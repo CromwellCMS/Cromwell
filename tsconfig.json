@@ -1,0 +1,35 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "rootDirs": [
+            "src/cromwell-core",
+            "src/templates",
+        ],
+        "lib": [
+            "dom",
+            "es2015",
+            "es2016",
+            "es2017"
+        ],
+        "allowJs": true,
+        "jsx": "react",
+        "sourceMap": true,
+        "strict": true,
+        "esModuleInterop": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "strictPropertyInitialization": false,
+        "resolveJsonModule": true,
+    },
+    "include": [
+        "src/templates/**/*.ts",
+        "src/templates/**/*.tsx",
+        "cromwell-demoshop/**/*.tsx",
+        "cromwell-demoshop/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        ".next"
+    ]
+}

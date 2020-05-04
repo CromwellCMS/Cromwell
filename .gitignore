@@ -1,0 +1,5 @@
+node_modules
+.next
+# db.sqlite3
+lerna-debug.log
+npm-debug.log
