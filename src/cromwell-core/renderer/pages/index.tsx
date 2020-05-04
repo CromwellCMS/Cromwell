@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { NextPage } from 'next'
 import { CromwellPage } from '../types';
-import { componentDataFetcher } from '../core/componentDataFetcher';
+import { componentDataFetcher } from '../common/componentDataFetcher';
 import { BaseComponent } from '../components/BaseComponent';
 import dynamic from "next/dynamic";
 const config = require('../../cmsconfig.json');

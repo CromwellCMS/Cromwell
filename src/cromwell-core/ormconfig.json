@@ -2,7 +2,8 @@
   "type": "sqlite",
   "database": "./db.sqlite3",
   "entities": [
-    "./src/cromwell-core/orm/models/entities/*.ts"
+    "./orm/models/entities/*.ts",
+    "./orm/models/inputs/*.ts"
   ],
   "synchronize": true
 }

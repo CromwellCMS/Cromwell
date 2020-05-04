@@ -6,18 +6,21 @@ import { ApolloServer } from "apollo-server";
 import { buildSchema } from "type-graphql";
 import { PostResolver } from "./orm/resolvers/PostResolver";
 import { AuthorResolver } from "./orm/resolvers/AuthorResolver";
+import { ProductResolver } from "./orm/resolvers/ProductResolver";
 const config = require('./cmsconfig.json');
 const publicDir = path.resolve(__dirname, '..') + '/public';
 const projDir = path.resolve(__dirname, '..', '..');
 const templatesDir = projDir + '/frontend';
 const currentTemplatePublicDir = templatesDir + '/' + config.templateName + '/public';
+const connectionOptions = require('./ormconfig.json');
 
 async function apiServer() {
-    await createConnection();
+    await createConnection(connectionOptions);
     const schema = await buildSchema({
         resolvers: [
             PostResolver,
-            AuthorResolver
+            AuthorResolver,
+            ProductResolver
         ],
         dateScalarMode: "isoDate"
     });

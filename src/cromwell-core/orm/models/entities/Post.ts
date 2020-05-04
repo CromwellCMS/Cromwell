@@ -28,3 +28,5 @@ export class Post extends BaseEntity {
   isPublished: boolean;
 
 }
+
+export type PostType = typeof Post;

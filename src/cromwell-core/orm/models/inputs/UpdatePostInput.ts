@@ -1,7 +1,8 @@
 import { InputType, Field } from "type-graphql";
+import { Post } from '../entities/Post';
 
 @InputType()
-export class UpdatePostInput {
+export class UpdatePostInput implements Partial<Post>{
   @Field({ nullable: true })
   title?: string;
 

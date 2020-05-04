@@ -28,3 +28,5 @@ export class Product extends BaseEntity {
     @Column({ default: false })
     isPublished: boolean;
 }
+
+export type ProductType = typeof Product;

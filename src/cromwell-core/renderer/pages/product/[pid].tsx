@@ -1,9 +1,13 @@
 import React, { Component } from 'react';
 import { NextPage } from 'next'
 import { useRouter } from 'next/router';
-import { componentDataFetcher } from '../../core/componentDataFetcher';
+import { componentDataFetcher } from '../../common/componentDataFetcher';
 import { CromwellPage } from '../../types';
 import dynamic from "next/dynamic";
+import gql from 'graphql-tag';
+import { graphQLClient } from '../../common/graphQLClient';
+// import { Product as ProductType } from '../../../orm/models/entities/Product';
+
 const config = require('../../../cmsconfig.json');
 const Product = dynamic(import(`../../../../templates/${config.templateName}/src/pages/product`));
 
@@ -11,6 +15,7 @@ const Product = dynamic(import(`../../../../templates/${config.templateName}/src
 interface Props {
     userAgent?: string;
     pid?: string;
+    data?: any
 }
 
 const ProductCore: CromwellPage<Props> = (props) => {
@@ -28,23 +33,46 @@ const ProductCore: CromwellPage<Props> = (props) => {
 }
 
 export const getStaticProps = async (context) => {
-    const { pid } = context.query;
-    const userAgent = context.req ? context.req.headers['user-agent'] : '';
+    const { childGetStaticProps } = await import(`../../../../templates/${config.templateName}/src/pages/product`);
+    const childStaticProps = childGetStaticProps ? await childGetStaticProps(context) : {};
+
+    const pid = (context && context.params) ? context.params.pid : '';
+
+
     const componentsData = await componentDataFetcher('product', context);
     return {
         props: {
-            userAgent,
-            pid: !Array.isArray(pid) ? pid : undefined,
+            ...childStaticProps,
+            pid,
             componentsData: componentsData
         }
     }
 }
 
 export async function getStaticPaths() {
+    let data;
+    let paths = [];
+    try {
+        data = await graphQLClient.request(`
+            query getPosts {
+                posts {
+                    id
+                }
+            }
+        `);
+        if (data) {
+            paths = data.posts.map(p => {
+                return {
+                    params: { pid: p.id }
+                }
+            })
+        }
+    } catch (e) {
+        console.error(e)
+    }
+    console.log('getStaticPaths', paths)
     return {
-        paths: [
-            { params: { ... } } 
-        ],
+        paths,
         fallback: true
     };
 }
