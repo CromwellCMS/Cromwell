@@ -1,0 +1,29 @@
+{
+  "name": "@cromwell/core",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "author": "cromwell",
+  "license": "ISC",
+  "dependencies": {
+    "@loadable/component": "^5.12.0",
+    "graphql-request": "^1.8.2",
+    "next": "^9.3.6",
+    "next-compose-plugins": "^2.2.0",
+    "next-transpile-modules": "^3.3.0",
+    "path": "^0.12.7",
+    "reflect-metadata": "^0.1.13",
+    "sqlite3": "^4.1.1",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1"
+  },
+  "devDependencies": {
+    "ts-loader": "^7.0.2",
+    "typescript": "^3.8.3",
+    "@types/jest": "25.2.1",
+    "@types/react": "16.9.34",
+    "@types/react-dom": "16.9.7",
+    "@types/node": "13.13.4"
+  },
+  "description": ""
+}

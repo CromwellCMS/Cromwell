@@ -3,6 +3,8 @@
   "compilerOptions": {
     "noImplicitAny": false,
     "experimentalDecorators": true,
-    "allowJs": true
+    "allowJs": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true
   }
 }

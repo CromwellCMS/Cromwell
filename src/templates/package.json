@@ -1,0 +1,8 @@
+{
+  "name": "@cromwell/templates",
+  "version": "1.0.0",
+  "author": "cromwell",
+  "main": "index.ts",
+  "license": "ISC",
+  "description": ""
+}

@@ -1,16 +1,13 @@
 import React, { Component } from 'react';
-import { NextPage } from 'next'
 import { useRouter } from 'next/router';
 import { componentDataFetcher } from '../../common/componentDataFetcher';
-import { CromwellPage } from '../../types';
+import { CromwellPage } from '@cromwell/core';
 import dynamic from "next/dynamic";
-import gql from 'graphql-tag';
-import { graphQLClient } from '../../common/graphQLClient';
+import { graphQLClient } from '@cromwell/core';
 // import { Product as ProductType } from '../../../orm/models/entities/Product';
-
-const config = require('../../../cmsconfig.json');
-const Product = dynamic(import(`../../../../templates/${config.templateName}/src/pages/product`));
-
+import { importProductPage } from '@cromwell/templates';
+const config = require('@cromwell/core/cmsconfig.json');
+const Product = dynamic(importProductPage(config.templateName));
 
 interface Props {
     userAgent?: string;
@@ -25,17 +22,24 @@ const ProductCore: CromwellPage<Props> = (props) => {
 
     return (
         <main>
-            <p>pid: {pid}</p>
-            <p>Your user agent: {props.userAgent}</p>
-            <Product />
+            <Product {...props} />
         </main>
     )
 }
 
 export const getStaticProps = async (context) => {
-    const { childGetStaticProps } = await import(`../../../../templates/${config.templateName}/src/pages/product`);
-    const childStaticProps = childGetStaticProps ? await childGetStaticProps(context) : {};
+    console.log('await importProductPage', await importProductPage(config.templateName))
+    const childGetStaticProps = (await importProductPage(config.templateName)).getStaticProps;
+    let childStaticProps = {}
+    if (childGetStaticProps) {
+        try {
+            childStaticProps = await childGetStaticProps(context);
+        } catch (e) {
+            console.error(e);
+        }
+    }
 
+    console.log('childStaticProps', childStaticProps)
     const pid = (context && context.params) ? context.params.pid : '';
 
 

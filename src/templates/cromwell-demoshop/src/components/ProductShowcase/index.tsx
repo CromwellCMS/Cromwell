@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { NextPage, NextPageContext } from 'next'
 import { useRouter } from 'next/router';
-// import { Product } from 'cromwell-core';
-import { ComponentProps } from 'cromwell-core';
+// import { Product } from '@cromwell/core';
+// import { ComponentProps } from '@cromwell/core';
 
 interface DataProps {
     // products?: Product[];
     userAgent?: string;
 }
 
-const ProductShowcase = (props: ComponentProps<DataProps>) => {
+// const ProductShowcase = (props: ComponentProps<DataProps>) => {
+const ProductShowcase = (props: any) => {
     const router = useRouter()
     const pid = (router && router.query) ? router.query.pid : undefined;
     console.log('ProductShowcase props', props)

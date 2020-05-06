@@ -7,11 +7,7 @@ import { buildSchema } from "type-graphql";
 import { PostResolver } from "./orm/resolvers/PostResolver";
 import { AuthorResolver } from "./orm/resolvers/AuthorResolver";
 import { ProductResolver } from "./orm/resolvers/ProductResolver";
-const config = require('./cmsconfig.json');
-const publicDir = path.resolve(__dirname, '..') + '/public';
-const projDir = path.resolve(__dirname, '..', '..');
-const templatesDir = projDir + '/frontend';
-const currentTemplatePublicDir = templatesDir + '/' + config.templateName + '/public';
+const config = require('@cromwell/core/cmsconfig.json');
 const connectionOptions = require('./ormconfig.json');
 
 async function apiServer() {
@@ -29,26 +25,26 @@ async function apiServer() {
     console.log(`API server has started at ${url}`);
 }
 
-async function adminPanelServer() {
-    const app = express();
+// async function adminPanelServer() {
+//     const app = express();
 
-    app.use(express.static(publicDir, {}));
-    app.get('*', (req, res) => {
-        res.sendFile(publicDir + '/index.html');
-    });
+//     app.use(express.static(publicDir, {}));
+//     app.get('*', (req, res) => {
+//         res.sendFile(publicDir + '/index.html');
+//     });
 
-    app.listen(config.adminPanelPort);
-    console.log(`Admin Panel server has started at http://localhost:${config.adminPanelPort}/`);
-}
+//     app.listen(config.adminPanelPort);
+//     console.log(`Admin Panel server has started at http://localhost:${config.adminPanelPort}/`);
+// }
 
-async function frontendServer() {
-    const app = express();
+// async function frontendServer() {
+//     const app = express();
 
-    app.use(express.static(currentTemplatePublicDir, {}));
+//     app.use(express.static(currentTemplatePublicDir, {}));
 
-    app.listen(config.templatePort);
-    console.log(`Frontend template server has started at http://localhost:${config.templatePort}/`);
-}
+//     app.listen(config.templatePort);
+//     console.log(`Frontend template server has started at http://localhost:${config.templatePort}/`);
+// }
 
 apiServer();
 // adminPanelServer();

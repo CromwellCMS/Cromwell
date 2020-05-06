@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
-import { NextPage } from 'next'
-import { CromwellPage } from '../types';
+import { CromwellPage } from '@cromwell/core';
+import { importIndexPage } from '@cromwell/templates';
 import { componentDataFetcher } from '../common/componentDataFetcher';
-import { BaseComponent } from '../components/BaseComponent';
 import dynamic from "next/dynamic";
-const config = require('../../cmsconfig.json');
-const Index = dynamic(import(`../../../templates/${config.templateName}/src/pages/index`));
+const config = require('@cromwell/core/cmsconfig.json');
+const Index = dynamic(importIndexPage(config.templateName));
 
 const IndexCore: CromwellPage<Props> = (props) => {
     console.log('Index props', props);
@@ -23,7 +22,7 @@ export const getStaticProps = async (context) => {
     const userAgent = context.req ? context.req.headers['user-agent'] : '';
     const componentsData = await componentDataFetcher("index", context);
 
-    const { getStaticProps } = await import(`../../../templates/${config.templateName}/src/pages/index`);
+    const getStaticProps  = (await importIndexPage(config.templateName)).getStaticProps;
     const initialProps = getStaticProps ? await getStaticProps() : {};
     return {
         props: {
