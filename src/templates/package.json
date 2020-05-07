@@ -4,5 +4,8 @@
   "author": "cromwell",
   "main": "index.ts",
   "license": "ISC",
-  "description": ""
+  "description": "",
+  "dependencies": {
+    "@cromwell/core": "1.0.0"
+  }
 }

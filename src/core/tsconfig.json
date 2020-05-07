@@ -21,7 +21,7 @@
   },
   "include": [
     "index.ts",
-    "src/*.ts"
+    "src/*.ts", "../renderer/src/common/getChildStaticProps.ts", "../../Store.ts"
   ],
   "exclude": [
     "node_modules"

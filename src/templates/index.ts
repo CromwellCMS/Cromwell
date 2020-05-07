@@ -1,18 +1,13 @@
-export const importProductPage = async (templateName: string) => {
-    console.log('importProductPage templateName', templateName);
-    const everyth = await import(`./${templateName}/`);
-    console.log('importProductPage everyth', everyth);
+import { PageName } from '@cromwell/core';
 
-    return everyth.Product;
-}
-export const importBlogPage = async (templateName: string) => {
-    return (await import(`./${templateName}/`)).Blog;
-}
-export const importIndexPage = async (templateName: string) => {
-    return (await import(`./${templateName}/`)).Index;
+export const importPage = async (templateName: string, pageName: PageName) => {
+    return await import(`./${templateName}/src/pages/${pageName}`);
 }
 
+export const importComponent = async (templateName: string, componentName: string) => {
+    return await import(`./${templateName}/src/components/${componentName}`);
+}
 
 export const importComponentsConfig = async (templateName: string) => {
-    return (await import(`./${templateName}/`)).componentsConfig;
+    return await import(`./${templateName}/src/components/componentsConfig.json`);
 }

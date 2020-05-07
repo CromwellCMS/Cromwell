@@ -1,6 +1,6 @@
 const withPlugins = require('next-compose-plugins');
 // const config = require('@cromwell/core').config;
-const withTM = require('next-transpile-modules')(['@cromwell/core', '@cromwell/templates', 'cromwell-demoshop']);
+const withTM = require('next-transpile-modules')(['@cromwell/core', '@cromwell/templates']);
 
 module.exports = withPlugins([withTM], {
     pageExtensions: ['jsx', 'js', 'ts', 'tsx'],

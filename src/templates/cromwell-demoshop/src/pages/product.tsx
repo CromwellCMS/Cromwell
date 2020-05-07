@@ -10,7 +10,7 @@ const Product: CromwellPage<ProductProps> = (props) => {
     console.log('ProductTemplate props', props);
     const product = props.data ? props.data.product : undefined;
     return (
-        <div>
+        <div>ProductTemp
             {
                 product && (
                     <div>
