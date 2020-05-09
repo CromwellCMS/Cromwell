@@ -9,6 +9,10 @@ export class Post extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: string;
 
+  @Field(() => String)
+  @Column()
+  slug: string;
+
   @Field()
   @Column()
   title: string;

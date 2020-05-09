@@ -1,8 +1,11 @@
 import { InputType, Field, ID } from "type-graphql";
-import { Product } from '../entities/Product';
+import { ProductType } from "@cromwell/core";
 
 @InputType({ description: "New Product data" })
-export class CreateProduct implements Partial<Product>  {
+export class CreateProduct implements Omit<ProductType, 'id'>  {
+
+    @Field(() => String)
+    slug: string;
 
     @Field(() => String)
     pageTitle: string;
@@ -13,9 +16,19 @@ export class CreateProduct implements Partial<Product>  {
     @Field(() => String)
     price: string;
 
+    @Field(() => String, { nullable: true })
+    oldPrice?: string;
+
     @Field(() => String)
     mainImage: string;
 
+    @Field(() => String)
+    images: string;
+
+    @Field(() => String)
+    description: string;
+
     @Field(() => Boolean)
-    isPublished: boolean;
+    isEnabled: boolean;
 }
+

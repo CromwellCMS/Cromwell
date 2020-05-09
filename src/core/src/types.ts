@@ -34,32 +34,47 @@ export type GraphQLNode = {
 }
 
 export interface ProductType {
-
+    // DB id
     id: string;
-
+    // Slug for page route
+    slug: string;
+    // Page SEO title
     pageTitle: string;
-
+    // Name of the product (h1)
     name: string;
-
+    // Price. Will be discount price if oldPrice is specified
     price: string;
-
+    // Price before sale, optional
+    oldPrice?: string | null;
+    // Href of main image
     mainImage: string;
-
-    isPublished: boolean;
+    // Hrefs of iamges
+    images: string;
+    // Description (HTML allowed)
+    description: string;
+    // Is displaying at frontend
+    isEnabled: boolean;
 }
 
 export interface PostType {
+    // DB id
     id: string;
-
+    // Slug for page route
+    slug: string;
+    // Page SEO title
+    pageTitle: string;
+    // Title of post (h1)
     title: string;
-
+    // DB id of author
     authorId: string;
-
-    author: AuthorType;
-
+    // Href of main image
+    mainImage: string;
+    // Short description (HTML allowed)
+    description: string;
+    // Post content (HTML allowed)
     content: string;
-
-    isPublished: boolean;
+    // Is displaying at frontend
+    isEnabled: boolean;
 }
 
 export interface AuthorType {

@@ -8,6 +8,10 @@ export class Author extends BaseEntity {
     @PrimaryGeneratedColumn()
     id: string;
 
+    @Field(() => String)
+    @Column()
+    slug: string;
+
     @Field()
     @Column()
     name: string;

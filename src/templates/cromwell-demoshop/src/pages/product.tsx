@@ -1,5 +1,5 @@
 import React from 'react';
-import { CromwellPage, ProductType, graphQLClient, GetStaticProps } from '@cromwell/core';
+import { CromwellPage, ProductType, graphQLClient, GetStaticProps, Link } from '@cromwell/core';
 
 interface ProductProps {
     data?: {
@@ -11,6 +11,7 @@ const Product: CromwellPage<ProductProps> = (props) => {
     const product = props.data ? props.data.product : undefined;
     return (
         <div>ProductTemp
+            <Link href='/'><a>HOME</a></Link>
             {
                 product && (
                     <div>
@@ -25,7 +26,7 @@ const Product: CromwellPage<ProductProps> = (props) => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
     const pid = (context && context.params) ? context.params.pid : null;
-    console.log('pid', pid)
+    console.log('pid', pid, 'context.params', context.params)
     let data = null;
     if (pid) {
         try {

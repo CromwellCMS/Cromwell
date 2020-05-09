@@ -5,4 +5,7 @@ import { Author } from '../entities/Author';
 export class CreateAuthorInput implements Partial<Author> {
     @Field()
     name: string;
+
+    @Field()
+    slug: string;
 }

@@ -2,7 +2,7 @@ import React from 'react';
 import { PageName, CromwellPage, CromwellPageCoreProps } from "@cromwell/core";
 import dynamic from "next/dynamic";
 import { importPage } from '@cromwell/templates';
-import { ComponentsContext, componentsCachePath } from '@cromwell/core';
+import { ComponentsContext, componentsCachePath, setComponentsData } from '@cromwell/core';
 // let cacache;
 // if (typeof window === undefined) {
 //     cacache = require('cacache');
@@ -15,7 +15,7 @@ export const getPage = (pageName: PageName): CromwellPage => {
         console.log('CromwellPageCoreProps', props);
         console.log('getPage:props.componentsData', props.componentsData);
         // if (cacache) cacache.put(componentsCachePath, 'componentsData', JSON.stringify(props.componentsData));
-
+        setComponentsData(props.componentsData);
         return (
             <ComponentsContext.Provider value={props.componentsData} >
                 {<Page {...props.childStaticProps} />}

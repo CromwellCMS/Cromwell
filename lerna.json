@@ -6,6 +6,7 @@
       "ignoreChanges": [
         "*.md"
       ],
+      "registry": "https://npm.pkg.github.com",
       "message": "chore(release): publish"
     },
     "bootstrap": {
