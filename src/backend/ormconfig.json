@@ -2,8 +2,7 @@
   "type": "sqlite",
   "database": "./db.sqlite3",
   "entities": [
-    "./orm/models/entities/*.ts",
-    "./orm/models/inputs/*.ts"
+    "./orm/models/entities/*.ts"
   ],
   "synchronize": true
 }

@@ -1,9 +1,9 @@
 import { NextPage } from 'next';
 
-export type CromwellPage<Props = {}> = NextPage<Props & CromwellPageCoreProps>;
+export type CromwellPageType<Props = {}> = NextPage<Props & CromwellPageCoreProps>;
 
 export type CromwellPageCoreProps = {
-    componentsData: Object;
+    modulesData: Object;
     childStaticProps: Object;
 }
 
@@ -13,8 +13,8 @@ export type PageName = keyof {
     blog
 }
 
-export interface DataComponentProps<Data> {
-    componetName: string;
+export type DataComponentProps<Data> = {
+    moduleName: string;
     component: React.ComponentType<Data>;
 }
 
@@ -26,20 +26,49 @@ export type DBEntity = keyof {
 export type GraphQLPathsType = { [K in DBEntity]: GraphQLNode };
 
 export type GraphQLNode = {
-    getOne: string;
+    getOneById: string;
+    getOneBySlug: string;
     getAll: string;
     create: string;
     update: string;
     delete: string;
 }
 
-export interface ProductType {
+export type BasePageEntityType = {
     // DB id
     id: string;
     // Slug for page route
     slug: string;
     // Page SEO title
     pageTitle: string;
+    // DB createDate
+    createDate: Date;
+    // DB updateDate
+    updateDate: Date;
+    // Is displaying at frontend
+    isEnabled: boolean;
+}
+
+type DBAuxiliaryColumns = 'id' | 'createDate' | 'updateDate';
+
+export type BasePageEntityInputType = Omit<BasePageEntityType, DBAuxiliaryColumns>;
+
+export type ProductCategoryType = BasePageEntityType & {
+    // Name of the category (h1)
+    name: string;
+    // Href of main image
+    mainImage: string;
+    // Description (HTML allowed)
+    description: string;
+    // DB children
+    children: ProductCategoryType[];
+    // DB parent
+    parent: ProductCategoryType;
+}
+
+export type ProductCategoryInputType = Omit<ProductCategoryType, DBAuxiliaryColumns>;
+
+export interface ProductType extends BasePageEntityType {
     // Name of the product (h1)
     name: string;
     // Price. Will be discount price if oldPrice is specified
@@ -49,20 +78,14 @@ export interface ProductType {
     // Href of main image
     mainImage: string;
     // Hrefs of iamges
-    images: string;
+    images: string[];
     // Description (HTML allowed)
     description: string;
-    // Is displaying at frontend
-    isEnabled: boolean;
 }
 
-export interface PostType {
-    // DB id
-    id: string;
-    // Slug for page route
-    slug: string;
-    // Page SEO title
-    pageTitle: string;
+export type ProductInputType = Omit<ProductType, DBAuxiliaryColumns>;
+
+export interface PostType extends BasePageEntityType {
     // Title of post (h1)
     title: string;
     // DB id of author
@@ -73,11 +96,12 @@ export interface PostType {
     description: string;
     // Post content (HTML allowed)
     content: string;
-    // Is displaying at frontend
-    isEnabled: boolean;
 }
 
-export interface AuthorType {
+export type PostInputType = Omit<ProductType, DBAuxiliaryColumns>;
+
+
+export interface AuthorType extends BasePageEntityType {
 
     id: string;
 

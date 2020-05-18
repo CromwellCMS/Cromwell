@@ -1,0 +1,12 @@
+{
+    "modules": {
+        "ProductShowcase": {
+            "pages": [
+                "index"
+            ],
+            "options": {
+                
+            }
+        }
+    }
+}

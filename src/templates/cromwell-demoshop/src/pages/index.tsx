@@ -1,16 +1,16 @@
 import React from 'react';
-import { DataComponent } from '@cromwell/core';
-import { CromwellPage } from '@cromwell/core';
-import ProductShowcase from '../components/ProductShowcase';
+import { DataModule } from '@cromwell/core';
+import { CromwellPageType } from '@cromwell/core';
+import ProductShowcase from '../modules/ProductShowcase';
 
-const Index: CromwellPage = (props) => {
+const Index: CromwellPageType = (props) => {
     console.log('IndexTemplate props', props);
 
     return (
         <div>IndexTemp
         HELLO WOORLD1
-            <DataComponent
-                componetName="ProductShowcase"
+            <DataModule
+                moduleName="ProductShowcase"
                 component={ProductShowcase}
             />
         </div>

@@ -1,20 +1,14 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { ObjectType, Field, ID, Int } from "type-graphql";
 import { Author } from './Author';
+import { BasePageEntity } from './BasePageEntity';
+import { PostType } from "@cromwell/core";
 
 @Entity()
 @ObjectType()
-export class Post extends BaseEntity {
-  @Field(type => ID)
-  @PrimaryGeneratedColumn()
-  id: string;
-
-  @Field(() => String)
-  @Column()
-  slug: string;
-
+export class Post extends BasePageEntity implements PostType {
   @Field()
-  @Column()
+  @Column({ type: "varchar" })
   title: string;
 
   @Column()
@@ -28,9 +22,11 @@ export class Post extends BaseEntity {
   content: string;
 
   @Field()
-  @Column({ default: false })
-  isPublished: boolean;
+  @Column()
+  mainImage: string;
 
+  @Field()
+  @Column()
+  description: string;
+  
 }
-
-export type PostType = typeof Post;

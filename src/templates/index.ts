@@ -4,10 +4,10 @@ export const importPage = async (templateName: string, pageName: PageName) => {
     return await import(`./${templateName}/src/pages/${pageName}`);
 }
 
-export const importComponent = async (templateName: string, componentName: string) => {
-    return await import(`./${templateName}/src/components/${componentName}`);
+export const importModule = async (templateName: string, componentName: string) => {
+    return await import(`./${templateName}/src/modules/${componentName}`);
 }
 
-export const importComponentsConfig = async (templateName: string) => {
-    return await import(`./${templateName}/src/components/componentsConfig.json`);
+export const importConfig = async (templateName: string) => {
+    return await import(`./${templateName}/cromwell.config.json`);
 }

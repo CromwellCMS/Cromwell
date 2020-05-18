@@ -1,12 +1,12 @@
 import React from 'react';
-import { CromwellPage, ProductType, graphQLClient, GetStaticProps, Link } from '@cromwell/core';
+import { CromwellPageType, ProductType, graphQLClient, GetStaticPropsType, Link, GraphQLPaths } from '@cromwell/core';
 
 interface ProductProps {
     data?: {
         product: ProductType
     };
 }
-const Product: CromwellPage<ProductProps> = (props) => {
+const Product: CromwellPageType<ProductProps> = (props) => {
     console.log('ProductTemplate props', props);
     const product = props.data ? props.data.product : undefined;
     return (
@@ -24,16 +24,18 @@ const Product: CromwellPage<ProductProps> = (props) => {
     );
 }
 
-export const getStaticProps: GetStaticProps = async (context) => {
-    const pid = (context && context.params) ? context.params.pid : null;
-    console.log('pid', pid, 'context.params', context.params)
+export const getStaticProps: GetStaticPropsType = async (context) => {
+    console.log('context', context)
+    const slug = (context && context.params) ? context.params.slug : null;
+    console.log('pid', slug, 'context.params', context.params)
     let data = null;
-    if (pid) {
+    if (slug) {
         try {
             data = await graphQLClient.request(`
                 query getproduct {
-                    product(id: "${pid}") {
+                    ${GraphQLPaths.Product.getOneBySlug}(slug: "${slug}") {
                         id
+                        slug
                         name
                         pageTitle
                         price

@@ -1,33 +1,25 @@
 import { InputType, Field, ID } from "type-graphql";
-import { ProductType } from "@cromwell/core";
+import { ProductInputType } from "@cromwell/core";
+import { BasePageInput } from './BasePageInput';
 
 @InputType({ description: "Update Product data" })
-export class UpdateProduct implements Partial<Omit<ProductType, 'id'>>  {
-
-    @Field(() => String)
-    slug: string;
-
-    @Field(() => String)
-    pageTitle: string;
-
+export class UpdateProduct extends BasePageInput implements ProductInputType {
     @Field(() => String)
     name: string;
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     price: string;
 
     @Field(() => String, { nullable: true })
     oldPrice?: string;
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     mainImage: string;
 
-    @Field(() => String)
-    images: string;
+    @Field(() => [String], { nullable: true })
+    images: string[];
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     description: string;
 
-    @Field(() => Boolean)
-    isEnabled: boolean;
 }

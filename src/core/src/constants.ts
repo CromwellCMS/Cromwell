@@ -2,14 +2,16 @@ import { DBEntity, GraphQLNode } from './types';
 
 export const GraphQLPaths: { [K in DBEntity]: GraphQLNode } = {
     Post: {
-        getOne: "post",
+        getOneBySlug: "post",
+        getOneById: "getPostById",
         getAll: "posts",
         create: "createPost",
         update: "updatePost",
         delete: "deletePost"
     },
     Product: {
-        getOne: "product",
+        getOneBySlug: "product",
+        getOneById: "getProductById",
         getAll: "products",
         create: "createProduct",
         update: "updateProduct",
