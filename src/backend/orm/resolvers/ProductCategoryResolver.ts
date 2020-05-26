@@ -2,61 +2,47 @@ import { Resolver, Query, Mutation, Arg, FieldResolver } from "type-graphql";
 import { ProductCategory } from "../models/entities/ProductCategory";
 import { CreateProductCategory } from "../models/inputs/CreateProductCategory";
 import { UpdateProductCategory } from "../models/inputs/UpdateProductCategory";
+import { ProductCategoryRepository } from "../repositories/ProductCategoryRepository";
+import { getCustomRepository } from "typeorm";
+
 
 @Resolver(ProductCategory)
 export class ProductCategoryResolver {
+
+    private get repo() { return getCustomRepository(ProductCategoryRepository) }
+
     @Query(() => [ProductCategory])
-    productCategories() {
-        return ProductCategory.find();
+    async productCategories() {
+        return await this.repo.getProductCategories();
     }
 
     @Query(() => ProductCategory)
-    productCategory(@Arg("slug") slug: string) {
-        return ProductCategory.findOne({ where: { slug } });
+    async productCategory(@Arg("slug") slug: string) {
+        return await this.repo.getProductCategoryBySlug(slug);
     }
 
     @Query(() => ProductCategory)
-    getProductCategoryById(@Arg("id") id: string) {
-        return ProductCategory.findOne({ where: { id } });
+    async getProductCategoryById(@Arg("id") id: string) {
+        return await this.repo.getProductCategoryById(id);
     }
 
     @Mutation(() => ProductCategory)
     async createProductCategory(@Arg("data") data: CreateProductCategory) {
-        if (data.slug) await this.checkSlug(data.slug);
-
-        const post = ProductCategory.create(data);
-        if (!post.slug) post.slug = post.id;
-        await post.save();
-        return post;
+        return await this.repo.createProductCategory(data);
     }
 
     @Mutation(() => ProductCategory)
     async updateProductCategory(@Arg("id") id: string, @Arg("data") data: UpdateProductCategory) {
-        if (data.slug) await this.checkSlug(data.slug);
-
-        const post = await ProductCategory.findOne({ where: { id } });
-        if (!post) throw new Error("ProductCategory not found!");
-        Object.assign(post, data);
-        await post.save();
-        return post;
+        return await this.repo.updateProductCategory(id, data);
     }
 
     @Mutation(() => Boolean)
     async deleteProductCategory(@Arg("id") id: string) {
-        const post = await ProductCategory.findOne({ where: { id } });
-        if (!post) throw new Error("ProductCategory not found!");
-        await post.remove();
-        return true;
+        return await this.repo.deleteProductCategory(id);
     }
 
     @FieldResolver()
     views(): number {
         return Math.floor(Math.random() * 10);
     }
-
-    async checkSlug(slug: string) {
-        const prod = await ProductCategory.findOne({ where: { slug } });
-        if (prod) throw new Error('Slug is not unique');
-    }
-
 }

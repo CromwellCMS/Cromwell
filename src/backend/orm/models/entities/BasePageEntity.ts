@@ -10,7 +10,7 @@ export class BasePageEntity extends BaseEntity implements BasePageEntityType {
     id: string;
 
     @Field(() => String)
-    @Column({ type: "varchar", unique: true, })
+    @Column({ type: "varchar", unique: true, nullable: true })
     slug: string;
 
     @Field(() => String, { nullable: true })

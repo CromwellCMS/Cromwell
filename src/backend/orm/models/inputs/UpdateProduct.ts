@@ -7,6 +7,9 @@ export class UpdateProduct extends BasePageInput implements ProductInputType {
     @Field(() => String)
     name: string;
 
+    @Field(() => [String])
+    categoryIds: string[];
+
     @Field(() => String, { nullable: true })
     price: string;
 

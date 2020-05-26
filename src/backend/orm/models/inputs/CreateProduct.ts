@@ -7,6 +7,9 @@ export class CreateProduct extends BasePageInput implements ProductInputType {
     @Field(() => String)
     name: string;
 
+    @Field(type  => [String], { nullable: true })
+    categoryIds: string[];
+
     @Field(() => String, { nullable: true })
     price: string;
 

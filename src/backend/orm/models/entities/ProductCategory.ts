@@ -1,8 +1,9 @@
 import { Entity, Column } from "typeorm";
-import { Tree, TreeChildren, TreeParent, TreeLevelColumn } from "typeorm";
+import { Tree, TreeChildren, TreeParent, TreeLevelColumn, ManyToMany } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
-import { ProductCategoryType } from '@cromwell/core'
+import { ProductCategoryType, ProductType } from '@cromwell/core'
 import { BasePageEntity } from './BasePageEntity';
+import { Product } from './Product';
 
 @Entity()
 @Tree("closure-table")
@@ -13,11 +14,11 @@ export class ProductCategory extends BasePageEntity implements ProductCategoryTy
     name: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar" })
+    @Column({ type: "varchar", nullable: true })
     mainImage: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar" })
+    @Column({ type: "varchar", nullable: true })
     description: string;
 
     @Field(() => [ProductCategory], { nullable: true })
@@ -28,7 +29,10 @@ export class ProductCategory extends BasePageEntity implements ProductCategoryTy
     @TreeParent()
     parent: ProductCategory;
 
-    @Field(() => Number)
-    @TreeLevelColumn()
-    level: number;
+    // @Field(() => Number)
+    // @TreeLevelColumn()
+    // level: number;
+
+    @ManyToMany(type => Product, question => question.categories)
+    products: Promise<ProductType[]>;
 }

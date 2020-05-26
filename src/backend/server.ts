@@ -1,22 +1,26 @@
 import "reflect-metadata";
 import express from 'express';
 import path from 'path';
-import { createConnection } from "typeorm";
+import { createConnection, Connection } from "typeorm";
 import { ApolloServer } from "apollo-server";
 import { buildSchema } from "type-graphql";
 import { PostResolver } from "./orm/resolvers/PostResolver";
 import { AuthorResolver } from "./orm/resolvers/AuthorResolver";
 import { ProductResolver } from "./orm/resolvers/ProductResolver";
+import { ProductCategoryResolver } from "./orm/resolvers/ProductCategoryResolver";
 const config = require('@cromwell/core/cmsconfig.json');
 const connectionOptions = require('./ormconfig.json');
 
+let _connection: Connection;
+
 async function apiServer() {
-    await createConnection(connectionOptions);
+    _connection = await createConnection(connectionOptions);
     const schema = await buildSchema({
         resolvers: [
             PostResolver,
             AuthorResolver,
-            ProductResolver
+            ProductResolver,
+            ProductCategoryResolver
         ],
         dateScalarMode: "isoDate"
     });

@@ -64,13 +64,20 @@ export type ProductCategoryType = BasePageEntityType & {
     children: ProductCategoryType[];
     // DB parent
     parent: ProductCategoryType;
+    // Products in category
+    products: Promise<ProductType[]>;
 }
 
-export type ProductCategoryInputType = Omit<ProductCategoryType, DBAuxiliaryColumns>;
+export type ProductCategoryInputType = Omit<ProductCategoryType, DBAuxiliaryColumns | 'children' | 'parent' | 'products'> & {
+    parentId: string;
+    childIds: string[];
+};
 
 export interface ProductType extends BasePageEntityType {
     // Name of the product (h1)
     name: string;
+    // Categories of the prooduct
+    categories: Promise<ProductCategoryType[]>;
     // Price. Will be discount price if oldPrice is specified
     price: string;
     // Price before sale, optional
@@ -83,7 +90,9 @@ export interface ProductType extends BasePageEntityType {
     description: string;
 }
 
-export type ProductInputType = Omit<ProductType, DBAuxiliaryColumns>;
+export type ProductInputType = Omit<ProductType, DBAuxiliaryColumns | 'categories'> & {
+    categoryIds: string[];
+};
 
 export interface PostType extends BasePageEntityType {
     // Title of post (h1)

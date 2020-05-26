@@ -1,7 +1,6 @@
-import { InputType, Field, ID } from "type-graphql";
+import { InputType, Field } from "type-graphql";
 import { ProductCategoryInputType } from "@cromwell/core";
 import { BasePageInput } from './BasePageInput';
-import { ProductCategory } from '../entities/ProductCategory';
 
 @InputType({ description: "New Product Category data" })
 export class CreateProductCategory extends BasePageInput implements ProductCategoryInputType {
@@ -14,10 +13,9 @@ export class CreateProductCategory extends BasePageInput implements ProductCateg
     @Field(() => String, { nullable: true })
     description: string;
 
-    @Field(() => [ProductCategory], { nullable: true })
-    children: ProductCategory[];
+    @Field(() => String, { nullable: true })
+    parentId: string;
 
-    @Field(() => ProductCategory, { nullable: true })
-    parent: ProductCategory;
-
+    @Field(() => [String], { nullable: true })
+    childIds: string[];
 }

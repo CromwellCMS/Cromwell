@@ -1,62 +1,55 @@
-import { Resolver, Query, Mutation, Arg, FieldResolver } from "type-graphql";
+import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from "type-graphql";
 import { Product } from "../models/entities/Product";
+import { ProductRepository } from "../repositories/ProductRepository";
 import { CreateProduct } from "../models/inputs/CreateProduct";
 import { UpdateProduct } from "../models/inputs/UpdateProduct";
+import { getCustomRepository } from "typeorm";
+import { ProductCategory } from "../models/entities/ProductCategory";
+import { ProductCategoryType } from "@cromwell/core";
 
 @Resolver(Product)
 export class ProductResolver {
+
+    private get repo() { return getCustomRepository(ProductRepository) }
+
     @Query(() => [Product])
-    products() {
-        return Product.find();
+    async products(): Promise<Product[]> {
+        return await this.repo.getProducts();
     }
 
     @Query(() => Product)
-    product(@Arg("slug") slug: string) {
-        return Product.findOne({ where: { slug } });
+    async product(@Arg("slug") slug: string): Promise<Product> {
+        return await this.repo.getProductBySlug(slug);
     }
 
     @Query(() => Product)
-    getProductById(@Arg("id") id: string) {
-        return Product.findOne({ where: { id } });
+    async getProductById(@Arg("id") id: string): Promise<Product> {
+        return await this.repo.getProductById(id);
     }
 
     @Mutation(() => Product)
-    async createProduct(@Arg("data") data: CreateProduct) {
-        if (data.slug) await this.checkSlug(data.slug);
-
-        const post = Product.create(data);
-        if (!post.slug) post.slug = post.id;
-        await post.save();
-        return post;
+    async createProduct(@Arg("data") data: CreateProduct): Promise<Product> {
+        return await this.repo.createProduct(data);
     }
 
     @Mutation(() => Product)
-    async updateProduct(@Arg("id") id: string, @Arg("data") data: UpdateProduct) {
-        if (data.slug) await this.checkSlug(data.slug);
-
-        const post = await Product.findOne({ where: { id } });
-        if (!post) throw new Error("Product not found!");
-        Object.assign(post, data);
-        await post.save();
-        return post;
+    async updateProduct(@Arg("id") id: string, @Arg("data") data: UpdateProduct): Promise<Product> {
+        return await this.repo.updateProduct(id, data);
     }
 
     @Mutation(() => Boolean)
-    async deleteProduct(@Arg("id") id: string) {
-        const post = await Product.findOne({ where: { id } });
-        if (!post) throw new Error("Product not found!");
-        await post.remove();
-        return true;
+    async deleteProduct(@Arg("id") id: string): Promise<boolean> {
+        return await this.repo.deleteProduct(id);
+    }
+
+    @FieldResolver(() => [ProductCategory])
+    async categories(@Root() product: Product): Promise<ProductCategoryType[]> {
+        return await product.categories;
     }
 
     @FieldResolver()
     views(): number {
         return Math.floor(Math.random() * 10);
-    }
-
-    async checkSlug(slug: string) {
-        const prod = await Product.findOne({ where: { slug } });
-        if (prod) throw new Error('Slug is not unique');
     }
 
 }
