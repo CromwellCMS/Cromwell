@@ -1,9 +1,10 @@
 import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from "type-graphql";
 import { Product } from "../models/entities/Product";
 import { ProductRepository } from "../repositories/ProductRepository";
+import { ProductCategoryRepository } from "../repositories/ProductCategoryRepository";
+import { getCustomRepository } from "typeorm";
 import { CreateProduct } from "../models/inputs/CreateProduct";
 import { UpdateProduct } from "../models/inputs/UpdateProduct";
-import { getCustomRepository } from "typeorm";
 import { ProductCategory } from "../models/entities/ProductCategory";
 import { ProductCategoryType } from "@cromwell/core";
 
@@ -44,7 +45,7 @@ export class ProductResolver {
 
     @FieldResolver(() => [ProductCategory])
     async categories(@Root() product: Product): Promise<ProductCategoryType[]> {
-        return await product.categories;
+        return await getCustomRepository(ProductCategoryRepository).getCategoriesOfProduct(product.id);
     }
 
     @FieldResolver()

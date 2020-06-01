@@ -2,7 +2,8 @@ import { EntityRepository, TreeRepository } from "typeorm";
 import { ProductCategory } from '../models/entities/ProductCategory';
 import { UpdateProductCategory } from '../models/inputs/UpdateProductCategory';
 import { CreateProductCategory } from '../models/inputs/CreateProductCategory';
-import { Product } from "../models/entities/Product";
+import { ProductCategoryType, PagedParamsType, DBTableNames } from "@cromwell/core";
+import { getPaged, innerJoinById } from './BaseRepository';
 
 @EntityRepository(ProductCategory)
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
@@ -85,13 +86,46 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async deleteProductCategory(id: string): Promise<boolean> {
-        const product = await this.getProductCategoryById(id);
-        if (!product) return false;
-        await this.delete(id);
+        const productCategory = await this.getProductCategoryById(id);
+        if (!productCategory) return false;
+        await this.delete(productCategory.id);
         return true;
     }
 
-    // async getProducts(category: ProductCategory): Promise<Product[]> {
-    //     category.
+    // async getProducts(params: CategoryParamsType): Promise<ProductType[]> {
+
+    //     if (!params.pageNumber) params.pageNumber = 1;
+    //     if (!params.pageSize) params.pageSize = 2;
+
+    //     // const res = await this.query(`
+    //     //     SELECT * FROM product AS p 
+    //     //     INNER JOIN product_categories_product_category AS cat_index 
+    //     //     ON cat_index.productId=p.id 
+    //     //     AND cat_index.productCategoryId = $1 
+    //     //     ORDER BY p.id 
+    //     //     LIMIT -1 OFFSET $2 * ($3 - 1) ROWS 
+    //     //     FETCH NEXT $2 ROWS ONLY`,
+    //     //     [params.categoryId, params.pageSize, params.pageNumber])
+
+    //     // console.log('res', res)
+
+    //     // const productCategory = await this.createQueryBuilder("product_category")
+    //     //     .where("product_category.id = :id", { id: params.categoryId })
+    //     //     .leftJoinAndSelect("product_category.products", "product")
+    //     //     .getOne();
+
+    //     // if (!productCategory) throw new Error(`ProductCategory ${params.categoryId} not found!`);
+
+    //     // return productCategory.products;
+    //     // return res;
+
+
     // }
+
+    async getCategoriesOfProduct(productId: string, params?: PagedParamsType<ProductCategoryType>): Promise<ProductCategoryType[]> {
+        const qb = this.createQueryBuilder(DBTableNames.ProductCategory);
+        innerJoinById(qb, DBTableNames.ProductCategory, 'products', DBTableNames.Product, productId);
+        getPaged(qb, DBTableNames.ProductCategory, params);
+        return await qb.getMany();
+    }
 }

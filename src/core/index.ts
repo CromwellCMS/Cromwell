@@ -10,6 +10,7 @@ export type GetStaticPropsType<
     P extends { [key: string]: any } = { [key: string]: any },
     Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: StaticPageContext) => Promise<P>;
 export * from './src/types';
+export * from './src/constants';
 export {
     CromwellPageType, CromwellPageCoreProps, PageName, DataComponentProps,
     DBEntity, GraphQLPathsType
@@ -17,8 +18,8 @@ export {
 export { DataModule, getModulesData, setModulesData } from './src/DataModule';
 // export { Store } from '../../Store';
 export { graphQLClient } from './src/graphQLClient';
-export { GraphQLPaths, componentsCachePath } from './src/constants';
 export { default as Link } from 'next/link';
+export * as cmsconfig from './cmsconfig.json';
 
 declare global {
     namespace NodeJS {

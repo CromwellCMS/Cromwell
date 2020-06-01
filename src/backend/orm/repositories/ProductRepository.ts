@@ -3,8 +3,9 @@ import { Product } from '../models/entities/Product';
 import { CreateProduct } from '../models/inputs/CreateProduct';
 import { UpdateProduct } from '../models/inputs/UpdateProduct';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
+import { getPaged, innerJoinById } from './BaseRepository';
 import { getCustomRepository } from "typeorm";
-import { ProductCategory } from "../models/entities/ProductCategory";
+import { PagedParamsType, DBTableNames, ProductType } from "@cromwell/core";
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
@@ -43,8 +44,8 @@ export class ProductRepository extends Repository<Product> {
         product.pageTitle = createProduct.pageTitle;
         product.slug = createProduct.slug;
         if (createProduct.categoryIds) {
-            product.categories = Promise.resolve(await getCustomRepository(ProductCategoryRepository)
-                .getProductCategoriesById(createProduct.categoryIds));
+            product.categories = await getCustomRepository(ProductCategoryRepository)
+                .getProductCategoriesById(createProduct.categoryIds);
         }
 
         await this.save(product);
@@ -69,8 +70,8 @@ export class ProductRepository extends Repository<Product> {
         product.pageTitle = updateProduct.pageTitle;
         product.slug = updateProduct.slug ? updateProduct.slug : product.id;
         if (updateProduct.categoryIds) {
-            product.categories = Promise.resolve(await getCustomRepository(ProductCategoryRepository)
-                .getProductCategoriesById(updateProduct.categoryIds));
+            product.categories = await getCustomRepository(ProductCategoryRepository)
+                .getProductCategoriesById(updateProduct.categoryIds);
         }
 
         await this.save(product);
@@ -84,12 +85,11 @@ export class ProductRepository extends Repository<Product> {
         return true;
     }
 
-    // async getCategoriesOfProduct(id: string): Promise<ProductCategory> {
-    //     const product = await this.findOne({
-    //         where: { id },
-    //         relations: {''}
-    //     });
-    //     if (!product) throw new Error(`Product ${id} not found!`);
-    //     return product;
-    // }
+    async getProductsFromCategory(categoryId: string, params?: PagedParamsType<ProductType>): Promise<ProductType[]> {
+        const qb = this.createQueryBuilder(DBTableNames.Product);
+        innerJoinById(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
+        getPaged(qb, DBTableNames.Product, params);
+        return await qb.getMany();
+    }
+
 }

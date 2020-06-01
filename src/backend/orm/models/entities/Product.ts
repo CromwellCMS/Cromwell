@@ -13,7 +13,7 @@ export class Product extends BasePageEntity implements ProductType {
 
     @ManyToMany(type => ProductCategory, category => category.products)
     @JoinTable()
-    categories: Promise<ProductCategoryType[]>;
+    categories: ProductCategoryType[];
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })

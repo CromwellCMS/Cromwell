@@ -20,7 +20,8 @@ export type DataComponentProps<Data> = {
 
 export type DBEntity = keyof {
     Post,
-    Product
+    Product,
+    ProductCategory
 }
 
 export type GraphQLPathsType = { [K in DBEntity]: GraphQLNode };
@@ -65,7 +66,7 @@ export type ProductCategoryType = BasePageEntityType & {
     // DB parent
     parent: ProductCategoryType;
     // Products in category
-    products: Promise<ProductType[]>;
+    products: ProductType[];
 }
 
 export type ProductCategoryInputType = Omit<ProductCategoryType, DBAuxiliaryColumns | 'children' | 'parent' | 'products'> & {
@@ -77,7 +78,7 @@ export interface ProductType extends BasePageEntityType {
     // Name of the product (h1)
     name: string;
     // Categories of the prooduct
-    categories: Promise<ProductCategoryType[]>;
+    categories: ProductCategoryType[];
     // Price. Will be discount price if oldPrice is specified
     price: string;
     // Price before sale, optional
@@ -115,4 +116,11 @@ export interface AuthorType extends BasePageEntityType {
     id: string;
 
     name: string;
+}
+
+export type PagedParamsType<Entity> = {
+    pageNumber?: number;
+    pageSize?: number;
+    orderBy?: keyof Entity;
+    order?: 'ASC' | 'DESC';
 }
