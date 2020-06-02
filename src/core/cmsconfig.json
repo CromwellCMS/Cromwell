@@ -2,5 +2,6 @@
     "apiPort": 4032,
     "adminPanelPort": 4064,
     "templatePort": 4128,
-    "templateName": "cromwell-demoshop"
+    "templateName": "cromwell-demoshop",
+    "defaultPageSize": 15
 }

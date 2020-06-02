@@ -3,16 +3,17 @@ import { Product } from '../models/entities/Product';
 import { CreateProduct } from '../models/inputs/CreateProduct';
 import { UpdateProduct } from '../models/inputs/UpdateProduct';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
-import { getPaged, innerJoinById } from './BaseRepository';
+import { getPaged, innerJoinById } from './BaseQueries';
 import { getCustomRepository } from "typeorm";
 import { PagedParamsType, DBTableNames, ProductType } from "@cromwell/core";
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
 
-    async getProducts(): Promise<Product[]> {
-        let products = await this.find();
-        return products;
+    async getProducts(params: PagedParamsType<ProductType>): Promise<Product[]> {
+        const qb = this.createQueryBuilder(DBTableNames.Product);
+        getPaged(qb, DBTableNames.Product, params);
+        return await qb.getMany();
     }
 
     async getProductById(id: string): Promise<Product> {

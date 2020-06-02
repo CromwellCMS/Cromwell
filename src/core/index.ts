@@ -15,11 +15,14 @@ export {
     CromwellPageType, CromwellPageCoreProps, PageName, DataComponentProps,
     DBEntity, GraphQLPathsType
 } from './src/types';
-export { DataModule, getModulesData, setModulesData } from './src/DataModule';
+export { CromwellModule, getModulesData, setModulesData } from './src/DataModule';
 // export { Store } from '../../Store';
 export { graphQLClient } from './src/graphQLClient';
 export { default as Link } from 'next/link';
-export * as cmsconfig from './cmsconfig.json';
+const cmsconfig = require('./cmsconfig.json');
+export const getCMSconfig = () => {
+    return cmsconfig;
+}
 
 declare global {
     namespace NodeJS {

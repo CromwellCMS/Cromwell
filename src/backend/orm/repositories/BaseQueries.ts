@@ -1,17 +1,19 @@
 import { SelectQueryBuilder } from "typeorm";
-import { PagedParamsType } from "@cromwell/core";
+import { PagedParamsType, getCMSconfig } from "@cromwell/core";
 
 export const getPaged = <T>(qb: SelectQueryBuilder<T>, entityName?: string, params?: PagedParamsType<T>): SelectQueryBuilder<T> => {
-    if (!params) params = {};
-    if (!params.pageNumber) params.pageNumber = 1;
-    if (!params.pageSize) params.pageSize = 4;
-
-    if (params.orderBy && entityName) {
-        if (!params.order) params.order = 'DESC';
-        qb.orderBy(`${entityName}.${params.orderBy}`, params.order)
+    const p = params ? params : {};
+    if (!p.pageNumber) p.pageNumber = 1;
+    if (!p.pageSize) {
+        const defaultPageSize = getCMSconfig().defaultPageSize;
+        p.pageSize = (defaultPageSize && typeof defaultPageSize === 'number') ? defaultPageSize : 15;
     }
-    return qb.skip(params.pageSize * (params.pageNumber - 1))
-        .take(params.pageSize);
+
+    if (p.orderBy && entityName) {
+        if (!p.order) p.order = 'DESC';
+        qb.orderBy(`${entityName}.${p.orderBy}`, p.order)
+    }
+    return qb.skip(p.pageSize * (p.pageNumber - 1)).take(p.pageSize);
 }
 
 export const innerJoinById = <T>(qb: SelectQueryBuilder<T>, firstEntityName: string,

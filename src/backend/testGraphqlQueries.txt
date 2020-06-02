@@ -1,0 +1,70 @@
+# Write your query or mutation here
+query getProduct {
+  product(slug: "16") {
+    id
+    name
+    views
+    categories(pagedParams: {}) {
+      id
+      name
+    }
+  }
+}
+query getProducts {
+  products(pagedParams: {pageNumber: 1, pageSize: 2}) {
+    id
+    name
+    slug
+    categories(pagedParams: {}) {
+      name
+    }
+  }
+}
+mutation createProduct {
+  createProduct(data: {
+    name: "fvdfg555",
+    categoryIds: ["1","2","3"]
+  }){
+    id
+  }
+}
+mutation deleteProduct {
+	deleteProduct(id: "15")
+}
+
+mutation creatPrCat {
+  createProductCategory(data: {
+    name: "fvdfg222"
+  }){
+    id
+  }
+}
+query getProdCat {
+  getProductCategoryById(id: "1") {
+    id
+    name
+    products(pagedParams: {
+      pageSize: 2
+    }) {
+      id
+      name
+    }
+  }
+}
+query getAllProdCats {
+  productCategories(pagedParams: {}) {
+    id
+    name
+    products(pagedParams: {
+      pageSize: 4,
+      order: "ASC",
+      orderBy: "name"
+    }) {
+      id
+      name
+    }
+  }
+}
+mutation deletePrCat {
+  deleteProductCategory(id: "1")
+}

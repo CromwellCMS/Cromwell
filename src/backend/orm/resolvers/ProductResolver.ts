@@ -5,8 +5,9 @@ import { ProductCategoryRepository } from "../repositories/ProductCategoryReposi
 import { getCustomRepository } from "typeorm";
 import { CreateProduct } from "../models/inputs/CreateProduct";
 import { UpdateProduct } from "../models/inputs/UpdateProduct";
+import { PagedParamsInput } from "../models/inputs/PagedParamsInput";
 import { ProductCategory } from "../models/entities/ProductCategory";
-import { ProductCategoryType } from "@cromwell/core";
+import { ProductCategoryType, ProductType } from "@cromwell/core";
 
 @Resolver(Product)
 export class ProductResolver {
@@ -14,8 +15,8 @@ export class ProductResolver {
     private get repo() { return getCustomRepository(ProductRepository) }
 
     @Query(() => [Product])
-    async products(): Promise<Product[]> {
-        return await this.repo.getProducts();
+    async products(@Arg("pagedParams") pagedParams: PagedParamsInput<ProductType>): Promise<Product[]> {
+        return await this.repo.getProducts(pagedParams);
     }
 
     @Query(() => Product)
@@ -44,8 +45,8 @@ export class ProductResolver {
     }
 
     @FieldResolver(() => [ProductCategory])
-    async categories(@Root() product: Product): Promise<ProductCategoryType[]> {
-        return await getCustomRepository(ProductCategoryRepository).getCategoriesOfProduct(product.id);
+    async categories(@Root() product: Product, @Arg("pagedParams") pagedParams: PagedParamsInput<ProductCategoryType>): Promise<ProductCategoryType[]> {
+        return await getCustomRepository(ProductCategoryRepository).getCategoriesOfProduct(product.id, pagedParams);
     }
 
     @FieldResolver()

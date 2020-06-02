@@ -1,4 +1,4 @@
-import { InputType, Field, ID } from "type-graphql";
+import { InputType, Field, Int } from "type-graphql";
 import { ProductInputType } from "@cromwell/core";
 import { BasePageInput } from './BasePageInput';
 

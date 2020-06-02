@@ -3,14 +3,15 @@ import { ProductCategory } from '../models/entities/ProductCategory';
 import { UpdateProductCategory } from '../models/inputs/UpdateProductCategory';
 import { CreateProductCategory } from '../models/inputs/CreateProductCategory';
 import { ProductCategoryType, PagedParamsType, DBTableNames } from "@cromwell/core";
-import { getPaged, innerJoinById } from './BaseRepository';
+import { getPaged, innerJoinById } from './BaseQueries';
 
 @EntityRepository(ProductCategory)
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
-    async getProductCategories(): Promise<ProductCategory[]> {
-        let products = await this.find();
-        return products;
+    async getProductCategories(params: PagedParamsType<ProductCategoryType>): Promise<ProductCategoryType[]> {
+        const qb = this.createQueryBuilder(DBTableNames.Product);
+        getPaged(qb, DBTableNames.Product, params);
+        return await qb.getMany();
     }
 
     async getProductCategoriesById(ids: string[]): Promise<ProductCategory[]> {
@@ -91,36 +92,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         await this.delete(productCategory.id);
         return true;
     }
-
-    // async getProducts(params: CategoryParamsType): Promise<ProductType[]> {
-
-    //     if (!params.pageNumber) params.pageNumber = 1;
-    //     if (!params.pageSize) params.pageSize = 2;
-
-    //     // const res = await this.query(`
-    //     //     SELECT * FROM product AS p 
-    //     //     INNER JOIN product_categories_product_category AS cat_index 
-    //     //     ON cat_index.productId=p.id 
-    //     //     AND cat_index.productCategoryId = $1 
-    //     //     ORDER BY p.id 
-    //     //     LIMIT -1 OFFSET $2 * ($3 - 1) ROWS 
-    //     //     FETCH NEXT $2 ROWS ONLY`,
-    //     //     [params.categoryId, params.pageSize, params.pageNumber])
-
-    //     // console.log('res', res)
-
-    //     // const productCategory = await this.createQueryBuilder("product_category")
-    //     //     .where("product_category.id = :id", { id: params.categoryId })
-    //     //     .leftJoinAndSelect("product_category.products", "product")
-    //     //     .getOne();
-
-    //     // if (!productCategory) throw new Error(`ProductCategory ${params.categoryId} not found!`);
-
-    //     // return productCategory.products;
-    //     // return res;
-
-
-    // }
 
     async getCategoriesOfProduct(productId: string, params?: PagedParamsType<ProductCategoryType>): Promise<ProductCategoryType[]> {
         const qb = this.createQueryBuilder(DBTableNames.ProductCategory);
