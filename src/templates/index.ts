@@ -4,8 +4,8 @@ export const importPage = async (templateName: string, pageName: PageName) => {
     return await import(`./${templateName}/src/pages/${pageName}`);
 }
 
-export const importModule = async (templateName: string, componentName: string) => {
-    return await import(`./${templateName}/src/modules/${componentName}`);
+export const importModule = async (templateName: string, moduleName: string) => {
+    return await import(`./${templateName}/src/modules/${moduleName}`);
 }
 
 export const importConfig = async (templateName: string) => {

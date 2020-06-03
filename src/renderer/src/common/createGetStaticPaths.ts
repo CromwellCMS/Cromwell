@@ -8,7 +8,7 @@ export const createGetStaticPaths = (dbEntity: DBEntity) => {
         try {
             slugs = await graphQLClient.request(`
                 query get${dbEntity} {
-                    ${getAllPath} {
+                    ${getAllPath}(pagedParams: {pageNumber: 1, pageSize: 1000000000}) {
                         slug
                     }
                 }

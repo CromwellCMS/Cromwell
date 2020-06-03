@@ -1,22 +1,17 @@
 import React from 'react';
 import { DataComponentProps } from './types';
 
-export function DataModule<Data>(props: DataComponentProps<Data>) {
-    console.log('DataModule props', props);
-
-    const Comp = props.component;
-    if (!Comp) {
-        const errMsg = `Module ${props.moduleName} will not render. No React Component specified!`;
-        console.error(errMsg);
-        return <div style={{ display: 'none' }}>{errMsg}</div>
+export function CromwellModule<Data>(Component: React.ComponentType<Data>, moduleName: string) {
+    return () => {
+        const modulesData = getModulesData();
+        const data = modulesData[moduleName];
+        console.log('CromwellModule moduleName', moduleName, 'data', data, 'modulesData', modulesData);
+        return (
+            <div className="BaseComponent">
+                <Component {...data} />
+            </div>
+        )
     }
-    const modulesData = getModulesData();
-    const data = modulesData[props.moduleName];
-    return (
-        <div className="BaseComponent">
-            <Comp {...data} />
-        </div>
-    )
 }
 
 export const getModulesData = (): Object => {

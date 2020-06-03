@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import { ProductType, StaticPageContext, graphQLClient, Link, DBEntity, GraphQLPaths } from '@cromwell/core';
+import { ProductType, StaticPageContext, graphQLClient, Link, DBEntity, GraphQLPaths, CromwellModule } from '@cromwell/core';
 
-interface DataProps {
+interface ProductShowcaseProps {
     products?: ProductType[];
-    children?: React.ReactNode;
 }
 
-const ProductShowcase = (props: DataProps) => {
+const ProductShowcase = (props: ProductShowcaseProps) => {
     console.log('ProductShowcase props', props)
     return (
         <div style={{ backgroundColor: "#999" }}>
@@ -24,12 +23,13 @@ const ProductShowcase = (props: DataProps) => {
     )
 }
 
-export const getStaticProps = async (context: StaticPageContext): Promise<DataProps> => {
+export const getStaticProps = async (context: StaticPageContext): Promise<ProductShowcaseProps> => {
     let data = {};
+    const limit = 20;
     try {
         data = await graphQLClient.request(`
             query getProducts {
-                ${GraphQLPaths.Product.getAll} {
+                ${GraphQLPaths.Product.getAll}(pagedParams: {pageNumber: 1, pageSize: ${limit}}) {
                     id
                     slug
                     name
@@ -48,4 +48,4 @@ export const getStaticProps = async (context: StaticPageContext): Promise<DataPr
     }
 }
 
-export default ProductShowcase;
+export default CromwellModule<ProductShowcaseProps>(ProductShowcase, 'ProductShowcase');
