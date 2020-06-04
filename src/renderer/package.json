@@ -29,9 +29,10 @@
     "@types/react-dom": "16.9.7"
   },
   "scripts": {
-    "nextDev": "next",
+    "nextDev": "npm run generateImports && next",
     "nextBuild": "next build",
-    "nextStart": "next start"
+    "nextStart": "next start",
+    "generateImports": "ts-node src/server.ts"
   },
   "description": ""
 }
