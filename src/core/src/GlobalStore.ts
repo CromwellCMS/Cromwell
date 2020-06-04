@@ -4,11 +4,12 @@ import { isServer } from './constants';
 const initialStore: CromwellStoreType = {
     modulesData: {
     },
-    moveableComponentsData: [
+    blocksData: [
         {
             componentId: '1',
             destinationComponentId: '2',
-            position: 'after'
+            destinationPosition: 'after',
+            styles: "background: red;"
         }
     ]
 }

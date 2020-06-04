@@ -1,5 +1,5 @@
 import React from 'react';
-import { CromwellPageType, MoveableComponent } from '@cromwell/core';
+import { CromwellPageType, CromwellBlock } from '@cromwell/core';
 import ProductShowcase from '../modules/ProductShowcase';
 
 const Index: CromwellPageType = (props) => {
@@ -9,19 +9,19 @@ const Index: CromwellPageType = (props) => {
         <div>IndexTemp
             
         HELLO WOORLD1
-            <MoveableComponent id="1">
+            <CromwellBlock id="1">
                 <div>
-                    <p>MoveableComponent 1</p>
+                    <p>CromwellBlock 1</p>
                 </div>
-            </MoveableComponent>
+            </CromwellBlock>
             <div>
                 <h2>Some subtitle</h2>
             </div>
-            <MoveableComponent id="2">
+            <CromwellBlock id="2">
                 <div>
-                    <p>MoveableComponent 2</p>
+                    <p>CromwellBlock 2</p>
                 </div>
-            </MoveableComponent>
+            </CromwellBlock>
             <ProductShowcase />
         </div>
     );

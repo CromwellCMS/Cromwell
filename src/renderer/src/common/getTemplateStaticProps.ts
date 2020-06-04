@@ -1,11 +1,11 @@
 import { PageName, StaticPageContext } from "@cromwell/core";
 import { importPage } from '@cromwell/templates';
-import { getStoreItem, setStoreItem } from "@cromwell/core";
-const config = require('../../cmsconfig.json');
-setStoreItem('cmsconfig', config);
-const cmsconfig = getStoreItem('cmsconfig');
+import { getStoreItem } from "@cromwell/core";
+import { checkCMSConfig } from './modulesDataFetcher';
+checkCMSConfig();
 
 export const getTemplateStaticProps = async (pageName: PageName, context: StaticPageContext) => {
+    const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.templateName) {
         console.log('cmsconfig', cmsconfig)
         throw new Error('getTemplateStaticProps !cmsconfig.templateName');

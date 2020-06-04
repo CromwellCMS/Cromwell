@@ -5,10 +5,12 @@
   "author": "cromwell",
   "license": "ISC",
   "dependencies": {
+    "@zeit/next-sass": "^1.0.1",
     "cacache": "^15.0.3",
     "next": "^9.3.6",
     "next-compose-plugins": "^2.2.0",
     "next-transpile-modules": "^3.3.0",
+    "node-sass": "^4.14.1",
     "reflect-metadata": "^0.1.13",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -30,7 +32,7 @@
   },
   "scripts": {
     "nextDev": "npm run generateImports && next",
-    "nextBuild": "next build",
+    "nextBuild": "npm run generateImports && next build",
     "nextStart": "next start",
     "generateImports": "ts-node src/server.ts"
   },

@@ -12,7 +12,7 @@ export type GetStaticPropsType<
 export * from './src/types';
 export * from './src/constants';
 export * from './src/DataModule';
-export * from './src/MoveableComponent';
+export * from './src/CromwellBlock';
 export * from './src/GraphQLClient';
 export * from './src/GlobalStore';
 export { default as Link } from 'next/link';

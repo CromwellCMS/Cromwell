@@ -29,7 +29,7 @@ export type CMSconfigType = {
 export type CromwellStoreType = {
     modulesData?: Record<string, any>;
     cmsconfig?: CMSconfigType;
-    moveableComponentsData?: MoveableComponentDataType[];
+    blocksData?: CromwellBlockDataType[];
 }
 
 declare global {
@@ -43,10 +43,11 @@ declare global {
     }
 }
 
-export type MoveableComponentDataType = {
+export type CromwellBlockDataType = {
     componentId: string;
-    destinationComponentId: string;
-    position: 'before' | 'after' | 'inside';
+    destinationComponentId?: string;
+    destinationPosition?: 'before' | 'after' | 'inside';
+    styles?: string;
 }
 
 

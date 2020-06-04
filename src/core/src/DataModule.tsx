@@ -8,7 +8,7 @@ export function CromwellModule<Data>(Component: React.ComponentType<Data>, modul
     return (): JSX.Element => {
         const modulesData = getModulesData();
         const data = modulesData ? modulesData[moduleName] : {};
-        console.log('CromwellModule moduleName', moduleName, 'data', data, 'modulesData', modulesData);
+        // console.log('CromwellModule moduleName', moduleName, 'data', data, 'modulesData', modulesData);
         return (
             <div className="BaseComponent">
                 <Component {...data} />

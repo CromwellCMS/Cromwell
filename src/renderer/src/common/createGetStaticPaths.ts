@@ -23,7 +23,7 @@ export const createGetStaticPaths = (dbEntity: DBEntity) => {
         } catch (e) {
             console.error(e)
         }
-        console.log('getStaticPaths', paths)
+        // console.log('getStaticPaths', paths)
         return {
             paths,
             fallback: true
