@@ -1,14 +1,21 @@
 import { PageName, StaticPageContext } from '@cromwell/core';
 import { importModule, importConfig } from '@cromwell/templates';
-const config = require('@cromwell/core/cmsconfig.json');
+import { getStoreItem, setStoreItem } from "@cromwell/core";
+const config = require('../../cmsconfig.json');
+setStoreItem('cmsconfig', config);
+const cmsconfig = getStoreItem('cmsconfig');
 
 /**
  * Fetches data for all modules at specified page.
  * @param pageName 
  * @param context - StaticPageContext of Page
  */
-export const modulesDataFetcher = async (pageName: PageName, context: StaticPageContext): Promise<Object> => {
-    const templateConfig = await importConfig(config.templateName);
+export const modulesDataFetcher = async (pageName: PageName, context: StaticPageContext): Promise<Record<string, any>> => {
+    if (!cmsconfig || !cmsconfig.templateName) {
+        console.log('cmsconfig', cmsconfig)
+        throw new Error('modulesDataFetcher !cmsconfig.templateName');
+    }
+    const templateConfig = await importConfig(cmsconfig.templateName);
     const moduleConfigs = Object.entries(templateConfig.modules);
     const modulesData: any = {};
     if (moduleConfigs && Array.isArray(moduleConfigs)) {
@@ -21,7 +28,7 @@ export const modulesDataFetcher = async (pageName: PageName, context: StaticPage
                 const moduleContext = JSON.parse(JSON.stringify(context));
                 moduleContext.moduleConfig = moduleConfigObj;
                 try {
-                    const getStaticProps = (await importModule(config.templateName, moduleName)).getStaticProps;
+                    const getStaticProps = (await importModule(cmsconfig.templateName, moduleName)).getStaticProps;
                     let moduleStaticProps = {};
                     if (getStaticProps) {
                         try {

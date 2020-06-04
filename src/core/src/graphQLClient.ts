@@ -1,3 +1,9 @@
 import { GraphQLClient } from 'graphql-request';
-export const config = require('../cmsconfig.json');
-export const graphQLClient = new GraphQLClient(`http://localhost:${config.apiPort}/`);
+import { getStoreItem } from './GlobalStore';
+
+export const getGraphQLClient = (): GraphQLClient => {
+    const cmsconfig = getStoreItem('cmsconfig');
+    console.log('cmsconfig', cmsconfig);
+    return new GraphQLClient(`http://localhost:${
+        cmsconfig ? cmsconfig.apiPort : ''}/`);
+}

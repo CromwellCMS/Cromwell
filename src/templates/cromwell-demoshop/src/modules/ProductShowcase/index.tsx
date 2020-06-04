@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ProductType, StaticPageContext, graphQLClient, Link, DBEntity, GraphQLPaths, CromwellModule } from '@cromwell/core';
+import { ProductType, StaticPageContext, getGraphQLClient, Link, DBEntity, GraphQLPaths, CromwellModule } from '@cromwell/core';
 
 interface ProductShowcaseProps {
     products?: ProductType[];
@@ -27,7 +27,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     let data = {};
     const limit = 20;
     try {
-        data = await graphQLClient.request(`
+        data = await getGraphQLClient().request(`
             query getProducts {
                 ${GraphQLPaths.Product.getAll}(pagedParams: {pageNumber: 1, pageSize: ${limit}}) {
                     id

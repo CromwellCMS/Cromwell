@@ -1,10 +1,13 @@
 import React from 'react';
-import { DataComponentProps } from './types';
+import { setStoreItem, getStoreItem } from './GlobalStore';
+
+export const getModulesData = (): Record<string, any> | undefined => getStoreItem('modulesData');
+export const setModulesData = (modulesData: Record<string, any>): void => setStoreItem('modulesData', modulesData);
 
 export function CromwellModule<Data>(Component: React.ComponentType<Data>, moduleName: string) {
-    return () => {
+    return (): JSX.Element => {
         const modulesData = getModulesData();
-        const data = modulesData[moduleName];
+        const data = modulesData ? modulesData[moduleName] : {};
         console.log('CromwellModule moduleName', moduleName, 'data', data, 'modulesData', modulesData);
         return (
             <div className="BaseComponent">
@@ -14,39 +17,4 @@ export function CromwellModule<Data>(Component: React.ComponentType<Data>, modul
     }
 }
 
-export const getModulesData = (): Object => {
-    if (typeof window !== 'undefined') {
-        if (!window.cromwellData) {
-            window.cromwellData = {
-                modulesData: {}
-            }
-        }
-        return window.cromwellData.modulesData;
-    }
-    else {
-        if (!global.cromwellData) {
-            global.cromwellData = {
-                modulesData: {}
-            }
-        }
-        return global.cromwellData.modulesData;
-    }
-}
-export const setModulesData = (modulesData: Object): void => {
-    if (typeof window !== 'undefined') {
-        if (!window.cromwellData) {
-            window.cromwellData = {
-                modulesData: {}
-            }
-        }
-        window.cromwellData.modulesData = modulesData;
-    }
-    else {
-        if (!global.cromwellData) {
-            global.cromwellData = {
-                modulesData: {}
-            }
-        }
-        global.cromwellData.modulesData = modulesData;
-    }
-}
+

@@ -3,14 +3,14 @@ import { NextPage } from 'next';
 export type CromwellPageType<Props = {}> = NextPage<Props & CromwellPageCoreProps>;
 
 export type CromwellPageCoreProps = {
-    modulesData: Object;
-    childStaticProps: Object;
+    modulesData: Record<string, any>;
+    childStaticProps: Record<string, any>;
 }
 
 export type PageName = keyof {
-    index,
-    product,
-    blog
+    index;
+    product;
+    blog;
 }
 
 export type DataComponentProps<Data> = {
@@ -18,10 +18,42 @@ export type DataComponentProps<Data> = {
     component: React.ComponentType<Data>;
 }
 
+export type CMSconfigType = {
+    apiPort: number;
+    adminPanelPort: number;
+    templatePort: number;
+    templateName: string;
+    defaultPageSize: number;
+}
+
+export type CromwellStoreType = {
+    modulesData?: Record<string, any>;
+    cmsconfig?: CMSconfigType;
+    moveableComponentsData?: MoveableComponentDataType[];
+}
+
+declare global {
+    namespace NodeJS {
+        interface Global {
+            CromwellStore: CromwellStoreType;
+        }
+    }
+    interface Window {
+        CromwellStore: CromwellStoreType;
+    }
+}
+
+export type MoveableComponentDataType = {
+    componentId: string;
+    destinationComponentId: string;
+    position: 'before' | 'after' | 'inside';
+}
+
+
 export type DBEntity = keyof {
-    Post,
-    Product,
-    ProductCategory
+    Post;
+    Product;
+    ProductCategory;
 }
 
 export type GraphQLPathsType = { [K in DBEntity]: GraphQLNode };

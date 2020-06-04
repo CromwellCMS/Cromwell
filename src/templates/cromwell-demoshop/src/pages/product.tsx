@@ -1,5 +1,5 @@
 import React from 'react';
-import { CromwellPageType, ProductType, graphQLClient, GetStaticPropsType, Link, GraphQLPaths } from '@cromwell/core';
+import { CromwellPageType, ProductType, getGraphQLClient, GetStaticPropsType, Link, GraphQLPaths } from '@cromwell/core';
 
 interface ProductProps {
     data?: {
@@ -31,7 +31,7 @@ export const getStaticProps: GetStaticPropsType = async (context) => {
     let data = null;
     if (slug) {
         try {
-            data = await graphQLClient.request(`
+            data = await getGraphQLClient().request(`
                 query getproduct {
                     ${GraphQLPaths.Product.getOneBySlug}(slug: "${slug}") {
                         id

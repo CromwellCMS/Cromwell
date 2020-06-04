@@ -8,7 +8,10 @@ import { PostResolver } from "./orm/resolvers/PostResolver";
 import { AuthorResolver } from "./orm/resolvers/AuthorResolver";
 import { ProductResolver } from "./orm/resolvers/ProductResolver";
 import { ProductCategoryResolver } from "./orm/resolvers/ProductCategoryResolver";
-const config = require('@cromwell/core/cmsconfig.json');
+import { setStoreItem } from "@cromwell/core";
+const config = require('./cmsconfig.json');
+setStoreItem('cmsconfig', config);
+
 const connectionOptions = require('./ormconfig.json');
 
 let _connection: Connection;
