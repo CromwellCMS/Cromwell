@@ -1,5 +1,5 @@
 import React from 'react';
-import { CromwellPageType, ProductType, getGraphQLClient, GetStaticPropsType, Link, GraphQLPaths } from '@cromwell/core';
+import { CromwellPageType, ProductType, getGraphQLClient, GetStaticPropsType, Link, GraphQLPaths, CromwellBlock } from '@cromwell/core';
 
 interface ProductProps {
     data?: {
@@ -17,6 +17,7 @@ const Product: CromwellPageType<ProductProps> = (props) => {
                     <div>
                         {product.name}
                         <p></p>
+                        <CromwellBlock id="3" />
                     </div>
                 )
             }

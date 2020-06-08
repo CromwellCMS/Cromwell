@@ -10,6 +10,20 @@ const initialStore: CromwellStoreType = {
             destinationComponentId: '2',
             destinationPosition: 'after',
             styles: "background: red;"
+        },
+        {
+            componentId: '111',
+            destinationComponentId: '3',
+            destinationPosition: 'inside',
+            isVirtual: true,
+            styles: "background: red;"
+        },
+        {
+            componentId: '112',
+            destinationComponentId: '111',
+            destinationPosition: 'after',
+            isVirtual: true,
+            moduleName: 'ProductShowcase'
         }
     ]
 }

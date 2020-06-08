@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { getStoreItem } from './GlobalStore';
 import { isServer } from './constants';
-import { CromwellBlockDataType } from './types';
+import { CromwellBlockDataType, BlockDestinationPositionType } from './types';
 import './scss/CromwellBlock.scss';
 
 const getCromwellBlockId = (id: string): string => `CromwellBlock_${id}`
@@ -18,6 +18,8 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
     private data?: CromwellBlockDataType;
     private blockRef: React.RefObject<HTMLDivElement> = React.createRef();
 
+    private virtualBlocks: CromwellBlockDataType[] = [];
+
     private targetElement?: HTMLElement;
 
     private shouldBeMoved = false;
@@ -26,8 +28,16 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
     private hasPortalAfter = false;
     private hasPortalInside = false;
 
+    private id: string;
+    private idBefore: string;
+    private idAfter: string;
+
     constructor(props: CromwellBlockProps) {
         super(props);
+
+        this.id = getCromwellBlockId(this.props.id);
+        this.idBefore = getCromwellBlockIdBefore(this.props.id);
+        this.idAfter = getCromwellBlockIdAfter(this.props.id);
 
         const data = getStoreItem('blocksData');
         if (data && Array.isArray(data)) {
@@ -56,12 +66,16 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
                     if (d.destinationPosition === 'after') this.hasPortalAfter = true;
                     if (d.destinationPosition === 'before') this.hasPortalBefore = true;
                     if (d.destinationPosition === 'inside') this.hasPortalInside = true;
+
+                    // Save virtual (existing only in config) blocks that targeted at this component.
+                    // This component will draw them
+                    if (d.isVirtual) this.virtualBlocks.push(d)
                 }
             })
         }
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         if (this.data) {
             if (this.data.styles && this.blockRef.current) {
                 this.blockRef.current.setAttribute('style', this.data.styles);
@@ -105,29 +119,38 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
         return destinationComponent;
     }
 
+    private getVirtualBlocks = (postion: BlockDestinationPositionType): JSX.Element[] => {
+        return this.virtualBlocks.filter(b => b.destinationPosition === postion)
+            .map(b => <CromwellBlock id={b.componentId} key={b.componentId} />)
+    }
+
     render(): JSX.Element | null {
-        // Will return null only at client and at first render if it hasn't found destination. If it won't find in componentDidMount then it will set 'shouldBeMoved' to false and render
+        // Will return null only at client at first render if it hasn't found destination. If it won't find in componentDidMount then it will set 'shouldBeMoved' to false and render
         if (!isServer() && this.shouldBeMoved && !this.targetElement) {
             return null;
         }
-        const id = getCromwellBlockId(this.props.id);
-        const idBefore = getCromwellBlockIdBefore(this.props.id);
-        const idAfter = getCromwellBlockIdAfter(this.props.id);
+        if (getCromwellBlockId(this.props.id) !== this.id) {
+            return <div style={{color: 'red'}}>Error. Block id was changed</div>
+        }
         const elementClassName = 'CromwellBlock'
             + (this.hasPortalInside ? ' CromwellBlockWrapper' : '')
             + (this.shouldBeMoved ? ' CromwellBlockInner' : '')
             + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '');
-        // console.log('this.shouldBeMoved && isServer()', getCromwellBlockId(this.props.id), this.shouldBeMoved, isServer(), elementClassName)
 
         const element = (<>
             {this.hasPortalBefore && (
-                <div id={idBefore} key={idBefore} className="CromwellBlockWrapper"></div>
+                <div id={this.idBefore} key={this.idBefore} className="CromwellBlockWrapper">
+                    {this.getVirtualBlocks('before')}
+                </div>
             )}
-            <div id={id} key={id} className={elementClassName} ref={this.blockRef} >
+            <div id={this.id} key={this.id} className={elementClassName} ref={this.blockRef} >
                 {this.props.children}
+                {this.getVirtualBlocks('inside')}
             </div>
             {this.hasPortalAfter && (
-                <div id={idAfter} key={idAfter} className="CromwellBlockWrapper"></div>
+                <div id={this.idAfter} key={this.idAfter} className="CromwellBlockWrapper">
+                    {this.getVirtualBlocks('after')}
+                </div>
             )}
         </>);
 

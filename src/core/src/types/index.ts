@@ -43,10 +43,34 @@ declare global {
     }
 }
 
+export type BlockDestinationPositionType = 'before' | 'after' | 'inside';
+
 export type CromwellBlockDataType = {
+    /**
+     * Component's id, must be unique for the entire app.
+     */
     componentId: string;
+    /**
+     * Id of Destination Component where this component will be displayed.
+     */
     destinationComponentId?: string;
-    destinationPosition?: 'before' | 'after' | 'inside';
+    /**
+     * Position around Destination Component where this component will be displayed.
+     */
+    destinationPosition?: BlockDestinationPositionType;
+    /**
+     * If true indicates that this component was created in builder and it doesn't exist in JSX.
+     * Exists only in page's config. 
+     */
+    isVirtual?: boolean;
+    /**
+     * Module's name to render inside component. Same name must be in cromwell.config.json
+     */
+    moduleName?: string;
+    /**
+     * 
+     * CSS styles to apply to this module.
+     */
     styles?: string;
 }
 
