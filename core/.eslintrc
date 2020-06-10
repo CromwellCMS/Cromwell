@@ -10,6 +10,10 @@
         "plugin:@typescript-eslint/recommended"
     ],
     "rules": {
-        "@typescript-eslint/no-namespace": "off"
+        "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/no-var-requires": 0
+    },
+    "env": {
+        "node": true
     }
 }

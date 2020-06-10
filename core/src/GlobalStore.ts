@@ -1,4 +1,4 @@
-import { CromwellStoreType } from '../index';
+import { CromwellStoreType } from './index';
 import { isServer } from './constants';
 
 const initialStore: CromwellStoreType = {

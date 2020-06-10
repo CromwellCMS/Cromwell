@@ -1,0 +1,36 @@
+{
+  "name": "@cromwell/core",
+  "version": "1.0.0",
+  "main": "src/index.ts",
+  "author": "cromwell",
+  "license": "ISC",
+  "dependencies": {
+    "graphql-request": "^1.8.2",
+    "next": "^9.3.6",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "peerDependencies": {},
+  "devDependencies": {
+    "@types/jest": "25.2.1",
+    "@types/node": "13.13.4",
+    "@types/react": "16.9.34",
+    "@types/react-dom": "16.9.7",
+    "cross-env": "^7.0.2",
+    "css-loader": "^3.5.3",
+    "sass": "^1.26.8",
+    "sass-loader": "^8.0.2",
+    "ts-declaration-webpack-plugin": "^1.2.3",
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.5",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "description": "",
+  "scripts": {
+    "buildDev": "npx cross-env NODE_ENV=development npx webpack",
+    "buildDev2": "npx tsc ./src/index.ts --jsx react --esModuleInterop --outDir ./es",
+    "watch": "npx cross-env WATCH=true NODE_ENV=development npx webpack",
+    "buildProd": "npx cross-env NODE_ENV=production npx webpack"
+  }
+}

@@ -4,15 +4,15 @@ import path from 'path';
 import { createConnection, Connection } from "typeorm";
 import { ApolloServer } from "apollo-server";
 import { buildSchema } from "type-graphql";
-import { PostResolver } from "./orm/resolvers/PostResolver";
-import { AuthorResolver } from "./orm/resolvers/AuthorResolver";
-import { ProductResolver } from "./orm/resolvers/ProductResolver";
-import { ProductCategoryResolver } from "./orm/resolvers/ProductCategoryResolver";
+import { PostResolver } from "./resolvers/PostResolver";
+import { AuthorResolver } from "./resolvers/AuthorResolver";
+import { ProductResolver } from "./resolvers/ProductResolver";
+import { ProductCategoryResolver } from "./resolvers/ProductCategoryResolver";
 import { setStoreItem } from "@cromwell/core";
 const config = require('./cmsconfig.json');
 setStoreItem('cmsconfig', config);
 
-const connectionOptions = require('./ormconfig.json');
+const connectionOptions = require('../ormconfig.json');
 
 let _connection: Connection;
 

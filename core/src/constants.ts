@@ -35,4 +35,5 @@ export const DBTableNames: { [K in DBEntity]: string} = {
 
 export const componentsCachePath = '/tmp/components';
 
-export const isServer = (): boolean => (typeof window === 'undefined');
+// export const isServer = (): boolean => (typeof window === 'undefined');
+export const isServer = (): boolean => true;

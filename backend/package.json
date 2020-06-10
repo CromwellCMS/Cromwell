@@ -20,10 +20,11 @@
     "@types/node": "13.13.4",
     "nodemon": "^2.0.2",
     "ts-loader": "^7.0.2",
-    "ts-node": "^8.6.2"
+    "ts-node": "^8.6.2",
+    "typescript": "^3.9.5"
   },
   "scripts": {
-    "start": "nodemon server.ts"
+    "start": "npx nodemon ./src/server.ts"
   },
   "description": ""
 }

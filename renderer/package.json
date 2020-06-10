@@ -26,15 +26,17 @@
     "babel-plugin-transform-decorators": "^6.24.1",
     "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "ts-loader": "^7.0.2",
+    "ts-node": "^8.6.2",
+    "typescript": "^3.9.5",
     "@types/jest": "25.2.1",
     "@types/react": "16.9.34",
     "@types/react-dom": "16.9.7"
   },
   "scripts": {
-    "nextDev": "npm run generateImports && next",
-    "nextBuild": "npm run generateImports && next build",
-    "nextStart": "next start",
-    "generateImports": "ts-node src/server.ts"
+    "nextDev": "npm run generateImports && npx next",
+    "nextBuild": "npm run generateImports && npx next build",
+    "nextStart": "npx next start",
+    "generateImports": "npx ts-node src/server.ts"
   },
   "description": ""
 }

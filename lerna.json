@@ -17,10 +17,10 @@
     }
   },
   "packages": [
-    "src/core",
-    "src/renderer",
-    "src/backend",
-    "src/templates",
-    "src/templates/*"
+    "core",
+    "renderer",
+    "backend",
+    "templates",
+    "templates/*"
   ]
 }

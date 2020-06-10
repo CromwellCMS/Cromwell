@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
-    "target": "es5",
-    "module": "commonjs",
+    "target": "esnext",
+    "module": "esnext",
     "lib": [
       "dom",
       "es2015",
@@ -9,6 +9,10 @@
       "es2017"
     ],
     "allowJs": true,
+    "declaration": true,
+    "declarationDir": "./dist/types",
+    "outDir": "./dist",
+    "declarationMap": true,
     "jsx": "react",
     "sourceMap": true,
     "strict": true,
@@ -17,11 +21,14 @@
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
     "resolveJsonModule": true,
-    "noImplicitAny": false
+    "noImplicitAny": false,
+    "removeComments": false,
+    "moduleResolution": "node"
   },
   "include": [
-    "index.ts",
-    "src/**"
+    "src/index.ts",
+    "src/**/*.ts",
+    "src/**/*.tsx"
   ],
   "exclude": [
     "node_modules"
