@@ -22,6 +22,7 @@ function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'defau
 
 var React = _interopDefault(require('react'));
 var core = require('@cromwell/core');
+require('tslib');
 
 var ProductShowcase = function (props) {
     console.log('ProductShowcase props', props);

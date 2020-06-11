@@ -31,12 +31,17 @@ export const modulesDataFetcher = async (pageName: BasePageNames | string, conte
             if (moduleConfigObj.pages && Array.isArray(moduleConfigObj.pages) && moduleConfigObj.pages.includes(pageName)) {
                 const moduleContext = JSON.parse(JSON.stringify(context));
                 moduleContext.moduleConfig = moduleConfigObj;
+                console.log('moduleConfigObj', pageName, moduleName, moduleConfigObj)
                 try {
-                    const getStaticProps = (await importModule(moduleName) as any).getStaticProps;
+                    const module = await importModule(moduleName);
+                    const getStaticProps = (module as any).getStaticProps;
+                    console.log('module', module, 'getStaticProps', getStaticProps)
+
                     let moduleStaticProps = {};
                     if (getStaticProps) {
                         try {
                             moduleStaticProps = await getStaticProps(moduleContext);
+                            // console.log('moduleStaticProps', moduleStaticProps)
                         } catch (e) {
                             console.error('modulesDataFetcher1', e);
                         }

@@ -26,8 +26,8 @@ var tslib = require('tslib');
 var React = _interopDefault(require('react'));
 var core = require('@cromwell/core');
 
-var ProductShowcase = function (props) {
-    console.log('ProductShowcase props', props);
+var ProductShowcaseDemo = function (props) {
+    console.log('ProductShowcaseDemo props', props);
     return (React.createElement("div", { style: { backgroundColor: "#999" } },
         React.createElement("p", null, "Showcase Time!"),
         props.products && props.products.map(function (p) { return (React.createElement("div", { key: p.id },
@@ -64,7 +64,7 @@ var getStaticProps = function (context) { return tslib.__awaiter(void 0, void 0,
         }
     });
 }); };
-var index = core.CromwellModule(ProductShowcase, 'ProductShowcase');
+var index = core.CromwellModule(ProductShowcaseDemo, 'ProductShowcaseDemo');
 
 exports.default = index;
 exports.getStaticProps = getStaticProps;

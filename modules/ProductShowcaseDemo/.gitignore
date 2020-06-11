@@ -93,5 +93,4 @@ out
 .yarn/build-state.yml
 .pnp.*
 
-
-dist
+# db.sqlite3

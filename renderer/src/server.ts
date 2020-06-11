@@ -14,6 +14,7 @@ if (!config) throw new Error('renderer::server cannot read CMS config');
 
 
 const templatesDir = resolve(__dirname, '../', '../', 'templates').replace(/\\/g, '/');
+const globalModulesDir = resolve(__dirname, '../', '../', 'modules').replace(/\\/g, '/');
 const templateDir = `${templatesDir}/${config.templateName}`;
 const templateImportsDir = `${templateDir}/es`;
 const templateConfigPath = templateDir + '/' + 'cromwell.config.json';
@@ -24,9 +25,29 @@ try {
     console.log(e);
 }
 
-let moduleImportPaths: Record<string, any> | undefined;
+
+let moduleImportPaths: Record<string, any> | undefined = undefined;
+
+// Read global modules
+
+if (templateConfig && templateConfig.modules) {
+    const moduleNames = Object.keys(templateConfig.modules);
+    moduleNames.forEach(name => {
+        const mPath = `${globalModulesDir}/${name}/es/frontend/index.js`;
+        if (fs.existsSync(mPath)) {
+            if (!moduleImportPaths) moduleImportPaths = {};
+            moduleImportPaths[name] = mPath;
+        }
+    })
+}
+
+// Read modules of template
+
 let moduleImports = '';
+let dynamicModuleImports = '';
 let moduleImportsSwitch = '';
+let dynamicModuleImportsSwitch = '';
+
 if (templateConfig && templateConfig.modules) {
     const moduleNames = Object.keys(templateConfig.modules);
     moduleNames.forEach(name => {
@@ -36,14 +57,19 @@ if (templateConfig && templateConfig.modules) {
             moduleImportPaths[name] = mPath;
         }
     });
-    if (moduleImportPaths) {
-        Object.entries(moduleImportPaths).map(e => {
-            moduleImports += `\nconst ${e[0]} = import('${e[1]}')`;
-            moduleImportsSwitch += `if (moduleName === '${e[0]}') return ${e[0]};\n`
-        })
 
-    }
+}
 
+// Concat all imports
+if (moduleImportPaths) {
+    Object.entries(moduleImportPaths).map(e => {
+        // moduleImports += `\nconst ${e[0]} = import('${e[1]}')`;
+        moduleImports += `\nconst ${e[0]} = import('${e[1]}')`;
+        moduleImportsSwitch += `if (moduleName === '${e[0]}') return ${e[0]};\n`;
+
+        dynamicModuleImports += `\nconst Dynamic${e[0]} = dynamic(() => import('${e[1]}'));`;
+        dynamicModuleImportsSwitch += `if (moduleName === '${e[0]}') return Dynamic${e[0]};\n   `;
+    })
 }
 
 console.log('moduleImports', moduleImports);
@@ -80,9 +106,14 @@ export const importDynamicPage = (pageName) => {
 }
 
 ${moduleImports}
-
 export const importModule = (moduleName) => {
     ${moduleImportsSwitch}
+    return undefined;
+}
+
+${dynamicModuleImports}
+export const importDynamicModule = (moduleName) => {
+    ${dynamicModuleImportsSwitch}
     return undefined;
 }
 `

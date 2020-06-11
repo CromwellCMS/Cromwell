@@ -20,7 +20,7 @@
     "core",
     "renderer",
     "backend",
-    "templates",
+    "modules/*",
     "templates/*"
   ]
 }

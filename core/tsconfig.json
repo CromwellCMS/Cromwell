@@ -11,6 +11,7 @@
     "allowJs": true,
     "declaration": true,
     "declarationDir": "./dist/types",
+    "declarationMap": true,
     // "declarationMap": true,
     "jsx": "react",
     "sourceMap": true,

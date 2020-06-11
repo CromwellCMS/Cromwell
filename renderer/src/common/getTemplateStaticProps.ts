@@ -12,6 +12,7 @@ export const getTemplateStaticProps = async (pageName: BasePageNames | string, c
     }
     let childStaticProps = {}
     const pageComp: any = await importPage(pageName);
+    console.log('getTemplateStaticProps', 'pageName', pageName, 'pageComp', pageComp)
     if (pageComp && pageComp.getStaticProps) {
         const childGetStaticProps = pageComp.getStaticProps;
         try {

@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import { ComponentType } from 'react';
 
 export type CromwellPageType<Props = {}> = NextPage<Props & CromwellPageCoreProps>;
 
@@ -30,6 +31,8 @@ export type CromwellStoreType = {
     modulesData?: Record<string, any>;
     cmsconfig?: CMSconfigType;
     blocksData?: CromwellBlockDataType[];
+    importModule?: (moduleName: string) => { default: ComponentType } | undefined;
+    importDynamicModule?: (moduleName: string) => ComponentType | undefined;
 }
 
 declare global {

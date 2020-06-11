@@ -6,17 +6,22 @@ const folders = [
     __dirname + '\\backend\\node_modules',
     __dirname + '\\renderer\\node_modules',
     __dirname + '\\renderer\\.next',
+    __dirname + '\\renderer\\.cromwell',
     __dirname + '\\templates\\node_modules',
     __dirname + '\\templates\\cromwell-demoshop\\node_modules',
     __dirname + '\\node_modules',
 ]
 
 const files = [
+    __dirname + '\\core\\package-lock.json',
+    __dirname + '\\backend\\package-lock.json',
+    __dirname + '\\renderer\\package-lock.json',
+    __dirname + '\\templates\\cromwell-demoshop\\package-lock.json',
     __dirname + '\\package-lock.json'
 ]
 
-console.log(folders);
-console.log(files);
+// console.log(folders);
+// console.log(files);
 
 files.forEach(path => {
     if (fs.existsSync(path)) {

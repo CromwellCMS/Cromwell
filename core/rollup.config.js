@@ -19,7 +19,7 @@ export default {
             sourcemap: true
         }
     ],
-    external: ['next/link'],
+    external: ['next/link', "tslib"],
     plugins: [
         autoExternal(),
         resolve(),

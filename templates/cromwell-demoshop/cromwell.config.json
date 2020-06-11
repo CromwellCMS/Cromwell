@@ -5,6 +5,13 @@
                 "index"
             ],
             "options": {}
+        },
+        "ProductShowcaseDemo": {
+            "pages": [
+                "index",
+                "product"
+            ],
+            "options": {}
         }
     }
 }

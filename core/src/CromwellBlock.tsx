@@ -32,6 +32,8 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
     private idBefore: string;
     private idAfter: string;
 
+    private moduleComponent?: React.ComponentType;
+
     constructor(props: CromwellBlockProps) {
         super(props);
 
@@ -45,7 +47,6 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
                 if (d.componentId == this.props.id) {
                     this.data = d;
                 }
-
                 // Check if current component should be moved to another component
                 // If should, it will create portal to destinationComponent's wrapper
                 if (d.componentId == this.props.id && d.destinationComponentId && d.destinationPosition) {
@@ -72,6 +73,17 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
                     if (d.isVirtual) this.virtualBlocks.push(d)
                 }
             })
+        }
+
+        if (this.data) {
+            // Check if current Block is Module 
+            if (this.data.moduleName) {
+                const importDynamicModule = getStoreItem('importDynamicModule');
+                if (importDynamicModule) {
+                    const module = importDynamicModule(this.data.moduleName);
+                    this.moduleComponent = module ? module : undefined;
+                }
+            }
         }
     }
 
@@ -130,12 +142,14 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
             return null;
         }
         if (getCromwellBlockId(this.props.id) !== this.id) {
-            return <div style={{color: 'red'}}>Error. Block id was changed</div>
+            return <div style={{ color: 'red' }}>Error. Block id was changed</div>
         }
         const elementClassName = 'CromwellBlock'
             + (this.hasPortalInside ? ' CromwellBlockWrapper' : '')
             + (this.shouldBeMoved ? ' CromwellBlockInner' : '')
             + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '');
+
+        const ModuleComponent = this.moduleComponent;
 
         const element = (<>
             {this.hasPortalBefore && (
@@ -145,6 +159,7 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
             )}
             <div id={this.id} key={this.id} className={elementClassName} ref={this.blockRef} >
                 {this.props.children}
+                {ModuleComponent && <ModuleComponent />}
                 {this.getVirtualBlocks('inside')}
             </div>
             {this.hasPortalAfter && (

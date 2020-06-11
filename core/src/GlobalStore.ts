@@ -16,7 +16,8 @@ const initialStore: CromwellStoreType = {
             destinationComponentId: '3',
             destinationPosition: 'inside',
             isVirtual: true,
-            styles: "background: red;"
+            styles: "background: red;",
+            moduleName: "ProductShowcaseDemo"
         },
         {
             componentId: '112',

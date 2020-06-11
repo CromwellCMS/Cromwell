@@ -1,7 +1,3 @@
-'use strict';
-
-
-
 function ___$insertStyle(css) {
   if (!css) {
     return;
@@ -18,20 +14,16 @@ function ___$insertStyle(css) {
   return css;
 }
 
-Object.defineProperty(exports, '__esModule', { value: true });
+import { __awaiter, __generator, __assign } from 'tslib';
+import React from 'react';
+import { CromwellModule, Link, getGraphQLClient, GraphQLPaths } from '@cromwell/core';
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
-var tslib = require('tslib');
-var React = _interopDefault(require('react'));
-var core = require('@cromwell/core');
-
-var ProductShowcase = function (props) {
-    console.log('ProductShowcase props', props);
+var ProductShowcaseDemo = function (props) {
+    console.log('ProductShowcaseDemo props', props);
     return (React.createElement("div", { style: { backgroundColor: "#999" } },
         React.createElement("p", null, "Showcase Time!"),
         props.products && props.products.map(function (p) { return (React.createElement("div", { key: p.id },
-            React.createElement(core.Link, { href: "/product/[slug]", as: "/product/" + p.slug },
+            React.createElement(Link, { href: "/product/[slug]", as: "/product/" + p.slug },
                 React.createElement("a", null,
                     "Name: ",
                     p.name)),
@@ -42,9 +34,9 @@ var ProductShowcase = function (props) {
                 "id: ",
                 p.id))); })));
 };
-var getStaticProps = function (context) { return tslib.__awaiter(void 0, void 0, void 0, function () {
+var getStaticProps = function (context) { return __awaiter(void 0, void 0, void 0, function () {
     var data, limit, e_1;
-    return tslib.__generator(this, function (_a) {
+    return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
                 data = {};
@@ -52,7 +44,7 @@ var getStaticProps = function (context) { return tslib.__awaiter(void 0, void 0,
                 _a.label = 1;
             case 1:
                 _a.trys.push([1, 3, , 4]);
-                return [4 /*yield*/, core.getGraphQLClient().request("\n            query getProducts {\n                " + core.GraphQLPaths.Product.getAll + "(pagedParams: {pageNumber: 1, pageSize: " + limit + "}) {\n                    id\n                    slug\n                    name\n                    pageTitle\n                    price\n                    mainImage\n                }\n            }\n        ")];
+                return [4 /*yield*/, getGraphQLClient().request("\n            query getProducts {\n                " + GraphQLPaths.Product.getAll + "(pagedParams: {pageNumber: 1, pageSize: " + limit + "}) {\n                    id\n                    slug\n                    name\n                    pageTitle\n                    price\n                    mainImage\n                }\n            }\n        ")];
             case 2:
                 data = _a.sent();
                 return [3 /*break*/, 4];
@@ -60,11 +52,11 @@ var getStaticProps = function (context) { return tslib.__awaiter(void 0, void 0,
                 e_1 = _a.sent();
                 console.error(e_1);
                 return [3 /*break*/, 4];
-            case 4: return [2 /*return*/, tslib.__assign({}, data)];
+            case 4: return [2 /*return*/, __assign({}, data)];
         }
     });
 }); };
-var index = core.CromwellModule(ProductShowcase, 'ProductShowcase');
+var index = CromwellModule(ProductShowcaseDemo, 'ProductShowcaseDemo');
 
-exports.default = index;
-exports.getStaticProps = getStaticProps;
+export default index;
+export { getStaticProps };

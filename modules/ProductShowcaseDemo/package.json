@@ -1,18 +1,11 @@
 {
-  "name": "cromwell-demoshop",
+  "name": "productshowcasedemo",
   "version": "1.0.0",
-  "author": "cromwell",
-  "homepage": "https://github.com/eilrix/cromwell-demoshop#readme",
-  "license": "ISC",
+  "description": "",
   "main": "dist",
   "module": "es",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/eilrix/cromwell-demoshop.git"
-  },
-  "bugs": {
-    "url": "https://github.com/eilrix/cromwell-demoshop/issues"
-  },
+  "author": "",
+  "license": "ISC",
   "dependencies": {
     "@cromwell/core": "1.0.0",
     "react": "^16.13.1",

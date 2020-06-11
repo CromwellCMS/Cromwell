@@ -18,8 +18,7 @@ export const getPage = (pageName: BasePageNames | string): CromwellPageType => {
 
     return function (props: CromwellPageCoreProps): JSX.Element {
         setModulesData(props.modulesData);
-        // console.log('CromwellPageCoreProps', props);
-        // console.log('getPage:props.componentsData', props.modulesData);
+        // console.log('CromwellPageCoreProps pageName', pageName, 'props', props);
         return (
             <Page {...props.childStaticProps} />
         )

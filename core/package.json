@@ -10,7 +10,8 @@
   "author": "cromwell",
   "license": "ISC",
   "dependencies": {
-    "graphql-request": "^1.8.2"
+    "graphql-request": "^1.8.2",
+    "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "next": "^9.3.6",

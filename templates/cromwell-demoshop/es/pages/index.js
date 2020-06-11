@@ -16,6 +16,7 @@ function ___$insertStyle(css) {
 
 import React from 'react';
 import { CromwellModule, Link, CromwellBlock } from '@cromwell/core';
+import 'tslib';
 
 var ProductShowcase = function (props) {
     console.log('ProductShowcase props', props);
