@@ -1,6 +1,6 @@
 const withPlugins = require('next-compose-plugins');
 const withSass = require('@zeit/next-sass');
-const withTM = require('next-transpile-modules')(['@cromwell/core', '@cromwell/templates']);
+const withTM = require('next-transpile-modules')(['@cromwell/templates']);
 
 module.exports = withPlugins([withTM, withSass], {
     pageExtensions: ['jsx', 'js', 'ts', 'tsx'],
@@ -33,6 +33,7 @@ module.exports = withPlugins([withTM, withSass], {
         //         exclude: /node_modules/,
         //     }
         // ]
+        config.plugins.push(new webpack.IgnorePlugin(/myconfig\.ts/));
         return config;
     },
 });

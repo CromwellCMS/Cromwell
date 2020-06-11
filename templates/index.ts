@@ -1,6 +1,6 @@
-import { PageName } from '@cromwell/core';
+// import { PageName } from '@cromwell/core';
 
-export const importPage = async (templateName: string, pageName: PageName) => {
+export const importPage = async (templateName: string, pageName: string) => {
     return await import(`./${templateName}/src/pages/${pageName}`);
 }
 

@@ -4,7 +4,8 @@
 	"scripts": {
 		"installAll": "npm i && npm run lerna && npm run buildCore",
 		"lerna": "npx lerna bootstrap --hoist",
-		"clean": "npx ts-node cleanup.ts && rmdir /Q /S \"./node_modules\"",
+		"clean": "npx ts-node cleanup.ts",
+		"clean2": "npx ts-node cleanup.ts && rmdir /Q /S \"./node_modules\"",
 		"buildCore": "cd ./core && npm run buildDev"
 	},
 	"devDependencies": {

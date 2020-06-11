@@ -11,7 +11,19 @@ const folders = [
     __dirname + '\\node_modules',
 ]
 
-console.log('', folders);
+const files = [
+    __dirname + '\\package-lock.json'
+]
+
+console.log(folders);
+console.log(files);
+
+files.forEach(path => {
+    if (fs.existsSync(path)) {
+        console.log('Removing file: ' + path);
+        fs.unlinkSync(path)
+    }
+})
 
 folders.forEach(path => {
     if (fs.existsSync(path)) {
@@ -19,3 +31,4 @@ folders.forEach(path => {
         fs.removeSync(path);
     }
 })
+

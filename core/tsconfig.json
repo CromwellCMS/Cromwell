@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "esnext",
+    "target": "es5",
     "module": "esnext",
     "lib": [
       "dom",
@@ -11,8 +11,7 @@
     "allowJs": true,
     "declaration": true,
     "declarationDir": "./dist/types",
-    "outDir": "./dist",
-    "declarationMap": true,
+    // "declarationMap": true,
     "jsx": "react",
     "sourceMap": true,
     "strict": true,
@@ -26,11 +25,11 @@
     "moduleResolution": "node"
   },
   "include": [
-    "src/index.ts",
     "src/**/*.ts",
     "src/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/myconfig.ts"
   ]
 }

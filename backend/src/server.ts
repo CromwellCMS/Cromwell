@@ -9,7 +9,7 @@ import { AuthorResolver } from "./resolvers/AuthorResolver";
 import { ProductResolver } from "./resolvers/ProductResolver";
 import { ProductCategoryResolver } from "./resolvers/ProductCategoryResolver";
 import { setStoreItem } from "@cromwell/core";
-const config = require('./cmsconfig.json');
+const config = require('../cmsconfig.json');
 setStoreItem('cmsconfig', config);
 
 const connectionOptions = require('../ormconfig.json');
