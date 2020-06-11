@@ -24,8 +24,7 @@
     "isolatedModules": true
   },
   "include": [
-    "src/**/*.ts",
-    "index.ts", "../core/src/getPageStaticProps.ts", "../core/src/componetsStore.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"

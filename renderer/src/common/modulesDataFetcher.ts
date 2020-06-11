@@ -1,13 +1,7 @@
 import { PageName, StaticPageContext } from '@cromwell/core';
-import { importModule, importConfig } from '@cromwell/templates';
-import { getStoreItem, setStoreItem } from "@cromwell/core";
-const config = require('../../cmsconfig.json');
-export const checkCMSConfig = (): void => {
-    const cmsconfig = getStoreItem('cmsconfig');
-    if (!cmsconfig || !cmsconfig.templateName) {
-        setStoreItem('cmsconfig', config);
-    }
-}
+import { importModule, importTemplateConfig, importCMSConfig } from '../../.cromwell/gen.imports';
+import { getStoreItem } from "@cromwell/core";
+import { checkCMSConfig } from "../helpers/checkCMSConfig";
 checkCMSConfig();
 
 /**
@@ -21,11 +15,12 @@ export const modulesDataFetcher = async (pageName: PageName, context: StaticPage
         console.log('cmsconfig', cmsconfig)
         throw new Error('modulesDataFetcher !cmsconfig.templateName');
     }
-    const templateConfig = await importConfig(cmsconfig.templateName);
+    const templateConfig = importTemplateConfig();
     if (!templateConfig) {
         throw new Error('modulesDataFetcher templateConfig was not found');
     }
     const moduleConfigs = Object.entries(templateConfig.modules);
+    console.log('moduleConfigs', moduleConfigs)
     const modulesData: any = {};
     if (moduleConfigs && Array.isArray(moduleConfigs)) {
         for (const moduleConfig of moduleConfigs) {
@@ -37,18 +32,18 @@ export const modulesDataFetcher = async (pageName: PageName, context: StaticPage
                 const moduleContext = JSON.parse(JSON.stringify(context));
                 moduleContext.moduleConfig = moduleConfigObj;
                 try {
-                    const getStaticProps = (await importModule(cmsconfig.templateName, moduleName)).getStaticProps;
+                    const getStaticProps = (await importModule(moduleName) as any).getStaticProps;
                     let moduleStaticProps = {};
                     if (getStaticProps) {
                         try {
                             moduleStaticProps = await getStaticProps(moduleContext);
                         } catch (e) {
-                            console.error(e);
+                            console.error('modulesDataFetcher1', e);
                         }
                     }
                     modulesData[moduleName] = moduleStaticProps;
                 } catch (e) {
-                    console.error(e);
+                    console.error('modulesDataFetcher2', e);
                 }
             }
         }

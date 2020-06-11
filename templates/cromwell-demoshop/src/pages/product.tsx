@@ -3,7 +3,7 @@ import { CromwellPageType, ProductType, getGraphQLClient, GetStaticPropsType, Li
 
 interface ProductProps {
     data?: {
-        product: ProductType
+        product: ProductType;
     };
 }
 const Product: CromwellPageType<ProductProps> = (props) => {

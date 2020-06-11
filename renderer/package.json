@@ -15,8 +15,7 @@
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-scripts": "3.4.1",
-    "@cromwell/core": "1.0.0",
-    "@cromwell/templates": "1.0.0"
+    "@cromwell/core": "1.0.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.8.3",

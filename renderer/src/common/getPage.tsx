@@ -2,8 +2,8 @@ import React from 'react';
 import { PageName, CromwellPageType, CromwellPageCoreProps } from "@cromwell/core";
 import { setModulesData } from '@cromwell/core';
 import { getStoreItem, setStoreItem } from "@cromwell/core";
-import { DynamicIndexPage, DynamicProductPage } from '../generatedImports';
-import { checkCMSConfig } from './modulesDataFetcher';
+import { importDynamicPage } from '../../.cromwell/gen.imports';
+import { checkCMSConfig } from '../helpers/checkCMSConfig';
 checkCMSConfig();
 
 
@@ -14,9 +14,7 @@ export const getPage = (pageName: PageName): CromwellPageType => {
         throw new Error('getPage !cmsconfig.templateName');
     }
 
-    let Page: any;
-    if (pageName === 'index') Page = DynamicIndexPage;
-    if (pageName === 'product') Page = DynamicProductPage;
+    const Page = importDynamicPage(pageName);
 
     return function (props: CromwellPageCoreProps): JSX.Element {
         setModulesData(props.modulesData);
