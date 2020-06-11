@@ -33,11 +33,7 @@
   },
   "description": "",
   "scripts": {
-    "buildDev": "rollup -c",
-    "watch2": "rollup -cw",
-    "buildDev3": "npx cross-env NODE_ENV=development npx webpack",
-    "buildDev2": "npx tsc ./src/index.ts --jsx react --esModuleInterop --outDir ./es",
-    "watch": "npx cross-env WATCH=true NODE_ENV=development npx webpack",
-    "buildProd": "npx cross-env NODE_ENV=production npx webpack"
+    "buildDev": "npx rollup -c",
+    "watch": "npx rollup -cw"
   }
 }

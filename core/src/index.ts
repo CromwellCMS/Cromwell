@@ -10,8 +10,8 @@ export type GetStaticPropsType<
     P extends { [key: string]: any } = { [key: string]: any },
     Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: StaticPageContext) => Promise<P>;
 
-export { setStoreItem, getStoreItem } from './GlobalStore';
 export { CromwellBlock } from './CromwellBlock';
+export * from './GlobalStore';
 export * from './types';
 export * from './constants';
 export * from './DataModule';

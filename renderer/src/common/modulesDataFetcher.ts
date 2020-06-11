@@ -1,4 +1,4 @@
-import { PageName, StaticPageContext } from '@cromwell/core';
+import { BasePageNames, StaticPageContext } from '@cromwell/core';
 import { importModule, importTemplateConfig, importCMSConfig } from '../../.cromwell/gen.imports';
 import { getStoreItem } from "@cromwell/core";
 import { checkCMSConfig } from "../helpers/checkCMSConfig";
@@ -9,7 +9,7 @@ checkCMSConfig();
  * @param pageName 
  * @param context - StaticPageContext of Page
  */
-export const modulesDataFetcher = async (pageName: PageName, context: StaticPageContext): Promise<Record<string, any>> => {
+export const modulesDataFetcher = async (pageName: BasePageNames | string, context: StaticPageContext): Promise<Record<string, any>> => {
     const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.templateName) {
         console.log('cmsconfig', cmsconfig)

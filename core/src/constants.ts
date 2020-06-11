@@ -1,5 +1,11 @@
 import { DBEntity, GraphQLNode } from './types';
 
+export enum BasePageNames {
+    Index = 'index',
+    Product = 'product',
+    Blog = 'blog'
+}
+
 export const GraphQLPaths: { [K in DBEntity]: GraphQLNode } = {
     Post: {
         getOneBySlug: "post",
@@ -27,7 +33,7 @@ export const GraphQLPaths: { [K in DBEntity]: GraphQLNode } = {
     }
 }
 
-export const DBTableNames: { [K in DBEntity]: string} = {
+export const DBTableNames: { [K in DBEntity]: string } = {
     Post: 'post',
     Product: 'product',
     ProductCategory: 'product_category'

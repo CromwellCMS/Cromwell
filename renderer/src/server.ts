@@ -1,4 +1,5 @@
 import { CMSconfigType } from '@cromwell/core';
+const { BasePageNames } = require('@cromwell/core')
 const fs = require('fs-extra');
 const resolve = require('path').resolve;
 // const config: CMSconfigType = require('../cmsconfig.json');
@@ -7,9 +8,9 @@ let config: CMSconfigType | undefined = undefined;
 try {
     config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
 } catch (e) {
-    console.log(e);
+    console.log('renderer::server ', e);
 }
-if (!config) throw new Error('renderer::server cannot read CMS config')
+if (!config) throw new Error('renderer::server cannot read CMS config');
 
 
 const templatesDir = resolve(__dirname, '../', '../', 'templates').replace(/\\/g, '/');
@@ -49,11 +50,11 @@ console.log('moduleImports', moduleImports);
 
 const content = `
 import dynamic from "next/dynamic";
-export const IndexPage = import('${templateImportsDir}/pages/index');
-export const DynamicIndexPage = dynamic(() => import('${templateImportsDir}/pages/index'));
+export const IndexPage = import('${templateImportsDir}/pages/${BasePageNames.Index}');
+export const DynamicIndexPage = dynamic(() => import('${templateImportsDir}/pages/${BasePageNames.Index}'));
 
-export const ProductPage = import('${templateImportsDir}/pages/product');
-export const DynamicProductPage = dynamic(() => import('${templateImportsDir}/pages/product'));
+export const ProductPage = import('${templateImportsDir}/pages/${BasePageNames.Product}');
+export const DynamicProductPage = dynamic(() => import('${templateImportsDir}/pages/${BasePageNames.Product}'));
 
 export const moduleImports = ${JSON.stringify(moduleImportPaths)};
 export const templateConfig = ${JSON.stringify(templateConfig)};
@@ -67,14 +68,14 @@ export const importCMSConfig = () => {
 }
 
 export const importPage = (pageName) => {
-    if (pageName === 'index') return IndexPage;
-    if (pageName === 'product') return ProductPage;
+    if (pageName === '${BasePageNames.Index}') return IndexPage;
+    if (pageName === '${BasePageNames.Product}') return ProductPage;
     return undefined;
 }
 
 export const importDynamicPage = (pageName) => {
-    if (pageName === 'index') return DynamicIndexPage;
-    if (pageName === 'product') return DynamicProductPage;
+    if (pageName === '${BasePageNames.Index}') return DynamicIndexPage;
+    if (pageName === '${BasePageNames.Product}') return DynamicProductPage;
     return undefined;
 }
 
