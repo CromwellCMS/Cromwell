@@ -40,6 +40,8 @@ var Index = function (props) {
     console.log('IndexTemplate props', props);
     return (React.createElement("div", null,
         "IndexTemp HELLO WOORLD1",
+        React.createElement(Link, { href: '/pages/some_page' },
+            React.createElement("a", null, "SomePage")),
         React.createElement(CromwellBlock, { id: "1" },
             React.createElement("div", null,
                 React.createElement("p", null, "CromwellBlock 1"))),

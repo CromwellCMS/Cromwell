@@ -1,8 +1,8 @@
-import { PageName, StaticPageContext, CromwellPageCoreProps } from "@cromwell/core";
+import { StaticPageContext, CromwellPageCoreProps, BasePageNames } from "@cromwell/core";
 import { modulesDataFetcher } from './modulesDataFetcher';
 import { getTemplateStaticProps } from './getTemplateStaticProps';
 
-export const createGetStaticProps = (pageName: PageName) => {
+export const createGetStaticProps = (pageName: BasePageNames | string) => {
     return async function (context: StaticPageContext): Promise<{ props: CromwellPageCoreProps }> {
         const modulesData = await modulesDataFetcher(pageName, context);
         const childStaticProps = await getTemplateStaticProps(pageName, context);

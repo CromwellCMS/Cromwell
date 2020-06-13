@@ -42,12 +42,13 @@ var ProductShowcase = function (props) {
 };
 var ProductShowcase$1 = core.CromwellModule(ProductShowcase, 'ProductShowcase');
 
-var Index = function (props) {
+var SomePage = function (props) {
     console.log('IndexTemplate props', props);
     return (React.createElement("div", null,
-        "IndexTemp HELLO WOORLD1",
-        React.createElement(core.Link, { href: '/pages/some_page' },
-            React.createElement("a", null, "SomePage")),
+        "SomePage",
+        React.createElement(core.Link, { href: '/' },
+            React.createElement("a", null, "HOME")),
+        "HELLO WOORLD1 SomePage",
         React.createElement(core.CromwellBlock, { id: "1" },
             React.createElement("div", null,
                 React.createElement("p", null, "CromwellBlock 1"))),
@@ -59,4 +60,4 @@ var Index = function (props) {
         React.createElement(ProductShowcase$1, null)));
 };
 
-module.exports = Index;
+module.exports = SomePage;

@@ -1,7 +1,3 @@
-'use strict';
-
-
-
 function ___$insertStyle(css) {
   if (!css) {
     return;
@@ -18,18 +14,16 @@ function ___$insertStyle(css) {
   return css;
 }
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
-var React = _interopDefault(require('react'));
-var core = require('@cromwell/core');
-require('tslib');
+import React from 'react';
+import { CromwellModule, Link, CromwellBlock } from '@cromwell/core';
+import 'tslib';
 
 var ProductShowcase = function (props) {
     console.log('ProductShowcase props', props);
     return (React.createElement("div", { style: { backgroundColor: "#999" } },
         React.createElement("p", null, "Showcase Time!"),
         props.products && props.products.map(function (p) { return (React.createElement("div", { key: p.id },
-            React.createElement(core.Link, { href: "/product/[slug]", as: "/product/" + p.slug },
+            React.createElement(Link, { href: "/product/[slug]", as: "/product/" + p.slug },
                 React.createElement("a", null,
                     "Name: ",
                     p.name)),
@@ -40,23 +34,24 @@ var ProductShowcase = function (props) {
                 "id: ",
                 p.id))); })));
 };
-var ProductShowcase$1 = core.CromwellModule(ProductShowcase, 'ProductShowcase');
+var ProductShowcase$1 = CromwellModule(ProductShowcase, 'ProductShowcase');
 
-var Index = function (props) {
+var SomePage = function (props) {
     console.log('IndexTemplate props', props);
     return (React.createElement("div", null,
-        "IndexTemp HELLO WOORLD1",
-        React.createElement(core.Link, { href: '/pages/some_page' },
-            React.createElement("a", null, "SomePage")),
-        React.createElement(core.CromwellBlock, { id: "1" },
+        "SomePage",
+        React.createElement(Link, { href: '/' },
+            React.createElement("a", null, "HOME")),
+        "HELLO WOORLD1 SomePage",
+        React.createElement(CromwellBlock, { id: "1" },
             React.createElement("div", null,
                 React.createElement("p", null, "CromwellBlock 1"))),
         React.createElement("div", null,
             React.createElement("h2", null, "Some subtitle")),
-        React.createElement(core.CromwellBlock, { id: "2" },
+        React.createElement(CromwellBlock, { id: "2" },
             React.createElement("div", null,
                 React.createElement("p", null, "CromwellBlock 2"))),
         React.createElement(ProductShowcase$1, null)));
 };
 
-module.exports = Index;
+export default SomePage;

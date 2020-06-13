@@ -2,7 +2,8 @@
     "modules": {
         "ProductShowcase": {
             "pages": [
-                "index"
+                "index",
+                "some_page"
             ],
             "options": {}
         },

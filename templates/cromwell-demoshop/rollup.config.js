@@ -8,7 +8,8 @@ import packageJson from "./package.json";
 const files = [
     'pages/index.tsx',
     'pages/product.tsx',
-    'modules/ProductShowcase/index.tsx'
+    'modules/ProductShowcase/index.tsx',
+    'customPages/some_page.tsx'
 ]
 export default files.map(f => {
     return {

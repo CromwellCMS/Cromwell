@@ -74,14 +74,33 @@ if (moduleImportPaths) {
 
 console.log('moduleImports', moduleImports);
 
+// Import custom pages
+const customPages: Record<string, string> = {};
+const customPagesPath = `${templateImportsDir}/customPages`;
+let customPageImports = '';
+let customPageImportsSwitch = '';
+let customPageDynamicImports = '';
+let customPageDynamicImportsSwitch = '';
+if (fs.existsSync(customPagesPath)) {
+    const files: string[] = fs.readdirSync(customPagesPath);
+    console.log('files of custom pages:', files)
+    files.forEach(fileName => {
+        customPages[fileName.replace('.js', '')] = `${customPagesPath}/${fileName}`;
+    });
+    Object.entries(customPages).forEach(e => {
+        customPageImports += `\nconst ${e[0]}_Page = import('${e[1]}')`;
+        customPageImportsSwitch += `if (pageName === '${e[0]}') return ${e[0]}_Page;\n`;
+
+        customPageDynamicImports += `\nconst ${e[0]}_DynamicPage = dynamic(() => import('${e[1]}'));`;
+        customPageDynamicImportsSwitch += `if (pageName === '${e[0]}') return ${e[0]}_DynamicPage;\n   `;
+    })
+}
+
 const content = `
 import dynamic from "next/dynamic";
-export const IndexPage = import('${templateImportsDir}/pages/${BasePageNames.Index}');
-export const DynamicIndexPage = dynamic(() => import('${templateImportsDir}/pages/${BasePageNames.Index}'));
-
-export const ProductPage = import('${templateImportsDir}/pages/${BasePageNames.Product}');
-export const DynamicProductPage = dynamic(() => import('${templateImportsDir}/pages/${BasePageNames.Product}'));
-
+/**
+ * Configs 
+ */
 export const moduleImports = ${JSON.stringify(moduleImportPaths)};
 export const templateConfig = ${JSON.stringify(templateConfig)};
 export const CMSconfig = ${JSON.stringify(config)};
@@ -93,30 +112,80 @@ export const importCMSConfig = () => {
     return CMSconfig;
 }
 
+/**
+ * Basic pages 
+ */
+export const IndexPage = import('${templateImportsDir}/pages/${BasePageNames.Index}');
+export const DynamicIndexPage = dynamic(() => import('${templateImportsDir}/pages/${BasePageNames.Index}'));
+
+export const ProductPage = import('${templateImportsDir}/pages/${BasePageNames.Product}');
+export const DynamicProductPage = dynamic(() => import('${templateImportsDir}/pages/${BasePageNames.Product}'));
+
+/**
+ * Custom pages
+ */
+${customPageImports}
+${customPageDynamicImports}
+
+/**
+ * Combined page imports
+ */
 export const importPage = (pageName) => {
     if (pageName === '${BasePageNames.Index}') return IndexPage;
     if (pageName === '${BasePageNames.Product}') return ProductPage;
+    
+    ${customPageImportsSwitch}
     return undefined;
 }
 
 export const importDynamicPage = (pageName) => {
     if (pageName === '${BasePageNames.Index}') return DynamicIndexPage;
     if (pageName === '${BasePageNames.Product}') return DynamicProductPage;
+
+    ${customPageDynamicImportsSwitch}
     return undefined;
 }
 
+/**
+ * Modules
+ */
 ${moduleImports}
+
 export const importModule = (moduleName) => {
     ${moduleImportsSwitch}
     return undefined;
 }
-
 ${dynamicModuleImports}
+
 export const importDynamicModule = (moduleName) => {
     ${dynamicModuleImportsSwitch}
     return undefined;
 }
 `
 
-fs.outputFileSync('./.cromwell/gen.imports.js', content);
-fs.outputFileSync('./.cromwell/gen.config.json', JSON.stringify(moduleImportPaths));
+fs.outputFileSync('./.cromwell/imports/gen.imports.js', content);
+fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(moduleImportPaths));
+
+
+// Create dir for custom pages
+const customPagesLocalPath = resolve(__dirname, './pages/pages').replace(/\\/g, '/');
+console.log('customPagesLocalPath', customPagesLocalPath)
+if (fs.existsSync(customPagesLocalPath)) {
+    fs.removeSync(customPagesLocalPath);
+}
+Object.keys(customPages).forEach(pageName => {
+    const pageContent = `
+    import { CromwellPageType } from '@cromwell/core';
+    import { createGetStaticProps } from '../../common/createGetStaticProps';
+    import { getPage } from '../../common/getPage';
+
+    /* eslint-disable @typescript-eslint/camelcase */
+    const ${pageName}_Page: CromwellPageType = getPage('${pageName}');
+
+    export const getStaticProps = createGetStaticProps('${pageName}');
+
+    /* eslint-disable @typescript-eslint/camelcase */
+    export default ${pageName}_Page;
+    `;
+    fs.outputFileSync(`${customPagesLocalPath}/${pageName}.tsx`, pageContent);
+})

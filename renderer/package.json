@@ -34,7 +34,7 @@
     "nextDev": "npm run generateImports && npx next",
     "nextBuild": "npm run generateImports && npx next build",
     "nextStart": "npx next start",
-    "generateImports": "npx ts-node src/server.ts"
+    "generateImports": "npx ts-node src/generator.ts"
   },
   "description": ""
 }
