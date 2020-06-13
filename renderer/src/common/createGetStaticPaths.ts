@@ -3,7 +3,7 @@ import { DBEntity, getGraphQLClient, GraphQLPaths } from "@cromwell/core";
 export const createGetStaticPaths = (dbEntity: DBEntity) => {
     return async function () {
         const getAllPath = GraphQLPaths[dbEntity].getAll;
-        let slugs;
+        let slugs: any;
         let paths = [];
         try {
             slugs = await getGraphQLClient().request(`

@@ -1,11 +1,14 @@
 import { NextPage } from 'next';
 import { ComponentType } from 'react';
+import { AxiosRequestConfig } from 'axios';
+
 
 export type CromwellPageType<Props = {}> = NextPage<Props & CromwellPageCoreProps>;
 
 export type CromwellPageCoreProps = {
     modulesData: Record<string, any>;
     childStaticProps: Record<string, any>;
+    cromwellBlocksData: CromwellBlockDataType[];
 }
 
 export type PageName = keyof {
@@ -183,4 +186,9 @@ export type PagedParamsType<Entity> = {
     pageSize?: number;
     orderBy?: keyof Entity;
     order?: 'ASC' | 'DESC';
+}
+
+export type RestAPIClient = {
+    get: <T>(route: string, config?: AxiosRequestConfig | undefined) => Promise<T>;
+    getUserModifications: (pageName: string) => Promise<CromwellBlockDataType[]>;
 }

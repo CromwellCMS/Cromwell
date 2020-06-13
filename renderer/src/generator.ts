@@ -18,6 +18,8 @@ const globalModulesDir = resolve(__dirname, '../', '../', 'modules').replace(/\\
 const templateDir = `${templatesDir}/${config.templateName}`;
 const templateImportsDir = `${templateDir}/es`;
 const templateConfigPath = templateDir + '/' + 'cromwell.config.json';
+const customPagesLocalDir = resolve(__dirname, './pages/pages').replace(/\\/g, '/');
+
 let templateConfig: Record<string, any> | undefined = undefined;
 try {
     templateConfig = JSON.parse(fs.readFileSync(templateConfigPath, { encoding: 'utf8', flag: 'r' }));
@@ -168,10 +170,9 @@ fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(moduleIm
 
 
 // Create dir for custom pages
-const customPagesLocalPath = resolve(__dirname, './pages/pages').replace(/\\/g, '/');
-console.log('customPagesLocalPath', customPagesLocalPath)
-if (fs.existsSync(customPagesLocalPath)) {
-    fs.removeSync(customPagesLocalPath);
+console.log('customPagesLocalPath', customPagesLocalDir)
+if (fs.existsSync(customPagesLocalDir)) {
+    fs.removeSync(customPagesLocalDir);
 }
 Object.keys(customPages).forEach(pageName => {
     const pageContent = `
@@ -187,5 +188,5 @@ Object.keys(customPages).forEach(pageName => {
     /* eslint-disable @typescript-eslint/camelcase */
     export default ${pageName}_Page;
     `;
-    fs.outputFileSync(`${customPagesLocalPath}/${pageName}.tsx`, pageContent);
+    fs.outputFileSync(`${customPagesLocalDir}/${pageName}.tsx`, pageContent);
 })

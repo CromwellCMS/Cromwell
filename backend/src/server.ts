@@ -1,14 +1,13 @@
 import "reflect-metadata";
 import express from 'express';
-import path from 'path';
 import { createConnection, Connection } from "typeorm";
-import { ApolloServer } from "apollo-server";
+import { ApolloServer } from 'apollo-server-express';
 import { buildSchema } from "type-graphql";
 import { PostResolver } from "./resolvers/PostResolver";
 import { AuthorResolver } from "./resolvers/AuthorResolver";
 import { ProductResolver } from "./resolvers/ProductResolver";
 import { ProductCategoryResolver } from "./resolvers/ProductCategoryResolver";
-import { setStoreItem, CMSconfigType } from "@cromwell/core";
+import { setStoreItem, CMSconfigType, CromwellBlockDataType, CromwellBlock } from "@cromwell/core";
 const resolve = require('path').resolve;
 const fs = require('fs-extra');
 
@@ -19,13 +18,17 @@ try {
 } catch (e) {
     console.log('renderer::server ', e);
 }
-if (!config) throw new Error('renderer::server cannot read CMS config');
-
+if (!config) throw new Error('renderer::server cannot read CMS config')
 setStoreItem('cmsconfig', config);
+
+const tempDir = resolve(__dirname, '../', './.cromwell/templates/', config.templateName).replace(/\\/g, '/');
+const userModificationsPath = tempDir + '/userModifications.json';
 
 const connectionOptions = require('../ormconfig.json');
 
 async function apiServer(): Promise<void> {
+    if (!config || !config.apiPort || !config.templateName) throw new Error('renderer::server cannot read CMS config ' + JSON.stringify(config));
+
     createConnection(connectionOptions);
     const schema = await buildSchema({
         resolvers: [
@@ -37,8 +40,20 @@ async function apiServer(): Promise<void> {
         dateScalarMode: "isoDate"
     });
     const server = new ApolloServer({ schema });
-    const { url } = await server.listen(config!.apiPort);
-    console.log(`API server has started at ${url}`);
+
+    const app = express();
+    server.applyMiddleware({ app, path: '/api/v1/graphql' });
+
+    app.get('/api/v1/modifications/:pageName', function (req, res) {
+        fs.readFile(userModificationsPath, (err, data) => {
+            const userModifications: Record<string, CromwellBlockDataType> | undefined = JSON.parse(data);
+            const mod = userModifications ? userModifications[req.params.pageName] : [];
+            res.send(mod ? mod : []);
+        });
+    })
+
+    app.listen(config.apiPort);
+    console.log(`API server has started at ${config.apiPort}/api/v1/graphql`);
 }
 
 // async function adminPanelServer() {

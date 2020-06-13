@@ -3,30 +3,7 @@ import { isServer } from './constants';
 
 const initialStore: CromwellStoreType = {
     modulesData: {
-    },
-    blocksData: [
-        {
-            componentId: '1',
-            destinationComponentId: '2',
-            destinationPosition: 'after',
-            styles: "background: red;"
-        },
-        {
-            componentId: '111',
-            destinationComponentId: '3',
-            destinationPosition: 'inside',
-            isVirtual: true,
-            styles: "background: red;",
-            moduleName: "ProductShowcaseDemo"
-        },
-        {
-            componentId: '112',
-            destinationComponentId: '111',
-            destinationPosition: 'after',
-            isVirtual: true,
-            moduleName: 'ProductShowcase'
-        }
-    ]
+    }
 }
 
 if (isServer()) {
