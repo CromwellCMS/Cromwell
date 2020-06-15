@@ -4,10 +4,10 @@ import { BasePageInput } from './BasePageInput';
 
 @InputType({ description: "Update Product data" })
 export class UpdateProduct extends BasePageInput implements ProductInputType {
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     name: string;
 
-    @Field(() => [String])
+    @Field(() => [String], { nullable: true })
     categoryIds: string[];
 
     @Field(() => String, { nullable: true })

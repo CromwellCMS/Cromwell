@@ -3,14 +3,21 @@ import { DBEntity, GraphQLNode } from './types';
 export enum BasePageNames {
     Index = 'index',
     Product = 'product',
-    Blog = 'blog'
+    Blog = 'blog',
+    ProductCategory = 'product_category'
+}
+export enum BasePagePaths {
+    Index = '/',
+    Product = '/product',
+    Blog = '/blog',
+    ProductCategory = '/category'
 }
 
 export const GraphQLPaths: { [K in DBEntity]: GraphQLNode } = {
     Post: {
         getOneBySlug: "post",
         getOneById: "getPostById",
-        getAll: "posts",
+        getMany: "posts",
         create: "createPost",
         update: "updatePost",
         delete: "deletePost"
@@ -18,7 +25,7 @@ export const GraphQLPaths: { [K in DBEntity]: GraphQLNode } = {
     Product: {
         getOneBySlug: "product",
         getOneById: "getProductById",
-        getAll: "products",
+        getMany: "products",
         create: "createProduct",
         update: "updateProduct",
         delete: "deleteProduct"
@@ -26,7 +33,7 @@ export const GraphQLPaths: { [K in DBEntity]: GraphQLNode } = {
     ProductCategory: {
         getOneBySlug: "productCategory",
         getOneById: "getProductCategoryById",
-        getAll: "productCategories",
+        getMany: "productCategories",
         create: "createProductCategory",
         update: "updateProductCategory",
         delete: "deleteProductCategory"

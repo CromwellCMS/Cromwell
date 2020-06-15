@@ -8,6 +8,7 @@ import { AuthorResolver } from "./resolvers/AuthorResolver";
 import { ProductResolver } from "./resolvers/ProductResolver";
 import { ProductCategoryResolver } from "./resolvers/ProductCategoryResolver";
 import { setStoreItem, CMSconfigType, CromwellBlockDataType, CromwellBlock } from "@cromwell/core";
+import { PageBuilder } from './controllers/PageBuilder';
 const resolve = require('path').resolve;
 const fs = require('fs-extra');
 
@@ -21,8 +22,10 @@ try {
 if (!config) throw new Error('renderer::server cannot read CMS config')
 setStoreItem('cmsconfig', config);
 
-const tempDir = resolve(__dirname, '../', './.cromwell/templates/', config.templateName).replace(/\\/g, '/');
-const userModificationsPath = tempDir + '/userModifications.json';
+const pageBuilderInst = new PageBuilder();
+setStoreItem('pageBuilder', pageBuilderInst);
+
+const userModificationsPath = resolve(__dirname, '../', '../', './modifications/', config.templateName).replace(/\\/g, '/') + '/userModifications.json';
 
 const connectionOptions = require('../ormconfig.json');
 
@@ -52,8 +55,8 @@ async function apiServer(): Promise<void> {
         });
     })
 
-    app.listen(config.apiPort);
-    console.log(`API server has started at ${config.apiPort}/api/v1/graphql`);
+    const { address } = app.listen(config.apiPort);
+    console.log(`API server has started at http://localhost:${config.apiPort}/api/v1/graphql`);
 }
 
 // async function adminPanelServer() {

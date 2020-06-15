@@ -5,13 +5,13 @@
 		"installAll": "npm i && npm run lerna && npm run buildCore",
 		"lerna": "npx lerna bootstrap --hoist",
 		"clean": "npx ts-node cleanup.ts",
-		"clean2": "npx ts-node cleanup.ts && rmdir /Q /S \"./node_modules\"",
+		"cleanNodemodules": "rmdir /Q /S \"./node_modules\"",
 		"buildCore": "cd ./core && npm run buildDev"
 	},
 	"devDependencies": {
-		"@types/node": "13.13.4",
-		"lerna": "^3.20.2",
-		"ts-node": "^8.6.2",
+		"@types/node": "14.0.13",
+		"lerna": "^3.22.1",
+		"ts-node": "^8.10.2",
 		"typescript": "^3.9.5"
 	}
 }

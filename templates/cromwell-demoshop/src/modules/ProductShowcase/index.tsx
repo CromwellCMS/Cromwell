@@ -6,7 +6,7 @@ interface ProductShowcaseProps {
 }
 
 const ProductShowcase = (props: ProductShowcaseProps) => {
-    console.log('ProductShowcase props', props)
+    // console.log('ProductShowcase props', props)
     return (
         <div style={{ backgroundColor: "#999" }}>
             <p>Showcase Time!</p>
@@ -29,7 +29,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     try {
         data = await getGraphQLClient().request(`
             query getProducts {
-                ${GraphQLPaths.Product.getAll}(pagedParams: {pageNumber: 1, pageSize: ${limit}}) {
+                ${GraphQLPaths.Product.getMany}(pagedParams: {pageNumber: 1, pageSize: ${limit}}) {
                     id
                     slug
                     name

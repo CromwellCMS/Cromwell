@@ -5,7 +5,7 @@ import { UpdateProduct } from '../models/inputs/UpdateProduct';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { getPaged, innerJoinById } from './BaseQueries';
 import { getCustomRepository } from "typeorm";
-import { PagedParamsType, DBTableNames, ProductType } from "@cromwell/core";
+import { PagedParamsType, DBTableNames, ProductType, BasePagePaths, getStoreItem } from "@cromwell/core";
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
@@ -54,12 +54,20 @@ export class ProductRepository extends Repository<Product> {
             product.slug = product.id;
             await this.save(product);
         }
+
+        this.buildProductPage(product);
+
         return product;
     }
 
     async updateProduct(id: string, updateProduct: UpdateProduct): Promise<Product> {
-        const product = await this.getProductById(id);
+        const product = await this.findOne({
+            where: { id },
+            relations: ["categories"]
+        });
         if (!product) throw new Error(`Product ${id} not found!`);
+
+        console.log('product', product)
 
         product.name = updateProduct.name;
         product.price = updateProduct.price;
@@ -76,6 +84,9 @@ export class ProductRepository extends Repository<Product> {
         }
 
         await this.save(product);
+
+        this.buildProductPage(product);
+
         return product;
     }
 
@@ -83,6 +94,11 @@ export class ProductRepository extends Repository<Product> {
         const product = await this.getProductById(id);
         if (!product) return false;
         await this.delete(id);
+
+        const pageBuilder = getStoreItem('pageBuilder');
+        if (pageBuilder) {
+            pageBuilder.deletePage(`${BasePagePaths.Product}/${product.slug}`);
+        }
         return true;
     }
 
@@ -91,6 +107,18 @@ export class ProductRepository extends Repository<Product> {
         innerJoinById(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
         getPaged(qb, DBTableNames.Product, params);
         return await qb.getMany();
+    }
+
+    private buildProductPage(product: Product) {
+        const pageBuilder = getStoreItem('pageBuilder');
+        if (pageBuilder) {
+            pageBuilder.buildPage(`${BasePagePaths.Product}/${product.slug}`);
+            if (product.categories) {
+                product.categories.forEach(cat => {
+                    pageBuilder.buildPage(`${BasePagePaths.ProductCategory}/${cat.slug}`);
+                })
+            }
+        }
     }
 
 }

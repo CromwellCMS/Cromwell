@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { ComponentType } from 'react';
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 
 export type CromwellPageType<Props = {}> = NextPage<Props & CromwellPageCoreProps>;
@@ -36,6 +36,7 @@ export type CromwellStoreType = {
     blocksData?: CromwellBlockDataType[];
     importModule?: (moduleName: string) => { default: ComponentType } | undefined;
     importDynamicModule?: (moduleName: string) => ComponentType | undefined;
+    pageBuilder?: PageBuilderType;
 }
 
 declare global {
@@ -92,7 +93,7 @@ export type GraphQLPathsType = { [K in DBEntity]: GraphQLNode };
 export type GraphQLNode = {
     getOneById: string;
     getOneBySlug: string;
-    getAll: string;
+    getMany: string;
     create: string;
     update: string;
     delete: string;
@@ -189,6 +190,11 @@ export type PagedParamsType<Entity> = {
 }
 
 export type RestAPIClient = {
-    get: <T>(route: string, config?: AxiosRequestConfig | undefined) => Promise<T>;
+    get: <T>(route: string, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<T>>;
     getUserModifications: (pageName: string) => Promise<CromwellBlockDataType[]>;
+}
+
+export interface PageBuilderType {
+    buildPage: (path: string) => void;
+    deletePage: (path: string) => void;
 }

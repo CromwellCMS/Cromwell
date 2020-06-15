@@ -169,6 +169,7 @@ fs.outputFileSync('./.cromwell/imports/gen.imports.js', content);
 fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(moduleImportPaths));
 
 
+
 // Create dir for custom pages
 console.log('customPagesLocalPath', customPagesLocalDir)
 if (fs.existsSync(customPagesLocalDir)) {
@@ -183,7 +184,7 @@ Object.keys(customPages).forEach(pageName => {
     /* eslint-disable @typescript-eslint/camelcase */
     const ${pageName}_Page: CromwellPageType = getPage('${pageName}');
 
-    export const getStaticProps = createGetStaticProps('${pageName}');
+    export const getStaticProps = createGetStaticProps('${pageName}', '/pages/${pageName}');
 
     /* eslint-disable @typescript-eslint/camelcase */
     export default ${pageName}_Page;

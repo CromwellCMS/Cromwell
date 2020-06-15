@@ -5,7 +5,7 @@ import { getPage } from '../../common/getPage';
 
 const ProductCore: CromwellPageType = getPage(BasePageNames.Product);
 
-export const getStaticProps = createGetStaticProps(BasePageNames.Product);
+export const getStaticProps = createGetStaticProps(BasePageNames.Product, '/' + BasePageNames.Product);
 
 export const getStaticPaths = createGetStaticPaths('Product');
 

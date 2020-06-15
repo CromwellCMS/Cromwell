@@ -1,5 +1,6 @@
 import React from 'react';
-import { CromwellPageType, ProductType, getGraphQLClient, GetStaticPropsType, Link, GraphQLPaths, CromwellBlock } from '@cromwell/core';
+import gql from 'graphql-tag';
+import { CromwellPageType, ProductType, getApolloGraphQLClient, GetStaticPropsType, Link, GraphQLPaths, CromwellBlock } from '@cromwell/core';
 
 interface ProductProps {
     data?: {
@@ -32,9 +33,10 @@ export const getStaticProps: GetStaticPropsType = async (context) => {
     let data = null;
     if (slug) {
         try {
-            data = await getGraphQLClient().request(`
+            data = await getApolloGraphQLClient().query({
+                query: gql`
                 query getproduct {
-                    ${GraphQLPaths.Product.getOneBySlug}(slug: "${slug}") {
+                    product(slug: "${slug}") {
                         id
                         slug
                         name
@@ -43,7 +45,8 @@ export const getStaticProps: GetStaticPropsType = async (context) => {
                         mainImage
                     }
                 }
-            `);
+            `
+            });
         } catch (e) {
             console.error(e)
         }
@@ -52,7 +55,7 @@ export const getStaticProps: GetStaticPropsType = async (context) => {
     }
 
     return {
-        data
+        data: data ? data.data: data
     }
 
 }
