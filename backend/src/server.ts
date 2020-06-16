@@ -9,9 +9,9 @@ import { ProductResolver } from "./resolvers/ProductResolver";
 import { ProductCategoryResolver } from "./resolvers/ProductCategoryResolver";
 import { setStoreItem, CMSconfigType, CromwellBlockDataType, CromwellBlock } from "@cromwell/core";
 import { PageBuilder } from './controllers/PageBuilder';
+
 const resolve = require('path').resolve;
 const fs = require('fs-extra');
-
 const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
 let config: CMSconfigType | undefined = undefined;
 try {
@@ -61,24 +61,51 @@ async function apiServer(): Promise<void> {
 
 // async function adminPanelServer() {
 //     const app = express();
-
 //     app.use(express.static(publicDir, {}));
 //     app.get('*', (req, res) => {
 //         res.sendFile(publicDir + '/index.html');
 //     });
-
 //     app.listen(config.adminPanelPort);
 //     console.log(`Admin Panel server has started at http://localhost:${config.adminPanelPort}/`);
 // }
 
-// async function frontendServer() {
-//     const app = express();
 
-//     app.use(express.static(currentTemplatePublicDir, {}));
-
-//     app.listen(config.templatePort);
-//     console.log(`Frontend template server has started at http://localhost:${config.templatePort}/`);
-// }
+// Test feature that serves satic pages and other files from .next folder (bad idea)
+// Use Nginx to cache response of Next.js server
+/*
+import { getFrontendBuildDir, getRootBuildDir, getBuildId } from './helpers/getFrontendBuildDir';
+const buildStaticDir = getFrontendBuildDir();
+const buildId = getBuildId();
+const rootBuildDir = getRootBuildDir();
+async function frontendServer() {
+    if (buildStaticDir && config && config.templatePort) {
+        const app = express();
+        app.get('*', function (req, res) {
+            console.log('req.path', req.path);
+            const reqPath = decodeURI(req.path);
+            let resFilePath;
+            if (reqPath.includes('/_next/data/')) {
+                resFilePath = `${rootBuildDir}/${reqPath.replace(`/_next/data/${buildId}`, `server/static/${buildId}/pages`)}`;
+            } else if (reqPath.includes('/_next/')) {
+                resFilePath = `${rootBuildDir}/${reqPath.replace('/_next/', '')}`;
+            } else {
+                resFilePath = `${buildStaticDir}${reqPath}.html`;
+            }
+            fs.access(resFilePath, fs.constants.F_OK, (err) => {
+                if (!err) {
+                    res.sendFile(resFilePath);
+                    return;
+                } else {
+                    console.error('File does not exist: ' + resFilePath);
+                    res.status(404).send('Not found');
+                }
+            });
+        });
+        app.listen(config.templatePort);
+        console.log(`Frontend template server has started at http://localhost:${config.templatePort}/`);
+    }
+}
+*/
 
 apiServer();
 // adminPanelServer();

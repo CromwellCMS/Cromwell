@@ -86,7 +86,6 @@ out
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
-# yarn v2
 
 .yarn/cache
 .yarn/unplugged
@@ -97,5 +96,7 @@ templates/*/dist
 templates/*/es
 modules/*/dist
 modules/*/es
+
+renderer/.cromwell
 
 # db.sqlite3

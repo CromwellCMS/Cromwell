@@ -3,27 +3,27 @@ import { Variables as GraphQLVariables } from 'graphql-request/dist/src/types';
 import { getStoreItem } from './GlobalStore';
 import { CromwellBlockDataType, RestAPIClient } from './types';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { ApolloClient, ApolloQueryResult, QueryOptions } from 'apollo-client';
-import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
-import { HttpLink } from 'apollo-link-http';
+// import { ApolloClient, ApolloQueryResult, QueryOptions } from 'apollo-client';
+// import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
+// import { HttpLink } from 'apollo-link-http';
 
-const cache = new InMemoryCache();
+// const cache = new InMemoryCache();
 
-export const getApolloGraphQLClient = (): ApolloClient<NormalizedCacheObject> => {
-    const cmsconfig = getStoreItem('cmsconfig');
-    if (!cmsconfig || !cmsconfig.apiPort) {
-        console.log('cmsconfig', cmsconfig)
-        throw new Error('getGraphQLClient !cmsconfig.apiPort');
-    }
-    const link = new HttpLink({
-        uri: `http://localhost:${cmsconfig.apiPort}/api/v1/graphql`
-    });
-    const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
-        cache,
-        link
-    });
-    return client;
-}
+// export const getApolloGraphQLClient = (): ApolloClient<NormalizedCacheObject> => {
+//     const cmsconfig = getStoreItem('cmsconfig');
+//     if (!cmsconfig || !cmsconfig.apiPort) {
+//         console.log('cmsconfig', cmsconfig)
+//         throw new Error('getGraphQLClient !cmsconfig.apiPort');
+//     }
+//     const link = new HttpLink({
+//         uri: `http://localhost:${cmsconfig.apiPort}/api/v1/graphql`
+//     });
+//     const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
+//         cache,
+//         link
+//     });
+//     return client;
+// }
 
 export const getGraphQLClient = (): GraphQLClient => {
     const cmsconfig = getStoreItem('cmsconfig');

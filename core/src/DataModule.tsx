@@ -10,7 +10,7 @@ export function CromwellModule<Data>(Component: React.ComponentType<Data>, modul
         const data = modulesData ? modulesData[moduleName] : {};
         // console.log('CromwellModule moduleName', moduleName, 'data', data, 'modulesData', modulesData);
         return (
-            <div className="BaseComponent">
+            <div className={`BaseComponent BaseComponent__${moduleName}`}>
                 <Component {...data} />
             </div>
         )

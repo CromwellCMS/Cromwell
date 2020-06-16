@@ -1,6 +1,6 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { CromwellPageType, ProductType, getApolloGraphQLClient, GetStaticPropsType, Link, GraphQLPaths, CromwellBlock } from '@cromwell/core';
+import { CromwellPageType, ProductType, getGraphQLClient, GetStaticPropsType, Link, GraphQLPaths, CromwellBlock } from '@cromwell/core';
 
 interface ProductProps {
     data?: {
@@ -27,15 +27,14 @@ const Product: CromwellPageType<ProductProps> = (props) => {
 }
 
 export const getStaticProps: GetStaticPropsType = async (context) => {
-    console.log('context', context)
+    // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
-    console.log('pid', slug, 'context.params', context.params)
+    console.log('ProductTemplate::getStaticProps: pid', slug, 'context.params', context.params)
     let data = null;
     if (slug) {
         try {
-            data = await getApolloGraphQLClient().query({
-                query: gql`
-                query getproduct {
+            data = await getGraphQLClient().request(
+                `query getproduct {
                     product(slug: "${slug}") {
                         id
                         slug
@@ -45,8 +44,7 @@ export const getStaticProps: GetStaticPropsType = async (context) => {
                         mainImage
                     }
                 }
-            `
-            });
+            `);
         } catch (e) {
             console.error(e)
         }
@@ -55,7 +53,7 @@ export const getStaticProps: GetStaticPropsType = async (context) => {
     }
 
     return {
-        data: data ? data.data: data
+        data: data
     }
 
 }

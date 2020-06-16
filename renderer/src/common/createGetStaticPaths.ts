@@ -25,7 +25,8 @@ export const createGetStaticPaths = (dbEntity: DBEntity) => {
         }
         // console.log('getStaticPaths', paths)
         return {
-            paths,
+            // paths,
+            paths: [],
             fallback: true
         };
     }

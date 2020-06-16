@@ -1,30 +1,14 @@
 import { PageBuilderType } from "@cromwell/core";
 import { resolve } from 'path';
+import { getFrontendBuildDir } from '../helpers/getFrontendBuildDir';
 const fs = require('fs-extra');
 
 export class PageBuilder implements PageBuilderType {
 
-    private rootBuildDir: string;
-    private buildStaticDir: string;
+    private buildStaticDir?: string;
 
     constructor() {
-        this.rootBuildDir = resolve(__dirname, '../../../renderer/.next').replace(/\\/g, '/');
-        console.log('PageBuilder rootBuildDir: ', this.rootBuildDir);
-        if (!fs.existsSync(this.rootBuildDir)) {
-            throw new Error('PageBuilder: cannot find frontend nextjs build folder: ' + this.rootBuildDir);
-        }
-        const buildIdPath = this.rootBuildDir + '/BUILD_ID';
-        let buildId;
-        if (fs.existsSync(buildIdPath)) {
-            buildId = fs.readFileSync(buildIdPath, { encoding: 'utf8', flag: 'r' });
-        } else {
-            throw new Error('PageBuilder: cannot find frontend nextjs BUILD_ID file: ' + buildIdPath);
-        }
-        this.buildStaticDir = `${this.rootBuildDir}/server/static/${buildId}/pages`
-        console.log('PageBuilder buildStaticDir: ', this.buildStaticDir);
-        if (!fs.existsSync(this.buildStaticDir)) {
-            throw new Error('PageBuilder: cannot find frontend nextjs static build folder: ' + this.buildStaticDir);
-        }
+        this.buildStaticDir = getFrontendBuildDir();
 
     }
     buildPage(path: string) {

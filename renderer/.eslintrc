@@ -13,6 +13,7 @@
         "@typescript-eslint/no-var-requires": 0
     },
     "env": {
-        "node": true
+        "node": true,
+        "es6": true
     }
 }

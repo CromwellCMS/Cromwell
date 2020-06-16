@@ -20,7 +20,7 @@ export const modulesDataFetcher = async (pageName: BasePageNames | string, conte
         throw new Error('modulesDataFetcher templateConfig was not found');
     }
     const moduleConfigs = Object.entries(templateConfig.modules);
-    console.log('moduleConfigs', moduleConfigs)
+    // console.log('moduleConfigs', moduleConfigs)
     const modulesData: any = {};
     if (moduleConfigs && Array.isArray(moduleConfigs)) {
         for (const moduleConfig of moduleConfigs) {
@@ -31,11 +31,11 @@ export const modulesDataFetcher = async (pageName: BasePageNames | string, conte
             if (moduleConfigObj.pages && Array.isArray(moduleConfigObj.pages) && moduleConfigObj.pages.includes(pageName)) {
                 const moduleContext = JSON.parse(JSON.stringify(context));
                 moduleContext.moduleConfig = moduleConfigObj;
-                console.log('moduleConfigObj', pageName, moduleName, moduleConfigObj)
+                // console.log('moduleConfigObj', pageName, moduleName, moduleConfigObj)
                 try {
                     const module = await importModule(moduleName);
                     const getStaticProps = (module as any).getStaticProps;
-                    console.log('module', module, 'getStaticProps', getStaticProps)
+                    // console.log('module', module, 'getStaticProps', getStaticProps)
 
                     let moduleStaticProps = {};
                     if (getStaticProps) {
