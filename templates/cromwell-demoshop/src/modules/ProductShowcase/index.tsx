@@ -40,7 +40,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
             }
         `);
     } catch (e) {
-        console.error(e)
+        console.error('ProductShowcase::getStaticProps', e)
     }
 
     return {

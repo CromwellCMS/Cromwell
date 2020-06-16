@@ -1,6 +1,6 @@
-import { BasePageNames, StaticPageContext } from '@cromwell/core';
-import { importModule, importTemplateConfig, importCMSConfig } from '.cromwell/imports/gen.imports';
-import { getStoreItem } from "@cromwell/core";
+//@ts-ignore
+import { importModule, importTemplateConfig } from '.cromwell/imports/gen.imports';
+import { BasePageNames, StaticPageContext, getStoreItem, getRestAPIClient } from "@cromwell/core";
 import { checkCMSConfig } from "../helpers/checkCMSConfig";
 checkCMSConfig();
 
@@ -15,12 +15,24 @@ export const modulesDataFetcher = async (pageName: BasePageNames | string, conte
         console.log('cmsconfig', cmsconfig)
         throw new Error('modulesDataFetcher !cmsconfig.templateName');
     }
+    // Get modifications of user to the current template
+    const restAPIClient = getRestAPIClient();
+    const modulesUserModifications = await restAPIClient.getModulesModifications();
+
+    // Get default modifications of the template
     const templateConfig = importTemplateConfig();
-    if (!templateConfig) {
-        throw new Error('modulesDataFetcher templateConfig was not found');
+
+    // Concat both modifications
+    let modulesModifications = {};
+    if (templateConfig && templateConfig.modules && typeof templateConfig.modules === 'object') {
+        modulesModifications = Object.assign(modulesModifications, templateConfig.modules);
     }
-    const moduleConfigs = Object.entries(templateConfig.modules);
-    // console.log('moduleConfigs', moduleConfigs)
+    if (modulesUserModifications && typeof modulesUserModifications === 'object') {
+        modulesModifications = Object.assign(modulesModifications, modulesUserModifications);
+    }
+
+    const moduleConfigs = Object.entries(modulesModifications);
+    console.log('moduleConfigs', moduleConfigs)
     const modulesData: any = {};
     if (moduleConfigs && Array.isArray(moduleConfigs)) {
         for (const moduleConfig of moduleConfigs) {

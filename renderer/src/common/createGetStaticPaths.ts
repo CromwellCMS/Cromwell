@@ -21,7 +21,7 @@ export const createGetStaticPaths = (dbEntity: DBEntity) => {
                 })
             }
         } catch (e) {
-            console.error(e)
+            console.error('createGetStaticPaths:error', e)
         }
         // console.log('getStaticPaths', paths)
         return {

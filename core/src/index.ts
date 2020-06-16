@@ -15,5 +15,5 @@ export * from './GlobalStore';
 export * from './types';
 export * from './constants';
 export * from './DataModule';
-export * from './GraphQLClient';
+export * from './apiClient';
 export { default as Link } from 'next/link';

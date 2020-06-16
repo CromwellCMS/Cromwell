@@ -1,5 +1,5 @@
 import { GraphQLClient } from 'graphql-request';
-import { Variables as GraphQLVariables } from 'graphql-request/dist/src/types';
+// import { Variables as GraphQLVariables } from 'graphql-request/dist/src/types';
 import { getStoreItem } from './GlobalStore';
 import { CromwellBlockDataType, RestAPIClient } from './types';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
@@ -56,9 +56,19 @@ export const getRestAPIClient = (): RestAPIClient => {
         get: <T>(route: string, config?: AxiosRequestConfig | undefined): Promise<AxiosResponse<T>> => {
             return axios.get(`${baseUrl}/${route}`, config);
         },
-        getUserModifications: async (pageName: string): Promise<CromwellBlockDataType[]> => {
-            const res = await axios.get(`${baseUrl}/modifications/${pageName}`);
-            return res.data;
+        getTemplateModifications: async (pageName: string): Promise<CromwellBlockDataType[]> => {
+            let res: any;
+            try {
+                res = await axios.get(`${baseUrl}/modifications/template/${pageName}`);
+            } catch (e) { console.error('getTemplateModifications', e) }
+            return (res && res.data) ? res.data : [];
+        },
+        getModulesModifications: async (): Promise<Record<string, any>> => {
+            let res: any;
+            try {
+                res = await axios.get(`${baseUrl}/modifications/modules`);
+            } catch (e) { console.error('getModulesModifications', e) }
+            return (res && res.data) ? res.data : {};
         }
     }
 }

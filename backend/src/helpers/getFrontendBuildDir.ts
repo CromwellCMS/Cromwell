@@ -2,7 +2,7 @@ import { resolve } from 'path';
 const fs = require('fs-extra');
 
 export const getRootBuildDir = (): string | undefined => {
-    const distDir = '.next'
+    const distDir = '.next';
     const rootBuildDir = resolve(__dirname, '../../../renderer', distDir).replace(/\\/g, '/');
     console.log('PageBuilder rootBuildDir: ', rootBuildDir);
     if (!fs.existsSync(rootBuildDir)) {

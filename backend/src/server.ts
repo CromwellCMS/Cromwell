@@ -7,9 +7,10 @@ import { PostResolver } from "./resolvers/PostResolver";
 import { AuthorResolver } from "./resolvers/AuthorResolver";
 import { ProductResolver } from "./resolvers/ProductResolver";
 import { ProductCategoryResolver } from "./resolvers/ProductCategoryResolver";
-import { setStoreItem, CMSconfigType, CromwellBlockDataType, CromwellBlock } from "@cromwell/core";
-import { PageBuilder } from './controllers/PageBuilder';
-
+import { applyModificationsController } from "./controllers/modificationsController";
+import { setStoreItem, CMSconfigType, CromwellBlockDataType } from "@cromwell/core";
+import { rebuildPage } from './helpers/PageBuilder';
+setStoreItem('rebuildPage', rebuildPage);
 const resolve = require('path').resolve;
 const fs = require('fs-extra');
 const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
@@ -21,11 +22,6 @@ try {
 }
 if (!config) throw new Error('renderer::server cannot read CMS config')
 setStoreItem('cmsconfig', config);
-
-const pageBuilderInst = new PageBuilder();
-setStoreItem('pageBuilder', pageBuilderInst);
-
-const userModificationsPath = resolve(__dirname, '../', '../', './modifications/', config.templateName).replace(/\\/g, '/') + '/userModifications.json';
 
 const connectionOptions = require('../ormconfig.json');
 
@@ -47,13 +43,7 @@ async function apiServer(): Promise<void> {
     const app = express();
     server.applyMiddleware({ app, path: '/api/v1/graphql' });
 
-    app.get('/api/v1/modifications/:pageName', function (req, res) {
-        fs.readFile(userModificationsPath, (err, data) => {
-            const userModifications: Record<string, CromwellBlockDataType> | undefined = JSON.parse(data);
-            const mod = userModifications ? userModifications[req.params.pageName] : [];
-            res.send(mod ? mod : []);
-        });
-    })
+    applyModificationsController(app);
 
     const { address } = app.listen(config.apiPort);
     console.log(`API server has started at http://localhost:${config.apiPort}/api/v1/graphql`);

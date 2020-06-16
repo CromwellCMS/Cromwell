@@ -36,7 +36,7 @@ export type CromwellStoreType = {
     blocksData?: CromwellBlockDataType[];
     importModule?: (moduleName: string) => { default: ComponentType } | undefined;
     importDynamicModule?: (moduleName: string) => ComponentType | undefined;
-    pageBuilder?: PageBuilderType;
+    rebuildPage?: (path: string) => void;
 }
 
 declare global {
@@ -191,10 +191,6 @@ export type PagedParamsType<Entity> = {
 
 export type RestAPIClient = {
     get: <T>(route: string, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<T>>;
-    getUserModifications: (pageName: string) => Promise<CromwellBlockDataType[]>;
-}
-
-export interface PageBuilderType {
-    buildPage: (path: string) => void;
-    deletePage: (path: string) => void;
+    getTemplateModifications: (pageName: string) => Promise<CromwellBlockDataType[]>;
+    getModulesModifications: () => Promise<any>;
 }

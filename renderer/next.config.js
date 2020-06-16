@@ -28,4 +28,7 @@ module.exports = {
         console.log('buildId', buildId);
         return buildId;
     },
+    env: {
+        isProd: isProd,
+    },
 }

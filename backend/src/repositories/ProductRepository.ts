@@ -95,10 +95,7 @@ export class ProductRepository extends Repository<Product> {
         if (!product) return false;
         await this.delete(id);
 
-        const pageBuilder = getStoreItem('pageBuilder');
-        if (pageBuilder) {
-            pageBuilder.deletePage(`${BasePagePaths.Product}/${product.slug}`);
-        }
+        this.buildProductPage(product);
         return true;
     }
 
@@ -110,12 +107,12 @@ export class ProductRepository extends Repository<Product> {
     }
 
     private buildProductPage(product: Product) {
-        const pageBuilder = getStoreItem('pageBuilder');
-        if (pageBuilder) {
-            pageBuilder.buildPage(`${BasePagePaths.Product}/${product.slug}`);
+        const rebuildPage = getStoreItem('rebuildPage');
+        if (rebuildPage) {
+            rebuildPage(`${BasePagePaths.Product}/${product.slug}`);
             if (product.categories) {
                 product.categories.forEach(cat => {
-                    pageBuilder.buildPage(`${BasePagePaths.ProductCategory}/${cat.slug}`);
+                    rebuildPage(`${BasePagePaths.ProductCategory}/${cat.slug}`);
                 })
             }
         }

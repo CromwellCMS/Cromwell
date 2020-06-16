@@ -29,7 +29,6 @@
     "src/**/*.tsx"
   ],
   "exclude": [
-    "node_modules",
-    "src/myconfig.ts"
+    "node_modules"
   ]
 }

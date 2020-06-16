@@ -46,7 +46,7 @@ export const getStaticProps: GetStaticPropsType = async (context) => {
                 }
             `);
         } catch (e) {
-            console.error(e)
+            console.error('Product::getStaticProps', e)
         }
     } else {
         console.error('Product::getStaticProps: !pid')

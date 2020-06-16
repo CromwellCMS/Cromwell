@@ -24,7 +24,7 @@ let templateConfig: Record<string, any> | undefined = undefined;
 try {
     templateConfig = JSON.parse(fs.readFileSync(templateConfigPath, { encoding: 'utf8', flag: 'r' }));
 } catch (e) {
-    console.log(e);
+    console.error('Failed to parse templateConfig', e);
 }
 
 
