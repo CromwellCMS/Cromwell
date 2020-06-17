@@ -1,5 +1,5 @@
 import { InputType, Field } from "type-graphql";
-import { ProductCategoryInputType } from "@cromwell/core";
+import { ProductCategoryInputType } from '../../types';
 import { BasePageInput } from './BasePageInput';
 
 @InputType({ description: "Update Product Category data" })

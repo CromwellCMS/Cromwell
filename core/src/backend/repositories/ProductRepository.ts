@@ -1,11 +1,13 @@
 import { EntityRepository, Repository } from "typeorm";
-import { Product } from '../models/entities/Product';
-import { CreateProduct } from '../models/inputs/CreateProduct';
-import { UpdateProduct } from '../models/inputs/UpdateProduct';
+import { Product } from '../entities/Product'
+import { CreateProduct } from '../inputs/CreateProduct';
+import { UpdateProduct } from '../inputs/UpdateProduct';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { getPaged, innerJoinById } from './BaseQueries';
 import { getCustomRepository } from "typeorm";
-import { PagedParamsType, DBTableNames, ProductType, BasePagePaths, getStoreItem } from "@cromwell/core";
+import { PagedParamsType, ProductType } from '../../types';
+import { DBTableNames, BasePagePaths } from '../../constants';
+import { getStoreItem } from '../../GlobalStore';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {

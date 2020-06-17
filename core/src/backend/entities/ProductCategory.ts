@@ -1,7 +1,7 @@
 import { Entity, Column } from "typeorm";
 import { Tree, TreeChildren, TreeParent, TreeLevelColumn, ManyToMany } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
-import { ProductCategoryType, ProductType } from '@cromwell/core';
+import { ProductCategoryType, ProductType } from '../../types';
 import { BasePageEntity } from './BasePageEntity';
 import { Product } from './Product';
 

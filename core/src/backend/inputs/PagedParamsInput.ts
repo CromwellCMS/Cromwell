@@ -1,5 +1,5 @@
 import { InputType, Field, ID, Int } from "type-graphql";
-import { PagedParamsType } from "@cromwell/core";
+import { PagedParamsType } from '../../types';
 
 @InputType({ description: "Paged data" })
 export class PagedParamsInput<T> implements PagedParamsType<T> {

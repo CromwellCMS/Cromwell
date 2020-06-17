@@ -1,6 +1,5 @@
 import React from 'react';
 import { CromwellPageType, CromwellBlock, Link } from '@cromwell/core';
-import ProductShowcase from '../modules/ProductShowcase';
 
 const SomePage: CromwellPageType = (props) => {
     console.log('IndexTemplate props', props);
@@ -22,7 +21,6 @@ const SomePage: CromwellPageType = (props) => {
                     <p>CromwellBlock 2</p>
                 </div>
             </CromwellBlock>
-            <ProductShowcase />
         </div>
     );
 }

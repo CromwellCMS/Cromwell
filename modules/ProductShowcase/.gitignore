@@ -86,18 +86,11 @@ out
 # Stores VSCode versions used for testing VSCode extensions
 .vscode-test
 
+# yarn v2
 
 .yarn/cache
 .yarn/unplugged
 .yarn/build-state.yml
 .pnp.*
-
-templates/*/dist
-templates/*/es
-modules/*/dist
-modules/*/es
-
-renderer/.cromwell
-admin-panel/.cromwell
 
 # db.sqlite3

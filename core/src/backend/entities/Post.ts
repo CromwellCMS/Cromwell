@@ -2,7 +2,7 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, U
 import { ObjectType, Field, ID, Int } from "type-graphql";
 import { Author } from './Author';
 import { BasePageEntity } from './BasePageEntity';
-import { PostType } from "@cromwell/core";
+import { PostType } from '../../types';
 
 @Entity()
 @ObjectType()

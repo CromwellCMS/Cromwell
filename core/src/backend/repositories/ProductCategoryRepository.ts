@@ -1,8 +1,9 @@
 import { EntityRepository, TreeRepository } from "typeorm";
-import { ProductCategory } from '../models/entities/ProductCategory';
-import { UpdateProductCategory } from '../models/inputs/UpdateProductCategory';
-import { CreateProductCategory } from '../models/inputs/CreateProductCategory';
-import { ProductCategoryType, PagedParamsType, DBTableNames } from "@cromwell/core";
+import { ProductCategory } from '../entities/ProductCategory'
+import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
+import { CreateProductCategory } from '../inputs/CreateProductCategory';
+import { ProductCategoryType, PagedParamsType } from '../../types';
+import {DBTableNames} from '../../constants';
 import { getPaged, innerJoinById } from './BaseQueries';
 
 @EntityRepository(ProductCategory)

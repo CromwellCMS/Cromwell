@@ -1,6 +1,6 @@
 import { SelectQueryBuilder } from "typeorm";
-import { PagedParamsType } from "@cromwell/core";
-import { getStoreItem } from "@cromwell/core";
+import { PagedParamsType } from '../../types';
+import { getStoreItem } from '../../GlobalStore';
 const cmsconfig = getStoreItem('cmsconfig');
 
 export const getPaged = <T>(qb: SelectQueryBuilder<T>, entityName?: string, params?: PagedParamsType<T>): SelectQueryBuilder<T> => {

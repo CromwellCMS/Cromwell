@@ -46,19 +46,24 @@ export const modulesDataFetcher = async (pageName: BasePageNames | string, conte
                 // console.log('moduleConfigObj', pageName, moduleName, moduleConfigObj)
                 try {
                     const module = await importModule(moduleName);
-                    const getStaticProps = (module as any).getStaticProps;
-                    // console.log('module', module, 'getStaticProps', getStaticProps)
+                    if (!module) {
+                        console.error('Module ' + moduleName + ' was not imported, but used by name at page ' + pageName)
+                    } else {
+                        const getStaticProps = (module as any).getStaticProps;
+                        // console.log('module', module, 'getStaticProps', getStaticProps)
 
-                    let moduleStaticProps = {};
-                    if (getStaticProps) {
-                        try {
-                            moduleStaticProps = await getStaticProps(moduleContext);
-                            // console.log('moduleStaticProps', moduleStaticProps)
-                        } catch (e) {
-                            console.error('modulesDataFetcher1', e);
+                        let moduleStaticProps = {};
+                        if (getStaticProps) {
+                            try {
+                                moduleStaticProps = await getStaticProps(moduleContext);
+                                // console.log('moduleStaticProps', moduleStaticProps)
+                            } catch (e) {
+                                console.error('modulesDataFetcher1', e);
+                            }
                         }
+                        modulesData[moduleName] = moduleStaticProps;
                     }
-                    modulesData[moduleName] = moduleStaticProps;
+
                 } catch (e) {
                     console.error('modulesDataFetcher2', e);
                 }

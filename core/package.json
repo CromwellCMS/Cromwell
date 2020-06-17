@@ -2,8 +2,8 @@
   "name": "@cromwell/core",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "module": "dist/index.es.js",
-  "types": "dist/types/index.d.ts",
+  "module": "es/index.js",
+  "types": "es/index.d.ts",
   "files": [
     "/dist"
   ],
@@ -21,7 +21,9 @@
   "peerDependencies": {
     "next": "^9.4.4",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "type-graphql": "^0.17.6",
+    "typeorm": "^0.2.25"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.0",

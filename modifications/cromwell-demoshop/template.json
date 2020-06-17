@@ -5,6 +5,10 @@
             "destinationComponentId": "2",
             "destinationPosition": "after",
             "styles": "background: red;"
+        },
+        {
+            "componentId": "5",
+            "moduleName": "ProductShowcase"
         }
     ],
     "product": [

@@ -1,6 +1,6 @@
 import { Entity, ManyToMany, JoinTable, Column } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
-import { ProductType, ProductCategoryType } from '@cromwell/core';
+import { ProductType, ProductCategoryType } from '../../types';
 import { BasePageEntity } from './BasePageEntity';
 import { ProductCategory } from './ProductCategory';
 
@@ -9,7 +9,7 @@ import { ProductCategory } from './ProductCategory';
 export class Product extends BasePageEntity implements ProductType {
     @Field(() => String)
     @Column({ type: "varchar" })
-    name: string;
+    name: string = 'privprivvvfff';
 
     @ManyToMany(type => ProductCategory, category => category.products)
     @JoinTable()

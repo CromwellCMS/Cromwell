@@ -1,4 +1,10 @@
 {
+    "template": [
+        {
+            "componentId": "5",
+            "moduleName": "ProductShowcase"
+        }
+    ],
     "modules": {
         "ProductShowcase": {
             "pages": [

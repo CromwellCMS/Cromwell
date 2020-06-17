@@ -43,24 +43,10 @@ if (templateConfig && templateConfig.modules) {
     })
 }
 
-// Read modules of template
-
 let moduleImports = '';
 let dynamicModuleImports = '';
 let moduleImportsSwitch = '';
 let dynamicModuleImportsSwitch = '';
-
-if (templateConfig && templateConfig.modules) {
-    const moduleNames = Object.keys(templateConfig.modules);
-    moduleNames.forEach(name => {
-        const mPath = `${templateImportsDir}/modules/${name}/index.js`;
-        if (fs.existsSync(mPath)) {
-            if (!moduleImportPaths) moduleImportPaths = {};
-            moduleImportPaths[name] = mPath;
-        }
-    });
-
-}
 
 // Concat all imports
 if (moduleImportPaths) {
@@ -75,6 +61,7 @@ if (moduleImportPaths) {
 }
 
 console.log('moduleImports', moduleImports);
+
 
 // Import custom pages
 const customPages: Record<string, string> = {};
