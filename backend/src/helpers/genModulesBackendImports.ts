@@ -26,6 +26,6 @@ export function genModulesBackendImports() {
      */
     ${modelsImports}
     `;
-    fs.outputFileSync(`${backendRootDir}/.cromwell/imports/gen.imports.js`, content);
+    fs.outputFileSync(`${backendRootDir}/.cromwell/imports/imports.gen.js`, content);
 }
 genModulesBackendImports();

@@ -152,7 +152,7 @@ export const importDynamicModule = (moduleName) => {
 }
 `
 
-fs.outputFileSync('./.cromwell/imports/gen.imports.js', content);
+fs.outputFileSync('./.cromwell/imports/imports.gen.js', content);
 fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(moduleImportPaths));
 
 

@@ -30,6 +30,6 @@ export function generateAdminPanelImports() {
         return undefined;
     }
     `;
-    fs.outputFileSync(`${adminPanelDir}/.cromwell/imports/gen.imports.js`, content);
+    fs.outputFileSync(`${adminPanelDir}/.cromwell/imports/imports.gen.js`, content);
 }
 generateAdminPanelImports();

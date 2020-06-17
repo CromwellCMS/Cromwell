@@ -2,7 +2,7 @@ import React from 'react';
 import { BasePageNames, CromwellPageType, CromwellPageCoreProps } from "@cromwell/core";
 import { getStoreItem, setStoreItem } from "@cromwell/core";
 //@ts-ignore
-import { importDynamicPage } from '.cromwell/imports/gen.imports';
+import { importDynamicPage } from '.cromwell/imports/imports.gen';
 import { checkCMSConfig } from '../helpers/checkCMSConfig';
 checkCMSConfig();
 

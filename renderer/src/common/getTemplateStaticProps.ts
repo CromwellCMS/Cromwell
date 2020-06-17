@@ -1,6 +1,6 @@
 import { BasePageNames, StaticPageContext } from "@cromwell/core";
 //@ts-ignore
-import { importPage } from '.cromwell/imports/gen.imports';
+import { importPage } from '.cromwell/imports/imports.gen';
 import { getStoreItem } from "@cromwell/core";
 import { checkCMSConfig } from '../helpers/checkCMSConfig';
 checkCMSConfig();

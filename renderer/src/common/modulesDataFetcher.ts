@@ -1,5 +1,5 @@
 //@ts-ignore
-import { importModule, importTemplateConfig } from '.cromwell/imports/gen.imports';
+import { importModule, importTemplateConfig } from '.cromwell/imports/imports.gen';
 import { BasePageNames, StaticPageContext, getStoreItem, getRestAPIClient } from "@cromwell/core";
 import { checkCMSConfig } from "../helpers/checkCMSConfig";
 checkCMSConfig();
