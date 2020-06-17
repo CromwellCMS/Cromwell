@@ -10,7 +10,9 @@
     "@cromwell/core": "1.0.0",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "tslib": "^2.0.0"
+    "tslib": "^2.0.0",
+    "type-graphql": "^0.17.6",
+    "typeorm": "^0.2.25"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.0",

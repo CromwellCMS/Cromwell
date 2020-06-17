@@ -7,19 +7,21 @@ import packageJson from "./package.json";
 
 const files = [
     'frontend/index.tsx',
-    'admin/index.tsx'
+    'admin/index.tsx',
+    'backend/models/CustomShop.ts',
+    'backend/resolvers/defaultResolver.ts'
 ]
 export default files.map(f => {
     return {
         input: "src/" + f,
         output: [
             {
-                file: packageJson.main + '/' + f.replace(/\.ts?x/, '.js'),
+                file: packageJson.main + '/' + f.replace(/\.tsx?$/, '.js'),
                 format: "cjs",
                 // sourcemap: true
             },
             {
-                file: packageJson.module + '/' + f.replace(/\.ts?x/, '.js'),
+                file: packageJson.module + '/' + f.replace(/\.tsx?$/, '.js'),
                 format: "esm",
                 // sourcemap: true
             }

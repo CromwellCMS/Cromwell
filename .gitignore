@@ -98,6 +98,7 @@ modules/*/dist
 modules/*/es
 
 renderer/.cromwell
+backend/.cromwell
 admin-panel/.cromwell
 
 # db.sqlite3

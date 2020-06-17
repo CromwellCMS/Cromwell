@@ -15,12 +15,12 @@ export default files.map(f => {
         input: "src/" + f,
         output: [
             {
-                file: packageJson.main + '/' + f.replace(/\.ts?x/, '.js'),
+                file: packageJson.main + '/' + f.replace(/\.tsx?$/, '.js'),
                 format: "cjs",
                 // sourcemap: true
             },
             {
-                file: packageJson.module + '/' + f.replace(/\.ts?x/, '.js'),
+                file: packageJson.module + '/' + f.replace(/\.tsx?$/, '.js'),
                 format: "esm",
                 // sourcemap: true
             }

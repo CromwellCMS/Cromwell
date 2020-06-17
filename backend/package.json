@@ -24,8 +24,9 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "dev": "npx nodemon ./src/server.ts",
-    "generateImports": "npx ts-node src/helpers/generateAdminPanelImports.ts"
+    "dev": "npm run generateServerImports && npx nodemon ./src/server.ts",
+    "generateServerImports": "npx ts-node src/helpers/genModulesBackendImports.ts",
+    "generateAdminImports": "npx ts-node src/helpers/generateAdminPanelImports.ts"
   },
   "description": ""
 }

@@ -10,6 +10,7 @@
       "es2018",
       "esnext.asynciterable"
     ],
+    "baseUrl": ".",
     "sourceMap": true,
     "strict": true,
     "emitDecoratorMetadata": true,
