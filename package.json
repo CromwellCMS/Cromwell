@@ -6,7 +6,7 @@
 		"lerna": "npx lerna bootstrap --hoist",
 		"clean": "npx ts-node cleanup.ts",
 		"cleanNodemodules": "rmdir /Q /S \"./node_modules\"",
-		"buildCore": "cd ./core && npm run buildDev"
+		"buildCore": "npm run buildDev --prefix ./core/core-common && npm run buildDev --prefix ./core/core-backend && npm run buildDev --prefix ./core/core-frontend"
 	},
 	"devDependencies": {
 		"@types/node": "14.0.13",

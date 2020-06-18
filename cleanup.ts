@@ -1,8 +1,15 @@
 const fs = require('fs-extra');
 
 const folders = [
-    __dirname + '\\core\\node_modules',
-    __dirname + '\\core\\dist',
+    __dirname + '\\core\\core-backend\\node_modules',
+    __dirname + '\\core\\core-common\\node_modules',
+    __dirname + '\\core\\core-frontend\\node_modules',
+    __dirname + '\\core\\core-backend\\dist',
+    __dirname + '\\core\\core-common\\dist',
+    __dirname + '\\core\\core-frontend\\dist',
+    __dirname + '\\core\\core-backend\\es',
+    __dirname + '\\core\\core-common\\es',
+    __dirname + '\\core\\core-frontend\\es',
     __dirname + '\\backend\\node_modules',
     __dirname + '\\renderer\\node_modules',
     __dirname + '\\renderer\\.next',
@@ -13,7 +20,9 @@ const folders = [
 ]
 
 const files = [
-    __dirname + '\\core\\package-lock.json',
+    __dirname + '\\core\\core-backend\\package-lock.json',
+    __dirname + '\\core\\core-common\\package-lock.json',
+    __dirname + '\\core\\core-frontend\\package-lock.json',
     __dirname + '\\backend\\package-lock.json',
     __dirname + '\\renderer\\package-lock.json',
     __dirname + '\\themes\\cromwell-demoshop\\package-lock.json',

@@ -1,4 +1,5 @@
-import { StaticPageContext, CromwellPageCoreProps, BasePageNames, getRestAPIClient } from "@cromwell/core";
+import { StaticPageContext, CromwellPageCoreProps, BasePageNames } from "@cromwell/core";
+import { getRestAPIClient } from '@cromwell/core-frontend';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
 import { getThemeStaticProps } from './getThemeStaticProps';
 import { resolve } from 'path';

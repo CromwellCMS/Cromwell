@@ -1,4 +1,5 @@
-import { DBEntity, getGraphQLClient, GraphQLPaths } from "@cromwell/core";
+import { DBEntity, GraphQLPaths } from "@cromwell/core";
+import { getGraphQLClient } from '@cromwell/core-frontend';
 
 export const createGetStaticPaths = (dbEntity: DBEntity) => {
     return async function () {

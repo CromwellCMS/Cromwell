@@ -5,7 +5,8 @@
   "author": "cromwell",
   "license": "ISC",
   "dependencies": {
-    "@cromwell/core": "1.0.0",
+    "@cromwell/core": "^1.0.0",
+    "@cromwell/core-frontend": "^1.0.0",
     "cacache": "^15.0.4",
     "next": "^9.4.4",
     "next-compose-plugins": "^2.2.0",

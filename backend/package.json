@@ -6,7 +6,8 @@
   "author": "cromwell",
   "license": "ISC",
   "dependencies": {
-    "@cromwell/core": "1.0.0",
+    "@cromwell/core": "^1.0.0",
+    "@cromwell/core-backend": "^1.0.0",
     "apollo-server": "^2.14.4",
     "apollo-server-express": "^2.14.4",
     "express": "^4.17.1",

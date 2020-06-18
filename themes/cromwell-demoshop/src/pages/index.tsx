@@ -1,5 +1,6 @@
 import React from 'react';
-import { CromwellPageType, CromwellBlock, Link } from '@cromwell/core';
+import { CromwellPageType, Link } from '@cromwell/core';
+import { CromwellBlock } from '@cromwell/core-frontend';
 
 const Index: CromwellPageType = (props) => {
     console.log('IndexTheme props', props);

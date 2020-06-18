@@ -1,12 +1,12 @@
 import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from "type-graphql";
-import { Product } from '@cromwell/core/es/backend';
-import { ProductRepository } from '@cromwell/core/es/backend';
-import { ProductCategoryRepository } from '@cromwell/core/es/backend';
+import { Product } from '@cromwell/core-backend';
+import { ProductRepository } from '@cromwell/core-backend';
+import { ProductCategoryRepository } from '@cromwell/core-backend';
 import { getCustomRepository } from "typeorm";
-import { CreateProduct } from '@cromwell/core/es/backend';
-import { UpdateProduct } from '@cromwell/core/es/backend';
-import { PagedParamsInput } from '@cromwell/core/es/backend';
-import { ProductCategory } from '@cromwell/core/es/backend';
+import { CreateProduct } from '@cromwell/core-backend';
+import { UpdateProduct } from '@cromwell/core-backend';
+import { PagedParamsInput } from '@cromwell/core-backend';
+import { ProductCategory } from '@cromwell/core-backend';
 import { ProductCategoryType, ProductType } from "@cromwell/core";
 
 @Resolver(Product)

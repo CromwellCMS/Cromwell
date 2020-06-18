@@ -1,6 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { CromwellPageType, ProductType, getGraphQLClient, GetStaticPropsType, Link, GraphQLPaths, CromwellBlock } from '@cromwell/core';
+import { CromwellPageType, ProductType, GetStaticPropsType, Link, GraphQLPaths } from '@cromwell/core';
+import { CromwellBlock, getGraphQLClient } from '@cromwell/core-frontend';
 
 interface ProductProps {
     data?: {
