@@ -1,4 +1,4 @@
-export * from './admin/index';
+export * as AdminComp from './admin/index';
 export * from './backend/entities/ProductShowcaseReviews';
 export * from './backend/resolvers/DefaultResolver';
 export * from './backend/resolvers/ReviewsResolver';

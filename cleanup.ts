@@ -1,15 +1,15 @@
 const fs = require('fs-extra');
 
 const folders = [
-    __dirname + '\\core\\core-backend\\node_modules',
-    __dirname + '\\core\\core-common\\node_modules',
-    __dirname + '\\core\\core-frontend\\node_modules',
-    __dirname + '\\core\\core-backend\\dist',
-    __dirname + '\\core\\core-common\\dist',
-    __dirname + '\\core\\core-frontend\\dist',
-    __dirname + '\\core\\core-backend\\es',
-    __dirname + '\\core\\core-common\\es',
-    __dirname + '\\core\\core-frontend\\es',
+    __dirname + '\\core\\backend\\node_modules',
+    __dirname + '\\core\\common\\node_modules',
+    __dirname + '\\core\\frontend\\node_modules',
+    __dirname + '\\core\\backend\\dist',
+    __dirname + '\\core\\common\\dist',
+    __dirname + '\\core\\frontend\\dist',
+    __dirname + '\\core\\backend\\es',
+    __dirname + '\\core\\common\\es',
+    __dirname + '\\core\\frontend\\es',
     __dirname + '\\backend\\node_modules',
     __dirname + '\\renderer\\node_modules',
     __dirname + '\\renderer\\.next',
@@ -20,9 +20,9 @@ const folders = [
 ]
 
 const files = [
-    __dirname + '\\core\\core-backend\\package-lock.json',
-    __dirname + '\\core\\core-common\\package-lock.json',
-    __dirname + '\\core\\core-frontend\\package-lock.json',
+    __dirname + '\\core\\backend\\package-lock.json',
+    __dirname + '\\core\\common\\package-lock.json',
+    __dirname + '\\core\\frontend\\package-lock.json',
     __dirname + '\\backend\\package-lock.json',
     __dirname + '\\renderer\\package-lock.json',
     __dirname + '\\themes\\cromwell-demoshop\\package-lock.json',

@@ -26,8 +26,7 @@
   },
   "scripts": {
     "dev": "npm run generateServerImports && npx nodemon ./src/server.ts",
-    "generateServerImports": "npx ts-node src/helpers/genPluginsBackendImports.ts",
-    "generateAdminImports": "npx ts-node src/helpers/generateAdminPanelImports.ts"
+    "generateServerImports": "npx ts-node src/helpers/genPluginsBackendImports.ts"
   },
   "description": ""
 }
