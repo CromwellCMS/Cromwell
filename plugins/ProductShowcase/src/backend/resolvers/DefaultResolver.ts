@@ -11,12 +11,12 @@ import { Product } from '@cromwell/core-backend';
 
 
 @Resolver(ProductCategory)
-export default class ProductCategoryResolver {
+export default class ProductShowcaseResolver {
 
     private get repo() { return getCustomRepository(ProductCategoryRepository) }
 
     @Query(() => ProductCategory)
-    async productCategory(@Arg("slug") slug: string) {
+    async productShowcase(@Arg("slug") slug: string) {
         return await this.repo.getProductCategoryBySlug(slug);
     }
 

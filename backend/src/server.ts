@@ -10,6 +10,8 @@ import { ProductCategoryResolver } from "./resolvers/ProductCategoryResolver";
 import { applyModificationsController } from "./controllers/modificationsController";
 import { setStoreItem, CMSconfigType, CromwellBlockDataType } from "@cromwell/core";
 import { rebuildPage } from './helpers/PageBuilder';
+//@ts-ignore
+import { pluginsResolvers } from '../.cromwell/imports/resolvers.imports.gen';
 setStoreItem('rebuildPage', rebuildPage);
 const resolve = require('path').resolve;
 const fs = require('fs-extra');
@@ -25,6 +27,7 @@ setStoreItem('cmsconfig', config);
 
 const connectionOptions = require('../ormconfig.json');
 
+const _pluginsResolvers = (pluginsResolvers && Array.isArray(pluginsResolvers)) ? pluginsResolvers : [];
 async function apiServer(): Promise<void> {
     if (!config || !config.apiPort || !config.themeName) throw new Error('renderer::server cannot read CMS config ' + JSON.stringify(config));
 
@@ -34,7 +37,8 @@ async function apiServer(): Promise<void> {
             PostResolver,
             AuthorResolver,
             ProductResolver,
-            ProductCategoryResolver
+            ProductCategoryResolver,
+            ..._pluginsResolvers
         ],
         dateScalarMode: "isoDate"
     });

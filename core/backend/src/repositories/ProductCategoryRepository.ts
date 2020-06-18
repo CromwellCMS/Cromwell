@@ -3,7 +3,7 @@ import { ProductCategory } from '../entities/ProductCategory'
 import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
 import { ProductCategoryType, PagedParamsType } from '@cromwell/core';
-import {DBTableNames} from '@cromwell/core';
+import { DBTableNames } from '@cromwell/core';
 import { getPaged, innerJoinById } from './BaseQueries';
 
 @EntityRepository(ProductCategory)

@@ -20,12 +20,40 @@ export function genPluginsBackendImports() {
         }
     });
 
-    const content = `
-    /**
-     * Entities
-     */
-    ${entitiesImports}
+    const entitiesContent = `
+/**
+ * Entities
+ */
+${entitiesImports}
     `;
-    fs.outputFileSync(`${backendRootDir}/.cromwell/imports/imports.gen.js`, content);
+    fs.outputFileSync(`${backendRootDir}/.cromwell/imports/entities.imports.gen.js`, entitiesContent);
+
+
+    // Collect resolvers
+    let resolversImports = '';
+    let resolversExport = '[';
+    pluginsNames.forEach(name => {
+        const resolversDir = `${globalPluginsDir}/${name}/${distDir}/backend/resolvers`;
+        if (fs.existsSync(resolversDir)) {
+            const resolverNames: string[] = fs.readdirSync(resolversDir);
+            resolverNames.forEach(rPath => {
+                const rName = rPath.replace(/.js$/, '') + '_Resolver';
+                resolversExport += rName + ',\n';
+                resolversImports += `\nimport ${rName} from '${resolversDir}/${rPath}';`;
+            })
+        }
+    });
+    resolversExport += ']';
+
+    const resolversContent = `
+/**
+ * Resolvers
+ */
+${resolversImports}
+
+export const pluginsResolvers = ${resolversExport};
+    `;
+    fs.outputFileSync(`${backendRootDir}/.cromwell/imports/resolvers.imports.gen.js`, resolversContent);
+
 }
 genPluginsBackendImports();

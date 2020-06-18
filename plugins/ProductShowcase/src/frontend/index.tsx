@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
-import { ProductType, StaticPageContext, Link, GraphQLPaths } from '@cromwell/core';
+import { ProductType, StaticPageContext, Link, GraphQLPaths, ProductCategoryType } from '@cromwell/core';
 import { getGraphQLClient, FrontendPlugin } from '@cromwell/core-frontend';
 
 interface ProductShowcaseProps {
-    products?: ProductType[];
+    productShowcase?: ProductCategoryType;
 }
 
 const ProductShowcase = (props: ProductShowcaseProps) => {
     // console.log('ProductShowcase props', props)
     return (
         <div style={{ backgroundColor: "#999" }}>
-            <p>Showcase Time!</p>
+            <p>Showcase time!</p>
             {
-                props.products && props.products.map(p => (
+                props.productShowcase && props.productShowcase.products && props.productShowcase.products.map(p => (
                     <div key={p.id}>
                         <Link href="/product/[slug]" as={`/product/${p.slug}`}><a>Name: {p.name}</a></Link>
                         <h1>Price: {p.price}</h1>
@@ -29,16 +29,18 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     const limit = 20;
     try {
         data = await getGraphQLClient().request(`
-            query getProducts {
-                ${GraphQLPaths.Product.getMany}(pagedParams: {pageNumber: 1, pageSize: ${limit}}) {
+        query productShowcase {
+            productShowcase(slug: "1") {
+                id
+                name
+                products(pagedParams: {pageNumber: 1, pageSize: 5}) {
                     id
                     slug
                     name
-                    pageTitle
                     price
-                    mainImage
-                }
+              }
             }
+          }
         `);
     } catch (e) {
         console.error('ProductShowcase::getStaticProps', e)

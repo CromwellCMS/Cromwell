@@ -17,9 +17,9 @@
     }
   },
   "packages": [
-    "core/core-common",
-    "core/core-backend",
-    "core/core-frontend",
+    "core/common",
+    "core/backend",
+    "core/frontend",
     "renderer",
     "backend",
     "admin-panel",
