@@ -32,6 +32,7 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "build": "npx rollup -c"
+    "build": "npx rollup -c",
+    "watch": "npx rollup -cw"
   }
 }

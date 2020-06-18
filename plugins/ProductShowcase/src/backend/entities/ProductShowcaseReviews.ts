@@ -3,7 +3,7 @@ import { ObjectType, Field, ID, Int } from "type-graphql";
 
 @Entity()
 @ObjectType()
-export class CustomShop {
+export class ProductShowcaseReviews {
 
     @Field(() => ID)
     @PrimaryGeneratedColumn()
@@ -15,9 +15,11 @@ export class CustomShop {
 
     @Field()
     @Column()
-    address: string;
+    text: string;
 
     @Field()
     @Column()
-    employyes: string;
+    rating: number;
 }
+
+export type ProductShowcaseReviewsType = ProductShowcaseReviews;

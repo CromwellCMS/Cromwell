@@ -1,15 +1,28 @@
 import React, { Component } from 'react';
-import { ProductType, StaticPageContext, Link, GraphQLPaths, ProductCategoryType } from '@cromwell/core';
+import { StaticPageContext, Link, ProductCategoryType } from '@cromwell/core';
 import { getGraphQLClient, FrontendPlugin } from '@cromwell/core-frontend';
+import { ProductShowcaseReviewsType } from '../backend/entities/ProductShowcaseReviews';
 
 interface ProductShowcaseProps {
     productShowcase?: ProductCategoryType;
+    productShowcaseReviews?: ProductShowcaseReviewsType[];
 }
 
 const ProductShowcase = (props: ProductShowcaseProps) => {
     // console.log('ProductShowcase props', props)
     return (
         <div style={{ backgroundColor: "#999" }}>
+            <p>Reviews</p>
+            {
+                props.productShowcaseReviews && props.productShowcaseReviews.map(review => {
+                    return (
+                        <div key={review.id}>
+                            <p>Title: {review.title}</p>
+                            <p>text: {review.text}</p>
+                        </div>
+                    )
+                })
+            }
             <p>Showcase time!</p>
             {
                 props.productShowcase && props.productShowcase.products && props.productShowcase.products.map(p => (
@@ -28,7 +41,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     let data = {};
     const limit = 20;
     try {
-        data = await getGraphQLClient().request(`
+        const products = await getGraphQLClient().request(`
         query productShowcase {
             productShowcase(slug: "1") {
                 id
@@ -42,6 +55,20 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
             }
           }
         `);
+        const reviews = await getGraphQLClient().request(`
+        query productShowcaseReviews {
+            productShowcaseReviews {
+                id,
+                title,
+                text,
+                rating
+            }
+        }
+        `);
+        data = {
+            productShowcase: products.productShowcase,
+            productShowcaseReviews: reviews.productShowcaseReviews
+        }
     } catch (e) {
         console.error('ProductShowcase::getStaticProps', e)
     }
