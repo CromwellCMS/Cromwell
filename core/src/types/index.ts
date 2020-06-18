@@ -6,7 +6,7 @@ import { AxiosRequestConfig, AxiosResponse } from 'axios';
 export type CromwellPageType<Props = {}> = NextPage<Props & CromwellPageCoreProps>;
 
 export type CromwellPageCoreProps = {
-    modulesData: Record<string, any>;
+    pluginsData: Record<string, any>;
     childStaticProps: Record<string, any>;
     cromwellBlocksData: CromwellBlockDataType[];
 }
@@ -18,24 +18,24 @@ export type PageName = keyof {
 }
 
 export type DataComponentProps<Data> = {
-    moduleName: string;
+    pluginName: string;
     component: React.ComponentType<Data>;
 }
 
 export type CMSconfigType = {
     apiPort: number;
     adminPanelPort: number;
-    templatePort: number;
-    templateName: string;
+    themePort: number;
+    themeName: string;
     defaultPageSize: number;
 }
 
 export type CromwellStoreType = {
-    modulesData?: Record<string, any>;
+    pluginsData?: Record<string, any>;
     cmsconfig?: CMSconfigType;
     blocksData?: CromwellBlockDataType[];
-    importModule?: (moduleName: string) => { default: ComponentType } | undefined;
-    importDynamicModule?: (moduleName: string) => ComponentType | undefined;
+    importPlugin?: (pluginName: string) => { default: ComponentType } | undefined;
+    importDynamicPlugin?: (pluginName: string) => ComponentType | undefined;
     rebuildPage?: (path: string) => void;
 }
 
@@ -71,12 +71,12 @@ export type CromwellBlockDataType = {
      */
     isVirtual?: boolean;
     /**
-     * Module's name to render inside component. Same name must be in cromwell.config.json
+     * Plugin's name to render inside component. Same name must be in cromwell.config.json
      */
-    moduleName?: string;
+    pluginName?: string;
     /**
      * 
-     * CSS styles to apply to this module.
+     * CSS styles to apply to this block.
      */
     styles?: string;
 }
@@ -191,6 +191,6 @@ export type PagedParamsType<Entity> = {
 
 export type RestAPIClient = {
     get: <T>(route: string, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<T>>;
-    getTemplateModifications: (pageName: string) => Promise<CromwellBlockDataType[]>;
-    getModulesModifications: () => Promise<any>;
+    getThemeModifications: (pageName: string) => Promise<CromwellBlockDataType[]>;
+    getPluginsModifications: () => Promise<any>;
 }

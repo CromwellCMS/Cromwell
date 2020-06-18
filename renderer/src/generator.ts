@@ -13,59 +13,59 @@ try {
 if (!config) throw new Error('renderer::server cannot read CMS config');
 
 
-const templatesDir = resolve(__dirname, '../', '../', 'templates').replace(/\\/g, '/');
-const globalModulesDir = resolve(__dirname, '../', '../', 'modules').replace(/\\/g, '/');
-const templateDir = `${templatesDir}/${config.templateName}`;
-const templateImportsDir = `${templateDir}/es`;
-const templateConfigPath = templateDir + '/' + 'cromwell.config.json';
+const themesDir = resolve(__dirname, '../', '../', 'themes').replace(/\\/g, '/');
+const globalPluginsDir = resolve(__dirname, '../', '../', 'plugins').replace(/\\/g, '/');
+const themeDir = `${themesDir}/${config.themeName}`;
+const themeImportsDir = `${themeDir}/es`;
+const themeConfigPath = themeDir + '/' + 'cromwell.config.json';
 const customPagesLocalDir = resolve(__dirname, './pages/pages').replace(/\\/g, '/');
 
-let templateConfig: Record<string, any> | undefined = undefined;
+let themeConfig: Record<string, any> | undefined = undefined;
 try {
-    templateConfig = JSON.parse(fs.readFileSync(templateConfigPath, { encoding: 'utf8', flag: 'r' }));
+    themeConfig = JSON.parse(fs.readFileSync(themeConfigPath, { encoding: 'utf8', flag: 'r' }));
 } catch (e) {
-    console.error('Failed to parse templateConfig', e);
+    console.error('Failed to parse themeConfig', e);
 }
 
 
-let moduleImportPaths: Record<string, any> | undefined = undefined;
+let pluginImportPaths: Record<string, any> | undefined = undefined;
 
-// Read global modules
+// Read global plugins
 
-if (templateConfig && templateConfig.modules) {
-    const moduleNames = Object.keys(templateConfig.modules);
-    moduleNames.forEach(name => {
-        const mPath = `${globalModulesDir}/${name}/es/frontend/index.js`;
+if (themeConfig && themeConfig.plugins) {
+    const pluginNames = Object.keys(themeConfig.plugins);
+    pluginNames.forEach(name => {
+        const mPath = `${globalPluginsDir}/${name}/es/frontend/index.js`;
         if (fs.existsSync(mPath)) {
-            if (!moduleImportPaths) moduleImportPaths = {};
-            moduleImportPaths[name] = mPath;
+            if (!pluginImportPaths) pluginImportPaths = {};
+            pluginImportPaths[name] = mPath;
         }
     })
 }
 
-let moduleImports = '';
-let dynamicModuleImports = '';
-let moduleImportsSwitch = '';
-let dynamicModuleImportsSwitch = '';
+let pluginImports = '';
+let dynamicPluginImports = '';
+let pluginImportsSwitch = '';
+let dynamicPluginImportsSwitch = '';
 
 // Concat all imports
-if (moduleImportPaths) {
-    Object.entries(moduleImportPaths).map(e => {
-        // moduleImports += `\nconst ${e[0]} = import('${e[1]}')`;
-        moduleImports += `\nconst ${e[0]} = import('${e[1]}')`;
-        moduleImportsSwitch += `if (moduleName === '${e[0]}') return ${e[0]};\n`;
+if (pluginImportPaths) {
+    Object.entries(pluginImportPaths).map(e => {
+        // pluginImports += `\nconst ${e[0]} = import('${e[1]}')`;
+        pluginImports += `\nconst ${e[0]} = import('${e[1]}')`;
+        pluginImportsSwitch += `if (pluginName === '${e[0]}') return ${e[0]};\n`;
 
-        dynamicModuleImports += `\nconst Dynamic${e[0]} = dynamic(() => import('${e[1]}'));`;
-        dynamicModuleImportsSwitch += `if (moduleName === '${e[0]}') return Dynamic${e[0]};\n   `;
+        dynamicPluginImports += `\nconst Dynamic${e[0]} = dynamic(() => import('${e[1]}'));`;
+        dynamicPluginImportsSwitch += `if (pluginName === '${e[0]}') return Dynamic${e[0]};\n   `;
     })
 }
 
-console.log('moduleImports', moduleImports);
+console.log('pluginImports', pluginImports);
 
 
 // Import custom pages
 const customPages: Record<string, string> = {};
-const customPagesPath = `${templateImportsDir}/customPages`;
+const customPagesPath = `${themeImportsDir}/customPages`;
 let customPageImports = '';
 let customPageImportsSwitch = '';
 let customPageDynamicImports = '';
@@ -90,12 +90,12 @@ import dynamic from "next/dynamic";
 /**
  * Configs 
  */
-export const moduleImports = ${JSON.stringify(moduleImportPaths)};
-export const templateConfig = ${JSON.stringify(templateConfig)};
+export const pluginImports = ${JSON.stringify(pluginImportPaths)};
+export const themeConfig = ${JSON.stringify(themeConfig)};
 export const CMSconfig = ${JSON.stringify(config)};
 
-export const importTemplateConfig = () => {
-    return templateConfig;
+export const importThemeConfig = () => {
+    return themeConfig;
 }
 export const importCMSConfig = () => {
     return CMSconfig;
@@ -104,11 +104,11 @@ export const importCMSConfig = () => {
 /**
  * Basic pages 
  */
-export const IndexPage = import('${templateImportsDir}/pages/${BasePageNames.Index}');
-export const DynamicIndexPage = dynamic(() => import('${templateImportsDir}/pages/${BasePageNames.Index}'));
+export const IndexPage = import('${themeImportsDir}/pages/${BasePageNames.Index}');
+export const DynamicIndexPage = dynamic(() => import('${themeImportsDir}/pages/${BasePageNames.Index}'));
 
-export const ProductPage = import('${templateImportsDir}/pages/${BasePageNames.Product}');
-export const DynamicProductPage = dynamic(() => import('${templateImportsDir}/pages/${BasePageNames.Product}'));
+export const ProductPage = import('${themeImportsDir}/pages/${BasePageNames.Product}');
+export const DynamicProductPage = dynamic(() => import('${themeImportsDir}/pages/${BasePageNames.Product}'));
 
 /**
  * Custom pages
@@ -136,24 +136,24 @@ export const importDynamicPage = (pageName) => {
 }
 
 /**
- * Modules
+ * Plugins
  */
-${moduleImports}
+${pluginImports}
 
-export const importModule = (moduleName) => {
-    ${moduleImportsSwitch}
+export const importPlugin = (pluginName) => {
+    ${pluginImportsSwitch}
     return undefined;
 }
-${dynamicModuleImports}
+${dynamicPluginImports}
 
-export const importDynamicModule = (moduleName) => {
-    ${dynamicModuleImportsSwitch}
+export const importDynamicPlugin = (pluginName) => {
+    ${dynamicPluginImportsSwitch}
     return undefined;
 }
 `
 
 fs.outputFileSync('./.cromwell/imports/imports.gen.js', content);
-fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(moduleImportPaths));
+fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(pluginImportPaths));
 
 
 

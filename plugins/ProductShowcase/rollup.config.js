@@ -8,7 +8,7 @@ import packageJson from "./package.json";
 const files = [
     'frontend/index.tsx',
     'admin/index.tsx',
-    'backend/models/CustomShop.ts',
+    'backend/entities/CustomShop.ts',
     'backend/resolvers/defaultResolver.ts'
 ]
 export default files.map(f => {

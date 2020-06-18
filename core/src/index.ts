@@ -4,7 +4,7 @@ export type StaticPageContext<Q extends ParsedUrlQuery = ParsedUrlQuery> = {
     params?: Q;
     preview?: boolean;
     previewData?: any;
-    moduleConfig?: Record<string, any>;
+    pluginsConfig?: Record<string, any>;
 }
 export type GetStaticPropsType<
     P extends { [key: string]: any } = { [key: string]: any },
@@ -14,6 +14,6 @@ export { CromwellBlock } from './CromwellBlock';
 export * from './GlobalStore';
 export * from './types';
 export * from './constants';
-export * from './DataModule';
+export * from './FrontendPlugin';
 export * from './apiClient';
 export { default as Link } from 'next/link';

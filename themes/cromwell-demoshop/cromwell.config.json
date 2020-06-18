@@ -1,11 +1,11 @@
 {
-    "template": [
+    "theme": [
         {
             "componentId": "5",
-            "moduleName": "ProductShowcase"
+            "pluginName": "ProductShowcase"
         }
     ],
-    "modules": {
+    "plugins": {
         "ProductShowcase": {
             "pages": [
                 "index",

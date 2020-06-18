@@ -32,7 +32,7 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
     private idBefore: string;
     private idAfter: string;
 
-    private moduleComponent?: React.ComponentType;
+    private pluginComponent?: React.ComponentType;
 
     constructor(props: CromwellBlockProps) {
         super(props);
@@ -76,12 +76,11 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
         }
 
         if (this.data) {
-            // Check if current Block is Module 
-            if (this.data.moduleName) {
-                const importDynamicModule = getStoreItem('importDynamicModule');
-                if (importDynamicModule) {
-                    const module = importDynamicModule(this.data.moduleName);
-                    this.moduleComponent = module ? module : undefined;
+            // Check if current Block is Plugin 
+            if (this.data.pluginName) {
+                const importDynamicPlugin = getStoreItem('importDynamicPlugin');
+                if (importDynamicPlugin) {
+                    this.pluginComponent = importDynamicPlugin(this.data.pluginName);
                 }
             }
         }
@@ -149,7 +148,7 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
             + (this.shouldBeMoved ? ' CromwellBlockInner' : '')
             + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '');
 
-        const ModuleComponent = this.moduleComponent;
+        const PluginComponent = this.pluginComponent;
 
         const element = (<>
             {this.hasPortalBefore && (
@@ -159,7 +158,7 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
             )}
             <div id={this.id} key={this.id} className={elementClassName} ref={this.blockRef} >
                 {this.props.children}
-                {ModuleComponent && <ModuleComponent />}
+                {PluginComponent && <PluginComponent />}
                 {this.getVirtualBlocks('inside')}
             </div>
             {this.hasPortalAfter && (

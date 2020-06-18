@@ -7,8 +7,8 @@ const folders = [
     __dirname + '\\renderer\\node_modules',
     __dirname + '\\renderer\\.next',
     __dirname + '\\renderer\\.cromwell',
-    __dirname + '\\templates\\node_modules',
-    __dirname + '\\templates\\cromwell-demoshop\\node_modules',
+    __dirname + '\\themes\\node_modules',
+    __dirname + '\\themes\\cromwell-demoshop\\node_modules',
     __dirname + '\\node_modules',
 ]
 
@@ -16,7 +16,7 @@ const files = [
     __dirname + '\\core\\package-lock.json',
     __dirname + '\\backend\\package-lock.json',
     __dirname + '\\renderer\\package-lock.json',
-    __dirname + '\\templates\\cromwell-demoshop\\package-lock.json',
+    __dirname + '\\themes\\cromwell-demoshop\\package-lock.json',
     __dirname + '\\package-lock.json'
 ]
 

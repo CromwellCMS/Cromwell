@@ -26,7 +26,7 @@ setStoreItem('cmsconfig', config);
 const connectionOptions = require('../ormconfig.json');
 
 async function apiServer(): Promise<void> {
-    if (!config || !config.apiPort || !config.templateName) throw new Error('renderer::server cannot read CMS config ' + JSON.stringify(config));
+    if (!config || !config.apiPort || !config.themeName) throw new Error('renderer::server cannot read CMS config ' + JSON.stringify(config));
 
     createConnection(connectionOptions);
     const schema = await buildSchema({
@@ -68,7 +68,7 @@ const buildStaticDir = getFrontendBuildDir();
 const buildId = getBuildId();
 const rootBuildDir = getRootBuildDir();
 async function frontendServer() {
-    if (buildStaticDir && config && config.templatePort) {
+    if (buildStaticDir && config && config.themePort) {
         const app = express();
         app.get('*', function (req, res) {
             console.log('req.path', req.path);
@@ -91,8 +91,8 @@ async function frontendServer() {
                 }
             });
         });
-        app.listen(config.templatePort);
-        console.log(`Frontend template server has started at http://localhost:${config.templatePort}/`);
+        app.listen(config.themePort);
+        console.log(`Frontend theme server has started at http://localhost:${config.themePort}/`);
     }
 }
 */

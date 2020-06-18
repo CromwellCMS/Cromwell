@@ -8,7 +8,7 @@
         },
         {
             "componentId": "5",
-            "moduleName": "ProductShowcase"
+            "pluginName": "ProductShowcase"
         }
     ],
     "product": [
@@ -18,14 +18,14 @@
             "destinationPosition": "inside",
             "isVirtual": true,
             "styles": "background: red;",
-            "moduleName": "ProductShowcaseDemo"
+            "pluginName": "ProductShowcaseDemo"
         },
         {
             "componentId": "112",
             "destinationComponentId": "111",
             "destinationPosition": "after",
             "isVirtual": true,
-            "moduleName": "ProductShowcase"
+            "pluginName": "ProductShowcase"
         }
     ]
 }

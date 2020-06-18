@@ -92,10 +92,10 @@ out
 .yarn/build-state.yml
 .pnp.*
 
-templates/*/dist
-templates/*/es
-modules/*/dist
-modules/*/es
+themes/*/dist
+themes/*/es
+plugins/*/dist
+plugins/*/es
 
 renderer/.cromwell
 backend/.cromwell

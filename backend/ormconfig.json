@@ -2,7 +2,7 @@
   "type": "sqlite",
   "database": "./db.sqlite3",
   "entities": [
-    "./src/models/*.ts"
+    "./src/entities/*.ts"
   ],
   "synchronize": true
 }

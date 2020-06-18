@@ -2,7 +2,7 @@ import { CromwellStoreType } from './types';
 import { isServer } from './constants';
 
 const initialStore: CromwellStoreType = {
-    modulesData: {
+    pluginsData: {
     }
 }
 

@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { ProductType, StaticPageContext, getGraphQLClient, Link, DBEntity, GraphQLPaths, CromwellModule } from '@cromwell/core';
+import { ProductType, StaticPageContext, getGraphQLClient, Link, DBEntity, GraphQLPaths, FrontendPlugin } from '@cromwell/core';
 
 interface ProductShowcaseProps {
     products?: ProductType[];
 }
 
-const ProductShowcaseDemo = (props: ProductShowcaseProps) => {
-    // console.log('ProductShowcaseDemo props', props)
+const ProductShowcase = (props: ProductShowcaseProps) => {
+    // console.log('ProductShowcase props', props)
     return (
         <div style={{ backgroundColor: "#999" }}>
             <p>Showcase Time!</p>
@@ -40,7 +40,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
             }
         `);
     } catch (e) {
-        console.error('ProductShowcaseDemo', e)
+        console.error('ProductShowcase::getStaticProps', e)
     }
 
     return {
@@ -48,4 +48,4 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     }
 }
 
-export default CromwellModule<ProductShowcaseProps>(ProductShowcaseDemo, 'ProductShowcaseDemo');
+export default FrontendPlugin<ProductShowcaseProps>(ProductShowcase, 'ProductShowcase');

@@ -3,30 +3,30 @@ const resolve = require('path').resolve;
 
 export function generateAdminPanelImports() {
     const adminPanelDir = resolve(__dirname, '../../../admin-panel').replace(/\\/g, '/');
-    const globalModulesDir = resolve(__dirname, '../../../modules').replace(/\\/g, '/');
+    const globalPluginsDir = resolve(__dirname, '../../../plugins').replace(/\\/g, '/');
     const distDir = 'es';
-    const moduleNames: string[] = fs.readdirSync(globalModulesDir);
-    console.log('generateAdminPanelImports:Modules found:', moduleNames);
+    const pluginsNames: string[] = fs.readdirSync(globalPluginsDir);
+    console.log('generateAdminPanelImports:Plugins found:', pluginsNames);
 
-    let modulesImports = '';
-    let modulesImportsSwitch = '';
-    moduleNames.forEach(name => {
-        const moduleAdminComponent = `${globalModulesDir}/${name}/${distDir}/admin/index.js`;
-        if (fs.existsSync(moduleAdminComponent)) {
-            modulesImports += `\nconst ${name}_Module = import('${moduleAdminComponent}')`;
-            modulesImportsSwitch += `if (moduleName === '${name}') return ${name}_Page;\n`;
+    let pluginsImports = '';
+    let pluginsImportsSwitch = '';
+    pluginsNames.forEach(name => {
+        const pluginAdminComponent = `${globalPluginsDir}/${name}/${distDir}/admin/index.js`;
+        if (fs.existsSync(pluginAdminComponent)) {
+            pluginsImports += `\nconst ${name}_Plugin = import('${pluginAdminComponent}')`;
+            pluginsImportsSwitch += `if (pluginName === '${name}') return ${name}_Page;\n`;
 
         }
     });
 
     const content = `
     /**
-     * Modules
+     * Plugins
      */
-    ${modulesImports}
+    ${pluginsImports}
     
-    export const importModule = (moduleName) => {
-        ${modulesImportsSwitch}
+    export const importPlugin = (pluginName) => {
+        ${pluginsImportsSwitch}
         return undefined;
     }
     `;

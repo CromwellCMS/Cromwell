@@ -56,18 +56,18 @@ export const getRestAPIClient = (): RestAPIClient => {
         get: <T>(route: string, config?: AxiosRequestConfig | undefined): Promise<AxiosResponse<T>> => {
             return axios.get(`${baseUrl}/${route}`, config);
         },
-        getTemplateModifications: async (pageName: string): Promise<CromwellBlockDataType[]> => {
+        getThemeModifications: async (pageName: string): Promise<CromwellBlockDataType[]> => {
             let res: any;
             try {
-                res = await axios.get(`${baseUrl}/modifications/template/${pageName}`);
-            } catch (e) { console.error('getTemplateModifications', e) }
+                res = await axios.get(`${baseUrl}/modifications/theme/${pageName}`);
+            } catch (e) { console.error('getThemeModifications', e) }
             return (res && res.data) ? res.data : [];
         },
-        getModulesModifications: async (): Promise<Record<string, any>> => {
+        getPluginsModifications: async (): Promise<Record<string, any>> => {
             let res: any;
             try {
-                res = await axios.get(`${baseUrl}/modifications/modules`);
-            } catch (e) { console.error('getModulesModifications', e) }
+                res = await axios.get(`${baseUrl}/modifications/plugins`);
+            } catch (e) { console.error('getPluginsModifications', e) }
             return (res && res.data) ? res.data : {};
         }
     }

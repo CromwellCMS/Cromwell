@@ -1,22 +1,22 @@
 import { StaticPageContext, CromwellPageCoreProps, BasePageNames, getRestAPIClient } from "@cromwell/core";
-import { modulesDataFetcher } from './modulesDataFetcher';
-import { getTemplateStaticProps } from './getTemplateStaticProps';
+import { pluginsDataFetcher } from './pluginsDataFetcher';
+import { getThemeStaticProps } from './getThemeStaticProps';
 import { resolve } from 'path';
 
 export const createGetStaticProps = (pageName: BasePageNames | string, pageRoute: string) => {
     return async function (context: StaticPageContext): Promise<
         { props: CromwellPageCoreProps; unstable_revalidate: number | undefined }> {
-        const modulesData = await modulesDataFetcher(pageName, context);
-        const childStaticProps = await getTemplateStaticProps(pageName, context);
-        const cromwellBlocksData = await getRestAPIClient().getTemplateModifications(pageName);
+        const pluginsData = await pluginsDataFetcher(pageName, context);
+        const childStaticProps = await getThemeStaticProps(pageName, context);
+        const cromwellBlocksData = await getRestAPIClient().getThemeModifications(pageName);
         // if (context && context.params && context.params.slug) {
         //     pageRoute += '/' + context.params.slug;
         // }
         console.log('createGetStaticProps', 'pageName', pageName, 'context', context, 'pageRoute', pageRoute)
-        // console.log('modulesData', modulesData, 'childStaticProps', childStaticProps);
+        // console.log('pluginssData', pluginsData, 'childStaticProps', childStaticProps);
         return {
             props: {
-                modulesData,
+                pluginsData,
                 childStaticProps,
                 cromwellBlocksData
             },

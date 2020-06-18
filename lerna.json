@@ -21,7 +21,7 @@
     "renderer",
     "backend",
     "admin-panel",
-    "modules/*",
-    "templates/*"
+    "plugins/*",
+    "themes/*"
   ]
 }

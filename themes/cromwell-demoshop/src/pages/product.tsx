@@ -8,7 +8,7 @@ interface ProductProps {
     };
 }
 const Product: CromwellPageType<ProductProps> = (props) => {
-    console.log('ProductTemplate props', props);
+    console.log('ProductThemePage props', props);
     const product = props.data ? props.data.product : undefined;
     return (
         <div>ProductTemp
@@ -29,7 +29,7 @@ const Product: CromwellPageType<ProductProps> = (props) => {
 export const getStaticProps: GetStaticPropsType = async (context) => {
     // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
-    console.log('ProductTemplate::getStaticProps: pid', slug, 'context.params', context.params)
+    console.log('ProductThemePage::getStaticProps: pid', slug, 'context.params', context.params)
     let data = null;
     if (slug) {
         try {

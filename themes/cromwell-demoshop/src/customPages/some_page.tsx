@@ -1,14 +1,13 @@
 import React from 'react';
 import { CromwellPageType, CromwellBlock, Link } from '@cromwell/core';
 
-const Index: CromwellPageType = (props) => {
-    console.log('IndexTemplate props', props);
+const SomePage: CromwellPageType = (props) => {
+    console.log('SomePageTheme props', props);
 
     return (
-        <div>IndexTemp
-            
-        HELLO WOORLD1
-        <Link href='/pages/some_page'><a>SomePage</a></Link>
+        <div>SomePage
+            <Link href='/'><a>HOME</a></Link>
+        HELLO WOORLD1 SomePage
             <CromwellBlock id="1">
                 <div>
                     <p>CromwellBlock 1</p>
@@ -22,8 +21,7 @@ const Index: CromwellPageType = (props) => {
                     <p>CromwellBlock 2</p>
                 </div>
             </CromwellBlock>
-            <CromwellBlock id="5" />
         </div>
     );
 }
-export default Index;
+export default SomePage;

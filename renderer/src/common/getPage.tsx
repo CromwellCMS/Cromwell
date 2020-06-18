@@ -9,15 +9,15 @@ checkCMSConfig();
 
 export const getPage = (pageName: BasePageNames | string): CromwellPageType => {
     const cmsconfig = getStoreItem('cmsconfig');
-    if (!cmsconfig || !cmsconfig.templateName) {
+    if (!cmsconfig || !cmsconfig.themeName) {
         console.log('cmsconfig', cmsconfig)
-        throw new Error('getPage !cmsconfig.templateName');
+        throw new Error('getPage !cmsconfig.themeName');
     }
 
     const Page: any = importDynamicPage(pageName);
 
     return function (props: CromwellPageCoreProps): JSX.Element {
-        setStoreItem('modulesData', props.modulesData);
+        setStoreItem('pluginsData', props.pluginsData);
         setStoreItem('blocksData', props.cromwellBlocksData);
         // console.log('CromwellPageCoreProps pageName', pageName, 'props', props);
         return (

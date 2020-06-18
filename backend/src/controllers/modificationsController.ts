@@ -5,14 +5,14 @@ const fs = require('fs-extra');
 
 export const applyModificationsController = (app: Express): void => {
     const config = getStoreItem('cmsconfig');
-    if (!config || !config.templateName) {
+    if (!config || !config.themeName) {
         console.error('applyModificationsController: failed to read cmsconfig', config);
         return;
     }
-    const userModificationsPath = resolve(__dirname, '../../../modifications/', config.templateName).replace(/\\/g, '/');
+    const userModificationsPath = resolve(__dirname, '../../../modifications/', config.themeName).replace(/\\/g, '/');
 
-    app.get('/api/v1/modifications/template/:pageName', function (req, res) {
-        const path = userModificationsPath + '/template.json';
+    app.get('/api/v1/modifications/theme/:pageName', function (req, res) {
+        const path = userModificationsPath + '/theme.json';
         fs.access(path, fs.constants.R_OK, (err) => {
             if (!err) {
                 fs.readFile(path, (err, data) => {
@@ -20,7 +20,7 @@ export const applyModificationsController = (app: Express): void => {
                     try {
                         userModifications = JSON.parse(data);
                     } catch (e) {
-                        console.error('Failed to read user template modifications', e);
+                        console.error('Failed to read user theme modifications', e);
                     }
                     const mod = userModifications ? userModifications[req.params.pageName] : [];
                     res.send(mod ? mod : []);
@@ -32,18 +32,18 @@ export const applyModificationsController = (app: Express): void => {
         });
     })
 
-    app.get('/api/v1/modifications/modules', function (req, res) {
-        const path = userModificationsPath + '/modules.json';
+    app.get('/api/v1/modifications/plugins', function (req, res) {
+        const path = userModificationsPath + '/plugins.json';
         fs.access(path, fs.constants.R_OK, (err) => {
             if (!err) {
                 fs.readFile(path, (err, data) => {
-                    let modulesModifications: Record<string, any> | undefined;
+                    let pluginsModifications: Record<string, any> | undefined;
                     try {
-                        modulesModifications = JSON.parse(data);
+                        pluginsModifications = JSON.parse(data);
                     } catch (e) {
-                        console.error('Failed to read user modules modifications', e);
+                        console.error('Failed to read user plugins modifications', e);
                     }
-                    res.send(modulesModifications && modulesModifications.modules ? modulesModifications.modules : {});
+                    res.send(pluginsModifications && pluginsModifications.plugins ? pluginsModifications.plugins : {});
                 });
                 return;
             } else {
