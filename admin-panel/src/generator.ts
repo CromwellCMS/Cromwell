@@ -1,7 +1,16 @@
-const fs = require('fs-extra');
-const resolve = require('path').resolve;
 
 function generateAdminPanelImports() {
+    const fs = require('fs-extra');
+    const resolve = require('path').resolve;
+
+    const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
+    let config = undefined;
+    try {
+        config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
+    } catch (e) {
+        console.log('renderer::server ', e);
+    }
+
     const adminPanelDir = resolve(__dirname, '../').replace(/\\/g, '/');
     const globalPluginsDir = resolve(__dirname, '../../plugins').replace(/\\/g, '/');
     const distDir = 'es';
@@ -23,10 +32,12 @@ function generateAdminPanelImports() {
 
     const content = `
 import { lazy } from 'react';
+export const CMSconfig = ${JSON.stringify(config)};
+
 /**
  * Plugins
  */
-export const pluginsNames = ${pluginNames}
+export const pluginNames = ${pluginNames}
 
 ${pluginsImports}
 

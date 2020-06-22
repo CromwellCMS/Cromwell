@@ -2,6 +2,7 @@
   "name": "@cromwell/admin-panel",
   "version": "1.0.0",
   "dependencies": {
+    "@cromwell/core": "^1.0.0",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -16,9 +17,22 @@
     "react-scripts": "3.4.1",
     "ts-node": "^8.10.2"
   },
+  "devDependencies": {
+    "browser-sync": "^2.26.7",
+    "copy-webpack-plugin": "^6.0.2",
+    "cross-env": "^7.0.2",
+    "html-webpack-plugin": "^4.3.0",
+    "sass": "^1.26.8",
+    "sass-loader": "^8.0.2",
+    "source-map-loader": "^1.0.0",
+    "ts-loader": "^7.0.5",
+    "typescript": "^3.9.5",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
+  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "dev": "npm run generateImports && npx cross-env NODE_ENV=development WATCH=true npx ts-node ./devServer.ts",
+    "buildDev": "npm run generateImports && npx cross-env NODE_ENV=development npx webpack",
     "generateImports": "npx ts-node src/generator.ts"
   },
   "eslintConfig": {

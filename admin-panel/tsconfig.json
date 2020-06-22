@@ -16,11 +16,11 @@
     "module": "esnext",
     "moduleResolution": "node",
     "resolveJsonModule": true,
-    "noEmit": true,
     "jsx": "react",
-    "isolatedModules": true
+    "noImplicitAny": false
   },
   "include": [
-    "src"
+    "src",
+    "./devServer.ts"
   ]
 }
