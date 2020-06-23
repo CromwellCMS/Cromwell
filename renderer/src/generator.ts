@@ -23,6 +23,7 @@ const generate = async () => {
     const themeImportsDir = `${themeDir}/es`;
     const themeConfigPath = themeDir + '/' + 'cromwell.config.json';
     const customPagesLocalDir = resolve(__dirname, './pages').replace(/\\/g, '/');
+    const localDir = resolve(__dirname, '../').replace(/\\/g, '/');
 
     let themeConfig: Record<string, any> | undefined = undefined;
     try {
@@ -101,10 +102,10 @@ const generate = async () => {
             console.log('pageName', pageName, 'pageComponentName', pageComponentName);
 
             customPageImports += `\nimport * as ${pageComponentName}_Page from '${pagePath}'`;
-            customPageImportsSwitch += `if (pageName === '${pageName}') return ${pageComponentName}_Page;\n`;
+            customPageImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_Page;\n`;
 
             customPageDynamicImports += `\nconst ${pageComponentName}_DynamicPage = dynamic(() => import('${pagePath}'));`;
-            customPageDynamicImportsSwitch += `if (pageName === '${pageName}') return ${pageComponentName}_DynamicPage;\n   `;
+            customPageDynamicImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_DynamicPage;\n   `;
         })
     }
 
@@ -127,59 +128,59 @@ const generate = async () => {
     // }
 
     const content = `
-    import dynamic from "next/dynamic";
-    /**
-     * Configs 
-     */
-    export const pluginImports = ${JSON.stringify(pluginImportPaths)};
-    export const themeConfig = ${JSON.stringify(themeConfig)};
-    export const CMSconfig = ${JSON.stringify(config)};
-    
-    export const importThemeConfig = () => {
-        return themeConfig;
-    }
-    export const importCMSConfig = () => {
-        return CMSconfig;
-    }
-    
-    /**
-     * Pages
-     */
-    ${customPageImports}
-    ${customPageDynamicImports}
-    
-    /**
-     * Page imports
-     */
-    export const importPage = (pageName) => {
-        ${customPageImportsSwitch}
-        return undefined;
-    }
-    
-    export const importDynamicPage = (pageName) => {
-        ${customPageDynamicImportsSwitch}
-        return undefined;
-    }
-    
-    /**
-     * Plugins
-     */
-    ${pluginImports}
-    
-    export const importPlugin = (pluginName) => {
-        ${pluginImportsSwitch}
-        return undefined;
-    }
-    ${dynamicPluginImports}
-    
-    export const importDynamicPlugin = (pluginName) => {
-        ${dynamicPluginImportsSwitch}
-        return undefined;
-    }
+import dynamic from "next/dynamic";
+/**
+ * Configs 
+ */
+export const pluginImports = ${JSON.stringify(pluginImportPaths)};
+export const themeConfig = ${JSON.stringify(themeConfig)};
+export const CMSconfig = ${JSON.stringify(config)};
+
+export const importThemeConfig = () => {
+    return themeConfig;
+}
+export const importCMSConfig = () => {
+    return CMSconfig;
+}
+
+/**
+ * Pages
+ */
+${customPageImports}
+${customPageDynamicImports}
+
+/**
+ * Page imports
+ */
+export const importPage = (pageName) => {
+    ${customPageImportsSwitch}
+    return undefined;
+}
+
+export const importDynamicPage = (pageName) => {
+    ${customPageDynamicImportsSwitch}
+    return undefined;
+}
+
+/**
+ * Plugins
+ */
+${pluginImports}
+
+export const importPlugin = (pluginName) => {
+${pluginImportsSwitch}
+    return undefined;
+}
+${dynamicPluginImports}
+
+export const importDynamicPlugin = (pluginName) => {
+${dynamicPluginImportsSwitch}
+    return undefined;
+}
     `
 
     fs.outputFileSync('./.cromwell/imports/imports.gen.js', content);
-    fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(pluginImportPaths));
+    // fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(pluginImportPaths));
 
 
 
@@ -192,15 +193,11 @@ const generate = async () => {
     Object.keys(customPages).forEach(pageName => {
         const pageComponentName = customPageCompNames[pageName];
         const pageContent = `
-import { CromwellPageType } from '@cromwell/core';
-//@ts-ignore
 import { createGetStaticProps } from 'common/createGetStaticProps';
-//@ts-ignore
 import { createGetStaticPaths } from 'common/createGetStaticPaths';
-//@ts-ignore
 import { getPage } from 'common/getPage';
 
-const PageComp: CromwellPageType = getPage('${pageName}');
+const PageComp = getPage('${pageName}');
 
 export const getStaticProps = createGetStaticProps('${pageName}');
 
@@ -208,7 +205,7 @@ export const getStaticPaths = createGetStaticPaths('${pageName}');
 
 export default PageComp;
         `;
-        fs.outputFileSync(`${customPagesLocalDir}/${pageName}.ts`, pageContent);
+        fs.outputFileSync(`${localDir}/pages/${pageName}.js`, pageContent);
     })
 };
 
