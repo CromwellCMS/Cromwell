@@ -1,16 +1,19 @@
+import { CMSconfigType } from '@cromwell/core';
 
 function generateAdminPanelImports() {
     const fs = require('fs-extra');
     const resolve = require('path').resolve;
 
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
-    let config = undefined;
+    let config: CMSconfigType | undefined = undefined;
     try {
         config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
     } catch (e) {
         console.log('renderer::server ', e);
     }
+    if (!config) throw new Error('renderer::server cannot read CMS config');
 
+    // Import global plugins
     const adminPanelDir = resolve(__dirname, '../').replace(/\\/g, '/');
     const globalPluginsDir = resolve(__dirname, '../../plugins').replace(/\\/g, '/');
     const distDir = 'es';
@@ -29,6 +32,13 @@ function generateAdminPanelImports() {
         }
     });
     pluginNames += '];';
+
+    // Import theme pages
+
+    const themesDir = resolve(__dirname, '../', '../', 'themes').replace(/\\/g, '/');
+    const themeExportDir = `${themesDir}/${config.themeName}/es`;
+
+
 
     const content = `
 import { lazy } from 'react';

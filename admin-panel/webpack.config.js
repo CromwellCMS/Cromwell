@@ -38,11 +38,39 @@ module.exports = {
                 loader: "source-map-loader"
             },
             {
+                test: /\.css$/i,
+                use: [
+                    { loader: 'style-loader' },
+                    {
+                        loader: 'css-loader', options: {
+                            sourceMap: true, modules: true,
+                            localIdentName: '[local]_[hash:base64:5]'
+                        }
+                    }
+                ],
+            },
+            {
                 test: /\.s[ac]ss$/i,
                 use: [
-                    'style-loader',
-                    'css-loader',
-                    'sass-loader',
+                    { loader: 'style-loader' },
+                    {
+                        loader: 'css-loader', options: {
+                            sourceMap: true, modules: true,
+                            localIdentName: '[local]_[hash:base64:5]'
+                        }
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: {
+                            sourceMap: true,
+                            config: {
+                                path: 'postcss.config.js'
+                            }
+                        }
+                    },
+                    {
+                        loader: 'sass-loader', options: { sourceMap: true }
+                    }
                 ],
             },
         ]

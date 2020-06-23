@@ -1,0 +1,23 @@
+.Layout {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.header {
+    width: 100%;
+}
+
+.main {
+    display: flex;
+    width: 100%;
+}
+
+.sidebar {
+    min-width: 200px;
+    width: 20%;
+}
+
+.content {
+    width: 80%;
+}

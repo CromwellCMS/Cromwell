@@ -2,9 +2,9 @@ import React from 'react';
 import { sideBarLinks, SidebarLinkType } from '../../constants/PageInfos';
 import { Link } from 'react-router-dom';
 
-export function Sidebar() {
+function Sidebar() {
     return (
-        <div>
+        <div className="Sidebar">
             {sideBarLinks.map(link => <SidebarLink data={link} />)}
         </div>
     )
@@ -27,3 +27,5 @@ const SidebarLink = (props: { data: SidebarLinkType }) => {
     )
 
 }
+
+export default Sidebar;
