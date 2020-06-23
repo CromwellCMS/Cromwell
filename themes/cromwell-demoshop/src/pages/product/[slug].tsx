@@ -59,4 +59,11 @@ export const getStaticProps: GetStaticPropsType = async (context) => {
 
 }
 
+export const getStaticPaths = () => {
+    return {
+        paths: [],
+        fallback: true
+    };
+}
+
 export default Product;

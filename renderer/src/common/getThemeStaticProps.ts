@@ -12,10 +12,10 @@ export const getThemeStaticProps = async (pageName: BasePageNames | string, cont
         throw new Error('getThemeStaticProps !cmsconfig.themeName');
     }
     let childStaticProps = {}
-    const pageComp: any = await importPage(pageName);
-    console.log('getThemeStaticProps', 'pageName', pageName, 'pageComp', pageComp)
-    if (pageComp && pageComp.getStaticProps) {
-        const childGetStaticProps = pageComp.getStaticProps;
+    const page: any = importPage(pageName);
+    console.log('getThemeStaticProps', 'pageName', pageName, 'pageComp', page)
+    if (page && page.getStaticProps) {
+        const childGetStaticProps = page.getStaticProps;
         try {
             childStaticProps = await childGetStaticProps(context);
         } catch (e) {

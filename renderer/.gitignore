@@ -93,4 +93,5 @@ out
 .yarn/build-state.yml
 .pnp.*
 
-# db.sqlite3
+
+src/pages

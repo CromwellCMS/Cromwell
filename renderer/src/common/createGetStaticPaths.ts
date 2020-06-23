@@ -1,6 +1,17 @@
-import { DBEntity, GraphQLPaths } from "@cromwell/core";
-import { getGraphQLClient } from '@cromwell/core-frontend';
+// import { DBEntity, GraphQLPaths } from "@cromwell/core";
+// import { getGraphQLClient } from '@cromwell/core-frontend';
+//@ts-ignore
+import { importPage } from '.cromwell/imports/imports.gen';
 
+export const createGetStaticPaths = (pageName: string) => {
+    const page: any = importPage(pageName);
+    if (page.getStaticPaths) {
+        return page.getStaticPaths;
+    }
+    return undefined;
+
+}
+/*
 export const createGetStaticPaths = (dbEntity: DBEntity) => {
     return async function () {
         const getAllPath = GraphQLPaths[dbEntity].getMany;
@@ -33,3 +44,4 @@ export const createGetStaticPaths = (dbEntity: DBEntity) => {
     }
 
 }
+*/

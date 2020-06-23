@@ -4,7 +4,7 @@ import { pluginsDataFetcher } from './pluginsDataFetcher';
 import { getThemeStaticProps } from './getThemeStaticProps';
 import { resolve } from 'path';
 
-export const createGetStaticProps = (pageName: BasePageNames | string, pageRoute: string) => {
+export const createGetStaticProps = (pageName: BasePageNames | string) => {
     return async function (context: StaticPageContext): Promise<
         { props: CromwellPageCoreProps; unstable_revalidate: number | undefined }> {
         const pluginsData = await pluginsDataFetcher(pageName, context);
@@ -13,7 +13,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string, pageRoute
         // if (context && context.params && context.params.slug) {
         //     pageRoute += '/' + context.params.slug;
         // }
-        console.log('createGetStaticProps', 'pageName', pageName, 'context', context, 'pageRoute', pageRoute)
+        console.log('createGetStaticProps', 'pageName', pageName, 'context', context)
         // console.log('pluginssData', pluginsData, 'childStaticProps', childStaticProps);
         return {
             props: {
