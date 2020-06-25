@@ -16,10 +16,12 @@ class PageErrorBoundary extends React.Component<{}, { hasError: boolean, errorMe
 
     render() {
         if (this.state.hasError) {
-            return (<div>
-                <h1>Page crashed</h1>S
-                <p>{this.state.errorMessage}</p>
-            </div>);
+            return (
+                <div>
+                    <h1>Page crashed</h1>
+                    <p>{this.state.errorMessage}</p>
+                </div>
+            );
         }
 
         return this.props.children;

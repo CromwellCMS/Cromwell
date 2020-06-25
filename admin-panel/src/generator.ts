@@ -33,10 +33,10 @@ function generateAdminPanelImports() {
     });
     pluginNames += '];';
 
-    // Import theme pages
 
-    const themesDir = resolve(__dirname, '../', '../', 'themes').replace(/\\/g, '/');
-    const themeExportDir = `${themesDir}/${config.themeName}/es`;
+    // Import theme pages
+    // const themesDir = resolve(__dirname, '../', '../', 'themes').replace(/\\/g, '/');
+    // const themeExportDir = `${themesDir}/${config.themeName}/es`;
 
 
 
