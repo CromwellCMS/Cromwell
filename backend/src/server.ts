@@ -47,7 +47,7 @@ async function apiServer(): Promise<void> {
     const app = express();
     server.applyMiddleware({ app, path: '/api/v1/graphql' });
 
-    applyModificationsController(app);
+    await applyModificationsController(app);
 
     const { address } = app.listen(config.apiPort);
     console.log(`API server has started at http://localhost:${config.apiPort}/api/v1/graphql`);

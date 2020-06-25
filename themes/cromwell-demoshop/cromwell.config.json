@@ -1,15 +1,22 @@
 {
-    "theme": [
+    "pages": [
         {
-            "componentId": "5",
-            "pluginName": "ProductShowcase"
+            "route": "pages/some_page",
+            "name": "my-some_page",
+            "title": "My funky page",
+            "modifications": [
+                {
+                    "componentId": "5",
+                    "pluginName": "ProductShowcase"
+                }
+            ]
         }
     ],
     "plugins": {
         "ProductShowcase": {
             "pages": [
                 "index",
-                "some_page"
+                "pages/some_page"
             ],
             "options": {}
         },

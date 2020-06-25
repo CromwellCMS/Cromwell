@@ -3,4 +3,4 @@
 
 ### Installation.
 
-npm run install
+npm run installAll

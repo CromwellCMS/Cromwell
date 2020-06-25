@@ -24,6 +24,7 @@ const generate = async () => {
     const themeConfigPath = themeDir + '/' + 'cromwell.config.json';
     const customPagesLocalDir = resolve(__dirname, './pages').replace(/\\/g, '/');
     const localDir = resolve(__dirname, '../').replace(/\\/g, '/');
+    const adminPanelDir = resolve(__dirname, '../../admin-panel').replace(/\\/g, '/');
 
     let themeConfig: Record<string, any> | undefined = undefined;
     try {
@@ -57,7 +58,7 @@ const generate = async () => {
     if (pluginImportPaths) {
         Object.entries(pluginImportPaths).map(e => {
             // pluginImports += `\nconst ${e[0]} = import('${e[1]}')`;
-            pluginImports += `\nconst ${e[0]} = import('${e[1]}')`;
+            pluginImports += `\nconst ${e[0]} = import('${e[1]}');`;
             pluginImportsSwitch += `if (pluginName === '${e[0]}') return ${e[0]};\n`;
 
             dynamicPluginImports += `\nconst Dynamic${e[0]} = dynamic(() => import('${e[1]}'));`;
@@ -68,16 +69,15 @@ const generate = async () => {
     console.log('pluginImports', pluginImports);
 
 
-    // Import custom pages
-    const getPageComponentName = (pagePath: string): string => {
-        return pagePath.replace(/\W/g, '')
-    }
     const customPages: Record<string, string> = {};
     const customPageCompNames: Record<string, string> = {};
+    const pageNames: string[] = [];
     let customPageImports = '';
     let customPageImportsSwitch = '';
     let customPageDynamicImports = '';
     let customPageDynamicImportsSwitch = '';
+    let customPageLazyImports = '';
+    let customPageLazyImportsSwitch = '';
     const pagesPath = `${themeImportsDir}/pages`;
     if (fs.existsSync(pagesPath)) {
         const files: string[] = await readRecursive(pagesPath);
@@ -97,15 +97,19 @@ const generate = async () => {
 
         Object.entries(customPages).forEach(e => {
             const pageName = e[0];
+            pageNames.push(pageName);
             const pagePath = e[1];
             const pageComponentName = customPageCompNames[pageName];
             console.log('pageName', pageName, 'pageComponentName', pageComponentName);
 
-            customPageImports += `\nimport * as ${pageComponentName}_Page from '${pagePath}'`;
+            customPageImports += `\nimport * as ${pageComponentName}_Page from '${pagePath}';`;
             customPageImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_Page;\n`;
 
             customPageDynamicImports += `\nconst ${pageComponentName}_DynamicPage = dynamic(() => import('${pagePath}'));`;
             customPageDynamicImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_DynamicPage;\n   `;
+
+            customPageLazyImports += `\nconst ${pageComponentName}_LazyPage = lazy(() => import('${pagePath}'))`;
+            customPageLazyImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_LazyPage;\n   `;
         })
     }
 
@@ -144,14 +148,12 @@ export const importCMSConfig = () => {
 }
 
 /**
- * Pages
+ * Page imports
  */
+export const pageNames = ${JSON.stringify(pageNames)};
 ${customPageImports}
 ${customPageDynamicImports}
 
-/**
- * Page imports
- */
 export const importPage = (pageName) => {
     ${customPageImportsSwitch}
     return undefined;
@@ -206,7 +208,22 @@ export const getStaticPaths = createGetStaticPaths('${pageName}');
 export default PageComp;
         `;
         fs.outputFileSync(`${localDir}/pages/${pageName}.js`, pageContent);
-    })
+    });
+
+
+    // Generate page imports for admin panel
+    const adminPanelContent = `
+import { lazy } from 'react';
+export const pageNames = ${JSON.stringify(pageNames)};
+${customPageLazyImports}
+
+export const importLazyPage = (pageName) => {
+    ${customPageLazyImportsSwitch}
+    return undefined;
+}
+    `;
+    fs.outputFileSync(`${adminPanelDir}/.cromwell/imports/pages.imports.gen.js`, adminPanelContent);
+
 };
 
 generate();
