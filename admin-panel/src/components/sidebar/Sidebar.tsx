@@ -82,7 +82,7 @@ const SidebarLink = (props: {
 
     const history = useHistory();
     const handleNav = (route: string) => {
-        history.push(route)
+        history.push(route);
     }
     const isExpanded = props.expanded === props.data.route;
 

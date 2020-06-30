@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "dependencies": {
     "@cromwell/core": "^1.0.0",
+    "@cromwell/core-frontend": "^1.0.0",
     "@material-ui/core": "^4.10.2",
     "@material-ui/icons": "^4.9.1",
     "@testing-library/jest-dom": "^4.2.4",
@@ -39,7 +40,7 @@
     "webpack-cli": "^3.3.12"
   },
   "scripts": {
-    "dev": "npm run generateImports && npx cross-env NODE_ENV=development WATCH=true npx ts-node ./devServer.ts",
+    "dev": "npm run generateImports && npx cross-env NODE_ENV=development WATCH=true npx ts-node -O '{\\\"module\\\":\\\"commonjs\\\"}' ./devServer.ts",
     "buildDev": "npm run generateImports && npx cross-env NODE_ENV=development npx webpack",
     "generateImports": "npx ts-node src/generator.ts"
   },

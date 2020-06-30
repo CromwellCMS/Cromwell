@@ -6,7 +6,7 @@ import { text } from '../../styles/common.module.scss';
 export default function Page(props: { component: React.ComponentType }) {
     return (
         <div className={`${styles.Page} ${text}`}>
-            Page
+            <h2>Page</h2>
             <PageErrorBoundary>
                 <Suspense fallback={<div>Loading...</div>}>
                     <props.component />

@@ -1,3 +1,4 @@
+const CMSconfig = require('./.cromwell/imports/imports.gen').CMSconfig;
 const path = require('path');
 const url = require('url');
 const fs = require('fs');
@@ -16,7 +17,7 @@ if (!isDevelopment && !isProduction)
     valid values - "development" and "production"`);
 
 const dir = isDevelopment ? appBuildDev : appBuildProd;
-const port = process.env.PORT || 3010;
+const port = process.env.PORT || CMSconfig.adminPanelPort;
 
 const watch = process.env.WATCH;
 

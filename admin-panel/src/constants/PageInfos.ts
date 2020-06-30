@@ -2,6 +2,7 @@ import React from 'react';
 import { pluginNames, importPlugin } from '../../.cromwell/imports/imports.gen';
 import HomePage from '../pages/home';
 import PluginsPage from '../pages/plugins';
+import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
 
 export type SidebarLinkType = {
     title: string;
@@ -25,6 +26,11 @@ const pluginsPageInfo: PageInfo = {
     route: '/plugins',
     component: PluginsPage
 };
+const themeEditPageInfo: PageInfo = {
+    name: 'ThemeEdit',
+    route: '/theme-edit',
+    component: ThemeEditPage
+};
 
 const pluginPages: PageInfo[] = pluginNames.map((name: string) => {
     return {
@@ -34,17 +40,23 @@ const pluginPages: PageInfo[] = pluginNames.map((name: string) => {
     }
 }).filter(i => Boolean(i.component));
 
+// Export all pages for react-router
 export const pageInfos: PageInfo[] = [
     homePageInfo,
+    themeEditPageInfo,
     pluginsPageInfo,
     ...pluginPages
 ].filter(i => Boolean(i.component));
 
-
+// Export links for sidebar
 export const sideBarLinks: SidebarLinkType[] = [
     {
         title: homePageInfo.name,
         route: homePageInfo.route
+    },
+    {
+        title: 'Edit theme',
+        route: themeEditPageInfo.route
     },
     {
         title: pluginsPageInfo.name,
