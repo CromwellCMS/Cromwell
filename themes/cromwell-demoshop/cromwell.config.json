@@ -3,7 +3,7 @@
         {
             "route": "pages/some_page",
             "name": "my-some_page",
-            "title": "My funky page",
+            "title": "My first page",
             "modifications": [
                 {
                     "componentId": "5",

@@ -33,7 +33,7 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
     }
 
     const pluginConfigs = Object.entries(pluginsModifications);
-    console.log('pluginConfigs', pluginConfigs)
+    console.log('pluginConfigs', JSON.stringify(pluginConfigs))
     const pluginsData: any = {};
     if (pluginConfigs && Array.isArray(pluginConfigs)) {
         for (const pluginConfig of pluginConfigs) {

@@ -36,9 +36,24 @@ export type DataComponentProps<Data> = {
 export type CMSconfigType = {
     apiPort: number;
     adminPanelPort: number;
-    themePort: number;
+    frontendPort: number;
     themeName: string;
     defaultPageSize: number;
+}
+
+export type ThemeConfigType = {
+    pages: PageConfigType[];
+    plugins: Record<string, {
+        pages: string[],
+        options: Record<string, any>
+    }>;
+}
+
+export type PageConfigType = {
+    route: string;
+    name: string;
+    title: string;
+    modifications: CromwellBlockDataType[];
 }
 
 export type CromwellStoreType = {

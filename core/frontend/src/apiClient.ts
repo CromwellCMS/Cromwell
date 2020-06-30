@@ -56,10 +56,10 @@ export const getRestAPIClient = (): RestAPIClient => {
         get: <T>(route: string, config?: AxiosRequestConfig | undefined): Promise<AxiosResponse<T>> => {
             return axios.get(`${baseUrl}/${route}`, config);
         },
-        getThemeModifications: async (pageName: string): Promise<CromwellBlockDataType[]> => {
+        getThemeModifications: async (pageRoute: string): Promise<CromwellBlockDataType[]> => {
             let res: any;
             try {
-                res = await axios.get(`${baseUrl}/modifications/theme/${pageName}`);
+                res = await axios.get(`${baseUrl}/modifications/theme/?pageRoute=${pageRoute}`);
             } catch (e) { console.error('getThemeModifications', e) }
             return (res && res.data) ? res.data : [];
         },

@@ -1,33 +1,43 @@
 {
-    "pages": {
-        "index": [
-            {
-                "componentId": "1",
-                "destinationComponentId": "2",
-                "destinationPosition": "after",
-                "styles": "background: red;"
-            },
-            {
-                "componentId": "5",
-                "pluginName": "ProductShowcase"
-            }
-        ],
-        "product": [
-            {
-                "componentId": "111",
-                "destinationComponentId": "3",
-                "destinationPosition": "inside",
-                "isVirtual": true,
-                "styles": "background: red;",
-                "pluginName": "ProductShowcaseDemo"
-            },
-            {
-                "componentId": "112",
-                "destinationComponentId": "111",
-                "destinationPosition": "after",
-                "isVirtual": true,
-                "pluginName": "ProductShowcase"
-            }
-        ]
-    }
+    "pages": [
+        {
+            "route": "index",
+            "name": "index",
+            "title": "Home page",
+            "modifications": [
+                {
+                    "componentId": "1",
+                    "destinationComponentId": "2",
+                    "destinationPosition": "after",
+                    "styles": "background: red;"
+                },
+                {
+                    "componentId": "5",
+                    "pluginName": "ProductShowcase"
+                }
+            ]
+        },
+        {
+            "route": "product/[slug]",
+            "name": "product",
+            "title": "Product page",
+            "modifications": [
+                {
+                    "componentId": "111",
+                    "destinationComponentId": "3",
+                    "destinationPosition": "inside",
+                    "isVirtual": true,
+                    "styles": "background: red;",
+                    "pluginName": "ProductShowcaseDemo"
+                },
+                {
+                    "componentId": "112",
+                    "destinationComponentId": "111",
+                    "destinationPosition": "after",
+                    "isVirtual": true,
+                    "pluginName": "ProductShowcase"
+                }
+            ]
+        }
+    ]
 }

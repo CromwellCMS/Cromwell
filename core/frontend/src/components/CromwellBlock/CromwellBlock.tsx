@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom';
 import { getStoreItem } from '@cromwell/core';
 import { isServer } from '@cromwell/core';
 import { CromwellBlockDataType, BlockDestinationPositionType } from '@cromwell/core';
-import './scss/CromwellBlock.scss';
+//@ts-ignore
+import classes from './CromwellBlock.module.scss';
 
 const getCromwellBlockId = (id: string): string => `CromwellBlock_${id}`
 const getCromwellBlockIdBefore = (id: string): string => `${getCromwellBlockId(id)}_before`
@@ -143,7 +144,7 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
         if (getCromwellBlockId(this.props.id) !== this.id) {
             return <div style={{ color: 'red' }}>Error. Block id was changed</div>
         }
-        const elementClassName = 'CromwellBlock'
+        const elementClassName = classes.CromwellBlock
             + (this.hasPortalInside ? ' CromwellBlockWrapper' : '')
             + (this.shouldBeMoved ? ' CromwellBlockInner' : '')
             + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '');

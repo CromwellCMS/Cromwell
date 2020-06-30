@@ -1,8 +1,9 @@
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import autoExternal from "rollup-plugin-auto-external";
-import sass from "rollup-plugin-sass";
 import typescript from "rollup-plugin-typescript2";
+import postcss from 'rollup-plugin-postcss-modules';
+import autoprefixer from "autoprefixer";
 
 export default [
     {
@@ -22,12 +23,15 @@ export default [
         external: ['next/link', "tslib"],
         plugins: [
             autoExternal(),
+            postcss({
+                plugins: [autoprefixer()],
+                extract: false,
+                writeDefinitions: false,
+                use: ['sass'],
+            }),
+            typescript(),
             resolve(),
-            commonjs(),
-            typescript({ useTsconfigDeclarationDir: true }),
-            sass({
-                insert: true
-            })
+            commonjs()
         ]
     }
 ];

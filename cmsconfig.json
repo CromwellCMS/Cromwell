@@ -1,7 +1,7 @@
 {
     "apiPort": 4032,
     "adminPanelPort": 4064,
-    "themePort": 4128,
+    "frontendPort": 4128,
     "themeName": "cromwell-demoshop",
     "defaultPageSize": 15
 }
