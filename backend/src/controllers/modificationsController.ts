@@ -1,4 +1,4 @@
-import { getStoreItem, CromwellBlockDataType } from "@cromwell/core";
+import { getStoreItem, CromwellBlockDataType, ThemeConfigType } from "@cromwell/core";
 import { Express } from 'express';
 const resolve = require('path').resolve;
 const fs = require('fs-extra');
@@ -14,15 +14,12 @@ export const applyModificationsController = async (app: Express): Promise<void> 
     const themeConfigPath = `${themeDir}/cromwell.config.json`;
 
     // Read theme's original modifications
-    let themePageModifications: any[] = [];
+    let themeConfig: ThemeConfigType | undefined = undefined;
     if (fs.existsSync(themeConfigPath)) {
         try {
-            const themeConfig = JSON.parse(
+            themeConfig = JSON.parse(
                 fs.readFileSync(themeConfigPath, { encoding: 'utf8', flag: 'r' }));
 
-            if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
-                themePageModifications = themeConfig.pages;
-            }
         } catch (e) {
             console.error(e);
         }
@@ -31,24 +28,41 @@ export const applyModificationsController = async (app: Express): Promise<void> 
         console.error('Failed to find theme config at ' + themeConfigPath)
     }
 
-    app.get('/api/v1/modifications/theme/:pageName', function (req, res) {
+    app.get('/api/v1/modifications/theme/', function (req, res) {
         const path = userModificationsPath + '/theme.json';
         fs.access(path, fs.constants.R_OK, (err) => {
             if (!err) {
                 fs.readFile(path, (err, data) => {
-                    let themeUserModifications: Record<string, any> | undefined;
+                    let themeUserModifications: ThemeConfigType | undefined;
                     try {
                         themeUserModifications = JSON.parse(data);
                     } catch (e) {
                         console.error('Failed to read user theme modifications', e);
                     }
                     let pageMods: any[] = [];
-                    if (themeUserModifications && themeUserModifications.pages) {
-                        const mods = themeUserModifications.pages[req.params.pageName];
-                        if (mods && Array.isArray(mods)) {
-                            pageMods = mods;
+                    console.log('themeUserModifications', themeUserModifications);
+                    if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
+                        const pageRoute = req.query.pageRoute;
+
+                        // Read theme's original modificators 
+                        if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
+                            for (const p of themeConfig.pages) {
+                                if (p.route === pageRoute && p.modifications && Array.isArray(p.modifications)) {
+                                    pageMods = p.modifications;
+                                }
+                            }
+                        }
+
+                        // Read user's custom modificators and unite with theme's mods
+                        if (themeUserModifications && themeUserModifications.pages && Array.isArray(themeUserModifications.pages)) {
+                            for (const p of themeUserModifications.pages) {
+                                if (p.route === pageRoute && p.modifications && Array.isArray(p.modifications)) {
+                                    pageMods = [...pageMods, ...p.modifications];
+                                }
+                            }
                         }
                     }
+
                     res.send(pageMods);
                 });
                 return;
