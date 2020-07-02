@@ -49,10 +49,14 @@ export type ThemeConfigType = {
     }>;
 }
 
-export type PageConfigType = {
+export type PageInfoType = {
     route: string;
     name: string;
     title: string;
+}
+
+export type PageConfigType = PageInfoType & {
+
     modifications: CromwellBlockDataType[];
 }
 
@@ -63,6 +67,7 @@ export type CromwellStoreType = {
     importPlugin?: (pluginName: string) => { default: ComponentType } | undefined;
     importDynamicPlugin?: (pluginName: string) => ComponentType | undefined;
     rebuildPage?: (path: string) => void;
+    isAdminPanel?: boolean;
 }
 
 declare global {
@@ -80,7 +85,11 @@ export type BlockDestinationPositionType = 'before' | 'after' | 'inside';
 
 export type CromwellBlockDataType = {
     /**
-     * Component's id, must be unique for the entire app.
+     * Component's type
+     */
+    type: 'plugin' | 'text' | 'HTML';
+    /**
+     * Component's id, must be unique for the app page.
      */
     componentId: string;
     /**
@@ -219,4 +228,5 @@ export type RestAPIClient = {
     get: <T>(route: string, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<T>>;
     getThemeModifications: (pageName: string) => Promise<CromwellBlockDataType[]>;
     getPluginsModifications: () => Promise<any>;
+    getPagesInfo: () => Promise<PageInfoType[]>;
 }

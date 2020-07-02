@@ -30,7 +30,9 @@ export default [
                 use: ['sass'],
             }),
             typescript(),
-            resolve(),
+            // resolve({
+            //     dedupe: ['@material-ui/icons']
+            // }),
             commonjs()
         ]
     }

@@ -1,7 +1,7 @@
 import { GraphQLClient } from 'graphql-request';
 // import { Variables as GraphQLVariables } from 'graphql-request/dist/src/types';
 import { getStoreItem } from '@cromwell/core';
-import { CromwellBlockDataType, RestAPIClient } from '@cromwell/core';
+import { CromwellBlockDataType, RestAPIClient, PageInfoType } from '@cromwell/core';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 // import { ApolloClient, ApolloQueryResult, QueryOptions } from 'apollo-client';
 // import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
@@ -60,15 +60,22 @@ export const getRestAPIClient = (): RestAPIClient => {
             let res: any;
             try {
                 res = await axios.get(`${baseUrl}/modifications/theme/?pageRoute=${pageRoute}`);
-            } catch (e) { console.error('getThemeModifications', e) }
+            } catch (e) { console.error('RestAPIClient::getThemeModifications', e) }
             return (res && res.data) ? res.data : [];
         },
         getPluginsModifications: async (): Promise<Record<string, any>> => {
             let res: any;
             try {
                 res = await axios.get(`${baseUrl}/modifications/plugins`);
-            } catch (e) { console.error('getPluginsModifications', e) }
+            } catch (e) { console.error('RestAPIClient::getPluginsModifications', e) }
             return (res && res.data) ? res.data : {};
+        },
+        getPagesInfo: async (): Promise<PageInfoType[]> => {
+            let res: any;
+            try {
+                res = await axios.get(`${baseUrl}/modifications/pages`);
+            } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
+            return (res && res.data) ? res.data : [];
         }
     }
 }

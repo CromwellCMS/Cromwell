@@ -46,5 +46,5 @@ export const DBTableNames: { [K in DBEntity]: string } = {
     ProductCategory: 'product_category'
 }
 
-// export const isServer = (): boolean => (typeof window === 'undefined');
-export const isServer = (): boolean => true;
+export const isServer = (): boolean => (typeof window === 'undefined');
+// export const isServer = (): boolean => true;

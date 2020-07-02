@@ -6,6 +6,7 @@
             "title": "My first page",
             "modifications": [
                 {
+                    "type": "plugin",
                     "componentId": "5",
                     "pluginName": "ProductShowcase"
                 }
