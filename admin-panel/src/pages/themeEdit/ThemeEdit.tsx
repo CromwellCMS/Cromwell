@@ -1,11 +1,13 @@
-import React, { useState, useRef, Suspense } from 'react';
-import { ThemeConfigType, PageConfigType, CMSconfigType } from '@cromwell/core';
+import { CromwellBlockDataType, PageInfoType, setStoreItem } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import { themeConfig, CMSconfig } from '../../../.cromwell/imports/imports.gen';
-import { importLazyPage } from '../../../.cromwell/imports/pages.imports.gen';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
+import React, { Suspense, useEffect, useRef, useState } from 'react';
+
+import { importLazyPage } from '../../../.cromwell/imports/pages.imports.gen';
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
+import LoadBox from '../../components/loadBox/LoadBox';
+import styles from './ThemeEdit.module.scss';
 
 
 const MenuItem = withStyles({
@@ -17,25 +19,42 @@ const MenuItem = withStyles({
 })(MuiMenuItem);
 
 export default function ThemeEdit() {
+
+    const [pageInfos, setPageInfos] = useState<PageInfoType[] | null>(null);
     const editingFrameRef = useRef(null);
-    const [editingPageConfig, setEditingPageConfig] = useState<PageConfigType | null>(null);
+    const [editingPageConfig, setEditingPageConfig] = useState<PageInfoType | null>(null);
     const [EditingPage, setEditingPage] = useState<React.LazyExoticComponent<React.ComponentType<any>> | null>(null);
+    const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
+    const [isPageListLoading, setIsPageListLoading] = useState<boolean>(true);
 
-    const pages = (themeConfig as ThemeConfigType).pages;
-    const frontendUrl = `http://localhost:${(CMSconfig as CMSconfigType).frontendPort}`
 
-    const onOpenPage = async (pageCofig: PageConfigType) => {
+    useEffect(() => {
+        (async () => {
+            const infos = await getRestAPIClient().getPagesInfo();
+            if (infos) setPageInfos(infos);
+            setIsPageListLoading(false);
+        })();
+    }, []);
+
+    const onOpenPage = async (pageCofig: PageInfoType) => {
+        setIsPageLoading(true);
+        const pageModifications: CromwellBlockDataType[] = await getRestAPIClient().getThemeModifications(pageCofig.route);
+        console.log('pageModifications', pageModifications);
+        setStoreItem('blocksData', pageModifications);
+
         setEditingPageConfig(pageCofig);
         const pageComp = importLazyPage(pageCofig.route);
         if (pageComp) setEditingPage(pageComp);
-        const pageModifications = await getRestAPIClient().getThemeModifications(pageCofig.route);
-        console.log('pageModifications', pageModifications);
+        setIsPageLoading(false);
     }
 
     return (
-        <div>
+        <div className={styles.ThemeEdit}>
             <div>
-                {pages.map(p => (
+                {isPageListLoading && (
+                    <LoadBox />
+                )}
+                {!isPageListLoading && pageInfos && pageInfos.map(p => (
                     <div onClick={() => { onOpenPage(p) }}>
                         <MenuItem>
                             <p>{p.name}</p>
@@ -51,10 +70,11 @@ export default function ThemeEdit() {
                     />
                 </div>
             )} */}
-            {EditingPage && (
+            {isPageLoading && (<LoadBox />)}
+            {!isPageLoading && EditingPage && (
                 <div>
                     <PageErrorBoundary>
-                        <Suspense fallback={<div>Loading...</div>}>
+                        <Suspense fallback={<LoadBox />}>
                             <EditingPage />
                         </Suspense>
                     </PageErrorBoundary>

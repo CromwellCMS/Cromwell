@@ -1,4 +1,7 @@
 .Page {
+    display: flex;
     overflow: auto;
+    box-sizing: border-box;
     padding: 1em;
+    height: 100%;
 }

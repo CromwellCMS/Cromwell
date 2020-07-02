@@ -1,0 +1,13 @@
+@import '../../styles/variables.scss';
+
+.LoadBox {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .MuiCircularProgress-colorPrimary {
+        color: $base-color;
+    }
+}

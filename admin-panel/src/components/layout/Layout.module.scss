@@ -1,7 +1,8 @@
 .Layout {
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
 
 }
 
@@ -26,5 +27,5 @@
 .content {
     width: 80%;
     height: 100%;
-    overflow: auto;
+    box-sizing: border-box;
 }
