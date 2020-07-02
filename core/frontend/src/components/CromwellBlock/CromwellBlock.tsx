@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { getStoreItem } from '@cromwell/core';
-import { isServer } from '@cromwell/core';
-import { CromwellBlockDataType, BlockDestinationPositionType } from '@cromwell/core';
+import { getStoreItem, isServer, CromwellBlockDataType, BlockDestinationPositionType } from '@cromwell/core';
+import TextFormatIcon from '@material-ui/icons/TextFormat';
+import PowerIcon from '@material-ui/icons/Power';
+import CodeIcon from '@material-ui/icons/Code';
+
 //@ts-ignore
 import classes from './CromwellBlock.module.scss';
 
@@ -12,6 +14,7 @@ const getCromwellBlockIdAfter = (id: string): string => `${getCromwellBlockId(id
 
 type CromwellBlockProps = {
     id: string;
+    config?: CromwellBlockDataType;
 }
 
 export class CromwellBlock extends Component<CromwellBlockProps> {
@@ -38,6 +41,7 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
     constructor(props: CromwellBlockProps) {
         super(props);
 
+        if (props.config) this.data = props.config;
         this.id = getCromwellBlockId(this.props.id);
         this.idBefore = getCromwellBlockIdBefore(this.props.id);
         this.idAfter = getCromwellBlockIdAfter(this.props.id);
@@ -144,12 +148,45 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
         if (getCromwellBlockId(this.props.id) !== this.id) {
             return <div style={{ color: 'red' }}>Error. Block id was changed</div>
         }
-        const elementClassName = classes.CromwellBlock
+        const isAdminPanel = getStoreItem('isAdminPanel');
+
+        const elementClassName = 'CromwellBlock'
             + (this.hasPortalInside ? ' CromwellBlockWrapper' : '')
             + (this.shouldBeMoved ? ' CromwellBlockInner' : '')
             + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '');
 
-        const PluginComponent = this.pluginComponent;
+        let blockContent: React.ReactNode | null = null;
+        if (this.data) {
+            if (this.data.type === 'plugin') {
+                if (!isAdminPanel && this.pluginComponent) {
+                    blockContent = <this.pluginComponent />;
+                }
+            }
+            if (this.data.type === 'text' || this.data.type === 'HTML') {
+                blockContent = this.props.children;
+            }
+
+
+            if (isAdminPanel) {
+                blockContent = (
+                    <div className={'CromwellBlock__adminPanelView'}>
+                        {this.data.type === 'plugin' && (
+                            <><PowerIcon className={'CromwellBlock__adminPanelIcon'} />
+                                <p>{this.data.pluginName}</p></>
+                        )}
+                        {this.data.type === 'text' && (
+                            <><TextFormatIcon className={'CromwellBlock__adminPanelIcon'} />
+                                {this.props.children}</>
+                        )}
+                        {this.data.type === 'HTML' && (
+                            <><CodeIcon className={'CromwellBlock__adminPanelIcon'} />
+                                {this.props.children}</>
+                        )}
+                    </div>
+                )
+            }
+        }
+
 
         const element = (<>
             {this.hasPortalBefore && (
@@ -158,8 +195,7 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
                 </div>
             )}
             <div id={this.id} key={this.id} className={elementClassName} ref={this.blockRef} >
-                {this.props.children}
-                {PluginComponent && <PluginComponent />}
+                {blockContent}
                 {this.getVirtualBlocks('inside')}
             </div>
             {this.hasPortalAfter && (
