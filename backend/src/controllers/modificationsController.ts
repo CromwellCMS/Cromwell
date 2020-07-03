@@ -74,29 +74,58 @@ export const applyModificationsController = (app: Express): void => {
     }
 
 
-    app.get('/api/v1/modifications/theme/', function (req, res) {
+    const getPageMods = (pageRoute: string, cb: (pageMods: CromwellBlockDataType[]) => void) => {
+        readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
+            let themeMods: CromwellBlockDataType[] | undefined = undefined, userMods: CromwellBlockDataType[] | undefined = undefined;
+            // Read theme's original modificators 
+            if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
+                for (const p of themeConfig.pages) {
+                    if (p.route === pageRoute) {
+                        themeMods = p.modifications;
+                    }
+                }
+            }
+            // Read user's custom modificators 
+            if (userConfig && userConfig.pages && Array.isArray(userConfig.pages)) {
+                for (const p of userConfig.pages) {
+                    if (p.route === pageRoute) {
+                        userMods = p.modifications;
+                    }
+                }
+            }
+            // Merge users's with theme's mods
+            const pageMods = mergeMods(themeMods, userMods);
+            cb(pageMods);
+        })
+    }
+
+    const mergeMods = (themeMods?: CromwellBlockDataType[], userMods?: CromwellBlockDataType[]): CromwellBlockDataType[] => {
+        let mods: CromwellBlockDataType[] = (themeMods && Array.isArray(themeMods)) ? themeMods : [];
+        if (userMods && Array.isArray(userMods)) {
+            userMods.forEach(userMod => {
+                let hasOriginaly = false;
+                mods.forEach((themeMod, i) => {
+                    if (themeMod.componentId === userMod.componentId) {
+                        mods[i] = userMod;
+                        hasOriginaly = true;
+                    }
+                })
+                if (!hasOriginaly) {
+                    mods.push(userMod);
+                }
+            })
+        }
+        return mods;
+    }
+
+
+
+    app.get('/api/v1/modifications/page/', function (req, res) {
         let pageMods: any[] = [];
 
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
             const pageRoute = req.query.pageRoute;
-
-            readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
-                // Read theme's original modificators 
-                if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
-                    for (const p of themeConfig.pages) {
-                        if (p.route === pageRoute && p.modifications && Array.isArray(p.modifications)) {
-                            pageMods = p.modifications;
-                        }
-                    }
-                }
-                // Read user's custom modificators and merge with theme's mods
-                if (userConfig && userConfig.pages && Array.isArray(userConfig.pages)) {
-                    for (const p of userConfig.pages) {
-                        if (p.route === pageRoute && p.modifications && Array.isArray(p.modifications)) {
-                            pageMods = [...pageMods, ...p.modifications];
-                        }
-                    }
-                }
+            getPageMods(pageRoute, (pageMods) => {
                 res.send(pageMods);
             })
         }
@@ -126,7 +155,7 @@ export const applyModificationsController = (app: Express): void => {
     })
 
 
-    app.get('/api/v1/modifications/pages', function (req, res) {
+    app.get('/api/v1/modifications/pages/info', function (req, res) {
         readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
             let pages: PageConfigType[] = [];
             if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
@@ -154,5 +183,54 @@ export const applyModificationsController = (app: Express): void => {
     })
 
 
+    app.get('/api/v1/modifications/pages/configs', function (req, res) {
+        readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
+            let pages: PageConfigType[] = [];
+            if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
+                pages = themeConfig.pages;
+            }
+            const pageRoutes: string[] = [];
+            pages.forEach(p => pageRoutes.push(p.route));
 
+            if (userConfig && userConfig.pages && Array.isArray(userConfig.pages)) {
+                userConfig.pages.forEach(p => {
+                    if (pageRoutes.includes(p.route)) {
+                        const i = pageRoutes.indexOf(p.route);
+                        // const mods = [...(pages[i].modifications ? pages[i].modifications : []),
+                        // ...(p.modifications ? p.modifications : [])]
+                        const mods = mergeMods(pages[i].modifications, p.modifications);
+                        pages[i] = Object.assign({}, pages[i], p);
+                        pages[i].modifications = mods;
+                    }
+                    else {
+                        pages.push(p);
+                    }
+                })
+            }
+
+            res.send(pages);
+
+        })
+    })
+
+
+    app.get('/api/v1/modifications/plugins/names', function (req, res) {
+        let modeNames: string[] = [];
+
+        if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
+            const pageRoute = req.query.pageRoute;
+            getPageMods(pageRoute, (pageMods) => {
+                pageMods.forEach(m => {
+                    if (m.type === 'plugin' && m.pluginName && !modeNames.includes(m.pluginName)) {
+                        modeNames.push(m.pluginName);
+                    }
+                })
+                res.send(modeNames);
+            })
+        }
+        else {
+            res.send(modeNames);
+        }
+    })
 }
+

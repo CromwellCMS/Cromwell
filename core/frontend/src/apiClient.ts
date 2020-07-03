@@ -1,8 +1,8 @@
-import { GraphQLClient } from 'graphql-request';
-// import { Variables as GraphQLVariables } from 'graphql-request/dist/src/types';
-import { getStoreItem } from '@cromwell/core';
-import { CromwellBlockDataType, RestAPIClient, PageInfoType } from '@cromwell/core';
+import { CromwellBlockDataType, getStoreItem, PageConfigType, PageInfoType, RestAPIClient } from '@cromwell/core';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { GraphQLClient } from 'graphql-request';
+
+// import { Variables as GraphQLVariables } from 'graphql-request/dist/src/types';
 // import { ApolloClient, ApolloQueryResult, QueryOptions } from 'apollo-client';
 // import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 // import { HttpLink } from 'apollo-link-http';
@@ -59,7 +59,7 @@ export const getRestAPIClient = (): RestAPIClient => {
         getThemeModifications: async (pageRoute: string): Promise<CromwellBlockDataType[]> => {
             let res: any;
             try {
-                res = await axios.get(`${baseUrl}/modifications/theme/?pageRoute=${pageRoute}`);
+                res = await axios.get(`${baseUrl}/modifications/page/?pageRoute=${pageRoute}`);
             } catch (e) { console.error('RestAPIClient::getThemeModifications', e) }
             return (res && res.data) ? res.data : [];
         },
@@ -73,9 +73,16 @@ export const getRestAPIClient = (): RestAPIClient => {
         getPagesInfo: async (): Promise<PageInfoType[]> => {
             let res: any;
             try {
-                res = await axios.get(`${baseUrl}/modifications/pages`);
+                res = await axios.get(`${baseUrl}/modifications/pages/info`);
             } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
             return (res && res.data) ? res.data : [];
-        }
+        },
+        getPageConfigs: async (): Promise<PageConfigType[]> => {
+            let res: any;
+            try {
+                res = await axios.get(`${baseUrl}/modifications/pages/configs`);
+            } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
+            return (res && res.data) ? res.data : [];
+        },
     }
 }

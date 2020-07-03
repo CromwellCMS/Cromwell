@@ -9,6 +9,21 @@
                     "type": "plugin",
                     "componentId": "5",
                     "pluginName": "ProductShowcase"
+                },
+                {
+                    "type": "HTML",
+                    "componentId": "1",
+                    "destinationComponentId": "2",
+                    "destinationPosition": "after"
+                },
+                {
+                    "type": "plugin",
+                    "componentId": "111",
+                    "destinationComponentId": "2",
+                    "destinationPosition": "after",
+                    "isVirtual": true,
+                    "styles": "background: red;",
+                    "pluginName": "ProductShowcaseDemo"
                 }
             ]
         }
@@ -24,7 +39,8 @@
         "ProductShowcaseDemo": {
             "pages": [
                 "index",
-                "product"
+                "product",
+                "pages/some_page"
             ],
             "options": {}
         }

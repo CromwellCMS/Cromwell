@@ -1,11 +1,11 @@
 import autoExternal from "rollup-plugin-auto-external";
 import resolve from "@rollup/plugin-node-resolve";
 import typescript from "rollup-plugin-typescript2";
-import sass from "rollup-plugin-sass";
 import commonjs from "@rollup/plugin-commonjs";
-// import postcss from 'rollup-plugin-postcss-modules';
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from "autoprefixer";
+import alias from '@rollup/plugin-alias';
+
 
 export default {
     input: './src/index.ts',
@@ -22,17 +22,23 @@ export default {
             // sourcemap: true
         }
     ],
-    external: ['style-inject', 'style-inject/dist', 'style-inject/dist/style-inject.es.js'],
+    external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend'],
     plugins: [
-        autoExternal(),
         postcss({
             plugins: [autoprefixer()],
             extract: false,
             modules: true,
             writeDefinitions: false,
-            inject: false,
+            inject: true,
             use: ['sass'],
         }),
+        alias({
+            entries: [
+                // Workaround for proper import (for next.js) of style-inject which is automatically imported by rollup-plugin-postcss
+                { find: /^.*\/node_modules\/style-inject\/dist\/style-inject\.es\.js/, replacement: 'style-inject' },
+            ]
+        }),
+        autoExternal(),
         resolve(),
         commonjs(),
         typescript({ useTsconfigDeclarationDir: true }),

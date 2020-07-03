@@ -229,4 +229,5 @@ export type RestAPIClient = {
     getThemeModifications: (pageName: string) => Promise<CromwellBlockDataType[]>;
     getPluginsModifications: () => Promise<any>;
     getPagesInfo: () => Promise<PageInfoType[]>;
+    getPageConfigs: () => Promise<PageConfigType[]>;
 }

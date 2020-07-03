@@ -12,7 +12,7 @@ const ProductShowcase = (props: ProductShowcaseProps) => {
     // console.log('ProductShowcase props', props)
     return (
         <div style={{ backgroundColor: "#999" }}>
-            <p>Reviews</p>
+            <p>ProductShowcase Reviews</p>
             {
                 props.productShowcaseReviews && props.productShowcaseReviews.map(review => {
                     return (

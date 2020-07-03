@@ -7,10 +7,9 @@ interface ProductShowcaseProps {
 }
 
 const ProductShowcaseDemo = (props: ProductShowcaseProps) => {
-    // console.log('ProductShowcaseDemo props', props)
     return (
         <div style={{ backgroundColor: "#999" }}>
-            <p>Showcase Time!</p>
+            <p>ProductShowcaseDemo::Showcase Time!</p>
             {
                 props.products && props.products.map(p => (
                     <div key={p.id}>
