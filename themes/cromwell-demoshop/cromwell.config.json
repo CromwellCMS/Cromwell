@@ -30,18 +30,9 @@
     ],
     "plugins": {
         "ProductShowcase": {
-            "pages": [
-                "index",
-                "pages/some_page"
-            ],
             "options": {}
         },
         "ProductShowcaseDemo": {
-            "pages": [
-                "index",
-                "product",
-                "pages/some_page"
-            ],
             "options": {}
         }
     }

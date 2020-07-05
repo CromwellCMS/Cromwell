@@ -16,58 +16,42 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
         console.log('cmsconfig', cmsconfig)
         throw new Error('pluginsDataFetcher !cmsconfig.themeName');
     }
-    // Get modifications of user to the current theme
     const restAPIClient = getRestAPIClient();
-    const pluginsUserModifications = await restAPIClient.getPluginsModifications();
-
-    // Get default modifications of the theme
-    const themeConfig: Record<string, any> = importThemeConfig();
-
-    // Concat both modifications
-    let pluginsModifications = {};
-    if (themeConfig && themeConfig.plugins && typeof themeConfig.plugins === 'object') {
-        pluginsModifications = Object.assign(pluginsModifications, themeConfig.plugins);
-    }
-    if (pluginsUserModifications && typeof pluginsUserModifications === 'object') {
-        pluginsModifications = Object.assign(pluginsModifications, pluginsUserModifications);
-    }
+    const pluginsModifications = await restAPIClient.getPluginsModifications(pageName);
 
     const pluginConfigs = Object.entries(pluginsModifications);
-    console.log('pluginConfigs', JSON.stringify(pluginConfigs))
+    // console.log('pageName', pageName, 'pluginConfigs', JSON.stringify(pluginConfigs))
     const pluginsData: any = {};
     if (pluginConfigs && Array.isArray(pluginConfigs)) {
         for (const pluginConfig of pluginConfigs) {
             // console.log('pluginConfig', pluginConfig);
             const pluginName = pluginConfig[0];
             const pluginConfigObj: any = pluginConfig[1];
-            // check if plugin can be displayed at current page
-            if (pluginConfigObj.pages && Array.isArray(pluginConfigObj.pages) && pluginConfigObj.pages.includes(pageName)) {
-                const pluginContext = JSON.parse(JSON.stringify(context));
-                pluginContext.pluginConfig = pluginConfigObj;
-                // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
-                try {
-                    const plugin = await importPlugin(pluginName);
-                    if (!plugin) {
-                        console.error('Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)
-                    } else {
-                        const getStaticProps = (plugin as any).getStaticProps;
-                        // console.log('plugin', plugin, 'getStaticProps', getStaticProps)
+            const pluginContext = JSON.parse(JSON.stringify(context));
+            pluginContext.pluginConfig = pluginConfigObj;
+            // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
+            try {
+                const plugin = await importPlugin(pluginName);
+                if (!plugin) {
+                    console.error('Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)
+                } else {
+                    const getStaticProps = (plugin as any).getStaticProps;
+                    // console.log('plugin', plugin, 'getStaticProps', getStaticProps)
 
-                        let pluginStaticProps = {};
-                        if (getStaticProps) {
-                            try {
-                                pluginStaticProps = await getStaticProps(pluginContext);
-                                // console.log('pluginStaticProps', pluginStaticProps)
-                            } catch (e) {
-                                console.error('pluginsDataFetcher1', e);
-                            }
+                    let pluginStaticProps = {};
+                    if (getStaticProps) {
+                        try {
+                            pluginStaticProps = await getStaticProps(pluginContext);
+                            // console.log('pluginStaticProps', pluginStaticProps)
+                        } catch (e) {
+                            console.error('pluginsDataFetcher1', e);
                         }
-                        pluginsData[pluginName] = pluginStaticProps;
                     }
-
-                } catch (e) {
-                    console.error('pluginsDataFetcher2', e);
+                    pluginsData[pluginName] = pluginStaticProps;
                 }
+
+            } catch (e) {
+                console.error('pluginsDataFetcher2', e);
             }
         }
     }

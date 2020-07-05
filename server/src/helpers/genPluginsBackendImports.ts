@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const resolve = require('path').resolve;
 
-export function genPluginsBackendImports() {
+export function genPluginsBackendImports(): void {
     const backendRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
     const globalPluginsDir = resolve(__dirname, '../../../plugins').replace(/\\/g, '/');
     const distDir = 'es';

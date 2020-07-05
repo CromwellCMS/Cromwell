@@ -21,7 +21,7 @@
     "core/backend",
     "core/frontend",
     "renderer",
-    "backend",
+    "server",
     "admin-panel",
     "plugins/*",
     "themes/*"

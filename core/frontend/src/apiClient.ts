@@ -63,10 +63,10 @@ export const getRestAPIClient = (): RestAPIClient => {
             } catch (e) { console.error('RestAPIClient::getThemeModifications', e) }
             return (res && res.data) ? res.data : [];
         },
-        getPluginsModifications: async (): Promise<Record<string, any>> => {
+        getPluginsModifications: async (pageRoute: string): Promise<Record<string, any>> => {
             let res: any;
             try {
-                res = await axios.get(`${baseUrl}/modifications/plugins`);
+                res = await axios.get(`${baseUrl}/modifications/plugins?pageRoute=${pageRoute}`);
             } catch (e) { console.error('RestAPIClient::getPluginsModifications', e) }
             return (res && res.data) ? res.data : {};
         },

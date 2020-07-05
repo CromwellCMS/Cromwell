@@ -14,8 +14,14 @@ export const applyModificationsController = (app: Express): void => {
     const themeConfigPath = `${themeDir}/cromwell.config.json`;
 
 
-    const readConfigs = (cb: (themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => void) => {
+    // < HELPERS >
 
+    /**
+     * Asynchronously reads modifications in theme's original config from /themes 
+     * and user's config from /modifications.
+     * @param cb callback with both configs.
+     */
+    const readConfigs = (cb: (themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => void): void => {
         let themeConfig: ThemeConfigType | null = null,
             userConfig: ThemeConfigType | null = null;
 
@@ -69,12 +75,41 @@ export const applyModificationsController = (app: Express): void => {
             else {
                 console.error('Failed to find theme config at ' + themeConfigPath);
                 readUserMods();
-            };
+            }
         });
     }
 
+    /**
+     * Will add and overwrite theme's original modificators by user's modificators
+     * @param themeMods 
+     * @param userMods 
+     */
+    const mergeMods = (themeMods?: CromwellBlockDataType[], userMods?: CromwellBlockDataType[]): CromwellBlockDataType[] => {
+        const mods: CromwellBlockDataType[] = (themeMods && Array.isArray(themeMods)) ? themeMods : [];
+        if (userMods && Array.isArray(userMods)) {
+            userMods.forEach(userMod => {
+                let hasOriginaly = false;
+                mods.forEach((themeMod, i) => {
+                    if (themeMod.componentId === userMod.componentId) {
+                        mods[i] = userMod;
+                        hasOriginaly = true;
+                    }
+                })
+                if (!hasOriginaly) {
+                    mods.push(userMod);
+                }
+            })
+        }
+        return mods;
+    }
 
-    const getPageMods = (pageRoute: string, cb: (pageMods: CromwellBlockDataType[]) => void) => {
+    /**
+     * Asynchronously returns all modifications for specified Page by pageRoute arg.
+     * Output contains theme's original modificators overwritten and supplemented by user's modificators.
+     * @param pageRoute original route of the page in theme dir
+     * @param cb callback with modifications
+     */
+    const getPageMods = (pageRoute: string, cb: (pageMods: CromwellBlockDataType[]) => void): void => {
         readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
             let themeMods: CromwellBlockDataType[] | undefined = undefined, userMods: CromwellBlockDataType[] | undefined = undefined;
             // Read theme's original modificators 
@@ -99,62 +134,54 @@ export const applyModificationsController = (app: Express): void => {
         })
     }
 
-    const mergeMods = (themeMods?: CromwellBlockDataType[], userMods?: CromwellBlockDataType[]): CromwellBlockDataType[] => {
-        let mods: CromwellBlockDataType[] = (themeMods && Array.isArray(themeMods)) ? themeMods : [];
-        if (userMods && Array.isArray(userMods)) {
-            userMods.forEach(userMod => {
-                let hasOriginaly = false;
-                mods.forEach((themeMod, i) => {
-                    if (themeMod.componentId === userMod.componentId) {
-                        mods[i] = userMod;
-                        hasOriginaly = true;
-                    }
-                })
-                if (!hasOriginaly) {
-                    mods.push(userMod);
-                }
+    // < HELPERS />
+
+    // < API Methods />
+
+    /**
+     * Returns all modifications for specified Page by pageRoute in query param.
+     * Output contains theme's original modificators overwritten by user's modificators.
+     */
+    app.get('/api/v1/modifications/page/', function (req, res) {
+        let out: CromwellBlockDataType[] = [];
+        if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
+            const pageRoute = req.query.pageRoute;
+            getPageMods(pageRoute, (pageMods) => {
+                out = pageMods;
+                res.send(out);
             })
         }
-        return mods;
-    }
+        else {
+            res.send(out);
+        }
+    })
 
-
-
-    app.get('/api/v1/modifications/page/', function (req, res) {
-        let pageMods: any[] = [];
+    /**
+     * Returns plagins' configs at specified Page by pageRoute in query param.
+     * Output contains theme's original modificators overwritten by user's modificators.
+     */
+    app.get('/api/v1/modifications/plugins', function (req, res) {
+        const out: Record<string, any> = {};
 
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
             const pageRoute = req.query.pageRoute;
             getPageMods(pageRoute, (pageMods) => {
-                res.send(pageMods);
+                pageMods.forEach(mod => {
+                    if (mod.type === 'plugin' && mod.pluginName) {
+                        out[mod.pluginName] = mod.pluginConfig ? mod.pluginConfig : {};
+                    }
+                })
+                res.send(out);
             })
         }
         else {
-            res.send(pageMods);
+            res.send(out);
         }
     })
 
-    app.get('/api/v1/modifications/plugins', function (req, res) {
-        const path = userModificationsPath + '/plugins.json';
-        fs.access(path, fs.constants.R_OK, (err) => {
-            if (!err) {
-                fs.readFile(path, (err, data) => {
-                    let pluginsModifications: Record<string, any> | undefined;
-                    try {
-                        pluginsModifications = JSON.parse(data);
-                    } catch (e) {
-                        console.error('Failed to read user plugins modifications', e);
-                    }
-                    res.send(pluginsModifications && pluginsModifications.plugins ? pluginsModifications.plugins : {});
-                });
-                return;
-            } else {
-                res.send({});
-            }
-        });
-    })
-
-
+    /**
+     * Returns all pages' metainfo without modificators
+     */
     app.get('/api/v1/modifications/pages/info', function (req, res) {
         readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
             let pages: PageConfigType[] = [];
@@ -182,7 +209,9 @@ export const applyModificationsController = (app: Express): void => {
         })
     })
 
-
+    /**
+     * Returns all pages merged configs.
+     */
     app.get('/api/v1/modifications/pages/configs', function (req, res) {
         readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
             let pages: PageConfigType[] = [];
@@ -214,23 +243,26 @@ export const applyModificationsController = (app: Express): void => {
     })
 
 
-    app.get('/api/v1/modifications/plugins/names', function (req, res) {
-        let modeNames: string[] = [];
+    // app.get('/api/v1/modifications/plugins/pagelist', function (req, res) {
+    //     const modeNames: string[] = [];
 
-        if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
-            const pageRoute = req.query.pageRoute;
-            getPageMods(pageRoute, (pageMods) => {
-                pageMods.forEach(m => {
-                    if (m.type === 'plugin' && m.pluginName && !modeNames.includes(m.pluginName)) {
-                        modeNames.push(m.pluginName);
-                    }
-                })
-                res.send(modeNames);
-            })
-        }
-        else {
-            res.send(modeNames);
-        }
-    })
+    //     if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
+    //         const pageRoute = req.query.pageRoute;
+    //         getPageMods(pageRoute, (pageMods) => {
+    //             pageMods.forEach(m => {
+    //                 if (m.type === 'plugin' && m.pluginName && !modeNames.includes(m.pluginName)) {
+    //                     modeNames.push(m.pluginName);
+    //                 }
+    //             })
+    //             res.send(modeNames);
+    //         })
+    //     }
+    //     else {
+    //         res.send(modeNames);
+    //     }
+    // })
+
+
+
 }
 

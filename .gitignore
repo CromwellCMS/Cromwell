@@ -98,7 +98,7 @@ plugins/*/dist
 plugins/*/es
 
 renderer/.cromwell
-backend/.cromwell
+server/.cromwell
 admin-panel/.cromwell
 
 # db.sqlite3
