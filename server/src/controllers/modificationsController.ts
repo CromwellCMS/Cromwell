@@ -38,7 +38,6 @@ export const applyModificationsController = (app: Express): void => {
                             console.error('Failed to read user theme modifications', e);
                         }
 
-                        console.log('themeUserModifications', themeUserModifications);
                         if (themeUserModifications && typeof themeUserModifications === 'object') {
                             userConfig = themeUserModifications;
                         }

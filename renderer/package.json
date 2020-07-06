@@ -38,9 +38,10 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "dev": "npx cross-env SCRIPT=dev npx ts-node src/generator.ts",
-    "build": "npx cross-env SCRIPT=build npx ts-node src/generator.ts",
-    "start": "npx cross-env SCRIPT=start npx ts-node src/generator.ts"
+    "gen": "npx ts-node src/generator.ts",
+    "dev": "npm run gen && npx cross-env SCRIPT=dev npx ts-node src/startup.ts",
+    "build": "npm run gen && npx cross-env SCRIPT=build npx ts-node src/startup.ts",
+    "start": "npm run gen src/generator.ts && npx cross-env SCRIPT=start npx ts-node src/startup.ts"
   },
   "description": ""
 }

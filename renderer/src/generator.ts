@@ -1,7 +1,4 @@
 import { CMSconfigType, ThemeConfigType } from '@cromwell/core';
-const shell = require('shelljs');
-const scriptName = process.env.SCRIPT;
-
 
 const main = async () => {
 
@@ -18,124 +15,121 @@ const main = async () => {
     }
     if (!config) throw new Error('renderer::server cannot read CMS config');
 
-    const generate = async () => {
-        if (!config) throw new Error('renderer::server cannot read CMS config');
+    const themesDir = resolve(__dirname, '../', '../', 'themes').replace(/\\/g, '/');
+    const globalPluginsDir = resolve(__dirname, '../', '../', 'plugins').replace(/\\/g, '/');
+    const themeDir = `${themesDir}/${config.themeName}`;
+    const themeImportsDir = `${themeDir}/es`;
+    const themeConfigPath = themeDir + '/' + 'cromwell.config.json';
+    const customPagesLocalDir = resolve(__dirname, './pages').replace(/\\/g, '/');
+    const localDir = resolve(__dirname, '../').replace(/\\/g, '/');
+    const adminPanelDir = resolve(__dirname, '../../admin-panel').replace(/\\/g, '/');
 
-        const themesDir = resolve(__dirname, '../', '../', 'themes').replace(/\\/g, '/');
-        const globalPluginsDir = resolve(__dirname, '../', '../', 'plugins').replace(/\\/g, '/');
-        const themeDir = `${themesDir}/${config.themeName}`;
-        const themeImportsDir = `${themeDir}/es`;
-        const themeConfigPath = themeDir + '/' + 'cromwell.config.json';
-        const customPagesLocalDir = resolve(__dirname, './pages').replace(/\\/g, '/');
-        const localDir = resolve(__dirname, '../').replace(/\\/g, '/');
-        const adminPanelDir = resolve(__dirname, '../../admin-panel').replace(/\\/g, '/');
-
-        let themeConfig: ThemeConfigType | undefined = undefined;
-        try {
-            themeConfig = JSON.parse(fs.readFileSync(themeConfigPath, { encoding: 'utf8', flag: 'r' }));
-        } catch (e) {
-            console.error('Failed to parse themeConfig', e);
-        }
+    let themeConfig: ThemeConfigType | undefined = undefined;
+    try {
+        themeConfig = JSON.parse(fs.readFileSync(themeConfigPath, { encoding: 'utf8', flag: 'r' }));
+    } catch (e) {
+        console.error('Failed to parse themeConfig', e);
+    }
 
 
-        let pluginImportPaths: Record<string, any> | undefined = undefined;
+    let pluginImportPaths: Record<string, any> | undefined = undefined;
 
-        // Read global plugins
+    // Read global plugins
 
-        if (themeConfig && themeConfig.plugins) {
-            const pluginNames = Object.keys(themeConfig.plugins);
-            pluginNames.forEach(name => {
-                const mPath = `${globalPluginsDir}/${name}/es/frontend/index.js`;
-                if (fs.existsSync(mPath)) {
-                    if (!pluginImportPaths) pluginImportPaths = {};
-                    pluginImportPaths[name] = mPath;
-                }
-            })
-        }
+    if (themeConfig && themeConfig.plugins) {
+        const pluginNames = Object.keys(themeConfig.plugins);
+        pluginNames.forEach(name => {
+            const mPath = `${globalPluginsDir}/${name}/es/frontend/index.js`;
+            if (fs.existsSync(mPath)) {
+                if (!pluginImportPaths) pluginImportPaths = {};
+                pluginImportPaths[name] = mPath;
+            }
+        })
+    }
 
-        let pluginImports = '';
-        let dynamicPluginImports = '';
-        let pluginImportsSwitch = '';
-        let dynamicPluginImportsSwitch = '';
+    let pluginImports = '';
+    let dynamicPluginImports = '';
+    let pluginImportsSwitch = '';
+    let dynamicPluginImportsSwitch = '';
 
-        // Concat all imports
-        if (pluginImportPaths) {
-            Object.entries(pluginImportPaths).map(e => {
-                // pluginImports += `\nconst ${e[0]} = import('${e[1]}')`;
-                pluginImports += `\nconst ${e[0]} = import('${e[1]}');`;
-                pluginImportsSwitch += `if (pluginName === '${e[0]}') return ${e[0]};\n`;
+    // Concat all imports
+    if (pluginImportPaths) {
+        Object.entries(pluginImportPaths).map(e => {
+            // pluginImports += `\nconst ${e[0]} = import('${e[1]}')`;
+            pluginImports += `\nconst ${e[0]} = import('${e[1]}');`;
+            pluginImportsSwitch += `if (pluginName === '${e[0]}') return ${e[0]};\n`;
 
-                dynamicPluginImports += `\nconst Dynamic${e[0]} = dynamic(() => import('${e[1]}'));`;
-                dynamicPluginImportsSwitch += `if (pluginName === '${e[0]}') return Dynamic${e[0]};\n   `;
-            })
-        }
+            dynamicPluginImports += `\nconst Dynamic${e[0]} = dynamic(() => import('${e[1]}'));`;
+            dynamicPluginImportsSwitch += `if (pluginName === '${e[0]}') return Dynamic${e[0]};\n   `;
+        })
+    }
 
-        console.log('pluginImports', pluginImports);
-
-
-        const customPages: Record<string, string> = {};
-        const customPageCompNames: Record<string, string> = {};
-        const pageNames: string[] = [];
-        let customPageImports = '';
-        let customPageImportsSwitch = '';
-        let customPageDynamicImports = '';
-        let customPageDynamicImportsSwitch = '';
-        let customPageLazyImports = '';
-        let customPageLazyImportsSwitch = '';
-        const pagesPath = `${themeImportsDir}/pages`;
-        if (fs.existsSync(pagesPath)) {
-            const files: string[] = await readRecursive(pagesPath);
-            console.log('pagesPath, files', files);
-
-            files.forEach(p => {
-                const pagePath = p.replace(/\\/g, '/');
-                const pageName = pagePath.replace(/\.js$/, '').replace(`${pagesPath}/`, '');
-                customPages[pageName] = pagePath;
-            });
-
-            console.log('customPages', customPages);
-            Object.entries(customPages).forEach(e => {
-                customPageCompNames[e[0]] = e[0].replace(/\W/g, '_') + '_' + require("crypto").randomBytes(6).toString('hex');
-            });
-            console.log('customPageCompNames', customPageCompNames);
-
-            Object.entries(customPages).forEach(e => {
-                const pageName = e[0];
-                pageNames.push(pageName);
-                const pagePath = e[1];
-                const pageComponentName = customPageCompNames[pageName];
-                console.log('pageName', pageName, 'pageComponentName', pageComponentName);
-
-                customPageImports += `\nimport * as ${pageComponentName}_Page from '${pagePath}';`;
-                customPageImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_Page;\n`;
-
-                customPageDynamicImports += `\nconst ${pageComponentName}_DynamicPage = dynamic(() => import('${pagePath}'));`;
-                customPageDynamicImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_DynamicPage;\n   `;
-
-                customPageLazyImports += `\nconst ${pageComponentName}_LazyPage = lazy(() => import('${pagePath}'))`;
-                customPageLazyImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_LazyPage;\n   `;
-            })
-        }
+    console.log('pluginImports', pluginImports);
 
 
-        // const customPagesPath = `${themeImportsDir}/pages`;
+    const customPages: Record<string, string> = {};
+    const customPageCompNames: Record<string, string> = {};
+    const pageNames: string[] = [];
+    let customPageImports = '';
+    let customPageImportsSwitch = '';
+    let customPageDynamicImports = '';
+    let customPageDynamicImportsSwitch = '';
+    let customPageLazyImports = '';
+    let customPageLazyImportsSwitch = '';
+    const pagesPath = `${themeImportsDir}/pages`;
+    if (fs.existsSync(pagesPath)) {
+        const files: string[] = await readRecursive(pagesPath);
+        console.log('pagesPath, files', files);
 
-        // if (fs.existsSync(customPagesPath)) {
-        //     const files: string[] = fs.readdirSync(customPagesPath);
-        //     console.log('files of custom pages:', files)
-        //     files.forEach(fileName => {
-        //         customPages[fileName.replace(/\.js$/, '')] = `${customPagesPath}/${fileName}`;
-        //     });
-        //     Object.entries(customPages).forEach(e => {
-        //         customPageImports += `\nconst ${e[0]}_Page = import('${e[1]}')`;
-        //         customPageImportsSwitch += `if (pageName === '${e[0]}') return ${e[0]}_Page;\n`;
+        files.forEach(p => {
+            const pagePath = p.replace(/\\/g, '/');
+            const pageName = pagePath.replace(/\.js$/, '').replace(`${pagesPath}/`, '');
+            customPages[pageName] = pagePath;
+        });
 
-        //         customPageDynamicImports += `\nconst ${e[0]}_DynamicPage = dynamic(() => import('${e[1]}'));`;
-        //         customPageDynamicImportsSwitch += `if (pageName === '${e[0]}') return ${e[0]}_DynamicPage;\n   `;
-        //     })
-        // }
+        console.log('customPages', customPages);
+        Object.entries(customPages).forEach(e => {
+            customPageCompNames[e[0]] = e[0].replace(/\W/g, '_') + '_' + require("crypto").randomBytes(6).toString('hex');
+        });
+        console.log('customPageCompNames', customPageCompNames);
 
-        const content = `
+        Object.entries(customPages).forEach(e => {
+            const pageName = e[0];
+            pageNames.push(pageName);
+            const pagePath = e[1];
+            const pageComponentName = customPageCompNames[pageName];
+            console.log('pageName', pageName, 'pageComponentName', pageComponentName);
+
+            customPageImports += `\nimport * as ${pageComponentName}_Page from '${pagePath}';`;
+            customPageImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_Page;\n`;
+
+            customPageDynamicImports += `\nconst ${pageComponentName}_DynamicPage = dynamic(() => import('${pagePath}'));`;
+            customPageDynamicImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_DynamicPage;\n   `;
+
+            customPageLazyImports += `\nconst ${pageComponentName}_LazyPage = lazy(() => import('${pagePath}'))`;
+            customPageLazyImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_LazyPage;\n   `;
+        })
+    }
+
+
+    // const customPagesPath = `${themeImportsDir}/pages`;
+
+    // if (fs.existsSync(customPagesPath)) {
+    //     const files: string[] = fs.readdirSync(customPagesPath);
+    //     console.log('files of custom pages:', files)
+    //     files.forEach(fileName => {
+    //         customPages[fileName.replace(/\.js$/, '')] = `${customPagesPath}/${fileName}`;
+    //     });
+    //     Object.entries(customPages).forEach(e => {
+    //         customPageImports += `\nconst ${e[0]}_Page = import('${e[1]}')`;
+    //         customPageImportsSwitch += `if (pageName === '${e[0]}') return ${e[0]}_Page;\n`;
+
+    //         customPageDynamicImports += `\nconst ${e[0]}_DynamicPage = dynamic(() => import('${e[1]}'));`;
+    //         customPageDynamicImportsSwitch += `if (pageName === '${e[0]}') return ${e[0]}_DynamicPage;\n   `;
+    //     })
+    // }
+
+    const content = `
             import dynamic from "next/dynamic";
             /**
              * Configs 
@@ -185,20 +179,20 @@ const main = async () => {
             }
         `
 
-        fs.outputFileSync('./.cromwell/imports/imports.gen.js', content);
-        // fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(pluginImportPaths));
+    fs.outputFileSync('./.cromwell/imports/imports.gen.js', content);
+    // fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(pluginImportPaths));
 
 
 
-        // Import theme's pages into nexjs pages dir
+    // Import theme's pages into nexjs pages dir
 
-        console.log('customPagesLocalPath', customPagesLocalDir)
-        if (fs.existsSync(customPagesLocalDir)) {
-            fs.removeSync(customPagesLocalDir);
-        }
-        Object.keys(customPages).forEach(pageName => {
-            const pageComponentName = customPageCompNames[pageName];
-            const pageContent = `
+    console.log('customPagesLocalPath', customPagesLocalDir)
+    if (fs.existsSync(customPagesLocalDir)) {
+        fs.removeSync(customPagesLocalDir);
+    }
+    Object.keys(customPages).forEach(pageName => {
+        const pageComponentName = customPageCompNames[pageName];
+        const pageContent = `
                 import { createGetStaticProps } from 'common/createGetStaticProps';
                 import { createGetStaticPaths } from 'common/createGetStaticPaths';
                 import { getPage } from 'common/getPage';
@@ -211,12 +205,12 @@ const main = async () => {
                 
                 export default PageComp;
             `;
-            fs.outputFileSync(`${localDir}/pages/${pageName}.js`, pageContent);
-        });
+        fs.outputFileSync(`${localDir}/pages/${pageName}.js`, pageContent);
+    });
 
 
-        // Generate page imports for admin panel
-        const adminPanelContent = `
+    // Generate page imports for admin panel
+    const adminPanelContent = `
             import { lazy } from 'react';
             export const pageNames = ${JSON.stringify(pageNames)};
             ${customPageLazyImports}
@@ -226,29 +220,7 @@ const main = async () => {
                 return undefined;
             }
         `;
-        fs.outputFileSync(`${adminPanelDir}/.cromwell/imports/pages.imports.gen.js`, adminPanelContent);
-
-
-        if (scriptName === 'dev') {
-            shell.exec(`npx next dev -p ${config.frontendPort}`)
-        }
-
-        if (scriptName === 'build') {
-            shell.exec('npx next build')
-        }
-
-    }
-
-
-
-    if (scriptName === 'dev' || scriptName === 'build') {
-        generate();
-    }
-    if (scriptName === 'start') {
-        shell.exec(`npx next start -p ${config.frontendPort}`);
-    }
-
-
+    fs.outputFileSync(`${adminPanelDir}/.cromwell/imports/pages.imports.gen.js`, adminPanelContent);
 
 };
 
