@@ -12,13 +12,13 @@ const Index: CromwellPageType = (props) => {
             
         HELLO WOORLD1
         <Link href='/pages/some_page'><a>SomePage</a></Link>
-            <CromwellTextBlock id="1">Custom CromwellBlock text 1 </CromwellTextBlock>
+            <CromwellTextBlock id="1">Custom Block text 1 </CromwellTextBlock>
             <div>
                 <h2>Some subtitle</h2>
             </div>
             <CromwellHTMLBlock id="2">
                 <div>
-                    <p>Custom CromwellBlock text 2</p>
+                    <p>Custom Block text 2</p>
                 </div>
             </CromwellHTMLBlock>
             <CromwellBlock id="5" />

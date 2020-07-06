@@ -19,10 +19,10 @@ const Product: CromwellPageType<ProductProps> = (props) => {
                     <div>
                         {product.name}
                         <p></p>
-                        <CromwellBlock id="3" />
                     </div>
                 )
             }
+            <CromwellBlock id="3" />
         </div>
     );
 }

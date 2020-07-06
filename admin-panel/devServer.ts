@@ -23,7 +23,9 @@ const watch = process.env.WATCH;
 
 const bs = require('browser-sync').create();
 bs.init({
-    watch: true,
+    files: [`${dir}/*.js`],
+    open: false,
+    // watch: true,
     server: {
         baseDir: dir,
         middleware: [

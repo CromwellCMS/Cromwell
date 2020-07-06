@@ -56,14 +56,6 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
                 // If should, it will create portal to destinationComponent's wrapper
                 if (d.componentId == this.props.id && d.destinationComponentId && d.destinationPosition) {
                     this.shouldBeMoved = true;
-
-                    if (!isServer()) {
-                        const destinationComponent = this.getDestinationComponent(d);
-                        if (destinationComponent) {
-                            // console.log('Moving component ' + props.id + ' to ' + d.destinationComponentId);
-                            this.targetElement = destinationComponent;
-                        }
-                    }
                 }
 
                 // Check if current component has other components moved to it.
@@ -104,8 +96,19 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
                 element.classList.remove('CromwellBlockInnerServer');
             }
             if (this.data && this.data.destinationComponentId && !this.targetElement) {
+
+                // if (!isServer()) {
+                //     const destinationComponent = this.getDestinationComponent(this.data);
+                //     if (destinationComponent) {
+                //         console.log('Moving component ' + this.props.id + ' to ' + this.data.destinationComponentId);
+                //         this.targetElement = destinationComponent;
+                //     }
+                // }
+                // console.log('CromwellBlock::componentDidMount id: ' + this.id + ' data: ' + JSON.stringify(this.data))
+
                 const destinationComponent = this.getDestinationComponent(this.data);
                 if (destinationComponent) {
+                    // console.log('Moving component ' + this.props.id + ' to ' + this.data.destinationComponentId);
                     this.targetElement = destinationComponent;
                 }
                 else {
@@ -141,8 +144,12 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
     }
 
     render(): JSX.Element | null {
+        // console.log('CromwellBlock::render id: ' + this.id + ' data: ' + JSON.stringify(this.data));
+        // console.log('isServer', isServer(), 'this.shouldBeMoved', this.shouldBeMoved, 'this.targetElement', this.targetElement);
+
         // Will return null only at client at first render if it hasn't found destination. If it won't find in componentDidMount then it will set 'shouldBeMoved' to false and render
         if (!isServer() && this.shouldBeMoved && !this.targetElement) {
+            // console.log('CromwellBlock::render returned null id: ' + this.id)
             return null;
         }
         if (getCromwellBlockId(this.props.id) !== this.id) {

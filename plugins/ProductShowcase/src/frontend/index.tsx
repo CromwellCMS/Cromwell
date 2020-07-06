@@ -28,7 +28,7 @@ const ProductShowcase = (props: ProductShowcaseProps) => {
                 props.productShowcase && props.productShowcase.products && props.productShowcase.products.map(p => (
                     <div key={p.id}>
                         <Link href="/product/[slug]" as={`/product/${p.slug}`}><a>Name: {p.name}</a></Link>
-                        <h1>Price: {p.price}</h1>
+                        <p>Price: {p.price}</p>
                         <h1>id: {p.id}</h1>
                     </div>
                 ))
