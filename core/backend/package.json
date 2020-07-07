@@ -11,6 +11,8 @@
   "license": "ISC",
   "dependencies": {
     "@cromwell/core": "1.0.0",
+    "crypto": "^1.0.1",
+    "recursive-readdir": "^2.2.2",
     "tslib": "^2.0.0"
   },
   "peerDependencies": {
@@ -23,6 +25,7 @@
     "@types/node": "14.0.13",
     "@types/react": "16.9.36",
     "@types/react-dom": "16.9.8",
+    "@types/recursive-readdir": "2.2.0",
     "rollup": "^2.16.1",
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-typescript2": "^0.27.1",

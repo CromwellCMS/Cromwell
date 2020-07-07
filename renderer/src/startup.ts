@@ -29,3 +29,5 @@ const main = async () => {
     }
 
 }
+
+main();

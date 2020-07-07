@@ -8,7 +8,7 @@ const isProduction = buildMode === 'production';
 
 module.exports = {
     mode: buildMode,
-    devtool: isProduction ? null : "source-map",
+    devtool: isProduction ? false : "source-map",
     entry: './src/index.ts',
     output: {
         path: isProduction ? appBuildProd : appBuildDev,

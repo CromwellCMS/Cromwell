@@ -1,6 +1,9 @@
 import { CMSconfigType, ThemeConfigType } from '@cromwell/core';
+import { readThemePages } from '@cromwell/core-backend';
+import ReactDOMServer from 'react-dom/server';
+import React from 'react';
 
-function generateAdminPanelImports() {
+const generateAdminPanelImports = async () => {
     const fs = require('fs-extra');
     const resolve = require('path').resolve;
 
@@ -14,15 +17,6 @@ function generateAdminPanelImports() {
         console.log('renderer::server ', e);
     }
     if (!config || !config.themeName) throw new Error('renderer::server cannot read CMS config');
-
-    const themeDir = resolve(__dirname, '../', '../', 'themes').replace(/\\/g, '/') + '/' + config.themeName;
-    const themeConfigPath = themeDir + '/' + 'cromwell.config.json';
-    let themeConfig: ThemeConfigType | undefined = undefined;
-    try {
-        themeConfig = JSON.parse(fs.readFileSync(themeConfigPath, { encoding: 'utf8', flag: 'r' }));
-    } catch (e) {
-        console.error('Failed to parse themeConfig', e);
-    }
 
 
     // Import global plugins
@@ -55,7 +49,6 @@ function generateAdminPanelImports() {
     const content = `
         import { lazy } from 'react';
         export const CMSconfig = ${JSON.stringify(config)};
-        export const themeConfig = ${JSON.stringify(themeConfig)};
 
         /**
          * Plugins
@@ -69,6 +62,54 @@ function generateAdminPanelImports() {
             return undefined;
         }
     `;
-    fs.outputFileSync(`${adminPanelDir}/.cromwell/imports/imports.gen.js`, content);
+    fs.outputFileSync(`${adminPanelDir}/.cromwell/imports/plugins.gen.js`, content);
+
+
+
+    // Generate page imports for admin panel
+    const customPages = await readThemePages(resolve(__dirname, '../../'));
+
+    let customPageStatics = '';
+    let customPageStaticsSwitch = '';
+    let customPageLazyImports = '';
+    let customPageLazyImportsSwitch = '';
+    const pageNames: string[] = [];
+
+    Object.entries(customPages).forEach(e => {
+        const pageName = e[0];
+        pageNames.push(pageName);
+        const pagePath = e[1].pagePath;
+        const pageComponentName = e[1].pageComponentName;
+        console.log('pageName', pageName, 'pageComponentName', pageComponentName);
+
+        customPageLazyImports += `\nconst ${pageComponentName}_LazyPage = lazy(() => import('${pagePath}'))`;
+        customPageLazyImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_LazyPage;\n   `;
+
+        // Render page to static HTML
+        const pageComp: () => JSX.Element = require(pagePath).default;
+        const html = ReactDOMServer.renderToStaticMarkup(React.createElement(pageComp));
+
+        customPageStatics += `\nconst ${pageComponentName}_StaticPage = '${html}'`;
+        customPageStaticsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_StaticPage;\n   `;
+    })
+
+    const adminPanelContent = `
+            import { lazy } from 'react';
+            export const pageNames = ${JSON.stringify(pageNames)};
+            ${customPageLazyImports}
+            
+            export const importLazyPage = (pageName) => {
+                ${customPageLazyImportsSwitch}
+                return undefined;
+            }
+
+            ${customPageStatics}
+
+            export const importStaticPage = (pageName) => {
+                ${customPageStaticsSwitch}
+                return undefined;
+            }
+        `;
+    fs.outputFileSync(`${adminPanelDir}/.cromwell/imports/pages.gen.js`, adminPanelContent);
 }
 generateAdminPanelImports();
