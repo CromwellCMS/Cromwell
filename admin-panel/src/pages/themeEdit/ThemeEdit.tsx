@@ -1,15 +1,18 @@
 import { CromwellBlockDataType, PageInfoType, setStoreItem } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { cromwellBlockTypeFromClassname, cromwellIdFromHTML, getRestAPIClient } from '@cromwell/core-frontend';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
+import { DomElement } from 'htmlparser2';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
+import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
 
-import { importLazyPage } from '../../../.cromwell/imports/pages.imports.gen';
+import { importStaticPage } from '../../../.cromwell/imports/pages.gen';
+import { CromwellAdminBlock } from '../../components/cromwellAdminBlock/CromwellAdminBlock';
+import cromwellAdminBlockStyles from '../../components/cromwellAdminBlock/CromwellAdminBlock.module.scss';
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { Draggable } from '../../helpers/Draggable';
 import styles from './ThemeEdit.module.scss';
-
 
 const MenuItem = withStyles({
     root: {
@@ -19,15 +22,30 @@ const MenuItem = withStyles({
     },
 })(MuiMenuItem);
 
+const transformReactHtmlParser = (node: DomElement) => {
+    if (node.attribs && node.attribs.class && node.attribs.class.includes('CromwellBlock')) {
+        const id = cromwellIdFromHTML(node.attribs.id);
+        const type = cromwellBlockTypeFromClassname(node.attribs.class);
+        // console.log('id', id, 'type', type, node);
+        return (
+            <CromwellAdminBlock id={id} type={type}>
+                {node.children ? node.children.map((c, i) => convertNodeToElement(c, i, transformReactHtmlParser)) : ''}
+            </CromwellAdminBlock>
+        )
+    }
+}
 
 let draggable;
+
+
 
 export default function ThemeEdit() {
 
     const [pageInfos, setPageInfos] = useState<PageInfoType[] | null>(null);
     const editorWindowRef = useRef<HTMLDivElement>(null);
     const [editingPageConfig, setEditingPageConfig] = useState<PageInfoType | null>(null);
-    const [EditingPage, setEditingPage] = useState<React.LazyExoticComponent<React.ComponentType<any>> | null>(null);
+    // const [EditingPage, setEditingPage] = useState<React.LazyExoticComponent<React.ComponentType<any>> | null>(null);
+    const [EditingPage, setEditingPage] = useState<string | null>(null);
     const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
     const [isPageListLoading, setIsPageListLoading] = useState<boolean>(true);
     const [isPageListCollapsed, setIsPageListCollapsed] = useState<boolean>(false);
@@ -46,15 +64,18 @@ export default function ThemeEdit() {
         setIsPageLoading(true);
         setIsPageListCollapsed(true);
         const pageModifications: CromwellBlockDataType[] = await getRestAPIClient().getThemeModifications(pageCofig.route);
-        console.log('pageModifications', pageModifications);
+        // console.log('pageModifications', pageModifications);
         setStoreItem('blocksData', pageModifications);
 
         setEditingPageConfig(pageCofig);
-        const pageComp = importLazyPage(pageCofig.route);
+        const pageComp = importStaticPage(pageCofig.route);
         if (pageComp) setEditingPage(pageComp);
         setIsPageLoading(false);
 
-        draggable.setupDraggableBlocks(editorWindowRef.current, '.CromwellBlock', styles.dragFrame);
+        draggable.setupDraggableBlocks(
+            editorWindowRef.current,
+            `.${cromwellAdminBlockStyles.CromwellAdminBlock}`,
+            `.${cromwellAdminBlockStyles.dragFrame}`);
 
         // // dragula
         // // temp timeout
@@ -118,12 +139,16 @@ export default function ThemeEdit() {
             {!isPageLoading && EditingPage && isPageListCollapsed && (
                 <div className={styles.EditorWindow} ref={editorWindowRef}>
                     <PageErrorBoundary>
-                        <Suspense fallback={<LoadBox />}>
+                        {/* <Suspense fallback={<LoadBox />}>
                             <EditingPage />
-                        </Suspense>
+                        </Suspense> */}
+                        {ReactHtmlParser(EditingPage, {
+                            transform: transformReactHtmlParser
+                        })}
                     </PageErrorBoundary>
                 </div>
             )}
         </div>
     )
 }
+

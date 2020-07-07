@@ -7,39 +7,28 @@
 .EditorWindow {
     :global(.CromwellBlock)  {
         position: relative;
-        padding: 10px;
-        margin: 5px;
-        border: 2px dashed transparent;
-        border-radius: 5px;
-        transition-property: border, height, margin, padding;
-        transition-duration: 0.3s;
-        user-select: none;
-        z-index: 5;
+        // padding: 10px;
+        // margin: 5px;
+        // border: 2px dashed transparent;
+        // border-radius: 5px;
+        // transition-property: border, height, margin, padding;
+        // transition-duration: 0.3s;
+        // user-select: none;
+        // z-index: 5;
     }
-    :global(.CromwellBlock):hover {
-        border: 2px dashed #999;
+    // :global(.CromwellBlock):hover {
+    //     border: 2px dashed #999;
 
-    }
+    // }
 
-    :global(.CromwellBlock__adminPanelView) {
-        display: flex;
-        align-items: center;
-    }
+    // :global(.CromwellBlock__adminPanelView) {
+    //     display: flex;
+    //     align-items: center;
+    // }
 
     
-    :global(.CromwellBlock__adminPanelIcon) {
-        margin: 10px
-    }
+    // :global(.CromwellBlock__adminPanelIcon) {
+    //     margin: 10px
+    // }
 
-    .dragFrame {
-        display: block;
-        position: absolute;
-        z-index: -1;
-        background-color: rgba(0,0,0,0.1);
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        cursor: grab;
-    }
 }
