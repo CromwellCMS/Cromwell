@@ -1,4 +1,4 @@
-import { getStoreItem, CromwellBlockDataType, ThemeConfigType, PageConfigType } from "@cromwell/core";
+import { getStoreItem, CromwellBlockDataType, ThemeConfigType, PageConfigType, apiV1BaseRoute } from "@cromwell/core";
 import { Express } from 'express';
 const resolve = require('path').resolve;
 const fs = require('fs-extra');
@@ -103,10 +103,10 @@ export const applyModificationsController = (app: Express): void => {
     }
 
     /**
-     * Asynchronously returns all modifications for specified Page by pageRoute arg.
+     * Asynchronously reads all modifications for specified Page by pageRoute arg.
      * Output contains theme's original modificators overwritten and supplemented by user's modificators.
      * @param pageRoute original route of the page in theme dir
-     * @param cb callback with modifications
+     * @param cb callback to return modifications
      */
     const getPageMods = (pageRoute: string, cb: (pageMods: CromwellBlockDataType[]) => void): void => {
         readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
@@ -133,6 +133,39 @@ export const applyModificationsController = (app: Express): void => {
         })
     }
 
+    /**
+     * Asynchronously reads theme's and user's configs and merge all pages info with modifications 
+     * @param cb cb to return pages info
+     */
+    const readAllPageConfigs = (cb: (pages: PageConfigType[]) => void) => {
+        readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
+            let pages: PageConfigType[] = [];
+            if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
+                pages = themeConfig.pages;
+            }
+            const pageRoutes: string[] = [];
+            pages.forEach(p => pageRoutes.push(p.route));
+
+            if (userConfig && userConfig.pages && Array.isArray(userConfig.pages)) {
+                userConfig.pages.forEach(p => {
+                    if (pageRoutes.includes(p.route)) {
+                        const i = pageRoutes.indexOf(p.route);
+                        // const mods = [...(pages[i].modifications ? pages[i].modifications : []),
+                        // ...(p.modifications ? p.modifications : [])]
+                        const mods = mergeMods(pages[i].modifications, p.modifications);
+                        pages[i] = Object.assign({}, pages[i], p);
+                        pages[i].modifications = mods;
+                    }
+                    else {
+                        pages.push(p);
+                    }
+                })
+            }
+            cb(pages);
+        })
+    }
+
+
     // < HELPERS />
 
     // < API Methods />
@@ -141,7 +174,7 @@ export const applyModificationsController = (app: Express): void => {
      * Returns all modifications for specified Page by pageRoute in query param.
      * Output contains theme's original modificators overwritten by user's modificators.
      */
-    app.get('/api/v1/modifications/page/', function (req, res) {
+    app.get(`/${apiV1BaseRoute}/modifications/page/`, function (req, res) {
         let out: CromwellBlockDataType[] = [];
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
             const pageRoute = req.query.pageRoute;
@@ -159,7 +192,7 @@ export const applyModificationsController = (app: Express): void => {
      * Returns plagins' configs at specified Page by pageRoute in query param.
      * Output contains theme's original modificators overwritten by user's modificators.
      */
-    app.get('/api/v1/modifications/plugins', function (req, res) {
+    app.get(`/${apiV1BaseRoute}/modifications/plugins`, function (req, res) {
         const out: Record<string, any> = {};
 
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
@@ -179,9 +212,29 @@ export const applyModificationsController = (app: Express): void => {
     })
 
     /**
+    * Returns array of plugins' names at all pages
+    */
+    app.get(`/${apiV1BaseRoute}/modifications/pluginNames`, function (req, res) {
+        const out: string[] = [];
+
+        readAllPageConfigs((pages) => {
+            pages.forEach(p => {
+                p.modifications.forEach(mod => {
+                    if (mod.type === 'plugin' && mod.pluginName && !out.includes(mod.pluginName)) {
+                        out.push(mod.pluginName);
+                    }
+                })
+            });
+            res.send(out);
+        })
+
+
+    })
+
+    /**
      * Returns all pages' metainfo without modificators
      */
-    app.get('/api/v1/modifications/pages/info', function (req, res) {
+    app.get(`/${apiV1BaseRoute}/modifications/pages/info`, function (req, res) {
         readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
             let pages: PageConfigType[] = [];
             if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
@@ -211,33 +264,9 @@ export const applyModificationsController = (app: Express): void => {
     /**
      * Returns all pages merged configs.
      */
-    app.get('/api/v1/modifications/pages/configs', function (req, res) {
-        readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
-            let pages: PageConfigType[] = [];
-            if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
-                pages = themeConfig.pages;
-            }
-            const pageRoutes: string[] = [];
-            pages.forEach(p => pageRoutes.push(p.route));
-
-            if (userConfig && userConfig.pages && Array.isArray(userConfig.pages)) {
-                userConfig.pages.forEach(p => {
-                    if (pageRoutes.includes(p.route)) {
-                        const i = pageRoutes.indexOf(p.route);
-                        // const mods = [...(pages[i].modifications ? pages[i].modifications : []),
-                        // ...(p.modifications ? p.modifications : [])]
-                        const mods = mergeMods(pages[i].modifications, p.modifications);
-                        pages[i] = Object.assign({}, pages[i], p);
-                        pages[i].modifications = mods;
-                    }
-                    else {
-                        pages.push(p);
-                    }
-                })
-            }
-
+    app.get(`/${apiV1BaseRoute}/modifications/pages/configs`, function (req, res) {
+        readAllPageConfigs((pages) => {
             res.send(pages);
-
         })
     })
 

@@ -47,4 +47,6 @@ export const DBTableNames: { [K in DBEntity]: string } = {
 }
 
 export const isServer = (): boolean => (typeof window === 'undefined');
+
+export const apiV1BaseRoute = 'api/v1';
 // export const isServer = (): boolean => true;

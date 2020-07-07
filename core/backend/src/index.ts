@@ -15,3 +15,5 @@ export * from './inputs/UpdateProductCategory';
 export * from './repositories/BaseQueries';
 export * from './repositories/ProductCategoryRepository';
 export * from './repositories/ProductRepository';
+
+export * from './helpers/readThemePages';

@@ -1,4 +1,4 @@
-import { CromwellBlockDataType, getStoreItem, PageConfigType, PageInfoType, RestAPIClient } from '@cromwell/core';
+import { CromwellBlockDataType, getStoreItem, PageConfigType, PageInfoType, RestAPIClient, apiV1BaseRoute } from '@cromwell/core';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { GraphQLClient } from 'graphql-request';
 
@@ -51,7 +51,7 @@ export const getRestAPIClient = (): RestAPIClient => {
         console.log('cmsconfig', cmsconfig);
         throw new Error('getGraphQLClient !cmsconfig.apiPort');
     }
-    const baseUrl = `http://localhost:${cmsconfig.apiPort}/api/v1`;
+    const baseUrl = `http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}`;
     return {
         get: <T>(route: string, config?: AxiosRequestConfig | undefined): Promise<AxiosResponse<T>> => {
             return axios.get(`${baseUrl}/${route}`, config);
@@ -69,6 +69,13 @@ export const getRestAPIClient = (): RestAPIClient => {
                 res = await axios.get(`${baseUrl}/modifications/plugins?pageRoute=${pageRoute}`);
             } catch (e) { console.error('RestAPIClient::getPluginsModifications', e) }
             return (res && res.data) ? res.data : {};
+        },
+        getPluginNames: async (): Promise<string[]> => {
+            let res: any;
+            try {
+                res = await axios.get(`${baseUrl}/modifications/pluginNames`);
+            } catch (e) { console.error('RestAPIClient::getPluginNames', e) }
+            return (res && res.data) ? res.data : [];
         },
         getPagesInfo: async (): Promise<PageInfoType[]> => {
             let res: any;

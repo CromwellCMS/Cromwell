@@ -83,32 +83,36 @@ declare global {
 
 export type BlockDestinationPositionType = 'before' | 'after' | 'inside';
 
+export type TCromwellBlockType = 'plugin' | 'text' | 'HTML';
+
 export type CromwellBlockDataType = {
     /**
      * Component's type
      */
-    type: 'plugin' | 'text' | 'HTML';
+    type: TCromwellBlockType;
 
     /**
-     * Component's id, must be unique for the app page.
+     * Component's id, must be unique in a page.
      */
     componentId: string;
 
     /**
-     * Id of Destination Component where this component will be displayed.
+     * If true, indicates that this component was created in builder and it doesn't exist in JSX.
+     * Exists only in page's config. 
+     */
+    isVirtual?: boolean;
+
+    /**
+     * Id of Destination Component where this component will be displayed. 
+     * Works only for virtual blocks.
      */
     destinationComponentId?: string;
 
     /**
      * Position around Destination Component where this component will be displayed.
+     * Works only for virtual blocks.
      */
     destinationPosition?: BlockDestinationPositionType;
-
-    /**
-     * If true indicates that this component was created in builder and it doesn't exist in JSX.
-     * Exists only in page's config. 
-     */
-    isVirtual?: boolean;
 
     /**
      * Plugin's name to render inside component. Same name must be in cromwell.config.json
@@ -125,6 +129,12 @@ export type CromwellBlockDataType = {
      * CSS styles to apply to this block.
      */
     styles?: string;
+
+    /**
+     * Non-virtual blocks that exist in JSX cannot be deleted (or moved) in theme's source code by user
+     * but user can set isDeleted flag that will tell Blocks to render null instead
+     */
+    isDeleted?: boolean;
 }
 
 
@@ -239,6 +249,7 @@ export type RestAPIClient = {
     get: <T>(route: string, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<T>>;
     getThemeModifications: (pageName: string) => Promise<CromwellBlockDataType[]>;
     getPluginsModifications: (pageRoute: string) => Promise<any>;
+    getPluginNames: () => Promise<string[]>;
     getPagesInfo: () => Promise<PageInfoType[]>;
     getPageConfigs: () => Promise<PageConfigType[]>;
 }
