@@ -1,7 +1,7 @@
 import { CMSconfigType, ThemeConfigType } from '@cromwell/core';
-const shell = require('shelljs');
-const fs = require('fs-extra');
-const resolve = require('path').resolve;
+import fs from 'fs-extra';
+import shell from 'shelljs';
+import { resolve } from 'path';
 const scriptName = process.env.SCRIPT;
 
 const main = async () => {

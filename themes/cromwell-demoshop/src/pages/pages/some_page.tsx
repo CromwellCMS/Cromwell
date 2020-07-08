@@ -1,6 +1,6 @@
 import React from 'react';
 import { CromwellPageType, Link } from '@cromwell/core';
-import { CromwellBlock, CromwellHTMLBlock, CromwellTextBlock } from '@cromwell/core-frontend';
+import { CromwellBlock, CHTMLBlock, CTextBlock } from '@cromwell/core-frontend';
 
 const SomePage: CromwellPageType = (props) => {
     console.log('SomePageTheme props', props);
@@ -9,17 +9,17 @@ const SomePage: CromwellPageType = (props) => {
         <div>SomePage
             <Link href='/'><a>HOME</a></Link>
         HELLO WOORLD1 SomePage
-            <CromwellHTMLBlock id="1">
+            <CHTMLBlock id="1">
                 <div>
                     <p>CBlock 1</p>
                 </div>
-            </CromwellHTMLBlock>
+            </CHTMLBlock>
             <div>
                 <h2>Some subtitle</h2>
             </div>
-            <CromwellTextBlock id="2">
+            <CTextBlock id="2">
                 CBlock 2
-            </CromwellTextBlock>
+            </CTextBlock>
         </div>
     );
 }

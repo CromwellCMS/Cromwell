@@ -40,34 +40,35 @@ export class Draggable {
                 var rect = this.hoveredBlock.getBoundingClientRect();
                 var x = event.clientX - rect.left;
                 var y = event.clientY - rect.top;
-                if (this.draggingBlockShadowCopy) {
-                    this.draggingBlockShadowCopy.remove();
-                }
-                this.draggingBlockShadowCopy = this.draggingBlock.cloneNode(true) as HTMLDivElement;
+
+                const draggingBlockShadowCopy = this.draggingBlock.cloneNode(true) as HTMLDivElement;
+                draggingBlockShadowCopy.style.pointerEvents = 'none';
+
                 const parent = this.hoveredBlock.parentNode;
+                let hasInserted = false;
                 if (parent) {
-                    let hasInserted = false;
                     if (y < this.hoveredBlock.offsetHeight / 2) {
                         // move above
-                        const prev = this.hoveredBlock.previousSibling as HTMLDivElement;
-                        if (prev && prev.id !== this.draggingBlockId || !prev) {
-                            // console.log(prev.id, this.draggingBlockId);
-                            parent.insertBefore(this.draggingBlockShadowCopy, this.hoveredBlock);
-                            hasInserted = true;
-                        }
+                        // console.log(prev.id, this.draggingBlockId);
+                        parent.insertBefore(draggingBlockShadowCopy, this.hoveredBlock);
+                        hasInserted = true;
                     } else {
                         // move below
-                        const next = this.hoveredBlock.nextSibling as HTMLDivElement;
-                        if (next && next.id !== this.draggingBlockId || !next) {
-                            // console.log(next.id, this.draggingBlockId);
-                            parent.insertBefore(this.draggingBlockShadowCopy, this.hoveredBlock.nextSibling);
-                            hasInserted = true;
-                        }
+                        // console.log(next.id, this.draggingBlockId);
+                        parent.insertBefore(draggingBlockShadowCopy, this.hoveredBlock.nextSibling);
+                        hasInserted = true;
                     }
-                    if (hasInserted) {
-                        this.showBlock(this.draggingBlockShadowCopy);
-                        this.hideBlock(this.draggingBlock);
+                }
+                if (hasInserted) {
+                    if (this.draggingBlockShadowCopy) {
+                        this.draggingBlockShadowCopy.remove();
                     }
+                    this.draggingBlockShadowCopy = draggingBlockShadowCopy;
+                    this.showBlock(this.draggingBlockShadowCopy);
+                    this.hideBlock(this.draggingBlock);
+                }
+                else {
+                    draggingBlockShadowCopy.remove();
                 }
                 // console.log('x', x, 'y', y, 'clientHeight', this.hoveredBlock.offsetHeight)
             }
@@ -105,6 +106,8 @@ export class Draggable {
             block.style.margin = '0px';
             block.style.padding = '0px';
             block.style.overflow = 'hidden';
+            block.style.pointerEvents = 'none';
+
             setTimeout(() => {
                 if (block) {
                     // block.style.display = 'none';
@@ -122,6 +125,7 @@ export class Draggable {
         block.style.margin = '';
         block.style.padding = '';
         block.style.overflow = '';
+        block.style.pointerEvents = '';
     }
 
     public setupDraggableBlocks = (editorWindowElem: HTMLDivElement | null, draggableBlocksClass: string, draggableFrameCSSslass: string) => {

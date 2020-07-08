@@ -1,7 +1,7 @@
 import React from 'react';
 import gql from 'graphql-tag';
 import { CromwellPageType, ProductType, GetStaticPropsType, Link, GraphQLPaths } from '@cromwell/core';
-import { CromwellBlock, getGraphQLClient } from '@cromwell/core-frontend';
+import { CContainerBlock, getGraphQLClient } from '@cromwell/core-frontend';
 
 interface ProductProps {
     data?: {
@@ -22,7 +22,7 @@ const Product: CromwellPageType<ProductProps> = (props) => {
                     </div>
                 )
             }
-            <CromwellBlock id="3" />
+            <CContainerBlock id="3" />
         </div>
     );
 }

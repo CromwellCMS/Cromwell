@@ -1,14 +1,12 @@
-import { CMSconfigType, ThemeConfigType } from '@cromwell/core';
+import { CMSconfigType } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
-import ReactDOMServer from 'react-dom/server';
+import fs from 'fs-extra';
+import { resolve } from 'path';
 import React from 'react';
+import ReactDOMServer from 'react-dom/server';
 
 const generateAdminPanelImports = async () => {
-    const fs = require('fs-extra');
-    const resolve = require('path').resolve;
-
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
-
 
     let config: CMSconfigType | undefined = undefined;
     try {

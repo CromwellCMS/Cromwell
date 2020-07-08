@@ -5,16 +5,10 @@ import {
     cromwellBlockTypeToClassname,
     cromwellIdToHTML
 } from '../../constants';
+import { TCromwellBlockProps } from '../../types';
 
-//@ts-ignore
-type CromwellBlockProps = {
-    id: string;
-    config?: CromwellBlockDataType;
-    adminPanelContentView?: (id: string, config?: CromwellBlockDataType, children?: React.ReactNode) => React.ReactNode;
-    className?: string;
-}
 
-export class CromwellBlock extends Component<CromwellBlockProps> {
+export class CromwellBlock extends Component<TCromwellBlockProps> {
 
     private data?: CromwellBlockDataType;
     // private blockRef: React.RefObject<HTMLDivElement> = React.createRef();
@@ -22,7 +16,7 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
     private id: string;
     private pluginComponent?: React.ComponentType;
 
-    constructor(props: CromwellBlockProps) {
+    constructor(props: TCromwellBlockProps) {
         super(props);
 
         if (props.config) this.data = props.config;
@@ -56,12 +50,20 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
 
     private getVirtualBlocks = (postion: BlockDestinationPositionType): JSX.Element[] => {
         return this.virtualBlocks.filter(b => b.destinationPosition === postion)
-            .map(b => <CromwellBlock id={b.componentId} key={b.componentId} adminPanelContentView={this.props.adminPanelContentView} />)
+            .map(b => <CromwellBlock
+                id={b.componentId}
+                key={b.componentId}
+                contentComponent={this.props.contentComponent}
+                wrappingComponent={this.props.wrappingComponent}
+            />)
     }
 
     render(): JSX.Element | null {
         // console.log('CromwellBlock::render id: ' + this.id + ' data: ' + JSON.stringify(this.data));
         // console.log('isServer', isServer(), 'this.shouldBeMoved', this.shouldBeMoved, 'this.targetElement', this.targetElement);
+        if (this.data && this.data.isDeleted) {
+            return <></>;
+        }
 
         if (cromwellIdToHTML(this.props.id) !== this.id) {
             return <div style={{ color: 'red' }}>Error. Block id was changed between renders</div>
@@ -83,15 +85,14 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
                 blockContent = this.props.children;
             }
 
-
-            if (this.props.adminPanelContentView) {
-                blockContent = this.props.adminPanelContentView(this.id, this.data, this.props.children);
+            if (this.props.contentComponent) {
+                const Comp = this.props.contentComponent;
+                blockContent = <Comp id={this.id} config={this.data}>{this.props.children}</Comp>
             }
         }
 
 
-        const element = (<>
-            {this.getVirtualBlocks('before')}
+        let element = (
             <div id={this.id} key={this.id}
                 // @TODO resolve styles type to store in config. Normal CSS or React.CSSProperties
                 // style={this.data ? this.data.styles as any : undefined}
@@ -101,11 +102,20 @@ export class CromwellBlock extends Component<CromwellBlockProps> {
                 {blockContent}
                 {this.getVirtualBlocks('inside')}
             </div>
-            {this.getVirtualBlocks('after')}
-        </>);
+        );
 
+        if (this.props.wrappingComponent) {
+            const Comp = this.props.wrappingComponent;
+            element = <Comp id={this.id} config={this.data}>{element}</Comp>
 
-        return element;
+        }
+        return (
+            <>
+                {this.getVirtualBlocks('before')}
+                {element}
+                {this.getVirtualBlocks('after')}
+            </>
+        )
 
     }
 }

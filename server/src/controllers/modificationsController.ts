@@ -1,7 +1,7 @@
 import { getStoreItem, CromwellBlockDataType, ThemeConfigType, PageConfigType, apiV1BaseRoute } from "@cromwell/core";
 import { Express } from 'express';
-const resolve = require('path').resolve;
-const fs = require('fs-extra');
+import fs from 'fs-extra';
+import { resolve } from 'path';
 
 export const applyModificationsController = (app: Express): void => {
     const config = getStoreItem('cmsconfig');
@@ -25,7 +25,7 @@ export const applyModificationsController = (app: Express): void => {
         let themeConfig: ThemeConfigType | null = null,
             userConfig: ThemeConfigType | null = null;
 
-        // Read theme's user modifivcations
+        // Read theme's user modifications
         const readUserMods = () => {
             const path = userModificationsPath + '/theme.json';
             fs.access(path, fs.constants.R_OK, (err) => {
@@ -33,7 +33,7 @@ export const applyModificationsController = (app: Express): void => {
                     fs.readFile(path, (err, data) => {
                         let themeUserModifications: ThemeConfigType | undefined;
                         try {
-                            themeUserModifications = JSON.parse(data);
+                            themeUserModifications = JSON.parse(data.toString());
                         } catch (e) {
                             console.error('Failed to read user theme modifications', e);
                         }
@@ -58,7 +58,7 @@ export const applyModificationsController = (app: Express): void => {
                     let themeOriginalConfig: ThemeConfigType | undefined;
                     if (!err) {
                         try {
-                            themeOriginalConfig = JSON.parse(data);
+                            themeOriginalConfig = JSON.parse(data.toString());
                         } catch (e) {
                             console.error(e);
                         }

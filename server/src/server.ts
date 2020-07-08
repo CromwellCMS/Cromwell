@@ -1,20 +1,22 @@
-import "reflect-metadata";
-import express from 'express';
-import { createConnection, Connection } from "typeorm";
+import 'reflect-metadata';
+
+import { apiV1BaseRoute, CMSconfigType, setStoreItem } from '@cromwell/core';
 import { ApolloServer } from 'apollo-server-express';
-import { buildSchema } from "type-graphql";
-import { PostResolver } from "./resolvers/PostResolver";
-import { AuthorResolver } from "./resolvers/AuthorResolver";
-import { ProductResolver } from "./resolvers/ProductResolver";
-import { ProductCategoryResolver } from "./resolvers/ProductCategoryResolver";
-import { applyModificationsController } from "./controllers/modificationsController";
-import { setStoreItem, CMSconfigType, CromwellBlockDataType } from "@cromwell/core";
-import { rebuildPage } from './helpers/PageBuilder';
-//@ts-ignore
+import express from 'express';
+import fs from 'fs-extra';
+import { resolve } from 'path';
+import { buildSchema } from 'type-graphql';
+import { createConnection, ConnectionOptions } from 'typeorm';
+
 import { pluginsResolvers } from '../.cromwell/imports/resolvers.imports.gen';
+import { applyModificationsController } from './controllers/modificationsController';
+import { rebuildPage } from './helpers/PageBuilder';
+import { AuthorResolver } from './resolvers/AuthorResolver';
+import { PostResolver } from './resolvers/PostResolver';
+import { ProductCategoryResolver } from './resolvers/ProductCategoryResolver';
+import { ProductResolver } from './resolvers/ProductResolver';
+
 setStoreItem('rebuildPage', rebuildPage);
-const resolve = require('path').resolve;
-const fs = require('fs-extra');
 const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
 let config: CMSconfigType | undefined = undefined;
 try {
@@ -25,9 +27,10 @@ try {
 if (!config) throw new Error('renderer::server cannot read CMS config')
 setStoreItem('cmsconfig', config);
 
-const connectionOptions = require('../ormconfig.json');
+const connectionOptions: ConnectionOptions = require('../ormconfig.json');
 
 const _pluginsResolvers = (pluginsResolvers && Array.isArray(pluginsResolvers)) ? pluginsResolvers : [];
+
 async function apiServer(): Promise<void> {
     if (!config || !config.apiPort || !config.themeName) throw new Error('renderer::server cannot read CMS config ' + JSON.stringify(config));
 
@@ -45,12 +48,12 @@ async function apiServer(): Promise<void> {
     const server = new ApolloServer({ schema });
 
     const app = express();
-    server.applyMiddleware({ app, path: '/api/v1/graphql' });
+    server.applyMiddleware({ app, path: `/${apiV1BaseRoute}/graphql` });
 
     await applyModificationsController(app);
 
     const { address } = app.listen(config.apiPort);
-    console.log(`API server has started at http://localhost:${config.apiPort}/api/v1/graphql`);
+    console.log(`API server has started at http://localhost:${config.apiPort}/${apiV1BaseRoute}/`);
 }
 
 // async function adminPanelServer() {

@@ -1,4 +1,4 @@
-import { CromwellBlockDataType, getStoreItem, PageConfigType, PageInfoType, RestAPIClient, apiV1BaseRoute } from '@cromwell/core';
+import { CromwellBlockDataType, getStoreItem, PageConfigType, PageInfoType, apiV1BaseRoute } from '@cromwell/core';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { GraphQLClient } from 'graphql-request';
 
@@ -31,7 +31,7 @@ export const getGraphQLClient = (): GraphQLClient => {
         console.log('cmsconfig', cmsconfig)
         throw new Error('getGraphQLClient !cmsconfig.apiPort');
     }
-    const graphQLClient = new GraphQLClient(`http://localhost:${cmsconfig.apiPort}/api/v1/graphql`);
+    const graphQLClient = new GraphQLClient(`http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}/graphql`);
 
     // const graphQLClientRequestOrig = graphQLClient.request;
     // async function graphQLClientRequest<T extends any>(query: string, variables: GraphQLVariables = {}): Promise<T> {
@@ -45,51 +45,63 @@ export const getGraphQLClient = (): GraphQLClient => {
     return graphQLClient;
 }
 
+class RestAPIClient {
+    private baseUrl: string;
+
+    constructor() {
+        const cmsconfig = getStoreItem('cmsconfig');
+        if (!cmsconfig || !cmsconfig.apiPort) {
+            console.log('cmsconfig', cmsconfig);
+            throw new Error('getGraphQLClient !cmsconfig.apiPort');
+        }
+        this.baseUrl = `http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}`;
+    }
+
+    public get = <T>(route: string, config?: AxiosRequestConfig | undefined): Promise<AxiosResponse<T>> => {
+        return axios.get(`${this.baseUrl}/${route}`, config);
+    }
+
+    public getThemeModifications = async (pageRoute: string): Promise<CromwellBlockDataType[]> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/modifications/page/?pageRoute=${pageRoute}`);
+        } catch (e) { console.error('RestAPIClient::getThemeModifications', e) }
+        return (res && res.data) ? res.data : [];
+    }
+
+    public getPluginsModifications = async (pageRoute: string): Promise<Record<string, any>> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/modifications/plugins?pageRoute=${pageRoute}`);
+        } catch (e) { console.error('RestAPIClient::getPluginsModifications', e) }
+        return (res && res.data) ? res.data : {};
+    }
+
+    public getPluginNames = async (): Promise<string[]> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/modifications/pluginNames`);
+        } catch (e) { console.error('RestAPIClient::getPluginNames', e) }
+        return (res && res.data) ? res.data : [];
+    }
+
+    public getPagesInfo = async (): Promise<PageInfoType[]> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/modifications/pages/info`);
+        } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
+        return (res && res.data) ? res.data : [];
+    }
+
+    public getPageConfigs = async (): Promise<PageConfigType[]> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/modifications/pages/configs`);
+        } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
+        return (res && res.data) ? res.data : [];
+    }
+}
+
 export const getRestAPIClient = (): RestAPIClient => {
-    const cmsconfig = getStoreItem('cmsconfig');
-    if (!cmsconfig || !cmsconfig.apiPort) {
-        console.log('cmsconfig', cmsconfig);
-        throw new Error('getGraphQLClient !cmsconfig.apiPort');
-    }
-    const baseUrl = `http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}`;
-    return {
-        get: <T>(route: string, config?: AxiosRequestConfig | undefined): Promise<AxiosResponse<T>> => {
-            return axios.get(`${baseUrl}/${route}`, config);
-        },
-        getThemeModifications: async (pageRoute: string): Promise<CromwellBlockDataType[]> => {
-            let res: any;
-            try {
-                res = await axios.get(`${baseUrl}/modifications/page/?pageRoute=${pageRoute}`);
-            } catch (e) { console.error('RestAPIClient::getThemeModifications', e) }
-            return (res && res.data) ? res.data : [];
-        },
-        getPluginsModifications: async (pageRoute: string): Promise<Record<string, any>> => {
-            let res: any;
-            try {
-                res = await axios.get(`${baseUrl}/modifications/plugins?pageRoute=${pageRoute}`);
-            } catch (e) { console.error('RestAPIClient::getPluginsModifications', e) }
-            return (res && res.data) ? res.data : {};
-        },
-        getPluginNames: async (): Promise<string[]> => {
-            let res: any;
-            try {
-                res = await axios.get(`${baseUrl}/modifications/pluginNames`);
-            } catch (e) { console.error('RestAPIClient::getPluginNames', e) }
-            return (res && res.data) ? res.data : [];
-        },
-        getPagesInfo: async (): Promise<PageInfoType[]> => {
-            let res: any;
-            try {
-                res = await axios.get(`${baseUrl}/modifications/pages/info`);
-            } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
-            return (res && res.data) ? res.data : [];
-        },
-        getPageConfigs: async (): Promise<PageConfigType[]> => {
-            let res: any;
-            try {
-                res = await axios.get(`${baseUrl}/modifications/pages/configs`);
-            } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
-            return (res && res.data) ? res.data : [];
-        },
-    }
+    return new RestAPIClient();
 }

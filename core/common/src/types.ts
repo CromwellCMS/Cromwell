@@ -83,7 +83,7 @@ declare global {
 
 export type BlockDestinationPositionType = 'before' | 'after' | 'inside';
 
-export type TCromwellBlockType = 'plugin' | 'text' | 'HTML';
+export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML';
 
 export type CromwellBlockDataType = {
     /**
@@ -243,13 +243,4 @@ export type PagedParamsType<Entity> = {
     pageSize?: number;
     orderBy?: keyof Entity;
     order?: 'ASC' | 'DESC';
-}
-
-export type RestAPIClient = {
-    get: <T>(route: string, config?: AxiosRequestConfig | undefined) => Promise<AxiosResponse<T>>;
-    getThemeModifications: (pageName: string) => Promise<CromwellBlockDataType[]>;
-    getPluginsModifications: (pageRoute: string) => Promise<any>;
-    getPluginNames: () => Promise<string[]>;
-    getPagesInfo: () => Promise<PageInfoType[]>;
-    getPageConfigs: () => Promise<PageConfigType[]>;
 }

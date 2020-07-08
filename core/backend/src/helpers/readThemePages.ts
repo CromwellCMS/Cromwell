@@ -1,4 +1,9 @@
-import { CMSconfigType, ThemeConfigType } from '@cromwell/core';
+import { CMSconfigType } from '@cromwell/core';
+import crypto from 'crypto';
+import fs from 'fs-extra';
+import { resolve } from 'path';
+import readRecursive from 'recursive-readdir';
+
 
 type TPageInfo = {
     pagePath: string;
@@ -9,10 +14,6 @@ type TPageInfo = {
  * @param projectRootDir absolute path to the root of the CMS
  */
 export const readThemePages = async (projectRootDir: string): Promise<Record<string, TPageInfo>> => {
-    const readRecursive = require('recursive-readdir');
-    const fs = require('fs-extra');
-    const resolve = require('path').resolve;
-    const crypto = require('crypto');
     const configPath = resolve(projectRootDir, 'cmsconfig.json');
 
     let config: CMSconfigType | undefined = undefined;

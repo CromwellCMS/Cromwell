@@ -1,10 +1,10 @@
-import { CMSconfigType, ThemeConfigType, setStoreItem } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { CMSconfigType, setStoreItem } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
+import { getRestAPIClient } from '@cromwell/core-frontend';
+import fs from 'fs-extra';
+import { resolve } from 'path';
 
 const main = async () => {
-    const fs = require('fs-extra');
-    const resolve = require('path').resolve;
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
     let config: CMSconfigType | undefined = undefined;
     try {

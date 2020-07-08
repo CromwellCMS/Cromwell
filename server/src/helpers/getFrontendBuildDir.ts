@@ -1,5 +1,5 @@
+import fs from 'fs-extra';
 import { resolve } from 'path';
-const fs = require('fs-extra');
 
 export const getRootBuildDir = (): string | undefined => {
     const distDir = '.next';

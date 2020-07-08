@@ -1,6 +1,5 @@
-# Write your query or mutation here
 query getProduct {
-  product(slug: "16") {
+  product(slug: "2") {
     id
     name
     views
@@ -11,7 +10,7 @@ query getProduct {
   }
 }
 query getProducts {
-  products(pagedParams: {pageNumber: 1, pageSize: 2}) {
+  products(pagedParams: {pageNumber: 1, pageSize: 3}) {
     id
     name
     slug
@@ -22,14 +21,22 @@ query getProducts {
 }
 mutation createProduct {
   createProduct(data: {
-    name: "fvdfg555",
+    name: "fvdfg7777",
     categoryIds: ["1","2","3"]
   }){
     id
   }
 }
+mutation updateProduct {
+  updateProduct(id: "2", data: {
+    name: "fvdfg5",
+    categoryIds: ["1"]
+  }){
+    id
+  }
+}
 mutation deleteProduct {
-	deleteProduct(id: "15")
+	deleteProduct(id: "23")
 }
 
 mutation creatPrCat {
@@ -67,4 +74,37 @@ query getAllProdCats {
 }
 mutation deletePrCat {
   deleteProductCategory(id: "1")
+}
+
+query productShowcase {
+  productShowcase(slug: "1") {
+		id
+    name
+    products(pagedParams: {pageNumber: 1, pageSize: 5}) {
+			id
+      name
+      price
+    }
+  }
+}
+
+query productShowcaseReviews {
+	productShowcaseReviews {
+		id,
+    title,
+    text,
+    rating
+  }
+}
+
+
+query getProductsShow {
+    products(pagedParams: {pageNumber: 1, pageSize: 20}) {
+        id
+        slug
+        name
+        pageTitle
+        price
+        mainImage
+    }
 }

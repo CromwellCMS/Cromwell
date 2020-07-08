@@ -1,6 +1,6 @@
-import MuiExpansionPanel from '@material-ui/core/ExpansionPanel';
-import MuiExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import MuiExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import { Accordion } from '@material-ui/core';
+import { AccordionSummary } from '@material-ui/core'
+import { AccordionDetails } from '@material-ui/core'
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
@@ -22,7 +22,7 @@ const ExpansionPanel = withStyles({
         },
     },
     expanded: {},
-})(MuiExpansionPanel);
+})(Accordion);
 
 const ExpansionPanelSummary = withStyles({
     root: {
@@ -42,14 +42,13 @@ const ExpansionPanelSummary = withStyles({
         marginRight: '0'
     },
     expanded: {},
-})(MuiExpansionPanelSummary);
+})(AccordionSummary);
 
 const ExpansionPanelDetails = withStyles({
     root: {
         padding: 0,
-    },
-    expanded: {},
-})(MuiExpansionPanelDetails);
+    }
+})(AccordionDetails);
 
 const MenuItem = withStyles({
     root: {

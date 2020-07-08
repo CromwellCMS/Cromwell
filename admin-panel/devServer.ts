@@ -1,7 +1,8 @@
 import { CMSconfig } from './.cromwell/imports/plugins.gen';
+import fs from 'fs-extra';
+import { resolve } from 'path';
 const path = require('path');
 const url = require('url');
-const fs = require('fs');
 const webpack = require('webpack');
 const config = require('./webpack.config');
 const appBuildDev = path.resolve('./.cromwell/static/dev');

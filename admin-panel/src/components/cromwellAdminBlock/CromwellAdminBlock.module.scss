@@ -32,6 +32,8 @@
 
 .adminPanelContentView {
     position: relative;
+    display: flex;
+    align-items: center;
 }
 
 // :global(.CromwellBlock__adminPanelView) {
