@@ -46,16 +46,7 @@ export const getGraphQLClient = (): GraphQLClient => {
 }
 
 class RestAPIClient {
-    private baseUrl: string;
-
-    constructor() {
-        const cmsconfig = getStoreItem('cmsconfig');
-        if (!cmsconfig || !cmsconfig.apiPort) {
-            console.log('cmsconfig', cmsconfig);
-            throw new Error('getGraphQLClient !cmsconfig.apiPort');
-        }
-        this.baseUrl = `http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}`;
-    }
+    constructor(private baseUrl: string) { }
 
     public get = <T>(route: string, config?: AxiosRequestConfig | undefined): Promise<AxiosResponse<T>> => {
         return axios.get(`${this.baseUrl}/${route}`, config);
@@ -103,5 +94,11 @@ class RestAPIClient {
 }
 
 export const getRestAPIClient = (): RestAPIClient => {
-    return new RestAPIClient();
+    const cmsconfig = getStoreItem('cmsconfig');
+    if (!cmsconfig || !cmsconfig.apiPort) {
+        console.log('cmsconfig', cmsconfig);
+        throw new Error('getGraphQLClient !cmsconfig.apiPort');
+    }
+    const baseUrl = `http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}`;
+    return new RestAPIClient(baseUrl);
 }

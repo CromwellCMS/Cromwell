@@ -19,7 +19,8 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
     constructor(props: TCromwellBlockProps) {
         super(props);
 
-        if (props.config) this.data = props.config;
+        if (props.type) this.data = { componentId: props.id, type: props.type };
+
         this.id = cromwellIdToHTML(this.props.id);
 
         const blocksData = getStoreItem('blocksData');

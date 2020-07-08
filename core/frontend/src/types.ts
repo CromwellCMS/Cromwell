@@ -1,8 +1,9 @@
-import { CromwellBlockDataType } from '@cromwell/core';
+import { CromwellBlockDataType, TCromwellBlockType } from '@cromwell/core';
 
 export type TCromwellBlockProps = {
     id: string;
-    config?: CromwellBlockDataType;
+    type?: TCromwellBlockType;
+
     /**
      * Component that replaces Blocks's content (blockContent)
      */

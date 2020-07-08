@@ -212,7 +212,7 @@ export const applyModificationsController = (app: Express): void => {
     })
 
     /**
-    * Returns array of plugins' names at all pages
+    * Returns array of plugin names at all pages
     */
     app.get(`/${apiV1BaseRoute}/modifications/pluginNames`, function (req, res) {
         const out: string[] = [];
@@ -262,7 +262,7 @@ export const applyModificationsController = (app: Express): void => {
     })
 
     /**
-     * Returns all pages merged configs.
+     * Returns all pages with merged modifications.
      */
     app.get(`/${apiV1BaseRoute}/modifications/pages/configs`, function (req, res) {
         readAllPageConfigs((pages) => {

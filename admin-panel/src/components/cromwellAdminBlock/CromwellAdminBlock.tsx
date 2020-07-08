@@ -8,7 +8,7 @@ import styles from './CromwellAdminBlock.module.scss';
 
 type TCromwellAdminBlockProps = {
     id: string;
-    type?: TCromwellBlockType | null;
+    type?: TCromwellBlockType;
     children?: React.ReactNode;
 }
 
@@ -17,7 +17,7 @@ export const CromwellAdminBlock = (props: TCromwellAdminBlockProps) => {
         <CromwellBlock id={props.id}
             contentComponent={adminPanelContentView}
             wrappingComponent={CromwellBlockWrapper}
-            config={props.type ? { componentId: props.id, type: props.type } : undefined}
+            type={props.type}
         >
             {props.children}
         </CromwellBlock>

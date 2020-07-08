@@ -37,9 +37,9 @@
   },
   "scripts": {
     "gen": "npx ts-node -O {\\\"module\\\":\\\"commonjs\\\"} ./src/generator.ts",
-    "dev": "npm run gen && npx cross-env SCRIPT=dev npx ts-node src/startup.ts",
-    "build": "npm run gen && npx cross-env SCRIPT=build npx ts-node src/startup.ts",
-    "start": "npm run gen src/generator.ts && npx cross-env SCRIPT=start npx ts-node src/startup.ts"
+    "dev": "npm run gen && npx cross-env SCRIPT=dev npx ts-node -O {\\\"module\\\":\\\"commonjs\\\"} src/startup.ts",
+    "build": "npm run gen && npx cross-env SCRIPT=build npx ts-node -O {\\\"module\\\":\\\"commonjs\\\"} src/startup.ts",
+    "start": "npm run gen src/generator.ts && npx cross-env SCRIPT=start npx ts-node -O {\\\"module\\\":\\\"commonjs\\\"} src/startup.ts"
   },
   "description": ""
 }

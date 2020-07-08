@@ -28,7 +28,7 @@ const transformReactHtmlParser = (node: DomElement) => {
         const type = cromwellBlockTypeFromClassname(node.attribs.class);
         // console.log('id', id, 'type', type, node);
         return (
-            <CromwellAdminBlock id={id} type={type}>
+            <CromwellAdminBlock id={id} type={type ? type : undefined}>
                 {node.children ? node.children.map((c, i) => convertNodeToElement(c, i, transformReactHtmlParser)) : ''}
             </CromwellAdminBlock>
         )
