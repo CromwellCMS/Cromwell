@@ -19,13 +19,21 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
     constructor(props: TCromwellBlockProps) {
         super(props);
 
-        if (props.type) this.data = { componentId: props.id, type: props.type };
+    }
+
+    private readConfig = () => {
+        this.data = undefined;
+        this.virtualBlocks = [];
+        this.pluginComponent = undefined;
+
+        if (this.props.type) this.data = { componentId: this.props.id, type: this.props.type };
 
         this.id = cromwellIdToHTML(this.props.id);
 
-        const blocksData = getStoreItem('blocksData');
-        if (blocksData && Array.isArray(blocksData)) {
-            blocksData.forEach(d => {
+        const pageConfig = getStoreItem('pageConfig');
+        // console.log('pageConfig', pageConfig)
+        if (pageConfig && pageConfig.modifications && Array.isArray(pageConfig.modifications)) {
+            pageConfig.modifications.forEach(d => {
                 if (d.componentId == this.props.id) {
                     this.data = d;
                 }
@@ -60,15 +68,16 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
     }
 
     render(): JSX.Element | null {
+        this.readConfig();
+
         // console.log('CromwellBlock::render id: ' + this.id + ' data: ' + JSON.stringify(this.data));
-        // console.log('isServer', isServer(), 'this.shouldBeMoved', this.shouldBeMoved, 'this.targetElement', this.targetElement);
         if (this.data && this.data.isDeleted) {
             return <></>;
         }
 
-        if (cromwellIdToHTML(this.props.id) !== this.id) {
-            return <div style={{ color: 'red' }}>Error. Block id was changed between renders</div>
-        }
+        // if (cromwellIdToHTML(this.props.id) !== this.id) {
+        //     return <div style={{ color: 'red' }}>Error. Block id was changed between renders</div>
+        // }
 
         const elementClassName = 'CromwellBlock'
             // + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '')
@@ -77,13 +86,11 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
 
         let blockContent: React.ReactNode | null = null;
         if (this.data) {
-            if (this.data.type === 'plugin') {
-                if (this.pluginComponent) {
-                    blockContent = <this.pluginComponent />;
-                }
-            }
-            if (this.data.type === 'text' || this.data.type === 'HTML') {
-                blockContent = this.props.children;
+
+            blockContent = this.props.children;
+
+            if (this.data.type === 'plugin' && this.pluginComponent) {
+                blockContent = <this.pluginComponent />;
             }
 
             if (this.props.contentComponent) {

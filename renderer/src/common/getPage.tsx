@@ -17,11 +17,14 @@ export const getPage = (pageName: BasePageNames | string): CromwellPageType => {
     const Page: any = importDynamicPage(pageName);
 
     return function (props: CromwellPageCoreProps): JSX.Element {
-        setStoreItem('pluginsData', props.pluginsData);
-        setStoreItem('blocksData', props.cromwellBlocksData);
+        const { pluginsData, pageConfig, appCustomConfig, childStaticProps, ...restProps } = props;
+        setStoreItem('pluginsData', pluginsData);
+        setStoreItem('pageConfig', pageConfig);
+        setStoreItem('appCustomConfig', appCustomConfig);
+
         // console.log('CromwellPageCoreProps pageName', pageName, 'props', props);
         return (
-            <Page {...props.childStaticProps} />
+            <Page {...childStaticProps} {...restProps} />
         )
     }
 }

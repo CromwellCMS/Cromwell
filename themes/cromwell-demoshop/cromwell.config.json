@@ -35,5 +35,10 @@
         "ProductShowcaseDemo": {
             "options": {}
         }
+    },
+    "appCustomConfig": {
+        "header": {
+            "welcomeMessage": "Welcome message"
+        }
     }
 }

@@ -52,11 +52,11 @@ class RestAPIClient {
         return axios.get(`${this.baseUrl}/${route}`, config);
     }
 
-    public getThemeModifications = async (pageRoute: string): Promise<CromwellBlockDataType[]> => {
+    public getPageConfig = async (pageRoute: string): Promise<PageConfigType> => {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/modifications/page/?pageRoute=${pageRoute}`);
-        } catch (e) { console.error('RestAPIClient::getThemeModifications', e) }
+        } catch (e) { console.error('RestAPIClient::getPageConfig', e) }
         return (res && res.data) ? res.data : [];
     }
 
@@ -90,6 +90,14 @@ class RestAPIClient {
             res = await axios.get(`${this.baseUrl}/modifications/pages/configs`);
         } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
         return (res && res.data) ? res.data : [];
+    }
+
+    public getAppCustomConfig = async (): Promise<Record<string, any>> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/modifications/app/custom-config`);
+        } catch (e) { console.error('RestAPIClient::getAppCustomConfig', e) }
+        return (res && res.data) ? res.data : {};
     }
 }
 

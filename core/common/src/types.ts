@@ -19,7 +19,8 @@ export type CromwellPageType<Props = {}> = NextPage<Props & CromwellPageCoreProp
 export type CromwellPageCoreProps = {
     pluginsData: Record<string, any>;
     childStaticProps: Record<string, any>;
-    cromwellBlocksData: CromwellBlockDataType[];
+    pageConfig: PageConfigType;
+    appCustomConfig: Record<string, any>;
 }
 
 export type PageName = keyof {
@@ -47,6 +48,10 @@ export type ThemeConfigType = {
         pages: string[],
         options: Record<string, any>
     }>;
+    /**
+     * Custom config that will be available at every page in the Store inside pageConfig props
+     */
+    appCustomConfig?: Record<string, any>
 }
 
 export type PageInfoType = {
@@ -56,14 +61,15 @@ export type PageInfoType = {
 }
 
 export type PageConfigType = PageInfoType & {
-
     modifications: CromwellBlockDataType[];
+    pageCustomConfig: Record<string, any>;
 }
 
 export type CromwellStoreType = {
     pluginsData?: Record<string, any>;
     cmsconfig?: CMSconfigType;
-    blocksData?: CromwellBlockDataType[];
+    pageConfig?: PageConfigType;
+    appCustomConfig?: Record<string, any>;
     importPlugin?: (pluginName: string) => { default: ComponentType } | undefined;
     importDynamicPlugin?: (pluginName: string) => ComponentType | undefined;
     rebuildPage?: (path: string) => void;

@@ -19,6 +19,7 @@
     "graphql-tag": "^2.10.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "reset-css": "^5.0.1",
     "style-inject": "^0.3.0",
     "tslib": "^2.0.0"
   },
@@ -42,6 +43,7 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "build": "npx rollup -c"
+    "build": "npx rollup -c",
+    "watch": "npx rollup -cw"
   }
 }

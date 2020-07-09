@@ -17,7 +17,10 @@
                     "componentId": "5",
                     "pluginName": "ProductShowcase"
                 }
-            ]
+            ],
+            "customConfig": {
+                "welcomeMessage": "HI"
+            }
         },
         {
             "route": "product/[slug]",
@@ -47,6 +50,9 @@
             "route": "pages/some_page",
             "name": "my-some_page",
             "title": "My first page",
+            "customConfig": {
+                "welcomeMessage": "HI"
+            },
             "modifications": [
                 {
                     "type": "plugin",
