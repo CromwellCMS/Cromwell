@@ -58,20 +58,20 @@ const main = async () => {
     let customPageDynamicImports = '';
     let customPageDynamicImportsSwitch = '';
 
-
-
     Object.entries(customPages).forEach(e => {
         const pageName = e[0];
         pageNames.push(pageName);
         const pagePath = e[1].pagePath;
         const pageComponentName = e[1].pageComponentName;
-        console.log('pageName', pageName, 'pageComponentName', pageComponentName);
+        if (pagePath && pageComponentName) {
+            console.log('pageName', pageName, 'pageComponentName', pageComponentName);
 
-        customPageImports += `\nimport * as ${pageComponentName}_Page from '${pagePath}';`;
-        customPageImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_Page;\n`;
+            customPageImports += `\nimport * as ${pageComponentName}_Page from '${pagePath}';`;
+            customPageImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_Page;\n`;
 
-        customPageDynamicImports += `\nconst ${pageComponentName}_DynamicPage = dynamic(() => import('${pagePath}'));`;
-        customPageDynamicImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_DynamicPage;\n   `;
+            customPageDynamicImports += `\nconst ${pageComponentName}_DynamicPage = dynamic(() => import('${pagePath}'));`;
+            customPageDynamicImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_DynamicPage;\n   `;
+        }
     })
 
 
@@ -137,7 +137,7 @@ const main = async () => {
     }
     Object.keys(customPages).forEach(pageName => {
         const pageComponentName = customPages[pageName].pageComponentName;
-        const pageContent = `
+        let pageContent = `
                 import { createGetStaticProps } from 'common/createGetStaticProps';
                 import { createGetStaticPaths } from 'common/createGetStaticPaths';
                 import { getPage } from 'common/getPage';
@@ -150,6 +150,10 @@ const main = async () => {
                 
                 export default PageComp;
             `;
+
+        if (pageName === '_app') {
+            pageContent = customPages[pageName].fileContent + '';
+        }
         fs.outputFileSync(`${localDir}/pages/${pageName}.js`, pageContent);
     });
 

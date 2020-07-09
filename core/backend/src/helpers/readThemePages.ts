@@ -6,8 +6,9 @@ import readRecursive from 'recursive-readdir';
 
 
 type TPageInfo = {
-    pagePath: string;
-    pageComponentName: string;
+    pagePath?: string;
+    pageComponentName?: string;
+    fileContent?: string;
 }
 /**
  * Returns object with page names as keys paths as values: {"pageName": "pagePath"}
@@ -33,13 +34,20 @@ export const readThemePages = async (projectRootDir: string): Promise<Record<str
     if (fs.existsSync(pagesPath)) {
         const files: string[] = await readRecursive(pagesPath);
         files.forEach(p => {
-            const pagePath = p.replace(/\\/g, '/');
+            let pagePath: string | undefined = p.replace(/\\/g, '/');
             const pageName = pagePath.replace(/\.js$/, '').replace(`${pagesPath}/`, '');
             const pageComponentName = pageName.replace(/\W/g, '_') + '_' + crypto.randomBytes(6).toString('hex');
 
+            let fileContent: string | undefined = undefined;
+            if (pageName === '_app') {
+                fileContent = fs.readFileSync(pagePath).toString();
+                pagePath = undefined;
+            }
+
             customPages[pageName] = {
                 pagePath,
-                pageComponentName
+                pageComponentName,
+                fileContent
             }
         });
     }
