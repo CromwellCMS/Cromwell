@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { StaticPageContext, Link, ProductCategoryType } from '@cromwell/core';
-import { getGraphQLClient, FrontendPlugin } from '@cromwell/core-frontend';
+import { StaticPageContext, ProductCategoryType } from '@cromwell/core';
+import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
 import { ProductShowcaseReviewsType } from '../backend/entities/ProductShowcaseReviews';
 
 interface ProductShowcaseProps {

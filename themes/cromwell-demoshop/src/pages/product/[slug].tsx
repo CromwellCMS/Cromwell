@@ -1,7 +1,9 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { CromwellPageType, ProductType, GetStaticPropsType, Link, GraphQLPaths } from '@cromwell/core';
+import { CromwellPageType, ProductType, GetStaticPropsType } from '@cromwell/core';
+import { Link } from '@cromwell/core-frontend';
 import { CContainerBlock, getGraphQLClient } from '@cromwell/core-frontend';
+import Layout from '../../components/layout/Layout';
 
 interface ProductProps {
     data?: {
@@ -12,18 +14,20 @@ const Product: CromwellPageType<ProductProps> = (props) => {
     console.log('ProductThemePage props', props);
     const product = props.data ? props.data.product : undefined;
     return (
-        <div>ProductTemp
+        <Layout>
+            <div>ProductTemp
             <Link href='/'><a>HOME</a></Link>
-            {
-                product && (
-                    <div>
-                        {product.name}
-                        <p></p>
-                    </div>
-                )
-            }
-            <CContainerBlock id="3" />
-        </div>
+                {
+                    product && (
+                        <div>
+                            {product.name}
+                            <p></p>
+                        </div>
+                    )
+                }
+                <CContainerBlock id="3" />
+            </div>
+        </Layout>
     );
 }
 

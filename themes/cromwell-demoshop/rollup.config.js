@@ -22,7 +22,7 @@ export default {
             // sourcemap: true
         }
     ],
-    external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend'],
+    external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/head'],
     plugins: [
         postcss({
             plugins: [autoprefixer()],

@@ -6,3 +6,5 @@ export * from './HOCs/FrontendPlugin';
 export * from './constants';
 export * from './apiClient';
 export * from './types';
+
+export { default as Link } from 'next/link';

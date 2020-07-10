@@ -1,13 +1,21 @@
 import React from 'react';
-import { CromwellPageType, Link } from '@cromwell/core';
-import { CromwellBlock, CHTMLBlock, CTextBlock } from '@cromwell/core-frontend';
+import { CromwellPageType } from '@cromwell/core';
+import { Link } from '@cromwell/core-frontend';
+import { CHTMLBlock, CTextBlock } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
+import Head from 'next/head';
+
 
 const SomePage: CromwellPageType = (props) => {
     console.log('SomePageTheme props', props);
 
     return (
         <Layout>
+            <Head>
+                <meta charSet="utf-8" />
+                <title>My Title</title>
+                <link rel="canonical" href="http://mysite.com/example" />
+            </Head>
             <div>SomePage
             <Link href='/'><a>HOME</a></Link>
         HELLO WOORLD1 SomePage

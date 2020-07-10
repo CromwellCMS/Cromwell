@@ -151,7 +151,7 @@ const main = async () => {
                 export default PageComp;
             `;
 
-        if (pageName === '_app') {
+        if (pageName === '_app' || pageName === '_document') {
             pageContent = customPages[pageName].fileContent + '';
         }
         fs.outputFileSync(`${localDir}/pages/${pageName}.js`, pageContent);

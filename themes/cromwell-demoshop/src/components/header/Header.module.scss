@@ -1,8 +1,18 @@
 .Header {
     display: flex;
+    width: 100%;
 
     .topPanel {
         display: flex;
+        width: 100%;
+    }
+
+    .topPanelLinks {
+        display: flex;
+        justify-content: space-between;
+    }
+    .topPanelLink a {
+        color: #333;
     }
 }
 

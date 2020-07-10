@@ -38,7 +38,21 @@
     },
     "appCustomConfig": {
         "header": {
-            "welcomeMessage": "Welcome message"
+            "welcomeMessage": "Welcome message",
+            "topLinks": [
+                {
+                    "title": "Contact us",
+                    "href": "/contact-us"
+                },
+                {
+                    "title": "Blog",
+                    "href": "/blog"
+                },
+                {
+                    "title": "Sign in",
+                    "href": "/sign-in"
+                }
+            ]
         }
     }
 }
