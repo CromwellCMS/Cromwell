@@ -1,4 +1,4 @@
-import { getStoreItem, CromwellBlockDataType, ThemeConfigType, PageConfigType, apiV1BaseRoute, PageInfoType } from "@cromwell/core";
+import { getStoreItem, TCromwellBlockData, TThemeConfig, TPageConfig, apiV1BaseRoute, TPageInfo, TAppConfig } from "@cromwell/core";
 import { Express } from 'express';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -21,9 +21,9 @@ export const applyModificationsController = (app: Express): void => {
      * and user's config from /modifications.
      * @param cb callback with both configs.
      */
-    const readConfigs = (cb: (themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => void): void => {
-        let themeConfig: ThemeConfigType | null = null,
-            userConfig: ThemeConfigType | null = null;
+    const readConfigs = (cb: (themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => void): void => {
+        let themeConfig: TThemeConfig | null = null,
+            userConfig: TThemeConfig | null = null;
 
         // Read theme's user modifications
         const readUserMods = () => {
@@ -31,7 +31,7 @@ export const applyModificationsController = (app: Express): void => {
             fs.access(path, fs.constants.R_OK, (err) => {
                 if (!err) {
                     fs.readFile(path, (err, data) => {
-                        let themeUserModifications: ThemeConfigType | undefined;
+                        let themeUserModifications: TThemeConfig | undefined;
                         try {
                             themeUserModifications = JSON.parse(data.toString());
                         } catch (e) {
@@ -55,7 +55,7 @@ export const applyModificationsController = (app: Express): void => {
         fs.access(themeConfigPath, fs.constants.R_OK, (err) => {
             if (!err) {
                 fs.readFile(themeConfigPath, (err, data) => {
-                    let themeOriginalConfig: ThemeConfigType | undefined;
+                    let themeOriginalConfig: TThemeConfig | undefined;
                     if (!err) {
                         try {
                             themeOriginalConfig = JSON.parse(data.toString());
@@ -83,8 +83,8 @@ export const applyModificationsController = (app: Express): void => {
      * @param themeMods 
      * @param userMods 
      */
-    const mergeMods = (themeMods?: CromwellBlockDataType[], userMods?: CromwellBlockDataType[]): CromwellBlockDataType[] => {
-        const mods: CromwellBlockDataType[] = (themeMods && Array.isArray(themeMods)) ? themeMods : [];
+    const mergeMods = (themeMods?: TCromwellBlockData[], userMods?: TCromwellBlockData[]): TCromwellBlockData[] => {
+        const mods: TCromwellBlockData[] = (themeMods && Array.isArray(themeMods)) ? themeMods : [];
         if (userMods && Array.isArray(userMods)) {
             userMods.forEach(userMod => {
                 let hasOriginaly = false;
@@ -102,7 +102,7 @@ export const applyModificationsController = (app: Express): void => {
         return mods;
     }
 
-    const mergePages = (themeConfig?: PageConfigType, userConfig?: PageConfigType): PageConfigType => {
+    const mergePages = (themeConfig?: TPageConfig, userConfig?: TPageConfig): TPageConfig => {
         const mods = mergeMods(themeConfig?.modifications, userConfig?.modifications);
         const config = Object.assign({}, themeConfig, userConfig);
         config.modifications = mods;
@@ -115,10 +115,10 @@ export const applyModificationsController = (app: Express): void => {
      * @param pageRoute original route of the page in theme dir
      * @param cb callback to return modifications
      */
-    const getPageConfig = (pageRoute: string, cb: (pageConfig: PageConfigType) => void): void => {
-        readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
-            // let themeMods: CromwellBlockDataType[] | undefined = undefined, userMods: CromwellBlockDataType[] | undefined = undefined;
-            let themePageConfig: PageConfigType | undefined = undefined, userPageConfig: PageConfigType | undefined = undefined;
+    const getPageConfig = (pageRoute: string, cb: (pageConfig: TPageConfig) => void): void => {
+        readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
+            // let themeMods: TCromwellBlockData[] | undefined = undefined, userMods: TCromwellBlockData[] | undefined = undefined;
+            let themePageConfig: TPageConfig | undefined = undefined, userPageConfig: TPageConfig | undefined = undefined;
             // Read theme's original modificators 
             if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
                 for (const p of themeConfig.pages) {
@@ -145,9 +145,9 @@ export const applyModificationsController = (app: Express): void => {
      * Asynchronously reads theme's and user's configs and merge all pages info with modifications 
      * @param cb cb to return pages info
      */
-    const readAllPageConfigs = (cb: (pages: PageConfigType[]) => void) => {
-        readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
-            let pages: PageConfigType[] = [];
+    const readAllPageConfigs = (cb: (pages: TPageConfig[]) => void) => {
+        readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
+            let pages: TPageConfig[] = [];
             if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
                 pages = themeConfig.pages;
             }
@@ -179,7 +179,7 @@ export const applyModificationsController = (app: Express): void => {
      * Output contains theme's original modificators overwritten by user's modificators.
      */
     app.get(`/${apiV1BaseRoute}/modifications/page/`, function (req, res) {
-        let out: PageConfigType | null = null;
+        let out: TPageConfig | null = null;
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
             const pageRoute = req.query.pageRoute;
             getPageConfig(pageRoute, (pageConfig) => {
@@ -242,9 +242,9 @@ export const applyModificationsController = (app: Express): void => {
      * Returns all pages' metainfo without modificators
      */
     app.get(`/${apiV1BaseRoute}/modifications/pages/info`, function (req, res) {
-        const out: PageInfoType[] = [];
-        readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
-            let pages: PageConfigType[] = [];
+        const out: TPageInfo[] = [];
+        readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
+            let pages: TPageConfig[] = [];
             if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
                 pages = themeConfig.pages;
             }
@@ -263,7 +263,7 @@ export const applyModificationsController = (app: Express): void => {
                 })
             }
             pages.forEach(p => {
-                const info: PageInfoType = {
+                const info: TPageInfo = {
                     route: p.route,
                     name: p.name,
                     title: p.title
@@ -285,12 +285,26 @@ export const applyModificationsController = (app: Express): void => {
         })
     })
 
+
+    /**
+     * Returns merged app config.
+     */
+    app.get(`/${apiV1BaseRoute}/modifications/app/config`, function (req, res) {
+        let out: TAppConfig = {};
+        readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
+            console.log('themeConfig', themeConfig);
+            out = Object.assign(out, themeConfig?.appConfig, userConfig?.appConfig);
+            res.send(out);
+        })
+
+    })
+
     /**
      * Returns merged custom app configs.
      */
     app.get(`/${apiV1BaseRoute}/modifications/app/custom-config`, function (req, res) {
         let out: Record<string, any> = {};
-        readConfigs((themeConfig: ThemeConfigType | null, userConfig: ThemeConfigType | null) => {
+        readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
             console.log('themeConfig', themeConfig);
             out = Object.assign(out, themeConfig?.appCustomConfig, userConfig?.appCustomConfig);
             res.send(out);

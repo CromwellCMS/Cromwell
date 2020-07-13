@@ -4,7 +4,25 @@
 
     .topPanel {
         display: flex;
+        justify-content: space-between;
         width: 100%;
+        padding: 10px 0;
+    }
+
+    .leftBlock {
+        display: flex;
+    }
+
+    .currencyOption {
+        display: flex;
+    }
+
+    .languageOption {
+        display: flex;
+    }
+
+    .rightBlock {
+        display: flex;
     }
 
     .topPanelLinks {

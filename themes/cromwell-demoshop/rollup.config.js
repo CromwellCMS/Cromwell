@@ -22,7 +22,7 @@ export default {
             // sourcemap: true
         }
     ],
-    external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/head'],
+    external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document'],
     plugins: [
         postcss({
             plugins: [autoprefixer()],
@@ -32,13 +32,13 @@ export default {
             inject: true,
             use: ['sass'],
         }),
-        alias({
-            entries: [
-                // Workaround for proper import (for next.js) of style-inject which is automatically imported by rollup-plugin-postcss
-                { find: /^.*\/node_modules\/style-inject\/dist\/style-inject\.es\.js/, replacement: 'style-inject' },
-            ]
-        }),
-        autoExternal(),
+        // alias({
+        //     entries: [
+        //         // Workaround for proper import (for next.js) of style-inject which is automatically imported by rollup-plugin-postcss
+        //         { find: /^.*\/node_modules\/style-inject\/dist\/style-inject\.es\.js/, replacement: 'style-inject' },
+        //     ]
+        // }),
+        // autoExternal(),
         resolve(),
         commonjs(),
         typescript({ useTsconfigDeclarationDir: true }),

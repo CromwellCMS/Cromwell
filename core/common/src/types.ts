@@ -9,17 +9,18 @@ export type StaticPageContext<Q extends ParsedUrlQuery = ParsedUrlQuery> = {
     previewData?: any;
     pluginsConfig?: Record<string, any>;
 }
-export type GetStaticPropsType<
+export type TGetStaticProps<
     P extends { [key: string]: any } = { [key: string]: any },
     Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: StaticPageContext) => Promise<P>;
 
 
-export type CromwellPageType<Props = {}> = NextPage<Props & CromwellPageCoreProps>;
+export type TCromwellPage<Props = {}> = NextPage<Props & TCromwellPageCoreProps>;
 
-export type CromwellPageCoreProps = {
+export type TCromwellPageCoreProps = {
     pluginsData: Record<string, any>;
     childStaticProps: Record<string, any>;
-    pageConfig: PageConfigType;
+    pageConfig: TPageConfig;
+    appConfig: TAppConfig;
     appCustomConfig: Record<string, any>;
 }
 
@@ -29,12 +30,12 @@ export type PageName = keyof {
     blog;
 }
 
-export type DataComponentProps<Data> = {
+export type TDataComponentProps<Data> = {
     pluginName: string;
     component: React.ComponentType<Data>;
 }
 
-export type CMSconfigType = {
+export type TCmsConfig = {
     apiPort: number;
     adminPanelPort: number;
     frontendPort: number;
@@ -42,34 +43,43 @@ export type CMSconfigType = {
     defaultPageSize: number;
 }
 
-export type ThemeConfigType = {
-    pages: PageConfigType[];
+export type TAppConfig = {
+    pagesDir?: string;
+    /** Custom HTML add into head of every page */
+    headHtml?: string;
+}
+
+export type TThemeConfig = {
+    pages: TPageConfig[];
     plugins: Record<string, {
         pages: string[],
         options: Record<string, any>
     }>;
+    appConfig: TAppConfig;
     /**
      * Custom config that will be available at every page in the Store inside pageConfig props
      */
     appCustomConfig?: Record<string, any>
 }
 
-export type PageInfoType = {
+export type TPageInfo = {
     route: string;
     name: string;
-    title: string;
+    title?: string;
+    description?: string;
 }
 
-export type PageConfigType = PageInfoType & {
-    modifications: CromwellBlockDataType[];
+export type TPageConfig = TPageInfo & {
+    modifications: TCromwellBlockData[];
     pageCustomConfig: Record<string, any>;
 }
 
-export type CromwellStoreType = {
+export type TCromwellStore = {
     pluginsData?: Record<string, any>;
-    cmsconfig?: CMSconfigType;
-    pageConfig?: PageConfigType;
+    cmsconfig?: TCmsConfig;
+    pageConfig?: TPageConfig;
     appCustomConfig?: Record<string, any>;
+    appConfig?: TAppConfig;
     importPlugin?: (pluginName: string) => { default: ComponentType } | undefined;
     importDynamicPlugin?: (pluginName: string) => ComponentType | undefined;
     rebuildPage?: (path: string) => void;
@@ -79,19 +89,19 @@ export type CromwellStoreType = {
 declare global {
     namespace NodeJS {
         interface Global {
-            CromwellStore: CromwellStoreType;
+            CromwellStore: TCromwellStore;
         }
     }
     interface Window {
-        CromwellStore: CromwellStoreType;
+        CromwellStore: TCromwellStore;
     }
 }
 
-export type BlockDestinationPositionType = 'before' | 'after' | 'inside';
+export type TBlockDestinationPositionType = 'before' | 'after' | 'inside';
 
 export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML';
 
-export type CromwellBlockDataType = {
+export type TCromwellBlockData = {
     /**
      * Component's type
      */
@@ -118,7 +128,7 @@ export type CromwellBlockDataType = {
      * Position around Destination Component where this component will be displayed.
      * Works only for virtual blocks.
      */
-    destinationPosition?: BlockDestinationPositionType;
+    destinationPosition?: TBlockDestinationPositionType;
 
     /**
      * Plugin's name to render inside component. Same name must be in cromwell.config.json
@@ -144,15 +154,15 @@ export type CromwellBlockDataType = {
 }
 
 
-export type DBEntity = keyof {
+export type TDBEntity = keyof {
     Post;
     Product;
     ProductCategory;
 }
 
-export type GraphQLPathsType = { [K in DBEntity]: GraphQLNode };
+export type GraphQLPathsType = { [K in TDBEntity]: TGraphQLNode };
 
-export type GraphQLNode = {
+export type TGraphQLNode = {
     getOneById: string;
     getOneBySlug: string;
     getMany: string;
@@ -161,7 +171,7 @@ export type GraphQLNode = {
     delete: string;
 }
 
-export type BasePageEntityType = {
+export type TBasePageEntityType = {
     // DB id
     id: string;
     // Slug for page route
@@ -178,9 +188,9 @@ export type BasePageEntityType = {
 
 type DBAuxiliaryColumns = 'id' | 'createDate' | 'updateDate';
 
-export type BasePageEntityInputType = Omit<BasePageEntityType, DBAuxiliaryColumns>;
+export type BasePageEntityInputType = Omit<TBasePageEntityType, DBAuxiliaryColumns>;
 
-export type ProductCategoryType = BasePageEntityType & {
+export type ProductCategoryType = TBasePageEntityType & {
     // Name of the category (h1)
     name: string;
     // Href of main image
@@ -200,7 +210,7 @@ export type ProductCategoryInputType = Omit<ProductCategoryType, DBAuxiliaryColu
     childIds: string[];
 };
 
-export interface ProductType extends BasePageEntityType {
+export interface ProductType extends TBasePageEntityType {
     // Name of the product (h1)
     name: string;
     // Categories of the prooduct
@@ -221,7 +231,7 @@ export type ProductInputType = Omit<ProductType, DBAuxiliaryColumns | 'categorie
     categoryIds: string[];
 };
 
-export interface PostType extends BasePageEntityType {
+export interface PostType extends TBasePageEntityType {
     // Title of post (h1)
     title: string;
     // DB id of author
@@ -237,7 +247,7 @@ export interface PostType extends BasePageEntityType {
 export type PostInputType = Omit<ProductType, DBAuxiliaryColumns>;
 
 
-export interface AuthorType extends BasePageEntityType {
+export interface AuthorType extends TBasePageEntityType {
 
     id: string;
 

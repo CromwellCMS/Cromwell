@@ -1,4 +1,4 @@
-import { CMSconfigType } from '@cromwell/core';
+import { TCmsConfig } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -8,7 +8,7 @@ import ReactDOMServer from 'react-dom/server';
 const generateAdminPanelImports = async () => {
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
 
-    let config: CMSconfigType | undefined = undefined;
+    let config: TCmsConfig | undefined = undefined;
     try {
         config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
     } catch (e) {

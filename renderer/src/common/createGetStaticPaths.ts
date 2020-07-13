@@ -1,4 +1,4 @@
-// import { DBEntity, GraphQLPaths } from "@cromwell/core";
+// import { TDBEntity, GraphQLPaths } from "@cromwell/core";
 // import { getGraphQLClient } from '@cromwell/core-frontend';
 //@ts-ignore
 import { importPage } from '.cromwell/imports/imports.gen';
@@ -12,7 +12,7 @@ export const createGetStaticPaths = (pageName: string) => {
 
 }
 /*
-export const createGetStaticPaths = (dbEntity: DBEntity) => {
+export const createGetStaticPaths = (dbEntity: TDBEntity) => {
     return async function () {
         const getAllPath = GraphQLPaths[dbEntity].getMany;
         let slugs: any;

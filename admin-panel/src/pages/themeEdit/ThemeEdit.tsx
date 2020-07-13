@@ -1,4 +1,4 @@
-import { CromwellBlockDataType, PageInfoType, setStoreItem, PageConfigType } from '@cromwell/core';
+import { TCromwellBlockData, TPageInfo, setStoreItem, TPageConfig } from '@cromwell/core';
 import { cromwellBlockTypeFromClassname, cromwellIdFromHTML, getRestAPIClient } from '@cromwell/core-frontend';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
@@ -41,9 +41,9 @@ let draggable: Draggable;
 
 export default function ThemeEdit() {
 
-    const [pageInfos, setPageInfos] = useState<PageInfoType[] | null>(null);
+    const [pageInfos, setPageInfos] = useState<TPageInfo[] | null>(null);
     const editorWindowRef = useRef<HTMLDivElement>(null);
-    const [editingPageConfig, setEditingPageConfig] = useState<PageInfoType | null>(null);
+    const [editingPageConfig, setEditingPageConfig] = useState<TPageInfo | null>(null);
     // const [EditingPage, setEditingPage] = useState<React.LazyExoticComponent<React.ComponentType<any>> | null>(null);
     const [EditingPage, setEditingPage] = useState<string | null>(null);
     const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
@@ -59,10 +59,10 @@ export default function ThemeEdit() {
         })();
     }, []);
 
-    const onOpenPage = async (pageCofig: PageInfoType) => {
+    const onOpenPage = async (pageCofig: TPageInfo) => {
         setIsPageLoading(true);
         setIsPageListCollapsed(true);
-        const pageModifications: PageConfigType = await getRestAPIClient().getPageConfig(pageCofig.route);
+        const pageModifications: TPageConfig = await getRestAPIClient().getPageConfig(pageCofig.route);
         // console.log('pageModifications', pageModifications);
         setStoreItem('pageConfig', pageModifications);
 

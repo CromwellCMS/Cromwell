@@ -1,5 +1,5 @@
 import React from 'react';
-import { CromwellBlockDataType, PageInfoType, setStoreItem, TCromwellBlockType } from '@cromwell/core';
+import { TCromwellBlockData, TPageInfo, setStoreItem, TCromwellBlockType } from '@cromwell/core';
 import { CromwellBlock, cromwellBlockTypeFromClassname, cromwellBlockTypeToClassname, cromwellIdToHTML, TContentComponentProps } from '@cromwell/core-frontend';
 import TextFormatIcon from '@material-ui/icons/TextFormat';
 import PowerIcon from '@material-ui/icons/Power';

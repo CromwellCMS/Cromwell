@@ -1,11 +1,11 @@
-import { CMSconfigType } from '@cromwell/core';
+import { TCmsConfig, TThemeConfig } from '@cromwell/core';
 import crypto from 'crypto';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import readRecursive from 'recursive-readdir';
 
 
-type TPageInfo = {
+type TPagePathInfo = {
     pagePath?: string;
     pageComponentName?: string;
     fileContent?: string;
@@ -14,22 +14,36 @@ type TPageInfo = {
  * Returns object with page names as keys paths as values: {"pageName": "pagePath"}
  * @param projectRootDir absolute path to the root of the CMS
  */
-export const readThemePages = async (projectRootDir: string): Promise<Record<string, TPageInfo>> => {
+export const readThemePages = async (projectRootDir: string): Promise<Record<string, TPagePathInfo>> => {
     const configPath = resolve(projectRootDir, 'cmsconfig.json');
 
-    let config: CMSconfigType | undefined = undefined;
+    let config: TCmsConfig | undefined = undefined;
     try {
         config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
     } catch (e) {
-        console.log('renderer::server ', e);
+        console.log('core/backend::readThemePages ', e);
     }
     if (!config) throw new Error('core/backend::readThemePages cannot read CMS config');
 
     const themesDir = resolve(projectRootDir, 'themes').replace(/\\/g, '/');
     const themeDir = `${themesDir}/${config.themeName}`;
-    const themeImportsDir = `${themeDir}/es`;
-    const pagesPath = `${themeImportsDir}/pages`;
-    const customPages: Record<string, TPageInfo> = {};
+
+    const themeConfigPath = `${themeDir}/cromwell.config.json`;
+    let themeConfig: TThemeConfig | undefined = undefined;
+    try {
+        themeConfig = JSON.parse(fs.readFileSync(themeConfigPath, { encoding: 'utf8', flag: 'r' }));
+    } catch (e) {
+        console.log('core/backend::readThemePages ', e);
+    }
+    if (!themeConfig) {
+        console.log('core/backend::readThemePages cannot read Theme config - cromwell.config.json')
+    }
+
+    const pagesPath = (themeConfig && themeConfig.appConfig && themeConfig.appConfig.pagesDir) ?
+        resolve(themeDir, themeConfig.appConfig.pagesDir).replace(/\\/g, '/') :
+        `${themeDir}/es/pages`;
+
+    const customPages: Record<string, TPagePathInfo> = {};
 
     if (fs.existsSync(pagesPath)) {
         const files: string[] = await readRecursive(pagesPath);

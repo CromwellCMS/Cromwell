@@ -36,7 +36,16 @@
             "options": {}
         }
     },
+    "appConfig": {
+        "pagesDir": "es/themes/cromwell-demoshop/src/pages"
+    },
     "appCustomConfig": {
+        "store": {
+            "currencyOptions": [
+                "USD",
+                "EURO"
+            ]
+        },
         "header": {
             "welcomeMessage": "Welcome message",
             "topLinks": [

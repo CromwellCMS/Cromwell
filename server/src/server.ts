@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { apiV1BaseRoute, CMSconfigType, setStoreItem } from '@cromwell/core';
+import { apiV1BaseRoute, TCmsConfig, setStoreItem } from '@cromwell/core';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import fs from 'fs-extra';
@@ -18,7 +18,7 @@ import { ProductResolver } from './resolvers/ProductResolver';
 
 setStoreItem('rebuildPage', rebuildPage);
 const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
-let config: CMSconfigType | undefined = undefined;
+let config: TCmsConfig | undefined = undefined;
 try {
     config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
 } catch (e) {

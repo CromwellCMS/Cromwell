@@ -1,4 +1,4 @@
-import { CromwellBlockDataType, getStoreItem, PageConfigType, PageInfoType, apiV1BaseRoute } from '@cromwell/core';
+import { TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute, TAppConfig } from '@cromwell/core';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { GraphQLClient } from 'graphql-request';
 
@@ -52,7 +52,7 @@ class RestAPIClient {
         return axios.get(`${this.baseUrl}/${route}`, config);
     }
 
-    public getPageConfig = async (pageRoute: string): Promise<PageConfigType> => {
+    public getPageConfig = async (pageRoute: string): Promise<TPageConfig> => {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/modifications/page/?pageRoute=${pageRoute}`);
@@ -76,7 +76,7 @@ class RestAPIClient {
         return (res && res.data) ? res.data : [];
     }
 
-    public getPagesInfo = async (): Promise<PageInfoType[]> => {
+    public getPagesInfo = async (): Promise<TPageInfo[]> => {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/modifications/pages/info`);
@@ -84,12 +84,20 @@ class RestAPIClient {
         return (res && res.data) ? res.data : [];
     }
 
-    public getPageConfigs = async (): Promise<PageConfigType[]> => {
+    public getPageConfigs = async (): Promise<TPageConfig[]> => {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/modifications/pages/configs`);
         } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
         return (res && res.data) ? res.data : [];
+    }
+
+    public getAppConfig = async (): Promise<TAppConfig> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/modifications/app/config`);
+        } catch (e) { console.error('RestAPIClient::getAppConfig', e) }
+        return (res && res.data) ? res.data : {};
     }
 
     public getAppCustomConfig = async (): Promise<Record<string, any>> => {

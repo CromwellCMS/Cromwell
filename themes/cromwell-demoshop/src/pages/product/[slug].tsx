@@ -1,6 +1,6 @@
 import React from 'react';
 import gql from 'graphql-tag';
-import { CromwellPageType, ProductType, GetStaticPropsType } from '@cromwell/core';
+import { TCromwellPage, ProductType, TGetStaticProps } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
 import { CContainerBlock, getGraphQLClient } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
@@ -10,7 +10,7 @@ interface ProductProps {
         product: ProductType;
     };
 }
-const Product: CromwellPageType<ProductProps> = (props) => {
+const Product: TCromwellPage<ProductProps> = (props) => {
     console.log('ProductThemePage props', props);
     const product = props.data ? props.data.product : undefined;
     return (
@@ -31,7 +31,7 @@ const Product: CromwellPageType<ProductProps> = (props) => {
     );
 }
 
-export const getStaticProps: GetStaticPropsType = async (context) => {
+export const getStaticProps: TGetStaticProps = async (context) => {
     // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
     console.log('ProductThemePage::getStaticProps: pid', slug, 'context.params', context.params)

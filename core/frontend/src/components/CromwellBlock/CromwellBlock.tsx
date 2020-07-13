@@ -1,4 +1,4 @@
-import { BlockDestinationPositionType, CromwellBlockDataType, getStoreItem } from '@cromwell/core';
+import { TBlockDestinationPositionType, TCromwellBlockData, getStoreItem } from '@cromwell/core';
 import React, { Component } from 'react';
 
 import {
@@ -10,9 +10,9 @@ import { TCromwellBlockProps } from '../../types';
 
 export class CromwellBlock extends Component<TCromwellBlockProps> {
 
-    private data?: CromwellBlockDataType;
+    private data?: TCromwellBlockData;
     // private blockRef: React.RefObject<HTMLDivElement> = React.createRef();
-    private virtualBlocks: CromwellBlockDataType[] = [];
+    private virtualBlocks: TCromwellBlockData[] = [];
     private id: string;
     private pluginComponent?: React.ComponentType;
 
@@ -57,7 +57,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
         }
     }
 
-    private getVirtualBlocks = (postion: BlockDestinationPositionType): JSX.Element[] => {
+    private getVirtualBlocks = (postion: TBlockDestinationPositionType): JSX.Element[] => {
         return this.virtualBlocks.filter(b => b.destinationPosition === postion)
             .map(b => <CromwellBlock
                 id={b.componentId}

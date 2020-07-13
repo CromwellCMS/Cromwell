@@ -1,4 +1,4 @@
-import { DBEntity, GraphQLNode } from './types';
+import { TDBEntity, TGraphQLNode } from './types';
 
 export enum BasePageNames {
     Index = 'index',
@@ -13,7 +13,7 @@ export enum BasePagePaths {
     ProductCategory = '/category'
 }
 
-export const GraphQLPaths: { [K in DBEntity]: GraphQLNode } = {
+export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
     Post: {
         getOneBySlug: "post",
         getOneById: "getPostById",
@@ -40,7 +40,7 @@ export const GraphQLPaths: { [K in DBEntity]: GraphQLNode } = {
     }
 }
 
-export const DBTableNames: { [K in DBEntity]: string } = {
+export const DBTableNames: { [K in TDBEntity]: string } = {
     Post: 'post',
     Product: 'product',
     ProductCategory: 'product_category'

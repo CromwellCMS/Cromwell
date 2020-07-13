@@ -20,7 +20,7 @@ export default [
                 sourcemap: true
             }
         ],
-        external: ['next/link', "tslib"],
+        external: ['next/link', 'next/head', "tslib"],
         plugins: [
             autoExternal(),
             postcss({

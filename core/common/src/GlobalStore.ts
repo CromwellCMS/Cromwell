@@ -1,7 +1,7 @@
-import { CromwellStoreType } from './types';
+import { TCromwellStore, TAppConfig } from './types';
 import { isServer } from './constants';
 
-const initialStore: CromwellStoreType = {
+const initialStore: TCromwellStore = {
     pluginsData: {
     }
 }
@@ -15,7 +15,7 @@ else {
         window.CromwellStore = initialStore;
 }
 
-export const getStoreItem = <K extends keyof CromwellStoreType>(itemName: K): CromwellStoreType[K] => {
+export const getStoreItem = <K extends keyof TCromwellStore>(itemName: K): TCromwellStore[K] => {
     if (isServer()) {
         return global.CromwellStore[itemName];
     }
@@ -24,7 +24,7 @@ export const getStoreItem = <K extends keyof CromwellStoreType>(itemName: K): Cr
     }
 }
 
-export const setStoreItem = <K extends keyof CromwellStoreType>(itemName: K, item: CromwellStoreType[K]): void => {
+export const setStoreItem = <K extends keyof TCromwellStore>(itemName: K, item: TCromwellStore[K]): void => {
     if (isServer()) {
         global.CromwellStore[itemName] = item;
     }
@@ -39,6 +39,16 @@ export const getPageCustomConfig = (): Record<string, any> | undefined => {
     }
     else {
         return window.CromwellStore.pageConfig?.pageCustomConfig;
+    }
+}
+
+
+export const getAppConfig = (): TAppConfig | undefined => {
+    if (isServer()) {
+        return global.CromwellStore.appConfig;
+    }
+    else {
+        return window.CromwellStore.appConfig;
     }
 }
 

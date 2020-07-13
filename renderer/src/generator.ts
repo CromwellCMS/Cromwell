@@ -1,4 +1,4 @@
-import { CMSconfigType, setStoreItem } from '@cromwell/core';
+import { TCmsConfig, setStoreItem } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import fs from 'fs-extra';
@@ -6,7 +6,7 @@ import { resolve } from 'path';
 
 const main = async () => {
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
-    let config: CMSconfigType | undefined = undefined;
+    let config: TCmsConfig | undefined = undefined;
     try {
         config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
     } catch (e) {

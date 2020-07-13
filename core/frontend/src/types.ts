@@ -1,4 +1,4 @@
-import { CromwellBlockDataType, TCromwellBlockType } from '@cromwell/core';
+import { TCromwellBlockData, TCromwellBlockType } from '@cromwell/core';
 
 export type TCromwellBlockProps = {
     id: string;
@@ -18,6 +18,6 @@ export type TCromwellBlockProps = {
 
 export type TContentComponentProps = {
     id: string;
-    config?: CromwellBlockDataType;
+    config?: TCromwellBlockData;
     children?: React.ReactNode
 }

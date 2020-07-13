@@ -1,20 +1,20 @@
 import React from 'react';
-import { CromwellPageType } from '@cromwell/core';
-import { Link } from '@cromwell/core-frontend';
+import { TCromwellPage } from '@cromwell/core';
+import { Link, Head } from '@cromwell/core-frontend';
 import { CHTMLBlock, CTextBlock } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
-import Head from 'next/head';
 
 
-const SomePage: CromwellPageType = (props) => {
+const SomePage: TCromwellPage = (props) => {
     console.log('SomePageTheme props', props);
-
     return (
         <Layout>
             <Head>
                 <meta charSet="utf-8" />
-                <title>My Title</title>
-                <link rel="canonical" href="http://mysite.com/example" />
+                {/* can be replaced by title in page config */}
+                <title>SomePage Title</title>
+                {/* can be replaced by description in page config */}
+                <meta property="og:description" content={'dfsdfd'} key="description" />
             </Head>
             <div>SomePage
             <Link href='/'><a>HOME</a></Link>

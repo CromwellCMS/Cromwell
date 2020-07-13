@@ -1,4 +1,4 @@
-import { CMSconfigType, ThemeConfigType } from '@cromwell/core';
+import { TCmsConfig, TThemeConfig } from '@cromwell/core';
 import fs from 'fs-extra';
 import shell from 'shelljs';
 import { resolve } from 'path';
@@ -7,7 +7,7 @@ const scriptName = process.env.SCRIPT;
 const main = async () => {
 
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
-    let config: CMSconfigType | undefined = undefined;
+    let config: TCmsConfig | undefined = undefined;
     try {
         config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
     } catch (e) {

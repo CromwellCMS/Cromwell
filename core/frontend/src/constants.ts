@@ -1,4 +1,4 @@
-import { CromwellBlockDataType, TCromwellBlockType } from '@cromwell/core';
+import { TCromwellBlockData, TCromwellBlockType } from '@cromwell/core';
 
 export const cromwellIdToHTML = (id: string): string => `CromwellBlock_${id}`;
 
