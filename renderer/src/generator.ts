@@ -15,9 +15,10 @@ const main = async () => {
     if (!config) throw new Error('renderer::server cannot read CMS config');
     setStoreItem('cmsconfig', config);
 
-    const globalPluginsDir = resolve(__dirname, '../', '../', 'plugins').replace(/\\/g, '/');
-    const customPagesLocalDir = resolve(__dirname, './pages').replace(/\\/g, '/');
+    const projectRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
+    const globalPluginsDir = `${projectRootDir}/plugins`;
     const localDir = resolve(__dirname, '../').replace(/\\/g, '/');
+    const pagesLocalDir = `${localDir}/pages`;
 
     let pluginImportPaths: Record<string, any> | undefined = undefined;
 
@@ -131,9 +132,9 @@ const main = async () => {
 
     // Import theme's pages into nexjs pages dir
 
-    console.log('customPagesLocalPath', customPagesLocalDir)
-    if (fs.existsSync(customPagesLocalDir)) {
-        fs.removeSync(customPagesLocalDir);
+    console.log('customPagesLocalPath', pagesLocalDir)
+    if (fs.existsSync(pagesLocalDir)) {
+        fs.removeSync(pagesLocalDir);
     }
     Object.keys(customPages).forEach(pageName => {
         const pageComponentName = customPages[pageName].pageComponentName;
@@ -151,11 +152,24 @@ const main = async () => {
                 export default PageComp;
             `;
 
-        if (pageName === '_app' || pageName === '_document') {
+        if (!customPages[pageName].pagePath && customPages[pageName].fileContent) {
             pageContent = customPages[pageName].fileContent + '';
         }
-        fs.outputFileSync(`${localDir}/pages/${pageName}.js`, pageContent);
+        fs.outputFileSync(`${pagesLocalDir}/${pageName}.js`, pageContent);
     });
+
+
+    // Copy theme's public assets
+
+    const themeDir = `${projectRootDir}/themes/${config.themeName}`;
+    const themePublicDir = `${themeDir}/public`;
+    if (fs.existsSync(themePublicDir)) {
+        fs.copy(themePublicDir, `${localDir}/public`, function (err) {
+            if (err) {
+                console.error(err);
+            }
+        });
+    }
 
 };
 

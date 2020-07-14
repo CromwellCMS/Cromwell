@@ -1,12 +1,5 @@
-:global(.CromwellBlock) {
+.CromwellBlock {
     display: flex;
-    background-color: #ddd;
-}
-
-:global(.CromwellBlock__adminPanelView) {
-
-}
-
-:global(.CromwellBlock__adminPanelIcon) {
-
+    flex-wrap: wrap;
+    // background-color: #ddd;
 }

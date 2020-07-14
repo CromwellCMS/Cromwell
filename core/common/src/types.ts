@@ -99,7 +99,7 @@ declare global {
 
 export type TBlockDestinationPositionType = 'before' | 'after' | 'inside';
 
-export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML';
+export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image';
 
 export type TCromwellBlockData = {
     /**

@@ -4,7 +4,7 @@ import { getStoreItem, setStoreItem } from "@cromwell/core";
 import { Head } from '@cromwell/core-frontend';
 import ReactHtmlParser from 'react-html-parser';
 //@ts-ignore
-import { importDynamicPage } from '.cromwell/imports/imports.gen';
+import { importDynamicPage, importPage } from '.cromwell/imports/imports.gen';
 import { checkCMSConfig } from '../helpers/checkCMSConfig';
 checkCMSConfig();
 
@@ -16,7 +16,8 @@ export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
         throw new Error('getPage !cmsconfig.themeName');
     }
 
-    const Page: any = importDynamicPage(pageName);
+    // const Page: any = importDynamicPage(pageName);
+    const Page: any = importPage(pageName).default;
 
     return function (props: TCromwellPageCoreProps): JSX.Element {
         const { pluginsData, pageConfig, appCustomConfig, childStaticProps, appConfig, ...restProps } = props;

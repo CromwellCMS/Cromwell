@@ -53,10 +53,10 @@ export const readThemePages = async (projectRootDir: string): Promise<Record<str
             const pageComponentName = pageName.replace(/\W/g, '_') + '_' + crypto.randomBytes(6).toString('hex');
 
             let fileContent: string | undefined = undefined;
-            if (pageName === '_app' || pageName === '_document') {
-                fileContent = fs.readFileSync(pagePath).toString();
-                pagePath = undefined;
-            }
+            // if (pageName === '_app' || pageName === '_document') {
+            //     fileContent = fs.readFileSync(pagePath).toString();
+            //     pagePath = undefined;
+            // }
 
             customPages[pageName] = {
                 pagePath,

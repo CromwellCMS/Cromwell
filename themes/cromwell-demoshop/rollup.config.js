@@ -4,8 +4,10 @@ import typescript from "rollup-plugin-typescript2";
 import commonjs from "@rollup/plugin-commonjs";
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from "autoprefixer";
-import alias from '@rollup/plugin-alias';
-
+// import alias from '@rollup/plugin-alias';
+// import image from '@rollup/plugin-image';
+// import imageInliner from 'postcss-image-inliner';
+// import postcssAssets from 'postcss-assets';
 
 export default {
     input: './src/index.ts',
@@ -22,10 +24,15 @@ export default {
             // sourcemap: true
         }
     ],
-    external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document'],
+    external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/app'],
     plugins: [
+        // image(),
         postcss({
-            plugins: [autoprefixer()],
+            plugins: [
+                autoprefixer(),
+                // imageInliner({ assetPaths: ['src/images'], b64Svg: true }),
+                // postcssAssets({ loadPaths: ['**'] })
+            ],
             extract: false,
             modules: true,
             writeDefinitions: false,

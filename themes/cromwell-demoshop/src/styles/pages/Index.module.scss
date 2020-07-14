@@ -1,0 +1,24 @@
+.IndexPage {
+    // display: flex;
+    // flex-wrap: wrap;
+
+    .advantagesBlockWrapper {
+        background-color: #eee;
+
+    }
+    .advantagesBlock {
+        display: flex;
+        justify-content: space-between;
+    }
+    .advantageItem {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        padding: 20px;
+        width: 33%;
+    }
+    .advantageItemText {
+         margin-left: 20px;
+         flex-direction: column;
+    }
+}

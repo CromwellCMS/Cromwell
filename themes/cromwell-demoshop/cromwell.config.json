@@ -47,6 +47,8 @@
             ]
         },
         "header": {
+            "logo": "/images/shopping-cart.png",
+            "contactPhone": "+123 (456) 78-90",
             "welcomeMessage": "Welcome message",
             "topLinks": [
                 {

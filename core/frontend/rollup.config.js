@@ -26,6 +26,7 @@ export default [
             postcss({
                 plugins: [autoprefixer()],
                 extract: false,
+                inject: true,
                 writeDefinitions: false,
                 use: ['sass'],
             }),

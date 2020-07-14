@@ -1,11 +1,10 @@
-import { TBlockDestinationPositionType, TCromwellBlockData, getStoreItem } from '@cromwell/core';
+import { getStoreItem, TBlockDestinationPositionType, TCromwellBlockData } from '@cromwell/core';
 import React, { Component } from 'react';
 
-import {
-    cromwellBlockTypeToClassname,
-    cromwellIdToHTML
-} from '../../constants';
+import { cromwellBlockTypeToClassname, cromwellIdToHTML } from '../../constants';
 import { TCromwellBlockProps } from '../../types';
+//@ts-ignore
+import styles from './CromwellBlock.module.scss';
 
 
 export class CromwellBlock extends Component<TCromwellBlockProps> {
@@ -79,7 +78,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
         //     return <div style={{ color: 'red' }}>Error. Block id was changed between renders</div>
         // }
 
-        const elementClassName = 'CromwellBlock'
+        const elementClassName = styles.CromwellBlock
             // + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '')
             + (this.data && this.data.type ? ' ' + cromwellBlockTypeToClassname(this.data.type) : '')
             + (this.props.className ? ` ${this.props.className}` : '');

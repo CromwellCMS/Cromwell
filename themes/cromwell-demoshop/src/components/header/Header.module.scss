@@ -1,12 +1,22 @@
+@import '../../styles/variables.scss';
+
 .Header {
     display: flex;
     width: 100%;
 
+    a {
+        color: $text;
+        text-decoration: none;
+    }
+
     .topPanel {
         display: flex;
         justify-content: space-between;
+        align-items: center;
         width: 100%;
         padding: 10px 0;
+        font-size: 0.7em;
+        border-bottom: 2px solid #333;
     }
 
     .leftBlock {
@@ -15,6 +25,7 @@
 
     .currencyOption {
         display: flex;
+        width: 100px;
     }
 
     .languageOption {
@@ -29,8 +40,85 @@
         display: flex;
         justify-content: space-between;
     }
+
+    .topPanelLink {
+        margin: 0 10px;
+    }
+
     .topPanelLink a {
-        color: #333;
+        // color: #333;
+    }
+
+    .formControl {
+        margin: 0;
+    }
+
+    .select {
+        padding: 0px;
+    }
+
+    .welcomeMessage {
+        margin: 0 40px 0 20px;
+    }
+
+
+
+    .mainPanel {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+    }
+
+    .logo {
+        width: 70px;
+        height: 70px;
+    }
+
+    .search {
+        display: flex;
+        width: 35%;
+        min-width: 200px;
+    }
+     
+    .phone {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        font-weight: 500;
+    }
+    .phoneActionTip {
+        font-size: 0.7em;
+    }
+
+    .cart {
+        display: flex;
+        width: 110px;
+        border-radius: 15px;
+        justify-content: space-between;
+    }
+
+    .cartIcon {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        background: url('/images/bag.png') no-repeat center / contain;
+    }
+    .cartExpandBlock {
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+    }
+    .cartExpandIcon {
+        display: flex;
+    }
+    .itemsInCart {
+        font-weight: 500;
+        font-size: 0.7em;
+        color: $primaryTextOver;
+        background: $primary;
+        text-align: center;
+        border-radius: 20px;
     }
 }
 
