@@ -1,6 +1,6 @@
 import React from 'react';
-import { TCromwellBlockData, TPageInfo, setStoreItem, TCromwellBlockType } from '@cromwell/core';
-import { CromwellBlock, cromwellBlockTypeFromClassname, cromwellBlockTypeToClassname, cromwellIdToHTML, TContentComponentProps } from '@cromwell/core-frontend';
+import { TCromwellBlockData, TPageInfo, setStoreItem, TCromwellBlockType, TContentComponentProps } from '@cromwell/core';
+import { CromwellBlock, cromwellBlockTypeFromClassname, cromwellBlockTypeToClassname, cromwellIdToHTML } from '@cromwell/core-frontend';
 import TextFormatIcon from '@material-ui/icons/TextFormat';
 import PowerIcon from '@material-ui/icons/Power';
 import CodeIcon from '@material-ui/icons/Code';
@@ -12,28 +12,29 @@ type TCromwellAdminBlockProps = {
     children?: React.ReactNode;
 }
 
-export const CromwellAdminBlock = (props: TCromwellAdminBlockProps) => {
-    return (
-        <CromwellBlock id={props.id}
-            contentComponent={adminPanelContentView}
-            wrappingComponent={CromwellBlockWrapper}
-            type={props.type}
-        >
-            {props.children}
-        </CromwellBlock>
-    )
-}
+// export const CromwellAdminBlock = (props: TCromwellAdminBlockProps) => {
+//     return (
+//         <CromwellBlock id={props.id}
+//             contentComponent={adminPanelContentView}
+//             wrappingComponent={CromwellBlockWrapper}
+//             type={props.type}
+//         >
+//             {props.children}
+//         </CromwellBlock>
+//     )
+// }
 
-export const CromwellBlockWrapper = (props: TContentComponentProps) => {
+export const CromwellBlockWrappingComponent = (props: TContentComponentProps) => {
     return (
         <div className={styles.CromwellAdminBlock} id={`${cromwellIdToHTML(props.id)}_admin`}>
-            {props.children}
             <div className={styles.dragFrame}></div>
+            <div className={styles.cromwellBlockContent}>{props.children}</div>
+
         </div>
     )
 }
 
-export const adminPanelContentView = (props: TContentComponentProps) => {
+export const CromwellBlockContentComponent = (props: TContentComponentProps) => {
     return (
         <div className={styles.adminPanelContentView}>
             {props.config && (
@@ -47,6 +48,10 @@ export const adminPanelContentView = (props: TContentComponentProps) => {
                             {props.children}</>
                     )}
                     {props.config.type === 'HTML' && (
+                        <><CodeIcon className={styles.adminPanelIcon} />
+                            {props.children}</>
+                    )}
+                    {props.config.type === 'container' && (
                         <><CodeIcon className={styles.adminPanelIcon} />
                             {props.children}</>
                     )}

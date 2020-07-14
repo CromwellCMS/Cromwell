@@ -1,7 +1,7 @@
 import React from 'react';
 import { TCromwellPage } from '@cromwell/core';
 import { Link, Head } from '@cromwell/core-frontend';
-import { CHTMLBlock, CTextBlock } from '@cromwell/core-frontend';
+import { CHTML, CText } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
 
 
@@ -19,17 +19,17 @@ const SomePage: TCromwellPage = (props) => {
             <div>SomePage
             <Link href='/'><a>HOME</a></Link>
         HELLO WOORLD1 SomePage
-            <CHTMLBlock id="1">
+            <CHTML id="1">
                     <div>
                         <p>CBlock 1</p>
                     </div>
-                </CHTMLBlock>
+                </CHTML>
                 <div>
                     <h2>Some subtitle</h2>
                 </div>
-                <CTextBlock id="2">
+                <CText id="2">
                     CBlock 2
-            </CTextBlock>
+            </CText>
             </div>
         </Layout>
     );

@@ -12,7 +12,6 @@ import variables from '../../styles/variables.scss';
 type TProps = {
     children: React.ReactNode;
 }
-console.log('variables.primary', variables.primary);
 
 const theme = createMuiTheme({
     palette: {

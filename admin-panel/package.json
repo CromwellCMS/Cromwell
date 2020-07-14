@@ -43,10 +43,10 @@
     "webpack-cli": "^3.3.12"
   },
   "scripts": {
-    "dev": "npm run gen && npx cross-env NODE_ENV=development WATCH=true npx ts-node -O '{\\\"module\\\":\\\"commonjs\\\"}' ./devServer.ts",
-    "buildDev": "npm run gen && npx cross-env NODE_ENV=development npx webpack",
-    "buildProd": "npm run gen && npx cross-env NODE_ENV=production npx webpack",
-    "gen": "npx ts-node -O {\\\"module\\\":\\\"commonjs\\\"} src/generator.ts"
+    "dev": "npx cross-env SCRIPT=dev npx ts-node ./src/startup.ts",
+    "buildDev": "npx cross-env SCRIPT=buildDev npx ts-node ./src/startup.ts",
+    "buildProd": "npx cross-env SCRIPT=buildProd npx ts-node ./src/startup.ts",
+    "gen": "npx cross-env SCRIPT=gen npx ts-node ./src/startup.ts"
   },
   "eslintConfig": {
     "extends": "react-app"

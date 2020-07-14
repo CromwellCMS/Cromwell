@@ -130,8 +130,8 @@ module.exports = {
                 : {
                     reactSrc: '/react.development.js',
                     reactDOMSrc: '/react-dom.development.js',
-                    reactProfilingSrc: '/react.profiling.min.js',
-                    reactDOMProfilingSrc: '/react-dom.profiling.min.js'
+                    // reactProfilingSrc: '/react.profiling.min.js',
+                    // reactDOMProfilingSrc: '/react-dom.profiling.min.js'
                 }
         ))
     ],

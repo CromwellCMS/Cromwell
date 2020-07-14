@@ -17,11 +17,11 @@ const main = async () => {
 
 
     if (scriptName === 'dev') {
-        shell.exec(`npx next dev -p ${config.frontendPort}`)
+        shell.exec(`npx next dev -p ${config.frontendPort}`);
     }
 
     if (scriptName === 'build') {
-        shell.exec('npx next build')
+        shell.exec('npx next build');
     }
 
     if (scriptName === 'start') {

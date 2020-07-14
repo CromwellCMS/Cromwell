@@ -3,7 +3,7 @@ import React from 'react'
 //@ts-ignore
 import styles from './CromwellTextBlock.module.scss';
 
-export const CTextBlock = (props: { id: string, className?: string, children?: string }) => {
+export const CText = (props: { id: string, className?: string, children?: string }) => {
     const { children, ...rest } = props;
     return (
         <CromwellBlock {...rest} type='text' >

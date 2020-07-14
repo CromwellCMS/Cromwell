@@ -1,5 +1,5 @@
 import { getAppCustomConfigTextProp, getAppCustomConfigProp, isServer } from '@cromwell/core';
-import { Link, CHTMLBlock } from '@cromwell/core-frontend';
+import { Link, CHTML } from '@cromwell/core-frontend';
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
@@ -81,7 +81,7 @@ export default function Header() {
             <div className={commonStyles.content}>
                 <div className={styles.topPanel}>
                     <div className={styles.leftBlock}>
-                        <CHTMLBlock id="header_01" className={styles.currencyOption}>
+                        <CHTML id="header_01" className={styles.currencyOption}>
                             <FormControl className={styles.formControl}>
                                 <Select
                                     className={styles.select}
@@ -93,19 +93,19 @@ export default function Header() {
                                     ))}
                                 </Select>
                             </FormControl>
-                        </CHTMLBlock>
-                        <CHTMLBlock id="header_02">
+                        </CHTML>
+                        <CHTML id="header_02">
                             <div className={styles.languageOption}>
 
                             </div>
-                        </CHTMLBlock>
+                        </CHTML>
                     </div>
 
                     <div className={styles.rightBlock}>
-                        <CHTMLBlock id="header_03" className={styles.welcomeMessage}>
+                        <CHTML id="header_03" className={styles.welcomeMessage}>
                             <p>{getAppCustomConfigTextProp('header/welcomeMessage')}</p>
-                        </CHTMLBlock>
-                        <CHTMLBlock id="header_04" className={styles.topPanelLinks}>
+                        </CHTML>
+                        <CHTML id="header_04" className={styles.topPanelLinks}>
                             <>
                                 {topLinks && topLinks.map(l => (
                                     <div className={styles.topPanelLink}>
@@ -115,7 +115,7 @@ export default function Header() {
                                     </div>
                                 ))}
                             </>
-                        </CHTMLBlock>
+                        </CHTML>
                     </div>
                 </div>
 

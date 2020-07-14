@@ -2,7 +2,7 @@ import React from 'react';
 import gql from 'graphql-tag';
 import { TCromwellPage, ProductType, TGetStaticProps } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
-import { CContainerBlock, getGraphQLClient } from '@cromwell/core-frontend';
+import { CContainer, getGraphQLClient } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
 
 interface ProductProps {
@@ -25,7 +25,7 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                         </div>
                     )
                 }
-                <CContainerBlock id="3" />
+                <CContainer id="3" />
             </div>
         </Layout>
     );

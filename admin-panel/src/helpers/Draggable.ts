@@ -159,6 +159,7 @@ export class Draggable {
                         this.draggingBlockMoveableCopy.style.transition = 'none'
                         this.draggingBlockMoveableCopy.style.backgroundColor = 'rgba(0,255,255,0.5)';
                         this.draggingBlockMoveableCopy.style.pointerEvents = 'none';
+                        this.draggingBlockMoveableCopy.style.zIndex = '9999';
 
                         const computedStyle = getComputedStyle(this.draggingBlock);
                         this.draggingBlockHeight = this.draggingBlock.clientHeight - parseFloat(computedStyle.paddingTop) - parseFloat(computedStyle.paddingBottom);

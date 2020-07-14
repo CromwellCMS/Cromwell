@@ -2,10 +2,8 @@ import { TCmsConfig } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
 
-const generateAdminPanelImports = async () => {
+export const generateAdminPanelImports = async () => {
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
 
     let config: TCmsConfig | undefined = undefined;
@@ -18,7 +16,8 @@ const generateAdminPanelImports = async () => {
 
 
     // Import global plugins
-    const adminPanelDir = resolve(__dirname, '../').replace(/\\/g, '/');
+    const projectRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
+    const localProjectDir = resolve(__dirname, '../').replace(/\\/g, '/');
     const globalPluginsDir = resolve(__dirname, '../../plugins').replace(/\\/g, '/');
     const distDir = 'es';
     const pluginsNames: string[] = fs.readdirSync(globalPluginsDir);
@@ -60,12 +59,12 @@ const generateAdminPanelImports = async () => {
             return undefined;
         }
     `;
-    fs.outputFileSync(`${adminPanelDir}/.cromwell/imports/plugins.gen.js`, content);
+    fs.outputFileSync(`${localProjectDir}/.cromwell/imports/plugins.gen.js`, content);
 
 
 
     // Generate page imports for admin panel
-    const customPages = await readThemePages(resolve(__dirname, '../../'));
+    const customPages = await readThemePages(projectRootDir);
 
     let customPageStatics = '';
     let customPageStaticsSwitch = '';
@@ -83,12 +82,20 @@ const generateAdminPanelImports = async () => {
         customPageLazyImports += `\nconst ${pageComponentName}_LazyPage = lazy(() => import('${pagePath}'))`;
         customPageLazyImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_LazyPage;\n   `;
 
-        // Render page to static HTML
-        const pageComp: () => JSX.Element = require(pagePath).default;
-        const html = ReactDOMServer.renderToStaticMarkup(React.createElement(pageComp));
+        // // Render page to static HTML
+        // if (pagePath) {
+        //     console.log('pagePath', pagePath);
+        //     const pageComp: () => JSX.Element = require(pagePath);
+        //     console.log('pageComp', pageComp);
+        //     // const pageComp: () => JSX.Element = require('C:/Users/a.glebov/projects/cromwell/themes/cromwell-demoshop/es/index').index.default;
 
-        customPageStatics += `\nconst ${pageComponentName}_StaticPage = '${html}'`;
-        customPageStaticsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_StaticPage;\n   `;
+        //     if (pageComp) {
+        //         const html = ReactDOMServer.renderToStaticMarkup(React.createElement(pageComp));
+
+        //         customPageStatics += `\nconst ${pageComponentName}_StaticPage = '${html}'`;
+        //         customPageStaticsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_StaticPage;\n   `;
+        //     }
+        // }
     })
 
     const adminPanelContent = `
@@ -108,6 +115,23 @@ const generateAdminPanelImports = async () => {
                 return undefined;
             }
         `;
-    fs.outputFileSync(`${adminPanelDir}/.cromwell/imports/pages.gen.js`, adminPanelContent);
+    fs.outputFileSync(`${localProjectDir}/.cromwell/imports/pages.gen.js`, adminPanelContent);
+
+
+
+    // Copy theme's public assets
+    const isProduction = process.env.NODE_ENV === 'production';
+    const staticDir = `${localProjectDir}/.cromwell/static/${isProduction ? 'prod' : 'dev'}`;
+    const themeDir = `${projectRootDir}/themes/${config.themeName}`;
+    const themePublicDir = `${themeDir}/public`;
+    console.log('staticDir', staticDir)
+    console.log('themePublicDir', themePublicDir)
+
+    if (fs.existsSync(themePublicDir)) {
+        fs.copy(themePublicDir, staticDir, function (err) {
+            if (err) {
+                console.error(err);
+            }
+        });
+    }
 }
-generateAdminPanelImports();

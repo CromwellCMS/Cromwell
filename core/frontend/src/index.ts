@@ -1,12 +1,11 @@
 export { CromwellBlock } from './components/CromwellBlock/CromwellBlock';
-export { CTextBlock } from './components/CromwellTextBlock/CTextBlock';
-export { CHTMLBlock } from './components/CromwellHTMLBlock/CHTMLBlock';
-export { CContainerBlock } from './components/CromwellContainerBlock/CContainerBlock';
-export { CImageBlock } from './components/CromwellImageBlock/CImageBlock';
+export { CText } from './components/CromwellTextBlock/CText';
+export { CHTML } from './components/CromwellHTMLBlock/CHTML';
+export { CContainer } from './components/CromwellContainerBlock/CContainer';
+export { CImage } from './components/CromwellImageBlock/CImage';
 export * from './components/Head/Head';
 export * from './HOCs/FrontendPlugin';
 export * from './constants';
 export * from './apiClient';
-export * from './types';
 
 export { default as Link } from 'next/link';

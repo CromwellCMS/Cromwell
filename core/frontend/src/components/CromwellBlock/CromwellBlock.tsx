@@ -1,8 +1,7 @@
-import { getStoreItem, TBlockDestinationPositionType, TCromwellBlockData } from '@cromwell/core';
+import { getStoreItem, TBlockDestinationPositionType, TCromwellBlockData, TCromwellBlockProps } from '@cromwell/core';
 import React, { Component } from 'react';
 
 import { cromwellBlockTypeToClassname, cromwellIdToHTML } from '../../constants';
-import { TCromwellBlockProps } from '../../types';
 //@ts-ignore
 import styles from './CromwellBlock.module.scss';
 
@@ -57,12 +56,15 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
     }
 
     private getVirtualBlocks = (postion: TBlockDestinationPositionType): JSX.Element[] => {
+        const ContentComponent = this.props.contentComponent ? this.props.contentComponent : getStoreItem('cromwellBlockContentComponent');
+        const WrappingComponent = this.props.wrappingComponent ? this.props.contentComponent : getStoreItem('cromwellBlockWrappingComponent');
+
         return this.virtualBlocks.filter(b => b.destinationPosition === postion)
             .map(b => <CromwellBlock
                 id={b.componentId}
                 key={b.componentId}
-                contentComponent={this.props.contentComponent}
-                wrappingComponent={this.props.wrappingComponent}
+                contentComponent={ContentComponent}
+                wrappingComponent={WrappingComponent}
             />)
     }
 
@@ -92,9 +94,9 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
                 blockContent = <this.pluginComponent />;
             }
 
-            if (this.props.contentComponent) {
-                const Comp = this.props.contentComponent;
-                blockContent = <Comp id={this.id} config={this.data}>{this.props.children}</Comp>
+            const ContentComponent = this.props.contentComponent ? this.props.contentComponent : getStoreItem('cromwellBlockContentComponent');
+            if (ContentComponent) {
+                blockContent = <ContentComponent id={this.id} config={this.data}>{this.props.children}</ContentComponent>
             }
         }
 
@@ -111,9 +113,9 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
             </div>
         );
 
-        if (this.props.wrappingComponent) {
-            const Comp = this.props.wrappingComponent;
-            element = <Comp id={this.id} config={this.data}>{element}</Comp>
+        const WrappingComponent = this.props.wrappingComponent ? this.props.contentComponent : getStoreItem('cromwellBlockWrappingComponent');
+        if (WrappingComponent) {
+            element = <WrappingComponent id={this.id} config={this.data}>{element}</WrappingComponent>
 
         }
         return (
