@@ -9,3 +9,7 @@ export * from './constants';
 export * from './apiClient';
 
 export { default as Link } from 'next/link';
+
+//@ts-ignore
+import CromwellBlockStyles from './components/CromwellBlock/CromwellBlock.module.scss';
+export const CromwellBlockCSSclass = CromwellBlockStyles.CromwellBlock;

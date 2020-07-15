@@ -56,15 +56,10 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
     }
 
     private getVirtualBlocks = (postion: TBlockDestinationPositionType): JSX.Element[] => {
-        const ContentComponent = this.props.contentComponent ? this.props.contentComponent : getStoreItem('cromwellBlockContentComponent');
-        const WrappingComponent = this.props.wrappingComponent ? this.props.contentComponent : getStoreItem('cromwellBlockWrappingComponent');
-
         return this.virtualBlocks.filter(b => b.destinationPosition === postion)
             .map(b => <CromwellBlock
                 id={b.componentId}
                 key={b.componentId}
-                contentComponent={ContentComponent}
-                wrappingComponent={WrappingComponent}
             />)
     }
 
@@ -93,11 +88,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
             if (this.data.type === 'plugin' && this.pluginComponent) {
                 blockContent = <this.pluginComponent />;
             }
-
-            const ContentComponent = this.props.contentComponent ? this.props.contentComponent : getStoreItem('cromwellBlockContentComponent');
-            if (ContentComponent) {
-                blockContent = <ContentComponent id={this.id} config={this.data}>{this.props.children}</ContentComponent>
-            }
         }
 
 
@@ -113,11 +103,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
             </div>
         );
 
-        const WrappingComponent = this.props.wrappingComponent ? this.props.contentComponent : getStoreItem('cromwellBlockWrappingComponent');
-        if (WrappingComponent) {
-            element = <WrappingComponent id={this.id} config={this.data}>{element}</WrappingComponent>
-
-        }
         return (
             <>
                 {this.getVirtualBlocks('before')}

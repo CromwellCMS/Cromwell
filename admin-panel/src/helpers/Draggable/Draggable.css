@@ -1,0 +1,34 @@
+.DraggableBlock {
+    position: relative;
+    user-select: none;
+    cursor: grab;
+}
+
+.DraggableBlock img {
+    -webkit-user-drag: none;
+}
+
+.DraggableBlock__frame {
+    display: block;
+    position: absolute;
+    z-index: -1;
+    top: -10px;
+    bottom: -10px;
+    left: -10px;
+    right: -10px;
+    border: 1px dashed transparent;
+    border-radius: 5px;
+    background-color: transparent;
+    transition-property: border, height, margin, padding, background-color, box-shadow;
+    transition-duration: 0.3s;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0);
+}
+
+.DraggableBlock__frame_hovered {
+    border: 1px dashed #999;
+    background-color: rgba(255,255,255,0.7);
+}
+
+.DraggableBlock__frame_selected {
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+}

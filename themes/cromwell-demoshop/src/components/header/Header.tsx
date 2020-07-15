@@ -120,7 +120,11 @@ export default function Header() {
                 </div>
 
                 <div className={styles.mainPanel}>
-                    <img className={styles.logo} src={logoHref} alt="logo" />
+                    <div className={styles.logo}>
+                        <Link href="/">
+                            <img className={styles.logo} src={logoHref} alt="logo" />
+                        </Link>
+                    </div>
                     <div className={styles.search}>
                         <TextField id="outlined-basic" label="Search..." variant="outlined" size="small" />
                     </div>

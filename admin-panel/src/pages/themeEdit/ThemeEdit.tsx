@@ -1,17 +1,13 @@
-import { TCromwellBlockData, TPageInfo, setStoreItem, TPageConfig } from '@cromwell/core';
-import { cromwellBlockTypeFromClassname, cromwellIdFromHTML, getRestAPIClient } from '@cromwell/core-frontend';
+import { TPageInfo, setStoreItem, TPageConfig } from '@cromwell/core';
+import { getRestAPIClient, CromwellBlockCSSclass } from '@cromwell/core-frontend';
 import MuiMenuItem from '@material-ui/core/MenuItem';
 import { withStyles } from '@material-ui/core/styles';
-import { DomElement } from 'htmlparser2';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import ReactHtmlParser, { convertNodeToElement } from 'react-html-parser';
-
 import { importStaticPage, importLazyPage } from '../../../.cromwell/imports/pages.gen';
-import { CromwellBlockWrappingComponent, CromwellBlockContentComponent } from '../../components/cromwellAdminBlock/CromwellAdminBlock';
-import cromwellAdminBlockStyles from '../../components/cromwellAdminBlock/CromwellAdminBlock.module.scss';
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
-import { Draggable } from '../../helpers/Draggable';
+import { Draggable } from '../../helpers/Draggable/Draggable';
+import '../../helpers/Draggable/Draggable.css';
 import styles from './ThemeEdit.module.scss';
 
 const MenuItem = withStyles({
@@ -22,25 +18,8 @@ const MenuItem = withStyles({
     },
 })(MuiMenuItem);
 
-// setStoreItem('cromwellBlockContentComponent', CromwellBlockContentComponent);
-setStoreItem('cromwellBlockWrappingComponent', CromwellBlockWrappingComponent);
-
-// const transformReactHtmlParser = (node: DomElement) => {
-//     if (node.attribs && node.attribs.class && node.attribs.class.includes('CromwellBlock')) {
-//         const id = cromwellIdFromHTML(node.attribs.id);
-//         const type = cromwellBlockTypeFromClassname(node.attribs.class);
-//         // console.log('id', id, 'type', type, node);
-//         return (
-//             <CromwellAdminBlock id={id} type={type ? type : undefined}>
-//                 {node.children ? node.children.map((c, i) => convertNodeToElement(c, i, transformReactHtmlParser)) : ''}
-//             </CromwellAdminBlock>
-//         )
-//     }
-// }
 
 let draggable: Draggable;
-
-
 
 export default function ThemeEdit() {
 
@@ -80,9 +59,7 @@ export default function ThemeEdit() {
         if (pageComp) setEditingPage(pageComp);
         setIsPageLoading(false);
 
-        draggable = new Draggable(editorWindowRef.current,
-            `.${cromwellAdminBlockStyles.CromwellAdminBlock}`,
-            `.${cromwellAdminBlockStyles.dragFrame}`);
+        draggable = new Draggable(`.${CromwellBlockCSSclass}`, editorWindowRef.current ? editorWindowRef.current : undefined);
 
     }
 
@@ -123,9 +100,6 @@ export default function ThemeEdit() {
                         <Suspense fallback={<LoadBox />}>
                             <EditingPage />
                         </Suspense>
-                        {/* {ReactHtmlParser(EditingPage, {
-                            transform: transformReactHtmlParser
-                        })} */}
                     </PageErrorBoundary>
                 </div>
             )}

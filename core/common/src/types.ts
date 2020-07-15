@@ -83,11 +83,6 @@ export type TCromwellStore = {
     importPlugin?: (pluginName: string) => { default: ComponentType } | undefined;
     importDynamicPlugin?: (pluginName: string) => ComponentType | undefined;
     rebuildPage?: (path: string) => void;
-
-    // For admin panel only
-    isAdminPanel?: boolean;
-    cromwellBlockContentComponent?: React.ComponentType<TContentComponentProps>;
-    cromwellBlockWrappingComponent?: React.ComponentType<TContentComponentProps>;
 }
 
 declare global {
@@ -269,16 +264,6 @@ export type PagedParamsType<Entity> = {
 export type TCromwellBlockProps = {
     id: string;
     type?: TCromwellBlockType;
-
-    /**
-     * Component that replaces Blocks's content (blockContent)
-     */
-    contentComponent?: React.ComponentType<TContentComponentProps>;
-
-    /**
-     * Component that wraps Block without virtual blocks around. children prop is block itself.
-     */
-    wrappingComponent?: React.ComponentType<TContentComponentProps>;
     className?: string;
 }
 

@@ -5,6 +5,7 @@ export class Draggable {
     private draggingBlock: HTMLDivElement | null = null;
     private draggingBlockId: string | null = null;
     private draggableBlocks: NodeListOf<HTMLDivElement> | null = null;
+    private draggableFrames: HTMLDivElement[] = [];
     private isDragging = false;
     private draggingBlockHeight = 0;
     private draggingBlockWidth = 0;
@@ -31,9 +32,21 @@ export class Draggable {
     private hoveredBlockId: string | null = null;
     private canDragBlock: boolean = false;
 
-    constructor(editorWindowElem: HTMLDivElement | null, draggableBlocksClass: string, draggableFrameCSSslass: string) {
+    private draggableFrameHoveredCSSclass?: string;
+    private draggableFrameSelectedCSSclass?: string;
+
+    constructor(
+        draggableBlocksSelector: string,
+        editorWindowElem?: HTMLDivElement,
+        // draggableFrameSelector: string,
+        // draggableFrameHoveredCSSclass?: string,
+        // draggableFrameSelectedCSSclass?: string
+    ) {
         // check for underlying blocks to move to
         const bodyElem = document.querySelector('body');
+
+        this.draggableFrameHoveredCSSclass = 'DraggableBlock__frame_hovered';
+        this.draggableFrameSelectedCSSclass = 'DraggableBlock__frame_selected';
 
         if (bodyElem) {
             bodyElem.onmousemove = this.onMouseMove;
@@ -42,10 +55,7 @@ export class Draggable {
             }
         }
 
-        this.setupDraggableBlocks(
-            editorWindowElem,
-            draggableBlocksClass,
-            draggableFrameCSSslass);
+        this.setupDraggableBlocks(draggableBlocksSelector, editorWindowElem);
     }
 
     private onMouseMove = (event) => {
@@ -53,7 +63,7 @@ export class Draggable {
         if (this.canDragBlock && this.draggingBlock && this.draggingBlockMoveableCopy) {
             if (!this.isDragging) {
                 this.isDragging = true;
-                this.draggingBlockMoveableCopy.style.display = "block";
+                this.draggingBlockMoveableCopy.style.display = '';
                 if (this.draggingBlock && this.draggingBlockMoveableCopy) {
                     this.draggingBlock.style.opacity = '0.4';
                 }
@@ -137,63 +147,96 @@ export class Draggable {
         block.style.pointerEvents = '';
     }
 
-    public setupDraggableBlocks = (editorWindowElem: HTMLDivElement | null, draggableBlocksClass: string, draggableFrameCSSslass: string) => {
+    public setupDraggableBlocks = (draggableBlocksSelector: string, editorWindowElem?: HTMLDivElement) => {
         // temp timeout
         setTimeout(() => {
-            this.draggableBlocks = document.querySelectorAll(draggableBlocksClass);
-            // console.log('draggableBlocks', this.draggableBlocks, draggableBlocksClass);
+            this.draggableBlocks = document.querySelectorAll(draggableBlocksSelector);
+            // console.log('draggableBlocks', this.draggableBlocks, draggableBlocksSelector);
             this.draggableBlocks.forEach(b => {
-                const draggableFrame: HTMLDivElement | null = b.querySelector(draggableFrameCSSslass)
-                if (draggableFrame) {
-                    draggableFrame.onclick = () => {
-                        console.log('draggableElement', b.id);
-                    }
+                // const draggableFrame: HTMLDivElement | null = b.querySelector(draggableFrameSelector)
+                const draggableFrame: HTMLDivElement = document.createElement('div');
+                draggableFrame.classList.add('DraggableBlock__frame');
 
-                    draggableFrame.onmousedown = () => {
-                        this.draggingBlock = b;
-                        this.draggingBlockId = b.id;
+                b.appendChild(draggableFrame);
+                b.classList.add('DraggableBlock');
 
-                        this.draggingBlockMoveableCopy = b.cloneNode(true) as HTMLDivElement;
-                        this.draggingBlockMoveableCopy.style.position = "fixed";
-                        this.draggingBlockMoveableCopy.style.display = "none";
-                        this.draggingBlockMoveableCopy.style.transition = 'none'
-                        this.draggingBlockMoveableCopy.style.backgroundColor = 'rgba(0,255,255,0.5)';
-                        this.draggingBlockMoveableCopy.style.pointerEvents = 'none';
-                        this.draggingBlockMoveableCopy.style.zIndex = '9999';
+                this.draggableFrames.push(draggableFrame);
 
-                        const computedStyle = getComputedStyle(this.draggingBlock);
-                        this.draggingBlockHeight = this.draggingBlock.clientHeight - parseFloat(computedStyle.paddingTop) - parseFloat(computedStyle.paddingBottom);
-                        this.draggingBlockWidth = this.draggingBlock.clientWidth - parseFloat(computedStyle.paddingLeft) + parseFloat(computedStyle.paddingRight);
-                        this.draggingBlock.style.height = this.draggingBlockHeight + 'px';
-                        this.draggingBlock.style.width = this.draggingBlockWidth + 'px';
-
-                        setTimeout(() => {
-                            if (this.draggingBlock && this.draggingBlockMoveableCopy) {
-                                this.canDragBlock = true;
-                                if (editorWindowElem) editorWindowElem.appendChild(this.draggingBlockMoveableCopy);
-                            }
-                            else this.stopDragBlock();
-                        }, 200);
-                    }
-
+                draggableFrame.onclick = () => {
+                    console.log('draggableElement', b.id);
                 }
 
-                b.onmouseenter = () => {
-                    this.hoveredBlock = b;
-                    this.hoveredBlockId = b.id;
-                    // console.log('hoveredBlockId', this.hoveredBlockId);
+                b.onmousedown = (e) => {
+                    e.stopPropagation();
+                    this.onBlockMouseDown(b, editorWindowElem);
                 }
 
-                b.onmouseleave = () => {
-                    this.hoveredBlock = null;
-                    this.hoveredBlockId = null;
-                    // console.log('hoveredBlockId', this.hoveredBlockId);
+                b.onmouseover = (e) => {
+                    e.stopPropagation();
+                    this.onBlockHoverStart(b, draggableFrame);
+                }
+
+                b.onmouseleave = (e) => {
+                    e.stopPropagation();
+                    this.onBlockHoverEnd();
                 }
             })
         }, 100)
     }
 
-    public stopDragBlock = () => {
+    private onBlockMouseDown = (block: HTMLDivElement, editorWindowElem?: HTMLDivElement) => {
+        this.draggingBlock = block;
+        this.draggingBlockId = block.id;
+
+        const computedStyle = getComputedStyle(this.draggingBlock);
+        this.draggingBlockHeight = this.draggingBlock.clientHeight - parseFloat(computedStyle.paddingTop) - parseFloat(computedStyle.paddingBottom);
+        this.draggingBlockWidth = this.draggingBlock.clientWidth - parseFloat(computedStyle.paddingLeft) - parseFloat(computedStyle.paddingRight);
+        this.draggingBlock.style.height = this.draggingBlockHeight + 'px';
+        this.draggingBlock.style.width = this.draggingBlockWidth + 'px';
+
+        this.draggingBlockMoveableCopy = block.cloneNode(true) as HTMLDivElement;
+        this.draggingBlockMoveableCopy.style.position = "fixed";
+        this.draggingBlockMoveableCopy.style.display = "none";
+        this.draggingBlockMoveableCopy.style.transition = 'none'
+        this.draggingBlockMoveableCopy.style.pointerEvents = 'none';
+        this.draggingBlockMoveableCopy.style.zIndex = '9999';
+
+        setTimeout(() => {
+            if (this.draggingBlock && this.draggingBlockMoveableCopy) {
+                this.canDragBlock = true;
+                if (editorWindowElem) editorWindowElem.appendChild(this.draggingBlockMoveableCopy);
+            }
+            else this.stopDragBlock();
+        }, 100);
+    }
+
+    private onBlockHoverStart = (block: HTMLDivElement, frame: HTMLDivElement) => {
+        if (this.hoveredBlockId === block.id) return;
+
+        this.hoveredBlock = block;
+        this.hoveredBlockId = block.id;
+
+        this.draggableFrames.forEach(f => this.draggableFrameHoveredCSSclass && f.classList.remove(this.draggableFrameHoveredCSSclass))
+
+        if (frame && this.draggableFrameHoveredCSSclass) {
+            frame.classList.add(this.draggableFrameHoveredCSSclass)
+        }
+
+        this.draggableBlocks && this.draggableBlocks.forEach(b => b.style.zIndex = '2');
+        this.hoveredBlock.style.zIndex = '5';
+        // console.log('onmouseover hoveredBlockId', this.hoveredBlockId);
+    }
+
+    private onBlockHoverEnd = () => {
+        if (!this.hoveredBlockId) return;
+        this.draggableFrames.forEach(f => this.draggableFrameHoveredCSSclass && f.classList.remove(this.draggableFrameHoveredCSSclass));
+        this.draggableBlocks && this.draggableBlocks.forEach(b => b.style.zIndex = '2');
+        this.hoveredBlock = null;
+        this.hoveredBlockId = null;
+        // console.log('onmouseleave hoveredBlockId', this.hoveredBlockId);
+    }
+
+    private stopDragBlock = () => {
         if (this.draggingBlockShadowCopy) {
             if (this.draggingBlock) {
                 const parent = this.draggingBlockShadowCopy.parentElement;
@@ -212,6 +255,7 @@ export class Draggable {
             this.draggingBlock.style.opacity = '';
         }
         this.draggingBlock = null;
+        this.draggingBlockId = null;
         this.draggingBlockMoveableCopy = null;
         this.canDragBlock = false;
         this.isDragging = false;
