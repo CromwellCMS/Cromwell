@@ -7,9 +7,12 @@ import fs from 'fs-extra';
 import { resolve } from 'path';
 import { buildSchema } from 'type-graphql';
 import { createConnection, ConnectionOptions } from 'typeorm';
+import bodyParser from 'body-parser';
+import cors from 'cors';
 
 import { pluginsResolvers } from '../.cromwell/imports/resolvers.imports.gen';
 import { applyModificationsController } from './controllers/modificationsController';
+import { applyPluginsController } from './controllers/pluginsController';
 import { rebuildPage } from './helpers/PageBuilder';
 import { AuthorResolver } from './resolvers/AuthorResolver';
 import { PostResolver } from './resolvers/PostResolver';
@@ -50,7 +53,12 @@ async function apiServer(): Promise<void> {
     const app = express();
     server.applyMiddleware({ app, path: `/${apiV1BaseRoute}/graphql` });
 
-    await applyModificationsController(app);
+    app.use(bodyParser.urlencoded({ extended: false }));
+    app.use(bodyParser.json());
+    app.use(cors());
+
+    applyModificationsController(app);
+    applyPluginsController(app);
 
     const { address } = app.listen(config.apiPort);
     console.log(`API server has started at http://localhost:${config.apiPort}/${apiV1BaseRoute}/`);

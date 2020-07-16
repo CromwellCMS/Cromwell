@@ -4,12 +4,42 @@
     .SidebarLink {
         width: 100%;
         background: rgba(0,0,0,0.05);
+
+
+        .ExpansionPanelSummary {
+            width: 100%;
+            min-height: 30px;
+            padding: 0;
+        }
+    
+        .ExpandMoreIcon {
+            margin-right: 0;
+        }
+
+        :global(.MuiAccordionSummary-content) {
+            margin: 0;
+        }
+        :global(.MuiIconButton-edgeEnd) {
+            margin: 0;
+        }
     }
     
     .SidebarLink__sublinks-container {
         width: 100%;
     
     }
+
+    .SidebarLink__head {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        padding-left: 16px;
+        padding-right: 16px;
+        justify-content: normal;
+    }
+
+
+
+
 
 }
 

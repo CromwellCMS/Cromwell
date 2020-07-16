@@ -86,22 +86,26 @@ const SidebarLink = (props: {
     const isExpanded = props.expanded === props.data.route;
 
     const head = (
-        <MenuItem onClick={e => {
-            isExpanded ? e.stopPropagation() : '';
-            handleNav(props.data.route);
-        }}>
+        <MenuItem
+            onClick={e => {
+                isExpanded ? e.stopPropagation() : '';
+                handleNav(props.data.route);
+            }}
+            className={styles.SidebarLink__head}
+        >
             <p>{props.data.title}</p>
         </MenuItem>
     )
 
     if (props.data.sublinks) return (
         <ExpansionPanel expanded={isExpanded} onChange={props.toggleSubmenu(props.data.route)} className={styles.SidebarLink}>
-            <ExpansionPanelSummary
-                expandIcon={<ExpandMoreIcon style={{ marginRight: '0' }} className={"ExpandMoreIcon"} />}
+            <AccordionSummary
+                className={styles.ExpansionPanelSummary}
+                expandIcon={<ExpandMoreIcon style={{ marginRight: '0' }} className={styles.ExpandMoreIcon} />}
                 aria-controls={`sublinks-${props.data.title}-content`}
             >
                 {head}
-            </ExpansionPanelSummary>
+            </AccordionSummary>
             <ExpansionPanelDetails>
                 <div className={styles["SidebarLink__sublinks-container"]}>
                     {props.data.sublinks.map(sublink => (

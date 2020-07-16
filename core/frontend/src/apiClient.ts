@@ -107,6 +107,22 @@ class RestAPIClient {
         } catch (e) { console.error('RestAPIClient::getAppCustomConfig', e) }
         return (res && res.data) ? res.data : {};
     }
+
+    public getPluginSettings = async (pluginName: string): Promise<any | null> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/plugin/settings/${pluginName}`);
+        } catch (e) { console.error('RestAPIClient::getPluginSettings', e) }
+        return (res && res.data) ? res.data : null;
+    }
+
+    public setPluginSettings = async (pluginName: string, settings: any): Promise<boolean> => {
+        let res: any;
+        try {
+            res = await axios.post(`${this.baseUrl}/plugin/settings/${pluginName}`, settings);
+        } catch (e) { console.error('RestAPIClient::setPluginSettings', e) }
+        return (res && res.data) ? res.data : null;
+    }
 }
 
 export const getRestAPIClient = (): RestAPIClient => {
