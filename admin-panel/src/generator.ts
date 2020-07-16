@@ -1,4 +1,4 @@
-import { TCmsConfig } from '@cromwell/core';
+import { TCmsConfig, TPluginConfig } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -19,7 +19,6 @@ export const generateAdminPanelImports = async () => {
     const projectRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
     const localProjectDir = resolve(__dirname, '../').replace(/\\/g, '/');
     const globalPluginsDir = resolve(__dirname, '../../plugins').replace(/\\/g, '/');
-    const distDir = 'es';
     const pluginsNames: string[] = fs.readdirSync(globalPluginsDir);
     console.log('generateAdminPanelImports:Plugins found:', pluginsNames);
 
@@ -27,11 +26,22 @@ export const generateAdminPanelImports = async () => {
     let pluginsImportsSwitch = '';
     let pluginNames = '[\n';
     pluginsNames.forEach(name => {
-        const pluginAdminComponent = `${globalPluginsDir}/${name}/${distDir}/admin/index.js`;
-        if (fs.existsSync(pluginAdminComponent)) {
-            pluginsImports += `\nconst ${name}_Plugin = lazy(() => import('${pluginAdminComponent}'))`;
-            pluginsImportsSwitch += `   if (pluginName === '${name}') return ${name}_Plugin;\n`;
-            pluginNames += `"${name}",\n`;
+        const configPath = `${globalPluginsDir}/${name}/cromwell.config.json`;
+        if (fs.existsSync(configPath)) {
+            let config: TPluginConfig | undefined;
+            try {
+                config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
+            } catch (e) {
+                console.error('server::generator: ', e);
+            }
+            if (config && config.adminDir) {
+                const pluginAdminComponent = `${globalPluginsDir}/${name}/${config.adminDir}/index.js`;
+                if (fs.existsSync(pluginAdminComponent)) {
+                    pluginsImports += `\nconst ${name}_Plugin = lazy(() => import('${pluginAdminComponent}'))`;
+                    pluginsImportsSwitch += `   if (pluginName === '${name}') return ${name}_Plugin;\n`;
+                    pluginNames += `"${name}",\n`;
+                }
+            }
         }
     });
     pluginNames += '];';

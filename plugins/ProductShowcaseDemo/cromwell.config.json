@@ -1,3 +1,5 @@
 {
-    "name": "ProductShowcaseDemo"
+    "name": "ProductShowcaseDemo",
+    "adminDir": "es/admin",
+    "frontendDir": "es/frontend"
 }

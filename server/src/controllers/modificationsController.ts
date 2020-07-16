@@ -9,7 +9,9 @@ export const applyModificationsController = (app: Express): void => {
         console.error('applyModificationsController: failed to read cmsconfig', config);
         return;
     }
-    const userModificationsPath = resolve(__dirname, '../../../modifications/', config.themeName).replace(/\\/g, '/');
+    const settingsPath = resolve(__dirname, '../../../settings/').replace(/\\/g, '/');
+
+    const userModificationsPath = `${settingsPath}/themes/${config.themeName}`;
     const themeDir = resolve(__dirname, '../../../themes/', config.themeName).replace(/\\/g, '/');
     const themeConfigPath = `${themeDir}/cromwell.config.json`;
 
@@ -292,7 +294,6 @@ export const applyModificationsController = (app: Express): void => {
     app.get(`/${apiV1BaseRoute}/modifications/app/config`, function (req, res) {
         let out: TAppConfig = {};
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
-            console.log('themeConfig', themeConfig);
             out = Object.assign(out, themeConfig?.appConfig, userConfig?.appConfig);
             res.send(out);
         })
@@ -305,11 +306,9 @@ export const applyModificationsController = (app: Express): void => {
     app.get(`/${apiV1BaseRoute}/modifications/app/custom-config`, function (req, res) {
         let out: Record<string, any> = {};
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
-            console.log('themeConfig', themeConfig);
             out = Object.assign(out, themeConfig?.appCustomConfig, userConfig?.appCustomConfig);
             res.send(out);
         })
-
     })
 
 

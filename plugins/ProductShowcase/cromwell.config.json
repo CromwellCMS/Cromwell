@@ -1,3 +1,9 @@
 {
-    "name": "ProductShowcaseDemo"
+    "name": "ProductShowcase",
+    "adminDir": "es/admin",
+    "frontendDir": "es/frontend",
+    "backend": {
+        "resolversDir": "es/backend/resolvers",
+        "entitiesDir": "es/backend/entities"
+    }
 }

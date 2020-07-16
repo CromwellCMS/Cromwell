@@ -1,4 +1,4 @@
-import { TCmsConfig, setStoreItem } from '@cromwell/core';
+import { TCmsConfig, setStoreItem, TPluginConfig } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import fs from 'fs-extra';
@@ -25,11 +25,23 @@ const main = async () => {
     // Read global plugins
     const pluginNames = await getRestAPIClient().getPluginNames();
     pluginNames.forEach(name => {
-        const mPath = `${globalPluginsDir}/${name}/es/frontend/index.js`;
-        if (fs.existsSync(mPath)) {
-            if (!pluginImportPaths) pluginImportPaths = {};
-            pluginImportPaths[name] = mPath;
+        const configPath = `${globalPluginsDir}/${name}/cromwell.config.json`;
+        if (fs.existsSync(configPath)) {
+            let config: TPluginConfig | undefined;
+            try {
+                config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
+            } catch (e) {
+                console.error('renderer::generator: ', e);
+            }
+            if (config && config.frontendDir) {
+                const mPath = `${globalPluginsDir}/${name}/${config.frontendDir}/index.js`;
+                if (fs.existsSync(mPath)) {
+                    if (!pluginImportPaths) pluginImportPaths = {};
+                    pluginImportPaths[name] = mPath;
+                }
+            }
         }
+
     })
 
     let pluginImports = '';

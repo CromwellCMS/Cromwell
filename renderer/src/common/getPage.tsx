@@ -44,7 +44,7 @@ export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
             }
         }
 
-        console.log('getPage: TCromwellPageCoreProps pageName', pageName, 'props', props);
+        // console.log('getPage: TCromwellPageCoreProps pageName', pageName, 'props', props);
         return (
             <>
                 <Head>

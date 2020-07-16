@@ -272,3 +272,13 @@ export type TContentComponentProps = {
     config?: TCromwellBlockData;
     children?: React.ReactNode
 }
+
+export type TPluginConfig = {
+    name: string;
+    adminDir?: string;
+    frontendDir?: string;
+    backend?: {
+        resolversDir?: string;
+        entitiesDir?: string;
+    }
+}
