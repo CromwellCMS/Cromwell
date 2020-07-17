@@ -1,9 +1,8 @@
 import { getAppCustomConfigTextProp, getAppCustomConfigProp, isServer } from '@cromwell/core';
-import { Link, CHTML } from '@cromwell/core-frontend';
+import { Link, CHTML, CContainer, CPlugin } from '@cromwell/core-frontend';
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/core/styles';
-import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import MuiSelect from '@material-ui/core/Select';
@@ -140,6 +139,7 @@ export default function Header() {
                         </div>
                     </ListItem>
                 </div>
+                <CPlugin id="header_main_menu" />
             </div>
         </div>
     )

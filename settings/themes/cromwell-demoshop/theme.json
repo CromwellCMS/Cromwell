@@ -66,5 +66,12 @@
                 }
             ]
         }
+    ],
+    "globalModifications": [
+        {
+            "type": "plugin",
+            "componentId": "header_main_menu",
+            "pluginName": "MainMenu"
+        }
     ]
 }

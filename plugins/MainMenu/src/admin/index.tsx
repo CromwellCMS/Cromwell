@@ -189,7 +189,8 @@ const Item = (props: { i: number, updateList: () => void }) => {
                                 className={classes.addBtn}
                                 onClick={() => {
                                     if (!item.sublinks) item.sublinks = [];
-                                    item.sublinks.push({}); forceUpdate();
+                                    item.sublinks.push({});
+                                    forceUpdate();
                                 }}>
                                 <AddIcon />
                             </MenuItem>

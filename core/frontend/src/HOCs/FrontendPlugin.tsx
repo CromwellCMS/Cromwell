@@ -8,9 +8,7 @@ export function FrontendPlugin<Data>(Component: React.ComponentType<Data>, plugi
         const data = pluginsData ? pluginsData[pluginName] : {};
         // console.log('FrontendPlugin pluginName', pluginName, 'data', data, 'pluginsData', pluginsData);
         return (
-            <div className={`FrontendPlugin FrontendPlugin__${pluginName}`}>
-                <Component {...data} />
-            </div>
+            <Component {...data} />
         )
     }
 }

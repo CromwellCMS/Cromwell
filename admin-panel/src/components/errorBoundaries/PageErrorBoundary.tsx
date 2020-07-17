@@ -18,7 +18,7 @@ class PageErrorBoundary extends React.Component<{}, { hasError: boolean, errorMe
         if (this.state.hasError) {
             return (
                 <div>
-                    <h1>Page crashed</h1>
+                    <h3>Page crashed</h3>
                     <p>{this.state.errorMessage}</p>
                 </div>
             );

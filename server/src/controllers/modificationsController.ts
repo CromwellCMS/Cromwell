@@ -104,8 +104,16 @@ export const applyModificationsController = (app: Express): void => {
         return mods;
     }
 
-    const mergePages = (themeConfig?: TPageConfig, userConfig?: TPageConfig): TPageConfig => {
-        const mods = mergeMods(themeConfig?.modifications, userConfig?.modifications);
+    const mergePages = (themeConfig?: TPageConfig, userConfig?: TPageConfig,
+        globalThemeMods?: TCromwellBlockData[], globalUserMods?: TCromwellBlockData[]): TPageConfig => {
+        // Merge global mods
+        const globalModificators = mergeMods(globalThemeMods, globalUserMods);
+
+        let mods = mergeMods(themeConfig?.modifications, userConfig?.modifications);
+
+        // Merge pages' mods with global mods
+        mods = mergeMods(globalModificators, mods);
+
         const config = Object.assign({}, themeConfig, userConfig);
         config.modifications = mods;
         return config
@@ -138,7 +146,8 @@ export const applyModificationsController = (app: Express): void => {
                 }
             }
             // Merge users's with theme's mods
-            const pageConfig = mergePages(themePageConfig, userPageConfig);
+            const pageConfig = mergePages(themePageConfig, userPageConfig, themeConfig?.globalModifications, userConfig?.globalModifications);
+
             cb(pageConfig);
         })
     }
@@ -167,6 +176,10 @@ export const applyModificationsController = (app: Express): void => {
                     }
                 })
             }
+            // Merge global mods
+            const globalModificators = mergeMods(themeConfig?.globalModifications, userConfig?.globalModifications);
+            // Merge pages' mods with global mods
+            pages.forEach(p => p.modifications = mergeMods(globalModificators, p.modifications));
             cb(pages);
         })
     }
@@ -195,7 +208,7 @@ export const applyModificationsController = (app: Express): void => {
     })
 
     /**
-     * Returns plagins' configs at specified Page by pageRoute in query param.
+     * Returns plugins' configs at specified Page by pageRoute in query param.
      * Output contains theme's original modificators overwritten by user's modificators.
      */
     app.get(`/${apiV1BaseRoute}/modifications/plugins`, function (req, res) {
