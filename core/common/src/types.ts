@@ -59,7 +59,8 @@ export type TThemeConfig = {
     /**
      * Custom config that will be available at every page in the Store inside pageConfig props
      */
-    appCustomConfig?: Record<string, any>
+    appCustomConfig?: Record<string, any>,
+    globalModifications?: TCromwellBlockData[];
 }
 
 export type TPageInfo = {
@@ -98,7 +99,7 @@ declare global {
 
 export type TBlockDestinationPositionType = 'before' | 'after' | 'inside';
 
-export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image';
+export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image' | 'gallery';
 
 export type TCromwellBlockData = {
     /**
@@ -150,8 +151,23 @@ export type TCromwellBlockData = {
      * but user can set isDeleted flag that will tell Blocks to render null instead
      */
     isDeleted?: boolean;
+
+    /** For "image" block */
+    imageSource?: string;
+    /** For "HTML" block */
+    innerHTML?: string;
+    /** For gallery block */
+    gallerySettings?: TGallerySettings;
 }
 
+export type TGallerySettings = {
+    images: {
+        src: string;
+        href?: string
+    }[],
+    showNav?: boolean;
+    showPagination?: boolean;
+}
 
 export type TDBEntity = keyof {
     Post;
@@ -265,6 +281,7 @@ export type TCromwellBlockProps = {
     id: string;
     type?: TCromwellBlockType;
     className?: string;
+    content?: React.ComponentType<{ data?: TCromwellBlockData }>;
 }
 
 export type TContentComponentProps = {

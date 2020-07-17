@@ -1,6 +1,11 @@
 import { getStoreItem, TBlockDestinationPositionType, TCromwellBlockData, TCromwellBlockProps } from '@cromwell/core';
 import React, { Component } from 'react';
-
+import { CContainer } from '../ContainerBlock/CContainer';
+import { CText } from '../TextBlock/CText';
+import { CHTML } from '../HTMLBlock/CHTML';
+import { CImage } from '../ImageBlock/CImage';
+import { CPlugin } from '../PluginBlock/CPlugin';
+import { CGallery } from '../GalleryBlock/CGallery';
 import { cromwellBlockTypeToClassname, cromwellIdToHTML } from '../../constants';
 //@ts-ignore
 import styles from './CromwellBlock.module.scss';
@@ -12,7 +17,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
     // private blockRef: React.RefObject<HTMLDivElement> = React.createRef();
     private virtualBlocks: TCromwellBlockData[] = [];
     private id: string;
-    private pluginComponent?: React.ComponentType;
 
     constructor(props: TCromwellBlockProps) {
         super(props);
@@ -22,7 +26,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
     private readConfig = () => {
         this.data = undefined;
         this.virtualBlocks = [];
-        this.pluginComponent = undefined;
 
         if (this.props.type) this.data = { componentId: this.props.id, type: this.props.type };
 
@@ -45,22 +48,57 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
 
         if (this.data && !this.data.isDeleted) {
 
-            // Check if current Block is Plugin 
-            if (this.data.pluginName) {
-                const importDynamicPlugin = getStoreItem('importDynamicPlugin');
-                if (importDynamicPlugin) {
-                    this.pluginComponent = importDynamicPlugin(this.data.pluginName);
-                }
-            }
+
         }
     }
 
     private getVirtualBlocks = (postion: TBlockDestinationPositionType): JSX.Element[] => {
         return this.virtualBlocks.filter(b => b.destinationPosition === postion)
-            .map(b => <CromwellBlock
-                id={b.componentId}
-                key={b.componentId}
-            />)
+            .map(b => {
+                if (b.type === 'HTML') {
+                    return <CHTML
+                        id={b.componentId}
+                        key={b.componentId}
+                    />
+                }
+                if (b.type === 'image') {
+                    return <CImage
+                        id={b.componentId}
+                        key={b.componentId}
+                    />
+                }
+                if (b.type === 'container') {
+                    return <CContainer
+                        id={b.componentId}
+                        key={b.componentId}
+                    />
+                }
+                if (b.type === 'text') {
+                    return <CText
+                        id={b.componentId}
+                        key={b.componentId}
+                    />
+                }
+                if (b.type === 'gallery') {
+                    return <CGallery
+                        id={b.componentId}
+                        key={b.componentId}
+                    />
+                }
+                if (b.type === 'plugin') {
+                    return <CPlugin
+                        id={b.componentId}
+                        key={b.componentId}
+                    />
+                }
+
+                return (
+                    <CromwellBlock
+                        id={b.componentId}
+                        key={b.componentId}
+                    />
+                )
+            })
     }
 
     render(): JSX.Element | null {
@@ -80,14 +118,11 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
             + (this.data && this.data.type ? ' ' + cromwellBlockTypeToClassname(this.data.type) : '')
             + (this.props.className ? ` ${this.props.className}` : '');
 
-        let blockContent: React.ReactNode | null = null;
-        if (this.data) {
+        let blockContent: React.ReactNode | null = this.props.children;
 
-            blockContent = this.props.children;
-
-            if (this.data.type === 'plugin' && this.pluginComponent) {
-                blockContent = <this.pluginComponent />;
-            }
+        const ContentComp = this.props.content;
+        if (ContentComp) {
+            blockContent = <ContentComp data={this.data} />
         }
 
 

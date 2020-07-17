@@ -24,6 +24,30 @@
                     "isVirtual": true,
                     "styles": "background: red;",
                     "pluginName": "ProductShowcaseDemo"
+                },
+                {
+                    "type": "gallery",
+                    "componentId": "123211",
+                    "destinationComponentId": "111",
+                    "destinationPosition": "after",
+                    "isVirtual": true,
+                    "gallerySettings": {
+                        "images": [
+                            {
+                                "src": "https://picsum.photos/id/1018/1000/600/",
+                                "href": "/pages/some_page"
+                            },
+                            {
+                                "src": "https://picsum.photos/id/1015/1000/600/",
+                                "href": "/pages/some_page"
+                            },
+                            {
+                                "src": "https://picsum.photos/id/1019/1000/600/",
+                                "href": "/pages/some_page"
+                            }
+                        ],
+                        "showPagination": true
+                    }
                 }
             ]
         }

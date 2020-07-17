@@ -2,8 +2,8 @@ import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
 import autoExternal from "rollup-plugin-auto-external";
 import typescript from "rollup-plugin-typescript2";
-import postcss from 'rollup-plugin-postcss-modules';
 import autoprefixer from "autoprefixer";
+import postcss from 'rollup-plugin-postcss';
 
 export default [
     {
@@ -28,12 +28,11 @@ export default [
                 extract: false,
                 inject: true,
                 writeDefinitions: false,
+                autoModules: true,
                 use: ['sass'],
             }),
             typescript(),
-            // resolve({
-            //     dedupe: ['@material-ui/icons']
-            // }),
+            resolve(),
             commonjs()
         ]
     }
