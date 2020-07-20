@@ -1,19 +1,19 @@
 import { Entity, ManyToMany, JoinTable, Column } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
-import { ProductType, ProductCategoryType } from '@cromwell/core';
+import { TProduct, TProductCategory } from '@cromwell/core';
 import { BasePageEntity } from './BasePageEntity';
 import { ProductCategory } from './ProductCategory';
 
 @Entity()
 @ObjectType()
-export class Product extends BasePageEntity implements ProductType {
+export class Product extends BasePageEntity implements TProduct {
     @Field(() => String)
     @Column({ type: "varchar" })
     name: string = 'privprivvvfff';
 
     @ManyToMany(type => ProductCategory, category => category.products)
     @JoinTable()
-    categories: ProductCategoryType[];
+    categories: TProductCategory[];
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
@@ -21,7 +21,7 @@ export class Product extends BasePageEntity implements ProductType {
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    oldPrice?: string;
+    oldPrice: string;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
@@ -34,4 +34,8 @@ export class Product extends BasePageEntity implements ProductType {
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     description: string;
+
+    @Field(() => Number, { nullable: true })
+    @Column({ type: "float", nullable: true })
+    rating: number;
 }

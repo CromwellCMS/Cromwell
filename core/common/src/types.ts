@@ -41,6 +41,7 @@ export type TCmsConfig = {
     frontendPort: number;
     themeName: string;
     defaultPageSize: number;
+    defaultCurrency: string;
 }
 
 export type TAppConfig = {
@@ -75,6 +76,7 @@ export type TPageConfig = TPageInfo & {
     pageCustomConfig: Record<string, any>;
 }
 
+
 export type TCromwellStore = {
     pluginsData?: Record<string, any>;
     cmsconfig?: TCmsConfig;
@@ -84,6 +86,7 @@ export type TCromwellStore = {
     importPlugin?: (pluginName: string) => { default: ComponentType } | undefined;
     importDynamicPlugin?: (pluginName: string) => ComponentType | undefined;
     rebuildPage?: (path: string) => void;
+    components: Record<string, React.ComponentType<CommonComponentProps>>;
 }
 
 declare global {
@@ -165,8 +168,11 @@ export type TGallerySettings = {
         src: string;
         href?: string
     }[],
+    height?: number;
+    width?: number;
     showNav?: boolean;
     showPagination?: boolean;
+    showScrollbar?: boolean;
 }
 
 export type TDBEntity = keyof {
@@ -205,7 +211,7 @@ type DBAuxiliaryColumns = 'id' | 'createDate' | 'updateDate';
 
 export type BasePageEntityInputType = Omit<TBasePageEntityType, DBAuxiliaryColumns>;
 
-export type ProductCategoryType = TBasePageEntityType & {
+export type TProductCategory = TBasePageEntityType & {
     // Name of the category (h1)
     name: string;
     // Href of main image
@@ -213,40 +219,42 @@ export type ProductCategoryType = TBasePageEntityType & {
     // Description (HTML allowed)
     description: string;
     // DB children
-    children: ProductCategoryType[];
+    children: TProductCategory[];
     // DB parent
-    parent: ProductCategoryType;
+    parent: TProductCategory;
     // Products in category
-    products: ProductType[];
+    products: TProduct[];
 }
 
-export type ProductCategoryInputType = Omit<ProductCategoryType, DBAuxiliaryColumns | 'children' | 'parent' | 'products'> & {
+export type ProductCategoryInputType = Omit<TProductCategory, DBAuxiliaryColumns | 'children' | 'parent' | 'products'> & {
     parentId: string;
     childIds: string[];
 };
 
-export interface ProductType extends TBasePageEntityType {
+export interface TProduct extends TBasePageEntityType {
     // Name of the product (h1)
     name: string;
     // Categories of the prooduct
-    categories: ProductCategoryType[];
+    categories: TProductCategory[];
     // Price. Will be discount price if oldPrice is specified
     price: string;
     // Price before sale, optional
-    oldPrice?: string | null;
+    oldPrice: string | null;
     // Href of main image
     mainImage: string;
     // Hrefs of iamges
     images: string[];
     // Description (HTML allowed)
     description: string;
+    // Rating 1-5
+    rating: number
 }
 
-export type ProductInputType = Omit<ProductType, DBAuxiliaryColumns | 'categories'> & {
+export type TProductInput = Omit<TProduct, DBAuxiliaryColumns | 'categories' | 'rating'> & {
     categoryIds: string[];
 };
 
-export interface PostType extends TBasePageEntityType {
+export interface TPost extends TBasePageEntityType {
     // Title of post (h1)
     title: string;
     // DB id of author
@@ -259,17 +267,17 @@ export interface PostType extends TBasePageEntityType {
     content: string;
 }
 
-export type PostInputType = Omit<ProductType, DBAuxiliaryColumns>;
+export type TPostInput = Omit<TProduct, DBAuxiliaryColumns>;
 
 
-export interface AuthorType extends TBasePageEntityType {
+export interface TAuthor extends TBasePageEntityType {
 
     id: string;
 
     name: string;
 }
 
-export type PagedParamsType<Entity> = {
+export type TPagedParams<Entity> = {
     pageNumber?: number;
     pageSize?: number;
     orderBy?: keyof Entity;
@@ -298,4 +306,8 @@ export type TPluginConfig = {
         resolversDir?: string;
         entitiesDir?: string;
     }
+}
+
+export type CommonComponentProps = {
+    data: TProduct
 }

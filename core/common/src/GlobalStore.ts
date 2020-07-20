@@ -1,9 +1,9 @@
-import { TCromwellStore, TAppConfig } from './types';
-import { isServer } from './constants';
+import { TCromwellStore, TAppConfig, TProduct, CommonComponentProps } from './types';
+import { isServer, ECommonComponentNames } from './constants';
 
 const initialStore: TCromwellStore = {
-    pluginsData: {
-    }
+    pluginsData: {},
+    components: {}
 }
 
 if (isServer()) {
@@ -15,51 +15,35 @@ else {
         window.CromwellStore = initialStore;
 }
 
-export const getStoreItem = <K extends keyof TCromwellStore>(itemName: K): TCromwellStore[K] => {
+const getStore = (): TCromwellStore => {
     if (isServer()) {
-        return global.CromwellStore[itemName];
+        return global.CromwellStore;
     }
     else {
-        return window.CromwellStore[itemName];
+        return window.CromwellStore;
     }
+}
+
+export const getStoreItem = <K extends keyof TCromwellStore>(itemName: K): TCromwellStore[K] => {
+    return getStore()[itemName];
 }
 
 export const setStoreItem = <K extends keyof TCromwellStore>(itemName: K, item: TCromwellStore[K]): void => {
-    if (isServer()) {
-        global.CromwellStore[itemName] = item;
-    }
-    else {
-        window.CromwellStore[itemName] = item;
-    }
+    getStore()[itemName] = item;
 }
 
 export const getPageCustomConfig = (): Record<string, any> | undefined => {
-    if (isServer()) {
-        return global.CromwellStore.pageConfig?.pageCustomConfig;
-    }
-    else {
-        return window.CromwellStore.pageConfig?.pageCustomConfig;
-    }
+    return getStore().pageConfig?.pageCustomConfig;
 }
 
 
 export const getAppConfig = (): TAppConfig | undefined => {
-    if (isServer()) {
-        return global.CromwellStore.appConfig;
-    }
-    else {
-        return window.CromwellStore.appConfig;
-    }
+    return getStore()?.appConfig;
 }
 
 
 export const getAppCustomConfig = (): Record<string, any> | undefined => {
-    if (isServer()) {
-        return global.CromwellStore.appCustomConfig;
-    }
-    else {
-        return window.CromwellStore.appCustomConfig;
-    }
+    return getStore()?.appCustomConfig;
 }
 
 export const getAppCustomConfigProp = (propPath: string): any => {
@@ -83,4 +67,13 @@ export const getAppCustomConfigProp = (propPath: string): any => {
 export const getAppCustomConfigTextProp = (propPath: string): string => {
     const prop = getAppCustomConfigProp(propPath);
     return prop ? prop : `{appCustomConfig/${propPath}}`;
+}
+
+
+export const loadCommonComponent = (componentName: ECommonComponentNames | string): React.ComponentType<CommonComponentProps> => {
+    return getStore().components[componentName];
+}
+
+export const saveCommonComponent = (componentName: ECommonComponentNames | string, component: React.ComponentType<CommonComponentProps>): void => {
+    getStore().components[componentName] = component;
 }

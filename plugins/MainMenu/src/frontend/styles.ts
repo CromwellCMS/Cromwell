@@ -5,7 +5,6 @@ export const useStyles = makeStyles((theme: Theme) =>
         menuList: {
             display: 'flex',
             width: '100%',
-            backgroundColor: '#eee'
             // padding: '10px'
         },
         listItem: {

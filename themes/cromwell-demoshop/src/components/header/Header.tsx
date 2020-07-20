@@ -77,8 +77,8 @@ export default function Header() {
 
     return (
         <div className={`${styles.Header} ${commonStyles.text}`}>
-            <div className={commonStyles.content}>
-                <div className={styles.topPanel}>
+            <div className={styles.topPanel}>
+                <div className={`${commonStyles.content} ${styles.topPanelContent}`}>
                     <div className={styles.leftBlock}>
                         <CHTML id="header_01" className={styles.currencyOption}>
                             <FormControl className={styles.formControl}>
@@ -117,8 +117,10 @@ export default function Header() {
                         </CHTML>
                     </div>
                 </div>
+            </div>
 
-                <div className={styles.mainPanel}>
+            <div className={styles.mainPanel}>
+                <div className={`${commonStyles.content} ${styles.mainPanelContent}`}>
                     <div className={styles.logo}>
                         <Link href="/">
                             <img className={styles.logo} src={logoHref} alt="logo" />
@@ -139,7 +141,11 @@ export default function Header() {
                         </div>
                     </ListItem>
                 </div>
-                <CPlugin id="header_main_menu" />
+            </div>
+            <div className={styles.mainMenu}>
+                <div className={`${commonStyles.content} ${styles.mainMenuContent}`}>
+                    <CPlugin id="header_main_menu" />
+                </div>
             </div>
         </div>
     )

@@ -6,7 +6,7 @@ import { CHTML } from '../HTMLBlock/CHTML';
 import { CImage } from '../ImageBlock/CImage';
 import { CPlugin } from '../PluginBlock/CPlugin';
 import { CGallery } from '../GalleryBlock/CGallery';
-import { cromwellBlockTypeToClassname, cromwellIdToHTML } from '../../constants';
+import { cromwellBlockTypeToClassname, cromwellIdToHTML, cromwellBlockPluginNameToClassname } from '../../constants';
 //@ts-ignore
 import styles from './CromwellBlock.module.scss';
 
@@ -116,7 +116,9 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
         const elementClassName = styles.CromwellBlock
             // + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '')
             + (this.data && this.data.type ? ' ' + cromwellBlockTypeToClassname(this.data.type) : '')
-            + (this.props.className ? ` ${this.props.className}` : '');
+            + (this.props.className ? ` ${this.props.className}` : '')
+            + (this.data && this.data.type && this.data.type === 'plugin' && this.data.pluginName
+                ? ` ${cromwellBlockPluginNameToClassname(this.data.pluginName)}` : '');
 
         let blockContent: React.ReactNode | null = this.props.children;
 

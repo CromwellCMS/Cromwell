@@ -2,6 +2,7 @@
 
 .Header {
     display: flex;
+    flex-direction: column;
     width: 100%;
 
     a {
@@ -10,13 +11,16 @@
     }
 
     .topPanel {
+        width: 100%;
+        border-bottom: 2px solid #333;
+    }
+    .topPanelContent {
         display: flex;
         justify-content: space-between;
         align-items: center;
         width: 100%;
         padding: 10px 0;
         font-size: 0.7em;
-        border-bottom: 2px solid #333;
     }
 
     .leftBlock {
@@ -64,6 +68,10 @@
 
 
     .mainPanel {
+        display: flex;
+        
+    }
+    .mainPanelContent {
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -119,6 +127,16 @@
         background: $primary;
         text-align: center;
         border-radius: 20px;
+    }
+
+    .mainMenu {
+        display: flex;
+        width: 100%;
+        background-color: #eee;
+        box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+    }
+    .mainMenuContent {
+        padding: 0;
     }
 }
 

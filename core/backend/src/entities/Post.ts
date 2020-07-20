@@ -2,11 +2,11 @@ import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, U
 import { ObjectType, Field, ID, Int } from "type-graphql";
 import { Author } from './Author';
 import { BasePageEntity } from './BasePageEntity';
-import { PostType } from '@cromwell/core';
+import { TPost } from '@cromwell/core';
 
 @Entity()
 @ObjectType()
-export class Post extends BasePageEntity implements PostType {
+export class Post extends BasePageEntity implements TPost {
   @Field()
   @Column({ type: "varchar" })
   title: string;

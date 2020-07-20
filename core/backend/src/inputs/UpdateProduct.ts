@@ -1,9 +1,9 @@
 import { InputType, Field, ID } from "type-graphql";
-import { ProductInputType } from '@cromwell/core';
+import { TProductInput } from '@cromwell/core';
 import { BasePageInput } from './BasePageInput';
 
 @InputType({ description: "Update Product data" })
-export class UpdateProduct extends BasePageInput implements ProductInputType {
+export class UpdateProduct extends BasePageInput implements TProductInput {
     @Field(() => String, { nullable: true })
     name: string;
 
@@ -14,7 +14,7 @@ export class UpdateProduct extends BasePageInput implements ProductInputType {
     price: string;
 
     @Field(() => String, { nullable: true })
-    oldPrice?: string;
+    oldPrice: string;
 
     @Field(() => String, { nullable: true })
     mainImage: string;

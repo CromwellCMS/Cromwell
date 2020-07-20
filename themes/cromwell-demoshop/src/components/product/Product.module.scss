@@ -1,0 +1,37 @@
+.Product {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 300px;
+    min-width: 200px;
+
+    .imageBlock {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        height: 300px;
+        width: 100%;
+    }
+    .image {
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .priceCartBlock {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .priceBlock {
+        display: flex;
+    }
+    .price {
+        font-weight: 400;
+    }
+    .oldPrice {
+        text-decoration: line-through;
+        opacity: 0.7;
+        margin-right: 10px;
+    }
+}

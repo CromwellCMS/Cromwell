@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { ProductType, StaticPageContext, TDBEntity, GraphQLPaths } from '@cromwell/core';
+import { TProduct, StaticPageContext, TDBEntity, GraphQLPaths } from '@cromwell/core';
 import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
 
 interface ProductShowcaseProps {
-    products?: ProductType[];
+    products?: TProduct[];
 }
 
 const ProductShowcaseDemo = (props: ProductShowcaseProps) => {

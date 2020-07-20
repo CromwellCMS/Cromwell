@@ -8,7 +8,17 @@ export const CImage = (props: { id: string, className?: string, src?: string }) 
         <CromwellBlock {...rest} type='image'
             content={(props) => {
                 return (
-                    <img src={(props.data && props.data.imageSource) ? props.data.imageSource : src}></img>
+                    <div style={{
+                        display: 'flex',
+                        width: '100%'
+                    }}>
+                        <img src={(props.data && props.data.imageSource) ? props.data.imageSource : src}
+                            style={{
+                                width: '100%',
+                                objectFit: 'contain'
+                            }}
+                        ></img>
+                    </div>
                 )
             }}
         />

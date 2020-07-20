@@ -17,11 +17,6 @@ export default {
             dir: './es',
             format: "esm",
             // sourcemap: true
-        },
-        {
-            dir: './dist',
-            format: "cjs",
-            // sourcemap: true
         }
     ],
     external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/app'],

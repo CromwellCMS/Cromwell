@@ -4,7 +4,7 @@ import { PagedParamsInput } from '@cromwell/core-backend';
 import { ProductCategoryRepository } from '@cromwell/core-backend';
 import { ProductRepository } from '@cromwell/core-backend';
 import { getCustomRepository } from "typeorm";
-import { ProductType } from "@cromwell/core";
+import { TProduct } from "@cromwell/core";
 import { Product } from '@cromwell/core-backend';
 
 
@@ -19,7 +19,7 @@ export default class ProductShowcaseResolver {
     }
 
     @FieldResolver(() => [Product])
-    async products(@Root() productCategory: ProductCategory, @Arg("pagedParams") pagedParams: PagedParamsInput<ProductType>): Promise<ProductType[]> {
+    async products(@Root() productCategory: ProductCategory, @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TProduct[]> {
         return await getCustomRepository(ProductRepository).getProductsFromCategory(productCategory.id, pagedParams);
     }
 }

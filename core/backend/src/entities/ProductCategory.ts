@@ -1,14 +1,14 @@
 import { Entity, Column } from "typeorm";
 import { Tree, TreeChildren, TreeParent, TreeLevelColumn, ManyToMany } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
-import { ProductCategoryType, ProductType } from '@cromwell/core';
+import { TProductCategory, TProduct } from '@cromwell/core';
 import { BasePageEntity } from './BasePageEntity';
 import { Product } from './Product';
 
 @Entity()
 @Tree("closure-table")
 @ObjectType()
-export class ProductCategory extends BasePageEntity implements ProductCategoryType {
+export class ProductCategory extends BasePageEntity implements TProductCategory {
     @Field(() => String)
     @Column({ type: "varchar" })
     name: string;
@@ -34,5 +34,5 @@ export class ProductCategory extends BasePageEntity implements ProductCategoryTy
     // level: number;
 
     @ManyToMany(type => Product, question => question.categories)
-    products: ProductType[];
+    products: TProduct[];
 }

@@ -4,6 +4,7 @@ export { CHTML } from './components/HTMLBlock/CHTML';
 export { CContainer } from './components/ContainerBlock/CContainer';
 export { CImage } from './components/ImageBlock/CImage';
 export { CPlugin } from './components/PluginBlock/CPlugin';
+export { CGallery } from './components/GalleryBlock/CGallery';
 export * from './components/Head/Head';
 export * from './HOCs/FrontendPlugin';
 export * from './constants';

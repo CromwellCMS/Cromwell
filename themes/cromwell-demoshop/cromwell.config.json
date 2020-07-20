@@ -1,6 +1,44 @@
 {
     "pages": [
         {
+            "route": "index",
+            "name": "index",
+            "title": "Home page",
+            "modifications": [
+                {
+                    "type": "gallery",
+                    "componentId": "main_gallery_01",
+                    "gallerySettings": {
+                        "images": [
+                            {
+                                "src": "/images/main_banner_1.png",
+                                "href": "/pages/some_page"
+                            },
+                            {
+                                "src": "/images/main_banner_2.png",
+                                "href": "/pages/some_page"
+                            },
+                            {
+                                "src": "/images/main_banner_3.png",
+                                "href": "/pages/some_page"
+                            },
+                            {
+                                "src": "/images/main_banner_4.png",
+                                "href": "/pages/some_page"
+                            }
+                        ],
+                        "height": 320,
+                        "showPagination": true
+                    }
+                },
+                {
+                    "type": "plugin",
+                    "componentId": "main_showcase",
+                    "pluginName": "ProductShowcase"
+                }
+            ]
+        },
+        {
             "route": "pages/some_page",
             "name": "my-some_page",
             "title": "My first page",
@@ -24,30 +62,6 @@
                     "isVirtual": true,
                     "styles": "background: red;",
                     "pluginName": "ProductShowcaseDemo"
-                },
-                {
-                    "type": "gallery",
-                    "componentId": "123211",
-                    "destinationComponentId": "111",
-                    "destinationPosition": "after",
-                    "isVirtual": true,
-                    "gallerySettings": {
-                        "images": [
-                            {
-                                "src": "https://picsum.photos/id/1018/1000/600/",
-                                "href": "/pages/some_page"
-                            },
-                            {
-                                "src": "https://picsum.photos/id/1015/1000/600/",
-                                "href": "/pages/some_page"
-                            },
-                            {
-                                "src": "https://picsum.photos/id/1019/1000/600/",
-                                "href": "/pages/some_page"
-                            }
-                        ],
-                        "showPagination": true
-                    }
                 }
             ]
         }
