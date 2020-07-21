@@ -1,5 +1,5 @@
-import { getAppCustomConfigTextProp, getAppCustomConfigProp, isServer } from '@cromwell/core';
-import { Link, CHTML, CContainer, CPlugin } from '@cromwell/core-frontend';
+import { getAppCustomConfigTextProp, getAppCustomConfigProp, getAppConfig, isServer, setStoreItem } from '@cromwell/core';
+import { Link, CHTML, CContainer, CPlugin, getGlobalCurrency, setGlobalCurrency } from '@cromwell/core-frontend';
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core';
 import {
@@ -48,28 +48,24 @@ export default function Header() {
 
 
     const topLinks: TTopLink[] | undefined = getAppCustomConfigProp('header/topLinks');
-    const currencyOptions: string[] | undefined = getAppCustomConfigProp('store/currencyOptions');
+    const appConfig = getAppConfig();
+    const currencyOptions: string[] = appConfig && appConfig.currencyOptions ? appConfig.currencyOptions : [];
     const logoHref: string | undefined = getAppCustomConfigProp('header/logo');
     const contactPhone: string | undefined = getAppCustomConfigProp('header/contactPhone');
     const classes = useStyles();
-
-    let _currency = !isServer() ? window.localStorage.getItem('storeCurrency') : null;
-    if ((!_currency || _currency === "") && currencyOptions && Array.isArray(currencyOptions) && currencyOptions.length > 0) {
-        _currency = currencyOptions[0];
-    }
 
     let _itemsInCart: string | number | null = !isServer() ? window.localStorage.getItem('itemsInCart') : null;
     if (typeof _itemsInCart === 'string') _itemsInCart = parseInt(_itemsInCart);
     if (_itemsInCart && isNaN(_itemsInCart)) _itemsInCart = null;
     if (!_itemsInCart) _itemsInCart = 0;
 
-    const [currency, setCurrency] = React.useState<string | null>(_currency);
+    const [currency, setCurrency] = React.useState<string | null | undefined>(getGlobalCurrency());
     const [itemsInCart, setItemsInCart] = React.useState<number>(_itemsInCart);
 
     const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const val = event.target.value as string
         setCurrency(val);
-        window.localStorage.setItem('storeCurrency', val);
+        setGlobalCurrency(val);
     };
 
     const handleCartClick = () => {
@@ -108,7 +104,7 @@ export default function Header() {
                         <CHTML id="header_04" className={styles.topPanelLinks}>
                             <>
                                 {topLinks && topLinks.map(l => (
-                                    <div className={styles.topPanelLink}>
+                                    <div className={styles.topPanelLink} key={l.href}>
                                         <Link href={l.href} key={l.href}>
                                             <a className={commonStyles.link}>{l.title}</a>
                                         </Link>

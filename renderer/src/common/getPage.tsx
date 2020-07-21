@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BasePageNames, TCromwellPage, TCromwellPageCoreProps } from "@cromwell/core";
 import { getStoreItem, setStoreItem } from "@cromwell/core";
 import { Head } from '@cromwell/core-frontend';
@@ -8,6 +8,10 @@ import { importDynamicPage, importPage } from '.cromwell/imports/imports.gen';
 import { checkCMSConfig } from '../helpers/checkCMSConfig';
 checkCMSConfig();
 
+function useForceUpdate() {
+    const [value, setValue] = useState(0); // integer state
+    return () => setValue(value => ++value); // update the state to force render
+}
 
 export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
     const cmsconfig = getStoreItem('cmsconfig');
@@ -20,11 +24,18 @@ export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
     const Page: any = importPage(pageName).default;
 
     return function (props: TCromwellPageCoreProps): JSX.Element {
-        const { pluginsData, pageConfig, appCustomConfig, childStaticProps, appConfig, ...restProps } = props;
+        const { pluginsData, pageConfig, appCustomConfig, childStaticProps, appConfig, pagesInfo, ...restProps } = props;
         setStoreItem('pluginsData', pluginsData);
         setStoreItem('pageConfig', pageConfig);
         setStoreItem('appConfig', appConfig);
         setStoreItem('appCustomConfig', appCustomConfig);
+        setStoreItem('pagesInfo', pagesInfo);
+        const forceUpdate = useForceUpdate();
+        const onCurrencyChange = (currency: string) => {
+            forceUpdate();
+        }
+        setStoreItem('onCurrencyChange', onCurrencyChange);
+
 
         // Head SEO/meta/etc props:
         let title;

@@ -12,6 +12,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string) => {
         const pageConfig = await getRestAPIClient().getPageConfig(pageName);
         const appConfig = await getRestAPIClient().getAppConfig();
         const appCustomConfig = await getRestAPIClient().getAppCustomConfig();
+        const pagesInfo = await getRestAPIClient().getPagesInfo();
         // if (context && context.params && context.params.slug) {
         //     pageRoute += '/' + context.params.slug;
         // }
@@ -23,7 +24,8 @@ export const createGetStaticProps = (pageName: BasePageNames | string) => {
                 childStaticProps,
                 pageConfig,
                 appConfig,
-                appCustomConfig
+                appCustomConfig,
+                pagesInfo
             },
             /* eslint-disable @typescript-eslint/camelcase */
             unstable_revalidate: process.env.isProd ? 1 : undefined

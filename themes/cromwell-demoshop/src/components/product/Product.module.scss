@@ -3,15 +3,18 @@
 .Product {
     display: flex;
     flex-direction: column;
+    position: relative;
+    z-index: 3;
     width: 100%;
     max-width: 300px;
     min-width: 200px;
-    border-radius: 15px;
-    transition-property: box-shadow;
+    border-radius: 8px;
+    transition-property: box-shadow, z-index;
     transition-duration: 0.3s;
 
     &:hover {
         box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+        z-index: 5;
     }
 
     .imageBlock {
@@ -19,6 +22,8 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
+        overflow: hidden;
+        border-radius: 8px 8px 0 0;
         height: 300px;
         width: 100%;
     }
@@ -70,6 +75,7 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
     }
     .priceBlock {
         display: flex;

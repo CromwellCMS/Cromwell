@@ -25,6 +25,7 @@
     "react-dom": "^16.13.1",
     "reset-css": "^5.0.1",
     "style-inject": "^0.3.0",
+    "swiper": "^6.0.4",
     "tslib": "^2.0.0"
   },
   "devDependencies": {

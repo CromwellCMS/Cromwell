@@ -1,0 +1,21 @@
+.content {
+    display: flex;
+}
+
+.sidebar {
+    width: 25%;
+}
+.main {
+    width: 75%;
+}
+
+.productList {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.product {
+    width: 200px;
+    margin-left: 15px;
+}
