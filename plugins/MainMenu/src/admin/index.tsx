@@ -1,7 +1,6 @@
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-import { CircularProgress } from '@material-ui/core';
 import {
     createStyles, makeStyles, Theme, Card,
     CardActionArea,
@@ -10,7 +9,8 @@ import {
     IconButton,
     TextField,
     MenuItem,
-    Button
+    Button,
+    CircularProgress
 } from '@material-ui/core';
 import {
     Add as AddIcon, ExpandMore as ExpandMoreIcon,
@@ -205,8 +205,7 @@ const Item = (props: { i: number, updateList: () => void }) => {
 }
 
 
-
-export const useStylesLoadBox = makeStyles((theme: Theme) =>
+const useStylesLoadBox = makeStyles((theme: Theme) =>
     createStyles({
         LoadBox: {
             height: '100%',
@@ -217,12 +216,7 @@ export const useStylesLoadBox = makeStyles((theme: Theme) =>
         }
     }),
 );
-
-interface LoadBoxProps {
-    size?: number
-}
-
-const LoadBox = (props: LoadBoxProps) => {
+const LoadBox = (props: { size?: number }) => {
     const classes = useStylesLoadBox();
     return (
         <div className={classes.LoadBox} >

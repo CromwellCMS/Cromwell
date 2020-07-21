@@ -30,19 +30,16 @@ const MainMenu = (props: TMainMenuProps) => {
         <div className={classes.menuList}>
             {items.map(i => {
                 const isActive = activeItem === i.title;
-                return (
+                const menuItem = (
                     <MenuItem className={classes.listItem}
+                        key={i.title}
                         onMouseLeave={handlePopoverClose}
                         onMouseOver={(e) => {
                             handlePopoverOpen(e);
                             setActiveItem(i.title);
                         }}
                     >
-                        {i.href ? (
-                            <Link href={i.href}>{i.title}</Link>
-                        ) : (
-                                <p>{i.title}</p>
-                            )}
+                        <p>{i.title}</p>
                         {(i.sublinks || i.html) && (
                             <Popover
                                 id={i.title}
@@ -75,6 +72,7 @@ const MainMenu = (props: TMainMenuProps) => {
                                                 style={{
                                                     // width: i.sublinkCols ? `${100 / i.sublinkCols}px` : '100%'
                                                 }}
+                                                key={sub.href}
                                             ><Link href={sub.href + ''}><p>{sub.title}</p></Link></MenuItem>
                                         )
                                     })}
@@ -83,6 +81,11 @@ const MainMenu = (props: TMainMenuProps) => {
                         )}
                     </MenuItem>
                 )
+                if (i.href) {
+                    return <Link href={i.href}><a>{menuItem}</a></Link>
+                }
+                return menuItem;
+
             })}
         </div>
     )

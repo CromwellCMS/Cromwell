@@ -65,6 +65,12 @@
                     "pluginName": "ProductShowcaseDemo"
                 }
             ]
+        },
+        {
+            "route": "category/[slug]",
+            "name": "category",
+            "title": "Category page",
+            "isDynamic": true
         }
     ],
     "plugins": {
@@ -76,15 +82,25 @@
         }
     },
     "appConfig": {
-        "pagesDir": "es/pages"
+        "pagesDir": "es/pages",
+        "currencyOptions": [
+            "USD",
+            "EURO",
+            "RUB"
+        ],
+        "currencySymbols": {
+            "USD": "$",
+            "EURO": "€",
+            "RUB": "₽"
+        },
+        "currencyRatio": {
+            "USD": 1,
+            "EURO": 0.8,
+            "RUB": 60
+        }
     },
     "appCustomConfig": {
-        "store": {
-            "currencyOptions": [
-                "USD",
-                "EURO"
-            ]
-        },
+        "store": {},
         "header": {
             "logo": "/images/shopping-cart.png",
             "contactPhone": "+123 (456) 78-90",

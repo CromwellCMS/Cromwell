@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from 'react';
-import { StaticPageContext, TProductCategory } from '@cromwell/core';
+import { StaticPageContext, TProductCategory, TProduct } from '@cromwell/core';
 import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
 import { useStyles } from './styles';
 import { ECommonComponentNames, loadCommonComponent } from '@cromwell/core';
@@ -22,14 +22,30 @@ interface ProductShowcaseProps {
 const ProductShowcase = (props: ProductShowcaseProps) => {
     const classes = useStyles();
     const [virtualData, setVirtualData] = useState<VirtualData>({ slides: [] } as any);
-    const CommmonProductComp = loadCommonComponent(ECommonComponentNames.product);
+
+    // Try to load component if template has already defined common Product view
+    let CommmonProductComp = loadCommonComponent(ECommonComponentNames.product);
+    if (!CommmonProductComp) {
+        // Default view otherwise
+        CommmonProductComp = (props: { data: TProduct }) => {
+            const p = props.data;
+            return (
+                <div key={p.id}>
+                    <img src={p.mainImage} width="300px" />
+                    <Link href={`/product/${p.slug}`}><a>{p.name}</a></Link>
+                    <p>{p.price}</p>
+                </div>
+            )
+
+        }
+    }
     const swiperId = `swiper-container_ProductShowcase`;
     // console.log('ProductShowcase props', props)
     useEffect(() => {
         const options: SwiperOptions = {
             slidesPerView: 3,
             // slidesPerView: 3,
-            centeredSlides: true,
+            // centeredSlides: true,
             spaceBetween: 30,
             // Optional parameters
             direction: 'horizontal',

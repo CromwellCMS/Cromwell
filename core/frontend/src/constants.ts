@@ -13,4 +13,4 @@ export const cromwellBlockTypeFromClassname = (classname: string): TCromwellBloc
     else return null
     
 }
-export const cromwellBlockPluginNameToClassname = (name: string) => `CromwellBlock_PluginName_${name}`
+export const cromwellBlockPluginNameToClassname = (name: string) => `CromwellBlock_PluginName_${name}`;

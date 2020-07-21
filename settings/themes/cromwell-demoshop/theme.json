@@ -29,6 +29,7 @@
             "route": "product/[slug]",
             "name": "product",
             "title": "Product page",
+            "isDynamic": true,
             "modifications": [
                 {
                     "type": "plugin",
