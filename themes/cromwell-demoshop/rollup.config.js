@@ -4,7 +4,7 @@ import typescript from "rollup-plugin-typescript2";
 import commonjs from "@rollup/plugin-commonjs";
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from "autoprefixer";
-// import alias from '@rollup/plugin-alias';
+import alias from '@rollup/plugin-alias';
 // import image from '@rollup/plugin-image';
 // import imageInliner from 'postcss-image-inliner';
 // import postcssAssets from 'postcss-assets';
@@ -34,13 +34,13 @@ export default {
             inject: true,
             use: ['sass'],
         }),
-        // alias({
-        //     entries: [
-        //         // Workaround for proper import (for next.js) of style-inject which is automatically imported by rollup-plugin-postcss
-        //         { find: /^.*\/node_modules\/style-inject\/dist\/style-inject\.es\.js/, replacement: 'style-inject' },
-        //     ]
-        // }),
-        // autoExternal(),
+        alias({
+            entries: [
+                // Workaround for proper import (for next.js) of style-inject which is automatically imported by rollup-plugin-postcss
+                { find: /^.*\/node_modules\/style-inject\/dist\/style-inject\.es\.js/, replacement: 'style-inject' },
+            ]
+        }),
+        autoExternal(),
         resolve(),
         commonjs(),
         typescript({ useTsconfigDeclarationDir: true }),

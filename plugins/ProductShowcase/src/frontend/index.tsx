@@ -1,7 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import { StaticPageContext, TProductCategory } from '@cromwell/core';
 import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
-import { ProductShowcaseReviewsType } from '../backend/entities/ProductShowcaseReviews';
 import { useStyles } from './styles';
 import { ECommonComponentNames, loadCommonComponent } from '@cromwell/core';
 import Swiper, { Navigation, Pagination, SwiperOptions, Lazy, Virtual } from 'swiper';
@@ -55,7 +54,6 @@ const ProductShowcase = (props: ProductShowcaseProps) => {
                     // })
                 }()),
                 renderExternal: (data) => {
-                    console.log('setVirtualData', data);
                     setVirtualData(data)
                 }
             },
@@ -87,7 +85,7 @@ const ProductShowcase = (props: ProductShowcaseProps) => {
                             ><CommmonProductComp data={slide} /></div>
                         ))}
                     </div>
-                    <div className="swiper-pagination"></div>
+                    <div className={`swiper-pagination ${classes.swiperPagination}`}></div>
                     <div className="swiper-button-next"></div>
                     <div className="swiper-button-prev"></div>
                 </div>

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { TCromwellBlockData, getStoreItem, TGallerySettings } from '@cromwell/core';
 import { Link } from '../../index';
@@ -10,6 +10,7 @@ styleInject(swiperCSS);
 
 //@ts-ignore
 import styles from './CGallery.module.scss';
+import { type } from 'os';
 Swiper.use([Navigation, Pagination, Lazy]);
 
 export const CGallery = (props: { id: string, className?: string, settings?: TGallerySettings }) => {
@@ -20,9 +21,38 @@ export const CGallery = (props: { id: string, className?: string, settings?: TGa
             content={(props) => {
                 const gallerySettings = (props.data && props.data.gallerySettings) ? props.data.gallerySettings : settings;
                 const swiperId = `swiper-container_${props.data?.componentId}`;
+
+                let _height = '0px';
                 // console.log('gallerySettings', gallerySettings)
                 if (gallerySettings) {
+
+                    if (gallerySettings.height) {
+                        if (typeof gallerySettings.height === 'string') {
+                            _height = gallerySettings.height;
+                        }
+                    }
+                    if (gallerySettings.ratio && gallerySettings.width) {
+                        if (typeof gallerySettings.width === 'number') {
+                            _height = `${gallerySettings.width * gallerySettings.ratio}px`;
+                        }
+                        if (typeof gallerySettings.width === 'string') {
+                            // will be calculated in useEffect
+                        }
+                    }
+                }
+
+                const [height, setHeigth] = useState(_height);
+
+                if (gallerySettings) {
                     useEffect(() => {
+                        if (gallerySettings.ratio && gallerySettings.width) {
+                            if (typeof gallerySettings.width === 'string') {
+                                if (props.blockRef && props.blockRef.current) {
+                                    let _height = `${props.blockRef.current.clientWidth / gallerySettings.ratio}px`;
+                                    setHeigth(_height);
+                                }
+                            }
+                        }
                         const options: SwiperOptions = {
                             loop: true,
                             lazy: {
@@ -48,7 +78,6 @@ export const CGallery = (props: { id: string, className?: string, settings?: TGa
 
                         const mySwiper = new Swiper(`#${swiperId}`, options);
                     }, [])
-
                 }
 
                 if (gallerySettings && gallerySettings.images) {
@@ -57,7 +86,7 @@ export const CGallery = (props: { id: string, className?: string, settings?: TGa
                             id={swiperId}
                             style={{
                                 width: gallerySettings.width ? gallerySettings.width : '1200px',
-                                height: gallerySettings.height ? gallerySettings.height : '400px',
+                                height: height
                             }}>
                             <div className="swiper-wrapper">
                                 {gallerySettings.images.map(i => {
@@ -67,7 +96,7 @@ export const CGallery = (props: { id: string, className?: string, settings?: TGa
                                             attr-data-background={i.src}
                                             style={{
                                                 width: gallerySettings.width ? gallerySettings.width : '1200px',
-                                                height: gallerySettings.height ? gallerySettings.height : '400px',
+                                                height: height
                                                 // backgroundImage: `url('${i.src}')`
                                             }}
                                             className={`${styles.swiperImage} swiper-lazy`}

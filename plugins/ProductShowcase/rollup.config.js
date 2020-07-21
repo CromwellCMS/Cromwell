@@ -14,6 +14,11 @@ export default {
             // sourcemap: true
         }
     ],
+    // external: id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/'),
+    // external: id => {
+    //     if (/material/.test(id))
+    //         console.log(id);
+    // },
     plugins: [
         autoExternal(),
         resolve(),

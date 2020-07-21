@@ -27,7 +27,8 @@
                                 "href": "/pages/some_page"
                             }
                         ],
-                        "height": 320,
+                        "width": "100%",
+                        "ratio": 3.75,
                         "showPagination": true
                     }
                 },
@@ -75,7 +76,7 @@
         }
     },
     "appConfig": {
-        "pagesDir": "es/themes/cromwell-demoshop/src/pages"
+        "pagesDir": "es/pages"
     },
     "appCustomConfig": {
         "store": {

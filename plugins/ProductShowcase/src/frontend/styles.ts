@@ -1,4 +1,4 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
 export const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,7 +30,11 @@ export const useStyles = makeStyles((theme: Theme) =>
             padding: '15px'
         },
         swiperContainer: {
-            width: '100%'
+            width: '100%',
+            padding: '15px 0'
+        },
+        swiperPagination: {
+            bottom: 0
         }
     }),
 );

@@ -3,7 +3,7 @@ import Header from '../header/Header';
 import {
     createMuiTheme,
     ThemeProvider,
-} from '@material-ui/core/styles';
+} from '@material-ui/core';
 // @ts-ignore
 import styles from './Layout.module.scss';
 // @ts-ignore

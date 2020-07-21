@@ -1,5 +1,5 @@
 {
     "name": "MainMenu",
-    "adminDir": "es/plugins/MainMenu/src/admin",
-    "frontendDir": "es/plugins/MainMenu/src/frontend"
+    "adminDir": "es/src/admin",
+    "frontendDir": "es/src/frontend"
 }

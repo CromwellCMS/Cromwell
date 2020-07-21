@@ -168,8 +168,10 @@ export type TGallerySettings = {
         src: string;
         href?: string
     }[],
-    height?: number;
-    width?: number;
+    height?: number | string;
+    width?: number | string;
+    /** = width / height */
+    ratio?: number;
     showNav?: boolean;
     showPagination?: boolean;
     showScrollbar?: boolean;
@@ -289,7 +291,10 @@ export type TCromwellBlockProps = {
     id: string;
     type?: TCromwellBlockType;
     className?: string;
-    content?: React.ComponentType<{ data?: TCromwellBlockData }>;
+    content?: React.ComponentType<{
+        data?: TCromwellBlockData,
+        blockRef?: React.RefObject<HTMLDivElement>
+    }>;
 }
 
 export type TContentComponentProps = {

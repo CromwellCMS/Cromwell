@@ -1,9 +1,18 @@
+@import '../../styles/variables.scss';
+
 .Product {
     display: flex;
     flex-direction: column;
     width: 100%;
     max-width: 300px;
     min-width: 200px;
+    border-radius: 15px;
+    transition-property: box-shadow;
+    transition-duration: 0.3s;
+
+    &:hover {
+        box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+    }
 
     .imageBlock {
         display: flex;
@@ -16,6 +25,45 @@
     .image {
         width: 100%;
         object-fit: contain;
+    }
+
+    .caption {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 15px 20px 15px;
+    }
+
+    .productName {
+        display: inline;
+        color: $text;
+        font-size: 20px;
+        text-decoration: none;
+        border-bottom: 2px solid #fff;
+        transition: all 0.25s linear;
+        position: relative;
+        // border-bottom: 1px solid;
+    }
+
+    .productName:before {
+        content: "";
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: $primary;
+        position: absolute;
+        left: 0;
+        bottom: -2px;
+        transform-origin: left; 
+        transform: scale(0);
+        transition: 0.25s linear;
+    }
+      
+    &:hover .productName:before {
+        transform: scale(1);
+    }
+    &:hover .productName {
+        color: $primary;
     }
 
     .priceCartBlock {

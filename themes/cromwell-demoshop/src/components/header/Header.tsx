@@ -1,16 +1,17 @@
 import { getAppCustomConfigTextProp, getAppCustomConfigProp, isServer } from '@cromwell/core';
 import { Link, CHTML, CContainer, CPlugin } from '@cromwell/core-frontend';
 import React, { useEffect } from 'react';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import { withStyles } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import MuiSelect from '@material-ui/core/Select';
+import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core';
+import {
+    MenuItem,
+    FormControl,
+    Select as MuiSelect,
+    TextField as MuiTextField,
+    ListItem,
+    IconButton
+} from '@material-ui/core';
+import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import { TTopLink } from '../../types';
-import MuiTextField from '@material-ui/core/TextField';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import IconButton from '@material-ui/core/IconButton';
-import ListItem from '@material-ui/core/ListItem';
 
 // @ts-ignore
 import styles from './Header.module.scss';

@@ -14,9 +14,10 @@ import styles from './CromwellBlock.module.scss';
 export class CromwellBlock extends Component<TCromwellBlockProps> {
 
     private data?: TCromwellBlockData;
-    // private blockRef: React.RefObject<HTMLDivElement> = React.createRef();
     private virtualBlocks: TCromwellBlockData[] = [];
     private id: string;
+
+    private blockRef = React.createRef<HTMLDivElement>();
 
     constructor(props: TCromwellBlockProps) {
         super(props);
@@ -124,7 +125,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
 
         const ContentComp = this.props.content;
         if (ContentComp) {
-            blockContent = <ContentComp data={this.data} />
+            blockContent = <ContentComp data={this.data} blockRef={this.blockRef} />
         }
 
 
@@ -133,7 +134,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
                 // @TODO resolve styles type to store in config. Normal CSS or React.CSSProperties
                 // style={this.data ? this.data.styles as any : undefined}
                 className={elementClassName}
-            // ref={this.blockRef}
+                ref={this.blockRef}
             >
                 {blockContent}
                 {this.getVirtualBlocks('inside')}

@@ -1,9 +1,11 @@
-import { Accordion } from '@material-ui/core';
-import { AccordionSummary } from '@material-ui/core'
-import { AccordionDetails } from '@material-ui/core'
-import MuiMenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from '@material-ui/core/styles';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import {
+    Accordion,
+    AccordionSummary,
+    AccordionDetails,
+    MenuItem as MuiMenuItem
+} from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
+import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 

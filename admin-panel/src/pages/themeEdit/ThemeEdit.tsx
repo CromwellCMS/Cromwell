@@ -1,7 +1,7 @@
 import { TPageInfo, setStoreItem, TPageConfig } from '@cromwell/core';
 import { getRestAPIClient, CromwellBlockCSSclass } from '@cromwell/core-frontend';
-import MuiMenuItem from '@material-ui/core/MenuItem';
-import { withStyles } from '@material-ui/core/styles';
+import { MenuItem as MuiMenuItem } from '@material-ui/core';
+import { withStyles } from '@material-ui/core';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import { importStaticPage, importLazyPage } from '../../../.cromwell/imports/pages.gen';
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';

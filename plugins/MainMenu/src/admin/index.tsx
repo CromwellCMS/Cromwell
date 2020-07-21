@@ -1,19 +1,21 @@
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import Collapse from '@material-ui/core/Collapse';
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
-import AddIcon from '@material-ui/icons/Add';
-import HighlightOffIcon from '@material-ui/icons/HighlightOff';
-import Button from '@material-ui/core/Button';
+import { CircularProgress } from '@material-ui/core';
+import {
+    createStyles, makeStyles, Theme, Card,
+    CardActionArea,
+    CardActions,
+    Collapse,
+    IconButton,
+    TextField,
+    MenuItem,
+    Button
+} from '@material-ui/core';
+import {
+    Add as AddIcon, ExpandMore as ExpandMoreIcon,
+    HighlightOff as HighlightOffIcon
+} from '@material-ui/icons';
 
 import config from '../../cromwell.config.json';
 import { defaultSettings } from '../defaultSettings';
