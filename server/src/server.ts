@@ -11,7 +11,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 
 import { pluginsResolvers } from '../.cromwell/imports/resolvers.imports.gen';
-import { applyModificationsController } from './controllers/modificationsController';
+import { applyThemeController } from './controllers/themeController';
 import { applyPluginsController } from './controllers/pluginsController';
 import { rebuildPage } from './helpers/PageBuilder';
 import { AuthorResolver } from './resolvers/AuthorResolver';
@@ -57,7 +57,7 @@ async function apiServer(): Promise<void> {
     app.use(bodyParser.json());
     app.use(cors());
 
-    applyModificationsController(app);
+    applyThemeController(app);
     applyPluginsController(app);
 
     const { address } = app.listen(config.apiPort);

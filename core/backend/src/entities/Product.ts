@@ -15,13 +15,13 @@ export class Product extends BasePageEntity implements TProduct {
     @JoinTable()
     categories: TProductCategory[];
 
-    @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    price: string;
+    @Field(() => Number, { nullable: true })
+    @Column({ type: "float", nullable: true })
+    price: number;
 
-    @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
-    oldPrice: string;
+    @Field(type => Number, { nullable: true })
+    @Column({ type: "float", nullable: true })
+    oldPrice: number;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })

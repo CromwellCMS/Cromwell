@@ -3,7 +3,7 @@ import { Express } from 'express';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 
-export const applyModificationsController = (app: Express): void => {
+export const applyThemeController = (app: Express): void => {
     const config = getStoreItem('cmsconfig');
     if (!config || !config.themeName) {
         console.error('applyModificationsController: failed to read cmsconfig', config);
@@ -193,7 +193,7 @@ export const applyModificationsController = (app: Express): void => {
      * Returns merged page config for specified Page by pageRoute in query param.
      * Output contains theme's original modificators overwritten by user's modificators.
      */
-    app.get(`/${apiV1BaseRoute}/modifications/page/`, function (req, res) {
+    app.get(`/${apiV1BaseRoute}/theme/page/`, function (req, res) {
         let out: TPageConfig | null = null;
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
             const pageRoute = req.query.pageRoute;
@@ -211,7 +211,7 @@ export const applyModificationsController = (app: Express): void => {
      * Returns plugins' configs at specified Page by pageRoute in query param.
      * Output contains theme's original modificators overwritten by user's modificators.
      */
-    app.get(`/${apiV1BaseRoute}/modifications/plugins`, function (req, res) {
+    app.get(`/${apiV1BaseRoute}/theme/plugins`, function (req, res) {
         const out: Record<string, any> = {};
 
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
@@ -236,7 +236,7 @@ export const applyModificationsController = (app: Express): void => {
     /**
     * Returns array of plugin names at all pages
     */
-    app.get(`/${apiV1BaseRoute}/modifications/pluginNames`, function (req, res) {
+    app.get(`/${apiV1BaseRoute}/theme/pluginNames`, function (req, res) {
         const out: string[] = [];
 
         readAllPageConfigs((pages) => {
@@ -256,7 +256,7 @@ export const applyModificationsController = (app: Express): void => {
     /**
      * Returns all pages' metainfo without modificators
      */
-    app.get(`/${apiV1BaseRoute}/modifications/pages/info`, function (req, res) {
+    app.get(`/${apiV1BaseRoute}/theme/pages/info`, function (req, res) {
         const out: TPageInfo[] = [];
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
             let pages: TPageConfig[] = [];
@@ -281,7 +281,8 @@ export const applyModificationsController = (app: Express): void => {
                 const info: TPageInfo = {
                     route: p.route,
                     name: p.name,
-                    title: p.title
+                    title: p.title,
+                    isDynamic: p.isDynamic
                 }
                 out.push(info);
             });
@@ -294,7 +295,7 @@ export const applyModificationsController = (app: Express): void => {
     /**
      * Returns all pages with merged modifications.
      */
-    app.get(`/${apiV1BaseRoute}/modifications/pages/configs`, function (req, res) {
+    app.get(`/${apiV1BaseRoute}/theme/pages/configs`, function (req, res) {
         readAllPageConfigs((pages) => {
             res.send(pages);
         })
@@ -304,7 +305,7 @@ export const applyModificationsController = (app: Express): void => {
     /**
      * Returns merged app config.
      */
-    app.get(`/${apiV1BaseRoute}/modifications/app/config`, function (req, res) {
+    app.get(`/${apiV1BaseRoute}/theme/app/config`, function (req, res) {
         let out: TAppConfig = {};
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
             out = Object.assign(out, themeConfig?.appConfig, userConfig?.appConfig);
@@ -316,7 +317,7 @@ export const applyModificationsController = (app: Express): void => {
     /**
      * Returns merged custom app configs.
      */
-    app.get(`/${apiV1BaseRoute}/modifications/app/custom-config`, function (req, res) {
+    app.get(`/${apiV1BaseRoute}/theme/app/custom-config`, function (req, res) {
         let out: Record<string, any> = {};
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
             out = Object.assign(out, themeConfig?.appCustomConfig, userConfig?.appCustomConfig);

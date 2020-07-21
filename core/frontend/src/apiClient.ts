@@ -55,7 +55,7 @@ class RestAPIClient {
     public getPageConfig = async (pageRoute: string): Promise<TPageConfig> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/modifications/page/?pageRoute=${pageRoute}`);
+            res = await axios.get(`${this.baseUrl}/theme/page/?pageRoute=${pageRoute}`);
         } catch (e) { console.error('RestAPIClient::getPageConfig', e) }
         return (res && res.data) ? res.data : [];
     }
@@ -63,7 +63,7 @@ class RestAPIClient {
     public getPluginsModifications = async (pageRoute: string): Promise<Record<string, any>> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/modifications/plugins?pageRoute=${pageRoute}`);
+            res = await axios.get(`${this.baseUrl}/theme/plugins?pageRoute=${pageRoute}`);
         } catch (e) { console.error('RestAPIClient::getPluginsModifications', e) }
         return (res && res.data) ? res.data : {};
     }
@@ -71,7 +71,7 @@ class RestAPIClient {
     public getPluginNames = async (): Promise<string[]> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/modifications/pluginNames`);
+            res = await axios.get(`${this.baseUrl}/theme/pluginNames`);
         } catch (e) { console.error('RestAPIClient::getPluginNames', e) }
         return (res && res.data) ? res.data : [];
     }
@@ -79,7 +79,7 @@ class RestAPIClient {
     public getPagesInfo = async (): Promise<TPageInfo[]> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/modifications/pages/info`);
+            res = await axios.get(`${this.baseUrl}/theme/pages/info`);
         } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
         return (res && res.data) ? res.data : [];
     }
@@ -87,15 +87,15 @@ class RestAPIClient {
     public getPageConfigs = async (): Promise<TPageConfig[]> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/modifications/pages/configs`);
-        } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
+            res = await axios.get(`${this.baseUrl}/theme/pages/configs`);
+        } catch (e) { console.error('RestAPIClient::getPageConfigs', e) }
         return (res && res.data) ? res.data : [];
     }
 
     public getAppConfig = async (): Promise<TAppConfig> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/modifications/app/config`);
+            res = await axios.get(`${this.baseUrl}/theme/app/config`);
         } catch (e) { console.error('RestAPIClient::getAppConfig', e) }
         return (res && res.data) ? res.data : {};
     }
@@ -103,7 +103,7 @@ class RestAPIClient {
     public getAppCustomConfig = async (): Promise<Record<string, any>> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/modifications/app/custom-config`);
+            res = await axios.get(`${this.baseUrl}/theme/app/custom-config`);
         } catch (e) { console.error('RestAPIClient::getAppCustomConfig', e) }
         return (res && res.data) ? res.data : {};
     }

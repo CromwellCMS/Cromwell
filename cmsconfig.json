@@ -3,6 +3,5 @@
     "adminPanelPort": 4064,
     "frontendPort": 4128,
     "themeName": "cromwell-demoshop",
-    "defaultPageSize": 15,
-    "defaultCurrency": "USD"
+    "defaultPageSize": 15
 }

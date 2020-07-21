@@ -22,6 +22,7 @@ export type TCromwellPageCoreProps = {
     pageConfig: TPageConfig;
     appConfig: TAppConfig;
     appCustomConfig: Record<string, any>;
+    pagesInfo: TPageInfo[];
 }
 
 export type PageName = keyof {
@@ -41,13 +42,18 @@ export type TCmsConfig = {
     frontendPort: number;
     themeName: string;
     defaultPageSize: number;
-    defaultCurrency: string;
 }
 
 export type TAppConfig = {
     pagesDir?: string;
     /** Custom HTML add into head of every page */
     headHtml?: string;
+    /** Array of available currencies: ['USD', 'EURO', ...] */
+    currencyOptions?: string[];
+    /** Object of local curency symbols that will be added to price in getPriceWithCurrency method: {"USD": "$","EURO": "€"}  */
+    currencySymbols?: Record<string, string>;
+    /** Ratio between currencies: {"USD": 1,"EURO": 0.8} */
+    currencyRatio?: Record<string, number>;
 }
 
 export type TThemeConfig = {
@@ -65,10 +71,16 @@ export type TThemeConfig = {
 }
 
 export type TPageInfo = {
+    /** Path of page's react component */
     route: string;
+    /** Name */
     name: string;
+    /** SEO title */
     title?: string;
+    /** SEO description */
     description?: string;
+    /** Is using next.js dynamic routes? */
+    isDynamic?: boolean;
 }
 
 export type TPageConfig = TPageInfo & {
@@ -87,6 +99,9 @@ export type TCromwellStore = {
     importDynamicPlugin?: (pluginName: string) => ComponentType | undefined;
     rebuildPage?: (path: string) => void;
     components: Record<string, React.ComponentType<CommonComponentProps>>;
+    pagesInfo?: TPageInfo[];
+    currency?: string;
+    onCurrencyChange?: (currency: string) => void;
 }
 
 declare global {
@@ -161,13 +176,20 @@ export type TCromwellBlockData = {
     innerHTML?: string;
     /** For gallery block */
     gallerySettings?: TGallerySettings;
+
+    /** For text block */
+    text?: string;
+    textElementType?: keyof React.ReactHTML;
 }
 
 export type TGallerySettings = {
     images: {
         src: string;
-        href?: string
+        href?: string;
+        thumb?: string;
     }[],
+    direction?: "horizontal" | "vertical",
+    loop?: boolean;
     height?: number | string;
     width?: number | string;
     /** = width / height */
@@ -175,6 +197,11 @@ export type TGallerySettings = {
     showNav?: boolean;
     showPagination?: boolean;
     showScrollbar?: boolean;
+    showThumbs?: boolean | {
+        width?: string;
+        height?: string;
+        loop?: boolean
+    };
 }
 
 export type TDBEntity = keyof {
@@ -239,9 +266,9 @@ export interface TProduct extends TBasePageEntityType {
     // Categories of the prooduct
     categories: TProductCategory[];
     // Price. Will be discount price if oldPrice is specified
-    price: string;
+    price: number;
     // Price before sale, optional
-    oldPrice: string | null;
+    oldPrice: number | null;
     // Href of main image
     mainImage: string;
     // Hrefs of iamges
