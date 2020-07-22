@@ -45,7 +45,10 @@ export type TCmsConfig = {
 }
 
 export type TAppConfig = {
+    /** Theme's pages dist dir  */
     pagesDir?: string;
+    /** Colors to use */
+    palette?: { primaryColor?: string }
     /** Custom HTML add into head of every page */
     headHtml?: string;
     /** Array of available currencies: ['USD', 'EURO', ...] */
@@ -318,10 +321,8 @@ export type TCromwellBlockProps = {
     id: string;
     type?: TCromwellBlockType;
     className?: string;
-    content?: React.ComponentType<{
-        data?: TCromwellBlockData,
-        blockRef?: React.RefObject<HTMLDivElement>
-    }>;
+    content?: (data?: TCromwellBlockData,
+        blockRef?: React.RefObject<HTMLDivElement>) => React.ReactNode;
 }
 
 export type TContentComponentProps = {

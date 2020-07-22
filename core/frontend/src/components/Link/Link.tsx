@@ -6,6 +6,7 @@ type TLinkProps = {
     href: string;
     children?: React.ReactNode;
 }
+
 export const Link = (props: TLinkProps) => {
     const pagesInfo = getStoreItem('pagesInfo');
     let dynamicPageComp: string | undefined = undefined;
@@ -13,19 +14,17 @@ export const Link = (props: TLinkProps) => {
     if (pagesInfo) {
         pagesInfo.forEach(i => {
             if (i.isDynamic && i.route) {
-                const baseRoute = i.route.replace(/\[.*\]$/, '');
-                // console.log('baseRoute', baseRoute);
-                if (href.includes(baseRoute)) {
-                    dynamicPageComp = i.route;
-                    if (!dynamicPageComp.startsWith('/')) {
-                        dynamicPageComp = `/${dynamicPageComp}`;
-                    }
+                let route = i.route;
+                if (!route.startsWith('/')) {
+                    route = `/${route}`;
+                }
+                let baseRoute = route.replace(/\[.*\]$/, '');
+                if (href.startsWith(baseRoute)) {
+                    dynamicPageComp = route;
                 }
             }
         })
     }
-    // console.log('dynamicPageComp', dynamicPageComp);
-
     return (
         <NextLink
             href={dynamicPageComp ? dynamicPageComp : href}

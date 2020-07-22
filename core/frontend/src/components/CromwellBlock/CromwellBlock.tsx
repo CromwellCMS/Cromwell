@@ -123,9 +123,9 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
 
         let blockContent: React.ReactNode | null = this.props.children;
 
-        const ContentComp = this.props.content;
-        if (ContentComp) {
-            blockContent = <ContentComp data={this.data} blockRef={this.blockRef} />
+        if (this.props.content) {
+            // blockContent = <ContentComp data={this.data} blockRef={this.blockRef} />
+            blockContent = this.props.content(this.data, this.blockRef)
         }
 
 

@@ -40,8 +40,10 @@ export const Product = (props: { data: TProduct, className?: string }) => {
                         )}
                         <p className={styles.price}>{getPriceWithCurrency(data.price)}</p>
                     </div>
+                </div>
+                <div>
                     <IconButton
-                        aria-label="add to cart"
+                        aria-label="Add to cart"
                         onClick={() => {
 
                         }}

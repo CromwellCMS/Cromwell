@@ -28,11 +28,11 @@ const MainMenu = (props: TMainMenuProps) => {
     };
     return (
         <div className={classes.menuList}>
-            {items.map(i => {
+            {items.map((i, index) => {
                 const isActive = activeItem === i.title;
                 const menuItem = (
                     <MenuItem className={classes.listItem}
-                        key={i.title}
+                        key={index}
                         onMouseLeave={handlePopoverClose}
                         onMouseOver={(e) => {
                             handlePopoverOpen(e);
@@ -66,13 +66,13 @@ const MainMenu = (props: TMainMenuProps) => {
                                     display: 'grid',
                                     gridTemplateColumns: `repeat(${i.sublinkCols ? i.sublinkCols : 1}, 1fr)`
                                 }}>
-                                    {i.sublinks && i.sublinks.map(sub => {
+                                    {i.sublinks && i.sublinks.map((sub, subIndex) => {
                                         return (
                                             <MenuItem
                                                 style={{
                                                     // width: i.sublinkCols ? `${100 / i.sublinkCols}px` : '100%'
                                                 }}
-                                                key={sub.href}
+                                                key={subIndex}
                                             ><Link href={sub.href + ''}><p>{sub.title}</p></Link></MenuItem>
                                         )
                                     })}
@@ -82,7 +82,7 @@ const MainMenu = (props: TMainMenuProps) => {
                     </MenuItem>
                 )
                 if (i.href) {
-                    return <Link href={i.href}><a>{menuItem}</a></Link>
+                    return <Link href={i.href} key={index}><a>{menuItem}</a></Link>
                 }
                 return menuItem;
 

@@ -28,7 +28,7 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
                         <div className={styles.productList}>
                             {category && category.products && category.products.map(p => {
                                 return (
-                                    <Product data={p} className={styles.product} />
+                                    <Product data={p} className={styles.product} key={p.id} />
                                 )
                             })}
                         </div>
@@ -60,6 +60,7 @@ export const getStaticProps: TGetStaticProps = async (context) => {
                         name
                         pageTitle
                         price
+                        oldPrice
                         mainImage
                       }
                     }

@@ -56,18 +56,6 @@ const ProductShowcase = (props: ProductShowcaseProps) => {
                         return props.productShowcase.products;
                     }
                     else return [];
-                    // props.productShowcase && props.productShowcase.products && props.productShowcase.products.map(p => {
-                    //     if (CommmonProductComp) {
-                    //         return <CommmonProductComp data={p} key={p.id} />
-                    //     }
-                    //     else return (
-                    //         <div key={p.id}>
-                    //             <Link href="/product/[slug]" as={`/product/${p.slug}`}><a>Name: {p.name}</a></Link>
-                    //             <p>Price: {p.price}</p>
-                    //             <h1>id: {p.id}</h1>
-                    //         </div>
-                    //     )
-                    // })
                 }()),
                 renderExternal: (data) => {
                     setVirtualData(data)
@@ -124,6 +112,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
                     slug
                     name
                     price
+                    oldPrice
                     mainImage
               }
             }

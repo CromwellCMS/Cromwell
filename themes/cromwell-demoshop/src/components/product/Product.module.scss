@@ -42,7 +42,7 @@
     .productName {
         display: inline;
         color: $text;
-        font-size: 20px;
+        font-size: 18px;
         text-decoration: none;
         border-bottom: 2px solid #fff;
         transition: all 0.25s linear;
@@ -79,6 +79,9 @@
     }
     .priceBlock {
         display: flex;
+        flex-wrap: wrap;
+        font-size: 18px;
+        margin: 6px 0;
     }
     .price {
         font-weight: 400;

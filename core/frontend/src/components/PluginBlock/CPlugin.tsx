@@ -6,8 +6,8 @@ export const CPlugin = (props: { id: string, className?: string, pluginName?: st
     const { pluginName, ...rest } = props;
     return (
         <CromwellBlock {...rest} type='image'
-            content={(props) => {
-                const name = (props.data && props.data.pluginName) ? props.data.pluginName : pluginName;
+            content={(data) => {
+                const name = (data && data.pluginName) ? data.pluginName : pluginName;
                 let PluginComponent;
                 if (name) {
                     const importDynamicPlugin = getStoreItem('importDynamicPlugin');

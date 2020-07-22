@@ -83,6 +83,9 @@
     },
     "appConfig": {
         "pagesDir": "es/pages",
+        "palette": {
+            "primaryColor": "#9900CC"
+        },
         "currencyOptions": [
             "USD",
             "EURO",
