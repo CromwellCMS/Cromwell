@@ -18,7 +18,9 @@
                 {
                     "type": "plugin",
                     "componentId": "5",
-                    "pluginName": "ProductShowcase"
+                    "plugin": {
+                        "pluginName": "ProductShowcase"
+                    }
                 }
             ],
             "customConfig": {
@@ -38,7 +40,9 @@
                     "destinationPosition": "inside",
                     "isVirtual": true,
                     "styles": "background: red;",
-                    "pluginName": "ProductShowcaseDemo"
+                    "plugin": {
+                        "pluginName": "ProductShowcaseDemo"
+                    }
                 },
                 {
                     "type": "plugin",
@@ -46,7 +50,9 @@
                     "destinationComponentId": "111",
                     "destinationPosition": "after",
                     "isVirtual": true,
-                    "pluginName": "ProductShowcase"
+                    "plugin": {
+                        "pluginName": "ProductShowcase"
+                    }
                 }
             ]
         },
@@ -63,7 +69,9 @@
                     "type": "plugin",
                     "componentId": "6",
                     "isVirtual": true,
-                    "pluginName": "ProductShowcase"
+                    "plugin": {
+                        "pluginName": "ProductShowcaseDemo"
+                    }
                 }
             ]
         }
@@ -72,7 +80,9 @@
         {
             "type": "plugin",
             "componentId": "header_main_menu",
-            "pluginName": "MainMenu"
+            "plugin": {
+                "pluginName": "MainMenu"
+            }
         }
     ]
 }

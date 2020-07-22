@@ -12,6 +12,20 @@ import { getStoreItem } from '@cromwell/core';
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
 
+    constructor() {
+        super();
+        // this.mockCategories();
+    }
+
+    async mockCategories() {
+        const cats = await getCustomRepository(ProductCategoryRepository).find();
+        const prods = await this.find();
+        prods.forEach(p => {
+            p.categories = cats;
+            p.save();
+        })
+    }
+
     async getProducts(params: TPagedParams<TProduct>): Promise<Product[]> {
         const qb = this.createQueryBuilder(DBTableNames.Product);
         getPaged(qb, DBTableNames.Product, params);

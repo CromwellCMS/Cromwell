@@ -11,7 +11,7 @@ export const Link = (props: TLinkProps) => {
     const pagesInfo = getStoreItem('pagesInfo');
     let dynamicPageComp: string | undefined = undefined;
     const href = props.href;
-    if (pagesInfo) {
+    if (pagesInfo && Array.isArray(pagesInfo)) {
         pagesInfo.forEach(i => {
             if (i.isDynamic && i.route) {
                 let route = i.route;

@@ -118,8 +118,8 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
             // + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '')
             + (this.data && this.data.type ? ' ' + cromwellBlockTypeToClassname(this.data.type) : '')
             + (this.props.className ? ` ${this.props.className}` : '')
-            + (this.data && this.data.type && this.data.type === 'plugin' && this.data.pluginName
-                ? ` ${cromwellBlockPluginNameToClassname(this.data.pluginName)}` : '');
+            + (this.data && this.data.type && this.data.type === 'plugin' && this.data.plugin && this.data.plugin.pluginName
+                ? ` ${cromwellBlockPluginNameToClassname(this.data.plugin.pluginName)}` : '');
 
         let blockContent: React.ReactNode | null = this.props.children;
 

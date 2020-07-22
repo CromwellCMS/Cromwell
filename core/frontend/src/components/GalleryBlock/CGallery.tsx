@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { TCromwellBlockData, getStoreItem, TGallerySettings } from '@cromwell/core';
 import { Link } from '../Link/Link';
-import Swiper, { Navigation, Pagination, SwiperOptions, Lazy, Thumbs } from 'swiper';
+import Swiper, { Navigation, Pagination, SwiperOptions, Lazy, Thumbs, Zoom } from 'swiper';
 import styleInject from 'style-inject';
 //@ts-ignore
 import swiperCSS from "swiper/swiper-bundle.css";
@@ -11,7 +11,7 @@ styleInject(swiperCSS);
 //@ts-ignore
 import styles from './CGallery.module.scss';
 import { type } from 'os';
-Swiper.use([Navigation, Pagination, Lazy, Thumbs]);
+Swiper.use([Navigation, Pagination, Lazy, Thumbs, Zoom]);
 
 
 function useForceUpdate() {
@@ -71,14 +71,21 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
                         clickable: true
                     }
                     // Navigation arrows
-                    if (gallerySettings.showNav) options.navigation = {
+                    if (gallerySettings.navigation) options.navigation = {
                         nextEl: '.swiper-button-next',
                         prevEl: '.swiper-button-prev',
                     }
+                    if (gallerySettings.zoom) {
+                        options.zoom = {
+                            toggle: gallerySettings.zoom.zoomOnHover ? false : true
+                        }
+                    }
+
                     if (gallerySettings.showThumbs) {
                         this.galleryThumbs = new Swiper(`#${this.swiperThumbsId}`, {
                             spaceBetween: 10,
                             slidesPerView: 4,
+                            grabCursor: true,
                             loop: gallerySettings.loop === false ? false : true,
                             freeMode: true,
                             loopedSlides: gallerySettings.loop ? 5 : undefined,
@@ -93,6 +100,13 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
                     }
 
                     this.swiper = new Swiper(`#${this.swiperId}`, options);
+
+                    if (this.swiper && gallerySettings.navigation && gallerySettings.navigation.showOnHover) {
+                        const nextEl = this.swiper.navigation.nextEl;
+                        if (nextEl) nextEl.style.display = 'none';
+                        const prevEl = this.swiper.navigation.prevEl;
+                        if (prevEl) prevEl.style.display = 'none';
+                    }
                 }
 
                 this.galleryContainer = galleryContainer;
@@ -121,7 +135,7 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
         return (
             <CromwellBlock {...rest} type='image'
                 content={(data, blockRef) => {
-                    this.gallerySettings = (data && data.gallerySettings) ? data.gallerySettings : settings;
+                    this.gallerySettings = (data && data.gallery) ? data.gallery : settings;
                     this.blockRef = blockRef;
                     this.swiperId = `swiper-container_${data?.componentId}`;
                     this.swiperThumbsId = `${this.swiperId}_thumbs`;
@@ -150,7 +164,24 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
                                 id={this.swiperId}
                                 style={{
                                     width: gallerySettings.width ? gallerySettings.width : '100%',
-                                }}>
+                                }}
+                                onMouseEnter={() => {
+                                    if (this.swiper && gallerySettings.navigation && gallerySettings.navigation.showOnHover) {
+                                        const nextEl = this.swiper.navigation.nextEl;
+                                        if (nextEl) nextEl.style.display = '';
+                                        const prevEl = this.swiper.navigation.prevEl;
+                                        if (prevEl) prevEl.style.display = '';
+                                    }
+                                }}
+                                onMouseLeave={() => {
+                                    if (this.swiper && gallerySettings.navigation && gallerySettings.navigation.showOnHover) {
+                                        const nextEl = this.swiper.navigation.nextEl;
+                                        if (nextEl) nextEl.style.display = 'none';
+                                        const prevEl = this.swiper.navigation.prevEl;
+                                        if (prevEl) prevEl.style.display = 'none';
+                                    }
+                                }}
+                            >
                                 <div className="swiper-wrapper"
                                     style={{
                                         height: this.height ? this.height : _height
@@ -165,7 +196,21 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
                                                     height: this.height ? this.height : _height
                                                     // backgroundImage: `url('${i.src}')`
                                                 }}
-                                                className={`${styles.swiperImage} swiper-lazy`}
+                                                className={`${styles.swiperImage} swiper-lazy ${gallerySettings.zoom ? 'swiper-zoom-target' : ''}`}
+                                                onMouseEnter={() => {
+                                                    if (this.swiper && gallerySettings.zoom && gallerySettings.zoom.zoomOnHover) {
+                                                        this.swiper.zoom.enable();
+                                                        this.swiper.zoom.in();
+                                                        this.swiper.$el.addClass(styles.swiperZommedIn);
+                                                    }
+                                                }}
+                                                onMouseLeave={() => {
+                                                    if (this.swiper && gallerySettings.zoom && gallerySettings.zoom.zoomOnHover) {
+                                                        this.swiper.zoom.out();
+                                                        this.swiper.zoom.disable();
+                                                        this.swiper.$el.removeClass(styles.swiperZommedIn);
+                                                    }
+                                                }}
                                             >
                                                 <div className="swiper-lazy-preloader swiper-lazy-preloader-white"
                                                     style={{
@@ -174,6 +219,10 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
                                                     }}></div>
                                             </div>
                                         );
+                                        if (gallerySettings.zoom) {
+                                            el = <div className="swiper-zoom-container">{el}</div>
+                                        }
+
                                         if (i.href) {
                                             el = (
                                                 <Link href={i.href}>{el}</Link>
@@ -191,7 +240,7 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
                                 {gallerySettings.showPagination && (
                                     <div className="swiper-pagination"></div>
                                 )}
-                                {gallerySettings.showNav && (<>
+                                {gallerySettings.navigation && (<>
                                     <div className="swiper-button-prev"></div>
                                     <div className="swiper-button-next"></div>
                                 </>)}

@@ -1,0 +1,26 @@
+.CImageHoverEffect {
+    position: relative;
+    border-radius: 10px;
+    overflow: hidden;
+
+    &::before {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        background-color: #000;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+    }
+
+    img {
+        opacity: 1;
+        transition-property: opacity;
+        transition-duration: 0.3s;
+    }
+
+    &:hover img {
+        opacity: 0.7;
+    }
+}

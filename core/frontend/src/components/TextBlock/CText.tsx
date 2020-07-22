@@ -7,9 +7,9 @@ export const CText = (props: { id: string, className?: string, children?: string
     const { children, type, ...rest } = props;
     return (
         <CromwellBlock {...rest} type='text' content={(data) => {
-            let _type = data && data.textElementType ? data.textElementType : type;
+            let _type = data && data.text && data.text.textElementType ? data.text.textElementType : type;
             if (!_type) _type = 'p';
-            const _text = data && data.text ? data.text : children;
+            const _text = data && data.text && data.text.content ? data.text.content : children;
             return React.createElement(_type, {}, _text);
         }} />
     )

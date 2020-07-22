@@ -151,20 +151,7 @@ export type TCromwellBlockData = {
      */
     destinationPosition?: TBlockDestinationPositionType;
 
-    /**
-     * Plugin's name to render inside component. Same name must be in cromwell.config.json
-     */
-    pluginName?: string;
-
-    /**
-     * Custom editable plugin's config
-     */
-    pluginConfig?: Record<string, any>;
-
-    /**
-     * 
-     * CSS styles to apply to this block.
-     */
+    /** CSS styles to apply to this block's wrapper*/
     styles?: string;
 
     /**
@@ -173,16 +160,35 @@ export type TCromwellBlockData = {
      */
     isDeleted?: boolean;
 
+    /** For plugin block */
+    plugin?: {
+        /** Plugin's name to render inside component. Same name must be in cromwell.config.json */
+        pluginName?: string;
+
+        /** Custom editable plugin's config */
+        pluginConfig?: Record<string, any>;
+    }
+
     /** For "image" block */
-    imageSource?: string;
+    image?: {
+        src?: string;
+        link?: string;
+        withEffect?: boolean;
+    }
+
     /** For "HTML" block */
-    innerHTML?: string;
+    html?: {
+        innerHTML?: string;
+    }
+
     /** For gallery block */
-    gallerySettings?: TGallerySettings;
+    gallery?: TGallerySettings
 
     /** For text block */
-    text?: string;
-    textElementType?: keyof React.ReactHTML;
+    text?: {
+        content?: string;
+        textElementType?: keyof React.ReactHTML;
+    }
 }
 
 export type TGallerySettings = {
@@ -197,13 +203,19 @@ export type TGallerySettings = {
     width?: number | string;
     /** = width / height */
     ratio?: number;
-    showNav?: boolean;
+    navigation?: {
+        showOnHover?: boolean
+    };
     showPagination?: boolean;
     showScrollbar?: boolean;
     showThumbs?: boolean | {
         width?: string;
         height?: string;
         loop?: boolean
+    };
+    zoom?: {
+        zoomOnHover?: boolean;
+        maxRatio?: number;
     };
 }
 

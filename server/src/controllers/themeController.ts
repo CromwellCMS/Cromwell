@@ -219,8 +219,8 @@ export const applyThemeController = (app: Express): void => {
             getPageConfig(pageRoute, (pageConfig) => {
                 if (pageConfig && pageConfig.modifications && Array.isArray(pageConfig.modifications)) {
                     pageConfig.modifications.forEach(mod => {
-                        if (mod.type === 'plugin' && mod.pluginName) {
-                            out[mod.pluginName] = mod.pluginConfig ? mod.pluginConfig : {};
+                        if (mod.type === 'plugin' && mod.plugin && mod.plugin.pluginName) {
+                            out[mod.plugin.pluginName] = mod.plugin.pluginConfig ? mod.plugin.pluginConfig : {};
                         }
                     })
                 }
@@ -242,8 +242,8 @@ export const applyThemeController = (app: Express): void => {
         readAllPageConfigs((pages) => {
             pages.forEach(p => {
                 p.modifications.forEach(mod => {
-                    if (mod.type === 'plugin' && mod.pluginName && !out.includes(mod.pluginName)) {
-                        out.push(mod.pluginName);
+                    if (mod.type === 'plugin' && mod.plugin && mod.plugin.pluginName && !out.includes(mod.plugin.pluginName)) {
+                        out.push(mod.plugin.pluginName);
                     }
                 })
             });

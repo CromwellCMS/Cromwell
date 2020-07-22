@@ -19,7 +19,7 @@ export default {
             // sourcemap: true
         }
     ],
-    external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/app'],
+    external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/app', 'next/router'],
     plugins: [
         // image(),
         postcss({

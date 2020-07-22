@@ -12,7 +12,9 @@
 
     .topPanel {
         width: 100%;
-        border-bottom: 2px solid #333;
+        // border-bottom: 2px solid #333;
+        box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+
     }
     .topPanelContent {
         display: flex;
