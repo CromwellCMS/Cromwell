@@ -1,3 +1,5 @@
+/.cromwell
+
 # Logs
 logs
 *.log
@@ -93,4 +95,6 @@ out
 .yarn/build-state.yml
 .pnp.*
 
-# db.sqlite3
+
+pages/
+public/images/

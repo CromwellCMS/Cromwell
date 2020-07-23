@@ -1,10 +1,11 @@
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import { TPluginConfig } from '@cromwell/core';
+import { projectRootDir } from './constants';
 
 export function generate(): void {
     const backendRootDir = resolve(__dirname, '../').replace(/\\/g, '/');
-    const globalPluginsDir = resolve(__dirname, '../../plugins').replace(/\\/g, '/');
+    const globalPluginsDir = `${projectRootDir}/plugins`;
     const pluginsNames: string[] = fs.readdirSync(globalPluginsDir);
     console.log('genPluginsBackendImports:Plugins found:', pluginsNames);
 

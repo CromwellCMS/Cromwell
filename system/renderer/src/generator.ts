@@ -15,7 +15,7 @@ const main = async () => {
     if (!config) throw new Error('renderer::server cannot read CMS config');
     setStoreItem('cmsconfig', config);
 
-    const projectRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
+    const projectRootDir = resolve(__dirname, '../../../').replace(/\\/g, '/');
     const globalPluginsDir = `${projectRootDir}/plugins`;
     const localDir = resolve(__dirname, '../').replace(/\\/g, '/');
     const pagesLocalDir = `${localDir}/pages`;
@@ -64,7 +64,7 @@ const main = async () => {
     console.log('pluginImports', pluginImports);
 
 
-    const customPages = await readThemePages(resolve(__dirname, '../../'));
+    const customPages = await readThemePages(projectRootDir);
     const pageNames: string[] = [];
     let customPageImports = '';
     let customPageImportsSwitch = '';

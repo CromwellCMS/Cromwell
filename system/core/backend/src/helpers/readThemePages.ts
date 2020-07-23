@@ -15,7 +15,7 @@ type TPagePathInfo = {
  * @param projectRootDir absolute path to the root of the CMS
  */
 export const readThemePages = async (projectRootDir: string): Promise<Record<string, TPagePathInfo>> => {
-    const configPath = resolve(projectRootDir, 'cmsconfig.json');
+    const configPath = resolve(projectRootDir, 'system/cmsconfig.json');
 
     let config: TCmsConfig | undefined = undefined;
     try {

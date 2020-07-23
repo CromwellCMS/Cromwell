@@ -16,9 +16,9 @@ export const generateAdminPanelImports = async () => {
 
 
     // Import global plugins
-    const projectRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
+    const projectRootDir = resolve(__dirname, '../../../').replace(/\\/g, '/');
     const localProjectDir = resolve(__dirname, '../').replace(/\\/g, '/');
-    const globalPluginsDir = resolve(__dirname, '../../plugins').replace(/\\/g, '/');
+    const globalPluginsDir = `${projectRootDir}/plugins`;
     const pluginsNames: string[] = fs.readdirSync(globalPluginsDir);
     console.log('generateAdminPanelImports:Plugins found:', pluginsNames);
 

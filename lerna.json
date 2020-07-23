@@ -17,12 +17,12 @@
     }
   },
   "packages": [
-    "core/common",
-    "core/backend",
-    "core/frontend",
-    "renderer",
-    "server",
-    "admin-panel",
+    "system/core/common",
+    "system/core/backend",
+    "system/core/frontend",
+    "system/renderer",
+    "system/server",
+    "system/admin-panel",
     "plugins/*",
     "themes/*"
   ]

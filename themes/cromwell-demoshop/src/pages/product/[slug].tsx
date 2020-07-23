@@ -1,5 +1,5 @@
 import React from 'react';
-import { TCromwellPage, TProduct, TGetStaticProps } from '@cromwell/core';
+import { TCromwellPage, TProduct, TGetStaticProps, getAppCustomConfigProp } from '@cromwell/core';
 import { CImage, CText } from '@cromwell/core-frontend'
 import { CContainer, getGraphQLClient, getPriceWithCurrency, CGallery } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
@@ -21,6 +21,7 @@ const Product: TCromwellPage<ProductProps> = (props) => {
     // console.log('ProductThemePage props', props);
     const router = useRouter();
     const product = props.data ? props.data.product : undefined;
+    const customTabs = getAppCustomConfigProp('product/customTabs');
     return (
         <Layout>
             <div className={`${commonStyles.content} ${styles.ProductPage}`}>
@@ -85,17 +86,15 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                                             </div>
                                         )
                                     },
-                                    {
-                                        label: 'Custom tab',
+                                    ...((customTabs && Array.isArray(customTabs)) ? customTabs.map(t => ({
+                                        label: t.label,
                                         node: (
                                             <div
                                                 className={styles.tab}
-                                            >
-                                                <p>Custom tab</p>
+                                                dangerouslySetInnerHTML={(t.html) ? { __html: t.html } : undefined}>
                                             </div>
                                         )
-                                    },
-
+                                    })) : [])
                                 ]} />
                             </CContainer>
                         </CContainer>

@@ -2,10 +2,11 @@ import { getStoreItem, TCromwellBlockData, TThemeConfig, TPageConfig, apiV1BaseR
 import { Express } from 'express';
 import fs from 'fs-extra';
 import { resolve } from 'path';
+import { projectRootDir } from '../constants';
 
 export const applyPluginsController = (app: Express): void => {
 
-    const settingsPath = resolve(__dirname, '../../../settings/').replace(/\\/g, '/');
+    const settingsPath = `${projectRootDir}/settings/`;
 
     // < HELPERS >
     // < HELPERS />

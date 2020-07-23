@@ -2,6 +2,7 @@ import { getStoreItem, TCromwellBlockData, TThemeConfig, TPageConfig, apiV1BaseR
 import { Express } from 'express';
 import fs from 'fs-extra';
 import { resolve } from 'path';
+import { projectRootDir } from '../constants';
 
 export const applyThemeController = (app: Express): void => {
     const config = getStoreItem('cmsconfig');
@@ -9,10 +10,10 @@ export const applyThemeController = (app: Express): void => {
         console.error('applyModificationsController: failed to read cmsconfig', config);
         return;
     }
-    const settingsPath = resolve(__dirname, '../../../settings/').replace(/\\/g, '/');
+    const settingsPath = `${projectRootDir}/settings/`;
 
     const userModificationsPath = `${settingsPath}/themes/${config.themeName}`;
-    const themeDir = resolve(__dirname, '../../../themes/', config.themeName).replace(/\\/g, '/');
+    const themeDir = `${projectRootDir}/themes/${config.themeName}`;
     const themeConfigPath = `${themeDir}/cromwell.config.json`;
 
 
