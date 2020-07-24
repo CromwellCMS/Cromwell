@@ -13,6 +13,7 @@ import cors from 'cors';
 import { pluginsResolvers } from '../.cromwell/imports/resolvers.imports.gen';
 import { applyThemeController } from './controllers/themeController';
 import { applyPluginsController } from './controllers/pluginsController';
+import { applyMockController } from './controllers/mockController';
 import { rebuildPage } from './helpers/PageBuilder';
 import { AuthorResolver } from './resolvers/AuthorResolver';
 import { PostResolver } from './resolvers/PostResolver';
@@ -57,11 +58,14 @@ async function apiServer(): Promise<void> {
     app.use(bodyParser.json());
     app.use(cors());
 
-    applyThemeController(app);
-    applyPluginsController(app);
+    setTimeout(() => {
+        applyThemeController(app);
+        applyPluginsController(app);
+        applyMockController(app);
 
-    const { address } = app.listen(config.apiPort);
-    console.log(`API server has started at http://localhost:${config.apiPort}/${apiV1BaseRoute}/`);
+        const { address } = app.listen(config?.apiPort);
+        console.log(`API server has started at http://localhost:${config?.apiPort}/${apiV1BaseRoute}/`);
+    }, 100)
 }
 
 // async function adminPanelServer() {

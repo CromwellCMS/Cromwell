@@ -9,7 +9,7 @@ import { ProductCategory } from './ProductCategory';
 export class Product extends BasePageEntity implements TProduct {
     @Field(() => String)
     @Column({ type: "varchar" })
-    name: string = 'privprivvvfff';
+    name: string;
 
     @ManyToMany(type => ProductCategory, category => category.products)
     @JoinTable()
@@ -21,7 +21,7 @@ export class Product extends BasePageEntity implements TProduct {
 
     @Field(type => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    oldPrice: number;
+    oldPrice?: number;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })

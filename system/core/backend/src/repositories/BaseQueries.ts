@@ -1,9 +1,9 @@
 import { SelectQueryBuilder } from "typeorm";
-import { TPagedParams } from '@cromwell/core';
+import { TPagedParams, TPagedList } from '@cromwell/core';
 import { getStoreItem } from '@cromwell/core';
 const cmsconfig = getStoreItem('cmsconfig');
 
-export const getPaged = <T>(qb: SelectQueryBuilder<T>, entityName?: string, params?: TPagedParams<T>): SelectQueryBuilder<T> => {
+export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, entityName?: string, params?: TPagedParams<T>): SelectQueryBuilder<T> => {
     const p = params ? params : {};
     if (!p.pageNumber) p.pageNumber = 1;
     if (!p.pageSize) {
@@ -18,9 +18,25 @@ export const getPaged = <T>(qb: SelectQueryBuilder<T>, entityName?: string, para
     return qb.skip(p.pageSize * (p.pageNumber - 1)).take(p.pageSize);
 }
 
-export const innerJoinById = <T>(qb: SelectQueryBuilder<T>, firstEntityName: string,
+export const applyInnerJoinById = <T>(qb: SelectQueryBuilder<T>, firstEntityName: string,
     firstEntityProp: keyof T, secondEntityName: string, secondEntityId: string): SelectQueryBuilder<T> => {
     return qb.innerJoinAndSelect(`${firstEntityName}.${firstEntityProp}`,
         secondEntityName, `${secondEntityName}.id = :entityId`,
         { entityId: secondEntityId });
+}
+
+export const getPaged = async <T>(qb: SelectQueryBuilder<T>, entityName?: string,
+    params?: TPagedParams<T>): Promise<TPagedList<T>> => {
+    const count = await qb.getCount();
+    applyGetPaged(qb, entityName, params)
+    const elements = await qb.getMany();
+    const pagedMeta = {
+        pageNumber: params?.pageNumber,
+        pageSize: params?.pageSize,
+        totalPages: params?.pageSize ? Math.floor(count / params.pageSize) : undefined,
+        totalElements: count,
+    }
+    
+    return { pagedMeta, elements };
+
 }

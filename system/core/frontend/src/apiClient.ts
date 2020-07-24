@@ -1,8 +1,7 @@
-import { TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute, TAppConfig } from '@cromwell/core';
+import { TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute, TAppConfig, TProduct, TPagedList } from '@cromwell/core';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { GraphQLClient } from 'graphql-request';
-
-// import { Variables as GraphQLVariables } from 'graphql-request/dist/src/types';
+import { Variables as GraphQLVariables } from 'graphql-request/dist/src/types';
 // import { ApolloClient, ApolloQueryResult, QueryOptions } from 'apollo-client';
 // import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 // import { HttpLink } from 'apollo-link-http';
@@ -25,24 +24,56 @@ import { GraphQLClient } from 'graphql-request';
 //     return client;
 // }
 
-export const getGraphQLClient = (): GraphQLClient => {
+class CGraphQLClient {
+
+    private graphQLClient: GraphQLClient;
+
+    constructor(private baseUrl: string) {
+        this.graphQLClient = new GraphQLClient(this.baseUrl);
+    }
+
+    public request = <T = any>(query: string, variables?: GraphQLVariables): Promise<T> => this.graphQLClient.request(query, variables);
+
+    public getProducts = async (pageNumber: number = 1, pageSize: number = 10): Promise<TPagedList<TProduct>> => {
+        const res = await this.request(
+            `query coreGetProducts {
+                products(pagedParams: {pageNumber: ${pageNumber}, pageSize: ${pageSize}}) {
+                    pagedMeta {
+                        pageNumber
+                        pageSize
+                        totalPages
+                        totalElements
+                    }
+                    elements {
+                        id
+                        slug
+                        pageTitle
+                        name
+                        price
+                        oldPrice
+                        mainImage
+                        images
+                        description
+                        rating
+                        isEnabled
+                    }
+                }
+              }
+        `
+        );
+        return res?.products;
+    }
+}
+
+export const getGraphQLClient = (): CGraphQLClient => {
     const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.apiPort) {
         console.log('cmsconfig', cmsconfig)
         throw new Error('getGraphQLClient !cmsconfig.apiPort');
     }
-    const graphQLClient = new GraphQLClient(`http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}/graphql`);
+    const baseUrl = `http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}/graphql`;
 
-    // const graphQLClientRequestOrig = graphQLClient.request;
-    // async function graphQLClientRequest<T extends any>(query: string, variables: GraphQLVariables = {}): Promise<T> {
-    //     const data: any = await graphQLClientRequestOrig.call(graphQLClient, query, {
-    //         ...variables,
-    //         someVar: 'someVar'
-    //     });
-    //     return data;
-    // }
-    // graphQLClient.request = graphQLClientRequest;
-    return graphQLClient;
+    return new CGraphQLClient(baseUrl);
 }
 
 class RestAPIClient {

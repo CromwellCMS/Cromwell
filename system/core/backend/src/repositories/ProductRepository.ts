@@ -1,35 +1,23 @@
 import { EntityRepository, Repository } from "typeorm";
 import { Product } from '../entities/Product'
+import { PagedProduct } from '../entities/paged/PagedProduct'
 import { CreateProduct } from '../inputs/CreateProduct';
 import { UpdateProduct } from '../inputs/UpdateProduct';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
-import { getPaged, innerJoinById } from './BaseQueries';
+import { applyGetPaged, applyInnerJoinById, getPaged } from './BaseQueries';
 import { getCustomRepository } from "typeorm";
-import { TPagedParams, TProduct } from '@cromwell/core';
+import { TPagedParams, TProduct, TPagedList } from '@cromwell/core';
 import { DBTableNames, BasePagePaths } from '@cromwell/core';
 import { getStoreItem } from '@cromwell/core';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
 
-    constructor() {
-        super();
-        // this.mockCategories();
-    }
-
-    async mockCategories() {
-        const cats = await getCustomRepository(ProductCategoryRepository).find();
-        const prods = await this.find();
-        prods.forEach(p => {
-            p.categories = cats;
-            p.save();
-        })
-    }
-
-    async getProducts(params: TPagedParams<TProduct>): Promise<Product[]> {
+    async getProducts(params: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         const qb = this.createQueryBuilder(DBTableNames.Product);
-        getPaged(qb, DBTableNames.Product, params);
-        return await qb.getMany();
+        const paged = await getPaged(qb, DBTableNames.Product, params);
+        console.log('paged', paged)
+        return paged;
     }
 
     async getProductById(id: string): Promise<Product> {
@@ -107,18 +95,23 @@ export class ProductRepository extends Repository<Product> {
     }
 
     async deleteProduct(id: string): Promise<boolean> {
-        const product = await this.getProductById(id);
-        if (!product) return false;
-        await this.delete(id);
+        console.log('ProductRepository::deleteProduct; id: ' + id)
 
+        const product = await this.getProductById(id);
+        if (!product) {
+            console.log('ProductRepository::deleteProduct failed to find product by id');
+            return false;
+        }
+        const res = await this.delete(id);
+        console.log('ProductRepository::deleteProduct res: ' + JSON.stringify(res));
         this.buildProductPage(product);
         return true;
     }
 
     async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>): Promise<TProduct[]> {
         const qb = this.createQueryBuilder(DBTableNames.Product);
-        innerJoinById(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
-        getPaged(qb, DBTableNames.Product, params);
+        applyInnerJoinById(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
+        applyGetPaged(qb, DBTableNames.Product, params);
         return await qb.getMany();
     }
 

@@ -11,11 +11,11 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntityType {
 
     @Field(() => String)
     @Column({ type: "varchar", unique: true, nullable: true })
-    slug: string;
+    slug?: string;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    pageTitle: string;
+    pageTitle?: string;
 
     @Field(() => Date)
     @CreateDateColumn()
@@ -27,5 +27,5 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntityType {
 
     @Field(() => Boolean)
     @Column({ type: "boolean", default: true })
-    isEnabled: boolean;
+    isEnabled?: boolean;
 }

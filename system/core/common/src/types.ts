@@ -240,15 +240,15 @@ export type TBasePageEntityType = {
     // DB id
     id: string;
     // Slug for page route
-    slug: string;
+    slug?: string;
     // Page SEO title
-    pageTitle: string;
+    pageTitle?: string;
     // DB createDate
     createDate: Date;
     // DB updateDate
     updateDate: Date;
     // Is displaying at frontend
-    isEnabled: boolean;
+    isEnabled?: boolean;
 }
 
 type DBAuxiliaryColumns = 'id' | 'createDate' | 'updateDate';
@@ -281,17 +281,17 @@ export interface TProduct extends TBasePageEntityType {
     // Categories of the prooduct
     categories: TProductCategory[];
     // Price. Will be discount price if oldPrice is specified
-    price: number;
+    price?: number;
     // Price before sale, optional
-    oldPrice: number | null;
+    oldPrice?: number | null;
     // Href of main image
-    mainImage: string;
+    mainImage?: string;
     // Hrefs of iamges
-    images: string[];
+    images?: string[];
     // Description (HTML allowed)
-    description: string;
+    description?: string;
     // Rating 1-5
-    rating: number
+    rating?: number
 }
 
 export type TProductInput = Omit<TProduct, DBAuxiliaryColumns | 'categories' | 'rating'> & {
@@ -328,6 +328,17 @@ export type TPagedParams<Entity> = {
     order?: 'ASC' | 'DESC';
 }
 
+export type TPagedMeta = {
+    pageNumber?: number;
+    pageSize?: number;
+    totalPages?: number;
+    totalElements?: number;
+}
+
+export type TPagedList<Entity> = {
+    pagedMeta?: TPagedMeta;
+    elements?: Entity[];
+}
 
 export type TCromwellBlockProps = {
     id: string;

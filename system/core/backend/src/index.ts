@@ -3,6 +3,9 @@ export * from './entities/ProductCategory';
 export * from './entities/Post';
 export * from './entities/Author';
 
+export * from './entities/paged/PagedProduct';
+
+
 export * from './inputs/CreateAuthor';
 export * from './inputs/CreatePostInput';
 export * from './inputs/CreateProduct';

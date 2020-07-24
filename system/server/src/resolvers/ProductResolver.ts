@@ -1,5 +1,5 @@
 import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from "type-graphql";
-import { Product } from '@cromwell/core-backend';
+import { Product, PagedProduct } from '@cromwell/core-backend';
 import { ProductRepository } from '@cromwell/core-backend';
 import { ProductCategoryRepository } from '@cromwell/core-backend';
 import { getCustomRepository } from "typeorm";
@@ -7,16 +7,18 @@ import { CreateProduct } from '@cromwell/core-backend';
 import { UpdateProduct } from '@cromwell/core-backend';
 import { PagedParamsInput } from '@cromwell/core-backend';
 import { ProductCategory } from '@cromwell/core-backend';
-import { TProductCategory, TProduct } from "@cromwell/core";
+import { TProductCategory, TProduct, TPagedList } from "@cromwell/core";
 
 @Resolver(Product)
 export class ProductResolver {
 
     private get repo() { return getCustomRepository(ProductRepository) }
 
-    @Query(() => [Product])
-    async products(@Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<Product[]> {
-        return await this.repo.getProducts(pagedParams);
+    @Query(() => PagedProduct)
+    async products(@Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {
+        const res = await this.repo.getProducts(pagedParams);
+        console.log('res', res)
+        return res;
     }
 
     @Query(() => Product)

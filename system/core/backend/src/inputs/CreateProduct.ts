@@ -14,7 +14,7 @@ export class CreateProduct extends BasePageInput implements TProductInput {
     price: number;
 
     @Field(() => Number, { nullable: true })
-    oldPrice: number;
+    oldPrice?: number;
 
     @Field(() => String, { nullable: true })
     mainImage: string;

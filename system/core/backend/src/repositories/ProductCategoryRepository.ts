@@ -4,14 +4,14 @@ import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
 import { TProductCategory, TPagedParams } from '@cromwell/core';
 import { DBTableNames } from '@cromwell/core';
-import { getPaged, innerJoinById } from './BaseQueries';
+import { getPaged, applyGetPaged, applyInnerJoinById } from './BaseQueries';
 
 @EntityRepository(ProductCategory)
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async getProductCategories(params: TPagedParams<TProductCategory>): Promise<TProductCategory[]> {
         const qb = this.createQueryBuilder(DBTableNames.Product);
-        getPaged(qb, DBTableNames.Product, params);
+        applyGetPaged(qb, DBTableNames.Product, params);
         return await qb.getMany();
     }
 
@@ -96,8 +96,8 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async getCategoriesOfProduct(productId: string, params?: TPagedParams<TProductCategory>): Promise<TProductCategory[]> {
         const qb = this.createQueryBuilder(DBTableNames.ProductCategory);
-        innerJoinById(qb, DBTableNames.ProductCategory, 'products', DBTableNames.Product, productId);
-        getPaged(qb, DBTableNames.ProductCategory, params);
+        applyInnerJoinById(qb, DBTableNames.ProductCategory, 'products', DBTableNames.Product, productId);
+        applyGetPaged(qb, DBTableNames.ProductCategory, params);
         return await qb.getMany();
     }
 }
