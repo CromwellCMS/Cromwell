@@ -106,7 +106,7 @@ export class Draggable {
                 }
                 this.draggingBlockShadowCopy = draggingBlockShadowCopy;
                 this.showBlock(this.draggingBlockShadowCopy);
-                this.hideBlock(this.draggingBlock);
+                // this.hideBlock(this.draggingBlock);
             }
             else {
                 draggingBlockShadowCopy.remove();
@@ -189,8 +189,10 @@ export class Draggable {
         this.draggingBlockId = block.id;
 
         const computedStyle = getComputedStyle(this.draggingBlock);
-        this.draggingBlockHeight = this.draggingBlock.clientHeight - parseFloat(computedStyle.paddingTop) - parseFloat(computedStyle.paddingBottom);
-        this.draggingBlockWidth = this.draggingBlock.clientWidth - parseFloat(computedStyle.paddingLeft) - parseFloat(computedStyle.paddingRight);
+        // this.draggingBlockHeight = this.draggingBlock.clientHeight - parseFloat(computedStyle.paddingTop) - parseFloat(computedStyle.paddingBottom);
+        this.draggingBlockHeight = this.draggingBlock.offsetHeight;
+        // this.draggingBlockWidth = this.draggingBlock.clientWidth - parseFloat(computedStyle.paddingLeft) - parseFloat(computedStyle.paddingRight);
+        this.draggingBlockWidth = this.draggingBlock.offsetWidth;
         this.draggingBlock.style.height = this.draggingBlockHeight + 'px';
         this.draggingBlock.style.width = this.draggingBlockWidth + 'px';
 

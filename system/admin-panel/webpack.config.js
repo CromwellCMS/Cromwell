@@ -5,6 +5,7 @@ const appBuildDev = path.resolve('./.cromwell/static/dev');
 const appBuildProd = path.resolve('./.cromwell/static/prod');
 const buildMode = process.env.NODE_ENV;
 const isProduction = buildMode === 'production';
+const projectRootDir = path.resolve(__dirname, '../../').replace(/\\/g, '/');
 
 module.exports = {
     mode: buildMode,
@@ -81,22 +82,22 @@ module.exports = {
             patterns:
                 isProduction ?
                     [{
-                        from: path.resolve(__dirname, '../node_modules/react/umd/react.production.min.js'),
+                        from: `${projectRootDir}/node_modules/react/umd/react.production.min.js`,
                     },
                     {
-                        from: path.resolve(__dirname, '../node_modules/react-dom/umd/react-dom.production.min.js'),
+                        from: `${projectRootDir}/node_modules/react-dom/umd/react-dom.production.min.js`,
                     }] :
                     [{
-                        from: path.resolve(__dirname, '../node_modules/react/umd/react.development.js'),
+                        from: `${projectRootDir}/node_modules/react/umd/react.development.js`,
                     },
                     {
-                        from: path.resolve(__dirname, '../node_modules/react/umd/react.profiling.min.js'),
+                        from: `${projectRootDir}/node_modules/react/umd/react.profiling.min.js`,
                     },
                     {
-                        from: path.resolve(__dirname, '../node_modules/react-dom/umd/react-dom.development.js'),
+                        from: `${projectRootDir}/node_modules/react-dom/umd/react-dom.development.js`,
                     },
                     {
-                        from: path.resolve(__dirname, '../node_modules/react-dom/umd/react-dom.profiling.min.js'),
+                        from: `${projectRootDir}/node_modules/react-dom/umd/react-dom.profiling.min.js`,
                     }]
         }),
         new HtmlWebpackPlugin(Object.assign(

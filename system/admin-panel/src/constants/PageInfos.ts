@@ -3,6 +3,7 @@ import { pluginNames, importPlugin } from '../../.cromwell/imports/plugins.gen';
 import HomePage from '../pages/home';
 import PluginsPage from '../pages/plugins';
 import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
+import ProductListPage from '../pages/productList/ProductList';
 
 export type SidebarLinkType = {
     title: string;
@@ -31,6 +32,11 @@ const themeEditPageInfo: PageInfo = {
     route: '/theme-edit',
     component: ThemeEditPage
 };
+const productListInfo: PageInfo = {
+    name: 'ProductList',
+    route: '/product-list',
+    component: ProductListPage
+};
 
 const pluginPages: PageInfo[] = pluginNames.map((name: string) => {
     return {
@@ -44,6 +50,7 @@ const pluginPages: PageInfo[] = pluginNames.map((name: string) => {
 export const pageInfos: PageInfo[] = [
     homePageInfo,
     themeEditPageInfo,
+    productListInfo,
     pluginsPageInfo,
     ...pluginPages
 ].filter(i => Boolean(i.component));
@@ -53,6 +60,10 @@ export const sideBarLinks: SidebarLinkType[] = [
     {
         title: homePageInfo.name,
         route: homePageInfo.route
+    },
+    {
+        title: 'Products',
+        route: productListInfo.route
     },
     {
         title: 'Edit theme',
