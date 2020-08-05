@@ -1,15 +1,17 @@
 import React from 'react';
-import InfiniteLoader from '../../components/infinityLoader/InfiniteLoader';
-import { getGraphQLClient } from '@cromwell/core-frontend';
+import { getGraphQLClient, CList } from '@cromwell/core-frontend';
 import { TProduct, TPagedList } from '@cromwell/core';
+import LoadBox from '../../components/loadBox/LoadBox';
 
 const ProductList = () => {
     const client = getGraphQLClient();
-
     return (
         <div style={{ height: '500px', width: '800px' }}>
-            <InfiniteLoader<TProduct>
+            <CList<TProduct>
                 ListItem={ProductItem}
+                useAutoLoading
+                usePagination
+                useQueryPagination
                 loader={(pageNumber: number) => {
                     return client.getProducts(pageNumber);
                 }}
@@ -21,15 +23,23 @@ const ProductList = () => {
 export default ProductList;
 
 type TProductItemProps = {
-    data: TProduct;
+    data?: TProduct;
+    isLoading?: boolean;
 }
 
 const ProductItem = (props: TProductItemProps) => {
-    console.log('ProductItem::props', props)
+    // console.log('ProductItem::props', props)
     return (
         <div>
-            <p>Product</p>
-            <p>{props.data?.id + '_' + props.data?.name}</p>
+            {props.isLoading && (
+                <LoadBox />
+            )}
+            {props.data && (
+                <>
+                    <p>Product</p>
+                    <p>{props.data?.id + '_' + props.data?.name}</p>
+                </>
+            )}
         </div>
     )
 }

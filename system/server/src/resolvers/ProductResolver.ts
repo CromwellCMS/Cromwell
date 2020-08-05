@@ -16,9 +16,7 @@ export class ProductResolver {
 
     @Query(() => PagedProduct)
     async products(@Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {
-        const res = await this.repo.getProducts(pagedParams);
-        console.log('res', res)
-        return res;
+        return await this.repo.getProducts(pagedParams);
     }
 
     @Query(() => Product)

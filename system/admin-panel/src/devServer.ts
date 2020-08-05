@@ -25,9 +25,9 @@ export const startDevServer = (watch?: boolean) => {
 
     const bs = require('browser-sync').create();
     bs.init({
-        files: [`${dir}/*.js`],
+        // files: [`${dir}/*.js`],
         open: false,
-        // watch: true,
+        watch: false,
         server: {
             baseDir: dir,
             middleware: [

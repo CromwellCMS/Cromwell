@@ -1,0 +1,47 @@
+.baseInfiniteLoader {
+    width: 100%;
+    height: 100%;
+    min-height: 100px;
+    display: flex;
+    flex-direction: column;
+    
+
+    :global(.ReactVirtualized__List:focus) {
+        outline: none;
+    }
+
+    .rowPreloader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .scrollBox {
+        display: block;
+        // height: 100%;
+        // overflow: auto;
+        // padding-top: 10px;
+    }
+
+    .wrapper {
+        display: block;
+        // height: 100%;
+    }
+    .page {
+        position: relative;
+    }
+    .pageItem {
+        position: relative;
+    }
+
+    .pagination {
+        display: flex;
+    }
+    .pageLink {
+        border: 1px solid #999;
+        margin: 0 10px;
+    }
+    .currentPage {
+        border: 3px solid #999;
+    }
+}

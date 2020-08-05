@@ -16,7 +16,6 @@ export class ProductRepository extends Repository<Product> {
     async getProducts(params: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         const qb = this.createQueryBuilder(DBTableNames.Product);
         const paged = await getPaged(qb, DBTableNames.Product, params);
-        console.log('paged', paged)
         return paged;
     }
 
@@ -71,8 +70,6 @@ export class ProductRepository extends Repository<Product> {
         });
         if (!product) throw new Error(`Product ${id} not found!`);
 
-        console.log('product', product)
-
         product.name = updateProduct.name;
         product.price = updateProduct.price;
         product.oldPrice = updateProduct.oldPrice;
@@ -103,7 +100,6 @@ export class ProductRepository extends Repository<Product> {
             return false;
         }
         const res = await this.delete(id);
-        console.log('ProductRepository::deleteProduct res: ' + JSON.stringify(res));
         this.buildProductPage(product);
         return true;
     }
