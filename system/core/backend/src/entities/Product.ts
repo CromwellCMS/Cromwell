@@ -17,7 +17,7 @@ export class Product extends BasePageEntity implements TProduct {
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    price: number;
+    price?: number;
 
     @Field(type => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
@@ -25,15 +25,15 @@ export class Product extends BasePageEntity implements TProduct {
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    mainImage: string;
+    mainImage?: string;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "simple-array", nullable: true })
-    images: string[];
+    images?: string[];
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    description: string;
+    description?: string;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })

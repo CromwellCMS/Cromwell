@@ -1,8 +1,12 @@
 import { TCmsConfig, TThemeConfig } from '@cromwell/core';
 import fs from 'fs-extra';
 import shell from 'shelljs';
+//@ts-ignore
+import lnk from 'lnk';
 import { resolve } from 'path';
 const scriptName = process.env.SCRIPT;
+const projectRootDir = resolve(__dirname, '../../../').replace(/\\/g, '/');
+const rendererRootDir = resolve(__dirname, '../').replace(/\\/g, '/');
 
 const main = async () => {
 
@@ -15,6 +19,8 @@ const main = async () => {
     }
     if (!config) throw new Error('renderer::server cannot read CMS config');
 
+    // Link public dir in root to renderer's public dir for Next.js server
+    lnk([`${projectRootDir}/public`], `${rendererRootDir}`)
 
     if (scriptName === 'dev') {
         shell.exec(`npx next dev -p ${config.frontendPort}`);

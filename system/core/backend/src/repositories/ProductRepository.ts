@@ -6,7 +6,7 @@ import { UpdateProduct } from '../inputs/UpdateProduct';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { applyGetPaged, applyInnerJoinById, getPaged } from './BaseQueries';
 import { getCustomRepository } from "typeorm";
-import { TPagedParams, TProduct, TPagedList } from '@cromwell/core';
+import { TPagedParams, TProduct, TPagedList, TProductInput } from '@cromwell/core';
 import { DBTableNames, BasePagePaths } from '@cromwell/core';
 import { getStoreItem } from '@cromwell/core';
 
@@ -36,8 +36,8 @@ export class ProductRepository extends Repository<Product> {
     }
 
 
-    async createProduct(createProduct: CreateProduct): Promise<Product> {
-        const product = new Product();
+    async createProduct(createProduct: TProductInput): Promise<TProduct> {
+        let product = new Product();
         product.name = createProduct.name;
         product.price = createProduct.price;
         product.oldPrice = createProduct.oldPrice;
@@ -52,7 +52,12 @@ export class ProductRepository extends Repository<Product> {
                 .getProductCategoriesById(createProduct.categoryIds);
         }
 
-        await this.save(product);
+        // Sort images to move mainImage into first item in the array
+        if (product.images) {
+            product.images = product.images.sort((a, b) => a === product.mainImage ? -1 : 1)
+        }
+
+        product = await this.save(product);
         if (!product.slug) {
             product.slug = product.id;
             await this.save(product);
@@ -63,8 +68,8 @@ export class ProductRepository extends Repository<Product> {
         return product;
     }
 
-    async updateProduct(id: string, updateProduct: UpdateProduct): Promise<Product> {
-        const product = await this.findOne({
+    async updateProduct(id: string, updateProduct: TProductInput): Promise<Product> {
+        let product = await this.findOne({
             where: { id },
             relations: ["categories"]
         });
@@ -84,7 +89,12 @@ export class ProductRepository extends Repository<Product> {
                 .getProductCategoriesById(updateProduct.categoryIds);
         }
 
-        await this.save(product);
+        // Sort images to move mainImage into first item in the array
+        if (product.images && product.mainImage) {
+            product.images = product.images.sort((a, b) => a === product!.mainImage ? -1 : 1)
+        }
+
+        product = await this.save(product);
 
         this.buildProductPage(product);
 

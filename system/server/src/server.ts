@@ -13,6 +13,7 @@ import cors from 'cors';
 import { pluginsResolvers } from '../.cromwell/imports/resolvers.imports.gen';
 import { applyThemeController } from './controllers/themeController';
 import { applyPluginsController } from './controllers/pluginsController';
+import { applyCmsController } from './controllers/cmsController';
 import { applyMockController } from './controllers/mockController';
 import { rebuildPage } from './helpers/PageBuilder';
 import { AuthorResolver } from './resolvers/AuthorResolver';
@@ -59,6 +60,7 @@ async function apiServer(): Promise<void> {
     app.use(cors());
 
     setTimeout(() => {
+        applyCmsController(app);
         applyThemeController(app);
         applyPluginsController(app);
         applyMockController(app);

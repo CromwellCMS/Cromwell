@@ -30,7 +30,7 @@ export class ProductResolver {
     }
 
     @Mutation(() => Product)
-    async createProduct(@Arg("data") data: CreateProduct): Promise<Product> {
+    async createProduct(@Arg("data") data: CreateProduct): Promise<TProduct> {
         return await this.repo.createProduct(data);
     }
 

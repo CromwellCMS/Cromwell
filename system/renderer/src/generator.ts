@@ -170,19 +170,6 @@ const main = async () => {
         fs.outputFileSync(`${pagesLocalDir}/${pageName}.js`, pageContent);
     });
 
-
-    // Copy theme's public assets
-
-    const themeDir = `${projectRootDir}/themes/${config.themeName}`;
-    const themePublicDir = `${themeDir}/public`;
-    if (fs.existsSync(themePublicDir)) {
-        fs.copy(themePublicDir, `${localDir}/public`, function (err) {
-            if (err) {
-                console.error(err);
-            }
-        });
-    }
-
 };
 
 main();

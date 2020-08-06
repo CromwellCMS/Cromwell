@@ -24,9 +24,10 @@ export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
     const Page: any = importPage(pageName).default;
 
     return function (props: TCromwellPageCoreProps): JSX.Element {
-        const { pluginsData, pageConfig, appCustomConfig, childStaticProps, appConfig, pagesInfo, ...restProps } = props;
+        const { pluginsData, pageConfig, appCustomConfig, childStaticProps, cmsConfig, appConfig, pagesInfo, ...restProps } = props;
         setStoreItem('pluginsData', pluginsData);
         setStoreItem('pageConfig', pageConfig);
+        setStoreItem('cmsconfig', cmsConfig);
         setStoreItem('appConfig', appConfig);
         setStoreItem('appCustomConfig', appCustomConfig);
         setStoreItem('pagesInfo', pagesInfo);
