@@ -91,21 +91,6 @@
         "pagesDir": "es/pages",
         "palette": {
             "primaryColor": "#9900CC"
-        },
-        "currencyOptions": [
-            "USD",
-            "EURO",
-            "RUB"
-        ],
-        "currencySymbols": {
-            "USD": "$",
-            "EURO": "€",
-            "RUB": "₽"
-        },
-        "currencyRatio": {
-            "USD": 1,
-            "EURO": 0.8,
-            "RUB": 60
         }
     },
     "appCustomConfig": {
@@ -130,7 +115,7 @@
             ]
         },
         "product": {
-            "customTabs" : [
+            "customTabs": [
                 {
                     "label": "Custom tab",
                     "html": "<div><p>Custom tab</p></div>"

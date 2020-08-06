@@ -1,4 +1,4 @@
-import { getAppCustomConfigTextProp, getAppCustomConfigProp, getAppConfig, isServer, setStoreItem } from '@cromwell/core';
+import { getAppCustomConfigTextProp, getAppCustomConfigProp, getCmsConfig, isServer, setStoreItem } from '@cromwell/core';
 import { Link, CHTML, CContainer, CPlugin, getGlobalCurrency, setGlobalCurrency } from '@cromwell/core-frontend';
 import React, { useEffect } from 'react';
 import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core';
@@ -48,8 +48,8 @@ export default function Header() {
 
 
     const topLinks: TTopLink[] | undefined = getAppCustomConfigProp('header/topLinks');
-    const appConfig = getAppConfig();
-    const currencyOptions: string[] = appConfig && appConfig.currencyOptions ? appConfig.currencyOptions : [];
+    const cmsConfig = getCmsConfig();
+    const currencyOptions: string[] = cmsConfig && cmsConfig.currencyOptions ? cmsConfig.currencyOptions : [];
     const logoHref: string | undefined = getAppCustomConfigProp('header/logo');
     const contactPhone: string | undefined = getAppCustomConfigProp('header/contactPhone');
     const classes = useStyles();

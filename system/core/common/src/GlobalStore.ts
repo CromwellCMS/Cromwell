@@ -1,4 +1,4 @@
-import { TCromwellStore, TAppConfig, TProduct, CommonComponentProps } from './types';
+import { TCromwellStore, TAppConfig, TProduct, CommonComponentProps, TCmsConfig } from './types';
 import { isServer, ECommonComponentNames } from './constants';
 
 const initialStore: TCromwellStore = {
@@ -39,6 +39,9 @@ export const getPageCustomConfig = (): Record<string, any> | undefined => {
 
 export const getAppConfig = (): TAppConfig | undefined => {
     return getStore()?.appConfig;
+}
+export const getCmsConfig = (): TCmsConfig | undefined => {
+    return getStore()?.cmsconfig;
 }
 
 

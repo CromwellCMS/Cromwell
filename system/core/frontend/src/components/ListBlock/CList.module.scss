@@ -36,12 +36,37 @@
 
     .pagination {
         display: flex;
+        
+    }
+    .paginationContent {
+        display: flex;
+        margin: 0 auto;
+        margin-top: 15px;
     }
     .pageLink {
-        border: 1px solid #999;
-        margin: 0 10px;
+        display: flex;
+        align-items: center;
+        // border: 1px solid #ccc;
+        border-radius: 20px;
+        margin: 0 6px;
+        cursor: pointer;
+        padding: 2px 7px;
+        color: #333;
+        text-decoration: none;
+        user-select: none;
     }
-    .currentPage {
-        border: 3px solid #999;
+
+    .activePageLink {
+        border: 2px solid #ccc;
+        cursor: initial;
+    }
+
+    .paginationDisabledLink {
+        opacity: 0.5;
+        cursor: initial;
+    }
+
+    .paginationArrow {
+        font-size: 30px;
     }
 }

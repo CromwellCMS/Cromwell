@@ -20,6 +20,7 @@ export type TCromwellPageCoreProps = {
     pluginsData: Record<string, any>;
     childStaticProps: Record<string, any>;
     pageConfig: TPageConfig;
+    cmsConfig: TCmsConfig;
     appConfig: TAppConfig;
     appCustomConfig: Record<string, any>;
     pagesInfo: TPageInfo[];
@@ -42,6 +43,12 @@ export type TCmsConfig = {
     frontendPort: number;
     themeName: string;
     defaultPageSize: number;
+    /** Array of available currencies: ['USD', 'EURO', ...] */
+    currencyOptions?: string[];
+    /** Object of local curency symbols that will be added to price in getPriceWithCurrency method: {"USD": "$","EURO": "€"}  */
+    currencySymbols?: Record<string, string>;
+    /** Ratio between currencies: {"USD": 1,"EURO": 0.8} */
+    currencyRatio?: Record<string, number>;
 }
 
 export type TAppConfig = {
@@ -51,12 +58,6 @@ export type TAppConfig = {
     palette?: { primaryColor?: string }
     /** Custom HTML add into head of every page */
     headHtml?: string;
-    /** Array of available currencies: ['USD', 'EURO', ...] */
-    currencyOptions?: string[];
-    /** Object of local curency symbols that will be added to price in getPriceWithCurrency method: {"USD": "$","EURO": "€"}  */
-    currencySymbols?: Record<string, string>;
-    /** Ratio between currencies: {"USD": 1,"EURO": 0.8} */
-    currencyRatio?: Record<string, number>;
 }
 
 export type TThemeConfig = {
@@ -191,18 +192,23 @@ export type TCromwellBlockData = {
     }
 }
 
+type TImageSettings = {
+    src: string;
+    id?: string | number;
+    href?: string;
+    thumb?: string;
+};
+
 export type TGallerySettings = {
-    images: {
-        src: string;
-        href?: string;
-        thumb?: string;
-    }[],
+    images: TImageSettings[],
     direction?: "horizontal" | "vertical",
     loop?: boolean;
     height?: number | string;
     width?: number | string;
-    /** = width / height */
+    /** ratio = width / height */
     ratio?: number;
+    slidesPerView?: number;
+    backgroundSize?: 'cover' | 'contain';
     navigation?: {
         showOnHover?: boolean
     };
@@ -217,6 +223,9 @@ export type TGallerySettings = {
         zoomOnHover?: boolean;
         maxRatio?: number;
     };
+    components?: {
+        imgWrapper?: React.ComponentType<{ image: TImageSettings }>;
+    }
 }
 
 export type TDBEntity = keyof {
@@ -283,7 +292,7 @@ export interface TProduct extends TBasePageEntityType {
     // Price. Will be discount price if oldPrice is specified
     price?: number;
     // Price before sale, optional
-    oldPrice?: number | null;
+    oldPrice?: number;
     // Href of main image
     mainImage?: string;
     // Hrefs of iamges

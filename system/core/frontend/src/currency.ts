@@ -3,13 +3,13 @@ import { getStoreItem, setStoreItem, isServer } from '@cromwell/core';
 export const getPriceWithCurrency = (price: number | undefined | null): string => {
     if (!price) return 'Not available';
     let priceStr = price + '';
-    const appConfig = getStoreItem('appConfig');
+    const cmsconfig = getStoreItem('cmsconfig');
     const currency = getGlobalCurrency();
     const defaultCurrency = getDafaultCurrency();
 
     if (currency && defaultCurrency) {
 
-        const priceRatio = appConfig?.currencyRatio;
+        const priceRatio = cmsconfig?.currencyRatio;
         if (priceRatio) {
             const convertPrice = (price: number, from: string, to: string) => {
                 return (price * (priceRatio[to] / priceRatio[from])).toFixed(2);
@@ -17,7 +17,7 @@ export const getPriceWithCurrency = (price: number | undefined | null): string =
             priceStr = convertPrice(price, defaultCurrency, currency);
         }
 
-        const currencySymbols = appConfig?.currencySymbols;
+        const currencySymbols = cmsconfig?.currencySymbols;
         if (currencySymbols && currencySymbols[currency]) {
             priceStr = currencySymbols[currency] + priceStr;
         }
@@ -40,6 +40,17 @@ export const getGlobalCurrency = (): string | undefined => {
     return currency;
 }
 
+export const getGlobalCurrencySymbol = (): string | undefined => {
+    let symb;
+    const currency = getGlobalCurrency();
+    const cmsconfig = getStoreItem('cmsconfig');
+    const currencySymbols = cmsconfig?.currencySymbols;
+    if (currencySymbols && currency) {
+        symb = currencySymbols[currency];
+    }
+    return symb;
+}
+
 export const setGlobalCurrency = (currency: string) => {
     if (currency) {
         setStoreItem('currency', currency);
@@ -55,11 +66,11 @@ export const setGlobalCurrency = (currency: string) => {
     }
 }
 
-export const getDafaultCurrency = (): string | undefined => {
-    const appConfig = getStoreItem('appConfig');
+const getDafaultCurrency = (): string | undefined => {
+    const cmsconfig = getStoreItem('cmsconfig');
     let defaultCurrency;
-    if (appConfig && appConfig.currencyOptions && Array.isArray(appConfig.currencyOptions) && appConfig.currencyOptions.length > 0) {
-        defaultCurrency = appConfig.currencyOptions[0];
+    if (cmsconfig && cmsconfig.currencyOptions && Array.isArray(cmsconfig.currencyOptions) && cmsconfig.currencyOptions.length > 0) {
+        defaultCurrency = cmsconfig.currencyOptions[0];
     }
     return defaultCurrency;
 }

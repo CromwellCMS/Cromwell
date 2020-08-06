@@ -10,7 +10,6 @@ styleInject(swiperCSS);
 
 //@ts-ignore
 import styles from './CGallery.module.scss';
-import { type } from 'os';
 Swiper.use([Navigation, Pagination, Lazy, Thumbs, Zoom]);
 
 
@@ -19,7 +18,7 @@ function useForceUpdate() {
     return () => setValue(value => ++value); // update the state to force render
 }
 
-export class CGallery extends React.Component<{ id: string, className?: string, settings?: TGallerySettings }> {
+export class CGallery extends React.Component<{ id: string, className?: string, settings?: TGallerySettings, enableRerenders?: boolean }> {
 
     private gallerySettings?: TGallerySettings;
     private blockRef?: React.RefObject<HTMLDivElement>;
@@ -31,6 +30,17 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
     private swiper?: Swiper;
     private galleryThumbs?: Swiper;
     private primaryColor?: string = getStoreItem('appConfig')?.palette?.primaryColor;
+
+    shouldComponentUpdate(prev, next) {
+        if (this.swiperId) {
+            const galleryContainer = document.getElementById(this.swiperId);
+            if (galleryContainer) {
+                if (galleryContainer !== this.galleryContainer) return true;
+            }
+        }
+        if (this.props.enableRerenders) return true;
+        return false;
+    }
 
     componentDidMount() {
         this.updateGallery();
@@ -44,7 +54,7 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
         if (gallerySettings && this.swiperId) {
             const galleryContainer = document.getElementById(this.swiperId);
             if (galleryContainer) {
-                if (galleryContainer === this.galleryContainer && this.prevGallerySettings === gallerySettings) return;
+                if (galleryContainer === this.galleryContainer) return;
                 this.prevGallerySettings = gallerySettings;
 
                 if (this.galleryContainer === galleryContainer && this.swiper) {
@@ -59,6 +69,9 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
                             loadPrevNext: true
                         },
                         direction: gallerySettings.direction ? gallerySettings.direction : 'horizontal',
+                    }
+                    if (gallerySettings.slidesPerView) {
+                        options.slidesPerView = gallerySettings.slidesPerView;
                     }
                     if (gallerySettings.showScrollbar) {
                         options.scrollbar = {
@@ -193,7 +206,8 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
                                                 attr-data-background={i.src}
                                                 style={{
                                                     width: gallerySettings.width ? gallerySettings.width : '100%',
-                                                    height: this.height ? this.height : _height
+                                                    height: this.height ? this.height : _height,
+                                                    backgroundSize: gallerySettings.backgroundSize
                                                     // backgroundImage: `url('${i.src}')`
                                                 }}
                                                 className={`${styles.swiperImage} swiper-lazy ${gallerySettings.zoom ? 'swiper-zoom-target' : ''}`}
@@ -219,6 +233,10 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
                                                     }}></div>
                                             </div>
                                         );
+                                        if (gallerySettings.components && gallerySettings.components.imgWrapper) {
+                                            const WrapComp = gallerySettings.components.imgWrapper;
+                                            el = <WrapComp image={i}>{el}</WrapComp>
+                                        }
                                         if (gallerySettings.zoom) {
                                             el = <div className="swiper-zoom-container">{el}</div>
                                         }
@@ -238,7 +256,7 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
                                     })}
                                 </div>
                                 {gallerySettings.showPagination && (
-                                    <div className="swiper-pagination"></div>
+                                    <div className={`swiper-pagination ${styles.swiperPagination}`}></div>
                                 )}
                                 {gallerySettings.navigation && (<>
                                     <div className="swiper-button-prev"></div>
