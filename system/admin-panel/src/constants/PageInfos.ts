@@ -1,41 +1,51 @@
 import React from 'react';
+//@ts-ignore
 import { pluginNames, importPlugin } from '../../.cromwell/imports/plugins.gen';
 import HomePage from '../pages/home';
 import PluginsPage from '../pages/plugins';
 import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
 import ProductListPage from '../pages/productList/ProductList';
+import ProductPage from '../pages/product/Product';
 
 export type SidebarLinkType = {
     title: string;
     route: string;
+    baseRoute?: string;
     sublinks?: SidebarLinkType[];
 }
 
 export type PageInfo = {
     name: string;
     route: string;
+    baseRoute?: string;
     component: React.ComponentType;
 }
 
-const homePageInfo: PageInfo = {
+export const homePageInfo: PageInfo = {
     name: 'Home',
     route: '/',
     component: HomePage
 };
-const pluginsPageInfo: PageInfo = {
+export const pluginsPageInfo: PageInfo = {
     name: 'Plugins',
     route: '/plugins',
     component: PluginsPage
 };
-const themeEditPageInfo: PageInfo = {
+export const themeEditPageInfo: PageInfo = {
     name: 'ThemeEdit',
     route: '/theme-edit',
     component: ThemeEditPage
 };
-const productListInfo: PageInfo = {
+export const productListInfo: PageInfo = {
     name: 'ProductList',
     route: '/product-list',
     component: ProductListPage
+};
+export const productInfo: PageInfo = {
+    name: 'ProductList',
+    route: '/product/:id',
+    baseRoute: '/product',
+    component: ProductPage
 };
 
 const pluginPages: PageInfo[] = pluginNames.map((name: string) => {
@@ -51,6 +61,8 @@ export const pageInfos: PageInfo[] = [
     homePageInfo,
     themeEditPageInfo,
     productListInfo,
+    productListInfo,
+    productInfo,
     pluginsPageInfo,
     ...pluginPages
 ].filter(i => Boolean(i.component));

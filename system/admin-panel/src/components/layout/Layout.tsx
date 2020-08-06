@@ -1,7 +1,7 @@
 import 'gridlex/src/gridlex.scss';
 import 'reset-css';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { pageInfos } from '../../constants/PageInfos';
@@ -9,6 +9,9 @@ import Header from '../header/Header';
 import Page from '../page/Page';
 import Sidebar from '../sidebar/Sidebar';
 import classes from './Layout.module.scss';
+import Page404 from '../../pages/404page/404page';
+import { getRestAPIClient } from '@cromwell/core-frontend';
+import { setStoreItem } from '@cromwell/core';
 
 function Layout() {
   return (
@@ -25,11 +28,14 @@ function Layout() {
             <Switch>
               {pageInfos.map(page => {
                 return (
-                  <Route exact path={page.route} key={page.name} >
+                  <Route exact={!page.baseRoute} path={page.route} key={page.name} >
                     <Page component={page.component} />
                   </Route>
                 )
               })}
+              <Route key={'404'} >
+                <Page404 />
+              </Route>
             </Switch>
           </div>
         </div>

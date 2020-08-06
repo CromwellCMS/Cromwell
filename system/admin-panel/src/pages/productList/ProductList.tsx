@@ -1,21 +1,53 @@
 import React from 'react';
 import { getGraphQLClient, CList } from '@cromwell/core-frontend';
 import { TProduct, TPagedList } from '@cromwell/core';
+import { productInfo } from '../../constants/PageInfos';
 import LoadBox from '../../components/loadBox/LoadBox';
+import { Link } from 'react-router-dom';
+import styles from './ProductList.module.scss';
+import {
+    IconButton,
+} from '@material-ui/core';
+import {
+    AddCircle as AddCircleIcon, ExpandMore as ExpandMoreIcon,
+    HighlightOff as HighlightOffIcon,
+    DeleteForever as DeleteForeverIcon,
+    Edit as EditIcon
+} from '@material-ui/icons';
+
+
 
 const ProductList = () => {
     const client = getGraphQLClient();
     return (
-        <div style={{ height: '500px', width: '800px' }}>
-            <CList<TProduct>
-                ListItem={ProductItem}
-                useAutoLoading
-                usePagination
-                useQueryPagination
-                loader={(pageNumber: number) => {
-                    return client.getProducts(pageNumber);
-                }}
-            />
+        <div className={styles.ProductList}>
+            <div className={styles.productListHeader}>
+                <div style={{ width: '10%' }}>
+                    <p>id</p>
+                </div>
+                <div style={{ width: '100%' }}>
+                    <p>title</p>
+                </div>
+                <div style={{ width: '10%' }}>
+                    <IconButton
+                        aria-label="add"
+                    >
+                        <AddCircleIcon />
+                    </IconButton>
+                </div>
+            </div>
+            <div className={styles.productListWrapper}>
+                <CList<TProduct>
+                    ListItem={ProductItem}
+                    useAutoLoading
+                    usePagination
+                    useQueryPagination
+                    loader={(pageNumber: number) => {
+                        return client.getProducts({ pageNumber });
+                    }}
+                    cssClasses={{ scrollBox: styles.list }}
+                />
+            </div>
         </div>
     )
 }
@@ -24,20 +56,36 @@ export default ProductList;
 
 type TProductItemProps = {
     data?: TProduct;
-    isLoading?: boolean;
 }
 
 const ProductItem = (props: TProductItemProps) => {
     // console.log('ProductItem::props', props)
     return (
-        <div>
-            {props.isLoading && (
-                <LoadBox />
-            )}
+        <div className={styles.productItem}>
             {props.data && (
                 <>
-                    <p>Product</p>
-                    <p>{props.data?.id + '_' + props.data?.name}</p>
+                    <div style={{ width: '10%' }}>
+                        <p>{props.data?.id}</p>
+                    </div>
+                    <div style={{ width: '100%' }}>
+                        <p>{props.data?.name}</p>
+                    </div>
+                    <div style={{ width: '10%' }}>
+                        <Link to={`${productInfo.baseRoute}/${props.data?.id}`}>
+                            <IconButton
+                                aria-label="edit"
+                            >
+                                <EditIcon />
+                            </IconButton>
+                        </Link>
+                    </div>
+                    <div style={{ width: '10%' }}>
+                        <IconButton
+                            aria-label="delete"
+                        >
+                            <DeleteForeverIcon />
+                        </IconButton>
+                    </div>
                 </>
             )}
         </div>

@@ -1,0 +1,42 @@
+@import '../../styles/common.module.scss';
+
+.ProductList {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+}
+
+.productListHeader {
+    display: flex;
+    padding: 10px 20px;
+
+    > div {
+        display: flex;
+        align-items: center;
+    }
+}
+
+.productListWrapper {
+    min-height: 400px;
+    height: 100%;
+    width: 100%;    
+}
+
+.productItem {
+    display: flex;
+    padding: 5px 20px;
+    align-items: center;
+    border-bottom: 1px solid #ddd;
+}
+
+.productItemBlock {
+    margin-right: 15px;
+}
+
+.list {
+    @include styledScrollBar;
+    // box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+    // border: 1px solid #ddd;
+    border-radius: 10px;
+}

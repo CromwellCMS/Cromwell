@@ -26,6 +26,6 @@
   },
   "include": [
     "src",
-    "src/devServer.ts"
+    "src/devServer.ts", "constants.js"
   ]
 }

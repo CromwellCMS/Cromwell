@@ -3,7 +3,8 @@
     flex-direction: column;
     width: 100vw;
     height: 100vh;
-
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .header {
@@ -28,5 +29,5 @@
     width: 80%;
     height: 100%;
     box-sizing: border-box;
-    padding: 0 10px 10px 0;
+    padding: 10px 0 10px 0;
 }

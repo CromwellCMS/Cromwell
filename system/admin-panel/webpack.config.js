@@ -1,11 +1,10 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const appBuildDev = path.resolve('./.cromwell/static/dev');
-const appBuildProd = path.resolve('./.cromwell/static/prod');
+const { appBuildDev, appBuildProd, contentDir, projectRootDir } = require('./constants');
+
 const buildMode = process.env.NODE_ENV;
 const isProduction = buildMode === 'production';
-const projectRootDir = path.resolve(__dirname, '../../').replace(/\\/g, '/');
 
 module.exports = {
     mode: buildMode,

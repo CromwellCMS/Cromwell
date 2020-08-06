@@ -1,0 +1,53 @@
+.Product {
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+    .header {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .textField {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .imageBlock {
+        border: 1px solid #bbb;
+        border-radius: 5px;
+        margin: 10px 0;
+        padding: 5px;
+    }
+
+    .imageWrapper {
+        width: 100%;
+        height: 100%;
+        transition: 0.3s;
+        border: 2px solid transparent;
+
+    }
+
+    .imageWrapper:hover {
+        // border: 2px solid #ccc;
+
+        .imageActions {
+            opacity: 1;
+        }
+    }
+
+    .imageActions {
+        opacity: 0;
+        transition: 0.3s;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+    }
+
+    .saveBtn {
+        position: relative;
+    }
+}
+

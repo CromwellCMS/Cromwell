@@ -2,10 +2,12 @@ import { TCmsConfig, TPluginConfig } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import { resolve } from 'path';
+import { appBuildDev, appBuildProd, staticDir, projectRootDir, publicStaticDir } from '../constants';
+//@ts-ignore
+import lnk from 'lnk';
 
 export const generateAdminPanelImports = async () => {
-    const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
-
+    const configPath = `${projectRootDir}/system/cmsconfig.json`;
     let config: TCmsConfig | undefined = undefined;
     try {
         config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
@@ -16,7 +18,6 @@ export const generateAdminPanelImports = async () => {
 
 
     // Import global plugins
-    const projectRootDir = resolve(__dirname, '../../../').replace(/\\/g, '/');
     const localProjectDir = resolve(__dirname, '../').replace(/\\/g, '/');
     const globalPluginsDir = `${projectRootDir}/plugins`;
     const pluginsNames: string[] = fs.readdirSync(globalPluginsDir);
@@ -128,20 +129,8 @@ export const generateAdminPanelImports = async () => {
     fs.outputFileSync(`${localProjectDir}/.cromwell/imports/pages.gen.js`, adminPanelContent);
 
 
-
-    // Copy theme's public assets
-    const isProduction = process.env.NODE_ENV === 'production';
-    const staticDir = `${localProjectDir}/.cromwell/static/${isProduction ? 'prod' : 'dev'}`;
-    const themeDir = `${projectRootDir}/themes/${config.themeName}`;
-    const themePublicDir = `${themeDir}/public`;
-    console.log('staticDir', staticDir)
-    console.log('themePublicDir', themePublicDir)
-
-    if (fs.existsSync(themePublicDir)) {
-        fs.copy(themePublicDir, staticDir, function (err) {
-            if (err) {
-                console.error(err);
-            }
-        });
+    // Link public dir in root to renderer's public dir for Express.js server
+    if (!fs.existsSync(publicStaticDir)) {
+        lnk([`${projectRootDir}/public`], `${staticDir}`);
     }
 }

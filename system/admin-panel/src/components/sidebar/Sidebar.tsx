@@ -7,7 +7,7 @@ import {
 import { withStyles } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 import { sideBarLinks, SidebarLinkType } from '../../constants/PageInfos';
 import styles from './Sidebar.module.scss';
@@ -88,15 +88,17 @@ const SidebarLink = (props: {
     const isExpanded = props.expanded === props.data.route;
 
     const head = (
-        <MenuItem
-            onClick={e => {
-                isExpanded ? e.stopPropagation() : '';
-                handleNav(props.data.route);
-            }}
-            className={styles.SidebarLink__head}
-        >
-            <p>{props.data.title}</p>
-        </MenuItem>
+        <a href={props.data.route} onClick={(e) => e.preventDefault()}>
+            <MenuItem
+                onClick={e => {
+                    isExpanded ? e.stopPropagation() : '';
+                    handleNav(props.data.route);
+                }}
+                className={styles.SidebarLink__head}
+            >
+                <p>{props.data.title}</p>
+            </MenuItem>
+        </a>
     )
 
     if (props.data.sublinks) return (
