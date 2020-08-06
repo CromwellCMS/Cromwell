@@ -5,6 +5,7 @@ import { useStyles } from './styles';
 import { ECommonComponentNames, loadCommonComponent } from '@cromwell/core';
 import Swiper, { Navigation, Pagination, SwiperOptions, Lazy, Virtual } from 'swiper';
 import { VirtualData } from 'swiper/types/components/virtual';
+import { gql } from '@apollo/client';
 //@ts-ignore
 import styleInject from 'style-inject';
 //@ts-ignore
@@ -102,24 +103,28 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     let data = {};
     const limit = 20;
     try {
-        const products = await getGraphQLClient().request(`
-        query productShowcase {
-            productShowcase(slug: "1") {
-                id
-                name
-                products(pagedParams: {pageNumber: 1, pageSize: 10}) {
-                    id
-                    slug
-                    name
-                    price
-                    oldPrice
-                    mainImage
-              }
-            }
-          }
-        `);
+        const products = await getGraphQLClient().query({
+            query: gql`
+                query productShowcase {
+                    productShowcase(slug: "1") {
+                        id
+                        name
+                        products(pagedParams: {pageNumber: 1, pageSize: 10}) {
+                            id
+                            slug
+                            name
+                            price
+                            oldPrice
+                            mainImage
+                    }
+                    }
+                }
+            `
+        });
+
+
         data = {
-            productShowcase: products.productShowcase,
+            productShowcase: products?.data?.productShowcase,
         }
     } catch (e) {
         console.error('ProductShowcase::getStaticProps', e)

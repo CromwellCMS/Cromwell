@@ -1,50 +1,78 @@
-import { TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute, TAppConfig, TProduct, TPagedList } from '@cromwell/core';
+import { TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute, TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory } from '@cromwell/core';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { GraphQLClient } from 'graphql-request';
-import { Variables as GraphQLVariables } from 'graphql-request/dist/src/types';
-// import { ApolloClient, ApolloQueryResult, QueryOptions } from 'apollo-client';
-// import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
-// import { HttpLink } from 'apollo-link-http';
+import { gql, ApolloClient, InMemoryCache, createHttpLink, NormalizedCacheObject, QueryOptions, ApolloQueryResult } from '@apollo/client';
 
-// const cache = new InMemoryCache();
 
-// export const getApolloGraphQLClient = (): ApolloClient<NormalizedCacheObject> => {
-//     const cmsconfig = getStoreItem('cmsconfig');
-//     if (!cmsconfig || !cmsconfig.apiPort) {
-//         console.log('cmsconfig', cmsconfig)
-//         throw new Error('getGraphQLClient !cmsconfig.apiPort');
-//     }
-//     const link = new HttpLink({
-//         uri: `http://localhost:${cmsconfig.apiPort}/api/v1/graphql`
-//     });
-//     const client: ApolloClient<NormalizedCacheObject> = new ApolloClient({
-//         cache,
-//         link
-//     });
-//     return client;
-// }
 
 class CGraphQLClient {
 
-    private graphQLClient: GraphQLClient;
+    private apolloClient: ApolloClient<NormalizedCacheObject>;
 
     constructor(private baseUrl: string) {
-        this.graphQLClient = new GraphQLClient(this.baseUrl);
+
+        const cache = new InMemoryCache();
+        const link = createHttpLink({
+            uri: this.baseUrl,
+        });
+        this.apolloClient = new ApolloClient({
+            // Provide required constructor fields
+            cache: cache,
+            link: link,
+            name: 'cromwell-core-client',
+            version: '1.3',
+            queryDeduplication: false,
+            defaultOptions: {
+                watchQuery: {
+                    fetchPolicy: 'cache-and-network',
+                },
+            },
+        });
     }
 
-    public request = <T = any>(query: string, variables?: GraphQLVariables): Promise<T> => this.graphQLClient.request(query, variables);
+    public query = <T = any>(options: QueryOptions): Promise<ApolloQueryResult<T>> =>
+        this.apolloClient.query(options);
 
-    public getProducts = async (pageNumber: number = 1, pageSize: number = 10): Promise<TPagedList<TProduct>> => {
-        const res = await this.request(
-            `query coreGetProducts {
-                products(pagedParams: {pageNumber: ${pageNumber}, pageSize: ${pageSize}}) {
-                    pagedMeta {
-                        pageNumber
-                        pageSize
-                        totalPages
-                        totalElements
+
+    public getProducts = async (pagedParams?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> => {
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetProducts($pagedParams: PagedParamsInput!) {
+                    products(pagedParams: $pagedParams) {
+                        pagedMeta {
+                            pageNumber
+                            pageSize
+                            totalPages
+                            totalElements
+                        }
+                        elements {
+                            id
+                            slug
+                            pageTitle
+                            name
+                            price
+                            oldPrice
+                            mainImage
+                            images
+                            description
+                            rating
+                            views
+                            isEnabled
+                        }
                     }
-                    elements {
+                }
+            `,
+            variables: {
+                pagedParams: pagedParams ? pagedParams : {}
+            }
+        })
+        return res?.data?.products;
+    }
+
+    public getProductById = async (productId: number, withCategories?: boolean): Promise<TProduct> => {
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetProductById($productId: String!, $withCategories: Boolean!) {
+                    getProductById(id: $productId) {
                         id
                         slug
                         pageTitle
@@ -55,13 +83,83 @@ class CGraphQLClient {
                         images
                         description
                         rating
+                        views
                         isEnabled
+                        categories(pagedParams: {pageSize: 9999}) @include(if: $withCategories) {
+                            id
+                            name
+                            slug
+                        }
                     }
                 }
-              }
-        `
-        );
-        return res?.products;
+            `,
+            variables: {
+                productId,
+                withCategories: withCategories ? withCategories : false
+            }
+        });
+        return res?.data?.getProductById;
+    }
+
+    public getProductBySlug = async (slug: string, withCategories?: boolean): Promise<TProduct> => {
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetProductBySlug($slug: String!, $withCategories: Boolean!) {
+                    product(slug: $slug) {
+                        id
+                        slug
+                        pageTitle
+                        name
+                        price
+                        oldPrice
+                        mainImage
+                        images
+                        description
+                        rating
+                        views
+                        isEnabled
+                        categories(pagedParams: {pageSize: 9999}) @include(if: $withCategories) {
+                            id
+                            name
+                            slug
+                        }
+                    }
+                }
+            `,
+            variables: {
+                slug,
+                withCategories: withCategories ? withCategories : false
+            }
+        });
+        return res?.data?.product;
+    }
+
+    public getProductCategoryBySlug = async (slug: string, productsPagedParams?: TPagedParams<TProduct>): Promise<TProductCategory> => {
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetProductCategory($slug: String!, $productsPagedParams: PagedParamsInput!) {
+                    productCategory(slug: $slug) {
+                        id
+                        name
+                        products(pagedParams: $productsPagedParams) {
+                            id
+                            slug
+                            name
+                            pageTitle
+                            price
+                            oldPrice
+                            mainImage
+                        }
+                    }
+                }
+            `,
+            variables: {
+                slug,
+                productsPagedParams: productsPagedParams ? productsPagedParams : {}
+            }
+        });
+
+        return res?.data?.productCategory;
     }
 }
 
@@ -81,6 +179,14 @@ class RestAPIClient {
 
     public get = <T>(route: string, config?: AxiosRequestConfig | undefined): Promise<AxiosResponse<T>> => {
         return axios.get(`${this.baseUrl}/${route}`, config);
+    }
+
+    public getCmsConfig = async (): Promise<TCmsConfig> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/cms/config`);
+        } catch (e) { console.error('RestAPIClient::getCmsConfig', e) }
+        return res?.data;
     }
 
     public getPageConfig = async (pageRoute: string): Promise<TPageConfig> => {

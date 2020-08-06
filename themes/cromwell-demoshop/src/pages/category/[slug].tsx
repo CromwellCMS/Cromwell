@@ -1,5 +1,5 @@
 import React from 'react';
-import { TCromwellPage, TProductCategory, TGetStaticProps } from '@cromwell/core';
+import { TCromwellPage, TProductCategory, TGetStaticProps, TProduct } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
 import { CContainer, getGraphQLClient } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
@@ -8,6 +8,7 @@ import { Product } from '../../components/product/Product';
 import commonStyles from '../../styles/common.module.scss';
 //@ts-ignore
 import styles from '../../styles/pages/Category.module.scss';
+import { gql } from '@apollo/client';
 
 interface ProductProps {
     data?: {
@@ -44,28 +45,11 @@ export const getStaticProps: TGetStaticProps = async (context) => {
     // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
     console.log('CategoryThemePage::getStaticProps: slug', slug, 'context.params', context.params)
-    let data = null;
-    if (slug) {
+    let data: TProductCategory | null = null;
+    if (slug && typeof slug === 'string') {
         try {
-            data = await getGraphQLClient().request(
-                `query getProductCategory {
-                    productCategory(slug: "${slug}") {
-                      id
-                      name
-                      products(pagedParams: {
-                        pageSize: 20
-                      }) {
-                        id
-                        slug
-                        name
-                        pageTitle
-                        price
-                        oldPrice
-                        mainImage
-                      }
-                    }
-                  }
-            `);
+            data = await getGraphQLClient().
+                getProductCategoryBySlug(slug, { pageSize: 20 });
         } catch (e) {
             console.error('Product::getStaticProps', e)
         }

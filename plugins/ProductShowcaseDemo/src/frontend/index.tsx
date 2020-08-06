@@ -13,7 +13,7 @@ const ProductShowcaseDemo = (props: ProductShowcaseProps) => {
             {
                 props.products && props.products.map(p => (
                     <div key={p.id}>
-                        <Link href="/product/[slug]" as={`/product/${p.slug}`}><a>Name: {p.name}</a></Link>
+                        <Link href="/product/[slug]"><a>Name: {p.name}</a></Link>
                         <p>Price: {p.price}</p>
                         <h1>id: {p.id}</h1>
                     </div>
@@ -27,18 +27,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     let data = {};
     const limit = 20;
     try {
-        data = await getGraphQLClient().request(`
-            query getProducts {
-                ${GraphQLPaths.Product.getMany}(pagedParams: {pageNumber: 1, pageSize: ${limit}}) {
-                    id
-                    slug
-                    name
-                    pageTitle
-                    price
-                    mainImage
-                }
-            }
-        `);
+        data = await getGraphQLClient().getProducts({ pageSize: 10 })
     } catch (e) {
         console.error('ProductShowcaseDemo', e)
     }

@@ -13,14 +13,12 @@ import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Product.module.scss';
 
 interface ProductProps {
-    data?: {
-        product: TProduct;
-    };
+    product?: TProduct | null;
 }
 const Product: TCromwellPage<ProductProps> = (props) => {
     // console.log('ProductThemePage props', props);
     const router = useRouter();
-    const product = props.data ? props.data.product : undefined;
+    const product = props.product;
     const customTabs = getAppCustomConfigProp('product/customTabs');
     return (
         <Layout>
@@ -133,29 +131,14 @@ const Product: TCromwellPage<ProductProps> = (props) => {
 
 export default Product;
 
-export const getStaticProps: TGetStaticProps = async (context) => {
+export const getStaticProps: TGetStaticProps = async (context): Promise<ProductProps> => {
     // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
     console.log('ProductThemePage::getStaticProps: pid', slug, 'context.params', context.params)
-    let data = null;
-    if (slug) {
+    let data: TProduct | null = null;
+    if (slug && typeof slug === 'string') {
         try {
-            data = await getGraphQLClient().request(
-                `query getproduct {
-                    product(slug: "${slug}") {
-                        id
-                        slug
-                        name
-                        pageTitle
-                        price
-                        oldPrice
-                        mainImage
-                        images
-                        rating
-                        description
-                    }
-                }
-            `);
+            data = await getGraphQLClient().getProductBySlug(slug, false);
         } catch (e) {
             console.error('Product::getStaticProps', e)
         }
@@ -164,7 +147,7 @@ export const getStaticProps: TGetStaticProps = async (context) => {
     }
 
     return {
-        data: data
+        product: data
     }
 
 }
