@@ -13,12 +13,14 @@ import styles from './CGallery.module.scss';
 Swiper.use([Navigation, Pagination, Lazy, Thumbs, Zoom]);
 
 
-function useForceUpdate() {
-    const [value, setValue] = useState(0); // integer state
-    return () => setValue(value => ++value); // update the state to force render
+type TCGalleryProps = {
+    id: string;
+    className?: string;
+    settings?: TGallerySettings;
+    enableRerenders?: boolean
 }
 
-export class CGallery extends React.Component<{ id: string, className?: string, settings?: TGallerySettings, enableRerenders?: boolean }> {
+export class CGallery extends React.Component<TCGalleryProps> {
 
     private gallerySettings?: TGallerySettings;
     private blockRef?: React.RefObject<HTMLDivElement>;
@@ -26,19 +28,23 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
     private swiperThumbsId?: string;
     private height?: string;
     private galleryContainer?: HTMLElement | null;
-    private prevGallerySettings?: TGallerySettings;
     private swiper?: Swiper;
     private galleryThumbs?: Swiper;
     private primaryColor?: string = getStoreItem('appConfig')?.palette?.primaryColor;
 
-    shouldComponentUpdate(prev, next) {
+    shouldComponentUpdate(nextProps: TCGalleryProps) {
         if (this.swiperId) {
             const galleryContainer = document.getElementById(this.swiperId);
             if (galleryContainer) {
                 if (galleryContainer !== this.galleryContainer) return true;
             }
         }
-        if (this.props.enableRerenders) return true;
+        if (nextProps) {
+            if (nextProps.enableRerenders) return true;
+        } else {
+            if (this.props.enableRerenders) return true;
+        }
+
         return false;
     }
 
@@ -49,20 +55,21 @@ export class CGallery extends React.Component<{ id: string, className?: string, 
         this.updateGallery();
     }
 
+    // update or init
     private updateGallery = () => {
         const gallerySettings = this.gallerySettings;
         if (gallerySettings && this.swiperId) {
             const galleryContainer = document.getElementById(this.swiperId);
             if (galleryContainer) {
-                if (galleryContainer === this.galleryContainer) return;
-                this.prevGallerySettings = gallerySettings;
 
                 if (this.galleryContainer === galleryContainer && this.swiper) {
+                    // update
                     this.swiper.update();
                     if (this.galleryThumbs) this.galleryThumbs.update();
                     this.swiper.slideTo(0);
                     this.swiper.lazy.load();
                 } else {
+                    // init
                     const options: SwiperOptions = {
                         loop: gallerySettings.loop === false ? false : true,
                         lazy: {

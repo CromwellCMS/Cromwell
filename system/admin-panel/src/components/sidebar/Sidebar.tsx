@@ -69,7 +69,7 @@ function Sidebar() {
     };
     return (
         <div className={styles.Sidebar}>
-            {sideBarLinks.map(link => <SidebarLink data={link}
+            {sideBarLinks.map(link => <SidebarLink data={link} key={link.route}
                 toggleSubmenu={toggleSubmenu} expanded={expanded} />)}
         </div>
     )

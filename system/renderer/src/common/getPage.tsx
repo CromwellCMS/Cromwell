@@ -23,20 +23,20 @@ export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
     // const Page: any = importDynamicPage(pageName);
     const Page: any = importPage(pageName).default;
 
-    return function (props: TCromwellPageCoreProps): JSX.Element {
+    return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
         const { pluginsData, pageConfig, appCustomConfig, childStaticProps, cmsConfig, appConfig, pagesInfo, ...restProps } = props;
-        setStoreItem('pluginsData', pluginsData);
-        setStoreItem('pageConfig', pageConfig);
-        setStoreItem('cmsconfig', cmsConfig);
-        setStoreItem('appConfig', appConfig);
-        setStoreItem('appCustomConfig', appCustomConfig);
-        setStoreItem('pagesInfo', pagesInfo);
+        if (cmsConfig) setStoreItem('cmsconfig', cmsConfig);
+        if (pluginsData) setStoreItem('pluginsData', pluginsData);
+        if (pageConfig) setStoreItem('pageConfig', pageConfig);
+        if (appConfig) setStoreItem('appConfig', appConfig);
+        if (appCustomConfig) setStoreItem('appCustomConfig', appCustomConfig);
+        if (pagesInfo) setStoreItem('pagesInfo', pagesInfo);
+
         const forceUpdate = useForceUpdate();
         const onCurrencyChange = (currency: string) => {
             forceUpdate();
         }
         setStoreItem('onCurrencyChange', onCurrencyChange);
-
 
         // Head SEO/meta/etc props:
         let title;

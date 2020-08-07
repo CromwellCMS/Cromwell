@@ -27,6 +27,11 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                     {(!product && router && router.isFallback) && (
                         <LoadBox />
                     )}
+                    {(!product && !(router && router.isFallback)) && (
+                        <div className={styles.productNotFound}>
+                            <h3>Product not found</h3>
+                        </div>
+                    )}
                     {product && (<>
                         <CContainer id="product_0" className={styles.mainBlock}>
                             <CContainer id="product_0" className={styles.imageAndCaptionBlock}>
@@ -48,7 +53,8 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                                         },
                                         zoom: {
                                             zoomOnHover: true
-                                        }
+                                        },
+                                        backgroundSize: 'contain'
                                     }} />
                                 </CContainer>
                                 <CContainer id="product_3" className={styles.captionBlock}>

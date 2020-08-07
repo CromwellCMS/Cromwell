@@ -6,14 +6,15 @@ import { pluginsDataFetcher } from './pluginsDataFetcher';
 export const createGetStaticProps = (pageName: BasePageNames | string) => {
     return async function (context: StaticPageContext): Promise<
         { props: TCromwellPageCoreProps; unstable_revalidate?: number }> {
+        const apiClient = getRestAPIClient();
         const timestamp = Date.now();
         const childStaticProps = await getThemeStaticProps(pageName, context);
         const pluginsData = await pluginsDataFetcher(pageName, context);
-        const pageConfig = await getRestAPIClient().getPageConfig(pageName);
-        const appConfig = await getRestAPIClient().getAppConfig();
-        const cmsConfig = await getRestAPIClient().getCmsConfig();
-        const appCustomConfig = await getRestAPIClient().getAppCustomConfig();
-        const pagesInfo = await getRestAPIClient().getPagesInfo();
+        const pageConfig = await apiClient.getPageConfig(pageName);
+        const appConfig = await apiClient.getAppConfig();
+        const cmsConfig = await apiClient.getCmsConfig();
+        const appCustomConfig = await apiClient.getAppCustomConfig();
+        const pagesInfo = await apiClient.getPagesInfo();
         const timestamp2 = Date.now();
 
         // if (context && context.params && context.params.slug) {
@@ -21,7 +22,6 @@ export const createGetStaticProps = (pageName: BasePageNames | string) => {
         // }
         console.log('getStaticProps for page: ' + pageName + ' with context: ', JSON.stringify(context));
         console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms')
-
         // console.log('pluginssData', pluginsData, 'childStaticProps', childStaticProps);
         return {
             props: {

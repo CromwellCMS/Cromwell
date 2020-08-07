@@ -8,6 +8,15 @@
         border-radius: 8px;
         overflow: hidden;
     }
+    .productNotFound {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+        height: 400px;
+        font-size: 30px;
+    }
+
     .mainBlock {
         display: flex;
         flex-direction: column;

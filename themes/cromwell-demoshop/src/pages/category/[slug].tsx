@@ -1,7 +1,7 @@
 import React from 'react';
 import { TCromwellPage, TProductCategory, TGetStaticProps, TProduct } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
-import { CContainer, getGraphQLClient } from '@cromwell/core-frontend';
+import { CContainer, getGraphQLClient, CList } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
 import { Product } from '../../components/product/Product';
 //@ts-ignore
@@ -11,13 +11,14 @@ import styles from '../../styles/pages/Category.module.scss';
 import { gql } from '@apollo/client';
 
 interface ProductProps {
-    data?: {
-        productCategory: TProductCategory;
-    };
+    data?: TProductCategory;
+    slug: string;
 }
 const ProductCategory: TCromwellPage<ProductProps> = (props) => {
     console.log('ProductThemePage props', props);
-    const category = props.data ? props.data.productCategory : undefined;
+    const category = props.data;
+    const client = getGraphQLClient();
+
     return (
         <Layout>
             <div className={commonStyles.content}>
@@ -27,11 +28,22 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
                     </div>
                     <div className={styles.main}>
                         <div className={styles.productList}>
-                            {category && category.products && category.products.map(p => {
-                                return (
-                                    <Product data={p} className={styles.product} key={p.id} />
-                                )
-                            })}
+                            <CList<TProduct>
+                                ListItem={(props) => <Product data={props.data} className={styles.product} key={props.data?.id} />}
+                                usePagination
+                                firstBatch={category?.products}
+                                useQueryPagination
+                                loader={async (pageNumber: number) => {
+                                    if (props.slug) {
+                                        const cat = await client.getProductCategoryBySlug(props.slug,
+                                            { pageSize: 20, pageNumber });
+                                        if (cat) return cat.products;
+                                    }
+                                }}
+                                cssClasses={{
+                                    page: styles.productList
+                                }}
+                            />
                         </div>
                     </div>
                 </div>
@@ -58,7 +70,8 @@ export const getStaticProps: TGetStaticProps = async (context) => {
     }
 
     return {
-        data: data
+        slug,
+        data
     }
 
 }

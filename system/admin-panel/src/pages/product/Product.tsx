@@ -61,6 +61,7 @@ const ProductPage = () => {
     const client = getGraphQLClient();
     const [product, setProdData] = useState<TProduct | null>(null);
     const [isLoading, setIsloading] = useState(false);
+    const [canUpdateGallery, setCanUpdateGallery] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -78,13 +79,45 @@ const ProductPage = () => {
         if (product) {
             const prod: TProduct = Object.assign({}, product);
             (prod[prop] as any) = val;
-            setProdData(prod)
+            setProdData(prod);
         }
     }
 
-    const handleSave = () => {
+    const setMainImage = (idx: number) => {
+        if (product && product.images) {
+            const newMain = product.images[idx];
+            if (newMain && newMain !== product.mainImage) {
+                const prod: TProduct = Object.assign({}, product);
+                // Sort images to move mainImage into first item in the array
+                const imgs = [newMain, ...product.images.filter((src, i) => i !== idx)];
+                prod.images = imgs;
+                prod.mainImage = newMain;
+                setProdData(prod);
+                setCanUpdateGallery(true);
+                setTimeout(() => {
+                    setCanUpdateGallery(false);
+                }, 500);
+            }
+        }
+    }
+
+    const deleteImage = (idx: number) => {
+        if (product && product.images) {
+            const prod: TProduct = Object.assign({}, product);
+            // Sort images to move mainImage into first item in the array
+            prod.images = product.images.filter((val, i) => i !== idx);
+            setProdData(prod);
+            setCanUpdateGallery(true);
+            setTimeout(() => {
+                setCanUpdateGallery(false);
+            }, 500);
+            // product.mainImage = src;
+        }
+    }
+
+    const handleSave = async () => {
         if (product) {
-            const imput: TProductInput = {
+            const input: TProductInput = {
                 name: product.name,
                 categoryIds: product.categories ? product.categories.map(c => c.id) : [],
                 price: product.price,
@@ -92,7 +125,18 @@ const ProductPage = () => {
                 mainImage: product.mainImage,
                 images: product.images,
                 description: product.description,
+                slug: product.slug,
+                pageTitle: product.pageTitle,
+                isEnabled: product.isEnabled
             }
+            setIsloading(true);
+            try {
+                await client.updateProduct(product.id, input);
+                const prod = await client.getProductById(id, true);
+                setProdData(prod);
+            } catch (e) { console.log(e) }
+
+            setIsloading(false);
         }
     }
 
@@ -136,45 +180,47 @@ const ProductPage = () => {
                         }}
                     />
                     <div className={styles.imageBlock}>
-                        <CGallery id="CGallery" settings={{
-                            images: product.images ? product.images.map((src, id) => ({ src, id })) : [],
-                            height: '350px',
-                            slidesPerView: 3,
-                            showPagination: true,
-                            navigation: {},
-                            loop: false,
-                            backgroundSize: 'contain',
-                            components: {
-                                imgWrapper: (props) => {
-                                    const isPrimary = props.image.src === product.mainImage;
-                                    return (
-                                        <div className={styles.imageWrapper}>
-                                            <div className={styles.imageActions}>
-                                                <IconButton
-                                                    aria-label="make primary"
-                                                    onClick={() => { console.log('show more') }}
-                                                >
-                                                    {isPrimary ? <StarIcon /> : <StarBorderIcon />}
-                                                </IconButton>
-                                                <IconButton
-                                                    aria-label="change image"
-                                                    onClick={() => { console.log('show more') }}
-                                                >
-                                                    <EditIcon />
-                                                </IconButton>
-                                                <IconButton
-                                                    aria-label="delete image"
-                                                    onClick={() => { console.log('show more') }}
-                                                >
-                                                    <HighlightOffIcon />
-                                                </IconButton>
+                        <CGallery id="CGallery"
+                            enableRerenders={canUpdateGallery}
+                            settings={{
+                                images: product.images ? product.images.map((src, id) => ({ src, id })) : [],
+                                height: '350px',
+                                slidesPerView: 3,
+                                showPagination: true,
+                                navigation: {},
+                                loop: false,
+                                backgroundSize: 'contain',
+                                components: {
+                                    imgWrapper: (props) => {
+                                        const isPrimary = props.image.src === product.mainImage;
+                                        return (
+                                            <div className={styles.imageWrapper}>
+                                                <div className={styles.imageActions}>
+                                                    <IconButton
+                                                        aria-label="make primary"
+                                                        onClick={() => { setMainImage(props.image.id as number) }}
+                                                    >
+                                                        {isPrimary ? <StarIcon /> : <StarBorderIcon />}
+                                                    </IconButton>
+                                                    <IconButton
+                                                        aria-label="change image"
+                                                        onClick={() => { console.log('show more') }}
+                                                    >
+                                                        <EditIcon />
+                                                    </IconButton>
+                                                    <IconButton
+                                                        aria-label="delete image"
+                                                        onClick={() => { deleteImage(props.image.id as number) }}
+                                                    >
+                                                        <HighlightOffIcon />
+                                                    </IconButton>
+                                                </div>
+                                                {props.children}
                                             </div>
-                                            {props.children}
-                                        </div>
-                                    )
+                                        )
+                                    }
                                 }
-                            }
-                        }} />
+                            }} />
                     </div>
                     <TextField label="HTML Description" variant="outlined"
                         value={product.description || ''}
@@ -198,7 +244,7 @@ const ProductPage = () => {
                         size="large"
                         onClick={async () => {
                             setIsloading(true);
-
+                            handleSave();
 
                             setIsloading(false);
                         }}>

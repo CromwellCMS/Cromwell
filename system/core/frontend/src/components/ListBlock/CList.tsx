@@ -1,7 +1,7 @@
 import React from 'react'
 //@ts-ignore
 import styles from './CList.module.scss';
-import { TProduct, TPagedList, TPagedMeta } from '@cromwell/core';
+import { TProduct, TPagedList, TPagedMeta, isServer } from '@cromwell/core';
 import debounce from 'debounce';
 // import Alertify from 'alertify.js';
 
@@ -21,10 +21,16 @@ const getPageNumsAround = (currentPage: number, quantity: number, maxPageNum: nu
     }
     return pages;
 }
-const getPagedUrl = (pageNum: number): string => {
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('pageNumber', pageNum + '');
-    return window.location.origin + window.location.pathname + '?' + urlParams.toString();
+const getPagedUrl = (pageNum: number, pathname?: string): string | undefined => {
+    if (!isServer()) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('pageNumber', pageNum + '');
+        return window.location.pathname + '?' + urlParams.toString();
+    }
+    else {
+        return pathname ? pathname + `?pageNumber=${pageNum}` : undefined;
+    }
+
 }
 
 type TCssClasses = {
@@ -57,7 +63,10 @@ type TProps<DataType, ListItemProps> = {
     * Needed if dataList wasn't provided. Doesn't work with dataLst.
     * If returned data is TPagedList, then will use pagination. If returned data is an array, then it won't be called anymore
     */
-    loader?: (pageNum: number) => Promise<TPagedList<DataType>> | Promise<DataType[]> | undefined;
+    loader?: (pageNum: number) => Promise<TPagedList<DataType> | DataType[] | undefined | null> | undefined | null;
+
+    /** First batch / page. Can be used with "loader". Supposed to be used in SSR to prerender page  */
+    firstBatch?: TPagedList<DataType>;
 
     /** Max pages to render at screen. 10 by default */
     maxDomPages?: number;
@@ -92,6 +101,9 @@ type TProps<DataType, ListItemProps> = {
     cssClasses?: TCssClasses;
 
     icons?: TIcons;
+
+    /** window.location.pathname for SSR to prerender pagination links */
+    pathname?: string
 }
 type TState = {
     isLoading: boolean;
@@ -118,7 +130,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
     private maxPage: number = 1;
     private pageStatuses: ('deffered' | 'loading' | 'fetched' | 'failed')[] = [];
     private isPageLoading: boolean = false;
-
+    private isInitialized: boolean = false;
     private scrollBoxRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private wrapperRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
 
@@ -128,72 +140,18 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
         this.state = {
             isLoading: false
         };
-    }
 
-    componentDidMount() {
         this.getMetaInfo();
     }
 
-    private async getMetaInfo() {
-        if (this.props.loader) {
-            this.setState({ isLoading: true });
+    componentDidMount() {
 
-            if (this.props.useQueryPagination) {
-                const urlParams = new URLSearchParams(window.location.search);
-                let pageNumber: any = urlParams.get('pageNumber');
-                if (pageNumber) {
-                    pageNumber = parseInt(pageNumber);
-                    if (pageNumber && !isNaN(pageNumber)) {
-                        this.currentPageNum = pageNumber;
-                        this.minPageBound = pageNumber;
-                        this.maxPageBound = pageNumber;
-                    }
-                }
-            }
-
-            try {
-                const pagedData = await this.props.loader(this.currentPageNum);
-                if (pagedData) {
-                    if (!Array.isArray(pagedData) && pagedData.elements && pagedData.pagedMeta) {
-                        this.remoteRowCount = pagedData.pagedMeta.totalElements ? pagedData.pagedMeta.totalElements : 0;
-                        this.pageSize = pagedData.pagedMeta.pageSize;
-                        if (this.pageSize) {
-                            this.maxPage = Math.ceil(this.remoteRowCount / this.pageSize);
-                            for (let i = 1; i <= this.maxPage; i++) {
-                                this.pageStatuses[i] = 'deffered';
-                            }
-                        }
-                        this.pageStatuses[this.currentPageNum] = 'fetched';
-                        this.addElementsToList(pagedData.elements, this.currentPageNum);
-
-                    }
-                    if (Array.isArray(pagedData)) {
-                        this.canLoadMore = false;
-                        this.remoteRowCount = pagedData.length;
-                        this.addElementsToList(pagedData, this.currentPageNum);
-                    }
-
-                }
-            } catch (e) {
-                console.log(e);
-            }
-            this.setState({
-                isLoading: false
-            });
-        }
-        else if (this.props.dataList) {
-            this.remoteRowCount = this.props.dataList.length;
-            this.canLoadMore = false;
-            this.forceUpdate();
-        }
-    }
-
-    private addElementsToList(data: DataType[], pageNum: number) {
-        this.dataList[pageNum] = data;
-        this.updateList();
     }
 
     componentDidUpdate(prevProps: TProps<DataType, ListItemProps>, prevState: TState) {
+        if (!this.isInitialized) {
+            this.getMetaInfo();
+        }
 
         if (this.props.useAutoLoading && this.scrollBoxRef.current && this.wrapperRef.current) {
             this.wrapperRef.current.style.minHeight = this.scrollBoxRef.current.clientHeight - 20 + 'px';
@@ -207,6 +165,96 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
         };
         this.onScroll();
     }
+
+    private getMetaInfo() {
+
+        if (this.props.dataList) {
+            this.parseFirstBatchArray(this.props.dataList);
+        }
+
+        if (!this.props.dataList && this.props.loader) {
+
+            if (this.props.useQueryPagination && !isServer()) {
+                const urlParams = new URLSearchParams(window.location.search);
+                let pageNumber: any = urlParams.get('pageNumber');
+                if (pageNumber) {
+                    pageNumber = parseInt(pageNumber);
+                    if (pageNumber && !isNaN(pageNumber)) {
+                        this.currentPageNum = pageNumber;
+                        this.minPageBound = pageNumber;
+                        this.maxPageBound = pageNumber;
+                    }
+                }
+            }
+
+            if (this.props.firstBatch) {
+                // Parse firstBatch
+                this.parseFirstBatchPaged(this.props.firstBatch);
+            }
+            else {
+                // Load firstBatch
+                this.fetchFirstBatch();
+            }
+        }
+    }
+
+    private fetchFirstBatch = async () => {
+        if (this.props.loader) {
+            this.setState({ isLoading: true });
+
+            try {
+                const data = await this.props.loader(this.currentPageNum);
+                if (data && !Array.isArray(data) && data.elements && data.pagedMeta) {
+                    this.parseFirstBatchPaged(data);
+                }
+                if (data && Array.isArray(data)) {
+                    this.parseFirstBatchArray(data);
+                }
+
+            } catch (e) {
+                console.log(e);
+            }
+            this.setState({
+                isLoading: false
+            });
+        }
+    }
+
+    private parseFirstBatchPaged = (data: TPagedList<DataType>) => {
+        if (data.pagedMeta) {
+            this.remoteRowCount = (data.pagedMeta.totalElements) ? data.pagedMeta.totalElements : 0;
+            this.pageSize = data.pagedMeta.pageSize;
+
+        }
+        if (this.pageSize) {
+            this.maxPage = Math.ceil(this.remoteRowCount / this.pageSize);
+            for (let i = 1; i <= this.maxPage; i++) {
+                this.pageStatuses[i] = 'deffered';
+            }
+        }
+        this.pageStatuses[this.currentPageNum] = 'fetched';
+
+        if (data.elements) {
+            this.addElementsToList(data.elements, this.currentPageNum);
+            this.forceUpdate();
+        }
+        this.isInitialized = true;
+    }
+
+    private parseFirstBatchArray = (data: DataType[]) => {
+        this.canLoadMore = false;
+        this.remoteRowCount = data.length;
+        this.addElementsToList(data, this.currentPageNum);
+        this.isInitialized = true;
+        this.forceUpdate();
+    }
+
+
+    private addElementsToList(data: DataType[], pageNum: number) {
+        this.dataList[pageNum] = data;
+        this.updateList();
+    }
+
 
     private onScroll = debounce(() => {
         if (this.props.useAutoLoading) {
@@ -394,7 +442,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                                 key={l.pageNum}
                                 id={getPageId(l.pageNum)}>
                                 {l.elements.map((e, i) => (
-                                    <div className={styles.pageItem} key={i}>{e}</div>
+                                    e
                                 ))}
                             </div>
                         ))}
@@ -411,6 +459,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                     paginationButtonsNum={this.props.paginationButtonsNum}
                     cssClasses={this.props.cssClasses}
                     icons={this.props.icons}
+                    pathname={this.props.pathname}
                 />
             </div>
         );
@@ -430,6 +479,7 @@ class Pagination extends React.Component<{
     onPageScrolled: (currentPage: number) => void;
     cssClasses?: TCssClasses;
     icons?: TIcons;
+    pathname?: string;
 }> {
     private currentPage: number = this.props.inititalPage;
 
@@ -471,7 +521,7 @@ class Pagination extends React.Component<{
         const paginationButtonsNum = this.props.paginationButtonsNum ? this.props.paginationButtonsNum : 10;
         const pages = getPageNumsAround(currPage, paginationButtonsNum, this.props.maxPageNum);
         const links: JSX.Element[] = [
-            <a href={getPagedUrl(1)}
+            <a href={getPagedUrl(1, this.props.pathname)}
                 className={`${styles.pageLink}  ${this.props.cssClasses?.paginationArrowLink || ''} ${currPage === 1 ? paginationDisabledLinkClass : ''}`}
                 key={'first'}
                 onClick={(e) => {
@@ -483,7 +533,7 @@ class Pagination extends React.Component<{
                     <p className={styles.paginationArrow}>⇤</p>
                 )}
             </a>,
-            <a href={currPage > 1 ? getPagedUrl(currPage - 1) : undefined}
+            <a href={currPage > 1 ? getPagedUrl(currPage - 1, this.props.pathname) : undefined}
                 className={`${styles.pageLink}  ${this.props.cssClasses?.paginationArrowLink || ''} ${currPage === 1 ? paginationDisabledLinkClass : ''}`}
                 key={'back'}
                 onClick={(e) => {
@@ -498,7 +548,7 @@ class Pagination extends React.Component<{
                 )}
             </a>,
             ...pages.map(p => (
-                <a href={p === currPage ? undefined : getPagedUrl(p)}
+                <a href={p === currPage ? undefined : getPagedUrl(p, this.props.pathname)}
                     className={`${styles.pageLink} ${p === currPage ? `${styles.activePageLink} ${this.props.cssClasses?.paginationActiveLink || ''}` : ''} ${this.props.cssClasses?.paginationLink || ''}`}
                     onClick={(e) => {
                         e.preventDefault();
@@ -521,7 +571,7 @@ class Pagination extends React.Component<{
                     <p className={styles.paginationArrow}>￫</p>
                 )}
             </a>,
-            <a href={getPagedUrl(this.props.maxPageNum)}
+            <a href={getPagedUrl(this.props.maxPageNum, this.props.pathname)}
                 className={`${styles.pageLink}  ${this.props.cssClasses?.paginationArrowLink || ''} ${currPage === this.props.maxPageNum ? paginationDisabledLinkClass : ''}`}
                 key={'last'}
                 onClick={(e) => {
