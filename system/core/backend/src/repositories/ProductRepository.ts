@@ -35,27 +35,40 @@ export class ProductRepository extends Repository<Product> {
         return product;
     }
 
+    async handleProductInput(product: Product, input: TProductInput) {
+        product.name = input.name;
+        product.price = input.price;
+        product.oldPrice = input.oldPrice;
+        product.mainImage = input.mainImage;
+        product.images = input.images;
+        product.description = input.description;
+        product.isEnabled = input.isEnabled;
+        product.pageTitle = input.pageTitle;
+        product.slug = input.slug;
+        if (input.categoryIds) {
+            product.categories = await getCustomRepository(ProductCategoryRepository)
+                .getProductCategoriesById(input.categoryIds);
+        }
+
+        // Move mainImage into first item in the array if it is not
+        if (product.images && product.images.length > 0 && product.mainImage && product.images[0] !== product.mainImage) {
+            const imgs = [...product.images];
+            const index = imgs.indexOf(product.mainImage);
+            if (index > -1) {
+                imgs.splice(index, 1);
+                product.images = [product.mainImage, ...imgs]
+            }
+        }
+        // Set mainImage from array if it hasn't been set
+        if (!product.mainImage && product.images && product.images.length > 0) {
+            product.mainImage = product.images[0];
+        }
+    }
 
     async createProduct(createProduct: TProductInput): Promise<TProduct> {
         let product = new Product();
-        product.name = createProduct.name;
-        product.price = createProduct.price;
-        product.oldPrice = createProduct.oldPrice;
-        product.mainImage = createProduct.mainImage;
-        product.images = createProduct.images;
-        product.description = createProduct.description;
-        product.isEnabled = createProduct.isEnabled;
-        product.pageTitle = createProduct.pageTitle;
-        product.slug = createProduct.slug;
-        if (createProduct.categoryIds) {
-            product.categories = await getCustomRepository(ProductCategoryRepository)
-                .getProductCategoriesById(createProduct.categoryIds);
-        }
 
-        // Sort images to move mainImage into first item in the array
-        if (product.images) {
-            product.images = product.images.sort((a, b) => a === product.mainImage ? -1 : 1)
-        }
+        await this.handleProductInput(product, createProduct);
 
         product = await this.save(product);
         if (!product.slug) {
@@ -75,24 +88,7 @@ export class ProductRepository extends Repository<Product> {
         });
         if (!product) throw new Error(`Product ${id} not found!`);
 
-        product.name = updateProduct.name;
-        product.price = updateProduct.price;
-        product.oldPrice = updateProduct.oldPrice;
-        product.mainImage = updateProduct.mainImage;
-        product.images = updateProduct.images;
-        product.description = updateProduct.description;
-        product.isEnabled = updateProduct.isEnabled;
-        product.pageTitle = updateProduct.pageTitle;
-        product.slug = updateProduct.slug ? updateProduct.slug : product.id;
-        if (updateProduct.categoryIds) {
-            product.categories = await getCustomRepository(ProductCategoryRepository)
-                .getProductCategoriesById(updateProduct.categoryIds);
-        }
-
-        // Sort images to move mainImage into first item in the array
-        if (product.images && product.mainImage) {
-            product.images = product.images.sort((a, b) => a === product!.mainImage ? -1 : 1)
-        }
+        await this.handleProductInput(product, updateProduct);
 
         product = await this.save(product);
 
@@ -114,11 +110,11 @@ export class ProductRepository extends Repository<Product> {
         return true;
     }
 
-    async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>): Promise<TProduct[]> {
+    async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         const qb = this.createQueryBuilder(DBTableNames.Product);
         applyInnerJoinById(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
-        applyGetPaged(qb, DBTableNames.Product, params);
-        return await qb.getMany();
+        const paged = await getPaged(qb, DBTableNames.Product, params);
+        return paged;
     }
 
     private buildProductPage(product: Product) {

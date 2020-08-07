@@ -53,8 +53,9 @@ const ProductShowcase = (props: ProductShowcaseProps) => {
             virtual: {
                 slides: (function () {
                     if (props.productShowcase && props.productShowcase.products &&
-                        Array.isArray(props.productShowcase.products)) {
-                        return props.productShowcase.products;
+                        props.productShowcase.products.elements &&
+                        Array.isArray(props.productShowcase.products.elements)) {
+                        return props.productShowcase.products.elements;
                     }
                     else return [];
                 }()),
@@ -100,38 +101,39 @@ const ProductShowcase = (props: ProductShowcaseProps) => {
 }
 
 export const getStaticProps = async (context: StaticPageContext): Promise<ProductShowcaseProps> => {
-    let data = {};
+    let data;
     const limit = 20;
     try {
-        const products = await getGraphQLClient().query({
+        data = await getGraphQLClient().query({
             query: gql`
                 query productShowcase {
                     productShowcase(slug: "1") {
                         id
                         name
                         products(pagedParams: {pageNumber: 1, pageSize: 10}) {
-                            id
-                            slug
-                            name
-                            price
-                            oldPrice
-                            mainImage
-                    }
+                            pagedMeta {
+                                pageSize
+                            }
+                            elements {
+                                id
+                                slug
+                                name
+                                price
+                                oldPrice
+                                mainImage
+                            }
+                        }
                     }
                 }
             `
         });
 
-
-        data = {
-            productShowcase: products?.data?.productShowcase,
-        }
     } catch (e) {
         console.error('ProductShowcase::getStaticProps', e)
     }
 
     return {
-        ...data
+        productShowcase: data?.data?.productShowcase
     }
 }
 

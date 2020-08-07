@@ -35,19 +35,8 @@
             "modifications": [
                 {
                     "type": "plugin",
-                    "componentId": "111",
-                    "destinationComponentId": "3",
-                    "destinationPosition": "inside",
-                    "isVirtual": true,
-                    "styles": "background: red;",
-                    "plugin": {
-                        "pluginName": "ProductShowcaseDemo"
-                    }
-                },
-                {
-                    "type": "plugin",
                     "componentId": "112",
-                    "destinationComponentId": "111",
+                    "destinationComponentId": "3",
                     "destinationPosition": "after",
                     "isVirtual": true,
                     "plugin": {

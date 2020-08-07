@@ -276,7 +276,7 @@ export type TProductCategory = TBasePageEntityType & {
     // DB parent
     parent: TProductCategory;
     // Products in category
-    products: TProduct[];
+    products: TPagedList<TProduct>;
 }
 
 export type ProductCategoryInputType = Omit<TProductCategory, DBAuxiliaryColumns | 'children' | 'parent' | 'products'> & {

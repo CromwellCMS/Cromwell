@@ -1,7 +1,7 @@
 import { Entity, Column } from "typeorm";
 import { Tree, TreeChildren, TreeParent, TreeLevelColumn, ManyToMany } from "typeorm";
 import { ObjectType, Field } from "type-graphql";
-import { TProductCategory, TProduct } from '@cromwell/core';
+import { TProductCategory, TProduct, TPagedList } from '@cromwell/core';
 import { BasePageEntity } from './BasePageEntity';
 import { Product } from './Product';
 
@@ -34,5 +34,5 @@ export class ProductCategory extends BasePageEntity implements TProductCategory 
     // level: number;
 
     @ManyToMany(type => Product, question => question.categories)
-    products: TProduct[];
+    products: TPagedList<TProduct>;
 }

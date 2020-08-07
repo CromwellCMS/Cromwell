@@ -5,12 +5,12 @@ import { ProductShowcaseReviewsType } from '../backend/entities/ProductShowcaseR
 import { useStyles } from './styles';
 import { gql } from '@apollo/client';
 
-interface ProductShowcaseProps {
+interface CustomerReviewsProps {
     productShowcase?: TProductCategory;
     productShowcaseReviews?: ProductShowcaseReviewsType[];
 }
 
-const ProductShowcase = (props: ProductShowcaseProps) => {
+const CustomerReviews = (props: CustomerReviewsProps) => {
     const classes = useStyles();
     // console.log('ProductShowcase props', props)
     return (
@@ -43,7 +43,7 @@ const ProductShowcase = (props: ProductShowcaseProps) => {
     )
 }
 
-export const getStaticProps = async (context: StaticPageContext): Promise<ProductShowcaseProps> => {
+export const getStaticProps = async (context: StaticPageContext): Promise<CustomerReviewsProps> => {
     let data = {};
     const limit = 20;
     try {
@@ -82,7 +82,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
             productShowcaseReviews: reviews?.data?.productShowcaseReviews
         }
     } catch (e) {
-        console.error('ProductShowcase::getStaticProps', e)
+        console.error('CustomerReviews::getStaticProps', e)
     }
 
     return {
@@ -90,4 +90,4 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     }
 }
 
-export default FrontendPlugin<ProductShowcaseProps>(ProductShowcase, 'ProductShowcase');
+export default FrontendPlugin<CustomerReviewsProps>(CustomerReviews, 'CustomerReviews');

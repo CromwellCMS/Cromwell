@@ -11,7 +11,8 @@ export * from './components/Head/Head';
 export * from './HOCs/FrontendPlugin';
 export * from './constants';
 export * from './currency';
-export * from './apiClient';
+export * from './api/CGraphQLClient';
+export * from './api/CRestAPIClient';
 
 //@ts-ignore
 import CromwellBlockStyles from './components/CromwellBlock/CromwellBlock.module.scss';

@@ -5,6 +5,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from "autoprefixer";
 import alias from '@rollup/plugin-alias';
+import del from 'rollup-plugin-delete';
 // import image from '@rollup/plugin-image';
 // import imageInliner from 'postcss-image-inliner';
 // import postcssAssets from 'postcss-assets';
@@ -21,6 +22,7 @@ export default {
     ],
     external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/app', 'next/router'],
     plugins: [
+        del({ targets: './es/*' }),
         // image(),
         postcss({
             plugins: [

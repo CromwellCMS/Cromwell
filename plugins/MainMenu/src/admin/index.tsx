@@ -87,8 +87,8 @@ export default function index() {
 }
 
 function useForceUpdate() {
-    const [value, setValue] = useState(0); // integer state
-    return () => setValue(value => ++value); // update the state to force render
+    const [value, setValue] = useState(0);
+    return () => setValue(value => ++value);
 }
 
 const Item = (props: { i: number, updateList: () => void }) => {

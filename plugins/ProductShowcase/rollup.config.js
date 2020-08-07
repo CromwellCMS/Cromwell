@@ -2,6 +2,7 @@ import autoExternal from "rollup-plugin-auto-external";
 import typescript from "rollup-plugin-typescript2";
 import commonjs from "@rollup/plugin-commonjs";
 import resolve from "@rollup/plugin-node-resolve";
+import del from 'rollup-plugin-delete';
 
 
 export default {
@@ -20,6 +21,7 @@ export default {
     //         console.log(id);
     // },
     plugins: [
+        del({ targets: './es/*' }),
         autoExternal(),
         resolve(),
         commonjs(),

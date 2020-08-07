@@ -3,6 +3,7 @@ import resolve from "@rollup/plugin-node-resolve";
 import typescript from "rollup-plugin-typescript2";
 import sass from "rollup-plugin-sass";
 import commonjs from "@rollup/plugin-commonjs";
+import del from 'rollup-plugin-delete';
 
 
 export default {
@@ -21,6 +22,7 @@ export default {
         }
     ],
     plugins: [
+        del({ targets: './es/*' }),
         autoExternal(),
         resolve(),
         commonjs(),

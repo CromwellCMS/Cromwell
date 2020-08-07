@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { TProduct, StaticPageContext, TDBEntity, GraphQLPaths } from '@cromwell/core';
+import { TProduct, StaticPageContext, TDBEntity, GraphQLPaths, TPagedList } from '@cromwell/core';
 import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
 
 interface ProductShowcaseProps {
-    products?: TProduct[];
+    products?: TPagedList<TProduct>;
 }
 
 const ProductShowcaseDemo = (props: ProductShowcaseProps) => {
@@ -11,7 +11,7 @@ const ProductShowcaseDemo = (props: ProductShowcaseProps) => {
         <div style={{ backgroundColor: "#999" }}>
             <p>ProductShowcaseDemo::Showcase Time!</p>
             {
-                props.products && props.products.map(p => (
+                (props.products && props.products.elements) && props.products.elements.map(p => (
                     <div key={p.id}>
                         <Link href="/product/[slug]"><a>Name: {p.name}</a></Link>
                         <p>Price: {p.price}</p>

@@ -4,7 +4,7 @@ import { ProductShowcaseReviews } from '../entities/ProductShowcaseReviews';
 
 
 @Resolver(ProductShowcaseReviews)
-export default class ProductShowcaseResolver {
+export default class ReviewsResolver {
 
     @Query(() => [ProductShowcaseReviews])
     async productShowcaseReviews() {

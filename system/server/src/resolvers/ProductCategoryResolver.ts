@@ -1,12 +1,12 @@
 import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from "type-graphql";
-import { ProductCategory } from '@cromwell/core-backend';
+import { ProductCategory, PagedProduct } from '@cromwell/core-backend';
 import { CreateProductCategory } from '@cromwell/core-backend';
 import { UpdateProductCategory } from '@cromwell/core-backend';
 import { PagedParamsInput } from '@cromwell/core-backend';
 import { ProductCategoryRepository } from '@cromwell/core-backend';
 import { ProductRepository } from '@cromwell/core-backend';
 import { getCustomRepository } from "typeorm";
-import { TProduct, TProductCategory } from "@cromwell/core";
+import { TProduct, TProductCategory, TPagedList } from "@cromwell/core";
 import { Product } from '@cromwell/core-backend';
 
 
@@ -45,8 +45,8 @@ export class ProductCategoryResolver {
         return await this.repo.deleteProductCategory(id);
     }
 
-    @FieldResolver(() => [Product])
-    async products(@Root() productCategory: ProductCategory, @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TProduct[]> {
+    @FieldResolver(() => PagedProduct)
+    async products(@Root() productCategory: ProductCategory, @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {
         return await getCustomRepository(ProductRepository).getProductsFromCategory(productCategory.id, pagedParams);
     }
 
