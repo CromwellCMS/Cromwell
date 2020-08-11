@@ -1,6 +1,12 @@
-import { TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute, TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory, TProductInput } from '@cromwell/core';
-import { gql, ApolloClient, InMemoryCache, createHttpLink, NormalizedCacheObject, QueryOptions, ApolloQueryResult } from '@apollo/client';
-
+import {
+    TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute,
+    TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory,
+    TProductInput, TAttribute
+} from '@cromwell/core';
+import {
+    gql, ApolloClient, InMemoryCache, createHttpLink, NormalizedCacheObject,
+    QueryOptions, ApolloQueryResult
+} from '@apollo/client';
 
 class CGraphQLClient {
 
@@ -13,11 +19,9 @@ class CGraphQLClient {
             uri: this.baseUrl,
         });
         this.apolloClient = new ApolloClient({
-            // Provide required constructor fields
             cache: cache,
             link: link,
             name: 'cromwell-core-client',
-            version: '1.0',
             queryDeduplication: false,
             defaultOptions: {
                 watchQuery: {
@@ -31,57 +35,78 @@ class CGraphQLClient {
         this.apolloClient.query(options);
 
 
+    public PagedMetaFragment = gql`
+        fragment PagedMetaFragment on PagedMeta {
+            pageNumber
+            pageSize
+            totalPages
+            totalElements
+        }
+    `
+
     // <Product>
 
-    public fullProductFragment = gql`
-    fragment ProductFragment on Product {
-        id
-        slug
-        pageTitle
-        name
-        price
-        oldPrice
-        mainImage
-        images
-        description
-        rating
-        views
-        isEnabled
-        categories(pagedParams: {pageSize: 9999}) @include(if: $withCategories) {
+    public ProductFragment = gql`
+        fragment ProductFragment on Product {
             id
-            name
             slug
+            pageTitle
+            name
+            price
+            oldPrice
+            mainImage
+            images
+            description
+            rating
+            views
+            attributes {
+                key
+                values {
+                    value
+                    productVariant {
+                            name
+                        price
+                        oldPrice
+                        mainImage
+                        images
+                        description
+                    }
+                }
+            }
+            isEnabled
+            categories(pagedParams: {pageSize: 9999}) @include(if: $withCategories) {
+                id
+                name
+                slug
+            }
         }
-    }
-`
+    `
 
-    public getProducts = async (pagedParams?: TPagedParams<TProduct>, withCategories?: boolean): Promise<TPagedList<TProduct>> => {
+    public getProducts = async (pagedParams?: TPagedParams<TProduct>, withCategories: boolean = false): Promise<TPagedList<TProduct>> => {
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProducts($pagedParams: PagedParamsInput!, $withCategories: Boolean!) {
                     products(pagedParams: $pagedParams) {
                         pagedMeta {
-                            pageNumber
-                            pageSize
-                            totalPages
-                            totalElements
+                            ...PagedMetaFragment
                         }
                         elements {
                             ...ProductFragment
                         }
                     }
                 }
-                ${this.fullProductFragment}
+                ${this.ProductFragment}
+                ${this.PagedMetaFragment}
             `,
             variables: {
                 pagedParams: pagedParams ? pagedParams : {},
-                withCategories: withCategories ? withCategories : false
+                withCategories
             }
         })
         return res?.data?.products;
     }
 
-    public getProductById = async (productId: number, withCategories?: boolean): Promise<TProduct> => {
+    public getProductById = async (productId: number, withCategories: boolean = false): Promise<TProduct> => {
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductById($productId: String!, $withCategories: Boolean!) {
@@ -89,17 +114,17 @@ class CGraphQLClient {
                         ...ProductFragment
                     }
                 }
-                ${this.fullProductFragment}
+                ${this.ProductFragment}
             `,
             variables: {
                 productId,
-                withCategories: withCategories ? withCategories : false
+                withCategories
             }
         });
         return res?.data?.getProductById;
     }
 
-    public getProductBySlug = async (slug: string, withCategories?: boolean): Promise<TProduct> => {
+    public getProductBySlug = async (slug: string, withCategories: boolean = false): Promise<TProduct> => {
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductBySlug($slug: String!, $withCategories: Boolean!) {
@@ -107,17 +132,17 @@ class CGraphQLClient {
                         ...ProductFragment
                     }
                 }
-                ${this.fullProductFragment}
+                ${this.ProductFragment}
             `,
             variables: {
                 slug,
-                withCategories: withCategories ? withCategories : false
+                withCategories
             }
         });
         return res?.data?.product;
     }
 
-    public updateProduct = async (id: string, product: TProductInput, withCategories?: boolean) => {
+    public updateProduct = async (id: string, product: TProductInput, withCategories: boolean = false) => {
         const res = await this.apolloClient.mutate({
             mutation: gql`
                 mutation coreUpdateProduct($id: String!, $data: UpdateProduct!, $withCategories: Boolean!) {
@@ -125,16 +150,35 @@ class CGraphQLClient {
                         ...ProductFragment
                     }
                 }
-                ${this.fullProductFragment}
+                ${this.ProductFragment}
             `,
             variables: {
                 id,
                 data: product,
-                withCategories: withCategories ? withCategories : false
+                withCategories
             }
         });
         return res?.data?.updateProduct;
     }
+
+    public createProduct = async (product: TProductInput, withCategories: boolean = false) => {
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreCreateProduct($data: CreateProduct!, $withCategories: Boolean!) {
+                    createProduct(id: $id, data: $data) {
+                        ...ProductFragment
+                    }
+                }
+                ${this.ProductFragment}
+            `,
+            variables: {
+                data: product,
+                withCategories: withCategories
+            }
+        });
+        return res?.data?.createProduct;
+    }
+
 
     // </Product>
 
@@ -149,10 +193,7 @@ class CGraphQLClient {
                         name
                         products(pagedParams: $productsPagedParams) {
                             pagedMeta {
-                                pageNumber
-                                pageSize
-                                totalPages
-                                totalElements
+                                ...PagedMetaFragment
                             }
                             elements {
                                 ...ProductFragment
@@ -160,7 +201,8 @@ class CGraphQLClient {
                         }
                     }
                 }
-                ${this.fullProductFragment}
+                ${this.ProductFragment}
+                ${this.PagedMetaFragment}
             `,
             variables: {
                 slug,
@@ -174,6 +216,85 @@ class CGraphQLClient {
 
 
     // </ProductCategory>
+
+    // <Attribute>
+
+    public AttributeFragment = gql`
+       fragment AttributeFragment on Attribute {
+            key
+            values
+            type
+       }
+   `
+
+    public getAttributes = async (): Promise<TAttribute[]> => {
+        const res = await this.apolloClient.query({
+            query: gql`
+               query coreGetAttributes {
+                    attributes {
+                        ...AttributeFragment
+                    }
+               }
+               ${this.AttributeFragment}
+           `
+        })
+        return res?.data?.attributes;
+    }
+
+    public getAttributeById = async (attributeId: number): Promise<TAttribute> => {
+        const res = await this.apolloClient.query({
+            query: gql`
+               query coreGetAttributeById($attributeId: String!) {
+                    getAttribute(id: $attributeId) {
+                       ...AttributeFragment
+                    }           
+               }
+               ${this.AttributeFragment}
+           `,
+            variables: {
+                attributeId
+            }
+        });
+        return res?.data?.getAttribute;
+    }
+
+    public updateAttribute = async (id: string, attribute: TAttribute) => {
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+               mutation coreUpdateAttribute($id: String!, $data: AttributeInput!) {
+                    updateAttribute(id: $id, data: $data) {
+                       ...AttributeFragment
+                   }
+               }
+               ${this.AttributeFragment}
+           `,
+            variables: {
+                id,
+                data: attribute,
+            }
+        });
+        return res?.data?.updateAttribute;
+    }
+
+    public createAttribute = async (attribute: TAttribute) => {
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+               mutation coreCreateAttribute($data: AttributeInput!, $withCategories: Boolean!) {
+                   createAttribute(id: $id, data: $data) {
+                       ...AttributeFragment
+                   }
+               }
+               ${this.AttributeFragment}
+           `,
+            variables: {
+                data: attribute,
+            }
+        });
+        return res?.data?.createAttribute;
+    }
+
+
+    // </Attribute>
 
 
 }

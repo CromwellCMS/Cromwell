@@ -20,6 +20,7 @@ import { AuthorResolver } from './resolvers/AuthorResolver';
 import { PostResolver } from './resolvers/PostResolver';
 import { ProductCategoryResolver } from './resolvers/ProductCategoryResolver';
 import { ProductResolver } from './resolvers/ProductResolver';
+import { AttributeResolver } from './resolvers/AttributeResolver';
 
 setStoreItem('rebuildPage', rebuildPage);
 const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
@@ -42,10 +43,11 @@ async function apiServer(): Promise<void> {
     createConnection(connectionOptions);
     const schema = await buildSchema({
         resolvers: [
-            PostResolver,
+            AttributeResolver,
             AuthorResolver,
-            ProductResolver,
+            PostResolver,
             ProductCategoryResolver,
+            ProductResolver,
             ..._pluginsResolvers
         ],
         dateScalarMode: "isoDate"

@@ -6,7 +6,7 @@ import { UpdateProduct } from '../inputs/UpdateProduct';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { applyGetPaged, applyInnerJoinById, getPaged } from './BaseQueries';
 import { getCustomRepository } from "typeorm";
-import { TPagedParams, TProduct, TPagedList, TProductInput } from '@cromwell/core';
+import { TPagedParams, TProduct, TPagedList, TProductInput, TProductFilter } from '@cromwell/core';
 import { DBTableNames, BasePagePaths } from '@cromwell/core';
 import { getStoreItem } from '@cromwell/core';
 
@@ -42,6 +42,7 @@ export class ProductRepository extends Repository<Product> {
         product.mainImage = input.mainImage;
         product.images = input.images;
         product.description = input.description;
+        product.attributes = input.attributes;
         product.isEnabled = input.isEnabled;
         product.pageTitle = input.pageTitle;
         product.slug = input.slug;
@@ -110,9 +111,12 @@ export class ProductRepository extends Repository<Product> {
         return true;
     }
 
-    async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
+    async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>, filterParams?: TProductFilter): Promise<TPagedList<TProduct>> {
         const qb = this.createQueryBuilder(DBTableNames.Product);
         applyInnerJoinById(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
+        if (filterParams) {
+            // if (filterParams.)
+        }
         const paged = await getPaged(qb, DBTableNames.Product, params);
         return paged;
     }

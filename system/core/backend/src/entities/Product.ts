@@ -3,11 +3,12 @@ import { ObjectType, Field, ID } from "type-graphql";
 import { TProduct, TProductCategory } from '@cromwell/core';
 import { BasePageEntity } from './BasePageEntity';
 import { ProductCategory } from './ProductCategory';
+import { AttributeInstance } from './AttributeInstance';
 
 @Entity()
 @ObjectType()
 export class Product extends BasePageEntity implements TProduct {
-    @Field(() => String)
+    @Field(type => String)
     @Column({ type: "varchar" })
     name: string;
 
@@ -15,7 +16,7 @@ export class Product extends BasePageEntity implements TProduct {
     @JoinTable()
     categories: TProductCategory[];
 
-    @Field(() => Number, { nullable: true })
+    @Field(type => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
     price?: number;
 
@@ -23,19 +24,31 @@ export class Product extends BasePageEntity implements TProduct {
     @Column({ type: "float", nullable: true })
     oldPrice?: number;
 
-    @Field(() => String, { nullable: true })
+    @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     mainImage?: string;
 
-    @Field(() => String, { nullable: true })
+    @Field(type => [String], { nullable: true })
     @Column({ type: "simple-array", nullable: true })
     images?: string[];
 
-    @Field(() => String, { nullable: true })
+    @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     description?: string;
 
-    @Field(() => Number, { nullable: true })
+    @Field(type => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
     rating: number;
+
+    @Field(type => [AttributeInstance], { nullable: true })
+    public get attributes(): AttributeInstance[] | undefined {
+        if (this.attributesJSON) return JSON.parse(this.attributesJSON);
+    }
+
+    public set attributes(data: AttributeInstance[] | undefined) {
+        if (data) this.attributesJSON = JSON.stringify(data);
+    }
+
+    @Column({ type: "varchar", nullable: true })
+    private attributesJSON?: string;
 }

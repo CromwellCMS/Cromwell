@@ -232,13 +232,14 @@ export type TDBEntity = keyof {
     Post;
     Product;
     ProductCategory;
+    Attribute;
 }
 
 export type GraphQLPathsType = { [K in TDBEntity]: TGraphQLNode };
 
 export type TGraphQLNode = {
     getOneById: string;
-    getOneBySlug: string;
+    getOneBySlug?: string;
     getMany: string;
     create: string;
     update: string;
@@ -301,6 +302,8 @@ export interface TProduct extends TBasePageEntityType {
     description?: string;
     // Rating 1-5
     rating?: number
+    // Custom attributes
+    attributes?: TAttributeInstance[];
 }
 
 export type TProductInput = Omit<TProduct, DBAuxiliaryColumns | 'categories' | 'rating'> & {
@@ -324,11 +327,16 @@ export type TPostInput = Omit<TProduct, DBAuxiliaryColumns>;
 
 
 export interface TAuthor extends TBasePageEntityType {
-
     id: string;
-
     name: string;
 }
+
+export type TAttribute = {
+    key: string;
+    values: string[];
+    type: 'radio' | 'checkbox';
+}
+
 
 export type TPagedParams<Entity> = {
     pageNumber?: number;
@@ -342,6 +350,31 @@ export type TPagedMeta = {
     pageSize?: number;
     totalPages?: number;
     totalElements?: number;
+}
+
+export type TAttributeInstance = {
+    key: string;
+    values: TAttributeInstanceValue[];
+}
+
+export type TAttributeInstanceValue = {
+    value: string;
+    productVariant?: TAttributeProductVariant;
+}
+
+export type TAttributeProductVariant = {
+    name?: string;
+    price?: number;
+    oldPrice?: number;
+    mainImage?: string;
+    images?: string[];
+    description?: string;
+}
+
+export type TProductFilter = {
+    minPrice?: number;
+    maxPrice?: number;
+    attributes?: TAttributeInstance[];
 }
 
 export type TPagedList<Entity> = {

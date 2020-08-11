@@ -37,13 +37,21 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         create: "createProductCategory",
         update: "updateProductCategory",
         delete: "deleteProductCategory"
+    },
+    Attribute: {
+        getOneById: "getAttribute",
+        getMany: "getAttributes",
+        create: "createAttribute",
+        update: "updateAttribute",
+        delete: "deleteAttribute"
     }
 }
 
 export const DBTableNames: { [K in TDBEntity]: string } = {
     Post: 'post',
     Product: 'product',
-    ProductCategory: 'product_category'
+    ProductCategory: 'product_category',
+    Attribute: 'attribute'
 }
 
 export const isServer = (): boolean => (typeof window === 'undefined');

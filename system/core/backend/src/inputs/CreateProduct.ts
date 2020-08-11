@@ -1,6 +1,7 @@
 import { InputType, Field, Int } from "type-graphql";
 import { TProductInput } from '@cromwell/core';
 import { BasePageInput } from './BasePageInput';
+import { AttributeInstance } from '../entities/AttributeInstance';
 
 @InputType({ description: "New Product data" })
 export class CreateProduct extends BasePageInput implements TProductInput {
@@ -24,5 +25,8 @@ export class CreateProduct extends BasePageInput implements TProductInput {
 
     @Field(() => String, { nullable: true })
     description: string;
+
+    @Field(() => [AttributeInstance], { nullable: true })
+    attributes?: AttributeInstance[];
 }
 
