@@ -17,7 +17,7 @@ type TCGalleryProps = {
     id: string;
     className?: string;
     settings?: TGallerySettings;
-    enableRerenders?: boolean
+    shouldComponentUpdate?: boolean;
 }
 
 export class CGallery extends React.Component<TCGalleryProps> {
@@ -40,12 +40,10 @@ export class CGallery extends React.Component<TCGalleryProps> {
             }
         }
         if (nextProps) {
-            if (nextProps.enableRerenders) return true;
-        } else {
-            if (this.props.enableRerenders) return true;
+            if (nextProps.shouldComponentUpdate === false) return false;
         }
 
-        return false;
+        return true;
     }
 
     componentDidMount() {
@@ -62,7 +60,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
             const galleryContainer = document.getElementById(this.swiperId);
             if (galleryContainer) {
 
-                if (this.galleryContainer === galleryContainer && this.swiper) {
+                if (this.galleryContainer === galleryContainer && this.swiper && this.swiper.update) {
                     // update
                     this.swiper.update();
                     if (this.galleryThumbs) this.galleryThumbs.update();

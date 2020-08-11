@@ -2,6 +2,7 @@
     position: relative;
     width: 100%;
     height: 100%;
+    padding-bottom: 150px;
 
     .header {
         width: 100%;
@@ -48,6 +49,52 @@
 
     .saveBtn {
         position: relative;
+        margin-top: 100px;
     }
+
+    .attributeBlock {
+        border: 1px solid #bbb;
+        border-radius: 5px;
+        margin: 10px 0;
+    }
+
+    .attributeHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding-left: 10px;
+        border-bottom: 1px solid #bbb;
+        
+    }
+
+    .tag {
+        font-size: 18px;
+        border: 1px solid #333;
+        padding: 2px 6px;
+        border-radius: 3px;
+    }
+
+    .attributeInstanceValue {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        min-width: 100px;
+    }
+
+    .editingProductVariant {
+        border: 1px solid #bbb;
+        margin: 10px;
+        border-radius: 5px;
+    }
+    .editingProductVariantCard {
+        padding: 10px;
+    }
+  
 }
 
+.newAttributesList {
+    background-color: #fff;
+}
+.newAttributeOption {
+    min-width: 130px;
+}

@@ -1,32 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import { TAttribute, TAttributeInstanceValue, TAttributeProductVariant, TProduct, TProductInput } from '@cromwell/core';
+import { CGallery, getGlobalCurrencySymbol, getGraphQLClient } from '@cromwell/core-frontend';
+import { Button, Fade, IconButton, MenuItem, Paper, Popper, TextField, Tooltip } from '@material-ui/core';
 import {
-    useParams
-} from "react-router-dom";
-import { TProduct, TPagedList, TProductInput } from '@cromwell/core';
-import styles from './Product.module.scss';
-import LoadBox from '../../components/loadBox/LoadBox';
-import {
-    createStyles, makeStyles, Theme, Card,
-    CardActionArea,
-    CardActions,
-    Collapse,
-    IconButton,
-    TextField,
-    MenuItem,
-    Button,
-    CircularProgress
-} from '@material-ui/core';
-import NumberFormat from 'react-number-format';
-import {
-    AddCircleOutline as AddCircleOutlineIcon,
-    Star as StarIcon,
-    StarBorder as StarBorderIcon,
+    DeleteForever as DeleteForeverIcon,
     Edit as EditIcon,
     HighlightOff as HighlightOffIcon,
-    OpenInNew as OpenInNewIcon
+    OpenInNew as OpenInNewIcon,
+    Star as StarIcon,
+    StarBorder as StarBorderIcon,
 } from '@material-ui/icons';
-import { getGraphQLClient, getGlobalCurrencySymbol, CGallery } from '@cromwell/core-frontend';
+import React, { useEffect, useState } from 'react';
+import NumberFormat from 'react-number-format';
+import { useParams } from 'react-router-dom';
 
+import LoadBox from '../../components/loadBox/LoadBox';
+import TransferList from '../../components/transferList/TransferList';
+import styles from './Product.module.scss';
 
 interface NumberFormatCustomProps {
     inputRef: (instance: NumberFormat | null) => void;
@@ -59,27 +48,298 @@ function NumberFormatCustom(props: NumberFormatCustomProps) {
 const ProductPage = () => {
     const { id } = useParams();
     const client = getGraphQLClient();
+    const [loadingProgress, setIsloading] = useState([false, false]);
     const [product, setProdData] = useState<TProduct | null>(null);
-    const [isLoading, setIsloading] = useState(false);
-    const [canUpdateGallery, setCanUpdateGallery] = useState(false);
+    const [attributes, setAttributes] = useState<TAttribute[]>([]);
+    const [popperAnchorEl, setPopperAnchorEl] = React.useState<HTMLButtonElement | null>(null);
+    const [popperOpen, setPopperOpen] = React.useState(false);
+
+    const [editingProductVariant, setEditingProductVariant] = React.useState<{
+        prodAttrIdx: number; value: string;
+    } | null>(null);
 
     useEffect(() => {
         (async () => {
-            setIsloading(true);
+            setIsloading(loadingProgress.slice().splice(0, 1, true));
             try {
                 const prod = await client.getProductById(id, true);
                 setProdData(prod);
             } catch (e) { console.log(e) }
 
-            setIsloading(false);
+            setIsloading(loadingProgress.slice().splice(0, 1, false));
+        })();
+
+        (async () => {
+            setIsloading(loadingProgress.slice().splice(1, 1, true));
+            try {
+                const attr = await client.getAttributes();
+                console.log('attr', attr);
+                setAttributes(attr);
+            } catch (e) { console.log(e) }
+
+            setIsloading(loadingProgress.slice().splice(1, 1, false));
         })();
     }, []);
 
+
+    const handleSave = async () => {
+        console.log('product', product)
+        if (product) {
+            const input: TProductInput = {
+                name: product.name,
+                categoryIds: product.categories ? product.categories.map(c => c.id) : [],
+                price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
+                oldPrice: typeof product.oldPrice === 'string' ? parseFloat(product.oldPrice) : product.oldPrice,
+                mainImage: product.mainImage,
+                images: product.images,
+                description: product.description,
+                slug: product.slug,
+                attributes: product.attributes ? product.attributes.map(attr => ({
+                    key: attr.key,
+                    values: attr.values ? attr.values.map(val => ({
+                        value: val.value,
+                        productVariant: val.productVariant ? {
+                            name: val.productVariant.name,
+                            price: typeof val.productVariant.price === 'string' ? parseFloat(val.productVariant.price) : val.productVariant.price,
+                            oldPrice: typeof val.productVariant.oldPrice === 'string' ? parseFloat(val.productVariant.oldPrice) : val.productVariant.oldPrice,
+                            mainImage: val.productVariant.mainImage,
+                            images: val.productVariant.images,
+                            description: val.productVariant.description
+                        } : undefined
+                    })) : []
+                })) : undefined,
+                pageTitle: product.pageTitle,
+                isEnabled: product.isEnabled
+            }
+            setIsloading(loadingProgress.slice().splice(0, 1, true));
+            try {
+                await client.updateProduct(product.id, input);
+                const prod = await client.getProductById(id, true);
+                setProdData(prod);
+            } catch (e) { console.log(e) }
+
+            setIsloading(loadingProgress.slice().splice(0, 1, false));
+        }
+    }
+
+    const isLoading = loadingProgress.some(i => Boolean(i));
+
+    const leftAttributesToAdd: TAttribute[] = [];
+
+    attributes.forEach(attr => {
+        if (product) {
+            let hasAttr = product.attributes ? product.attributes.some(a => a.key === attr.key) : false;
+            if (!hasAttr) {
+                leftAttributesToAdd.push(attr);
+            }
+        }
+    });
+
+    return (
+        <div className={styles.Product}>
+            {/* <h2>Edit product</h2> */}
+            <div className={styles.header}>
+                <p>Product id: {id}</p>
+                <Tooltip title="Open product page in new tab">
+                    <IconButton
+                        aria-label="open"
+                        onClick={() => { if (product) window.open(`http://localhost:4128/product/${product.id}`, '_blank'); }}
+                    >
+                        <OpenInNewIcon />
+                    </IconButton>
+                </Tooltip>
+            </div>
+            {isLoading && <LoadBox />}
+            {!isLoading && product && (
+                <>
+                    <ProductCard product={product} setProdData={setProdData} />
+                    <div className={styles.textField}>
+                        <h3 style={{ margin: '10px 0' }}>Attributes</h3>
+                        {product.attributes && attributes && (
+                            product.attributes.map((prodAttr, prodAttrIdx) => {
+                                let origAttr: TAttribute | undefined = undefined;
+                                for (const attr of attributes) {
+                                    if (attr.key === prodAttr.key) origAttr = attr;
+                                }
+                                if (origAttr) {
+                                    const leftValues = origAttr.values.filter(v => !prodAttr.values.some(pv => pv.value === v))
+                                    const rightValues = prodAttr.values.map(v => v.value);
+                                    return (
+                                        <div className={styles.attributeBlock}>
+                                            <div className={styles.attributeHeader}>
+                                                <p className={styles.tag}>{prodAttr.key}</p>
+                                                <Tooltip title="Delete attribute">
+                                                    <IconButton
+                                                        aria-label="delete attribute"
+                                                        onClick={() => {
+                                                            const prod: TProduct = JSON.parse(JSON.stringify(product));
+                                                            if (prod.attributes) {
+                                                                prod.attributes = prod.attributes.filter((a, i) => i !== prodAttrIdx);
+                                                                setProdData(prod);
+                                                            }
+                                                        }}
+                                                    >
+                                                        <DeleteForeverIcon />
+                                                    </IconButton>
+                                                </Tooltip>
+                                            </div>
+                                            <TransferList
+                                                left={leftValues}
+                                                setLeft={(val) => {
+                                                }}
+                                                right={rightValues}
+                                                itemComp={(props) => (
+                                                    <div className={styles.attributeInstanceValue}>
+                                                        <p>{props.value}</p>
+                                                        {rightValues.includes(props.value) && (
+                                                            <Tooltip title="Edit product variant">
+                                                                <IconButton
+                                                                    aria-label="edit product variant"
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        setEditingProductVariant({
+                                                                            prodAttrIdx,
+                                                                            value: props.value
+                                                                        })
+                                                                    }}
+                                                                >
+                                                                    <EditIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        )}
+                                                    </div>
+                                                )}
+                                                setRight={(val) => {
+                                                    const prod: TProduct = JSON.parse(JSON.stringify(product));
+                                                    const newVals: TAttributeInstanceValue[] = [];
+                                                    val.forEach(newVal => {
+                                                        if (prod.attributes) {
+                                                            let hasVal = false;
+                                                            prod.attributes[prodAttrIdx].values.forEach(prodVal => {
+                                                                if (prodVal.value === newVal) {
+                                                                    newVals.push(prodVal);
+                                                                    hasVal = true;
+                                                                }
+                                                            })
+                                                            if (!hasVal) {
+                                                                newVals.push({
+                                                                    value: newVal
+                                                                });
+                                                            }
+                                                        }
+                                                    });
+                                                    if (prod.attributes) {
+                                                        prod.attributes[prodAttrIdx].values = newVals;
+                                                        setProdData(prod);
+                                                    }
+                                                }}
+                                            />
+                                            {editingProductVariant && editingProductVariant.prodAttrIdx === prodAttrIdx && (
+                                                <div className={styles.editingProductVariant}>
+                                                    <div className={styles.attributeHeader}>
+                                                        <h3>Editing product variant for value: <span className={styles.tag}>{editingProductVariant.value}</span></h3>
+                                                        <div>
+                                                            <Tooltip title="Close">
+                                                                <IconButton
+                                                                    aria-label="close editingProductVariant"
+                                                                    onClick={() => {
+                                                                        setEditingProductVariant(null)
+                                                                    }}
+                                                                >
+                                                                    <HighlightOffIcon />
+                                                                </IconButton>
+                                                            </Tooltip>
+                                                        </div>
+                                                    </div>
+                                                    <div className={styles.editingProductVariantCard}>
+                                                        <ProductCard
+                                                            product={prodAttr.values.find(a => a.value === editingProductVariant.value)?.productVariant || product}
+                                                            setProdData={(data: TAttributeProductVariant) => {
+                                                                const prod: TProduct = JSON.parse(JSON.stringify(product));
+                                                                if (prod.attributes) {
+                                                                    prod.attributes[prodAttrIdx].values = prod.attributes[prodAttrIdx].values.map(val => {
+                                                                        if (val.value === editingProductVariant.value) {
+                                                                            return {
+                                                                                value: val.value,
+                                                                                productVariant: data
+                                                                            }
+                                                                        } else return val;
+                                                                    });
+                                                                    setProdData(prod);
+                                                                }
+                                                            }}
+                                                            isProductVariant
+                                                        />
+                                                    </div>
+
+                                                </div>
+                                            )}
+                                        </div>
+                                    )
+                                }
+
+                            })
+                        )}
+                        <Button variant="outlined" color="primary"
+                            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                                setPopperAnchorEl(event.currentTarget);
+                                setPopperOpen((prev) => !prev);
+                            }}
+                            disabled={!Boolean(leftAttributesToAdd.length)}
+                        >Add attribute</Button>
+                        <Popper open={popperOpen} anchorEl={popperAnchorEl} placement={'bottom-start'} transition>
+                            {({ TransitionProps }) => (
+                                <Fade {...TransitionProps} timeout={350}>
+                                    <Paper className={styles.newAttributesList}>
+                                        {leftAttributesToAdd.map(attr => {
+                                            return (
+                                                <MenuItem
+                                                    onClick={() => {
+                                                        const prod: TProduct = JSON.parse(JSON.stringify(product));
+                                                        if (!prod.attributes) prod.attributes = [];
+                                                        prod.attributes.push({
+                                                            key: attr.key,
+                                                            values: []
+                                                        })
+                                                        setPopperOpen(false);
+                                                        setProdData(prod);
+                                                    }}
+                                                    className={styles.newAttributeOption}
+                                                >{attr.key}</MenuItem>
+                                            )
+                                        })}
+                                    </Paper>
+                                </Fade>
+                            )}
+                        </Popper>
+                    </div>
+                    <Button variant="contained" color="primary"
+                        className={styles.saveBtn}
+                        size="large"
+                        onClick={handleSave}>
+                        Save
+                        </Button>
+                </>
+            )}
+
+        </div>
+    )
+}
+
+const ProductCard = (props: {
+    product: TAttributeProductVariant | TProduct,
+    setProdData: (data: TProduct) => void;
+    isProductVariant?: boolean;
+}) => {
+    const { product, setProdData } = props;
+    const [canUpdateGallery, setCanUpdateGallery] = useState(false);
+    const [galleryId] = useState('_' + Math.random().toString(36).substr(2, 9));
+    // console.log('ProductCard render', product)
     const handleChange = (prop: keyof TProduct, val: any) => {
         if (product) {
-            const prod: TProduct = Object.assign({}, product);
+            const prod = Object.assign({}, product);
             (prod[prop] as any) = val;
-            setProdData(prod);
+            setProdData(prod as TProduct);
         }
     }
 
@@ -87,12 +347,12 @@ const ProductPage = () => {
         if (product && product.images) {
             const newMain = product.images[idx];
             if (newMain && newMain !== product.mainImage) {
-                const prod: TProduct = Object.assign({}, product);
+                const prod = Object.assign({}, product);
                 // Sort images to move mainImage into first item in the array
                 const imgs = [newMain, ...product.images.filter((src, i) => i !== idx)];
                 prod.images = imgs;
                 prod.mainImage = newMain;
-                setProdData(prod);
+                setProdData(prod as TProduct);
                 setCanUpdateGallery(true);
                 setTimeout(() => {
                     setCanUpdateGallery(false);
@@ -103,10 +363,10 @@ const ProductPage = () => {
 
     const deleteImage = (idx: number) => {
         if (product && product.images) {
-            const prod: TProduct = Object.assign({}, product);
+            const prod = Object.assign({}, product);
             // Sort images to move mainImage into first item in the array
             prod.images = product.images.filter((val, i) => i !== idx);
-            setProdData(prod);
+            setProdData(prod as TProduct);
             setCanUpdateGallery(true);
             setTimeout(() => {
                 setCanUpdateGallery(false);
@@ -115,144 +375,104 @@ const ProductPage = () => {
         }
     }
 
-    const handleSave = async () => {
-        if (product) {
-            const input: TProductInput = {
-                name: product.name,
-                categoryIds: product.categories ? product.categories.map(c => c.id) : [],
-                price: product.price,
-                oldPrice: product.oldPrice,
-                mainImage: product.mainImage,
-                images: product.images,
-                description: product.description,
-                slug: product.slug,
-                pageTitle: product.pageTitle,
-                isEnabled: product.isEnabled
-            }
-            setIsloading(true);
-            try {
-                await client.updateProduct(product.id, input);
-                const prod = await client.getProductById(id, true);
-                setProdData(prod);
-            } catch (e) { console.log(e) }
-
-            setIsloading(false);
-        }
-    }
+    if (!product) return null;
 
     return (
-        <div className={styles.Product}>
-            {/* <h2>Edit product</h2> */}
-            <div className={styles.header}>
-                <p>Product id: {id}</p>
-                <IconButton
-                    aria-label="open"
-                    onClick={() => { if (product) window.open(`http://localhost:4128/product/${product.id}`, '_blank'); }}
-                >
-                    <OpenInNewIcon />
-                </IconButton>
+        <div>
+            <TextField label="Name" variant="outlined"
+                value={product.name || ''}
+                className={styles.textField}
+                onChange={(e) => { handleChange('name', e.target.value) }}
+            />
+            <TextField label="Price" variant="outlined"
+                value={product.price || ''}
+                className={styles.textField}
+                onChange={(e) => { handleChange('price', e.target.value) }}
+                InputProps={{
+                    inputComponent: NumberFormatCustom as any,
+                }}
+            />
+            <TextField label="Old price (before sale)" variant="outlined"
+                value={product.oldPrice || ''}
+                className={styles.textField}
+                onChange={(e) => {
+                    const val = e.target.value;
+                    handleChange('oldPrice', (val && val !== '') ? val : null);
+                }}
+                InputProps={{
+                    inputComponent: NumberFormatCustom as any,
+                }}
+            />
+            <div className={styles.imageBlock}>
+                <CGallery id={"CGallery" + galleryId}
+                    shouldComponentUpdate={props.isProductVariant ? true : canUpdateGallery}
+                    settings={{
+                        images: product.images ? product.images.map((src, id) => ({ src, id })) : [],
+                        height: '350px',
+                        slidesPerView: 3,
+                        showPagination: true,
+                        navigation: {},
+                        loop: false,
+                        backgroundSize: 'contain',
+                        components: {
+                            imgWrapper: (props) => {
+                                const isPrimary = props.image.src === product.mainImage;
+                                return (
+                                    <div className={styles.imageWrapper}>
+                                        <div className={styles.imageActions}>
+                                            <Tooltip title="Make primary">
+                                                <IconButton
+                                                    aria-label="make primary"
+                                                    onClick={() => { setMainImage(props.image.id as number) }}
+                                                >
+                                                    {isPrimary ? <StarIcon /> : <StarBorderIcon />}
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Change image">
+                                                <IconButton
+                                                    aria-label="Change image"
+                                                    onClick={() => { console.log('show more') }}
+                                                >
+                                                    <EditIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Tooltip title="Delete image">
+                                                <IconButton
+                                                    aria-label="Delete"
+                                                    onClick={() => { deleteImage(props.image.id as number) }}
+                                                >
+                                                    <DeleteForeverIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                        {props.children}
+                                    </div>
+                                )
+                            }
+                        }
+                    }} />
             </div>
-            {isLoading && <LoadBox />}
-            {product && (
-                <>
-                    <TextField label="Name" variant="outlined"
-                        value={product.name || ''}
-                        className={styles.textField}
-                        onChange={(e) => { handleChange('name', e.target.value) }}
-                    />
-                    <TextField label="Price" variant="outlined"
-                        value={product.price || ''}
-                        className={styles.textField}
-                        onChange={(e) => { handleChange('price', e.target.value) }}
-                        InputProps={{
-                            inputComponent: NumberFormatCustom as any,
-                        }}
-                    />
-                    <TextField label="Old price (before sale)" variant="outlined"
-                        value={product.oldPrice || ''}
-                        className={styles.textField}
-                        onChange={(e) => {
-                            const val = e.target.value;
-                            handleChange('oldPrice', (val && val !== '') ? val : null);
-                        }}
-                        InputProps={{
-                            inputComponent: NumberFormatCustom as any,
-                        }}
-                    />
-                    <div className={styles.imageBlock}>
-                        <CGallery id="CGallery"
-                            enableRerenders={canUpdateGallery}
-                            settings={{
-                                images: product.images ? product.images.map((src, id) => ({ src, id })) : [],
-                                height: '350px',
-                                slidesPerView: 3,
-                                showPagination: true,
-                                navigation: {},
-                                loop: false,
-                                backgroundSize: 'contain',
-                                components: {
-                                    imgWrapper: (props) => {
-                                        const isPrimary = props.image.src === product.mainImage;
-                                        return (
-                                            <div className={styles.imageWrapper}>
-                                                <div className={styles.imageActions}>
-                                                    <IconButton
-                                                        aria-label="make primary"
-                                                        onClick={() => { setMainImage(props.image.id as number) }}
-                                                    >
-                                                        {isPrimary ? <StarIcon /> : <StarBorderIcon />}
-                                                    </IconButton>
-                                                    <IconButton
-                                                        aria-label="change image"
-                                                        onClick={() => { console.log('show more') }}
-                                                    >
-                                                        <EditIcon />
-                                                    </IconButton>
-                                                    <IconButton
-                                                        aria-label="delete image"
-                                                        onClick={() => { deleteImage(props.image.id as number) }}
-                                                    >
-                                                        <HighlightOffIcon />
-                                                    </IconButton>
-                                                </div>
-                                                {props.children}
-                                            </div>
-                                        )
-                                    }
-                                }
-                            }} />
-                    </div>
-                    <TextField label="HTML Description" variant="outlined"
-                        value={product.description || ''}
-                        className={styles.textField}
-                        multiline
-                        // rows={4}
-                        onChange={(e) => { handleChange('description', e.target.value) }}
-                    />
-                    <TextField label="SEO URL" variant="outlined"
-                        value={product.slug || ''}
-                        className={styles.textField}
-                        onChange={(e) => { handleChange('slug', e.target.value) }}
-                    />
-                    <TextField label="SEO Title" variant="outlined"
-                        value={product.pageTitle || ''}
-                        className={styles.textField}
-                        onChange={(e) => { handleChange('pageTitle', e.target.value) }}
-                    />
-                    <Button variant="contained" color="primary"
-                        className={styles.saveBtn}
-                        size="large"
-                        onClick={async () => {
-                            setIsloading(true);
-                            handleSave();
-
-                            setIsloading(false);
-                        }}>
-                        Save
-                        </Button>
-                </>
+            <TextField label="HTML Description" variant="outlined"
+                value={product.description || ''}
+                className={styles.textField}
+                multiline
+                // rows={4}
+                onChange={(e) => { handleChange('description', e.target.value) }}
+            />
+            {props.isProductVariant !== true && (
+                <TextField label="SEO URL" variant="outlined"
+                    value={(product as TProduct).slug || ''}
+                    className={styles.textField}
+                    onChange={(e) => { handleChange('slug', e.target.value) }}
+                />
             )}
-
+            {props.isProductVariant !== true && (
+                <TextField label="SEO Title" variant="outlined"
+                    value={(product as TProduct).pageTitle || ''}
+                    className={styles.textField}
+                    onChange={(e) => { handleChange('pageTitle', e.target.value) }}
+                />
+            )}
         </div>
     )
 }
