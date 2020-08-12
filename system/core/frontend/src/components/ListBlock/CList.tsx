@@ -42,11 +42,18 @@ type TCssClasses = {
     paginationActiveLink?: string;
     paginationDisabledLink?: string;
 }
-type TIcons = {
-    arrowLeft: React.ReactNode;
-    arrowRight: React.ReactNode;
-    arrowFirst: React.ReactNode;
-    arrowLast: React.ReactNode;
+type TElements = {
+    arrowLeft?: React.ReactNode;
+    arrowRight?: React.ReactNode;
+    arrowFirst?: React.ReactNode;
+    arrowLast?: React.ReactNode;
+    pagination?: React.ComponentType<{
+        count: number;
+        page: number;
+        onChange: (page: number) => void;
+    }>;
+    /** Preloader to show during first data request  */
+    preloader?: React.ReactNode;
 }
 
 type TProps<DataType, ListItemProps> = {
@@ -92,21 +99,15 @@ type TProps<DataType, ListItemProps> = {
     /** Parse and set pageNumber in url as query param */
     useQueryPagination?: boolean;
 
-    /** Preloader to show during first data request  */
-    preloader?: React.ReactNode;
-
     /** Force to show preloader instead of a list */
     isLoading?: boolean;
 
     cssClasses?: TCssClasses;
 
-    icons?: TIcons;
+    elements?: TElements;
 
     /** window.location.pathname for SSR to prerender pagination links */
     pathname?: string
-}
-type TState = {
-    isLoading: boolean;
 }
 
 export type TItemComponentProps<DataType, ListItemProps> = {
@@ -114,7 +115,7 @@ export type TItemComponentProps<DataType, ListItemProps> = {
     listItemProps?: ListItemProps;
 }
 
-export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TProps<DataType, ListItemProps>, TState> {
+export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TProps<DataType, ListItemProps>> {
 
     private dataList: DataType[][] = [];
     private list: {
@@ -131,15 +132,12 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
     private pageStatuses: ('deffered' | 'loading' | 'fetched' | 'failed')[] = [];
     private isPageLoading: boolean = false;
     private isInitialized: boolean = false;
+    private isLoading: boolean = false;
     private scrollBoxRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private wrapperRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
 
     constructor(props: TProps<DataType, ListItemProps>) {
         super(props);
-
-        this.state = {
-            isLoading: false
-        };
 
         this.getMetaInfo();
     }
@@ -148,10 +146,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
 
     }
 
-    componentDidUpdate(prevProps: TProps<DataType, ListItemProps>, prevState: TState) {
-        if (!this.isInitialized) {
-            this.getMetaInfo();
-        }
+    componentDidUpdate(prevProps: TProps<DataType, ListItemProps>) {
 
         if (this.props.useAutoLoading && this.scrollBoxRef.current && this.wrapperRef.current) {
             this.wrapperRef.current.style.minHeight = this.scrollBoxRef.current.clientHeight - 20 + 'px';
@@ -191,7 +186,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                 // Parse firstBatch
                 this.parseFirstBatchPaged(this.props.firstBatch);
             }
-            else {
+            else if (!isServer()) {
                 // Load firstBatch
                 this.fetchFirstBatch();
             }
@@ -200,7 +195,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
 
     private fetchFirstBatch = async () => {
         if (this.props.loader) {
-            this.setState({ isLoading: true });
+            this.isLoading = true;
 
             try {
                 const data = await this.props.loader(this.currentPageNum);
@@ -214,9 +209,8 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
             } catch (e) {
                 console.log(e);
             }
-            this.setState({
-                isLoading: false
-            });
+            this.isLoading = false;
+            this.forceUpdate();
         }
     }
 
@@ -309,15 +303,15 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
             this.maxPageBound = pageNumber;
             await this.loadPage(pageNumber);
             this.forceUpdate(() => {
-                if (this.props.useAutoLoading) {
-                    setTimeout(() => {
-                        if (this.wrapperRef.current) {
-                            const id = `#${getPageId(pageNumber)}`;
-                            const elem = this.wrapperRef.current.querySelector(id);
-                            if (elem) elem.scrollIntoView();
-                        }
-                    }, 10)
-                }
+                // if (this.props.useAutoLoading) {
+                setTimeout(() => {
+                    if (this.wrapperRef.current) {
+                        const id = `#${getPageId(pageNumber)}`;
+                        const elem = this.wrapperRef.current.querySelector(id);
+                        if (elem) elem.scrollIntoView();
+                    }
+                }, 10)
+                // }
             });
         }
 
@@ -402,10 +396,10 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
     }
 
     render() {
-        if (this.state.isLoading || this.props.isLoading) {
+        if (this.isLoading || this.props.isLoading) {
             return (
                 <div className={styles.baseInfiniteLoader}>
-                    {this.props.preloader}
+                    {this.props.elements?.preloader}
                 </div>
             )
         }
@@ -458,7 +452,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                     onPageScrolled={this.onPageScrolled}
                     paginationButtonsNum={this.props.paginationButtonsNum}
                     cssClasses={this.props.cssClasses}
-                    icons={this.props.icons}
+                    elements={this.props.elements}
                     pathname={this.props.pathname}
                 />
             </div>
@@ -478,7 +472,7 @@ class Pagination extends React.Component<{
     openPage: (pageNum: number) => void;
     onPageScrolled: (currentPage: number) => void;
     cssClasses?: TCssClasses;
-    icons?: TIcons;
+    elements?: TElements;
     pathname?: string;
 }> {
     private currentPage: number = this.props.inititalPage;
@@ -516,8 +510,22 @@ class Pagination extends React.Component<{
         }
     }
     render() {
-        const paginationDisabledLinkClass = styles.paginationDisabledLink + ' ' + (this.props.cssClasses?.paginationDisabledLink || '')
         const currPage = this.currentPage;
+        const CustomPagination = this.props.elements?.pagination
+        if (CustomPagination) {
+            return (
+                <CustomPagination
+                    page={currPage}
+                    count={this.props.maxPageNum}
+                    onChange={(pageNum: number) => {
+                        this.currentPage = pageNum;
+                        this.props.openPage(pageNum);
+                    }}
+                />
+            )
+        }
+
+        const paginationDisabledLinkClass = styles.paginationDisabledLink + ' ' + (this.props.cssClasses?.paginationDisabledLink || '')
         const paginationButtonsNum = this.props.paginationButtonsNum ? this.props.paginationButtonsNum : 10;
         const pages = getPageNumsAround(currPage, paginationButtonsNum, this.props.maxPageNum);
         const links: JSX.Element[] = [
@@ -529,7 +537,7 @@ class Pagination extends React.Component<{
                     this.currentPage = 1;
                     this.props.openPage(1);
                 }}>
-                {this.props.icons?.arrowFirst ? this.props.icons?.arrowFirst : (
+                {this.props.elements?.arrowFirst ? this.props.elements?.arrowFirst : (
                     <p className={styles.paginationArrow}>⇤</p>
                 )}
             </a>,
@@ -543,7 +551,7 @@ class Pagination extends React.Component<{
                         this.props.openPage(currPage - 1);
                     }
                 }}>
-                {this.props.icons?.arrowLeft ? this.props.icons?.arrowLeft : (
+                {this.props.elements?.arrowLeft ? this.props.elements?.arrowLeft : (
                     <p className={styles.paginationArrow}>￩</p>
                 )}
             </a>,
@@ -567,7 +575,7 @@ class Pagination extends React.Component<{
                         this.props.openPage(currPage + 1);
                     }
                 }}>
-                {this.props.icons?.arrowRight ? this.props.icons?.arrowRight : (
+                {this.props.elements?.arrowRight ? this.props.elements?.arrowRight : (
                     <p className={styles.paginationArrow}>￫</p>
                 )}
             </a>,
@@ -579,7 +587,7 @@ class Pagination extends React.Component<{
                     this.currentPage = this.props.maxPageNum;
                     this.props.openPage(this.props.maxPageNum);
                 }}>
-                {this.props.icons?.arrowLast ? this.props.icons?.arrowLast : (
+                {this.props.elements?.arrowLast ? this.props.elements?.arrowLast : (
                     <p className={styles.paginationArrow}>⇥</p>
                 )}
             </a>

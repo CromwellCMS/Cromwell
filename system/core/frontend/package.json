@@ -16,6 +16,7 @@
     "debounce": "^1.2.0",
     "graphql-request": "^2.0.0",
     "graphql-tag": "^2.10.3",
+    "next": "^9.5.2",
     "swiper": "^6.0.4",
     "tslib": "^2.0.0"
   },

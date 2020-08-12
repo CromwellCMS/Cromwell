@@ -11,6 +11,12 @@
         align-items: center;
     }
 
+    .tabContent {
+        padding: 15px;
+        margin: 15px 0;
+        background-color: #fff;
+    } 
+
     .textField {
         width: 100%;
         margin: 10px 0;
@@ -49,7 +55,6 @@
 
     .saveBtn {
         position: relative;
-        margin-top: 100px;
     }
 
     .attributeBlock {

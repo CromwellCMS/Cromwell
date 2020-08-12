@@ -6,12 +6,20 @@ import PluginsPage from '../pages/plugins';
 import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
 import ProductListPage from '../pages/productList/ProductList';
 import ProductPage from '../pages/product/Product';
+import {
+    Dashboard as DashboardIcon,
+    LocalMall as LocalMallIcon,
+    Power as PowerIcon,
+    FormatPaint as FormatPaintIcon
+} from '@material-ui/icons';
+
 
 export type SidebarLinkType = {
     title: string;
     route: string;
     baseRoute?: string;
     sublinks?: SidebarLinkType[];
+    icon?: React.ReactNode;
 }
 
 export type PageInfo = {
@@ -22,7 +30,7 @@ export type PageInfo = {
 }
 
 export const homePageInfo: PageInfo = {
-    name: 'Home',
+    name: 'Dashboard',
     route: '/',
     component: HomePage
 };
@@ -71,21 +79,25 @@ export const pageInfos: PageInfo[] = [
 export const sideBarLinks: SidebarLinkType[] = [
     {
         title: homePageInfo.name,
-        route: homePageInfo.route
+        route: homePageInfo.route,
+        icon: React.createElement(DashboardIcon)
     },
     {
         title: 'Products',
-        route: productListInfo.route
+        route: productListInfo.route,
+        icon: React.createElement(LocalMallIcon)
     },
     {
         title: 'Edit theme',
-        route: themeEditPageInfo.route
+        route: themeEditPageInfo.route,
+        icon: React.createElement(FormatPaintIcon)
     },
     {
         title: pluginsPageInfo.name,
         route: pluginsPageInfo.route,
         sublinks: pluginPages.map(p => {
             return { title: p.name, route: p.route }
-        })
+        }),
+        icon: React.createElement(PowerIcon)
     }
 ]

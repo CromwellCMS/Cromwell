@@ -8,6 +8,7 @@ import styles from './ProductList.module.scss';
 import {
     IconButton,
 } from '@material-ui/core';
+import { Pagination } from '@material-ui/lab';
 import {
     AddCircle as AddCircleIcon, ExpandMore as ExpandMoreIcon,
     HighlightOff as HighlightOffIcon,
@@ -46,6 +47,20 @@ const ProductList = () => {
                         return client.getProducts({ pageNumber });
                     }}
                     cssClasses={{ scrollBox: styles.list }}
+                    elements={{
+                        pagination: (props) => {
+                            return (
+                                <Pagination count={props.count} page={props.page}
+                                    onChange={(event: React.ChangeEvent<unknown>, value: number) => {
+                                        props.onChange(value)
+                                    }}
+                                    className={styles.pagination}
+                                    showFirstButton showLastButton
+                                />
+                            )
+                        },
+                        preloader: <LoadBox />
+                    }}
                 />
             </div>
         </div>

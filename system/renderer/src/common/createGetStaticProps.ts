@@ -5,7 +5,7 @@ import { pluginsDataFetcher } from './pluginsDataFetcher';
 
 export const createGetStaticProps = (pageName: BasePageNames | string) => {
     return async function (context: StaticPageContext): Promise<
-        { props: TCromwellPageCoreProps; unstable_revalidate?: number }> {
+        { props: TCromwellPageCoreProps; revalidate?: number }> {
         const apiClient = getRestAPIClient();
         const timestamp = Date.now();
         const childStaticProps = await getThemeStaticProps(pageName, context);
@@ -33,8 +33,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string) => {
                 appCustomConfig,
                 pagesInfo
             },
-            /* eslint-disable @typescript-eslint/camelcase */
-            unstable_revalidate: process.env.isProd ? 1 : undefined
+            revalidate: process.env.isProd ? 1 : undefined
         }
     }
 }

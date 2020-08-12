@@ -1,6 +1,9 @@
 import { TAttribute, TAttributeInstanceValue, TAttributeProductVariant, TProduct, TProductInput } from '@cromwell/core';
 import { CGallery, getGlobalCurrencySymbol, getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, Fade, IconButton, MenuItem, Paper, Popper, TextField, Tooltip } from '@material-ui/core';
+import {
+    Button, Fade, IconButton, MenuItem, Paper, Popper, TextField,
+    Tooltip, Tabs, Tab, Box, AppBar
+} from '@material-ui/core';
 import {
     DeleteForever as DeleteForeverIcon,
     Edit as EditIcon,
@@ -9,7 +12,7 @@ import {
     Star as StarIcon,
     StarBorder as StarBorderIcon,
 } from '@material-ui/icons';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import NumberFormat from 'react-number-format';
 import { useParams } from 'react-router-dom';
 
@@ -53,6 +56,7 @@ const ProductPage = () => {
     const [attributes, setAttributes] = useState<TAttribute[]>([]);
     const [popperAnchorEl, setPopperAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const [popperOpen, setPopperOpen] = React.useState(false);
+    const [activeTabNum, setActiveTabNum] = React.useState(0);
 
     const [editingProductVariant, setEditingProductVariant] = React.useState<{
         prodAttrIdx: number; value: string;
@@ -139,22 +143,46 @@ const ProductPage = () => {
         <div className={styles.Product}>
             {/* <h2>Edit product</h2> */}
             <div className={styles.header}>
-                <p>Product id: {id}</p>
-                <Tooltip title="Open product page in new tab">
-                    <IconButton
-                        aria-label="open"
-                        onClick={() => { if (product) window.open(`http://localhost:4128/product/${product.id}`, '_blank'); }}
+                {/* <p>Product id: {id}</p> */}
+                <Paper>
+                    <Tabs
+                        value={activeTabNum}
+                        indicatorColor="primary"
+                        textColor="primary"
+                        onChange={(event: React.ChangeEvent<{}>, newValue: number) => {
+                            setActiveTabNum(newValue);
+                        }}
+                        aria-label="disabled tabs example"
                     >
-                        <OpenInNewIcon />
-                    </IconButton>
-                </Tooltip>
+                        <Tab label="Main" />
+                        <Tab label="Attributes" />
+                        <Tab label="Categories" />
+                    </Tabs>
+                </Paper>
+                <div>
+                    <Button variant="contained" color="primary"
+                        className={styles.saveBtn}
+                        size="large"
+                        onClick={handleSave}>
+                        Save
+                        </Button>
+                    <Tooltip title="Open product page in new tab">
+                        <IconButton
+                            aria-label="open"
+                            onClick={() => { if (product) window.open(`http://localhost:4128/product/${product.id}`, '_blank'); }}
+                        >
+                            <OpenInNewIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
             </div>
             {isLoading && <LoadBox />}
             {!isLoading && product && (
                 <>
-                    <ProductCard product={product} setProdData={setProdData} />
-                    <div className={styles.textField}>
-                        <h3 style={{ margin: '10px 0' }}>Attributes</h3>
+                    <TabPanel value={activeTabNum} index={0}>
+                        <MainInfoCard product={product} setProdData={setProdData} />
+                    </TabPanel>
+                    <TabPanel value={activeTabNum} index={1}>
                         {product.attributes && attributes && (
                             product.attributes.map((prodAttr, prodAttrIdx) => {
                                 let origAttr: TAttribute | undefined = undefined;
@@ -252,7 +280,8 @@ const ProductPage = () => {
                                                         </div>
                                                     </div>
                                                     <div className={styles.editingProductVariantCard}>
-                                                        <ProductCard
+                                                        <MainInfoCard
+                                                            productVariantVal={editingProductVariant.value}
                                                             product={prodAttr.values.find(a => a.value === editingProductVariant.value)?.productVariant || product}
                                                             setProdData={(data: TAttributeProductVariant) => {
                                                                 const prod: TProduct = JSON.parse(JSON.stringify(product));
@@ -312,29 +341,33 @@ const ProductPage = () => {
                                 </Fade>
                             )}
                         </Popper>
-                    </div>
-                    <Button variant="contained" color="primary"
-                        className={styles.saveBtn}
-                        size="large"
-                        onClick={handleSave}>
-                        Save
-                        </Button>
+                    </TabPanel>
+                    <TabPanel value={activeTabNum} index={2}>
+                        Categories
+                    </TabPanel>
                 </>
-            )}
+            )
+            }
 
-        </div>
+        </div >
     )
 }
 
-const ProductCard = (props: {
+const MainInfoCard = (props: {
     product: TAttributeProductVariant | TProduct,
     setProdData: (data: TProduct) => void;
     isProductVariant?: boolean;
+    productVariantVal?: string;
 }) => {
     const { product, setProdData } = props;
     const [canUpdateGallery, setCanUpdateGallery] = useState(false);
     const [galleryId] = useState('_' + Math.random().toString(36).substr(2, 9));
-    // console.log('ProductCard render', product)
+    const productVariantVal = useRef(props.productVariantVal);
+    const isNewVariant = productVariantVal.current !== props.productVariantVal;
+    if (isNewVariant) {
+        productVariantVal.current = props.productVariantVal;
+    }
+    // console.log('MainInfoCard render', product)
     const handleChange = (prop: keyof TProduct, val: any) => {
         if (product) {
             const prod = Object.assign({}, product);
@@ -405,7 +438,7 @@ const ProductCard = (props: {
             />
             <div className={styles.imageBlock}>
                 <CGallery id={"CGallery" + galleryId}
-                    shouldComponentUpdate={props.isProductVariant ? true : canUpdateGallery}
+                    shouldComponentUpdate={isNewVariant ? true : canUpdateGallery}
                     settings={{
                         images: product.images ? product.images.map((src, id) => ({ src, id })) : [],
                         height: '350px',
@@ -475,6 +508,30 @@ const ProductCard = (props: {
             )}
         </div>
     )
+}
+
+interface TabPanelProps {
+    children?: React.ReactNode;
+    index: any;
+    value: any;
+}
+
+function TabPanel(props: TabPanelProps) {
+    const { children, value, index, ...other } = props;
+
+    return (
+        <div
+            role="tabpanel"
+            hidden={value !== index}
+            id={`simple-tabpanel-${index}`}
+            aria-labelledby={`simple-tab-${index}`}
+            {...other}
+        >
+            {value === index && (
+                <Paper className={styles.tabContent}>{children}</Paper>
+            )}
+        </div>
+    );
 }
 
 export default ProductPage;

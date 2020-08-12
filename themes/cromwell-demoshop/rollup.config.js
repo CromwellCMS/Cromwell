@@ -22,7 +22,7 @@ export default {
     ],
     external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/app', 'next/router'],
     plugins: [
-        del({ targets: './es/*' }),
+        // del({ targets: './es/*' }),
         // image(),
         postcss({
             plugins: [

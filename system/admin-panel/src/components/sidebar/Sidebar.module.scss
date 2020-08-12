@@ -2,6 +2,8 @@
     width: 100%;
     background: rgba(0, 0, 0, 0.04);
     height: 100%;
+    background: #333;
+    padding: 10px 5px;
 
     a {
         display: block;
@@ -12,7 +14,12 @@
     .SidebarLink {
         width: 100%;
         background: rgba(0,0,0,0.03);
-
+        margin-bottom: 7px;
+        border-bottom: 1px solid #242424;
+        box-shadow: 2px 2px 2px -1px rgba(0, 0, 0, 0.3), 0px -3px 3px 0px rgba(0, 0, 0, 0.2), 0px 3px 3px 0px rgba(0, 0, 0, 0.12);
+        border-radius: 6px;
+        overflow: hidden;
+        transition: 0.3s;
 
         .ExpansionPanelSummary {
             width: 100%;
@@ -31,19 +38,40 @@
             margin: 0;
         }
     }
-    
+
+    .SidebarLink:hover {
+        background-color: #444;
+    }
+
     .SidebarLink__sublinks-container {
         width: 100%;
     
     }
 
     .SidebarLink__head {
-        padding-top: 12px;
-        padding-bottom: 12px;
-        padding-left: 16px;
-        padding-right: 16px;
+        padding-top: 6px;
+        padding-bottom: 6px;
+        padding-left: 9px;
+        padding-right: 9px;
         justify-content: normal;
+        color: #999;
+        font-weight: 200;
     }
+
+    .sidebarlinkIcon {
+        margin-right: 10px;
+    }
+
+    .SidebarLinkActive {
+        position: relative;
+        background-color: #242424;
+        border-left: 3px solid #ccc;
+
+        .SidebarLink__head {
+            color: #fff;
+        }
+    }
+    
 
 
 

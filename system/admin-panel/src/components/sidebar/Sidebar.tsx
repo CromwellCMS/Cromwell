@@ -6,9 +6,8 @@ import {
 } from '@material-ui/core';
 import { withStyles } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
-import React from 'react';
+import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';
-
 import { sideBarLinks, SidebarLinkType } from '../../constants/PageInfos';
 import styles from './Sidebar.module.scss';
 
@@ -60,17 +59,23 @@ const MenuItem = withStyles({
     },
 })(MuiMenuItem);
 
-
+function useForceUpdate() {
+    const [value, setValue] = useState(0);
+    return () => setValue(value => ++value);
+}
 
 function Sidebar() {
     const [expanded, setExpanded] = React.useState<string | false>(false);
+    const forceUpdate = useForceUpdate()
     const toggleSubmenu = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
     };
     return (
         <div className={styles.Sidebar}>
             {sideBarLinks.map(link => <SidebarLink data={link} key={link.route}
-                toggleSubmenu={toggleSubmenu} expanded={expanded} />)}
+                toggleSubmenu={toggleSubmenu} expanded={expanded}
+                forceUpdate={forceUpdate}
+            />)}
         </div>
     )
 }
@@ -78,12 +83,13 @@ function Sidebar() {
 const SidebarLink = (props: {
     data: SidebarLinkType,
     toggleSubmenu: (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => void,
-    expanded: string | false
+    expanded: string | false;
+    forceUpdate: () => void;
 }) => {
-
     const history = useHistory();
     const handleNav = (route: string) => {
         history.push(route);
+        props.forceUpdate();
     }
     const isExpanded = props.expanded === props.data.route;
 
@@ -96,6 +102,7 @@ const SidebarLink = (props: {
                 }}
                 className={styles.SidebarLink__head}
             >
+                <div className={styles.sidebarlinkIcon}>{props.data.icon}</div>
                 <p>{props.data.title}</p>
             </MenuItem>
         </a>
@@ -114,7 +121,9 @@ const SidebarLink = (props: {
                 <div className={styles["SidebarLink__sublinks-container"]}>
                     {props.data.sublinks.map(sublink => (
                         <SidebarLink data={sublink} key={sublink.route}
-                            expanded={props.expanded} toggleSubmenu={props.toggleSubmenu} />
+                            expanded={props.expanded} toggleSubmenu={props.toggleSubmenu}
+                            forceUpdate={props.forceUpdate}
+                        />
                     ))}
                 </div>
             </ExpansionPanelDetails>
@@ -122,7 +131,7 @@ const SidebarLink = (props: {
     );
 
     return (
-        <div className={styles.SidebarLink}>
+        <div className={`${styles.SidebarLink} ${history.location.pathname === props.data.route ? styles.SidebarLinkActive : ''}`}>
             {head}
         </div>
     )

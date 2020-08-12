@@ -21,7 +21,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "graphql-tag": "^2.10.3",
-    "next": "^9.4.4",
+    "next": "^9.5.2",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "reset-css": "^5.0.1",
