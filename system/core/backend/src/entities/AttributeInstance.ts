@@ -1,6 +1,5 @@
-import { InputType, Field, ID, Int, Float, ObjectType } from "type-graphql";
-import { TPagedParams, TProductFilter, TAttributeInstance, TProduct, TAttributeInstanceValue, TAttributeProductVariant } from '@cromwell/core';
-import { UpdateProduct } from '../inputs/UpdateProduct';
+import { TAttributeInstance, TAttributeInstanceValue, TAttributeProductVariant } from '@cromwell/core';
+import { Field, InputType, ObjectType } from 'type-graphql';
 
 @ObjectType("AttributeInstanceInput")
 @InputType("AttributeInstanceType")

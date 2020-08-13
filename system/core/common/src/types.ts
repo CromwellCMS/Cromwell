@@ -373,16 +373,6 @@ export type TAttributeProductVariant = {
     description?: string;
 }
 
-export type TProductFilter = {
-    minPrice?: number;
-    maxPrice?: number;
-    attributes?: TProductFilterAttribute[];
-}
-export type TProductFilterAttribute = {
-    key: string;
-    values: string[];
-}
-
 export type TPagedList<Entity> = {
     pagedMeta?: TPagedMeta;
     elements?: Entity[];

@@ -5,7 +5,7 @@ import { ProductCategoryRepository } from '@cromwell/core-backend';
 import { getCustomRepository } from "typeorm";
 import { CreateProduct } from '@cromwell/core-backend';
 import { UpdateProduct } from '@cromwell/core-backend';
-import { ProductCategory, ProductFilter, PagedParamsInput } from '@cromwell/core-backend';
+import { ProductCategory, PagedParamsInput } from '@cromwell/core-backend';
 import { TProductCategory, TProduct, TPagedList } from "@cromwell/core";
 
 @Resolver(Product)
