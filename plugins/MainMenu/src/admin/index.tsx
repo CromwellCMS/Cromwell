@@ -34,13 +34,13 @@ export default function index() {
     useEffect(() => {
         (async () => {
             setIsloading(true);
-            const settings: TMainMenuSettings = await apiClient.getPluginSettings(config.name);
+            const settings: TMainMenuSettings = await apiClient?.getPluginSettings(config.name);
             if (settings) {
                 items = settings.items;
                 setSettings(settings);
             }
             else {
-                await apiClient.setPluginSettings(config.name, defaultSettings);
+                await apiClient?.setPluginSettings(config.name, defaultSettings);
                 items = defaultSettings.items;
                 setSettings(defaultSettings);
             }
@@ -74,7 +74,7 @@ export default function index() {
                                 setIsloading(true);
                                 if (settings) {
                                     settings.items = items;
-                                    await apiClient.setPluginSettings(config.name, settings);
+                                    await apiClient?.setPluginSettings(config.name, settings);
                                 }
                                 setIsloading(false);
                             }}>

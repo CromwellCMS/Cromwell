@@ -12,7 +12,7 @@ setStoreItem('cmsconfig', CMSconfig);
 // Update config from api
 if (CMSconfig) {
   (async () => {
-    const cmsConfig = await getRestAPIClient().getCmsConfig();
+    const cmsConfig = await getRestAPIClient()?.getCmsConfig();
     setStoreItem('cmsconfig', cmsConfig);
   })();
 }

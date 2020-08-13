@@ -42,5 +42,8 @@
     "build": "npm run gen && npx cross-env SCRIPT=build npx ts-node -O {\\\"module\\\":\\\"commonjs\\\"} src/startup.ts",
     "start": "npx cross-env SCRIPT=start npx ts-node -O {\\\"module\\\":\\\"commonjs\\\"} src/startup.ts"
   },
-  "description": ""
+  "description": "",
+  "resolutions": {
+    "webpack": "^5.0.0-beta.22"
+  }
 }

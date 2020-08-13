@@ -17,9 +17,9 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
         throw new Error('pluginsDataFetcher !cmsconfig.themeName');
     }
     const restAPIClient = getRestAPIClient();
-    const pluginsModifications = await restAPIClient.getPluginsModifications(pageName);
+    const pluginsModifications = await restAPIClient?.getPluginsModifications(pageName);
 
-    const pluginConfigs = Object.entries(pluginsModifications);
+    const pluginConfigs = pluginsModifications ? Object.entries(pluginsModifications) : undefined;
     // console.log('pageName', pageName, 'pluginConfigs', JSON.stringify(pluginConfigs))
     const pluginsData: any = {};
     if (pluginConfigs && Array.isArray(pluginConfigs)) {

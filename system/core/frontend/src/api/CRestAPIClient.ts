@@ -1,5 +1,8 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
-import { TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute, TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory } from '@cromwell/core';
+import {
+    TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute,
+    TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory, setStoreItem
+} from '@cromwell/core';
 
 
 class CRestAPIClient {
@@ -90,12 +93,18 @@ class CRestAPIClient {
     }
 }
 
-export const getRestAPIClient = (): CRestAPIClient => {
+export const getRestAPIClient = (): CRestAPIClient | undefined => {
+    let client = getStoreItem('restAPIClient');
+    if (client) return client;
+
     const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.apiPort) {
-        console.log('cmsconfig', cmsconfig);
-        throw new Error('getGraphQLClient !cmsconfig.apiPort');
+        console.error('getRestAPIClient !cmsconfig.apiPort, cmsconfig:', cmsconfig);
+        return;
     }
     const baseUrl = `http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}`;
-    return new CRestAPIClient(baseUrl);
+    client = new CRestAPIClient(baseUrl);
+
+    setStoreItem('restAPIClient', client);
+    return client;
 }

@@ -52,6 +52,9 @@ type TElements = {
         page: number;
         onChange: (page: number) => void;
     }>;
+    showMore?: React.ComponentType<{
+        onClick: () => void;
+    }>
     /** Preloader to show during first data request  */
     preloader?: React.ReactNode;
 }
@@ -86,6 +89,13 @@ type TProps<DataType, ListItemProps> = {
 
     /** Threshold in px where automatically request next or prev page. 200 by default. Use with useAutoLoading */
     minRangeToLoad?: number;
+
+    /** If useAutoLoading disabled can show button to load next page in the same container */
+    useShowMoreButton?: boolean;
+
+    /** When useShowMoreButton and usePagination enabled CList needs to know 
+     * container that scrolls pages to define current page during scrolling  */
+    scrollContainerSelector?: string;
 
     /** Display pagination */
     usePagination?: boolean;
@@ -286,7 +296,6 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
     public onPageScrolled = (pageNumber: number) => {
         this.currentPageNum = pageNumber;
         if (this.props.useQueryPagination) {
-
             window.history.pushState({}, '', getPagedUrl(pageNumber));
         }
     }
@@ -320,12 +329,16 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
     private updateList = () => {
         const ListItem = this.props.ListItem;
         this.list = [];
-        const maxDomPages = this.props.maxDomPages ? this.props.maxDomPages : 10;
-        const pageBounds = getPageNumsAround(this.currentPageNum, maxDomPages, this.maxPage);
-        // const minPageBound = (this.minPageBound < pageBounds[0]) ? pageBounds[0] : this.minPageBound;
-        if (this.minPageBound < pageBounds[0]) this.minPageBound = pageBounds[0];
-        // const maxPageBound = (this.maxPageBound > pageBounds[pageBounds.length]) ? pageBounds[pageBounds.length] : this.maxPageBound;
-        if (this.maxPageBound > pageBounds[pageBounds.length - 1]) this.maxPageBound = pageBounds[pageBounds.length - 1];
+
+        if (!this.props.useShowMoreButton) {
+            const maxDomPages = this.props.maxDomPages ? this.props.maxDomPages : 10;
+            const pageBounds = getPageNumsAround(this.currentPageNum, maxDomPages, this.maxPage);
+            // const minPageBound = (this.minPageBound < pageBounds[0]) ? pageBounds[0] : this.minPageBound;
+            if (this.minPageBound < pageBounds[0]) this.minPageBound = pageBounds[0];
+            // const maxPageBound = (this.maxPageBound > pageBounds[pageBounds.length]) ? pageBounds[pageBounds.length] : this.maxPageBound;
+            if (this.maxPageBound > pageBounds[pageBounds.length - 1]) this.maxPageBound = pageBounds[pageBounds.length - 1];
+
+        }
 
         for (let i = this.minPageBound; i <= this.maxPageBound; i++) {
             const pageData = this.dataList[i];
@@ -421,6 +434,14 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                 </div>
             )
         }
+        const handleShowMoreClick = () => {
+            if (this.maxPage > this.maxPageBound) {
+                if (!this.isPageLoading) {
+                    this.loadNextPage();
+                    this.forceUpdate();
+                }
+            }
+        }
 
         return (
             <div className={styles.baseInfiniteLoader}>
@@ -442,19 +463,35 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                         ))}
                     </div>
                 </div>
-                <Pagination
-                    pageNums={this.list.map(p => p.pageNum)}
-                    wrapperRef={this.wrapperRef}
-                    scrollBoxRef={this.scrollBoxRef}
-                    inititalPage={this.currentPageNum}
-                    maxPageNum={this.maxPage}
-                    openPage={this.openPage}
-                    onPageScrolled={this.onPageScrolled}
-                    paginationButtonsNum={this.props.paginationButtonsNum}
-                    cssClasses={this.props.cssClasses}
-                    elements={this.props.elements}
-                    pathname={this.props.pathname}
-                />
+                {this.props.useShowMoreButton && !this.isPageLoading && this.maxPage > this.maxPageBound && (
+                    <div className={styles.showMoreBtnContainer}>
+                        {this.props.elements?.showMore ? (
+                            <this.props.elements.showMore onClick={handleShowMoreClick} />
+                        ) : (
+                                <div
+                                    className={styles.showMoreBtn}
+                                    onClick={handleShowMoreClick}
+                                >Show more</div>
+                            )}
+
+                    </div>
+                )}
+                {this.props.usePagination && (
+                    <Pagination
+                        pageNums={this.list.map(p => p.pageNum)}
+                        wrapperRef={this.wrapperRef}
+                        scrollBoxRef={this.scrollBoxRef}
+                        inititalPage={this.currentPageNum}
+                        maxPageNum={this.maxPage}
+                        openPage={this.openPage}
+                        onPageScrolled={this.onPageScrolled}
+                        paginationButtonsNum={this.props.paginationButtonsNum}
+                        cssClasses={this.props.cssClasses}
+                        elements={this.props.elements}
+                        pathname={this.props.pathname}
+                        scrollContainerSelector={this.props.scrollContainerSelector}
+                    />
+                )}
             </div>
         );
     }
@@ -474,14 +511,18 @@ class Pagination extends React.Component<{
     cssClasses?: TCssClasses;
     elements?: TElements;
     pathname?: string;
+    scrollContainerSelector?: string;
 }> {
     private currentPage: number = this.props.inititalPage;
 
     componentDidMount() {
-        if (this.props.scrollBoxRef.current) {
-            this.props.scrollBoxRef.current.addEventListener('scroll', () => {
-                this.onScroll();
-            })
+        if (this.props.scrollContainerSelector) {
+            const container = document.querySelector(this.props.scrollContainerSelector);
+            if (container) {
+                container.addEventListener('scroll', this.onScroll)
+            }
+        } else if (this.props.scrollBoxRef.current) {
+            this.props.scrollBoxRef.current.addEventListener('scroll', this.onScroll)
         }
     }
 
@@ -498,7 +539,7 @@ class Pagination extends React.Component<{
                 const pageNode = this.props.wrapperRef.current.querySelector('#' + id);
                 if (pageNode) {
                     const bounds = pageNode.getBoundingClientRect();
-                    if (!currPage && bounds.top > 0) currPage = p;
+                    if (!currPage && bounds.bottom > 0) currPage = p;
                 }
             }
         });
@@ -510,6 +551,7 @@ class Pagination extends React.Component<{
         }
     }
     render() {
+
         const currPage = this.currentPage;
         const CustomPagination = this.props.elements?.pagination
         if (CustomPagination) {

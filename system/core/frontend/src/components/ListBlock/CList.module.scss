@@ -69,4 +69,26 @@
     .paginationArrow {
         font-size: 30px;
     }
+
+    .showMoreBtnContainer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .showMoreBtn {
+        display: inline-block;
+        border: 1px solid #333;
+        min-width: 150px;
+        padding: 4px 15px;
+        border-radius: 6px;
+        color: #333;
+        transition: 0.3s;
+        text-align: center;
+        cursor: pointer;
+    }
+    .showMoreBtn:hover {
+        color: #fff;
+        background-color: #333;
+    }
 }

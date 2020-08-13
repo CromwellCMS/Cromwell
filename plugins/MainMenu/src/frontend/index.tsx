@@ -93,7 +93,7 @@ const MainMenu = (props: TMainMenuProps) => {
 
 export const getStaticProps = async (context: StaticPageContext): Promise<TMainMenuProps> => {
     const apiClient = getRestAPIClient();
-    const settings: TMainMenuSettings = await apiClient.getPluginSettings(config.name);
+    const settings: TMainMenuSettings = await apiClient?.getPluginSettings(config.name);
 
     return {
         settings

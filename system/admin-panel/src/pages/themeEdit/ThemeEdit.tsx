@@ -35,7 +35,7 @@ export default function ThemeEdit() {
 
     useEffect(() => {
         (async () => {
-            const infos = await getRestAPIClient().getPagesInfo();
+            const infos = await getRestAPIClient()?.getPagesInfo();
             if (infos) setPageInfos(infos);
             setIsPageListLoading(false);
         })();
@@ -44,9 +44,9 @@ export default function ThemeEdit() {
     const onOpenPage = async (pageCofig: TPageInfo) => {
         setIsPageLoading(true);
         setIsPageListCollapsed(true);
-        const pageModifications: TPageConfig = await getRestAPIClient().getPageConfig(pageCofig.route);
-        const appConfig = await getRestAPIClient().getAppConfig();
-        const appCustomConfig = await getRestAPIClient().getAppCustomConfig();
+        const pageModifications: TPageConfig | undefined = await getRestAPIClient()?.getPageConfig(pageCofig.route);
+        const appConfig = await getRestAPIClient()?.getAppConfig();
+        const appCustomConfig = await getRestAPIClient()?.getAppCustomConfig();
         // console.log('pageModifications', pageModifications);
         setStoreItem('pageConfig', pageModifications);
         setStoreItem('appConfig', appConfig);

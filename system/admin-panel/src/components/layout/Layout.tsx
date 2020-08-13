@@ -10,8 +10,6 @@ import Page from '../page/Page';
 import Sidebar from '../sidebar/Sidebar';
 import classes from './Layout.module.scss';
 import Page404 from '../../pages/404page/404page';
-import { getRestAPIClient } from '@cromwell/core-frontend';
-import { setStoreItem } from '@cromwell/core';
 
 function Layout() {
   return (

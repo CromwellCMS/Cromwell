@@ -62,7 +62,7 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                                     <Rating name="read-only" value={product.rating} precision={0.5} readOnly className={styles.productRating} />
 
                                     <CContainer id="product_5" className={styles.priceBlock}>
-                                        {product.oldPrice && (
+                                        {(product?.oldPrice !== undefined && product.oldPrice !== null) && (
                                             <CText id="product_6" className={styles.oldPrice}>{getPriceWithCurrency(product.oldPrice)}</CText>
                                         )}
                                         <CText id="product_7" className={styles.price}>{getPriceWithCurrency(product.price)}</CText>
@@ -141,10 +141,10 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<ProductP
     // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
     console.log('ProductThemePage::getStaticProps: pid', slug, 'context.params', context.params)
-    let data: TProduct | null = null;
+    let data: TProduct | undefined = undefined;
     if (slug && typeof slug === 'string') {
         try {
-            data = await getGraphQLClient().getProductBySlug(slug, false);
+            data = await getGraphQLClient()?.getProductBySlug(slug, false);
         } catch (e) {
             console.error('Product::getStaticProps', e)
         }

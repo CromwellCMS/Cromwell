@@ -1,6 +1,6 @@
 import React from 'react';
 import { TCromwellPage, TProductCategory, TGetStaticProps, TProduct } from '@cromwell/core';
-import { Pagination } from '@material-ui/lab';
+import { Pagination as MUIPagination } from '@material-ui/lab';
 import { Link } from '@cromwell/core-frontend';
 import { CContainer, getGraphQLClient, CList } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
@@ -9,14 +9,34 @@ import { Product } from '../../components/product/Product';
 import commonStyles from '../../styles/common.module.scss';
 //@ts-ignore
 import styles from '../../styles/pages/Category.module.scss';
+//@ts-ignore
+import layoutStyles from '../../components/layout/Layout.module.scss';
+
 import { gql } from '@apollo/client';
 
 interface ProductProps {
     data?: TProductCategory;
     slug: string;
 }
+
+const Pagination = (props: {
+    count: number;
+    page: number;
+    onChange: (page: number) => void;
+}) => {
+    return (
+        <MUIPagination count={props.count} page={props.page}
+            onChange={(event: React.ChangeEvent<unknown>, value: number) => {
+                props.onChange(value)
+            }}
+            className={styles.pagination}
+            showFirstButton showLastButton
+        />
+    )
+}
+
 const ProductCategory: TCromwellPage<ProductProps> = (props) => {
-    console.log('ProductThemePage props', props);
+    // console.log('ProductThemePage props', props);
     const category = props.data;
     const client = getGraphQLClient();
 
@@ -31,39 +51,30 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
                         </div>
                     </div>
                     <div className={styles.main}>
-                        <div className={styles.productList}>
-                            {category && (
-                                <CList<TProduct>
-                                    ListItem={(props) => <Product data={props.data} className={styles.product} key={props.data?.id} />}
-                                    usePagination
-                                    firstBatch={category?.products}
-                                    useQueryPagination
-                                    loader={async (pageNumber: number) => {
-                                        if (props.slug) {
-                                            const cat = await client.getProductCategoryBySlug(props.slug,
-                                                { pageSize: 20, pageNumber });
-                                            if (cat) return cat.products;
-                                        }
-                                    }}
-                                    cssClasses={{
-                                        page: styles.productList
-                                    }}
-                                    elements={{
-                                        pagination: (props) => {
-                                            return (
-                                                <Pagination count={props.count} page={props.page}
-                                                    onChange={(event: React.ChangeEvent<unknown>, value: number) => {
-                                                        props.onChange(value)
-                                                    }}
-                                                    className={styles.pagination}
-                                                    showFirstButton showLastButton
-                                                />
-                                            )
-                                        }
-                                    }}
-                                />
-                            )}
-                        </div>
+                        {category && (
+                            <CList<TProduct>
+                                ListItem={(props) => <Product data={props.data} className={styles.product} key={props.data?.id} />}
+                                usePagination
+                                useShowMoreButton
+                                useQueryPagination
+                                maxDomPages={2}
+                                scrollContainerSelector={`.${layoutStyles.Layout}`}
+                                firstBatch={category?.products}
+                                loader={async (pageNumber: number) => {
+                                    if (props.slug) {
+                                        const cat = await client?.getProductCategoryBySlug(props.slug,
+                                            { pageSize: 20, pageNumber });
+                                        if (cat) return cat.products;
+                                    }
+                                }}
+                                cssClasses={{
+                                    page: styles.productList
+                                }}
+                                elements={{
+                                    pagination: Pagination
+                                }}
+                            />
+                        )}
                     </div>
                 </div>
 
@@ -76,10 +87,10 @@ export const getStaticProps: TGetStaticProps = async (context) => {
     // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
     console.log('CategoryThemePage::getStaticProps: slug', slug, 'context.params', context.params)
-    let data: TProductCategory | null = null;
+    let data: TProductCategory | undefined = undefined;
     if (slug && typeof slug === 'string') {
         try {
-            data = await getGraphQLClient().
+            data = await getGraphQLClient()?.
                 getProductCategoryBySlug(slug, { pageSize: 20 });
         } catch (e) {
             console.error('Product::getStaticProps', e)

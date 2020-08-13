@@ -19,11 +19,11 @@ export type TCromwellPage<Props = {}> = NextPage<Props & TCromwellPageCoreProps>
 export type TCromwellPageCoreProps = {
     pluginsData: Record<string, any>;
     childStaticProps: Record<string, any>;
-    pageConfig: TPageConfig;
-    cmsConfig: TCmsConfig;
-    appConfig: TAppConfig;
-    appCustomConfig: Record<string, any>;
-    pagesInfo: TPageInfo[];
+    pageConfig?: TPageConfig;
+    cmsConfig?: TCmsConfig;
+    appConfig?: TAppConfig;
+    appCustomConfig?: Record<string, any>;
+    pagesInfo?: TPageInfo[];
 }
 
 export type PageName = keyof {
@@ -106,6 +106,8 @@ export type TCromwellStore = {
     pagesInfo?: TPageInfo[];
     currency?: string;
     onCurrencyChange?: (currency: string) => void;
+    graphQLClient?: any;
+    restAPIClient?: any;
 }
 
 declare global {
@@ -374,7 +376,11 @@ export type TAttributeProductVariant = {
 export type TProductFilter = {
     minPrice?: number;
     maxPrice?: number;
-    attributes?: TAttributeInstance[];
+    attributes?: TProductFilterAttribute[];
+}
+export type TProductFilterAttribute = {
+    key: string;
+    values: string[];
 }
 
 export type TPagedList<Entity> = {

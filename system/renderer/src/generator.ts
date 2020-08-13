@@ -23,8 +23,8 @@ const main = async () => {
     let pluginImportPaths: Record<string, any> | undefined = undefined;
 
     // Read global plugins
-    const pluginNames = await getRestAPIClient().getPluginNames();
-    pluginNames.forEach(name => {
+    const pluginNames = await getRestAPIClient()?.getPluginNames();
+    pluginNames?.forEach(name => {
         const configPath = `${globalPluginsDir}/${name}/cromwell.config.json`;
         if (fs.existsSync(configPath)) {
             let config: TPluginConfig | undefined;

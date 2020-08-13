@@ -35,7 +35,7 @@ export const Product = (props: { data?: TProduct, className?: string }) => {
                 </div>
                 <div className={styles.priceCartBlock}>
                     <div className={styles.priceBlock}>
-                        {data?.oldPrice && (
+                        {(data?.oldPrice !== undefined && data?.oldPrice !== null) && (
                             <p className={styles.oldPrice}>{getPriceWithCurrency(data.oldPrice)}</p>
                         )}
                         <p className={styles.price}>{getPriceWithCurrency(data?.price)}</p>
