@@ -2,8 +2,7 @@ import { TCromwellStore, TAppConfig, TProduct, CommonComponentProps, TCmsConfig 
 import { isServer, ECommonComponentNames } from './constants';
 
 const initialStore: TCromwellStore = {
-    pluginsData: {},
-    components: {}
+    pluginsData: {}
 }
 
 if (isServer()) {
@@ -73,10 +72,16 @@ export const getAppCustomConfigTextProp = (propPath: string): string => {
 }
 
 
-export const loadCommonComponent = (componentName: ECommonComponentNames | string): React.ComponentType<CommonComponentProps> => {
-    return getStore().components[componentName];
+export const loadCommonComponent = (componentName: ECommonComponentNames | string): React.ComponentType<CommonComponentProps> | undefined => {
+    const components = getStore().components;
+    return components ? components[componentName] : undefined;
 }
 
 export const saveCommonComponent = (componentName: ECommonComponentNames | string, component: React.ComponentType<CommonComponentProps>): void => {
-    getStore().components[componentName] = component;
+    let components = getStore().components;
+    if (!components) {
+        components = {};
+        getStore().components = components;
+    }
+    components[componentName] = component;
 }

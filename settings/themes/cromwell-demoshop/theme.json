@@ -28,24 +28,6 @@
             }
         },
         {
-            "route": "product/[slug]",
-            "name": "product",
-            "title": "Product page",
-            "isDynamic": true,
-            "modifications": [
-                {
-                    "type": "plugin",
-                    "componentId": "112",
-                    "destinationComponentId": "3",
-                    "destinationPosition": "after",
-                    "isVirtual": true,
-                    "plugin": {
-                        "pluginName": "ProductShowcase"
-                    }
-                }
-            ]
-        },
-        {
             "route": "pages/some_page",
             "name": "my-some_page",
             "title": "My first page",

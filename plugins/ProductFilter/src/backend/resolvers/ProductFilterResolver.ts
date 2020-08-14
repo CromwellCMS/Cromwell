@@ -1,4 +1,4 @@
-import { DBTableNames, TProduct } from '@cromwell/core';
+import { DBTableNames, TProduct, TPagedList } from '@cromwell/core';
 import {
     applyInnerJoinById,
     getPaged,
@@ -18,25 +18,21 @@ export default class ProductFilterResolver {
 
     @Query(() => PagedProduct)
     async getFilteredProductsFromCategory(
-        @Arg("slug") slug: string,
+        @Arg("categoryId") categoryId: string,
         @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>,
         @Arg("filterParams", { nullable: true }) filterParams: ProductFilter
-    ) {
-        const categoryRepo = getCustomRepository(ProductCategoryRepository);
-        const category = await categoryRepo.getProductCategoryBySlug(slug);
-        if (category) {
-            const productRepo = getCustomRepository(ProductRepository);
-            const qb = productRepo.createQueryBuilder(DBTableNames.Product);
-            applyInnerJoinById(qb, DBTableNames.Product, 'categories',
-                DBTableNames.ProductCategory, category.id);
+    ): Promise<TPagedList<TProduct> | undefined> {
+        const productRepo = getCustomRepository(ProductRepository);
+        const qb = productRepo.createQueryBuilder(DBTableNames.Product);
+        applyInnerJoinById(qb, DBTableNames.Product, 'categories',
+            DBTableNames.ProductCategory, categoryId);
 
-            if (filterParams) {
-                this.applyProductFilter(qb, filterParams);
-            }
-
-            const paged = await getPaged(qb, DBTableNames.Product, pagedParams);
-            return paged;
+        if (filterParams) {
+            this.applyProductFilter(qb, filterParams);
         }
+
+        const paged = await getPaged(qb, DBTableNames.Product, pagedParams);
+        return paged;
 
     }
 

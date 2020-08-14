@@ -190,7 +190,7 @@ const ProductPage = () => {
                                     if (attr.key === prodAttr.key) origAttr = attr;
                                 }
                                 if (origAttr) {
-                                    const leftValues = origAttr.values.filter(v => !prodAttr.values.some(pv => pv.value === v))
+                                    const leftValues = origAttr.values.filter(v => !prodAttr.values.some(pv => pv.value === v.value))
                                     const rightValues = prodAttr.values.map(v => v.value);
                                     return (
                                         <div className={styles.attributeBlock}>
@@ -212,7 +212,7 @@ const ProductPage = () => {
                                                 </Tooltip>
                                             </div>
                                             <TransferList
-                                                left={leftValues}
+                                                left={leftValues.map(v => v.value)}
                                                 setLeft={(val) => {
                                                 }}
                                                 right={rightValues}

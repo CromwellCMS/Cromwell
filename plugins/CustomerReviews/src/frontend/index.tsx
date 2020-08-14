@@ -31,7 +31,8 @@ const CustomerReviews = (props: CustomerReviewsProps) => {
             }
             <p>Showcase time!</p>
             {
-                props.productShowcase && props.productShowcase.products && props.productShowcase.products.map(p => (
+                props.productShowcase && props.productShowcase.products && props.productShowcase.products.elements &&
+                props.productShowcase.products.elements.map(p => (
                     <div key={p.id}>
                         <Link href="/product/[slug]"><a>Name: {p.name}</a></Link>
                         <p>Price: {p.price}</p>
@@ -47,7 +48,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Custom
     let data = {};
     const limit = 20;
     try {
-        const products = await getGraphQLClient().query({
+        const products = await getGraphQLClient()?.query({
             query: gql`
                 query productShowcase {
                     productShowcase(slug: "1") {
@@ -64,7 +65,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Custom
             `
         });
 
-        const reviews = await getGraphQLClient().query({
+        const reviews = await getGraphQLClient()?.query({
             query: gql`
                  query productShowcaseReviews {
                     productShowcaseReviews {

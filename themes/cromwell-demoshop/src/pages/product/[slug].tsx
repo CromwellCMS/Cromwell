@@ -129,7 +129,7 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                         </CContainer>
                     </>)}
                 </CContainer>
-                <CContainer id="3" />
+                <CContainer id="Product_ProductShowcase" />
             </div>
         </Layout>
     );

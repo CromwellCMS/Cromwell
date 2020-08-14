@@ -9,12 +9,13 @@ export const createGetStaticProps = (pageName: BasePageNames | string) => {
         const apiClient = getRestAPIClient();
         const timestamp = Date.now();
         const childStaticProps = await getThemeStaticProps(pageName, context);
-        const pluginsData = await pluginsDataFetcher(pageName, context);
+        const { pluginsData, pluginsSettings } = await pluginsDataFetcher(pageName, context);
         const pageConfig = await apiClient?.getPageConfig(pageName);
         const appConfig = await apiClient?.getAppConfig();
         const cmsConfig = await apiClient?.getCmsConfig();
         const appCustomConfig = await apiClient?.getAppCustomConfig();
         const pagesInfo = await apiClient?.getPagesInfo();
+
         const timestamp2 = Date.now();
 
         // if (context && context.params && context.params.slug) {
@@ -26,6 +27,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string) => {
         return {
             props: {
                 pluginsData,
+                pluginsSettings,
                 childStaticProps,
                 pageConfig,
                 cmsConfig,

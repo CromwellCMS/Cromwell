@@ -214,6 +214,31 @@ class CGraphQLClient {
         return res?.data?.productCategory;
     }
 
+    public getProductsFromCategory = async (categoryId: string, pagedParams?: TPagedParams<TProduct>, withCategories: boolean = false): Promise<TPagedList<TProduct>> => {
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $withCategories: Boolean!) {
+                    getProductsFromCategory(categoryId: $categoryId, pagedParams: $pagedParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...ProductFragment
+                        }
+                    }
+                }
+                ${this.ProductFragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                withCategories,
+                pagedParams: pagedParams ? pagedParams : {},
+                categoryId
+            }
+        })
+        return res?.data?.getProductsFromCategory;
+    }
+
 
     // </ProductCategory>
 
@@ -222,7 +247,10 @@ class CGraphQLClient {
     public AttributeFragment = gql`
        fragment AttributeFragment on Attribute {
             key
-            values
+            values {
+                value
+                icon
+            }
             type
        }
    `

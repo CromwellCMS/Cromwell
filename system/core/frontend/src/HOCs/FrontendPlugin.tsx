@@ -1,14 +1,16 @@
 import React from 'react';
-import { getStoreItem } from '@cromwell/core';
+import { getStoreItem, TFrontendPluginProps } from '@cromwell/core';
 
 
-export function FrontendPlugin<Data>(Component: React.ComponentType<Data>, pluginName: string) {
+export function FrontendPlugin<TData>(Component: React.ComponentType<TFrontendPluginProps<TData>>, pluginName: string) {
     return (): JSX.Element => {
         const pluginsData = getStoreItem('pluginsData');
+        const pluginsSettings = getStoreItem('pluginsSettings');
         const data = pluginsData ? pluginsData[pluginName] : {};
+        const settings = pluginsSettings ? pluginsSettings[pluginName] : {};
         // console.log('FrontendPlugin pluginName', pluginName, 'data', data, 'pluginsData', pluginsData);
         return (
-            <Component {...data} />
+            <Component data={data} settings={settings} />
         )
     }
 }

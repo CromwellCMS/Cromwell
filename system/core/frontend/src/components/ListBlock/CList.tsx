@@ -3,6 +3,7 @@ import React from 'react'
 import styles from './CList.module.scss';
 import { TProduct, TPagedList, TPagedMeta, isServer } from '@cromwell/core';
 import debounce from 'debounce';
+import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 // import Alertify from 'alertify.js';
 
 const getPageId = (pageNum: number) => "infinity-page_" + pageNum;
@@ -60,6 +61,9 @@ type TElements = {
 }
 
 type TProps<DataType, ListItemProps> = {
+    /** CromwellBlock id */
+    id: string;
+
     /** Component that will display items */
     ListItem: React.ComponentType<TItemComponentProps<DataType, ListItemProps>>;
 
@@ -240,7 +244,6 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
 
         if (data.elements) {
             this.addElementsToList(data.elements, this.currentPageNum);
-            this.forceUpdate();
         }
         this.isInitialized = true;
     }
@@ -250,7 +253,6 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
         this.remoteRowCount = data.length;
         this.addElementsToList(data, this.currentPageNum);
         this.isInitialized = true;
-        this.forceUpdate();
     }
 
 
@@ -408,13 +410,26 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
         this.forceUpdate();
     }
 
+    private wrapContent = (content: JSX.Element): JSX.Element => {
+        return (
+            <CromwellBlock id={this.props.id} type='list' content={(data, blockRef, setContentInstance) => {
+                if (setContentInstance) setContentInstance(this);
+                return content;
+            }}
+
+            />
+        )
+    }
+
     render() {
+        let content;
         if (this.isLoading || this.props.isLoading) {
-            return (
+            content = (
                 <div className={styles.baseInfiniteLoader}>
                     {this.props.elements?.preloader}
                 </div>
-            )
+            );
+            return this.wrapContent(content);
         }
 
         if (this.props.dataList) {
@@ -428,11 +443,12 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
         // console.log('BaseInfiniteLoader::render', this.minPageBound, this.maxPageBound, this.list)
 
         if (this.list.length === 0) {
-            return (
+            content = (
                 <div className={styles.baseInfiniteLoader}>
                     <h3>{this.props.noDataLabel ? this.props.noDataLabel : 'No data'}</h3>
                 </div>
-            )
+            );
+            return this.wrapContent(content);
         }
         const handleShowMoreClick = () => {
             if (this.maxPage > this.maxPageBound) {
@@ -443,7 +459,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
             }
         }
 
-        return (
+        content = (
             <div className={styles.baseInfiniteLoader}>
                 <div className={`${styles.scrollBox} ${this.props.cssClasses?.scrollBox || ''}`}
                     ref={this.scrollBoxRef}
@@ -494,6 +510,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                 )}
             </div>
         );
+        return this.wrapContent(content);
     }
 
 }

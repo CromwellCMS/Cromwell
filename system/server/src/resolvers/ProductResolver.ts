@@ -1,12 +1,16 @@
-import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from "type-graphql";
-import { Product, PagedProduct } from '@cromwell/core-backend';
-import { ProductRepository } from '@cromwell/core-backend';
-import { ProductCategoryRepository } from '@cromwell/core-backend';
-import { getCustomRepository } from "typeorm";
-import { CreateProduct } from '@cromwell/core-backend';
-import { UpdateProduct } from '@cromwell/core-backend';
-import { ProductCategory, PagedParamsInput } from '@cromwell/core-backend';
-import { TProductCategory, TProduct, TPagedList } from "@cromwell/core";
+import { TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import {
+    CreateProduct,
+    PagedParamsInput,
+    PagedProduct,
+    Product,
+    ProductCategory,
+    ProductCategoryRepository,
+    ProductRepository,
+    UpdateProduct
+} from '@cromwell/core-backend';
+import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { getCustomRepository } from 'typeorm';
 
 @Resolver(Product)
 export class ProductResolver {
@@ -41,6 +45,11 @@ export class ProductResolver {
     @Mutation(() => Boolean)
     async deleteProduct(@Arg("id") id: string): Promise<boolean> {
         return await this.repo.deleteProduct(id);
+    }
+
+    @Query(() => PagedProduct)
+    async getProductsFromCategory(@Arg("categoryId") categoryId: string, @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {
+        return await this.repo.getProductsFromCategory(categoryId, pagedParams);
     }
 
     @FieldResolver(() => [ProductCategory])

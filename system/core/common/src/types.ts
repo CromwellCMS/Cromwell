@@ -18,12 +18,18 @@ export type TCromwellPage<Props = {}> = NextPage<Props & TCromwellPageCoreProps>
 
 export type TCromwellPageCoreProps = {
     pluginsData: Record<string, any>;
+    pluginsSettings: Record<string, any>;
     childStaticProps: Record<string, any>;
     pageConfig?: TPageConfig;
     cmsConfig?: TCmsConfig;
     appConfig?: TAppConfig;
     appCustomConfig?: Record<string, any>;
     pagesInfo?: TPageInfo[];
+}
+
+export type TFrontendPluginProps<TData> = {
+    data: TData;
+    settings: any;
 }
 
 export type PageName = keyof {
@@ -92,9 +98,13 @@ export type TPageConfig = TPageInfo & {
     pageCustomConfig: Record<string, any>;
 }
 
+export type TCromwellBlock = React.Component<TCromwellBlockProps> & {
+    getContentInstance: () => React.Component;
+}
 
 export type TCromwellStore = {
     pluginsData?: Record<string, any>;
+    pluginsSettings?: Record<string, any>;
     cmsconfig?: TCmsConfig;
     pageConfig?: TPageConfig;
     appCustomConfig?: Record<string, any>;
@@ -102,7 +112,10 @@ export type TCromwellStore = {
     importPlugin?: (pluginName: string) => { default: ComponentType } | undefined;
     importDynamicPlugin?: (pluginName: string) => ComponentType | undefined;
     rebuildPage?: (path: string) => void;
-    components: Record<string, React.ComponentType<CommonComponentProps>>;
+    /** { [ComponentName]: (Class/function) } */
+    components?: Record<string, React.ComponentType<CommonComponentProps>>;
+    /** { [CromwellBlockId]: Instance} */
+    blockInstances?: Record<string, TCromwellBlock>;
     pagesInfo?: TPageInfo[];
     currency?: string;
     onCurrencyChange?: (currency: string) => void;
@@ -123,7 +136,7 @@ declare global {
 
 export type TBlockDestinationPositionType = 'before' | 'after' | 'inside';
 
-export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image' | 'gallery';
+export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image' | 'gallery' | 'list';
 
 export type TCromwellBlockData = {
     /**
@@ -335,10 +348,14 @@ export interface TAuthor extends TBasePageEntityType {
 
 export type TAttribute = {
     key: string;
-    values: string[];
+    values: TAttributeValue[];
     type: 'radio' | 'checkbox';
+    icon?: string;
 }
-
+export type TAttributeValue = {
+    value: string;
+    icon?: string;
+}
 
 export type TPagedParams<Entity> = {
     pageNumber?: number;
@@ -383,7 +400,9 @@ export type TCromwellBlockProps = {
     type?: TCromwellBlockType;
     className?: string;
     content?: (data?: TCromwellBlockData,
-        blockRef?: React.RefObject<HTMLDivElement>) => React.ReactNode;
+        blockRef?: React.RefObject<HTMLDivElement>,
+        setContentInstance?: (inst: React.Component) => void
+    ) => React.ReactNode;
 }
 
 export type TContentComponentProps = {

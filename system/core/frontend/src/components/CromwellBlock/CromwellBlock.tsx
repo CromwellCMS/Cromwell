@@ -1,4 +1,7 @@
-import { getStoreItem, TBlockDestinationPositionType, TCromwellBlockData, TCromwellBlockProps } from '@cromwell/core';
+import {
+    getStoreItem, setStoreItem, TBlockDestinationPositionType, TCromwellBlockData,
+    TCromwellBlockProps, TCromwellBlock
+} from '@cromwell/core';
 import React, { Component } from 'react';
 import { CContainer } from '../ContainerBlock/CContainer';
 import { CText } from '../TextBlock/CText';
@@ -6,23 +9,41 @@ import { CHTML } from '../HTMLBlock/CHTML';
 import { CImage } from '../ImageBlock/CImage';
 import { CPlugin } from '../PluginBlock/CPlugin';
 import { CGallery } from '../GalleryBlock/CGallery';
-import { cromwellBlockTypeToClassname, cromwellIdToHTML, cromwellBlockPluginNameToClassname } from '../../constants';
+import {
+    cromwellBlockTypeToClassname, cromwellIdToHTML,
+    cromwellBlockPluginNameToClassname
+} from '../../constants';
 //@ts-ignore
 import styles from './CromwellBlock.module.scss';
 
 
-export class CromwellBlock extends Component<TCromwellBlockProps> {
+export class CromwellBlock extends Component<TCromwellBlockProps> implements TCromwellBlock {
 
     private data?: TCromwellBlockData;
     private virtualBlocks: TCromwellBlockData[] = [];
     private id: string;
+    private contentInstance: React.Component;
 
     private blockRef = React.createRef<HTMLDivElement>();
 
     constructor(props: TCromwellBlockProps) {
         super(props);
-
     }
+
+    componentDidMount() {
+        let instances = getStoreItem('blockInstances');
+        if (!instances) instances = {}
+        instances[this.props.id] = this;
+        setStoreItem('blockInstances', instances);
+    }
+
+    componentWillUnmount() {
+        let instances = getStoreItem('blockInstances');
+        if (instances) delete instances[this.props.id];
+        setStoreItem('blockInstances', instances);
+    }
+
+    public getContentInstance = () => this.contentInstance;
 
     private readConfig = () => {
         this.data = undefined;
@@ -125,7 +146,8 @@ export class CromwellBlock extends Component<TCromwellBlockProps> {
 
         if (this.props.content) {
             // blockContent = <ContentComp data={this.data} blockRef={this.blockRef} />
-            blockContent = this.props.content(this.data, this.blockRef)
+            blockContent = this.props.content(this.data, this.blockRef,
+                inst => this.contentInstance = inst)
         }
 
 

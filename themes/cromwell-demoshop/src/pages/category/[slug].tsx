@@ -1,5 +1,5 @@
 import React from 'react';
-import { TCromwellPage, TProductCategory, TGetStaticProps, TProduct } from '@cromwell/core';
+import { TCromwellPage, TProductCategory, TGetStaticProps, TProduct, TPagedList } from '@cromwell/core';
 import { Pagination as MUIPagination } from '@material-ui/lab';
 import { Link } from '@cromwell/core-frontend';
 import { CContainer, getGraphQLClient, CList } from '@cromwell/core-frontend';
@@ -11,12 +11,12 @@ import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Category.module.scss';
 //@ts-ignore
 import layoutStyles from '../../components/layout/Layout.module.scss';
-
 import { gql } from '@apollo/client';
 
 interface ProductProps {
-    data?: TProductCategory;
-    slug: string;
+    category?: TProductCategory | null;
+    products?: TPagedList<TProduct> | null;
+    slug?: string;
 }
 
 const Pagination = (props: {
@@ -37,7 +37,7 @@ const Pagination = (props: {
 
 const ProductCategory: TCromwellPage<ProductProps> = (props) => {
     // console.log('ProductThemePage props', props);
-    const category = props.data;
+    const category = props.category;
     const client = getGraphQLClient();
 
     return (
@@ -45,27 +45,23 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
             <div className={commonStyles.content}>
                 <div className={styles.content}>
                     <div className={styles.sidebar}>
-                        <h3>Filters..</h3>
-                        <div>
-
-                        </div>
+                        <CContainer id="Category_ProductFilter" />
                     </div>
                     <div className={styles.main}>
                         {category && (
                             <CList<TProduct>
+                                id="Category_ProductList"
                                 ListItem={(props) => <Product data={props.data} className={styles.product} key={props.data?.id} />}
                                 usePagination
                                 useShowMoreButton
                                 useQueryPagination
+                                disableCaching
                                 maxDomPages={2}
                                 scrollContainerSelector={`.${layoutStyles.Layout}`}
-                                firstBatch={category?.products}
+                                firstBatch={props.products ? props.products : undefined}
                                 loader={async (pageNumber: number) => {
-                                    if (props.slug) {
-                                        const cat = await client?.getProductCategoryBySlug(props.slug,
-                                            { pageSize: 20, pageNumber });
-                                        if (cat) return cat.products;
-                                    }
+                                    return client?.getProductsFromCategory(category.id,
+                                        { pageSize: 20, pageNumber })
                                 }}
                                 cssClasses={{
                                     page: styles.productList
@@ -83,25 +79,35 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
     );
 }
 
-export const getStaticProps: TGetStaticProps = async (context) => {
+export const getStaticProps: TGetStaticProps = async (context): Promise<ProductProps> => {
     // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
     console.log('CategoryThemePage::getStaticProps: slug', slug, 'context.params', context.params)
-    let data: TProductCategory | undefined = undefined;
+    let category: TProductCategory | undefined | null = null;
     if (slug && typeof slug === 'string') {
         try {
-            data = await getGraphQLClient()?.
-                getProductCategoryBySlug(slug, { pageSize: 20 });
+            category = await getGraphQLClient()?.
+                getProductCategoryBySlug(slug);
         } catch (e) {
             console.error('Product::getStaticProps', e)
         }
     } else {
         console.error('Product::getStaticProps: !pid')
     }
+    let products: TPagedList<TProduct> | undefined | null = null;
+    if (category) {
+        try {
+            products = await getGraphQLClient()?.getProductsFromCategory(category.id,
+                { pageSize: 20 })
+        } catch (e) {
+            console.error('Product::getStaticProps', e)
+        }
+    }
 
     return {
-        slug,
-        data
+        slug: slug as string,
+        category: category ? category : null,
+        products: products ? products : null
     }
 
 }

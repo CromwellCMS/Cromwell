@@ -39,6 +39,7 @@ const ProductList = () => {
             </div>
             <div className={styles.productListWrapper}>
                 <CList<TProduct>
+                    id="Admin_ProductsList"
                     ListItem={ProductItem}
                     useAutoLoading
                     usePagination

@@ -2,39 +2,30 @@ import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
 export const useStyles = makeStyles((theme: Theme) =>
     createStyles({
-        wrapper: {
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-            padding: '10px 0'
+        card: {
+            margin: '15px 0'
         },
-        title: {
-            margin: '0 20px',
-            fontWeight: 600,
-            fontSize: '26px'
+        root: {
+            margin: 'auto',
+        },
+        cardHeader: {
+            padding: theme.spacing(1, 2),
         },
         list: {
-            display: 'flex'
+            maxHeight: 230,
+            backgroundColor: theme.palette.background.paper,
+            overflow: 'auto',
         },
-        listItem: {
-            margin: '0 10px',
-            padding: '10px'
+        button: {
+            margin: theme.spacing(0.5, 0),
         },
-        popover: {
-            pointerEvents: 'none',
-            maxWidth: '1200px'
-        },
-        paper: {
-            // display: 'flex',
-            pointerEvents: 'initial',
-            padding: '15px'
-        },
-        swiperContainer: {
-            width: '100%',
-            padding: '15px 0'
-        },
-        swiperPagination: {
-            bottom: 0
+        attrValueIcon: {
+            width: '30px',
+            height: '30px',
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+            backgroundSize: 'contain',
+            marginRight: '10px'
         }
     }),
 );

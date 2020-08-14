@@ -10,7 +10,10 @@ checkCMSConfig();
  * @param pageName 
  * @param context - StaticPageContext of Page
  */
-export const pluginsDataFetcher = async (pageName: BasePageNames | string, context: StaticPageContext): Promise<Record<string, any>> => {
+export const pluginsDataFetcher = async (pageName: BasePageNames | string, context: StaticPageContext): Promise<{
+    pluginsData: Record<string, any>;
+    pluginsSettings: Record<string, any>;
+}> => {
     const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.themeName) {
         console.log('cmsconfig', cmsconfig)
@@ -22,6 +25,8 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
     const pluginConfigs = pluginsModifications ? Object.entries(pluginsModifications) : undefined;
     // console.log('pageName', pageName, 'pluginConfigs', JSON.stringify(pluginConfigs))
     const pluginsData: any = {};
+    const pluginsSettings: any = {}
+
     if (pluginConfigs && Array.isArray(pluginConfigs)) {
         for (const pluginConfig of pluginConfigs) {
             // console.log('pluginConfig', pluginConfig);
@@ -29,6 +34,9 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
             const pluginConfigObj: any = pluginConfig[1];
             const pluginContext = JSON.parse(JSON.stringify(context));
             pluginContext.pluginConfig = pluginConfigObj;
+
+            const settings = await restAPIClient?.getPluginSettings(pluginName);
+            if (settings) pluginsSettings[pluginName] = settings;
             // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
             try {
                 const plugin = await importPlugin(pluginName);
@@ -55,6 +63,9 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
             }
         }
     }
-    return pluginsData;
+    return {
+        pluginsData,
+        pluginsSettings
+    };
 }
 
