@@ -1,8 +1,8 @@
 import {
     TGetStaticProps, TProductCategory, TAttribute, TAttributeValue,
-    TPagedParams, TProduct, TPagedList, TFrontendPluginProps
+    TPagedParams, TProduct, TPagedList, TFrontendPluginProps, getBlockInstance
 } from '@cromwell/core';
-import { FrontendPlugin, getGraphQLClient } from '@cromwell/core-frontend';
+import { FrontendPlugin, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import React, { Component, useEffect, useState } from 'react';
 import {
     Checkbox, FormHelperText,
@@ -22,21 +22,24 @@ import { useStyles } from './styles';
 import { gql } from '@apollo/client';
 import { TProductFilter } from '../types';
 
-interface ProductFilterProps {
+interface TProductFilterData {
     productCategory?: TProductCategory;
     slug?: string;
     attributes: TAttribute[];
 }
+interface TProductFilterSettings {
+    productListId: string;
+}
 
 
-const ProductFilter = (props: TFrontendPluginProps<ProductFilterProps>) => {
-    const attributes = props?.data?.attributes;
+const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductFilterSettings>): JSX.Element => {
+    const { attributes, productCategory } = props.data
     const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
     const classes = useStyles();
     const client = getGraphQLClient();
 
     const getFiltered = async (categoryId: string, pagedParams?: TPagedParams<TProduct>,
-        filterParams?: TProductFilter, withCategories: boolean = false): Promise<TPagedList<TProduct>> => {
+        filterParams?: TProductFilter, withCategories = false): Promise<TPagedList<TProduct>> => {
         const data = await client?.query({
             query: gql`
                 query getFilteredProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilter!, $withCategories: Boolean!) {
@@ -62,39 +65,48 @@ const ProductFilter = (props: TFrontendPluginProps<ProductFilterProps>) => {
         return data?.data?.getFilteredProductsFromCategory;
     }
 
-    // // Overwrite getProductsFromCategory method of CMS 
-    // // so all other clients (as themes) will use modified method with filters
-    // useEffect(() => {
-    //     if (client) {
-    //         client.getProductsFromCategory = (categoryId: string,
-    //             pagedParams?: TPagedParams<TProduct> | undefined,
-    //             withCategories?: boolean): Promise<TPagedList<TProduct>> => {
-    //             const filterOptions = {
-    //                 attributes: Object.keys(checkedAttrs).map(key => ({
-    //                     key, values: checkedAttrs[key]
-    //                 }))
-    //             }
-    //             console.log('checkedAttrs', checkedAttrs);
-    //             console.log('filterOptions', filterOptions);
-    //             return getFiltered(categoryId, pagedParams, filterOptions);
-    //         }
-    //     }
-    // });
-    // console.log('checkedAttrs', checkedAttrs)
-
     const handleSetAttribute = (key: string, checks: string[]) => {
         setCheckedAttrs(prev => {
             const newCheckedAttrs: Record<string, string[]> = JSON.parse(JSON.stringify(prev));
             newCheckedAttrs[key] = checks;
-            return newCheckedAttrs
+            return newCheckedAttrs;
         })
     }
+
+    useEffect(() => {
+        if (Object.keys(checkedAttrs).length > 0 && productCategory && productCategory.id) {
+            const productListId = props?.settings?.productListId;
+            if (productListId) {
+                const list: TCList | undefined = getBlockInstance(productListId)?.getContentInstance() as CList<any>;
+                if (list) {
+                    const listProps = Object.assign({}, list.getProps());
+                    listProps.loader = (pageNum: number): Promise<TPagedList<TProduct>> => {
+                        const filterOptions = {
+                            attributes: Object.keys(checkedAttrs).map(key => ({
+                                key, values: checkedAttrs[key]
+                            }))
+                        }
+                        const pagedParams: TPagedParams<TProduct> = {
+                            pageNumber: pageNum
+                        }
+                        return getFiltered(productCategory.id, pagedParams, filterOptions);
+                    };
+                    listProps.firstBatch = undefined;
+                    list.setProps(listProps);
+                    list.clearState();
+                    list.init();
+                }
+            }
+
+        }
+
+    }, [checkedAttrs]);
 
     return (
         <div>
             {attributes && (
                 attributes.map(attr => {
-                    let checked: string[] | undefined = checkedAttrs[attr.key];
+                    const checked: string[] | undefined = checkedAttrs[attr.key];
                     const numberOfChecked = () => checked ? checked.length : 0;
                     const handleToggleAll = () => {
                         if (attr.values.length !== 0) {
@@ -198,4 +210,4 @@ export const getStaticProps: TGetStaticProps = async (context) => {
     }
 }
 
-export default FrontendPlugin<ProductFilterProps>(ProductFilter, 'ProductFilter');
+export default FrontendPlugin(ProductFilter, 'ProductFilter');

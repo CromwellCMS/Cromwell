@@ -1,4 +1,4 @@
-import { StaticPageContext } from '@cromwell/core';
+import { StaticPageContext, TFrontendPluginProps } from '@cromwell/core';
 import { FrontendPlugin, getRestAPIClient, Link } from '@cromwell/core-frontend';
 import { MenuItem, Popover } from '@material-ui/core';
 import React, { useState } from 'react';
@@ -8,11 +8,8 @@ import { defaultSettings } from '../defaultSettings';
 import { TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
 
-type TMainMenuProps = {
-    settings: TMainMenuSettings
-}
 
-const MainMenu = (props: TMainMenuProps) => {
+const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
     const classes = useStyles();
     const items = (props.settings && props.settings.items) ? props.settings.items : defaultSettings.items;
     const [activeItem, setActiveItem] = useState<string>('none');
@@ -91,14 +88,4 @@ const MainMenu = (props: TMainMenuProps) => {
     )
 }
 
-export const getStaticProps = async (context: StaticPageContext): Promise<TMainMenuProps> => {
-    const apiClient = getRestAPIClient();
-    const settings: TMainMenuSettings = await apiClient?.getPluginSettings(config.name);
-
-    return {
-        settings
-    }
-
-}
-
-export default FrontendPlugin<TMainMenuProps>(MainMenu, 'MainMenu');
+export default FrontendPlugin<null, TMainMenuSettings>(MainMenu, 'MainMenu');

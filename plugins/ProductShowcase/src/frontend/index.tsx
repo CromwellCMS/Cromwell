@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useState } from 'react';
-import { StaticPageContext, TProductCategory, TProduct } from '@cromwell/core';
+import { StaticPageContext, TProductCategory, TProduct, TFrontendPluginProps } from '@cromwell/core';
 import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
 import { useStyles } from './styles';
 import { ECommonComponentNames, loadCommonComponent } from '@cromwell/core';
@@ -20,15 +20,15 @@ interface ProductShowcaseProps {
     productShowcase?: TProductCategory;
 }
 
-const ProductShowcase = (props: ProductShowcaseProps) => {
+const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX.Element => {
     const classes = useStyles();
     const [virtualData, setVirtualData] = useState<VirtualData>({ slides: [] } as any);
-
+    const productShowcaseData = props.data.productShowcase;
     // Try to load component if template has already defined common Product view
     let CommmonProductComp = loadCommonComponent(ECommonComponentNames.product);
     if (!CommmonProductComp) {
         // Default view otherwise
-        CommmonProductComp = (props: { data: TProduct }) => {
+        CommmonProductComp = (props: { data: TProduct }): JSX.Element => {
             const p = props.data;
             return (
                 <div key={p.id}>
@@ -52,10 +52,10 @@ const ProductShowcase = (props: ProductShowcaseProps) => {
             direction: 'horizontal',
             virtual: {
                 slides: (function () {
-                    if (props.productShowcase && props.productShowcase.products &&
-                        props.productShowcase.products.elements &&
-                        Array.isArray(props.productShowcase.products.elements)) {
-                        return props.productShowcase.products.elements;
+                    if (productShowcaseData && productShowcaseData.products &&
+                        productShowcaseData.products.elements &&
+                        Array.isArray(productShowcaseData.products.elements)) {
+                        return productShowcaseData.products.elements;
                     }
                     else return [];
                 }()),
@@ -88,7 +88,7 @@ const ProductShowcase = (props: ProductShowcaseProps) => {
                             <div className="swiper-slide"
                                 key={index}
                                 style={{ left: `${virtualData.offset}px` }}
-                            ><CommmonProductComp data={slide} /></div>
+                            >{CommmonProductComp && <CommmonProductComp data={slide} />}</div>
                         ))}
                     </div>
                     <div className={`swiper-pagination ${classes.swiperPagination}`}></div>
@@ -104,7 +104,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     let data;
     const limit = 20;
     try {
-        data = await getGraphQLClient().query({
+        data = await getGraphQLClient()?.query({
             query: gql`
                 query productShowcase {
                     productShowcase(slug: "1") {
@@ -137,4 +137,4 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     }
 }
 
-export default FrontendPlugin<ProductShowcaseProps>(ProductShowcase, 'ProductShowcase');
+export default FrontendPlugin(ProductShowcase, 'ProductShowcase');

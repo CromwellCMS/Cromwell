@@ -20,7 +20,9 @@ const main = async () => {
     if (!config) throw new Error('renderer::server cannot read CMS config');
 
     // Link public dir in root to renderer's public dir for Next.js server
-    lnk([`${projectRootDir}/public`], `${rendererRootDir}`)
+    if (!fs.existsSync(`${rendererRootDir}/public`)) {
+        lnk([`${projectRootDir}/public`], `${rendererRootDir}`)
+    }
 
     if (scriptName === 'dev') {
         shell.exec(`npx next dev -p ${config.frontendPort}`);

@@ -27,9 +27,9 @@ export type TCromwellPageCoreProps = {
     pagesInfo?: TPageInfo[];
 }
 
-export type TFrontendPluginProps<TData> = {
+export type TFrontendPluginProps<TData = any, TSettings = any> = {
     data: TData;
-    settings: any;
+    settings: TSettings;
 }
 
 export type PageName = keyof {
@@ -61,7 +61,7 @@ export type TAppConfig = {
     /** Theme's pages dist dir  */
     pagesDir?: string;
     /** Colors to use */
-    palette?: { primaryColor?: string }
+    palette?: { primaryColor?: string };
     /** Custom HTML add into head of every page */
     headHtml?: string;
 }
@@ -69,14 +69,14 @@ export type TAppConfig = {
 export type TThemeConfig = {
     pages: TPageConfig[];
     plugins: Record<string, {
-        pages: string[],
-        options: Record<string, any>
+        pages: string[];
+        options: Record<string, any>;
     }>;
     appConfig: TAppConfig;
     /**
      * Custom config that will be available at every page in the Store inside pageConfig props
      */
-    appCustomConfig?: Record<string, any>,
+    appCustomConfig?: Record<string, any>;
     globalModifications?: TCromwellBlockData[];
 }
 
@@ -183,28 +183,28 @@ export type TCromwellBlockData = {
 
         /** Custom editable plugin's config */
         pluginConfig?: Record<string, any>;
-    }
+    };
 
     /** For "image" block */
     image?: {
         src?: string;
         link?: string;
         withEffect?: boolean;
-    }
+    };
 
     /** For "HTML" block */
     html?: {
         innerHTML?: string;
-    }
+    };
 
     /** For gallery block */
-    gallery?: TGallerySettings
+    gallery?: TGallerySettings;
 
     /** For text block */
     text?: {
         content?: string;
         textElementType?: keyof React.ReactHTML;
-    }
+    };
 }
 
 type TImageSettings = {
@@ -215,8 +215,8 @@ type TImageSettings = {
 };
 
 export type TGallerySettings = {
-    images: TImageSettings[],
-    direction?: "horizontal" | "vertical",
+    images: TImageSettings[];
+    direction?: "horizontal" | "vertical";
     loop?: boolean;
     height?: number | string;
     width?: number | string;
@@ -225,14 +225,14 @@ export type TGallerySettings = {
     slidesPerView?: number;
     backgroundSize?: 'cover' | 'contain';
     navigation?: {
-        showOnHover?: boolean
+        showOnHover?: boolean;
     };
     showPagination?: boolean;
     showScrollbar?: boolean;
     showThumbs?: boolean | {
         width?: string;
         height?: string;
-        loop?: boolean
+        loop?: boolean;
     };
     zoom?: {
         zoomOnHover?: boolean;
@@ -240,7 +240,7 @@ export type TGallerySettings = {
     };
     components?: {
         imgWrapper?: React.ComponentType<{ image: TImageSettings }>;
-    }
+    };
 }
 
 export type TDBEntity = keyof {
@@ -316,7 +316,7 @@ export interface TProduct extends TBasePageEntityType {
     // Description (HTML allowed)
     description?: string;
     // Rating 1-5
-    rating?: number
+    rating?: number;
     // Custom attributes
     attributes?: TAttributeInstance[];
 }
@@ -399,16 +399,16 @@ export type TCromwellBlockProps = {
     id: string;
     type?: TCromwellBlockType;
     className?: string;
-    content?: (data?: TCromwellBlockData,
-        blockRef?: React.RefObject<HTMLDivElement>,
-        setContentInstance?: (inst: React.Component) => void
+    content?: (data: TCromwellBlockData | undefined,
+        blockRef: React.RefObject<HTMLDivElement>,
+        setContentInstance: (inst: React.Component) => void
     ) => React.ReactNode;
 }
 
 export type TContentComponentProps = {
     id: string;
     config?: TCromwellBlockData;
-    children?: React.ReactNode
+    children?: React.ReactNode;
 }
 
 export type TPluginConfig = {
@@ -418,9 +418,9 @@ export type TPluginConfig = {
     backend?: {
         resolversDir?: string;
         entitiesDir?: string;
-    }
+    };
 }
 
 export type CommonComponentProps = {
-    data: TProduct
+    data: TProduct;
 }

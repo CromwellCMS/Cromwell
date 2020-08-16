@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StaticPageContext, TProductCategory } from '@cromwell/core';
+import { StaticPageContext, TProductCategory, TFrontendPluginProps } from '@cromwell/core';
 import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
 import { ProductShowcaseReviewsType } from '../backend/entities/ProductShowcaseReviews';
 import { useStyles } from './styles';
@@ -10,8 +10,9 @@ interface CustomerReviewsProps {
     productShowcaseReviews?: ProductShowcaseReviewsType[];
 }
 
-const CustomerReviews = (props: CustomerReviewsProps) => {
+const CustomerReviews = (props: TFrontendPluginProps<CustomerReviewsProps>): JSX.Element => {
     const classes = useStyles();
+    const { productShowcase, productShowcaseReviews } = props.data;
     // console.log('ProductShowcase props', props)
     return (
         <div className={classes.wrapper}>
@@ -20,7 +21,7 @@ const CustomerReviews = (props: CustomerReviewsProps) => {
 
             </div>
             {
-                props.productShowcaseReviews && props.productShowcaseReviews.map(review => {
+                productShowcaseReviews && productShowcaseReviews.map(review => {
                     return (
                         <div key={review.id} className={classes.listItem}>
                             <p>Title: {review.title}</p>
@@ -31,8 +32,8 @@ const CustomerReviews = (props: CustomerReviewsProps) => {
             }
             <p>Showcase time!</p>
             {
-                props.productShowcase && props.productShowcase.products && props.productShowcase.products.elements &&
-                props.productShowcase.products.elements.map(p => (
+                productShowcase && productShowcase.products && productShowcase.products.elements &&
+                productShowcase.products.elements.map(p => (
                     <div key={p.id}>
                         <Link href="/product/[slug]"><a>Name: {p.name}</a></Link>
                         <p>Price: {p.price}</p>

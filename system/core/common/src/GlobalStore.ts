@@ -1,4 +1,4 @@
-import { TCromwellStore, TAppConfig, TProduct, CommonComponentProps, TCmsConfig } from './types';
+import { TCromwellStore, TAppConfig, TProduct, CommonComponentProps, TCmsConfig, TCromwellBlock } from './types';
 import { isServer, ECommonComponentNames } from './constants';
 
 const initialStore: TCromwellStore = {
@@ -84,4 +84,11 @@ export const saveCommonComponent = (componentName: ECommonComponentNames | strin
         getStore().components = components;
     }
     components[componentName] = component;
+}
+
+export const getBlockInstance = (blockId: string): TCromwellBlock | undefined => {
+    const blockInstances = getStore().blockInstances;
+    if (blockInstances) {
+        return blockInstances[blockId];
+    }
 }

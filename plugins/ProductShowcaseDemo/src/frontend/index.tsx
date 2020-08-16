@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
-import { TProduct, StaticPageContext, TPagedList } from '@cromwell/core';
+import { TProduct, StaticPageContext, TPagedList, TFrontendPluginProps } from '@cromwell/core';
 import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
 
 interface ProductShowcaseProps {
     products?: TPagedList<TProduct>;
 }
 
-const ProductShowcaseDemo = (props: ProductShowcaseProps) => {
+const ProductShowcaseDemo = (props: TFrontendPluginProps<ProductShowcaseProps>) => {
+    const products = props.data.products;
     return (
         <div style={{ backgroundColor: "#999" }}>
             <p>ProductShowcaseDemo::Showcase Time!</p>
             {
-                (props.products && props.products.elements) && props.products.elements.map(p => (
+                (products && products.elements) && products.elements.map(p => (
                     <div key={p.id}>
                         <Link href="/product/[slug]"><a>Name: {p.name}</a></Link>
                         <p>Price: {p.price}</p>
@@ -24,10 +25,10 @@ const ProductShowcaseDemo = (props: ProductShowcaseProps) => {
 }
 
 export const getStaticProps = async (context: StaticPageContext): Promise<ProductShowcaseProps> => {
-    let data = {};
+    let data: any = {};
     const limit = 20;
     try {
-        data = await getGraphQLClient().getProducts({ pageSize: 10 })
+        data = await getGraphQLClient()?.getProducts({ pageSize: 10 })
     } catch (e) {
         console.error('ProductShowcaseDemo', e)
     }
@@ -37,4 +38,4 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     }
 }
 
-export default FrontendPlugin<ProductShowcaseProps>(ProductShowcaseDemo, 'ProductShowcaseDemo');
+export default FrontendPlugin(ProductShowcaseDemo, 'ProductShowcaseDemo');

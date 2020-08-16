@@ -25,7 +25,8 @@ const getPageNumsAround = (currentPage: number, quantity: number, maxPageNum: nu
 const getPagedUrl = (pageNum: number, pathname?: string): string | undefined => {
     if (!isServer()) {
         const urlParams = new URLSearchParams(window.location.search);
-        urlParams.set('pageNumber', pageNum + '');
+        if (pageNum) urlParams.set('pageNumber', pageNum + '');
+        else urlParams.delete('pageNumber');
         return window.location.pathname + '?' + urlParams.toString();
     }
     else {
@@ -55,14 +56,17 @@ type TElements = {
     }>;
     showMore?: React.ComponentType<{
         onClick: () => void;
-    }>
+    }>;
     /** Preloader to show during first data request  */
     preloader?: React.ReactNode;
 }
 
-type TProps<DataType, ListItemProps> = {
+export type TCListProps<DataType, ListItemProps> = {
     /** CromwellBlock id */
     id: string;
+
+    /** HTML Class attribute for wrapper container */
+    className?: string;
 
     /** Component that will display items */
     ListItem: React.ComponentType<TItemComponentProps<DataType, ListItemProps>>;
@@ -121,7 +125,21 @@ type TProps<DataType, ListItemProps> = {
     elements?: TElements;
 
     /** window.location.pathname for SSR to prerender pagination links */
-    pathname?: string
+    pathname?: string;
+}
+
+/** Public API of CList instance */
+export type TCList<DataType = any, ListItemProps = any> = {
+    /** Get React component props. */
+    getProps: () => TCListProps<DataType, ListItemProps>;
+    /** Replace props. Will use them in any render after instead of React props. Behavior can be reset by setting null */
+    setProps: (props: TCListProps<DataType, ListItemProps>) => void;
+    /** Clear all internal data about pages and cache, set current pageNumber = 1 */
+    clearState: () => void;
+    /** Re-init component, parse first batch with metainfo, create pagination info */
+    init: () => void;
+    /** Navigate to specified page */
+    openPage: (pageNumber: number) => void;
 }
 
 export type TItemComponentProps<DataType, ListItemProps> = {
@@ -129,7 +147,7 @@ export type TItemComponentProps<DataType, ListItemProps> = {
     listItemProps?: ListItemProps;
 }
 
-export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TProps<DataType, ListItemProps>> {
+export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCListProps<DataType, ListItemProps>> implements TCList<DataType, ListItemProps> {
 
     private dataList: DataType[][] = [];
     private list: {
@@ -143,26 +161,33 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
     private remoteRowCount: number = 0;
     private pageSize?: number;
     private maxPage: number = 1;
+    private maxDomPages: number = 10;
     private pageStatuses: ('deffered' | 'loading' | 'fetched' | 'failed')[] = [];
     private isPageLoading: boolean = false;
     private isInitialized: boolean = false;
     private isLoading: boolean = false;
     private scrollBoxRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private wrapperRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
+    private forcedProps: any;
 
-    constructor(props: TProps<DataType, ListItemProps>) {
+    constructor(props: TCListProps<DataType, ListItemProps>) {
         super(props);
 
-        this.getMetaInfo();
+        this.init();
     }
 
-    componentDidMount() {
-
+    public getProps(): TCListProps<DataType, ListItemProps> {
+        if (this.forcedProps) return this.forcedProps;
+        return this.props;
     }
 
-    componentDidUpdate(prevProps: TProps<DataType, ListItemProps>) {
+    public setProps(props: TCListProps<DataType, ListItemProps>): void {
+        this.forcedProps = props;
+    }
 
-        if (this.props.useAutoLoading && this.scrollBoxRef.current && this.wrapperRef.current) {
+    componentDidUpdate(prevProps: TCListProps<DataType, ListItemProps>) {
+        const props = this.getProps();
+        if (props.useAutoLoading && this.scrollBoxRef.current && this.wrapperRef.current) {
             this.wrapperRef.current.style.minHeight = this.scrollBoxRef.current.clientHeight - 20 + 'px';
             const lastPage = this.wrapperRef.current.querySelector(`#${getPageId(this.maxPage)}`);
             if (lastPage) {
@@ -171,19 +196,21 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                     this.wrapperRef.current.style.paddingBottom = pad + 'px';
                 }
             }
-        };
+        }
         this.onScroll();
     }
 
-    private getMetaInfo() {
+    public init(): void {
+        const props = this.getProps();
 
-        if (this.props.dataList) {
-            this.parseFirstBatchArray(this.props.dataList);
+        if (props.maxDomPages) this.maxDomPages = props.maxDomPages
+        if (props.dataList) {
+            this.parseFirstBatchArray(props.dataList);
         }
 
-        if (!this.props.dataList && this.props.loader) {
+        if (!props.dataList && props.loader) {
 
-            if (this.props.useQueryPagination && !isServer()) {
+            if (props.useQueryPagination && !isServer()) {
                 const urlParams = new URLSearchParams(window.location.search);
                 let pageNumber: any = urlParams.get('pageNumber');
                 if (pageNumber) {
@@ -196,9 +223,9 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                 }
             }
 
-            if (this.props.firstBatch) {
+            if (props.firstBatch) {
                 // Parse firstBatch
-                this.parseFirstBatchPaged(this.props.firstBatch);
+                this.parseFirstBatchPaged(props.firstBatch);
             }
             else if (!isServer()) {
                 // Load firstBatch
@@ -208,11 +235,12 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
     }
 
     private fetchFirstBatch = async () => {
-        if (this.props.loader) {
+        const props = this.getProps();
+        if (props.loader) {
             this.isLoading = true;
 
             try {
-                const data = await this.props.loader(this.currentPageNum);
+                const data = await props.loader(this.currentPageNum);
                 if (data && !Array.isArray(data) && data.elements && data.pagedMeta) {
                     this.parseFirstBatchPaged(data);
                 }
@@ -263,8 +291,9 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
 
 
     private onScroll = debounce(() => {
-        if (this.props.useAutoLoading) {
-            const minRangeToLoad = this.props.minRangeToLoad ? this.props.minRangeToLoad : 200;
+        const props = this.getProps();
+        if (props.useAutoLoading) {
+            const minRangeToLoad = props.minRangeToLoad ? props.minRangeToLoad : 200;
             if (this.scrollBoxRef.current && this.wrapperRef.current) {
                 const scrollTop = this.scrollBoxRef.current.scrollTop;
                 const scrollBottom = this.wrapperRef.current.clientHeight - this.scrollBoxRef.current.clientHeight - scrollTop;
@@ -295,26 +324,43 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
         }
     }, 50)
 
+    public clearState = () => {
+        const props = this.getProps();
+        this.currentPageNum = 1;
+        this.minPageBound = 1;
+        this.maxPageBound = 1;
+        if (props.useQueryPagination) {
+            window.history.pushState({}, '', getPagedUrl(0));
+        }
+        this.dataList = [];
+        this.list = [];
+        this.pageStatuses = [];
+    }
+
     public onPageScrolled = (pageNumber: number) => {
+        const props = this.getProps();
         this.currentPageNum = pageNumber;
-        if (this.props.useQueryPagination) {
+        if (props.useQueryPagination) {
             window.history.pushState({}, '', getPagedUrl(pageNumber));
         }
     }
 
 
     public openPage = async (pageNumber: number) => {
+        const props = this.getProps();
         if (this.currentPageNum !== pageNumber) {
             this.onPageScrolled(pageNumber)
-            if (this.props.disableCaching) {
+            if (props.disableCaching) {
                 this.dataList = [];
+                this.pageStatuses = this.pageStatuses.map(s =>
+                    s === 'fetched' || s === 'failed' ? 'deffered' : s)
             }
 
             this.minPageBound = pageNumber;
             this.maxPageBound = pageNumber;
             await this.loadPage(pageNumber);
             this.forceUpdate(() => {
-                // if (this.props.useAutoLoading) {
+                // if (props.useAutoLoading) {
                 setTimeout(() => {
                     if (this.wrapperRef.current) {
                         const id = `#${getPageId(pageNumber)}`;
@@ -329,11 +375,12 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
     }
 
     private updateList = () => {
-        const ListItem = this.props.ListItem;
+        const props = this.getProps();
+        const ListItem = props.ListItem;
         this.list = [];
 
-        if (!this.props.useShowMoreButton) {
-            const maxDomPages = this.props.maxDomPages ? this.props.maxDomPages : 10;
+        if (!props.useShowMoreButton) {
+            const maxDomPages = this.maxDomPages;
             const pageBounds = getPageNumsAround(this.currentPageNum, maxDomPages, this.maxPage);
             // const minPageBound = (this.minPageBound < pageBounds[0]) ? pageBounds[0] : this.minPageBound;
             if (this.minPageBound < pageBounds[0]) this.minPageBound = pageBounds[0];
@@ -348,7 +395,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                 const pageItems: JSX.Element[] = [];
                 for (let j = 0; j < pageData.length; j++) {
                     const data = pageData[j];
-                    pageItems.push(<ListItem data={data} listItemProps={this.props.listItemProps} key={j} />);
+                    pageItems.push(<ListItem data={data} listItemProps={props.listItemProps} key={j} />);
                 }
                 this.list.push({
                     elements: pageItems,
@@ -359,12 +406,13 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
     }
 
     private async loadData(pageNum: number) {
-        if (this.props.loader) {
+        const props = this.getProps();
+        if (props.loader) {
             // console.log('loadData pageNum:', pageNum);
             this.pageStatuses[pageNum] = 'loading';
             this.isPageLoading = true;
             try {
-                const pagedData = await this.props.loader(pageNum);
+                const pagedData = await props.loader(pageNum);
                 if (pagedData && !Array.isArray(pagedData) && pagedData.elements) {
                     this.addElementsToList(pagedData.elements, pageNum);
                     this.pageStatuses[pageNum] = 'fetched';
@@ -378,7 +426,8 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
         }
     }
 
-    private loadPage = async (pageNum: number) => {
+    private loadPage = async (pageNum: number): Promise<boolean> => {
+        let hasLoaded = false;
         switch (this.pageStatuses[pageNum]) {
             case 'fetched': {
                 break;
@@ -388,64 +437,77 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
             }
             case 'deffered': {
                 await this.loadData(pageNum);
+                hasLoaded = true;
                 break;
             }
         }
         this.updateList();
+        return hasLoaded;
     }
 
     private loadNextPage = async () => {
-        this.maxPageBound++;
-        const nextNum = this.maxPageBound;
-        // console.log('loadNextPage', nextNum, this.pageStatuses[nextNum])
-        await this.loadPage(nextNum);
-        this.forceUpdate();
+        const props = this.getProps();
+
+        if (this.maxPageBound < this.maxPage && this.maxPageBound + 1 < this.currentPageNum + this.maxDomPages) {
+            this.maxPageBound++;
+            const nextNum = this.maxPageBound;
+            // console.log('loadNextPage', nextNum, this.pageStatuses[nextNum])
+
+            await this.loadPage(nextNum);
+            this.forceUpdate();
+        }
+
     }
 
     private loadPreviousPage = async () => {
-        this.minPageBound--;
-        const prevNum = this.minPageBound;
-        // console.log('loadPreviousPage', prevNum, this.pageStatuses[prevNum]);
-        await this.loadPage(prevNum);
-        this.forceUpdate();
+        if (this.minPageBound > 1 && this.minPageBound + 1 > this.currentPageNum - this.maxDomPages) {
+            this.minPageBound--;
+            const prevNum = this.minPageBound;
+            // console.log('loadPreviousPage', prevNum, this.pageStatuses[prevNum]);
+            await this.loadPage(prevNum);
+            this.forceUpdate();
+        }
     }
 
     private wrapContent = (content: JSX.Element): JSX.Element => {
+        const props = this.getProps();
         return (
-            <CromwellBlock id={this.props.id} type='list' content={(data, blockRef, setContentInstance) => {
-                if (setContentInstance) setContentInstance(this);
-                return content;
-            }}
-
+            <CromwellBlock id={props.id} type='list'
+                className={props.className}
+                content={(data, blockRef, setContentInstance) => {
+                    setContentInstance(this);
+                    return content;
+                }}
             />
         )
     }
 
     render() {
+        const props = this.getProps();
         let content;
-        if (this.isLoading || this.props.isLoading) {
+        if (this.isLoading || props.isLoading) {
             content = (
                 <div className={styles.baseInfiniteLoader}>
-                    {this.props.elements?.preloader}
+                    {props.elements?.preloader}
                 </div>
             );
             return this.wrapContent(content);
         }
 
-        if (this.props.dataList) {
+        if (props.dataList) {
             this.currentPageNum = 1;
             this.minPageBound = 1;
             this.maxPageBound = 1;
             this.maxPage = 1;
             this.dataList = [];
-            this.addElementsToList(this.props.dataList, 1);
+            this.addElementsToList(props.dataList, 1);
         }
         // console.log('BaseInfiniteLoader::render', this.minPageBound, this.maxPageBound, this.list)
 
         if (this.list.length === 0) {
             content = (
                 <div className={styles.baseInfiniteLoader}>
-                    <h3>{this.props.noDataLabel ? this.props.noDataLabel : 'No data'}</h3>
+                    <h3>{props.noDataLabel ? props.noDataLabel : 'No data'}</h3>
                 </div>
             );
             return this.wrapContent(content);
@@ -461,15 +523,15 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
 
         content = (
             <div className={styles.baseInfiniteLoader}>
-                <div className={`${styles.scrollBox} ${this.props.cssClasses?.scrollBox || ''}`}
+                <div className={`${styles.scrollBox} ${props.cssClasses?.scrollBox || ''}`}
                     ref={this.scrollBoxRef}
                     onScroll={this.onScroll}
-                    style={this.props.useAutoLoading ?
+                    style={props.useAutoLoading ?
                         { height: '100%', overflow: 'auto' } : {}}
                 >
                     <div className={styles.wrapper} ref={this.wrapperRef}>
                         {this.list.map(l => (
-                            <div className={`${styles.page} ${this.props.cssClasses?.page || ''}`}
+                            <div className={`${styles.page} ${props.cssClasses?.page || ''}`}
                                 key={l.pageNum}
                                 id={getPageId(l.pageNum)}>
                                 {l.elements.map((e, i) => (
@@ -479,10 +541,10 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                         ))}
                     </div>
                 </div>
-                {this.props.useShowMoreButton && !this.isPageLoading && this.maxPage > this.maxPageBound && (
+                {props.useShowMoreButton && !this.isPageLoading && this.maxPage > this.maxPageBound && (
                     <div className={styles.showMoreBtnContainer}>
-                        {this.props.elements?.showMore ? (
-                            <this.props.elements.showMore onClick={handleShowMoreClick} />
+                        {props.elements?.showMore ? (
+                            <props.elements.showMore onClick={handleShowMoreClick} />
                         ) : (
                                 <div
                                     className={styles.showMoreBtn}
@@ -492,7 +554,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
 
                     </div>
                 )}
-                {this.props.usePagination && (
+                {props.usePagination && (
                     <Pagination
                         pageNums={this.list.map(p => p.pageNum)}
                         wrapperRef={this.wrapperRef}
@@ -501,11 +563,11 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TPr
                         maxPageNum={this.maxPage}
                         openPage={this.openPage}
                         onPageScrolled={this.onPageScrolled}
-                        paginationButtonsNum={this.props.paginationButtonsNum}
-                        cssClasses={this.props.cssClasses}
-                        elements={this.props.elements}
-                        pathname={this.props.pathname}
-                        scrollContainerSelector={this.props.scrollContainerSelector}
+                        paginationButtonsNum={props.paginationButtonsNum}
+                        cssClasses={props.cssClasses}
+                        elements={props.elements}
+                        pathname={props.pathname}
+                        scrollContainerSelector={props.scrollContainerSelector}
                     />
                 )}
             </div>
@@ -533,13 +595,15 @@ class Pagination extends React.Component<{
     private currentPage: number = this.props.inititalPage;
 
     componentDidMount() {
-        if (this.props.scrollContainerSelector) {
-            const container = document.querySelector(this.props.scrollContainerSelector);
+        const props = this.props;
+
+        if (props.scrollContainerSelector) {
+            const container = document.querySelector(props.scrollContainerSelector);
             if (container) {
                 container.addEventListener('scroll', this.onScroll)
             }
-        } else if (this.props.scrollBoxRef.current) {
-            this.props.scrollBoxRef.current.addEventListener('scroll', this.onScroll)
+        } else if (props.scrollBoxRef.current) {
+            props.scrollBoxRef.current.addEventListener('scroll', this.onScroll)
         }
     }
 
@@ -548,12 +612,14 @@ class Pagination extends React.Component<{
     }
 
     private onScroll = () => {
+        const props = this.props;
+
         // Get current page
         let currPage = 0;
-        this.props.pageNums.forEach(p => {
+        props.pageNums.forEach(p => {
             const id = getPageId(p);
-            if (this.props.wrapperRef.current) {
-                const pageNode = this.props.wrapperRef.current.querySelector('#' + id);
+            if (props.wrapperRef.current) {
+                const pageNode = props.wrapperRef.current.querySelector('#' + id);
                 if (pageNode) {
                     const bounds = pageNode.getBoundingClientRect();
                     if (!currPage && bounds.bottom > 0) currPage = p;
@@ -563,97 +629,98 @@ class Pagination extends React.Component<{
         if (currPage && this.currentPage !== currPage) {
             // console.log('currPage', currPage)
             this.currentPage = currPage;
-            this.props.onPageScrolled(currPage);
+            props.onPageScrolled(currPage);
             this.forceUpdate();
         }
     }
     render() {
+        const props = this.props;
 
         const currPage = this.currentPage;
-        const CustomPagination = this.props.elements?.pagination
+        const CustomPagination = props.elements?.pagination
         if (CustomPagination) {
             return (
                 <CustomPagination
                     page={currPage}
-                    count={this.props.maxPageNum}
+                    count={props.maxPageNum}
                     onChange={(pageNum: number) => {
                         this.currentPage = pageNum;
-                        this.props.openPage(pageNum);
+                        props.openPage(pageNum);
                     }}
                 />
             )
         }
 
-        const paginationDisabledLinkClass = styles.paginationDisabledLink + ' ' + (this.props.cssClasses?.paginationDisabledLink || '')
-        const paginationButtonsNum = this.props.paginationButtonsNum ? this.props.paginationButtonsNum : 10;
-        const pages = getPageNumsAround(currPage, paginationButtonsNum, this.props.maxPageNum);
+        const paginationDisabledLinkClass = styles.paginationDisabledLink + ' ' + (props.cssClasses?.paginationDisabledLink || '')
+        const paginationButtonsNum = props.paginationButtonsNum ? props.paginationButtonsNum : 10;
+        const pages = getPageNumsAround(currPage, paginationButtonsNum, props.maxPageNum);
         const links: JSX.Element[] = [
-            <a href={getPagedUrl(1, this.props.pathname)}
-                className={`${styles.pageLink}  ${this.props.cssClasses?.paginationArrowLink || ''} ${currPage === 1 ? paginationDisabledLinkClass : ''}`}
+            <a href={getPagedUrl(1, props.pathname)}
+                className={`${styles.pageLink}  ${props.cssClasses?.paginationArrowLink || ''} ${currPage === 1 ? paginationDisabledLinkClass : ''}`}
                 key={'first'}
                 onClick={(e) => {
                     e.preventDefault();
                     this.currentPage = 1;
-                    this.props.openPage(1);
+                    props.openPage(1);
                 }}>
-                {this.props.elements?.arrowFirst ? this.props.elements?.arrowFirst : (
+                {props.elements?.arrowFirst ? props.elements?.arrowFirst : (
                     <p className={styles.paginationArrow}>⇤</p>
                 )}
             </a>,
-            <a href={currPage > 1 ? getPagedUrl(currPage - 1, this.props.pathname) : undefined}
-                className={`${styles.pageLink}  ${this.props.cssClasses?.paginationArrowLink || ''} ${currPage === 1 ? paginationDisabledLinkClass : ''}`}
+            <a href={currPage > 1 ? getPagedUrl(currPage - 1, props.pathname) : undefined}
+                className={`${styles.pageLink}  ${props.cssClasses?.paginationArrowLink || ''} ${currPage === 1 ? paginationDisabledLinkClass : ''}`}
                 key={'back'}
                 onClick={(e) => {
                     e.preventDefault();
                     if (currPage > 1) {
                         this.currentPage = currPage - 1;
-                        this.props.openPage(currPage - 1);
+                        props.openPage(currPage - 1);
                     }
                 }}>
-                {this.props.elements?.arrowLeft ? this.props.elements?.arrowLeft : (
+                {props.elements?.arrowLeft ? props.elements?.arrowLeft : (
                     <p className={styles.paginationArrow}>￩</p>
                 )}
             </a>,
             ...pages.map(p => (
-                <a href={p === currPage ? undefined : getPagedUrl(p, this.props.pathname)}
-                    className={`${styles.pageLink} ${p === currPage ? `${styles.activePageLink} ${this.props.cssClasses?.paginationActiveLink || ''}` : ''} ${this.props.cssClasses?.paginationLink || ''}`}
+                <a href={p === currPage ? undefined : getPagedUrl(p, props.pathname)}
+                    className={`${styles.pageLink} ${p === currPage ? `${styles.activePageLink} ${props.cssClasses?.paginationActiveLink || ''}` : ''} ${props.cssClasses?.paginationLink || ''}`}
                     onClick={(e) => {
                         e.preventDefault();
                         this.currentPage = p;
-                        this.props.openPage(p);
+                        props.openPage(p);
                     }}
                     key={p}>{p}</a>
             )),
-            <a href={currPage < this.props.maxPageNum ? getPagedUrl(currPage + 1) : undefined}
-                className={`${styles.pageLink}  ${this.props.cssClasses?.paginationArrowLink || ''} ${currPage === this.props.maxPageNum ? paginationDisabledLinkClass : ''}`}
+            <a href={currPage < props.maxPageNum ? getPagedUrl(currPage + 1) : undefined}
+                className={`${styles.pageLink}  ${props.cssClasses?.paginationArrowLink || ''} ${currPage === props.maxPageNum ? paginationDisabledLinkClass : ''}`}
                 key={'next'}
                 onClick={(e) => {
                     e.preventDefault();
-                    if (currPage < this.props.maxPageNum) {
+                    if (currPage < props.maxPageNum) {
                         this.currentPage = currPage + 1;
-                        this.props.openPage(currPage + 1);
+                        props.openPage(currPage + 1);
                     }
                 }}>
-                {this.props.elements?.arrowRight ? this.props.elements?.arrowRight : (
+                {props.elements?.arrowRight ? props.elements?.arrowRight : (
                     <p className={styles.paginationArrow}>￫</p>
                 )}
             </a>,
-            <a href={getPagedUrl(this.props.maxPageNum, this.props.pathname)}
-                className={`${styles.pageLink}  ${this.props.cssClasses?.paginationArrowLink || ''} ${currPage === this.props.maxPageNum ? paginationDisabledLinkClass : ''}`}
+            <a href={getPagedUrl(props.maxPageNum, props.pathname)}
+                className={`${styles.pageLink}  ${props.cssClasses?.paginationArrowLink || ''} ${currPage === props.maxPageNum ? paginationDisabledLinkClass : ''}`}
                 key={'last'}
                 onClick={(e) => {
                     e.preventDefault();
-                    this.currentPage = this.props.maxPageNum;
-                    this.props.openPage(this.props.maxPageNum);
+                    this.currentPage = props.maxPageNum;
+                    props.openPage(props.maxPageNum);
                 }}>
-                {this.props.elements?.arrowLast ? this.props.elements?.arrowLast : (
+                {props.elements?.arrowLast ? props.elements?.arrowLast : (
                     <p className={styles.paginationArrow}>⇥</p>
                 )}
             </a>
         ]
         return (
             <div className={styles.pagination}>
-                <div className={`${styles.paginationContent} ${this.props.cssClasses?.pagination || ''}`}>
+                <div className={`${styles.paginationContent} ${props.cssClasses?.pagination || ''}`}>
                     {...links}
                 </div>
             </div>

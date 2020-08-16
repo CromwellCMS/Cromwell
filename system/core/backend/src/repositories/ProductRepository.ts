@@ -10,7 +10,7 @@ import {
 import { EntityRepository, getCustomRepository, Repository } from 'typeorm';
 
 import { Product } from '../entities/Product';
-import { applyInnerJoinById, getPaged } from './BaseQueries';
+import { applyGetManyFromOne, getPaged } from './BaseQueries';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 
 @EntityRepository(Product)
@@ -116,7 +116,7 @@ export class ProductRepository extends Repository<Product> {
 
     async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         const qb = this.createQueryBuilder(DBTableNames.Product);
-        applyInnerJoinById(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
+        applyGetManyFromOne(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
         const paged = await getPaged(qb, DBTableNames.Product, params);
         return paged;
     }

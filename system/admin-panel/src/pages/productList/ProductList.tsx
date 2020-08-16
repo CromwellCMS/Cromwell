@@ -37,33 +37,32 @@ const ProductList = () => {
                     </IconButton>
                 </div>
             </div>
-            <div className={styles.productListWrapper}>
-                <CList<TProduct>
-                    id="Admin_ProductsList"
-                    ListItem={ProductItem}
-                    useAutoLoading
-                    usePagination
-                    useQueryPagination
-                    loader={(pageNumber: number) => {
-                        return client?.getProducts({ pageNumber });
-                    }}
-                    cssClasses={{ scrollBox: styles.list }}
-                    elements={{
-                        pagination: (props) => {
-                            return (
-                                <Pagination count={props.count} page={props.page}
-                                    onChange={(event: React.ChangeEvent<unknown>, value: number) => {
-                                        props.onChange(value)
-                                    }}
-                                    className={styles.pagination}
-                                    showFirstButton showLastButton
-                                />
-                            )
-                        },
-                        preloader: <LoadBox />
-                    }}
-                />
-            </div>
+            <CList<TProduct>
+                className={styles.productListWrapper}
+                id="Admin_ProductsList"
+                ListItem={ProductItem}
+                useAutoLoading
+                usePagination
+                useQueryPagination
+                loader={(pageNumber: number) => {
+                    return client?.getProducts({ pageNumber });
+                }}
+                cssClasses={{ scrollBox: styles.list }}
+                elements={{
+                    pagination: (props) => {
+                        return (
+                            <Pagination count={props.count} page={props.page}
+                                onChange={(event: React.ChangeEvent<unknown>, value: number) => {
+                                    props.onChange(value)
+                                }}
+                                className={styles.pagination}
+                                showFirstButton showLastButton
+                            />
+                        )
+                    },
+                    preloader: <LoadBox />
+                }}
+            />
         </div>
     )
 }

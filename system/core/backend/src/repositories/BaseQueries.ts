@@ -18,7 +18,14 @@ export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, entityName?: string,
     return qb.skip(p.pageSize * (p.pageNumber - 1)).take(p.pageSize);
 }
 
-export const applyInnerJoinById = <T>(qb: SelectQueryBuilder<T>, firstEntityName: string,
+/** Retrieve all related entities of one specified entity by id in many-to-many relationship
+ * E.g. get all products from a category
+ * @prop firstEntityName - table DB name of many
+ * @prop firstEntityProp - property of many that refers to relationship
+ * @prop secondEntityName - table DB name of one
+ * @prop secondEntityId - DB id of one
+ */
+export const applyGetManyFromOne = <T>(qb: SelectQueryBuilder<T>, firstEntityName: string,
     firstEntityProp: keyof T, secondEntityName: string, secondEntityId: string): SelectQueryBuilder<T> => {
     return qb.innerJoinAndSelect(`${firstEntityName}.${firstEntityProp}`,
         secondEntityName, `${secondEntityName}.id = :entityId`,
@@ -33,10 +40,10 @@ export const getPaged = async <T>(qb: SelectQueryBuilder<T>, entityName?: string
     const pagedMeta = {
         pageNumber: params?.pageNumber,
         pageSize: params?.pageSize,
-        totalPages: params?.pageSize ? Math.floor(count / params.pageSize) : undefined,
+        totalPages: params?.pageSize ? Math.ceil(count / params.pageSize) : undefined,
         totalElements: count,
     }
-    
+
     return { pagedMeta, elements };
 
 }

@@ -1,6 +1,6 @@
 import { DBTableNames, TProduct, TPagedList } from '@cromwell/core';
 import {
-    applyInnerJoinById,
+    applyGetManyFromOne,
     getPaged,
     PagedParamsInput,
     PagedProduct,
@@ -24,7 +24,7 @@ export default class ProductFilterResolver {
     ): Promise<TPagedList<TProduct> | undefined> {
         const productRepo = getCustomRepository(ProductRepository);
         const qb = productRepo.createQueryBuilder(DBTableNames.Product);
-        applyInnerJoinById(qb, DBTableNames.Product, 'categories',
+        applyGetManyFromOne(qb, DBTableNames.Product, 'categories',
             DBTableNames.ProductCategory, categoryId);
 
         if (filterParams) {
@@ -33,26 +33,35 @@ export default class ProductFilterResolver {
 
         const paged = await getPaged(qb, DBTableNames.Product, pagedParams);
         return paged;
-
     }
 
     private applyProductFilter(qb: SelectQueryBuilder<TProduct>, filterParams: TProductFilter) {
         if (filterParams.attributes) {
+            let isFirstAttr = true;
             filterParams.attributes.forEach(attr => {
-                qb.andWhere(new Brackets(subQb => {
-                    let isFirstVal = true;
-                    attr.values.forEach(val => {
-                        const likeStr = `%{"key":"${attr.key}","values":[%{"value":"${val}"}%]}%`;
-                        const query = `${DBTableNames.Product}.attributesJSON LIKE :likeStr`;
-                        if (isFirstVal) {
-                            isFirstVal = false;
-                            subQb.where(query, { likeStr })
-                        } else {
-                            subQb.orWhere(query, { likeStr })
-                        }
-                    })
-                }))
-            })
+                if (attr.values.length > 0) {
+                    const brackets = new Brackets(subQb => {
+                        let isFirstVal = true;
+                        attr.values.forEach(val => {
+                            const likeStr = `%{"key":"${attr.key}","values":[%{"value":"${val}"}%]}%`;
+                            const valKey = `${attr.key}_${val}`;
+                            const query = `${DBTableNames.Product}.attributesJSON LIKE :${valKey}`;
+                            if (isFirstVal) {
+                                isFirstVal = false;
+                                subQb.where(query, { [valKey]: likeStr })
+                            } else {
+                                subQb.orWhere(query, { [valKey]: likeStr })
+                            }
+                        })
+                    });
+                    if (isFirstAttr) {
+                        isFirstAttr = false;
+                        qb.where(brackets);
+                    } else {
+                        qb.andWhere(brackets);
+                    }
+                }
+            });
         }
     }
 }
