@@ -4,6 +4,7 @@ import styles from './CList.module.scss';
 import { TProduct, TPagedList, TPagedMeta, isServer } from '@cromwell/core';
 import debounce from 'debounce';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { throbber } from '../throbber';
 // import Alertify from 'alertify.js';
 
 const getPageId = (pageNum: number) => "infinity-page_" + pageNum;
@@ -140,7 +141,13 @@ export type TCList<DataType = any, ListItemProps = any> = {
     init: () => void;
     /** Navigate to specified page */
     openPage: (pageNumber: number) => void;
+    /** Get scrollbox wrapper DOM element */
+    getScrollboxEl: () => HTMLDivElement | null;
+    /** event listeners */
+    addListener: (type: TListenerType, cb: () => void) => void;
 }
+
+type TListenerType = 'componentDidUpdate' | 'onRender';
 
 export type TItemComponentProps<DataType, ListItemProps> = {
     data?: DataType;
@@ -168,7 +175,9 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
     private isLoading: boolean = false;
     private scrollBoxRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private wrapperRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
+    private throbberRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private forcedProps: any;
+    private listeners: Record<TListenerType, { cb: () => void; id?: string }[]> = { componentDidUpdate: [], onRender: [] };
 
     constructor(props: TCListProps<DataType, ListItemProps>) {
         super(props);
@@ -187,6 +196,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
 
     componentDidUpdate(prevProps: TCListProps<DataType, ListItemProps>) {
         const props = this.getProps();
+        this.triggerListener('componentDidUpdate');
         if (props.useAutoLoading && this.scrollBoxRef.current && this.wrapperRef.current) {
             this.wrapperRef.current.style.minHeight = this.scrollBoxRef.current.clientHeight - 20 + 'px';
             const lastPage = this.wrapperRef.current.querySelector(`#${getPageId(this.maxPage)}`);
@@ -198,6 +208,22 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             }
         }
         this.onScroll();
+    }
+
+    public addListener(type: TListenerType, cb: () => void, id?: string) {
+        let hasListener = false;
+        if (id) {
+            this.listeners[type].forEach(l => {
+                if (l.id === id) hasListener = true;
+            })
+        }
+        if (!hasListener) {
+            this.listeners[type].push({ id, cb });
+        }
+    }
+
+    private triggerListener(type: TListenerType) {
+        this.listeners[type].forEach(l => l.cb());
     }
 
     public init(): void {
@@ -238,7 +264,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         const props = this.getProps();
         if (props.loader) {
             this.isLoading = true;
-
+            this.setOverlay(true);
             try {
                 const data = await props.loader(this.currentPageNum);
                 if (data && !Array.isArray(data) && data.elements && data.pagedMeta) {
@@ -252,6 +278,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                 console.log(e);
             }
             this.isLoading = false;
+            this.setOverlay(false);
             this.forceUpdate();
         }
     }
@@ -411,6 +438,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             // console.log('loadData pageNum:', pageNum);
             this.pageStatuses[pageNum] = 'loading';
             this.isPageLoading = true;
+            this.setOverlay(true);
             try {
                 const pagedData = await props.loader(pageNum);
                 if (pagedData && !Array.isArray(pagedData) && pagedData.elements) {
@@ -423,6 +451,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                 this.pageStatuses[pageNum] = 'failed';
             }
             this.isPageLoading = false;
+            this.setOverlay(false);
         }
     }
 
@@ -443,6 +472,27 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         }
         this.updateList();
         return hasLoaded;
+    }
+
+    public setOverlay = (isLoading: boolean) => {
+        const props = this.getProps();
+        if (this.throbberRef.current) {
+            if (isLoading) {
+                this.throbberRef.current.style.display = 'block';
+                setTimeout(() => {
+                    if (this.throbberRef.current) {
+                        const bounds = this.throbberRef.current.getBoundingClientRect();
+                        const throbberEl = this.throbberRef.current.querySelector(`.${styles.throbber}`) as HTMLDivElement | null;
+                        if (throbberEl) {
+                            throbberEl.style.left = (bounds.left + bounds.width / 2 - throbberEl.offsetWidth / 2) + 'px';
+                        }
+                    }
+                }, 10);
+            } else {
+                this.throbberRef.current.style.display = 'none';
+            }
+        }
+
     }
 
     private loadNextPage = async () => {
@@ -469,6 +519,10 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         }
     }
 
+    public getScrollboxEl = () => {
+        return this.scrollBoxRef.current;
+    }
+
     private wrapContent = (content: JSX.Element): JSX.Element => {
         const props = this.getProps();
         return (
@@ -476,7 +530,16 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                 className={props.className}
                 content={(data, blockRef, setContentInstance) => {
                     setContentInstance(this);
-                    return content;
+                    return (
+                        <div className={styles.CList}>
+                            <div ref={this.throbberRef} className={styles.listOverlay}>
+                                {props.elements?.preloader ? props.elements?.preloader :
+                                    <div className={styles.throbber}
+                                        dangerouslySetInnerHTML={{ __html: throbber }}></div>}
+                            </div>
+                            {content}
+                        </div>
+                    );
                 }}
             />
         )
@@ -484,13 +547,9 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
 
     render() {
         const props = this.getProps();
+        this.triggerListener('onRender');
         let content;
         if (this.isLoading || props.isLoading) {
-            content = (
-                <div className={styles.baseInfiniteLoader}>
-                    {props.elements?.preloader}
-                </div>
-            );
             return this.wrapContent(content);
         }
 
@@ -506,9 +565,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
 
         if (this.list.length === 0) {
             content = (
-                <div className={styles.baseInfiniteLoader}>
-                    <h3>{props.noDataLabel ? props.noDataLabel : 'No data'}</h3>
-                </div>
+                <h3>{props.noDataLabel ? props.noDataLabel : 'No data'}</h3>
             );
             return this.wrapContent(content);
         }
@@ -522,7 +579,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         }
 
         content = (
-            <div className={styles.baseInfiniteLoader}>
+            <>
                 <div className={`${styles.scrollBox} ${props.cssClasses?.scrollBox || ''}`}
                     ref={this.scrollBoxRef}
                     onScroll={this.onScroll}
@@ -570,7 +627,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                         scrollContainerSelector={props.scrollContainerSelector}
                     />
                 )}
-            </div>
+            </>
         );
         return this.wrapContent(content);
     }

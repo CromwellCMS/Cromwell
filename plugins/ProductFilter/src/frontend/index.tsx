@@ -77,7 +77,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         if (Object.keys(checkedAttrs).length > 0 && productCategory && productCategory.id) {
             const productListId = props?.settings?.productListId;
             if (productListId) {
-                const list: TCList | undefined = getBlockInstance(productListId)?.getContentInstance() as CList<any>;
+                const list: TCList | undefined = getBlockInstance(productListId)?.getContentInstance() as any;
                 if (list) {
                     const listProps = Object.assign({}, list.getProps());
                     listProps.loader = (pageNum: number): Promise<TPagedList<TProduct>> => {
@@ -97,7 +97,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                     list.init();
                 }
             }
-
+            
         }
 
     }, [checkedAttrs]);

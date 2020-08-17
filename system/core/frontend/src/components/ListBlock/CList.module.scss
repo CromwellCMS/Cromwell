@@ -1,4 +1,4 @@
-.baseInfiniteLoader {
+.CList {
     width: 100%;
     height: 100%;
     min-height: 100px;
@@ -90,5 +90,32 @@
     .showMoreBtn:hover {
         color: #fff;
         background-color: #333;
+    }
+
+    .throbberBox {
+        position: relative;
+
+    }
+    .listOverlay {
+        display: none;
+        position: absolute;
+        z-index: 10;
+        top: 0px;
+        bottom: 0px;
+        left: 0px;
+        right: 0px;
+        background-color: rgba(0,0,0,0.4);
+    }
+
+    .throbber {
+        position: fixed;
+        left: 50vw;
+        top: 50vh;
+
+        > svg {
+            width: 130px;
+            height: 130px;
+        }
+     
     }
 }
