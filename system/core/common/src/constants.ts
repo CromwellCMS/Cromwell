@@ -1,4 +1,4 @@
-import { TDBEntity, TGraphQLNode } from './types';
+import { TDBEntity, TGraphQLNode } from './types/data';
 
 export enum BasePageNames {
     Index = 'index',

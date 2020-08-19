@@ -1,9 +1,5 @@
-import { Resolver, Query, Mutation, Arg, FieldResolver } from "type-graphql";
-import { Post } from '@cromwell/core-backend';
-import { CreatePostInput } from '@cromwell/core-backend';
-import { UpdatePostInput } from '@cromwell/core-backend';
-import { Author } from '@cromwell/core-backend';
-import { AuthorResolver } from './AuthorResolver';
+import { Author, CreatePostInput, Post, UpdatePostInput } from '@cromwell/core-backend';
+import { Arg, FieldResolver, Mutation, Query, Resolver } from 'type-graphql';
 
 @Resolver(Post)
 export class PostResolver {

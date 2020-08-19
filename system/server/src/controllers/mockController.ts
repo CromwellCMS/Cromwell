@@ -1,7 +1,7 @@
-import { apiV1BaseRoute, TAttributeValue, TAttribute } from "@cromwell/core";
+import { apiV1BaseRoute, TAttributeValue, TAttributeInput, TProductReviewInput } from "@cromwell/core";
 import { Express } from 'express';
 import { getCustomRepository } from "typeorm";
-import { ProductRepository, ProductCategoryRepository, AttributeRepository } from '@cromwell/core-backend';
+import { ProductRepository, ProductCategoryRepository, AttributeRepository, ProductReviewRepository } from '@cromwell/core-backend';
 
 
 export const applyMockController = (app: Express): void => {
@@ -9,9 +9,10 @@ export const applyMockController = (app: Express): void => {
     const productRepo = getCustomRepository(ProductRepository);
     const productCategoryRepo = getCustomRepository(ProductCategoryRepository);
     const attributeRepo = getCustomRepository(AttributeRepository);
+    const productReviewRepo = getCustomRepository(ProductReviewRepository);
 
     // attributes
-    let attributes: TAttribute[] = [{
+    let attributesMock: TAttributeInput[] = [{
         key: "Size",
         values: [{ value: "35" }, { value: "36" }, { value: "37" }, { value: "38" }, { value: "39" }, { value: "40" }, { value: "41" }, { value: "42" }, { value: "43" }, { value: "44" }, { value: "45" }],
         type: 'radio'
@@ -21,6 +22,46 @@ export const applyMockController = (app: Express): void => {
         values: [{ value: "Orange", icon: '/images/color_orange.png' }, { value: "Purple", icon: '/images/color_purple.png' }, { value: "Blue", icon: '/images/color_blue.png' }],
         type: 'radio'
     }];
+
+    // reviews
+    const reviewsMock: TProductReviewInput[] = [
+        {
+            title: 'Just awesome',
+            description: 'Best product ever',
+            rating: 5,
+            userName: 'Bob',
+        },
+        {
+            title: 'All good',
+            description: 'Statisfied on 99%',
+            rating: 4.5,
+            userName: 'Mark',
+        },
+        {
+            title: 'Neat',
+            description: "You can go with it, buy I'm good",
+            rating: 4,
+            userName: 'Tom',
+        },
+        {
+            title: 'Could be better',
+            description: "For the record, it is not good",
+            rating: 3,
+            userName: 'Will',
+        },
+        {
+            title: 'Sad',
+            description: 'Remind me not to buy this stuff again',
+            rating: 2,
+            userName: 'Billy',
+        },
+        {
+            title: 'How?',
+            description: 'How could it be so bad?',
+            rating: 1,
+            userName: 'Max',
+        },
+    ]
 
     /**
     * Delete all products and mock new
@@ -45,7 +86,7 @@ export const applyMockController = (app: Express): void => {
                 },
                 {
                     name: 'Ulon Mesk',
-                    price: 9999999.0,
+                    price: 9999.0,
                     oldPrice: 0.0,
                 },
                 {
@@ -65,8 +106,8 @@ export const applyMockController = (app: Express): void => {
                 },
                 {
                     name: 'Space Trampoline',
-                    price: 14900.0,
-                    oldPrice: 14900.01,
+                    price: 1490.0,
+                    oldPrice: 1490.01,
                 },
                 {
                     name: 'Meaning of 42',
@@ -74,11 +115,11 @@ export const applyMockController = (app: Express): void => {
                 },
                 {
                     name: 'CyberCowboy',
-                    price: 912800.0,
+                    price: 9128.0,
                 },
                 {
                     name: 'US SpaceForce',
-                    price: 99999.0,
+                    price: 999.0,
                 }
             ];
 
@@ -90,7 +131,7 @@ export const applyMockController = (app: Express): void => {
             const imagesNum = 6;
             const getRandImg = () => images[Math.round(Math.random() * (images.length - 1))];
 
-            const sizeVals = attributes[0].values;
+            const sizeVals = attributesMock[0].values;
             const getRandSize = () => sizeVals[Math.round(Math.random() * (sizeVals.length - 1))];
             const sizesNum = 3;
 
@@ -142,8 +183,15 @@ export const applyMockController = (app: Express): void => {
                                     };;
                                     return sizes.sort();
                                 })()
+                            },
+                            {
+                                key: 'Condition',
+                                values: [
+                                    { value: Math.random() > 0.3 ? 'New' : 'Used' }
+                                ]
                             }
-                        ]
+                        ],
+                        views: Math.floor(Math.random() * 1000)
                     })
                 }
             }
@@ -172,12 +220,30 @@ export const applyMockController = (app: Express): void => {
                 await attributeRepo.deleteAttribute(attr.id);
             }
 
-            for (const attr of attributes) {
+            for (const attr of attributesMock) {
                 await attributeRepo.createAttribute(attr);
             }
 
             res.send(true);
             done();
         })
-    })
+    });
+
+    app.get(`/${apiV1BaseRoute}/mock/reviews`, function (req, res) {
+        new Promise(async (done) => {
+
+            // Clear
+            const reviewsOld = await productReviewRepo.find();
+            for (const item of reviewsOld) {
+                await productReviewRepo.deleteProductReview(item.id);
+            }
+
+            for (const item of reviewsMock) {
+                await productReviewRepo.createProductReview(item);
+            }
+
+            res.send(true);
+            done();
+        })
+    });
 }

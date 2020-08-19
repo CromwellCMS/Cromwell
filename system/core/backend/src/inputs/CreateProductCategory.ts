@@ -1,9 +1,9 @@
 import { InputType, Field } from "type-graphql";
-import { ProductCategoryInputType } from '@cromwell/core';
+import { TProductCategoryInput } from '@cromwell/core';
 import { BasePageInput } from './BasePageInput';
 
 @InputType({ description: "New Product Category data" })
-export class CreateProductCategory extends BasePageInput implements ProductCategoryInputType {
+export class CreateProductCategory extends BasePageInput implements TProductCategoryInput {
     @Field(() => String)
     name: string;
 

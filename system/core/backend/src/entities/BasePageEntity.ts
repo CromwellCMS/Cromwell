@@ -1,10 +1,10 @@
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Field, ID, ObjectType } from "type-graphql";
-import { TBasePageEntityType } from '@cromwell/core';
+import { TBasePageEntity } from '@cromwell/core';
 
 @Entity()
 @ObjectType()
-export class BasePageEntity extends BaseEntity implements TBasePageEntityType {
+export class BasePageEntity extends BaseEntity implements TBasePageEntity {
     @Field(() => ID)
     @PrimaryGeneratedColumn()
     id: string;

@@ -10,7 +10,7 @@ import {
 import { EntityRepository, getCustomRepository, Repository } from 'typeorm';
 
 import { Product } from '../entities/Product';
-import { applyGetManyFromOne, getPaged } from './BaseQueries';
+import { applyGetManyFromOne, getPaged, handleBaseInput } from './BaseQueries';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 
 @EntityRepository(Product)
@@ -39,6 +39,7 @@ export class ProductRepository extends Repository<Product> {
     }
 
     async handleProductInput(product: Product, input: TProductInput) {
+        handleBaseInput(product, input);
         product.name = input.name;
         product.price = input.price;
         product.oldPrice = input.oldPrice;
@@ -46,9 +47,7 @@ export class ProductRepository extends Repository<Product> {
         product.images = input.images;
         product.description = input.description;
         product.attributes = input.attributes;
-        product.isEnabled = input.isEnabled;
-        product.pageTitle = input.pageTitle;
-        product.slug = input.slug;
+       
         if (input.categoryIds) {
             product.categories = await getCustomRepository(ProductCategoryRepository)
                 .getProductCategoriesById(input.categoryIds);

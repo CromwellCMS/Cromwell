@@ -1,8 +1,9 @@
-import { Entity, ManyToMany, JoinTable, Column } from "typeorm";
+import { Entity, ManyToMany, JoinTable, Column, OneToMany } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
-import { TProduct, TProductCategory } from '@cromwell/core';
+import { TProduct, TProductCategory, TProductReview } from '@cromwell/core';
 import { BasePageEntity } from './BasePageEntity';
 import { ProductCategory } from './ProductCategory';
+import { ProductReview } from './ProductReview';
 import { AttributeInstance } from './AttributeInstance';
 
 @Entity()
@@ -36,9 +37,8 @@ export class Product extends BasePageEntity implements TProduct {
     @Column({ type: "varchar", nullable: true })
     description?: string;
 
-    @Field(type => Number, { nullable: true })
-    @Column({ type: "float", nullable: true })
-    rating: number;
+    @OneToMany(type => ProductReview, review => review.product)
+    reviews?: TProductReview[];
 
     @Field(type => [AttributeInstance], { nullable: true })
     public get attributes(): AttributeInstance[] | undefined {
@@ -51,4 +51,8 @@ export class Product extends BasePageEntity implements TProduct {
 
     @Column({ type: "varchar", nullable: true })
     private attributesJSON?: string;
+
+    @Field(type => Number, { nullable: true })
+    @Column({ type: "bigint", nullable: true })
+    views?: number;
 }

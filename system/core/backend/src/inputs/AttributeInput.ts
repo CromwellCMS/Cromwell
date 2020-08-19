@@ -1,8 +1,8 @@
-import { TAttribute, TAttributeValue } from '@cromwell/core';
+import { TAttributeInput, TAttributeValue } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
 
 @InputType("AttributeInput")
-export class AttributeInput implements TAttribute {
+export class AttributeInput implements TAttributeInput {
     @Field(type => String)
     key: string;
 

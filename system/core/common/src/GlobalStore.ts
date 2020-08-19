@@ -1,4 +1,5 @@
-import { TCromwellStore, TAppConfig, TProduct, CommonComponentProps, TCmsConfig, TCromwellBlock } from './types';
+import { TCromwellStore, TAppConfig, TCmsConfig } from './types/data';
+import { TCommonComponentProps, TCromwellBlock } from './types/blocks';
 import { isServer, ECommonComponentNames } from './constants';
 
 const initialStore: TCromwellStore = {
@@ -72,12 +73,12 @@ export const getAppCustomConfigTextProp = (propPath: string): string => {
 }
 
 
-export const loadCommonComponent = (componentName: ECommonComponentNames | string): React.ComponentType<CommonComponentProps> | undefined => {
+export const loadCommonComponent = (componentName: ECommonComponentNames | string): React.ComponentType<TCommonComponentProps> | undefined => {
     const components = getStore().components;
     return components ? components[componentName] : undefined;
 }
 
-export const saveCommonComponent = (componentName: ECommonComponentNames | string, component: React.ComponentType<CommonComponentProps>): void => {
+export const saveCommonComponent = (componentName: ECommonComponentNames | string, component: React.ComponentType<TCommonComponentProps>): void => {
     let components = getStore().components;
     if (!components) {
         components = {};

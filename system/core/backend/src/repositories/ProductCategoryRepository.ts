@@ -4,7 +4,7 @@ import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
 import { TProductCategory, TPagedParams } from '@cromwell/core';
 import { DBTableNames } from '@cromwell/core';
-import { getPaged, applyGetPaged, applyGetManyFromOne } from './BaseQueries';
+import { getPaged, applyGetPaged, applyGetManyFromOne, handleBaseInput } from './BaseQueries';
 
 @EntityRepository(ProductCategory)
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
@@ -43,13 +43,11 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async createProductCategory(createProduct: CreateProductCategory): Promise<ProductCategory> {
         const productCategory = new ProductCategory();
+        handleBaseInput(productCategory, createProduct);
         productCategory.name = createProduct.name;
         productCategory.name = createProduct.name;
         productCategory.mainImage = createProduct.mainImage;
         productCategory.description = createProduct.description;
-        productCategory.isEnabled = createProduct.isEnabled;
-        productCategory.pageTitle = createProduct.pageTitle;
-        productCategory.slug = createProduct.slug;
 
         if (createProduct.parentId) {
             productCategory.parent = await this.getProductCategoryById(createProduct.parentId);
@@ -70,12 +68,10 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         const productCategory = await this.getProductCategoryById(id);
         if (!productCategory) throw new Error(`ProductCategory ${id} not found!`);
 
+        handleBaseInput(productCategory, updateProductCategory);
         productCategory.name = updateProductCategory.name;
         productCategory.mainImage = updateProductCategory.mainImage;
         productCategory.description = updateProductCategory.description;
-        productCategory.isEnabled = updateProductCategory.isEnabled;
-        productCategory.pageTitle = updateProductCategory.pageTitle;
-        productCategory.slug = updateProductCategory.slug ? updateProductCategory.slug : productCategory.id;
 
         if (updateProductCategory.parentId) {
             productCategory.parent = await this.getProductCategoryById(updateProductCategory.parentId);

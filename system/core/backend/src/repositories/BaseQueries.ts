@@ -1,5 +1,5 @@
 import { SelectQueryBuilder } from "typeorm";
-import { TPagedParams, TPagedList } from '@cromwell/core';
+import { TPagedParams, TPagedList, TBasePageEntity, TBasePageEntityInput } from '@cromwell/core';
 import { getStoreItem } from '@cromwell/core';
 const cmsconfig = getStoreItem('cmsconfig');
 
@@ -46,4 +46,10 @@ export const getPaged = async <T>(qb: SelectQueryBuilder<T>, entityName?: string
 
     return { pagedMeta, elements };
 
+}
+
+export const handleBaseInput = (entity: TBasePageEntity, input: TBasePageEntityInput) => {
+    entity.slug = input.slug;
+    entity.pageTitle = input.pageTitle;
+    entity.isEnabled = input.isEnabled;
 }

@@ -1,10 +1,10 @@
 
 import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { InputType, Field, ID } from "type-graphql";
-import { BasePageEntityInputType } from '@cromwell/core';
+import { TBasePageEntityInput } from '@cromwell/core';
 
 @InputType()
-export class BasePageInput implements BasePageEntityInputType {
+export class BasePageInput implements TBasePageEntityInput {
     @Field(() => String, { nullable: true })
     slug?: string;
 

@@ -1,8 +1,7 @@
-import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from "type-graphql";
-import { Attribute, AttributeInput } from '@cromwell/core-backend';
-import { AttributeRepository } from '@cromwell/core-backend';
-import { getCustomRepository } from "typeorm";
-import { TAttribute, TPagedList } from "@cromwell/core";
+import { TAttribute } from '@cromwell/core';
+import { Attribute, AttributeInput, AttributeRepository } from '@cromwell/core-backend';
+import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { getCustomRepository } from 'typeorm';
 
 @Resolver(Attribute)
 export class AttributeResolver {

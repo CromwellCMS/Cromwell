@@ -1,4 +1,4 @@
-import { TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import { TPagedList, TProduct, TProductCategory, TProductReview } from '@cromwell/core';
 import {
     CreateProduct,
     PagedParamsInput,
@@ -7,11 +7,13 @@ import {
     ProductCategory,
     ProductCategoryRepository,
     ProductRepository,
-    UpdateProduct
+    UpdateProduct,
+    ProductReview
 } from '@cromwell/core-backend';
 import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
-
+// @OneToMany(type => ProductReview, review => review.product)
+// reviews?: TProductReview[];
 @Resolver(Product)
 export class ProductResolver {
 
@@ -55,6 +57,11 @@ export class ProductResolver {
     @FieldResolver(() => [ProductCategory])
     async categories(@Root() product: Product, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductCategory>): Promise<TProductCategory[]> {
         return await getCustomRepository(ProductCategoryRepository).getCategoriesOfProduct(product.id, pagedParams);
+    }
+
+    @FieldResolver(() => [ProductReview])
+    async reviews(@Root() product: Product): Promise<TProductReview[]> {
+        return await product.reviews;
     }
 
     @FieldResolver()

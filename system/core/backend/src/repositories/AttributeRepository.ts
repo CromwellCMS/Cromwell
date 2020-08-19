@@ -1,7 +1,8 @@
-import { DBTableNames, TAttribute } from '@cromwell/core';
+import { TAttribute, TAttributeInput } from '@cromwell/core';
 import { EntityRepository, Repository } from 'typeorm';
 
 import { Attribute } from '../entities/Attribute';
+import { handleBaseInput } from './BaseQueries';
 
 @EntityRepository(Attribute)
 export class AttributeRepository extends Repository<Attribute> {
@@ -18,13 +19,14 @@ export class AttributeRepository extends Repository<Attribute> {
         return attribute;
     }
 
-    async handleAttributeInput(attribute: Attribute, input: TAttribute) {
+    async handleAttributeInput(attribute: Attribute, input: TAttributeInput) {
+        handleBaseInput(attribute, input);
         attribute.key = input.key;
         attribute.type = input.type;
         attribute.values = input.values;
     }
 
-    async createAttribute(createAttribute: TAttribute): Promise<TAttribute> {
+    async createAttribute(createAttribute: TAttributeInput): Promise<TAttribute> {
         let attribute = new Attribute();
 
         await this.handleAttributeInput(attribute, createAttribute);
@@ -38,7 +40,7 @@ export class AttributeRepository extends Repository<Attribute> {
         return attribute;
     }
 
-    async updateAttribute(id: string, updateAttribute: TAttribute): Promise<Attribute> {
+    async updateAttribute(id: string, updateAttribute: TAttributeInput): Promise<Attribute> {
         let attribute = await this.findOne({
             where: { id }
         });

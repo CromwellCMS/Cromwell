@@ -327,6 +327,8 @@ class CGraphQLClient {
 
 }
 
+export type TCGraphQLClient = CGraphQLClient;
+
 export const getGraphQLClient = (): CGraphQLClient | undefined => {
     let client = getStoreItem('graphQLClient');
     if (client) return client;
