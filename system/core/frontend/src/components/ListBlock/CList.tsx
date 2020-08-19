@@ -1,7 +1,7 @@
 import React from 'react'
 //@ts-ignore
 import styles from './CList.module.scss';
-import { TProduct, TPagedList, TPagedMeta, isServer } from '@cromwell/core';
+import { TProduct, TPagedList, TPagedMeta, isServer, TPagedParams } from '@cromwell/core';
 import debounce from 'debounce';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { throbber } from '../throbber';
@@ -82,7 +82,10 @@ export type TCListProps<DataType, ListItemProps> = {
     * Needed if dataList wasn't provided. Doesn't work with dataLst.
     * If returned data is TPagedList, then will use pagination. If returned data is an array, then it won't be called anymore
     */
-    loader?: (pageNum: number) => Promise<TPagedList<DataType> | DataType[] | undefined | null> | undefined | null;
+    loader?: (params: TPagedParams<DataType>) => Promise<TPagedList<DataType> | DataType[] | undefined | null> | undefined | null;
+
+    /** Page size to first use in TPagedParams of "loader". After first batch recieved will use pageSize from pagedMeta if pagedMeta has it */
+    pageSize?: number;
 
     /** First batch / page. Can be used with "loader". Supposed to be used in SSR to prerender page  */
     firstBatch?: TPagedList<DataType>;
@@ -145,6 +148,11 @@ export type TCList<DataType = any, ListItemProps = any> = {
     getScrollboxEl: () => HTMLDivElement | null;
     /** event listeners */
     addListener: (type: TListenerType, cb: () => void) => void;
+    /** Set additional params to use in "loader" prop. */
+    setPagedParams: (val: TPagedParams<DataType>) => void;
+    /** Get currently used params in "loader" prop */
+    getPagedParams: () => TPagedParams<DataType>;
+
 }
 
 type TListenerType = 'componentDidUpdate' | 'onRender';
@@ -161,17 +169,29 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         elements: JSX.Element[];
         pageNum: number;
     }[] = [];
-    private currentPageNum: number = 1;
+    private pagedParams: TPagedParams<DataType> = {
+        pageNumber: 1
+    };
+    private get currentPageNum(): number {
+        return this.pagedParams.pageNumber || 1;
+    }
+    private set currentPageNum(val: number) {
+        this.pagedParams.pageNumber = val;
+    }
+    private get pageSize(): number | undefined {
+        return this.pagedParams.pageSize
+    }
+    private set pageSize(val: number | undefined) {
+        this.pagedParams.pageSize = val;
+    }
     private minPageBound: number = 1;
     private maxPageBound: number = 1;
     private canLoadMore: boolean = true;
     private remoteRowCount: number = 0;
-    private pageSize?: number;
     private maxPage: number = 1;
     private maxDomPages: number = 10;
     private pageStatuses: ('deffered' | 'loading' | 'fetched' | 'failed')[] = [];
     private isPageLoading: boolean = false;
-    private isInitialized: boolean = false;
     private isLoading: boolean = false;
     private scrollBoxRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private wrapperRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
@@ -229,7 +249,8 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
     public init(): void {
         const props = this.getProps();
 
-        if (props.maxDomPages) this.maxDomPages = props.maxDomPages
+        if (props.pageSize) this.pageSize = props.pageSize;
+        if (props.maxDomPages) this.maxDomPages = props.maxDomPages;
         if (props.dataList) {
             this.parseFirstBatchArray(props.dataList);
         }
@@ -266,7 +287,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             this.isLoading = true;
             this.setOverlay(true);
             try {
-                const data = await props.loader(this.currentPageNum);
+                const data = await props.loader(this.pagedParams);
                 if (data && !Array.isArray(data) && data.elements && data.pagedMeta) {
                     this.parseFirstBatchPaged(data);
                 }
@@ -300,14 +321,12 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         if (data.elements) {
             this.addElementsToList(data.elements, this.currentPageNum);
         }
-        this.isInitialized = true;
     }
 
     private parseFirstBatchArray = (data: DataType[]) => {
         this.canLoadMore = false;
         this.remoteRowCount = data.length;
         this.addElementsToList(data, this.currentPageNum);
-        this.isInitialized = true;
     }
 
 
@@ -357,7 +376,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         this.minPageBound = 1;
         this.maxPageBound = 1;
         if (props.useQueryPagination) {
-            window.history.pushState({}, '', getPagedUrl(0));
+            window.history.pushState({}, '', getPagedUrl(1));
         }
         this.dataList = [];
         this.list = [];
@@ -440,7 +459,8 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             this.isPageLoading = true;
             this.setOverlay(true);
             try {
-                const pagedData = await props.loader(pageNum);
+                const pagedData = await props.loader(Object.assign({}, this.pagedParams,
+                    { pageNumber: pageNum }));
                 if (pagedData && !Array.isArray(pagedData) && pagedData.elements) {
                     this.addElementsToList(pagedData.elements, pageNum);
                     this.pageStatuses[pageNum] = 'fetched';
@@ -544,6 +564,9 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             />
         )
     }
+
+    public getPagedParams = () => this.pagedParams;
+    public setPagedParams = (val: TPagedParams<DataType>) => this.pagedParams = val;
 
     render() {
         const props = this.getProps();

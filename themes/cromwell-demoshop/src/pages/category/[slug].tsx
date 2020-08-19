@@ -5,6 +5,7 @@ import { Link } from '@cromwell/core-frontend';
 import { CContainer, getGraphQLClient, CList } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
 import { Product } from '../../components/product/Product';
+import { CategorySort } from '../../components/categorySort/CategorySort';
 //@ts-ignore
 import commonStyles from '../../styles/common.module.scss';
 //@ts-ignore
@@ -39,7 +40,7 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
     // console.log('ProductThemePage props', props);
     const category = props.category;
     const client = getGraphQLClient();
-
+    const listId = 'Category_ProductList';
     return (
         <Layout>
             <div className={commonStyles.content}>
@@ -48,20 +49,23 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
                         <CContainer id="Category_ProductFilter" />
                     </div>
                     <div className={styles.main}>
+                        <div>
+                            <CategorySort listId={listId} />
+                        </div>
                         {category && (
                             <CList<TProduct>
-                                id="Category_ProductList"
+                                id={listId}
                                 ListItem={(props) => <Product data={props.data} className={styles.product} key={props.data?.id} />}
                                 usePagination
                                 useShowMoreButton
                                 useQueryPagination
                                 disableCaching
+                                pageSize={20}
                                 maxDomPages={2}
                                 scrollContainerSelector={`.${layoutStyles.Layout}`}
                                 firstBatch={props.products ? props.products : undefined}
-                                loader={async (pageNumber: number) => {
-                                    return client?.getProductsFromCategory(category.id,
-                                        { pageSize: 20, pageNumber })
+                                loader={async (params) => {
+                                    return client?.getProductsFromCategory(category.id, params)
                                 }}
                                 cssClasses={{
                                     page: styles.productList

@@ -1,7 +1,9 @@
 import { getStoreItem, setStoreItem, isServer } from '@cromwell/core';
 
 export const getPriceWithCurrency = (price: number | undefined | null): string => {
-    if (price === undefined || price === null) return 'Not available';
+    if (price === undefined || price === null)
+        return '';
+        //return 'Not available';
     let priceStr = price + '';
     const cmsconfig = getStoreItem('cmsconfig');
     const currency = getGlobalCurrency();
