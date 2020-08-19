@@ -9,35 +9,73 @@ import {
     ProductRepository,
 } from '@cromwell/core-backend';
 import { Arg, Query, Resolver } from 'type-graphql';
-import { Brackets, getCustomRepository, SelectQueryBuilder } from 'typeorm';
-import { TProductFilterAttribute, TProductFilter } from '../../types';
-import { ProductFilter } from '../entities/ProductFilter'
+import { Brackets, getCustomRepository, SelectQueryBuilder, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
+import { TProductFilterAttribute, TProductFilter, TFilteredList, TFilterMeta } from '../../types';
+import { ProductFilter } from '../entities/ProductFilter';
+import { FilteredProduct } from '../entities/FilteredProduct';
 
 @Resolver(Product)
 export default class ProductFilterResolver {
 
-    @Query(() => PagedProduct)
+    @Query(() => FilteredProduct)
     async getFilteredProductsFromCategory(
         @Arg("categoryId") categoryId: string,
         @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>,
         @Arg("filterParams", { nullable: true }) filterParams: ProductFilter
-    ): Promise<TPagedList<TProduct> | undefined> {
-        const productRepo = getCustomRepository(ProductRepository);
-        const qb = productRepo.createQueryBuilder(DBTableNames.Product);
-        applyGetManyFromOne(qb, DBTableNames.Product, 'categories',
-            DBTableNames.ProductCategory, categoryId);
+    ): Promise<TFilteredList<TProduct> | undefined> {
 
-        if (filterParams) {
-            this.applyProductFilter(qb, filterParams);
+        const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
+            const productRepo = getCustomRepository(ProductRepository);
+            const qb = productRepo.createQueryBuilder(DBTableNames.Product);
+            applyGetManyFromOne(qb, DBTableNames.Product, 'categories',
+                DBTableNames.ProductCategory, categoryId);
+
+            if (filterParams) {
+                this.applyProductFilter(qb, filterParams, shouldApplyPriceFilter);
+            }
+            return qb;
+        }
+        const getFilterMeta = async (): Promise<TFilterMeta> => {
+            // Get max price
+            const qb = getQb(false);
+            let maxPrice = (await qb.select(`MAX(${DBTableNames.Product}.price)`, "maxPrice").getRawOne()).maxPrice;
+            if (maxPrice && typeof maxPrice === 'string') maxPrice = parseInt(maxPrice);
+
+            let minPrice = (await qb.select(`MIN(${DBTableNames.Product}.price)`, "minPrice").getRawOne()).minPrice;
+            if (minPrice && typeof minPrice === 'string') minPrice = parseInt(minPrice);
+
+            return {
+                minPrice, maxPrice
+            }
+        }
+        const getElements = async (): Promise<TPagedList<TProduct>> => {
+            const qb = getQb();
+            return await getPaged<TProduct>(qb, DBTableNames.Product, pagedParams);
         }
 
-        const paged = await getPaged(qb, DBTableNames.Product, pagedParams);
-        return paged;
+        const filterMeta = await getFilterMeta();
+        const paged = await getElements();
+
+        const filtered: TFilteredList<TProduct> = {
+            ...paged,
+            filterMeta
+        }
+        return filtered;
     }
 
-    private applyProductFilter(qb: SelectQueryBuilder<TProduct>, filterParams: TProductFilter) {
+    private applyProductFilter(qb: SelectQueryBuilder<TProduct>, filterParams: TProductFilter, shouldApplyPriceFilter = true) {
+        let isFirstAttr = true;
+
+        const qbAddWhere: typeof qb.where = (where, params) => {
+            if (isFirstAttr) {
+                isFirstAttr = false;
+                return qb.where(where, params);
+            } else {
+                return qb.andWhere(where as any, params);
+            }
+        }
+
         if (filterParams.attributes) {
-            let isFirstAttr = true;
             filterParams.attributes.forEach(attr => {
                 if (attr.values.length > 0) {
                     const brackets = new Brackets(subQb => {
@@ -54,14 +92,21 @@ export default class ProductFilterResolver {
                             }
                         })
                     });
-                    if (isFirstAttr) {
-                        isFirstAttr = false;
-                        qb.where(brackets);
-                    } else {
-                        qb.andWhere(brackets);
-                    }
+                    qbAddWhere(brackets);
                 }
             });
         }
+
+        if (shouldApplyPriceFilter) {
+            if (filterParams.maxPrice) {
+                const query = `${DBTableNames.Product}.price <= :maxPrice`;
+                qbAddWhere(query, { maxPrice: filterParams.maxPrice })
+            }
+            if (filterParams.minPrice) {
+                const query = `${DBTableNames.Product}.price >= :minPrice`;
+                qbAddWhere(query, { minPrice: filterParams.minPrice })
+            }
+        }
+
     }
 }

@@ -1,3 +1,6 @@
+import { DBTableNames, TProduct, TPagedList } from '@cromwell/core';
+
+
 export type TProductFilter = {
     minPrice?: number;
     maxPrice?: number;
@@ -6,4 +9,13 @@ export type TProductFilter = {
 export type TProductFilterAttribute = {
     key: string;
     values: string[];
+}
+
+export type TFilteredList<T> = TPagedList<T> & {
+    filterMeta: TFilterMeta;
+}
+
+export type TFilterMeta = {
+    minPrice?: number;
+    maxPrice?: number;
 }
