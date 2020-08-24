@@ -1,0 +1,32 @@
+.ProductAttributes {
+    position: relative;
+
+    .attribute {
+        margin: 10px 0;
+        width: 100%;
+    }
+    
+    .headerWrapper {
+        width: 100%;
+        margin-bottom: 5px;
+    }
+    
+    .valuesWrapper {
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+    }
+    .attrValue {
+        margin-right: 10px;
+        margin-bottom: 10px;
+    }
+    .attrValueIcon {
+        width: 20px;
+        height: 20px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        margin-right: 10px;
+    }
+}
+

@@ -11,19 +11,38 @@ import {
 import { TProduct, getBlockInstance, TPagedParams } from '@cromwell/core';
 import { getGraphQLClient, TCGraphQLClient, TCList } from '@cromwell/core-frontend';
 
-type TSortOption = { key: keyof TProduct; title: string; direction: 'ASC' | 'DESC' };
+type TSortOption = { key?: keyof TProduct; title: string; direction?: 'ASC' | 'DESC' };
 
 export const CategorySort = (props: {
     listId: string;
 }) => {
-    const [sortKey, setSortKey] = useState('');
+    const [sortTitle, setSortTitle] = useState('Default');
     const handleKeyChange = (event: React.ChangeEvent<{
         name?: string | undefined;
         value: unknown;
     }>) => {
-        setSortKey(event.target.value as string);
+        const val = event.target.value as string
+        setSortTitle(val);
+        setTimeout(() => {
+            const listId = props.listId;
+            const option: TSortOption | undefined = sortOptions.find(o => o.title === val);
+            if (option && listId) {
+                const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+                if (list) {
+                    const params = Object.assign({}, list.getPagedParams());
+                    params.order = option.direction;
+                    params.orderBy = option.key;
+                    list.setPagedParams(params);
+                    list.clearState();
+                    list.init();
+                }
+            }
+        }, 100);
     }
     const sortOptions: TSortOption[] = [
+        {
+            title: 'Default'
+        },
         {
             key: 'rating',
             direction: 'DESC',
@@ -46,36 +65,13 @@ export const CategorySort = (props: {
         },
     ];
 
-    useEffect(() => {
-        const listId = props.listId;
-        const option: TSortOption | undefined = sortOptions.find(o => o.key === sortKey);
-
-        if (option && listId) {
-            const param: TPagedParams<TProduct> = {
-                orderBy: option.key,
-                order: option.direction
-            }
-            const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
-            if (list) {
-                list.setPagedParams(Object.assign({}, list.getPagedParams(), param));
-                list.clearState();
-                list.init();
-            }
-
-        }
-
-    }, [sortKey])
-
     return (
         <FormControl variant="filled">
             <InputLabel>Sort</InputLabel>
             <Select
-                value={sortKey}
+                value={sortTitle}
                 onChange={handleKeyChange}
             >
-                <MenuItem value="">
-                    <em>None</em>
-                </MenuItem>
                 {sortOptions.map(opt => (
                     <MenuItem value={opt.title}>{opt.title}</MenuItem>
                 ))}

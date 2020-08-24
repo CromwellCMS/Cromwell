@@ -1,0 +1,11 @@
+.ProductActions {
+    // display: flex;
+    // flex-wrap: wrap;
+    position: relative;
+    border-top: 1px solid #bbb;
+    padding-top: 15px;
+
+    .actionButton {
+        margin: 0 15px 15px 0;
+    }
+}
