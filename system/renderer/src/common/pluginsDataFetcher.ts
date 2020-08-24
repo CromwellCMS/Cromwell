@@ -50,7 +50,7 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
                     if (getStaticProps) {
                         try {
                             pluginStaticProps = await getStaticProps(pluginContext);
-                            // console.log('pluginStaticProps', pluginStaticProps)
+                            pluginStaticProps = JSON.parse(JSON.stringify(pluginStaticProps));
                         } catch (e) {
                             console.error('pluginsDataFetcher1', e);
                         }

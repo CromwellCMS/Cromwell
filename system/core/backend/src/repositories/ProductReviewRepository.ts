@@ -1,4 +1,4 @@
-import { DBTableNames, TProductReview, TProductReviewInput } from '@cromwell/core';
+import { DBTableNames, TProductReview, TProductReviewInput, TPagedList, TPagedParams } from '@cromwell/core';
 import { EntityRepository, Repository, getCustomRepository } from 'typeorm';
 
 import { ProductReview } from '../entities/ProductReview';
@@ -8,8 +8,9 @@ import { ProductRepository } from './ProductRepository';
 @EntityRepository(ProductReview)
 export class ProductReviewRepository extends Repository<ProductReview> {
 
-    async getProductReviews(): Promise<ProductReview[]> {
-        return this.find();
+    private productRepo = getCustomRepository(ProductRepository);
+    async getProductReviews(params: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
+        return getPaged(this.createQueryBuilder(), DBTableNames.ProductReview, params);
     }
 
     async getProductReview(id: string): Promise<ProductReview> {
@@ -23,7 +24,29 @@ export class ProductReviewRepository extends Repository<ProductReview> {
     async handleProductReviewInput(productReview: ProductReview, input: TProductReviewInput) {
         handleBaseInput(productReview, input);
 
-        productReview.product = await getCustomRepository(ProductRepository).getProductById(input.productId);
+        const product = await this.productRepo.getProductById(input.productId);
+        if (!product) throw new Error(`ProductReviewRepository:handleProductReviewInput productId ${input.productId} not found!`);
+        productReview.product = product;
+
+        let sum = 0;
+        let num = 0;
+        const reviews = await this.productRepo.getReviewsOfProduct(product.id);
+        if (reviews && reviews.elements) {
+            reviews.elements.forEach(r => {
+                if (r.rating) {
+                    sum += r.rating;
+                    num++;
+                }
+            })
+        }
+        if (input.rating) {
+            sum += input.rating;
+            num++;
+        }
+        if (sum && num) {
+            product.rating = parseFloat((sum / num).toFixed(1));
+            this.productRepo.save(product);
+        }
 
         productReview.title = input.title;
         productReview.description = input.description;

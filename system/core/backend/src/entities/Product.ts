@@ -40,6 +40,10 @@ export class Product extends BasePageEntity implements TProduct {
     @OneToMany(type => ProductReview, review => review.product)
     reviews?: TProductReview[];
 
+    @Field(type => Number, { nullable: true })
+    @Column({ type: "integer", nullable: true })
+    rating: number | undefined;
+
     @Field(type => [AttributeInstance], { nullable: true })
     public get attributes(): AttributeInstance[] | undefined {
         if (this.attributesJSON) return JSON.parse(this.attributesJSON);

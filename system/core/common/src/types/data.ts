@@ -40,6 +40,7 @@ export type TDBEntity = keyof {
     Post;
     Product;
     ProductCategory;
+    ProductReview;
     Attribute;
 }
 

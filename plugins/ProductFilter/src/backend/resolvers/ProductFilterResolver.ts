@@ -11,7 +11,7 @@ import {
 import { Arg, Query, Resolver } from 'type-graphql';
 import { Brackets, getCustomRepository, SelectQueryBuilder, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
 import { TProductFilterAttribute, TProductFilter, TFilteredList, TFilterMeta } from '../../types';
-import { ProductFilter } from '../entities/ProductFilter';
+import { ProductFilterInput } from '../entities/ProductFilter';
 import { FilteredProduct } from '../entities/FilteredProduct';
 
 @Resolver(Product)
@@ -21,7 +21,7 @@ export default class ProductFilterResolver {
     async getFilteredProductsFromCategory(
         @Arg("categoryId") categoryId: string,
         @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>,
-        @Arg("filterParams", { nullable: true }) filterParams: ProductFilter
+        @Arg("filterParams", { nullable: true }) filterParams: ProductFilterInput
     ): Promise<TFilteredList<TProduct> | undefined> {
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {

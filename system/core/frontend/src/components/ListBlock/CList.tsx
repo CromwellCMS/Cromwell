@@ -288,7 +288,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             this.setOverlay(true);
             try {
                 const data = await props.loader(this.pagedParams);
-                if (data && !Array.isArray(data) && data.elements && data.pagedMeta) {
+                if (data && !Array.isArray(data) && data.elements) {
                     this.parseFirstBatchPaged(data);
                 }
                 if (data && Array.isArray(data)) {

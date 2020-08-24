@@ -19,7 +19,7 @@ const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: stri
     // console.log('getFiltered', filterParams);
     const data = await client?.query({
         query: gql`
-            query getFilteredProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilter!, $withCategories: Boolean!) {
+            query getFilteredProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!, $withCategories: Boolean!) {
                 getFilteredProductsFromCategory(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
                     pagedMeta {
                         ...PagedMetaFragment

@@ -1,7 +1,7 @@
 import {
     TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute,
     TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory,
-    TProductInput, TAttribute, setStoreItem
+    TProductInput, TAttribute, setStoreItem, TProductReviewInput, TAttributeInput, TProductReview
 } from '@cromwell/core';
 import {
     gql, ApolloClient, InMemoryCache, createHttpLink, NormalizedCacheObject,
@@ -57,14 +57,14 @@ class CGraphQLClient {
             mainImage
             images
             description
-            rating
             views
+            rating
             attributes {
                 key
                 values {
                     value
                     productVariant {
-                            name
+                        name
                         price
                         oldPrice
                         mainImage
@@ -246,12 +246,14 @@ class CGraphQLClient {
 
     public AttributeFragment = gql`
        fragment AttributeFragment on Attribute {
+            id
             key
             values {
                 value
                 icon
             }
             type
+            isEnabled
        }
    `
 
@@ -286,7 +288,7 @@ class CGraphQLClient {
         return res?.data?.getAttribute;
     }
 
-    public updateAttribute = async (id: string, attribute: TAttribute) => {
+    public updateAttribute = async (id: string, attribute: TAttributeInput) => {
         const res = await this.apolloClient.mutate({
             mutation: gql`
                mutation coreUpdateAttribute($id: String!, $data: AttributeInput!) {
@@ -304,11 +306,11 @@ class CGraphQLClient {
         return res?.data?.updateAttribute;
     }
 
-    public createAttribute = async (attribute: TAttribute) => {
+    public createAttribute = async (attribute: TAttributeInput) => {
         const res = await this.apolloClient.mutate({
             mutation: gql`
-               mutation coreCreateAttribute($data: AttributeInput!, $withCategories: Boolean!) {
-                   createAttribute(id: $id, data: $data) {
+               mutation coreCreateAttribute($data: AttributeInput!) {
+                   createAttribute(data: $data) {
                        ...AttributeFragment
                    }
                }
@@ -323,6 +325,124 @@ class CGraphQLClient {
 
 
     // </Attribute>
+
+
+    // <ProductReview>
+
+    public ProductReviewFragment = gql`
+        fragment ProductReviewFragment on ProductReview {
+            id
+            productId
+            title
+            description
+            rating
+            userName
+            isEnabled
+        }
+  `
+
+    public getProductReview = async (productReviewId: number): Promise<TProductReview> => {
+        const res = await this.apolloClient.query({
+            query: gql`
+              query coreGetProductReviewById($id: String!) {
+                productReview(id: $id) {
+                      ...ProductReviewFragment
+                   }           
+              }
+              ${this.ProductReviewFragment}
+          `,
+            variables: {
+                id: productReviewId
+            }
+        });
+        return res?.data?.productReview;
+    }
+
+    public getProductReviews = async (pagedParams?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> => {
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetProductReviews($pagedParams: PagedParamsInput!) {
+                    productReviews(pagedParams: $pagedParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...ProductReviewFragment
+                        }
+                    }
+                }
+                ${this.ProductReviewFragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                pagedParams: pagedParams ? pagedParams : {},
+            }
+        })
+        return res?.data?.productReviews;
+    }
+
+    public getProductReviewsOfProduct = async (productId: string, pagedParams?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> => {
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetProductReviewsOfProduct($productId: String!, $pagedParams: PagedParamsInput!) {
+                    getProductReviewsOfProduct(productId: $productId, pagedParams: $pagedParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...ProductReviewFragment
+                        }
+                    }
+                }
+                ${this.ProductReviewFragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                productId,
+                pagedParams: pagedParams ? pagedParams : {},
+            }
+        })
+        return res?.data?.getProductReviewsOfProduct;
+    }
+
+
+    public updateProductReview = async (id: string, productReview: TProductReviewInput): Promise<TProductReview> => {
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+              mutation coreUpdateAttribute($id: String!, $data: AttributeInput!) {
+                  updateProductReview(id: $id, data: $data) {
+                      ...ProductReviewFragment
+                  }
+              }
+              ${this.ProductReviewFragment}
+          `,
+            variables: {
+                id,
+                data: productReview,
+            }
+        });
+        return res?.data?.updateProductReview;
+    }
+
+    public createProductReview = async (productReview: TProductReviewInput): Promise<TProductReview> => {
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+              mutation coreCreateProductReview($data: AttributeInput!) {
+                createProductReview(data: $data) {
+                      ...ProductReviewFragment
+                  }
+              }
+              ${this.ProductReviewFragment}
+          `,
+            variables: {
+                data: productReview,
+            }
+        });
+        return res?.data?.createProductReview;
+    }
+
+
+    // </ProductReview>
 
 
 }

@@ -1,17 +1,22 @@
 import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from "type-graphql";
 import { ProductReview, ProductReviewInput } from '@cromwell/core-backend';
-import { ProductReviewRepository } from '@cromwell/core-backend';
+import { ProductReviewRepository, PagedProductReview, PagedParamsInput, ProductRepository } from '@cromwell/core-backend';
 import { getCustomRepository } from "typeorm";
-import { TProductReview, TPagedList } from "@cromwell/core";
+import { TProductReview, TPagedList, } from "@cromwell/core";
 
 @Resolver(ProductReview)
 export class ProductReviewResolver {
 
     private get repo() { return getCustomRepository(ProductReviewRepository) }
 
-    @Query(() => [ProductReview])
-    async productReviews(): Promise<TProductReview[]> {
-        return await this.repo.getProductReviews();
+    @Query(() => PagedProductReview)
+    async productReviews(@Arg("pagedParams") pagedParams: PagedParamsInput<TProductReview>): Promise<TPagedList<TProductReview>> {
+        return await this.repo.getProductReviews(pagedParams);
+    }
+
+    @Query(() => PagedProductReview)
+    async getProductReviewsOfProduct(@Arg("productId") productId: string, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductReview>): Promise<TPagedList<TProductReview>> {
+        return getCustomRepository(ProductRepository).getReviewsOfProduct(productId, pagedParams);
     }
 
     @Query(() => ProductReview)

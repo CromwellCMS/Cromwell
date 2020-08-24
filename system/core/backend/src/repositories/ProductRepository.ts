@@ -6,12 +6,15 @@ import {
     TPagedParams,
     TProduct,
     TProductInput,
+    TProductReview,
 } from '@cromwell/core';
 import { EntityRepository, getCustomRepository, Repository } from 'typeorm';
 
 import { Product } from '../entities/Product';
 import { applyGetManyFromOne, getPaged, handleBaseInput } from './BaseQueries';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
+import { ProductReviewRepository } from './ProductReviewRepository';
+import { ProductReview } from '../entities/ProductReview';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
@@ -47,7 +50,7 @@ export class ProductRepository extends Repository<Product> {
         product.images = input.images;
         product.description = input.description;
         product.attributes = input.attributes;
-       
+
         if (input.categoryIds) {
             product.categories = await getCustomRepository(ProductCategoryRepository)
                 .getProductCategoriesById(input.categoryIds);
@@ -118,6 +121,12 @@ export class ProductRepository extends Repository<Product> {
         applyGetManyFromOne(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
         const paged = await getPaged(qb, DBTableNames.Product, params);
         return paged;
+    }
+
+    async getReviewsOfProduct(productId: string, params?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
+        const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(DBTableNames.ProductReview);
+        applyGetManyFromOne(qb, DBTableNames.ProductReview, 'product', DBTableNames.Product, productId);
+        return getPaged(qb, DBTableNames.ProductReview, params)
     }
 
     private buildProductPage(product: Product) {

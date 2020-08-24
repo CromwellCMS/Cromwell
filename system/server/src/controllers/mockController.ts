@@ -1,4 +1,4 @@
-import { apiV1BaseRoute, TAttributeValue, TAttributeInput, TProductReviewInput } from "@cromwell/core";
+import { apiV1BaseRoute, TAttributeValue, TAttributeInput, TProductReviewInput, TProductCategoryInput, TProductCategory } from "@cromwell/core";
 import { Express } from 'express';
 import { getCustomRepository } from "typeorm";
 import { ProductRepository, ProductCategoryRepository, AttributeRepository, ProductReviewRepository } from '@cromwell/core-backend';
@@ -21,10 +21,15 @@ export const applyMockController = (app: Express): void => {
         key: 'Color',
         values: [{ value: "Orange", icon: '/images/color_orange.png' }, { value: "Purple", icon: '/images/color_purple.png' }, { value: "Blue", icon: '/images/color_blue.png' }],
         type: 'radio'
+    },
+    {
+        key: 'Condition',
+        values: [{ value: "New" }, { value: "Used" }],
+        type: 'radio'
     }];
 
     // reviews
-    const reviewsMock: TProductReviewInput[] = [
+    const reviewsMock: (Omit<TProductReviewInput, 'productId'>)[] = [
         {
             title: 'Just awesome',
             description: 'Best product ever',
@@ -39,15 +44,27 @@ export const applyMockController = (app: Express): void => {
         },
         {
             title: 'Neat',
-            description: "You can go with it, buy I'm good",
+            description: "You can go with it, but I'm good",
             rating: 4,
             userName: 'Tom',
         },
         {
+            title: 'Not bad',
+            description: "It could be worse but well it wasn't",
+            rating: 3.5,
+            userName: 'John',
+        },
+        {
             title: 'Could be better',
-            description: "For the record, it is not good",
+            description: "For the record, it is NOT good",
             rating: 3,
             userName: 'Will',
+        },
+        {
+            title: '',
+            description: 'I do not recommend it',
+            rating: 2.5,
+            userName: 'Roy',
         },
         {
             title: 'Sad',
@@ -56,8 +73,8 @@ export const applyMockController = (app: Express): void => {
             userName: 'Billy',
         },
         {
-            title: 'How?',
-            description: 'How could it be so bad?',
+            title: '',
+            description: 'How could it be SO bad?',
             rating: 1,
             userName: 'Max',
         },
@@ -70,10 +87,6 @@ export const applyMockController = (app: Express): void => {
         new Promise(async (done) => {
 
             const mockedProdList = [
-                {
-                    name: '12 Monkeys',
-                    price: 12.0,
-                },
                 {
                     name: 'Top Laptop',
                     price: 231.0,
@@ -116,10 +129,6 @@ export const applyMockController = (app: Express): void => {
                 {
                     name: 'CyberCowboy',
                     price: 9128.0,
-                },
-                {
-                    name: 'US SpaceForce',
-                    price: 999.0,
                 }
             ];
 
@@ -129,10 +138,10 @@ export const applyMockController = (app: Express): void => {
                 '/images/product_3.jpg'
             ];
             const imagesNum = 6;
-            const getRandImg = () => images[Math.round(Math.random() * (images.length - 1))];
+            const getRandImg = () => images[Math.floor(Math.random() * (images.length))];
 
             const sizeVals = attributesMock[0].values;
-            const getRandSize = () => sizeVals[Math.round(Math.random() * (sizeVals.length - 1))];
+            const getRandSize = () => sizeVals[Math.floor(Math.random() * (sizeVals.length))];
             const sizesNum = 3;
 
             const description = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</p><ul><li><i class="porto-icon-ok"></i>Any Product types that You want - Simple, Configurable</li><li><i class="porto-icon-ok"></i>Downloadable/Digital Products, Virtual Products</li><li><i class="porto-icon-ok"></i>Inventory Management with Backordered items</li></ul><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, <br>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
@@ -143,7 +152,9 @@ export const applyMockController = (app: Express): void => {
                 await productRepo.deleteProduct(oldProd.id);
             }
 
-            const times = 20; // will create (times * 11) products
+            const cats = await productCategoryRepo.find();
+
+            const times = 100; // will create (times * 9) products
 
             for (let i = 0; i < times; i++) {
                 for (const mock of mockedProdList) {
@@ -153,9 +164,13 @@ export const applyMockController = (app: Express): void => {
                     if (mainImage === images[1]) color = 'Orange';
                     if (mainImage === images[2]) color = 'Purple';
 
+                    shuffleArray(cats);
+                    const catsNum = Math.floor(Math.random() * cats.length)
+                    const categoryIds: string[] = cats.slice(0, catsNum).map(c => c.id);
+
                     await productRepo.createProduct({
                         name: mock.name,
-                        categoryIds: [],
+                        categoryIds,
                         price: mock.price,
                         oldPrice: mock.oldPrice,
                         mainImage: mainImage,
@@ -196,17 +211,51 @@ export const applyMockController = (app: Express): void => {
                 }
             }
 
-            const cats = await productCategoryRepo.find();
-            const prods = await productRepo.find();
-            prods.forEach(p => {
-                p.categories = cats;
-                p.save();
-            });
-
             res.send(true);
             done();
         })
     })
+
+
+    app.get(`/${apiV1BaseRoute}/mock/categories`, function (req, res) {
+        new Promise(async (done) => {
+
+
+            // Clear
+            const categories = await productCategoryRepo.find();
+            for (const cat of categories) {
+                productCategoryRepo.delete(cat.id)
+            }
+
+            const categoriesMock: TProductCategoryInput[] = []
+            for (let i = 0; i < 20; i++) {
+                const name = 'Category ' + (i + 1);
+                categoriesMock.push({
+                    name,
+                    description: name + ' description'
+                })
+            }
+
+            for (const cat of categoriesMock) {
+                const catEntity = await productCategoryRepo.createProductCategory(cat);
+                const subCatsNum = Math.floor(Math.random() * 5);
+                const subCats: TProductCategoryInput[] = [];
+                for (let j = 0; j < subCatsNum; j++) {
+                    const name = 'Subcategory ' + (j + 1);
+                    const subcat = {
+                        name,
+                        description: name + ' description',
+                        parentId: catEntity.id
+                    };
+                    await productCategoryRepo.createProductCategory(subcat);
+                }
+
+            }
+
+            res.send(true);
+            done();
+        })
+    });
 
 
 
@@ -238,12 +287,28 @@ export const applyMockController = (app: Express): void => {
                 await productReviewRepo.deleteProductReview(item.id);
             }
 
-            for (const item of reviewsMock) {
-                await productReviewRepo.createProductReview(item);
+            const products = await productRepo.find();
+            for (const prod of products) {
+                shuffleArray(reviewsMock);
+                const reviewsNum = Math.floor(Math.random() * reviewsMock.length)
+                for (let i = 0; i < reviewsNum && i < reviewsMock.length; i++) {
+                    const review: TProductReviewInput = {
+                        ...reviewsMock[i],
+                        productId: prod.id
+                    }
+                    await productReviewRepo.createProductReview(review);
+                }
             }
 
             res.send(true);
             done();
         })
     });
+}
+
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
 }

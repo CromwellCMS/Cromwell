@@ -4,8 +4,8 @@ import { AttributeInput, AttributeInstance } from '@cromwell/core-backend';
 import { TProductFilterAttribute, TProductFilter } from '../../types';
 
 
-@InputType({ description: "Product filter options" })
-export class ProductFilter implements TProductFilter {
+@InputType("ProductFilterInput")
+export class ProductFilterInput implements TProductFilter {
 
     @Field(type => Float, { nullable: true })
     minPrice: number;

@@ -2,7 +2,7 @@ import { EntityRepository, TreeRepository } from "typeorm";
 import { ProductCategory } from '../entities/ProductCategory'
 import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
-import { TProductCategory, TPagedParams } from '@cromwell/core';
+import { TProductCategory, TPagedParams, TProductCategoryInput } from '@cromwell/core';
 import { DBTableNames } from '@cromwell/core';
 import { getPaged, applyGetPaged, applyGetManyFromOne, handleBaseInput } from './BaseQueries';
 
@@ -40,21 +40,25 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return product;
     }
 
+    async handleProductCategoryInput(productCategory: ProductCategory, input: TProductCategoryInput) {
+        handleBaseInput(productCategory, input);
 
-    async createProductCategory(createProduct: CreateProductCategory): Promise<ProductCategory> {
+        productCategory.name = input.name;
+        productCategory.mainImage = input.mainImage;
+        productCategory.description = input.description;
+
+        if (input.parentId) {
+            productCategory.parent = await this.getProductCategoryById(input.parentId);
+        }
+        if (input.childIds && Array.isArray(input.childIds)) {
+            productCategory.children = await this.getProductCategoriesById(input.childIds);
+        }
+    }
+
+    async createProductCategory(createProductCategory: CreateProductCategory): Promise<ProductCategory> {
         const productCategory = new ProductCategory();
-        handleBaseInput(productCategory, createProduct);
-        productCategory.name = createProduct.name;
-        productCategory.name = createProduct.name;
-        productCategory.mainImage = createProduct.mainImage;
-        productCategory.description = createProduct.description;
-
-        if (createProduct.parentId) {
-            productCategory.parent = await this.getProductCategoryById(createProduct.parentId);
-        }
-        if (createProduct.childIds && Array.isArray(createProduct.childIds)) {
-            productCategory.children = await this.getProductCategoriesById(createProduct.childIds);
-        }
+  
+        this.handleProductCategoryInput(productCategory, createProductCategory);
 
         await this.save(productCategory);
         if (!productCategory.slug) {
@@ -68,17 +72,8 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         const productCategory = await this.getProductCategoryById(id);
         if (!productCategory) throw new Error(`ProductCategory ${id} not found!`);
 
-        handleBaseInput(productCategory, updateProductCategory);
-        productCategory.name = updateProductCategory.name;
-        productCategory.mainImage = updateProductCategory.mainImage;
-        productCategory.description = updateProductCategory.description;
+        this.handleProductCategoryInput(productCategory, updateProductCategory);
 
-        if (updateProductCategory.parentId) {
-            productCategory.parent = await this.getProductCategoryById(updateProductCategory.parentId);
-        }
-        if (updateProductCategory.childIds && Array.isArray(updateProductCategory.childIds)) {
-            productCategory.children = await this.getProductCategoriesById(updateProductCategory.childIds);
-        }
         await this.save(productCategory);
         return productCategory;
     }

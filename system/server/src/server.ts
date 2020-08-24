@@ -21,6 +21,7 @@ import { PostResolver } from './resolvers/PostResolver';
 import { ProductCategoryResolver } from './resolvers/ProductCategoryResolver';
 import { ProductResolver } from './resolvers/ProductResolver';
 import { AttributeResolver } from './resolvers/AttributeResolver';
+import { ProductReviewResolver } from './resolvers/ProductReviewResolver';
 
 setStoreItem('rebuildPage', rebuildPage);
 const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
@@ -48,6 +49,7 @@ async function apiServer(): Promise<void> {
             PostResolver,
             ProductCategoryResolver,
             ProductResolver,
+            ProductReviewResolver,
             ..._pluginsResolvers
         ],
         dateScalarMode: "isoDate"

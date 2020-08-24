@@ -8,6 +8,7 @@ export * from './entities/ProductReview';
 
 export * from './entities/paged/PagedProduct';
 export * from './entities/paged/PagedMeta';
+export * from './entities/paged/PagedProductReview';
 
 export * from './inputs/CreateAuthor';
 export * from './inputs/CreatePostInput';

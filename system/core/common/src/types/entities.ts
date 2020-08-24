@@ -26,22 +26,22 @@ type TProductCategoryCore = {
     // Name of the category (h1)
     name: string;
     // Href of main image
-    mainImage: string;
+    mainImage?: string;
     // Description (HTML allowed)
-    description: string;
+    description?: string;
     // DB children
-    children: TProductCategory[];
+    children?: TProductCategory[];
     // DB parent
-    parent: TProductCategory;
+    parent?: TProductCategory;
     // Products in category
-    products: TPagedList<TProduct>;
+    products?: TPagedList<TProduct>;
 }
 
 export type TProductCategory = TProductCategoryCore & TBasePageEntity;
 
 export type TProductCategoryInput = TBasePageEntityInput & Omit<TProductCategoryCore, 'children' | 'parent' | 'products'> & {
-    parentId: string;
-    childIds: string[];
+    parentId?: string;
+    childIds?: string[];
 };
 
 export interface TProduct extends TBasePageEntity {

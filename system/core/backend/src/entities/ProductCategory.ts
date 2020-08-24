@@ -15,11 +15,11 @@ export class ProductCategory extends BasePageEntity implements TProductCategory 
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    mainImage: string;
+    mainImage?: string;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    description: string;
+    description?: string;
 
     @Field(() => [ProductCategory], { nullable: true })
     @TreeChildren()

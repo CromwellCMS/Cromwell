@@ -8,7 +8,8 @@ import {
     ProductCategoryRepository,
     ProductRepository,
     UpdateProduct,
-    ProductReview
+    ProductReview,
+    PagedProductReview
 } from '@cromwell/core-backend';
 import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -59,9 +60,9 @@ export class ProductResolver {
         return await getCustomRepository(ProductCategoryRepository).getCategoriesOfProduct(product.id, pagedParams);
     }
 
-    @FieldResolver(() => [ProductReview])
-    async reviews(@Root() product: Product): Promise<TProductReview[]> {
-        return await product.reviews;
+    @FieldResolver(() => PagedProductReview)
+    async reviews(@Root() product: Product, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductReview>): Promise<TPagedList<TProductReview>> {
+        return this.repo.getReviewsOfProduct(product.id, pagedParams);
     }
 
     @FieldResolver()
