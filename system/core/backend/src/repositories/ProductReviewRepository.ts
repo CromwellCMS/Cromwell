@@ -2,7 +2,7 @@ import { DBTableNames, TProductReview, TProductReviewInput, TPagedList, TPagedPa
 import { EntityRepository, Repository, getCustomRepository } from 'typeorm';
 
 import { ProductReview } from '../entities/ProductReview';
-import { applyGetManyFromOne, getPaged, handleBaseInput } from './BaseQueries';
+import { getPaged, handleBaseInput } from './BaseQueries';
 import { ProductRepository } from './ProductRepository';
 
 @EntityRepository(ProductReview)

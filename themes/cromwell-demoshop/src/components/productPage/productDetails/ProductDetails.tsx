@@ -2,7 +2,7 @@ import { getAppCustomConfigProp, TAttribute, TProduct, TProductReview } from '@c
 import { CContainer, CGallery, CImage, CList, CText, getGraphQLClient, getPriceWithCurrency } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 import { LoadBox } from '../../loadbox/Loadbox';
 import { Pagination } from '../../pagination/Pagination';
@@ -17,10 +17,21 @@ export const ProductDetails = (props: {
     product?: TProduct | null;
     attributes?: TAttribute[];
 }) => {
+    const [product, setProduct] = useState(props.product);
+    const productRef = useRef<TProduct | null | undefined>(props.product);
+
     const router = useRouter();
-    const product = props.product;
+    const productOriginal = props.product;
     const customTabs = getAppCustomConfigProp('product/customTabs');
     const client = getGraphQLClient();
+
+    useEffect(() => {
+        if (props.product !== productRef.current) {
+            productRef.current = props.product;
+            setProduct(props.product);
+        }
+    });
+
     return (
         <CContainer id="product_01" className={styles.ProductDetails}>
             {(!product && router && router.isFallback) && (
@@ -69,6 +80,11 @@ export const ProductDetails = (props: {
                             <CContainer id="productAttributesBlock" className={styles.productAttributesBlock}>
                                 {product.attributes && props.attributes && (
                                     <ProductAttributes
+                                        product={productOriginal}
+                                        modifyProduct={(modifiedProduct) => {
+                                            console.log('modifyProduct', modifiedProduct);
+                                            setProduct(modifiedProduct)
+                                        }}
                                         attributes={props.attributes}
                                         productAttributes={product.attributes}
                                     />

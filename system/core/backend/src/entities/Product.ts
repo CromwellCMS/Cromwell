@@ -1,6 +1,6 @@
-import { Entity, ManyToMany, JoinTable, Column, OneToMany } from "typeorm";
+import { Entity, ManyToMany, JoinTable, Column, OneToMany, ConnectionOptions } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
-import { TProduct, TProductCategory, TProductReview } from '@cromwell/core';
+import { TProduct, TProductCategory, TProductReview, getStoreItem } from '@cromwell/core';
 import { BasePageEntity } from './BasePageEntity';
 import { ProductCategory } from './ProductCategory';
 import { ProductReview } from './ProductReview';
@@ -37,7 +37,9 @@ export class Product extends BasePageEntity implements TProduct {
     @Column({ type: "varchar", nullable: true })
     description?: string;
 
-    @OneToMany(type => ProductReview, review => review.product)
+    @OneToMany(type => ProductReview, review => review.product, {
+        onDelete: "CASCADE"
+    })
     reviews?: TProductReview[];
 
     @Field(type => Number, { nullable: true })
@@ -53,7 +55,10 @@ export class Product extends BasePageEntity implements TProduct {
         if (data) this.attributesJSON = JSON.stringify(data);
     }
 
-    @Column({ type: "varchar", nullable: true })
+    @Column({
+        type: getStoreItem('dbType') === 'postgres' ? "jsonb" : "varchar",
+        nullable: true
+    })
     private attributesJSON?: string;
 
     @Field(type => Number, { nullable: true })

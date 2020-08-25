@@ -1,4 +1,4 @@
-import { apiV1BaseRoute, TAttributeValue, TAttributeInput, TProductReviewInput, TProductCategoryInput, TProductCategory } from "@cromwell/core";
+import { apiV1BaseRoute, TAttributeValue, TAttributeInput, TProductReviewInput, TProductCategoryInput, TAttributeInstanceValue } from "@cromwell/core";
 import { Express } from 'express';
 import { getCustomRepository } from "typeorm";
 import { ProductRepository, ProductCategoryRepository, AttributeRepository, ProductReviewRepository } from '@cromwell/core-backend';
@@ -32,7 +32,7 @@ export const applyMockController = (app: Express): void => {
     const reviewsMock: (Omit<TProductReviewInput, 'productId'>)[] = [
         {
             title: 'Just awesome',
-            description: 'Best product ever',
+            description: 'Best product ever!',
             rating: 5,
             userName: 'Bob',
         },
@@ -50,7 +50,7 @@ export const applyMockController = (app: Express): void => {
         },
         {
             title: 'Not bad',
-            description: "It could be worse but well it wasn't",
+            description: "To be honest it could be worse but well it wasn't",
             rating: 3.5,
             userName: 'John',
         },
@@ -74,7 +74,7 @@ export const applyMockController = (app: Express): void => {
         },
         {
             title: '',
-            description: 'How could it be SO bad?',
+            description: 'How could it be SO bad?!',
             rating: 1,
             userName: 'Max',
         },
@@ -141,8 +141,6 @@ export const applyMockController = (app: Express): void => {
             const getRandImg = () => images[Math.floor(Math.random() * (images.length))];
 
             const sizeVals = attributesMock[0].values;
-            const getRandSize = () => sizeVals[Math.floor(Math.random() * (sizeVals.length))];
-            const sizesNum = 3;
 
             const description = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</p><ul><li><i class="porto-icon-ok"></i>Any Product types that You want - Simple, Configurable</li><li><i class="porto-icon-ok"></i>Downloadable/Digital Products, Virtual Products</li><li><i class="porto-icon-ok"></i>Inventory Management with Backordered items</li></ul><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, <br>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
 
@@ -154,7 +152,7 @@ export const applyMockController = (app: Express): void => {
 
             const cats = await productCategoryRepo.find();
 
-            const times = 100; // will create (times * 9) products
+            const times = 50; // will create (times * 9) products
 
             for (let i = 0; i < times; i++) {
                 for (const mock of mockedProdList) {
@@ -167,6 +165,8 @@ export const applyMockController = (app: Express): void => {
                     shuffleArray(cats);
                     const catsNum = Math.floor(Math.random() * cats.length)
                     const categoryIds: string[] = cats.slice(0, catsNum).map(c => c.id);
+
+                    const condition = Math.random() > 0.3 ? 'New' : 'Used';
 
                     await productRepo.createProduct({
                         name: mock.name,
@@ -186,23 +186,32 @@ export const applyMockController = (app: Express): void => {
                             {
                                 key: 'Color',
                                 values: [
-                                    { value: color }
+                                    {
+                                        value: color,
+                                        productVariant: {
+                                            images: [mainImage]
+                                        }
+                                    }
                                 ]
                             },
                             {
                                 key: 'Size',
-                                values: (() => {
-                                    const sizes: TAttributeValue[] = [];
-                                    for (let i = 0; i < sizesNum; i++) {
-                                        sizes.push(getRandSize())
-                                    };;
-                                    return sizes.sort();
-                                })()
+                                values: shuffleArray(sizeVals).slice(0, Math.floor(Math.random() * 4) + 3).map(s => ({
+                                    value: s.value,
+                                    productVariant: {
+                                        price: mock.price + Math.round(mock.price * 0.2 * Math.random())
+                                    }
+                                })).sort((a, b) => parseInt(a.value) - parseInt(b.value))
                             },
                             {
                                 key: 'Condition',
                                 values: [
-                                    { value: Math.random() > 0.3 ? 'New' : 'Used' }
+                                    {
+                                        value: condition,
+                                        productVariant: {
+                                            price: condition === 'Used' ? Math.round(mock.price * 0.4) : undefined
+                                        }
+                                    }
                                 ]
                             }
                         ],
@@ -306,9 +315,10 @@ export const applyMockController = (app: Express): void => {
     });
 }
 
-function shuffleArray(array) {
+function shuffleArray<T extends Array<any>>(array: T): T {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+    return array;
 }

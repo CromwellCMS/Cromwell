@@ -28,6 +28,8 @@ const watchPollTimeout = 1000; // ms
 /** Close all watchers when this process is being closed */
 const closeAllOnExit = false;
 
+const cleanCacheOnStart = false;
+
 const overallTimeout = 0;
 
 // Will run terminal with "npm run watch" for every dir:
@@ -165,7 +167,9 @@ if (watch && closeAllOnExit) {
                 // console.log(`pid ${pid} key ${key}`);
                 if (isRunning(pid)) {
                     console.log(`Taskkill /PID ${pid}`);
-                    execSync(`Taskkill /PID ${pid} /F /T`);
+                    try {
+                        execSync(`Taskkill /PID ${pid} /F /T`);
+                    } catch (e) { }
                 }
             })
         }
@@ -173,6 +177,11 @@ if (watch && closeAllOnExit) {
 }
 
 cacache.get(cachePath, cacheKey).then(data => {
+    if (cleanCacheOnStart) {
+        globalCache = {};
+        cacache.put(cachePath, cacheKey, JSON.stringify(globalCache));
+        return;
+    }
     if (data && data.data && data.data.toString) {
         try {
             const c = JSON.parse(data.data.toString());

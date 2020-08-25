@@ -14,6 +14,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "path": "^0.12.7",
+    "pg": "^8.3.2",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^4.2.0",
     "type-graphql": "^0.17.6",
@@ -22,13 +23,15 @@
   "devDependencies": {
     "@types/express": "^4.17.6",
     "@types/node": "14.0.13",
+    "cross-env": "^7.0.2",
     "nodemon": "^2.0.4",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "dev": "npm run generateServerImports && npx nodemon ./src/server.ts",
-    "generateServerImports": "npx ts-node src/generator.ts"
+    "dev": "npm run gen && npx cross-env ENV=dev npx nodemon ./src/server.ts",
+    "prod": "npm run gen && npx cross-env ENV=prod npx nodemon ./src/server.ts",
+    "gen": "npx ts-node src/generator.ts"
   },
   "description": ""
 }

@@ -19,10 +19,8 @@
     width: 220px;
     margin-left: 15px;
 }
-
-.pagination {
-    margin-top: 15px;
-    width: 100%;
+.sortContainer {
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
+    margin: 20px 0 20px 20px;
 }

@@ -75,6 +75,7 @@ export default class ProductFilterResolver {
             }
         }
 
+        // // Improper filter via LIKE operator (won't work with attributes that have intersections in values)
         if (filterParams.attributes) {
             filterParams.attributes.forEach(attr => {
                 if (attr.values.length > 0) {
@@ -96,6 +97,36 @@ export default class ProductFilterResolver {
                 }
             });
         }
+
+        // // Attempt to make a proper filtration for SQLite. Isn't finished. Works only for only one attribute 
+        // if (filterParams.attributes && filterParams.attributes.length > 0) {
+        //     qb.disableEscaping()
+        //     qb.innerJoin('json_each(product.attributesJSON)', 't_attributes')
+        //     qb.innerJoin("json_each(json_extract(t_attributes.value, '$.values'))", 't_attrValues')
+        //     filterParams.attributes.forEach(attr => {
+        //         if (attr.values.length > 0) {
+        //             const brackets = new Brackets(subQb => {
+        //                 const attrKey = `attr_${attr.key}`
+        //                 subQb.andWhere(`json_extract(t_attributes.value, '$.key') = :${attrKey}`, { [attrKey]: attr.key })
+        //                 subQb.andWhere(new Brackets(subQb2 => {
+        //                     let isFirstVal = true;
+        //                     attr.values.forEach(val => {
+        //                         const valKey = `val_${attr.key}_${val}`;
+        //                         const query = `json_extract(t_attrValues .value , '$.value') = :${valKey}`;
+        //                         if (isFirstVal) {
+        //                             isFirstVal = false;
+        //                             subQb2.where(query, { [valKey]: val })
+        //                         } else {
+        //                             subQb2.orWhere(query, { [valKey]: val })
+        //                         }
+        //                     })
+        //                 }))
+        //             });
+        //             qbAddWhere(brackets);
+        //         }
+        //     });
+        // }
+
 
         if (shouldApplyPriceFilter) {
             if (filterParams.maxPrice) {

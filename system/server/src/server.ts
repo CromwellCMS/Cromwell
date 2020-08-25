@@ -24,6 +24,10 @@ import { AttributeResolver } from './resolvers/AttributeResolver';
 import { ProductReviewResolver } from './resolvers/ProductReviewResolver';
 
 setStoreItem('rebuildPage', rebuildPage);
+
+const env: 'dev' | 'prod' | undefined = process.env.ENV as any;
+setStoreItem('env', env);
+
 const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
 let config: TCmsConfig | undefined = undefined;
 try {
@@ -34,14 +38,19 @@ try {
 if (!config) throw new Error('renderer::server cannot read CMS config')
 setStoreItem('cmsconfig', config);
 
-const connectionOptions: ConnectionOptions = require('../ormconfig.json');
+let connectionOptions: ConnectionOptions | undefined = undefined;
+if (env === 'dev') {
+    connectionOptions = require('../ormconfig.dev.json');
+}
+if (!connectionOptions || !connectionOptions.type) throw new Error('server.ts: Cannot read connection options');
+setStoreItem('dbType', connectionOptions.type);
 
 const _pluginsResolvers = (pluginsResolvers && Array.isArray(pluginsResolvers)) ? pluginsResolvers : [];
 
 async function apiServer(): Promise<void> {
     if (!config || !config.apiPort || !config.themeName) throw new Error('renderer::server cannot read CMS config ' + JSON.stringify(config));
 
-    createConnection(connectionOptions);
+    if (connectionOptions) createConnection(connectionOptions);
     const schema = await buildSchema({
         resolvers: [
             AttributeResolver,

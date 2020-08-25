@@ -1,42 +1,120 @@
 query getProduct {
-  product(slug: "2") {
+  getProductById(id: "32") {
     id
+    slug
     name
+    price
     views
-    categories(pagedParams: {}) {
+    images
+    pageTitle
+    rating
+    reviews(pagedParams: {pageSize: 100}) {
+       elements {
+        title
+        productId
+      }
+    }
+    attributes {
+      key
+      values {
+        value
+        productVariant {
+      			name
+            price
+            oldPrice
+            mainImage
+            images
+            description
+        }
+      }
+    }
+    categories(pagedParams: {pageSize: 9999}) {
       id
       name
     }
   }
 }
 query getProducts {
-  products(pagedParams: {pageNumber: 1, pageSize: 3}) {
-    id
-    name
-    slug
-    categories(pagedParams: {}) {
+  products(pagedParams: {pageNumber: 1, pageSize: 2}) {
+    pagedMeta {
+			pageSize
+      
+    }
+    elements {
+      id
       name
+      slug
+      categories(pagedParams: {}) {
+        id
+        name
+      }
+    }
+  }
+}
+query getProductsFromCategory {
+  getProductsFromCategory(categoryId:"1", pagedParams: {pageNumber: 1, pageSize: 2}) {
+    pagedMeta {
+			pageSize
+      
+    }
+    elements {
+      id
+      name
+      slug
+      categories(pagedParams: {}) {
+        id
+        name
+      }
     }
   }
 }
 mutation createProduct {
   createProduct(data: {
-    name: "fvdfg7777",
-    categoryIds: ["1","2","3"]
+    name: "US SpaceForce",
+    categoryIds: ["1","2","3"],
+    images: ["/images/product.jpg", "/images/product.jpg", "/images/product.jpg"]
   }){
     id
   }
 }
 mutation updateProduct {
-  updateProduct(id: "2", data: {
-    name: "fvdfg5",
-    categoryIds: ["1"]
+  updateProduct(id: "1536", data: {
+    categoryIds: ["1","2","3"],
+    name: "Throbber 4",
+    slug: "Throbber4",
+    mainImage: "/images/product_3.jpg",
+    images: [
+  "/images/product.jpg",
+  "/images/product_2.jpg",
+        "/images/product.jpg",
+  "/images/product_2.jpg",
+  "/images/product_2.jpg",
+  "/images/product_3.jpg"
+    ]
+    attributes: [
+      { key: "1", values: [
+        {value: "1"}, {value: "2"}]
+      },
+        { key: "2", values: [
+        {value: "3"}, {value: "4"}]
+      },
+    ]
   }){
     id
+    name
+    images
+    price
+    categories(pagedParams: {}) {
+      slug
+      name
+    }
   }
 }
 mutation deleteProduct {
-	deleteProduct(id: "23")
+	deleteProduct(id: "1")
+}
+mutation deleteProductReview {
+	deleteProductReview(id: "12")
 }
 
 mutation creatPrCat {
@@ -50,14 +128,26 @@ query getProdCat {
   getProductCategoryById(id: "1") {
     id
     name
+    slug
     products(pagedParams: {
       pageSize: 2
     }) {
-      id
-      name
+      pagedMeta {
+				pageSize
+      }
+      elements {
+        id
+        name
+        slug
+        categories(pagedParams: {}) {
+          id
+          name
+        }
+      }
     }
   }
 }
+
 query getAllProdCats {
   productCategories(pagedParams: {}) {
     id
@@ -67,8 +157,18 @@ query getAllProdCats {
       order: "ASC",
       orderBy: "name"
     }) {
-      id
-      name
+       pagedMeta {
+        pageSize
+      }
+      elements {
+        id
+        name
+        slug
+        categories(pagedParams: {}) {
+          id
+          name
+        }
+      }
     }
   }
 }
@@ -76,35 +176,83 @@ mutation deletePrCat {
   deleteProductCategory(id: "1")
 }
 
-query productShowcase {
-  productShowcase(slug: "1") {
-		id
-    name
-    products(pagedParams: {pageNumber: 1, pageSize: 5}) {
-			id
-      name
-      price
-    }
+query getAttributes {
+  attributes {
+		key
+    values {
+      value
+      icon
+		}
+    type
+  }
+}
+query getAttribute {
+  attribute(id: "2") {
+		key
+    values {
+      value
+      icon
+		}
+    type
   }
 }
 
-query productShowcaseReviews {
-	productShowcaseReviews {
-		id,
-    title,
-    text,
-    rating
+
+mutation createAttribute {
+  createAttribute(data: {
+    key: "size",
+    type: "radio"
+    values: [{value: "1"}, {value: "2"}]
+  }){
+    id
+    values {
+      value
+      icon
+		}
   }
 }
 
-
-query getProductsShow {
-    products(pagedParams: {pageNumber: 1, pageSize: 20}) {
+query getFilteredProductsFromCategory {
+  getFilteredProductsFromCategory(categoryId: "1", pagedParams: {
+      pageSize: 20
+    }, filterParams: {
+			attributes: [{
+				key: "Size",
+        values: ["35"]
+      }],
+      minPrice: 1000,
+      maxPrice: 9999990
+    }) {
+      pagedMeta {
+				pageSize
+      }
+    	filterMeta {
+          minPrice
+          maxPrice
+      }
+      elements {
         id
-        slug
         name
-        pageTitle
+        slug
         price
-        mainImage
-    }
+        categories(pagedParams: {}) {
+          id
+          name
+        }
+      }
+  }
+}
+
+query getProductReviewsOfProduct {
+	getProductReviewsOfProduct(productId: "2398", pagedParams: {}) {
+			elements {
+        id
+				productId
+        title
+        description
+        rating
+        userName
+        isEnabled
+      }
+  }
 }

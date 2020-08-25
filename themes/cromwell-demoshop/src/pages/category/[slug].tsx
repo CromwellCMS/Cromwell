@@ -1,11 +1,11 @@
 import React from 'react';
 import { TCromwellPage, TProductCategory, TGetStaticProps, TProduct, TPagedList } from '@cromwell/core';
-import { Pagination as MUIPagination } from '@material-ui/lab';
 import { Link } from '@cromwell/core-frontend';
 import { CContainer, getGraphQLClient, CList } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
 import { Product } from '../../components/product/Product';
 import { CategorySort } from '../../components/categorySort/CategorySort';
+import { Pagination } from '../../components/pagination/Pagination';
 //@ts-ignore
 import commonStyles from '../../styles/common.module.scss';
 //@ts-ignore
@@ -18,22 +18,6 @@ interface ProductProps {
     category?: TProductCategory | null;
     products?: TPagedList<TProduct> | null;
     slug?: string;
-}
-
-const Pagination = (props: {
-    count: number;
-    page: number;
-    onChange: (page: number) => void;
-}) => {
-    return (
-        <MUIPagination count={props.count} page={props.page}
-            onChange={(event: React.ChangeEvent<unknown>, value: number) => {
-                props.onChange(value)
-            }}
-            className={styles.pagination}
-            showFirstButton showLastButton
-        />
-    )
 }
 
 const ProductCategory: TCromwellPage<ProductProps> = (props) => {
@@ -49,7 +33,7 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
                         <CContainer id="Category_ProductFilter" />
                     </div>
                     <div className={styles.main}>
-                        <div>
+                        <div className={styles.sortContainer}>
                             <CategorySort listId={listId} />
                         </div>
                         {category && (

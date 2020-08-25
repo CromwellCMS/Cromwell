@@ -1,29 +1,62 @@
-import { TAttribute, TAttributeInstance, TAttributeInstanceValue } from '@cromwell/core';
+import { TAttribute, TAttributeInstance, TAttributeInstanceValue, TProduct } from '@cromwell/core';
 import { Button, Collapse } from '@material-ui/core';
 import React, { Component, useEffect, useRef, useState } from 'react';
 //@ts-ignore
 import styles from './ProductAttributes.module.scss';
 
-interface TProductFilterSettings {
-    productListId: string;
-}
-
 export const ProductAttributes = (props: {
     attributes?: TAttribute[]
     productAttributes?: TAttributeInstance[];
+    product?: TProduct | null;
+    modifyProduct: (product: TProduct) => void;
 }): JSX.Element => {
-    const { attributes, productAttributes } = props;
+    const { attributes, productAttributes, product } = props;
     const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
     const [collapsedItems, setCollapsedItems] = useState<Record<string, boolean>>({});
 
     const handleSetAttribute = (key: string, checks: string[]) => {
-        console.log('key', key, 'checks', checks)
+        // console.log('key', key, 'checks', checks)
         setCheckedAttrs(prev => {
             const newCheckedAttrs: Record<string, string[]> = JSON.parse(JSON.stringify(prev));
             newCheckedAttrs[key] = checks;
+            applyProductVariants(newCheckedAttrs);
             return newCheckedAttrs;
         })
     };
+
+    const applyProductVariants = (checks: Record<string, string[]>) => {
+        if (attributes && product && product.attributes) {
+            // console.log('checks[key]', checks, 'attributes', attributes, 'product', product);
+
+            const oldProd = Object.assign({}, product);
+
+            for (const key of Object.keys(checks)) {
+                const origAttribute = attributes.find(a => a.key === key);
+                const attributeInstance = product.attributes.find(a => a.key === key);
+                if (origAttribute && attributeInstance) {
+                    if (origAttribute.type === 'radio') {
+                        // checks array should contain one element for value
+                        if (checks[key] && checks[key].length === 1) {
+                            const valueInstance = attributeInstance.values.find(v => v.value === checks[key][0])
+                            if (valueInstance && valueInstance.productVariant) {
+                                const variant = valueInstance.productVariant;
+                                // console.log('valueInstance variant', variant);
+
+                                for (const varKey of Object.keys(variant)) {
+                                    const varValue = (variant as any)[varKey];
+                                    if (varValue !== null && varValue !== undefined) {
+                                        (oldProd as any)[varKey] = varValue;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            props.modifyProduct(oldProd);
+        }
+    }
 
     return (
         <div className={styles.ProductAttributes}>
