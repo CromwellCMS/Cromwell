@@ -106,7 +106,7 @@ class CGraphQLClient {
         return res?.data?.products;
     }
 
-    public getProductById = async (productId: number, withCategories: boolean = false): Promise<TProduct> => {
+    public getProductById = async (productId: string, withCategories: boolean = false): Promise<TProduct> => {
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductById($productId: String!, $withCategories: Boolean!) {
@@ -271,7 +271,7 @@ class CGraphQLClient {
         return res?.data?.attributes;
     }
 
-    public getAttributeById = async (attributeId: number): Promise<TAttribute> => {
+    public getAttributeById = async (attributeId: string): Promise<TAttribute> => {
         const res = await this.apolloClient.query({
             query: gql`
                query coreGetAttributeById($attributeId: String!) {
@@ -341,7 +341,7 @@ class CGraphQLClient {
         }
   `
 
-    public getProductReview = async (productReviewId: number): Promise<TProductReview> => {
+    public getProductReview = async (productReviewId: string): Promise<TProductReview> => {
         const res = await this.apolloClient.query({
             query: gql`
               query coreGetProductReviewById($id: String!) {

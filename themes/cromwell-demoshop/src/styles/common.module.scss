@@ -40,3 +40,9 @@
 .link:hover {
     color: $primary;
 }
+
+.center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

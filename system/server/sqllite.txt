@@ -3,3 +3,6 @@ JOIN json_each(product.attributesJSON) t_attributes
 JOIN json_each(json_extract(t_attributes.value, '$.values')) t_attrValues 
 WHERE json_extract(t_attributes.value, '$.key') = "Color"
 AND (json_extract(t_attrValues .value , '$.value') = "Blue")
+
+
+ 

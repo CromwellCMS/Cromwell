@@ -1,7 +1,6 @@
 import React from 'react';
 import SwipeableViews from 'react-swipeable-views';
 import {
-    AppBar,
     Tabs,
     Tab
 } from '@material-ui/core';
@@ -35,16 +34,15 @@ export class SwipeableTabs extends React.Component<TSwipeableTabsProps> {
 
         return (
             <>
-                <AppBar position="static" color="default">
-                    <Tabs value={index}
-                        variant="fullWidth"
-                        indicatorColor="primary"
-                        textColor="primary"
-                        onChange={this.handleChange}
-                    >
-                        {this.props.tabs.map(t => <Tab label={t.label} />)}
-                    </Tabs>
-                </AppBar>
+                <Tabs value={index}
+                    style={{ backgroundColor: '#f5f5f5' }}
+                    variant="fullWidth"
+                    indicatorColor="primary"
+                    textColor="primary"
+                    onChange={this.handleChange}
+                >
+                    {this.props.tabs.map(t => <Tab label={t.label} />)}
+                </Tabs>
                 <SwipeableViews animateHeight index={index}
                     onChangeIndex={this.handleChangeIndex}>
                     {this.props.tabs.map(t => t.node)}

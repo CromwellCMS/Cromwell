@@ -98,6 +98,8 @@ export type TAppConfig = {
     palette?: { primaryColor?: string };
     /** Custom HTML add into head of every page */
     headHtml?: string;
+    /** Global CSS files to import */
+    globalCss?: string[]
 }
 
 export type TThemeConfig = {

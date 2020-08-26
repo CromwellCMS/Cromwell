@@ -1,16 +1,17 @@
 import { TAttribute, TAttributeInstance, TAttributeInstanceValue, TProduct } from '@cromwell/core';
 import { Button, Collapse } from '@material-ui/core';
 import React, { Component, useEffect, useRef, useState } from 'react';
+import { productStore } from '../../../helpers/ProductPageStore';
+import { observer } from "mobx-react";
 //@ts-ignore
 import styles from './ProductAttributes.module.scss';
 
-export const ProductAttributes = (props: {
+export const ProductAttributes = observer((props: {
     attributes?: TAttribute[]
     productAttributes?: TAttributeInstance[];
-    product?: TProduct | null;
-    modifyProduct: (product: TProduct) => void;
 }): JSX.Element => {
-    const { attributes, productAttributes, product } = props;
+    const { attributes, productAttributes } = props;
+    const product = productStore.product;
     const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
     const [collapsedItems, setCollapsedItems] = useState<Record<string, boolean>>({});
 
@@ -19,6 +20,7 @@ export const ProductAttributes = (props: {
         setCheckedAttrs(prev => {
             const newCheckedAttrs: Record<string, string[]> = JSON.parse(JSON.stringify(prev));
             newCheckedAttrs[key] = checks;
+            productStore.pickedAttributes = newCheckedAttrs;
             applyProductVariants(newCheckedAttrs);
             return newCheckedAttrs;
         })
@@ -28,7 +30,7 @@ export const ProductAttributes = (props: {
         if (attributes && product && product.attributes) {
             // console.log('checks[key]', checks, 'attributes', attributes, 'product', product);
 
-            const oldProd = Object.assign({}, product);
+            const newProd = Object.assign({}, product);
 
             for (const key of Object.keys(checks)) {
                 const origAttribute = attributes.find(a => a.key === key);
@@ -40,12 +42,11 @@ export const ProductAttributes = (props: {
                             const valueInstance = attributeInstance.values.find(v => v.value === checks[key][0])
                             if (valueInstance && valueInstance.productVariant) {
                                 const variant = valueInstance.productVariant;
-                                // console.log('valueInstance variant', variant);
 
                                 for (const varKey of Object.keys(variant)) {
                                     const varValue = (variant as any)[varKey];
                                     if (varValue !== null && varValue !== undefined) {
-                                        (oldProd as any)[varKey] = varValue;
+                                        (newProd as any)[varKey] = varValue;
                                     }
                                 }
                             }
@@ -53,8 +54,7 @@ export const ProductAttributes = (props: {
                     }
                 }
             }
-
-            props.modifyProduct(oldProd);
+            productStore.modifiedProduct = newProd;
         }
     }
 
@@ -121,9 +121,8 @@ export const ProductAttributes = (props: {
                             </div>
                         )
                     }
-
                 })
             )}
         </div>
     )
-}
+})

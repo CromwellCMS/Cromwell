@@ -6,31 +6,33 @@ import React, { useState, useRef, useEffect } from 'react';
 
 import { LoadBox } from '../../loadbox/Loadbox';
 import { Pagination } from '../../pagination/Pagination';
+import { SwipeableTabs } from '../../tabs/Tabs';
 import { ProductActions } from '../../productPage/actions/ProductActions';
 import { ProductAttributes } from '../../productPage/attributes/ProductAttributes';
 import { ReviewItem } from '../../productPage/reviewItem/ReviewItem';
-import { SwipeableTabs } from '../../tabs/Tabs';
+import { productStore } from '../../../helpers/ProductPageStore';
+import { observable, computed, intercept } from "mobx";
+import { observer } from "mobx-react";
 //@ts-ignore
 import styles from './ProductDetails.module.scss';
 
-export const ProductDetails = (props: {
+
+export const ProductDetails = observer((props: {
     product?: TProduct | null;
     attributes?: TAttribute[];
 }) => {
-    const [product, setProduct] = useState(props.product);
-    const productRef = useRef<TProduct | null | undefined>(props.product);
+    const productRef = useRef(props.product);
 
+    if (props.product && props.product !== productRef.current) {
+        productRef.current = props.product;
+        productStore.product = props.product;
+        productStore.modifiedProduct = props.product;
+    }
+    const product = productStore.modifiedProduct;
     const router = useRouter();
     const productOriginal = props.product;
     const customTabs = getAppCustomConfigProp('product/customTabs');
     const client = getGraphQLClient();
-
-    useEffect(() => {
-        if (props.product !== productRef.current) {
-            productRef.current = props.product;
-            setProduct(props.product);
-        }
-    });
 
     return (
         <CContainer id="product_01" className={styles.ProductDetails}>
@@ -80,11 +82,6 @@ export const ProductDetails = (props: {
                             <CContainer id="productAttributesBlock" className={styles.productAttributesBlock}>
                                 {product.attributes && props.attributes && (
                                     <ProductAttributes
-                                        product={productOriginal}
-                                        modifyProduct={(modifiedProduct) => {
-                                            console.log('modifyProduct', modifiedProduct);
-                                            setProduct(modifiedProduct)
-                                        }}
                                         attributes={props.attributes}
                                         productAttributes={product.attributes}
                                     />
@@ -172,4 +169,4 @@ export const ProductDetails = (props: {
         </CContainer>
 
     )
-}
+})

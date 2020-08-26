@@ -8,10 +8,15 @@ import {
     Select as MuiSelect,
     TextField as MuiTextField,
     ListItem,
-    IconButton
+    IconButton,
+    Modal,
+    Button
 } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import { ExpandMore as ExpandMoreIcon, ShoppingCart as ShoppingCartIcon } from '@material-ui/icons';
 import { TTopLink } from '../../types';
+import { productListStore } from '../../helpers/ProductListStore';
+import { observer } from "mobx-react";
+import ProductList from '.././checkoutPage/productList/ProductList';
 
 // @ts-ignore
 import styles from './Header.module.scss';
@@ -44,9 +49,7 @@ const TextField = withStyles({
 })(MuiTextField);
 
 
-export default function Header() {
-
-
+const Header = observer(() => {
     const topLinks: TTopLink[] | undefined = getAppCustomConfigProp('header/topLinks');
     const cmsConfig = getCmsConfig();
     const currencyOptions: string[] = cmsConfig && cmsConfig.currencyOptions ? cmsConfig.currencyOptions : [];
@@ -54,13 +57,9 @@ export default function Header() {
     const contactPhone: string | undefined = getAppCustomConfigProp('header/contactPhone');
     const classes = useStyles();
 
-    let _itemsInCart: string | number | null = !isServer() ? window.localStorage.getItem('itemsInCart') : null;
-    if (typeof _itemsInCart === 'string') _itemsInCart = parseInt(_itemsInCart);
-    if (_itemsInCart && isNaN(_itemsInCart)) _itemsInCart = null;
-    if (!_itemsInCart) _itemsInCart = 0;
-
+    let itemsInCart = productListStore.cart.length;
     const [currency, setCurrency] = React.useState<string | null | undefined>(getGlobalCurrency());
-    const [itemsInCart, setItemsInCart] = React.useState<number>(_itemsInCart);
+    const [isCartOpen, setIsCartOpen] = React.useState<boolean>(false);
 
     const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const val = event.target.value as string
@@ -69,7 +68,11 @@ export default function Header() {
     };
 
     const handleCartClick = () => {
+        setIsCartOpen(true);
+    }
 
+    const handleCartClose = () => {
+        setIsCartOpen(false);
     }
 
     return (
@@ -137,6 +140,23 @@ export default function Header() {
                             <ExpandMoreIcon className={styles.cartExpandIcon} />
                         </div>
                     </ListItem>
+                    <Modal
+                        className={commonStyles.center}
+                        open={isCartOpen}
+                        onClose={handleCartClose}
+                        aria-labelledby="simple-modal-title"
+                        aria-describedby="simple-modal-description"
+                    >
+                        <div className={styles.cartModal}>
+                            <ProductList />
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                size="large"
+                                startIcon={<ShoppingCartIcon />}
+                            >Checkout</Button>
+                        </div>
+                    </Modal>
                 </div>
             </div>
             <div className={styles.mainMenu}>
@@ -146,4 +166,6 @@ export default function Header() {
             </div>
         </div>
     )
-}
+})
+
+export default Header;

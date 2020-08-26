@@ -6,6 +6,8 @@ const nodeCleanup = require('node-cleanup');
 const cacache = require('cacache')
 const crypto = require("crypto");
 const isRunning = require('is-running');
+
+// < VARIABLES >
 const projectRootDir = resolve(__dirname, '../');
 
 const panelWidth = 0.30; // 30%
@@ -16,10 +18,10 @@ const serverHeigth = 0.3;
 const padding = 25; // 25px
 const overlayShift = 35;
 
-/** Number of monitor to display. If undefined, will bind to active one at the start of the script */
+/** Number of monitor to use. If undefined, will bind to active one at the start of the script */
 const monitorNum: number | undefined = 0;
 
-/** Will spawn a new terminal instance only if there's no terminals with the same title & pid */
+/** Will look into cache and spawn a new terminal instance only if there's no terminals with the same title & pid */
 const startIfNotFound = true;
 
 const watch = true;
@@ -37,6 +39,9 @@ const otherDirs = ['themes\\cromwell-demoshop', 'plugins\\ProductFilter'];
 
 const cachePath = projectRootDir + '\\system\\renderer\\.cromwell\\cache';
 const cacheKey = 'cromwellWindows';
+
+// < / VARIABLES >
+
 
 let globalCache: Record<string, number> = {};
 

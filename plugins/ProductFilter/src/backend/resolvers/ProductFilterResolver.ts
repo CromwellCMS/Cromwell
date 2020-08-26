@@ -82,7 +82,7 @@ export default class ProductFilterResolver {
                     const brackets = new Brackets(subQb => {
                         let isFirstVal = true;
                         attr.values.forEach(val => {
-                            const likeStr = `%{"key":"${attr.key}","values":[%{"value":"${val}"}%]}%`;
+                            const likeStr = `%{"key":"${attr.key}","values":[%{"value":"${val}"%]}%`;
                             const valKey = `${attr.key}_${val}`;
                             const query = `${DBTableNames.Product}.attributesJSON LIKE :${valKey}`;
                             if (isFirstVal) {
@@ -98,7 +98,7 @@ export default class ProductFilterResolver {
             });
         }
 
-        // // Attempt to make a proper filtration for SQLite. Isn't finished. Works only for only one attribute 
+        // // Attempt to make a proper filtration for SQLite. Isn't finished. Works for only one attribute 
         // if (filterParams.attributes && filterParams.attributes.length > 0) {
         //     qb.disableEscaping()
         //     qb.innerJoin('json_each(product.attributesJSON)', 't_attributes')

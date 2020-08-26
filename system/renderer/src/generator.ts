@@ -15,6 +15,7 @@ const main = async () => {
     if (!config) throw new Error('renderer::server cannot read CMS config');
     setStoreItem('cmsconfig', config);
 
+    const appConfig = await getRestAPIClient()?.getAppConfig();
     const projectRootDir = resolve(__dirname, '../../../').replace(/\\/g, '/');
     const globalPluginsDir = `${projectRootDir}/plugins`;
     const localDir = resolve(__dirname, '../').replace(/\\/g, '/');
@@ -150,7 +151,17 @@ const main = async () => {
     }
     Object.keys(customPages).forEach(pageName => {
         const pageComponentName = customPages[pageName].pageComponentName;
+
+        let globalCssImports = '';
+        if (pageName === '_app' && appConfig && appConfig.globalCss &&
+            Array.isArray(appConfig.globalCss) && appConfig.globalCss.length > 0) {
+            appConfig.globalCss.forEach(css => {
+                globalCssImports += `import '${css}';\n`
+            })
+        }
+
         let pageContent = `
+                ${globalCssImports}
                 import { createGetStaticProps } from 'common/createGetStaticProps';
                 import { createGetStaticPaths } from 'common/createGetStaticPaths';
                 import { getPage } from 'common/getPage';

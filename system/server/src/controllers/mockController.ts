@@ -98,11 +98,6 @@ export const applyMockController = (app: Express): void => {
                     oldPrice: 1024.0,
                 },
                 {
-                    name: 'Ulon Mesk',
-                    price: 9999.0,
-                    oldPrice: 0.0,
-                },
-                {
                     name: 'Throbber',
                     price: 1,
                     oldPrice: 2,
