@@ -7,12 +7,16 @@ export { CPlugin } from './components/PluginBlock/CPlugin';
 export { CGallery } from './components/GalleryBlock/CGallery';
 export { CList, TCList, TCListProps, TItemComponentProps } from './components/ListBlock/CList';
 export { Link } from './components/Link/Link';
+export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
 export * from './components/Head/Head';
 export * from './HOCs/FrontendPlugin';
 export * from './constants';
 export * from './currency';
 export * from './api/CGraphQLClient';
 export * from './api/CRestAPIClient';
+
+export * from './store/actions';
+export * from './store/helpers';
 
 //@ts-ignore
 import CromwellBlockStyles from './components/CromwellBlock/CromwellBlock.module.scss';

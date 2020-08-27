@@ -1,6 +1,10 @@
 import { getAppCustomConfigProp, TAttribute, TProduct, TProductReview } from '@cromwell/core';
-import { CContainer, CGallery, CImage, CList, CText, getGraphQLClient, getPriceWithCurrency } from '@cromwell/core-frontend';
+import {
+    CContainer, CGallery, CImage, CList, CText, getGraphQLClient,
+    getPriceWithCurrency, ProductAttributes
+} from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
+import { Button } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import React, { useState, useRef, useEffect } from 'react';
 
@@ -8,10 +12,7 @@ import { LoadBox } from '../../loadbox/Loadbox';
 import { Pagination } from '../../pagination/Pagination';
 import { SwipeableTabs } from '../../tabs/Tabs';
 import { ProductActions } from '../../productPage/actions/ProductActions';
-import { ProductAttributes } from '../../productPage/attributes/ProductAttributes';
 import { ReviewItem } from '../../productPage/reviewItem/ReviewItem';
-import { productStore } from '../../../helpers/ProductPageStore';
-import { observable, computed, intercept } from "mobx";
 import { observer } from "mobx-react";
 //@ts-ignore
 import styles from './ProductDetails.module.scss';
@@ -22,15 +23,15 @@ export const ProductDetails = observer((props: {
     attributes?: TAttribute[];
 }) => {
     const productRef = useRef(props.product);
+    const modifiedProductRef = useRef(props.product);
+    const [pickedAttributes, setPickedAttributes] = useState({});
 
     if (props.product && props.product !== productRef.current) {
         productRef.current = props.product;
-        productStore.product = props.product;
-        productStore.modifiedProduct = props.product;
+        modifiedProductRef.current = props.product;
     }
-    const product = productStore.modifiedProduct;
+    const product = modifiedProductRef.current;
     const router = useRouter();
-    const productOriginal = props.product;
     const customTabs = getAppCustomConfigProp('product/customTabs');
     const client = getGraphQLClient();
 
@@ -80,15 +81,40 @@ export const ProductDetails = observer((props: {
                                 <CText id="product_7" className={styles.price}>{getPriceWithCurrency(product.price)}</CText>
                             </CContainer>
                             <CContainer id="productAttributesBlock" className={styles.productAttributesBlock}>
-                                {product.attributes && props.attributes && (
+                                {productRef.current && props.attributes && (
                                     <ProductAttributes
                                         attributes={props.attributes}
-                                        productAttributes={product.attributes}
+                                        product={productRef.current}
+                                        onChange={(attrs, modified) => {
+                                            modifiedProductRef.current = modified;
+                                            setPickedAttributes(attrs);
+                                        }}
+                                        elements={{
+                                            attributeValue: (attrProps) => {
+                                                return (
+                                                    <Button
+                                                        onClick={attrProps.onClick}
+                                                        variant={attrProps.isChecked ? 'contained' : 'outlined'}
+                                                        className={styles.attrValue}
+                                                    >
+                                                        {attrProps.icon && (
+                                                            <div
+                                                                style={{ backgroundImage: `url(${attrProps.icon}` }}
+                                                                className={styles.attrValueIcon}></div>
+                                                        )}
+                                                        <p style={{ textTransform: 'none' }}>{attrProps.value}</p>
+                                                    </Button>
+                                                )
+                                            }
+                                        }}
                                     />
                                 )}
                             </CContainer>
                             <CContainer id="productActionsBlock">
-                                <ProductActions />
+                                <ProductActions
+                                    product={product}
+                                    pickedAttributes={pickedAttributes}
+                                />
                             </CContainer>
                         </CContainer>
                     </CContainer>

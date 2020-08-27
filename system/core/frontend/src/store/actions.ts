@@ -1,10 +1,11 @@
-import { TProduct, TAttributeInstance, isServer } from "@cromwell/core";
+import { TProduct, TAttributeInstance, TAttribute, isServer } from "@cromwell/core";
 import { toast } from 'react-toastify';
-import { TProductListItem, productListStore } from './ProductListStore'
+import { TProductListItem } from '../types';
 
-const cartKey = 'DemoShop_CartList';
-const wishlistKey = 'DemoShop_WishList';
-const compareKey = 'DemoShop_CompareList';
+
+const cartKey = 'CromwellShop_CartList';
+const wishlistKey = 'CromwellShop_WishList';
+const compareKey = 'CromwellShop_CompareList';
 
 
 const getList = (key: string): TProductListItem[] => {
@@ -22,9 +23,6 @@ const getList = (key: string): TProductListItem[] => {
 }
 
 const saveList = (key: string, list: TProductListItem[]) => {
-    if (key === cartKey) productListStore.cart = list;
-    if (key === wishlistKey) productListStore.wishlist = list;
-    if (key === compareKey) productListStore.compare = list;
     if (!isServer()) {
         window.localStorage.setItem(key, JSON.stringify(list));
     }
@@ -40,26 +38,33 @@ const getIndexInList = (listKey: string, product: TProductListItem): number => {
             return false;
 
         if (it.product.id === product.product.id) {
-            const productKeys: string[] = Object.keys(product.pickedAttributes || {});
-            const itemKeys: string[] = Object.keys(it.pickedAttributes || {});
-            if (productKeys.length === 0 && itemKeys.length === 0) {
-                return true;
+            // filter empty attribute sets
+            const filter = (picked: Record<string, string[]>) => {
+                for (const key of Object.keys(picked)) {
+                    const vals = picked[key];
+                    if (!vals || !Array.isArray(vals) || vals.length === 0) {
+                        delete picked[key];
+                    }
+                }
+                return picked;
             }
-            if (it.pickedAttributes) {
-                if (!product.pickedAttributes) return false;
-                if (itemKeys.length !== productKeys.length) return false;
-                if (!itemKeys.every(key => productKeys.includes(key))) return false;
+            const productPickedAttributes = filter(Object.assign({}, product.pickedAttributes));
+            const itPickedAttributes = filter(Object.assign({}, it.pickedAttributes));
 
-                return Object.keys(it.pickedAttributes).every(attrKey => {
-                    if (!it.pickedAttributes) return false;
-                    if (!product.pickedAttributes) return false;
+            const productKeys: string[] = Object.keys(productPickedAttributes);
+            const itemKeys: string[] = Object.keys(itPickedAttributes);
 
-                    const vals = it.pickedAttributes[attrKey] || [];
-                    const pickedVals = product.pickedAttributes[attrKey] || [];
-                    if (vals.length !== pickedVals.length) return false;
-                    return vals.every(key => pickedVals.includes(key))
-                })
-            }
+            if (productKeys.length === 0 && itemKeys.length === 0) return true;
+            if (productKeys.length !== itemKeys.length) return false;
+
+            if (!itemKeys.every(key => productKeys.includes(key))) return false;
+
+            return itemKeys.every(attrKey => {
+                const vals = itPickedAttributes[attrKey] || [];
+                const pickedVals = productPickedAttributes[attrKey] || [];
+                if (vals.length !== pickedVals.length) return false;
+                return vals.every(key => pickedVals.includes(key))
+            })
         }
         return false;
     };
@@ -67,6 +72,7 @@ const getIndexInList = (listKey: string, product: TProductListItem): number => {
     for (let i = 0; i < list.length; i++) {
         const it = list[i];
         const equal = areEqual(it);
+
         if (equal) {
             index = i;
             break;
@@ -102,6 +108,15 @@ export const getCart = () => {
     return getList(cartKey);
 }
 
+export const saveCart = (cart: TProductListItem[]) => {
+    saveList(cartKey, cart);
+}
+
+export const isInCart = (item: TProductListItem): boolean => {
+    if (getIndexInList(cartKey, item) > -1) return true;
+    return false;
+}
+
 export const addToCart = (product: TProductListItem) => {
     const hasBeenAdded = addToList(cartKey, product);
     if (hasBeenAdded) {
@@ -122,6 +137,11 @@ export const removeFromCart = (product: TProductListItem) => {
 
 export const getWishlist = () => {
     return getList(wishlistKey);
+}
+
+export const isInWishlist = (item: TProductListItem): boolean => {
+    if (getIndexInList(wishlistKey, item) > -1) return true;
+    return false;
 }
 
 export const addToWishlist = (product: TProductListItem) => {
@@ -146,6 +166,12 @@ export const removeFromWishlist = (product: TProductListItem) => {
 export const getCompare = () => {
     return getList(compareKey);
 }
+
+export const isInCompare = (item: TProductListItem): boolean => {
+    if (getIndexInList(compareKey, item) > -1) return true;
+    return false;
+}
+
 
 export const addToCompare = (product: TProductListItem) => {
     const hasBeenAdded = addToList(compareKey, product);

@@ -18,7 +18,7 @@
 .mainBlock {
     display: flex;
     flex-direction: column;
-    width: 75%; 
+    width: 78%; 
 }
 
 .imageAndCaptionBlock {
@@ -27,10 +27,10 @@
 }
 
 .imageBlock {
-    width: 60%;
+    width: 55%;
 }
 .captionBlock {
-    width: 40%;
+    width: 45%;
     padding: 15px;
 }
 
@@ -66,7 +66,7 @@
 .infoBlock {
     display: flex;
     flex-direction: column;
-    width: 25%;
+    width: 22%;
 }
 .advantagesBlock {
     display: flex;
@@ -114,3 +114,18 @@
     display: flex;
     flex-wrap: wrap;
 }
+
+body .attrValue {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.attrValueIcon {
+    width: 20px;
+    height: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 10px;
+}
+

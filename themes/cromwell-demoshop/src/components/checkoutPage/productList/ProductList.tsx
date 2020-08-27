@@ -1,38 +1,79 @@
-import React, { useState, useEffect } from 'react';
-import * as actions from '../../../helpers/productActions';
-import { LoadBox } from '../../loadbox/Loadbox'
-import { getGraphQLClient } from '@cromwell/core-frontend';
-import { TProduct } from '@cromwell/core';
+import { getCart, getGraphQLClient, getPriceWithCurrency, removeFromCart, updateCart } from '@cromwell/core-frontend';
+import { IconButton } from '@material-ui/core';
+import { DeleteForever as DeleteForeverIcon } from '@material-ui/icons';
+import React, { useEffect, useState } from 'react';
+
+import { TProductListItem } from '../../../helpers/ProductListStore';
+import { LoadBox } from '../../loadbox/Loadbox';
+//@ts-ignore
+import styles from './ProductList.module.scss';
 
 const ProductList = () => {
-    const [products, setProducts] = useState<TProduct[]>([]);
+    const [cart, setCart] = useState<TProductListItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const client = getGraphQLClient();
+
+    const handleDeleteItem = (item: TProductListItem) => {
+        removeFromCart(item);
+        setCart(getCart());
+    }
+
     useEffect(() => {
+        /**
+         * Since getCart wll retrieve products from local storage and 
+         * after a while  products can be modified at the server
+         * we need to refresh the cart first  
+         */
         (async () => {
-            const cart = actions.getCart().filter(p => Boolean(p.product));
-            const promises: (Promise<TProduct>)[] = [];
             setIsLoading(true);
-            for (const cartProd of cart) {
-                if (client && cartProd.product) {
-                    promises.push(client.getProductById(cartProd.product.id));
-                }
-            }
-            const updatedProducts: TProduct[] = await Promise.all(promises);
+            await updateCart();
+            const cart = getCart();
+            setCart(cart);
             setIsLoading(false);
-            setProducts(updatedProducts);
         })();
     }, []);
+
     return (
-        <div>
+        <div className={styles.ProductList}>
             {isLoading && (
                 <LoadBox />
             )}
-            {!isLoading && products.map((product, i) => (
-                <div key={i}>
-                    <p>{product.name}</p>
-                </div>
-            ))}
+            {!isLoading && cart.map((it, i) => {
+                const product = it.product;
+                const checkedAttrKeys = Object.keys(it.pickedAttributes || {});
+                if (product)
+                    return (
+                        <div key={i} className={styles.listItem}>
+                            <div className={styles.itemBlock}>
+                                <img src={product.mainImage} className={styles.mainImage} />
+                            </div>
+                            <div className={styles.itemBlock}>
+                                <p>{product.name}</p>
+                                <div className={styles.priceBlock}>
+                                    {(product?.oldPrice !== undefined && product?.oldPrice !== null) && (
+                                        <p className={styles.oldPrice}>{getPriceWithCurrency(product.oldPrice)}</p>
+                                    )}
+                                    <p className={styles.price}>{getPriceWithCurrency(product?.price)}</p>
+                                </div>
+                            </div>
+                            <div className={styles.itemBlock}>
+                                {checkedAttrKeys.map(key => {
+                                    const vals = it.pickedAttributes ? it.pickedAttributes[key] : [];
+                                    const valsStr = vals.join(', ');
+                                    return <p key={key}>{key}: {valsStr}</p>
+                                })}
+                            </div>
+                            <div className={styles.itemBlock} style={{ marginLeft: 'auto', paddingRight: '0px' }}>
+                                <IconButton
+                                    aria-label="Delete"
+                                    onClick={() => { handleDeleteItem(it); }}
+                                >
+                                    <DeleteForeverIcon />
+                                </IconButton>
+                            </div>
+                        </div>
+                    )
+            })}
         </div>
     )
 }

@@ -106,7 +106,7 @@ class CGraphQLClient {
         return res?.data?.products;
     }
 
-    public getProductById = async (productId: string, withCategories: boolean = false): Promise<TProduct> => {
+    public getProductById = async (productId: string, withCategories: boolean = false): Promise<TProduct | undefined> => {
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductById($productId: String!, $withCategories: Boolean!) {
@@ -124,7 +124,7 @@ class CGraphQLClient {
         return res?.data?.getProductById;
     }
 
-    public getProductBySlug = async (slug: string, withCategories: boolean = false): Promise<TProduct> => {
+    public getProductBySlug = async (slug: string, withCategories: boolean = false): Promise<TProduct | undefined> => {
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductBySlug($slug: String!, $withCategories: Boolean!) {
@@ -184,7 +184,7 @@ class CGraphQLClient {
 
     // <ProductCategory>
 
-    public getProductCategoryBySlug = async (slug: string, productsPagedParams?: TPagedParams<TProduct>): Promise<TProductCategory> => {
+    public getProductCategoryBySlug = async (slug: string, productsPagedParams?: TPagedParams<TProduct>): Promise<TProductCategory | undefined> => {
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductCategory($slug: String!, $productsPagedParams: PagedParamsInput!, $withCategories: Boolean!) {
@@ -257,7 +257,7 @@ class CGraphQLClient {
        }
    `
 
-    public getAttributes = async (): Promise<TAttribute[]> => {
+    public getAttributes = async (): Promise<TAttribute[] | undefined> => {
         const res = await this.apolloClient.query({
             query: gql`
                query coreGetAttributes {
@@ -271,7 +271,7 @@ class CGraphQLClient {
         return res?.data?.attributes;
     }
 
-    public getAttributeById = async (attributeId: string): Promise<TAttribute> => {
+    public getAttributeById = async (attributeId: string): Promise<TAttribute | undefined> => {
         const res = await this.apolloClient.query({
             query: gql`
                query coreGetAttributeById($attributeId: String!) {
@@ -341,7 +341,7 @@ class CGraphQLClient {
         }
   `
 
-    public getProductReview = async (productReviewId: string): Promise<TProductReview> => {
+    public getProductReview = async (productReviewId: string): Promise<TProductReview | undefined> => {
         const res = await this.apolloClient.query({
             query: gql`
               query coreGetProductReviewById($id: String!) {
@@ -406,7 +406,7 @@ class CGraphQLClient {
     }
 
 
-    public updateProductReview = async (id: string, productReview: TProductReviewInput): Promise<TProductReview> => {
+    public updateProductReview = async (id: string, productReview: TProductReviewInput): Promise<TProductReview | undefined> => {
         const res = await this.apolloClient.mutate({
             mutation: gql`
               mutation coreUpdateAttribute($id: String!, $data: AttributeInput!) {
@@ -424,7 +424,7 @@ class CGraphQLClient {
         return res?.data?.updateProductReview;
     }
 
-    public createProductReview = async (productReview: TProductReviewInput): Promise<TProductReview> => {
+    public createProductReview = async (productReview: TProductReviewInput): Promise<TProductReview | undefined> => {
         const res = await this.apolloClient.mutate({
             mutation: gql`
               mutation coreCreateProductReview($data: AttributeInput!) {

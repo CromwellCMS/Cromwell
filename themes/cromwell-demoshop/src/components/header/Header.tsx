@@ -59,7 +59,6 @@ const Header = observer(() => {
 
     let itemsInCart = productListStore.cart.length;
     const [currency, setCurrency] = React.useState<string | null | undefined>(getGlobalCurrency());
-    const [isCartOpen, setIsCartOpen] = React.useState<boolean>(false);
 
     const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const val = event.target.value as string
@@ -68,11 +67,11 @@ const Header = observer(() => {
     };
 
     const handleCartClick = () => {
-        setIsCartOpen(true);
+        productListStore.isCartOpen = true;
     }
 
     const handleCartClose = () => {
-        setIsCartOpen(false);
+        productListStore.isCartOpen = false;
     }
 
     return (
@@ -142,14 +141,17 @@ const Header = observer(() => {
                     </ListItem>
                     <Modal
                         className={commonStyles.center}
-                        open={isCartOpen}
+                        open={productListStore.isCartOpen}
                         onClose={handleCartClose}
                         aria-labelledby="simple-modal-title"
                         aria-describedby="simple-modal-description"
                     >
                         <div className={styles.cartModal}>
-                            <ProductList />
+                            <div className={styles.cartList}>
+                                <ProductList />
+                            </div>
                             <Button
+                                className={styles.checkoutBtn}
                                 variant="contained"
                                 color="primary"
                                 size="large"

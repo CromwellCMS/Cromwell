@@ -8,4 +8,21 @@
     .actionButton {
         margin: 0 15px 15px 0;
     }
+
+    .cartAndAMountBlock {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .amountPicker {
+        display: flex;
+        align-items: center;
+        margin-left: 15px;
+    }
+    .amountInput {
+        width: 50px;
+        input {
+            text-align: center;
+        }
+    }
 }
