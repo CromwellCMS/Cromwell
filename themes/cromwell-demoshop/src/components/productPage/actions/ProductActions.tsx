@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, TextField, IconButton } from '@material-ui/core';
+import { Button, TextField, IconButton, Input } from '@material-ui/core';
 import {
     AddShoppingCart as AddShoppingCartIcon,
     ShoppingCart as ShoppingCartIcon,
@@ -9,11 +9,11 @@ import {
     Add as AddIcon
 } from '@material-ui/icons';
 import { toast } from 'react-toastify';
-import { productListStore, TProductListItem } from '../../../helpers/ProductListStore';
+import { productListStore } from '../../../helpers/ProductListStore';
 //@ts-ignore
 import styles from './ProductActions.module.scss';
 import { isServer, TProduct, TAttributeInstance } from '@cromwell/core';
-import { isInCart, isInWishlist, isInCompare, addToCart, addToWishlist, addToCompare } from '@cromwell/core-frontend';
+import { getCStore, TStoreListItem } from '@cromwell/core-frontend';
 
 
 function useForceUpdate() {
@@ -28,14 +28,16 @@ export const ProductActions = (props: {
     const forceUpdate = useForceUpdate();
     const [amount, setAmount] = useState(1);
     const { product, pickedAttributes } = props;
-    const item: TProductListItem = {
+    const item: TStoreListItem = {
         product: product ? product : undefined,
         pickedAttributes: pickedAttributes,
         amount
     };
-    const inCart = isInCart(item);
-    const inWishlist = isInWishlist(item);
-    const inCompare = isInCompare(item);
+    const cstore = getCStore();
+    const inCart = cstore.isInCart(item);
+    const sameQntInCart = cstore.hasSameQntInCart(item);
+    const inWishlist = cstore.isInWishlist(item);
+    const inCompare = cstore.isInCompare(item);
 
     return (
         <div className={styles.ProductActions}>
@@ -43,9 +45,14 @@ export const ProductActions = (props: {
                 <Button
                     onClick={() => {
                         if (inCart) {
-                            productListStore.isCartOpen = true;
+                            if (sameQntInCart) {
+                                productListStore.isCartOpen = true;
+                            } else {
+                                cstore.updateQntInCart(item);
+                                forceUpdate();
+                            }
                         } else {
-                            addToCart(item);
+                            cstore.addToCart(item);
                             forceUpdate();
                         }
                     }}
@@ -54,44 +61,45 @@ export const ProductActions = (props: {
                     size="large"
                     className={styles.actionButton}
                     startIcon={inCart ? <ShoppingCartIcon /> : <AddShoppingCartIcon />}
-                >{inCart ? 'Open cart' : 'Add to cart'}</Button>
+                >{inCart ? sameQntInCart ? 'Open cart' : 'Update qty' : 'Add to cart'}</Button>
                 <div className={styles.amountPicker}>
-                    <IconButton
-                        onClick={() => {
-                            if (amount > 1) {
-                                setAmount(amount - 1)
-                            }
-                        }}
-                    >
-                        <RemoveIcon />
-                    </IconButton>
-                    <TextField
-                        type="number"
+                    <Input
                         className={styles.amountInput}
                         value={amount}
                         onChange={(e) => {
                             const val = parseInt(e.target.value);
-                            if (val && val > 0) setAmount(val)
-                            else setAmount(1)
+                            if (val && !isNaN(val) && val > 0) setAmount(val)
                         }}
+                        startAdornment={
+                            <IconButton
+                                onClick={() => {
+                                    if (amount > 1) {
+                                        setAmount(amount - 1)
+                                    }
+                                }}
+                            >
+                                <RemoveIcon />
+                            </IconButton>
+                        }
+                        endAdornment={
+                            <IconButton
+                                onClick={() => {
+                                    setAmount(amount + 1)
+                                }}
+                            >
+                                <AddIcon />
+                            </IconButton>
+                        }
                     />
-                    <IconButton
-                        onClick={() => {
-                            setAmount(amount + 1)
-                        }}
-                    >
-                        <AddIcon />
-                    </IconButton>
                 </div>
             </div>
-
             <div>
                 <Button
                     onClick={() => {
                         if (inWishlist) {
                             productListStore.isWishlistOpen = true;
                         } else {
-                            addToWishlist(item);
+                            cstore.addToWishlist(item);
                             forceUpdate();
                         }
                     }}
@@ -103,10 +111,10 @@ export const ProductActions = (props: {
                 >{inWishlist ? 'Open Wishlist' : 'Save'}</Button>
                 <Button
                     onClick={() => {
-                        if (inWishlist) {
+                        if (inCompare) {
                             productListStore.isCompareOpen = true;
                         } else {
-                            addToCompare(item);
+                            cstore.addToCompare(item);
                             forceUpdate();
                         }
                     }}

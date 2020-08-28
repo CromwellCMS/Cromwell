@@ -19,11 +19,12 @@ export type TCromwellStore = {
     blockInstances?: Record<string, TCromwellBlock>;
     pagesInfo?: TPageInfo[];
     currency?: string;
-    onCurrencyChange?: (currency: string) => void;
+    forceUpdatePage?: () => void;
     dbType?: "mysql" | "mariadb" | "postgres" | "cockroachdb" | "sqlite" | "mssql" | "sap" | "oracle" | "cordova" | "nativescript" | "react-native" | "sqljs" | "mongodb" | "aurora-data-api" | "aurora-data-api-pg" | "expo";
     env?: 'dev' | 'prod';
     graphQLClient?: any;
     restAPIClient?: any;
+    cstore?: any;
 }
 
 declare global {

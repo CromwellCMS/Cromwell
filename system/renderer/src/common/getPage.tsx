@@ -34,10 +34,10 @@ export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
         if (pagesInfo) setStoreItem('pagesInfo', pagesInfo);
 
         const forceUpdate = useForceUpdate();
-        const onCurrencyChange = (currency: string) => {
+        const forceUpdatePage = (currency: string) => {
             forceUpdate();
         }
-        setStoreItem('onCurrencyChange', onCurrencyChange);
+        setStoreItem('forceUpdatePage', forceUpdatePage);
 
         // Head SEO/meta/etc props:
         let title;

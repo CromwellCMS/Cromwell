@@ -25,7 +25,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     const [virtualData, setVirtualData] = useState<VirtualData>({ slides: [] } as any);
     const productShowcaseData = props.data.productShowcase;
     // Try to load component if template has already defined common Product view
-    let CommmonProductComp = loadCommonComponent(ECommonComponentNames.product);
+    let CommmonProductComp = loadCommonComponent(ECommonComponentNames.ProductCard);
     if (!CommmonProductComp) {
         // Default view otherwise
         CommmonProductComp = (props: { data: TProduct }): JSX.Element => {

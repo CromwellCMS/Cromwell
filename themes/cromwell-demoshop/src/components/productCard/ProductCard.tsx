@@ -1,27 +1,35 @@
 import React, { Component, useRef, useEffect, useState } from 'react';
 import { TProduct } from '@cromwell/core';
-import { Link, getPriceWithCurrency } from '@cromwell/core-frontend';
+import { Link, getCStore } from '@cromwell/core-frontend';
 //@ts-ignore
-import styles from './Product.module.scss';
+import styles from './ProductCard.module.scss';
+//@ts-ignore
+import commonStyles from '../../styles/common.module.scss';
+import clsx from 'clsx';
 import { IconButton } from '@material-ui/core';
 import { AddShoppingCart as AddShoppingCartIcon } from '@material-ui/icons';
 import { Rating } from '@material-ui/lab';
 
-export const Product = (props: { data?: TProduct, className?: string }) => {
+export const ProductCard = (props: {
+    data?: TProduct, className?: string,
+    variant?: 'grid' | 'list'
+}) => {
     const data = props.data;
     const productLink = `/product/${data?.slug}`;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [imageHeigth, setImageHeigth] = useState(300);
+    const cstore = getCStore();
 
     useEffect(() => {
         if (wrapperRef && wrapperRef.current) {
-            const width = wrapperRef.current.offsetWidth;
+            const width = props.variant !== 'list' ? wrapperRef.current.offsetWidth : wrapperRef.current.offsetHeight;
             setImageHeigth(width);
         }
     }, []);
 
     return (
-        <div className={`${styles.Product} ${props.className}`} ref={wrapperRef}>
+        <div className={clsx(styles.Product, commonStyles.onHoverLinkContainer,
+            props.className, props.variant === 'list' ? styles.listVariant : undefined)} ref={wrapperRef}>
             <div className={styles.imageBlock} style={{ height: imageHeigth }}>
                 <Link href={productLink}>
                     <a><img className={styles.image} src={data?.mainImage} /></a>
@@ -30,15 +38,20 @@ export const Product = (props: { data?: TProduct, className?: string }) => {
             <div className={styles.caption}>
                 <div>
                     <Link href={productLink}>
-                        <a className={styles.productName}>{data?.name}</a>
+                        <a className={clsx(styles.productName, commonStyles.onHoverLink)}>{data?.name}</a>
                     </Link>
                 </div>
+                {data?.description && (
+                    <div className={styles.description}
+                        dangerouslySetInnerHTML={{ __html: data?.description }}>
+                    </div>
+                )}
                 <div className={styles.priceCartBlock}>
                     <div className={styles.priceBlock}>
                         {(data?.oldPrice !== undefined && data?.oldPrice !== null) && (
-                            <p className={styles.oldPrice}>{getPriceWithCurrency(data.oldPrice)}</p>
+                            <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(data.oldPrice)}</p>
                         )}
-                        <p className={styles.price}>{getPriceWithCurrency(data?.price)}</p>
+                        <p className={styles.price}>{cstore.getPriceWithCurrency(data?.price)}</p>
                     </div>
                 </div>
                 <div>

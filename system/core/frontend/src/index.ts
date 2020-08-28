@@ -11,12 +11,10 @@ export { ProductAttributes } from './components/ProductAttributes/ProductAttribu
 export * from './components/Head/Head';
 export * from './HOCs/FrontendPlugin';
 export * from './constants';
-export * from './currency';
 export * from './api/CGraphQLClient';
 export * from './api/CRestAPIClient';
-
-export * from './store/actions';
-export * from './store/helpers';
+export * from './CStore';
+export * from './types';
 
 //@ts-ignore
 import CromwellBlockStyles from './components/CromwellBlock/CromwellBlock.module.scss';

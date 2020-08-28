@@ -6,21 +6,28 @@
     padding-top: 15px;
 
     .actionButton {
-        margin: 0 15px 15px 0;
+        margin-right: 15px;
     }
 
     .cartAndAMountBlock {
         display: flex;
         flex-wrap: wrap;
+        margin-bottom: 15px;
     }
 
     .amountPicker {
         display: flex;
         align-items: center;
         margin-left: 15px;
+        // border: 1px solid #ccc;
+        // border-radius: 30px;
     }
     .amountInput {
-        width: 50px;
+        width: 140px;
+        // border: none;
+        // outline: none;
+        font-size: 20px;
+        text-align: center;
         input {
             text-align: center;
         }

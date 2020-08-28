@@ -1,7 +1,7 @@
 import { getAppCustomConfigProp, TAttribute, TProduct, TProductReview } from '@cromwell/core';
 import {
     CContainer, CGallery, CImage, CList, CText, getGraphQLClient,
-    getPriceWithCurrency, ProductAttributes
+    getCStore, ProductAttributes
 } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import { Button } from '@material-ui/core';
@@ -25,6 +25,7 @@ export const ProductDetails = observer((props: {
     const productRef = useRef(props.product);
     const modifiedProductRef = useRef(props.product);
     const [pickedAttributes, setPickedAttributes] = useState({});
+    const cstore = getCStore();
 
     if (props.product && props.product !== productRef.current) {
         productRef.current = props.product;
@@ -34,6 +35,10 @@ export const ProductDetails = observer((props: {
     const router = useRouter();
     const customTabs = getAppCustomConfigProp('product/customTabs');
     const client = getGraphQLClient();
+
+    useEffect(() => {
+        if (product) cstore.addToWatchedItems({ product })
+    }, []);
 
     return (
         <CContainer id="product_01" className={styles.ProductDetails}>
@@ -76,9 +81,9 @@ export const ProductDetails = observer((props: {
 
                             <CContainer id="product_5" className={styles.priceBlock}>
                                 {(product?.oldPrice !== undefined && product.oldPrice !== null) && (
-                                    <CText id="product_6" className={styles.oldPrice}>{getPriceWithCurrency(product.oldPrice)}</CText>
+                                    <CText id="product_6" className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</CText>
                                 )}
-                                <CText id="product_7" className={styles.price}>{getPriceWithCurrency(product.price)}</CText>
+                                <CText id="product_7" className={styles.price}>{cstore.getPriceWithCurrency(product.price)}</CText>
                             </CContainer>
                             <CContainer id="productAttributesBlock" className={styles.productAttributesBlock}>
                                 {productRef.current && props.attributes && (

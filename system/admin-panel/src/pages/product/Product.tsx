@@ -1,5 +1,5 @@
 import { TAttribute, TAttributeInstanceValue, TAttributeProductVariant, TProduct, TProductInput } from '@cromwell/core';
-import { CGallery, getGlobalCurrencySymbol, getGraphQLClient } from '@cromwell/core-frontend';
+import { CGallery, getCStore, getGraphQLClient } from '@cromwell/core-frontend';
 import {
     Button, Fade, IconButton, MenuItem, Paper, Popper, TextField,
     Tooltip, Tabs, Tab, Box, AppBar
@@ -43,7 +43,7 @@ function NumberFormatCustom(props: NumberFormatCustomProps) {
             }}
             thousandSeparator
             isNumericString
-            prefix={getGlobalCurrencySymbol()}
+            prefix={getCStore().getActiveCurrencySymbol()}
         />
     );
 }

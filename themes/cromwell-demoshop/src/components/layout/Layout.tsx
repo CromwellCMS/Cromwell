@@ -1,5 +1,7 @@
 import React from 'react';
 import Header from '../header/Header';
+import { CartModal } from '../modals/cart/CartModal';
+import { WishlistModal } from '../modals/wishlist/WishlistModal';
 import {
     createMuiTheme,
     ThemeProvider,
@@ -28,6 +30,8 @@ export default function Layout(props: TProps) {
         <ThemeProvider theme={theme}>
             <div className={styles.Layout}>
                 <Header />
+                <CartModal />
+                <WishlistModal />
                 {props.children}
             </div>
         </ThemeProvider>

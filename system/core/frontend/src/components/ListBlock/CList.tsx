@@ -137,7 +137,7 @@ export type TCList<DataType = any, ListItemProps = any> = {
     /** Get React component props. */
     getProps: () => TCListProps<DataType, ListItemProps>;
     /** Replace props. Will use them in any render after instead of React props. Behavior can be reset by setting null */
-    setProps: (props: TCListProps<DataType, ListItemProps>) => void;
+    setProps: (props: TCListProps<DataType, ListItemProps> | null) => void;
     /** Clear all internal data about pages and cache, set current pageNumber = 1 */
     clearState: () => void;
     /** Re-init component, parse first batch with metainfo, create pagination info */
@@ -196,7 +196,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
     private scrollBoxRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private wrapperRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private throbberRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
-    private forcedProps: any;
+    private forcedProps: TCListProps<DataType, ListItemProps> | null;
     private listeners: Record<TListenerType, { cb: () => void; id?: string }[]> = { componentDidUpdate: [], onRender: [] };
 
     constructor(props: TCListProps<DataType, ListItemProps>) {
@@ -210,7 +210,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         return this.props;
     }
 
-    public setProps(props: TCListProps<DataType, ListItemProps>): void {
+    public setProps(props: TCListProps<DataType, ListItemProps> | null): void {
         this.forcedProps = props;
     }
 

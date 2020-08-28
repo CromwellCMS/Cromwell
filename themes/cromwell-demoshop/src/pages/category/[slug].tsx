@@ -3,7 +3,7 @@ import { TCromwellPage, TProductCategory, TGetStaticProps, TProduct, TPagedList 
 import { Link } from '@cromwell/core-frontend';
 import { CContainer, getGraphQLClient, CList } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
-import { Product } from '../../components/product/Product';
+import { ProductCard } from '../../components/productCard/ProductCard';
 import { CategorySort } from '../../components/categorySort/CategorySort';
 import { Pagination } from '../../components/pagination/Pagination';
 //@ts-ignore
@@ -39,7 +39,7 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
                         {category && (
                             <CList<TProduct>
                                 id={listId}
-                                ListItem={(props) => <Product data={props.data} className={styles.product} key={props.data?.id} />}
+                                ListItem={(props) => <ProductCard data={props.data} className={styles.product} key={props.data?.id} />}
                                 usePagination
                                 useShowMoreButton
                                 useQueryPagination

@@ -69,6 +69,6 @@ export const apiV1BaseRoute = 'api/v1';
 
 
 export enum ECommonComponentNames {
-    product = 'product',
-    post = 'post'
+    ProductCard = 'ProductCard',
+    Post = 'Post'
 }

@@ -1,33 +1,33 @@
-import { getCart, getGraphQLClient, getPriceWithCurrency, removeFromCart, updateCart } from '@cromwell/core-frontend';
+import { getCStore, Link, TStoreListItem } from '@cromwell/core-frontend';
 import { IconButton } from '@material-ui/core';
 import { DeleteForever as DeleteForeverIcon } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-
-import { TProductListItem } from '../../../helpers/ProductListStore';
+import clsx from 'clsx';
 import { LoadBox } from '../../loadbox/Loadbox';
 //@ts-ignore
-import styles from './ProductList.module.scss';
+import styles from './CartProductList.module.scss';
+//@ts-ignore
+import commonStyles from '../../../styles/common.module.scss';
 
-const ProductList = () => {
-    const [cart, setCart] = useState<TProductListItem[]>([]);
+export const CartProductList = () => {
+    const [cart, setCart] = useState<TStoreListItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const client = getGraphQLClient();
+    const cstore = getCStore();
 
-    const handleDeleteItem = (item: TProductListItem) => {
-        removeFromCart(item);
-        setCart(getCart());
+    const handleDeleteItem = (item: TStoreListItem) => {
+        cstore.removeFromCart(item);
+        setCart(cstore.getCart());
     }
 
     useEffect(() => {
         /**
-         * Since getCart wll retrieve products from local storage and 
-         * after a while  products can be modified at the server
-         * we need to refresh the cart first  
+         * Since getCart method wll retrieve products from local storage and 
+         * after a while products can be modified at the server, we need to refresh cart first  
          */
         (async () => {
             setIsLoading(true);
-            await updateCart();
-            const cart = getCart();
+            await cstore.updateCart();
+            const cart = cstore.getCart();
             setCart(cart);
             setIsLoading(false);
         })();
@@ -41,19 +41,24 @@ const ProductList = () => {
             {!isLoading && cart.map((it, i) => {
                 const product = it.product;
                 const checkedAttrKeys = Object.keys(it.pickedAttributes || {});
-                if (product)
+                if (product) {
+                    const productLink = `/product/${product.slug}`;
                     return (
-                        <div key={i} className={styles.listItem}>
+                        <div key={i} className={clsx(styles.listItem, commonStyles.onHoverLinkContainer)}>
                             <div className={styles.itemBlock}>
-                                <img src={product.mainImage} className={styles.mainImage} />
+                                <Link href={productLink}>
+                                    <a><img src={product.mainImage} className={styles.mainImage} /></a>
+                                </Link>
                             </div>
                             <div className={styles.itemBlock}>
-                                <p>{product.name}</p>
+                                <Link href={productLink}>
+                                    <a className={clsx(commonStyles.onHoverLink, styles.productName)}>{product.name}</a>
+                                </Link>
                                 <div className={styles.priceBlock}>
                                     {(product?.oldPrice !== undefined && product?.oldPrice !== null) && (
-                                        <p className={styles.oldPrice}>{getPriceWithCurrency(product.oldPrice)}</p>
+                                        <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>
                                     )}
-                                    <p className={styles.price}>{getPriceWithCurrency(product?.price)}</p>
+                                    <p className={styles.price}>{cstore.getPriceWithCurrency(product?.price)}</p>
                                 </div>
                             </div>
                             <div className={styles.itemBlock}>
@@ -62,6 +67,9 @@ const ProductList = () => {
                                     const valsStr = vals.join(', ');
                                     return <p key={key}>{key}: {valsStr}</p>
                                 })}
+                            </div>
+                            <div className={styles.itemBlock}>
+                                <p>Qty: {it.amount}</p>
                             </div>
                             <div className={styles.itemBlock} style={{ marginLeft: 'auto', paddingRight: '0px' }}>
                                 <IconButton
@@ -73,9 +81,8 @@ const ProductList = () => {
                             </div>
                         </div>
                     )
+                }
             })}
         </div>
     )
 }
-
-export default ProductList;

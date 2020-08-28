@@ -46,3 +46,35 @@
     align-items: center;
     justify-content: center;
 }
+
+
+.onHoverLink {
+    display: inline;
+    color: $text;
+    text-decoration: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.25s linear;
+    position: relative;
+    // border-bottom: 1px solid;
+}
+
+.onHoverLink:before {
+    content: "";
+    display: block;
+    width: 100%;
+    height: 2px;
+    background-color: $primary;
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    transform-origin: left; 
+    transform: scale(0);
+    transition: 0.25s linear;
+}
+  
+.onHoverLinkContainer:hover .onHoverLink:before {
+    transform: scale(1);
+}
+.onHoverLinkContainer:hover .onHoverLink {
+    color: $primary;
+}

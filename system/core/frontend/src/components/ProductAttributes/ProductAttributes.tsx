@@ -1,6 +1,6 @@
 import { TAttribute, TAttributeInstance, TAttributeInstanceValue, TProduct } from '@cromwell/core';
 import React, { useState } from 'react';
-import { applyProductVariants } from '../../store/helpers';
+import { getCStore } from '../../CStore';
 //@ts-ignore
 import styles from './ProductAttributes.module.scss';
 
@@ -34,7 +34,7 @@ export const ProductAttributes = (props: {
     const { attributes, product, onChange } = props;
     const productAttributes = product.attributes;
     const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
-
+    const cstore = getCStore();
     const ValueComp = props.elements?.attributeValue;
 
     const handleSetAttribute = (key: string, checks: string[]) => {
@@ -43,7 +43,7 @@ export const ProductAttributes = (props: {
             const newCheckedAttrs: Record<string, string[]> = Object.assign({}, prev);
             newCheckedAttrs[key] = checks;
             setTimeout(() => {
-                onChange(newCheckedAttrs, applyProductVariants(
+                onChange(newCheckedAttrs, cstore.applyProductVariants(
                     product, newCheckedAttrs, attributes));
             }, 10);
 

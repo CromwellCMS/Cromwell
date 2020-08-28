@@ -1,13 +1,13 @@
 
 import React, { Component, useEffect, useRef, useState } from 'react';
-import { getPriceWithCurrency } from '@cromwell/core-frontend';
+import { getCStore } from '@cromwell/core-frontend';
 import { IOSSliderStyles } from '../styles';
 import {
     Slider as MUISlider
 } from '@material-ui/core';
 
 const getPriceText = (value: number) => {
-    return getPriceWithCurrency(value);
+    return getCStore().getPriceWithCurrency(value);
 }
 
 function useForceUpdate() {

@@ -1,6 +1,6 @@
 import { getAppCustomConfigTextProp, getAppCustomConfigProp, getCmsConfig, isServer, setStoreItem } from '@cromwell/core';
-import { Link, CHTML, CContainer, CPlugin, getGlobalCurrency, setGlobalCurrency } from '@cromwell/core-frontend';
-import React, { useEffect } from 'react';
+import { Link, CHTML, CContainer, CPlugin, getCStore } from '@cromwell/core-frontend';
+import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core';
 import {
     MenuItem,
@@ -16,7 +16,6 @@ import { ExpandMore as ExpandMoreIcon, ShoppingCart as ShoppingCartIcon } from '
 import { TTopLink } from '../../types';
 import { productListStore } from '../../helpers/ProductListStore';
 import { observer } from "mobx-react";
-import ProductList from '.././checkoutPage/productList/ProductList';
 
 // @ts-ignore
 import styles from './Header.module.scss';
@@ -56,23 +55,28 @@ const Header = observer(() => {
     const logoHref: string | undefined = getAppCustomConfigProp('header/logo');
     const contactPhone: string | undefined = getAppCustomConfigProp('header/contactPhone');
     const classes = useStyles();
-
-    let itemsInCart = productListStore.cart.length;
-    const [currency, setCurrency] = React.useState<string | null | undefined>(getGlobalCurrency());
+    const cstore = getCStore();
+    const [itemsInCart, setItemsInCart] = useState(cstore.getCart().length);
+    const [currency, setCurrency] = React.useState<string | null | undefined>(cstore.getActiveCurrency());
 
     const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        const val = event.target.value as string
+        const val = event.target.value as string;
         setCurrency(val);
-        setGlobalCurrency(val);
+        cstore.setActiveCurrency(val);
     };
 
     const handleCartClick = () => {
         productListStore.isCartOpen = true;
     }
 
-    const handleCartClose = () => {
-        productListStore.isCartOpen = false;
-    }
+
+
+    useEffect(() => {
+        cstore.addOnCartUpdatedCallback((cart) => {
+            if (itemsInCart !== cart.length)
+                setItemsInCart(cart.length);
+        }, 'headerCart');
+    }, []);
 
     return (
         <div className={`${styles.Header} ${commonStyles.text}`}>
@@ -139,26 +143,6 @@ const Header = observer(() => {
                             <ExpandMoreIcon className={styles.cartExpandIcon} />
                         </div>
                     </ListItem>
-                    <Modal
-                        className={commonStyles.center}
-                        open={productListStore.isCartOpen}
-                        onClose={handleCartClose}
-                        aria-labelledby="simple-modal-title"
-                        aria-describedby="simple-modal-description"
-                    >
-                        <div className={styles.cartModal}>
-                            <div className={styles.cartList}>
-                                <ProductList />
-                            </div>
-                            <Button
-                                className={styles.checkoutBtn}
-                                variant="contained"
-                                color="primary"
-                                size="large"
-                                startIcon={<ShoppingCartIcon />}
-                            >Checkout</Button>
-                        </div>
-                    </Modal>
                 </div>
             </div>
             <div className={styles.mainMenu}>

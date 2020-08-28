@@ -40,35 +40,8 @@
     }
 
     .productName {
-        display: inline;
         color: $text;
         font-size: 18px;
-        text-decoration: none;
-        border-bottom: 2px solid #fff;
-        transition: all 0.25s linear;
-        position: relative;
-        // border-bottom: 1px solid;
-    }
-
-    .productName:before {
-        content: "";
-        display: block;
-        width: 100%;
-        height: 2px;
-        background-color: $primary;
-        position: absolute;
-        left: 0;
-        bottom: -2px;
-        transform-origin: left; 
-        transform: scale(0);
-        transition: 0.25s linear;
-    }
-      
-    &:hover .productName:before {
-        transform: scale(1);
-    }
-    &:hover .productName {
-        color: $primary;
     }
 
     .priceCartBlock {
@@ -91,4 +64,40 @@
         opacity: 0.7;
         margin-right: 10px;
     }
+
+    .description {
+        display: none;
+    }
+
+
+    &.listVariant {
+        flex-direction: row;
+        max-width: 100%;
+
+        .description {
+            display: block;
+            max-height: 80px;
+            overflow: hidden;
+            font-size: 16px;
+        }
+
+        .productName {
+            font-weight: 500;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .imageBlock {
+            width: auto;
+            > a {
+                height: 100%;
+            }
+        }
+
+        .image {
+            height: 100%;
+            width: auto;
+        }
+    }
+
 }
