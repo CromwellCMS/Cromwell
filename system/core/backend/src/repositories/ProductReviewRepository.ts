@@ -28,26 +28,6 @@ export class ProductReviewRepository extends Repository<ProductReview> {
         if (!product) throw new Error(`ProductReviewRepository:handleProductReviewInput productId ${input.productId} not found!`);
         productReview.product = product;
 
-        let sum = 0;
-        let num = 0;
-        const reviews = await this.productRepo.getReviewsOfProduct(product.id);
-        if (reviews && reviews.elements) {
-            reviews.elements.forEach(r => {
-                if (r.rating) {
-                    sum += r.rating;
-                    num++;
-                }
-            })
-        }
-        if (input.rating) {
-            sum += input.rating;
-            num++;
-        }
-        if (sum && num) {
-            product.rating = parseFloat((sum / num).toFixed(1));
-            this.productRepo.save(product);
-        }
-
         productReview.title = input.title;
         productReview.description = input.description;
         productReview.rating = input.rating;

@@ -39,10 +39,14 @@
     margin: 15px 0;
     font-weight: 500;
 }
-.productRating {
-    position: relative;
-    // margin: 10px 0;
+
+.ratingBlock {
+    display: flex;
 }
+.ratingCaption {
+    margin-left: 10px;
+}
+
 .priceBlock {
     margin: 15px 0;
     display: flex;

@@ -7,10 +7,11 @@ import {
     TProduct,
     TProductInput,
     TProductReview,
+    TProductRating
 } from '@cromwell/core';
 import { EntityRepository, getCustomRepository, Repository } from 'typeorm';
 
-import { Product } from '../entities/Product';
+import { Product, ProductRating } from '../entities/Product';
 import { applyGetManyFromOne, getPaged, handleBaseInput } from './BaseQueries';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { ProductReviewRepository } from './ProductReviewRepository';
@@ -25,7 +26,7 @@ export class ProductRepository extends Repository<Product> {
         return paged;
     }
 
-    async getProductById(id: string): Promise<Product> {
+    async getProductById(id: string): Promise<Product | undefined> {
         const product = await this.findOne({
             where: { id }
         });
@@ -33,7 +34,7 @@ export class ProductRepository extends Repository<Product> {
         return product;
     }
 
-    async getProductBySlug(slug: string): Promise<Product> {
+    async getProductBySlug(slug: string): Promise<Product | undefined> {
         const product = await this.findOne({
             where: { slug }
         });
@@ -71,7 +72,7 @@ export class ProductRepository extends Repository<Product> {
         }
     }
 
-    async createProduct(createProduct: TProductInput): Promise<TProduct> {
+    async createProduct(createProduct: TProductInput): Promise<Product> {
         let product = new Product();
 
         await this.handleProductInput(product, createProduct);
@@ -79,6 +80,7 @@ export class ProductRepository extends Repository<Product> {
         product = await this.save(product);
         if (!product.slug) {
             product.slug = product.id;
+
             await this.save(product);
         }
 
@@ -111,8 +113,7 @@ export class ProductRepository extends Repository<Product> {
             console.log('ProductRepository::deleteProduct failed to find product by id');
             return false;
         }
-        await product.remove();
-        // const res = await this.delete(id);
+        const res = await this.delete(id);
         this.buildProductPage(product);
         return true;
     }
@@ -130,7 +131,21 @@ export class ProductRepository extends Repository<Product> {
         return getPaged(qb, DBTableNames.ProductReview, params)
     }
 
-    private buildProductPage(product: Product) {
+    async getProductRating(productId: string): Promise<TProductRating> {
+        const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(DBTableNames.ProductReview);
+        applyGetManyFromOne(qb, DBTableNames.ProductReview, 'product', DBTableNames.Product, productId);
+
+        const reviewsNumberKey: keyof TProductRating = 'reviewsNumber';
+        const averageKey: keyof TProductRating = 'average';
+        const ratingKey: keyof TProductReview = 'rating';
+        qb.select('COUNT()', reviewsNumberKey);
+        qb.addSelect(`AVG(${ratingKey})`, averageKey);
+
+        const raw = await qb.getRawOne();
+        return raw;
+    }
+
+    private buildProductPage(product: TProduct) {
         const rebuildPage = getStoreItem('rebuildPage');
         if (rebuildPage) {
             rebuildPage(`${BasePagePaths.Product}/${product.slug}`);

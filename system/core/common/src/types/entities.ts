@@ -59,14 +59,21 @@ export interface TProduct extends TBasePageEntity {
     images?: string[];
     // Description (HTML allowed)
     description?: string;
-    // Rating 1-5
-    rating?: number;
+    // Rating data
+    rating?: TProductRating;
     // Customer reviews 
     reviews?: TProductReview[];
     // Custom attributes
     attributes?: TAttributeInstance[];
     // Qnt of page requests
     views?: number;
+}
+
+export type TProductRating = {
+    // Rating 1-5
+    average?: number;
+    // Number of customer reviews
+    reviewsNumber?: number;
 }
 
 export type TProductInput = Omit<TProduct, TDBAuxiliaryColumns | 'categories' | 'rating' | 'reviews'> & {

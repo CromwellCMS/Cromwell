@@ -77,8 +77,13 @@ export const ProductDetails = observer((props: {
                         </CContainer>
                         <CContainer id="product_3" className={styles.captionBlock}>
                             <CText id="product_4" className={styles.productName} type="h1">{product?.name}</CText>
-                            <Rating name="read-only" value={product.rating} precision={0.5} readOnly className={styles.productRating} />
-
+                            <div className={styles.ratingBlock}>
+                                <Rating name="read-only" value={product?.rating?.average} precision={0.5} readOnly />
+                                {product?.rating?.reviewsNumber && (
+                                    <p className={styles.ratingCaption}>
+                                        {product?.rating?.average} based on {product?.rating?.reviewsNumber} reviews.</p>
+                                )}
+                            </div>
                             <CContainer id="product_5" className={styles.priceBlock}>
                                 {(product?.oldPrice !== undefined && product.oldPrice !== null) && (
                                     <CText id="product_6" className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</CText>

@@ -42,8 +42,9 @@ export const ProductCard = (props: {
                     </Link>
                 </div>
                 {data?.description && (
-                    <div className={styles.description}
-                        dangerouslySetInnerHTML={{ __html: data?.description }}>
+                    <div className={styles.description}>
+                        <div dangerouslySetInnerHTML={{ __html: data?.description }}></div>
+                        <div className={styles.descriptionGradient}></div>
                     </div>
                 )}
                 <div className={styles.priceCartBlock}>
@@ -64,7 +65,14 @@ export const ProductCard = (props: {
                         <AddShoppingCartIcon />
                     </IconButton>
                 </div>
-                <Rating name="read-only" value={data?.rating} precision={0.5} readOnly />
+                <div className={styles.ratingBlock}>
+                    <Rating name="read-only" value={data?.rating?.average} precision={0.5} readOnly />
+                    {data?.rating?.reviewsNumber && (
+                        <p className={styles.ratingCaption}>
+                            {data?.rating?.average} based on {data?.rating?.reviewsNumber} reviews.</p>
+                    )}
+                </div>
+
             </div>
         </div>
     )

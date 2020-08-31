@@ -22,7 +22,6 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
-        overflow: hidden;
         border-radius: 8px 8px 0 0;
         height: 300px;
         width: 100%;
@@ -68,6 +67,16 @@
     .description {
         display: none;
     }
+    .descriptionGradient {
+        display: none;
+    }
+
+    .ratingBlock {
+        display: flex;
+    }
+    .ratingCaption {
+        margin-left: 10px;
+    }
 
 
     &.listVariant {
@@ -76,9 +85,19 @@
 
         .description {
             display: block;
-            max-height: 80px;
+            position: relative;
+            height: 80px;
             overflow: hidden;
             font-size: 16px;
+        }
+
+        .descriptionGradient {
+            display: block;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            height: 50px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 1));
         }
 
         .productName {
@@ -97,6 +116,10 @@
         .image {
             height: 100%;
             width: auto;
+        }
+
+        .caption {
+            padding: 20px;
         }
     }
 

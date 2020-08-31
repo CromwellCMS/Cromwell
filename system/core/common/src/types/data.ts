@@ -51,11 +51,12 @@ export type GraphQLPathsType = { [K in TDBEntity]: TGraphQLNode };
 
 export type TGraphQLNode = {
     getOneById: string;
-    getOneBySlug?: string;
+    getOneBySlug: string;
     getMany: string;
     create: string;
     update: string;
     delete: string;
+    [x: string]: string;
 }
 
 

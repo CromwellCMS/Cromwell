@@ -1,6 +1,6 @@
 import { Entity, ManyToMany, JoinTable, Column, OneToMany, ConnectionOptions } from "typeorm";
 import { ObjectType, Field, ID } from "type-graphql";
-import { TProduct, TProductCategory, TProductReview, getStoreItem } from '@cromwell/core';
+import { TProduct, TProductCategory, TProductReview, getStoreItem, TProductRating } from '@cromwell/core';
 import { BasePageEntity } from './BasePageEntity';
 import { ProductCategory } from './ProductCategory';
 import { ProductReview } from './ProductReview';
@@ -42,10 +42,6 @@ export class Product extends BasePageEntity implements TProduct {
     })
     reviews?: TProductReview[];
 
-    @Field(type => Number, { nullable: true })
-    @Column({ type: "integer", nullable: true })
-    rating: number | undefined;
-
     @Field(type => [AttributeInstance], { nullable: true })
     public get attributes(): AttributeInstance[] | undefined {
         if (this.attributesJSON) return JSON.parse(this.attributesJSON);
@@ -64,4 +60,13 @@ export class Product extends BasePageEntity implements TProduct {
     @Field(type => Number, { nullable: true })
     @Column({ type: "bigint", nullable: true })
     views?: number;
+}
+
+@ObjectType()
+export class ProductRating implements TProductRating {
+    @Field(type => Number, { nullable: true })
+    average?: number;
+
+    @Field(type => Number, { nullable: true })
+    reviewsNumber?: number;
 }

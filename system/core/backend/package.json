@@ -12,6 +12,8 @@
   "dependencies": {
     "@cromwell/core": "1.0.0",
     "crypto": "^1.0.1",
+    "fs-extra": "^9.0.1",
+    "path": "^0.12.7",
     "recursive-readdir": "^2.2.2",
     "tslib": "^2.0.0"
   },

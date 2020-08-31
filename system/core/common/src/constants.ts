@@ -28,7 +28,8 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         getMany: "products",
         create: "createProduct",
         update: "updateProduct",
-        delete: "deleteProduct"
+        delete: "deleteProduct",
+        getFromCategory: "getProductsFromCategory"
     },
     ProductCategory: {
         getOneBySlug: "productCategory",
@@ -39,6 +40,7 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         delete: "deleteProductCategory"
     },
     Attribute: {
+        getOneBySlug: "",
         getOneById: "getAttribute",
         getMany: "getAttributes",
         create: "createAttribute",
@@ -46,11 +48,13 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         delete: "deleteAttribute"
     },
     ProductReview: {
+        getOneBySlug: "",
         getOneById: "getProductReview",
         getMany: "getProductReviews",
         create: "createProductReview",
         update: "updateProductReview",
-        delete: "deleteProductReview"
+        delete: "deleteProductReview",
+        getFromProduct: "getProductReviewsOfProduct"
     }
 }
 

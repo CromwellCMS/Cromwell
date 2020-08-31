@@ -1,7 +1,8 @@
 import {
     TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute,
     TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory,
-    TProductInput, TAttribute, setStoreItem, TProductReviewInput, TAttributeInput, TProductReview
+    TProductInput, TAttribute, setStoreItem, TProductReviewInput, TAttributeInput,
+    TProductReview, GraphQLPaths
 } from '@cromwell/core';
 import {
     gql, ApolloClient, InMemoryCache, createHttpLink, NormalizedCacheObject,
@@ -24,6 +25,9 @@ class CGraphQLClient {
             name: 'cromwell-core-client',
             queryDeduplication: false,
             defaultOptions: {
+                query: {
+                    fetchPolicy: 'network-only',
+                },
                 watchQuery: {
                     fetchPolicy: 'cache-and-network',
                 },
@@ -58,7 +62,10 @@ class CGraphQLClient {
             images
             description
             views
-            rating
+            rating {
+                average
+                reviewsNumber
+            }
             attributes {
                 key
                 values {
@@ -83,10 +90,11 @@ class CGraphQLClient {
     `
 
     public getProducts = async (pagedParams?: TPagedParams<TProduct>, withCategories: boolean = false): Promise<TPagedList<TProduct>> => {
+        const path = GraphQLPaths.Product.getMany;
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProducts($pagedParams: PagedParamsInput!, $withCategories: Boolean!) {
-                    products(pagedParams: $pagedParams) {
+                    ${path}(pagedParams: $pagedParams) {
                         pagedMeta {
                             ...PagedMetaFragment
                         }
@@ -106,11 +114,13 @@ class CGraphQLClient {
         return res?.data?.products;
     }
 
-    public getProductById = async (productId: string, withCategories: boolean = false): Promise<TProduct | undefined> => {
+    public getProductById = async (productId: string, withCategories: boolean = false)
+        : Promise<TProduct | undefined> => {
+        const path = GraphQLPaths.Product.getOneById;
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductById($productId: String!, $withCategories: Boolean!) {
-                    getProductById(id: $productId) {
+                    ${path}(id: $productId) {
                         ...ProductFragment
                     }
                 }
@@ -125,10 +135,11 @@ class CGraphQLClient {
     }
 
     public getProductBySlug = async (slug: string, withCategories: boolean = false): Promise<TProduct | undefined> => {
+        const path = GraphQLPaths.Product.getOneBySlug;
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductBySlug($slug: String!, $withCategories: Boolean!) {
-                    product(slug: $slug) {
+                    ${path}(slug: $slug) {
                         ...ProductFragment
                     }
                 }
@@ -143,10 +154,11 @@ class CGraphQLClient {
     }
 
     public updateProduct = async (id: string, product: TProductInput, withCategories: boolean = false) => {
+        const path = GraphQLPaths.Product.update;
         const res = await this.apolloClient.mutate({
             mutation: gql`
                 mutation coreUpdateProduct($id: String!, $data: UpdateProduct!, $withCategories: Boolean!) {
-                    updateProduct(id: $id, data: $data) {
+                    ${path}(id: $id, data: $data) {
                         ...ProductFragment
                     }
                 }
@@ -162,10 +174,11 @@ class CGraphQLClient {
     }
 
     public createProduct = async (product: TProductInput, withCategories: boolean = false) => {
+        const path = GraphQLPaths.Product.create;
         const res = await this.apolloClient.mutate({
             mutation: gql`
                 mutation coreCreateProduct($data: CreateProduct!, $withCategories: Boolean!) {
-                    createProduct(id: $id, data: $data) {
+                    ${path}(id: $id, data: $data) {
                         ...ProductFragment
                     }
                 }
@@ -179,16 +192,43 @@ class CGraphQLClient {
         return res?.data?.createProduct;
     }
 
+    public getProductsFromCategory = async (categoryId: string, pagedParams?: TPagedParams<TProduct>, withCategories: boolean = false): Promise<TPagedList<TProduct>> => {
+        const path = GraphQLPaths.Product.getProductsFromCategory;
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $withCategories: Boolean!) {
+                    ${path}(categoryId: $categoryId, pagedParams: $pagedParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...ProductFragment
+                        }
+                    }
+                }
+                ${this.ProductFragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                withCategories,
+                pagedParams: pagedParams ? pagedParams : {},
+                categoryId
+            }
+        })
+        return res?.data?.getProductsFromCategory;
+    }
 
     // </Product>
+
 
     // <ProductCategory>
 
     public getProductCategoryBySlug = async (slug: string, productsPagedParams?: TPagedParams<TProduct>): Promise<TProductCategory | undefined> => {
+        const path = GraphQLPaths.ProductCategory.getOneBySlug;
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductCategory($slug: String!, $productsPagedParams: PagedParamsInput!, $withCategories: Boolean!) {
-                    productCategory(slug: $slug) {
+                    ${path}(slug: $slug) {
                         id
                         name
                         products(pagedParams: $productsPagedParams) {
@@ -214,34 +254,9 @@ class CGraphQLClient {
         return res?.data?.productCategory;
     }
 
-    public getProductsFromCategory = async (categoryId: string, pagedParams?: TPagedParams<TProduct>, withCategories: boolean = false): Promise<TPagedList<TProduct>> => {
-        const res = await this.apolloClient.query({
-            query: gql`
-                query coreGetProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $withCategories: Boolean!) {
-                    getProductsFromCategory(categoryId: $categoryId, pagedParams: $pagedParams) {
-                        pagedMeta {
-                            ...PagedMetaFragment
-                        }
-                        elements {
-                            ...ProductFragment
-                        }
-                    }
-                }
-                ${this.ProductFragment}
-                ${this.PagedMetaFragment}
-            `,
-            variables: {
-                withCategories,
-                pagedParams: pagedParams ? pagedParams : {},
-                categoryId
-            }
-        })
-        return res?.data?.getProductsFromCategory;
-    }
-
-
     // </ProductCategory>
 
+    
     // <Attribute>
 
     public AttributeFragment = gql`
@@ -258,10 +273,11 @@ class CGraphQLClient {
    `
 
     public getAttributes = async (): Promise<TAttribute[] | undefined> => {
+        const path = GraphQLPaths.Attribute.getMany;
         const res = await this.apolloClient.query({
             query: gql`
                query coreGetAttributes {
-                    attributes {
+                ${path} {
                         ...AttributeFragment
                     }
                }
@@ -272,10 +288,11 @@ class CGraphQLClient {
     }
 
     public getAttributeById = async (attributeId: string): Promise<TAttribute | undefined> => {
+        const path = GraphQLPaths.Attribute.getOneById;
         const res = await this.apolloClient.query({
             query: gql`
                query coreGetAttributeById($attributeId: String!) {
-                    getAttribute(id: $attributeId) {
+                ${path}(id: $attributeId) {
                        ...AttributeFragment
                     }           
                }
@@ -289,10 +306,11 @@ class CGraphQLClient {
     }
 
     public updateAttribute = async (id: string, attribute: TAttributeInput) => {
+        const path = GraphQLPaths.Attribute.update;
         const res = await this.apolloClient.mutate({
             mutation: gql`
                mutation coreUpdateAttribute($id: String!, $data: AttributeInput!) {
-                    updateAttribute(id: $id, data: $data) {
+                ${path}(id: $id, data: $data) {
                        ...AttributeFragment
                    }
                }
@@ -307,10 +325,11 @@ class CGraphQLClient {
     }
 
     public createAttribute = async (attribute: TAttributeInput) => {
+        const path = GraphQLPaths.Attribute.create;
         const res = await this.apolloClient.mutate({
             mutation: gql`
                mutation coreCreateAttribute($data: AttributeInput!) {
-                   createAttribute(data: $data) {
+                ${path}(data: $data) {
                        ...AttributeFragment
                    }
                }
@@ -342,10 +361,11 @@ class CGraphQLClient {
   `
 
     public getProductReview = async (productReviewId: string): Promise<TProductReview | undefined> => {
+        const path = GraphQLPaths.ProductReview.getOneById;
         const res = await this.apolloClient.query({
             query: gql`
               query coreGetProductReviewById($id: String!) {
-                productReview(id: $id) {
+                ${path}(id: $id) {
                       ...ProductReviewFragment
                    }           
               }
@@ -359,10 +379,11 @@ class CGraphQLClient {
     }
 
     public getProductReviews = async (pagedParams?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> => {
+        const path = GraphQLPaths.ProductReview.getMany;
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductReviews($pagedParams: PagedParamsInput!) {
-                    productReviews(pagedParams: $pagedParams) {
+                    ${path}(pagedParams: $pagedParams) {
                         pagedMeta {
                             ...PagedMetaFragment
                         }
@@ -382,10 +403,11 @@ class CGraphQLClient {
     }
 
     public getProductReviewsOfProduct = async (productId: string, pagedParams?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> => {
+        const path = GraphQLPaths.ProductReview.getFromProduct;
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductReviewsOfProduct($productId: String!, $pagedParams: PagedParamsInput!) {
-                    getProductReviewsOfProduct(productId: $productId, pagedParams: $pagedParams) {
+                    ${path}(productId: $productId, pagedParams: $pagedParams) {
                         pagedMeta {
                             ...PagedMetaFragment
                         }
@@ -407,10 +429,11 @@ class CGraphQLClient {
 
 
     public updateProductReview = async (id: string, productReview: TProductReviewInput): Promise<TProductReview | undefined> => {
+        const path = GraphQLPaths.ProductReview.update;
         const res = await this.apolloClient.mutate({
             mutation: gql`
               mutation coreUpdateAttribute($id: String!, $data: AttributeInput!) {
-                  updateProductReview(id: $id, data: $data) {
+                ${path}(id: $id, data: $data) {
                       ...ProductReviewFragment
                   }
               }
@@ -425,10 +448,11 @@ class CGraphQLClient {
     }
 
     public createProductReview = async (productReview: TProductReviewInput): Promise<TProductReview | undefined> => {
+        const path = GraphQLPaths.ProductReview.create;
         const res = await this.apolloClient.mutate({
             mutation: gql`
               mutation coreCreateProductReview($data: AttributeInput!) {
-                createProductReview(data: $data) {
+                ${path}(data: $data) {
                       ...ProductReviewFragment
                   }
               }

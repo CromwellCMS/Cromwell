@@ -28,7 +28,7 @@ const watch = true;
 const watchPollTimeout = 1000; // ms
 
 /** Close all watchers when this process is being closed */
-const closeAllOnExit = false;
+const closeAllOnExit = true;
 
 const cleanCacheOnStart = false;
 
@@ -147,7 +147,6 @@ const run = () => {
 
     // Templates & Plugins
     otherDirs.forEach((dir, i) => {
-        let randId = crypto.randomBytes(6).toString('hex');
         startTerminal(dir, `cd ${projectRootDir}\\${dir} && npm run watch`, {
             x: startX + i * overlayShift,
             y: monitorBounds.y + monitorBounds.height * serverHeigth + monitorBounds.height * rendererHeigth,

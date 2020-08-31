@@ -121,7 +121,10 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
                                 price
                                 oldPrice
                                 mainImage
-                                rating
+                                rating {
+                                    average
+                                    reviewsNumber
+                                }
                             }
                         }
                     }

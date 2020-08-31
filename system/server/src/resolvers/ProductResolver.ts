@@ -1,4 +1,4 @@
-import { TPagedList, TProduct, TProductCategory, TProductReview } from '@cromwell/core';
+import { TPagedList, TProduct, TProductCategory, TProductReview, TProductRating, GraphQLPaths } from '@cromwell/core';
 import {
     CreateProduct,
     PagedParamsInput,
@@ -9,60 +9,78 @@ import {
     ProductRepository,
     UpdateProduct,
     ProductReview,
-    PagedProductReview
+    PagedProductReview,
+    ProductRating
 } from '@cromwell/core-backend';
 import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
-// @OneToMany(type => ProductReview, review => review.product)
-// reviews?: TProductReview[];
+
+const categoriesKey: keyof TProduct = 'categories';
+const ratingKey: keyof TProduct = 'rating';
+const reviewsKey: keyof TProduct = 'reviews';
+
+const getOneBySlugPath = GraphQLPaths.Product.getOneBySlug;
+const getOneByIdPath = GraphQLPaths.Product.getOneById;
+const getManyPath = GraphQLPaths.Product.getMany;
+const createPath = GraphQLPaths.Product.create;
+const updatePath = GraphQLPaths.Product.update;
+const deletePath = GraphQLPaths.Product.delete;
+const getFromCategoryPath = GraphQLPaths.Product.getFromCategory;
+
 @Resolver(Product)
 export class ProductResolver {
 
-    private get repo() { return getCustomRepository(ProductRepository) }
+    private repository = getCustomRepository(ProductRepository)
 
     @Query(() => PagedProduct)
-    async products(@Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {
-        return await this.repo.getProducts(pagedParams);
+    async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>)
+        : Promise<TPagedList<TProduct>> {
+        return this.repository.getProducts(pagedParams);
     }
 
     @Query(() => Product)
-    async product(@Arg("slug") slug: string): Promise<Product> {
-        return await this.repo.getProductBySlug(slug);
+    async [getOneBySlugPath](@Arg("slug") slug: string): Promise<Product | undefined> {
+        return this.repository.getProductBySlug(slug);
     }
 
     @Query(() => Product)
-    async getProductById(@Arg("id") id: string): Promise<Product> {
-        return await this.repo.getProductById(id);
+    async [getOneByIdPath](@Arg("id") id: string): Promise<Product | undefined> {
+        return this.repository.getProductById(id);
     }
 
     @Mutation(() => Product)
-    async createProduct(@Arg("data") data: CreateProduct): Promise<TProduct> {
-        return await this.repo.createProduct(data);
+    async [createPath](@Arg("data") data: CreateProduct): Promise<Product> {
+        return this.repository.createProduct(data);
     }
 
     @Mutation(() => Product)
-    async updateProduct(@Arg("id") id: string, @Arg("data") data: UpdateProduct): Promise<Product> {
-        return await this.repo.updateProduct(id, data);
+    async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProduct): Promise<Product> {
+        return this.repository.updateProduct(id, data);
     }
 
     @Mutation(() => Boolean)
-    async deleteProduct(@Arg("id") id: string): Promise<boolean> {
-        return await this.repo.deleteProduct(id);
+    async [deletePath](@Arg("id") id: string): Promise<boolean> {
+        return this.repository.deleteProduct(id);
     }
 
     @Query(() => PagedProduct)
-    async getProductsFromCategory(@Arg("categoryId") categoryId: string, @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {
-        return await this.repo.getProductsFromCategory(categoryId, pagedParams);
+    async [getFromCategoryPath](@Arg("categoryId") categoryId: string, @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {
+        return this.repository.getProductsFromCategory(categoryId, pagedParams);
     }
 
     @FieldResolver(() => [ProductCategory])
-    async categories(@Root() product: Product, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductCategory>): Promise<TProductCategory[]> {
-        return await getCustomRepository(ProductCategoryRepository).getCategoriesOfProduct(product.id, pagedParams);
+    async [categoriesKey](@Root() product: Product, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductCategory>): Promise<TProductCategory[]> {
+        return getCustomRepository(ProductCategoryRepository).getCategoriesOfProduct(product.id, pagedParams);
     }
 
     @FieldResolver(() => PagedProductReview)
-    async reviews(@Root() product: Product, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductReview>): Promise<TPagedList<TProductReview>> {
-        return this.repo.getReviewsOfProduct(product.id, pagedParams);
+    async [reviewsKey](@Root() product: Product, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductReview>): Promise<TPagedList<TProductReview>> {
+        return this.repository.getReviewsOfProduct(product.id, pagedParams);
+    }
+
+    @FieldResolver(() => ProductRating)
+    async [ratingKey](@Root() product: Product): Promise<TProductRating> {
+        return this.repository.getProductRating(product.id);
     }
 
     @FieldResolver()
