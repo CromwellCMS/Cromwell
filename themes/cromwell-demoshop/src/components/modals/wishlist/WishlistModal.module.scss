@@ -1,3 +1,4 @@
+@import '../../../styles/common.module.scss';
 
 .wishlistModal {
     height: 70vh;
@@ -10,6 +11,7 @@
     outline: none;
 
     .wishList {
+        // @include styledScrollBar;
         background-color: #fff;
         border-radius: 10px;
         width: 100%;

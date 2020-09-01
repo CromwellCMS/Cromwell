@@ -265,12 +265,20 @@ class CStore {
             const id = listItem?.product?.id;
             if (client && id) {
                 if (!promises[id]) {
-                    promises[id] = client.getProductById(id)
+                    promises[id] = client.getProductById(id).catch(e => {
+                        console.log(e);
+                        return undefined;
+                    });
                 }
             }
         }
+
         const updatedProducts: (TProduct | undefined)[] = await Promise.all(Object.values(promises));
-        const attributes: TAttribute[] | undefined = await client?.getAttributes();
+
+        let attributes: TAttribute[] | undefined = undefined;
+        try {
+            attributes = await client?.getAttributes();
+        } catch (e) { console.log(e) }
 
         const updatedList: TStoreListItem[] = [];
 

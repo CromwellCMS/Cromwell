@@ -44,8 +44,8 @@ const ProductList = () => {
                 useAutoLoading
                 usePagination
                 useQueryPagination
-                loader={(pageNumber: number) => {
-                    return client?.getProducts({ pageNumber });
+                loader={(params) => {
+                    return client?.getProducts(params);
                 }}
                 cssClasses={{ scrollBox: styles.list }}
                 elements={{

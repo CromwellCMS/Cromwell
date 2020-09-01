@@ -33,14 +33,16 @@ export const WishlistModal = observer(() => {
          * Since getCart method wll retrieve products from local storage and 
          * after a while products can be modified at the server, we need to refresh cart first  
          */
-        (async () => {
-            setIsLoading(true);
-            await cstore.updateWishlist();
-            const wishlist = cstore.getWishlist()
-            setWishlist(wishlist);
-            setIsLoading(false);
-        })();
-    }, []);
+        if (productListStore.isWishlistOpen) {
+            (async () => {
+                setIsLoading(true);
+                await cstore.updateWishlist();
+                const wishlist = cstore.getWishlist()
+                setWishlist(wishlist);
+                setIsLoading(false);
+            })();
+        }
+    }, [productListStore.isWishlistOpen]);
 
     return (
         <Modal

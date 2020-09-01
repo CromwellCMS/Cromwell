@@ -11,7 +11,7 @@ import {
 
 class CGraphQLClient {
 
-    private apolloClient: ApolloClient<NormalizedCacheObject>;
+    public readonly apolloClient: ApolloClient<NormalizedCacheObject>;
 
     constructor(private baseUrl: string) {
 
@@ -38,6 +38,7 @@ class CGraphQLClient {
     public query = <T = any>(options: QueryOptions): Promise<ApolloQueryResult<T>> =>
         this.apolloClient.query(options);
 
+    public returnData = (res: any, path: string) => res?.data ? res?.data[path] : undefined;
 
     public PagedMetaFragment = gql`
         fragment PagedMetaFragment on PagedMeta {
@@ -111,7 +112,7 @@ class CGraphQLClient {
                 withCategories
             }
         })
-        return res?.data?.products;
+        return this.returnData(res, path);
     }
 
     public getProductById = async (productId: string, withCategories: boolean = false)
@@ -131,7 +132,7 @@ class CGraphQLClient {
                 withCategories
             }
         });
-        return res?.data?.getProductById;
+        return this.returnData(res, path);
     }
 
     public getProductBySlug = async (slug: string, withCategories: boolean = false): Promise<TProduct | undefined> => {
@@ -150,7 +151,7 @@ class CGraphQLClient {
                 withCategories
             }
         });
-        return res?.data?.product;
+        return this.returnData(res, path);
     }
 
     public updateProduct = async (id: string, product: TProductInput, withCategories: boolean = false) => {
@@ -170,7 +171,7 @@ class CGraphQLClient {
                 withCategories
             }
         });
-        return res?.data?.updateProduct;
+        return this.returnData(res, path);
     }
 
     public createProduct = async (product: TProductInput, withCategories: boolean = false) => {
@@ -189,7 +190,7 @@ class CGraphQLClient {
                 withCategories: withCategories
             }
         });
-        return res?.data?.createProduct;
+        return this.returnData(res, path);
     }
 
     public getProductsFromCategory = async (categoryId: string, pagedParams?: TPagedParams<TProduct>, withCategories: boolean = false): Promise<TPagedList<TProduct>> => {
@@ -215,7 +216,7 @@ class CGraphQLClient {
                 categoryId
             }
         })
-        return res?.data?.getProductsFromCategory;
+        return this.returnData(res, path);
     }
 
     // </Product>
@@ -251,12 +252,12 @@ class CGraphQLClient {
             }
         });
 
-        return res?.data?.productCategory;
+        return this.returnData(res, path);
     }
 
     // </ProductCategory>
 
-    
+
     // <Attribute>
 
     public AttributeFragment = gql`
@@ -276,15 +277,15 @@ class CGraphQLClient {
         const path = GraphQLPaths.Attribute.getMany;
         const res = await this.apolloClient.query({
             query: gql`
-               query coreGetAttributes {
-                ${path} {
+                query coreGetAttributes {
+                    ${path} {
                         ...AttributeFragment
                     }
-               }
-               ${this.AttributeFragment}
+                }
+                ${this.AttributeFragment}
            `
         })
-        return res?.data?.attributes;
+        return this.returnData(res, path);
     }
 
     public getAttributeById = async (attributeId: string): Promise<TAttribute | undefined> => {
@@ -302,7 +303,7 @@ class CGraphQLClient {
                 attributeId
             }
         });
-        return res?.data?.getAttribute;
+        return this.returnData(res, path);
     }
 
     public updateAttribute = async (id: string, attribute: TAttributeInput) => {
@@ -321,7 +322,7 @@ class CGraphQLClient {
                 data: attribute,
             }
         });
-        return res?.data?.updateAttribute;
+        return this.returnData(res, path);
     }
 
     public createAttribute = async (attribute: TAttributeInput) => {
@@ -339,7 +340,7 @@ class CGraphQLClient {
                 data: attribute,
             }
         });
-        return res?.data?.createAttribute;
+        return this.returnData(res, path);
     }
 
 
@@ -375,7 +376,7 @@ class CGraphQLClient {
                 id: productReviewId
             }
         });
-        return res?.data?.productReview;
+        return this.returnData(res, path);
     }
 
     public getProductReviews = async (pagedParams?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> => {
@@ -399,7 +400,7 @@ class CGraphQLClient {
                 pagedParams: pagedParams ? pagedParams : {},
             }
         })
-        return res?.data?.productReviews;
+        return this.returnData(res, path);
     }
 
     public getProductReviewsOfProduct = async (productId: string, pagedParams?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> => {
@@ -424,7 +425,7 @@ class CGraphQLClient {
                 pagedParams: pagedParams ? pagedParams : {},
             }
         })
-        return res?.data?.getProductReviewsOfProduct;
+        return this.returnData(res, path);
     }
 
 
@@ -444,7 +445,7 @@ class CGraphQLClient {
                 data: productReview,
             }
         });
-        return res?.data?.updateProductReview;
+        return this.returnData(res, path);
     }
 
     public createProductReview = async (productReview: TProductReviewInput): Promise<TProductReview | undefined> => {
@@ -462,7 +463,7 @@ class CGraphQLClient {
                 data: productReview,
             }
         });
-        return res?.data?.createProductReview;
+        return this.returnData(res, path);
     }
 
 

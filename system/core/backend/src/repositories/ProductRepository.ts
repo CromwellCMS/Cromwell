@@ -63,7 +63,7 @@ export class ProductRepository extends Repository<Product> {
             const index = imgs.indexOf(product.mainImage);
             if (index > -1) {
                 imgs.splice(index, 1);
-                product.images = [product.mainImage, ...imgs]
+                product.images = [product.mainImage, ...imgs];
             }
         }
         // Set mainImage from array if it hasn't been set

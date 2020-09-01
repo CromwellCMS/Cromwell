@@ -1,11 +1,11 @@
-import React from 'react'
-//@ts-ignore
-import styles from './CList.module.scss';
-import { TProduct, TPagedList, TPagedMeta, isServer, TPagedParams } from '@cromwell/core';
+import { isServer, TPagedList, TPagedParams } from '@cromwell/core';
 import debounce from 'debounce';
+import React from 'react';
+
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { throbber } from '../throbber';
-// import Alertify from 'alertify.js';
+//@ts-ignore
+import styles from './CList.module.scss';
 
 const getPageId = (pageNum: number) => "infinity-page_" + pageNum;
 const getPageNumsAround = (currentPage: number, quantity: number, maxPageNum: number): number[] => {
@@ -186,7 +186,6 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
     }
     private minPageBound: number = 1;
     private maxPageBound: number = 1;
-    private canLoadMore: boolean = true;
     private remoteRowCount: number = 0;
     private maxPage: number = 1;
     private maxDomPages: number = 10;
@@ -196,8 +195,11 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
     private scrollBoxRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private wrapperRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private throbberRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
+    private throbberAutoloadingBefore: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
+    private throbberAutoloadingAfter: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private forcedProps: TCListProps<DataType, ListItemProps> | null;
     private listeners: Record<TListenerType, { cb: () => void; id?: string }[]> = { componentDidUpdate: [], onRender: [] };
+    private paginationInst?: Pagination;
 
     constructor(props: TCListProps<DataType, ListItemProps>) {
         super(props);
@@ -225,6 +227,9 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                 if (pad > 0) {
                     this.wrapperRef.current.style.paddingBottom = pad + 'px';
                 }
+            }
+            else {
+                this.wrapperRef.current.style.paddingBottom = '0px';
             }
         }
         this.onScroll();
@@ -279,6 +284,10 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                 this.fetchFirstBatch();
             }
         }
+
+        if (props.usePagination && this.paginationInst) {
+            this.paginationInst.init();
+        }
     }
 
     private fetchFirstBatch = async () => {
@@ -324,7 +333,6 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
     }
 
     private parseFirstBatchArray = (data: DataType[]) => {
-        this.canLoadMore = false;
         this.remoteRowCount = data.length;
         this.addElementsToList(data, this.currentPageNum);
     }
@@ -343,6 +351,8 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             if (this.scrollBoxRef.current && this.wrapperRef.current) {
                 const scrollTop = this.scrollBoxRef.current.scrollTop;
                 const scrollBottom = this.wrapperRef.current.clientHeight - this.scrollBoxRef.current.clientHeight - scrollTop;
+
+                this.setThrobberAutoloadingAfter();
 
                 // Rendered last row from data list, but has more pages to load from server
                 if (scrollBottom < minRangeToLoad) {
@@ -496,6 +506,9 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
 
     public setOverlay = (isLoading: boolean) => {
         const props = this.getProps();
+
+        if (!props.usePagination || props.useAutoLoading) return;
+
         if (this.throbberRef.current) {
             if (isLoading) {
                 this.throbberRef.current.style.display = 'block';
@@ -512,7 +525,17 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                 this.throbberRef.current.style.display = 'none';
             }
         }
+    }
 
+    private setThrobberAutoloadingAfter = (enable?: boolean) => {
+        const throbber = this.throbberAutoloadingAfter.current;
+        if (!throbber) return;
+
+        if (this.maxPageBound >= this.maxPage) {
+            throbber.style.display = 'none';
+            return;
+        }
+        if (enable) throbber.style.display = 'block';
     }
 
     private loadNextPage = async () => {
@@ -522,10 +545,11 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             this.maxPageBound++;
             const nextNum = this.maxPageBound;
             // console.log('loadNextPage', nextNum, this.pageStatuses[nextNum])
-
+            this.setThrobberAutoloadingAfter(true);
             await this.loadPage(nextNum);
             this.forceUpdate();
         }
+
 
     }
 
@@ -534,8 +558,15 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             this.minPageBound--;
             const prevNum = this.minPageBound;
             // console.log('loadPreviousPage', prevNum, this.pageStatuses[prevNum]);
+            const throbber = this.throbberAutoloadingBefore.current;
+            if (throbber) throbber.style.display = 'block';
             await this.loadPage(prevNum);
-            this.forceUpdate();
+            this.forceUpdate(() => {
+            });
+        }
+        if (this.minPageBound <= 1) {
+            const throbber = this.throbberAutoloadingBefore.current;
+            if (throbber) throbber.style.display = 'none';
         }
     }
 
@@ -610,15 +641,27 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                         { height: '100%', overflow: 'auto' } : {}}
                 >
                     <div className={styles.wrapper} ref={this.wrapperRef}>
+                        {/* {props.useAutoLoading && (
+                            <div ref={this.throbberAutoloadingBefore} style={{ display: 'none' }}>
+                                <div className={styles.throbberAutoloading}
+                                    dangerouslySetInnerHTML={{ __html: throbber }}></div>
+                            </div>
+                        )} */}
                         {this.list.map(l => (
                             <div className={`${styles.page} ${props.cssClasses?.page || ''}`}
                                 key={l.pageNum}
                                 id={getPageId(l.pageNum)}>
-                                {l.elements.map((e, i) => (
-                                    e
-                                ))}
+                                {l.elements}
                             </div>
                         ))}
+                        {props.useAutoLoading && (
+                            <div style={{ display: 'none' }}
+                                ref={this.throbberAutoloadingAfter}
+                            >
+                                <div className={styles.throbberAutoloading}
+                                    dangerouslySetInnerHTML={{ __html: throbber }}></div>
+                            </div>
+                        )}
                     </div>
                 </div>
                 {props.useShowMoreButton && !this.isPageLoading && this.maxPage > this.maxPageBound && (
@@ -648,6 +691,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                         elements={props.elements}
                         pathname={props.pathname}
                         scrollContainerSelector={props.scrollContainerSelector}
+                        setPaginationInst={(inst: Pagination) => this.paginationInst = inst}
                     />
                 )}
             </>
@@ -671,19 +715,35 @@ class Pagination extends React.Component<{
     elements?: TElements;
     pathname?: string;
     scrollContainerSelector?: string;
+    setPaginationInst: (inst: Pagination) => void
 }> {
     private currentPage: number = this.props.inititalPage;
+    private scrollboxEl: Element | undefined | null;
+
+    constructor(props) {
+        super(props);
+        this.props.setPaginationInst(this);
+    }
 
     componentDidMount() {
+        this.init();
+    }
+
+    public init() {
         const props = this.props;
 
+        if (this.scrollboxEl) {
+            this.scrollboxEl.removeEventListener('scroll', this.onScroll);
+        }
+
         if (props.scrollContainerSelector) {
-            const container = document.querySelector(props.scrollContainerSelector);
-            if (container) {
-                container.addEventListener('scroll', this.onScroll)
-            }
+            this.scrollboxEl = document.querySelector(props.scrollContainerSelector);
+
         } else if (props.scrollBoxRef.current) {
-            props.scrollBoxRef.current.addEventListener('scroll', this.onScroll)
+            this.scrollboxEl = props.scrollBoxRef.current;
+        }
+        if (this.scrollboxEl) {
+            this.scrollboxEl.addEventListener('scroll', this.onScroll)
         }
     }
 
@@ -702,7 +762,11 @@ class Pagination extends React.Component<{
                 const pageNode = props.wrapperRef.current.querySelector('#' + id);
                 if (pageNode) {
                     const bounds = pageNode.getBoundingClientRect();
-                    if (!currPage && bounds.bottom > 0) currPage = p;
+                    let topOffset = bounds.bottom;
+                    if (this.scrollboxEl) {
+                        topOffset -= this.scrollboxEl.getBoundingClientRect().top;
+                    }
+                    if (!currPage && topOffset > 0) currPage = p;
                 }
             }
         });

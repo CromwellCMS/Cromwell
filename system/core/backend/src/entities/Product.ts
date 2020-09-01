@@ -51,10 +51,7 @@ export class Product extends BasePageEntity implements TProduct {
         if (data) this.attributesJSON = JSON.stringify(data);
     }
 
-    @Column({
-        type: getStoreItem('dbType') === 'postgres' ? "jsonb" : "varchar",
-        nullable: true
-    })
+    @Column({ type: "varchar", nullable: true })
     private attributesJSON?: string;
 
     @Field(type => Number, { nullable: true })
