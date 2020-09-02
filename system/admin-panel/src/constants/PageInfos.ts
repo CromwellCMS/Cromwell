@@ -4,6 +4,7 @@ import { pluginNames, importPlugin } from '../../.cromwell/imports/plugins.gen';
 import HomePage from '../pages/home';
 import PluginsPage from '../pages/plugins';
 import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
+import ThemeListPage from '../pages/themeList/ThemeList';
 import ProductListPage from '../pages/productList/ProductList';
 import ProductPage from '../pages/product/Product';
 import {
@@ -39,9 +40,15 @@ export const pluginsPageInfo: PageInfo = {
     route: '/plugins',
     component: PluginsPage
 };
+export const themeListPageInfo: PageInfo = {
+    name: 'ThemeList',
+    route: '/theme-list',
+    component: ThemeListPage
+};
 export const themeEditPageInfo: PageInfo = {
     name: 'ThemeEdit',
-    route: '/theme-edit',
+    route: '/theme-edit/:themeName',
+    baseRoute: '/theme-edit',
     component: ThemeEditPage
 };
 export const productListInfo: PageInfo = {
@@ -68,6 +75,7 @@ const pluginPages: PageInfo[] = pluginNames.map((name: string) => {
 export const pageInfos: PageInfo[] = [
     homePageInfo,
     themeEditPageInfo,
+    themeListPageInfo,
     productListInfo,
     productListInfo,
     productInfo,
@@ -89,7 +97,7 @@ export const sideBarLinks: SidebarLinkType[] = [
     },
     {
         title: 'Edit theme',
-        route: themeEditPageInfo.route,
+        route: themeListPageInfo.route,
         icon: React.createElement(FormatPaintIcon)
     },
     {

@@ -1,6 +1,6 @@
 
 export type TMainMenuSettings = {
-    items: TMainMenuItem[];
+    items?: TMainMenuItem[];
 }
 
 export type TMainMenuItem = {

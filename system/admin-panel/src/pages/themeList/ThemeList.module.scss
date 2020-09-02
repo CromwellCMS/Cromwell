@@ -1,0 +1,34 @@
+.ThemeList {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    width: 100%;
+    height: fit-content;
+}
+
+.themeCard {
+    max-width: 350px;
+    margin: 0 20px 20px 0;
+}
+
+.themeImage {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 100%;
+    height: 200px;
+}
+
+.themeActions {
+    display: flex;
+    flex-wrap: wrap;
+
+    > button {
+        margin-top: 10px;
+        margin-right: 10px;
+    }
+}
+
+.themeTitle {
+    margin-right: 15px;
+}

@@ -9,7 +9,7 @@ import LoadBox from '../../components/loadBox/LoadBox';
 import { Draggable } from '../../helpers/Draggable/Draggable';
 import '../../helpers/Draggable/Draggable.css';
 import styles from './ThemeEdit.module.scss';
-
+import { useParams } from "react-router-dom";
 const MenuItem = withStyles({
     root: {
         width: '100%',
@@ -22,7 +22,6 @@ const MenuItem = withStyles({
 let draggable: Draggable;
 
 export default function ThemeEdit() {
-
     const [pageInfos, setPageInfos] = useState<TPageInfo[] | null>(null);
     const editorWindowRef = useRef<HTMLDivElement>(null);
     const [editingPageConfig, setEditingPageConfig] = useState<TPageInfo | null>(null);
@@ -31,8 +30,8 @@ export default function ThemeEdit() {
     const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
     const [isPageListLoading, setIsPageListLoading] = useState<boolean>(true);
     const [isPageListCollapsed, setIsPageListCollapsed] = useState<boolean>(false);
-
-
+    const { themeName } = useParams();
+    
     useEffect(() => {
         (async () => {
             const infos = await getRestAPIClient()?.getPagesInfo();

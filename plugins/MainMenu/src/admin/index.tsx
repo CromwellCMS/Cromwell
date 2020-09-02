@@ -36,12 +36,12 @@ export default function index() {
             setIsloading(true);
             const settings: TMainMenuSettings = await apiClient?.getPluginSettings(config.name);
             if (settings) {
-                items = settings.items;
+                items = settings.items || [];
                 setSettings(settings);
             }
             else {
                 await apiClient?.setPluginSettings(config.name, defaultSettings);
-                items = defaultSettings.items;
+                items = defaultSettings.items || [];
                 setSettings(defaultSettings);
             }
             setIsloading(false);

@@ -1,9 +1,9 @@
 {
     "themeInfo": {
-        "themeName": "cromwell-demoshop",
-        "title": "Demoshop",
-        "previewImage": "/images/shopping-cart.png",
-        "description": "Online shop theme"
+        "themeName": "cromwell-blog",
+        "title": "Blog",
+        "previewImage": "/images/blog.png",
+        "description": "Simple blog website"
     },
     "pages": [
         {

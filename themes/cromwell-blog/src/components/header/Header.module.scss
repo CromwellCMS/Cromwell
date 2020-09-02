@@ -1,0 +1,128 @@
+@import '../../styles/variables.scss';
+
+.Header {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+
+    a {
+        color: $text;
+        text-decoration: none;
+    }
+
+    .leftBlock {
+        display: flex;
+    }
+
+    .currencyOption {
+        display: flex;
+        width: 100px;
+    }
+
+    .languageOption {
+        display: flex;
+    }
+
+    .rightBlock {
+        display: flex;
+    }
+
+    .topPanelLinks {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .topPanelLink {
+        margin: 0 10px;
+    }
+
+    .topPanelLink a {
+        // color: #333;
+    }
+
+    .formControl {
+        margin: 0;
+    }
+
+    .select {
+        padding: 0px;
+    }
+
+    .welcomeMessage {
+        margin: 0 40px 0 20px;
+    }
+
+
+
+    .mainPanel {
+        display: flex;
+        
+    }
+    .mainPanelContent {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+    }
+
+    .logo {
+        height: 70px;
+        cursor: pointer;
+    }
+
+    .search {
+        display: flex;
+        width: 35%;
+        min-width: 200px;
+    }
+     
+    .phone {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        font-weight: 500;
+    }
+    .phoneActionTip {
+        font-size: 0.7em;
+    }
+
+    .cart {
+        display: flex;
+        width: 110px;
+        border-radius: 15px;
+        justify-content: space-between;
+    }
+
+    .cartIcon {
+        width: 40px;
+        height: 40px;
+        cursor: pointer;
+        background: url('/images/bag.png') no-repeat center / contain;
+    }
+    .cartExpandBlock {
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+    }
+    .cartExpandIcon {
+        display: flex;
+    }
+    .itemsInCart {
+        font-weight: 500;
+        font-size: 0.7em;
+        color: $primaryTextOver;
+        background: $primary;
+        text-align: center;
+        border-radius: 20px;
+    }
+
+    .mainMenu {
+        display: flex;
+        width: 100%;
+        background-color: #eee;
+        box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+    }
+    .mainMenuContent {
+        padding: 0;
+    }
+}
