@@ -80,9 +80,21 @@ export const applyMockController = (app: Express): void => {
         },
     ]
 
+
     /**
-    * Delete all products and mock new
-    */
+     * @swagger
+     * 
+     * /mock/products:
+     *   get:
+     *     description: Delete all products and mock new
+     *     tags: 
+     *       - Mock
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: success
+     */
     app.get(`/${apiV1BaseRoute}/mock/products`, function (req, res) {
         new Promise(async (done) => {
 
@@ -221,6 +233,20 @@ export const applyMockController = (app: Express): void => {
     })
 
 
+    /**
+     * @swagger
+     * 
+     * /mock/categories:
+     *   get:
+     *     description: Delete all categories and mock new
+     *     tags: 
+     *       - Mock
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: success
+     */
     app.get(`/${apiV1BaseRoute}/mock/categories`, function (req, res) {
         new Promise(async (done) => {
 
@@ -262,8 +288,20 @@ export const applyMockController = (app: Express): void => {
     });
 
 
-
-
+    /**
+     * @swagger
+     * 
+     * /mock/attributes:
+     *   get:
+     *     description: Delete all attributes and mock new
+     *     tags: 
+     *       - Mock
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: success
+     */
     app.get(`/${apiV1BaseRoute}/mock/attributes`, function (req, res) {
         new Promise(async (done) => {
 
@@ -282,6 +320,21 @@ export const applyMockController = (app: Express): void => {
         })
     });
 
+
+    /**
+     * @swagger
+     * 
+     * /mock/reviews:
+     *   get:
+     *     description: Delete all product reviews and mock new
+     *     tags: 
+     *       - Mock
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: success
+     */
     app.get(`/${apiV1BaseRoute}/mock/reviews`, function (req, res) {
         new Promise(async (done) => {
 

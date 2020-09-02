@@ -155,7 +155,7 @@ export type TCList<DataType = any, ListItemProps = any> = {
 
 }
 
-type TListenerType = 'componentDidUpdate' | 'onRender';
+type TListenerType = 'componentDidUpdate' | 'componentWillUpdate';
 
 export type TItemComponentProps<DataType, ListItemProps> = {
     data?: DataType;
@@ -198,7 +198,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
     private throbberAutoloadingBefore: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private throbberAutoloadingAfter: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private forcedProps: TCListProps<DataType, ListItemProps> | null;
-    private listeners: Record<TListenerType, { cb: () => void; id?: string }[]> = { componentDidUpdate: [], onRender: [] };
+    private listeners: Record<TListenerType, { cb: () => void; id?: string }[]> = { componentDidUpdate: [], componentWillUpdate: [] };
     private paginationInst?: Pagination;
 
     constructor(props: TCListProps<DataType, ListItemProps>) {
@@ -214,6 +214,10 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
 
     public setProps(props: TCListProps<DataType, ListItemProps> | null): void {
         this.forcedProps = props;
+    }
+
+    componentWillUpdate() {
+        this.triggerListener('componentWillUpdate');
     }
 
     componentDidUpdate(prevProps: TCListProps<DataType, ListItemProps>) {
@@ -601,7 +605,6 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
 
     render() {
         const props = this.getProps();
-        this.triggerListener('onRender');
         let content;
         if (this.isLoading || props.isLoading) {
             return this.wrapContent(content);

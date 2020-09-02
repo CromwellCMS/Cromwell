@@ -80,11 +80,13 @@ export type TPagedMeta = {
 }
 
 export type TCmsConfig = {
+    domain?: string;
+    protocol?: 'http' | 'https';
     apiPort: number;
     adminPanelPort: number;
     frontendPort: number;
     themeName: string;
-    defaultPageSize: number;
+    defaultPageSize?: number;
     /** Array of available currencies: ['USD', 'EURO', ...] */
     currencyOptions?: string[];
     /** Object of local curency symbols that will be added to price in getPriceWithCurrency method: {"USD": "$","EURO": "€"}  */
@@ -105,6 +107,7 @@ export type TAppConfig = {
 }
 
 export type TThemeConfig = {
+    themeInfo: TThemeInfo,
     pages: TPageConfig[];
     plugins: Record<string, {
         pages: string[];
@@ -116,6 +119,13 @@ export type TThemeConfig = {
      */
     appCustomConfig?: Record<string, any>;
     globalModifications?: TCromwellBlockData[];
+}
+
+export type TThemeInfo = {
+    themeName: string;
+    previewImage?: string;
+    title?: string;
+    description?: string;
 }
 
 export type TPageInfo = {

@@ -1,4 +1,5 @@
 import { TDBEntity, TGraphQLNode } from './types/data';
+import { getCmsConfig } from './GlobalStore';
 
 export enum BasePageNames {
     Index = 'index',
@@ -68,9 +69,51 @@ export const DBTableNames: { [K in TDBEntity]: string } = {
 
 export const isServer = (): boolean => (typeof window === 'undefined');
 
+export const currentApiVersion = '1.0.0';
+
 export const apiV1BaseRoute = 'api/v1';
 // export const isServer = (): boolean => true;
 
+
+export const serviceLocator = {
+    getApiUrl: () => {
+        const cmsConfig = getCmsConfig();
+        if (!cmsConfig) throw new Error('core:serviceLocator:getApiUrl !cmsConfig');
+        const protocol = cmsConfig.protocol ? cmsConfig.protocol : 'http';
+
+        if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
+            return `${protocol}://${cmsConfig.domain}`
+        } else {
+            if (!cmsConfig.apiPort) throw new Error('core:serviceLocator:getApiUrl !apiPort');
+            return `${protocol}://localhost:${cmsConfig.apiPort}`
+        }
+    },
+    getFrontendUrl: () => {
+        const cmsConfig = getCmsConfig();
+        if (!cmsConfig) throw new Error('core:serviceLocator:getFrontendUrl !cmsConfig');
+        const protocol = cmsConfig.protocol ? cmsConfig.protocol : 'http';
+
+        if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
+            return `${protocol}://${cmsConfig.domain}`
+        } else {
+            if (!cmsConfig.frontendPort) throw new Error('core:serviceLocator:getFrontendUrl !frontendPort');
+            return `${protocol}://localhost:${cmsConfig.frontendPort}`
+        }
+    },
+    getAdminPanelUrl: () => {
+        const cmsConfig = getCmsConfig();
+        if (!cmsConfig) throw new Error('core:serviceLocator:getAdminPanelUrl !cmsConfig');
+        const protocol = cmsConfig.protocol ? cmsConfig.protocol : 'http';
+
+        if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
+            return `${protocol}://${cmsConfig.domain}/admin`
+        } else {
+            if (!cmsConfig.adminPanelPort) throw new Error('core:serviceLocator:getAdminPanelUrl !adminPanelPort');
+            return `${protocol}://localhost:${cmsConfig.adminPanelPort}`
+        }
+    }
+
+};
 
 export enum ECommonComponentNames {
     ProductCard = 'ProductCard',

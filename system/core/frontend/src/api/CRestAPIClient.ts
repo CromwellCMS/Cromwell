@@ -1,8 +1,10 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import {
     TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute,
-    TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory, setStoreItem
+    TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory,
+    setStoreItem, serviceLocator, TThemeInfo
 } from '@cromwell/core';
+import queryString from 'query-string';
 
 
 class CRestAPIClient {
@@ -16,7 +18,15 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/cms/config`);
-        } catch (e) { console.error('RestAPIClient::getCmsConfig', e) }
+        } catch (e) { console.error('CRestAPIClient::getCmsConfig', e) }
+        return res?.data;
+    }
+
+    public getThemesInfo = async (): Promise<TThemeInfo[]> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/cms/themes`);
+        } catch (e) { console.error('CRestAPIClient::getThemesInfo', e) }
         return res?.data;
     }
 
@@ -24,7 +34,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/page/?pageRoute=${pageRoute}`);
-        } catch (e) { console.error('RestAPIClient::getPageConfig', e) }
+        } catch (e) { console.error('CRestAPIClient::getPageConfig', e) }
         return (res && res.data) ? res.data : [];
     }
 
@@ -32,15 +42,15 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/plugins?pageRoute=${pageRoute}`);
-        } catch (e) { console.error('RestAPIClient::getPluginsModifications', e) }
+        } catch (e) { console.error('CRestAPIClient::getPluginsModifications', e) }
         return (res && res.data) ? res.data : {};
     }
 
     public getPluginNames = async (): Promise<string[]> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/theme/pluginNames`);
-        } catch (e) { console.error('RestAPIClient::getPluginNames', e) }
+            res = await axios.get(`${this.baseUrl}/theme/plugin-names`);
+        } catch (e) { console.error('CRestAPIClient::getPluginNames', e) }
         return (res && res.data) ? res.data : [];
     }
 
@@ -48,7 +58,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/pages/info`);
-        } catch (e) { console.error('RestAPIClient::getPagesInfo', e) }
+        } catch (e) { console.error('CRestAPIClient::getPagesInfo', e) }
         return (res && res.data) ? res.data : [];
     }
 
@@ -56,7 +66,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/pages/configs`);
-        } catch (e) { console.error('RestAPIClient::getPageConfigs', e) }
+        } catch (e) { console.error('CRestAPIClient::getPageConfigs', e) }
         return (res && res.data) ? res.data : [];
     }
 
@@ -64,7 +74,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/app/config`);
-        } catch (e) { console.error('RestAPIClient::getAppConfig', e) }
+        } catch (e) { console.error('CRestAPIClient::getAppConfig', e) }
         return (res && res.data) ? res.data : {};
     }
 
@@ -72,7 +82,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/app/custom-config`);
-        } catch (e) { console.error('RestAPIClient::getAppCustomConfig', e) }
+        } catch (e) { console.error('CRestAPIClient::getAppCustomConfig', e) }
         return (res && res.data) ? res.data : {};
     }
 
@@ -80,7 +90,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/plugin/settings/${pluginName}`);
-        } catch (e) { console.error('RestAPIClient::getPluginSettings', e) }
+        } catch (e) { console.error('CRestAPIClient::getPluginSettings', e) }
         return (res && res.data) ? res.data : null;
     }
 
@@ -88,7 +98,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.post(`${this.baseUrl}/plugin/settings/${pluginName}`, settings);
-        } catch (e) { console.error('RestAPIClient::setPluginSettings', e) }
+        } catch (e) { console.error('CRestAPIClient::setPluginSettings', e) }
         return (res && res.data) ? res.data : null;
     }
 }
@@ -97,12 +107,9 @@ export const getRestAPIClient = (): CRestAPIClient | undefined => {
     let client = getStoreItem('restAPIClient');
     if (client) return client;
 
-    const cmsconfig = getStoreItem('cmsconfig');
-    if (!cmsconfig || !cmsconfig.apiPort) {
-        console.error('getRestAPIClient !cmsconfig.apiPort, cmsconfig:', cmsconfig);
-        return;
-    }
-    const baseUrl = `http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}`;
+    const baseUrl = `${serviceLocator.getApiUrl()}/${apiV1BaseRoute}`;
+    console.log('serviceLocator.getApiUrl()', serviceLocator.getApiUrl(), 'baseUrl', baseUrl)
+
     client = new CRestAPIClient(baseUrl);
 
     setStoreItem('restAPIClient', client);

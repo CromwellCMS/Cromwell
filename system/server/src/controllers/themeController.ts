@@ -191,8 +191,24 @@ export const applyThemeController = (app: Express): void => {
     // < API Methods />
 
     /**
-     * Returns merged page config for specified Page by pageRoute in query param.
-     * Output contains theme's original modificators overwritten by user's modificators.
+     * @swagger
+     * 
+     * /theme/page:
+     *   get:
+     *     description: Returns merged page config for specified Page by pageRoute in query param. Output contains theme's original modificators overwritten by user's modificators.
+     *     tags: 
+     *       - Theme
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: pageRoute
+     *         description: page route from theme's config
+     *         in: query
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: page config
      */
     app.get(`/${apiV1BaseRoute}/theme/page/`, function (req, res) {
         let out: TPageConfig | null = null;
@@ -209,8 +225,24 @@ export const applyThemeController = (app: Express): void => {
     })
 
     /**
-     * Returns plugins' configs at specified Page by pageRoute in query param.
-     * Output contains theme's original modificators overwritten by user's modificators.
+     * @swagger
+     * 
+     * /theme/plugins:
+     *   get:
+     *     description: Returns plugins' configs at specified Page by pageRoute in query param. Output contains theme's original modificators overwritten by user's modificators.
+     *     tags: 
+     *       - Theme
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: pageRoute
+     *         description: page route from theme's config
+     *         in: query
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: plugins' configs
      */
     app.get(`/${apiV1BaseRoute}/theme/plugins`, function (req, res) {
         const out: Record<string, any> = {};
@@ -235,9 +267,20 @@ export const applyThemeController = (app: Express): void => {
     })
 
     /**
-    * Returns array of plugin names at all pages
-    */
-    app.get(`/${apiV1BaseRoute}/theme/pluginNames`, function (req, res) {
+     * @swagger
+     * 
+     * /theme/plugin-names:
+     *   get:
+     *     description: Returns array of plugin names at all pages.
+     *     tags: 
+     *       - Theme
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: plugin names
+     */
+    app.get(`/${apiV1BaseRoute}/theme/plugin-names`, function (req, res) {
         const out: string[] = [];
 
         readAllPageConfigs((pages) => {
@@ -255,7 +298,18 @@ export const applyThemeController = (app: Express): void => {
     })
 
     /**
-     * Returns all pages' metainfo without modificators
+     * @swagger
+     * 
+     * /theme/pages/info:
+     *   get:
+     *     description: Returns all pages' metainfo without modificators.
+     *     tags: 
+     *       - Theme
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: pages info
      */
     app.get(`/${apiV1BaseRoute}/theme/pages/info`, function (req, res) {
         const out: TPageInfo[] = [];
@@ -293,8 +347,20 @@ export const applyThemeController = (app: Express): void => {
         })
     })
 
+
     /**
-     * Returns all pages with merged modifications.
+     * @swagger
+     * 
+     * /theme/pages/configs:
+     *   get:
+     *     description: Returns all pages with merged modifications.
+     *     tags: 
+     *       - Theme
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: pages configs
      */
     app.get(`/${apiV1BaseRoute}/theme/pages/configs`, function (req, res) {
         readAllPageConfigs((pages) => {
@@ -304,7 +370,18 @@ export const applyThemeController = (app: Express): void => {
 
 
     /**
-     * Returns merged app config.
+     * @swagger
+     * 
+     * /theme/app/config:
+     *   get:
+     *     description: Returns merged app config.
+     *     tags: 
+     *       - Theme
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: app config
      */
     app.get(`/${apiV1BaseRoute}/theme/app/config`, function (req, res) {
         let out: TAppConfig = {};
@@ -315,8 +392,20 @@ export const applyThemeController = (app: Express): void => {
 
     })
 
+
     /**
-     * Returns merged custom app configs.
+     * @swagger
+     * 
+     * /theme/app/custom-confi:
+     *   get:
+     *     description: Returns merged custom app configs.
+     *     tags: 
+     *       - Theme
+     *     produces:
+     *       - application/json
+     *     responses:
+     *       200:
+     *         description: app custom config
      */
     app.get(`/${apiV1BaseRoute}/theme/app/custom-config`, function (req, res) {
         let out: Record<string, any> = {};
@@ -325,7 +414,6 @@ export const applyThemeController = (app: Express): void => {
             res.send(out);
         })
     })
-
 
 }
 

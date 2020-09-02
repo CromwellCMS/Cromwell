@@ -37,7 +37,7 @@ export const applyPluginsController = (app: Express): void => {
 
     /** Read plugin's user settings */
     const readPluginSettings = (pluginName: string, cb: (data: any) => void) => {
-        const filePath = `${settingsPath}/plugins/${pluginName}/settings.json`;
+        const filePath = `${settingsPath}/${pluginName}/settings.json`;
         fs.access(filePath, fs.constants.R_OK, (err) => {
             if (!err) {
                 fs.readFile(filePath, (err, data) => {
@@ -61,8 +61,26 @@ export const applyPluginsController = (app: Express): void => {
 
     // < API Methods />
 
+
     /**
-     * Returns JSON settings of a plugin by pluginName.
+     * @swagger
+     * 
+     * /plugin/settings/{pluginName}:
+     *   get:
+     *     description: Returns JSON settings of a plugin by pluginName.
+     *     tags: 
+     *       - Plugins
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: pluginName
+     *         description: Name of a plugin to load settings for.
+     *         in: path
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: settings
      */
     app.get(`/${apiV1BaseRoute}/plugin/settings/:pluginName`, function (req, res) {
         let out: Record<string, any> = {};
@@ -81,8 +99,25 @@ export const applyPluginsController = (app: Express): void => {
 
 
     /**
-    * Sets JSON settings of a plugin by pluginName.
-    */
+     * @swagger
+     * 
+     * /plugin/settings/{pluginName}:
+     *   post:
+     *     description: Sets JSON settings of a plugin by pluginName.
+     *     tags: 
+     *       - Plugins
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: pluginName
+     *         description: Name of a plugin to save settings for.
+     *         in: path
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: success
+     */
     app.post(`/${apiV1BaseRoute}/plugin/settings/:pluginName`, function (req, res) {
         if (req.params.pluginName && req.params.pluginName !== "") {
             const filePath = `${settingsPath}/${req.params.pluginName}/settings.json`;

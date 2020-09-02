@@ -2,7 +2,7 @@ import {
     TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute,
     TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory,
     TProductInput, TAttribute, setStoreItem, TProductReviewInput, TAttributeInput,
-    TProductReview, GraphQLPaths
+    TProductReview, GraphQLPaths, serviceLocator
 } from '@cromwell/core';
 import {
     gql, ApolloClient, InMemoryCache, createHttpLink, NormalizedCacheObject,
@@ -477,13 +477,8 @@ export type TCGraphQLClient = CGraphQLClient;
 export const getGraphQLClient = (): CGraphQLClient | undefined => {
     let client = getStoreItem('graphQLClient');
     if (client) return client;
-
-    const cmsconfig = getStoreItem('cmsconfig');
-    if (!cmsconfig || !cmsconfig.apiPort) {
-        console.error('getGraphQLClient !cmsconfig.apiPort, cmsconfig:', cmsconfig);
-        return;
-    }
-    const baseUrl = `http://localhost:${cmsconfig.apiPort}/${apiV1BaseRoute}/graphql`;
+    
+    const baseUrl = `${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/graphql`;
 
     client = new CGraphQLClient(baseUrl);
     setStoreItem('graphQLClient', client);

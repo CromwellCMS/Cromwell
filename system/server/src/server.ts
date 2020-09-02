@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 
-import { apiV1BaseRoute, TCmsConfig, setStoreItem } from '@cromwell/core';
+import { apiV1BaseRoute, TCmsConfig, setStoreItem, currentApiVersion, serviceLocator } from '@cromwell/core';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import fs from 'fs-extra';
@@ -9,7 +9,8 @@ import { buildSchema } from 'type-graphql';
 import { createConnection, ConnectionOptions } from 'typeorm';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-
+import swaggerUi from 'swagger-ui-express';
+import swaggerJSDoc from 'swagger-jsdoc';
 import { pluginsResolvers } from '../.cromwell/imports/resolvers.imports.gen';
 import { applyThemeController } from './controllers/themeController';
 import { applyPluginsController } from './controllers/pluginsController';
@@ -72,6 +73,25 @@ async function apiServer(): Promise<void> {
     app.use(bodyParser.json());
     app.use(cors());
 
+    const swaggerOptions = {
+        definition: {
+            openapi: '3.0.0',
+            info: {
+                title: 'Cromwell Server API', // Title (required)
+                version: currentApiVersion,
+            },
+        },
+        apis: ['**/*.ts'],
+    };
+    const swaggerSpec = swaggerJSDoc(swaggerOptions);
+    swaggerSpec.servers = [
+        {
+            url: `${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/`,
+            description: 'API v1 server'
+        }
+    ]
+    app.use(`/${apiV1BaseRoute}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
     setTimeout(() => {
         applyCmsController(app);
         applyThemeController(app);
@@ -79,7 +99,7 @@ async function apiServer(): Promise<void> {
         applyMockController(app);
 
         const { address } = app.listen(config?.apiPort);
-        console.log(`API server has started at http://localhost:${config?.apiPort}/${apiV1BaseRoute}/`);
+        console.log(`API server has started at ${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/`);
     }, 100)
 }
 
