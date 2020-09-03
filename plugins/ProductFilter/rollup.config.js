@@ -11,6 +11,10 @@ export default {
             dir: './es',
             format: "esm",
             // sourcemap: true
+        },
+        {
+            dir: './dist',
+            format: "cjs",
         }
     ],
     plugins: [

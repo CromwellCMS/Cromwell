@@ -1,6 +1,6 @@
 import { getStoreItem, setStoreItem } from "@cromwell/core";
 //@ts-ignore
-import { importCMSConfig, importPlugin, importDynamicPlugin } from '.cromwell/imports/imports.gen';
+import { importCMSConfig, importPlugin, importDynamicPlugin } from 'imports/imports.gen';
 export const checkCMSConfig = (): void => {
     const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.themeName) {

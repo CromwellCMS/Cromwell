@@ -14,6 +14,7 @@
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "fs-extra": "^9.0.1",
     "path": "^0.12.7",
     "pg": "^8.3.2",
     "reflect-metadata": "^0.1.13",
@@ -33,9 +34,9 @@
     "typescript": "^3.9.5"
   },
   "scripts": {
-    "dev": "npm run gen && npx cross-env ENV=dev npx nodemon ./src/server.ts",
-    "prod": "npm run gen && npx cross-env ENV=prod npx nodemon ./src/server.ts",
-    "gen": "npx ts-node src/generator.ts"
+    "build": "node startup.js build",
+    "dev": "node startup.js dev",
+    "prod": "node startup.js prod"
   },
   "description": ""
 }

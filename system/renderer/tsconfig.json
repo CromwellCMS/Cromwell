@@ -17,7 +17,7 @@
       ]
     },
     "allowJs": true,
-    "jsx": "preserve",
+    "jsx": "react",
     "sourceMap": true,
     "strict": true,
     "esModuleInterop": true,
@@ -32,7 +32,7 @@
     "isolatedModules": true
   },
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts", "src/startup.js"
   ],
   "exclude": [
     "node_modules"

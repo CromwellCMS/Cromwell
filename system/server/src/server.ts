@@ -11,7 +11,10 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
+//@ts-ignore
 import { pluginsResolvers } from '../.cromwell/imports/resolvers.imports.gen';
+//@ts-ignore
+import { pluginsEntities } from '../.cromwell/imports/entities.imports.gen';
 import { applyThemeController } from './controllers/themeController';
 import { applyPluginsController } from './controllers/pluginsController';
 import { applyCmsController } from './controllers/cmsController';
@@ -23,10 +26,11 @@ import { ProductCategoryResolver } from './resolvers/ProductCategoryResolver';
 import { ProductResolver } from './resolvers/ProductResolver';
 import { AttributeResolver } from './resolvers/AttributeResolver';
 import { ProductReviewResolver } from './resolvers/ProductReviewResolver';
+import { Product, ProductCategory, Post, Author, Attribute, ProductReview } from '@cromwell/core-backend';
 
 setStoreItem('rebuildPage', rebuildPage);
 
-const env: 'dev' | 'prod' | undefined = process.env.ENV as any;
+const env: 'dev' | 'prod' | undefined = process.env.ENV ? process.env.ENV as any : 'prod';
 setStoreItem('env', env);
 
 const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
@@ -40,11 +44,21 @@ if (!config) throw new Error('renderer::server cannot read CMS config')
 setStoreItem('cmsconfig', config);
 
 let connectionOptions: ConnectionOptions | undefined = undefined;
-if (env === 'dev') {
-    connectionOptions = require('../ormconfig.dev.json');
-}
+// if (env === 'dev') {
+connectionOptions = require('../ormconfig.dev.json');
+// }
 if (!connectionOptions || !connectionOptions.type) throw new Error('server.ts: Cannot read connection options');
 setStoreItem('dbType', connectionOptions.type);
+
+const _pluginsEntities = (pluginsEntities && Array.isArray(pluginsEntities)) ? pluginsEntities : [];
+(connectionOptions.entities as any) = [
+    Product, ProductCategory, Post, Author, Attribute, ProductReview,
+    ..._pluginsEntities
+];
+if (typeof connectionOptions.database === 'string') {
+    (connectionOptions.database as any) = resolve(__dirname, '../', connectionOptions.database);
+    console.log('connectionOptions.database', connectionOptions.database);
+}
 
 const _pluginsResolvers = (pluginsResolvers && Array.isArray(pluginsResolvers)) ? pluginsResolvers : [];
 
@@ -81,7 +95,7 @@ async function apiServer(): Promise<void> {
                 version: currentApiVersion,
             },
         },
-        apis: ['**/*.ts'],
+        apis: env === 'prod' ? [resolve(__dirname, 'server.js')] : ['**/*.ts']
     };
     const swaggerSpec = swaggerJSDoc(swaggerOptions);
     swaggerSpec.servers = [

@@ -10,6 +10,8 @@ export function generate(): void {
     console.log('genPluginsBackendImports:Plugins found:', pluginsNames);
 
     let entitiesImports = '';
+    let entitiesExport = '[';
+
     let resolversImports = '';
     let resolversExport = '[';
 
@@ -31,7 +33,9 @@ export function generate(): void {
                     if (fs.existsSync(entitiesDir)) {
                         const modelNames: string[] = fs.readdirSync(entitiesDir);
                         modelNames.forEach(entityName => {
-                            entitiesImports += `\nexport * from '${entitiesDir}/${entityName}';`;
+                            const eName = `Plugin_${name}_Entity_${entityName.replace(/.js$/, '')}`;
+                            entitiesExport += eName + ',\n';
+                            entitiesImports += `\nconst ${eName} = require('${entitiesDir}/${entityName}');`;
                         })
                     }
                 }
@@ -44,7 +48,7 @@ export function generate(): void {
                         resolverNames.forEach(rPath => {
                             const rName = rPath.replace(/.js$/, '') + '_Resolver';
                             resolversExport += rName + ',\n';
-                            resolversImports += `\nimport ${rName} from '${resolversDir}/${rPath}';`;
+                            resolversImports += `\nconst ${rName} = require('${resolversDir}/${rPath}');`;
                         })
                     }
                 }
@@ -54,6 +58,7 @@ export function generate(): void {
     })
 
     resolversExport += ']';
+    entitiesExport += ']';
 
 
     const entitiesContent = `
@@ -61,6 +66,9 @@ export function generate(): void {
          * Entities
          */
         ${entitiesImports}
+module.exports = {
+    pluginsEntities: ${entitiesExport}
+}      
     `;
 
     fs.outputFileSync(`${backendRootDir}/.cromwell/imports/entities.imports.gen.js`, entitiesContent);
@@ -70,7 +78,9 @@ export function generate(): void {
          * Resolvers
          */
         ${resolversImports}
-        export const pluginsResolvers = ${resolversExport};
+module.exports = {
+    pluginsResolvers: ${resolversExport}
+}        
     `;
 
     fs.outputFileSync(`${backendRootDir}/.cromwell/imports/resolvers.imports.gen.js`, resolversContent);

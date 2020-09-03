@@ -3,6 +3,8 @@ import { readThemePages } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import fs from 'fs-extra';
 import { resolve } from 'path';
+//@ts-ignore
+import lnk from 'lnk';
 
 const main = async () => {
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
@@ -19,7 +21,8 @@ const main = async () => {
     const projectRootDir = resolve(__dirname, '../../../').replace(/\\/g, '/');
     const globalPluginsDir = `${projectRootDir}/plugins`;
     const localDir = resolve(__dirname, '../').replace(/\\/g, '/');
-    const pagesLocalDir = `${localDir}/pages`;
+    const buildDir = `${localDir}/.cromwell`;
+    const pagesLocalDir = `${buildDir}/pages`;
 
     let pluginImportPaths: Record<string, any> | undefined = undefined;
 
@@ -138,9 +141,7 @@ const main = async () => {
             }
         `
 
-    fs.outputFileSync('./.cromwell/imports/imports.gen.js', content);
-    // fs.outputFileSync('./.cromwell/imports/gen.config.json', JSON.stringify(pluginImportPaths));
-
+    fs.outputFileSync(`${buildDir}/imports/imports.gen.js`, content);
 
 
     // Import theme's pages into nexjs pages dir
@@ -162,9 +163,7 @@ const main = async () => {
 
         let pageContent = `
                 ${globalCssImports}
-                import { createGetStaticProps } from 'common/createGetStaticProps';
-                import { createGetStaticPaths } from 'common/createGetStaticPaths';
-                import { getPage } from 'common/getPage';
+                const { createGetStaticProps, createGetStaticPaths, getPage } = require('build/renderer');
                 
                 const PageComp = getPage('${pageName}');
                 
@@ -180,6 +179,25 @@ const main = async () => {
         }
         fs.outputFileSync(`${pagesLocalDir}/${pageName}.js`, pageContent);
     });
+
+    fs.outputFileSync(`${buildDir}/jsconfig.json`, `
+    {
+        "compilerOptions": {
+          "baseUrl": "."
+        }
+      }
+    `);
+
+
+    // Link public dir in root to renderer's public dir for Next.js server
+    if (!fs.existsSync(`${buildDir}/public`)) {
+        lnk([`${projectRootDir}/public`], `${buildDir}`)
+    }
+
+    // Link renderer's build dir into next dir
+    if (!fs.existsSync(`${buildDir}/build`)) {
+        lnk([`${localDir}/build`], `${buildDir}`)
+    }
 
 };
 

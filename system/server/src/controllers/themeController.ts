@@ -396,7 +396,7 @@ export const applyThemeController = (app: Express): void => {
     /**
      * @swagger
      * 
-     * /theme/app/custom-confi:
+     * /theme/app/custom-config:
      *   get:
      *     description: Returns merged custom app configs.
      *     tags: 

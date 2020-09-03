@@ -108,7 +108,6 @@ export const getRestAPIClient = (): CRestAPIClient | undefined => {
     if (client) return client;
 
     const baseUrl = `${serviceLocator.getApiUrl()}/${apiV1BaseRoute}`;
-    console.log('serviceLocator.getApiUrl()', serviceLocator.getApiUrl(), 'baseUrl', baseUrl)
 
     client = new CRestAPIClient(baseUrl);
 

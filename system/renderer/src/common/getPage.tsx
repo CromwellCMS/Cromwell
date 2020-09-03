@@ -4,7 +4,7 @@ import { getStoreItem, setStoreItem } from "@cromwell/core";
 import { Head } from '@cromwell/core-frontend';
 import ReactHtmlParser from 'react-html-parser';
 //@ts-ignore
-import { importDynamicPage, importPage } from '.cromwell/imports/imports.gen';
+import { importDynamicPage, importPage } from 'imports/imports.gen';
 import { checkCMSConfig } from '../helpers/checkCMSConfig';
 checkCMSConfig();
 
@@ -21,7 +21,7 @@ export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
     }
 
     // const Page: any = importDynamicPage(pageName);
-    const Page: any = importPage(pageName).default;
+    const Page: any = importPage(pageName)?.default;
 
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
         const { pluginsData, pluginsSettings, pageConfig, appCustomConfig, childStaticProps, cmsConfig, appConfig, pagesInfo, ...restProps } = props;
@@ -34,7 +34,7 @@ export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
         if (pagesInfo) setStoreItem('pagesInfo', pagesInfo);
 
         const forceUpdate = useForceUpdate();
-        const forceUpdatePage = (currency: string) => {
+        const forceUpdatePage = () => {
             forceUpdate();
         }
         setStoreItem('forceUpdatePage', forceUpdatePage);

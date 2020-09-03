@@ -3,7 +3,7 @@
     "adminDir": "es/admin",
     "frontendDir": "es/frontend",
     "backend": {
-        "resolversDir": "es/backend/resolvers",
-        "entitiesDir": "es/backend/entities"
+        "resolversDir": "dist/backend/resolvers",
+        "entitiesDir": "dist/backend/entities"
     }
 }

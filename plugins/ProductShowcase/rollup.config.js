@@ -13,6 +13,10 @@ export default {
             dir: './es',
             format: "esm",
             // sourcemap: true
+        },
+        {
+            dir: './dist',
+            format: "cjs",
         }
     ],
     // external: id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/'),

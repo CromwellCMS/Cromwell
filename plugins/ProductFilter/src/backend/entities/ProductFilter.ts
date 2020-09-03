@@ -2,10 +2,11 @@ import { InputType, Field, ID, Int, Float, ObjectType } from "type-graphql";
 import { TPagedParams, TAttributeInstance, } from '@cromwell/core';
 import { AttributeInput, AttributeInstance } from '@cromwell/core-backend';
 import { TProductFilterAttribute, TProductFilter } from '../../types';
+import ProductFilterAttributes from './ProductFilterAttributes'
 
 
 @InputType("ProductFilterInput")
-export class ProductFilterInput implements TProductFilter {
+class ProductFilterInput implements TProductFilter {
 
     @Field(type => Float, { nullable: true })
     minPrice: number;
@@ -17,15 +18,8 @@ export class ProductFilterInput implements TProductFilter {
     attributes: ProductFilterAttributes[];
 }
 
-@InputType("ProductFilterAttributesInput")
-export class ProductFilterAttributes implements TProductFilterAttribute {
+export default ProductFilterInput;
 
-    @Field(type => String)
-    key: string;
-
-    @Field(type => [String])
-    values: string[];
-}
 
 
 

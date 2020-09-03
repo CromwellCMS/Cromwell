@@ -3,14 +3,17 @@
 	"private": true,
 	"scripts": {
 		"installAll": "npm i && npm run lerna && npm run buildCore",
+		"start": "npm run render && npm ",
+		"winDev": "node ./system/manager/manager.js winDev",
+		"render": "node ./system/manager/manager.js render",
+		"startSystem": "node ./system/manager/manager.js start",
 		"lerna": "npx lerna bootstrap --hoist",
 		"clean": "npx ts-node cleanup.ts",
-		"windowsDev": "npx ts-node ./system/windowsDev.ts",
 		"cleanNodemodules": "rmdir /Q /S \"./node_modules\"",
-		"buildCore": "npm run buildDev --prefix ./system/core/common && npm run buildDev --prefix ./system/core/backend && npm run buildDev --prefix ./system/core/frontend && npm run gen --prefix ./system/renderer",
+		"buildCore": "npm run buildDev --prefix ./system/core/common && npm run buildDev --prefix ./system/core/backend && npm run buildDev --prefix ./system/core/frontend",
 		"buildPlugins": "npm run build --prefix ./plugins/CustomerReviews && npm run build --prefix ./plugins/MainMenu && npm run build --prefix ./plugins/ProductFilter && npm run build --prefix ./plugins/ProductShowcase && npm run build --prefix ./plugins/ProductShowcaseDemo",
 		"buildTheme": "npm run build --prefix ./themes/cromwell-demoshop",
-		"buildAll": "npm run buildCore && npm run buildPlugins && npm run buildTheme"
+		"buildAll": "npm run buildCore && npm run buildServer && npm run buildPlugins && npm run buildTheme"
 	},
 	"devDependencies": {
 		"@types/cacache": "^12.0.1",

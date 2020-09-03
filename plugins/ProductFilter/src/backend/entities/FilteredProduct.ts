@@ -3,10 +3,11 @@ import {
     Product, PagedMeta
 } from '@cromwell/core-backend';
 import { TPagedList, TProduct } from "@cromwell/core";
-import { TFilteredList, TFilterMeta } from '../../types'
+import { TFilteredList, TFilterMeta } from '../../types';
+import FilterMeta from './FilterMeta'
 
 @ObjectType('FilteredProduct')
-export class FilteredProduct implements TFilteredList<TProduct> {
+class FilteredProduct implements TFilteredList<TProduct> {
     @Field(() => PagedMeta, { nullable: true })
     pagedMeta?: PagedMeta;
 
@@ -17,11 +18,5 @@ export class FilteredProduct implements TFilteredList<TProduct> {
     filterMeta: TFilterMeta;
 }
 
-@ObjectType('FilterMeta')
-export class FilterMeta implements TFilterMeta {
-    @Field(() => Float, { nullable: true })
-    minPrice?: number;
+export default FilteredProduct;
 
-    @Field(() => Float, { nullable: true })
-    maxPrice?: number;
-}
