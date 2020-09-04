@@ -194,7 +194,7 @@ class CGraphQLClient {
     }
 
     public getProductsFromCategory = async (categoryId: string, pagedParams?: TPagedParams<TProduct>, withCategories: boolean = false): Promise<TPagedList<TProduct>> => {
-        const path = GraphQLPaths.Product.getProductsFromCategory;
+        const path = GraphQLPaths.Product.getFromCategory;
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $withCategories: Boolean!) {
@@ -477,7 +477,7 @@ export type TCGraphQLClient = CGraphQLClient;
 export const getGraphQLClient = (): CGraphQLClient | undefined => {
     let client = getStoreItem('graphQLClient');
     if (client) return client;
-    
+
     const baseUrl = `${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/graphql`;
 
     client = new CGraphQLClient(baseUrl);

@@ -1,18 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { TThemeInfo, getCmsConfig } from '@cromwell/core'
-import { getRestAPIClient, CromwellBlockCSSclass } from '@cromwell/core-frontend';
-import styles from './ThemeList.module.scss';
-import { makeStyles } from '@material-ui/core/styles';
-import Badge from '@material-ui/core/Badge';
-import Card from '@material-ui/core/Card';
-import CardActionArea from '@material-ui/core/CardActionArea';
-import CardActions from '@material-ui/core/CardActions';
-import CardContent from '@material-ui/core/CardContent';
-import CardMedia from '@material-ui/core/CardMedia';
-import Button from '@material-ui/core/Button';
-import Typography from '@material-ui/core/Typography';
-import { useHistory } from "react-router-dom";
+import { getCmsConfig, TThemeInfo } from '@cromwell/core';
+import { getRestAPIClient } from '@cromwell/core-frontend';
+import { Badge, Button, Card, CardActionArea, CardActions, CardContent, Typography } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+
 import { themeEditPageInfo } from '../../constants/PageInfos';
+import styles from './ThemeList.module.scss';
 
 export default function ThemeList() {
     const [infos, setInfos] = useState<TThemeInfo[]>([]);

@@ -1,6 +1,6 @@
 import React from 'react';
 //@ts-ignore
-import { pluginNames, importPlugin } from '../../.cromwell/imports/plugins.gen';
+import { pluginNames, importPlugin } from 'CromwellImports';
 import HomePage from '../pages/home';
 import PluginsPage from '../pages/plugins';
 import ThemeEditPage from '../pages/themeEdit/ThemeEdit';

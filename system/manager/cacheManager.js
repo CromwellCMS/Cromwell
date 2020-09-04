@@ -35,6 +35,8 @@ const loadCache = (cb) => {
     });
 }
 
+const getGlobalCache = () => globalCache;
+
 module.exports = {
-    globalCache, saveProcessPid, getProcessPid, loadCache
+    getGlobalCache, saveProcessPid, getProcessPid, loadCache
 }

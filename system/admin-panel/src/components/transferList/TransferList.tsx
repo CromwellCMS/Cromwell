@@ -1,15 +1,19 @@
+import {
+    Button,
+    Card,
+    CardHeader,
+    Checkbox,
+    createStyles,
+    Divider,
+    Grid,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    makeStyles,
+    Theme,
+} from '@material-ui/core';
 import React from 'react';
-import { makeStyles, Theme, createStyles } from '@material-ui/core/styles';
-import Grid from '@material-ui/core/Grid';
-import List from '@material-ui/core/List';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import Checkbox from '@material-ui/core/Checkbox';
-import Button from '@material-ui/core/Button';
-import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

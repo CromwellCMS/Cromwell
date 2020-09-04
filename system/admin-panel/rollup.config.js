@@ -2,18 +2,32 @@ import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import typescript from "rollup-plugin-typescript2";
 import packageJson from './package.json';
-import { resolve } from 'path';
+import json from '@rollup/plugin-json';
+const { resolve } = require('path');
 
-// const external = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/');
 const external = id => {
-    if (id.includes('.cromwell/imports') || id.includes('cromwell/plugins') || id === 'tslib')
+    const exts = ['tslib', 'util', 'path'];
+
+    for (const ext of exts) if (id === ext) return true;
+
+    if (id.includes('.cromwell/imports') || id.includes('cromwell/plugins')
+        || id.includes('cromwell/themes'))
         return true;
+
     for (const pack of Object.keys(packageJson.dependencies)) {
         if (id === pack) {
             return true;
         }
     }
+
+    for (const pack of Object.keys(packageJson.devDependencies)) {
+        if (id === pack) {
+            return true;
+        }
+    }
 }
+
+const buildDir = 'build';
 
 export default [
     {
@@ -21,15 +35,17 @@ export default [
         input: resolve(__dirname, "src/server.ts"),
         output: [
             {
-                file: resolve(__dirname, 'build/server.js'),
+                file: resolve(__dirname, buildDir, 'server.js'),
                 // dir: './build',
                 format: "cjs",
             }
         ],
-        external: external,
+        external,
         plugins: [
-            // autoExternal(),
-            nodeResolve(),
+            json(),
+            nodeResolve({
+                preferBuiltins: false
+            }),
             commonjs(),
             typescript({
                 tsconfigOverride: {
@@ -46,13 +62,16 @@ export default [
         watch: false,
         output: [
             {
-                file: resolve(__dirname, 'build/generator.js'),
+                file: resolve(__dirname, buildDir, 'generator.js'),
+                // dir: './build',
                 format: "cjs",
             }
         ],
-        external: external,
+        external,
         plugins: [
-            nodeResolve(),
+            nodeResolve({
+                preferBuiltins: false
+            }),
             commonjs(),
             typescript({
                 tsconfigOverride: {
@@ -62,5 +81,5 @@ export default [
                 }
             }),
         ]
-    }
+    },
 ];

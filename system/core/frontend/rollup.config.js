@@ -1,21 +1,22 @@
 import commonjs from "@rollup/plugin-commonjs";
-import resolve from "@rollup/plugin-node-resolve";
+import nodeResolve from "@rollup/plugin-node-resolve";
 import autoExternal from "rollup-plugin-auto-external";
 import typescript from "rollup-plugin-typescript2";
 import autoprefixer from "autoprefixer";
 import postcss from 'rollup-plugin-postcss';
+import { resolve } from 'path';
 
 export default [
     {
-        input: "./src/index.ts",
+        input: resolve(__dirname, "src/index.ts"),
         output: [
             {
-                file: 'dist/index.js',
+                file: resolve(__dirname, 'dist/index.js'),
                 format: "cjs",
                 sourcemap: true
             },
             {
-                file: 'es/index.js',
+                file: resolve(__dirname, 'es/index.js'),
                 format: "esm",
                 sourcemap: true
             }
@@ -32,7 +33,7 @@ export default [
                 use: ['sass'],
             }),
             typescript(),
-            resolve(),
+            nodeResolve(),
             commonjs()
         ]
     }

@@ -21,7 +21,7 @@
     "sqlite3": "^4.2.0",
     "swagger-jsdoc": "^4.0.0",
     "swagger-ui-express": "^4.1.4",
-    "type-graphql": "^0.17.6",
+    "type-graphql": "^1.0.0",
     "typeorm": "^0.2.25"
   },
   "devDependencies": {

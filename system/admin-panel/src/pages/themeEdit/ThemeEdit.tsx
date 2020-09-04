@@ -3,7 +3,8 @@ import { getRestAPIClient, CromwellBlockCSSclass } from '@cromwell/core-frontend
 import { MenuItem as MuiMenuItem } from '@material-ui/core';
 import { withStyles } from '@material-ui/core';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
-import { importStaticPage, importLazyPage } from '../../../.cromwell/imports/pages.gen';
+//@ts-ignore
+import { importStaticPage, importLazyPage } from 'CromwellImports';
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { Draggable } from '../../helpers/Draggable/Draggable';
@@ -31,7 +32,7 @@ export default function ThemeEdit() {
     const [isPageListLoading, setIsPageListLoading] = useState<boolean>(true);
     const [isPageListCollapsed, setIsPageListCollapsed] = useState<boolean>(false);
     const { themeName } = useParams();
-    
+
     useEffect(() => {
         (async () => {
             const infos = await getRestAPIClient()?.getPagesInfo();

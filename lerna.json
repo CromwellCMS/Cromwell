@@ -10,19 +10,13 @@
       "message": "chore(release): publish"
     },
     "bootstrap": {
-      "ignore": "component-*",
       "npmClientArgs": [
         "--no-package-lock"
       ]
     }
   },
   "packages": [
-    "system/core/common",
-    "system/core/backend",
-    "system/core/frontend",
-    "system/renderer",
-    "system/server",
-    "system/admin-panel",
+    "system/**",
     "plugins/*",
     "themes/*"
   ]

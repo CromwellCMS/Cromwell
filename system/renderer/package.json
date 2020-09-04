@@ -8,7 +8,6 @@
     "@cromwell/core": "^1.0.0",
     "@cromwell/core-frontend": "^1.0.0",
     "@cromwell/core-backend": "^1.0.0",
-    "cacache": "^15.0.4",
     "fs-extra": "^9.0.1",
     "lnk": "^1.1.0",
     "next": "^9.5.2",
@@ -22,7 +21,7 @@
     "react-scripts": "3.4.1",
     "reflect-metadata": "^0.1.13",
     "shelljs": "^0.8.4",
-    "tslib": "2.0.0"
+    "tslib": "^2.0.0"
   },
   "devDependencies": {
     "@babel/plugin-proposal-decorators": "^7.10.1",
@@ -43,7 +42,7 @@
     "buildRenderer": "node startup.js buildRenderer",
     "dev": "node startup.js dev",
     "build": "node startup.js build",
-    "start": "node startup.js start"
+    "start": "node startup.js prod"
   },
   "description": "",
   "resolutions": {

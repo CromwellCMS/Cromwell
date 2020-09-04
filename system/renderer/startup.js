@@ -1,6 +1,7 @@
 const fs = require('fs-extra');
 const shell = require('shelljs');
 const { resolve } = require('path');
+const { spawn } = require('child_process');
 const scriptName = process.argv[2];
 const projectRootDir = resolve(__dirname, '.../../').replace(/\\/g, '/');
 const systemRootDir = resolve(__dirname, '../').replace(/\\/g, '/');
@@ -24,11 +25,7 @@ const main = async () => {
         shell.exec(`npx rollup -c`);
     }
 
-    if (scriptName === 'buildRenderer') {
-        buildRenderer();
-    }
-
-    if (scriptName === 'dev') {
+    const build = () => {
         if (!fs.existsSync(buildDir)) {
             buildRenderer();
         }
@@ -36,27 +33,51 @@ const main = async () => {
         shell.cd(buildDir);
         shell.exec(`node ./generator.js`);
         shell.cd(pagesDir);
-        shell.exec(`npx next dev -p ${config.frontendPort}`);
-    }
-
-    if (scriptName === 'build') {
-        if (!fs.existsSync(buildDir)) {
-            buildRenderer();
-        }
-
-        shell.cd(buildDir);
-        shell.exec(`node ./generator.js`)
-        shell.cd(pagesDir);
         shell.exec(`npx next build`);
     }
 
-    if (scriptName === 'start') {
+
+    if (scriptName === 'buildRenderer') {
+        buildRenderer();
+        return;
+    }
+
+    if (scriptName === 'dev') {
         if (!fs.existsSync(buildDir)) {
             buildRenderer();
+            shell.cd(buildDir);
+            shell.exec(`node ./generator.js`);
+        }
+
+        spawn(`npx rollup -cw`, [],
+            { shell: true, stdio: 'inherit', cwd: rendererRootDir });
+
+        spawn(`node ${buildDir}/generator.js`, [],
+            { shell: true, stdio: 'inherit', cwd: rendererRootDir });
+
+        spawn(`npx next dev -p ${config.frontendPort}`, [],
+            { shell: true, stdio: 'inherit', cwd: pagesDir });
+
+        return;
+    }
+
+    if (scriptName === 'build') {
+        build();
+        return;
+    }
+
+    if (scriptName === 'prod') {
+        if (!fs.existsSync(`${pagesDir}/.next/static`)
+            || !fs.existsSync(`${pagesDir}/.next/BUILD_ID`)
+            || !fs.existsSync(`${pagesDir}/.next/build-manifest.json`)
+            || !fs.existsSync(`${pagesDir}/.next/prerender-manifest.json`)
+        ) {
+            build();
         }
 
         shell.cd(pagesDir);
         shell.exec(`npx next start -p ${config.frontendPort}`);
+        return;
     }
 
 }

@@ -2,9 +2,9 @@ import {
     Accordion,
     AccordionSummary,
     AccordionDetails,
-    MenuItem as MuiMenuItem
+    MenuItem as MuiMenuItem,
+    withStyles
 } from '@material-ui/core';
-import { withStyles } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
 import { useHistory, Link } from 'react-router-dom';

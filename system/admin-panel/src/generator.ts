@@ -1,12 +1,12 @@
 import { TCmsConfig, TPluginConfig } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
 import fs from 'fs-extra';
-import { resolve } from 'path';
-import { appBuildDev, appBuildProd, staticDir, projectRootDir, publicStaticDir } from '../constants';
+import { staticDir, publicStaticDir, projectRootDir, localProjectBuildDir, generatorOutDir, localProjectDir } from './constants';
+
 //@ts-ignore
 import lnk from 'lnk';
 
-export const generateAdminPanelImports = async () => {
+const generateAdminPanelImports = async () => {
     const configPath = `${projectRootDir}/system/cmsconfig.json`;
     let config: TCmsConfig | undefined = undefined;
     try {
@@ -18,7 +18,6 @@ export const generateAdminPanelImports = async () => {
 
 
     // Import global plugins
-    const localProjectDir = resolve(__dirname, '../').replace(/\\/g, '/');
     const globalPluginsDir = `${projectRootDir}/plugins`;
     const pluginsNames: string[] = fs.readdirSync(globalPluginsDir);
     console.log('generateAdminPanelImports:Plugins found:', pluginsNames);
@@ -54,7 +53,7 @@ export const generateAdminPanelImports = async () => {
 
 
 
-    const content = `
+    const pluginsContent = `
         import { lazy } from 'react';
         export const CMSconfig = ${JSON.stringify(config)};
 
@@ -70,7 +69,7 @@ export const generateAdminPanelImports = async () => {
             return undefined;
         }
     `;
-    fs.outputFileSync(`${localProjectDir}/.cromwell/imports/plugins.gen.js`, content);
+    // fs.outputFileSync(`${outDir}/plugins.gen.js`, pluginsContent);
 
 
 
@@ -110,7 +109,7 @@ export const generateAdminPanelImports = async () => {
     })
 
     const adminPanelContent = `
-            import { lazy } from 'react';
+            // import { lazy } from 'react';
             export const pageNames = ${JSON.stringify(pageNames)};
             ${customPageLazyImports}
             
@@ -126,7 +125,18 @@ export const generateAdminPanelImports = async () => {
                 return undefined;
             }
         `;
-    fs.outputFileSync(`${localProjectDir}/.cromwell/imports/pages.gen.js`, adminPanelContent);
+    // fs.outputFileSync(`${outDir}/pages.gen.js`, adminPanelContent);
+
+
+    fs.outputFileSync(`${generatorOutDir}/index.js`, (pluginsContent + adminPanelContent));
+
+
+    const jsAppContent = `
+    'use strict';
+    import { AdminPanel } from './admin/app';
+    AdminPanel.runApp();
+    `
+    fs.outputFileSync(`${localProjectBuildDir}/index.js`, jsAppContent);
 
 
     // Link public dir in root to renderer's public dir for Express.js server
@@ -134,3 +144,5 @@ export const generateAdminPanelImports = async () => {
         lnk([`${projectRootDir}/public`], `${staticDir}`);
     }
 }
+
+generateAdminPanelImports();

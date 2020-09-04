@@ -2,11 +2,12 @@ import fs from 'fs-extra';
 import { resolve } from 'path';
 import webpack from 'webpack';
 import express from 'express';
-import { appBuildDev, appBuildProd, publicStaticDir, projectRootDir } from '../constants';
 import { TCmsConfig } from '@cromwell/core';
+import { appBuildDev, appBuildProd, publicStaticDir, projectRootDir } from './constants';
 const chalk = require('react-dev-utils/chalk');
 
-export const startDevServer = (watch?: boolean) => {
+const startDevServer = () => {
+    const watch = true;
 
     const configPath = `${projectRootDir}/system/cmsconfig.json`;
     let CMSconfig: TCmsConfig | undefined = undefined;
@@ -17,9 +18,7 @@ export const startDevServer = (watch?: boolean) => {
     }
     if (!CMSconfig) throw new Error('renderer::server cannot read CMS config');
 
-
-
-    const env = process.env.NODE_ENV;
+    const env = process.argv[2];
     const config = require('../webpack.config');
     const compiler = webpack(config);
 
@@ -27,7 +26,7 @@ export const startDevServer = (watch?: boolean) => {
     let isProduction = env === 'production';
 
     if (!isDevelopment && !isProduction)
-        throw (`devServer::startDevServer: process.env.NODE_ENV is invalid - ${env}
+        throw (`devServer::startDevServer: rocess.argv[2] is invalid - ${env}
     valid values - "development" and "production"`);
 
     const buildDir = isDevelopment ? appBuildDev : appBuildProd;
@@ -58,32 +57,36 @@ export const startDevServer = (watch?: boolean) => {
 
     const { address } = app.listen(port);
 
-    compiler.hooks.watchRun.tap('MyPlugin1', (params) => {
-        console.log(chalk.cyan('\r\nBegin compile at ' + new Date() + '\r\n'));
-    });
+    if (isDevelopment) {
+        compiler.hooks.watchRun.tap('MyPlugin1', (params) => {
+            console.log(chalk.cyan('\r\nBegin compile at ' + new Date() + '\r\n'));
+        });
 
-    compiler.hooks.done.tap('MyPlugin2', (params) => {
-        setTimeout(() => {
-            console.log(chalk.cyan('\r\nEnd compile at ' + new Date() + '\r\n'));
-            if (isDevelopment && bs) {
-                bs.reload();
+        compiler.hooks.done.tap('MyPlugin2', (params) => {
+            setTimeout(() => {
+                console.log(chalk.cyan('\r\nEnd compile at ' + new Date() + '\r\n'));
+                if (isDevelopment && bs) {
+                    bs.reload();
+                }
+            }, 100)
+        });
+
+
+        if (watch) compiler.watch({}, (err, stats) => {
+            console.log(stats.toString({
+                chunks: false,
+                colors: true
             }
-        }, 100)
-    });
-
-
-    if (watch) compiler.watch({}, (err, stats) => {
-        console.log(stats.toString({
-            chunks: false,
-            colors: true
-        }
-        ))
-    });
-    else compiler.run((err, stats) => {
-        console.log(stats.toString({
-            chunks: false,
-            colors: true
-        }));
-    });
+            ))
+        });
+        else compiler.run((err, stats) => {
+            console.log(stats.toString({
+                chunks: false,
+                colors: true
+            }));
+        });
+    }
 
 }
+
+startDevServer();

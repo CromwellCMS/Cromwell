@@ -1,8 +1,9 @@
 import commonjs from "@rollup/plugin-commonjs";
-import resolve from "@rollup/plugin-node-resolve";
+import nodeResolve from "@rollup/plugin-node-resolve";
 import autoExternal from "rollup-plugin-auto-external";
 import typescript from "rollup-plugin-typescript2";
 import packageJson from './package.json';
+const { resolve } = require('path');
 
 const external = id => {
     const exts = ['tslib', 'util', 'path'];
@@ -20,15 +21,15 @@ const external = id => {
     }
 }
 
-const buildDir = './build';
+const buildDir = 'build';
 
 export default [
     {
         // preserveModules: true,
-        input: "./src/index.ts",
+        input: resolve(__dirname, "src/index.ts"),
         output: [
             {
-                file: `${buildDir}/renderer.js`,
+                file: resolve(__dirname, buildDir, 'renderer.js'),
                 // dir: './build',
                 format: "cjs",
             }
@@ -36,7 +37,7 @@ export default [
         external,
         plugins: [
             // autoExternal(),
-            resolve({
+            nodeResolve({
                 preferBuiltins: false
             }),
             commonjs(),
@@ -51,17 +52,18 @@ export default [
     },
     {
         // preserveModules: true,
-        input: "./src/generator.ts",
+        input: resolve(__dirname, "src/generator.ts"),
+        watch: false,
         output: [
             {
-                file: `${buildDir}/generator.js`,
+                file: resolve(__dirname, buildDir, 'generator.js'),
                 // dir: './build',
                 format: "cjs",
             }
         ],
         external,
         plugins: [
-            resolve({
+            nodeResolve({
                 preferBuiltins: false
             }),
             commonjs(),

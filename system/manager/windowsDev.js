@@ -2,7 +2,7 @@ const { windowManager } = require("node-window-manager");
 const { execSync } = require('child_process');
 const isRunning = require('is-running');
 const config = require('./config');
-const { saveProcessPid, getProcessPid } = require('./cacheManager');
+const { saveProcessPid, getProcessPid, getGlobalCache } = require('./cacheManager');
 
 const winStart = () => {
 
@@ -122,7 +122,8 @@ const winStart = () => {
 
 }
 
-const winKillAll = (globalCache) => {
+const winKillAll = () => {
+    const globalCache = getGlobalCache();
     if (globalCache) {
         Object.keys(globalCache).forEach(key => {
             const pid = globalCache[key];

@@ -1,10 +1,10 @@
-const { projectRootDir, closeAllOnExit } = require('./config');
+const { projectRootDir, closeAllOnExit, services, windowsDev } = require('./config');
 const { winStart, winKillAll } = require('./windowsDev');
-const { fork } = require("child_process");
+const { fork, spawn } = require("child_process");
 const nodeCleanup = require('node-cleanup');
 const isRunning = require('is-running');
-const { globalCache, saveProcessPid, loadCache } = require('./cacheManager');
-
+const { getGlobalCache, saveProcessPid, loadCache } = require('./cacheManager');
+const { resolve } = require('path');
 
 loadCache(() => {
     /**
@@ -17,9 +17,10 @@ loadCache(() => {
 
     if (closeAllOnExit) {
         nodeCleanup(function (exitCode, signal) {
+            const globalCache = getGlobalCache();
             console.log('globalCache', exitCode, globalCache);
             if (scriptName === 'winDev') {
-                winKillAll(globalCache);
+                winKillAll();
             }
             if (scriptName === 'start') {
                 if (globalCache) {
@@ -42,18 +43,46 @@ loadCache(() => {
     }
 
     if (scriptName === 'start') {
-        const proc = fork(`${projectRootDir}\\system\\server\\startup.js`, ['prod']);
+
+        if (services.server) {
+            const proc = fork(`${projectRootDir}\\system\\server\\startup.js`, [services.server]);
+            saveProcessPid('server', proc.pid);
+        }
+
+        if (services.rederer) {
+            const proc2 = fork(`${projectRootDir}\\system\\renderer\\startup.js`, [services.rederer]);
+            saveProcessPid('renderer', proc2.pid);
+        }
+
+        if (services.adminPanel) {
+            const proc3 = fork(`${projectRootDir}\\system\\admin-panel\\startup.js`, [services.adminPanel]);
+            saveProcessPid('admin_panel', proc3.pid);
+        }
+    }
+
+    if (scriptName === 'dev') {
+
+        spawn(`npx rollup -cw`, [],
+            { shell: true, stdio: 'inherit', cwd: resolve(projectRootDir, 'system/core/common') });
+        spawn(`npx rollup -cw`, [],
+            { shell: true, stdio: 'inherit', cwd: resolve(projectRootDir, 'system/core/backend') });
+        spawn(`npx rollup -cw`, [],
+            { shell: true, stdio: 'inherit', cwd: resolve(projectRootDir, 'system/core/frontend') });
+
+        const proc = fork(`${projectRootDir}\\system\\server\\startup.js`, ['dev']);
         saveProcessPid('server', proc.pid);
 
-        const proc2 = fork(`${projectRootDir}\\system\\renderer\\startup.js`, ['start']);
+        const proc2 = fork(`${projectRootDir}\\system\\renderer\\startup.js`, ['dev']);
         saveProcessPid('renderer', proc2.pid);
 
-    }
+        const proc3 = fork(`${projectRootDir}\\system\\admin-panel\\startup.js`, ['dev']);
+        saveProcessPid('admin_panel', proc3.pid);
 
-    if (scriptName === 'render') {
-        const proc2 = fork(`${projectRootDir}\\system\\renderer\\startup.js`, ['build']);
+        windowsDev.otherDirs.forEach((dir, i) => {
+            spawn(`npx rollup -cw`, [],
+                { shell: true, stdio: 'inherit', cwd: resolve(projectRootDir, dir) });
+        })
     }
-
 })
 
 

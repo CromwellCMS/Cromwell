@@ -1,11 +1,18 @@
 const { resolve } = require('path');
 const projectRootDir = resolve(__dirname, '../../');
+const systemDir = resolve(projectRootDir, 'system');
 
 module.exports = {
-    projectRootDir,
+    projectRootDir, systemDir,
     cachePath: projectRootDir + '\\system\\.cromwell\\cache',
     cacheKey: 'CromwellProcessManager',
     cleanCacheOnStart: false,
+    /** Config for root "start" script */
+    services: {
+        adminPanel: 'prod', // 'dev' | 'prod' | 'build' | null
+        server: 'prod', // 'dev' | 'prod' | 'build' | null
+        rederer: 'prod' // 'dev' | 'prod' | 'build' | null
+    },
     /** Close all services when manager process is being closed */
     closeAllOnExit: true,
     windowsDev: {
@@ -22,10 +29,10 @@ module.exports = {
         watch: true,
         watchPollTimeout: 1000, // ms
         overallTimeout: 0,
-        // Will run terminal with "npm run watch" for every dir:
+        /**  Will run terminal with "npm run watch" for every dir: */
         otherDirs: [
             "themes\\cromwell-demoshop",
-            "plugins\\ProductFilter"
+            // "plugins\\ProductFilter"
         ]
     }
 }

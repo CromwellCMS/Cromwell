@@ -1,43 +1,42 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
-const { appBuildDev, appBuildProd, contentDir, projectRootDir } = require('./constants');
+const packageJson = require('./package.json');
+const { appBuildDev, appBuildProd, contentDir, localProjectBuildDir, projectRootDir, localProjectDir } = require('./src/constants');
+const scriptName = process.env.SCRIPT;
+const isBuildAdmin = scriptName === 'buildAdmin';
+const isProduction = scriptName === 'production';
+const buildMode = isProduction ? 'production' : 'development';
+const buildDir = 'admin';
 
-const buildMode = process.env.NODE_ENV;
-const isProduction = buildMode === 'production';
 
 module.exports = {
     mode: buildMode,
+    target: isBuildAdmin ? "node" : "web",
     devtool: isProduction ? false : "source-map",
-    entry: './src/index.ts',
-    output: {
-        path: isProduction ? appBuildProd : appBuildDev,
-        filename: isProduction
-            ? '[name].[contenthash:8].js'
-            : '[name].js',
-        publicPath: '/',
-    },
+    entry: isBuildAdmin ? path.resolve(localProjectDir, './src/app.ts') :
+        path.resolve(localProjectBuildDir, `index.js`),
+    output: isBuildAdmin ? {
+        libraryTarget: 'commonjs',
+        library: 'AdminPanel',
+        path: path.resolve(localProjectBuildDir, buildDir),
+        filename: 'app.js'
+    } : {
+            path: isProduction ? appBuildProd : appBuildDev,
+            filename: isProduction
+                ? '[name].[contenthash:8].js'
+                : '[name].js',
+            publicPath: '/',
+        },
     resolve: {
-        extensions: [".js", "jsx", ".ts", ".tsx"]
+        extensions: isBuildAdmin ? [".js", "jsx", ".ts", ".tsx"] : [".js"],
+        alias: {
+            CromwellImports: path.resolve(localProjectDir, '.cromwell/imports'),
+        }
     },
     module: {
-        rules: [
-            {
-                test: /\.ts(x?)$/,
-                exclude: /node_modules/,
-                use: [
-                    {
-                        loader: "ts-loader"
-                    }
-                ]
-            },
-            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            {
-                enforce: "pre",
-                test: /\.js$/,
-                loader: "source-map-loader"
-            },
-            {
+        rules: [].concat(
+            [{
                 test: /\.css$/i,
                 use: [
                     { loader: 'style-loader' },
@@ -47,36 +46,53 @@ module.exports = {
                         }
                     }
                 ],
-            },
-            {
-                test: /\.s[ac]ss$/i,
-                use: [
-                    { loader: 'style-loader' },
-                    {
-                        loader: 'css-loader', options: {
-                            sourceMap: true,
-                            modules: {
-                                localIdentName: '[local]_[hash:base64:5]'
-                            },
+            }],
+            isBuildAdmin ? [
+                {
+                    test: /\.ts(x?)$/,
+                    exclude: /node_modules/,
+                    use: [
+                        {
+                            loader: "ts-loader"
                         }
-                    },
-                    {
-                        loader: 'postcss-loader',
-                        options: {
-                            sourceMap: true,
-                            config: {
-                                path: 'postcss.config.js'
+                    ]
+                },
+                // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
+                // {
+                //     enforce: "pre",
+                //     test: /\.js$/,
+                //     loader: "source-map-loader"
+                // },
+                {
+                    test: /\.s[ac]ss$/i,
+                    use: [
+                        { loader: 'style-loader' },
+                        {
+                            loader: 'css-loader', options: {
+                                sourceMap: true,
+                                modules: {
+                                    localIdentName: '[local]_[hash:base64:5]'
+                                },
                             }
+                        },
+                        {
+                            loader: 'postcss-loader',
+                            options: {
+                                sourceMap: true,
+                                config: {
+                                    path: 'postcss.config.js'
+                                }
+                            }
+                        },
+                        {
+                            loader: 'sass-loader', options: { sourceMap: true }
                         }
-                    },
-                    {
-                        loader: 'sass-loader', options: { sourceMap: true }
-                    }
-                ],
-            },
-        ]
+                    ],
+                },
+            ] : []
+        )
     },
-    plugins: [
+    plugins: isBuildAdmin ? [] : [
         new CopyPlugin({
             patterns:
                 isProduction ?
@@ -102,8 +118,7 @@ module.exports = {
         new HtmlWebpackPlugin(Object.assign(
             {
                 filename: `index.html`,
-                template: `./public/index.html`,
-
+                template: path.resolve(localProjectDir, './public/index.html'),
             },
             isProduction
                 ? {
@@ -118,11 +133,11 @@ module.exports = {
                         minifyJS: true,
                         minifyCSS: true,
                         minifyURLs: true,
-                        reactSrc: '/react.production.min.js',
-                        reactDOMSrc: '/react-dom.production.min.js',
-                        reactProfilingSrc: '',
-                        reactDOMProfilingSrc: ''
                     },
+                    reactSrc: '/react.production.min.js',
+                    reactDOMSrc: '/react-dom.production.min.js',
+                    reactProfilingSrc: '',
+                    reactDOMProfilingSrc: ''
                 }
                 : {
                     reactSrc: '/react.development.js',
@@ -136,8 +151,16 @@ module.exports = {
     // assume a corresponding global variable exists and use that instead.
     // This is important because it allows us to avoid bundling all of our
     // dependencies, which allows browsers to cache those libraries between builds.
-    externals: {
+    externals: Object.assign({
         "react": "React",
-        "react-dom": "ReactDOM"
-    }
+        "react-dom": "ReactDOM",
+    }, isBuildAdmin ?
+        Object.assign({
+            "CromwellImports": "CromwellImports", "react": "react",
+            "react-dom": "react-dom",
+        },
+            ...Object.keys(packageJson.dependencies).map(key => ({ [key]: key })),
+            ...Object.keys(packageJson.devDependencies).map(key => ({ [key]: key }))
+        ) : {}
+    )
 };
