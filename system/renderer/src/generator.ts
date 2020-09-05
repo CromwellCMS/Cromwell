@@ -191,12 +191,16 @@ const main = async () => {
 
     // Link public dir in root to renderer's public dir for Next.js server
     if (!fs.existsSync(`${buildDir}/public`)) {
-        lnk([`${projectRootDir}/public`], `${buildDir}`)
+        try {
+            lnk([`${projectRootDir}/public`], `${buildDir}`)
+        } catch (e) { console.log(e) }
     }
 
     // Link renderer's build dir into next dir
     if (!fs.existsSync(`${buildDir}/build`)) {
-        lnk([`${localDir}/build`], `${buildDir}`)
+        try {
+            lnk([`${localDir}/build`], `${buildDir}`)
+        } catch (e) { console.log(e) }
     }
 
 };

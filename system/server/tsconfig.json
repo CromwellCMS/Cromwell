@@ -20,12 +20,12 @@
     "allowJs": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    "jsx": "react"
+    "moduleResolution": "node",
   },
   "exclude": [
     "node_modules"
   ],
   "include": [
-    "src/**/*.ts", "src/startup.js",
+    "src/**/*.ts"
   ],
 }

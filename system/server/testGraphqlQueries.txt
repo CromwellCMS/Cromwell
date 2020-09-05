@@ -7,7 +7,10 @@ query getProduct {
     views
     images
     pageTitle
-    rating
+    rating {
+      average
+      reviewsNumber
+    }
     reviews(pagedParams: {pageSize: 100}) {
        elements {
         title
@@ -177,7 +180,7 @@ mutation deletePrCat {
 }
 
 query getAttributes {
-  attributes {
+  getAttributes {
 		key
     values {
       value
@@ -187,7 +190,7 @@ query getAttributes {
   }
 }
 query getAttribute {
-  attribute(id: "2") {
+  getAttribute(id: "2") {
 		key
     values {
       value

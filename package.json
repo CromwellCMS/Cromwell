@@ -2,20 +2,20 @@
 	"name": "cromwell",
 	"private": true,
 	"scripts": {
+		"startup": "node ./startup.js",
 		"installAll": "npm i && npm run lerna && npm run buildCore",
-		"start": "node ./system/manager/manager.js start",
+		"startSystem": "node ./system/manager/manager.js start",
 		"dev": "node ./system/manager/manager.js dev",
 		"winDev": "node ./system/manager/manager.js winDev",
 		"lerna": "npx lerna bootstrap --hoist",
 		"clean": "node ./system/manager/cleanup.js",
 		"cleanNodemodules": "rmdir /Q /S \"./node_modules\"",
-		"buildCore": "npm run buildDev --prefix ./system/core/common && npm run buildDev --prefix ./system/core/backend && npm run buildDev --prefix ./system/core/frontend",
+		"buildCore": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend",
 		"buildPlugins": "npm run build --prefix ./plugins/CustomerReviews && npm run build --prefix ./plugins/MainMenu && npm run build --prefix ./plugins/ProductFilter && npm run build --prefix ./plugins/ProductShowcase && npm run build --prefix ./plugins/ProductShowcaseDemo",
 		"buildTheme": "npm run build --prefix ./themes/cromwell-demoshop",
 		"buildAll": "npm run buildCore && npm run buildServer && npm run buildPlugins && npm run buildTheme"
 	},
 	"devDependencies": {
-		"lerna": "^3.22.1",
-		"typescript": "^3.9.5"
+		"lerna": "^3.22.1"
 	}
 }

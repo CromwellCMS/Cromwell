@@ -35,7 +35,7 @@
   },
   "description": "",
   "scripts": {
-    "buildDev": "npx rollup -c",
+    "build": "npx rollup -c",
     "watch": "npx rollup -cw"
   }
 }

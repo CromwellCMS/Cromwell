@@ -1,5 +1,6 @@
 {
     "name": "ProductShowcase",
+    "buildDir": "es",
     "adminDir": "es/plugins/ProductShowcase/src/admin",
     "frontendDir": "es/plugins/ProductShowcase/src/frontend",
     "backend": {

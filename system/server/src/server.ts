@@ -112,8 +112,10 @@ async function apiServer(): Promise<void> {
         applyPluginsController(app);
         applyMockController(app);
 
-        const { address } = app.listen(config?.apiPort);
-        console.log(`API server has started at ${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/`);
+        const { address } = app.listen(config?.apiPort, () => {
+            console.log(`API server has started at ${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/`);
+            if (process.send) process.send('ready');
+        });
     }, 100)
 }
 

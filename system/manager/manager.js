@@ -44,15 +44,29 @@ loadCache(() => {
 
     if (scriptName === 'start') {
 
+        let serverProc;
         if (services.server) {
-            const proc = fork(`${projectRootDir}\\system\\server\\startup.js`, [services.server]);
-            saveProcessPid('server', proc.pid);
+            serverProc = fork(`${projectRootDir}\\system\\server\\startup.js`, [services.server]);
+            saveProcessPid('server', serverProc.pid);
         }
 
-        if (services.rederer) {
-            const proc2 = fork(`${projectRootDir}\\system\\renderer\\startup.js`, [services.rederer]);
-            saveProcessPid('renderer', proc2.pid);
+        const startRederer = () => {
+            if (services.rederer) {
+                const proc2 = fork(`${projectRootDir}\\system\\renderer\\startup.js`, [services.rederer]);
+                saveProcessPid('renderer', proc2.pid);
+            }
         }
+
+        if (serverProc) {
+            serverProc.on('message', (message) => {
+                if (message === 'ready') {
+                    startRederer();
+                }
+            });
+        } else {
+            startRederer();
+        }
+
 
         if (services.adminPanel) {
             const proc3 = fork(`${projectRootDir}\\system\\admin-panel\\startup.js`, [services.adminPanel]);

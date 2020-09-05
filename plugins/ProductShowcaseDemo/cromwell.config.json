@@ -1,5 +1,6 @@
 {
     "name": "ProductShowcaseDemo",
+    "buildDir": "es",
     "adminDir": "es/admin",
     "frontendDir": "es/frontend"
 }

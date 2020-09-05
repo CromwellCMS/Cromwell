@@ -1,5 +1,6 @@
 {
     "name": "MainMenu",
+    "buildDir": "es",
     "adminDir": "es/src/admin",
     "frontendDir": "es/src/frontend"
 }

@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const shell = require('shelljs');
 const { resolve } = require('path');
-const { spawn } = require('child_process');
+const { spawn, spawnSync, fork } = require('child_process');
 const scriptName = process.argv[2];
 const projectRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
 const systemRootDir = resolve(__dirname, '../').replace(/\\/g, '/');
@@ -26,10 +26,10 @@ const main = async () => {
             shell.exec(`npx rollup -c`);
         }
 
-        spawn(`npx rollup -cw`, [],
+        spawnSync(`npx rollup -cw`, [],
             { shell: true, stdio: 'inherit', cwd: serverRootDir });
 
-        spawn(`node ${buildDir}/generator.js`, [],
+        spawnSync(`node ${buildDir}/generator.js`, [],
             { shell: true, stdio: 'inherit', cwd: serverRootDir });
 
         spawn(`npx nodemon --watch ${buildDir} ${buildDir}/server.js`, [],
@@ -47,9 +47,16 @@ const main = async () => {
             shell.exec(`npx rollup -c`)
         }
 
-        shell.cd(buildDir);
-        shell.exec(`node ./generator.js`);
-        shell.exec(`node ./server.js`);
+        spawnSync(`node ./generator.js`, [],
+            { shell: true, stdio: 'inherit', cwd: buildDir });
+
+        const serverProc = fork(resolve(buildDir, `server.js`));
+
+        serverProc.on('message', (message) => {
+            if (message === 'ready') {
+                if (process.send) process.send('ready');
+            }
+        });
     }
 
 }

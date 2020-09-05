@@ -1,5 +1,6 @@
 {
     "name": "ProductFilter",
+    "buildDir": "es",
     "adminDir": "es/admin",
     "frontendDir": "es/frontend",
     "backend": {

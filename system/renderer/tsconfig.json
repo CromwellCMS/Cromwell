@@ -32,7 +32,7 @@
     "isolatedModules": true
   },
   "include": [
-    "src/**/*.ts", "src/startup.js"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules"
