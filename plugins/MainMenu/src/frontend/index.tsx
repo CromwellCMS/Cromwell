@@ -2,8 +2,6 @@ import { StaticPageContext, TFrontendPluginProps } from '@cromwell/core';
 import { FrontendPlugin, getRestAPIClient, Link } from '@cromwell/core-frontend';
 import { MenuItem, Popover } from '@material-ui/core';
 import React, { useState } from 'react';
-
-import config from '../../cromwell.config.json';
 import { defaultSettings } from '../defaultSettings';
 import { TMainMenuSettings } from '../types';
 import { useStyles } from './styles';

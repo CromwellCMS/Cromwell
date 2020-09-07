@@ -83,7 +83,7 @@ const main = async () => {
         if (pagePath && pageComponentName) {
             console.log('pageName', pageName, 'pageComponentName', pageComponentName);
 
-            customPageImports += `\nimport * as ${pageComponentName}_Page from '${pagePath}';`;
+            customPageImports += `\nconst ${pageComponentName}_Page = require('${pagePath}');`;
             customPageImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_Page;\n`;
 
             customPageDynamicImports += `\nconst ${pageComponentName}_DynamicPage = dynamic(() => import('${pagePath}'));`;
@@ -151,8 +151,7 @@ const main = async () => {
         fs.removeSync(pagesLocalDir);
     }
     Object.keys(customPages).forEach(pageName => {
-        const pageComponentName = customPages[pageName].pageComponentName;
-
+        // const pageComponentName = customPages[pageName].pageComponentName;
         let globalCssImports = '';
         if (pageName === '_app' && appConfig && appConfig.globalCss &&
             Array.isArray(appConfig.globalCss) && appConfig.globalCss.length > 0) {

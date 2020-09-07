@@ -5,11 +5,10 @@ import { importPage } from 'imports/imports.gen';
 
 export const createGetStaticPaths = (pageName: string) => {
     const page: any = importPage(pageName);
-    if (page.getStaticPaths) {
+    if (page && page.getStaticPaths) {
         return page.getStaticPaths;
     }
     return undefined;
-
 }
 /*
 export const createGetStaticPaths = (dbEntity: TDBEntity) => {

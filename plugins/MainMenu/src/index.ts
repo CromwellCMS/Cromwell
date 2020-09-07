@@ -1,2 +1,2 @@
-export * as AdminComp from './admin/index';
-export * as ProductShowcase from './frontend/index';
+export * as admin from './admin/index';
+export * as frontend from './frontend/index';

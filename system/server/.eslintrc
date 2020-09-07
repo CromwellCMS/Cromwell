@@ -12,5 +12,9 @@
     "rules": {
         "@typescript-eslint/no-var-requires": 0,
         "@typescript-eslint/ban-ts-ignore": "off"
+    },
+    "env": {
+        "node": true,
+        "es6": true
     }
 }

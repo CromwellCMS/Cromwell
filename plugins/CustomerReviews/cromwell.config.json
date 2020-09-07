@@ -1,10 +1,10 @@
 {
     "name": "ProductShowcase",
-    "buildDir": "es",
-    "adminDir": "es/plugins/ProductShowcase/src/admin",
-    "frontendDir": "es/plugins/ProductShowcase/src/frontend",
+    "buildDir": "dist",
+    "adminDir": "dist/plugins/ProductShowcase/src/admin",
+    "frontendDir": "dist/plugins/ProductShowcase/src/frontend",
     "backend": {
-        "resolversDir": "es/plugins/ProductShowcase/src/backend/resolvers",
-        "entitiesDir": "es/plugins/ProductShowcase/src/backend/entities"
+        "resolversDir": "dist/plugins/ProductShowcase/src/backend/resolvers",
+        "entitiesDir": "dist/plugins/ProductShowcase/src/backend/entities"
     }
 }

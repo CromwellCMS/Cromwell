@@ -1,19 +1,39 @@
-const { spawnSync } = require("child_process");
-const path = require('path');
-const { resolve } = path;
-const fs = require('fs');
+var spawnSync = require("child_process").spawnSync;
+var path = require('path');
+var resolve = path.resolve;
+var fs = require('fs');
 
-(() => {
-    const projectRootDir = __dirname;
-    const coreDir = resolve(projectRootDir, 'system/core');
-    const cmsConfigPath = resolve(projectRootDir, 'system/cmsconfig.json');
-    let cmsConfig;
-    try {
-        cmsConfig = JSON.parse(fs.readFileSync(cmsConfigPath).toString());
-    } catch (e) {
-        console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup Failed to read cmsconfig');
-        console.log(e);
+(function () {
+
+    function copyFileSync(source, target) {
+        var targetFile = target;
+        if (fs.existsSync(target)) {
+            if (fs.lstatSync(target).isDirectory()) {
+                targetFile = path.join(target, path.basename(source));
+            }
+        }
+        fs.writeFileSync(targetFile, fs.readFileSync(source));
     }
+    function copyFolderRecursiveSync(source, target) {
+        var files = [];
+        var targetFolder = path.join(target, path.basename(source));
+        if (!fs.existsSync(targetFolder)) {
+            fs.mkdirSync(targetFolder);
+        }
+        if (fs.lstatSync(source).isDirectory()) {
+            files = fs.readdirSync(source);
+            files.forEach(function (file) {
+                var curSource = path.join(source, file);
+                if (fs.lstatSync(curSource).isDirectory()) {
+                    copyFolderRecursiveSync(curSource, targetFolder);
+                } else {
+                    copyFileSync(curSource, targetFolder);
+                }
+            });
+        }
+    }
+
+    var projectRootDir = __dirname;
 
     // Check node_modules
     if (!fs.existsSync(resolve(projectRootDir, 'node_modules'))) {
@@ -35,12 +55,14 @@ const fs = require('fs');
         }
     }
 
+    var coreDir = resolve(projectRootDir, 'system/core');
+
     // Check core
     if (!fs.existsSync(resolve(coreDir, 'common/node_modules')) ||
         !fs.existsSync(resolve(coreDir, 'backend/node_modules')) ||
         !fs.existsSync(resolve(coreDir, 'frontend/node_modules'))) {
         console.log('\x1b[36m%s\x1b[0m', 'Running lerna bootstrap...');
-        const command = 'npx lerna bootstrap --hoist';
+        var command = 'npx lerna bootstrap --hoist';
         try {
             spawnSync(command, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
         } catch (e) {
@@ -78,29 +100,42 @@ const fs = require('fs');
             spawnSync('npm run build', { shell: true, cwd: resolve(coreDir, 'frontend'), stdio: 'inherit' });
         } catch (e) {
             console.log(e);
-            console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to build core');
+            console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to build Core');
             return;
         }
     }
 
+    var hasPublicDir = true;
+    var cmsConfig;
+    if (!fs.existsSync(resolve(projectRootDir, 'public'))) {
+        hasPublicDir = false;
+        var cmsConfigPath = resolve(projectRootDir, 'system/cmsconfig.json');
+        try {
+            cmsConfig = JSON.parse(fs.readFileSync(cmsConfigPath).toString());
+        } catch (e) {
+            console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup Failed to read CMS config');
+            console.log(e);
+        }
+    }
+
     // Check themes
-    const themesDir = resolve(projectRootDir, 'themes');
+    var themesDir = resolve(projectRootDir, 'themes');
     if (fs.existsSync(themesDir)) {
-        const themes = fs.readdirSync(themesDir);
-        for (const theme of themes) {
-            const themeDir = resolve(themesDir, theme);
-            const configPath = resolve(themeDir, 'cromwell.config.json');
+        var themes = fs.readdirSync(themesDir);
+        for (var theme of themes) {
+            var themeDir = resolve(themesDir, theme);
+            var configPath = resolve(themeDir, 'cromwell.config.json');
             try {
-                const config = JSON.parse(fs.readFileSync(configPath).toString());
+                var config = JSON.parse(fs.readFileSync(configPath).toString());
                 if (config && config.appConfig && config.appConfig.pagesDir) {
                     if (!fs.existsSync(resolve(themeDir, config.appConfig.pagesDir))) {
                         console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
                         spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
                     }
-                    // Check if current and copy images
-                    if (cmsConfig && cmsConfig.themeName && config.themeInfo &&
+
+                    // Check if current project root dir has no public folder and copy media from theme if theme is active
+                    if (!hasPublicDir && cmsConfig && cmsConfig.themeName && config.themeInfo &&
                         cmsConfig.themeName === config.themeInfo.themeName &&
-                        !fs.existsSync(resolve(projectRootDir, 'public')) &&
                         fs.existsSync(resolve(themeDir, 'public'))) {
                         copyFolderRecursiveSync(resolve(themeDir, 'public'), resolve(projectRootDir))
                     }
@@ -112,14 +147,14 @@ const fs = require('fs');
     }
 
     // Check plugins
-    const pluginsDir = resolve(projectRootDir, 'plugins');
+    var pluginsDir = resolve(projectRootDir, 'plugins');
     if (fs.existsSync(pluginsDir)) {
-        const plugins = fs.readdirSync(pluginsDir);
-        for (const plugin of plugins) {
-            const pluginDir = resolve(pluginsDir, plugin);
-            const configPath = resolve(pluginDir, 'cromwell.config.json');
+        var plugins = fs.readdirSync(pluginsDir);
+        for (var plugin of plugins) {
+            var pluginDir = resolve(pluginsDir, plugin);
+            var configPath = resolve(pluginDir, 'cromwell.config.json');
             try {
-                const config = JSON.parse(fs.readFileSync(configPath).toString());
+                var config = JSON.parse(fs.readFileSync(configPath).toString());
                 if (config && config.buildDir) {
                     if (!fs.existsSync(resolve(pluginDir, config.buildDir))) {
                         console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
@@ -132,52 +167,13 @@ const fs = require('fs');
         }
     }
 
-
     // Start system
     try {
-        spawnSync('node ./system/manager/manager.js start', { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync('node ./system/manager/src/manager.js start', { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     } catch (e) {
         console.log(e);
-        console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to Start system');
+        console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager:Failed to Start system');
         return;
     }
+
 })();
-
-
-
-function copyFileSync(source, target) {
-
-    var targetFile = target;
-
-    //if target is a directory a new file with the same name will be created
-    if (fs.existsSync(target)) {
-        if (fs.lstatSync(target).isDirectory()) {
-            targetFile = path.join(target, path.basename(source));
-        }
-    }
-
-    fs.writeFileSync(targetFile, fs.readFileSync(source));
-}
-
-function copyFolderRecursiveSync(source, target) {
-    var files = [];
-
-    //check if folder needs to be created or integrated
-    var targetFolder = path.join(target, path.basename(source));
-    if (!fs.existsSync(targetFolder)) {
-        fs.mkdirSync(targetFolder);
-    }
-
-    //copy
-    if (fs.lstatSync(source).isDirectory()) {
-        files = fs.readdirSync(source);
-        files.forEach(function (file) {
-            var curSource = path.join(source, file);
-            if (fs.lstatSync(curSource).isDirectory()) {
-                copyFolderRecursiveSync(curSource, targetFolder);
-            } else {
-                copyFileSync(curSource, targetFolder);
-            }
-        });
-    }
-}

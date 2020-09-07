@@ -8,6 +8,6 @@ export class PagedProduct implements TPagedList<TProduct> {
     @Field(() => PagedMeta, { nullable: true })
     pagedMeta?: PagedMeta;
 
-    @Field(() => Product, { nullable: true })
+    @Field(() => [Product], { nullable: true })
     elements?: Product[];
 }

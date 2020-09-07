@@ -6,7 +6,8 @@
         "description": "Online shop theme"
     },
     "appConfig": {
-        "pagesDir": "es/pages",
+        "buildDir": "dist",
+        "pagesDir": "dist/pages",
         "palette": {
             "primaryColor": "#9900CC"
         },

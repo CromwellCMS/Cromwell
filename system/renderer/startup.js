@@ -1,9 +1,8 @@
 const fs = require('fs-extra');
-const shell = require('shelljs');
 const { resolve } = require('path');
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const scriptName = process.argv[2];
-const projectRootDir = resolve(__dirname, '.../../').replace(/\\/g, '/');
+// const projectRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
 const systemRootDir = resolve(__dirname, '../').replace(/\\/g, '/');
 const rendererRootDir = resolve(__dirname).replace(/\\/g, '/');
 const buildDir = rendererRootDir + '/build';
@@ -21,19 +20,22 @@ const main = async () => {
     if (!config) throw new Error('renderer::server cannot read CMS config');
 
     const buildRenderer = () => {
-        shell.cd(rendererRootDir);
-        shell.exec(`npx rollup -c`);
+        spawnSync(`npx rollup -c`, [],
+            { shell: true, stdio: 'inherit', cwd: rendererRootDir });
+    }
+
+    const gen = () => {
+        spawnSync(`node ./generator.js`, [],
+            { shell: true, stdio: 'inherit', cwd: buildDir });
     }
 
     const build = () => {
         if (!fs.existsSync(buildDir)) {
             buildRenderer();
         }
-
-        shell.cd(buildDir);
-        shell.exec(`node ./generator.js`);
-        shell.cd(pagesDir);
-        shell.exec(`npx next build`);
+        gen();
+        spawnSync(`npx next build`, [],
+            { shell: true, stdio: 'inherit', cwd: pagesDir });
     }
 
 
@@ -45,8 +47,7 @@ const main = async () => {
     if (scriptName === 'dev') {
         if (!fs.existsSync(buildDir)) {
             buildRenderer();
-            shell.cd(buildDir);
-            shell.exec(`node ./generator.js`);
+            gen();
         }
 
         spawn(`npx rollup -cw`, [],
@@ -75,8 +76,8 @@ const main = async () => {
             build();
         }
 
-        shell.cd(pagesDir);
-        shell.exec(`npx next start -p ${config.frontendPort}`);
+        spawn(`npx next start -p ${config.frontendPort}`, [],
+            { shell: true, stdio: 'inherit', cwd: pagesDir });
         return;
     }
 

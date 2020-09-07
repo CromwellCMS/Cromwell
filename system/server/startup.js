@@ -1,5 +1,4 @@
 const fs = require('fs-extra');
-const shell = require('shelljs');
 const { resolve } = require('path');
 const { spawn, spawnSync, fork } = require('child_process');
 const scriptName = process.argv[2];
@@ -19,14 +18,17 @@ const main = async () => {
     }
     if (!config) throw new Error('renderer::server cannot read CMS config');
 
+    const buildServer = () => {
+        spawnSync(`npx rollup -c`, [],
+            { shell: true, stdio: 'inherit', cwd: serverRootDir });
+    }
 
     if (scriptName === 'dev') {
         if (!fs.existsSync(buildDir)) {
-            shell.cd(serverRootDir);
-            shell.exec(`npx rollup -c`);
+            buildServer();
         }
 
-        spawnSync(`npx rollup -cw`, [],
+        spawn(`npx rollup -cw`, [],
             { shell: true, stdio: 'inherit', cwd: serverRootDir });
 
         spawnSync(`node ${buildDir}/generator.js`, [],
@@ -37,14 +39,12 @@ const main = async () => {
     }
 
     if (scriptName === 'build') {
-        shell.cd(serverRootDir);
-        shell.exec(`npx rollup -c`)
+        buildServer();
     }
 
     if (scriptName === 'prod') {
         if (!fs.existsSync(buildDir)) {
-            shell.cd(serverRootDir);
-            shell.exec(`npx rollup -c`)
+            buildServer();
         }
 
         spawnSync(`node ./generator.js`, [],

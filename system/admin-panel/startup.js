@@ -1,26 +1,25 @@
 const fs = require('fs-extra');
-const shell = require('shelljs');
 const { resolve } = require('path');
-const { spawn } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const { appBuildProd, localProjectDir } = require('./src/constants');
-const projectRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
-const systemRootDir = resolve(__dirname, '../').replace(/\\/g, '/');
 const adminRootDir = resolve(__dirname).replace(/\\/g, '/');
-const buildDir = adminRootDir + '/build';
+const buildDir = resolve(adminRootDir, 'build');
+const tempDir = resolve(adminRootDir, '.cromwell');
 const scriptName = process.argv[2];
-const tempDir = adminRootDir + '/.cromwell';
 
 const main = async () => {
 
     const gen = () => {
-        shell.cd(buildDir);
-        shell.exec(`node ./generator.js`);
+        spawnSync(`node ./generator.js`, [],
+            { shell: true, stdio: 'inherit', cwd: buildDir });
     }
 
     const buildAdmin = () => {
-        shell.cd(adminRootDir);
-        shell.exec(`npx rollup -c`);
-        shell.exec(`npx cross-env SCRIPT=buildAdmin npx webpack`);
+        spawnSync(`npx rollup -c`, [],
+            { shell: true, stdio: 'inherit', cwd: adminRootDir });
+
+        spawnSync(`npx cross-env SCRIPT=buildAdmin npx webpack`, [],
+            { shell: true, stdio: 'inherit', cwd: adminRootDir });
     }
 
     const buildApp = () => {
@@ -28,8 +27,8 @@ const main = async () => {
             buildAdmin();
         }
         gen();
-        shell.cd(adminRootDir);
-        shell.exec(`npx cross-env SCRIPT=production npx webpack`)
+        spawnSync(`npx cross-env SCRIPT=production npx webpack`, [],
+            { shell: true, stdio: 'inherit', cwd: adminRootDir });
     }
 
     if (scriptName === 'gen') {
@@ -53,11 +52,11 @@ const main = async () => {
         }
         gen();
 
-        spawn(`npx cross-env SCRIPT=buildAdmin npx webpack --watch`, [],
+        spawnSync(`npx cross-env SCRIPT=buildAdmin npx webpack --watch`, [],
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
 
-        spawn(`node ${buildDir}/server.js development`, [],
-            { shell: true, stdio: 'inherit', cwd: localProjectDir });
+        spawn(`node ./server.js development`, [],
+            { shell: true, stdio: 'inherit', cwd: buildDir });
 
         return;
     }
@@ -66,8 +65,11 @@ const main = async () => {
         if (!fs.existsSync(appBuildProd)) {
             buildApp();
         }
-        shell.cd(buildDir);
-        shell.exec(`node ./server.js production`);
+        if (!fs.existsSync(tempDir)) {
+            gen();
+        }
+        spawn(`node ./server.js production`, [],
+            { shell: true, stdio: 'inherit', cwd: buildDir });
         return;
     }
 }

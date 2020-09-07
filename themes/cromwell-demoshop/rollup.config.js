@@ -1,28 +1,29 @@
 import autoExternal from "rollup-plugin-auto-external";
-import resolve from "@rollup/plugin-node-resolve";
+import nodeResolve from "@rollup/plugin-node-resolve";
 import typescript from "rollup-plugin-typescript2";
 import commonjs from "@rollup/plugin-commonjs";
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from "autoprefixer";
 import alias from '@rollup/plugin-alias';
 import del from 'rollup-plugin-delete';
-// import image from '@rollup/plugin-image';
-// import imageInliner from 'postcss-image-inliner';
-// import postcssAssets from 'postcss-assets';
+import cromwellConfig from './cromwell.config.json';
+import { resolve } from 'path';
+
+const distDir = resolve(__dirname, cromwellConfig.appConfig.buildDir);
 
 export default {
     input: './src/index.ts',
     preserveModules: true,
     output: [
         {
-            dir: './es',
-            format: "esm",
-            // sourcemap: true
+            dir: distDir,
+            format: "cjs",
+            exports: "auto"
         }
     ],
     external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/app', 'next/router'],
     plugins: [
-        // del({ targets: './es/*' }),
+        // del({ targets: distDir }),
         // image(),
         postcss({
             plugins: [
@@ -43,7 +44,7 @@ export default {
             ]
         }),
         autoExternal(),
-        resolve(),
+        nodeResolve(),
         commonjs(),
         typescript({ useTsconfigDeclarationDir: true }),
     ]

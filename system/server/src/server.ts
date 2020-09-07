@@ -76,7 +76,8 @@ async function apiServer(): Promise<void> {
             ProductReviewResolver,
             ..._pluginsResolvers
         ],
-        dateScalarMode: "isoDate"
+        dateScalarMode: "isoDate",
+        validate: false
     });
     const server = new ApolloServer({ schema });
 

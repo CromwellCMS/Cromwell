@@ -1,8 +1,8 @@
 {
     "name": "ProductShowcase",
-    "buildDir": "es",
-    "adminDir": "es/admin",
-    "frontendDir": "es/frontend",
+    "buildDir": "dist",
+    "adminDir": "dist/admin",
+    "frontendDir": "dist/frontend",
     "backend": {
         "resolversDir": "dist/backend/resolvers",
         "entitiesDir": "dist/backend/entities"

@@ -11,7 +11,7 @@ class FilteredProduct implements TFilteredList<TProduct> {
     @Field(() => PagedMeta, { nullable: true })
     pagedMeta?: PagedMeta;
 
-    @Field(() => Product, { nullable: true })
+    @Field(() => [Product], { nullable: true })
     elements?: Product[];
 
     @Field(() => FilterMeta)

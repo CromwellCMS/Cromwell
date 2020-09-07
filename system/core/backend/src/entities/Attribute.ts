@@ -3,6 +3,15 @@ import { Field, ObjectType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
 import { BasePageEntity } from './BasePageEntity';
 
+@ObjectType("AttributeValue")
+export class AttributeValue implements TAttributeValue {
+    @Field(type => String)
+    value: string;
+
+    @Field(type => String, { nullable: true })
+    icon?: string;
+}
+
 @Entity()
 @ObjectType("Attribute")
 export class Attribute extends BasePageEntity implements TAttribute {
@@ -29,15 +38,4 @@ export class Attribute extends BasePageEntity implements TAttribute {
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     icon?: string;
-
-}
-
-@ObjectType("AttributeValue")
-export class AttributeValue implements TAttributeValue {
-    @Field(type => String)
-    value: string;
-
-    @Field(type => String, { nullable: true })
-    icon?: string;
-
 }

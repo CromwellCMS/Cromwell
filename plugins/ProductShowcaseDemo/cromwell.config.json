@@ -1,6 +1,6 @@
 {
     "name": "ProductShowcaseDemo",
-    "buildDir": "es",
-    "adminDir": "es/admin",
-    "frontendDir": "es/frontend"
+    "buildDir": "dist",
+    "adminDir": "dist/admin",
+    "frontendDir": "dist/frontend"
 }
