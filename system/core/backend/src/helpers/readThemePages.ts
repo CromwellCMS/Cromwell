@@ -1,5 +1,4 @@
 import { TCmsConfig, TThemeConfig } from '@cromwell/core';
-import crypto from 'crypto';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import readRecursive from 'recursive-readdir';
@@ -10,6 +9,7 @@ type TPagePathInfo = {
     pageComponentName?: string;
     fileContent?: string;
 }
+const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
 /**
  * Returns object with page names as keys paths as values: {"pageName": "pagePath"}
  * @param projectRootDir absolute path to the root of the CMS
@@ -50,7 +50,7 @@ export const readThemePages = async (projectRootDir: string): Promise<Record<str
         files.forEach(p => {
             let pagePath: string | undefined = p.replace(/\\/g, '/');
             const pageName = pagePath.replace(/\.js$/, '').replace(`${pagesPath}/`, '');
-            const pageComponentName = pageName.replace(/\W/g, '_') + '_' + crypto.randomBytes(6).toString('hex');
+            const pageComponentName = pageName.replace(/\W/g, '_') + '_' + getRandStr();
 
             let fileContent: string | undefined = undefined;
             // if (pageName === '_app' || pageName === '_document') {

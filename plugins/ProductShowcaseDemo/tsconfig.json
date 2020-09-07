@@ -10,7 +10,6 @@
         ],
         "allowJs": true,
         "jsx": "react",
-        "sourceMap": true,
         "strict": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,

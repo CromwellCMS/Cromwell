@@ -8,7 +8,6 @@
   "dependencies": {
     "@cromwell/core": "^1.0.0",
     "@cromwell/core-backend": "^1.0.0",
-    "apollo-server": "^2.14.4",
     "async": "^3.2.0",
     "apollo-server-express": "^2.14.4",
     "body-parser": "^1.19.0",
@@ -17,7 +16,6 @@
     "express": "^4.17.1",
     "fs-extra": "^9.0.1",
     "path": "^0.12.7",
-    "pg": "^8.3.2",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^4.2.0",
     "swagger-jsdoc": "^4.0.0",
@@ -29,9 +27,7 @@
     "@types/async": "^3.2.3",
     "@types/express": "^4.17.6",
     "@types/node": "14.0.13",
-    "cross-env": "^7.0.2",
     "nodemon": "^2.0.4",
-    "ts-node": "^8.10.2",
     "typescript": "^3.9.5"
   },
   "scripts": {

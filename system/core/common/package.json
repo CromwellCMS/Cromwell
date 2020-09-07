@@ -2,10 +2,11 @@
   "name": "@cromwell/core",
   "version": "1.0.0",
   "main": "dist/index.js",
-  "module": "es/index.js",
-  "types": "es/index.d.ts",
+  "module": "es",
+  "types": "es",
   "files": [
-    "/dist"
+    "/dist",
+    "/es"
   ],
   "author": "Cromwell",
   "license": "ISC",
@@ -18,13 +19,12 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-node-resolve": "^8.0.1",
+    "@rollup/plugin-typescript": "^5.0.2",
     "@types/node": "14.0.13",
     "@types/react": "16.9.36",
     "@types/react-dom": "16.9.8",
     "rollup": "^2.16.1",
     "rollup-plugin-auto-external": "^2.0.0",
-    "rollup-plugin-sass": "^1.2.2",
-    "rollup-plugin-typescript2": "^0.27.1",
     "tslib": "^2.0.0",
     "typescript": "^3.9.5"
   },

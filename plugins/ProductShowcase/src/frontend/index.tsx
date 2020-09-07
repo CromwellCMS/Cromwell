@@ -7,10 +7,7 @@ import Swiper, { Navigation, Pagination, SwiperOptions, Lazy, Virtual } from 'sw
 import { VirtualData } from 'swiper/types/components/virtual';
 import { gql } from '@apollo/client';
 //@ts-ignore
-import styleInject from 'style-inject';
-//@ts-ignore
 import swiperCSS from "swiper/swiper-bundle.css";
-// styleInject(swiperCSS);
 
 //@ts-ignore
 import styles from './CGallery.module.scss';

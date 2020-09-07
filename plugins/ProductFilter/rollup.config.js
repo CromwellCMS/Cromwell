@@ -1,5 +1,5 @@
 import autoExternal from "rollup-plugin-auto-external";
-import typescript from "rollup-plugin-typescript2";
+import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import cromwellConfig from './cromwell.config.json';
@@ -21,6 +21,6 @@ export default {
         autoExternal(),
         nodeResolve(),
         commonjs(),
-        typescript({ useTsconfigDeclarationDir: true })
+        typescript()
     ]
 };

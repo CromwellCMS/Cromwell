@@ -19,7 +19,9 @@ export const applyMockController = (app: Express): void => {
     },
     {
         key: 'Color',
-        values: [{ value: "Orange", icon: '/images/color_orange.png' }, { value: "Purple", icon: '/images/color_purple.png' }, { value: "Blue", icon: '/images/color_blue.png' }],
+        values: [{ value: "Orange", icon: '/plugins/ProductFilter/color_orange.png' },
+        { value: "Purple", icon: '/plugins/ProductFilter/color_purple.png' },
+        { value: "Blue", icon: '/plugins/ProductFilter/color_blue.png' }],
         type: 'radio'
     },
     {
@@ -140,9 +142,9 @@ export const applyMockController = (app: Express): void => {
             ];
 
             const images = [
-                '/images/product.jpg',
-                '/images/product_2.jpg',
-                '/images/product_3.jpg'
+                '/themes/cromwell-demoshop/product.jpg',
+                '/themes/cromwell-demoshop/product_2.jpg',
+                '/themes/cromwell-demoshop/product_3.jpg'
             ];
             const imagesNum = 6;
             const getRandImg = () => images[Math.floor(Math.random() * (images.length))];

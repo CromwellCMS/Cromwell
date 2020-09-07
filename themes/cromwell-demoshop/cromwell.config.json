@@ -2,7 +2,7 @@
     "themeInfo": {
         "themeName": "cromwell-demoshop",
         "title": "Demoshop",
-        "previewImage": "/images/shopping-cart.png",
+        "previewImage": "/themes/cromwell-demoshop/shopping-cart.png",
         "description": "Online shop theme"
     },
     "appConfig": {
@@ -28,19 +28,19 @@
                     "gallery": {
                         "images": [
                             {
-                                "src": "/images/main_banner_1.png",
+                                "src": "/themes/cromwell-demoshop/main_banner_1.png",
                                 "href": "/pages/some_page"
                             },
                             {
-                                "src": "/images/main_banner_2.png",
+                                "src": "/themes/cromwell-demoshop/main_banner_2.png",
                                 "href": "/pages/some_page"
                             },
                             {
-                                "src": "/images/main_banner_3.png",
+                                "src": "/themes/cromwell-demoshop/main_banner_3.png",
                                 "href": "/pages/some_page"
                             },
                             {
-                                "src": "/images/main_banner_4.png",
+                                "src": "/themes/cromwell-demoshop/main_banner_4.png",
                                 "href": "/pages/some_page"
                             }
                         ],
@@ -137,7 +137,7 @@
     "appCustomConfig": {
         "store": {},
         "header": {
-            "logo": "/images/shopping-cart.png",
+            "logo": "/themes/cromwell-demoshop/shopping-cart.png",
             "contactPhone": "+123 (456) 78-90",
             "welcomeMessage": "Welcome message",
             "topLinks": [

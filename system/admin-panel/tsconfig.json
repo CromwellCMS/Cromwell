@@ -24,7 +24,13 @@
       }
     ]
   },
+  "exclude": [
+    "node_modules",
+    "build"
+  ],
   "include": [
-    "src"
+    "src/**/*.ts",
+    "src/**/*.js",
+    "src/**/*.tsx"
   ]
 }

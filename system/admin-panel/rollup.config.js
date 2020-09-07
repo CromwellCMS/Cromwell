@@ -1,6 +1,6 @@
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
-import typescript from "rollup-plugin-typescript2";
+import typescript from "@rollup/plugin-typescript";
 import packageJson from './package.json';
 import json from '@rollup/plugin-json';
 const { resolve } = require('path');
@@ -28,6 +28,12 @@ const external = id => {
 }
 
 const buildDir = 'build';
+const typeScriptOptions = {
+    module: "ESNext",
+    rootDir: resolve(__dirname, 'src'),
+    allowJs: true,
+    outDir: resolve(__dirname, buildDir)
+};
 
 export default [
     {
@@ -35,8 +41,8 @@ export default [
         input: resolve(__dirname, "src/server.ts"),
         output: [
             {
-                file: resolve(__dirname, buildDir, 'server.js'),
-                // dir: './build',
+                // file: resolve(__dirname, buildDir, 'server.js'),
+                dir: resolve(__dirname, buildDir),
                 format: "cjs",
             }
         ],
@@ -47,13 +53,7 @@ export default [
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({
-                tsconfigOverride: {
-                    compilerOptions: {
-                        module: "ESNext"
-                    }
-                }
-            }),
+            typescript(typeScriptOptions),
         ]
     },
     {
@@ -62,8 +62,8 @@ export default [
         watch: false,
         output: [
             {
-                file: resolve(__dirname, buildDir, 'generator.js'),
-                // dir: './build',
+                // file: resolve(__dirname, buildDir, 'generator.js'),
+                dir: resolve(__dirname, buildDir),
                 format: "cjs",
             }
         ],
@@ -73,13 +73,7 @@ export default [
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({
-                tsconfigOverride: {
-                    compilerOptions: {
-                        module: "ESNext"
-                    }
-                }
-            }),
+            typescript(typeScriptOptions),
         ]
     },
 ];

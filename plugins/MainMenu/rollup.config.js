@@ -1,5 +1,5 @@
 import autoExternal from "rollup-plugin-auto-external";
-import typescript from "rollup-plugin-typescript2";
+import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import json from '@rollup/plugin-json';
@@ -23,6 +23,6 @@ export default {
         autoExternal(),
         nodeResolve(),
         commonjs(),
-        typescript({ useTsconfigDeclarationDir: true })
+        typescript()
     ]
 };

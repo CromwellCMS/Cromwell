@@ -1,7 +1,7 @@
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import autoExternal from "rollup-plugin-auto-external";
-import typescript from "rollup-plugin-typescript2";
+import typescript from "@rollup/plugin-typescript";
 import packageJson from './package.json';
 const { resolve } = require('path');
 
@@ -42,11 +42,7 @@ export default [
             }),
             commonjs(),
             typescript({
-                tsconfigOverride: {
-                    compilerOptions: {
-                        module: "ESNext"
-                    }
-                }
+                module: "ESNext"
             }),
         ]
     },
@@ -68,11 +64,7 @@ export default [
             }),
             commonjs(),
             typescript({
-                tsconfigOverride: {
-                    compilerOptions: {
-                        module: "ESNext"
-                    }
-                }
+                module: "ESNext"
             }),
         ]
     },

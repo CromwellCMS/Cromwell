@@ -16,7 +16,8 @@
     }
   },
   "packages": [
-    "system/**",
+    "system/*",
+    "system/core/*",
     "plugins/*",
     "themes/*"
   ]

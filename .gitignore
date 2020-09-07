@@ -99,4 +99,5 @@ plugins/*/es
 
 /public
 /system/.cromwell
+/package-lock.json
 # db.sqlite3

@@ -180,25 +180,25 @@ export const ProductDetails = observer((props: {
                 <CContainer id="product_8" className={styles.infoBlock}>
                     <CContainer id="product_9" className={styles.advantagesBlock}>
                         <CContainer id="main_02" className={styles.advantageItem}>
-                            <CImage id="main_09" src="/images/free_shipping.png" />
+                            <CImage id="main_09" src="/themes/cromwell-demoshop/free_shipping.png" />
                             <CContainer id="main_11" className={styles.advantageItemText}>
                                 <CText id="main_06" className={styles.advantageItemHeader}>FREE SHIPPING & RETURN</CText>
                             </CContainer>
                         </CContainer>
                         <CContainer id="main_03" className={styles.advantageItem}>
-                            <CImage id="main_09" src="/images/wallet.png" />
+                            <CImage id="main_09" src="/themes/cromwell-demoshop/wallet.png" />
                             <CContainer id="main_13" className={styles.advantageItemText}>
                                 <CText id="main_07" className={styles.advantageItemHeader}>MONEY BACK GUARANTEE</CText>
                             </CContainer>
                         </CContainer>
                         <CContainer id="main_04" className={styles.advantageItem}>
-                            <CImage id="main_09" src="/images/technical-support.png" />
+                            <CImage id="main_09" src="/themes/cromwell-demoshop/technical-support.png" />
                             <CContainer id="main_10" className={styles.advantageItemText}>
                                 <CText id="main_08" className={styles.advantageItemHeader} >ONLINE SUPPORT 24/7</CText>
                             </CContainer>
                         </CContainer>
                     </CContainer>
-                    <CImage id="product_10" src="/images/sub_banner_3.jpg"
+                    <CImage id="product_10" src="/themes/cromwell-demoshop/sub_banner_3.jpg"
                         className={styles.infoBanner} link="/category/1" withEffect={true} />
                 </CContainer>
             </>)}
