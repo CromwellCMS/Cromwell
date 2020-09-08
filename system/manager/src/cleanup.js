@@ -1,5 +1,5 @@
 const fs = require('fs-extra');
-const { projectRootDir, systemDir } = require('./config');
+const { projectRootDir, systemDir } = require('../config');
 
 
 const folders = [

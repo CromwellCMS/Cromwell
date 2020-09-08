@@ -1,15 +1,24 @@
 const { windowManager } = require("node-window-manager");
 const { execSync } = require('child_process');
 const isRunning = require('is-running');
-const config = require('./config');
+const config = require('../config');
 const { saveProcessPid, getProcessPid, getGlobalCache } = require('./cacheManager');
+const nodeCleanup = require('node-cleanup');
 
 const winStart = () => {
 
-    const { projectRootDir } = config;
+    const { projectRootDir, closeAllOnExit } = config;
     const { panelWidth, corePanelHeight, rendererHeigth, serverHeigth, padding, overlayShift,
         monitorNum, startIfNotFound, watch, watchPollTimeout,
         overallTimeout, otherDirs } = config.windowsDev;
+
+    if (closeAllOnExit) {
+        nodeCleanup(function (exitCode, signal) {
+            const globalCache = getGlobalCache();
+            console.log('globalCache', exitCode, globalCache);
+            winKillAll();
+        });
+    }
 
     windowManager.requestAccessibility();
 
@@ -138,6 +147,4 @@ const winKillAll = () => {
     }
 }
 
-module.exports = {
-    winKillAll, winStart
-}
+winStart();

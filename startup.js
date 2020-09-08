@@ -16,9 +16,9 @@ var fs = require('fs');
     }
     function copyFolderRecursiveSync(source, target) {
         var files = [];
-        var targetFolder = path.join(target, path.basename(source));
+        var targetFolder = target;
         if (!fs.existsSync(targetFolder)) {
-            fs.mkdirSync(targetFolder);
+            fs.mkdirSync(targetFolder, { recursive: true });
         }
         if (fs.lstatSync(source).isDirectory()) {
             files = fs.readdirSync(source);
@@ -33,44 +33,81 @@ var fs = require('fs');
         }
     }
 
-    var projectRootDir = __dirname;
-
-    // Check node_modules
-    if (!fs.existsSync(resolve(projectRootDir, 'node_modules'))) {
-        console.log('\x1b[36m%s\x1b[0m', 'Installing lerna...');
-
-        try {
-            spawnSync(`npm install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-        } catch (e) {
-            console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Error during "npm install" command');
-            console.log(e);
-            try {
-                console.log('\x1b[36m%s\x1b[0m', 'Cromwell::startup. Installing lerna, second attempt');
-                spawnSync(`npm install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-            } catch (e) {
-                console.log(e);
-                console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to install lerna');
-                return;
-            }
-        }
+    function isCoreBuilt() {
+        return !(!fs.existsSync(resolve(coreDir, 'common/dist')) ||
+            !fs.existsSync(resolve(coreDir, 'backend/dist')) ||
+            !fs.existsSync(resolve(coreDir, 'frontend/dist')) ||
+            !fs.existsSync(resolve(coreDir, 'common/es')) ||
+            !fs.existsSync(resolve(coreDir, 'backend/es')) ||
+            !fs.existsSync(resolve(coreDir, 'frontend/es')));
     }
 
+    var projectRootDir = __dirname;
     var coreDir = resolve(projectRootDir, 'system/core');
 
-    // Check core
-    if (!fs.existsSync(resolve(coreDir, 'common/node_modules')) ||
+    // Check node_modules
+    if (!fs.existsSync(resolve(projectRootDir, 'node_modules')) ||
         !fs.existsSync(resolve(coreDir, 'backend/node_modules')) ||
-        !fs.existsSync(resolve(coreDir, 'frontend/node_modules'))) {
-        console.log('\x1b[36m%s\x1b[0m', 'Running lerna bootstrap...');
-        var command = 'npx lerna bootstrap --hoist';
+        !fs.existsSync(resolve(coreDir, 'frontend/node_modules'))
+    ) {
+
+        const managerDir = resolve(projectRootDir, 'system/manager');
+        const managerBuildDir = resolve(managerDir, 'build');
+        const crowellaPath = resolve(managerBuildDir, 'cromwella.js');
+
+        // Build Cromwella if it is not built
+        if (!fs.existsSync(crowellaPath)) {
+            // Install Manager modules
+            console.log('\x1b[36m%s\x1b[0m', 'Installing Cromwella...');
+            try {
+                spawnSync(`npm install`, { shell: true, cwd: managerDir, stdio: 'inherit' });
+            } catch (e) {
+                console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Error during "npm install" command');
+                console.log(e);
+                try {
+                    console.log('\x1b[36m%s\x1b[0m', 'Cromwell::startup. Installing lerna, second attempt');
+                    spawnSync(`npm install`, { shell: true, cwd: managerDir, stdio: 'inherit' });
+                } catch (e) {
+                    console.log(e);
+                    console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to install lerna');
+                    return;
+                }
+            }
+            try {
+                spawnSync(`npm run build`, { shell: true, cwd: managerDir, stdio: 'inherit' });
+            } catch (e) {
+                console.log(e);
+            }
+        }
+
+        // Check builds of services to define which mode of Cromwella to run (dev | prod)
+        // If all builds are persisting then will use prod mode (install only dependencies), 
+        // otherwise it'll need to build services using dev mode and installing devDependencies additionally
+        var rendererBuild = resolve(projectRootDir, 'system/renderer/build');
+        var serverBuild = resolve(projectRootDir, 'system/server/build');
+        var adminPanelBuild = resolve(projectRootDir, 'system/admin-panel/build');
+
+        var isProd = true;
+
+        if (!fs.existsSync(rendererBuild) ||
+            !fs.existsSync(serverBuild) ||
+            !fs.existsSync(adminPanelBuild) ||
+            !isCoreBuilt()
+        ) isProd = false;
+
+        var mode = isProd ? 'prod' : 'dev';
+
+        // Run Cromwella
+        console.log('\x1b[36m%s\x1b[0m', `Running Cromwella bootstrap...`);
+        console.log('crowellaPath', crowellaPath)
         try {
-            spawnSync(command, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+            spawnSync(`node ${crowellaPath} ${mode}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
         } catch (e) {
             console.log('\x1b[31m%s\x1b[0m', `Cromwell::startup. Error during ${command} command`);
             console.log(e);
             try {
-                console.log('\x1b[36m%s\x1b[0m', 'Cromwell::startup. Running lerna bootstrap, second attempt');
-                spawnSync(command, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+                console.log('\x1b[36m%s\x1b[0m', 'Cromwell::startup. Running Cromwella bootstrap, second attempt');
+                spawnSync(`node ${crowellaPath}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
             } catch (e) {
                 console.log(e);
                 console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to bootstrap');
@@ -78,21 +115,16 @@ var fs = require('fs');
             }
         }
 
-        if (!fs.existsSync(resolve(coreDir, 'common/node_modules')) ||
+        if (
             !fs.existsSync(resolve(coreDir, 'backend/node_modules')) ||
             !fs.existsSync(resolve(coreDir, 'frontend/node_modules'))) {
-            console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Lerna bootstrap command has been processed but node_modules have not been added in one of the Core package');
+            console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Cromwella bootstrap command has been processed but node_modules have not been added in one of Core package');
             return;
         }
     }
 
     // Build core
-    if (!fs.existsSync(resolve(coreDir, 'common/dist')) ||
-        !fs.existsSync(resolve(coreDir, 'backend/dist')) ||
-        !fs.existsSync(resolve(coreDir, 'frontend/dist')) ||
-        !fs.existsSync(resolve(coreDir, 'common/es')) ||
-        !fs.existsSync(resolve(coreDir, 'backend/es')) ||
-        !fs.existsSync(resolve(coreDir, 'frontend/es'))) {
+    if (!isCoreBuilt()) {
         console.log('\x1b[36m%s\x1b[0m', 'Building Core...');
         try {
             spawnSync('npm run build', { shell: true, cwd: resolve(coreDir, 'common'), stdio: 'inherit' });
@@ -133,11 +165,11 @@ var fs = require('fs');
                         spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
                     }
 
-                    // Check if current project root dir has no public folder and copy media from theme if theme is active
-                    if (!hasPublicDir && cmsConfig && cmsConfig.themeName && config.themeInfo &&
-                        cmsConfig.themeName === config.themeInfo.themeName &&
-                        fs.existsSync(resolve(themeDir, 'public'))) {
-                        copyFolderRecursiveSync(resolve(themeDir, 'public'), resolve(projectRootDir))
+                    // Check if current project root dir has no public folder and copy media from theme
+                    if (!hasPublicDir && config.themeInfo && config.themeInfo.themeName
+                        && fs.existsSync(resolve(themeDir, 'public'))) {
+                        copyFolderRecursiveSync(resolve(themeDir, 'public'),
+                            resolve(projectRootDir, `public/themes/${config.themeInfo.themeName}`));
                     }
                 }
             } catch (e) {
@@ -160,6 +192,12 @@ var fs = require('fs');
                         console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
                         spawnSync('npm run build', { shell: true, cwd: pluginDir, stdio: 'inherit' });
                     }
+                }
+
+                // Check if current project root dir has no public folder and copy media from theme
+                if (!hasPublicDir && config.name && fs.existsSync(resolve(pluginDir, 'public'))) {
+                    copyFolderRecursiveSync(resolve(pluginDir, 'public'),
+                        resolve(projectRootDir, `public/plugins/${config.name}`));
                 }
             } catch (e) {
                 console.log(e);

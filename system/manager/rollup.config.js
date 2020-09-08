@@ -1,14 +1,10 @@
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
-import autoExternal from "rollup-plugin-auto-external";
-import typescript from "rollup-plugin-typescript2";
-import packageJson from './package.json';
+import typescript from "@rollup/plugin-typescript";
 const { resolve } = require('path');
 
 const external = id => {
-    console.log('id', id)
-    const exts = ['tslib', 'util', 'path'];
-
+    const exts = ['util', 'path'];
     for (const ext of exts) if (id === ext) return true;
 
     // for (const pack of Object.keys(packageJson.dependencies)) {
@@ -18,25 +14,26 @@ const external = id => {
     // }
 }
 
-
 const buildDir = 'build';
 
 export default [
     {
-        input: resolve(__dirname, "src/lerna.ts"),
+        input: resolve(__dirname, "src/cromwella.ts"),
         output: [
             {
-                file: resolve(__dirname, buildDir, 'lerna.js'),
+                file: resolve(__dirname, buildDir, 'cromwella.js'),
                 format: "cjs",
             }
         ],
         external,
         plugins: [
             nodeResolve({
-                // preferBuiltins: false
+                preferBuiltins: false
             }),
             commonjs(),
-            typescript(),
+            typescript({
+                module: "ESNext"
+            }),
         ]
     },
 ];

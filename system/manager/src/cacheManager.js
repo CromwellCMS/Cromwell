@@ -1,5 +1,5 @@
 const cacache = require('cacache');
-const { cachePath, cacheKey, cleanCacheOnStart } = require('./config');
+const { cachePath, cacheKey, cleanCacheOnStart } = require('../config');
 
 let globalCache = {};
 

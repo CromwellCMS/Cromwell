@@ -1,16 +1,17 @@
 {
-	"name": "cromwell",
-	"private": true,
-	"scripts": {
-		"startup": "node ./startup.js",
-		"startSystem": "node ./system/manager/src/manager.js start",
-		"dev": "node ./system/manager/src/manager.js dev",
-		"winDev": "node ./system/manager/src/manager.js winDev",
-		"lerna": "npx lerna bootstrap --hoist",
-		"clean": "node ./system/manager/src/cleanup.js",
-		"winRemoveNodeModules": "rmdir /Q /S \"./node_modules\""
-	},
-	"devDependencies": {
-		"lerna": "^3.22.1"
-	}
+    "name": "cromwell",
+    "private": true,
+    "scripts": {
+        "startup": "node ./startup.js",
+        "startSystem": "node ./system/manager/src/manager.js start",
+        "dev": "node ./system/manager/src/manager.js dev",
+        "winDev": "node ./system/manager/src/manager.js winDev",
+        "cromwella": "node ./system/manager/build/cromwella.js prod",
+        "cromwellaDev": "node ./system/manager/build/cromwella.js dev",
+        "cromwellaDevForce": "node ./system/manager/build/cromwella.js devForce",
+        "lerna": "npx lerna bootstrap --hoist",
+        "clean": "node ./system/manager/src/cleanup.js",
+        "winRemoveNodeModules": "rmdir /Q /S \"./node_modules\"",
+        "buildCore": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend"
+    }
 }

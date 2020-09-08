@@ -1,8 +1,7 @@
-const { projectRootDir, closeAllOnExit, services, windowsDev } = require('./config');
-const { winStart, winKillAll } = require('./windowsDev');
+const { projectRootDir, closeAllOnExit, services, windowsDev } = require('../config');
 const { fork, spawn } = require("child_process");
-const nodeCleanup = require('node-cleanup');
-const isRunning = require('is-running');
+// const nodeCleanup = require('node-cleanup');
+// const isRunning = require('is-running');
 const { getGlobalCache, saveProcessPid, loadCache } = require('./cacheManager');
 const { resolve } = require('path');
 
@@ -15,31 +14,30 @@ loadCache(() => {
      */
     const scriptName = process.argv[2];
 
-    if (closeAllOnExit) {
-        nodeCleanup(function (exitCode, signal) {
-            const globalCache = getGlobalCache();
-            console.log('globalCache', exitCode, globalCache);
-            if (scriptName === 'winDev') {
-                winKillAll();
-            }
-            if (scriptName === 'start') {
-                if (globalCache) {
-                    Object.keys(globalCache).forEach(key => {
-                        const pid = globalCache[key];
-                        if (isRunning(pid)) {
-                            try {
-                                console.log('pid', pid)
-                                // process.kill(pid)
-                            } catch (e) { console.log(e) }
-                        }
-                    })
-                }
-            }
-        });
-    }
+    // if (closeAllOnExit) {
+    //     nodeCleanup(function (exitCode, signal) {
+    //         const globalCache = getGlobalCache();
+    //         console.log('globalCache', exitCode, globalCache);
+    //         if (scriptName === 'start') {
+    //             if (globalCache) {
+    //                 Object.keys(globalCache).forEach(key => {
+    //                     const pid = globalCache[key];
+    //                     if (isRunning(pid)) {
+    //                         try {
+    //                             console.log('pid', pid)
+    //                             // process.kill(pid)
+    //                         } catch (e) { console.log(e) }
+    //                     }
+    //                 })
+    //             }
+    //         }
+    //     });
+    // }
 
     if (scriptName === 'winDev') {
-        winStart();
+        const windDevPath = resolve(projectRootDir, 'src/windowsDev.js')
+        spawn(`node ${windDevPath}`, [],
+            { shell: true, stdio: 'inherit', cwd: projectRootDir });
     }
 
     if (scriptName === 'start') {

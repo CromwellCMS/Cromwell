@@ -14,7 +14,7 @@ const main = async () => {
             { shell: true, stdio: 'inherit', cwd: buildDir });
     }
 
-    const buildAdmin = () => {
+    const buildAdminService = () => {
         spawnSync(`npx rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: adminRootDir });
 
@@ -22,9 +22,9 @@ const main = async () => {
             { shell: true, stdio: 'inherit', cwd: adminRootDir });
     }
 
-    const buildApp = () => {
+    const buildWebApp = () => {
         if (!fs.existsSync(buildDir)) {
-            buildAdmin();
+            buildAdminService();
         }
         gen();
         spawnSync(`npx cross-env SCRIPT=production npx webpack`, [],
@@ -37,18 +37,18 @@ const main = async () => {
     }
 
     if (scriptName === 'buildAdmin') {
-        buildAdmin();
+        buildAdminService();
         return;
     }
 
     if (scriptName === 'build') {
-        buildApp();
+        buildWebApp();
         return;
     }
 
     if (scriptName === 'dev') {
         if (!fs.existsSync(buildDir)) {
-            buildAdmin();
+            buildAdminService();
         }
         gen();
 
@@ -63,7 +63,7 @@ const main = async () => {
 
     if (scriptName === 'prod') {
         if (!fs.existsSync(appBuildProd)) {
-            buildApp();
+            buildWebApp();
         }
         if (!fs.existsSync(tempDir)) {
             gen();
