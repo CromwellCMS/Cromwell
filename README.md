@@ -1,12 +1,12 @@
 # Cromwell CMS
 
-Free open source JavaScipt CMS for Next.js blazing-fast statically pre-rendered React websites with custom Themes and Plugins. 
+Free JavaScipt CMS for Next.js blazing-fast statically pre-rendered React websites with custom Themes and Plugins. 
 
 Includes: 
 - Online store and blogging platform management systems.
 - User-friendly drag-and-drop website builder.
 - Simple installation of Themes and Plugins from official store and their management.
-- Integrated Database. SQLite for development and MySQL/PostgreSQL for production
+- Integrated Database. SQLite for development and MySQL/PostgreSQL for production.
 
 
 ## Prerequisites
@@ -47,7 +47,7 @@ Supposed to be started after Server service up and running.
 #### 3. Admin Panel
 > http://localhost:4064
 
-Compilable service that checks for installed plugins and rebuilds with them Admin Panel.
+Self-compilable service that checks for installed plugins and rebuilds with them Admin Panel.
 Uses dedicated Express.js server to serve Admin Panel files and public media files. 
 
 #### 4. Manager

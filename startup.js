@@ -44,37 +44,38 @@ var fs = require('fs');
 
     var projectRootDir = __dirname;
     var coreDir = resolve(projectRootDir, 'system/core');
+    var rootNodeModulesDir = resolve(projectRootDir, 'node_modules');
 
     // Check node_modules
-    if (!fs.existsSync(resolve(projectRootDir, 'node_modules')) ||
+    if (!fs.existsSync(rootNodeModulesDir) ||
         !fs.existsSync(resolve(coreDir, 'backend/node_modules')) ||
         !fs.existsSync(resolve(coreDir, 'frontend/node_modules'))
     ) {
 
-        const managerDir = resolve(projectRootDir, 'system/manager');
-        const managerBuildDir = resolve(managerDir, 'build');
-        const crowellaPath = resolve(managerBuildDir, 'cromwella.js');
+        const crowellaProjectDir = resolve(projectRootDir, 'system/cromwella');
+        const crowellaPath = resolve(crowellaProjectDir, 'build/cromwella.js');
+        const crowellaNodeModules = resolve(crowellaProjectDir, 'node_modules');
 
         // Build Cromwella if it is not built
         if (!fs.existsSync(crowellaPath)) {
-            // Install Manager modules
+            // Install Crowella modules
             console.log('\x1b[36m%s\x1b[0m', 'Installing Cromwella...');
             try {
-                spawnSync(`npm install`, { shell: true, cwd: managerDir, stdio: 'inherit' });
+                spawnSync(`npm link`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
             } catch (e) {
                 console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Error during "npm install" command');
                 console.log(e);
                 try {
-                    console.log('\x1b[36m%s\x1b[0m', 'Cromwell::startup. Installing lerna, second attempt');
-                    spawnSync(`npm install`, { shell: true, cwd: managerDir, stdio: 'inherit' });
+                    console.log('\x1b[36m%s\x1b[0m', 'Cromwell::startup. Installing Cromwella, second attempt');
+                    spawnSync(`npm link`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
                 } catch (e) {
                     console.log(e);
-                    console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to install lerna');
+                    console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to install Cromwella');
                     return;
                 }
             }
             try {
-                spawnSync(`npm run build`, { shell: true, cwd: managerDir, stdio: 'inherit' });
+                spawnSync(`npm run build`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
             } catch (e) {
                 console.log(e);
             }
@@ -95,19 +96,26 @@ var fs = require('fs');
             !isCoreBuilt()
         ) isProd = false;
 
-        var mode = isProd ? 'prod' : 'dev';
+        var mode = isProd ? 'production' : 'development';
+
+
+        // Check if Crowella has been built, but has no node_modules
+        if (!fs.existsSync(crowellaNodeModules)) {
+            const modeStr = mode === 'production' ? ' --production' : '';
+            spawnSync(`npm link${modeStr}`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
+        }
+
 
         // Run Cromwella
         console.log('\x1b[36m%s\x1b[0m', `Running Cromwella bootstrap...`);
-        console.log('crowellaPath', crowellaPath)
         try {
-            spawnSync(`node ${crowellaPath} ${mode}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+            spawnSync(`npx cromwella --env=${mode}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
         } catch (e) {
             console.log('\x1b[31m%s\x1b[0m', `Cromwell::startup. Error during ${command} command`);
             console.log(e);
             try {
                 console.log('\x1b[36m%s\x1b[0m', 'Cromwell::startup. Running Cromwella bootstrap, second attempt');
-                spawnSync(`node ${crowellaPath}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+                spawnSync(`npx cromwella --env=${mode}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
             } catch (e) {
                 console.log(e);
                 console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to bootstrap');

@@ -1,0 +1,9 @@
+{
+  "info": "Config for Cromwella package manager",
+  "packages": [
+    "system/*",
+    "system/core/*",
+    "plugins/*",
+    "themes/*"
+  ]
+}
