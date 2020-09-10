@@ -9,7 +9,7 @@ import colors from 'colors/safe';
 import yargs from 'yargs-parser';
 import { spawnSync, spawn } from "child_process";
 import { sync as symlinkOrCopySync } from 'symlink-or-copy';
-import { TInstallationMode, TPackage, TDependency, THoistedDeps, TNonHoisted, TLocalSymlink } from './types';
+import { TPackage, TDependency, THoistedDeps, TNonHoisted, TLocalSymlink } from './types';
 
 /**
  * Cromwella package manager.
@@ -21,22 +21,16 @@ export const cromwella = () => {
     const projectRootDir: string = (!args.path || typeof args.path !== 'string' || args.path == '') ?
         process.cwd() : args.path;
 
-    // if (!args.path || typeof args.path !== 'string' || args.path == '') {
-    //     console.log(colors.red(`\nCromwella:: Error. Please pass absolute project root directory as --path argument to this script\n`));
-    //     return;
-    // }
+    if (!projectRootDir || typeof projectRootDir !== 'string' || projectRootDir == '') {
+        console.log(colors.red(`\nCromwella:: Error. Please pass absolute project root directory as --path argument\n`));
+        return;
+    }
 
-    const devMods = ['development', 'production'];
-    const installationMode: TInstallationMode = (!args.env || !devMods.includes(args.env)) ?
-        'development' : args.env;
-
+    const isProduction = Boolean(typeof args.production === 'boolean' && args.production)
+    const installationMode = isProduction ? 'production' : 'development';
     const forceInstall = Boolean(args.f);
 
-    let packagePaths: string[] = [];
-    let packages: TPackage[] = [];
 
-    const dependencies: TDependency[] = [];
-    const devDependencies: TDependency[] = [];
     const installPaths: string[] = [projectRootDir];
 
     /**
@@ -47,7 +41,7 @@ export const cromwella = () => {
      * @param store store where to push or edit dependencies info
      */
     const collectDeps = (packageDeps: Record<string, string>,
-        packagePath: string, store: TDependency[]) => {
+        packagePath: string, store: TDependency[]): TDependency[] => {
         // console.log('packagePath', packagePath);
         // console.log('store', store);
         for (const [moduleName, moduleVer] of Object.entries(packageDeps)) {
@@ -68,15 +62,17 @@ export const cromwella = () => {
                 })
             }
         }
+        return store;
     }
 
     /**
      * Hoists provided dependencies. Creates one object with hoisted deps and array of ojects for each package where modules 
      * cannot be hoisted (has different versions).
      * Also will find local packages that depends on other local packages
-     * @param store 
+     * @param store collected dependencies from all package.json's by collectDeps function
+     * @param packages info about all package.json files
      */
-    const hoistDeps = (store: TDependency[]): THoistedDeps => {
+    const hoistDeps = (store: TDependency[], packages: TPackage[]): THoistedDeps => {
 
         // Out main package.json with hoisted modules. Will be temporary placed in root of the project to install all modules
         // { [packageName]: version }
@@ -122,11 +118,11 @@ export const cromwella = () => {
                             const packageName = packages?.find(p => p.path === packagePath)?.name;
 
                             console.log(colors.yellow(`\nCromwella:: Local package ${packageName} at ${packagePath} dependent on different version of hoisted package ${module.name}. \nHoisted (commonly used) ${module.name} is "${hoistedVersion}", but dependent is "${ver}".\n`));
-                            if (installationMode === 'development' && !forceInstall) {
+                            if (!isProduction && !forceInstall) {
                                 console.log(colors.red(`Cromwella:: Error. Abort installation. Please fix "${module.name}": "${ver}" or run installation in force mode (add -f flag).\n`));
                                 process.exit();
                             }
-                            if (installationMode === 'production' || (installationMode === 'development' && forceInstall)) {
+                            if (isProduction || (!isProduction && forceInstall)) {
                                 console.log(colors.yellow(`Cromwella:: Installing ${module.name}: "${ver}" locally...\n`));
                             }
 
@@ -225,6 +221,9 @@ export const cromwella = () => {
         }
     }
 
+    /**
+     * Step 1
+     */
     const globPackages = () => {
         console.log(colors.cyan(`Cromwella:: Start. Scannig for local packages from ./cromwella.json...\n`));
         const globOptions = {};
@@ -243,16 +242,22 @@ export const cromwella = () => {
             console.log(colors.red(`\nCromwella:: Error. Failed to read config in ${cromwellaConfigPath}\n`))
             return;
         }
+
+        const packagePaths: string[] = [];
+
         asyncEach(cromwellaConfig.packages, function (pkg: string, callback: () => void) {
             const globPath = resolve(projectRootDir, pkg, 'package.json');
             glob(globPath, globOptions, function (er: any, files: string[]) {
                 files.forEach(f => packagePaths.push(resolve(projectRootDir, f)));
                 callback();
             })
-        }, onGlobDone);
+        }, () => onGlobDone(packagePaths));
     }
 
-    const onGlobDone = () => {
+    /**
+     * Step 2
+     */
+    const onGlobDone = (packagePaths: string[]) => {
         packagePaths = Array.from(new Set(packagePaths));
         if (packagePaths.length === 0) {
             console.log(colors.red(`\nCromwella:: Error. No local packages found\n`))
@@ -261,7 +266,11 @@ export const cromwella = () => {
         console.log(colors.cyan(`Cromwella:: Bootstraping local packages:`));
         packagePaths.forEach(path => {
             console.log(colors.blue(path));
-        })
+        });
+
+        // Collect info about package.json files
+        const packages: TPackage[] = [];
+
         for (const pkgPath of packagePaths) {
             try {
                 const pkgJson = JSON.parse(fs.readFileSync(pkgPath).toString());
@@ -276,6 +285,29 @@ export const cromwella = () => {
                 console.log(e);
             }
         }
+
+        // Collect dependencies and devDependencies from all packages
+        const dependencies: TDependency[] = [];
+        const devDependencies: TDependency[] = [];
+
+        for (const pkg of packages) {
+            if (pkg.dependencies && pkg.path) {
+                collectDeps(pkg.dependencies, pkg.path, dependencies);
+            }
+        }
+        for (const pkg of packages) {
+            if (pkg.devDependencies && pkg.path) {
+                collectDeps(pkg.devDependencies, pkg.path, devDependencies);
+            }
+        }
+
+        // Merge all dependencies into one object and create symlinks for local packages refs
+        // There proccess can be exited if found same modules with diff versions in dev mode.
+        const hoistedDependencies: THoistedDeps = JSON.parse(JSON.stringify(hoistDeps(dependencies, packages)));
+        const hoistedDevDependencies: THoistedDeps = JSON.parse(JSON.stringify(hoistDeps(devDependencies, packages)));
+        // All ok -> can start installation.
+
+
 
         // Clean node_modules in local packages. Some non-hoisted modules could be installed before
         // But if now versions are changed/fixed, we need to delete old modules. 
@@ -305,26 +337,11 @@ export const cromwella = () => {
             }
         }
 
-        // Collect dependencies and devDependencies from all packages
-        for (const pkg of packages) {
-            if (pkg.dependencies && pkg.path) {
-                collectDeps(pkg.dependencies, pkg.path, dependencies);
-            }
-        }
-        for (const pkg of packages) {
-            if (pkg.devDependencies && pkg.path) {
-                collectDeps(pkg.devDependencies, pkg.path, devDependencies);
-            }
-        }
-
-        // Merge all dependencies into one object and create symlinks for local packages refs
-        const uniDependencies: THoistedDeps = JSON.parse(JSON.stringify(hoistDeps(dependencies)));
-        const uniDevDependencies: THoistedDeps = JSON.parse(JSON.stringify(hoistDeps(devDependencies)));
 
         // Write all dependencies in temp package.json in root and backup original
         createInstallPackage(projectRootDir, {
-            dependencies: uniDependencies.hoisted,
-            devDependencies: uniDevDependencies.hoisted
+            dependencies: hoistedDependencies.hoisted,
+            devDependencies: hoistedDevDependencies.hoisted
         });
 
         // Do the same for all packages with non-hoisted modules
@@ -334,13 +351,13 @@ export const cromwella = () => {
             devDeps?: Record<string, string>;
         }> = {}
 
-        Object.entries(uniDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
+        Object.entries(hoistedDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
             if (!uniques[packagePath]) {
                 uniques[packagePath] = {};
             }
             uniques[packagePath].deps = packageModules.modules;
         });
-        Object.entries(uniDevDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
+        Object.entries(hoistedDevDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
             if (!uniques[packagePath]) {
                 uniques[packagePath] = {};
             }
@@ -357,7 +374,7 @@ export const cromwella = () => {
 
         asyncEach(installPaths, (path: string, callback: () => void) => {
             console.log(colors.cyan(`\nCromwella:: Installing modules for: ${path} package in ${installationMode} mode...\n`));
-            const modeStr = installationMode === 'production' ? ' --production' : '';
+            const modeStr = isProduction ? ' --production' : '';
             try {
                 const proc = spawn(`npm install${modeStr}`, { shell: true, cwd: path, stdio: 'inherit' });
                 proc.on('close', (code: number) => {
@@ -368,17 +385,18 @@ export const cromwella = () => {
             } catch (e) {
                 console.log(colors.red(`\nCromwella:: Error. Failed to install node_modules for ${path} package\n`))
             }
-        }, () => {
-            onInstallationDone(uniDependencies, uniDevDependencies);
-        })
+        }, () => onInstallationDone(hoistedDependencies, hoistedDevDependencies));
     }
 
-    const onInstallationDone = (uniDependencies: THoistedDeps, uniDevDependencies: THoistedDeps) => {
+    /**
+     * Step 3
+     */
+    const onInstallationDone = (hoistedDependencies: THoistedDeps, hoistedDevDependencies: THoistedDeps) => {
         // Make symlinks between local packages
-        uniDependencies.localSymlinks.forEach(link => {
+        hoistedDependencies.localSymlinks.forEach(link => {
             makeSymlink(link.linkPath, link.referredDir);
         });
-        uniDevDependencies.localSymlinks.forEach(link => {
+        hoistedDevDependencies.localSymlinks.forEach(link => {
             makeSymlink(link.linkPath, link.referredDir);
         });
     }

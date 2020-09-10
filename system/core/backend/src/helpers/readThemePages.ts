@@ -2,6 +2,7 @@ import { TCmsConfig, TThemeConfig } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import readRecursive from 'recursive-readdir';
+import { readCMSConfig } from './readCMSConfig';
 
 
 type TPagePathInfo = {
@@ -17,14 +18,7 @@ const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.rando
 export const readThemePages = async (projectRootDir: string): Promise<Record<string, TPagePathInfo>> => {
     const configPath = resolve(projectRootDir, 'system/cmsconfig.json');
 
-    let config: TCmsConfig | undefined = undefined;
-    try {
-        config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
-    } catch (e) {
-        console.log('core/backend::readThemePages ', e);
-    }
-    if (!config) throw new Error('core/backend::readThemePages cannot read CMS config');
-
+    const config = readCMSConfig(projectRootDir);
     const themesDir = resolve(projectRootDir, 'themes').replace(/\\/g, '/');
     const themeDir = `${themesDir}/${config.themeName}`;
 

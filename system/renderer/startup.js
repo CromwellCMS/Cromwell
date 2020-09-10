@@ -1,12 +1,20 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, spawnSync } = require('child_process');
-const scriptName = process.argv[2];
 // const projectRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
 const systemRootDir = resolve(__dirname, '../').replace(/\\/g, '/');
 const rendererRootDir = resolve(__dirname).replace(/\\/g, '/');
 const buildDir = rendererRootDir + '/build';
-const pagesDir = rendererRootDir + '/.cromwell';
+const tempDir = rendererRootDir + '/.cromwell';
+
+/**
+ * 'buildService' - compile "src" files into "build" dir
+ * 'dev' - Next.js "dev" command. Will check if service is built
+ * 'build' - Next.js "build" command. Will check if service is built
+ * 'buildStart' - Run Next.js "build" command and then "start". Will check if service is built
+ * 'prod' - Next.js "start" command. Will check if service is built and if Next.js has build
+ */
+const scriptName = process.argv[2];
 
 const main = async () => {
 
@@ -19,7 +27,7 @@ const main = async () => {
     }
     if (!config) throw new Error('renderer::server cannot read CMS config');
 
-    const buildRenderer = () => {
+    const buildService = () => {
         spawnSync(`npx rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: rendererRootDir });
     }
@@ -31,33 +39,43 @@ const main = async () => {
 
     const build = () => {
         if (!fs.existsSync(buildDir)) {
-            buildRenderer();
+            buildService();
         }
         gen();
         spawnSync(`npx next build`, [],
-            { shell: true, stdio: 'inherit', cwd: pagesDir });
+            { shell: true, stdio: 'inherit', cwd: tempDir });
+    }
+
+    const start = () => {
+        if (!fs.existsSync(`${tempDir}/.next/static`)
+            || !fs.existsSync(`${tempDir}/.next/BUILD_ID`)
+            || !fs.existsSync(`${tempDir}/.next/build-manifest.json`)
+            || !fs.existsSync(`${tempDir}/.next/prerender-manifest.json`)
+        ) {
+            build();
+        }
+
+        spawn(`npx next start -p ${config.frontendPort}`, [],
+            { shell: true, stdio: 'inherit', cwd: tempDir });
     }
 
 
-    if (scriptName === 'buildRenderer') {
-        buildRenderer();
+    if (scriptName === 'buildService') {
+        buildService();
         return;
     }
 
     if (scriptName === 'dev') {
         if (!fs.existsSync(buildDir)) {
-            buildRenderer();
-            gen();
+            buildService();
         }
+        gen();
 
         spawn(`npx rollup -cw`, [],
             { shell: true, stdio: 'inherit', cwd: rendererRootDir });
 
-        spawn(`node ${buildDir}/generator.js`, [],
-            { shell: true, stdio: 'inherit', cwd: rendererRootDir });
-
         spawn(`npx next dev -p ${config.frontendPort}`, [],
-            { shell: true, stdio: 'inherit', cwd: pagesDir });
+            { shell: true, stdio: 'inherit', cwd: tempDir });
 
         return;
     }
@@ -68,18 +86,18 @@ const main = async () => {
     }
 
     if (scriptName === 'prod') {
-        if (!fs.existsSync(`${pagesDir}/.next/static`)
-            || !fs.existsSync(`${pagesDir}/.next/BUILD_ID`)
-            || !fs.existsSync(`${pagesDir}/.next/build-manifest.json`)
-            || !fs.existsSync(`${pagesDir}/.next/prerender-manifest.json`)
-        ) {
-            build();
-        }
-
-        spawn(`npx next start -p ${config.frontendPort}`, [],
-            { shell: true, stdio: 'inherit', cwd: pagesDir });
+        start();
         return;
     }
+
+    if (scriptName === 'buildStart') {
+        build();
+        start();
+        return;
+    }
+
+
+
 
 }
 

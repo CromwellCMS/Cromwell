@@ -1,16 +1,28 @@
-import { apiV1BaseRoute, TAttributeValue, TAttributeInput, TProductReviewInput, TProductCategoryInput, TAttributeInstanceValue } from "@cromwell/core";
-import { Express } from 'express';
-import { getCustomRepository } from "typeorm";
-import { ProductRepository, ProductCategoryRepository, AttributeRepository, ProductReviewRepository } from '@cromwell/core-backend';
+import { TAttributeInput, TProductCategoryInput, TProductReviewInput } from '@cromwell/core';
+import {
+    AttributeRepository,
+    ProductCategoryRepository,
+    ProductRepository,
+    ProductReviewRepository,
+} from '@cromwell/core-backend';
+import { Router } from 'express';
+import { getCustomRepository } from 'typeorm';
 
-
-export const applyMockController = (app: Express): void => {
+export const getMockController = (): Router => {
+    const mockController = Router();
 
     const productRepo = getCustomRepository(ProductRepository);
     const productCategoryRepo = getCustomRepository(ProductCategoryRepository);
     const attributeRepo = getCustomRepository(AttributeRepository);
     const productReviewRepo = getCustomRepository(ProductReviewRepository);
 
+    const shuffleArray = <T extends Array<any>>(array: T): T => {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
     // attributes
     let attributesMock: TAttributeInput[] = [{
         key: "Size",
@@ -97,7 +109,7 @@ export const applyMockController = (app: Express): void => {
      *       200:
      *         description: success
      */
-    app.get(`/${apiV1BaseRoute}/mock/products`, function (req, res) {
+    mockController.get(`/products`, function (req, res) {
         new Promise(async (done) => {
 
             const mockedProdList = [
@@ -249,7 +261,7 @@ export const applyMockController = (app: Express): void => {
      *       200:
      *         description: success
      */
-    app.get(`/${apiV1BaseRoute}/mock/categories`, function (req, res) {
+    mockController.get(`/categories`, function (req, res) {
         new Promise(async (done) => {
 
 
@@ -304,7 +316,7 @@ export const applyMockController = (app: Express): void => {
      *       200:
      *         description: success
      */
-    app.get(`/${apiV1BaseRoute}/mock/attributes`, function (req, res) {
+    mockController.get(`/attributes`, function (req, res) {
         new Promise(async (done) => {
 
             // Clear
@@ -337,7 +349,7 @@ export const applyMockController = (app: Express): void => {
      *       200:
      *         description: success
      */
-    app.get(`/${apiV1BaseRoute}/mock/reviews`, function (req, res) {
+    mockController.get(`/reviews`, function (req, res) {
         new Promise(async (done) => {
 
             // Clear
@@ -363,12 +375,7 @@ export const applyMockController = (app: Express): void => {
             done();
         })
     });
+
+    return mockController;
 }
 
-function shuffleArray<T extends Array<any>>(array: T): T {
-    for (let i = array.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [array[i], array[j]] = [array[j], array[i]];
-    }
-    return array;
-}

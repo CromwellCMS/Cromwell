@@ -12,13 +12,13 @@ import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 //@ts-ignore
-import { pluginsResolvers } from '../.cromwell/imports/resolvers.imports.gen';
+const { pluginsResolvers } = require('../.cromwell/imports/resolvers.imports.gen');
 //@ts-ignore
-import { pluginsEntities } from '../.cromwell/imports/entities.imports.gen';
-import { applyThemeController } from './controllers/themeController';
-import { applyPluginsController } from './controllers/pluginsController';
-import { applyCmsController } from './controllers/cmsController';
-import { applyMockController } from './controllers/mockController';
+const { pluginsEntities } = require('../.cromwell/imports/entities.imports.gen');
+import { getThemeController } from './controllers/themeController';
+import { getPluginsController } from './controllers/pluginsController';
+import { getCmsController } from './controllers/cmsController';
+import { getMockController } from './controllers/mockController';
 import { rebuildPage } from './helpers/PageBuilder';
 import { AuthorResolver } from './resolvers/AuthorResolver';
 import { PostResolver } from './resolvers/PostResolver';
@@ -26,44 +26,39 @@ import { ProductCategoryResolver } from './resolvers/ProductCategoryResolver';
 import { ProductResolver } from './resolvers/ProductResolver';
 import { AttributeResolver } from './resolvers/AttributeResolver';
 import { ProductReviewResolver } from './resolvers/ProductReviewResolver';
-import { Product, ProductCategory, Post, Author, Attribute, ProductReview } from '@cromwell/core-backend';
+import { Product, ProductCategory, Post, Author, Attribute, ProductReview, readCMSConfig } from '@cromwell/core-backend';
 
 setStoreItem('rebuildPage', rebuildPage);
 
+const projectRootDir = resolve(__dirname, '../../../');
 const env: 'dev' | 'prod' | undefined = process.env.ENV ? process.env.ENV as any : 'prod';
 setStoreItem('env', env);
 
-const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
-let config: TCmsConfig | undefined = undefined;
-try {
-    config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
-} catch (e) {
-    console.log('renderer::server ', e);
-}
-if (!config) throw new Error('renderer::server cannot read CMS config')
-setStoreItem('cmsconfig', config);
-
-let connectionOptions: ConnectionOptions | undefined = undefined;
-// if (env === 'dev') {
-connectionOptions = require('../ormconfig.dev.json');
-// }
-if (!connectionOptions || !connectionOptions.type) throw new Error('server.ts: Cannot read connection options');
-setStoreItem('dbType', connectionOptions.type);
-
-const _pluginsEntities = (pluginsEntities && Array.isArray(pluginsEntities)) ? pluginsEntities : [];
-(connectionOptions.entities as any) = [
-    Product, ProductCategory, Post, Author, Attribute, ProductReview,
-    ..._pluginsEntities
-];
-if (typeof connectionOptions.database === 'string') {
-    (connectionOptions.database as any) = resolve(__dirname, '../', connectionOptions.database);
-    console.log('connectionOptions.database', connectionOptions.database);
-}
-
-const _pluginsResolvers = (pluginsResolvers && Array.isArray(pluginsResolvers)) ? pluginsResolvers : [];
+const config = readCMSConfig(projectRootDir)
 
 async function apiServer(): Promise<void> {
+
     if (!config || !config.apiPort || !config.themeName) throw new Error('renderer::server cannot read CMS config ' + JSON.stringify(config));
+
+    let connectionOptions: ConnectionOptions | undefined = undefined;
+    // if (env === 'dev') {
+    connectionOptions = require('../ormconfig.dev.json');
+    // }
+    if (!connectionOptions || !connectionOptions.type) throw new Error('server.ts: Cannot read connection options');
+    setStoreItem('dbType', connectionOptions.type);
+
+    const _pluginsEntities = (pluginsEntities && Array.isArray(pluginsEntities)) ? pluginsEntities : [];
+    (connectionOptions.entities as any) = [
+        Product, ProductCategory, Post, Author, Attribute, ProductReview,
+        ..._pluginsEntities
+    ];
+    if (typeof connectionOptions.database === 'string') {
+        (connectionOptions.database as any) = resolve(__dirname, '../', connectionOptions.database);
+        console.log('connectionOptions.database', connectionOptions.database);
+    }
+
+    const _pluginsResolvers = (pluginsResolvers && Array.isArray(pluginsResolvers)) ? pluginsResolvers : [];
+
 
     if (connectionOptions) createConnection(connectionOptions);
     const schema = await buildSchema({
@@ -92,7 +87,7 @@ async function apiServer(): Promise<void> {
         definition: {
             openapi: '3.0.0',
             info: {
-                title: 'Cromwell Server API', // Title (required)
+                title: 'Cromwell Server API',
                 version: currentApiVersion,
             },
         },
@@ -108,10 +103,10 @@ async function apiServer(): Promise<void> {
     app.use(`/${apiV1BaseRoute}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     setTimeout(() => {
-        applyCmsController(app);
-        applyThemeController(app);
-        applyPluginsController(app);
-        applyMockController(app);
+        app.use(`/${apiV1BaseRoute}/cms`, getCmsController());
+        app.use(`/${apiV1BaseRoute}/theme`, getThemeController());
+        app.use(`/${apiV1BaseRoute}/plugin`, getPluginsController());
+        app.use(`/${apiV1BaseRoute}/mock`, getMockController());
 
         const { address } = app.listen(config?.apiPort, () => {
             console.log(`API server has started at ${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/`);

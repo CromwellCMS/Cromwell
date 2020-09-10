@@ -1,12 +1,13 @@
-import { apiV1BaseRoute, TThemeConfig } from "@cromwell/core";
-import { Express } from 'express';
-import fs from 'fs-extra';
-import { resolve } from 'path';
+import { TThemeConfig } from '@cromwell/core';
 import async from 'async';
+import { Router } from 'express';
+import fs from 'fs-extra';
 
 import { projectRootDir } from '../constants';
 
-export const applyCmsController = (app: Express): void => {
+export const getCmsController = (): Router => {
+
+    const cmsController = Router();
 
     const settingsPath = `${projectRootDir}/settings/`;
     const themesDir = `${projectRootDir}/themes`;
@@ -15,7 +16,6 @@ export const applyCmsController = (app: Express): void => {
     // < HELPERS />
 
     // < API Methods />
-
 
     /**
      * @swagger
@@ -31,7 +31,7 @@ export const applyCmsController = (app: Express): void => {
      *       200:
      *         description: config
      */
-    app.get(`/${apiV1BaseRoute}/cms/config`, function (req, res) {
+    cmsController.get(`/config`, function (req, res) {
         let out: Record<string, any> = {};
         const filePath = `${projectRootDir}/system/cmsconfig.json`;
         fs.access(filePath, fs.constants.R_OK, (err) => {
@@ -69,7 +69,7 @@ export const applyCmsController = (app: Express): void => {
      *       200:
      *         description: theme infos
      */
-    app.get(`/${apiV1BaseRoute}/cms/themes`, function (req, res) {
+    cmsController.get(`/themes`, function (req, res) {
         let out: (Record<string, any>)[] = [];
         fs.readdir(themesDir, (err, files) => {
             if (!err && files) {
@@ -99,9 +99,7 @@ export const applyCmsController = (app: Express): void => {
                 res.status(404).send("Failed to read plugins");
             }
         });
-    })
+    });
 
-
+    return cmsController;
 }
-
-

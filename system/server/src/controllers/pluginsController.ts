@@ -1,10 +1,10 @@
-import { apiV1BaseRoute } from "@cromwell/core";
-import { Express } from 'express';
+import { Router } from 'express';
 import fs from 'fs-extra';
-import { resolve } from 'path';
+
 import { projectRootDir } from '../constants';
 
-export const applyPluginsController = (app: Express): void => {
+export const getPluginsController = (): Router => {
+    const pluginsController = Router();
 
     const settingsPath = `${projectRootDir}/settings/plugins`;
     const pluginsPath = `${projectRootDir}/plugins`;
@@ -82,7 +82,7 @@ export const applyPluginsController = (app: Express): void => {
      *       200:
      *         description: settings
      */
-    app.get(`/${apiV1BaseRoute}/plugin/settings/:pluginName`, function (req, res) {
+    pluginsController.get(`/settings/:pluginName`, function (req, res) {
         let out: Record<string, any> = {};
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {
@@ -118,7 +118,7 @@ export const applyPluginsController = (app: Express): void => {
      *       200:
      *         description: success
      */
-    app.post(`/${apiV1BaseRoute}/plugin/settings/:pluginName`, function (req, res) {
+    pluginsController.post(`/settings/:pluginName`, function (req, res) {
         if (req.params.pluginName && req.params.pluginName !== "") {
             const filePath = `${settingsPath}/${req.params.pluginName}/settings.json`;
             fs.outputFile(filePath, JSON.stringify(req.body), (err) => {
@@ -134,4 +134,5 @@ export const applyPluginsController = (app: Express): void => {
         }
     })
 
+    return pluginsController;
 }

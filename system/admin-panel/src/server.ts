@@ -4,19 +4,13 @@ import webpack from 'webpack';
 import express from 'express';
 import { TCmsConfig } from '@cromwell/core';
 import { appBuildDev, appBuildProd, publicStaticDir, projectRootDir } from './constants';
+import { readCMSConfig } from '@cromwell/core-backend';
 const chalk = require('react-dev-utils/chalk');
 
 const startDevServer = () => {
     const watch = true;
 
-    const configPath = `${projectRootDir}/system/cmsconfig.json`;
-    let CMSconfig: TCmsConfig | undefined = undefined;
-    try {
-        CMSconfig = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
-    } catch (e) {
-        console.log('renderer::server ', e);
-    }
-    if (!CMSconfig) throw new Error('renderer::server cannot read CMS config');
+    const CMSconfig = readCMSConfig(projectRootDir)
 
     const env = process.argv[2];
     const config = require('../webpack.config');

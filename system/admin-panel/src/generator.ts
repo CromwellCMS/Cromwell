@@ -2,21 +2,15 @@ import { TCmsConfig, TPluginConfig } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import { staticDir, publicStaticDir, projectRootDir, localProjectBuildDir, generatorOutDir, localProjectDir } from './constants';
+import { readCMSConfig } from '@cromwell/core-backend';
 
 //@ts-ignore
 import lnk from 'lnk';
 
 const generateAdminPanelImports = async () => {
     const configPath = `${projectRootDir}/system/cmsconfig.json`;
-    let config: TCmsConfig | undefined = undefined;
-    try {
-        config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
-    } catch (e) {
-        console.log('renderer::server ', e);
-    }
-    if (!config || !config.themeName) throw new Error('renderer::server cannot read CMS config');
-
-
+    const config = readCMSConfig(projectRootDir);
+    
     // Import global plugins
     const globalPluginsDir = `${projectRootDir}/plugins`;
     const pluginsNames: string[] = fs.readdirSync(globalPluginsDir);
