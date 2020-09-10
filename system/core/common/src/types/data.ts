@@ -85,6 +85,7 @@ export type TCmsConfig = {
     apiPort: number;
     adminPanelPort: number;
     frontendPort: number;
+    managerPort: number;
     themeName: string;
     defaultPageSize?: number;
     /** Array of available currencies: ['USD', 'EURO', ...] */

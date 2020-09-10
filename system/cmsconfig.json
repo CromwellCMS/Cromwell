@@ -1,4 +1,5 @@
 {
+    "managerPort": 4016,
     "apiPort": 4032,
     "adminPanelPort": 4064,
     "frontendPort": 4128,

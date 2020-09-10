@@ -97,25 +97,24 @@ var fs = require('fs');
         ) isProd = false;
 
         var mode = isProd ? 'production' : 'development';
-
+        var modeStr = mode === 'production' ? '--production' : '';
 
         // Check if Crowella has been built, but has no node_modules
         if (!fs.existsSync(crowellaNodeModules)) {
-            const modeStr = mode === 'production' ? ' --production' : '';
-            spawnSync(`npm link${modeStr}`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
+            spawnSync(`npm link ${modeStr}`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
         }
 
 
         // Run Cromwella
         console.log('\x1b[36m%s\x1b[0m', `Running Cromwella bootstrap...`);
         try {
-            spawnSync(`npx cromwella --env=${mode}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+            spawnSync(`npx cromwella ${modeStr}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
         } catch (e) {
             console.log('\x1b[31m%s\x1b[0m', `Cromwell::startup. Error during ${command} command`);
             console.log(e);
             try {
                 console.log('\x1b[36m%s\x1b[0m', 'Cromwell::startup. Running Cromwella bootstrap, second attempt');
-                spawnSync(`npx cromwella --env=${mode}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+                spawnSync(`npx cromwella ${modeStr}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
             } catch (e) {
                 console.log(e);
                 console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to bootstrap');
@@ -213,9 +212,10 @@ var fs = require('fs');
         }
     }
 
+    var managerPath = resolve(projectRootDir, 'system/manager/startup.js')
     // Start system
     try {
-        spawnSync('node ./system/manager/src/manager.js start', { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`node ${managerPath} production`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     } catch (e) {
         console.log(e);
         console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager:Failed to Start system');

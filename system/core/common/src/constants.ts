@@ -1,5 +1,5 @@
 import { TDBEntity, TGraphQLNode } from './types/data';
-import { getCmsConfig } from './GlobalStore';
+import { getCmsConfig } from './globalStore';
 
 export enum BasePageNames {
     Index = 'index',
@@ -86,6 +86,18 @@ export const serviceLocator = {
         } else {
             if (!cmsConfig.apiPort) throw new Error('core:serviceLocator:getApiUrl !apiPort');
             return `${protocol}://localhost:${cmsConfig.apiPort}`
+        }
+    },
+    getManagerUrl: () => {
+        const cmsConfig = getCmsConfig();
+        if (!cmsConfig) throw new Error('core:serviceLocator:getManagerUrl !cmsConfig');
+        const protocol = cmsConfig.protocol ? cmsConfig.protocol : 'http';
+
+        if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
+            return `${protocol}://${cmsConfig.domain}`
+        } else {
+            if (!cmsConfig.apiPort) throw new Error('core:serviceLocator:getApiUrl !apiPort');
+            return `${protocol}://localhost:${cmsConfig.managerPort}`
         }
     },
     getFrontendUrl: () => {

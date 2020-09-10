@@ -12,15 +12,17 @@
     "strictPropertyInitialization": false,
     "experimentalDecorators": true,
     "noImplicitAny": false,
-    "allowJs": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "build"
   ],
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "src/utils/cacheManager.js",
+    "src/utils/windowsDev.js", "src/config.js"
   ],
 }
