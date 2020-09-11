@@ -23,12 +23,12 @@ loadCache(() => {
         })
     }
 
-    if (scriptName === 'winDev') {
-        startManagerServer();
-        const windDevPath = resolve(localProjectDir, 'src/utils/windowsDev.js')
-        spawn(`node ${windDevPath}`, [],
-            { shell: true, stdio: 'inherit', cwd: localProjectDir });
-    }
+    // if (scriptName === 'winDev') {
+    //     startManagerServer();
+    //     const windDevPath = resolve(localProjectDir, 'src/utils/windowsDev.js')
+    //     spawn(`node ${windDevPath}`, [],
+    //         { shell: true, stdio: 'inherit', cwd: localProjectDir });
+    // }
 
     if (scriptName === 'production') {
         startManagerServer();

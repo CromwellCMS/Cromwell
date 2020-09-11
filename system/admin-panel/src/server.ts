@@ -4,13 +4,13 @@ import webpack from 'webpack';
 import express from 'express';
 import { TCmsConfig } from '@cromwell/core';
 import { appBuildDev, appBuildProd, publicStaticDir, projectRootDir } from './constants';
-import { readCMSConfig } from '@cromwell/core-backend';
+import { readCMSConfigSync } from '@cromwell/core-backend';
 const chalk = require('react-dev-utils/chalk');
 
 const startDevServer = () => {
     const watch = true;
 
-    const CMSconfig = readCMSConfig(projectRootDir)
+    const CMSconfig = readCMSConfigSync(projectRootDir)
 
     const env = process.argv[2];
     const config = require('../webpack.config');

@@ -19,6 +19,7 @@ import { getThemeController } from './controllers/themeController';
 import { getPluginsController } from './controllers/pluginsController';
 import { getCmsController } from './controllers/cmsController';
 import { getMockController } from './controllers/mockController';
+import { getManagerController } from './controllers/managerController';
 import { rebuildPage } from './helpers/PageBuilder';
 import { AuthorResolver } from './resolvers/AuthorResolver';
 import { PostResolver } from './resolvers/PostResolver';
@@ -26,7 +27,7 @@ import { ProductCategoryResolver } from './resolvers/ProductCategoryResolver';
 import { ProductResolver } from './resolvers/ProductResolver';
 import { AttributeResolver } from './resolvers/AttributeResolver';
 import { ProductReviewResolver } from './resolvers/ProductReviewResolver';
-import { Product, ProductCategory, Post, Author, Attribute, ProductReview, readCMSConfig } from '@cromwell/core-backend';
+import { Product, ProductCategory, Post, Author, Attribute, ProductReview, readCMSConfigSync } from '@cromwell/core-backend';
 
 setStoreItem('rebuildPage', rebuildPage);
 
@@ -34,7 +35,7 @@ const projectRootDir = resolve(__dirname, '../../../');
 const env: 'dev' | 'prod' | undefined = process.env.ENV ? process.env.ENV as any : 'prod';
 setStoreItem('env', env);
 
-const config = readCMSConfig(projectRootDir)
+const config = readCMSConfigSync(projectRootDir)
 
 async function apiServer(): Promise<void> {
 
@@ -106,6 +107,7 @@ async function apiServer(): Promise<void> {
         app.use(`/${apiV1BaseRoute}/cms`, getCmsController());
         app.use(`/${apiV1BaseRoute}/theme`, getThemeController());
         app.use(`/${apiV1BaseRoute}/plugin`, getPluginsController());
+        app.use(`/${apiV1BaseRoute}/manager`, getManagerController());
         app.use(`/${apiV1BaseRoute}/mock`, getMockController());
 
         const { address } = app.listen(config?.apiPort, () => {

@@ -28,4 +28,5 @@ export * from './repositories/AttributeRepository';
 export * from './repositories/ProductReviewRepository';
 
 export * from './helpers/readThemePages';
-export * from './helpers/readCMSConfig';
+export * from './helpers/cmsConfigController';
+export * from './helpers/paths';

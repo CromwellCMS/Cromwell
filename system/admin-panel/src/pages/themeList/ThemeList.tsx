@@ -1,4 +1,4 @@
-import { getCmsConfig, TThemeInfo } from '@cromwell/core';
+import { getCmsConfig, TThemeInfo, TCmsConfig } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { Badge, Button, Card, CardActionArea, CardActions, CardContent, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
@@ -10,17 +10,28 @@ import styles from './ThemeList.module.scss';
 export default function ThemeList() {
     const [infos, setInfos] = useState<TThemeInfo[]>([]);
     const [isListLoading, setIsListLoading] = useState<boolean>(true);
-    const cmsConfig = getCmsConfig();
+    const [cmsConfig, setCmsConfig] = useState<TCmsConfig | undefined>(getCmsConfig());
     const history = useHistory();
+    const client = getRestAPIClient();
 
     useEffect(() => {
         (async () => {
-            const client = getRestAPIClient();
             const infos = await client?.getThemesInfo();
             if (infos) setInfos(infos);
             setIsListLoading(false);
         })();
     }, []);
+
+    const handleSetActiveTheme = async (info: TThemeInfo) => {
+        if (client) {
+            setIsListLoading(true);
+            await client.changeTheme(info.themeName);
+            const updatedConfig = await client.getCmsConfig();
+            setCmsConfig(updatedConfig);
+            setIsListLoading(false);
+
+        }
+    }
 
     return (
         <div className={styles.ThemeList}>
@@ -56,7 +67,8 @@ export default function ThemeList() {
                                 </Button>
                             )}
                             {!isActive && (
-                                <Button size="small" color="primary" variant="contained">
+                                <Button size="small" color="primary" variant="contained"
+                                    onClick={() => handleSetActiveTheme(info)}>
                                     Set active
                                 </Button>
                             )}

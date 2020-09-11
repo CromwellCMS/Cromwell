@@ -52,7 +52,7 @@ const main = async () => {
         }
         gen();
 
-        spawnSync(`npx cross-env SCRIPT=buildAdmin npx webpack --watch`, [],
+        spawn(`npx cross-env SCRIPT=buildAdmin npx webpack --watch`, [],
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
 
         spawn(`node ./server.js development`, [],

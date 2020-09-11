@@ -1,6 +1,6 @@
 import { TCmsConfig, setStoreItem, TPluginConfig } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
-import { readCMSConfig } from '@cromwell/core-backend';
+import { readCMSConfigSync } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -10,8 +10,8 @@ import lnk from 'lnk';
 const main = async () => {
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
     const projectRootDir = resolve(__dirname, '../../../').replace(/\\/g, '/');
-    const config = readCMSConfig(projectRootDir);
-    
+    const config = readCMSConfigSync(projectRootDir);
+
     const appConfig = await getRestAPIClient()?.getAppConfig();
     const globalPluginsDir = `${projectRootDir}/plugins`;
     const localDir = resolve(__dirname, '../').replace(/\\/g, '/');

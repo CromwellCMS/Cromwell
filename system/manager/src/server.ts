@@ -1,5 +1,5 @@
 import { apiV1BaseRoute, TCmsConfig, setStoreItem, currentApiVersion, serviceLocator } from '@cromwell/core';
-import { readCMSConfig } from '@cromwell/core-backend';
+import { readCMSConfigSync } from '@cromwell/core-backend';
 import express from 'express';
 import { resolve } from 'path';
 import bodyParser from 'body-parser';
@@ -8,11 +8,12 @@ import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import config from './config';
 import { getServiceController } from './controllers/serviceController';
+import { getRendererController } from './controllers/rendererController';
 
 export const startManagerServer = () => {
     const { projectRootDir, localProjectDir } = config;
 
-    const cmsconfig = readCMSConfig(projectRootDir)
+    const cmsconfig = readCMSConfigSync(projectRootDir)
 
     const app = express();
     app.use(bodyParser.urlencoded({ extended: false }));
@@ -39,6 +40,7 @@ export const startManagerServer = () => {
     app.use(`/${apiV1BaseRoute}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
     app.use(`/${apiV1BaseRoute}/services`, getServiceController());
+    app.use(`/${apiV1BaseRoute}/renderer`, getRendererController());
 
 
     app.listen(cmsconfig.managerPort, () => {

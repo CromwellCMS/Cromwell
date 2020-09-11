@@ -101,6 +101,18 @@ class CRestAPIClient {
         } catch (e) { console.error('CRestAPIClient::setPluginSettings', e) }
         return (res && res.data) ? res.data : null;
     }
+
+    // < Manager >
+
+    public changeTheme = async (themeName: string): Promise<boolean | null> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/manager/change-theme/${themeName}`);
+        } catch (e) { console.error('CRestAPIClient::changeTheme', e) }
+        return (res && res.data) ? res.data : null;
+    }
+
+    // < / Manager >
 }
 
 export const getRestAPIClient = (): CRestAPIClient | undefined => {

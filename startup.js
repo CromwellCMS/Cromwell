@@ -4,7 +4,6 @@ var resolve = path.resolve;
 var fs = require('fs');
 
 (function () {
-
     function copyFileSync(source, target) {
         var targetFile = target;
         if (fs.existsSync(target)) {
@@ -52,9 +51,9 @@ var fs = require('fs');
         !fs.existsSync(resolve(coreDir, 'frontend/node_modules'))
     ) {
 
-        const crowellaProjectDir = resolve(projectRootDir, 'system/cromwella');
-        const crowellaPath = resolve(crowellaProjectDir, 'build/cromwella.js');
-        const crowellaNodeModules = resolve(crowellaProjectDir, 'node_modules');
+        var crowellaProjectDir = resolve(projectRootDir, 'system/cromwella');
+        var crowellaPath = resolve(crowellaProjectDir, 'build/cromwella.js');
+        var crowellaNodeModules = resolve(crowellaProjectDir, 'node_modules');
 
         // Build Cromwella if it is not built
         if (!fs.existsSync(crowellaPath)) {
@@ -161,7 +160,8 @@ var fs = require('fs');
     var themesDir = resolve(projectRootDir, 'themes');
     if (fs.existsSync(themesDir)) {
         var themes = fs.readdirSync(themesDir);
-        for (var theme of themes) {
+        for (var i = 0; i < themes.length; i++) {
+            var theme = themes[i];
             var themeDir = resolve(themesDir, theme);
             var configPath = resolve(themeDir, 'cromwell.config.json');
             try {
@@ -189,7 +189,8 @@ var fs = require('fs');
     var pluginsDir = resolve(projectRootDir, 'plugins');
     if (fs.existsSync(pluginsDir)) {
         var plugins = fs.readdirSync(pluginsDir);
-        for (var plugin of plugins) {
+        for (var i = 0; i < plugins.length; i++) {
+            var plugin = plugins[i];
             var pluginDir = resolve(pluginsDir, plugin);
             var configPath = resolve(pluginDir, 'cromwell.config.json');
             try {

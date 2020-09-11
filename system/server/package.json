@@ -8,8 +8,9 @@
   "dependencies": {
     "@cromwell/core": "^1.0.0",
     "@cromwell/core-backend": "^1.0.0",
-    "async": "^3.2.0",
     "apollo-server-express": "^2.14.4",
+    "async": "^3.2.0",
+    "axios": "^0.19.2",
     "body-parser": "^1.19.0",
     "class-validator": "^0.12.2",
     "cors": "^2.8.5",
@@ -34,7 +35,8 @@
   "scripts": {
     "build": "node startup.js build",
     "dev": "node startup.js dev",
-    "prod": "node startup.js prod"
+    "prod": "node startup.js prod",
+    "watch": "npx rollup -cw"
   },
   "description": ""
 }

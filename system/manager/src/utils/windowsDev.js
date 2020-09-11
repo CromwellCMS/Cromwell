@@ -5,13 +5,16 @@ const config = require('../config');
 const { saveProcessPid, getProcessPid, getAllServices, loadCache, getRunTimeCache } = require('./cacheManager');
 const nodeCleanup = require('node-cleanup');
 const { winKillPid } = require('./winUtils');
+const { resolve } = require("path");
 
 const winStart = () => {
 
-    const { projectRootDir, closeAllOnExit, cacheKeys } = config;
+    const { projectRootDir, closeAllOnExit, cacheKeys, windowsDevServices } = config;
     const { panelWidth, corePanelHeight, rendererHeigth, serverHeigth, padding, overlayShift,
         monitorNum, startIfNotFound, watch, watchPollTimeout,
         overallTimeout, otherDirs } = config.windowsDev;
+
+    const services = windowsDevServices;
 
     if (closeAllOnExit) {
         nodeCleanup(function (exitCode, signal) {
@@ -72,58 +75,87 @@ const winStart = () => {
 
     const winUpdateCycle = async () => {
         // CORE
-        await startTerminal(cacheKeys.coreCommon, `cd ${projectRootDir}\\system\\core\\common && npm run watch`, {
-            x: startX + coreWindowWidth,
-            y: coreStartY,
-            height: coreHeigth,
-            width: coreWindowWidth + padding
-        });
-        await startTerminal(cacheKeys.coreBackend, `cd ${projectRootDir}\\system\\core\\backend && npm run watch`, {
-            x: startX + coreWindowWidth * 2,
-            y: coreStartY,
-            height: coreHeigth,
-            width: coreWindowWidth + padding
-        });
-        // await startTerminal(cacheKeys.coreFrontend, `cd ${projectRootDir}\\system\\core\\frontend && npm run watch`, {
-        //     x: startX,
-        //     y: coreStartY,
-        //     height: coreHeigth,
-        //     width: coreWindowWidth + padding
-        // });
+        if (services.coreCommon) {
+            await startTerminal(cacheKeys.coreCommon, `cd ${projectRootDir}\\system\\core\\common && npm run ${services.coreCommon}`, {
+                x: startX + coreWindowWidth,
+                y: coreStartY,
+                height: coreHeigth,
+                width: coreWindowWidth + padding
+            });
+        }
 
-        // SERVER
-        await startTerminal(cacheKeys.server, `cd ${projectRootDir}\\system\\server && npm run dev`, {
-            x: startX,
-            y: monitorBounds.y,
-            height: monitorBounds.height * serverHeigth + padding,
-            width: maxWidth - overlayShift + padding
-        }, 5);
+        if (services.coreBackend) {
+            await startTerminal(cacheKeys.coreBackend, `cd ${projectRootDir}\\system\\core\\backend && npm run ${services.coreBackend}`, {
+                x: startX + coreWindowWidth * 2,
+                y: coreStartY,
+                height: coreHeigth,
+                width: coreWindowWidth + padding
+            });
+        }
 
-        // // RENDERER
-        // await startTerminal(cacheKeys.renderer, `cd ${projectRootDir}\\system\\renderer && npm run dev`, {
-        //     x: startX,
-        //     y: monitorBounds.y + monitorBounds.height * serverHeigth,
-        //     height: monitorBounds.height * rendererHeigth + padding,
-        //     width: maxWidth + padding
-        // }, 10);
+        if (services.coreFrontend) {
+            await startTerminal(cacheKeys.coreFrontend, `cd ${projectRootDir}\\system\\core\\frontend && npm run ${services.coreFrontend}`, {
+                x: startX,
+                y: coreStartY,
+                height: coreHeigth,
+                width: coreWindowWidth + padding
+            });
+        }
 
-        // // ADMIN PANEL
-        // await startTerminal(cacheKeys.adminPanel, `cd ${projectRootDir}\\system\\admin-panel && npm run dev`, {
-        //     x: startX + overlayShift,
-        //     y: monitorBounds.y,
-        //     height: monitorBounds.height * serverHeigth + padding,
-        //     width: maxWidth - overlayShift + padding
-        // }, 10);
+        if (services.server) {
+            // SERVER
+            await startTerminal(cacheKeys.server, `cd ${projectRootDir}\\system\\server && npm run ${services.server}`, {
+                x: startX,
+                y: monitorBounds.y,
+                height: monitorBounds.height * serverHeigth + padding,
+                width: maxWidth - overlayShift + padding
+            }, 5);
+        }
 
-        // // Templates & Plugins
-        // otherDirs.forEach((dir, i) => {
-        //     await startTerminal(dir, `cd ${projectRootDir}\\${dir} && npm run watch`, {
-        //         x: startX + i * overlayShift,
-        //         y: monitorBounds.y + monitorBounds.height * serverHeigth + monitorBounds.height * rendererHeigth,
-        //         height: monitorBounds.height * rendererHeigth / 2,
-        //         width: maxWidth - (otherDirs.length - 1) * overlayShift
-        //     }, 10);
-        // })
+        if (services.renderer) {
+            // RENDERER
+            await startTerminal(cacheKeys.renderer, `cd ${projectRootDir}\\system\\renderer && npm run ${services.renderer}`, {
+                x: startX,
+                y: monitorBounds.y + monitorBounds.height * serverHeigth,
+                height: monitorBounds.height * rendererHeigth + padding,
+                width: maxWidth + padding
+            }, 10);
+        }
+
+        if (services.adminPanel) {
+            // ADMIN PANEL
+            await startTerminal(cacheKeys.adminPanel, `cd ${projectRootDir}\\system\\admin-panel && npm run ${services.adminPanel}`, {
+                x: startX + overlayShift,
+                y: monitorBounds.y,
+                height: monitorBounds.height * serverHeigth + padding,
+                width: maxWidth - overlayShift + padding
+            }, 10);
+        }
+
+        if (services.manager) {
+            // MANAGER
+            await startTerminal(cacheKeys.manager, `cd ${projectRootDir}\\system\\manager && npm run ${services.manager}`, {
+                x: startX + overlayShift,
+                y: monitorBounds.y,
+                height: monitorBounds.height * serverHeigth + padding,
+                width: maxWidth - overlayShift + padding
+            }, 10);
+        }
+
+        if (services.other) {
+            // Templates & Plugins
+            let index = 0;
+            for (const dir of otherDirs) {
+                const fullDir = resolve(projectRootDir, dir);
+                await startTerminal(dir, `cd ${fullDir} && npm run ${services.other}`, {
+                    x: startX + index * overlayShift,
+                    y: monitorBounds.y + monitorBounds.height * serverHeigth + monitorBounds.height * rendererHeigth,
+                    height: monitorBounds.height * rendererHeigth / 2,
+                    width: maxWidth - (otherDirs.length - 1) * overlayShift
+                }, 10);
+                index++;
+            }
+        }
 
         if (watch) {
             setTimeout(() => {

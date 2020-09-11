@@ -5,7 +5,7 @@
         "startup": "node ./startup.js",
         "startSystem": "node ./system/manager/startup.js production",
         "dev": "node ./system/manager/startup.js development",
-        "winDev": "node ./system/manager/startup.js winDev",
+        "winDev": "node ./system/manager/src/utils/windowsDev.js",
         "cromwellaDev": "npx cromwella",
         "cromwellaDevForce": "npx cromwella -f",
         "cromwellaProd": "npx cromwella --production",

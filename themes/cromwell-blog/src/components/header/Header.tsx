@@ -47,7 +47,8 @@ const Header = observer(() => {
     const topLinks: TTopLink[] | undefined = getAppCustomConfigProp('header/topLinks');
     const cmsConfig = getCmsConfig();
     const currencyOptions: string[] = cmsConfig && cmsConfig.currencyOptions ? cmsConfig.currencyOptions : [];
-    const logoHref: string | undefined = getAppCustomConfigProp('header/logo');
+    let logoHref: string | undefined = getAppCustomConfigProp('header/logo');
+    logoHref = '/themes/cromwell-blog/blog.png';
 
     return (
         <div className={`${styles.Header} ${commonStyles.text}`}>

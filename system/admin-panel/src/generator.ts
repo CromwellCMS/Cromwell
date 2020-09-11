@@ -2,15 +2,14 @@ import { TCmsConfig, TPluginConfig } from '@cromwell/core';
 import { readThemePages } from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import { staticDir, publicStaticDir, projectRootDir, localProjectBuildDir, generatorOutDir, localProjectDir } from './constants';
-import { readCMSConfig } from '@cromwell/core-backend';
+import { readCMSConfigSync } from '@cromwell/core-backend';
 
 //@ts-ignore
 import lnk from 'lnk';
 
 const generateAdminPanelImports = async () => {
-    const configPath = `${projectRootDir}/system/cmsconfig.json`;
-    const config = readCMSConfig(projectRootDir);
-    
+    const config = readCMSConfigSync(projectRootDir);
+
     // Import global plugins
     const globalPluginsDir = `${projectRootDir}/plugins`;
     const pluginsNames: string[] = fs.readdirSync(globalPluginsDir);
@@ -85,21 +84,6 @@ const generateAdminPanelImports = async () => {
 
         customPageLazyImports += `\nconst ${pageComponentName}_LazyPage = lazy(() => import('${pagePath}'))`;
         customPageLazyImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_LazyPage;\n   `;
-
-        // // Render page to static HTML
-        // if (pagePath) {
-        //     console.log('pagePath', pagePath);
-        //     const pageComp: () => JSX.Element = require(pagePath);
-        //     console.log('pageComp', pageComp);
-        //     // const pageComp: () => JSX.Element = require('C:/Users/a.glebov/projects/cromwell/themes/cromwell-demoshop/es/index').index.default;
-
-        //     if (pageComp) {
-        //         const html = ReactDOMServer.renderToStaticMarkup(React.createElement(pageComp));
-
-        //         customPageStatics += `\nconst ${pageComponentName}_StaticPage = '${html}'`;
-        //         customPageStaticsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_StaticPage;\n   `;
-        //     }
-        // }
     })
 
     const adminPanelContent = `

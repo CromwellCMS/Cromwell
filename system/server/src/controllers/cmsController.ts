@@ -2,6 +2,7 @@ import { TThemeConfig } from '@cromwell/core';
 import async from 'async';
 import { Router } from 'express';
 import fs from 'fs-extra';
+import { getCMSConfigPath } from '@cromwell/core-backend';
 
 import { projectRootDir } from '../constants';
 
@@ -33,7 +34,7 @@ export const getCmsController = (): Router => {
      */
     cmsController.get(`/config`, function (req, res) {
         let out: Record<string, any> = {};
-        const filePath = `${projectRootDir}/system/cmsconfig.json`;
+        const filePath = getCMSConfigPath(projectRootDir);
         fs.access(filePath, fs.constants.R_OK, (err) => {
             if (!err) {
                 fs.readFile(filePath, (err, data) => {

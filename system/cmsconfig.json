@@ -1,23 +1,23 @@
 {
-    "managerPort": 4016,
-    "apiPort": 4032,
-    "adminPanelPort": 4064,
-    "frontendPort": 4128,
-    "themeName": "cromwell-demoshop",
-    "defaultPageSize": 15,
-    "currencyOptions": [
-        "USD",
-        "EURO",
-        "RUB"
-    ],
-    "currencySymbols": {
-        "USD": "$",
-        "EURO": "€",
-        "RUB": "₽"
-    },
-    "currencyRatio": {
-        "USD": 1,
-        "EURO": 0.8,
-        "RUB": 60
-    }
+  "managerPort": 4016,
+  "apiPort": 4032,
+  "adminPanelPort": 4064,
+  "frontendPort": 4128,
+  "themeName": "cromwell-demoshop",
+  "defaultPageSize": 15,
+  "currencyOptions": [
+    "USD",
+    "EURO",
+    "RUB"
+  ],
+  "currencySymbols": {
+    "USD": "$",
+    "EURO": "€",
+    "RUB": "₽"
+  },
+  "currencyRatio": {
+    "USD": 1,
+    "EURO": 0.8,
+    "RUB": 60
+  }
 }

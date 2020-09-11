@@ -26,7 +26,8 @@
     "buildRenderer": "node startup.js buildRenderer",
     "dev": "node startup.js dev",
     "build": "node startup.js build",
-    "start": "node startup.js prod"
+    "start": "node startup.js prod",
+    "watch": "npx rollup -cw"
   },
   "description": "",
   "resolutions": {
