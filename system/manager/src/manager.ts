@@ -6,6 +6,7 @@ import { startManagerServer } from './server';
 import { startServer } from './managers/serverManager';
 import { startRenderer } from './managers/rendererManager';
 import { startAdminPanel } from './managers/adminPanelManager';
+import { ManagerState } from './managerState';
 
 type TScriptName = 'production' | 'development' | 'winDev';
 
@@ -19,8 +20,10 @@ loadCache(() => {
     const startSystem = () => {
         startServer(() => {
             startAdminPanel();
-            startRenderer();
-        })
+            startRenderer(undefined, (message) => {
+                console.log(message);
+            });
+        }, ManagerState.logLine)
     }
 
     // if (scriptName === 'winDev') {

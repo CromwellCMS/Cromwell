@@ -1,88 +1,180 @@
 import { startService, closeService } from './baseManager';
 import { resolve } from 'path';
 import config from '../config';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import fs from 'fs-extra';
+import {
+    serviceLocator, apiV1BaseRoute
+} from '@cromwell/core';
 import {
     getThemeDirSync, saveCMSConfigSync, getCMSConfigSync,
     getRendererDir, getRendererTempDir, getRendererTempNextDir,
-    getRendererSavedBuildDirByTheme
+    getRendererSavedBuildDirByTheme, rendererMessages
 } from '@cromwell/core-backend';
+import { ManagerState } from '../managerState';
 const { projectRootDir, cacheKeys, servicesEnv } = config;
 
+type TRendererCommands = 'buildService' | 'dev' | 'build' | 'buildStart' | 'prod';
 const rendererDir = getRendererDir(projectRootDir);
 const rendererTempDir = getRendererTempDir(projectRootDir);
 const rendererStartupPath = resolve(rendererDir, 'startup.js');
 
-type TRendererCommands = 'buildService' | 'dev' | 'build' | 'buildStart' | 'prod';
+export const startRenderer = (cb?: (success: boolean) => void,
+    onLog?: (message: string) => void) => {
+    const rendererUrl = serviceLocator.getFrontendUrl();
 
-export const startRenderer = () => {
     if (servicesEnv.renderer) {
-        startService(rendererStartupPath, cacheKeys.renderer, [servicesEnv.renderer])
+        const onOut = (data) => {
+            // console.log(`stdout: ${data}`);
+            onLog?.(data?.toString() ?? data);
+        }
+        ManagerState.rendererStatus = 'busy';
+        const proc = startService(rendererStartupPath, cacheKeys.renderer, [servicesEnv.renderer], onOut)
+
+        const onMessage = async (message: string) => {
+            // console.log('rendererManager onMessage', message)
+            if (message === rendererMessages.onStartMessage) {
+                ManagerState.rendererStatus = 'busy';
+                let success = false;
+                try {
+                    success = (await axios.get(rendererUrl)).status < 400;
+                } catch (e) {
+                    onLog?.(e);
+                }
+                proc.removeListener('message', onMessage);
+                proc.stdout?.removeListener('data', onOut);
+                proc.stderr?.removeListener('data', onOut);
+
+                if (success) {
+                    ManagerState.rendererStatus = 'running';
+                } else {
+                    ManagerState.rendererStatus = 'inactive';
+                }
+
+                // console.log('success', success);
+                cb?.(success);
+            }
+            if (message === rendererMessages.onStartErrorMessage) {
+                ManagerState.rendererStatus = 'inactive';
+                const mess = 'RendererManager:: failed to start Renderer';
+                onLog?.(mess);
+                // console.log(mess);
+                cb?.(false);
+            }
+        };
+
+        proc?.on('message', onMessage);
     }
 }
 
-export const closeRenderer = (cb?: () => void) => {
-    closeService(cacheKeys.renderer, cb);
-}
-
-export const buildAndStart = (cb?: () => void) => {
-    closeService(cacheKeys.renderer, () => {
-        const commad: TRendererCommands = 'buildStart';
-        startService(rendererStartupPath, cacheKeys.renderer, [commad]);
-        if (cb) cb();
+export const closeRenderer = (cb?: (success) => void) => {
+    closeService(cacheKeys.renderer, (success) => {
+        ManagerState.rendererStatus = 'inactive';
+        cb?.(success);
     });
 }
 
-export const changeThemeSync = (themeName: string, cb?: () => void): boolean => {
+export const buildAndStart = (cb?: (success: boolean) => void,
+    onLog?: (message: string) => void) => {
+    closeService(cacheKeys.renderer, () => {
+        ManagerState.rendererStatus = 'building';
+        const commad: TRendererCommands = 'build';
+        const onOut = (data) => {
+            // console.log(`stdout: ${data}`);
+            onLog?.(data?.toString() ?? data);
+        }
+        const proc = startService(rendererStartupPath, cacheKeys.renderer, [commad], onOut);
+        let hasErrors = false;
+        proc.on('message', (message: string) => {
+            if (message === rendererMessages.onBuildErrorMessage) {
+                hasErrors = true;
+            }
+            if (message === rendererMessages.onBuildEndMessage) {
+                if (hasErrors) {
+                    ManagerState.rendererStatus = 'inactive';
+                    const mess = 'RendererManager:: Renderer build failed';
+                    onLog?.(mess);
+                    cb?.(false);
+                    return;
+                } else {
+                    startRenderer(cb, onLog);
+                }
+            }
+        });
+    });
+}
+
+export const changeTheme = (themeName: string, cb?: (success: boolean) => void,
+    onLog?: (message: string) => void) => {
+    if (ManagerState.rendererStatus === 'busy' ||
+        ManagerState.rendererStatus === 'building') {
+        onLog?.(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, aborting changeTheme process..`)
+        return;
+    }
     const themeDir = getThemeDirSync(projectRootDir, themeName);
     const config = getCMSConfigSync(projectRootDir);
-    console.log('rendererManager:: changeThemeSync', themeName, themeDir);
+    onLog?.(`RendererManager:: changeTheme: ${themeName}, ${themeDir}`);
     if (themeDir && config) {
+        ManagerState.rendererStatus = 'busy';
         const currentThemeName = config.themeName;
         const newThemeName = themeName;
 
         const currentArchiveBuildDir = getRendererSavedBuildDirByTheme(projectRootDir, currentThemeName);
         const newArchiveBuildDir = getRendererSavedBuildDirByTheme(projectRootDir, newThemeName);
-        // Check for older build of current theme and delete
-        if (fs.existsSync(currentArchiveBuildDir)) {
-            console.log('rendererManager:: removing current archive: ' + currentArchiveBuildDir);
-            fs.removeSync(currentArchiveBuildDir);
-        }
-        // Archive build of current theme
-        const nextBuildDir = getRendererTempNextDir(projectRootDir);
-        if (fs.existsSync(nextBuildDir)) {
-            console.log(`rendererManager:: archiving current build ${nextBuildDir} to: ${currentArchiveBuildDir}`);
-            fs.copySync(nextBuildDir, currentArchiveBuildDir);
-        }
-        // Delete current build of the theme
-        if (fs.existsSync(nextBuildDir)) {
-            console.log(`rendererManager:: removing current build ${nextBuildDir}`);
-            fs.removeSync(nextBuildDir);
-        }
-
         let hasBuilt = false;
-        // Unarchive old build of the new theme if exists
-        if (fs.existsSync(newArchiveBuildDir)) {
-            console.log(`rendererManager:: unarchiving old build of a new theme ${newArchiveBuildDir}`);
-            fs.copySync(newArchiveBuildDir, nextBuildDir);
-            fs.removeSync(newArchiveBuildDir);
-            hasBuilt = true;
+        try {
+            // Check for older build of current theme and delete
+            if (fs.existsSync(currentArchiveBuildDir)) {
+                onLog?.('RendererManager:: removing current archive: ' + currentArchiveBuildDir);
+                fs.removeSync(currentArchiveBuildDir);
+            }
+            // Archive build of current theme
+            const nextBuildDir = getRendererTempNextDir(projectRootDir);
+            if (fs.existsSync(nextBuildDir)) {
+                onLog?.(`RendererManager:: archiving current build ${nextBuildDir} to: ${currentArchiveBuildDir}`);
+                fs.copySync(nextBuildDir, currentArchiveBuildDir);
+            }
+            // Delete current build of the theme
+            if (fs.existsSync(nextBuildDir)) {
+                onLog?.(`RendererManager:: removing current build ${nextBuildDir}`);
+                fs.removeSync(nextBuildDir);
+            }
+
+
+            // Unarchive old build of the new theme if exists
+            if (fs.existsSync(newArchiveBuildDir)) {
+                onLog?.(`RendererManager:: unarchiving old build of a new theme ${newArchiveBuildDir}`);
+                fs.copySync(newArchiveBuildDir, nextBuildDir);
+                fs.removeSync(newArchiveBuildDir);
+                hasBuilt = true;
+            }
+
+            // Save into CMS config
+            config.themeName = themeName;
+            onLog?.(`RendererManager:: saving CMS config with themeName: ${newThemeName}`)
+            saveCMSConfigSync(projectRootDir, config);
+        } catch (e) {
+            onLog?.(e);
+            ManagerState.rendererStatus = 'inactive';
+            hasBuilt = false;
         }
 
-        // Save into CMS config
-        config.themeName = themeName;
-        console.log(`rendererManager:: saving CMS config with themeName: ${newThemeName}`)
-        saveCMSConfigSync(projectRootDir, config);
-
-        closeRenderer(() => {
+        closeRenderer((success) => {
             if (hasBuilt) {
-                startRenderer();
+                startRenderer((success) => {
+                    if (success) onLog?.(`RendererManager:: Renderer successfully started`);
+                    else onLog?.(`RendererManager:: Failed to start renderer`);
+                    cb?.(success);
+                }, onLog);
             } else {
-                buildAndStart()
+                buildAndStart((success) => {
+                    if (success) onLog?.(`RendererManager:: Renderer successfully started`);
+                    else onLog?.(`RendererManager:: Failed to start renderer`);
+                    cb?.(success);
+                }, onLog)
             }
         });
-
-        return true;
+    } else {
+        cb?.(false)
     }
-    return false;
 }

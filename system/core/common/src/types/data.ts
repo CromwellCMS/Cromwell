@@ -24,6 +24,7 @@ export type TCromwellStore = {
     env?: 'dev' | 'prod';
     graphQLClient?: any;
     restAPIClient?: any;
+    webSocketClient?: any;
     cstore?: any;
 }
 

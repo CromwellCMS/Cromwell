@@ -19,6 +19,9 @@ export const getRendererDir = (projectRootDir: string) =>
 export const getRendererTempDir = (projectRootDir: string) =>
     resolve(projectRootDir, renderDirChunk, '.cromwell');
 
+export const getRendererBuildDir = (projectRootDir: string) =>
+    resolve(projectRootDir, renderDirChunk, 'build');
+
 export const getRendererTempNextDir = (projectRootDir: string) =>
     resolve(projectRootDir, renderDirChunk, '.cromwell/.next');
 

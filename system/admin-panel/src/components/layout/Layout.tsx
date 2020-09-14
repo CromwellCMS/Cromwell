@@ -1,9 +1,10 @@
 import 'gridlex/src/gridlex.scss';
 import 'reset-css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import React, { useEffect } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
-
+import { ToastContainer, toast } from 'react-toastify';
 import { pageInfos } from '../../constants/PageInfos';
 import Header from '../header/Header';
 import Page from '../page/Page';
@@ -38,6 +39,7 @@ function Layout() {
           </div>
         </div>
       </BrowserRouter>
+      <ToastContainer />
     </div>
   );
 }

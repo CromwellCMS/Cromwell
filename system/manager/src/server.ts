@@ -9,6 +9,8 @@ import swaggerJSDoc from 'swagger-jsdoc';
 import config from './config';
 import { getServiceController } from './controllers/serviceController';
 import { getRendererController } from './controllers/rendererController';
+import WebSocket from 'ws';
+import { ManagerState } from './managerState';
 
 export const startManagerServer = () => {
     const { projectRootDir, localProjectDir } = config;
@@ -43,8 +45,38 @@ export const startManagerServer = () => {
     app.use(`/${apiV1BaseRoute}/renderer`, getRendererController());
 
 
-    app.listen(cmsconfig.managerPort, () => {
+    const server = app.listen(cmsconfig.managerPort, () => {
         console.log(`Manager server has started at ${serviceLocator.getManagerUrl()}/${apiV1BaseRoute}/`);
         if (process.send) process.send('ready');
+    });
+
+
+
+    const wss = new WebSocket.Server({ noServer: true });
+    wss.on('connection', function connection(ws) {
+        ws.on('message', function incoming(message) {
+            console.log('received: %s', message);
+        });
+        ws.send('Manager connected ' + new Date());
+        ManagerState.log.forEach(line => ws.send(line));
+
+        ManagerState.addOnLogListener((line) => {
+            ws.send(line);
+        })
+    });
+
+    const managerWSRoute = `/${apiV1BaseRoute}/manager/log`;
+
+    server.on('upgrade', function upgrade(request, socket, head) {
+        const pathname = request?.url;
+        console.log('Manager:: pathname', managerWSRoute, pathname)
+
+        if (pathname === managerWSRoute) {
+            wss.handleUpgrade(request, socket, head, function done(ws) {
+                wss.emit('connection', ws, request);
+            });
+        } else {
+            socket.destroy();
+        }
     });
 }

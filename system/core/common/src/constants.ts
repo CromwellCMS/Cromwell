@@ -88,6 +88,19 @@ export const serviceLocator = {
             return `${protocol}://localhost:${cmsConfig.apiPort}`
         }
     },
+    // Websocket API URL
+    getApiWsUrl: () => {
+        const cmsConfig = getCmsConfig();
+        if (!cmsConfig) throw new Error('core:serviceLocator:getApiUrl !cmsConfig');
+        const protocol = 'ws';
+
+        if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
+            return `${protocol}://${cmsConfig.domain}`
+        } else {
+            if (!cmsConfig.apiPort) throw new Error('core:serviceLocator:getApiWsUrl !apiPort');
+            return `${protocol}://localhost:${cmsConfig.apiPort}`
+        }
+    },
     getManagerUrl: () => {
         const cmsConfig = getCmsConfig();
         if (!cmsConfig) throw new Error('core:serviceLocator:getManagerUrl !cmsConfig');
@@ -96,9 +109,18 @@ export const serviceLocator = {
         if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
             return `${protocol}://${cmsConfig.domain}`
         } else {
-            if (!cmsConfig.apiPort) throw new Error('core:serviceLocator:getApiUrl !apiPort');
+            if (!cmsConfig.managerPort) throw new Error('core:serviceLocator:getApiUrl !apiPort');
             return `${protocol}://localhost:${cmsConfig.managerPort}`
         }
+    },
+    getManagerWsUrl: () => {
+        // Only available at localhost for usage of API Server (as a proxy)
+        const cmsConfig = getCmsConfig();
+        if (!cmsConfig) throw new Error('core:serviceLocator:getManagerWS !cmsConfig');
+        const protocol = 'ws';
+
+        if (!cmsConfig.managerPort) throw new Error('core:serviceLocator:getApiUrl !apiPort');
+        return `${protocol}://localhost:${cmsConfig.managerPort}`
     },
     getFrontendUrl: () => {
         const cmsConfig = getCmsConfig();

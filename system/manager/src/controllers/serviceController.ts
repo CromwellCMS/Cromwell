@@ -2,8 +2,6 @@
 import { Router } from 'express';
 import fs from 'fs-extra';
 import { getAllServices, saveProcessPid, loadCache } from '../utils/cacheManager';
-import { closeServer } from '../managers/serverManager';
-import { buildAndStart, changeThemeSync } from '../managers/rendererManager';
 
 export const getServiceController = (): Router => {
 

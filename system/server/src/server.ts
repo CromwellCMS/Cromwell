@@ -11,6 +11,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 //@ts-ignore
 const { pluginsResolvers } = require('../.cromwell/imports/resolvers.imports.gen');
 //@ts-ignore
@@ -82,7 +83,9 @@ async function apiServer(): Promise<void> {
 
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(bodyParser.json());
-    app.use(cors());
+    app.use(cors({
+        origin: [serviceLocator.getFrontendUrl(), serviceLocator.getAdminPanelUrl()]
+    }));
 
     const swaggerOptions = {
         definition: {
@@ -109,11 +112,27 @@ async function apiServer(): Promise<void> {
         app.use(`/${apiV1BaseRoute}/plugin`, getPluginsController());
         app.use(`/${apiV1BaseRoute}/manager`, getManagerController());
         app.use(`/${apiV1BaseRoute}/mock`, getMockController());
+        const wsProxy = createProxyMiddleware(serviceLocator.getManagerWsUrl());
+        app.use(wsProxy);
 
-        const { address } = app.listen(config?.apiPort, () => {
+        const server = app.listen(config?.apiPort, () => {
             console.log(`API server has started at ${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/`);
             if (process.send) process.send('ready');
         });
+
+        //// Manager websocket log proxy: 
+        const managerWSRoute = `/${apiV1BaseRoute}/manager/log`;
+        if (wsProxy.upgrade) server.on('upgrade', (request, socket, head) => {
+            const pathname = request?.url;
+            console.log('pathname', pathname);
+            if (pathname === managerWSRoute) {
+                if (wsProxy.upgrade) wsProxy.upgrade(request, socket, head);
+            } else {
+                socket.destroy();
+            }
+        });
+        //// 
+
     }, 100)
 }
 

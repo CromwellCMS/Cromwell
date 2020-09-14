@@ -13,6 +13,7 @@ export * from './HOCs/FrontendPlugin';
 export * from './constants';
 export * from './api/CGraphQLClient';
 export * from './api/CRestAPIClient';
+export * from './api/CWebSocketClient';
 export * from './CStore';
 export * from './types';
 

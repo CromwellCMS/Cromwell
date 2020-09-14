@@ -1,15 +1,17 @@
 import { getCmsConfig, TThemeInfo, TCmsConfig } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestAPIClient, getWebSocketClient } from '@cromwell/core-frontend';
 import { Badge, Button, Card, CardActionArea, CardActions, CardContent, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { themeEditPageInfo } from '../../constants/PageInfos';
 import styles from './ThemeList.module.scss';
+import { ManagerLogger } from '../../components/managerLogger/ManagerLogger';
 
 export default function ThemeList() {
     const [infos, setInfos] = useState<TThemeInfo[]>([]);
     const [isListLoading, setIsListLoading] = useState<boolean>(true);
+    const [isChangingTheme, setIsChangingTheme] = useState<boolean>(false);
     const [cmsConfig, setCmsConfig] = useState<TCmsConfig | undefined>(getCmsConfig());
     const history = useHistory();
     const client = getRestAPIClient();
@@ -24,11 +26,11 @@ export default function ThemeList() {
 
     const handleSetActiveTheme = async (info: TThemeInfo) => {
         if (client) {
-            setIsListLoading(true);
+            setIsChangingTheme(true);
             await client.changeTheme(info.themeName);
             const updatedConfig = await client.getCmsConfig();
             setCmsConfig(updatedConfig);
-            setIsListLoading(false);
+            setIsChangingTheme(false);
 
         }
     }
@@ -82,6 +84,7 @@ export default function ThemeList() {
                     </Card>
                 )
             })}
+            {isChangingTheme && <ManagerLogger />}
         </div>
     )
 }

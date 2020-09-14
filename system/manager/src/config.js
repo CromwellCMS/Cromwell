@@ -64,7 +64,7 @@ const config = {
         "watch": true,
         "watchPollTimeout": 1000, // ms
         "overallTimeout": 0,
-        /**  Will run terminal with npm script from windowsDevServices.other in every dir. Paths are relative at projectRootDir */
+        /**  Will run terminal with npm script from windowsDevServices.other in every dir. Paths are relative from projectRootDir */
         "otherDirs": [
             "themes/cromwell-demoshop",
             // "plugins/ProductFilter"

@@ -5,11 +5,12 @@ const { projectRootDir, cacheKeys, servicesEnv } = config;
 
 const serverStartupPath = resolve(projectRootDir, 'system/server/startup.js');
 
-export const startServer = (onStart: () => void) => {
+export const startServer = (onStart: () => void, onLog?: (message: string) => void) => {
     console.log('servicesEnv', servicesEnv)
     let serverProc;
     if (servicesEnv.server) {
-        serverProc = startService(serverStartupPath, cacheKeys.server, [servicesEnv.server])
+        serverProc = startService(serverStartupPath, cacheKeys.server, [servicesEnv.server],
+            (data) => onLog?.(data?.toString() ?? data))
     }
     if (serverProc) {
         serverProc.on('message', (message) => {

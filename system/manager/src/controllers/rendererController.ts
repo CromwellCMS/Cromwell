@@ -1,6 +1,7 @@
 
 import { Router } from 'express';
-import { buildAndStart, changeThemeSync } from '../managers/rendererManager';
+import { buildAndStart, changeTheme } from '../managers/rendererManager';
+import { ManagerState } from '../managerState';
 
 export const getRendererController = (): Router => {
 
@@ -49,11 +50,14 @@ export const getRendererController = (): Router => {
       */
     rendererController.get(`/change-theme/:themeName`, function (req, res) {
         const themeName = req.params.themeName;
-        let success = false;
         if (themeName && themeName !== '') {
-            success = changeThemeSync(themeName);
+            ManagerState.log = [];
+            changeTheme(themeName, (success) => {
+                res.send(success);
+            }, ManagerState.logLine);
+        } else {
+            res.send(false);
         }
-        res.send(success);
     });
 
     return rendererController;

@@ -28,14 +28,14 @@ const winStart = () => {
     const monitorBounds = monitor.getBounds();
     console.log('monitorBounds', monitorBounds);
 
-    // console.log('globalCache', globalCache);
-
     const startX = monitorBounds.x + monitorBounds.width * (1 - panelWidth);
     const maxWidth = monitorBounds.width * panelWidth;
 
     const coreWindowWidth = monitorBounds.width * panelWidth / 3;
     const coreHeigth = monitorBounds.height * corePanelHeight;
     const coreStartY = monitorBounds.y + monitorBounds.height * (1 - corePanelHeight);
+
+    const getCacheKey = (key) => `winDev_${key}`;
 
     const startTerminal = async (title, command, bounds, timeout) => {
 
@@ -76,7 +76,7 @@ const winStart = () => {
     const winUpdateCycle = async () => {
         // CORE
         if (services.coreCommon) {
-            await startTerminal(cacheKeys.coreCommon, `cd ${projectRootDir}\\system\\core\\common && npm run ${services.coreCommon}`, {
+            await startTerminal(getCacheKey(cacheKeys.coreCommon), `cd ${projectRootDir}\\system\\core\\common && npm run ${services.coreCommon}`, {
                 x: startX + coreWindowWidth,
                 y: coreStartY,
                 height: coreHeigth,
@@ -85,7 +85,7 @@ const winStart = () => {
         }
 
         if (services.coreBackend) {
-            await startTerminal(cacheKeys.coreBackend, `cd ${projectRootDir}\\system\\core\\backend && npm run ${services.coreBackend}`, {
+            await startTerminal(getCacheKey(cacheKeys.coreBackend), `cd ${projectRootDir}\\system\\core\\backend && npm run ${services.coreBackend}`, {
                 x: startX + coreWindowWidth * 2,
                 y: coreStartY,
                 height: coreHeigth,
@@ -94,7 +94,7 @@ const winStart = () => {
         }
 
         if (services.coreFrontend) {
-            await startTerminal(cacheKeys.coreFrontend, `cd ${projectRootDir}\\system\\core\\frontend && npm run ${services.coreFrontend}`, {
+            await startTerminal(getCacheKey(cacheKeys.coreFrontend), `cd ${projectRootDir}\\system\\core\\frontend && npm run ${services.coreFrontend}`, {
                 x: startX,
                 y: coreStartY,
                 height: coreHeigth,
@@ -104,7 +104,7 @@ const winStart = () => {
 
         if (services.server) {
             // SERVER
-            await startTerminal(cacheKeys.server, `cd ${projectRootDir}\\system\\server && npm run ${services.server}`, {
+            await startTerminal(getCacheKey(cacheKeys.server), `cd ${projectRootDir}\\system\\server && npm run ${services.server}`, {
                 x: startX,
                 y: monitorBounds.y,
                 height: monitorBounds.height * serverHeigth + padding,
@@ -114,7 +114,7 @@ const winStart = () => {
 
         if (services.renderer) {
             // RENDERER
-            await startTerminal(cacheKeys.renderer, `cd ${projectRootDir}\\system\\renderer && npm run ${services.renderer}`, {
+            await startTerminal(getCacheKey(cacheKeys.renderer), `cd ${projectRootDir}\\system\\renderer && npm run ${services.renderer}`, {
                 x: startX,
                 y: monitorBounds.y + monitorBounds.height * serverHeigth,
                 height: monitorBounds.height * rendererHeigth + padding,
@@ -124,7 +124,7 @@ const winStart = () => {
 
         if (services.adminPanel) {
             // ADMIN PANEL
-            await startTerminal(cacheKeys.adminPanel, `cd ${projectRootDir}\\system\\admin-panel && npm run ${services.adminPanel}`, {
+            await startTerminal(getCacheKey(cacheKeys.adminPanel), `cd ${projectRootDir}\\system\\admin-panel && npm run ${services.adminPanel}`, {
                 x: startX + overlayShift,
                 y: monitorBounds.y,
                 height: monitorBounds.height * serverHeigth + padding,
@@ -134,7 +134,7 @@ const winStart = () => {
 
         if (services.manager) {
             // MANAGER
-            await startTerminal(cacheKeys.manager, `cd ${projectRootDir}\\system\\manager && npm run ${services.manager}`, {
+            await startTerminal(getCacheKey(cacheKeys.manager), `cd ${projectRootDir}\\system\\manager && npm run ${services.manager}`, {
                 x: startX + overlayShift,
                 y: monitorBounds.y,
                 height: monitorBounds.height * serverHeigth + padding,
@@ -147,7 +147,7 @@ const winStart = () => {
             let index = 0;
             for (const dir of otherDirs) {
                 const fullDir = resolve(projectRootDir, dir);
-                await startTerminal(dir, `cd ${fullDir} && npm run ${services.other}`, {
+                await startTerminal(getCacheKey(dir), `cd ${fullDir} && npm run ${services.other}`, {
                     x: startX + index * overlayShift,
                     y: monitorBounds.y + monitorBounds.height * serverHeigth + monitorBounds.height * rendererHeigth,
                     height: monitorBounds.height * rendererHeigth / 2,
