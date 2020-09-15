@@ -2,6 +2,7 @@ const fs = require('fs-extra');
 const { spawn, spawnSync } = require('child_process');
 const { getCMSConfigSync, rendererMessages } = require('@cromwell/core-backend');
 const { projectRootDir, buildDir, tempDir, rendererRootDir } = require('./constants');
+const { resolve } = require('path');
 
 /**
  * 'buildService' - compile "src" files into "build" dir
@@ -17,9 +18,23 @@ const main = async () => {
     let config = getCMSConfigSync(projectRootDir);
     if (!config) throw new Error('renderer::server cannot read CMS config');
 
+    const isServiceBuilt = () => {
+        return (fs.existsSync(buildDir)
+            && fs.existsSync(resolve(buildDir, 'renderer.js'))
+            && fs.existsSync(resolve(buildDir, 'generator.js')))
+    }
+
     const buildService = () => {
         spawnSync(`npx rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: rendererRootDir });
+    }
+
+    const isFrontendBuilt = () => {
+        return (fs.existsSync(`${tempDir}/.next/static`)
+            && fs.existsSync(`${tempDir}/.next/BUILD_ID`)
+            && fs.existsSync(`${tempDir}/.next/build-manifest.json`)
+            && fs.existsSync(`${tempDir}/.next/prerender-manifest.json`)
+        )
     }
 
     const gen = () => {
@@ -27,35 +42,47 @@ const main = async () => {
             { shell: true, stdio: 'inherit', cwd: buildDir });
     }
 
-    const build = () => {
+    const build = async () => {
         if (process.send) process.send(rendererMessages.onBuildStartMessage);
         try {
-            if (!fs.existsSync(buildDir)) {
+            if (!isServiceBuilt()) {
                 buildService();
             }
             gen();
-            const proc = spawnSync(`npx next build`, [],
-                { shell: true, cwd: tempDir });
+            await new Promise(res => {
+                const proc = spawn(`npx next build`, [],
+                    { shell: true, stdio: 'pipe', cwd: tempDir });
 
-            if (proc && proc.stderr) {
-                console.log(proc.stderr.toString());
-                if (process.send) process.send(rendererMessages.onBuildErrorMessage);
-            }
+                if (proc.stderr && proc.stderr.on && proc.stderr.once) {
+                    proc.stderr.on('data', (data) => {
+                        console.log(data.toString ? data.toString() : data);
+                    });
+                    proc.stderr.once('data', (data) => {
+                        if (process.send) process.send(rendererMessages.onBuildErrorMessage);
+                    });
+                }
+                if (proc.stdout && proc.stdout.on) {
+                    proc.stdout.on('data', (data) => {
+                        console.log(data.toString ? data.toString() : data);
+                    });
+                }
+
+                proc.on('close', () => {
+                    res();
+                })
+            })
+
         } catch (e) {
             console.log(e);
         }
         if (process.send) process.send(rendererMessages.onBuildEndMessage);
     }
 
-    const start = () => {
+    const start = async () => {
         let proc;
         try {
-            if (!fs.existsSync(`${tempDir}/.next/static`)
-                || !fs.existsSync(`${tempDir}/.next/BUILD_ID`)
-                || !fs.existsSync(`${tempDir}/.next/build-manifest.json`)
-                || !fs.existsSync(`${tempDir}/.next/prerender-manifest.json`)
-            ) {
-                build();
+            if (!isFrontendBuilt()) {
+                await build();
             }
 
             proc = spawn(`npx next start -p ${config.frontendPort}`, [],
@@ -87,7 +114,7 @@ const main = async () => {
     }
 
     if (scriptName === 'dev') {
-        if (!fs.existsSync(buildDir)) {
+        if (!isServiceBuilt()) {
             buildService();
         }
         gen();
@@ -112,7 +139,7 @@ const main = async () => {
     }
 
     if (scriptName === 'buildStart') {
-        build();
+        await build();
         start();
         return;
     }

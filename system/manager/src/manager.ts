@@ -23,7 +23,7 @@ loadCache(() => {
             startRenderer(undefined, (message) => {
                 console.log(message);
             });
-        }, ManagerState.logLine)
+        }, ManagerState.getLogger('server'))
     }
 
     // if (scriptName === 'winDev') {

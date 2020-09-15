@@ -30,6 +30,7 @@ const config = {
         "coreFrontend": "core_frontend",
         "server": "server",
         "renderer": "renderer",
+        "rendererBuilder": "rendererBuilder",
         "adminPanel": "admin_panel",
         "manager": "manager",
     },

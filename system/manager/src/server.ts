@@ -58,9 +58,8 @@ export const startManagerServer = () => {
             console.log('received: %s', message);
         });
         ws.send('Manager connected ' + new Date());
-        ManagerState.log.forEach(line => ws.send(line));
-
-        ManagerState.addOnLogListener((line) => {
+        ManagerState.log.renderer.forEach(line => ws.send(line));
+        ManagerState.addOnLogListener('renderer', 'WS_Renderer', (line) => {
             ws.send(line);
         })
     });

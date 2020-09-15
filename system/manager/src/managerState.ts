@@ -1,5 +1,6 @@
 
 type TRendererStatus = 'inactive' | 'building' | 'running' | 'busy';
+type TServices = 'renderer' | 'server' | 'adminPanel';
 
 export class ManagerState {
 
@@ -18,22 +19,33 @@ export class ManagerState {
     }
 
 
-    public static _log: string[] = [];
-    public static get log(): string[] {
+    public static _log: Record<TServices, string[]> = { renderer: [], server: [], adminPanel: [] };
+    public static get log(): Record<TServices, string[]> {
         return ManagerState._log;
     }
-    public static set log(data: string[]) {
+    public static set log(data: Record<TServices, string[]>) {
         ManagerState._log = data;
-        data.forEach(line => ManagerState.onLogListeners.forEach(l => l?.(line)))
-    }
-    public static logLine = (line: string) => {
-        console.log(line);
-        ManagerState._log.push(line);
-        ManagerState.onLogListeners.forEach(l => l?.(line));
+        Object.keys(data).forEach((serviceName) => {
+            const name = serviceName as TServices;
+            data[name].forEach(line =>
+                Object.values(ManagerState.onLogListeners[name]).forEach(cb => cb(line)));
+        })
     }
 
-    private static onLogListeners: ((line: string) => void)[] = [];
-    public static addOnLogListener = (cb: (line: string) => void) => {
-        ManagerState.onLogListeners.push(cb);
+    public static clearLog = () =>
+        ManagerState._log = { renderer: [], server: [], adminPanel: [] };
+
+    public static getLogger = (serviceName: TServices, logDate?: boolean) => (line: string) => {
+        if (logDate) {
+            line = new Date(Date.now()).toISOString() + ': ' + line;
+        }
+        console.log(line);
+        ManagerState._log[serviceName].push(line);
+        Object.values(ManagerState.onLogListeners[serviceName]).forEach(l => l?.(line));
     }
+
+    private static onLogListeners: Record<TServices, Record<string, (line: string) => void>> = { renderer: {}, server: {}, adminPanel: {} };
+
+    public static addOnLogListener = (serivceName: TServices, id: string, cb: (line: string) => void) =>
+        ManagerState.onLogListeners[serivceName][id] = cb;
 }

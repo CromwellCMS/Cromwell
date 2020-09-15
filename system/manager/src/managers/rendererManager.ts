@@ -1,4 +1,4 @@
-import { startService, closeService } from './baseManager';
+import { startService, closeService, isServiceRunning } from './baseManager';
 import { resolve } from 'path';
 import config from '../config';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
@@ -12,6 +12,7 @@ import {
     getRendererSavedBuildDirByTheme, rendererMessages
 } from '@cromwell/core-backend';
 import { ManagerState } from '../managerState';
+import { retry } from 'async';
 const { projectRootDir, cacheKeys, servicesEnv } = config;
 
 type TRendererCommands = 'buildService' | 'dev' | 'build' | 'buildStart' | 'prod';
@@ -21,6 +22,13 @@ const rendererStartupPath = resolve(rendererDir, 'startup.js');
 
 export const startRenderer = (cb?: (success: boolean) => void,
     onLog?: (message: string) => void) => {
+    if (ManagerState.rendererStatus === 'busy' ||
+        ManagerState.rendererStatus === 'building' ||
+        ManagerState.rendererStatus === 'running') {
+        onLog?.(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, failed to startRenderer`)
+        cb?.(false);
+        return;
+    }
     const rendererUrl = serviceLocator.getFrontendUrl();
 
     if (servicesEnv.renderer) {
@@ -50,6 +58,8 @@ export const startRenderer = (cb?: (success: boolean) => void,
                 } else {
                     ManagerState.rendererStatus = 'inactive';
                 }
+                if (success) onLog?.(`RendererManager:: Renderer successfully started`);
+                else onLog?.(`RendererManager:: Failed to start renderer`);
 
                 // console.log('success', success);
                 cb?.(success);
@@ -67,40 +77,80 @@ export const startRenderer = (cb?: (success: boolean) => void,
     }
 }
 
-export const closeRenderer = (cb?: (success) => void) => {
+export const closeRenderer = (cb?: (success) => void, onLog?: (message: string) => void) => {
     closeService(cacheKeys.renderer, (success) => {
         ManagerState.rendererStatus = 'inactive';
-        cb?.(success);
-    });
+        if (!success) {
+            isRendererRunning((isActive) => {
+                if (isActive) {
+                    onLog?.('RendererManager::closeRenderer: failed to close Renderer by pid. Renderer is still active! Return success=false');
+                    cb?.(false);
+                } else {
+                    onLog?.('RendererManager::closeRenderer: failed to close Renderer by pid. Renderer already closed. Return success=true');
+                    cb?.(true);
+                }
+            });
+        } else {
+            onLog?.('RendererManager::closeRenderer: Renderer has been closed by pid');
+            cb?.(true);
+        }
+    }, onLog);
+}
+
+export const isRendererRunning = (cb: (isActive: boolean) => void) => {
+    isServiceRunning(cacheKeys.renderer, cb);
+}
+
+export const restartRenderer = (cb?: (success) => void, onLog?: (message: string) => void) => {
+    closeRenderer((success) => {
+        if (!success) {
+
+        }
+        startRenderer(cb, onLog);
+    }, onLog)
 }
 
 export const buildAndStart = (cb?: (success: boolean) => void,
     onLog?: (message: string) => void) => {
-    closeService(cacheKeys.renderer, () => {
-        ManagerState.rendererStatus = 'building';
-        const commad: TRendererCommands = 'build';
-        const onOut = (data) => {
-            // console.log(`stdout: ${data}`);
-            onLog?.(data?.toString() ?? data);
+    if (ManagerState.rendererStatus === 'busy' ||
+        ManagerState.rendererStatus === 'building') {
+        onLog?.(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, failed to buildAndStart`)
+        cb?.(false);
+        return;
+    }
+    const rendererInitialStatus = ManagerState.rendererStatus;
+
+    // ManagerState.rendererStatus = 'busy';
+    // // Delete current build of the theme
+    // const nextBuildDir = getRendererTempNextDir(projectRootDir);
+    // if (fs.existsSync(nextBuildDir)) {
+    //     onLog?.(`RendererManager:: removing current build ${nextBuildDir}`);
+    //     fs.removeSync(nextBuildDir);
+    // }
+    ManagerState.rendererStatus = 'building';
+    const commad: TRendererCommands = 'build';
+    const onOut = (data) => {
+        // console.log(`stdout: ${data}`);
+        onLog?.(data?.toString() ?? data);
+    }
+    const proc = startService(rendererStartupPath, cacheKeys.rendererBuilder, [commad], onOut);
+    let hasErrors = false;
+    proc.on('message', (message: string) => {
+        if (message === rendererMessages.onBuildErrorMessage) {
+            ManagerState.rendererStatus = rendererInitialStatus;
+            hasErrors = true;
         }
-        const proc = startService(rendererStartupPath, cacheKeys.renderer, [commad], onOut);
-        let hasErrors = false;
-        proc.on('message', (message: string) => {
-            if (message === rendererMessages.onBuildErrorMessage) {
-                hasErrors = true;
+        if (message === rendererMessages.onBuildEndMessage) {
+            ManagerState.rendererStatus = rendererInitialStatus;
+            if (hasErrors) {
+                const mess = 'RendererManager:: Renderer build failed';
+                onLog?.(mess);
+                cb?.(false);
+                return;
+            } else {
+                restartRenderer(cb, onLog);
             }
-            if (message === rendererMessages.onBuildEndMessage) {
-                if (hasErrors) {
-                    ManagerState.rendererStatus = 'inactive';
-                    const mess = 'RendererManager:: Renderer build failed';
-                    onLog?.(mess);
-                    cb?.(false);
-                    return;
-                } else {
-                    startRenderer(cb, onLog);
-                }
-            }
-        });
+        }
     });
 }
 
@@ -109,6 +159,7 @@ export const changeTheme = (themeName: string, cb?: (success: boolean) => void,
     if (ManagerState.rendererStatus === 'busy' ||
         ManagerState.rendererStatus === 'building') {
         onLog?.(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, aborting changeTheme process..`)
+        cb?.(false);
         return;
     }
     const themeDir = getThemeDirSync(projectRootDir, themeName);
@@ -160,20 +211,18 @@ export const changeTheme = (themeName: string, cb?: (success: boolean) => void,
         }
 
         closeRenderer((success) => {
+            if (!success) return;
+
             if (hasBuilt) {
                 startRenderer((success) => {
-                    if (success) onLog?.(`RendererManager:: Renderer successfully started`);
-                    else onLog?.(`RendererManager:: Failed to start renderer`);
                     cb?.(success);
                 }, onLog);
             } else {
                 buildAndStart((success) => {
-                    if (success) onLog?.(`RendererManager:: Renderer successfully started`);
-                    else onLog?.(`RendererManager:: Failed to start renderer`);
                     cb?.(success);
                 }, onLog)
             }
-        });
+        }, onLog);
     } else {
         cb?.(false)
     }
