@@ -3,4 +3,5 @@ export * as index from './pages/index';
 export * as _app from './pages/_app';
 export * as product from './pages/product/[slug]';
 export * as category from './pages/category/[slug]';
+export * as AdminPanel from './adminPanel/index';
 

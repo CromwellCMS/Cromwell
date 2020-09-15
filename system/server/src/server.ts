@@ -20,7 +20,6 @@ import { getThemeController } from './controllers/themeController';
 import { getPluginsController } from './controllers/pluginsController';
 import { getCmsController } from './controllers/cmsController';
 import { getMockController } from './controllers/mockController';
-import { getManagerController } from './controllers/managerController';
 import { rebuildPage } from './helpers/PageBuilder';
 import { AuthorResolver } from './resolvers/AuthorResolver';
 import { PostResolver } from './resolvers/PostResolver';
@@ -110,8 +109,16 @@ async function apiServer(): Promise<void> {
         app.use(`/${apiV1BaseRoute}/cms`, getCmsController());
         app.use(`/${apiV1BaseRoute}/theme`, getThemeController());
         app.use(`/${apiV1BaseRoute}/plugin`, getPluginsController());
-        app.use(`/${apiV1BaseRoute}/manager`, getManagerController());
+        // app.use(`/${apiV1BaseRoute}/manager`, getManagerController());
         app.use(`/${apiV1BaseRoute}/mock`, getMockController());
+
+        const managerUrl = `${serviceLocator.getManagerUrl()}/${apiV1BaseRoute}`;
+        const managerBasePath = `/${apiV1BaseRoute}/manager`;
+        app.use(managerBasePath, createProxyMiddleware({
+            target: managerUrl, changeOrigin: true, pathRewrite: {
+                [`^${managerBasePath}`]: ''
+            }
+        }));
         const wsProxy = createProxyMiddleware(serviceLocator.getManagerWsUrl());
         app.use(wsProxy);
 

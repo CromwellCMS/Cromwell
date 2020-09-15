@@ -1,25 +1,17 @@
 import { getStoreItem, TAppConfig, TCromwellBlockData, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
 import { Router } from 'express';
 import fs from 'fs-extra';
+import { readCMSConfig } from '@cromwell/core-backend';
 
 import { projectRootDir } from '../constants';
 
 export const getThemeController = (): Router => {
     const themeController = Router();
 
-    const config = getStoreItem('cmsconfig');
-    if (!config || !config.themeName) {
-        throw new Error('applyModificationsController: failed to read cmsconfig ' + config);
-    }
-    
     const settingsPath = `${projectRootDir}/settings/`;
-    const userModificationsPath = `${settingsPath}/themes/${config.themeName}`;
-    const themeDir = `${projectRootDir}/themes/${config.themeName}`;
-    const themeConfigPath = `${themeDir}/cromwell.config.json`;
-    
-    
+
     // < HELPERS >
-    
+
     /**
      * Asynchronously reads modifications in theme's original config from /themes 
      * and user's config from /modifications.
@@ -28,60 +20,71 @@ export const getThemeController = (): Router => {
     const readConfigs = (cb: (themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => void): void => {
         let themeConfig: TThemeConfig | null = null,
             userConfig: TThemeConfig | null = null;
-    
-        // Read theme's user modifications
-        const readUserMods = () => {
-            const path = userModificationsPath + '/theme.json';
-            fs.access(path, fs.constants.R_OK, (err) => {
-                if (!err) {
-                    fs.readFile(path, (err, data) => {
-                        let themeUserModifications: TThemeConfig | undefined;
-                        try {
-                            themeUserModifications = JSON.parse(data.toString());
-                        } catch (e) {
-                            console.error('Failed to read user theme modifications', e);
+
+        // Read CMS config, because theme can be changed
+        readCMSConfig(projectRootDir, (config) => {
+            if (config) {
+                const userModificationsPath = `${settingsPath}/themes/${config.themeName}`;
+                const themeDir = `${projectRootDir}/themes/${config.themeName}`;
+                const themeConfigPath = `${themeDir}/cromwell.config.json`;
+
+                // Read theme's user modifications
+                const readUserMods = () => {
+                    const path = userModificationsPath + '/theme.json';
+                    fs.access(path, fs.constants.R_OK, (err) => {
+                        if (!err) {
+                            fs.readFile(path, (err, data) => {
+                                let themeUserModifications: TThemeConfig | undefined;
+                                try {
+                                    themeUserModifications = JSON.parse(data.toString());
+                                } catch (e) {
+                                    console.error('Failed to read user theme modifications', e);
+                                }
+
+                                if (themeUserModifications && typeof themeUserModifications === 'object') {
+                                    userConfig = themeUserModifications;
+                                }
+
+                                cb(themeConfig, userConfig);
+                            });
+                            return;
+                        } else {
+                            cb(themeConfig, userConfig);
                         }
-    
-                        if (themeUserModifications && typeof themeUserModifications === 'object') {
-                            userConfig = themeUserModifications;
-                        }
-    
-                        cb(themeConfig, userConfig);
                     });
-                    return;
-                } else {
-                    cb(themeConfig, userConfig);
                 }
-            });
-        }
-    
-        // Read theme's original config
-        fs.access(themeConfigPath, fs.constants.R_OK, (err) => {
-            if (!err) {
-                fs.readFile(themeConfigPath, (err, data) => {
-                    let themeOriginalConfig: TThemeConfig | undefined;
+
+                // Read theme's original config
+                fs.access(themeConfigPath, fs.constants.R_OK, (err) => {
                     if (!err) {
-                        try {
-                            themeOriginalConfig = JSON.parse(data.toString());
-                        } catch (e) {
-                            console.error(e);
-                        }
+                        fs.readFile(themeConfigPath, (err, data) => {
+                            let themeOriginalConfig: TThemeConfig | undefined;
+                            if (!err) {
+                                try {
+                                    themeOriginalConfig = JSON.parse(data.toString());
+                                } catch (e) {
+                                    console.error(e);
+                                }
+                            }
+                            if (themeOriginalConfig && typeof themeOriginalConfig === 'object') {
+                                themeConfig = themeOriginalConfig;
+                            }
+
+                            readUserMods();
+
+                        })
                     }
-                    if (themeOriginalConfig && typeof themeOriginalConfig === 'object') {
-                        themeConfig = themeOriginalConfig;
+                    else {
+                        console.error('Failed to find theme config at ' + themeConfigPath);
+                        readUserMods();
                     }
-    
-                    readUserMods();
-    
-                })
+                });
             }
-            else {
-                console.error('Failed to find theme config at ' + themeConfigPath);
-                readUserMods();
-            }
-        });
+        })
+
+
     }
-    
+
     /**
      * Will add and overwrite theme's original modificators by user's modificators
      * @param themeMods 
@@ -105,22 +108,22 @@ export const getThemeController = (): Router => {
         }
         return mods;
     }
-    
+
     const mergePages = (themeConfig?: TPageConfig, userConfig?: TPageConfig,
         globalThemeMods?: TCromwellBlockData[], globalUserMods?: TCromwellBlockData[]): TPageConfig => {
         // Merge global mods
         const globalModificators = mergeMods(globalThemeMods, globalUserMods);
-    
+
         let mods = mergeMods(themeConfig?.modifications, userConfig?.modifications);
-    
+
         // Merge pages' mods with global mods
         mods = mergeMods(globalModificators, mods);
-    
+
         const config = Object.assign({}, themeConfig, userConfig);
         config.modifications = mods;
         return config
     }
-    
+
     /**
      * Asynchronously configs for specified Page by pageRoute arg and merge them into one.
      * Output contains theme's original modificators overwritten and supplemented by user's modificators.
@@ -149,11 +152,11 @@ export const getThemeController = (): Router => {
             }
             // Merge users's with theme's mods
             const pageConfig = mergePages(themePageConfig, userPageConfig, themeConfig?.globalModifications, userConfig?.globalModifications);
-    
+
             cb(pageConfig);
         })
     }
-    
+
     /**
      * Asynchronously reads theme's and user's configs and merge all pages info with modifications 
      * @param cb cb to return pages info
@@ -166,7 +169,7 @@ export const getThemeController = (): Router => {
             }
             const pageRoutes: string[] = [];
             pages.forEach(p => pageRoutes.push(p.route));
-    
+
             if (userConfig && userConfig.pages && Array.isArray(userConfig.pages)) {
                 userConfig.pages.forEach(p => {
                     if (pageRoutes.includes(p.route)) {
@@ -185,12 +188,12 @@ export const getThemeController = (): Router => {
             cb(pages);
         })
     }
-    
-    
+
+
     // < HELPERS />
-    
+
     // < API Methods />
-    
+
     /**
      * @swagger
      * 
@@ -224,7 +227,7 @@ export const getThemeController = (): Router => {
             res.send(out);
         }
     })
-    
+
     /**
      * @swagger
      * 
@@ -247,7 +250,7 @@ export const getThemeController = (): Router => {
      */
     themeController.get(`/plugins`, function (req, res) {
         const out: Record<string, any> = {};
-    
+
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
             const pageRoute = req.query.pageRoute;
             getPageConfig(pageRoute, (pageConfig) => {
@@ -259,14 +262,14 @@ export const getThemeController = (): Router => {
                     })
                 }
                 res.send(out);
-    
+
             })
         }
         else {
             res.send(out);
         }
     })
-    
+
     /**
      * @swagger
      * 
@@ -283,7 +286,7 @@ export const getThemeController = (): Router => {
      */
     themeController.get(`/plugin-names`, function (req, res) {
         const out: string[] = [];
-    
+
         readAllPageConfigs((pages) => {
             pages.forEach(p => {
                 p.modifications.forEach(mod => {
@@ -294,10 +297,10 @@ export const getThemeController = (): Router => {
             });
             res.send(out);
         })
-    
-    
+
+
     })
-    
+
     /**
      * @swagger
      * 
@@ -321,7 +324,7 @@ export const getThemeController = (): Router => {
             }
             const pageRoutes: string[] = [];
             pages.forEach(p => pageRoutes.push(p.route));
-    
+
             if (userConfig && userConfig.pages && Array.isArray(userConfig.pages)) {
                 userConfig.pages.forEach(p => {
                     if (pageRoutes.includes(p.route)) {
@@ -342,13 +345,13 @@ export const getThemeController = (): Router => {
                 }
                 out.push(info);
             });
-    
+
             res.send(out);
-    
+
         })
     })
-    
-    
+
+
     /**
      * @swagger
      * 
@@ -368,8 +371,8 @@ export const getThemeController = (): Router => {
             res.send(pages);
         })
     })
-    
-    
+
+
     /**
      * @swagger
      * 
@@ -390,10 +393,10 @@ export const getThemeController = (): Router => {
             out = Object.assign(out, themeConfig?.appConfig, userConfig?.appConfig);
             res.send(out);
         })
-    
+
     })
-    
-    
+
+
     /**
      * @swagger
      * 
@@ -417,5 +420,5 @@ export const getThemeController = (): Router => {
     });
 
     return themeController;
-    
+
 }

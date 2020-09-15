@@ -4,7 +4,7 @@ import { MenuItem as MuiMenuItem } from '@material-ui/core';
 import { withStyles } from '@material-ui/core';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 //@ts-ignore
-import { importStaticPage, importLazyPage } from 'CromwellImports';
+import { importStaticPage, importLazyPage, ImportedThemeController } from 'CromwellImports';
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { Draggable } from '../../helpers/Draggable/Draggable';
@@ -31,7 +31,7 @@ export default function ThemeEdit() {
     const [isPageLoading, setIsPageLoading] = useState<boolean>(false);
     const [isPageListLoading, setIsPageListLoading] = useState<boolean>(true);
     const [isPageListCollapsed, setIsPageListCollapsed] = useState<boolean>(false);
-    const { themeName } = useParams();
+    // const { themeName } = useParams();
 
     useEffect(() => {
         (async () => {
@@ -84,6 +84,13 @@ export default function ThemeEdit() {
                         >{'<--'}</MenuItem>
                     )
                 }
+                {!isPageListLoading && !isPageListCollapsed && ImportedThemeController && (
+                    <PageErrorBoundary>
+                        <Suspense fallback={<LoadBox />}>
+                            <ImportedThemeController />
+                        </Suspense>
+                    </PageErrorBoundary>
+                )}
             </div>
             {/* {editingPage && (
                 <div>

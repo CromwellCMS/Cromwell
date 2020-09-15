@@ -3,15 +3,24 @@ import { apiV1BaseRoute, getStoreItem, serviceLocator, setStoreItem } from '@cro
 class CWebSocketClient {
     constructor(private baseUrl: string) { }
 
-    connectToManager = (onMessage: (message: string) => void) => {
-        const url = `${this.baseUrl}/manager/log`;
+    private socketManager?: WebSocket;
 
-        const socket = new WebSocket(url);
-        socket.addEventListener('open', function (event) {
-        });
-        socket.addEventListener('message', function (event) {
-            onMessage(event.data)
-        });
+    public connectToManager = (onMessage: (message: string) => void): WebSocket => {
+        if (this.socketManager && !this.socketManager.CLOSED) {
+            // return this.socketManager;
+        } else {
+            const url = `${this.baseUrl}/manager/log`;
+            this.socketManager = new WebSocket(url);
+        }
+
+        // this.socketManager.addEventListener('open', function (event) { });
+        this.socketManager.addEventListener('message', (event) => onMessage(event.data));
+
+        return this.socketManager;
+    }
+
+    public disconnectManager = () => {
+        this.socketManager?.close();
     }
 }
 

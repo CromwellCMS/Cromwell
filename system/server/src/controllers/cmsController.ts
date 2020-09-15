@@ -2,7 +2,7 @@ import { TThemeConfig } from '@cromwell/core';
 import async from 'async';
 import { Router } from 'express';
 import fs from 'fs-extra';
-import { getCMSConfigPath } from '@cromwell/core-backend';
+import { readCMSConfig } from '@cromwell/core-backend';
 
 import { projectRootDir } from '../constants';
 
@@ -33,25 +33,10 @@ export const getCmsController = (): Router => {
      *         description: config
      */
     cmsController.get(`/config`, function (req, res) {
-        let out: Record<string, any> = {};
-        const filePath = getCMSConfigPath(projectRootDir);
-        fs.access(filePath, fs.constants.R_OK, (err) => {
-            if (!err) {
-                fs.readFile(filePath, (err, data) => {
-                    if (!err) {
-                        try {
-                            out = JSON.parse(data.toString());
-                            res.send(out);
-                            return;
-                        } catch (e) {
-                            console.error("Failed to read CMS Config", e);
-                        }
-                    }
-                    res.status(404).send("Failed to read CMS Config")
-
-                })
-            } else {
-                res.status(404).send("CMS Config not found")
+        readCMSConfig(projectRootDir, (config) => {
+            if (!config) res.status(404).send("Failed to read CMS Config")
+            else {
+                res.send(config);
             }
         })
     })

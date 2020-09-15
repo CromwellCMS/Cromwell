@@ -9,6 +9,14 @@
     }   
 }
 
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+
 @mixin styledScrollBar {
   &::-webkit-scrollbar {
     width: 0.5em;

@@ -8,6 +8,7 @@
     "appConfig": {
         "buildDir": "dist",
         "pagesDir": "dist/pages",
+        "adminPanelDir": "dist/adminPanel",
         "palette": {
             "primaryColor": "#9900CC"
         },
