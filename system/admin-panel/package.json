@@ -49,10 +49,11 @@
     "typescript-plugin-css-modules": "^2.3.0"
   },
   "scripts": {
-    "buildAdmin": "node startup.js buildAdmin",
+    "buildService": "node startup.js buildService",
     "dev": "node startup.js dev",
     "build": "node startup.js build",
-    "prod": "node startup.js prod"
+    "prod": "node startup.js prod",
+    "gen": "node startup.js gen"
   },
   "eslintConfig": {
     "extends": "react-app"

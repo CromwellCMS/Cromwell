@@ -11,6 +11,9 @@ export const getThemeDirSync = (projectRootDir: string, themeName: string): stri
 export const getCMSConfigPath = (projectRootDir: string) =>
     resolve(projectRootDir, 'system/cmsconfig.json');
 
+export const getPluginsDir = (projectRootDir: string) =>
+    resolve(projectRootDir, 'plugins');
+
 const renderDirChunk = 'system/renderer';
 
 export const getRendererDir = (projectRootDir: string) =>

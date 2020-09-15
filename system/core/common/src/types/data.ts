@@ -100,12 +100,15 @@ export type TCmsConfig = {
 export type TAppConfig = {
     /** Theme's pages dist dir  */
     pagesDir?: string;
+    /** Path to component to use in Admin Panel */
+    adminPanelDir?: string;
     /** Colors to use */
     palette?: { primaryColor?: string };
     /** Custom HTML add into head of every page */
     headHtml?: string;
     /** Global CSS files to import */
-    globalCss?: string[]
+    globalCss?: string[];
+
 }
 
 export type TThemeConfig = {

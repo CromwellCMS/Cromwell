@@ -1,6 +1,5 @@
 import { TCmsConfig, setStoreItem, TPluginConfig } from '@cromwell/core';
-import { readThemePages } from '@cromwell/core-backend';
-import { readCMSConfigSync } from '@cromwell/core-backend';
+import { readCMSConfigSync, readPluginsExports, readThemeExports } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -13,85 +12,53 @@ const main = async () => {
     const config = readCMSConfigSync(projectRootDir);
 
     const appConfig = await getRestAPIClient()?.getAppConfig();
-    const globalPluginsDir = `${projectRootDir}/plugins`;
     const localDir = resolve(__dirname, '../').replace(/\\/g, '/');
     const buildDir = `${localDir}/.cromwell`;
     const pagesLocalDir = `${buildDir}/pages`;
 
-    let pluginImportPaths: Record<string, any> | undefined = undefined;
-
-    // Read global plugins
-    const pluginNames = await getRestAPIClient()?.getPluginNames();
-    pluginNames?.forEach(name => {
-        const configPath = `${globalPluginsDir}/${name}/cromwell.config.json`;
-        if (fs.existsSync(configPath)) {
-            let config: TPluginConfig | undefined;
-            try {
-                config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
-            } catch (e) {
-                console.error('renderer::generator: ', e);
-            }
-            if (config && config.frontendDir) {
-                const mPath = `${globalPluginsDir}/${name}/${config.frontendDir}/index.js`;
-                if (fs.existsSync(mPath)) {
-                    if (!pluginImportPaths) pluginImportPaths = {};
-                    pluginImportPaths[name] = mPath;
-                }
-            }
-        }
-
-    })
-
+    // Read plugins
     let pluginImports = '';
     let dynamicPluginImports = '';
     let pluginImportsSwitch = '';
     let dynamicPluginImportsSwitch = '';
 
-    // Concat all imports
-    if (pluginImportPaths) {
-        Object.entries(pluginImportPaths).map(e => {
-            // pluginImports += `\nconst ${e[0]} = import('${e[1]}')`;
-            pluginImports += `\nconst ${e[0]} = import('${e[1]}');`;
-            pluginImportsSwitch += `if (pluginName === '${e[0]}') return ${e[0]};\n`;
+    const pluginInfos = readPluginsExports(projectRootDir);
+    pluginInfos.forEach(info => {
+        if (info.frontendPath) {
+            pluginImports += `\nconst ${info.pluginName} = import('${info.frontendPath}');`;
+            pluginImportsSwitch += `if (pluginName === '${info.pluginName}') return ${info.pluginName};\n`;
 
-            dynamicPluginImports += `\nconst Dynamic${e[0]} = dynamic(() => import('${e[1]}'));`;
-            dynamicPluginImportsSwitch += `if (pluginName === '${e[0]}') return Dynamic${e[0]};\n   `;
-        })
-    }
+            dynamicPluginImports += `\nconst Dynamic${info.pluginName} = dynamic(() => import('${info.frontendPath}'));`;
+            dynamicPluginImportsSwitch += `if (pluginName === '${info.pluginName}') return Dynamic${info.pluginName};\n   `;
+        }
+    })
 
-    console.log('pluginImports', pluginImports);
-
-
-    const customPages = await readThemePages(projectRootDir);
+    // Read pages
+    const themeExports = await readThemeExports(projectRootDir, config.themeName);
     const pageNames: string[] = [];
     let customPageImports = '';
     let customPageImportsSwitch = '';
     let customPageDynamicImports = '';
     let customPageDynamicImportsSwitch = '';
 
-    Object.entries(customPages).forEach(e => {
-        const pageName = e[0];
-        pageNames.push(pageName);
-        const pagePath = e[1].pagePath;
-        const pageComponentName = e[1].pageComponentName;
-        if (pagePath && pageComponentName) {
-            console.log('pageName', pageName, 'pageComponentName', pageComponentName);
+    themeExports.pagesInfo.forEach(pageInfo => {
+        pageNames.push(pageInfo.name);
+        if (pageInfo.path && pageInfo.compName) {
+            console.log('pageInfo.name', pageInfo.name, 'pageInfo.compName', pageInfo.compName);
 
-            customPageImports += `\nconst ${pageComponentName}_Page = require('${pagePath}');`;
-            customPageImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_Page;\n`;
+            customPageImports += `\nconst ${pageInfo.compName}_Page = require('${pageInfo.path}');`;
+            customPageImportsSwitch += `    if (pageName === '${pageInfo.name}') return ${pageInfo.compName}_Page;\n`;
 
-            customPageDynamicImports += `\nconst ${pageComponentName}_DynamicPage = dynamic(() => import('${pagePath}'));`;
-            customPageDynamicImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_DynamicPage;\n   `;
+            customPageDynamicImports += `\nconst ${pageInfo.compName}_DynamicPage = dynamic(() => import('${pageInfo.path}'));`;
+            customPageDynamicImportsSwitch += `    if (pageName === '${pageInfo.name}') return ${pageInfo.compName}_DynamicPage;\n   `;
         }
     })
-
 
     const content = `
             import dynamic from "next/dynamic";
             /**
              * Configs 
              */
-            export const pluginImports = ${JSON.stringify(pluginImportPaths)};
             export const CMSconfig = ${JSON.stringify(config)};
             
             export const importThemeConfig = () => {
@@ -138,16 +105,16 @@ const main = async () => {
     fs.outputFileSync(`${buildDir}/imports/imports.gen.js`, content);
 
 
-    // Import theme's pages into nexjs pages dir
+    // Create pages in Nex.js pages dir based on theme's pages
 
     console.log('customPagesLocalPath', pagesLocalDir)
     if (fs.existsSync(pagesLocalDir)) {
         fs.removeSync(pagesLocalDir);
     }
-    Object.keys(customPages).forEach(pageName => {
-        // const pageComponentName = customPages[pageName].pageComponentName;
+
+    themeExports.pagesInfo.forEach(pageInfo => {
         let globalCssImports = '';
-        if (pageName === '_app' && appConfig && appConfig.globalCss &&
+        if (pageInfo.name === '_app' && appConfig && appConfig.globalCss &&
             Array.isArray(appConfig.globalCss) && appConfig.globalCss.length > 0) {
             appConfig.globalCss.forEach(css => {
                 globalCssImports += `import '${css}';\n`
@@ -158,21 +125,22 @@ const main = async () => {
                 ${globalCssImports}
                 const { createGetStaticProps, createGetStaticPaths, getPage } = require('build/renderer');
                 
-                const PageComp = getPage('${pageName}');
+                const PageComp = getPage('${pageInfo.name}');
                 
-                export const getStaticProps = createGetStaticProps('${pageName}');
+                export const getStaticProps = createGetStaticProps('${pageInfo.name}');
                 
-                export const getStaticPaths = createGetStaticPaths('${pageName}');
+                export const getStaticPaths = createGetStaticPaths('${pageInfo.name}');
                 
                 export default PageComp;
             `;
 
-        if (!customPages[pageName].pagePath && customPages[pageName].fileContent) {
-            pageContent = customPages[pageName].fileContent + '';
+        if (!pageInfo.path && pageInfo.fileContent) {
+            pageContent = pageInfo.fileContent + '';
         }
-        fs.outputFileSync(`${pagesLocalDir}/${pageName}.js`, pageContent);
+        fs.outputFileSync(`${pagesLocalDir}/${pageInfo.name}.js`, pageContent);
     });
 
+    // Create jsconfig for Next.js
     fs.outputFileSync(`${buildDir}/jsconfig.json`, `
     {
         "compilerOptions": {

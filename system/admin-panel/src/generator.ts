@@ -1,8 +1,7 @@
 import { TCmsConfig, TPluginConfig } from '@cromwell/core';
-import { readThemePages } from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import { staticDir, publicStaticDir, projectRootDir, localProjectBuildDir, generatorOutDir, localProjectDir } from './constants';
-import { readCMSConfigSync } from '@cromwell/core-backend';
+import { readCMSConfigSync, readPluginsExports, readThemeExports } from '@cromwell/core-backend';
 
 //@ts-ignore
 import lnk from 'lnk';
@@ -10,33 +9,20 @@ import lnk from 'lnk';
 const generateAdminPanelImports = async () => {
     const config = readCMSConfigSync(projectRootDir);
 
-    // Import global plugins
-    const globalPluginsDir = `${projectRootDir}/plugins`;
-    const pluginsNames: string[] = fs.readdirSync(globalPluginsDir);
-    console.log('generateAdminPanelImports:Plugins found:', pluginsNames);
-
+    // Import plugins
     let pluginsImports = '';
     let pluginsImportsSwitch = '';
     let pluginNames = '[\n';
-    pluginsNames.forEach(name => {
-        const configPath = `${globalPluginsDir}/${name}/cromwell.config.json`;
-        if (fs.existsSync(configPath)) {
-            let config: TPluginConfig | undefined;
-            try {
-                config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
-            } catch (e) {
-                console.error('server::generator: ', e);
-            }
-            if (config && config.adminDir) {
-                const pluginAdminComponent = `${globalPluginsDir}/${name}/${config.adminDir}/index.js`;
-                if (fs.existsSync(pluginAdminComponent)) {
-                    pluginsImports += `\nconst ${name}_Plugin = lazy(() => import('${pluginAdminComponent}'))`;
-                    pluginsImportsSwitch += `   if (pluginName === '${name}') return ${name}_Plugin;\n`;
-                    pluginNames += `"${name}",\n`;
-                }
-            }
+
+    const pluginInfos = readPluginsExports(projectRootDir);
+    pluginInfos.forEach(info => {
+        if (info.adminPanelPath) {
+            pluginsImports += `\nconst ${info.pluginName}_Plugin = lazy(() => import('${info.adminPanelPath}'))`;
+            pluginsImportsSwitch += `   if (pluginName === '${info.pluginName}') return ${info.pluginName}_Plugin;\n`;
+            pluginNames += `"${info.pluginName}",\n`;
         }
-    });
+    })
+
     pluginNames += '];';
 
 
@@ -67,7 +53,6 @@ const generateAdminPanelImports = async () => {
 
 
     // Generate page imports for admin panel
-    const customPages = await readThemePages(projectRootDir);
 
     let customPageStatics = '';
     let customPageStaticsSwitch = '';
@@ -75,19 +60,29 @@ const generateAdminPanelImports = async () => {
     let customPageLazyImportsSwitch = '';
     const pageNames: string[] = [];
 
-    Object.entries(customPages).forEach(e => {
-        const pageName = e[0];
-        pageNames.push(pageName);
-        const pagePath = e[1].pagePath;
-        const pageComponentName = e[1].pageComponentName;
-        console.log('pageName', pageName, 'pageComponentName', pageComponentName);
+    // const themesDir = `${projectRootDir}/themes`;
+    // const themeNames: string[] = fs.readdirSync(themesDir);
+    // for (const themeName of themeNames) {
+    const themeExports = await readThemeExports(projectRootDir, config.themeName);
+    themeExports.pagesInfo.forEach(pageInfo => {
+        pageNames.push(pageInfo.name);
+        console.log('pageName', pageInfo.name, 'pageComponentName', pageInfo.compName);
 
-        customPageLazyImports += `\nconst ${pageComponentName}_LazyPage = lazy(() => import('${pagePath}'))`;
-        customPageLazyImportsSwitch += `    if (pageName === '${pageName}') return ${pageComponentName}_LazyPage;\n   `;
-    })
+        customPageLazyImports += `\nconst ${pageInfo.compName}_LazyPage = lazy(() => import('${pageInfo.path}'))`;
+        customPageLazyImportsSwitch += `    if (pageName === '${pageInfo.name}') return ${pageInfo.compName}_LazyPage;\n   `;
+    });
+    // };
+
+    console.log('themeExports.adminPanelPath', themeExports.adminPanelPath);
+    const ImportedThemeController = themeExports.adminPanelPath ?
+        `export const ImportedThemeController = lazy(() => import('${themeExports.adminPanelPath}'));` : 
+        'export const ImportedThemeController = undefined;';
 
     const adminPanelContent = `
             // import { lazy } from 'react';
+
+            ${ImportedThemeController}
+
             export const pageNames = ${JSON.stringify(pageNames)};
             ${customPageLazyImports}
             

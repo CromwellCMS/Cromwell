@@ -2,29 +2,24 @@ const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, spawnSync, fork } = require('child_process');
 const scriptName = process.argv[2];
-const projectRootDir = resolve(__dirname, '../../').replace(/\\/g, '/');
-const systemRootDir = resolve(__dirname, '../').replace(/\\/g, '/');
-const serverRootDir = resolve(__dirname).replace(/\\/g, '/');
-const buildDir = serverRootDir + '/build';
+const serverRootDir = resolve(__dirname);
+const buildDir = resolve(serverRootDir, 'build');
 
 const main = async () => {
-
-    const configPath = resolve(systemRootDir, 'cmsconfig.json');
-    let config = undefined;
-    try {
-        config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
-    } catch (e) {
-        console.log('renderer::server ', e);
-    }
-    if (!config) throw new Error('renderer::server cannot read CMS config');
 
     const buildServer = () => {
         spawnSync(`npx rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: serverRootDir });
     }
 
+    const isServiceBuild = () => {
+        return (fs.existsSync(buildDir) &&
+            fs.existsSync(resolve(buildDir, 'server.js')) &&
+            fs.existsSync(resolve(buildDir, 'generator.js')))
+    }
+
     if (scriptName === 'dev') {
-        if (!fs.existsSync(buildDir)) {
+        if (!isServiceBuild()) {
             buildServer();
         }
 
@@ -43,7 +38,7 @@ const main = async () => {
     }
 
     if (scriptName === 'prod') {
-        if (!fs.existsSync(buildDir)) {
+        if (!isServiceBuild()) {
             buildServer();
         }
 

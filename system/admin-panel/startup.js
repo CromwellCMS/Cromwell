@@ -14,6 +14,13 @@ const main = async () => {
             { shell: true, stdio: 'inherit', cwd: buildDir });
     }
 
+    const isServiceBuilt = () => {
+        return (fs.existsSync(buildDir)
+            && fs.existsSync(resolve(buildDir, 'server.js'))
+            && fs.existsSync(resolve(buildDir, 'generator.js'))
+        )
+    }
+
     const buildAdminService = () => {
         spawnSync(`npx rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: adminRootDir });
@@ -23,7 +30,7 @@ const main = async () => {
     }
 
     const buildWebApp = () => {
-        if (!fs.existsSync(buildDir)) {
+        if (!isServiceBuilt()) {
             buildAdminService();
         }
         gen();
@@ -36,7 +43,7 @@ const main = async () => {
         return;
     }
 
-    if (scriptName === 'buildAdmin') {
+    if (scriptName === 'buildService') {
         buildAdminService();
         return;
     }
@@ -47,7 +54,7 @@ const main = async () => {
     }
 
     if (scriptName === 'dev') {
-        if (!fs.existsSync(buildDir)) {
+        if (!isServiceBuilt()) {
             buildAdminService();
         }
         gen();
@@ -62,10 +69,11 @@ const main = async () => {
     }
 
     if (scriptName === 'prod') {
-        if (!fs.existsSync(appBuildProd)) {
+        if (!isServiceBuilt()) {
             buildWebApp();
         }
-        if (!fs.existsSync(tempDir)) {
+
+        if (!fs.existsSync(tempDir) || !fs.existsSync(appBuildProd)) {
             gen();
         }
         spawn(`node ./server.js production`, [],
