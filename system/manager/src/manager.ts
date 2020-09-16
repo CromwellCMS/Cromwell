@@ -1,12 +1,13 @@
-import config from './config';
-import { fork, spawn } from "child_process";
-import { loadCache } from './utils/cacheManager';
+import { spawn } from 'child_process';
 import { resolve } from 'path';
-import { startManagerServer } from './server';
-import { startServer } from './managers/serverManager';
-import { startRenderer } from './managers/rendererManager';
+
+import config from './config';
 import { startAdminPanel } from './managers/adminPanelManager';
+import { startRenderer } from './managers/rendererManager';
+import { startServer } from './managers/serverManager';
 import { ManagerState } from './managerState';
+import { startManagerServer } from './server';
+import { loadCache } from './utils/cacheManager';
 
 type TScriptName = 'production' | 'development' | 'winDev';
 
@@ -19,7 +20,7 @@ loadCache(() => {
 
     const startSystem = () => {
         startServer(() => {
-            startAdminPanel();
+            startAdminPanel(undefined, ManagerState.getLogger('adminPanel'));
             startRenderer(undefined, (message) => {
                 console.log(message);
             });

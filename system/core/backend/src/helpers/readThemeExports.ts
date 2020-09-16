@@ -2,7 +2,6 @@ import { TCmsConfig, TThemeConfig } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import readRecursive from 'recursive-readdir';
-import { getCMSConfigSync } from './cmsConfigHandler';
 
 export type TThemeExportsInfo = {
     pagesInfo: TPagePathInfo[]

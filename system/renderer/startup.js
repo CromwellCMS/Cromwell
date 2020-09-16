@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const { spawn, spawnSync } = require('child_process');
-const { getCMSConfigSync, rendererMessages } = require('@cromwell/core-backend');
+const { readCMSConfigSync, rendererMessages } = require('@cromwell/core-backend');
 const { projectRootDir, buildDir, tempDir, rendererRootDir } = require('./constants');
 const { resolve } = require('path');
 
@@ -15,7 +15,7 @@ const scriptName = process.argv[2];
 
 
 const main = async () => {
-    let config = getCMSConfigSync(projectRootDir);
+    let config = readCMSConfigSync(projectRootDir);
     if (!config) throw new Error('renderer::server cannot read CMS config');
 
     const isServiceBuilt = () => {

@@ -23,7 +23,7 @@ export const readPluginsExports = (projectRootDir: string): TPluginInfo[] => {
 
     const pluginsDir = getPluginsDir(projectRootDir);
     const pluginNames: string[] = fs.readdirSync(pluginsDir);
-    console.log('Core:readPluginsExports:: Plugins found:', pluginNames);
+    // console.log('Core:readPluginsExports:: Plugins found:', pluginNames);
 
     pluginNames?.forEach(name => {
         const configPath = resolve(pluginsDir, name, 'cromwell.config.json');

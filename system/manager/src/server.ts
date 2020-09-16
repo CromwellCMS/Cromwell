@@ -1,15 +1,17 @@
-import { apiV1BaseRoute, TCmsConfig, setStoreItem, currentApiVersion, serviceLocator } from '@cromwell/core';
+import { apiV1BaseRoute, currentApiVersion, serviceLocator } from '@cromwell/core';
 import { readCMSConfigSync } from '@cromwell/core-backend';
-import express from 'express';
-import { resolve } from 'path';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import swaggerUi from 'swagger-ui-express';
+import express from 'express';
+import { resolve } from 'path';
 import swaggerJSDoc from 'swagger-jsdoc';
-import config from './config';
-import { getServiceController } from './controllers/serviceController';
-import { getRendererController } from './controllers/rendererController';
+import swaggerUi from 'swagger-ui-express';
 import WebSocket from 'ws';
+
+import config from './config';
+import { getAdminPanelController } from './controllers/adminPanelController';
+import { getRendererController } from './controllers/rendererController';
+import { getServiceController } from './controllers/serviceController';
 import { ManagerState } from './managerState';
 
 export const startManagerServer = () => {
@@ -43,6 +45,7 @@ export const startManagerServer = () => {
 
     app.use(`/${apiV1BaseRoute}/services`, getServiceController());
     app.use(`/${apiV1BaseRoute}/renderer`, getRendererController());
+    app.use(`/${apiV1BaseRoute}/admin-panel`, getAdminPanelController());
 
 
     const server = app.listen(cmsconfig.managerPort, () => {
@@ -58,8 +61,8 @@ export const startManagerServer = () => {
             console.log('received: %s', message);
         });
         ws.send('Manager connected ' + new Date());
-        ManagerState.log.renderer.forEach(line => ws.send(line));
-        ManagerState.addOnLogListener('renderer', 'WS_Renderer', (line) => {
+        ManagerState.log.base?.forEach(line => ws.send(line));
+        ManagerState.addOnLogListener('base', 'WS_base', (line) => {
             ws.send(line);
         })
     });

@@ -55,20 +55,20 @@ export const readCMSConfig = (projectRootDir: string,
     })
 }
 
-/**
- * Tries to get saved config from the store and if not found, will call readCMSConfigSync
- */
-export const getCMSConfigSync = (projectRootDir: string): TCmsConfig | undefined => {
-    let config: TCmsConfig | undefined = getStoreItem('cmsconfig');
-    if (!config) {
-        try {
-            config = readCMSConfigSync(projectRootDir);
-        } catch (e) {
-            console.log(e);
-        }
-    }
-    return config;
-}
+// /**
+//  * Tries to get saved config from the store and if not found, will call readCMSConfigSync
+//  */
+// export const getCMSConfigSync = (projectRootDir: string): TCmsConfig | undefined => {
+//     let config: TCmsConfig | undefined = getStoreItem('cmsconfig');
+//     if (!config) {
+//         try {
+//             config = readCMSConfigSync(projectRootDir);
+//         } catch (e) {
+//             console.log(e);
+//         }
+//     }
+//     return config;
+// }
 
 export const saveCMSConfigSync = (projectRootDir: string, config: TCmsConfig) => {
     const configPath = getCMSConfigPath(projectRootDir);

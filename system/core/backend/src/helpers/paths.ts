@@ -14,6 +14,7 @@ export const getCMSConfigPath = (projectRootDir: string) =>
 export const getPluginsDir = (projectRootDir: string) =>
     resolve(projectRootDir, 'plugins');
 
+
 const renderDirChunk = 'system/renderer';
 
 export const getRendererDir = (projectRootDir: string) =>
@@ -30,3 +31,36 @@ export const getRendererTempNextDir = (projectRootDir: string) =>
 
 export const getRendererSavedBuildDirByTheme = (projectRootDir: string, themeName: string) =>
     resolve(projectRootDir, renderDirChunk, '.cromwell/old', themeName);
+
+
+
+const adminPanelDirChunk = 'system/admin-panel';
+
+export const getAdminPanelDir = (projectRootDir: string) =>
+    resolve(projectRootDir, adminPanelDirChunk);
+
+export const getAdminPanelServiceBuildDir = (projectRootDir: string) =>
+    resolve(projectRootDir, adminPanelDirChunk, 'build');
+
+export const getAdminPanelGeneratorOutDir = (projectRootDir: string) =>
+    resolve(projectRootDir, adminPanelDirChunk, '.cromwell/imports');
+
+export const getAdminPanelWebStaticDir = (projectRootDir: string) =>
+    resolve(projectRootDir, adminPanelDirChunk, '.cromwell/static');
+
+export const getAdminPanelWebPublicDir = (projectRootDir: string) =>
+    resolve(getAdminPanelWebStaticDir(projectRootDir), 'public');
+
+export const getAdminPanelWebBuildProd = (projectRootDir: string) =>
+    resolve(getAdminPanelWebStaticDir(projectRootDir), 'build/prod');
+
+export const getAdminPanelWebBuildDev = (projectRootDir: string) =>
+    resolve(getAdminPanelWebStaticDir(projectRootDir), 'build/dev');
+
+export const getAdminPanelSavedBuildDirByTheme = (projectRootDir: string, themeName: string) =>
+    resolve(projectRootDir, adminPanelDirChunk, '.cromwell/old', themeName);
+
+const serverDirChunk = 'system/server';
+
+export const getServerDir = (projectRootDir: string) =>
+    resolve(projectRootDir, serverDirChunk);

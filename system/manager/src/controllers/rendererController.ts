@@ -1,32 +1,17 @@
-
+import { readCMSConfigSync } from '@cromwell/core-backend';
 import { Router } from 'express';
-import { buildAndStart, changeTheme, closeRenderer } from '../managers/rendererManager';
+
+import managerConfig from '../config';
+import { closeRenderer, rendererBuildAndStart, rendererChangeTheme } from '../managers/rendererManager';
 import { ManagerState } from '../managerState';
+
+
+const { projectRootDir } = managerConfig;
 
 export const getRendererController = (): Router => {
 
     const rendererController = Router();
 
-
-    /**
-      * @swagger
-      * 
-      * /renderer/build-and-start:
-      *   get:
-      *     description: Runs Next.js build and starts Next.js server
-      *     tags: 
-      *       - Renderer
-      *     produces:
-      *       - application/json
-      *     responses:
-      *       200:
-      *         description: true
-      */
-    rendererController.get(`/build-and-start`, function (req, res) {
-        buildAndStart(() => {
-            res.send(true);
-        });
-    });
 
     /**
       * @swagger
@@ -51,8 +36,9 @@ export const getRendererController = (): Router => {
     rendererController.get(`/change-theme/:themeName`, function (req, res) {
         const themeName = req.params.themeName;
         if (themeName && themeName !== '') {
+            const cmsconfig = readCMSConfigSync(projectRootDir);
             ManagerState.clearLog();
-            changeTheme(themeName, (success) => {
+            rendererChangeTheme(cmsconfig.themeName, themeName, (success) => {
                 res.send(success);
             }, ManagerState.getLogger('renderer', true));
         } else {
@@ -76,7 +62,7 @@ export const getRendererController = (): Router => {
       */
     rendererController.get(`/rebuild-theme`, function (req, res) {
         ManagerState.clearLog();
-        buildAndStart((success) => {
+        rendererBuildAndStart((success) => {
             res.send(success);
         }, ManagerState.getLogger('renderer', true));
     });

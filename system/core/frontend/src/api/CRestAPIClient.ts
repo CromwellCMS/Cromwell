@@ -23,9 +23,9 @@ class CRestAPIClient {
     }
 
     public getCmsConfigAndSave = async (): Promise<TCmsConfig> => {
-       const config = await this.getCmsConfig();
-       setStoreItem('cmsconfig', config);
-       return config;
+        const config = await this.getCmsConfig();
+        setStoreItem('cmsconfig', config);
+        return config;
     }
 
     public getThemesInfo = async (): Promise<TThemeInfo[]> => {
@@ -113,7 +113,7 @@ class CRestAPIClient {
     public changeTheme = async (themeName: string): Promise<boolean | null> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/manager/renderer/change-theme/${themeName}`);
+            res = await axios.get(`${this.baseUrl}/manager/services/change-theme/${themeName}`);
         } catch (e) { console.error('CRestAPIClient::changeTheme', e) }
         return (res && res.data) ? res.data : null;
     }
@@ -121,7 +121,7 @@ class CRestAPIClient {
     public rebuildTheme = async (): Promise<boolean | null> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/manager/renderer/rebuild-theme`);
+            res = await axios.get(`${this.baseUrl}/manager/services/rebuild-theme`);
         } catch (e) { console.error('CRestAPIClient::changeTheme', e) }
         return (res && res.data) ? res.data : null;
     }

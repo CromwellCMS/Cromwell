@@ -1,25 +1,37 @@
-import { startService, closeService } from './baseManager';
+import { getServerDir, serverMessages } from '@cromwell/core-backend';
 import { resolve } from 'path';
+
 import config from '../config';
+import { closeService, startService } from './baseManager';
+
 const { projectRootDir, cacheKeys, servicesEnv } = config;
 
-const serverStartupPath = resolve(projectRootDir, 'system/server/startup.js');
+const serverDir = getServerDir(projectRootDir);
+const serverStartupPath = resolve(serverDir, 'startup.js');
 
-export const startServer = (onStart: () => void, onLog?: (message: string) => void) => {
+export const startServer = (cb: (success: boolean) => void, onLog?: (message: string) => void) => {
     console.log('servicesEnv', servicesEnv)
     let serverProc;
     if (servicesEnv.server) {
         serverProc = startService(serverStartupPath, cacheKeys.server, [servicesEnv.server],
             (data) => onLog?.(data?.toString() ?? data))
     }
+    
     if (serverProc) {
-        serverProc.on('message', (message) => {
-            if (message === 'ready') {
-                onStart();
+        const onMessage = async (message: string) => {
+            if (message === serverMessages.onStartMessage) {
+                onLog?.(`ServerManager:: Server has successfully started`);
+                serverProc.removeListener('message', onMessage);
+                cb(true);
             }
-        });
+            if (message === serverMessages.onStartErrorMessage) {
+                serverProc.removeListener('message', onMessage);
+                cb(false);
+            }
+        }
+        serverProc.on('message', onMessage);
     } else {
-        onStart();
+        cb(false);
     }
 }
 
