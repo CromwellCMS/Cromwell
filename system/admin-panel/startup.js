@@ -1,10 +1,12 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
-const { spawn, spawnSync } = require('child_process');
+const { spawn, spawnSync, fork } = require('child_process');
+const { adminPanelMessages } = require('@cromwell/core-backend');
 const { appBuildProd, localProjectDir } = require('./src/constants');
-const adminRootDir = resolve(__dirname).replace(/\\/g, '/');
-const buildDir = resolve(adminRootDir, 'build');
-const tempDir = resolve(adminRootDir, '.cromwell');
+const buildDir = resolve(localProjectDir, 'build');
+const tempDir = resolve(localProjectDir, '.cromwell');
+
+// 'buildService' | 'build' | 'dev' | 'prod'
 const scriptName = process.argv[2];
 
 const main = async () => {
@@ -21,21 +23,45 @@ const main = async () => {
         )
     }
 
-    const buildAdminService = () => {
+    const buildService = () => {
         spawnSync(`npx rollup -c`, [],
-            { shell: true, stdio: 'inherit', cwd: adminRootDir });
+            { shell: true, stdio: 'inherit', cwd: localProjectDir });
 
-        spawnSync(`npx cross-env SCRIPT=buildAdmin npx webpack`, [],
-            { shell: true, stdio: 'inherit', cwd: adminRootDir });
+        spawnSync(`node ./webpack.js buildService`, [],
+            { shell: true, stdio: 'inherit', cwd: localProjectDir });
     }
 
-    const buildWebApp = () => {
+    const buildWebApp = async () => {
+        if (process.send) process.send(adminPanelMessages.onBuildStartMessage);
+
         if (!isServiceBuilt()) {
-            buildAdminService();
+            buildService();
         }
         gen();
-        spawnSync(`npx cross-env SCRIPT=production npx webpack`, [],
-            { shell: true, stdio: 'inherit', cwd: adminRootDir });
+        await new Promise(res => {
+            const proc = spawn(`node ./webpack.js buildWeb`, [],
+                { shell: true, stdio: 'pipe', cwd: localProjectDir });
+
+            if (proc.stderr && proc.stderr.on && proc.stderr.once) {
+                proc.stderr.on('data', (data) => {
+                    console.log(data.toString ? data.toString() : data);
+                });
+                proc.stderr.once('data', (data) => {
+                    if (process.send) process.send(adminPanelMessages.onBuildErrorMessage);
+                });
+            }
+            if (proc.stdout && proc.stdout.on) {
+                proc.stdout.on('data', (data) => {
+                    console.log(data.toString ? data.toString() : data);
+                });
+            }
+
+            proc.on('close', () => {
+                res();
+            });
+        });
+
+        if (process.send) process.send(adminPanelMessages.onBuildEndMessage);
     }
 
     if (scriptName === 'gen') {
@@ -44,7 +70,7 @@ const main = async () => {
     }
 
     if (scriptName === 'buildService') {
-        buildAdminService();
+        buildService();
         return;
     }
 
@@ -55,11 +81,14 @@ const main = async () => {
 
     if (scriptName === 'dev') {
         if (!isServiceBuilt()) {
-            buildAdminService();
+            buildService();
         }
         gen();
 
-        spawn(`npx cross-env SCRIPT=buildAdmin npx webpack --watch`, [],
+        spawn(`npx rollup -cw`, [],
+            { shell: true, stdio: 'inherit', cwd: localProjectDir });
+
+        spawn(`node ./webpack.js buildService watch development`, [],
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
 
         spawn(`node ./server.js development`, [],
@@ -69,15 +98,16 @@ const main = async () => {
     }
 
     if (scriptName === 'prod') {
-        if (!isServiceBuilt()) {
-            buildWebApp();
+        if (!isServiceBuilt() || !fs.existsSync(tempDir) || !fs.existsSync(appBuildProd)) {
+            await buildWebApp();
         }
 
-        if (!fs.existsSync(tempDir) || !fs.existsSync(appBuildProd)) {
-            gen();
-        }
-        spawn(`node ./server.js production`, [],
+        const serverProc = fork(`./server.js`, ['production'],
             { shell: true, stdio: 'inherit', cwd: buildDir });
+
+        serverProc.on('message', (message) => {
+            if (process.send) process.send(message);
+        });
         return;
     }
 }

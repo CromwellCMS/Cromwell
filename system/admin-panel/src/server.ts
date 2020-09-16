@@ -2,9 +2,10 @@ import fs from 'fs-extra';
 import { resolve } from 'path';
 import webpack from 'webpack';
 import express from 'express';
-import { TCmsConfig } from '@cromwell/core';
+import { TCmsConfig, serviceLocator } from '@cromwell/core';
 import { appBuildDev, appBuildProd, publicStaticDir, projectRootDir } from './constants';
-import { readCMSConfigSync } from '@cromwell/core-backend';
+import { readCMSConfigSync, adminPanelMessages } from '@cromwell/core-backend';
+const { getConfig } = require('../webpack.config');
 const chalk = require('react-dev-utils/chalk');
 
 const startDevServer = () => {
@@ -13,11 +14,11 @@ const startDevServer = () => {
     const CMSconfig = readCMSConfigSync(projectRootDir)
 
     const env = process.argv[2];
-    const config = require('../webpack.config');
-    const compiler = webpack(config);
 
     let isDevelopment = env === 'development';
     let isProduction = env === 'production';
+
+    const compiler = webpack(getConfig('buildWeb', env) as any);
 
     if (!isDevelopment && !isProduction)
         throw (`devServer::startDevServer: rocess.argv[2] is invalid - ${env}
@@ -44,12 +45,18 @@ const startDevServer = () => {
             if (!err) {
                 res.sendFile(filePath);
             } else {
-                res.status(404).send("index.html not found. Run build command")
+                res.status(404).send("index.html not found. Run build command");
             }
         })
     })
 
-    const { address } = app.listen(port);
+    app.listen(port, () => {
+        console.log(`Admin Panel server has started at ${serviceLocator.getAdminPanelUrl()}`);
+        if (process.send) process.send(adminPanelMessages.onStartMessage);
+    }).on('error', (err) => {
+        console.error(err);
+        if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
+    });;
 
     if (isDevelopment) {
         compiler.hooks.watchRun.tap('MyPlugin1', (params) => {
@@ -83,4 +90,9 @@ const startDevServer = () => {
 
 }
 
-startDevServer();
+try {
+    startDevServer();
+} catch (e) {
+    console.error(e);
+    if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
+}

@@ -1,13 +1,17 @@
 const path = require('path');
+const { adminPanelMessages, getAdminPanelDir, getAdminPanelServiceBuildDir,
+    getAdminPanelWebBuildDev, getAdminPanelWebBuildProd, getAdminPanelWebStaticDir,
+    getAdminPanelWebPublicDir, getAdminPanelGeneratorOutDir } = require('@cromwell/core-backend');
 
 const projectRootDir = path.resolve(__dirname, '../../../');
 const localProjectDir = path.resolve(__dirname, '../');
-const localProjectBuildDir = path.resolve(__dirname, '../build');
-const appBuildDev = path.resolve(localProjectDir, '.cromwell/static/build/dev');
-const appBuildProd = path.resolve(localProjectDir, '.cromwell/static/build/prod');
-const staticDir = path.resolve(localProjectDir, '.cromwell/static');
-const publicStaticDir = path.resolve(localProjectDir, '.cromwell/static/public');
-const generatorOutDir = path.resolve(localProjectDir, '.cromwell/imports');
+
+const localProjectBuildDir = getAdminPanelServiceBuildDir(projectRootDir);
+const appBuildDev = getAdminPanelWebBuildDev(projectRootDir);
+const appBuildProd = getAdminPanelWebBuildProd(projectRootDir);
+const staticDir = getAdminPanelWebStaticDir(projectRootDir);
+const publicStaticDir = getAdminPanelWebPublicDir(projectRootDir);
+const generatorOutDir = getAdminPanelGeneratorOutDir(projectRootDir);
 
 module.exports = {
     projectRootDir: projectRootDir.replace(/\\/g, '/'),

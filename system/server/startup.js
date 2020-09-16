@@ -48,9 +48,7 @@ const main = async () => {
         const serverProc = fork(resolve(buildDir, `server.js`));
 
         serverProc.on('message', (message) => {
-            if (message === 'ready') {
-                if (process.send) process.send('ready');
-            }
+            if (process.send) process.send(message);
         });
     }
 

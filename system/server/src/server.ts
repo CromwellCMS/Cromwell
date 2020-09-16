@@ -1,6 +1,7 @@
 import 'reflect-metadata';
 
 import { apiV1BaseRoute, TCmsConfig, setStoreItem, currentApiVersion, serviceLocator } from '@cromwell/core';
+import { Product, ProductCategory, Post, Author, Attribute, ProductReview, readCMSConfigSync, serverMessages } from '@cromwell/core-backend';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import fs from 'fs-extra';
@@ -27,7 +28,6 @@ import { ProductCategoryResolver } from './resolvers/ProductCategoryResolver';
 import { ProductResolver } from './resolvers/ProductResolver';
 import { AttributeResolver } from './resolvers/AttributeResolver';
 import { ProductReviewResolver } from './resolvers/ProductReviewResolver';
-import { Product, ProductCategory, Post, Author, Attribute, ProductReview, readCMSConfigSync } from '@cromwell/core-backend';
 
 setStoreItem('rebuildPage', rebuildPage);
 
@@ -105,92 +105,92 @@ async function apiServer(): Promise<void> {
     ]
     app.use(`/${apiV1BaseRoute}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-    setTimeout(() => {
-        app.use(`/${apiV1BaseRoute}/cms`, getCmsController());
-        app.use(`/${apiV1BaseRoute}/theme`, getThemeController());
-        app.use(`/${apiV1BaseRoute}/plugin`, getPluginsController());
-        // app.use(`/${apiV1BaseRoute}/manager`, getManagerController());
-        app.use(`/${apiV1BaseRoute}/mock`, getMockController());
+    await new Promise(resolve => {
+        setTimeout(() => {
+            app.use(`/${apiV1BaseRoute}/cms`, getCmsController());
+            app.use(`/${apiV1BaseRoute}/theme`, getThemeController());
+            app.use(`/${apiV1BaseRoute}/plugin`, getPluginsController());
+            // app.use(`/${apiV1BaseRoute}/manager`, getManagerController());
+            app.use(`/${apiV1BaseRoute}/mock`, getMockController());
 
-        const managerUrl = `${serviceLocator.getManagerUrl()}/${apiV1BaseRoute}`;
-        const managerBasePath = `/${apiV1BaseRoute}/manager`;
-        app.use(managerBasePath, createProxyMiddleware({
-            target: managerUrl, changeOrigin: true, pathRewrite: {
-                [`^${managerBasePath}`]: ''
-            }
-        }));
-        const wsProxy = createProxyMiddleware(serviceLocator.getManagerWsUrl());
-        app.use(wsProxy);
+            const managerUrl = `${serviceLocator.getManagerUrl()}/${apiV1BaseRoute}`;
+            const managerBasePath = `/${apiV1BaseRoute}/manager`;
+            app.use(managerBasePath, createProxyMiddleware({
+                target: managerUrl, changeOrigin: true, pathRewrite: {
+                    [`^${managerBasePath}`]: ''
+                }
+            }));
+            const wsProxy = createProxyMiddleware(serviceLocator.getManagerWsUrl());
+            app.use(wsProxy);
 
-        const server = app.listen(config?.apiPort, () => {
-            console.log(`API server has started at ${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/`);
-            if (process.send) process.send('ready');
-        });
+            const server = app.listen(config?.apiPort, () => {
+                console.log(`API server has started at ${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/`);
+                if (process.send) process.send(serverMessages.onStartMessage);
+            });
 
-        //// Manager websocket log proxy: 
-        const managerWSRoute = `/${apiV1BaseRoute}/manager/log`;
-        if (wsProxy.upgrade) server.on('upgrade', (request, socket, head) => {
-            const pathname = request?.url;
-            console.log('pathname', pathname);
-            if (pathname === managerWSRoute) {
-                if (wsProxy.upgrade) wsProxy.upgrade(request, socket, head);
-            } else {
-                socket.destroy();
-            }
-        });
-        //// 
-
-    }, 100)
-}
-
-// async function adminPanelServer() {
-//     const app = express();
-//     app.use(express.static(publicDir, {}));
-//     app.get('*', (req, res) => {
-//         res.sendFile(publicDir + '/index.html');
-//     });
-//     app.listen(config.adminPanelPort);
-//     console.log(`Admin Panel server has started at http://localhost:${config.adminPanelPort}/`);
-// }
-
-
-// Test feature that serves satic pages and other files from .next folder (bad idea)
-// Use Nginx to cache response of Next.js server
-/*
-import { getFrontendBuildDir, getRootBuildDir, getBuildId } from './helpers/getFrontendBuildDir';
-const buildStaticDir = getFrontendBuildDir();
-const buildId = getBuildId();
-const rootBuildDir = getRootBuildDir();
-async function frontendServer() {
-    if (buildStaticDir && config && config.themePort) {
-        const app = express();
-        app.get('*', function (req, res) {
-            console.log('req.path', req.path);
-            const reqPath = decodeURI(req.path);
-            let resFilePath;
-            if (reqPath.includes('/_next/data/')) {
-                resFilePath = `${rootBuildDir}/${reqPath.replace(`/_next/data/${buildId}`, `server/static/${buildId}/pages`)}`;
-            } else if (reqPath.includes('/_next/')) {
-                resFilePath = `${rootBuildDir}/${reqPath.replace('/_next/', '')}`;
-            } else {
-                resFilePath = `${buildStaticDir}${reqPath}.html`;
-            }
-            fs.access(resFilePath, fs.constants.F_OK, (err) => {
-                if (!err) {
-                    res.sendFile(resFilePath);
-                    return;
+            //// Manager websocket log proxy: 
+            const managerWSRoute = `/${apiV1BaseRoute}/manager/log`;
+            if (wsProxy.upgrade) server.on('upgrade', (request, socket, head) => {
+                const pathname = request?.url;
+                console.log('pathname', pathname);
+                if (pathname === managerWSRoute) {
+                    if (wsProxy.upgrade) wsProxy.upgrade(request, socket, head);
                 } else {
-                    console.error('File does not exist: ' + resFilePath);
-                    res.status(404).send('Not found');
+                    socket.destroy();
                 }
             });
-        });
-        app.listen(config.themePort);
-        console.log(`Frontend theme server has started at http://localhost:${config.themePort}/`);
-    }
-}
-*/
+            //// 
 
-apiServer();
-// adminPanelServer();
-// frontendServer();
+            resolve();
+        }, 100)
+    })
+}
+
+(async () => {
+    try {
+        await apiServer();
+    } catch (e) {
+        console.log(e);
+        if (process.send) process.send(serverMessages.onStartErrorMessage);
+    }
+})();
+
+
+// Proxy routes of Manager for Server's swagger
+
+/**
+  * @swagger
+  *
+  * /manager/services/change-theme/{themeName}:
+  *   get:
+  *     description: Proxy route. More info in http://localhost:4016/api/v1/api-docs/#/Services/get_services_change_theme__themeName_
+  *     tags:
+  *       - Manager
+  *     produces:
+  *       - application/json
+  *     parameters:
+  *       - name: themeName
+  *         description: Name of a new theme to change
+  *         in: path
+  *         required: true
+  *         type: string
+  *     responses:
+  *       200:
+  *         description: true
+  */
+
+
+/**
+ * @swagger
+ *
+ * /manager/services/rebuild-theme:
+ *   get:
+ *     description: Proxy route. More info in http://localhost:4016/api/v1/api-docs/#/Services/get_services_rebuild_theme
+ *     tags:
+ *       - Services
+ *     produces:
+ *       - application/json
+ *     responses:
+ *       200:
+ *         description: true
+ */
