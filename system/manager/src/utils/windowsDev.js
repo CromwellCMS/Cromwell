@@ -2,7 +2,7 @@ const { windowManager } = require("node-window-manager");
 const { execSync } = require('child_process');
 const isRunning = require('is-running');
 const config = require('../config');
-const { saveProcessPid, getProcessPid, getAllServices, loadCache, getRunTimeCache } = require('./cacheManager');
+const { saveProcessPid, getProcessPid, getAllServices, loadCache, getRunTimeCache, cleanCache } = require('./cacheManager');
 const nodeCleanup = require('node-cleanup');
 const { winKillPid } = require('./winUtils');
 const { resolve } = require("path");
@@ -15,6 +15,8 @@ const winStart = () => {
         overallTimeout, otherDirs } = config.windowsDev;
 
     const services = windowsDevServices;
+
+    console.log('services', services);
 
     if (closeAllOnExit) {
         nodeCleanup(function (exitCode, signal) {
@@ -181,8 +183,12 @@ const winKillAll = () => {
 }
 
 
-
-
-loadCache(() => {
-    winStart();
-});
+if (config.cleanCacheOnStart) {
+    cleanCache(() => {
+        winStart();
+    })
+} else {
+    loadCache(() => {
+        winStart();
+    });
+}

@@ -1,12 +1,19 @@
 {
-    "appConfig": {
-    },
+    "appConfig": {},
     "pages": [
         {
             "route": "index",
-            "name": "index",
-            "title": "Home page",
+            "name": "Home page",
+            "title": "Home page2",
             "modifications": [
+                {
+                    "type": "plugin",
+                    "isDeleted": true,
+                    "componentId": "main_showcase",
+                    "plugin": {
+                        "pluginName": "ProductShowcase"
+                    }
+                },
                 {
                     "type": "text",
                     "componentId": "1",
@@ -28,8 +35,8 @@
         },
         {
             "route": "pages/some_page",
-            "name": "my-some_page",
-            "title": "My first page",
+            "name": "Custom page",
+            "title": "Some custom page",
             "description": "My first page description",
             "customConfig": {
                 "welcomeMessage": "HI"

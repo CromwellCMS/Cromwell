@@ -65,8 +65,7 @@ const getAllServices = (cb) => {
     })
 }
 
-
-const loadCache = (cb) => {
+const loadServiceNames = (cb) => {
     let cache;
     cacache.get(cachePath, getCacheKey(serviceNamesKey)).then(data => {
         if (data && data.data && data.data.toString) {
@@ -82,6 +81,11 @@ const loadCache = (cb) => {
         if (cache) {
             serviceNames = cache;
         }
+        cb(cache)
+    });
+}
+const loadCache = (cb) => {
+    loadServiceNames(() => {
         getAllServices((out) => {
             globalCache = out;
             setTimeout(() => {
@@ -89,10 +93,19 @@ const loadCache = (cb) => {
                 cb();
             }, 100);
         })
-    });
+    })
+}
+
+const cleanCache = (cb) => {
+    globalCache = {};
+    loadServiceNames(() => {
+        cacache.rm.all(cachePath).then(() => {
+            cb();
+        })
+    })
 }
 
 
 module.exports = {
-    saveProcessPid, getProcessPid, loadCache, getAllServices, getRunTimeCache
+    saveProcessPid, getProcessPid, loadCache, getAllServices, getRunTimeCache, cleanCache
 }

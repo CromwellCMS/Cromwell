@@ -20,7 +20,7 @@
     "pages": [
         {
             "route": "index",
-            "name": "index",
+            "name": "Home page",
             "title": "Home page",
             "modifications": [
                 {
@@ -61,8 +61,8 @@
         },
         {
             "route": "category/[slug]",
-            "name": "category",
-            "title": "Category page",
+            "name": "Product category page",
+            "title": "Product category page",
             "isDynamic": true,
             "modifications": [
                 {
@@ -79,7 +79,7 @@
         },
         {
             "route": "product/[slug]",
-            "name": "product",
+            "name": "Product page",
             "title": "Product page",
             "isDynamic": true,
             "modifications": [
@@ -97,8 +97,8 @@
         },
         {
             "route": "pages/some_page",
-            "name": "my-some_page",
-            "title": "My first page",
+            "name": "Custom page",
+            "title": "Some custom page",
             "modifications": [
                 {
                     "type": "plugin",

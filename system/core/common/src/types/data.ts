@@ -112,13 +112,13 @@ export type TAppConfig = {
 }
 
 export type TThemeConfig = {
-    themeInfo: TThemeInfo,
+    themeInfo?: TThemeInfo,
     pages: TPageConfig[];
-    plugins: Record<string, {
+    plugins?: Record<string, {
         pages: string[];
         options: Record<string, any>;
     }>;
-    appConfig: TAppConfig;
+    appConfig?: TAppConfig;
     /**
      * Custom config that will be available at every page in the Store inside pageConfig props
      */
@@ -144,9 +144,11 @@ export type TPageInfo = {
     description?: string;
     /** Is using next.js dynamic routes? */
     isDynamic?: boolean;
+    /** Is created in page builder and so does not has a .js file in theme's dir */
+    isVirtual?: boolean;
 }
 
 export type TPageConfig = TPageInfo & {
     modifications: TCromwellBlockData[];
-    pageCustomConfig: Record<string, any>;
+    pageCustomConfig?: Record<string, any>;
 }

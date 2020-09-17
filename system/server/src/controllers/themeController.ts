@@ -1,4 +1,7 @@
-import { getStoreItem, TAppConfig, TCromwellBlockData, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
+import {
+    getStoreItem, TAppConfig, TCromwellBlockData, TPageConfig, TCmsConfig,
+    TPageInfo, TThemeConfig
+} from '@cromwell/core';
 import { Router } from 'express';
 import fs from 'fs-extra';
 import { readCMSConfig } from '@cromwell/core-backend';
@@ -13,77 +16,117 @@ export const getThemeController = (): Router => {
     // < HELPERS >
 
     /**
+     * Asynchronously reads theme config (user's or original) by specified path
+     * @param configPath 
+     * @param cb 
+     */
+    const readThemeConfig = (configPath: string, cb: (themeConfig: TThemeConfig | null) => void) => {
+        fs.access(configPath, fs.constants.R_OK, (err) => {
+            if (!err) {
+                fs.readFile(configPath, (err, data) => {
+                    let config: TThemeConfig | undefined;
+                    if (!err) {
+                        try {
+                            config = JSON.parse(data.toString());
+                        } catch (e) {
+                            console.error('Failed to read ThemeConfig ' + configPath, e);
+                        }
+                        if (config && typeof config === 'object') {
+                            cb(config);
+                            return;
+                        }
+                    }
+                    console.error('Failed to read ThemeConfig at ' + configPath);
+                    cb(null);
+                    return;
+                });
+                return;
+            } else {
+                console.error('Failed to read ThemeConfig at ' + configPath);
+                cb(null);
+            }
+        });
+    }
+
+    /**
+     * Asynchronously reads user's theme config by theme name from cmsConfig
+     * @param cmsConfig 
+     * @param cb 
+     */
+    const readThemeUserConfig = (cmsConfig: TCmsConfig, cb: (config: TThemeConfig | null) => void) => {
+        const themeConfigPath = `${settingsPath}/themes/${cmsConfig.themeName}/theme.json`;
+        readThemeConfig(themeConfigPath, cb);
+    }
+
+    /**
+     * Asynchronously reads original theme config by theme name from cmsConfig
+     * @param cmsConfig 
+     * @param cb 
+     */
+    const readThemeOriginalConfig = (cmsConfig: TCmsConfig, cb: (config: TThemeConfig | null) => void) => {
+        const themeConfigPath = `${projectRootDir}/themes/${cmsConfig.themeName}/cromwell.config.json`;
+        readThemeConfig(themeConfigPath, cb);
+    }
+
+    /**
+     * Asynchronously saves theme config (user's or original) by specified path
+     * @param configPath 
+     * @param config 
+     * @param cb 
+     */
+    const saveThemeConfig = (configPath: string, config: TThemeConfig, cb: (success: boolean) => void) => {
+        fs.outputFile(configPath, JSON.stringify(config, null, 2), (err) => {
+            if (err) {
+                console.error(err);
+                cb(false)
+                return;
+            }
+            cb(true);
+        });
+    }
+
+    /**
+     * Asynchronously saves user's theme config by theme name from cmsConfig
+     * @param cmsConfig 
+     * @param cb 
+     */
+    const saveThemeUserConfig = (themeConfig: TThemeConfig, cmsConfig: TCmsConfig, cb: (success: boolean) => void) => {
+        const themeConfigPath = `${settingsPath}/themes/${cmsConfig.themeName}/theme.json`;
+        saveThemeConfig(themeConfigPath, themeConfig, cb);
+    }
+
+    // const saveThemeOriginalConfig = (themeConfig: TThemeConfig, cmsConfig: TCmsConfig, cb: (success: boolean) => void) => {
+    //     const themeConfigPath = `${projectRootDir}/themes/${cmsConfig.themeName}/cromwell.config.json`;
+    //     saveThemeConfig(themeConfigPath, themeConfig, cb);
+    // }
+
+    /**
      * Asynchronously reads modifications in theme's original config from /themes 
      * and user's config from /modifications.
      * @param cb callback with both configs.
      */
-    const readConfigs = (cb: (themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => void): void => {
+    const readConfigs = (cb: (themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null, cmsConfig?: TCmsConfig) => void): void => {
         let themeConfig: TThemeConfig | null = null,
             userConfig: TThemeConfig | null = null;
 
         // Read CMS config, because theme can be changed
-        readCMSConfig(projectRootDir, (config) => {
-            if (config) {
-                const userModificationsPath = `${settingsPath}/themes/${config.themeName}`;
-                const themeDir = `${projectRootDir}/themes/${config.themeName}`;
-                const themeConfigPath = `${themeDir}/cromwell.config.json`;
-
-                // Read theme's user modifications
-                const readUserMods = () => {
-                    const path = userModificationsPath + '/theme.json';
-                    fs.access(path, fs.constants.R_OK, (err) => {
-                        if (!err) {
-                            fs.readFile(path, (err, data) => {
-                                let themeUserModifications: TThemeConfig | undefined;
-                                try {
-                                    themeUserModifications = JSON.parse(data.toString());
-                                } catch (e) {
-                                    console.error('Failed to read user theme modifications', e);
-                                }
-
-                                if (themeUserModifications && typeof themeUserModifications === 'object') {
-                                    userConfig = themeUserModifications;
-                                }
-
-                                cb(themeConfig, userConfig);
-                            });
-                            return;
-                        } else {
-                            cb(themeConfig, userConfig);
-                        }
-                    });
-                }
+        readCMSConfig(projectRootDir, (cmsConfig) => {
+            if (cmsConfig) {
 
                 // Read theme's original config
-                fs.access(themeConfigPath, fs.constants.R_OK, (err) => {
-                    if (!err) {
-                        fs.readFile(themeConfigPath, (err, data) => {
-                            let themeOriginalConfig: TThemeConfig | undefined;
-                            if (!err) {
-                                try {
-                                    themeOriginalConfig = JSON.parse(data.toString());
-                                } catch (e) {
-                                    console.error(e);
-                                }
-                            }
-                            if (themeOriginalConfig && typeof themeOriginalConfig === 'object') {
-                                themeConfig = themeOriginalConfig;
-                            }
+                readThemeOriginalConfig(cmsConfig, (config) => {
+                    themeConfig = config;
 
-                            readUserMods();
-
-                        })
-                    }
-                    else {
-                        console.error('Failed to find theme config at ' + themeConfigPath);
-                        readUserMods();
-                    }
-                });
+                    // Read theme's user modifications
+                    readThemeUserConfig(cmsConfig, (config) => {
+                        userConfig = config;
+                        cb(themeConfig, userConfig, cmsConfig);
+                    })
+                })
             }
-        })
-
-
+        });
     }
+
 
     /**
      * Will add and overwrite theme's original modificators by user's modificators
@@ -109,6 +152,14 @@ export const getThemeController = (): Router => {
         return mods;
     }
 
+    /**
+     * Merges page canfigs from theme's original and user's files. 
+     * Adds optionaly globalMods to the output.
+     * @param themeConfig 
+     * @param userConfig 
+     * @param globalThemeMods 
+     * @param globalUserMods 
+     */
     const mergePages = (themeConfig?: TPageConfig, userConfig?: TPageConfig,
         globalThemeMods?: TCromwellBlockData[], globalUserMods?: TCromwellBlockData[]): TPageConfig => {
         // Merge global mods
@@ -124,6 +175,13 @@ export const getThemeController = (): Router => {
         return config
     }
 
+    const getPageConfigFromThemeConfig = (pageRoute: string, themeConfig: TThemeConfig | undefined | null): TPageConfig | undefined => {
+        if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
+            for (const p of themeConfig.pages) {
+                if (p.route === pageRoute) return p;
+            }
+        }
+    }
     /**
      * Asynchronously configs for specified Page by pageRoute arg and merge them into one.
      * Output contains theme's original modificators overwritten and supplemented by user's modificators.
@@ -133,28 +191,107 @@ export const getThemeController = (): Router => {
     const getPageConfig = (pageRoute: string, cb: (pageConfig: TPageConfig) => void): void => {
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
             // let themeMods: TCromwellBlockData[] | undefined = undefined, userMods: TCromwellBlockData[] | undefined = undefined;
-            let themePageConfig: TPageConfig | undefined = undefined, userPageConfig: TPageConfig | undefined = undefined;
             // Read theme's original modificators 
-            if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
-                for (const p of themeConfig.pages) {
-                    if (p.route === pageRoute) {
-                        themePageConfig = p;
-                    }
-                }
-            }
+            const themePageConfig: TPageConfig | undefined = getPageConfigFromThemeConfig(pageRoute, themeConfig);
             // Read user's custom modificators 
-            if (userConfig && userConfig.pages && Array.isArray(userConfig.pages)) {
-                for (const p of userConfig.pages) {
-                    if (p.route === pageRoute) {
-                        userPageConfig = p;
-                    }
-                }
-            }
+            const userPageConfig: TPageConfig | undefined = getPageConfigFromThemeConfig(pageRoute, userConfig);
             // Merge users's with theme's mods
             const pageConfig = mergePages(themePageConfig, userPageConfig, themeConfig?.globalModifications, userConfig?.globalModifications);
 
             cb(pageConfig);
-        })
+        });
+    }
+
+    /**
+     * Saves userPageConfig into user's theme config. TPageInfo is just overwrited,
+     * but modifications (TCromwellBlockData) are applied by an algorithm. New mods
+     * overwrite current ones in user's config by blockId and are being added if user
+     * config has no same blockId. If user has deleted some block, then should send mod
+     * with "isDeleted": true flag. If this mod is virtual and contains only in user's
+     * config, then mod will be deleted. If mod contains in original config, then it will
+     * be saved in user's config with this flag 
+     * 
+     * Modificators on userPageConfig (TCromwellBlockData) must contain only newly added 
+     * mods or an empty array. It is not allowed to send all mods from "/theme/page" route 
+     * because they contain merged mods from theme's config and we don't need to copy them 
+     * into user's config that way. User's config should contain only user's uniques 
+     * mods, so theme's original config can be updated by theme's authors in the future.
+     * 
+     * @param userConfig Page config with modifications to APPLY.
+     */
+    const saveUserPageConfig = (userPageConfig: TPageConfig, cb: (success: boolean) => void) => {
+        if (!userPageConfig) {
+            console.error('Server::saveUserPageConfig: Invalid userPageConfig')
+            cb(false);
+            return;
+        }
+        if (!userPageConfig.route) {
+            console.error('Server::saveUserPageConfig: Invalid userPageConfig, no route', JSON.stringify(userPageConfig));
+            cb(false);
+            return;
+        }
+        if (!userPageConfig.modifications) {
+            console.error('Server::saveUserPageConfig: Invalid userPageConfig, no modifications', JSON.stringify(userPageConfig));
+            cb(false);
+            return;
+        }
+
+        readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null, cmsConfig) => {
+            // If userConfig is null, then theme is probably new and user has never saved mods. Create a new userConfig
+            if (!userConfig) {
+                userConfig = {
+                    pages: []
+                }
+            }
+
+            const oldUserPageConfig: TPageConfig | undefined = getPageConfigFromThemeConfig(userPageConfig.route, userConfig);
+            const oldOriginalPageConfig: TPageConfig | undefined = getPageConfigFromThemeConfig(userPageConfig.route, themeConfig);
+
+            // Remove recently deleted user's blocks from oldUserPageConfig if they aren't in theme's;
+            let filteredUserPageConfig: TPageConfig = {
+                ...userPageConfig,
+                modifications: [...userPageConfig.modifications]
+            };
+            userPageConfig.modifications.forEach(mod => {
+                if (mod.isDeleted) {
+                    let hasOriginalSameMod = false;
+                    oldOriginalPageConfig?.modifications.forEach(origMod => {
+                        if (origMod.componentId === mod.componentId) hasOriginalSameMod = true;
+                    });
+                    if (!hasOriginalSameMod) {
+
+                        if (oldUserPageConfig && oldUserPageConfig.modifications) {
+                            oldUserPageConfig.modifications = oldUserPageConfig.modifications.filter(
+                                userMode => userMode.componentId !== mod.componentId
+                            )
+                        }
+                        filteredUserPageConfig.modifications = filteredUserPageConfig.modifications.filter(
+                            userMode => userMode.componentId !== mod.componentId
+                        )
+                    }
+                }
+            })
+
+            // Merge the rest
+            const pageConfig = mergePages(oldUserPageConfig, filteredUserPageConfig);
+
+            let pageIndex: number | undefined;
+            userConfig.pages.forEach((page, i) => {
+                if (page.route === pageConfig.route) pageIndex = i;
+            });
+            if (pageIndex !== undefined) {
+                userConfig.pages[pageIndex] = pageConfig;
+            } else {
+                userConfig.pages.push(pageConfig);
+            }
+
+            // Save config
+            if (cmsConfig) {
+                saveThemeUserConfig(userConfig, cmsConfig, cb);
+            } else {
+                cb(false);
+            }
+        });
     }
 
     /**
@@ -194,6 +331,7 @@ export const getThemeController = (): Router => {
 
     // < API Methods />
 
+
     /**
      * @swagger
      * 
@@ -225,6 +363,37 @@ export const getThemeController = (): Router => {
         }
         else {
             res.send(out);
+        }
+    });
+
+    /**
+     * @swagger
+     * 
+     * /theme/page:
+     *   post:
+     *     description: Saves page config for specified Page by pageRoute in query param. Modificators (TCromwellBlockData) must contain only newly added mods or an empty array. It is not allowed to send all mods from /theme/page route because they contain mods from theme's config and we don't need to copy them into user's config that way.
+     *     tags: 
+     *       - Theme
+     *     produces:
+     *       - application/json
+     *     parameters:
+     *       - name: TPageConfig
+     *         description: PageConfig to save in userThemeConfig
+     *         in: body
+     *         required: true
+     *         type: object
+     *     responses:
+     *       200:
+     *         description: success
+     */
+    themeController.post(`/page`, function (req, res) {
+        let input: TPageConfig | null = req.body;
+        if (input && typeof input === 'object') {
+            saveUserPageConfig(input, (success) => {
+                res.send(success);
+            })
+        } else {
+            res.send(false);
         }
     })
 

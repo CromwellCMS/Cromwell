@@ -11,7 +11,11 @@ export const getPluginsController = (): Router => {
 
     // < HELPERS >
 
-    /** Read default settings from plugin's folder  */
+    /**
+     * Read default settings from plugin's folder 
+     * @param pluginName name of plugin and plugin's directory
+     * @param cb callback with settings
+     */
     const readPluginDefaultSettings = (pluginName: string, cb: (data: any) => void) => {
         const filePath = `${pluginsPath}/${pluginName}/cromwell.config.json`;
         fs.access(filePath, fs.constants.R_OK, (err) => {
@@ -35,7 +39,11 @@ export const getPluginsController = (): Router => {
         })
     }
 
-    /** Read plugin's user settings */
+    /**
+     * Read plugin's user settings
+     * @param pluginName name of plugin and plugin's directory
+     * @param cb callback with settings
+     */
     const readPluginSettings = (pluginName: string, cb: (data: any) => void) => {
         const filePath = `${settingsPath}/${pluginName}/settings.json`;
         fs.access(filePath, fs.constants.R_OK, (err) => {
@@ -121,7 +129,7 @@ export const getPluginsController = (): Router => {
     pluginsController.post(`/settings/:pluginName`, function (req, res) {
         if (req.params.pluginName && req.params.pluginName !== "") {
             const filePath = `${settingsPath}/${req.params.pluginName}/settings.json`;
-            fs.outputFile(filePath, JSON.stringify(req.body), (err) => {
+            fs.outputFile(filePath, JSON.stringify(req.body, null, 2), (err) => {
                 if (err) {
                     console.error(err);
                     res.send(false);

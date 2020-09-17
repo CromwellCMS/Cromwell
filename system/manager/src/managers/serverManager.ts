@@ -16,7 +16,7 @@ export const startServer = (cb: (success: boolean) => void, onLog?: (message: st
         serverProc = startService(serverStartupPath, cacheKeys.server, [servicesEnv.server],
             (data) => onLog?.(data?.toString() ?? data))
     }
-    
+
     if (serverProc) {
         const onMessage = async (message: string) => {
             if (message === serverMessages.onStartMessage) {
@@ -25,6 +25,7 @@ export const startServer = (cb: (success: boolean) => void, onLog?: (message: st
                 cb(true);
             }
             if (message === serverMessages.onStartErrorMessage) {
+                onLog?.(`ServerManager:: Failed to start Server`);
                 serverProc.removeListener('message', onMessage);
                 cb(false);
             }
