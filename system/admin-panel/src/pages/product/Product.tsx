@@ -49,7 +49,7 @@ function NumberFormatCustom(props: NumberFormatCustomProps) {
 }
 
 const ProductPage = () => {
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
     const client = getGraphQLClient();
     const [loadingProgress, setIsloading] = useState([false, false]);
     const [product, setProdData] = useState<TProduct | null>(null);
@@ -152,7 +152,6 @@ const ProductPage = () => {
                         onChange={(event: React.ChangeEvent<{}>, newValue: number) => {
                             setActiveTabNum(newValue);
                         }}
-                        aria-label="disabled tabs example"
                     >
                         <Tab label="Main" />
                         <Tab label="Attributes" />

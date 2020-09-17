@@ -3,6 +3,69 @@
     display: flex;
     flex-direction: column;
     width: 100%;
+
+    .mainContainer {
+        display: flex;
+    }
+    .sidebar {
+        max-width: 300px;
+    }
+
+    .pageList {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+    }
+    .pageListHeader {
+        font-size: 12px;
+        margin-bottom: 9px;
+        margin-left: 15px;
+    }
+    .addPageItem {
+        display: flex;
+        justify-content: center;
+        background-color: #fff;
+        margin-bottom: 10px;
+        border-radius: 6px;
+        padding: 0 0 0 15px;
+    }
+
+
+    .pageBarActions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #fff;
+        margin-bottom: 10px;
+        border-radius: 8px;
+        overflow: hidden;
+    }
+    .pageBarTitle {
+        font-size: 18px;
+        font-weight: 600;
+    }
+
+    .pageSettingsContainer {
+        width: 100%;
+        padding-left: 20px;
+    }
+
+    .adminPanelThemeController {
+        position: relative;
+        padding: 15px;
+    }
+
+    .tabContent {
+        // padding: 15px;
+        margin: 15px 0;
+        background-color: #fff;
+        border-radius: 8px;
+    } 
+
+    .saveBtn {
+        position: relative;
+    }
+
 }
 
 .EditorWindow {

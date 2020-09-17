@@ -1,6 +1,9 @@
 import { getCmsConfig, TThemeInfo, TCmsConfig } from '@cromwell/core';
 import { getRestAPIClient, getWebSocketClient } from '@cromwell/core-frontend';
-import { Badge, Button, Card, CardActionArea, CardActions, CardContent, Typography } from '@material-ui/core';
+import {
+    Badge, Button, Card, CardActionArea, CardActions, CardContent,
+    Typography, IconButton
+} from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -51,7 +54,7 @@ export default function ThemeList() {
             setIsChangingTheme(true);
             const success = await client.rebuildTheme();
             if (success) {
-                toast.success('Rebuilded theme');
+                toast.success('Rebuilded');
             } else {
                 toast.error('Failed to rebuild theme');
             }
