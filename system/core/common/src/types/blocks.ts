@@ -34,6 +34,8 @@ export type TFrontendPluginProps<TData = any, TSettings = any> = {
 
 export type TCromwellBlock = React.Component<TCromwellBlockProps> & {
     getContentInstance: () => React.Component;
+    getData: () => TCromwellBlockData | undefined;
+    getBlockRef: () => React.RefObject<HTMLDivElement>;
 }
 
 export type TDataComponentProps<Data> = {

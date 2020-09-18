@@ -1,4 +1,4 @@
-import { TCromwellBlockData, TCromwellBlockType } from '@cromwell/core';
+import { TCromwellBlockData, TCromwellBlockType, getStoreItem } from '@cromwell/core';
 
 export const cromwellIdToHTML = (id: string): string => `CromwellBlock_${id}`;
 
@@ -11,6 +11,17 @@ export const cromwellBlockTypeFromClassname = (classname: string): TCromwellBloc
         return classname.replace(/.*CromwellBlock_Type_/, '').split(' ')[0] as TCromwellBlockType;
     }
     else return null
-    
+
 }
 export const cromwellBlockPluginNameToClassname = (name: string) => `CromwellBlock_PluginName_${name}`;
+
+export const getBlockDataById = (blockId: string): TCromwellBlockData | undefined => {
+    const instances = getStoreItem('blockInstances');
+    if (instances) {
+        const block = instances[blockId];
+        if (block) {
+            return block.getData();
+        }
+    }
+
+}

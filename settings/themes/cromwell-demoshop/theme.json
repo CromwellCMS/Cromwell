@@ -49,6 +49,17 @@
                     "plugin": {
                         "pluginName": "ProductShowcaseDemo"
                     }
+                },
+                {
+                    "type": "text",
+                    "text": {
+                        "content": "Random text"
+                    },
+                    "isVirtual": true,
+                    "componentId": "Random_text",
+                    "destinationComponentId": "2",
+                    "destinationPosition": "after",
+                    "styles": "background: red;"
                 }
             ]
         }

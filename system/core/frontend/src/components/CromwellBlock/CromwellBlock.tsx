@@ -26,6 +26,9 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
     private blockRef = React.createRef<HTMLDivElement>();
 
+    public getData = () => this.data;
+    public getBlockRef = () => this.blockRef;
+
     constructor(props: TCromwellBlockProps) {
         super(props);
     }
@@ -39,8 +42,16 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
     componentWillUnmount() {
         let instances = getStoreItem('blockInstances');
-        if (instances) delete instances[this.props.id];
-        setStoreItem('blockInstances', instances);
+        if (instances) {
+            // Check if a new instance with the same has been rendered and overwrited 
+            // current one. We don't need to remove a new instance from the store.
+            const inst = instances[this.props.id];
+            if (inst.getBlockRef().current === this.blockRef.current) {
+                // Remove only if refs the same  
+                delete instances[this.props.id];
+                setStoreItem('blockInstances', instances);
+            }
+        }
     }
 
     public getContentInstance = () => this.contentInstance;

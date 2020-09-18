@@ -21,13 +21,17 @@
         margin-bottom: 9px;
         margin-left: 15px;
     }
-    .addPageItem {
+    .navBarItem {
         display: flex;
-        justify-content: center;
+        justify-content: space-between;
         background-color: #fff;
         margin-bottom: 10px;
         border-radius: 6px;
         padding: 0 0 0 15px;
+    }
+    .addPageItem {
+        display: flex;
+        justify-content: center;
     }
 
 
