@@ -44,6 +44,14 @@ class CRestAPIClient {
         return (res && res.data) ? res.data : [];
     }
 
+    public savePageConfig = async (config: TPageConfig): Promise<boolean> => {
+        let res: any;
+        try {
+            res = await axios.post(`${this.baseUrl}/theme/page`, config);
+        } catch (e) { console.error('CRestAPIClient::savePageConfig', e) }
+        return (res && res.data) ? res.data : false;
+    }
+
     public getPluginsModifications = async (pageRoute: string): Promise<Record<string, any>> => {
         let res: any;
         try {

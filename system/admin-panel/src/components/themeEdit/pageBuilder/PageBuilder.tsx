@@ -13,6 +13,7 @@ const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.rando
 
 export class PageBuilder extends React.Component<{
     EditingPage: React.LazyExoticComponent<React.ComponentType<any>>;
+    onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void;
 }>  {
     private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef();
 
@@ -20,7 +21,16 @@ export class PageBuilder extends React.Component<{
 
     // Keeps track of modifications that user made (added) curently. Does not store all mods from actual pageCofig!
     // We need to send to the server only newly added modifications! 
-    private changedModifications: TCromwellBlockData[] | null | undefined = null;
+    private _changedModifications: TCromwellBlockData[] | null | undefined = null;
+    private get changedModifications(): TCromwellBlockData[] | null | undefined {
+        return this._changedModifications;
+    }
+    private set changedModifications(data) {
+        if (data) {
+            this.props.onPageModificationsChange(data);
+        };
+        this._changedModifications = data;
+    }
 
     componentDidMount() {
         this.draggable = new Draggable({

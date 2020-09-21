@@ -11,7 +11,7 @@ import { AddCircle as AddCircleIcon, HighlightOff as HighlightOffIcon, Settings 
 import { ImportedThemeController, importLazyPage } from 'CromwellImports';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
-
+import { toast } from 'react-toastify';
 
 import LoadBox from '../../components/loadBox/LoadBox';
 import { PageListItem } from '../../components/themeEdit/pageListItem/PageListItem';
@@ -46,8 +46,6 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
     }
 
     componentDidMount() {
-        (window as any).ThemeEditPage = this;
-
         (async () => {
             const infos = await getRestAPIClient()?.getPagesInfo();
             if (infos) this.setState({ pageInfos: infos });
@@ -67,6 +65,7 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
         setStoreItem('appCustomConfig', appCustomConfig);
 
         this.changedPageInfo = null;
+        this.changedModifications = null;
 
         // const pageComp = importStaticPage(pageCofig.route);
         const pageComp = importLazyPage(pageInfo.route);
@@ -89,12 +88,13 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
     private handlePageInfoChange = (page: TPageInfo) => {
         this.changedPageInfo = page;
     }
-    private handlePageModificationsChange = (modifications: TCromwellBlockData[]) => {
+    private handlePageModificationsChange = (modifications: TCromwellBlockData[] | null | undefined) => {
         this.changedModifications = modifications;
     }
 
-    private handleSaveEditingPage = () => {
-        if (!this.changedPageInfo && !this.changedModifications) {
+    private handleSaveEditingPage = async () => {
+        if (!this.changedPageInfo &&
+            (!this.changedModifications || this.changedModifications.length === 0)) {
             // nothing to save
             return;
         }
@@ -106,7 +106,21 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
             const pageConfig: TPageConfig = {
                 ...pageInfo,
                 modifications
+            };
+
+            const client = getRestAPIClient();
+            this.setState({ isPageLoading: true });
+            const success = await client?.savePageConfig(pageConfig);
+
+            if (success) {
+                toast.success('Changes have been saved');
+            } else {
+                toast.error('Failed to save changes');
             }
+
+            this.setState({ isPageLoading: false });
+            this.handleOpenPageBuilder(pageInfo);
+
         }
 
     }
@@ -248,13 +262,15 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
                                 <TabPanel value={activeTabNum} index={0}>
                                     {!isPageLoading && editingPageInfo && (
                                         <PageSettings initialPageConfig={editingPageInfo}
-                                            handleSavePage={this.handleSaveEditingPage}
+                                            handlePageInfoChange={this.handlePageInfoChange}
                                         />
                                     )}
                                 </TabPanel>
                                 <TabPanel value={activeTabNum} index={1}>
                                     {!isPageLoading && EditingPage && (
-                                        <PageBuilder EditingPage={EditingPage} />
+                                        <PageBuilder
+                                            onPageModificationsChange={this.handlePageModificationsChange}
+                                            EditingPage={EditingPage} />
                                     )}
                                 </TabPanel>
                                 {isPageLoading && (<LoadBox />)}

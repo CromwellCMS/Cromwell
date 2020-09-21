@@ -30,7 +30,7 @@ export const PageListItem = (props: {
                         <SettingsIcon />
                     </IconButton>
                 </Tooltip> */}
-                <Tooltip title="Delete page">
+                {/* <Tooltip title="Delete page">
                     <IconButton
                         aria-label="Delete page"
                         onClick={(e) => {
@@ -38,19 +38,16 @@ export const PageListItem = (props: {
                             handleDeletePage(page)
                         }}
                     >
-                        {/* <FormatPaintIcon /> */}
                         <DeleteForeverIcon />
                     </IconButton>
-                </Tooltip>
-                <Tooltip title="Edit page settings">
-                    <IconButton
-                        aria-label="Open page builder"
-                    // onClick={() => handleOpenPageBuilder(page)}
-                    >
-                        {/* <FormatPaintIcon /> */}
-                        <SettingsIcon />
-                    </IconButton>
-                </Tooltip>
+                </Tooltip> */}
+                <IconButton
+                    aria-label="Open page builder"
+                // onClick={() => handleOpenPageBuilder(page)}
+                >
+                    {/* <FormatPaintIcon /> */}
+                    <SettingsIcon />
+                </IconButton>
             </div>
         </MenuItem>
     )

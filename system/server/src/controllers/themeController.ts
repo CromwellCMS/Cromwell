@@ -75,7 +75,7 @@ export const getThemeController = (): Router => {
      * @param cb 
      */
     const saveThemeConfig = (configPath: string, config: TThemeConfig, cb: (success: boolean) => void) => {
-        fs.outputFile(configPath, JSON.stringify(config, null, 2), (err) => {
+        fs.outputFile(configPath, JSON.stringify(config, null, 4), (err) => {
             if (err) {
                 console.error(err);
                 cb(false)
@@ -254,12 +254,14 @@ export const getThemeController = (): Router => {
             };
             userPageConfig.modifications.forEach(mod => {
                 if (mod.isDeleted) {
-                    let hasOriginalSameMod = false;
-                    oldOriginalPageConfig?.modifications.forEach(origMod => {
-                        if (origMod.componentId === mod.componentId) hasOriginalSameMod = true;
-                    });
-                    if (!hasOriginalSameMod) {
+                    let hasUserSameMod = false;
 
+                    oldUserPageConfig?.modifications.forEach(userMod => {
+                        if (userMod.componentId === mod.componentId) hasUserSameMod = true;
+                    });
+                    // If hasUserSameMod === false, then mod exists only in theme's config
+                    if (!hasUserSameMod) {
+                        // Just remove from user's config
                         if (oldUserPageConfig && oldUserPageConfig.modifications) {
                             oldUserPageConfig.modifications = oldUserPageConfig.modifications.filter(
                                 userMode => userMode.componentId !== mod.componentId
@@ -267,6 +269,15 @@ export const getThemeController = (): Router => {
                         }
                         filteredUserPageConfig.modifications = filteredUserPageConfig.modifications.filter(
                             userMode => userMode.componentId !== mod.componentId
+                        )
+                    } else {
+                        // optimize space for mode to leave only flag and id
+                        filteredUserPageConfig.modifications = filteredUserPageConfig.modifications.map(userMode =>
+                            userMode.componentId === mod.componentId ? {
+                                componentId: mod.componentId,
+                                isDeleted: true,
+                                type: mod.type
+                            } : userMode
                         )
                     }
                 }

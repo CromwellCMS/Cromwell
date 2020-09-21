@@ -7,7 +7,7 @@ import styles from './PageSettings.module.scss';
 
 export const PageSettings = (props: {
     initialPageConfig: TPageInfo;
-    handleSavePage: (page: TPageInfo) => void;
+    handlePageInfoChange: (page: TPageInfo) => void;
 }) => {
     // const { editingPageConfig } = props;
     const initialPageConfig = useRef<TPageInfo>(props.initialPageConfig);
@@ -22,8 +22,10 @@ export const PageSettings = (props: {
 
     const handlePageSettingsChange = (prop: keyof TPageInfo, val: any) => {
         setEditingPageConfig(prev => {
-            return Object.assign({}, prev, { [prop]: val });
-        })
+            const next = Object.assign({}, prev, { [prop]: val });
+            props.handlePageInfoChange(next);
+            return next;
+        });
     }
 
 
