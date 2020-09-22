@@ -5,7 +5,7 @@ import packageJson from './package.json';
 import { resolve } from 'path';
 
 const external = id => {
-    const exts = ['util', 'path', 'colors/safe'];
+    const exts = ['util', 'path', 'colors/safe', 'webpack'];
     for (const ext of exts) if (id === ext) return true;
     for (const pack of Object.keys(packageJson.dependencies)) {
         if (id === pack) {
@@ -14,27 +14,40 @@ const external = id => {
     }
 }
 
+const plugins = [
+    nodeResolve({
+        preferBuiltins: false
+    }),
+    commonjs(),
+    typescript({
+        module: "ESNext"
+    }),
+]
+
 const buildDir = 'build';
 
 export default [
     {
-        input: resolve(__dirname, "src/cromwella.ts"),
+        input: resolve(__dirname, "src/installer.ts"),
         output: [
             {
-                file: resolve(__dirname, buildDir, 'cromwella.js'),
+                file: resolve(__dirname, buildDir, 'installer.js'),
                 format: "cjs",
             }
         ],
         external,
-        plugins: [
-            nodeResolve({
-                preferBuiltins: false
-            }),
-            commonjs(),
-            typescript({
-                module: "ESNext"
-            }),
-        ]
+        plugins: plugins
+    },
+    {
+        input: resolve(__dirname, "src/bundler.ts"),
+        output: [
+            {
+                file: resolve(__dirname, buildDir, 'bundler.js'),
+                format: "cjs",
+            }
+        ],
+        external,
+        plugins: plugins
     },
     {
         input: resolve(__dirname, "src/cli.ts"),
@@ -45,14 +58,6 @@ export default [
             }
         ],
         external,
-        plugins: [
-            nodeResolve({
-                preferBuiltins: false
-            }),
-            commonjs(),
-            typescript({
-                module: "ESNext"
-            }),
-        ]
+        plugins: plugins
     },
 ];

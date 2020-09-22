@@ -21,7 +21,6 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "clsx": "^1.1.1",
-    "graphql-tag": "^2.10.3",
     "mobx": "^5.15.6",
     "mobx-react": "^6.2.5",
     "next": "^9.5.2",

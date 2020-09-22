@@ -10,6 +10,7 @@ export { Link } from './components/Link/Link';
 export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
 export * from './components/Head/Head';
 export * from './HOCs/FrontendPlugin';
+export * from './helpers/rollup';
 export * from './constants';
 export * from './api/CGraphQLClient';
 export * from './api/CRestAPIClient';
