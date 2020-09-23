@@ -100,7 +100,7 @@ var fs = require('fs');
 
         // Check if Crowella has been built, but has no node_modules
         if (!fs.existsSync(crowellaNodeModules)) {
-            spawnSync(`npm link ${modeStr}`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
+            spawnSync(`npm link --production`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
         }
 
 

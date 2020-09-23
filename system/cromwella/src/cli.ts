@@ -1,7 +1,5 @@
 import yargs from 'yargs-parser';
 import colors from 'colors/safe';
-const { installer } = require('./installer');
-const { bundler } = require('./bundler');
 
 export const cli = () => {
     const args = yargs(process.argv.slice(2));
@@ -20,8 +18,10 @@ export const cli = () => {
 
 
     if (args.bundle) {
-        bundler(projectRootDir, installationMode, isProduction , forceInstall);
+        const { bundler } = require('./bundler');
+        bundler(projectRootDir, installationMode, isProduction, forceInstall);
     } else {
-        installer(projectRootDir, installationMode, isProduction , forceInstall);
+        const { installer } = require('./installer');
+        installer(projectRootDir, installationMode, isProduction, forceInstall);
     }
 }
