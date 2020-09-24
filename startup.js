@@ -52,7 +52,7 @@ var fs = require('fs');
     ) {
 
         var crowellaProjectDir = resolve(projectRootDir, 'system/cromwella');
-        var crowellaPath = resolve(crowellaProjectDir, 'build/cromwella.js');
+        var crowellaPath = resolve(crowellaProjectDir, 'build/cli1.js');
         var crowellaNodeModules = resolve(crowellaProjectDir, 'node_modules');
 
         // Build Cromwella if it is not built
@@ -61,12 +61,14 @@ var fs = require('fs');
             console.log('\x1b[36m%s\x1b[0m', 'Installing Cromwella...');
             try {
                 spawnSync(`npm link`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
+                if (!fs.existsSync(crowellaNodeModules)) throw new Error();
             } catch (e) {
                 console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Error during "npm install" command');
                 console.log(e);
                 try {
                     console.log('\x1b[36m%s\x1b[0m', 'Cromwell::startup. Installing Cromwella, second attempt');
                     spawnSync(`npm link`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
+                    if (!fs.existsSync(crowellaNodeModules)) throw new Error();
                 } catch (e) {
                     console.log(e);
                     console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to install Cromwella');
@@ -74,9 +76,19 @@ var fs = require('fs');
                 }
             }
             try {
-                spawnSync(`npm run build`, { shell: true, cwd: crowellaProjectDir, stdio: 'inherit' });
+                var child = spawnSync(`npm run build`, {
+                    shell: true, cwd: crowellaProjectDir,
+                    stdio: [process.stdin, process.stdout, 'pipe']
+                });
+                if (child.stdout) console.log(child.stdout.toString());
+                if (child.stderr) {
+                    console.error(child.stderr.toString());
+                    throw new Error();
+                }
             } catch (e) {
+                console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to build Cromwella');
                 console.log(e);
+                return;
             }
         }
 

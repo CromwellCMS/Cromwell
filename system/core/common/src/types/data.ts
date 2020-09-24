@@ -20,12 +20,13 @@ export type TCromwellStore = {
     pagesInfo?: TPageInfo[];
     currency?: string;
     forceUpdatePage?: () => void;
-    dbType?: "mysql" | "mariadb" | "postgres" | "cockroachdb" | "sqlite" | "mssql" | "sap" | "oracle" | "cordova" | "nativescript" | "react-native" | "sqljs" | "mongodb" | "aurora-data-api" | "aurora-data-api-pg" | "expo";
+    dbType?: string;
     env?: 'dev' | 'prod';
     graphQLClient?: any;
     restAPIClient?: any;
     webSocketClient?: any;
     cstore?: any;
+    nodeModules?: TCromwellNodeModules;
 }
 
 declare global {
@@ -38,6 +39,14 @@ declare global {
         CromwellStore: TCromwellStore;
     }
 }
+
+export type TCromwellNodeModules = {
+    importStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
+    imports?: Record<string, () => void>;
+    modules?: Record<string, Object>;
+    moduleExternals?: Record<string, string[]>;
+    importModule?: (moduleName: string, namedExport?: string) => Promise<boolean>;
+};
 
 
 export type TDBEntity = keyof {

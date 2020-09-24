@@ -60,4 +60,22 @@ export default [
         external,
         plugins: plugins
     },
+    {
+        input: resolve(__dirname, "src/importer.ts"),
+        output: [
+            {
+                file: resolve(__dirname, '../../.cromwell/importer.js'),
+                format: "iife",
+            }
+        ],
+        plugins: [
+            typescript({
+                module: "ESNext",
+                lib: ["es5", "es6", "dom"],
+                target: "esnext"
+            }),
+            nodeResolve(),
+            commonjs(),
+        ]
+    },
 ];

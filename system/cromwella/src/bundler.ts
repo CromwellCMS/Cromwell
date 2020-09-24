@@ -4,11 +4,12 @@ import fs from 'fs';
 import { sync as rimraf } from 'rimraf';
 import { sync as mkdirp } from 'mkdirp';
 import { resolve } from 'path';
+//@ts-ignore
 import webpack, { Configuration } from 'webpack';
 
 const isExternalForm = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/');
 
-const getGlobalModuleStr = (moduleName: string) => `window.Cromwell.modules['${moduleName}']`;
+const getGlobalModuleStr = (moduleName: string) => `CromwellStore.nodeModules.modules['${moduleName}']`;
 
 export const bundler = (projectRootDir: string, installationMode: string,
     isProduction: boolean, forceInstall: boolean) => {
@@ -22,9 +23,13 @@ export const bundler = (projectRootDir: string, installationMode: string,
     const webpackConfig: Configuration = {
         mode: 'development',
         entry: bundleEntry,
+        // target: 'node',
         output: {
             filename: 'main.bundle.js',
+            chunkFilename: '[name].bundle.js',
             path: buildDir,
+            // libraryTarget: 'iife',
+            // library: 'cromwell',
         },
         optimization: {
             splitChunks: {
@@ -54,7 +59,17 @@ export const bundler = (projectRootDir: string, installationMode: string,
                     ],
                 }
             ]
-        }
+        },
+        stats: {
+            chunks: true,
+            chunkModules: true,
+            colors: false,
+            modules: true,
+            providedExports: true,
+            source: false,
+            usedExports: true,
+            warnings: false
+          }
     };
 
     getHoistedDependencies(projectRootDir, isProduction, forceInstall, (packages: TPackage[],
@@ -74,15 +89,15 @@ export const bundler = (projectRootDir: string, installationMode: string,
             imports += `
             '${namedImport}': async () => {
                 return import('${path}').then(lib => {
-                    ${getGlobalModuleStr(moduleName)}['${namedImport}'] = lib;
-                }).catch(error =>  logError(error, "import { ${namedImport} } from '${moduleName}'"));
+                    ${getGlobalModuleStr(moduleName)}['${namedImport}'] = _interopDefaultLegacy(lib);
+                })
             },
             `;
         }
 
         hoistedDependencies.hoisted = {
-            '@material-ui/core': '',
-            // "hoist-non-react-statics": ""
+            // '@material-ui/core': '',
+            "hoist-non-react-statics": ""
         };
 
         const bundleNodeModuleRecursive = (moduleName: string) => {
@@ -106,6 +121,8 @@ export const bundler = (projectRootDir: string, installationMode: string,
             // Create a file for each export so webpack could make chunks for each export
             try {
                 let imported = require(moduleName);
+
+                imported = undefined;
 
                 console.log(moduleName, Object.keys(imported).length);
                 Object.keys(imported).forEach(exportKey => {
@@ -147,22 +164,53 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 console.error('Cromwella:bundler:: Failed to read dependencies of module: ' + moduleName);
             }
 
+            function _interopDefaultLegacy(lib) {
+                console.log('_interopDefaultLegacy', lib);
+                // const defaulted = e && typeof e === 'object' && 'default' in e ? e : { 'default': e };
+                // if (defaulted.default && typeof defaulted.default === 'object' &&
+                //     defaulted.default.default && typeof defaulted.default.default === 'object') {
+                //     defaulted.default = Object.assign({}, defaulted.default, defaulted.default.default);
+                // }
+                // return defaulted;
+                if (lib && typeof lib === 'object' && 'default' in lib &&
+                    Object.keys(lib).length === 1) {
+                    return lib.default;
+                }
+                return lib;
+            }
 
             let content = `
+            //function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+            function _interopDefaultLegacy(lib) {
+                if (lib && typeof lib === 'object' && 'default' in lib &&
+                    Object.keys(lib).length === 1) {
+                    return lib.default;
+                }
+                return lib;
+            }
+
             const isServer = () => (typeof window === 'undefined');
-            const logError = (e, libName) => console.error('Cromwella:bundler: An error occurred while loading the library: ' + libName, e);
-            
-            if (!isServer()) {
-                if (!window.Cromwell) window.Cromwell = {};
-                if (!window.Cromwell.imports) window.Cromwell.imports = {};
-                if (!window.Cromwell.modules) window.Cromwell.modules = {};
-                if (!${getGlobalModuleStr(moduleName)}) ${getGlobalModuleStr(moduleName)} = {};
-            
-                window.Cromwell.imports['${moduleName}'] = {
-                    ${imports}
+            const getStore = () => {
+                if (isServer()) {
+                    if (!global.CromwellStore) global.CromwellStore = {};
+                    return global.CromwellStore;
+                }
+                else {
+                    if (!window.CromwellStore) window.CromwellStore = {};
+                    return window.CromwellStore;
                 }
             }
-                    `;
+            const CromwellStore = getStore();
+
+            if (!CromwellStore.nodeModules.imports) CromwellStore.nodeModules.imports = {};
+            if (!CromwellStore.nodeModules.modules) CromwellStore.nodeModules.modules = {};
+            if (!${getGlobalModuleStr(moduleName)}) ${getGlobalModuleStr(moduleName)} = {};
+        
+            CromwellStore.nodeModules.imports['${moduleName}'] = {
+                ${imports}
+            }
+            `;
 
             const libEntry = resolve(moduleBuildDir, 'generated.js');
             fs.writeFileSync(libEntry, content);
@@ -175,6 +223,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
             console.log(JSON.stringify(webpackConfig.externals, null, 2));
 
             webpackConfig.entry = libEntry;
+            webpackConfig.output!.library = moduleName.replace(/\W/g, '_');
             webpackConfig.output!.path = moduleBuildDir;
             webpackConfig.output!.publicPath = `/${buildChunk}/${moduleName}/`;
             const compiler = webpack(webpackConfig);
@@ -187,6 +236,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
                 // Read actually used modules (external)
                 const jsonStats = stats.toJson();
+                console.log(JSON.stringify(jsonStats, null, 2))
                 jsonStats.chunks?.forEach(chunk => {
                     chunk.modules?.forEach(chunkModule => {
                         if (chunkModule.id && typeof chunkModule.id === 'string' &&
