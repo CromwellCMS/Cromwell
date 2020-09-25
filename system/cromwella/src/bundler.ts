@@ -21,7 +21,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
     const bundleEntry = resolve(projectRootDir, '.cromwell/bundle/main.js');
 
     const webpackConfig: Configuration = {
-        mode: 'development',
+        mode: 'production',
         entry: bundleEntry,
         // target: 'node',
         output: {
@@ -68,8 +68,9 @@ export const bundler = (projectRootDir: string, installationMode: string,
             providedExports: true,
             source: false,
             usedExports: true,
-            warnings: false
-          }
+            warnings: false,
+            reasons: true
+        },
     };
 
     getHoistedDependencies(projectRootDir, isProduction, forceInstall, (packages: TPackage[],
@@ -96,9 +97,12 @@ export const bundler = (projectRootDir: string, installationMode: string,
         }
 
         hoistedDependencies.hoisted = {
-            // '@material-ui/core': '',
-            "hoist-non-react-statics": ""
+            '@material-ui/core': '',
+            // "hoist-non-react-statics": ""
         };
+
+
+        const modulesExportKeys: Record<string, string[]> = {};
 
         const bundleNodeModuleRecursive = (moduleName: string) => {
             try {
@@ -118,14 +122,16 @@ export const bundler = (projectRootDir: string, installationMode: string,
             imports = '';
             addImport('default', moduleName, moduleName);
 
+            let exportKeys: string[] = [];
             // Create a file for each export so webpack could make chunks for each export
             try {
                 let imported = require(moduleName);
+                exportKeys = Object.keys(imported);
 
-                imported = undefined;
+                if (!modulesExportKeys[moduleName]) modulesExportKeys[moduleName] = exportKeys;
 
-                console.log(moduleName, Object.keys(imported).length);
-                Object.keys(imported).forEach(exportKey => {
+                console.log(moduleName, exportKeys.length);
+                exportKeys.forEach(exportKey => {
                     if (exportKey === 'default') return;
 
                     const exportContent = `
@@ -145,7 +151,9 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
 
             // Get package.json to set all Dependencies as external and then transpile them same way
+            // const externals: string[] = ['@material-ui/core'];
             const externals: string[] = [];
+
             try {
                 const moduleJson = require(`${moduleName}/package.json`);
                 if (!moduleJson) throw moduleJson;
@@ -164,24 +172,11 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 console.error('Cromwella:bundler:: Failed to read dependencies of module: ' + moduleName);
             }
 
-            function _interopDefaultLegacy(lib) {
-                console.log('_interopDefaultLegacy', lib);
-                // const defaulted = e && typeof e === 'object' && 'default' in e ? e : { 'default': e };
-                // if (defaulted.default && typeof defaulted.default === 'object' &&
-                //     defaulted.default.default && typeof defaulted.default.default === 'object') {
-                //     defaulted.default = Object.assign({}, defaulted.default, defaulted.default.default);
-                // }
-                // return defaulted;
-                if (lib && typeof lib === 'object' && 'default' in lib &&
-                    Object.keys(lib).length === 1) {
-                    return lib.default;
-                }
-                return lib;
-            }
 
             let content = `
+            // import {Accordion, Tab} from '@material-ui/core';
+            // import MuiiiiAccordion from '@material-ui/core';
             //function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
             function _interopDefaultLegacy(lib) {
                 if (lib && typeof lib === 'object' && 'default' in lib &&
                     Object.keys(lib).length === 1) {
@@ -206,7 +201,12 @@ export const bundler = (projectRootDir: string, installationMode: string,
             if (!CromwellStore.nodeModules.imports) CromwellStore.nodeModules.imports = {};
             if (!CromwellStore.nodeModules.modules) CromwellStore.nodeModules.modules = {};
             if (!${getGlobalModuleStr(moduleName)}) ${getGlobalModuleStr(moduleName)} = {};
-        
+
+            // CromwellStore.nodeModules.imports['Accordion'] = Accordion;
+            // CromwellStore.nodeModules.imports['Tab'] = Tab;
+            // CromwellStore.nodeModules.imports['MuiiiiAccordion'] = MuiiiiAccordion;
+
+
             CromwellStore.nodeModules.imports['${moduleName}'] = {
                 ${imports}
             }
@@ -220,7 +220,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
             webpackConfig.externals = Object.assign({}, ...externals.map(ext => ({
                 [ext]: `${getGlobalModuleStr(ext)}['default']`
             })));
-            console.log(JSON.stringify(webpackConfig.externals, null, 2));
+            // console.log(JSON.stringify(webpackConfig.externals, null, 2));
 
             webpackConfig.entry = libEntry;
             webpackConfig.output!.library = moduleName.replace(/\W/g, '_');
@@ -228,56 +228,109 @@ export const bundler = (projectRootDir: string, installationMode: string,
             webpackConfig.output!.publicPath = `/${buildChunk}/${moduleName}/`;
             const compiler = webpack(webpackConfig);
 
-            const usedExternals: string[] = [];
+            // { [moduleName]: namedExports }
+            const usedExternals: Record<string, string[]> = {};
+
+            const moduleStats: any[] = [];
+
+            const shouldLogBuild = true;
+
+            // Hard decryption of webpack's actually used modules (external)
+            // < hard >
+            compiler.hooks.compilation.tap('HelloCompilationPlugin', compilation => {
+                compilation.hooks.buildModule.tap('HelloCompilationPlugin', (module: any) => {
+                    if (module.external) {
+                        let reqModuleName;
+                        externals.forEach(ext => {
+                            if (ext === module.userRequest) {
+                                reqModuleName = ext;
+                            }
+                        });
+                        if (reqModuleName) {
+                            if (module.reasons.length === 1 && module.reasons[0].dependency) {
+                                const dep = module.reasons[0].dependency;
+                                if (reqModuleName === dep.request && reqModuleName === dep.userRequest) {
+                                    if (!usedExternals[reqModuleName]) usedExternals[reqModuleName] = [];
+                                    usedExternals[reqModuleName].push('default');
+                                }
+                            }
+                            if (module.reasons.length > 1) {
+                                module.reasons = module.reasons.slice(1, module.reasons.lenght);
+                                module.reasons.forEach(reason => {
+                                    if (reason.dependency && reason.dependency.request && reason.dependency.name
+                                    ) {
+                                        if (!usedExternals[reqModuleName]) usedExternals[reqModuleName] = [];
+                                        if (reason.dependency.directImport) {
+                                            if (!modulesExportKeys[reqModuleName]) {
+                                                try {
+                                                    let imported = require(reqModuleName);
+                                                    let exportKeys = Object.keys(imported);
+                                                    modulesExportKeys[reqModuleName] = exportKeys;
+                                                } catch (e) { console.log('Cromwella:bundler:', reqModuleName, 'failed to require') }
+                                            }
+                                        }
+                                        const depName = reason.dependency.directImport &&
+                                            modulesExportKeys[reqModuleName].includes(reason.dependency.name)
+                                            ? reason.dependency.name : 'default';
+
+                                        if (!usedExternals[reqModuleName].includes(depName)) {
+                                            usedExternals[reqModuleName].push(depName);
+                                        }
+                                    }
+                                })
+                            }
+                        }
+                        if (shouldLogBuild) {
+                            moduleStats.push(JSON.parse(cleanStringify({
+                                userRequest: module.userRequest,
+                                type: module.type,
+                                external: module.external,
+                                request: module.request,
+                                reasons: module.reasons.map(reas => {
+                                    const { name, request, userRequest, directImport, strictExportPresence, namespaceObjectAsContext, shorthand } = reas.dependency;
+                                    return {
+                                        dependency: { name, request, userRequest, directImport, strictExportPresence, namespaceObjectAsContext, shorthand }
+                                    }
+                                })
+                            })));
+                        }
+                    }
+                });
+            });
+            // < / hard >
 
             // if (moduleName === 'hoist-non-react-statics') {
             compiler.run((err, stats) => {
                 // console.log(JSON.stringify(stats.toJson(), null, 2));
 
-                // Read actually used modules (external)
-                const jsonStats = stats.toJson();
-                console.log(JSON.stringify(jsonStats, null, 2))
-                jsonStats.chunks?.forEach(chunk => {
-                    chunk.modules?.forEach(chunkModule => {
-                        if (chunkModule.id && typeof chunkModule.id === 'string' &&
-                            isExternalForm(chunkModule.id)) {
-                            if (!externals.includes(chunkModule.id)) {
-                                console.error(`Error: Module ${moduleName} used dependency ${chunkModule.id}, but it wasn't found in package.json, so dependency wasn't marked as external and was bundled!`)
-                            } else {
-                                usedExternals.push(chunkModule.id)
-                            }
-                        }
-                    })
+
+                if (shouldLogBuild) {
+                    const jsonStatsPath = resolve(moduleBuildDir, 'build_stats.json');
+                    fs.writeFileSync(jsonStatsPath, JSON.stringify(moduleStats, null, 4));
+                }
+
+                Object.keys(usedExternals).forEach(extName => {
+                    if (usedExternals[extName].includes('default')) {
+                        usedExternals[extName] = ['default'];
+                    }
                 })
-                // const toText = () => stats.toJson({
-                //     chunks: false,
-                // })
-                // if (stats.hasErrors()) {
-                //     console.error(toText());
-                // } else {
-                //     console.log(toText());
-                // }
 
-                console.log('usedExternals', usedExternals);
-
+                const jsonStats = stats.toJson();
+                console.log('moduleName', moduleName);
+                console.log('externals', externals);
+                console.log('usedExternals', JSON.stringify(usedExternals, null, 4));
 
                 // Create meta info file with actually used dependencies
                 const metaInfoPath = resolve(moduleBuildDir, 'meta.json');
-                const metaInfoContent = `
-                {
-                    "externalDependencies": [${usedExternals.reduce((prev, curr, i) =>
-                    (prev += `"${curr}"`) + (i < usedExternals.length - 1 ? ',\n' : ''), '')}]
-                }
-                `
-                fs.writeFileSync(metaInfoPath, metaInfoContent);
+                const metaInfoContent = { externalDependencies: usedExternals };
+                fs.writeFileSync(metaInfoPath, JSON.stringify(metaInfoContent, null, 4));
 
 
-                usedExternals.forEach(ext => {
+                Object.keys(usedExternals).forEach(ext => {
                     bundleNodeModuleRecursive(ext);
                 })
             });
             // }
-
         }
 
 
@@ -289,3 +342,28 @@ export const bundler = (projectRootDir: string, installationMode: string,
 }
 
 
+
+function cleanStringify(object) {
+    if (object && typeof object === 'object') {
+        object = copyWithoutCircularReferences([object], object);
+    }
+    return JSON.stringify(object);
+    function copyWithoutCircularReferences(references, object) {
+        var cleanObject = {};
+        Object.keys(object).forEach(function (key) {
+            var value = object[key];
+            if (value && typeof value === 'object') {
+                if (references.indexOf(value) < 0) {
+                    references.push(value);
+                    cleanObject[key] = copyWithoutCircularReferences(references, value);
+                    references.pop();
+                } else {
+                    cleanObject[key] = '###_Circular_###';
+                }
+            } else if (typeof value !== 'function') {
+                cleanObject[key] = value;
+            }
+        });
+        return cleanObject;
+    }
+}

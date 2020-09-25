@@ -45,7 +45,7 @@ export type TCromwellNodeModules = {
     imports?: Record<string, () => void>;
     modules?: Record<string, Object>;
     moduleExternals?: Record<string, string[]>;
-    importModule?: (moduleName: string, namedExport?: string) => Promise<boolean>;
+    importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean>;
 };
 
 
