@@ -16,7 +16,7 @@ export type TCromwellStore = {
     /** { [ComponentName]: (Class/function) } */
     components?: Record<string, React.ComponentType<TCommonComponentProps>>;
     /** { [CromwellBlockId]: Instance} */
-    blockInstances?: Record<string, TCromwellBlock>;
+    blockInstances?: Record<string, TCromwellBlock | undefined>;
     pagesInfo?: TPageInfo[];
     currency?: string;
     forceUpdatePage?: () => void;
@@ -26,7 +26,7 @@ export type TCromwellStore = {
     restAPIClient?: any;
     webSocketClient?: any;
     cstore?: any;
-    nodeModules?: TCromwellNodeModules;
+    // nodeModules?: TCromwellNodeModules;
 }
 
 declare global {
@@ -39,15 +39,6 @@ declare global {
         CromwellStore: TCromwellStore;
     }
 }
-
-export type TCromwellNodeModules = {
-    importStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
-    imports?: Record<string, () => void>;
-    modules?: Record<string, Object>;
-    moduleExternals?: Record<string, string[]>;
-    importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean>;
-};
-
 
 export type TDBEntity = keyof {
     Post;

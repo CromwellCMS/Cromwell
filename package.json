@@ -9,6 +9,7 @@
         "cromwellaDev": "npx cromwella",
         "cromwellaDevForce": "npx cromwella -f",
         "cromwellaProd": "npx cromwella --production",
+        "cromwellaBundle": "npx cromwella --bundle",
         "clean": "node ./system/manager/src/utils/cleanup.js",
         "winRemoveNodeModules": "rmdir /Q /S \"./node_modules\"",
         "buildCore": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend"

@@ -1,4 +1,4 @@
-import { TCromwellNodeModules, TCromwellStore } from '@cromwell/core';
+import { TCromwellNodeModules } from './types';
 import { promises } from 'fs';
 
 /**
@@ -7,15 +7,15 @@ import { promises } from 'fs';
 const isServer = (): boolean => (typeof window === 'undefined');
 const getStore = () => {
     if (isServer()) {
-        if (!global.CromwellStore) global.CromwellStore = {};
-        return global.CromwellStore;
+        if (!(global as any).CromwellStore) (global as any).CromwellStore = {};
+        return (global as any).CromwellStore;
     }
     else {
-        if (!window.CromwellStore) window.CromwellStore = {};
-        return window.CromwellStore;
+        if (!(window as any).CromwellStore) (window as any).CromwellStore = {};
+        return (window as any).CromwellStore;
     }
 }
-const CromwellStore: TCromwellStore = getStore();
+const CromwellStore: any = getStore();
 if (!CromwellStore.nodeModules) CromwellStore.nodeModules = {};
 const Cromwell: TCromwellNodeModules = CromwellStore.nodeModules
 

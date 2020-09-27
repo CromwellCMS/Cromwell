@@ -1,4 +1,5 @@
 const fs = require('fs-extra');
+const { resolve } = require("path");
 const { projectRootDir, systemDir } = require('../config');
 
 
@@ -25,21 +26,17 @@ const folders = [
     systemDir + '\\admin-panel\\node_modules',
     systemDir + '\\admin-panel\\build',
 
+    systemDir + '\\manager\\.cromwell',
+    systemDir + '\\manager\\node_modules',
+    systemDir + '\\manager\\build',
+
+    systemDir + '\\cromwella\\.cromwell',
+    systemDir + '\\cromwella\\node_modules',
+    systemDir + '\\cromwella\\build',
+
     systemDir + '\\.cromwell',
 
-
-    //temp
-    projectRootDir + '\\themes\\cromwell-demoshop\\node_modules',
-    projectRootDir + '\\themes\\cromwell-demoshop\\es',
-    projectRootDir + '\\themes\\cromwell-demoshop\\dist',
-    projectRootDir + '\\plugins\\ProductShowcase\\node_modules',
-    projectRootDir + '\\plugins\\ProductShowcase\\es',
-    projectRootDir + '\\plugins\\ProductShowcase\\dist',
-    projectRootDir + '\\plugins\\ProductShowcaseDemo\\node_modules',
-    projectRootDir + '\\plugins\\ProductShowcaseDemo\\es',
-    projectRootDir + '\\plugins\\ProductShowcaseDemo\\dist',
-
-    projectRootDir + '\\node_modules',
+    // projectRootDir + '\\node_modules',
 
 ]
 
@@ -49,9 +46,54 @@ const files = [
     systemDir + '\\core\\frontend\\package-lock.json',
     systemDir + '\\server\\package-lock.json',
     systemDir + '\\renderer\\package-lock.json',
+    systemDir + '\\cromwella\\package-lock.json',
+    systemDir + '\\manager\\package-lock.json',
     projectRootDir + '\\package-lock.json',
     projectRootDir + '\\themes\\cromwell-demoshop\\package-lock.json',
 ]
+
+
+// Add themes
+var themesDir = resolve(projectRootDir, 'themes');
+if (fs.existsSync(themesDir)) {
+    var themes = fs.readdirSync(themesDir);
+    for (var i = 0; i < themes.length; i++) {
+        var theme = themes[i];
+        var themeDir = resolve(themesDir, theme);
+        folders.push(resolve(themeDir, 'node_modules'));
+        folders.push(resolve(themeDir, 'package-lock.json'));
+        var configPath = resolve(themeDir, 'cromwell.config.json');
+        try {
+            var config = JSON.parse(fs.readFileSync(configPath).toString());
+            if (config && config.appConfig && config.appConfig.buildDir) {
+                folders.push(resolve(themeDir, config.appConfig.buildDir));
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+}
+
+// Check plugins
+var pluginsDir = resolve(projectRootDir, 'plugins');
+if (fs.existsSync(pluginsDir)) {
+    var plugins = fs.readdirSync(pluginsDir);
+    for (var i = 0; i < plugins.length; i++) {
+        var plugin = plugins[i];
+        var pluginDir = resolve(pluginsDir, plugin);
+        folders.push(resolve(pluginDir, 'node_modules'));
+        folders.push(resolve(pluginDir, 'package-lock.json'));
+        var configPath = resolve(pluginDir, 'cromwell.config.json');
+        try {
+            var config = JSON.parse(fs.readFileSync(configPath).toString());
+            if (config && config.buildDir) {
+                folders.push(resolve(pluginDir, config.buildDir));
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+}
 
 // console.log(folders);
 // console.log(files);
@@ -60,7 +102,7 @@ files.forEach(path => {
     if (fs.existsSync(path)) {
         console.log('Removing file: ' + path);
         try {
-            fs.unlinkSync(path)
+            fs.removeSync(path);
         } catch (e) { console.log(e) }
     }
 })
@@ -69,7 +111,7 @@ folders.forEach(path => {
     if (fs.existsSync(path)) {
         console.log('Removing folder: ' + path);
         try {
-            fs.unlinkSync(path)
+            fs.removeSync(path);
         } catch (e) { console.log(e) }
     }
 })

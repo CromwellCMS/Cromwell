@@ -108,8 +108,9 @@ export const changeTheme = (themeName: string, cb?: (success: boolean) => void,
                 }, onLog);
 
             } else {
-                onLog?.(`BaseManager:: All builds succeeded. Applying changes...`)
-                onLog?.(`BaseManager:: Successfully applied new theme: ${themeName}`)
+                onLog?.(`BaseManager:: All builds succeeded. Applying changes...`);
+                // ...
+                onLog?.(`BaseManager:: Successfully applied new theme: ${themeName}`);
                 cb?.(true);
             }
         }

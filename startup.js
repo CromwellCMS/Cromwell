@@ -52,7 +52,7 @@ var fs = require('fs');
     ) {
 
         var crowellaProjectDir = resolve(projectRootDir, 'system/cromwella');
-        var crowellaPath = resolve(crowellaProjectDir, 'build/cli1.js');
+        var crowellaPath = resolve(crowellaProjectDir, 'build/cli.js');
         var crowellaNodeModules = resolve(crowellaProjectDir, 'node_modules');
 
         // Build Cromwella if it is not built
@@ -76,13 +76,11 @@ var fs = require('fs');
                 }
             }
             try {
-                var child = spawnSync(`npm run build`, {
+                spawnSync(`npm run build`, {
                     shell: true, cwd: crowellaProjectDir,
-                    stdio: [process.stdin, process.stdout, 'pipe']
+                    stdio: 'inherit'
                 });
-                if (child.stdout) console.log(child.stdout.toString());
-                if (child.stderr) {
-                    console.error(child.stderr.toString());
+                if (!fs.existsSync(crowellaPath)) {
                     throw new Error();
                 }
             } catch (e) {
@@ -98,12 +96,14 @@ var fs = require('fs');
         var rendererBuild = resolve(projectRootDir, 'system/renderer/build');
         var serverBuild = resolve(projectRootDir, 'system/server/build');
         var adminPanelBuild = resolve(projectRootDir, 'system/admin-panel/build');
+        var managerBuild = resolve(projectRootDir, 'system/manager/build');
 
         var isProd = true;
 
         if (!fs.existsSync(rendererBuild) ||
             !fs.existsSync(serverBuild) ||
             !fs.existsSync(adminPanelBuild) ||
+            !fs.existsSync(managerBuild) ||
             !isCoreBuilt()
         ) isProd = false;
 

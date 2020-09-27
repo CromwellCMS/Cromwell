@@ -31,3 +31,11 @@ export type TLocalSymlink = {
     linkPath: string;
     referredDir: string;
 }
+
+export type TCromwellNodeModules = {
+    importStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
+    imports?: Record<string, () => void>;
+    modules?: Record<string, Object>;
+    moduleExternals?: Record<string, string[]>;
+    importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean>;
+};

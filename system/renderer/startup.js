@@ -92,7 +92,7 @@ const main = async () => {
             console.log(e);
         }
 
-        // @TODO: Make it somehow accept Next.js server on ready event. Just a timeout for now...
+        // @TODO: Make it somehow accept Next.js server's "on ready" event. Just a timeout for now...
         if (proc && proc.stdout) proc.stdout.once('data', (data) => {
             setTimeout(() => {
                 console.log(data.toString ? data.toString() : data);
@@ -143,10 +143,6 @@ const main = async () => {
         start();
         return;
     }
-
-
-
-
 }
 
 main();

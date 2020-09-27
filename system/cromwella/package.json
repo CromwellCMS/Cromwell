@@ -6,7 +6,6 @@
   "author": "Cromwell",
   "license": "ISC",
   "devDependencies": {
-    "@cromwell/core": "^1.0.0",
     "@rollup/plugin-commonjs": "^13.0.0",
     "@rollup/plugin-node-resolve": "^8.0.1",
     "@rollup/plugin-typescript": "^5.0.2",

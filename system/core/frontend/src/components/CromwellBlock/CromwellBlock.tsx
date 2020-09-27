@@ -46,7 +46,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
             // Check if a new instance with the same has been rendered and overwrited 
             // current one. We don't need to remove a new instance from the store.
             const inst = instances[this.props.id];
-            if (inst.getBlockRef().current === this.blockRef.current) {
+            if (inst && inst.getBlockRef && inst.getBlockRef().current === this.blockRef.current) {
                 // Remove only if refs the same  
                 delete instances[this.props.id];
                 setStoreItem('blockInstances', instances);

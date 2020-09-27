@@ -1,6 +1,6 @@
 # Cromwell CMS
 
-Free JavaScipt CMS for Next.js blazing-fast statically pre-rendered React websites with custom easy-to-build Themes and Plugins. 
+JavaScipt CMS for Next.js blazing-fast statically pre-rendered React websites with custom easy-to-build Themes and Plugins. 
 
 Includes: 
 - Online store and blogging platform management systems.
@@ -14,15 +14,15 @@ Includes:
 
 ## Installation
 
-Cromwell CMS is a multi-package repository managed by Lerna (Cromwella recently). Simple "npm install" doesn't work here, but all installation handled by startup.js script in the root. Script doesn't require any node_modules to be installed.
+All installation handled by startup.js script in the root. Script doesn't require any node_modules to be installed.
 
 ```sh
 $ npm run startup
 ```
+Cromwell CMS is a multi-package repository managed by Lerna (Cromwella recently), so the script will check and install modules via cromwella cli, compile system and start it.
+Also the script can be used on a regular basis to start CMS in production environment.
 
-This script will check and install modules, compile system and start it.
-Also the script can be used on a regular basis to start CMS in production environment
-
+Don't use "npm install my-package", it will delete all installed node_modules first. Read more about multi-package repositories in [Lerna docs](https://github.com/lerna/lerna)
 
 ## Services
 
