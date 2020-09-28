@@ -21,15 +21,12 @@ export const bundler = (projectRootDir: string, installationMode: string,
     const bundleEntry = resolve(projectRootDir, '.cromwell/bundle/main.js');
 
     const webpackConfig: Configuration = {
-        mode: 'production',
+        mode: 'development',
         entry: bundleEntry,
-        // target: 'node',
         output: {
             filename: 'main.bundle.js',
             chunkFilename: '[name].bundle.js',
             path: buildDir,
-            // libraryTarget: 'iife',
-            // library: 'cromwell',
         },
         optimization: {
             splitChunks: {
@@ -69,7 +66,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
             source: false,
             usedExports: true,
             warnings: false,
-            reasons: true
+            reasons: true,
         },
     };
 
@@ -89,16 +86,20 @@ export const bundler = (projectRootDir: string, installationMode: string,
             path = path.replace(/\\/g, '/');
             imports += `
             '${namedImport}': async () => {
+                if (didDefaultImport) return;
                 return import('${path}').then(lib => {
-                    ${getGlobalModuleStr(moduleName)}['${namedImport}'] = _interopDefaultLegacy(lib);
+                    ${namedImport === 'default' ? 'didDefaultImport = true;' : ''} 
+                    ${getGlobalModuleStr(moduleName)}${namedImport !== 'default' ?
+                    `['${namedImport}']` : ''} = _interopDefaultLegacy(lib);
                 })
             },
             `;
         }
 
         hoistedDependencies.hoisted = {
-            '@material-ui/core': '',
-            // "hoist-non-react-statics": ""
+            // '@material-ui/core': '',
+            // 'jss': '',
+            "hoist-non-react-statics": ""
         };
 
 
@@ -174,7 +175,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
 
             let content = `
-            // import {Accordion, Tab} from '@material-ui/core';
+            import {Accordion, Tab} from '@material-ui/core';
             // import MuiiiiAccordion from '@material-ui/core';
             //function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
             function _interopDefaultLegacy(lib) {
@@ -202,10 +203,12 @@ export const bundler = (projectRootDir: string, installationMode: string,
             if (!CromwellStore.nodeModules.modules) CromwellStore.nodeModules.modules = {};
             if (!${getGlobalModuleStr(moduleName)}) ${getGlobalModuleStr(moduleName)} = {};
 
-            // CromwellStore.nodeModules.imports['Accordion'] = Accordion;
+            CromwellStore.nodeModules.imports['Accordion'] = Accordion;
             // CromwellStore.nodeModules.imports['Tab'] = Tab;
             // CromwellStore.nodeModules.imports['MuiiiiAccordion'] = MuiiiiAccordion;
 
+            // If we once used 'default' import (which is whole lib), don't let it to make any other imports
+            let didDefaultImport = false;
 
             CromwellStore.nodeModules.imports['${moduleName}'] = {
                 ${imports}
@@ -218,7 +221,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
 
             webpackConfig.externals = Object.assign({}, ...externals.map(ext => ({
-                [ext]: `${getGlobalModuleStr(ext)}['default']`
+                [ext]: `${getGlobalModuleStr(ext)}`
             })));
             // console.log(JSON.stringify(webpackConfig.externals, null, 2));
 
@@ -231,70 +234,114 @@ export const bundler = (projectRootDir: string, installationMode: string,
             // { [moduleName]: namedExports }
             const usedExternals: Record<string, string[]> = {};
 
-            const moduleStats: any[] = [];
+            let moduleStats: any[] = [];
 
             const shouldLogBuild = true;
 
             // Hard decryption of webpack's actually used modules (external)
             // < hard >
             compiler.hooks.compilation.tap('HelloCompilationPlugin', compilation => {
-                compilation.hooks.buildModule.tap('HelloCompilationPlugin', (module: any) => {
-                    if (module.external) {
-                        let reqModuleName;
-                        externals.forEach(ext => {
-                            if (ext === module.userRequest) {
-                                reqModuleName = ext;
+                compilation.hooks.afterOptimizeTree.tap('HelloCompilationPlugin', (modules: any) => {
+                    if (shouldLogBuild) {
+                        moduleStats = JSON.parse(cleanStringify(modules.map(module => ({
+                            entryModule: {
+                                dependencies: module?.entryModule?.dependencies?.map(dep => {
+                                    const { name, request, userRequest, directImport, strictExportPresence, namespaceObjectAsContext, shorthand } = dep;
+                                    return {
+                                        name, request, userRequest, directImport,
+                                    }
+                                })
                             }
-                        });
-                        if (reqModuleName) {
-                            if (module.reasons.length === 1 && module.reasons[0].dependency) {
-                                const dep = module.reasons[0].dependency;
-                                if (reqModuleName === dep.request && reqModuleName === dep.userRequest) {
-                                    if (!usedExternals[reqModuleName]) usedExternals[reqModuleName] = [];
-                                    usedExternals[reqModuleName].push('default');
+                        }))));
+                    };
+                    moduleStats = JSON.parse(cleanStringify(modules));
+                    modules.forEach(module => {
+                        module?.entryModule?.dependencies.forEach(dep => {
+                            if (dep.directImport && dep.request && externals.includes(dep.request)) {
+                                if (!usedExternals[dep.request]) usedExternals[dep.request] = [];
+                                if (!modulesExportKeys[dep.request]) {
+                                    try {
+                                        let imported = require(dep.request);
+                                        let exportKeys = Object.keys(imported);
+                                        modulesExportKeys[dep.request] = exportKeys;
+                                    } catch (e) { console.log('Cromwella:bundler:', dep.request, 'failed to require') }
+                                }
+
+                                const depName = modulesExportKeys[dep.request].includes(dep.name)
+                                    ? dep.name : 'default';
+
+                                if (!usedExternals[dep.request].includes(depName)) {
+                                    usedExternals[dep.request].push(depName);
                                 }
                             }
-                            if (module.reasons.length > 1) {
-                                module.reasons = module.reasons.slice(1, module.reasons.lenght);
-                                module.reasons.forEach(reason => {
-                                    if (reason.dependency && reason.dependency.request && reason.dependency.name
-                                    ) {
-                                        if (!usedExternals[reqModuleName]) usedExternals[reqModuleName] = [];
-                                        if (reason.dependency.directImport) {
-                                            if (!modulesExportKeys[reqModuleName]) {
-                                                try {
-                                                    let imported = require(reqModuleName);
-                                                    let exportKeys = Object.keys(imported);
-                                                    modulesExportKeys[reqModuleName] = exportKeys;
-                                                } catch (e) { console.log('Cromwella:bundler:', reqModuleName, 'failed to require') }
-                                            }
-                                        }
-                                        const depName = reason.dependency.directImport &&
-                                            modulesExportKeys[reqModuleName].includes(reason.dependency.name)
-                                            ? reason.dependency.name : 'default';
+                        })
+                    })
+                    // if (module.external) {
+                    //     let reqModuleName;
+                    //     externals.forEach(ext => {
+                    //         if (ext === module.userRequest) {
+                    //             reqModuleName = ext;
+                    //         }
+                    //     });
+                    //     if (reqModuleName) {
+                    //         if (module.reasons.length === 1 && module.reasons[0].dependency) {
+                    //             const dep = module.reasons[0].dependency;
+                    //             if (reqModuleName === dep.request && reqModuleName === dep.userRequest) {
+                    //                 if (!usedExternals[reqModuleName]) usedExternals[reqModuleName] = [];
+                    //                 usedExternals[reqModuleName].push('default');
+                    //             }
+                    //         }
+                    //         if (module.reasons.length > 1) {
+                    //             module.reasons = module.reasons.slice(1, module.reasons.lenght);
+                    //             module.reasons.forEach(reason => {
+                    //                 if (reason.dependency && reason.dependency.request && reason.dependency.name
+                    //                 ) {
+                    //                     if (!usedExternals[reqModuleName]) usedExternals[reqModuleName] = [];
+                    //                     if (reason.dependency.directImport) {
+                    //                         if (!modulesExportKeys[reqModuleName]) {
+                    //                             try {
+                    //                                 let imported = require(reqModuleName);
+                    //                                 let exportKeys = Object.keys(imported);
+                    //                                 modulesExportKeys[reqModuleName] = exportKeys;
+                    //                             } catch (e) { console.log('Cromwella:bundler:', reqModuleName, 'failed to require') }
+                    //                         }
+                    //                     }
+                    //                     const depName = reason.dependency.directImport &&
+                    //                         modulesExportKeys[reqModuleName].includes(reason.dependency.name)
+                    //                         ? reason.dependency.name : 'default';
 
-                                        if (!usedExternals[reqModuleName].includes(depName)) {
-                                            usedExternals[reqModuleName].push(depName);
-                                        }
-                                    }
-                                })
-                            }
-                        }
-                        if (shouldLogBuild) {
-                            moduleStats.push(JSON.parse(cleanStringify({
-                                userRequest: module.userRequest,
-                                type: module.type,
-                                external: module.external,
-                                request: module.request,
-                                reasons: module.reasons.map(reas => {
-                                    const { name, request, userRequest, directImport, strictExportPresence, namespaceObjectAsContext, shorthand } = reas.dependency;
-                                    return {
-                                        dependency: { name, request, userRequest, directImport, strictExportPresence, namespaceObjectAsContext, shorthand }
-                                    }
-                                })
-                            })));
-                        }
-                    }
+                    //                     if (!usedExternals[reqModuleName].includes(depName)) {
+                    //                         usedExternals[reqModuleName].push(depName);
+                    //                     }
+                    //                 }
+                    //             })
+                    //         }
+                    //     }
+                    //     if (shouldLogBuild) {
+                    //         moduleStats.push(JSON.parse(cleanStringify(module)))
+                    //     };
+                    //     // if (shouldLogBuild) {
+                    //     //     moduleStats.push(JSON.parse(cleanStringify({
+                    //     //         userRequest: module.userRequest,
+                    //     //         type: module.type,
+                    //     //         external: module.external,
+                    //     //         request: module.request,
+                    //     //         reasons: module.reasons.map(reas => {
+                    //     //             const { name, request, userRequest, directImport, strictExportPresence, namespaceObjectAsContext, shorthand } = reas.dependency;
+                    //     //             return {
+                    //     //                 dependency: { name, request, userRequest, directImport, strictExportPresence, namespaceObjectAsContext, shorthand },
+                    //     //                 module: {
+                    //     //                     dependencies: reas.module.module.dependencies.map(dep => ({
+                    //     //                         request: dep.request,
+                    //     //                         userRequest: dep.userRequest,
+                    //     //                         name: dep.name,
+                    //     //                     }))
+                    //     //                 }
+                    //     //             }
+                    //     //         })
+                    //     //     })));
+                    //     // }
+                    // }
                 });
             });
             // < / hard >
@@ -303,6 +350,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
             compiler.run((err, stats) => {
                 // console.log(JSON.stringify(stats.toJson(), null, 2));
 
+                const jsonStats = stats.toJson();
 
                 if (shouldLogBuild) {
                     const jsonStatsPath = resolve(moduleBuildDir, 'build_stats.json');
@@ -315,7 +363,6 @@ export const bundler = (projectRootDir: string, installationMode: string,
                     }
                 })
 
-                const jsonStats = stats.toJson();
                 console.log('moduleName', moduleName);
                 console.log('externals', externals);
                 console.log('usedExternals', JSON.stringify(usedExternals, null, 4));
