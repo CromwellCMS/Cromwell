@@ -1,5 +1,10 @@
 const external = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/');
 
+export type TSciprtMetaInfo = {
+    // { [moduleName]: namedImports }
+    externalDependencies: Record<string, string[]>
+}
+
 export const rollupPluginCromwellFrontend = (settings) => {
     // const deps = Object.keys(packageJson.dependencies);
     const deps = settings.dependencies;
@@ -30,12 +35,13 @@ export const rollupPluginCromwellFrontend = (settings) => {
         },
         generateBundle(options, bundle) {
             Object.values(bundle).forEach((info: any) => {
+                const metaInfo: TSciprtMetaInfo = {
+                    externalDependencies: info.importedBindings
+                }
                 //@ts-ignore
                 this.emitFile({
                     type: 'asset', fileName: `${info.fileName}_meta.json`,
-                    source: JSON.stringify({
-                        imports: info.imports
-                    }, null, 2)
+                    source: JSON.stringify(metaInfo, null, 2)
                 });
             })
         }

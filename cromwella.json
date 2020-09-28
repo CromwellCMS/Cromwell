@@ -5,5 +5,29 @@
     "system/core/*",
     "plugins/*",
     "themes/*"
+  ],
+  "frontendDependencies": [
+    "@apollo/client",
+    "@cromwell/core",
+    "@cromwell/core-frontend",
+    "@material-ui/icons",
+    "@material-ui/lab",
+    "@material-ui/core",
+    "axios",
+    "debounce",
+    "gridlex",
+    "query-string",
+    "next",
+    "react",
+    "react-dom",
+    "react-number-format",
+    "react-html-parser",
+    "react-router-dom",
+    "react-toastify",
+    "reset-css",
+    "sockjs-client",
+    "swiper",
+    "tslib",
+    "type-graphql"
   ]
 }

@@ -1,3 +1,6 @@
 #!/usr/bin/env node
+const { spawn, execSync } = require('child_process');
+const { resolve } = require('path');
 
-require('../build/cli').cli();
+execSync(`node --max-old-space-size=8192 ${resolve(__dirname, '../build/cli')} ${process.argv.slice(2).join(' ')}`,
+    { shell: true, stdio: 'inherit' });

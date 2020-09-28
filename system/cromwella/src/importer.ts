@@ -1,5 +1,6 @@
 import { TCromwellNodeModules } from './types';
-import { promises } from 'fs';
+import { buildDirChunk } from './constants';
+import { TSciprtMetaInfo } from '@cromwell/core-frontend';
 
 /**
  * Node modules loading app for a Browser
@@ -48,7 +49,7 @@ Cromwell.importModule = async (moduleName, namedExports = ['default']): Promise<
     const useImporter = async (namedExport: string): Promise<boolean> => {
         if (Cromwell.imports && Cromwell.imports[moduleName]) {
             if (!Cromwell.imports[moduleName][namedExport]) {
-                console.error('loading:!Cromwell.imports[moduleName][namedExport]' + moduleName + namedExport);
+                console.error(`loading:!Cromwell.imports[moduleName][namedExport]: import {${namedExport}} from ${moduleName}`);
                 return false;
             }
             try {
@@ -72,7 +73,7 @@ Cromwell.importModule = async (moduleName, namedExports = ['default']): Promise<
             let importerPromise;
 
             // if (isServer()) {
-            importerPromise = fetch(`bundle/${moduleName}/main.bundle.js`)
+            importerPromise = fetch(`${buildDirChunk}/${moduleName}/main.bundle.js`)
                 .then(res => res.text());
             // } else {
             // importerPromise = new Promise((resolve, reject) => {
@@ -87,9 +88,9 @@ Cromwell.importModule = async (moduleName, namedExports = ['default']): Promise<
 
 
             // Load meta and externals if it has any
-            const metaInfoPromise = fetch(`bundle/${moduleName}/meta.json`);
+            const metaInfoPromise = fetch(`${buildDirChunk}/${moduleName}/meta.json`);
             try {
-                const metaInfo = await (await metaInfoPromise).json();
+                const metaInfo: TSciprtMetaInfo = await (await metaInfoPromise).json();
                 // { [moduleName]: namedExports }
                 let externals: Record<string, string[]> = metaInfo.externalDependencies;
 
@@ -184,7 +185,19 @@ Cromwell.importModule = async (moduleName, namedExports = ['default']): Promise<
         return true;
     }
 
-
-
     return false;
+}
+
+Cromwell.importSciptExternals = async (metaInfo) => {
+    if (metaInfo.externalDependencies) {
+        const promises: Promise<boolean>[] = []
+        Object.keys(metaInfo.externalDependencies).forEach(ext => {
+            const pr = Cromwell?.importModule?.(ext, metaInfo.externalDependencies[ext]);
+            if (pr) promises.push(pr);
+        });
+        const success = await Promise.all(promises);
+        if (!success.includes(false)) return true;
+    }
+
+    return false
 }

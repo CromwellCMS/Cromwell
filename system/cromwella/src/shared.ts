@@ -1,4 +1,4 @@
-import { TPackage, TDependency, THoistedDeps, TNonHoisted, TLocalSymlink } from './types';
+import { TPackage, TDependency, THoistedDeps, TNonHoisted, TLocalSymlink, TCromwellaConfig } from './types';
 import colors from 'colors/safe';
 import path, { resolve } from 'path';
 import fs from 'fs';
@@ -130,18 +130,9 @@ const hoistDeps = (store: TDependency[], packages: TPackage[],
     }
 }
 
-
-/**
-  * Step 1
-  */
-const globPackages = (projectRootDir: string, isProduction: boolean, forceInstall: boolean, cb: TGetDepsCb) => {
-    console.log(colors.cyan(`Cromwella:: Start. Scannig for local packages from ./cromwella.json...\n`));
-    const globOptions = {};
-
+export const getCromwellaConfigSync = (projectRootDir: string): TCromwellaConfig | undefined => {
     const cromwellaConfigPath = resolve(projectRootDir, 'cromwella.json');
-    let cromwellaConfig: {
-        packages: string[];
-    } | undefined = undefined;
+    let cromwellaConfig: TCromwellaConfig | undefined = undefined;
     try {
         cromwellaConfig = JSON.parse(fs.readFileSync(cromwellaConfigPath).toString());
     } catch (e) {
@@ -150,6 +141,18 @@ const globPackages = (projectRootDir: string, isProduction: boolean, forceInstal
 
     if (!cromwellaConfig || !cromwellaConfig.packages) {
         console.log(colors.red(`\nCromwella:: Error. Failed to read config in ${cromwellaConfigPath}\n`))
+    }
+
+    return cromwellaConfig;
+}
+
+
+export const globPackages = (projectRootDir: string, isProduction: boolean, forceInstall: boolean, cb: TGetDepsCb) => {
+    console.log(colors.cyan(`Cromwella:: Start. Scannig for local packages from ./cromwella.json...\n`));
+    const globOptions = {};
+
+    const cromwellaConfig = getCromwellaConfigSync(projectRootDir);
+    if (!cromwellaConfig || !cromwellaConfig.packages) {
         return;
     }
 

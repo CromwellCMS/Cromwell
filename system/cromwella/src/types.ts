@@ -1,3 +1,11 @@
+import { TSciprtMetaInfo } from '@cromwell/core-frontend';
+
+
+export type TCromwellaConfig = {
+    packages: string[];
+    frontendDependencies?: string[];
+}
+
 export type TInstallationMode = 'development' | 'production';
 
 export type TDependency = {
@@ -38,4 +46,5 @@ export type TCromwellNodeModules = {
     modules?: Record<string, Object>;
     moduleExternals?: Record<string, string[]>;
     importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean>;
+    importSciptExternals?: (metaInfo: TSciprtMetaInfo) => Promise<boolean>;
 };

@@ -1,7 +1,7 @@
 import yargs from 'yargs-parser';
 import colors from 'colors/safe';
 
-export const cli = () => {
+const cli = () => {
     const args = yargs(process.argv.slice(2));
 
     const projectRootDir: string = (!args.path || typeof args.path !== 'string' || args.path == '') ?
@@ -25,3 +25,5 @@ export const cli = () => {
         installer(projectRootDir, installationMode, isProduction, forceInstall);
     }
 }
+
+cli();
