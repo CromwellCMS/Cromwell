@@ -13,7 +13,6 @@
         "@material-ui/core",
         "react",
         "react-dom",
-        "tslib",
-        "type-graphql"
+        "tslib"
     ]
 }

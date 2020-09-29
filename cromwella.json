@@ -10,14 +10,13 @@
     "@apollo/client",
     "@cromwell/core",
     "@cromwell/core-frontend",
-    "@material-ui/icons",
     "@material-ui/lab",
     "@material-ui/core",
+    "@material-ui/icons",
     "axios",
     "debounce",
     "gridlex",
     "query-string",
-    "next",
     "react",
     "react-dom",
     "react-number-format",
@@ -25,9 +24,53 @@
     "react-router-dom",
     "react-toastify",
     "reset-css",
-    "sockjs-client",
     "swiper",
     "tslib",
-    "type-graphql"
+    {
+      "name": "@babel/runtime",
+      "addExports": [
+        {
+          "name": "interopRequireWildcard",
+          "path": "@babel/runtime/helpers/interopRequireWildcard",
+          "importType": "default",
+          "saveAsModules": [
+            "@babel/runtime/helpers/interopRequireWildcard"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "next/link",
+      "excludeExports": [
+        "__esModule"
+      ],
+      "externals": [
+        "react",
+        "object-assign",
+        "react-is"
+      ]
+    },
+    {
+      "name": "next/head",
+      "excludeExports": [
+        "__esModule"
+      ],
+      "externals": [
+        "react",
+        "object-assign",
+        "react-is"
+      ]
+    },
+    {
+      "name": "next/router",
+      "excludeExports": [
+        "__esModule"
+      ],
+      "externals": [
+        "react",
+        "object-assign",
+        "react-is"
+      ]
+    }
   ]
 }

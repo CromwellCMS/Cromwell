@@ -1,5 +1,5 @@
 import { TCromwellNodeModules } from './types';
-import { buildDirChunk } from './constants';
+import { buildDirChunk, moduleMainBuidFileName, moduleMetaInfoFileName } from './constants';
 import { TSciprtMetaInfo } from '@cromwell/core-frontend';
 
 /**
@@ -73,7 +73,7 @@ Cromwell.importModule = async (moduleName, namedExports = ['default']): Promise<
             let importerPromise;
 
             // if (isServer()) {
-            importerPromise = fetch(`${buildDirChunk}/${moduleName}/main.bundle.js`)
+            importerPromise = fetch(`${buildDirChunk}/${moduleName}/${moduleMainBuidFileName}`)
                 .then(res => res.text());
             // } else {
             // importerPromise = new Promise((resolve, reject) => {
@@ -88,7 +88,7 @@ Cromwell.importModule = async (moduleName, namedExports = ['default']): Promise<
 
 
             // Load meta and externals if it has any
-            const metaInfoPromise = fetch(`${buildDirChunk}/${moduleName}/meta.json`);
+            const metaInfoPromise = fetch(`${buildDirChunk}/${moduleName}/${moduleMetaInfoFileName}`);
             try {
                 const metaInfo: TSciprtMetaInfo = await (await metaInfoPromise).json();
                 // { [moduleName]: namedExports }
@@ -128,7 +128,7 @@ Cromwell.importModule = async (moduleName, namedExports = ['default']): Promise<
             try {
                 const jsText = await importerPromise;
                 eval(jsText);
-                if (canShowInfo) console.log(moduleName + 'moduleName executed');
+                if (canShowInfo) console.log(`Cromwella:bundler: Importer for module "${moduleName}" executed`);
             } catch (e) {
                 console.error('Cromwella:bundler: Failed to execute importer for module: ' + moduleName, e);
                 Cromwell.importStatuses[moduleName] = 'failed';
@@ -140,26 +140,27 @@ Cromwell.importModule = async (moduleName, namedExports = ['default']): Promise<
 
             // console.log('namedExport', namedExport)
             if (!Cromwell.imports[moduleName]) {
-                onLoad('failed');
                 console.error('Cromwella:bundler: Failed to load importer for module: ' + moduleName);
                 Cromwell.importStatuses[moduleName] = 'failed';
+                onLoad('failed');
                 return false;
             };
 
-            if (canShowInfo) console.log('Cromwella:bundler: successfully loaded importer for module: ' + moduleName);
+            if (canShowInfo) console.log('Cromwella:bundler: Successfully loaded importer for module: ' + moduleName);
+            Cromwell.importStatuses[moduleName] = 'ready';
+            onLoad('ready');
 
             const success = await importAllNamed();
 
             if (success.includes(false)) {
                 console.error('Cromwella:bundler: Failed to import one of named exports');
-                Cromwell.importStatuses[moduleName] = 'failed';
-                onLoad('failed');
+                // Cromwell.importStatuses[moduleName] = 'failed';
+                // onLoad('failed');
                 return false;
+            } else {
+                if (canShowInfo) console.log('Cromwella:bundler: All named exports for module' + moduleName + ' have been successfully loaded');
             }
 
-            if (canShowInfo) console.log('Cromwella:bundler: module ' + moduleName + ' is ready!');
-            Cromwell.importStatuses[moduleName] = 'ready';
-            onLoad('ready');
             return true;
         })
 

@@ -3,7 +3,20 @@ import { TSciprtMetaInfo } from '@cromwell/core-frontend';
 
 export type TCromwellaConfig = {
     packages: string[];
-    frontendDependencies?: string[];
+    frontendDependencies?: (string | {
+        name: string;
+        builtins?: string[];
+        externals?: string[];
+        excludeExports?: string[];
+        addExports?: TAdditionalExports[];
+    })[];
+}
+
+export type TAdditionalExports = {
+    name: string;
+    path?: string;
+    importType?: 'default' | 'named';
+    saveAsModules?: string[];
 }
 
 export type TInstallationMode = 'development' | 'production';
