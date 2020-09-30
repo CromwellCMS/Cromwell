@@ -1,15 +1,27 @@
-import { TPackage, TDependency, THoistedDeps, TNonHoisted, TLocalSymlink, TCromwellaConfig, TAdditionalExports } from './types';
-import { globPackages, getCromwellaConfigSync } from './shared';
-import { buildDirChunk, jsOperators, moduleMainBuidFileName, moduleMetaInfoFileName } from './constants';
-import fs from 'fs';
-import { sync as rimraf } from 'rimraf';
-import { sync as mkdirp } from 'mkdirp';
 import colorsdef from 'colors/safe';
-const colors: any = colorsdef;
-import { resolve, dirname, isAbsolute } from 'path';
-//@ts-ignore
-import webpack, { Configuration } from 'webpack';
+import fs from 'fs';
+import { sync as mkdirp } from 'mkdirp';
+import { dirname, isAbsolute, resolve } from 'path';
+import { sync as rimraf } from 'rimraf';
+import webpack from 'webpack';
 
+import {
+    buildDirChunk,
+    commonWebpackConfig,
+    cromwellStoreImportsPath,
+    cromwellStoreModulesPath,
+    getGlobalModuleStr,
+    jsOperators,
+    moduleMainBuidFileName,
+    moduleMetaInfoFileName,
+    parseImportsWebpackConfig,
+} from './constants';
+import { getCromwellaConfigSync, globPackages } from './shared';
+import { TAdditionalExports, TSciprtMetaInfo } from './types';
+
+const NoEmitPlugin = require("no-emit-webpack-plugin");
+const nodeExternals = require('webpack-node-externals');
+const colors: any = colorsdef;
 /**
  * Cromwella Bundler
  * Bundles frontend node_modules
@@ -17,75 +29,20 @@ import webpack, { Configuration } from 'webpack';
 
 const isExternalForm = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
 
-const getGlobalModuleStr = (moduleName: string) => `CromwellStore.nodeModules.modules['${moduleName}']`;
 
 export const bundler = (projectRootDir: string, installationMode: string,
     isProduction: boolean, forceInstall: boolean) => {
 
     const tempDir = resolve(projectRootDir, '.cromwell');
     const buildDir = resolve(tempDir, buildDirChunk);
-    const moduleChunksBuildDirChunk = 'chunks';
     const moduleGeneratedFileName = 'generated.js';
     const moduleExportsDirChunk = 'generated';
 
+    commonWebpackConfig.mode = isProduction ? 'production' : 'development';
+
     const cromwellaConfig = getCromwellaConfigSync(projectRootDir);
 
-    const commonWebpackConfig: Configuration = {
-        mode: isProduction ? 'production' : 'development',
-        target: 'web',
-        output: {
-            filename: moduleMainBuidFileName,
-            chunkFilename: moduleChunksBuildDirChunk + '/[name].bundle.js',
-            path: buildDir,
-            libraryTarget: 'var'
-        },
-        optimization: {
-            splitChunks: {
-                minSize: 20000,
-                maxSize: 100000,
-                chunks: 'all',
-                // name: (module, chunks, cacheGroupKey) => {
-                //     const moduleFileName = module.identifier().replace(/\\/g, '/').split('/').reduceRight(item => item);
-                //     // console.log('moduleFileName', moduleFileName);
-                //     if (moduleFileName === 'main.js') return moduleFileName;
-                //     const allChunksNames = chunks.map((item) => item.name).join('~');
-                //     return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
-                // }
-            },
-        },
-        module: {
-            rules: [
-                {
-                    test: /\.m?js$/,
-                    use: {
-                        loader: 'babel-loader',
-                        options: {
-                            plugins: ["transform-commonjs"]
-                        }
-                    }
-                },
-                {
-                    test: /\.css$/i,
-                    use: [
-                        { loader: 'style-loader' },
-                        {
-                            loader: 'css-loader', options: {
-                                sourceMap: true
-                            }
-                        }
-                    ],
-                }
-            ]
-        },
-        node: {
-            fs: 'empty'
-        }
-        // stats: 'errors-only'
-    };
-
-    globPackages(projectRootDir, isProduction, forceInstall, async (packages: TPackage[],
-        hoistedDependencies: THoistedDeps,
-        hoistedDevDependencies: THoistedDeps) => {
+    globPackages(projectRootDir, async (packagePaths: string[]) => {
 
 
         if (fs.existsSync(buildDir)) {
@@ -93,39 +50,35 @@ export const bundler = (projectRootDir: string, installationMode: string,
         }
         mkdirp(buildDir);
 
-        // Collect frontendDependencies from all packages 
+        // Collect frontendDependencies from cromwella.json in all packages 
         const frontendDependencies = cromwellaConfig?.frontendDependencies ?? [];
 
-        packages.forEach(pckg => {
-            if (pckg.path) {
-                const cromwellConfigPath = resolve(dirname(pckg.path), 'cromwell.config.json');
-                if (fs.existsSync(cromwellConfigPath)) {
-                    let pckgConfig;
-                    try {
-                        pckgConfig = JSON.parse(fs.readFileSync(cromwellConfigPath).toString());
-                    } catch (e) {
-                        console.log(e);
-                    }
+        packagePaths.forEach(packagePath => {
+            const pckgConfig = getCromwellaConfigSync(dirname(packagePath));
+            if (pckgConfig && pckgConfig.frontendDependencies && Array.isArray(pckgConfig.frontendDependencies)) {
+                pckgConfig.frontendDependencies.forEach(dep => {
+                    const depName: string = typeof dep === 'object' ? dep.name : dep;
 
-                    if (pckgConfig && pckgConfig.frontendDependencies && Array.isArray(pckgConfig.frontendDependencies)) {
-                        console.log('cromwellConfigPath', cromwellConfigPath);
-                        pckgConfig.frontendDependencies.forEach(dep => {
-                            if (!frontendDependencies.includes(dep)) {
-                                frontendDependencies.push(dep);
-                            }
-                        })
+                    // if (!frontendDependencies.includes(dep))
+                    if (frontendDependencies.every(mainDep => {
+                        const mainDepName: string = typeof mainDep === 'object' ? mainDep.name : mainDep;
+                        return (depName !== mainDepName);
+                    })) {
+                        frontendDependencies.push(dep);
 
                     }
+                })
 
-
-                }
             }
         });
 
+        // Parse cromwella.json configs
         const moduleExternals: Record<string, string[]> = {};
         const moduleBuiltins: Record<string, string[]> = {};
         const modulesExcludeExports: Record<string, string[]> = {};
+        const modulesToIgnore: Record<string, string[]> = {};
         const modulesAdditionalExports: Record<string, TAdditionalExports[]> = {};
+        const frontendDependenciesNames: string[] = [];
 
         frontendDependencies.forEach(dep => {
             if (typeof dep === 'object') {
@@ -141,13 +94,27 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 if (dep.addExports) {
                     modulesAdditionalExports[dep.name] = dep.addExports;
                 }
+                if (dep.ignore) {
+                    modulesToIgnore[dep.name] = dep.ignore;
+                }
+                frontendDependenciesNames.push(dep.name);
+            } else {
+                frontendDependenciesNames.push(dep);
             }
         })
 
-        let imports = '';
+        /**
+         * Helper to translate module's export key (namedImport) into generated file with all keys
+         * @param namedImport module's export key
+         * @param moduleName node module name as 'react'
+         * @param importPath path to use in dynamic import() statement. 
+         * @param modulePath full path to moduleName exporter. Preferably esm format. As /path/to/my/project/node_modules/@material-ui/core/esm/index.js
+         * @param saveAsModules will also save this export as specified module names in the global store 
+         */
+        const makeImportString = (namedImport: string, moduleName: string, importPath: string,
+            modulePath?: string, saveAsModules?: string[]): string => {
 
-        const addImport = (namedImport: string, moduleName: string, path: string, saveAsModules?: string[]) => {
-            let importPath = path.replace(/\\/g, '/');
+            importPath = importPath.replace(/\\/g, '/');
             let globalPropName = namedImport;
             let importerKey = namedImport;
             let saveAsModulesStr = '';
@@ -160,14 +127,14 @@ export const bundler = (projectRootDir: string, installationMode: string,
             // with current implementation via "import { prop } from '...';"
             // so just replace for 'default' to include whole lib instead.
             if (jsOperators.includes(namedImport)) {
-                importPath = require.resolve(moduleName).replace(/\\/g, '/');
+                importPath = modulePath ?? require.resolve(moduleName).replace(/\\/g, '/');
                 globalPropName = 'default';
             }
 
-            imports += `
+            return `
             '${importerKey}': () => {
                 startImport(() => {
-                    handleImport(import('${importPath}'), '${globalPropName}' ${saveAsModulesStr});
+                    handleImport(import('${importPath}'), '${globalPropName}'${saveAsModulesStr});
                 });
             },
             `;
@@ -175,6 +142,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
         console.log(colors.cyan(`Cromwella:bundler: Found ${frontendDependencies.length} frontend modules to build: ${frontendDependencies.join(', ')}\n`));
 
+        // Stores export keys of modules that have been requested
         const modulesExportKeys: Record<string, string[]> = {};
         const getModuleExportKeys = (moduleName: string): string[] | undefined => {
             let exportKeys: string[] | undefined;
@@ -194,12 +162,24 @@ export const bundler = (projectRootDir: string, installationMode: string,
             return exportKeys;
         }
 
+
+
+        /**
+         * Start bundling a node module. After bundling requsted moduleName will parse 
+         * used modules and bundle them same way recursively
+         * @param moduleName 
+         */
         const bundleNodeModuleRecursive = async (moduleName: string) => {
             let modulePath: string | undefined;
+            let moduleRootPath: string | undefined;
             try {
                 modulePath = require.resolve(moduleName).replace(/\\/g, '/');
+                moduleRootPath = dirname(require.resolve(`${moduleName}/package.json`)).replace(/\\/g, '/');
             } catch (e) {
                 console.log(colors.brightYellow('Cromwella:bundler: required module ' + moduleName + ' is not found'));
+            }
+            if (!moduleRootPath && modulePath) {
+                moduleRootPath = dirname(modulePath).replace(/\\/g, '/');;
             }
 
             const moduleBuildDir = resolve(buildDir, moduleName);
@@ -210,11 +190,45 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 return;
             }
 
-            console.log(colors.brightCyan(`Cromwella:bundler: Starting build module: ${moduleName} from path: ${modulePath}`));
+            console.log(colors.cyan(`Cromwella:bundler: ${colors.brightCyan('Starting')} build module: ${colors.brightCyan(`"${moduleName}"`)} from path: ${modulePath}`));
+            let imports = '';
 
             mkdirp(moduleBuildDir);
 
-            imports = '';
+
+            // Get package.json to set all Dependencies as external and then transpile them same way
+            let modulePackageJson: {
+                dependencies?: Record<string, string>;
+                peerDependencies?: Record<string, string>;
+                module?: string
+            } | undefined;
+            const packageExternals: string[] = [...frontendDependenciesNames];
+            if (moduleExternals[moduleName]) {
+                moduleExternals[moduleName].forEach(ext => packageExternals.push(ext));
+            }
+
+            try {
+                modulePackageJson = require(`${moduleName}/package.json`);
+                if (!modulePackageJson) throw modulePackageJson;
+
+                if (modulePackageJson.dependencies) {
+                    Object.keys(modulePackageJson.dependencies).forEach(depName => {
+                        packageExternals.push(depName);
+                    })
+                }
+                if (modulePackageJson.peerDependencies) {
+                    Object.keys(modulePackageJson.peerDependencies).forEach(depName => {
+                        packageExternals.push(depName);
+                    })
+                }
+            } catch (e) {
+                console.error(colors.brightYellow('Cromwella:bundler:: Failed to read package.json dependencies of module: ' + moduleName));
+            }
+
+            // Find es module export
+            if (moduleRootPath && modulePackageJson && modulePackageJson.module) {
+                modulePath = resolve(moduleRootPath, modulePackageJson.module).replace(/\\/g, '/');
+            }
 
 
             // Create a file for each export so webpack could make chunks for each export
@@ -224,7 +238,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
 
                 const exportContentPath = resolve(moduleBuildDir, moduleExportsDirChunk, exportKey);
-                addImport(exportKey, moduleName, exportContentPath, saveAsModules);
+                imports += makeImportString(exportKey, moduleName, exportContentPath, modulePath, saveAsModules);
 
                 if (jsOperators.includes(exportKey)) return;
 
@@ -242,7 +256,6 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
             if (exportKeys && modulePath) {
                 console.log(colors.cyan(`Cromwella:bundler: Found ${exportKeys.length} exports for module ${moduleName}`));
-
                 for (const exportKey of exportKeys) {
                     handleExportKey(exportKey, modulePath);
                 }
@@ -256,31 +269,8 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 });
             }
 
-            // Get package.json to set all Dependencies as external and then transpile them same way
-            const packageExternals: string[] = [];
-            if (moduleExternals[moduleName]) {
-                moduleExternals[moduleName].forEach(ext => packageExternals.push(ext));
-            }
 
-            try {
-                const moduleJson = require(`${moduleName}/package.json`);
-                if (!moduleJson) throw moduleJson;
-
-                if (moduleJson.dependencies) {
-                    Object.keys(moduleJson.dependencies).forEach(depName => {
-                        packageExternals.push(depName);
-                    })
-                }
-                if (moduleJson.peerDependencies) {
-                    Object.keys(moduleJson.peerDependencies).forEach(depName => {
-                        packageExternals.push(depName);
-                    })
-                }
-            } catch (e) {
-                console.error(colors.brightYellow('Cromwella:bundler:: Failed to read package.json dependencies of module: ' + moduleName));
-            }
-
-
+            // Main generated file that contains references to generated chunks
             let content = `
             const moduleName = '${moduleName}';
             const _interopDefaultLegacy = (lib) => {
@@ -304,12 +294,11 @@ export const bundler = (projectRootDir: string, installationMode: string,
             }
             const CromwellStore = getStore();
 
-            if (!CromwellStore.nodeModules.imports) CromwellStore.nodeModules.imports = {};
-            if (!CromwellStore.nodeModules.modules) CromwellStore.nodeModules.modules = {};
+            if (!${cromwellStoreImportsPath}) ${cromwellStoreImportsPath} = {};
+            if (!${cromwellStoreModulesPath}) ${cromwellStoreModulesPath} = {};
             if (!${getGlobalModuleStr(moduleName)}) {
                 const module = {};
                 ${getGlobalModuleStr(moduleName)} = module;
-                // ${getGlobalModuleStr(moduleName)}.default = module 
             }
 
             // If we once used 'default' import (which is whole lib), don't let it to make any other imports
@@ -327,20 +316,20 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 }
                 promise.then(lib => {
                     if (importName === 'default') {
-                        CromwellStore.nodeModules.modules[moduleName] = _interopDefaultLegacy(lib);
+                        ${cromwellStoreModulesPath}[moduleName] = _interopDefaultLegacy(lib);
                     } else {
                         if (didDefaultImport) return;
-                        CromwellStore.nodeModules.modules[moduleName][importName] = _interopDefaultLegacy(lib);
+                        ${cromwellStoreModulesPath}[moduleName][importName] = _interopDefaultLegacy(lib);
                     }
                     if (saveAsModules && Array.isArray(saveAsModules)) {
                         saveAsModules.forEach(modName => {
-                            CromwellStore.nodeModules.modules[modName] = _interopDefaultLegacy(lib);
+                            ${cromwellStoreModulesPath}[modName] = _interopDefaultLegacy(lib);
                         })
                     }
                 })
             })
 
-            CromwellStore.nodeModules.imports['${moduleName}'] = {
+            ${cromwellStoreImportsPath}['${moduleName}'] = {
                 ${imports}
             }
             `;
@@ -348,131 +337,113 @@ export const bundler = (projectRootDir: string, installationMode: string,
             fs.writeFileSync(libEntry, content);
 
 
-            // console.log(JSON.stringify(webpackConfig.externals, null, 2));
-            const webpackConfig = Object.assign({}, commonWebpackConfig);
-            webpackConfig.output = Object.assign({}, commonWebpackConfig.output);
-            webpackConfig.entry = libEntry;
-            webpackConfig.output!.library = moduleName.replace(/\W/g, '_');
-            webpackConfig.output!.path = resolve(moduleBuildDir);
-            webpackConfig.output!.publicPath = `/${buildDirChunk}/${moduleName}/`;
+            // 1. FIRST BUILD PASS
+            // Run compiler to parse files and find actually used dependencies.
 
+            const parsingWebpackConfig = Object.assign({}, parseImportsWebpackConfig);
+            parsingWebpackConfig.output = Object.assign({}, parseImportsWebpackConfig.output);
+            parsingWebpackConfig.output!.path = resolve(moduleBuildDir, 'parse_temp');
+            parsingWebpackConfig.entry = libEntry;
 
             // { [moduleName]: namedExports }
             const usedExternals: Record<string, string[]> = {};
+
+            // Used AND included in package.json
+            const filteredUsedExternals: Record<string, string[]> = {};
 
             let moduleStats: any[] = [];
 
             const shouldLogBuild = false;
 
+            // console.log('externals', externals);
 
-            const runCompiler = async (externals: string[], shouldBuildExternals: boolean) => {
-                webpackConfig.externals = Object.assign({}, ...externals.map(ext => ({
-                    [ext]: `${getGlobalModuleStr(ext)}`
-                })));
-                // console.log('externals', externals);
-                const compiler = webpack(webpackConfig);
+            parsingWebpackConfig.externals = nodeExternals();
+            if (!parsingWebpackConfig.plugins) parsingWebpackConfig.plugins = [];
+            parsingWebpackConfig.plugins.push(new NoEmitPlugin());
 
-                if (shouldBuildExternals) {
-                    // Decryption of webpack's actually used modules to define externals list
-                    compiler.hooks.normalModuleFactory.tap('CromwellaBundlerPlugin', factory => {
-                        factory.hooks.parser.for('javascript/auto').tap('CromwellaBundlerPlugin', (parser, options) => {
-                            parser.hooks.importSpecifier.tap('CromwellaBundlerPlugin', (statement, source: string, exportName: string, identifierName: string) => {
+            const compiler = webpack(parsingWebpackConfig);
 
-                                if (!isExternalForm(source)) return;
 
-                                if (moduleBuiltins[moduleName] && moduleBuiltins[moduleName].includes(source)) return;
+            // Decryption of webpack's actually used modules via AST to define externals list
+            compiler.hooks.normalModuleFactory.tap('CromwellaBundlerPlugin', factory => {
+                factory.hooks.parser.for('javascript/auto').tap('CromwellaBundlerPlugin', (parser, options) => {
+                    parser.hooks.importSpecifier.tap('CromwellaBundlerPlugin', (statement, source: string, exportName: string, identifierName: string) => {
 
-                                const exportKeys = getModuleExportKeys(source);
+                        if (!isExternalForm(source)) return;
 
-                                if (!exportName && identifierName && exportKeys) {
-                                    if (exportKeys.includes(identifierName)) exportName = identifierName;
-                                    else exportName = 'default';
-                                }
-                                // if (source === 'react-dom' && moduleName === '@material-ui/core') console.log('react-dom', source, exportName, identifierName, JSON.stringify(statement, null, 2));
+                        if (moduleBuiltins[moduleName] && moduleBuiltins[moduleName].includes(source)) return;
 
-                                if (!exportKeys || exportKeys.length === 0) return;
+                        const exportKeys = getModuleExportKeys(source);
 
-                                if (!usedExternals[source]) usedExternals[source] = [];
+                        if (!exportName && identifierName && exportKeys) {
+                            if (exportKeys.includes(identifierName)) exportName = identifierName;
+                            else exportName = 'default';
+                        }
+                        // if (source === 'react-dom' && moduleName === '@material-ui/core') console.log('react-dom', source, exportName, identifierName, JSON.stringify(statement, null, 2));
 
-                                if (exportName && exportKeys.includes(exportName) &&
-                                    !usedExternals[source].includes(exportName)) {
+                        if (!exportKeys || exportKeys.length === 0) return;
 
-                                    // Properties exported via "module.exports" can be the same as JS operators, we cannot code-split them
-                                    // with current implementation via "import { prop } from '...';"
-                                    // so just replace for 'default' to include whole lib instead 
-                                    if (jsOperators.includes(exportName)) {
-                                        exportName = 'default';
-                                    }
+                        if (!usedExternals[source]) usedExternals[source] = [];
 
-                                    usedExternals[source].push(exportName);
-                                }
-                            });
-                        });
+                        if (exportName && exportKeys.includes(exportName) &&
+                            !usedExternals[source].includes(exportName)) {
+
+                            // Properties exported via "module.exports" can be the same as JS operators, we cannot code-split them
+                            // with current implementation via "import { prop } from '...';"
+                            // so just replace for 'default' to include whole lib instead 
+                            if (jsOperators.includes(exportName)) {
+                                exportName = 'default';
+                            }
+
+                            usedExternals[source].push(exportName);
+                        }
                     });
-                }
+                });
+            });
 
-                await new Promise((done) => {
+            await new Promise((done) => {
+                compiler.run(async (err, stats) => {
 
-                    compiler.run(async (err, stats) => {
-
-                        if (shouldLogBuild) {
-                            // const jsonStats = stats?.toString({ colors: true });
-                            // console.log(jsonStats);
-
-                            const jsonStatsPath = resolve(moduleBuildDir, 'build_stats.json');
-                            fs.writeFileSync(jsonStatsPath, JSON.stringify(moduleStats, null, 4));
+                    // Optimize used externals:
+                    // If has "default" key with any other, leave only "default"
+                    Object.keys(usedExternals).forEach(extName => {
+                        if (usedExternals[extName].includes('default')) {
+                            usedExternals[extName] = ['default'];
                         }
-
-                        // Optimize used externals:
-                        // If has "default" key with any other, leave only "default"
-                        Object.keys(usedExternals).forEach(extName => {
-                            if (usedExternals[extName].includes('default')) {
-                                usedExternals[extName] = ['default'];
-                            }
-                        });
-                        // If imported more than 80% of keys, replace them by one "default"
-                        Object.keys(usedExternals).forEach(extName => {
-                            if (usedExternals[extName].length > modulesExportKeys[extName].length * 0.8) {
-                                usedExternals[extName] = ['default'];
-                            }
-                        });
-
-                        // Used from package.json
-                        const filteredUsedExternals = {};
-                        Object.keys(usedExternals).forEach(extName => {
-                            if (packageExternals.includes(extName)) {
-                                filteredUsedExternals[extName] = usedExternals[extName];
-                            }
-                        })
-
-                        // Create meta info file with actually used dependencies
-                        const metaInfoPath = resolve(moduleBuildDir, moduleMetaInfoFileName);
-                        const metaInfoContent = { externalDependencies: filteredUsedExternals };
-                        fs.writeFileSync(metaInfoPath, JSON.stringify(metaInfoContent, null, 4));
-
-                        if (!stats.hasErrors() && !err && fs.existsSync(resolve(moduleBuildDir, moduleMainBuidFileName))) {
-                            console.log(colors.brightGreen('Cromwella:bundler: Successfully built module: ' + moduleName));
-                            // console.log(colors.cyan('usedExternals: \n' + JSON.stringify(usedExternals, null, 4)));
-                            if (shouldBuildExternals && Object.keys(filteredUsedExternals).length > 0) {
-                                console.log(colors.cyan(`Cromwella:bundler: Starting to build following used dependencies of module ${moduleName}: ${Object.keys(filteredUsedExternals).join(', ')}`));
-                                for (const ext of Object.keys(filteredUsedExternals)) {
-                                    await bundleNodeModuleRecursive(ext);
-                                }
-                                console.log(colors.cyan(`Cromwella:bundler: All dependencies of module ${moduleName} has been built`));
-                            }
-                        } else {
-                            console.log(colors.brightRed('Cromwella:bundler: Failed to built module: ' + moduleName));
-                            if (err) console.error(err)
-                            if (stats) console.error(stats?.toString({ colors: true }))
+                    });
+                    // If imported more than 80% of keys, replace them by one "default"
+                    Object.keys(usedExternals).forEach(extName => {
+                        if (usedExternals[extName].length > modulesExportKeys[extName].length * 0.8) {
+                            usedExternals[extName] = ['default'];
                         }
-                        // console.log(stats?.toString({ colors: true }))
-                        done();
                     });
 
-                })
-            }
 
-            await runCompiler(packageExternals, true);
+                    Object.keys(usedExternals).forEach(extName => {
+                        if (packageExternals.includes(extName)) {
+                            filteredUsedExternals[extName] = usedExternals[extName];
+                        }
+                    })
+
+                    // Create meta info file with actually used dependencies
+                    const metaInfoPath = resolve(moduleBuildDir, moduleMetaInfoFileName);
+                    const metaInfoContent: TSciprtMetaInfo = {
+                        name: moduleName,
+                        externalDependencies: filteredUsedExternals,
+                    };
+                    fs.writeFileSync(metaInfoPath, JSON.stringify(metaInfoContent, null, 4));
+
+                    if (!stats.hasErrors() && !err && fs.existsSync(metaInfoPath)) {
+                        console.log(colors.cyan('Cromwella:bundler: Parsed imports for module: ' + moduleName));
+                    } else {
+                        console.log(colors.red('Cromwella:bundler: Failed to parse imports for module: ' + moduleName));
+                        if (err) console.error(err);
+                        if (stats) console.error(stats.toString({ colors: true }));
+                    }
+
+                    done();
+                });
+            });
 
             // Check if found used node_modules that weren't included in package.json
             // and hence weren't marked as externals in webpack config. 
@@ -485,53 +456,101 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
             if (notIncludedExts.length > 0) {
                 console.log(colors.brightYellow(`Cromwella:bundler: Found used node_modules of ${moduleName} that weren't included in package.json or cromwella.json : ${notIncludedExts.join(', ')}.`));
-                console.log(colors.brightYellow(`Cromwella:bundler: All listed modules have been bundled with ${moduleName} and hence are not reusable for other modules. This may cause bloating of bundles. Please configure encountered externals.`));
+                console.log(colors.brightYellow(`Cromwella:bundler: All listed modules will be bundled with ${moduleName} and hence not reusable for other modules. This may cause bloating of bundles. Please configure encountered modules as externals.`));
 
-                // // Run build second time with newly found externals: (probably don't need that)
-                // console.log(colors.cyan(`Cromwella:bundler: Runnig build for second time to build with the new externals`));
-                // rimraf(resolve(moduleBuildDir, moduleChunksBuildDirChunk));
-                // rimraf(resolve(moduleBuildDir, moduleMainBuidFileName));
-                // await runCompiler([...packageExternals, ...notIncludedExts], false);
             }
 
-            console.log(colors.brightCyan(`Cromwella:bundler: Module: ${moduleName} has been processed`));
 
+            // 2. SECOND BUILD PASS
+            // Build module.
+
+            // console.log(JSON.stringify(webpackConfig.externals, null, 2));
+            const webpackConfig = Object.assign({}, commonWebpackConfig);
+            webpackConfig.output = Object.assign({}, commonWebpackConfig.output);
+            webpackConfig.entry = libEntry;
+            webpackConfig.output!.library = moduleName.replace(/\W/g, '_');
+            webpackConfig.output!.path = resolve(moduleBuildDir);
+            webpackConfig.output!.publicPath = `/${buildDirChunk}/${moduleName}/`;
+
+            if (modulesToIgnore[moduleName] && modulesToIgnore[moduleName].length > 0) {
+                if (!webpackConfig.plugins) webpackConfig.plugins = [];
+                webpackConfig.plugins.push(new webpack.IgnorePlugin({
+                    checkResource(resource) {
+                        return modulesToIgnore[moduleName].includes(resource);
+                    }
+                }))
+            }
+
+            webpackConfig.externals = Object.assign({}, ...packageExternals.map(ext => ({
+                [ext]: `${getGlobalModuleStr(ext)}`
+            })));
+
+            const buildCompiler = webpack(webpackConfig);
+
+            await new Promise((done) => {
+
+                buildCompiler.run(async (err, stats) => {
+
+                    if (shouldLogBuild) {
+                        // const jsonStats = stats?.toString({ colors: true });
+                        // console.log(jsonStats);
+
+                        const jsonStatsPath = resolve(moduleBuildDir, 'build_stats.json');
+                        fs.writeFileSync(jsonStatsPath, JSON.stringify(moduleStats, null, 4));
+                    }
+
+                    if (!stats.hasErrors() && !err && fs.existsSync(resolve(moduleBuildDir, moduleMainBuidFileName))) {
+                        console.log(colors.brightGreen('Cromwella:bundler: Successfully built module: ' + moduleName));
+                        // console.log(colors.cyan('usedExternals: \n' + JSON.stringify(usedExternals, null, 4)));
+                        if (Object.keys(filteredUsedExternals).length > 0) {
+                            console.log(colors.cyan(`Cromwella:bundler: Starting to build following used dependencies of module ${moduleName}: ${Object.keys(filteredUsedExternals).join(', ')}`));
+                            for (const ext of Object.keys(filteredUsedExternals)) {
+                                await bundleNodeModuleRecursive(ext);
+                            }
+                            console.log(colors.cyan(`Cromwella:bundler: All dependencies of module ${moduleName} has been built`));
+                        }
+                    } else {
+                        console.log(colors.brightRed('Cromwella:bundler: Failed to built module: ' + moduleName));
+                        if (err) console.error(err);
+                        if (stats) console.error(stats?.toString({ colors: true }));
+                    }
+                    // console.log(stats?.toString({ colors: true }))
+                    done();
+                });
+
+            })
+
+            console.log(colors.cyan(`Cromwella:bundler: Module: ${colors.brightCyan(`"${moduleName}"`)} has been ${colors.brightCyan('processed')}`));
         }
 
-        for (const module of frontendDependencies) {
-            if (typeof module === 'object') {
-                await bundleNodeModuleRecursive(module.name);
-
-            } else {
-                await bundleNodeModuleRecursive(module);
-            }
+        for (const moduleName of frontendDependenciesNames) {
+            await bundleNodeModuleRecursive(moduleName);
         }
     });
 }
 
 
-
-function cleanStringify(object) {
-    if (object && typeof object === 'object') {
-        object = copyWithoutCircularReferences([object], object);
-    }
-    return JSON.stringify(object);
-    function copyWithoutCircularReferences(references, object) {
-        var cleanObject = {};
-        Object.keys(object).forEach(function (key) {
-            var value = object[key];
-            if (value && typeof value === 'object') {
-                if (references.indexOf(value) < 0) {
-                    references.push(value);
-                    cleanObject[key] = copyWithoutCircularReferences(references, value);
-                    references.pop();
-                } else {
-                    cleanObject[key] = '###_Circular_###';
-                }
-            } else if (typeof value !== 'function') {
-                cleanObject[key] = value;
-            }
-        });
-        return cleanObject;
-    }
-}
+// function cleanStringify(object) {
+//     if (object && typeof object === 'object') {
+//         object = copyWithoutCircularReferences([object], object);
+//     }
+//     return JSON.stringify(object);
+//     function copyWithoutCircularReferences(references, object) {
+//         var cleanObject = {};
+//         Object.keys(object).forEach(function (key) {
+//             var value = object[key];
+//             if (value && typeof value === 'object') {
+//                 if (references.indexOf(value) < 0) {
+//                     references.push(value);
+//                     cleanObject[key] = copyWithoutCircularReferences(references, value);
+//                     references.pop();
+//                 } else {
+//                     cleanObject[key] = '###_Circular_###';
+//                 }
+//             } else if (typeof value !== 'function') {
+//                 cleanObject[key] = value;
+//             }
+//         });
+//         return cleanObject;
+//     }
+// }

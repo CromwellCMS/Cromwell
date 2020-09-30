@@ -9,7 +9,6 @@
   "frontendDependencies": [
     "@apollo/client",
     "@cromwell/core",
-    "@cromwell/core-frontend",
     "@material-ui/lab",
     "@material-ui/core",
     "@material-ui/icons",
@@ -27,6 +26,14 @@
     "swiper",
     "tslib",
     {
+      "name": "@cromwell/core-frontend",
+      "externals": [
+        "next/head",
+        "next/router",
+        "next/link"
+      ]
+    },
+    {
       "name": "@babel/runtime",
       "addExports": [
         {
@@ -37,39 +44,6 @@
             "@babel/runtime/helpers/interopRequireWildcard"
           ]
         }
-      ]
-    },
-    {
-      "name": "next/link",
-      "excludeExports": [
-        "__esModule"
-      ],
-      "externals": [
-        "react",
-        "object-assign",
-        "react-is"
-      ]
-    },
-    {
-      "name": "next/head",
-      "excludeExports": [
-        "__esModule"
-      ],
-      "externals": [
-        "react",
-        "object-assign",
-        "react-is"
-      ]
-    },
-    {
-      "name": "next/router",
-      "excludeExports": [
-        "__esModule"
-      ],
-      "externals": [
-        "react",
-        "object-assign",
-        "react-is"
       ]
     }
   ]

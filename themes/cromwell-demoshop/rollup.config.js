@@ -1,5 +1,3 @@
-import autoExternal from "rollup-plugin-auto-external";
-import nodeResolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
 import postcss from 'rollup-plugin-postcss';
@@ -7,6 +5,8 @@ import autoprefixer from "autoprefixer";
 import alias from '@rollup/plugin-alias';
 import cromwellConfig from './cromwell.config.json';
 import { resolve } from 'path';
+import { rollupPluginCromwellFrontend } from '@cromwell/cromwella';
+import json from '@rollup/plugin-json';
 
 const distDir = resolve(__dirname, cromwellConfig.appConfig.buildDir);
 
@@ -19,8 +19,8 @@ export default {
             format: "esm",
         }
     ],
-    external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/app', 'next/router'],
     plugins: [
+        rollupPluginCromwellFrontend(),
         postcss({
             plugins: [
                 autoprefixer(),
@@ -37,9 +37,8 @@ export default {
                 { find: /^.*\/node_modules\/style-inject\/dist\/style-inject\.es\.js/, replacement: 'style-inject' },
             ]
         }),
-        autoExternal(),
-        nodeResolve(),
         commonjs(),
-        typescript()
+        typescript(),
+        json(),
     ]
 };

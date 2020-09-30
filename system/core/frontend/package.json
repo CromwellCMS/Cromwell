@@ -18,7 +18,8 @@
     "next": "^9.5.2",
     "query-string": "^6.13.1",
     "react-toastify": "^6.0.8",
-    "swiper": "^6.0.4"
+    "swiper": "^6.0.4",
+    "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "react": "^16.13.1",
@@ -37,8 +38,7 @@
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-postcss": "^3.1.2",
     "typescript-plugin-css-modules": "^2.3.0",
-    "typescript": "^3.9.5",
-    "tslib": "^2.0.0"
+    "typescript": "^3.9.5"
   },
   "description": "",
   "scripts": {

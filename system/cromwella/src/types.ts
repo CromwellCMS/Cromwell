@@ -1,5 +1,3 @@
-import { TSciprtMetaInfo } from '@cromwell/core-frontend';
-
 
 export type TCromwellaConfig = {
     packages: string[];
@@ -8,9 +6,17 @@ export type TCromwellaConfig = {
         builtins?: string[];
         externals?: string[];
         excludeExports?: string[];
+        ignore?: string[];
         addExports?: TAdditionalExports[];
     })[];
 }
+
+export type TSciprtMetaInfo = {
+    name: string;
+    // { [moduleName]: namedImports }
+    externalDependencies: Record<string, string[]>
+}
+
 
 export type TAdditionalExports = {
     name: string;
@@ -61,3 +67,8 @@ export type TCromwellNodeModules = {
     importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean>;
     importSciptExternals?: (metaInfo: TSciprtMetaInfo) => Promise<boolean>;
 };
+
+export type TGetDepsCb = (
+    packages: TPackage[],
+    hoistedDependencies?: THoistedDeps,
+    hoistedDevDependencies?: THoistedDeps) => void;

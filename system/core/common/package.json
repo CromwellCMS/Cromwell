@@ -14,7 +14,8 @@
     "axios": "^0.19.2",
     "next": "^9.5.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1"
+    "react-dom": "^16.13.1",
+    "tslib": "^2.0.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.0",
@@ -25,7 +26,6 @@
     "@types/react-dom": "16.9.8",
     "rollup": "^2.16.1",
     "rollup-plugin-auto-external": "^2.0.0",
-    "tslib": "^2.0.0",
     "typescript": "^3.9.5"
   },
   "description": "",

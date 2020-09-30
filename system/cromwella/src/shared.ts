@@ -1,17 +1,18 @@
-import { TPackage, TDependency, THoistedDeps, TNonHoisted, TLocalSymlink, TCromwellaConfig } from './types';
-import colors from 'colors/safe';
-import path, { resolve } from 'path';
-import fs from 'fs';
 import { each as asyncEach } from 'async';
-import glob from "glob";
+import colorsdef from 'colors/safe';
+import fs from 'fs';
+import glob from 'glob';
+import path, { resolve } from 'path';
 
-type TGetDepsCb = (
-    packages: TPackage[],
-    hoistedDependencies: THoistedDeps,
-    hoistedDevDependencies: THoistedDeps) => void;
+import { TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps, TLocalSymlink, TNonHoisted, TPackage } from './types';
+
+const colors: any = colorsdef;
+
 
 export const getHoistedDependencies = (projectRootDir: string, isProduction: boolean, forceInstall: boolean, cb: TGetDepsCb) => {
-    globPackages(projectRootDir, isProduction, forceInstall, cb);
+    globPackages(projectRootDir, (packagePaths) => {
+        collectPackagesInfo(packagePaths, isProduction, forceInstall, cb)
+    });
 }
 
 
@@ -100,13 +101,13 @@ const hoistDeps = (store: TDependency[], packages: TPackage[],
                     if (packageVer === ver) {
                         const packageName = packages?.find(p => p.path === packagePath)?.name;
 
-                        console.log(colors.yellow(`\nCromwella:: Local package ${packageName} at ${packagePath} dependent on different version of hoisted package ${module.name}. \nHoisted (commonly used) ${module.name} is "${hoistedVersion}", but dependent is "${ver}".\n`));
+                        console.log(colors.brightYellow(`\nCromwella:: Local package ${packageName} at ${packagePath} dependent on different version of hoisted package ${module.name}. \nHoisted (commonly used) ${module.name} is "${hoistedVersion}", but dependent is "${ver}".\n`));
                         if (!isProduction && !forceInstall) {
-                            console.log(colors.red(`Cromwella:: Error. Abort installation. Please fix "${module.name}": "${ver}" or run installation in force mode (add -f flag).\n`));
+                            console.log(colors.brightRed(`Cromwella:: Error. Abort operation. Please fix "${module.name}": "${ver}" or run installation in force mode (add -f flag).\n`));
                             process.exit();
                         }
                         if (isProduction || (!isProduction && forceInstall)) {
-                            console.log(colors.yellow(`Cromwella:: Installing ${module.name}: "${ver}" locally...\n`));
+                            console.log(colors.brightYellow(`Cromwella:: Installing ${module.name}: "${ver}" locally...\n`));
                         }
 
                         if (!nonHoisted[path.dirname(packagePath)]) {
@@ -130,29 +131,30 @@ const hoistDeps = (store: TDependency[], packages: TPackage[],
     }
 }
 
-export const getCromwellaConfigSync = (projectRootDir: string): TCromwellaConfig | undefined => {
+export const getCromwellaConfigSync = (projectRootDir: string, canLog?: boolean): TCromwellaConfig | undefined => {
     const cromwellaConfigPath = resolve(projectRootDir, 'cromwella.json');
     let cromwellaConfig: TCromwellaConfig | undefined = undefined;
     try {
         cromwellaConfig = JSON.parse(fs.readFileSync(cromwellaConfigPath).toString());
     } catch (e) {
-        console.log(e);
+        if (canLog) console.log(e);
     }
 
     if (!cromwellaConfig || !cromwellaConfig.packages) {
-        console.log(colors.red(`\nCromwella:: Error. Failed to read config in ${cromwellaConfigPath}\n`))
+        if (canLog) console.log(colors.brightRed(`\nCromwella:: Error. Failed to read config in ${cromwellaConfigPath}\n`))
     }
 
     return cromwellaConfig;
 }
 
 
-export const globPackages = (projectRootDir: string, isProduction: boolean, forceInstall: boolean, cb: TGetDepsCb) => {
+export const globPackages = (projectRootDir: string, cb: (packagePaths: string[]) => void) => {
     console.log(colors.cyan(`Cromwella:: Start. Scannig for local packages from ./cromwella.json...\n`));
     const globOptions = {};
 
     const cromwellaConfig = getCromwellaConfigSync(projectRootDir);
     if (!cromwellaConfig || !cromwellaConfig.packages) {
+        cb([]);
         return;
     }
 
@@ -164,17 +166,15 @@ export const globPackages = (projectRootDir: string, isProduction: boolean, forc
             files.forEach(f => packagePaths.push(resolve(projectRootDir, f)));
             callback();
         })
-    }, () => onGlobDone(packagePaths, isProduction, forceInstall, cb));
+    }, () => cb(packagePaths));
 }
 
 
-/**
-   * Step 2
-   */
-const onGlobDone = (packagePaths: string[], isProduction: boolean, forceInstall: boolean, cb: TGetDepsCb) => {
+const collectPackagesInfo = (packagePaths: string[], isProduction: boolean, forceInstall: boolean, cb: TGetDepsCb) => {
     packagePaths = Array.from(new Set(packagePaths));
     if (packagePaths.length === 0) {
-        console.log(colors.red(`\nCromwella:: Error. No local packages found\n`))
+        console.log(colors.brightYellow(`\nCromwella:: No local packages found\n`))
+        cb([])
         return;
     }
     console.log(colors.cyan(`Cromwella:: Bootstraping local packages:`));

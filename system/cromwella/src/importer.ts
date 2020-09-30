@@ -1,6 +1,5 @@
-import { TCromwellNodeModules } from './types';
+import { TCromwellNodeModules, TSciprtMetaInfo } from './types';
 import { buildDirChunk, moduleMainBuidFileName, moduleMetaInfoFileName } from './constants';
-import { TSciprtMetaInfo } from '@cromwell/core-frontend';
 
 /**
  * Node modules loading app for a Browser
@@ -16,6 +15,25 @@ const getStore = () => {
         return (window as any).CromwellStore;
     }
 }
+
+const isomorphicFetch = (filepath: string): Promise<string | undefined> => {
+    let importerPromise;
+    if (isServer()) {
+        importerPromise = new Promise(done => {
+            const fs = require('fs');
+            const resolve = require('path').resolve;
+            fs.readFile(resolve(process.cwd(), 'public', filepath), (err, data) => {
+                const text = data && data.toString ? data.toString() : data ? data : undefined;
+                done(text);
+            })
+        })
+    } else {
+        importerPromise = fetch(filepath)
+            .then(res => res.text());
+    }
+    return importerPromise;
+}
+
 const CromwellStore: any = getStore();
 if (!CromwellStore.nodeModules) CromwellStore.nodeModules = {};
 const Cromwell: TCromwellNodeModules = CromwellStore.nodeModules
@@ -70,65 +88,35 @@ Cromwell.importModule = async (moduleName, namedExports = ['default']): Promise<
             if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
             if (!Cromwell.imports) Cromwell.imports = {};
 
-            let importerPromise;
-
-            // if (isServer()) {
-            importerPromise = fetch(`${buildDirChunk}/${moduleName}/${moduleMainBuidFileName}`)
-                .then(res => res.text());
-            // } else {
-            // importerPromise = new Promise((resolve, reject) => {
-            //     const script = document.createElement('script');
-            //     document.body.appendChild(script);
-            //     script.onload = resolve;
-            //     script.onerror = reject;
-            //     script.async = true;
-            //     script.src = `bundle/${moduleName}/main.bundle.js`;
-            // });
-            // }
-
+            const importerFilepath = `${buildDirChunk}/${moduleName}/${moduleMainBuidFileName}`;
+            let importerPromise = isomorphicFetch(importerFilepath);
 
             // Load meta and externals if it has any
-            const metaInfoPromise = fetch(`${buildDirChunk}/${moduleName}/${moduleMetaInfoFileName}`);
+            const metaFilepath = `${buildDirChunk}/${moduleName}/${moduleMetaInfoFileName}`;
+            const metaInfoPromise = isomorphicFetch(metaFilepath);
+
             try {
-                const metaInfo: TSciprtMetaInfo = await (await metaInfoPromise).json();
-                // { [moduleName]: namedExports }
-                let externals: Record<string, string[]> = metaInfo.externalDependencies;
-
-                if (Cromwell && Cromwell.importModule &&
-                    externals && typeof externals === 'object') {
-                    const externalModuleNames = Object.keys(externals);
-                    if (externalModuleNames.length > 0) {
-                        if (canShowInfo) console.log('Cromwella:bundler: module ' + moduleName + ' has externals: ' + JSON.stringify(externals, null, 4));
-                        if (canShowInfo) console.log('Cromwella:bundler: loading externals first for module ' + moduleName + ' ...');
-
-                        const promises: Promise<boolean>[] = [];
-                        for (const extName of externalModuleNames) {
-
-                            const promise = Cromwell.importModule(extName, externals[extName]);
-                            promise.catch(e => {
-                                console.error('Cromwella:bundler: Failed to load external ' + extName + ' for module: ' + moduleName, e);
-                            })
-                            promises.push(promise);
-                            // try {
-                            //     await promise;
-                            // } catch (e) { }
-                        };
-                        try {
-                            await Promise.all(promises);
-                        } catch (e) {
-                            console.error('Cromwella:bundler: Failed to load externals for module: ' + moduleName, e);
-                        }
-                        if (canShowInfo) console.log('Cromwella:bundler: all externals for module ' + moduleName + ' have been processed');
-                    }
+                const metaInfoStr = await metaInfoPromise;
+                if (metaInfoStr) {
+                    const metaInfo: TSciprtMetaInfo = JSON.parse(metaInfoStr);
+                    // { [moduleName]: namedExports }
+                    if (metaInfo && Cromwell?.importSciptExternals)
+                        await Cromwell.importSciptExternals(metaInfo)
+                } else {
+                    throw new Error('Failed to fetch file ' + metaFilepath)
                 }
             } catch (e) {
-                console.error('Cromwella:bundler: Failed to load meta info about importer of module: ' + moduleName, e);
+                console.error('Cromwella:bundler: Failed to load meta info about importer of the module: ' + moduleName, e);
             }
 
             try {
                 const jsText = await importerPromise;
-                eval(jsText);
-                if (canShowInfo) console.log(`Cromwella:bundler: Importer for module "${moduleName}" executed`);
+                if (jsText) {
+                    eval(jsText);
+                    if (canShowInfo) console.log(`Cromwella:bundler: Importer for module "${moduleName}" executed`);
+                } else {
+                    throw new Error('Failed to fetch file ' + importerFilepath)
+                }
             } catch (e) {
                 console.error('Cromwella:bundler: Failed to execute importer for module: ' + moduleName, e);
                 Cromwell.importStatuses[moduleName] = 'failed';
@@ -189,15 +177,33 @@ Cromwell.importModule = async (moduleName, namedExports = ['default']): Promise<
     return false;
 }
 
-Cromwell.importSciptExternals = async (metaInfo) => {
-    if (metaInfo.externalDependencies) {
+Cromwell.importSciptExternals = async (metaInfo: TSciprtMetaInfo | undefined) => {
+    const externals = metaInfo?.externalDependencies;
+    if (metaInfo && externals && typeof externals === 'object' && Object.keys(externals).length > 0) {
+        if (canShowInfo) console.log('Cromwella:bundler: module ' + metaInfo.name + ' has externals: ' + JSON.stringify(externals, null, 4));
+        if (canShowInfo) console.log('Cromwella:bundler: loading externals first for module ' + metaInfo.name + ' ...');
         const promises: Promise<boolean>[] = []
-        Object.keys(metaInfo.externalDependencies).forEach(ext => {
-            const pr = Cromwell?.importModule?.(ext, metaInfo.externalDependencies[ext]);
-            if (pr) promises.push(pr);
+        Object.keys(externals).forEach(ext => {
+            const promise = Cromwell?.importModule?.(ext, externals[ext]);
+            if (promise) {
+                promise.catch(e => {
+                    console.error('Cromwella:bundler: Failed to load external ' + ext + ' for module: ' + metaInfo.name, e);
+                });
+                promises.push(promise);
+            }
         });
-        const success = await Promise.all(promises);
-        if (!success.includes(false)) return true;
+        let success: boolean[] | undefined;
+        try {
+            success = await Promise.all(promises);
+        } catch (e) {
+            console.error('Cromwella:bundler: Failed to load externals for module: ' + metaInfo.name, e);
+        }
+        let successNum = 0;
+        if (success) {
+            success.forEach(s => s && successNum++);
+        }
+        if (canShowInfo) console.log(`Cromwella:bundler: ${successNum}/${Object.keys(externals).length} externals for module ${metaInfo.name} have been loaded`);
+        if (success && !success.includes(false)) return true;
     }
 
     return false

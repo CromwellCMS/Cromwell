@@ -1,6 +1,11 @@
 import yargs from 'yargs-parser';
 import colors from 'colors/safe';
 
+/**
+ * CLI endpoint
+ * npx cromwella --args
+ */
+
 const cli = () => {
     const args = yargs(process.argv.slice(2));
 

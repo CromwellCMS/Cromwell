@@ -3,6 +3,7 @@ import nodeResolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import packageJson from './package.json';
 import { resolve } from 'path';
+import json from '@rollup/plugin-json';
 
 const external = id => {
     const exts = ['util', 'path', 'colors/safe', 'webpack'];
@@ -22,6 +23,7 @@ const plugins = [
     typescript({
         module: "ESNext"
     }),
+    json()
 ]
 
 const buildDir = 'build';
@@ -77,5 +79,16 @@ export default [
             nodeResolve(),
             commonjs(),
         ]
+    },
+    {
+        input: resolve(__dirname, "src/exports.ts"),
+        output: [
+            {
+                file: resolve(__dirname, buildDir, 'exports.js'),
+                format: "cjs",
+            }
+        ],
+        external,
+        plugins: plugins
     },
 ];

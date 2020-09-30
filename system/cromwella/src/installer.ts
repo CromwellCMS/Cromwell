@@ -1,16 +1,17 @@
-import path, { resolve } from 'path';
+import { each as asyncEach } from 'async';
+import { spawn } from 'child_process';
+import colorsdef from 'colors/safe';
 import fs from 'fs';
 import { sync as mkdirp } from 'mkdirp';
-import { sync as rimraf } from 'rimraf';
-import glob from "glob";
-import { each as asyncEach } from 'async';
 import nodeCleanup from 'node-cleanup';
-import colors from 'colors/safe';
-import { spawnSync, spawn } from "child_process";
+import path, { resolve } from 'path';
+import { sync as rimraf } from 'rimraf';
 import { sync as symlinkOrCopySync } from 'symlink-or-copy';
-import { TPackage, TDependency, THoistedDeps, TNonHoisted, TLocalSymlink } from './types';
-import { getHoistedDependencies } from './shared';
 
+import { getCromwellaConfigSync, getHoistedDependencies } from './shared';
+import { THoistedDeps, TPackage } from './types';
+
+const colors: any = colorsdef;
 /**
  * Cromwella package manager.
  */
@@ -70,7 +71,7 @@ export const installer = (projectRootDir: string, installationMode: string,
 
             fs.writeFileSync(hoistedPackageJsonPath, JSON.stringify(hoistedPackageJson));
         } catch (e) {
-            console.log(colors.red('Failed to create install package file for ' + dir));
+            console.log(colors.brightRed('Failed to create install package file for ' + dir));
             console.log(e)
             removeInstallPackage(dir);
         }
@@ -89,7 +90,7 @@ export const installer = (projectRootDir: string, installationMode: string,
                 fs.unlinkSync(hoistedPackageJsonBackupPath);
             }
         } catch (e) {
-            console.log(colors.red('Failed to remove install package file for ' + dir));
+            console.log(colors.brightRed('Failed to remove install package file for ' + dir));
             console.log(e)
         }
     }
@@ -97,10 +98,16 @@ export const installer = (projectRootDir: string, installationMode: string,
 
 
     const main = () => {
+        const cromwellaConfig = getCromwellaConfigSync(projectRootDir, true);
 
         getHoistedDependencies(projectRootDir, isProduction, forceInstall, (packages: TPackage[],
-            hoistedDependencies: THoistedDeps,
-            hoistedDevDependencies: THoistedDeps) => {
+            hoistedDependencies,
+            hoistedDevDependencies) => {
+
+            if (packages.length === 0 || !hoistedDependencies && !hoistedDevDependencies) {
+                console.log(colors.brightRed(`\nCromwella:: Error. No packages found\n`));
+                return
+            }
 
             // Clean node_modules in local packages. Some non-hoisted modules could be installed before
             // But if now versions are changed/fixed, we need to delete old modules. 
@@ -133,8 +140,8 @@ export const installer = (projectRootDir: string, installationMode: string,
 
             // Write all dependencies in temp package.json in root and backup original
             createInstallPackage(projectRootDir, {
-                dependencies: hoistedDependencies.hoisted,
-                devDependencies: hoistedDevDependencies.hoisted
+                dependencies: hoistedDependencies?.hoisted,
+                devDependencies: hoistedDevDependencies?.hoisted
             });
 
             // Do the same for all packages with non-hoisted modules
@@ -144,18 +151,21 @@ export const installer = (projectRootDir: string, installationMode: string,
                 devDeps?: Record<string, string>;
             }> = {}
 
-            Object.entries(hoistedDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
-                if (!uniques[packagePath]) {
-                    uniques[packagePath] = {};
-                }
-                uniques[packagePath].deps = packageModules.modules;
-            });
-            Object.entries(hoistedDevDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
-                if (!uniques[packagePath]) {
-                    uniques[packagePath] = {};
-                }
-                uniques[packagePath].devDeps = packageModules.modules;
-            });
+            if (hoistedDependencies?.nonHoisted)
+                Object.entries(hoistedDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
+                    if (!uniques[packagePath]) {
+                        uniques[packagePath] = {};
+                    }
+                    uniques[packagePath].deps = packageModules.modules;
+                });
+
+            if (hoistedDevDependencies?.nonHoisted)
+                Object.entries(hoistedDevDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
+                    if (!uniques[packagePath]) {
+                        uniques[packagePath] = {};
+                    }
+                    uniques[packagePath].devDeps = packageModules.modules;
+                });
 
             Object.keys(uniques).forEach(uni => {
                 installPaths.push(uni);
@@ -166,28 +176,28 @@ export const installer = (projectRootDir: string, installationMode: string,
             });
 
             asyncEach(installPaths, (path: string, callback: () => void) => {
-                console.log(colors.cyan(`\nCromwella:: Installing modules for: ${path} package in ${installationMode} mode...\n`));
+                console.log(colors.cyan(`\nCromwella:: Installing modules for: ${colors.brightCyan(`${path}`)} package in ${colors.brightCyan(`${installationMode}`)} mode...\n`));
                 const modeStr = isProduction ? ' --production' : '';
                 try {
                     const proc = spawn(`npm install${modeStr}`, { shell: true, cwd: path, stdio: 'inherit' });
                     proc.on('close', (code: number) => {
-                        console.log(colors.cyan(`\nCromwella:: Installation for ${path} package completed\n`));
+                        console.log(colors.brightCyan(`\nCromwella:: Installation for ${path} package completed\n`));
                         removeInstallPackage(path);
                         callback();
                     });
                 } catch (e) {
-                    console.log(colors.red(`\nCromwella:: Error. Failed to install node_modules for ${path} package\n`))
+                    console.log(colors.brightRed(`\nCromwella:: Error. Failed to install node_modules for ${path} package\n`))
                 }
             }, () => onInstallationDone(hoistedDependencies, hoistedDevDependencies));
         })
     }
 
-    const onInstallationDone = (hoistedDependencies: THoistedDeps, hoistedDevDependencies: THoistedDeps) => {
+    const onInstallationDone = (hoistedDependencies?: THoistedDeps, hoistedDevDependencies?: THoistedDeps) => {
         // Make symlinks between local packages
-        hoistedDependencies.localSymlinks.forEach(link => {
+        hoistedDependencies?.localSymlinks?.forEach(link => {
             makeSymlink(link.linkPath, link.referredDir);
         });
-        hoistedDevDependencies.localSymlinks.forEach(link => {
+        hoistedDevDependencies?.localSymlinks?.forEach(link => {
             makeSymlink(link.linkPath, link.referredDir);
         });
     }

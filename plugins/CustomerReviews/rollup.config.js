@@ -5,7 +5,7 @@ import nodeResolve from "@rollup/plugin-node-resolve";
 import cromwellConfig from './cromwell.config.json';
 import { resolve } from 'path';
 import packageJson from './package.json';
-import { rollupPluginCromwellFrontend } from '@cromwell/core-frontend';
+import { rollupPluginCromwellFrontend } from '@cromwell/cromwella';
 
 
 const distDir = resolve(__dirname, cromwellConfig.buildDir);

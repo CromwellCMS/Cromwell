@@ -1,0 +1,24 @@
+{
+    "frontendDependencies": [
+        "@apollo/client",
+        "@cromwell/core",
+        "@cromwell/core-frontend",
+        "@cromwell/cromwella",
+        "@material-ui/core",
+        "@material-ui/icons",
+        "@material-ui/lab",
+        "clsx",
+        "mobx",
+        "mobx-react",
+        "next/app",
+        "next/document",
+        "next/router",
+        "react",
+        "react-dom",
+        "reset-css",
+        "react-swipeable-views",
+        "react-toastify",
+        "style-inject",
+        "tslib"
+    ]
+}

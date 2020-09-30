@@ -14,7 +14,8 @@
     "@cromwell/core": "1.0.0",
     "fs-extra": "^9.0.1",
     "path": "^0.12.7",
-    "recursive-readdir": "^2.2.2"
+    "recursive-readdir": "^2.2.2",
+    "tslib": "^2.0.0"
   },
   "peerDependencies": {
     "type-graphql": "^1.0.0",
@@ -31,7 +32,6 @@
     "@types/recursive-readdir": "2.2.0",
     "rollup": "^2.16.1",
     "rollup-plugin-auto-external": "^2.0.0",
-    "tslib": "^2.0.0",
     "typescript": "^3.9.5"
   },
   "description": "",
