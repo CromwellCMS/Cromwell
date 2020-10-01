@@ -12,6 +12,7 @@ export type TPagePathInfo = {
     path: string;
     compName?: string;
     fileContent?: string;
+    metaInfoPath?: string;
 }
 
 const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
@@ -46,9 +47,14 @@ export const readThemeExports = async (projectRootDir: string, themeName: string
     if (fs.existsSync(pagesPath)) {
         const files: string[] = await readRecursive(pagesPath);
         files.forEach(p => {
+            if (!/\.(m?jsx?|tsx?)$/.test(p)) return;
+
             let path: string | undefined = p.replace(/\\/g, '/');
             const name = path.replace(/\.js$/, '').replace(`${pagesPath}/`, '');
             const compName = `Theme_${themeName.replace(/\W/g, '_')}_Page_${name.replace(/\W/g, '_')}_${getRandStr()}`;
+
+            let metaInfoPath: string | undefined = path + '_meta.json';
+            if (!fs.existsSync(metaInfoPath)) metaInfoPath = undefined;
 
             let fileContent: string | undefined = undefined;
             // if (pageName === '_app' || pageName === '_document') {
@@ -60,7 +66,8 @@ export const readThemeExports = async (projectRootDir: string, themeName: string
                 name,
                 path,
                 compName,
-                fileContent
+                fileContent,
+                metaInfoPath
             })
         });
     }

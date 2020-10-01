@@ -5,29 +5,35 @@
   "author": "cromwell",
   "license": "ISC",
   "dependencies": {
-    "@cromwell/core": "^1.0.0",
-    "@cromwell/core-frontend": "^1.0.0",
-    "@cromwell/core-backend": "^1.0.0",
+    "@cromwell/core": "workspace:1.1.0",
+    "@cromwell/core-backend": "workspace:^1.0.0",
+    "@cromwell/core-frontend": "workspace:^1.0.0",
+    "@cromwell/cromwella": "workspace:^1.0.0",
     "fs-extra": "^9.0.1",
     "lnk": "^1.1.0",
-    "next": "^9.5.2",
+    "next": "^9.5.3",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "react-html-parser": "^2.0.2",
-    "tslib": "^2.0.0"
+    "tslib": "^2.0.1"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^13.0.2",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@rollup/plugin-typescript": "^5.0.2",
     "@types/fs-extra": "^9.0.1",
     "@types/react": "16.9.36",
     "@types/react-dom": "16.9.8",
-    "typescript": "^3.9.5"
+    "rollup": "^2.28.2",
+    "typescript": "^4.0.3"
   },
   "scripts": {
     "buildRenderer": "node startup.js buildRenderer",
     "dev": "node startup.js dev",
     "build": "node startup.js build",
     "start": "node startup.js prod",
-    "watch": "npx rollup -cw"
+    "watch": "npx rollup -cw",
+    "gen": "node startup.js gen"
   },
   "description": "",
   "resolutions": {

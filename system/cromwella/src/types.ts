@@ -1,14 +1,17 @@
 
 export type TCromwellaConfig = {
     packages: string[];
-    frontendDependencies?: (string | {
-        name: string;
-        builtins?: string[];
-        externals?: string[];
-        excludeExports?: string[];
-        ignore?: string[];
-        addExports?: TAdditionalExports[];
-    })[];
+    frontendDependencies?: (string | TFrontendDependency)[];
+}
+
+export type TFrontendDependency = {
+    name: string;
+    version?: string;
+    builtins?: string[];
+    externals?: string[];
+    excludeExports?: string[];
+    ignore?: string[];
+    addExports?: TAdditionalExports[];
 }
 
 export type TSciprtMetaInfo = {
@@ -40,6 +43,7 @@ export type TPackage = {
     path?: string;
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
+    frontendDependencies?: (string | TFrontendDependency)[]
 };
 
 // { [project root dir]: info }

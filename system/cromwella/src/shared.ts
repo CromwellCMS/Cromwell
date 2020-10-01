@@ -2,16 +2,19 @@ import { each as asyncEach } from 'async';
 import colorsdef from 'colors/safe';
 import fs from 'fs';
 import glob from 'glob';
-import path, { resolve } from 'path';
+import path, { resolve, isAbsolute } from 'path';
 
 import { TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps, TLocalSymlink, TNonHoisted, TPackage } from './types';
 
 const colors: any = colorsdef;
 
+export const isExternalForm = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
 
 export const getHoistedDependencies = (projectRootDir: string, isProduction: boolean, forceInstall: boolean, cb: TGetDepsCb) => {
     globPackages(projectRootDir, (packagePaths) => {
-        collectPackagesInfo(packagePaths, isProduction, forceInstall, cb)
+        collectPackagesInfo(packagePaths, (packages) => {
+            hoistDependencies(packages, isProduction, forceInstall, cb);
+        })
     });
 }
 
@@ -170,7 +173,7 @@ export const globPackages = (projectRootDir: string, cb: (packagePaths: string[]
 }
 
 
-const collectPackagesInfo = (packagePaths: string[], isProduction: boolean, forceInstall: boolean, cb: TGetDepsCb) => {
+export const collectPackagesInfo = (packagePaths: string[], cb: (packages: TPackage[]) => void) => {
     packagePaths = Array.from(new Set(packagePaths));
     if (packagePaths.length === 0) {
         console.log(colors.brightYellow(`\nCromwella:: No local packages found\n`))
@@ -192,7 +195,8 @@ const collectPackagesInfo = (packagePaths: string[], isProduction: boolean, forc
                 name: pkgJson.name,
                 path: pkgPath,
                 dependencies: pkgJson.dependencies,
-                devDependencies: pkgJson.devDependencies
+                devDependencies: pkgJson.devDependencies,
+                frontendDependencies: pkgJson.frontendDependencies
             };
             packages.push(pckg);
         } catch (e) {
@@ -200,6 +204,11 @@ const collectPackagesInfo = (packagePaths: string[], isProduction: boolean, forc
         }
     }
 
+    cb(packages);
+
+}
+
+export const hoistDependencies = (packages: TPackage[], isProduction, forceInstall, cb: TGetDepsCb) => {
     // Collect dependencies and devDependencies from all packages
     const dependencies: TDependency[] = [];
     const devDependencies: TDependency[] = [];

@@ -1,8 +1,8 @@
 import colorsdef from 'colors/safe';
 import externalGlobals from 'rollup-plugin-external-globals';
-
+import { walk } from "estree-walker";
 import { cromwellStoreModulesPath } from '../constants';
-import { getCromwellaConfigSync } from '../shared';
+import { getCromwellaConfigSync, isExternalForm } from '../shared';
 import { TSciprtMetaInfo } from '../types';
 
 const colors: any = colorsdef;
@@ -21,6 +21,10 @@ export const rollupPluginCromwellFrontend = (settings?: {
     const globals = Object.assign({}, ...deps.map(mod => ({
         [mod]: `${cromwellStoreModulesPath}["${mod}"]`
     })));
+
+    const modulesInfo = {};
+    const chunksInfo = {};
+    const importsInfo = {};
 
     console.log('globals', globals);
     return {
@@ -53,15 +57,69 @@ export const rollupPluginCromwellFrontend = (settings?: {
             }
             return null;
         },
+        transform(code, id) {
+            console.log('id', id);
+            if (!/\.(m?jsx?|tsx?)$/.test(id)) return;
+
+            //@ts-ignore
+            const ast = this.parse(code);
+            walk(ast, {
+                enter(node: any, walker) {
+                    if (node.type === 'ImportDeclaration') {
+                        if (!node.specifiers || !node.source) return;
+                        const source = node.source.value;
+                        if (!isExternalForm(source)) return;
+
+                        // if (!importsInfo[id]) importsInfo[id] = [];
+                        // importsInfo[id].push(node);
+                        // return;
+                        if (!importsInfo[id]) importsInfo[id] = {};
+                        if (!importsInfo[id][source]) importsInfo[id][source] = [];
+
+                        node.specifiers.forEach(spec => {
+                            if (spec.type === 'ImportDefaultSpecifier') {
+                                importsInfo[id][source].push('default')
+                            }
+                            if (spec.type === 'ImportSpecifier' && spec.imported) {
+                                importsInfo[id][source].push(spec.imported.name)
+                            }
+                        })
+
+                    }
+                }
+            })
+        },
         renderChunk(code, chunk) {
-            console.log('renderChunk', chunk)
+            // chunksInfo[chunk.id] = info;
+
+            // console.log('renderChunk', chunk)
             return null;
         },
         generateBundle(options, bundle) {
             Object.values(bundle).forEach((info: any) => {
+                const importedBindings = {};
+                if (info.modules) {
+                    Object.keys(info.modules).forEach(modId => {
+                        if (importsInfo[modId]) {
+                            Object.keys(importsInfo[modId]).forEach(libName => {
+                                if (!deps.includes(libName)) return;
+
+                                const importsSpecs = importsInfo[modId][libName];
+                                importsSpecs.forEach(spec => {
+                                    if (!importedBindings[libName]) importedBindings[libName] = [];
+                                    if (!importedBindings[libName].includes(spec)) {
+                                        importedBindings[libName].push(spec);
+                                    }
+                                })
+
+                            })
+                        }
+                    })
+                }
+
                 const metaInfo: TSciprtMetaInfo = {
                     name: info.facadeModuleId,
-                    externalDependencies: info.importedBindings,
+                    externalDependencies: importedBindings,
                 };
                 //@ts-ignore
                 this.emitFile({

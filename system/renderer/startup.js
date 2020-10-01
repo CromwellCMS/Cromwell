@@ -143,6 +143,14 @@ const main = async () => {
         start();
         return;
     }
+
+    if (scriptName === 'gen') {
+        if (!isServiceBuilt()) {
+            buildService();
+        }
+        gen();
+        return;
+    }
 }
 
 main();

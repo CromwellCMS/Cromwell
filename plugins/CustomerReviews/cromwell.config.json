@@ -6,13 +6,5 @@
     "backend": {
         "resolversDir": "dist/plugins/ProductShowcase/src/backend/resolvers",
         "entitiesDir": "dist/plugins/ProductShowcase/src/backend/entities"
-    },
-    "frontendDependencies": [
-        "@apollo/client",
-        "@cromwell/core-frontend",
-        "@material-ui/core",
-        "react",
-        "react-dom",
-        "tslib"
-    ]
+    }
 }

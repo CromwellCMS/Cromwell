@@ -1,9 +1,11 @@
 import colorsdef from 'colors/safe';
-import fs from 'fs';
+import fs from 'fs-extra';
 import { sync as mkdirp } from 'mkdirp';
 import { dirname, isAbsolute, resolve } from 'path';
 import { sync as rimraf } from 'rimraf';
 import webpack from 'webpack';
+import lnk from 'lnk';
+import { spawnSync } from "child_process";
 
 import {
     buildDirChunk,
@@ -16,8 +18,9 @@ import {
     moduleMetaInfoFileName,
     parseImportsWebpackConfig,
 } from './constants';
-import { getCromwellaConfigSync, globPackages } from './shared';
-import { TAdditionalExports, TSciprtMetaInfo } from './types';
+import { getCromwellaConfigSync, globPackages, isExternalForm, collectPackagesInfo } from './shared';
+import { TAdditionalExports, TSciprtMetaInfo, TPackage, TFrontendDependency } from './types';
+import symlinkDir from 'symlink-dir';
 
 const NoEmitPlugin = require("no-emit-webpack-plugin");
 const nodeExternals = require('webpack-node-externals');
@@ -27,11 +30,10 @@ const colors: any = colorsdef;
  * Bundles frontend node_modules
  */
 
-const isExternalForm = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
 
 
 export const bundler = (projectRootDir: string, installationMode: string,
-    isProduction: boolean, forceInstall: boolean) => {
+    isProduction: boolean, rebundle: boolean) => {
 
     const tempDir = resolve(projectRootDir, '.cromwell');
     const buildDir = resolve(tempDir, buildDirChunk);
@@ -40,37 +42,44 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
     commonWebpackConfig.mode = isProduction ? 'production' : 'development';
 
-    const cromwellaConfig = getCromwellaConfigSync(projectRootDir);
+    const publicDir = resolve(projectRootDir, 'public');
+    const publicBuildLink = resolve(publicDir, buildDirChunk);
+    if (!fs.existsSync(buildDir)) {
+        mkdirp(buildDir);
+    }
+    symlinkDir(buildDir, publicBuildLink);
 
-    globPackages(projectRootDir, async (packagePaths: string[]) => {
+    const onPackagesCollected = async (packages: TPackage[]) => {
 
-
-        if (fs.existsSync(buildDir)) {
+        if (rebundle && fs.existsSync(buildDir)) {
             rimraf(buildDir);
         }
         mkdirp(buildDir);
 
         // Collect frontendDependencies from cromwella.json in all packages 
-        const frontendDependencies = cromwellaConfig?.frontendDependencies ?? [];
+        const frontendDependencies: TFrontendDependency[] = [];
 
-        packagePaths.forEach(packagePath => {
-            const pckgConfig = getCromwellaConfigSync(dirname(packagePath));
-            if (pckgConfig && pckgConfig.frontendDependencies && Array.isArray(pckgConfig.frontendDependencies)) {
-                pckgConfig.frontendDependencies.forEach(dep => {
-                    const depName: string = typeof dep === 'object' ? dep.name : dep;
+        packages.forEach(pckg => {
+            if (pckg && pckg.frontendDependencies && Array.isArray(pckg.frontendDependencies)) {
+                pckg.frontendDependencies.forEach(dep => {
+                    const frontendDep: TFrontendDependency = typeof dep === 'object' ? dep : {
+                        name: dep
+                    };
+                    const depName: string = frontendDep.name;
+                    const depVersion = pckg?.dependencies?.[depName] ?? pckg?.devDependencies?.[depName];
+                    frontendDep.version = depVersion;
 
                     // if (!frontendDependencies.includes(dep))
                     if (frontendDependencies.every(mainDep => {
-                        const mainDepName: string = typeof mainDep === 'object' ? mainDep.name : mainDep;
-                        return (depName !== mainDepName);
+                        return !(mainDep.name === frontendDep.name && mainDep.version === frontendDep.version)
                     })) {
-                        frontendDependencies.push(dep);
-
+                        frontendDependencies.push(frontendDep);
                     }
                 })
 
             }
         });
+
 
         // Parse cromwella.json configs
         const moduleExternals: Record<string, string[]> = {};
@@ -81,27 +90,40 @@ export const bundler = (projectRootDir: string, installationMode: string,
         const frontendDependenciesNames: string[] = [];
 
         frontendDependencies.forEach(dep => {
-            if (typeof dep === 'object') {
-                if (dep.builtins) {
-                    moduleBuiltins[dep.name] = dep.builtins;
-                }
-                if (dep.externals) {
-                    moduleBuiltins[dep.name] = dep.externals;
-                }
-                if (dep.excludeExports) {
-                    modulesExcludeExports[dep.name] = dep.excludeExports;
-                }
-                if (dep.addExports) {
-                    modulesAdditionalExports[dep.name] = dep.addExports;
-                }
-                if (dep.ignore) {
-                    modulesToIgnore[dep.name] = dep.ignore;
-                }
-                frontendDependenciesNames.push(dep.name);
-            } else {
-                frontendDependenciesNames.push(dep);
+            if (dep.builtins) {
+                moduleBuiltins[dep.name] = dep.builtins;
             }
-        })
+            if (dep.externals) {
+                moduleBuiltins[dep.name] = dep.externals;
+            }
+            if (dep.excludeExports) {
+                modulesExcludeExports[dep.name] = dep.excludeExports;
+            }
+            if (dep.addExports) {
+                modulesAdditionalExports[dep.name] = dep.addExports;
+            }
+            if (dep.ignore) {
+                modulesToIgnore[dep.name] = dep.ignore;
+            }
+            frontendDependenciesNames.push(dep.name);
+        });
+
+        console.log(colors.cyan(`Cromwella:bundler: Found ${frontendDependencies.length} frontend modules to build: ${frontendDependencies.join(', ')}\n`));
+
+
+        // Install node_modules locally
+
+        const tempPckgName = '@cromwell/temp-budler'
+        const tempPackageContent = {
+            "name": tempPckgName,
+            "version": "1.0.0",
+            "private": true,
+            "dependencies": Object.assign({}, ...frontendDependencies.map(dep => ({ [dep.name]: dep.version })))
+        }
+        fs.outputFileSync(`${buildDir}/package.json`, JSON.stringify(tempPackageContent, null, 4));
+
+        spawnSync(`pnpm i --workspace`, { shell: true, cwd: buildDir, stdio: 'inherit' });
+
 
         /**
          * Helper to translate module's export key (namedImport) into generated file with all keys
@@ -140,7 +162,6 @@ export const bundler = (projectRootDir: string, installationMode: string,
             `;
         }
 
-        console.log(colors.cyan(`Cromwella:bundler: Found ${frontendDependencies.length} frontend modules to build: ${frontendDependencies.join(', ')}\n`));
 
         // Stores export keys of modules that have been requested
         const modulesExportKeys: Record<string, string[]> = {};
@@ -436,7 +457,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
                     if (!stats.hasErrors() && !err && fs.existsSync(metaInfoPath)) {
                         console.log(colors.cyan('Cromwella:bundler: Parsed imports for module: ' + moduleName));
                     } else {
-                        console.log(colors.red('Cromwella:bundler: Failed to parse imports for module: ' + moduleName));
+                        console.log(colors.brightRed('Cromwella:bundler: Failed to parse imports for module: ' + moduleName));
                         if (err) console.error(err);
                         if (stats) console.error(stats.toString({ colors: true }));
                     }
@@ -526,6 +547,12 @@ export const bundler = (projectRootDir: string, installationMode: string,
         for (const moduleName of frontendDependenciesNames) {
             await bundleNodeModuleRecursive(moduleName);
         }
+    }
+
+    globPackages(projectRootDir, (packagePaths: string[]) => {
+        collectPackagesInfo(packagePaths, (packages: TPackage[]) => {
+            onPackagesCollected(packages);
+        })
     });
 }
 

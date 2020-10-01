@@ -1,6 +1,5 @@
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
-import autoExternal from "rollup-plugin-auto-external";
 import typescript from "@rollup/plugin-typescript";
 import packageJson from './package.json';
 const { resolve } = require('path');
@@ -49,7 +48,7 @@ export default [
     {
         // preserveModules: true,
         input: resolve(__dirname, "src/generator.ts"),
-        watch: false,
+        // watch: false,
         output: [
             {
                 file: resolve(__dirname, buildDir, 'generator.js'),

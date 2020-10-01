@@ -20,8 +20,8 @@ export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
         throw new Error('getPage !cmsconfig.themeName');
     }
 
-    // const Page: any = importDynamicPage(pageName);
-    const Page: any = importPage(pageName)?.default;
+    const Page: any = importDynamicPage(pageName);
+    // const Page: any = importPage(pageName)?.default;
 
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
         const { pluginsData, pluginsSettings, pageConfig, appCustomConfig, childStaticProps, cmsConfig, appConfig, pagesInfo, ...restProps } = props;

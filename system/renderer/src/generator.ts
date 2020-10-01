@@ -31,7 +31,7 @@ const main = async () => {
             dynamicPluginImports += `\nconst Dynamic${info.pluginName} = dynamic(() => import('${info.frontendPath}'));`;
             dynamicPluginImportsSwitch += `if (pluginName === '${info.pluginName}') return Dynamic${info.pluginName};\n   `;
         }
-    })
+    });
 
     // Read pages
     const themeExports = await readThemeExports(projectRootDir, config.themeName);
@@ -49,16 +49,27 @@ const main = async () => {
             customPageImports += `\nconst ${pageInfo.compName}_Page = require('${pageInfo.path}');`;
             customPageImportsSwitch += `    if (pageName === '${pageInfo.name}') return ${pageInfo.compName}_Page;\n`;
 
-            customPageDynamicImports += `\nconst ${pageInfo.compName}_DynamicPage = dynamic(() => import('${pageInfo.path}'));`;
+            // customPageDynamicImports += `\nconst ${pageInfo.compName}_DynamicPage = dynamic(() => import('${pageInfo.path}'));`;
+            customPageDynamicImports += `\nconst ${pageInfo.compName}_DynamicPage = dynamic(async () => {
+                const pagePromise = import('${pageInfo.path}');
+                const meta = await import('${pageInfo.metaInfoPath}');
+                await importer.importSciptExternals(meta);
+                return pagePromise;
+            });`;
+
             customPageDynamicImportsSwitch += `    if (pageName === '${pageInfo.name}') return ${pageInfo.compName}_DynamicPage;\n   `;
         }
     })
 
     const content = `
             import dynamic from "next/dynamic";
+            import { getModuleImporter } from '@cromwell/cromwella';
+
+            // const importer = getModuleImporter();
             /**
              * Configs 
              */
+
             export const CMSconfig = ${JSON.stringify(config)};
             
             export const importThemeConfig = () => {
@@ -107,10 +118,11 @@ const main = async () => {
 
     // Create pages in Nex.js pages dir based on theme's pages
 
-    console.log('customPagesLocalPath', pagesLocalDir)
+    console.log('pagesLocalDir', pagesLocalDir)
     if (fs.existsSync(pagesLocalDir)) {
         fs.removeSync(pagesLocalDir);
     }
+    fs.ensureDirSync(pagesLocalDir);
 
     themeExports.pagesInfo.forEach(pageInfo => {
         let globalCssImports = '';

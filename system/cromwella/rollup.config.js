@@ -13,6 +13,11 @@ const external = id => {
             return true;
         }
     }
+    for (const pack of Object.keys(packageJson.devDependencies)) {
+        if (id === pack) {
+            return true;
+        }
+    }
 }
 
 const plugins = [
@@ -81,14 +86,28 @@ export default [
         ]
     },
     {
+        preserveModules: true,
         input: resolve(__dirname, "src/exports.ts"),
         output: [
             {
-                file: resolve(__dirname, buildDir, 'exports.js'),
-                format: "cjs",
+                dir: resolve(__dirname, buildDir),
+                format: "esm",
             }
         ],
         external,
-        plugins: plugins
+        plugins: [
+            // nodeResolve({
+            //     preferBuiltins: false
+            // }),
+            // commonjs(),
+            typescript({
+                module: "ESNext",
+                declaration: true,
+                declarationMap: true,
+                rootDir: resolve(__dirname, 'src'),
+                declarationDir: resolve(__dirname, buildDir)
+            }),
+            json()
+        ]
     },
 ];
