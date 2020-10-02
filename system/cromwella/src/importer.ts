@@ -17,16 +17,20 @@ const getStore = () => {
 }
 
 const isomorphicFetch = (filepath: string): Promise<string | undefined> => {
+    console.log('isomorphicFetch', 'filepath', filepath);
     let importerPromise;
     if (isServer()) {
         importerPromise = new Promise(done => {
             const fs = require('fs');
             const resolve = require('path').resolve;
-            fs.readFile(resolve(process.cwd(), 'public', filepath), (err, data) => {
+            const fullPath = resolve(process.cwd(), 'public', filepath);
+            console.log('isomorphicFetch', 'fullPath', fullPath);
+
+            fs.readFile(fullPath, (err, data) => {
                 const text = data && data.toString ? data.toString() : data ? data : undefined;
                 done(text);
-            })
-        })
+            });
+        });
     } else {
         importerPromise = fetch(filepath)
             .then(res => res.text());
@@ -98,6 +102,7 @@ export const getModuleImporter = (): TCromwellNodeModules => {
 
                 try {
                     const metaInfoStr = await metaInfoPromise;
+                    console.log('metaInfoStr', metaInfoStr);
                     if (metaInfoStr) {
                         const metaInfo: TSciprtMetaInfo = JSON.parse(metaInfoStr);
                         // { [moduleName]: namedExports }
@@ -127,7 +132,6 @@ export const getModuleImporter = (): TCromwellNodeModules => {
 
 
 
-                // console.log('namedExport', namedExport)
                 if (!Cromwell.imports[moduleName]) {
                     console.error('Cromwella:bundler: Failed to load importer for module: ' + moduleName);
                     Cromwell.importStatuses[moduleName] = 'failed';

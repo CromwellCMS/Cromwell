@@ -68,7 +68,7 @@ export default [
         plugins: plugins
     },
     {
-        input: resolve(__dirname, "src/importer.ts"),
+        input: resolve(__dirname, "src/browser.ts"),
         output: [
             {
                 file: resolve(__dirname, '../../.cromwell/importer.js'),
@@ -91,7 +91,7 @@ export default [
         output: [
             {
                 dir: resolve(__dirname, buildDir),
-                format: "esm",
+                format: "cjs",
             }
         ],
         external,

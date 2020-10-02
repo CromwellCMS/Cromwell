@@ -196,6 +196,7 @@ export const collectPackagesInfo = (packagePaths: string[], cb: (packages: TPack
                 path: pkgPath,
                 dependencies: pkgJson.dependencies,
                 devDependencies: pkgJson.devDependencies,
+                peerDependencies: pkgJson.peerDependencies,
                 frontendDependencies: pkgJson.frontendDependencies
             };
             packages.push(pckg);

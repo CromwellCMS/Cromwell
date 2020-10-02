@@ -2,9 +2,7 @@ import { TCmsConfig, TPluginConfig } from '@cromwell/core';
 import fs from 'fs-extra';
 import { staticDir, publicStaticDir, projectRootDir, localProjectBuildDir, generatorOutDir, localProjectDir } from './constants';
 import { readCMSConfigSync, readPluginsExports, readThemeExports } from '@cromwell/core-backend';
-
-//@ts-ignore
-import lnk from 'lnk';
+import symlinkDir from 'symlink-dir';
 
 const generateAdminPanelImports = async () => {
     const config = readCMSConfigSync(projectRootDir);
@@ -75,7 +73,7 @@ const generateAdminPanelImports = async () => {
 
     console.log('themeExports.adminPanelPath', themeExports.adminPanelPath);
     const ImportedThemeController = themeExports.adminPanelPath ?
-        `export const ImportedThemeController = lazy(() => import('${themeExports.adminPanelPath}'));` : 
+        `export const ImportedThemeController = lazy(() => import('${themeExports.adminPanelPath}'));` :
         'export const ImportedThemeController = undefined;';
 
     const adminPanelContent = `
@@ -114,7 +112,7 @@ const generateAdminPanelImports = async () => {
 
     // Link public dir in root to renderer's public dir for Express.js server
     if (!fs.existsSync(publicStaticDir)) {
-        lnk([`${projectRootDir}/public`], `${staticDir}`);
+        symlinkDir(`${projectRootDir}/public`, publicStaticDir)
     }
 }
 

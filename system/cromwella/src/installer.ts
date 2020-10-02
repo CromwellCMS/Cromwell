@@ -6,8 +6,7 @@ import { sync as mkdirp } from 'mkdirp';
 import nodeCleanup from 'node-cleanup';
 import path, { resolve } from 'path';
 import { sync as rimraf } from 'rimraf';
-import { sync as symlinkOrCopySync } from 'symlink-or-copy';
-
+import symlinkDir from 'symlink-dir';
 import { getCromwellaConfigSync, getHoistedDependencies } from './shared';
 import { THoistedDeps, TPackage } from './types';
 
@@ -16,7 +15,7 @@ const colors: any = colorsdef;
  * Cromwella package manager.
  */
 
-export const installer = (projectRootDir: string, installationMode: string,
+export const installer = async (projectRootDir: string, installationMode: string,
     isProduction: boolean, forceInstall: boolean) => {
 
     const installPaths: string[] = [projectRootDir];
@@ -27,7 +26,7 @@ export const installer = (projectRootDir: string, installationMode: string,
      * @param includeInPath symlink full path
      * @param includeToPath referred directory
      */
-    const makeSymlink = (includeInPath: string, includeToPath: string) => {
+    const makeSymlink = async (includeInPath: string, includeToPath: string) => {
         if (!fs.existsSync(includeInPath)) {
             // console.log(`Cromwella:: Make include in: ${includeInPath} to: ${includeToPath}`);
             const includeInDir = resolve(includeInPath, '../');
@@ -39,7 +38,7 @@ export const installer = (projectRootDir: string, installationMode: string,
                 }
             }
             try {
-                symlinkOrCopySync(includeToPath, includeInPath);
+                await symlinkDir(includeToPath, includeInPath);
             } catch (e) {
                 console.log(e);
             }

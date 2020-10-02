@@ -1,10 +1,11 @@
 import { TCmsConfig, setStoreItem, TPluginConfig } from '@cromwell/core';
 import { readCMSConfigSync, readPluginsExports, readThemeExports } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
+import makeEmptyDir from 'make-empty-dir';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-//@ts-ignore
-import lnk from 'lnk';
+import symlinkDir from 'symlink-dir';
+
 
 const main = async () => {
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
@@ -63,9 +64,9 @@ const main = async () => {
 
     const content = `
             import dynamic from "next/dynamic";
-            import { getModuleImporter } from '@cromwell/cromwella';
+            import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
 
-            // const importer = getModuleImporter();
+            const importer = getModuleImporter();
             /**
              * Configs 
              */
@@ -119,11 +120,9 @@ const main = async () => {
     // Create pages in Nex.js pages dir based on theme's pages
 
     console.log('pagesLocalDir', pagesLocalDir)
-    if (fs.existsSync(pagesLocalDir)) {
-        fs.removeSync(pagesLocalDir);
-    }
-    fs.ensureDirSync(pagesLocalDir);
+    await makeEmptyDir(pagesLocalDir, { recursive: true });
 
+    const pagesPromises: Promise<any>[] = []
     themeExports.pagesInfo.forEach(pageInfo => {
         let globalCssImports = '';
         if (pageInfo.name === '_app' && appConfig && appConfig.globalCss &&
@@ -149,11 +148,15 @@ const main = async () => {
         if (!pageInfo.path && pageInfo.fileContent) {
             pageContent = pageInfo.fileContent + '';
         }
-        fs.outputFileSync(`${pagesLocalDir}/${pageInfo.name}.js`, pageContent);
+        pagesPromises.push(
+            fs.outputFile(`${pagesLocalDir}/${pageInfo.name}.js`, pageContent)
+        );
     });
 
+    await Promise.all(pagesPromises);
+
     // Create jsconfig for Next.js
-    fs.outputFileSync(`${buildDir}/jsconfig.json`, `
+    await fs.outputFile(`${buildDir}/jsconfig.json`, `
     {
         "compilerOptions": {
           "baseUrl": "."
@@ -165,14 +168,14 @@ const main = async () => {
     // Link public dir in root to renderer's public dir for Next.js server
     if (!fs.existsSync(`${buildDir}/public`)) {
         try {
-            lnk([`${projectRootDir}/public`], `${buildDir}`)
+            await symlinkDir(`${projectRootDir}/public`, `${buildDir}/public`)
         } catch (e) { console.log(e) }
     }
 
     // Link renderer's build dir into next dir
     if (!fs.existsSync(`${buildDir}/build`)) {
         try {
-            lnk([`${localDir}/build`], `${buildDir}`)
+            await symlinkDir(`${localDir}/build`, `${buildDir}/build`)
         } catch (e) { console.log(e) }
     }
 
