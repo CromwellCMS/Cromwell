@@ -34,7 +34,7 @@
     "style-loader": "^1.2.1",
     "symlink-dir": "^4.1.0",
     "typescript": "^4.0.3",
-    "webpack": "^5.0.0-rc.3",
+    "webpack": "^4.44.2",
     "webpack-cli": "^3.3.12",
     "webpack-node-externals": "^2.5.2"
   },

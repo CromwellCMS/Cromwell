@@ -79,7 +79,7 @@ export default [
             typescript({
                 module: "ESNext",
                 lib: ["es5", "es6", "dom"],
-                target: "esnext"
+                target: "es5"
             }),
             nodeResolve(),
             commonjs(),

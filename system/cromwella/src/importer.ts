@@ -16,14 +16,17 @@ const getStore = () => {
     }
 }
 
-const isomorphicFetch = (filepath: string): Promise<string | undefined> => {
+const isomorphicFetch = (filepath: string, serverPublicDir?: string): Promise<string | undefined> => {
     console.log('isomorphicFetch', 'filepath', filepath);
     let importerPromise;
     if (isServer()) {
         importerPromise = new Promise(done => {
-            const fs = require('fs');
-            const resolve = require('path').resolve;
-            const fullPath = resolve(process.cwd(), 'public', filepath);
+            const fs = Function('require', "return require('fs')")(require);
+            const resolve = Function('require', "return require('path').resolve")(require);
+
+            const fullPath = resolve(serverPublicDir ? serverPublicDir :
+                resolve(process.cwd(), 'public'), filepath);
+
             console.log('isomorphicFetch', 'fullPath', fullPath);
 
             fs.readFile(fullPath, (err, data) => {
@@ -38,7 +41,8 @@ const isomorphicFetch = (filepath: string): Promise<string | undefined> => {
     return importerPromise;
 }
 
-export const getModuleImporter = (): TCromwellNodeModules => {
+
+export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModules => {
     const CromwellStore: any = getStore();
     if (!CromwellStore.nodeModules) CromwellStore.nodeModules = {};
     const Cromwell: TCromwellNodeModules = CromwellStore.nodeModules;
@@ -94,15 +98,14 @@ export const getModuleImporter = (): TCromwellNodeModules => {
                 if (!Cromwell.imports) Cromwell.imports = {};
 
                 const importerFilepath = `${buildDirChunk}/${moduleName}/${moduleMainBuidFileName}`;
-                let importerPromise = isomorphicFetch(importerFilepath);
+                let importerPromise = isomorphicFetch(importerFilepath, serverPublicDir);
 
                 // Load meta and externals if it has any
                 const metaFilepath = `${buildDirChunk}/${moduleName}/${moduleMetaInfoFileName}`;
-                const metaInfoPromise = isomorphicFetch(metaFilepath);
+                const metaInfoPromise = isomorphicFetch(metaFilepath, serverPublicDir);
 
                 try {
                     const metaInfoStr = await metaInfoPromise;
-                    console.log('metaInfoStr', metaInfoStr);
                     if (metaInfoStr) {
                         const metaInfo: TSciprtMetaInfo = JSON.parse(metaInfoStr);
                         // { [moduleName]: namedExports }
@@ -118,7 +121,11 @@ export const getModuleImporter = (): TCromwellNodeModules => {
                 try {
                     const jsText = await importerPromise;
                     if (jsText) {
-                        eval(jsText);
+                        if (isServer()) {
+                            Function('require', jsText)(require);
+                        } else {
+                            Function(jsText)();
+                        }
                         if (canShowInfo) console.log(`Cromwella:bundler: Importer for module "${moduleName}" executed`);
                     } else {
                         throw new Error('Failed to fetch file ' + importerFilepath)
@@ -140,8 +147,6 @@ export const getModuleImporter = (): TCromwellNodeModules => {
                 };
 
                 if (canShowInfo) console.log('Cromwella:bundler: Successfully loaded importer for module: ' + moduleName);
-                Cromwell.importStatuses[moduleName] = 'ready';
-                onLoad('ready');
 
                 const success = await importAllNamed();
 
@@ -151,8 +156,11 @@ export const getModuleImporter = (): TCromwellNodeModules => {
                     // onLoad('failed');
                     return false;
                 } else {
-                    if (canShowInfo) console.log('Cromwella:bundler: All named exports for module' + moduleName + ' have been successfully loaded');
+                    if (canShowInfo) console.log('Cromwella:bundler: All named exports for module "' + moduleName + '" have been successfully loaded');
                 }
+
+                Cromwell.importStatuses[moduleName] = 'ready';
+                onLoad('ready');
 
                 return true;
             })

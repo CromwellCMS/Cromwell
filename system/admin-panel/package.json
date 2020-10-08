@@ -9,6 +9,7 @@
     "@material-ui/icons": "^4.9.1",
     "@material-ui/lab": "^4.0.0-alpha.56",
     "copy-webpack-plugin": "^6.1.1",
+    "clsx": "^1.1.1",
     "css-loader": "^3.6.0",
     "debounce": "^1.2.0",
     "express": "^4.17.1",

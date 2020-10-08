@@ -45,7 +45,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
     if (!isProduction) {
         commonWebpackConfig.mode = 'development';
-        commonWebpackConfig.devtool = 
+        commonWebpackConfig.devtool = 'cheap-source-map';
     }
     commonWebpackConfig.mode = isProduction ? 'production' : 'development';
 
@@ -92,11 +92,10 @@ export const bundler = (projectRootDir: string, installationMode: string,
             }
         });
 
-
-        frontendDependencies = [
-            // { name: '@cromwell/core', version: 'workspace:1.1.0' },
-            { name: 'clsx', version: '^1.1.1' },
-        ];
+        // frontendDependencies = [
+        //     { name: '@cromwell/core', version: 'workspace:1.1.0' },
+        //     { name: 'clsx', version: '^1.1.1' },
+        // ];
 
 
         // Parse cromwella.json configs
@@ -161,7 +160,10 @@ export const bundler = (projectRootDir: string, installationMode: string,
             if (!allDependencyNames.includes(moduleName)) return;
             if (fs.existsSync(resolve(nodeModulesDir, moduleName))) return;
 
-            spawnSync(`pnpm add ${moduleName} --filter ${tempPckgName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+            spawnSync(`pnpm add ${moduleName} --filter ${tempPckgName}`, { shell: true, cwd: projectRootDir, stdio: 'ignore' });
+            if (!fs.existsSync(resolve(nodeModulesDir, moduleName))) {
+                console.log(colors.brightRed('Cromwella:bundler: Failed to install node_module: ' + moduleName));
+            }
         }
 
 
@@ -195,8 +197,8 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
             return `
             '${importerKey}': () => {
-                startImport(() => {
-                    handleImport(import('${importPath}'), '${globalPropName}'${saveAsModulesStr});
+                return startImport(() => {
+                    return handleImport(import('${importPath}'), '${globalPropName}'${saveAsModulesStr});
                 });
             },
             `;
@@ -387,7 +389,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
             const startImport = (cb) => {
                 if (didDefaultImport) return;
-                cb();
+                return cb();
             }
 
             const handleImport = ((promise, importName, saveAsModules) => {
@@ -407,7 +409,8 @@ export const bundler = (projectRootDir: string, installationMode: string,
                             ${cromwellStoreModulesPath}[modName] = _interopDefaultLegacy(lib);
                         })
                     }
-                })
+                });
+                return promise;
             })
 
             ${cromwellStoreImportsPath}['${moduleName}'] = {
@@ -438,7 +441,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
 
             parsingWebpackConfig.externals = [
-                function ({ context, request }, callback) {
+                function (context, request, callback) {
                     if (isExternalForm(request)) {
                         //@ts-ignore
                         return callback(null, 'commonjs ' + request);
@@ -631,7 +634,6 @@ export const bundler = (projectRootDir: string, installationMode: string,
     });
 }
 
-
 // function cleanStringify(object) {
 //     if (object && typeof object === 'object') {
 //         object = copyWithoutCircularReferences([object], object);
@@ -663,8 +665,18 @@ export const commonWebpackConfig: any = {
         filename: moduleMainBuidFileName,
         chunkFilename: moduleChunksBuildDirChunk + '/[name].bundle.js',
         // libraryTarget: 'umd',
-        globalObject: 'global',
-        workerChunkLoading: 'async-node'
+        // libraryExport: 'default',
+        globalObject: `(() => {
+            if (typeof self !== 'undefined') {
+                return self;
+            } else if (typeof window !== 'undefined') {
+                return window;
+            } else if (typeof global !== 'undefined') {
+                return global;
+            } else {
+                return Function('return this')();
+            }
+        })()`,
     },
     optimization: {
         splitChunks: {

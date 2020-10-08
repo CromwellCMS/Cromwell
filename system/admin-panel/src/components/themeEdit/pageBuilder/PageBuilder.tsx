@@ -155,7 +155,7 @@ export class PageBuilder extends React.Component<{
         const instances = getStoreItem('blockInstances');
         if (instances) {
             Object.values(instances).forEach(inst => {
-                inst.forceUpdate();
+                inst?.forceUpdate();
             })
         }
     }
