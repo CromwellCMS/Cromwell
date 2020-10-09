@@ -3,12 +3,12 @@ import { getRestAPIClient } from '@cromwell/core-frontend';
 import { getThemeStaticProps } from './getThemeStaticProps';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
 
-export const createGetStaticProps = (pageName: BasePageNames | string) => {
+export const createGetStaticProps = (pageName: BasePageNames | string, PageExports: any) => {
     return async function (context: StaticPageContext): Promise<
         { props: TCromwellPageCoreProps; revalidate?: number }> {
         const apiClient = getRestAPIClient();
         const timestamp = Date.now();
-        const childStaticProps = await getThemeStaticProps(pageName, context);
+        const childStaticProps = await getThemeStaticProps(pageName, PageExports, context);
         const { pluginsData, pluginsSettings } = await pluginsDataFetcher(pageName, context);
         const pageConfig = await apiClient?.getPageConfig(pageName);
         const appConfig = await apiClient?.getAppConfig();

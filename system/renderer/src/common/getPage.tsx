@@ -3,24 +3,19 @@ import { BasePageNames, TCromwellPage, TCromwellPageCoreProps } from "@cromwell/
 import { getStoreItem, setStoreItem } from "@cromwell/core";
 import { Head } from '@cromwell/core-frontend';
 import ReactHtmlParser from 'react-html-parser';
-//@ts-ignore
-import { importDynamicPage, importPage } from 'imports/imports.gen';
-import { checkCMSConfig } from '../helpers/checkCMSConfig';
-checkCMSConfig();
 
 function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state
     return () => setValue(value => ++value); // update the state to force render
 }
 
-export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
+export const getPage = (pageName: BasePageNames | string, PageComponent: React.ComponentType): TCromwellPage => {
     const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.themeName) {
         console.log('cmsconfig', cmsconfig)
         throw new Error('getPage !cmsconfig.themeName');
     }
 
-    const Page: any = importDynamicPage(pageName);
     // const Page: any = importPage(pageName)?.default;
 
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
@@ -63,7 +58,7 @@ export const getPage = (pageName: BasePageNames | string): TCromwellPage => {
                 <Head>
                     <meta charSet="utf-8" />
                 </Head>
-                <Page {...childStaticProps} {...restProps} />
+                <PageComponent {...childStaticProps} {...restProps} />
                 <Head>
                     {headHtml && ReactHtmlParser(headHtml)}
                     {title && <title>{title}</title>}

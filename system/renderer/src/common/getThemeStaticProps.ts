@@ -1,21 +1,23 @@
 import { BasePageNames, StaticPageContext } from "@cromwell/core";
-//@ts-ignore
-import { importPage } from 'imports/imports.gen';
 import { getStoreItem } from "@cromwell/core";
 import { checkCMSConfig } from '../helpers/checkCMSConfig';
-checkCMSConfig();
 
-export const getThemeStaticProps = async (pageName: BasePageNames | string, context: StaticPageContext): Promise<Record<string, any>> => {
+/**
+ * Server-side only
+ * @param pageName 
+ * @param PageExports 
+ * @param context 
+ */
+export const getThemeStaticProps = async (pageName: BasePageNames | string, PageExports: any, context: StaticPageContext): Promise<Record<string, any>> => {
     const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.themeName) {
         console.log('cmsconfig', cmsconfig)
         throw new Error('getThemeStaticProps !cmsconfig.themeName');
     }
     let childStaticProps = {}
-    const page: any = importPage(pageName);
-    console.log('getThemeStaticProps', 'pageName', pageName, 'pageComp', page)
-    if (page && page.getStaticProps) {
-        const childGetStaticProps = page.getStaticProps;
+    console.log('getThemeStaticProps', 'pageName', pageName, 'pageComp', PageExports)
+    if (PageExports && PageExports.getStaticProps) {
+        const childGetStaticProps = PageExports.getStaticProps;
         try {
             childStaticProps = await childGetStaticProps(context);
             childStaticProps = JSON.parse(JSON.stringify(childStaticProps));

@@ -1,12 +1,9 @@
-//@ts-ignore
-import { importPlugin, importThemeConfig } from 'imports/imports.gen';
 import { BasePageNames, StaticPageContext, getStoreItem } from "@cromwell/core";
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { checkCMSConfig } from "../helpers/checkCMSConfig";
-checkCMSConfig();
 
 /**
- * Fetches data for all plugins at specified page.
+ * Fetches data for all plugins at specified page. Server-side only.
  * @param pageName 
  * @param context - StaticPageContext of Page
  */
@@ -39,7 +36,12 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
             if (settings) pluginsSettings[pluginName] = settings;
             // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
             try {
-                const plugin = await importPlugin(pluginName);
+                // old way
+                // const plugin = await importPlugin(pluginName);
+
+                // @TODO read code as text and execute via Function();
+                const plugin = undefined;
+
                 if (!plugin) {
                     console.error('Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)
                 } else {

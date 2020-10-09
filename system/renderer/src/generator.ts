@@ -132,17 +132,48 @@ const main = async () => {
             })
         }
 
+        const pageImportName = pageInfo.compName + '_Page';
+        const pageDynamicImportName = pageInfo.compName + '_DynamicPage';
+
+        const pageImport = `\nconst ${pageImportName} = require('${pageInfo.path}');`;
+
+        const pageDynamicImport = `\nconst ${pageDynamicImportName} = dynamic(async () => {
+                const pagePromise = import('${pageInfo.path}');
+                const meta = await import('${pageInfo.metaInfoPath}');
+                await importer.importSciptExternals(meta);
+                return pagePromise;
+            });`;
+
+
         let pageContent = `
-                ${globalCssImports}
-                const { createGetStaticProps, createGetStaticPaths, getPage } = require('build/renderer');
-                
-                const PageComp = getPage('${pageInfo.name}');
-                
-                export const getStaticProps = createGetStaticProps('${pageInfo.name}');
-                
-                export const getStaticPaths = createGetStaticPaths('${pageInfo.name}');
-                
-                export default PageComp;
+${globalCssImports}
+import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
+import { isServer } from "@cromwell/core";
+const { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig } = require('build/renderer');
+
+console.log('pageInfo.name', '${pageInfo.name}');
+
+const cmsConfig = ${JSON.stringify(config)};
+checkCMSConfig(cmsConfig);
+
+const importer = getModuleImporter();
+
+if (isServer()) {
+    console.log('isServer pageInfo.name', '${pageInfo.name}');
+    // const metaInfo = require('${pageInfo.metaInfoPath}');
+    // importer.importSciptExternals(metaInfo);
+}
+
+${pageImport}
+${pageDynamicImport}
+
+const PageComp = getPage('${pageInfo.name}', ${pageDynamicImportName});
+
+export const getStaticProps = createGetStaticProps('${pageInfo.name}', ${pageImportName});
+
+export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', ${pageImportName});
+
+export default PageComp;
             `;
 
         if (!pageInfo.path && pageInfo.fileContent) {

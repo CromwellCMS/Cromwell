@@ -35,7 +35,7 @@
     "react-html-parser"
   ],
   "scripts": {
-    "buildRenderer": "node startup.js buildRenderer",
+    "buildRenderer": "node startup.js buildService",
     "dev": "node startup.js dev",
     "build": "node startup.js build",
     "start": "node startup.js prod",
