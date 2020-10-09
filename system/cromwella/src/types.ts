@@ -6,7 +6,7 @@ export type TCromwellaConfig = {
 
 export type TFrontendDependency = {
     name: string;
-    version?: string;
+    version: string;
     builtins?: string[];
     externals?: string[];
     excludeExports?: string[];
@@ -36,6 +36,15 @@ export type TDependency = {
     versions: Record<string, number>;
     // { [path to package.json] : version }
     packages: Record<string, string>;
+};
+
+export type TPackageJson = {
+    name: string;
+    version: string;
+    dependencies?: Record<string, string>;
+    peerDependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+    module?: string;
 };
 
 export type TPackage = {
@@ -69,7 +78,7 @@ export type TCromwellNodeModules = {
     imports?: Record<string, () => void>;
     modules?: Record<string, Object>;
     moduleExternals?: Record<string, string[]>;
-    importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean>;
+    importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean> | boolean;
     importSciptExternals?: (metaInfo: TSciprtMetaInfo) => Promise<boolean>;
 };
 
