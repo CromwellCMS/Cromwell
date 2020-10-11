@@ -9,9 +9,10 @@
         "cromwellaDev": "npx cromwella i",
         "cromwellaDevForce": "npx cromwella i -f",
         "cromwellaProd": "npx cromwella i --production",
-        "cromwellaBundle": "npx cromwella b",
+        "cromwellaBundle": "npx cromwella b --production",
         "clean": "node ./system/manager/src/utils/cleanup.js",
         "winRemoveNodeModules": "rmdir /Q /S \"./node_modules\"",
+        "cromwellaNoCli": "node ./system/cromwella/bin/cromwella.js i",
         "buildCore": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend"
     }
 }

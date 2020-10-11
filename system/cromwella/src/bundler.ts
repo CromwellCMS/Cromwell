@@ -18,7 +18,8 @@ import {
     moduleNodeBuidFileName,
     moduleGeneratedFileName,
     moduleNodeGeneratedFileName,
-    moduleExportsDirChunk
+    moduleExportsDirChunk,
+    getDepVersion
 } from './constants';
 import { getCromwellaConfigSync, globPackages, isExternalForm, collectPackagesInfo } from './shared';
 import { TAdditionalExports, TSciprtMetaInfo, TPackage, TFrontendDependency, TPackageJson } from './types';
@@ -47,10 +48,6 @@ export const bundler = (projectRootDir: string, installationMode: string,
     const publicBuildLink = resolve(publicDir, buildDirChunk);
 
     const nodeModulesDir = resolve(buildDir, 'node_modules');
-
-
-    const getDepVersion = (pckg: any, depName: string): string | undefined => pckg?.dependencies?.[depName] ?? pckg?.devDependencies?.[depName] ?? pckg?.peerDependencies?.[depName];
-
 
     const onPackagesCollected = async (packages: TPackage[]) => {
 
@@ -155,19 +152,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
         if (!fs.existsSync(nodeModulesDir)) {
             console.log(colors.brightRed('Cromwella:bundler: Failed to install node_modules'));
-            return;
-        }
-
-        const ensureNodeModule = (moduleName: string, moduleVer?: string) => {
-            if (!allDependencyNames.includes(moduleName)) return;
-            if (fs.existsSync(resolve(nodeModulesDir, moduleName))) return;
-
-            const fullDepName = moduleName + (moduleVer ? '@' + moduleVer : '');
-            console.log(colors.cyan(`Cromwella:bundler: Installing dependency: ${fullDepName}`));
-            spawnSync(`pnpm add ${fullDepName} --filter ${tempPckgName}`, { shell: true, cwd: projectRootDir, stdio: 'ignore' });
-            if (!fs.existsSync(resolve(nodeModulesDir, moduleName))) {
-                console.log(colors.brightRed('Cromwella:bundler: Failed to install node_module: ' + moduleName));
-            }
+            // return;
         }
 
 
@@ -212,23 +197,48 @@ export const bundler = (projectRootDir: string, installationMode: string,
             exportKeys: string[] | undefined;
             exactVersion: string | undefined;
         };
+
+
         // Stores export keys of modules that have been requested
         const modulesExportKeys: Record<string, ModuleInfo> = {};
-        const getModuleExportKeys = (moduleName: string, moduleVer?: string): ModuleInfo => {
+        const getModuleInfo = (moduleName: string, moduleVer?: string): ModuleInfo => {
             let exportKeys: string[] | undefined;
             let exactVersion: string | undefined;
             if (!modulesExportKeys[moduleName]) {
-                ensureNodeModule(moduleName, moduleVer);
-                try {
-                    let imported: any = importFrom(buildDir, moduleName);
-                    exportKeys = Object.keys(imported);
-                    if (!exportKeys.includes('default')) exportKeys.unshift('default');
 
+                const requireExportKeys = () => {
+                    const imported: any = importFrom(buildDir, moduleName);
+                    const keys = Object.keys(imported);
+                    if (!keys.includes('default')) keys.unshift('default');
+                    return keys;
+                }
+
+                try {
+                    exportKeys = requireExportKeys();
+                    if (!exportKeys) throw new Error('!exportKeys')
+                } catch (e) {
+                    // Module not found, install
+                    const fullDepName = moduleName + (moduleVer ? '@' + moduleVer : '');
+                    const command = `pnpm add ${fullDepName} --filter ${tempPckgName}`;
+                    console.log(colors.cyan(`Cromwella:bundler: Installing dependency. Command: ${command}`));
+                    spawnSync(command, { shell: true, cwd: projectRootDir, stdio: 'ignore' });
+                }
+
+                if (!exportKeys) {
+                    try {
+                        exportKeys = requireExportKeys();
+                        if (!exportKeys) throw new Error('!exportKeys')
+                    } catch (e) {
+                        console.log(colors.brightYellow(`Cromwella:bundler: Failed to install and require() module: ${moduleName}`));
+                    }
+                }
+
+                try {
                     const modulePackageJson: TPackageJson | undefined = importFrom(buildDir, `${moduleName}/package.json`) as any;
                     exactVersion = modulePackageJson?.version;
-
+                    if (!exactVersion) throw new Error('!exactVersion')
                 } catch (e) {
-                    console.log(colors.brightYellow(`Cromwella:bundler: Failed to require() module: ${moduleName}`));
+                    console.log(colors.brightYellow(`Cromwella:bundler: Failed to require() package.json of module: ${moduleName}`));
                 }
 
                 const info: ModuleInfo = {
@@ -237,7 +247,6 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 }
                 modulesExportKeys[moduleName] = info;
                 return info;
-
             } else {
                 return modulesExportKeys[moduleName];
             }
@@ -245,7 +254,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
         // collect keys for initially installed
         for (const dep of frontendDependencies) {
-            getModuleExportKeys(dep.name, dep.version);
+            getModuleInfo(dep.name, dep.version);
         }
 
 
@@ -256,7 +265,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
          * @param moduleName 
          */
         const bundleNodeModuleRecursive = async (moduleName: string, moduleVer: string) => {
-            ensureNodeModule(moduleName, moduleVer);
+            getModuleInfo(moduleName, moduleVer);
 
             let modulePath: string | undefined;
             let moduleRootPath: string | undefined;
@@ -322,8 +331,6 @@ export const bundler = (projectRootDir: string, installationMode: string,
             }
 
 
-
-
             collectAllNames(modulePackageJson);
 
             // Find es module export
@@ -353,7 +360,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 await fs.writeFile(resolve(exportContentPath, 'index.js'), exportContent);
             }
 
-            const exportKeys = getModuleExportKeys(moduleName, moduleVer)?.exportKeys;
+            const exportKeys = getModuleInfo(moduleName, moduleVer)?.exportKeys;
 
             if (exportKeys && modulePath) {
                 console.log(colors.cyan(`Cromwella:bundler: Found ${exportKeys.length} exports for module ${moduleName}`));
@@ -375,9 +382,16 @@ export const bundler = (projectRootDir: string, installationMode: string,
             let content = `
             const moduleName = '${moduleName}';
             const _interopDefaultLegacy = (lib) => {
-                if (lib && typeof lib === 'object' && 'default' in lib &&
-                    Object.keys(lib).length === 1) {
-                    return lib.default;
+                if (lib && typeof lib === 'object' && 'default' in lib) {
+                    if (typeof lib.default === 'object' || typeof lib.default === 'function') {
+                        if ('default' in lib.default && Object.keys(lib).length === Object.keys(lib.default).length) {
+                            return lib.default;
+                        } else if (Object.keys(lib).length === Object.keys(lib.default).length + 1) {
+                            return lib.default;
+                        } else if (Object.keys(lib).length === 1) {
+                            return lib.default;
+                        }
+                    } 
                 }
                 return lib;
             }
@@ -505,7 +519,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
                         // if (!depVersion) return;
 
-                        const exportKeys = getModuleExportKeys(source, depVersion)?.exportKeys;
+                        const exportKeys = getModuleInfo(source, depVersion)?.exportKeys;
 
                         if (!exportKeys) return;
 
@@ -534,9 +548,9 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 });
             });
 
-            // compiler.hooks.shouldEmit.tap('CromwellaBundlerPlugin', (compilation) => {
-            //     return false;
-            // });
+            compiler.hooks.shouldEmit.tap('CromwellaBundlerPlugin', (compilation) => {
+                return false;
+            });
 
             await new Promise((done) => {
                 compiler.run(async (err, stats) => {
@@ -554,7 +568,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
                         const depVersion = getDepVersion(modulePackageJson, extName);
                         if (!depVersion) return;
 
-                        const exportKeys = getModuleExportKeys(extName, depVersion)?.exportKeys;
+                        const exportKeys = getModuleInfo(extName, depVersion)?.exportKeys;
                         if (exportKeys) {
                             if (usedExternals[extName].length > exportKeys.length * 0.8) {
                                 usedExternals[extName] = ['default'];
@@ -575,7 +589,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
                         const depVersion = getDepVersion(modulePackageJson, depName);
                         if (!depVersion) return;
 
-                        const exactVersion = getModuleExportKeys(depName, depVersion)?.exactVersion;
+                        const exactVersion = getModuleInfo(depName, depVersion)?.exactVersion;
 
                         if (!exactVersion) return;
 
@@ -626,7 +640,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
             // Build module for web.
 
             // console.log(JSON.stringify(webpackConfig.externals, null, 2));
-            const makeConfig = (templateConfig, templateLibEntry) => {
+            const makeConfig = (templateConfig, templateLibEntry, useGlobals: boolean) => {
                 const webpackConfig = Object.assign({}, templateConfig);
                 webpackConfig.output = Object.assign({}, templateConfig.output);
                 webpackConfig.entry = templateLibEntry;
@@ -648,13 +662,13 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 }
 
                 webpackConfig.externals = Object.assign({}, ...packageExternals.map(ext => ({
-                    [ext]: `root ${getGlobalModuleStr(ext)}`
+                    [ext]: useGlobals ? `root ${getGlobalModuleStr(ext)}` : `commonjs ${ext}`
                 })));
 
                 return webpackConfig;
             }
 
-            const webpackConfig = makeConfig(commonWebpackConfig, libEntry);
+            const webpackConfig = makeConfig(commonWebpackConfig, libEntry, true);
 
             webpackConfig.output!.publicPath = `/${buildDirChunk}/${moduleName}@${modulePackageJson.version}/`;
 
@@ -699,7 +713,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
             // 3. THIRD BUILD PASS
             // Build module for Node.js.
-            const nodeWebpackConfig = makeConfig(nodeWebpackConfigTemplate, nodeLibEntry);
+            const nodeWebpackConfig = makeConfig(nodeWebpackConfigTemplate, nodeLibEntry, false);
 
             const nodeBuildCompiler = webpack(nodeWebpackConfig);
 
@@ -762,7 +776,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 //     }
 // }
 
-export const commonWebpackConfig: any = {
+export const commonWebpackConfig: Configuration = {
     target: 'web',
     output: {
         filename: moduleMainBuidFileName,
@@ -799,6 +813,10 @@ export const commonWebpackConfig: any = {
                 ],
             }
         ]
+    },
+    node: {
+        fs: 'empty',
+        net: 'empty'
     },
     stats: 'errors-only'
     // stats: 'normal'

@@ -75,6 +75,7 @@ export type TLocalSymlink = {
 
 export type TCromwellNodeModules = {
     importStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
+    scriptStatuses?:Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
     imports?: Record<string, () => void>;
     modules?: Record<string, Object>;
     moduleExternals?: Record<string, string[]>;

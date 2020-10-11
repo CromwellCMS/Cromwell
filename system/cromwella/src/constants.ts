@@ -17,6 +17,7 @@ export const jsOperators = ['let', 'var', 'const', 'function', 'class', 'new', '
 export const cromwellStoreModulesPath = 'CromwellStore.nodeModules.modules';
 export const cromwellStoreImportsPath = 'CromwellStore.nodeModules.imports';
 export const getGlobalModuleStr = (moduleName: string) => `${cromwellStoreModulesPath}['${moduleName}']`;
+export const getDepVersion = (pckg: any, depName: string): string | undefined => pckg?.dependencies?.[depName] ?? pckg?.devDependencies?.[depName] ?? pckg?.peerDependencies?.[depName];
 
 export const moduleChunksBuildDirChunk = 'chunks';
 

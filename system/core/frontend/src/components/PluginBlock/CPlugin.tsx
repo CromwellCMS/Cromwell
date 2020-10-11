@@ -1,6 +1,7 @@
 import React from 'react';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { TCromwellBlockData, getStoreItem } from '@cromwell/core';
+import { isValidElementType } from 'react-is';
 
 export const CPlugin = (props: { id: string, className?: string, pluginName?: string }) => {
     const { pluginName, ...rest } = props;
@@ -15,7 +16,7 @@ export const CPlugin = (props: { id: string, className?: string, pluginName?: st
                         PluginComponent = importDynamicPlugin(name);
                     }
                 }
-                if (PluginComponent) return (
+                if (PluginComponent && isValidElementType(PluginComponent)) return (
                     <ErrorBoundary>
                         <PluginComponent />
                     </ErrorBoundary>

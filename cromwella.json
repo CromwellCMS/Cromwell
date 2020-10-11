@@ -4,7 +4,8 @@
     "system/*",
     "system/core/*",
     "plugins/*",
-    "themes/*"
+    "themes/*",
+    ".cromwell/built_modules"
   ],
   "frontendDependencies": [
     "@apollo/client",
