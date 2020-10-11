@@ -24,17 +24,18 @@ export const createGetStaticProps = (pageName: BasePageNames | string, PageExpor
         console.log('getStaticProps for page: ' + pageName + ' with context: ', JSON.stringify(context));
         console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms')
         // console.log('pluginssData', pluginsData, 'childStaticProps', childStaticProps);
+        const props: TCromwellPageCoreProps = {
+            pluginsData,
+            pluginsSettings,
+            childStaticProps,
+            pageConfig,
+            cmsConfig,
+            appConfig,
+            appCustomConfig,
+            pagesInfo
+        }
         return {
-            props: {
-                pluginsData,
-                pluginsSettings,
-                childStaticProps,
-                pageConfig,
-                cmsConfig,
-                appConfig,
-                appCustomConfig,
-                pagesInfo
-            },
+            props: JSON.parse(JSON.stringify(props)),
             revalidate: process.env.isProd ? 1 : undefined
         }
     }

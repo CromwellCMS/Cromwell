@@ -3,9 +3,11 @@ import { readCMSConfigSync, readPluginsExports, readThemeExports } from '@cromwe
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import makeEmptyDir from 'make-empty-dir';
 import fs from 'fs-extra';
-import { resolve } from 'path';
+import gracefulfs from 'graceful-fs';
+import { resolve, dirname } from 'path';
 import symlinkDir from 'symlink-dir';
-
+import { promisify } from 'util';
+const mkdir = promisify(gracefulfs.mkdir);
 
 const main = async () => {
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
@@ -122,8 +124,7 @@ const main = async () => {
     console.log('pagesLocalDir', pagesLocalDir)
     await makeEmptyDir(pagesLocalDir, { recursive: true });
 
-    const pagesPromises: Promise<any>[] = []
-    themeExports.pagesInfo.forEach(pageInfo => {
+    for (const pageInfo of themeExports.pagesInfo) {
         let globalCssImports = '';
         if (pageInfo.name === '_app' && appConfig && appConfig.globalCss &&
             Array.isArray(appConfig.globalCss) && appConfig.globalCss.length > 0) {
@@ -137,54 +138,70 @@ const main = async () => {
 
         const pageImport = `\nconst ${pageImportName} = require('${pageInfo.path}');`;
 
-        const pageDynamicImport = `\nconst ${pageDynamicImportName} = dynamic(async () => {
-                const pagePromise = import('${pageInfo.path}');
-                const meta = await import('${pageInfo.metaInfoPath}');
-                await importer.importSciptExternals(meta);
-                return pagePromise;
-            });`;
+        let pageDynamicImport = `\nconst ${pageDynamicImportName} = dynamic(async () => {
+            const pagePromise = import('${pageInfo.path}');
+            ${pageInfo.metaInfoPath ? `
+            const meta = await import('${pageInfo.metaInfoPath}');
+            await importer.importSciptExternals(meta);
+            ` : ''} 
+            const pageComp = await pagePromise;
+            console.log('pageComp', pageComp);
+            return pageComp.default;
+        });`;
 
+        // pageDynamicImport = `
+        // import ${pageDynamicImportName} from '${pageInfo.path}';
+        // `;
+
+        const cromwellStoreModulesPath = `CromwellStore.nodeModules.modules`;
 
         let pageContent = `
-${globalCssImports}
-import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
-import { isServer } from "@cromwell/core";
-const { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig } = require('build/renderer');
+        ${globalCssImports}
+        import React from 'react';
+        import dynamic from "next/dynamic";
+        import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
+        import { isServer } from "@cromwell/core";
+        const { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig } = require('build/renderer');
 
-console.log('pageInfo.name', '${pageInfo.name}');
+        console.log('pageInfo.name', '${pageInfo.name}');
 
-const cmsConfig = ${JSON.stringify(config)};
-checkCMSConfig(cmsConfig);
+        const cmsConfig = ${JSON.stringify(config)};
+        checkCMSConfig(cmsConfig);
 
-const importer = getModuleImporter();
+        const importer = getModuleImporter();
+        ${cromwellStoreModulesPath}['react'] = React;
 
-if (isServer()) {
-    console.log('isServer pageInfo.name', '${pageInfo.name}');
-    // const metaInfo = require('${pageInfo.metaInfoPath}');
-    // importer.importSciptExternals(metaInfo);
-}
+        ${pageInfo.metaInfoPath ? `
+        if (isServer()) {
+            console.log('isServer pageInfo.name', '${pageInfo.name}');
+            const metaInfo = require('${pageInfo.metaInfoPath}');
+            importer.importSciptExternals(metaInfo);
+        }
+        ` : ''}
 
-${pageImport}
-${pageDynamicImport}
+        ${pageImport}
+        ${pageDynamicImport}
 
-const PageComp = getPage('${pageInfo.name}', ${pageDynamicImportName});
+        const PageComp = getPage('${pageInfo.name}', ${pageDynamicImportName});
 
-export const getStaticProps = createGetStaticProps('${pageInfo.name}', ${pageImportName});
+        export const getStaticProps = createGetStaticProps('${pageInfo.name}', ${pageImportName});
 
-export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', ${pageImportName});
+        export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', ${pageImportName});
 
-export default PageComp;
+        export default PageComp;
             `;
 
         if (!pageInfo.path && pageInfo.fileContent) {
             pageContent = pageInfo.fileContent + '';
         }
-        pagesPromises.push(
-            fs.outputFile(`${pagesLocalDir}/${pageInfo.name}.js`, pageContent)
-        );
-    });
 
-    await Promise.all(pagesPromises);
+        const pagePath = `${pagesLocalDir}/${pageInfo.name}.js`;
+
+        await mkdir(dirname(pagePath), { recursive: true })
+
+        await fs.outputFile(pagePath, pageContent);
+    };
+
 
     // Create jsconfig for Next.js
     await fs.outputFile(`${buildDir}/jsconfig.json`, `

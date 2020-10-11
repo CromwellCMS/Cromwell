@@ -3,6 +3,9 @@ const { spawn, spawnSync } = require('child_process');
 const { readCMSConfigSync, rendererMessages } = require('@cromwell/core-backend');
 const { projectRootDir, buildDir, tempDir, rendererRootDir } = require('./constants');
 const { resolve } = require('path');
+const npmRunPath = require('npm-run-path');
+
+npmRunPath();
 
 /**
  * 'buildService' - compile "src" files into "build" dir
@@ -25,8 +28,8 @@ const main = async () => {
     }
 
     const buildService = () => {
-        spawnSync(`npx rollup -c`, [],
-            { shell: true, stdio: 'inherit', cwd: rendererRootDir });
+        spawnSync(`rollup -c`, [],
+            { shell: true, stdio: 'inherit', cwd: rendererRootDir, env: npmRunPath.env() });
     }
 
     const isFrontendBuilt = () => {
@@ -50,8 +53,8 @@ const main = async () => {
             }
             gen();
             await new Promise(res => {
-                const proc = spawn(`npx next build`, [],
-                    { shell: true, stdio: 'pipe', cwd: tempDir });
+                const proc = spawn(`next build`, [],
+                    { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
 
                 if (proc.stderr && proc.stderr.on && proc.stderr.once) {
                     proc.stderr.on('data', (data) => {
@@ -85,8 +88,8 @@ const main = async () => {
                 await build();
             }
 
-            proc = spawn(`npx next start -p ${config.frontendPort}`, [],
-                { shell: true, stdio: 'pipe', cwd: tempDir });
+            proc = spawn(`next start -p ${config.frontendPort}`, [],
+                { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
         } catch (e) {
             if (process.send) process.send(rendererMessages.onStartErrorMessage);
             console.log(e);
@@ -119,11 +122,11 @@ const main = async () => {
         }
         gen();
 
-        spawn(`npx rollup -cw`, [],
+        spawn(`rollup -cw`, [],
             { shell: true, stdio: 'inherit', cwd: rendererRootDir });
 
-        spawn(`npx next dev -p ${config.frontendPort}`, [],
-            { shell: true, stdio: 'inherit', cwd: tempDir });
+        spawn(`next dev -p ${config.frontendPort}`, [],
+            { shell: true, stdio: 'inherit', cwd: tempDir, env: npmRunPath.env() });
 
         return;
     }

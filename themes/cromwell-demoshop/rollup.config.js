@@ -4,9 +4,11 @@ import postcss from 'rollup-plugin-postcss';
 import autoprefixer from "autoprefixer";
 import alias from '@rollup/plugin-alias';
 import cromwellConfig from './cromwell.config.json';
-import { resolve } from 'path';
+import { resolve, isAbsolute } from 'path';
 import { rollupPluginCromwellFrontend } from '@cromwell/cromwella';
 import json from '@rollup/plugin-json';
+
+const external = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
 
 const distDir = resolve(__dirname, cromwellConfig.appConfig.buildDir);
 
@@ -19,6 +21,7 @@ export default {
             format: "esm",
         }
     ],
+    external,
     plugins: [
         rollupPluginCromwellFrontend(),
         postcss({

@@ -3,8 +3,9 @@ import colorsdef from 'colors/safe';
 import fs from 'fs';
 import glob from 'glob';
 import path, { resolve, isAbsolute } from 'path';
+import importFrom from 'import-from';
 
-import { TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps, TLocalSymlink, TNonHoisted, TPackage } from './types';
+import { TPackageJson, TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps, TLocalSymlink, TNonHoisted, TPackage } from './types';
 
 const colors: any = colorsdef;
 
@@ -18,6 +19,18 @@ export const getHoistedDependencies = (projectRootDir: string, isProduction: boo
     });
 }
 
+export const getNodeModuleVersion = (moduleName: string, importFromPath?: string): string | undefined => {
+    const pckgImportName = `${moduleName}/package.json`;
+    let modulePackageJson: TPackageJson | undefined;
+    try {
+        modulePackageJson = importFromPath ? importFrom(importFromPath, pckgImportName) as any :
+            require(pckgImportName);
+    } catch (e) {
+        console.log(`Cromwell bundler: Failed to require package from ${pckgImportName}. You may need to reconfigure your frontendDependencies`)
+    }
+
+    return modulePackageJson?.version;
+}
 
 /**
  * Collect dependencies and devDependencies from all packages into provided @param store

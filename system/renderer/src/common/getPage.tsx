@@ -3,6 +3,7 @@ import { BasePageNames, TCromwellPage, TCromwellPageCoreProps } from "@cromwell/
 import { getStoreItem, setStoreItem } from "@cromwell/core";
 import { Head } from '@cromwell/core-frontend';
 import ReactHtmlParser from 'react-html-parser';
+import { isValidElementType } from 'react-is';
 
 function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state
@@ -16,6 +17,8 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
         throw new Error('getPage !cmsconfig.themeName');
     }
 
+    if (!PageComponent) throw new Error('getPage !PageComponent');
+    if (!isValidElementType(PageComponent)) throw new Error('getPage PageComponent !isValidElementType');
     // const Page: any = importPage(pageName)?.default;
 
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
@@ -57,6 +60,7 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
             <>
                 <Head>
                     <meta charSet="utf-8" />
+                    <script src="/built_modules/importer.js"></script>
                 </Head>
                 <PageComponent {...childStaticProps} {...restProps} />
                 <Head>
