@@ -1,4 +1,4 @@
-import { getAppCustomConfigTextProp, getAppCustomConfigProp, getCmsConfig, isServer, setStoreItem } from '@cromwell/core';
+import { getThemeCustomConfigTextProp, getThemeCustomConfigProp, getCmsConfig, isServer, setStoreItem } from '@cromwell/core';
 import { Link, CHTML, CContainer, CPlugin, getCStore } from '@cromwell/core-frontend';
 import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core';
@@ -49,11 +49,11 @@ const TextField = withStyles({
 
 
 const Header = observer(() => {
-    const topLinks: TTopLink[] | undefined = getAppCustomConfigProp('header/topLinks');
+    const topLinks: TTopLink[] | undefined = getThemeCustomConfigProp('header/topLinks');
     const cmsConfig = getCmsConfig();
     const currencyOptions: string[] = cmsConfig && cmsConfig.currencyOptions ? cmsConfig.currencyOptions : [];
-    const logoHref: string | undefined = getAppCustomConfigProp('header/logo');
-    const contactPhone: string | undefined = getAppCustomConfigProp('header/contactPhone');
+    const logoHref: string | undefined = getThemeCustomConfigProp('header/logo');
+    const contactPhone: string | undefined = getThemeCustomConfigProp('header/contactPhone');
     const classes = useStyles();
     const cstore = getCStore();
     const [itemsInCart, setItemsInCart] = useState(cstore.getCart().length);
@@ -105,7 +105,7 @@ const Header = observer(() => {
 
                     <div className={styles.rightBlock}>
                         <CHTML id="header_03" className={styles.welcomeMessage}>
-                            <p>{getAppCustomConfigTextProp('header/welcomeMessage')}</p>
+                            <p>{getThemeCustomConfigTextProp('header/welcomeMessage')}</p>
                         </CHTML>
                         <CHTML id="header_04" className={styles.topPanelLinks}>
                             <>

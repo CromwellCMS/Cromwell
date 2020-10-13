@@ -2,7 +2,7 @@ import autoExternal from "rollup-plugin-auto-external";
 import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
-import cromwellConfig from './cromwell.config.json';
+import cromwellConfig from './cromwell.config.js';
 import { resolve } from 'path';
 import packageJson from './package.json';
 import { rollupPluginCromwellFrontend } from '@cromwell/cromwella';

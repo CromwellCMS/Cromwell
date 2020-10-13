@@ -1,5 +1,5 @@
 {
-    "appConfig": {},
+    "main": {},
     "pages": [
         {
             "route": "index",

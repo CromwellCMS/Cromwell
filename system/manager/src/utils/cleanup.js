@@ -62,11 +62,11 @@ if (fs.existsSync(themesDir)) {
         var themeDir = resolve(themesDir, theme);
         folders.push(resolve(themeDir, 'node_modules'));
         folders.push(resolve(themeDir, 'package-lock.json'));
-        var configPath = resolve(themeDir, 'cromwell.config.json');
+        var configPath = resolve(themeDir, 'cromwell.config.js');
         try {
-            var config = JSON.parse(fs.readFileSync(configPath).toString());
-            if (config && config.appConfig && config.appConfig.buildDir) {
-                folders.push(resolve(themeDir, config.appConfig.buildDir));
+            var config = require(configPath);
+            if (config && config.main && config.main.buildDir) {
+                folders.push(resolve(themeDir, config.main.buildDir));
             }
         } catch (e) {
             console.log(e);
@@ -83,9 +83,9 @@ if (fs.existsSync(pluginsDir)) {
         var pluginDir = resolve(pluginsDir, plugin);
         folders.push(resolve(pluginDir, 'node_modules'));
         folders.push(resolve(pluginDir, 'package-lock.json'));
-        var configPath = resolve(pluginDir, 'cromwell.config.json');
+        var configPath = resolve(pluginDir, 'cromwell.config.js');
         try {
-            var config = JSON.parse(fs.readFileSync(configPath).toString());
+            var config = require(configPath);
             if (config && config.buildDir) {
                 folders.push(resolve(pluginDir, config.buildDir));
             }

@@ -163,20 +163,20 @@ var fs = require('fs');
         for (var i = 0; i < themes.length; i++) {
             var theme = themes[i];
             var themeDir = resolve(themesDir, theme);
-            var configPath = resolve(themeDir, 'cromwell.config.json');
+            var configPath = resolve(themeDir, 'cromwell.config.js');
             try {
-                var config = JSON.parse(fs.readFileSync(configPath).toString());
-                if (config && config.appConfig && config.appConfig.pagesDir) {
-                    if (!fs.existsSync(resolve(themeDir, config.appConfig.pagesDir))) {
+                var config = require(configPath);
+                if (config && config.main && config.main.pagesDir) {
+                    if (!fs.existsSync(resolve(themeDir, config.main.pagesDir))) {
                         console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
                         spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
                     }
 
                     // Check if current project root dir has no public folder and copy media from theme
-                    if (!hasPublicDir && config.themeInfo && config.themeInfo.themeName
+                    if (!hasPublicDir && config.main && config.main.themeName
                         && fs.existsSync(resolve(themeDir, 'public'))) {
                         copyFolderRecursiveSync(resolve(themeDir, 'public'),
-                            resolve(projectRootDir, `public/themes/${config.themeInfo.themeName}`));
+                            resolve(projectRootDir, `public/themes/${config.main.themeName}`));
                     }
                 }
             } catch (e) {
@@ -192,9 +192,9 @@ var fs = require('fs');
         for (var i = 0; i < plugins.length; i++) {
             var plugin = plugins[i];
             var pluginDir = resolve(pluginsDir, plugin);
-            var configPath = resolve(pluginDir, 'cromwell.config.json');
+            var configPath = resolve(pluginDir, 'cromwell.config.js');
             try {
-                var config = JSON.parse(fs.readFileSync(configPath).toString());
+                var config = require(configPath);
                 if (config && config.buildDir) {
                     if (!fs.existsSync(resolve(pluginDir, config.buildDir))) {
                         console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);

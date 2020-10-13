@@ -1,5 +1,5 @@
 import {
-    getStoreItem, TAppConfig, TCromwellBlockData, TPageConfig, TCmsConfig,
+    getStoreItem, TThemeMainConfig, TCromwellBlockData, TPageConfig, TCmsConfig,
     TPageInfo, TThemeConfig
 } from '@cromwell/core';
 import { Router } from 'express';
@@ -21,31 +21,18 @@ export const getThemeController = (): Router => {
      * @param cb 
      */
     const readThemeConfig = (configPath: string, cb: (themeConfig: TThemeConfig | null) => void) => {
-        fs.access(configPath, fs.constants.R_OK, (err) => {
-            if (!err) {
-                fs.readFile(configPath, (err, data) => {
-                    let config: TThemeConfig | undefined;
-                    if (!err) {
-                        try {
-                            config = JSON.parse(data.toString());
-                        } catch (e) {
-                            console.error('Failed to read ThemeConfig ' + configPath, e);
-                        }
-                        if (config && typeof config === 'object') {
-                            cb(config);
-                            return;
-                        }
-                    }
-                    console.error('Failed to read ThemeConfig at ' + configPath);
-                    cb(null);
-                    return;
-                });
-                return;
-            } else {
-                console.error('Failed to read ThemeConfig at ' + configPath);
-                cb(null);
-            }
-        });
+        let config: TThemeConfig | undefined;
+        try {
+            config = require(configPath);
+        } catch (e) {
+            console.error(e);
+        }
+        if (config && typeof config === 'object') {
+            cb(config);
+            return;
+        }
+        console.error('Failed to read ThemeConfig at ' + configPath);
+        cb(null);
     }
 
     /**
@@ -64,7 +51,7 @@ export const getThemeController = (): Router => {
      * @param cb 
      */
     const readThemeOriginalConfig = (cmsConfig: TCmsConfig, cb: (config: TThemeConfig | null) => void) => {
-        const themeConfigPath = `${projectRootDir}/themes/${cmsConfig.themeName}/cromwell.config.json`;
+        const themeConfigPath = `${projectRootDir}/themes/${cmsConfig.themeName}/cromwell.config.js`;
         readThemeConfig(themeConfigPath, cb);
     }
 
@@ -96,7 +83,7 @@ export const getThemeController = (): Router => {
     }
 
     // const saveThemeOriginalConfig = (themeConfig: TThemeConfig, cmsConfig: TCmsConfig, cb: (success: boolean) => void) => {
-    //     const themeConfigPath = `${projectRootDir}/themes/${cmsConfig.themeName}/cromwell.config.json`;
+    //     const themeConfigPath = `${projectRootDir}/themes/${cmsConfig.themeName}/cromwell.config.js`;
     //     saveThemeConfig(themeConfigPath, themeConfig, cb);
     // }
 
@@ -240,6 +227,7 @@ export const getThemeController = (): Router => {
             // If userConfig is null, then theme is probably new and user has never saved mods. Create a new userConfig
             if (!userConfig) {
                 userConfig = {
+                    main: { themeName: themeConfig?.main.themeName ?? '' },
                     pages: []
                 }
             }
@@ -556,7 +544,7 @@ export const getThemeController = (): Router => {
     /**
      * @swagger
      * 
-     * /theme/app/config:
+     * /theme/main-config:
      *   get:
      *     description: Returns merged app config.
      *     tags: 
@@ -567,10 +555,10 @@ export const getThemeController = (): Router => {
      *       200:
      *         description: app config
      */
-    themeController.get(`/app/config`, function (req, res) {
-        let out: TAppConfig = {};
+    themeController.get(`/main-config`, function (req, res) {
+        let out: TThemeMainConfig;
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
-            out = Object.assign(out, themeConfig?.appConfig, userConfig?.appConfig);
+            out = Object.assign({}, themeConfig?.main, userConfig?.main);
             res.send(out);
         })
 
@@ -580,7 +568,7 @@ export const getThemeController = (): Router => {
     /**
      * @swagger
      * 
-     * /theme/app/custom-config:
+     * /theme/custom-config:
      *   get:
      *     description: Returns merged custom app configs.
      *     tags: 
@@ -591,10 +579,10 @@ export const getThemeController = (): Router => {
      *       200:
      *         description: app custom config
      */
-    themeController.get(`/app/custom-config`, function (req, res) {
+    themeController.get(`/custom-config`, function (req, res) {
         let out: Record<string, any> = {};
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
-            out = Object.assign(out, themeConfig?.appCustomConfig, userConfig?.appCustomConfig);
+            out = Object.assign(out, themeConfig?.themeCustomConfig, userConfig?.themeCustomConfig);
             res.send(out);
         })
     });

@@ -30,7 +30,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
     private galleryContainer?: HTMLElement | null;
     private swiper?: Swiper;
     private galleryThumbs?: Swiper;
-    private primaryColor?: string = getStoreItem('appConfig')?.palette?.primaryColor;
+    private primaryColor?: string = getStoreItem('themeMainConfig')?.palette?.primaryColor;
 
     shouldComponentUpdate(nextProps: TCGalleryProps) {
         if (this.swiperId) {

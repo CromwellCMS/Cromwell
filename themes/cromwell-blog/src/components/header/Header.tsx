@@ -1,4 +1,4 @@
-import { getAppCustomConfigProp, getCmsConfig } from '@cromwell/core';
+import { getThemeCustomConfigProp, getCmsConfig } from '@cromwell/core';
 import { CPlugin, Link } from '@cromwell/core-frontend';
 import {
     createStyles,
@@ -44,10 +44,10 @@ const TextField = withStyles({
 
 
 const Header = observer(() => {
-    const topLinks: TTopLink[] | undefined = getAppCustomConfigProp('header/topLinks');
+    const topLinks: TTopLink[] | undefined = getThemeCustomConfigProp('header/topLinks');
     const cmsConfig = getCmsConfig();
     const currencyOptions: string[] = cmsConfig && cmsConfig.currencyOptions ? cmsConfig.currencyOptions : [];
-    let logoHref: string | undefined = getAppCustomConfigProp('header/logo');
+    let logoHref: string | undefined = getThemeCustomConfigProp('header/logo');
     logoHref = '/themes/cromwell-blog/blog.png';
 
     return (

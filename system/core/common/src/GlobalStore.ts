@@ -1,4 +1,4 @@
-import { TCromwellStore, TAppConfig, TCmsConfig } from './types/data';
+import { TCromwellStore, TThemeMainConfig, TCmsConfig } from './types/data';
 import { TCommonComponentProps, TCromwellBlock } from './types/blocks';
 import { isServer, ECommonComponentNames } from './constants';
 
@@ -37,19 +37,19 @@ export const getPageCustomConfig = (): Record<string, any> | undefined => {
 }
 
 
-export const getAppConfig = (): TAppConfig | undefined => {
-    return getStore()?.appConfig;
+export const getThemeMainConfig = (): TThemeMainConfig | undefined => {
+    return getStore()?.themeMainConfig;
 }
 export const getCmsConfig = (): TCmsConfig | undefined => {
     return getStore()?.cmsconfig;
 }
 
 
-export const getAppCustomConfig = (): Record<string, any> | undefined => {
-    return getStore()?.appCustomConfig;
+export const getThemeCustomConfig = (): Record<string, any> | undefined => {
+    return getStore()?.themeCustomConfig;
 }
 
-export const getAppCustomConfigProp = (propPath: string): any => {
+export const getThemeCustomConfigProp = (propPath: string): any => {
     const getProp = (obj: any, paths: string[]): any => {
         if (obj[paths[0]]) {
             if (paths.length === 1) return obj[paths[0]];
@@ -62,14 +62,14 @@ export const getAppCustomConfigProp = (propPath: string): any => {
         return undefined;
     }
     const paths = propPath.split('/');
-    const config = getAppCustomConfig();
+    const config = getThemeCustomConfig();
     const prop = config ? getProp(config, paths) : undefined;
     return prop;
 }
 
-export const getAppCustomConfigTextProp = (propPath: string): string => {
-    const prop = getAppCustomConfigProp(propPath);
-    return prop ? prop : `{appCustomConfig/${propPath}}`;
+export const getThemeCustomConfigTextProp = (propPath: string): string => {
+    const prop = getThemeCustomConfigProp(propPath);
+    return prop ? prop : `{themeCustomConfig/${propPath}}`;
 }
 
 

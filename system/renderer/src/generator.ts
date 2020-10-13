@@ -14,7 +14,7 @@ const main = async () => {
     const projectRootDir = resolve(__dirname, '../../../').replace(/\\/g, '/');
     const config = readCMSConfigSync(projectRootDir);
 
-    const appConfig = await getRestAPIClient()?.getAppConfig();
+    const themeMainConfig = await getRestAPIClient()?.getThemeMainConfig();
     const localDir = resolve(__dirname, '../').replace(/\\/g, '/');
     const buildDir = `${localDir}/.cromwell`;
     const pagesLocalDir = `${buildDir}/pages`;
@@ -126,9 +126,9 @@ const main = async () => {
 
     for (const pageInfo of themeExports.pagesInfo) {
         let globalCssImports = '';
-        if (pageInfo.name === '_app' && appConfig && appConfig.globalCss &&
-            Array.isArray(appConfig.globalCss) && appConfig.globalCss.length > 0) {
-            appConfig.globalCss.forEach(css => {
+        if (pageInfo.name === '_app' && themeMainConfig && themeMainConfig.globalCss &&
+            Array.isArray(themeMainConfig.globalCss) && themeMainConfig.globalCss.length > 0) {
+            themeMainConfig.globalCss.forEach(css => {
                 globalCssImports += `import '${css}';\n`
             })
         }
@@ -139,11 +139,12 @@ const main = async () => {
         const pageImport = `\nconst ${pageImportName} = require('${pageInfo.path}');`;
 
         let pageDynamicImport = `\nconst ${pageDynamicImportName} = dynamic(async () => {
-            const pagePromise = import('${pageInfo.path}');
             ${pageInfo.metaInfoPath ? `
             const meta = await import('${pageInfo.metaInfoPath}');
             await importer.importSciptExternals(meta);
             ` : ''} 
+            const pagePromise = import('${pageInfo.path}');
+            console.log('pagePromise', pagePromise);
             const pageComp = await pagePromise;
             console.log('pageComp', pageComp);
             return pageComp.default;
@@ -158,6 +159,7 @@ const main = async () => {
         let pageContent = `
         ${globalCssImports}
         import React from 'react';
+        import ReactDOM from 'react-dom';
         import dynamic from "next/dynamic";
         import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
         import { isServer } from "@cromwell/core";
@@ -170,12 +172,17 @@ const main = async () => {
 
         const importer = getModuleImporter();
         ${cromwellStoreModulesPath}['react'] = React;
-
+        ${cromwellStoreModulesPath}['react'].didDefaultImport = true;
+        ${cromwellStoreModulesPath}['react-dom'] = ReactDOM;
+        ${cromwellStoreModulesPath}['react-dom'].didDefaultImport = true;
         ${pageInfo.metaInfoPath ? `
         if (isServer()) {
             console.log('isServer pageInfo.name', '${pageInfo.name}');
             const metaInfo = require('${pageInfo.metaInfoPath}');
             importer.importSciptExternals(metaInfo);
+        } else {
+            window.React = React;
+            window.ReactDOM = ReactDOM;
         }
         ` : ''}
 

@@ -25,19 +25,19 @@ export const readThemeExports = async (projectRootDir: string, themeName: string
     const themesDir = resolve(projectRootDir, 'themes').replace(/\\/g, '/');
     const themeDir = `${themesDir}/${themeName}`;
 
-    const themeConfigPath = `${themeDir}/cromwell.config.json`;
+    const themeConfigPath = `${themeDir}/cromwell.config.js`;
     let themeConfig: TThemeConfig | undefined = undefined;
     try {
-        themeConfig = JSON.parse(fs.readFileSync(themeConfigPath, { encoding: 'utf8', flag: 'r' }));
+        themeConfig = require(themeConfigPath);
     } catch (e) {
         console.log('core/backend::readThemeExports ', e);
     }
     if (!themeConfig) {
-        console.log('core/backend::readThemeExports cannot read Theme config - cromwell.config.json')
+        console.log('core/backend::readThemeExports cannot read Theme config at: ' + themeConfigPath);
     }
 
-    const pagesPath = (themeConfig && themeConfig.appConfig && themeConfig.appConfig.pagesDir) ?
-        resolve(themeDir, themeConfig.appConfig.pagesDir).replace(/\\/g, '/') :
+    const pagesPath = (themeConfig && themeConfig.main && themeConfig.main.pagesDir) ?
+        resolve(themeDir, themeConfig.main.pagesDir).replace(/\\/g, '/') :
         `${themeDir}/pages`;
 
     const exportsInfo: TThemeExportsInfo = {
@@ -72,7 +72,7 @@ export const readThemeExports = async (projectRootDir: string, themeName: string
         });
     }
 
-    const adminPanelConfigDir = themeConfig?.appConfig?.adminPanelDir;
+    const adminPanelConfigDir = themeConfig?.main?.adminPanelDir;
     if (adminPanelConfigDir) {
         const adminPanelDir = resolve(themeDir, adminPanelConfigDir);
         if (fs.existsSync(adminPanelDir)) {

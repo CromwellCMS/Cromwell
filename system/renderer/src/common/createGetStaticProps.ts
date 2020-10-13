@@ -11,9 +11,9 @@ export const createGetStaticProps = (pageName: BasePageNames | string, PageExpor
         const childStaticProps = await getThemeStaticProps(pageName, PageExports, context);
         const { pluginsData, pluginsSettings } = await pluginsDataFetcher(pageName, context);
         const pageConfig = await apiClient?.getPageConfig(pageName);
-        const appConfig = await apiClient?.getAppConfig();
+        const themeMainConfig = await apiClient?.getThemeMainConfig()
         const cmsConfig = await apiClient?.getCmsConfig();
-        const appCustomConfig = await apiClient?.getAppCustomConfig();
+        const themeCustomConfig = await apiClient?.getThemeCustomConfig();
         const pagesInfo = await apiClient?.getPagesInfo();
 
         const timestamp2 = Date.now();
@@ -30,8 +30,8 @@ export const createGetStaticProps = (pageName: BasePageNames | string, PageExpor
             childStaticProps,
             pageConfig,
             cmsConfig,
-            appConfig,
-            appCustomConfig,
+            themeMainConfig,
+            themeCustomConfig,
             pagesInfo
         }
         return {

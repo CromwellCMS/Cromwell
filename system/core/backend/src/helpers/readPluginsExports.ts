@@ -26,11 +26,11 @@ export const readPluginsExports = (projectRootDir: string): TPluginInfo[] => {
     // console.log('Core:readPluginsExports:: Plugins found:', pluginNames);
 
     pluginNames?.forEach(name => {
-        const configPath = resolve(pluginsDir, name, 'cromwell.config.json');
+        const configPath = resolve(pluginsDir, name, 'cromwell.config.js');
         if (fs.existsSync(configPath)) {
             let config: TPluginConfig | undefined;
             try {
-                config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
+                config = require(configPath)
             } catch (e) {
                 console.error('Core:readPluginsExports:: ', e);
             }

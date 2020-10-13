@@ -17,25 +17,20 @@ export const getPluginsController = (): Router => {
      * @param cb callback with settings
      */
     const readPluginDefaultSettings = (pluginName: string, cb: (data: any) => void) => {
-        const filePath = `${pluginsPath}/${pluginName}/cromwell.config.json`;
+        const filePath = `${pluginsPath}/${pluginName}/cromwell.config.js`;
         fs.access(filePath, fs.constants.R_OK, (err) => {
             if (!err) {
-                fs.readFile(filePath, (err, data) => {
-                    if (!err) {
-                        try {
-                            let out = JSON.parse(data.toString());
-                            if (out && out.defaultSettings) cb(out.defaultSettings);
-                            else cb(null);
-                            return;
-                        } catch (e) {
-                            console.error("Failed to read plugin's settings", e);
-                        }
+                try {
+                    let out = require(filePath);
+                    if (out && out.defaultSettings) {
+                        cb(out.defaultSettings);
+                        return;
                     }
-                    cb(null);
-                })
-            } else {
-                cb(null);
+                } catch (e) {
+                    console.error("Failed to read plugin's settings", e);
+                }
             }
+            cb(null);
         })
     }
 

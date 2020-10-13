@@ -60,22 +60,18 @@ export const getCmsController = (): Router => {
         fs.readdir(themesDir, (err, files) => {
             if (!err && files) {
                 async.each(files, function (file, callback) {
-                    const configPath = `${themesDir}/${file}/cromwell.config.json`;
+                    const configPath = `${themesDir}/${file}/cromwell.config.js`;
                     fs.access(configPath, fs.constants.R_OK, (err) => {
                         if (!err) {
-                            fs.readFile(configPath, (err, data) => {
-                                if (!err) {
-                                    try {
-                                        const themeConfig: TThemeConfig | undefined = JSON.parse(data.toString());
-                                        if (themeConfig && themeConfig.themeInfo) {
-                                            out.push(themeConfig.themeInfo);
-                                        }
-                                    } catch (e) {
-                                        console.error("Failed to read CMS Config", e);
-                                    }
+                            try {
+                                const themeConfig: TThemeConfig | undefined = require(configPath);
+                                if (themeConfig && themeConfig.main) {
+                                    out.push(themeConfig.main);
                                 }
-                                callback();
-                            })
+                            } catch (e) {
+                                console.error("Failed to read CMS Config at: " + configPath, e);
+                            }
+                            callback();
                         }
                     })
                 }, function (err) {

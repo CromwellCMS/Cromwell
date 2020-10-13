@@ -5,10 +5,10 @@ import commonjs from "@rollup/plugin-commonjs";
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from "autoprefixer";
 import alias from '@rollup/plugin-alias';
-import cromwellConfig from './cromwell.config.json';
+import cromwellConfig from './cromwell.config.js';
 import { resolve } from 'path';
 
-const distDir = resolve(__dirname, cromwellConfig.appConfig.buildDir);
+const distDir = resolve(__dirname, cromwellConfig.main.buildDir);
 
 export default {
     input: resolve(__dirname, 'src/index.ts'),

@@ -1,23 +1,23 @@
-{
-    "themeInfo": {
-        "themeName": "cromwell-demoshop",
-        "title": "Demoshop",
-        "previewImage": "/themes/cromwell-demoshop/shopping-cart.png",
-        "description": "Online shop theme"
-    },
-    "appConfig": {
-        "buildDir": "dist",
-        "pagesDir": "dist/pages",
-        "adminPanelDir": "dist/adminPanel",
-        "palette": {
+import { TThemeConfig } from '@cromwell/core';
+
+const config: TThemeConfig = {
+    main: {
+        themeName: "cromwell-demoshop",
+        title: "Demoshop",
+        previewImage: "/themes/cromwell-demoshop/shopping-cart.png",
+        description: "Online shop theme",
+        buildDir: "dist",
+        pagesDir: "dist/pages",
+        adminPanelDir: "dist/adminPanel",
+        palette: {
             "primaryColor": "#9900CC"
         },
-        "globalCss": [
+        globalCss: [
             "react-toastify/dist/ReactToastify.css"
         ],
-        "headHtml": "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap\" rel=\"stylesheet\" /><link href=\"https://unpkg.com/reset-css/reset.css\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />"
+        headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap\" rel=\"stylesheet\" /><link href=\"https://unpkg.com/reset-css/reset.css\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />"
     },
-    "pages": [
+    pages: [
         {
             "route": "index",
             "name": "Home page",
@@ -127,15 +127,7 @@
             ]
         }
     ],
-    "plugins": {
-        "ProductShowcase": {
-            "options": {}
-        },
-        "ProductShowcaseDemo": {
-            "options": {}
-        }
-    },
-    "appCustomConfig": {
+    themeCustomConfig: {
         "store": {},
         "header": {
             "logo": "/themes/cromwell-demoshop/shopping-cart.png",
@@ -166,3 +158,5 @@
         }
     }
 }
+
+export default config;

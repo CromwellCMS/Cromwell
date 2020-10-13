@@ -8,8 +8,8 @@ export type TCromwellStore = {
     pluginsSettings?: Record<string, any>;
     cmsconfig?: TCmsConfig;
     pageConfig?: TPageConfig;
-    appCustomConfig?: Record<string, any>;
-    appConfig?: TAppConfig;
+    themeCustomConfig?: Record<string, any>;
+    themeMainConfig?: TThemeMainConfig;
     importPlugin?: (pluginName: string) => { default: ComponentType } | undefined;
     importDynamicPlugin?: (pluginName: string) => ComponentType | undefined;
     rebuildPage?: (path: string) => void;
@@ -97,37 +97,34 @@ export type TCmsConfig = {
     currencyRatio?: Record<string, number>;
 }
 
-export type TAppConfig = {
-    /** Theme's pages dist dir  */
+export type TThemeConfig = {
+    main: TThemeMainConfig;
+    pages: TPageConfig[];
+
+    /**
+     * Custom config that will be available at every page in the Store inside pageConfig props
+     */
+    themeCustomConfig?: Record<string, any>;
+    globalModifications?: TCromwellBlockData[];
+}
+
+export type TThemeMainConfig = {
+    themeName: string;
+
+    /** Dir with production build of the theme. Path is relative from theme's root dir */
+    buildDir?: string;
+    /** Theme's pages dir inside buildDir. Same as in Next.js "pages" dir. Path is relative from theme's root dir  */
     pagesDir?: string;
     /** Path to component to use in Admin Panel */
     adminPanelDir?: string;
     /** Colors to use */
     palette?: { primaryColor?: string };
-    /** Custom HTML add into head of every page */
+    /** Custom HTML to add into head of every page */
     headHtml?: string;
-    /** Global CSS files to import */
+    /** Global CSS files to import from node_modules */
     globalCss?: string[];
 
-}
-
-export type TThemeConfig = {
-    themeInfo?: TThemeInfo,
-    pages: TPageConfig[];
-    plugins?: Record<string, {
-        pages: string[];
-        options: Record<string, any>;
-    }>;
-    appConfig?: TAppConfig;
-    /**
-     * Custom config that will be available at every page in the Store inside pageConfig props
-     */
-    appCustomConfig?: Record<string, any>;
-    globalModifications?: TCromwellBlockData[];
-}
-
-export type TThemeInfo = {
-    themeName: string;
+    /** View fields to display in Admin Panel: */
     previewImage?: string;
     title?: string;
     description?: string;

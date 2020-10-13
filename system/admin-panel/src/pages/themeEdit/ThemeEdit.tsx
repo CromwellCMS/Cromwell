@@ -57,12 +57,12 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
         this.setState({ isPageLoading: true });
         const pageCofig: TPageConfig | undefined =
             await getRestAPIClient()?.getPageConfig(pageInfo.route);
-        const appConfig = await getRestAPIClient()?.getAppConfig();
-        const appCustomConfig = await getRestAPIClient()?.getAppCustomConfig();
+        const themeMainConfig = await getRestAPIClient()?.getThemeMainConfig();
+        const themeCustomConfig = await getRestAPIClient()?.getThemeCustomConfig();
         // console.log('pageModifications', pageModifications);
         setStoreItem('pageConfig', pageCofig);
-        setStoreItem('appConfig', appConfig);
-        setStoreItem('appCustomConfig', appCustomConfig);
+        setStoreItem('themeMainConfig', themeMainConfig);
+        setStoreItem('themeCustomConfig', themeCustomConfig);
 
         this.changedPageInfo = null;
         this.changedModifications = null;

@@ -1,11 +1,9 @@
 {
-    "themeInfo": {
+    "main": {
         "themeName": "cromwell-blog",
         "title": "Blog",
         "previewImage": "/themes/cromwell-blog/blog.png",
-        "description": "Simple blog website"
-    },
-    "appConfig": {
+        "description": "Simple blog website",
         "buildDir": "dist",
         "pagesDir": "dist/pages",
         "palette": {

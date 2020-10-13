@@ -1,13 +1,28 @@
 import {
-    TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute,
-    TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory,
-    TProductInput, TAttribute, setStoreItem, TProductReviewInput, TAttributeInput,
-    TProductReview, GraphQLPaths, serviceLocator
-} from '@cromwell/core';
-import {
-    gql, ApolloClient, InMemoryCache, createHttpLink, NormalizedCacheObject,
-    QueryOptions, ApolloQueryResult
+    ApolloClient,
+    ApolloQueryResult,
+    createHttpLink,
+    gql,
+    InMemoryCache,
+    NormalizedCacheObject,
+    QueryOptions,
 } from '@apollo/client';
+import {
+    apiV1BaseRoute,
+    getStoreItem,
+    GraphQLPaths,
+    serviceLocator,
+    setStoreItem,
+    TAttribute,
+    TAttributeInput,
+    TPagedList,
+    TPagedParams,
+    TProduct,
+    TProductCategory,
+    TProductInput,
+    TProductReview,
+    TProductReviewInput,
+} from '@cromwell/core';
 
 class CGraphQLClient {
 

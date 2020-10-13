@@ -17,7 +17,7 @@ import {
     HighlightOff as HighlightOffIcon
 } from '@material-ui/icons';
 
-import config from '../../cromwell.config.json';
+import config from '../../cromwell.config.js';
 import { defaultSettings } from '../defaultSettings';
 import { TMainMenuItem, TMainMenuSettings } from '../types';
 import { useStyles } from './styles';

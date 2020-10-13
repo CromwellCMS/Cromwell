@@ -1,4 +1,4 @@
-import { getCmsConfig, TThemeInfo, TCmsConfig } from '@cromwell/core';
+import { getCmsConfig, TThemeMainConfig, TCmsConfig } from '@cromwell/core';
 import { getRestAPIClient, getWebSocketClient } from '@cromwell/core-frontend';
 import {
     Badge, Button, Card, CardActionArea, CardActions, CardContent,
@@ -14,7 +14,7 @@ import { ManagerLogger } from '../../components/managerLogger/ManagerLogger';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 
 export default function ThemeList() {
-    const [infos, setInfos] = useState<TThemeInfo[]>([]);
+    const [infos, setInfos] = useState<TThemeMainConfig[]>([]);
     const [isListLoading, setIsListLoading] = useState<boolean>(true);
     const [isChangingTheme, setIsChangingTheme] = useState<boolean>(false);
     const [cmsConfig, setCmsConfig] = useState<TCmsConfig | undefined>(getCmsConfig());
@@ -33,7 +33,7 @@ export default function ThemeList() {
         })();
     }, []);
 
-    const handleSetActiveTheme = async (info: TThemeInfo) => {
+    const handleSetActiveTheme = async (info: TThemeMainConfig) => {
         if (client) {
             setIsChangingTheme(true);
             const success = await client.changeTheme(info.themeName);

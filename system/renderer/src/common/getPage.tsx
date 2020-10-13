@@ -22,13 +22,13 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
     // const Page: any = importPage(pageName)?.default;
 
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
-        const { pluginsData, pluginsSettings, pageConfig, appCustomConfig, childStaticProps, cmsConfig, appConfig, pagesInfo, ...restProps } = props;
+        const { pluginsData, pluginsSettings, pageConfig, themeCustomConfig, childStaticProps, cmsConfig, themeMainConfig, pagesInfo, ...restProps } = props;
         if (cmsConfig) setStoreItem('cmsconfig', cmsConfig);
         if (pluginsData) setStoreItem('pluginsData', pluginsData);
         if (pluginsSettings) setStoreItem('pluginsSettings', pluginsSettings);
         if (pageConfig) setStoreItem('pageConfig', pageConfig);
-        if (appConfig) setStoreItem('appConfig', appConfig);
-        if (appCustomConfig) setStoreItem('appCustomConfig', appCustomConfig);
+        if (themeMainConfig) setStoreItem('themeMainConfig', themeMainConfig);
+        if (themeCustomConfig) setStoreItem('themeCustomConfig', themeCustomConfig);
         if (pagesInfo) setStoreItem('pagesInfo', pagesInfo);
 
         const forceUpdate = useForceUpdate();
@@ -49,9 +49,9 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
                 description = pageConfig.description;
             }
         }
-        if (appConfig) {
-            if (appConfig.headHtml && appConfig.headHtml !== "") {
-                headHtml = appConfig.headHtml;
+        if (themeMainConfig) {
+            if (themeMainConfig.headHtml && themeMainConfig.headHtml !== "") {
+                headHtml = themeMainConfig.headHtml;
             }
         }
 

@@ -1,10 +1,14 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import {
-    TCromwellBlockData, getStoreItem, TPageConfig, TPageInfo, apiV1BaseRoute,
-    TAppConfig, TProduct, TPagedList, TCmsConfig, TPagedParams, TProductCategory,
-    setStoreItem, serviceLocator, TThemeInfo
+    apiV1BaseRoute,
+    getStoreItem,
+    serviceLocator,
+    setStoreItem,
+    TCmsConfig,
+    TPageConfig,
+    TPageInfo,
+    TThemeMainConfig,
 } from '@cromwell/core';
-import queryString from 'query-string';
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 
 class CRestAPIClient {
@@ -28,7 +32,7 @@ class CRestAPIClient {
         return config;
     }
 
-    public getThemesInfo = async (): Promise<TThemeInfo[]> => {
+    public getThemesInfo = async (): Promise<TThemeMainConfig[]> => {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/cms/themes`);
@@ -84,19 +88,19 @@ class CRestAPIClient {
         return (res && res.data) ? res.data : [];
     }
 
-    public getAppConfig = async (): Promise<TAppConfig> => {
+    public getThemeMainConfig = async (): Promise<TThemeMainConfig> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/theme/app/config`);
-        } catch (e) { console.error('CRestAPIClient::getAppConfig', e) }
+            res = await axios.get(`${this.baseUrl}/theme/main-config`);
+        } catch (e) { console.error('CRestAPIClient::getThemeMainConfig', e) }
         return (res && res.data) ? res.data : {};
     }
 
-    public getAppCustomConfig = async (): Promise<Record<string, any>> => {
+    public getThemeCustomConfig = async (): Promise<Record<string, any>> => {
         let res: any;
         try {
-            res = await axios.get(`${this.baseUrl}/theme/app/custom-config`);
-        } catch (e) { console.error('CRestAPIClient::getAppCustomConfig', e) }
+            res = await axios.get(`${this.baseUrl}/theme/custom-config`);
+        } catch (e) { console.error('CRestAPIClient::getThemeCustomConfig', e) }
         return (res && res.data) ? res.data : {};
     }
 

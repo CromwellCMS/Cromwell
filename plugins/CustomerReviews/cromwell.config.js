@@ -1,4 +1,4 @@
-{
+module.exports = {
     "name": "ProductShowcase",
     "buildDir": "dist",
     "adminDir": "dist/plugins/ProductShowcase/src/admin",
