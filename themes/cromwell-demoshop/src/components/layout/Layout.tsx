@@ -6,6 +6,7 @@ import {
     createMuiTheme,
     ThemeProvider,
 } from '@material-ui/core';
+import { isElement } from 'react-is';
 // @ts-ignore
 import styles from './Layout.module.scss';
 // @ts-ignore
@@ -26,13 +27,15 @@ const theme = createMuiTheme({
 });
 
 export default function Layout(props: TProps) {
+    console.log('Layout render. props: ', isElement(props.children), props);
+
     return (
         <ThemeProvider theme={theme}>
             <div className={styles.Layout}>
                 <Header />
                 <CartModal />
                 <WishlistModal />
-                {props.children}
+                {isElement(props.children) && props.children}
             </div>
         </ThemeProvider>
 

@@ -381,20 +381,6 @@ export const bundler = (projectRootDir: string, installationMode: string,
             // Main generated file that contains references to generated chunks
             let content = `
             const moduleName = '${moduleName}';
-            const _interopDefaultLegacy = (lib) => {
-                if (lib && typeof lib === 'object' && 'default' in lib) {
-                    if (typeof lib.default === 'object' || typeof lib.default === 'function') {
-                        if ('default' in lib.default && Object.keys(lib).length === Object.keys(lib.default).length) {
-                            return lib.default;
-                        } else if (Object.keys(lib).length === Object.keys(lib.default).length + 1) {
-                            return lib.default;
-                        } else if (Object.keys(lib).length === 1) {
-                            return lib.default;
-                        }
-                    } 
-                }
-                return lib;
-            }
 
             const isServer = () => (typeof window === 'undefined');
             const getStore = () => {
@@ -419,26 +405,59 @@ export const bundler = (projectRootDir: string, installationMode: string,
             // If we once used 'default' import (which is whole lib), don't let it to make any other imports
             let didDefaultImport = false;
 
+            const checkDidDefaultImport = () => {
+                if (checkDidGloballyDefaultImport()) return true;
+                return didDefaultImport;
+            }
+            const checkDidGloballyDefaultImport = () => {
+                const storedLib = ${cromwellStoreModulesPath}[moduleName];
+                if (typeof storedLib === 'object' || storedLib === 'function') {
+                    if (storedLib.didDefaultImport) return true;
+                }
+            }
+
             const startImport = (cb) => {
-                if (didDefaultImport) return;
+                if (checkDidDefaultImport()) return;
                 return cb();
             }
 
+            const interopDefault = (lib, importName) => {
+                if (lib && typeof lib === 'object' && 'default' in lib) {
+
+                    if (importName !== 'default') {
+                        return lib.default;
+                    }
+
+                    if (typeof lib.default === 'object' || typeof lib.default === 'function') {
+                        if (Object.keys(lib).length === 1) {
+                            return lib.default;
+                        } else if ('default' in lib.default && Object.keys(lib).length === Object.keys(lib.default).length) {
+                            return lib.default;
+                        } else if (Object.keys(lib).length === Object.keys(lib.default).length + 1) {
+                            return lib.default;
+                        }
+                    } 
+                }
+                return lib;
+            }
+
             const handleImport = ((promise, importName, saveAsModules) => {
-                if (didDefaultImport) return;
+                if (checkDidDefaultImport()) return;
                 if (importName === 'default') {
                     didDefaultImport = true;
                 }
                 promise.then(lib => {
+                    if (checkDidGloballyDefaultImport()) return;
+
                     if (importName === 'default') {
-                        ${cromwellStoreModulesPath}[moduleName] = _interopDefaultLegacy(lib);
+                        ${cromwellStoreModulesPath}[moduleName] = interopDefault(lib, importName);
                     } else {
-                        if (didDefaultImport) return;
-                        ${cromwellStoreModulesPath}[moduleName][importName] = _interopDefaultLegacy(lib);
+                        if (checkDidDefaultImport()) return;
+                        ${cromwellStoreModulesPath}[moduleName][importName] = interopDefault(lib, importName);
                     }
                     if (saveAsModules && Array.isArray(saveAsModules)) {
                         saveAsModules.forEach(modName => {
-                            ${cromwellStoreModulesPath}[modName] = _interopDefaultLegacy(lib);
+                            ${cromwellStoreModulesPath}[modName] = interopDefault(lib, importName);
                         })
                     }
                 });
@@ -507,43 +526,47 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
 
             // Decryption of webpack's actually used modules via AST to define externals list
+            const handleStatement = (statement, source: string, exportName: string, identifierName: string) => {
+                if (!isExternalForm(source)) return;
+
+                if (moduleBuiltins[moduleName] && moduleBuiltins[moduleName].includes(source)) return;
+
+                const depVersion = getDepVersion(modulePackageJson, source);
+
+                // if (!depVersion) return;
+
+                const exportKeys = getModuleInfo(source, depVersion)?.exportKeys;
+
+                if (!exportKeys) return;
+
+                if (!exportName && identifierName) {
+                    if (exportKeys.includes(identifierName)) exportName = identifierName;
+                    else exportName = 'default';
+                }
+
+                if (!exportKeys.includes(exportName)) exportName = 'default';
+
+                if (!usedExternals[source]) usedExternals[source] = [];
+
+                if (exportName && exportKeys.includes(exportName) &&
+                    !usedExternals[source].includes(exportName)) {
+
+                    // Properties exported via "module.exports" can be the same as JS operators, we cannot code-split them
+                    // with current implementation via "import { prop } from '...';"
+                    // so just replace for 'default' to include whole lib instead 
+                    if (jsOperators.includes(exportName)) {
+                        exportName = 'default';
+                    }
+
+                    usedExternals[source].push(exportName);
+                }
+            }
+
             compiler.hooks.normalModuleFactory.tap('CromwellaBundlerPlugin', factory => {
                 factory.hooks.parser.for('javascript/auto').tap('CromwellaBundlerPlugin', (parser, options) => {
-                    parser.hooks.importSpecifier.tap('CromwellaBundlerPlugin', (statement, source: string, exportName: string, identifierName: string) => {
-
-                        if (!isExternalForm(source)) return;
-
-                        if (moduleBuiltins[moduleName] && moduleBuiltins[moduleName].includes(source)) return;
-
-                        const depVersion = getDepVersion(modulePackageJson, source);
-
-                        // if (!depVersion) return;
-
-                        const exportKeys = getModuleInfo(source, depVersion)?.exportKeys;
-
-                        if (!exportKeys) return;
-
-                        if (!exportName && identifierName) {
-                            if (exportKeys.includes(identifierName)) exportName = identifierName;
-                            else exportName = 'default';
-                        }
-
-                        if (!exportKeys.includes(exportName)) exportName = 'default';
-
-                        if (!usedExternals[source]) usedExternals[source] = [];
-
-                        if (exportName && exportKeys.includes(exportName) &&
-                            !usedExternals[source].includes(exportName)) {
-
-                            // Properties exported via "module.exports" can be the same as JS operators, we cannot code-split them
-                            // with current implementation via "import { prop } from '...';"
-                            // so just replace for 'default' to include whole lib instead 
-                            if (jsOperators.includes(exportName)) {
-                                exportName = 'default';
-                            }
-
-                            usedExternals[source].push(exportName);
-                        }
+                    parser.hooks.importSpecifier.tap('CromwellaBundlerPlugin', handleStatement);
+                    parser.hooks.exportImportSpecifier.tap('CromwellaBundlerPlugin', (statement, source, identifierName, exportName) => {
+                        handleStatement(statement, source, exportName, identifierName);
                     });
                 });
             });

@@ -27,7 +27,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
     if (!Cromwell.modules) Cromwell.modules = {};
     if (!Cromwell.moduleExternals) Cromwell.moduleExternals = {};
 
-    const canShowInfo = true;
+    const canShowInfo = false;
 
     if (!Cromwell.importModule) Cromwell.importModule = (moduleName, namedExports = ['default']): Promise<boolean> | boolean => {
         if (canShowInfo) console.log('Cromwella:bundler: importModule ' + moduleName + ' named: ' + namedExports);
@@ -141,6 +141,12 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
             // Module has been requested for the first time. Load main importer script of the module.
             if (!Cromwell.importStatuses[moduleName]) {
 
+                if (Cromwell.modules?.[moduleName]) {
+                    // Module has been asyc imported in some other importer or was bundled intentionally that way with reference in global store.
+                    Cromwell.importStatuses[moduleName] = 'failed';
+                    return true;
+                }
+
                 Cromwell.importStatuses[moduleName] = new Promise(async (onLoad) => {
 
                     if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
@@ -165,8 +171,21 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                         console.error('Cromwella:bundler: Failed to load meta info about importer of the module: ' + moduleName, e);
                     }
 
+                    if (Cromwell.modules?.[moduleName]) {
+                        // Module has been asyc imported in some other importer or was bundled intentionally that way with reference in global store.
+                        Cromwell.importStatuses[moduleName] = 'failed';
+                        return true;
+                    }
+
                     try {
                         const jsText = await importerPromise;
+
+                        if (Cromwell.modules?.[moduleName]) {
+                            // Module has been asyc imported in some other importer or was bundled intentionally that way with reference in global store.
+                            Cromwell.importStatuses[moduleName] = 'failed';
+                            return true;
+                        }
+
                         if (jsText) {
                             if (isServer()) {
                                 Function('require', jsText)(require);
@@ -183,7 +202,6 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                         onLoad('failed');
                         return false;
                     }
-
 
 
                     if (!Cromwell.imports[moduleName]) {
@@ -252,11 +270,17 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
         if (!metaInfo || !externals) return false;
 
         if (!Cromwell.scriptStatuses) Cromwell.scriptStatuses = {};
+
         if (metaInfo.name && typeof Cromwell.scriptStatuses[metaInfo.name] === 'object') {
             await Cromwell.scriptStatuses[metaInfo.name];
             return true;
         };
+
         if (metaInfo.name && typeof Cromwell.scriptStatuses[metaInfo.name] === 'string') return true;
+        if (metaInfo.name && Cromwell.modules?.[metaInfo.name]) {
+            Cromwell.scriptStatuses[metaInfo.name] = 'failed';
+            return true;
+        }
 
         if (typeof externals === 'object' && Object.keys(externals).length > 0) {
             if (canShowInfo) console.log('Cromwella:bundler: module ' + metaInfo.name + ' has externals: ' + JSON.stringify(externals, null, 4));

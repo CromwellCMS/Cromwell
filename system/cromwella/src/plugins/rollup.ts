@@ -101,7 +101,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                         if (!importsInfo[id].externals[source]) importsInfo[id].externals[source] = [];
 
                         node.specifiers.forEach(spec => {
-                            if (spec.type === 'ImportDefaultSpecifier') {
+                            if (spec.type === 'ImportDefaultSpecifier' || spec.type === 'ImportNamespaceSpecifier') {
                                 importsInfo[id].externals[source].push('default')
                             }
                             if (spec.type === 'ImportSpecifier' && spec.imported) {

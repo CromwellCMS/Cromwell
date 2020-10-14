@@ -12,7 +12,8 @@ export const moduleExportsDirChunk = 'generated';
 
 export const jsOperators = ['let', 'var', 'const', 'function', 'class', 'new', 'delete',
     'import', 'export', 'default', 'typeof', 'in', 'of', 'instanceof', 'void',
-    'await', 'return', 'try', 'catch', 'throw', 'if', 'else', 'switch', 'case'];
+    'return', 'try', 'catch', 'throw', 'if', 'else', 'switch', 'case',
+    'continue', 'do', 'while'];
 
 export const cromwellStoreModulesPath = 'CromwellStore.nodeModules.modules';
 export const cromwellStoreImportsPath = 'CromwellStore.nodeModules.imports';

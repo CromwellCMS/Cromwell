@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { BasePageNames, TCromwellPage, TCromwellPageCoreProps } from "@cromwell/core";
 import { getStoreItem, setStoreItem } from "@cromwell/core";
 import { Head } from '@cromwell/core-frontend';
@@ -23,6 +23,7 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
 
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
         const { pluginsData, pluginsSettings, pageConfig, themeCustomConfig, childStaticProps, cmsConfig, themeMainConfig, pagesInfo, ...restProps } = props;
+        const forcedChildStaticProps = useRef(null);
         if (cmsConfig) setStoreItem('cmsconfig', cmsConfig);
         if (pluginsData) setStoreItem('pluginsData', pluginsData);
         if (pluginsSettings) setStoreItem('pluginsSettings', pluginsSettings);
@@ -32,7 +33,8 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
         if (pagesInfo) setStoreItem('pagesInfo', pagesInfo);
 
         const forceUpdate = useForceUpdate();
-        const forceUpdatePage = () => {
+        const forceUpdatePage = (forcedProps?: any) => {
+            forcedChildStaticProps.current = forcedProps;
             forceUpdate();
         }
         setStoreItem('forceUpdatePage', forceUpdatePage);
@@ -55,6 +57,8 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
             }
         }
 
+        const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;
+
         // console.log('getPage: TCromwellPageCoreProps pageName', pageName, 'props', props);
         return (
             <>
@@ -62,7 +66,7 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
                     <meta charSet="utf-8" />
                     <script src="/built_modules/importer.js"></script>
                 </Head>
-                <PageComponent {...childStaticProps} {...restProps} />
+                <PageComponent {...pageCompProps} {...restProps} />
                 <Head>
                     {headHtml && ReactHtmlParser(headHtml)}
                     {title && <title>{title}</title>}

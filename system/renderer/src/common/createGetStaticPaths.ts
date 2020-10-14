@@ -2,11 +2,8 @@
 // import { getGraphQLClient } from '@cromwell/core-frontend';
 //@ts-ignore
 
-export const createGetStaticPaths = (pageName: string, PageExports: any) => {
-    if (PageExports && PageExports.getStaticPaths) {
-        return PageExports.getStaticPaths;
-    }
-    return undefined;
+export const createGetStaticPaths = (pageName: string, getStaticPaths: any) => {
+    return getStaticPaths;
 }
 /*
 export const createGetStaticPaths = (dbEntity: TDBEntity) => {

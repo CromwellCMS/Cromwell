@@ -3,12 +3,13 @@ import { getRestAPIClient } from '@cromwell/core-frontend';
 import { getThemeStaticProps } from './getThemeStaticProps';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
 
-export const createGetStaticProps = (pageName: BasePageNames | string, PageExports: any) => {
+export const createGetStaticProps = (pageName: BasePageNames | string,
+    pageGetStaticProps: ((context: StaticPageContext) => any) | undefined | null) => {
     return async function (context: StaticPageContext): Promise<
         { props: TCromwellPageCoreProps; revalidate?: number }> {
         const apiClient = getRestAPIClient();
         const timestamp = Date.now();
-        const childStaticProps = await getThemeStaticProps(pageName, PageExports, context);
+        const childStaticProps = await getThemeStaticProps(pageName, pageGetStaticProps, context);
         const { pluginsData, pluginsSettings } = await pluginsDataFetcher(pageName, context);
         const pageConfig = await apiClient?.getPageConfig(pageName);
         const themeMainConfig = await apiClient?.getThemeMainConfig()
@@ -21,7 +22,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string, PageExpor
         // if (context && context.params && context.params.slug) {
         //     pageRoute += '/' + context.params.slug;
         // }
-        console.log('getStaticProps for page: ' + pageName + ' with context: ', JSON.stringify(context));
+        console.log('getStaticProps for page: ' + pageName);
         console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms')
         // console.log('pluginssData', pluginsData, 'childStaticProps', childStaticProps);
         const props: TCromwellPageCoreProps = {

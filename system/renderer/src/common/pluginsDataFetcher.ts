@@ -29,8 +29,8 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
             // console.log('pluginConfig', pluginConfig);
             const pluginName = pluginConfig[0];
             const pluginConfigObj: any = pluginConfig[1];
-            const pluginContext = JSON.parse(JSON.stringify(context));
-            pluginContext.pluginConfig = pluginConfigObj;
+            const pluginContext = Object.assign({}, context);
+            pluginContext.pluginsConfig = pluginConfigObj;
 
             const settings = await restAPIClient?.getPluginSettings(pluginName);
             if (settings) pluginsSettings[pluginName] = settings;

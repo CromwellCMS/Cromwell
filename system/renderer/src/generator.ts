@@ -121,6 +121,8 @@ const main = async () => {
 
     // Create pages in Nex.js pages dir based on theme's pages
 
+    const disableSSR = false;
+
     console.log('pagesLocalDir', pagesLocalDir)
     await makeEmptyDir(pagesLocalDir, { recursive: true });
 
@@ -133,22 +135,8 @@ const main = async () => {
             })
         }
 
-        const pageImportName = pageInfo.compName + '_Page';
         const pageDynamicImportName = pageInfo.compName + '_DynamicPage';
 
-        const pageImport = `\nconst ${pageImportName} = require('${pageInfo.path}');`;
-
-        let pageDynamicImport = `\nconst ${pageDynamicImportName} = dynamic(async () => {
-            ${pageInfo.metaInfoPath ? `
-            const meta = await import('${pageInfo.metaInfoPath}');
-            await importer.importSciptExternals(meta);
-            ` : ''} 
-            const pagePromise = import('${pageInfo.path}');
-            console.log('pagePromise', pagePromise);
-            const pageComp = await pagePromise;
-            console.log('pageComp', pageComp);
-            return pageComp.default;
-        });`;
 
         // pageDynamicImport = `
         // import ${pageDynamicImportName} from '${pageInfo.path}';
@@ -161,8 +149,9 @@ const main = async () => {
         import React from 'react';
         import ReactDOM from 'react-dom';
         import dynamic from "next/dynamic";
+        import NextLink from 'next/link';
         import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
-        import { isServer } from "@cromwell/core";
+        import { isServer, getStoreItem } from "@cromwell/core";
         const { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig } = require('build/renderer');
 
         console.log('pageInfo.name', '${pageInfo.name}');
@@ -175,6 +164,7 @@ const main = async () => {
         ${cromwellStoreModulesPath}['react'].didDefaultImport = true;
         ${cromwellStoreModulesPath}['react-dom'] = ReactDOM;
         ${cromwellStoreModulesPath}['react-dom'].didDefaultImport = true;
+        ${cromwellStoreModulesPath}['next/link'] = NextLink;
         ${pageInfo.metaInfoPath ? `
         if (isServer()) {
             console.log('isServer pageInfo.name', '${pageInfo.name}');
@@ -186,14 +176,44 @@ const main = async () => {
         }
         ` : ''}
 
-        ${pageImport}
-        ${pageDynamicImport}
+        const ${pageDynamicImportName} = dynamic(async () => {
+            ${pageInfo.metaInfoPath ? `
+            const meta = await import('${pageInfo.metaInfoPath}');
+            await importer.importSciptExternals(meta);
+            ` : ''} 
+            const pagePromise = import('${pageInfo.path}');
+            console.log('pagePromise', pagePromise);
+            const pageComp = await pagePromise;
+            console.log('pageComp', pageComp);
+
+            ${disableSSR ? `
+            const browserGetStaticProps = createGetStaticProps('${pageInfo.name}', pageComp ? pageComp.getStaticProps : null);
+            setTimeout(async () => {
+                if (isServer()) return;
+                try {
+                    const props = await browserGetStaticProps();
+                    console.log('browserGetStaticProps', props);
+                    const forceUpdatePage = getStoreItem('forceUpdatePage');
+                    forceUpdatePage(props.childStaticProps)
+                } catch (e) {
+                    console.log('browserGetStaticProps', e)
+                }
+            }, 3000)
+            ` : ''}
+
+            return pageComp.default;
+        });;
+
+
+        ${disableSSR ? `` : `
+        const pageServerModule = require('${pageInfo.path}');
+
+        export const getStaticProps = createGetStaticProps('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticProps : null);
+        
+        export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticPaths : null);
+        `}
 
         const PageComp = getPage('${pageInfo.name}', ${pageDynamicImportName});
-
-        export const getStaticProps = createGetStaticProps('${pageInfo.name}', ${pageImportName});
-
-        export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', ${pageImportName});
 
         export default PageComp;
             `;

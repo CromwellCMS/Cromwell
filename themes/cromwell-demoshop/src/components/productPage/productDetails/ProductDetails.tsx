@@ -1,4 +1,4 @@
-import { getAppCustomConfigProp, TAttribute, TProduct, TProductReview } from '@cromwell/core';
+import { getThemeCustomConfigProp, TAttribute, TProduct, TProductReview } from '@cromwell/core';
 import {
     CContainer, CGallery, CImage, CList, CText, getGraphQLClient,
     getCStore, ProductAttributes
@@ -17,8 +17,7 @@ import { observer } from "mobx-react";
 //@ts-ignore
 import styles from './ProductDetails.module.scss';
 
-
-export const ProductDetails = observer((props: {
+const ProductDetailsComp = (props: {
     product?: TProduct | null;
     attributes?: TAttribute[];
 }) => {
@@ -33,7 +32,7 @@ export const ProductDetails = observer((props: {
     }
     const product = modifiedProductRef.current;
     const router = useRouter();
-    const customTabs = getAppCustomConfigProp('product/customTabs');
+    const customTabs = getThemeCustomConfigProp('product/customTabs');
     const client = getGraphQLClient();
 
     useEffect(() => {
@@ -205,4 +204,6 @@ export const ProductDetails = observer((props: {
         </CContainer>
 
     )
-})
+}
+
+export const ProductDetails = observer(ProductDetailsComp);

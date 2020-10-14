@@ -28,8 +28,8 @@ export default Product;
 
 export const getStaticProps: TGetStaticProps = async (context): Promise<ProductProps> => {
     // console.log('context', context)
-    const slug = (context && context.params) ? context.params.slug : null;
-    console.log('ProductThemePage::getStaticProps: pid', slug, 'context.params', context.params)
+    const slug = context?.params?.slug ?? null;
+    console.log('ProductThemePage::getStaticProps: pid', slug, 'context.params', context?.params)
     const client = getGraphQLClient();
     let product: TProduct | undefined = undefined;
     if (slug && typeof slug === 'string') {
