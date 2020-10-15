@@ -3,6 +3,10 @@ import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { TCromwellBlockData, getStoreItem } from '@cromwell/core';
 import { isValidElementType } from 'react-is';
 
+/**
+ * Used internally to import and render plugin at frontend
+ * @param props 
+ */
 export const CPlugin = (props: { id: string, className?: string, pluginName?: string }) => {
     const { pluginName, ...rest } = props;
     return (

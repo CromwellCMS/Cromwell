@@ -3,12 +3,12 @@ import {
     TCromwellBlockProps, TCromwellBlock
 } from '@cromwell/core';
 import React, { Component } from 'react';
-import { CContainer } from '../ContainerBlock/CContainer';
-import { CText } from '../TextBlock/CText';
-import { CHTML } from '../HTMLBlock/CHTML';
-import { CImage } from '../ImageBlock/CImage';
-import { CPlugin } from '../PluginBlock/CPlugin';
-import { CGallery } from '../GalleryBlock/CGallery';
+import { CContainer } from '../CContainer/CContainer';
+import { CText } from '../CText/CText';
+import { CHTML } from '../CHTML/CHTML';
+import { CImage } from '../CImage/CImage';
+import { CPlugin } from '../CPlugin/CPlugin';
+import { CGallery } from '../CGallery/CGallery';
 import {
     cromwellBlockTypeToClassname, cromwellIdToHTML,
     cromwellBlockPluginNameToClassname

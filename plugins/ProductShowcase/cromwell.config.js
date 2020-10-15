@@ -2,7 +2,7 @@ module.exports = {
     "name": "ProductShowcase",
     "buildDir": "dist",
     "adminDir": "dist/admin",
-    "frontendDir": "dist/frontend",
+    "frontendBundle": "dist/frontend/index.js",
     "backend": {
         "resolversDir": "dist/backend/resolvers",
         "entitiesDir": "dist/backend/entities"

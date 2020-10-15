@@ -1,7 +1,11 @@
 import React from 'react';
 import { getStoreItem, TFrontendPluginProps } from '@cromwell/core';
 
-
+/**
+ * Used by plugin's authors to export frontend part of their plugin
+ * @param Component Base React component
+ * @param pluginName plugin's name from config, since we can't rely on Component's name 
+ */
 export function FrontendPlugin<TData = any, TSettings = any>(Component: React.ComponentType<TFrontendPluginProps<TData, TSettings>>, pluginName: string) {
     return (): JSX.Element => {
         const pluginsData = getStoreItem('pluginsData');

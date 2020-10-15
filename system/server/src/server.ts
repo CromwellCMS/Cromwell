@@ -28,10 +28,10 @@ import { ProductCategoryResolver } from './resolvers/ProductCategoryResolver';
 import { ProductResolver } from './resolvers/ProductResolver';
 import { AttributeResolver } from './resolvers/AttributeResolver';
 import { ProductReviewResolver } from './resolvers/ProductReviewResolver';
+import { projectRootDir } from './constants';
 
 setStoreItem('rebuildPage', rebuildPage);
 
-const projectRootDir = resolve(__dirname, '../../../');
 const env: 'dev' | 'prod' | undefined = process.env.ENV ? process.env.ENV as any : 'prod';
 setStoreItem('env', env);
 

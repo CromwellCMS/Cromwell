@@ -40,8 +40,8 @@ export const readPluginsExports = (projectRootDir: string): TPluginInfo[] => {
                     pluginName: name
                 };
 
-                if (config.frontendDir) {
-                    const frontendPath = resolve(pluginsDir, name, config.frontendDir, 'index.js');
+                if (config.frontendBundle) {
+                    const frontendPath = resolve(pluginsDir, name, config.frontendBundle);
                     if (fs.existsSync(frontendPath)) {
                         pluginInfo.frontendPath = frontendPath.replace(/\\/g, '/');
                     }

@@ -1,5 +1,6 @@
 import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
+import nodeResolve from "@rollup/plugin-node-resolve";
 import postcss from 'rollup-plugin-postcss';
 import autoprefixer from "autoprefixer";
 import alias from '@rollup/plugin-alias';
@@ -57,5 +58,19 @@ export default [
         plugins: [
             typescript(),
         ]
-    }
+    },
+    // {
+    //     input: resolve(__dirname, 'src/test.ts'),
+    //     output: {
+    //         file: configDistPath + 'test.js',
+    //         format: "cjs",
+    //     },
+    //     plugins: [
+    //         rollupPluginCromwellFrontend(),
+    //         typescript(),
+    //         commonjs(),
+    //         json(),
+    //         nodeResolve()
+    //     ]
+    // }
 ]

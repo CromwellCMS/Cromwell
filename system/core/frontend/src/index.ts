@@ -1,11 +1,11 @@
 export { CromwellBlock } from './components/CromwellBlock/CromwellBlock';
-export { CText } from './components/TextBlock/CText';
-export { CHTML } from './components/HTMLBlock/CHTML';
-export { CContainer } from './components/ContainerBlock/CContainer';
-export { CImage } from './components/ImageBlock/CImage';
-export { CPlugin } from './components/PluginBlock/CPlugin';
-export { CGallery } from './components/GalleryBlock/CGallery';
-export { CList, TCList, TCListProps, TItemComponentProps } from './components/ListBlock/CList';
+export { CText } from './components/CText/CText';
+export { CHTML } from './components/CHTML/CHTML';
+export { CContainer } from './components/CContainer/CContainer';
+export { CImage } from './components/CImage/CImage';
+export { CPlugin } from './components/CPlugin/CPlugin';
+export { CGallery } from './components/CGallery/CGallery';
+export { CList, TCList, TCListProps, TItemComponentProps } from './components/CList/CList';
 export { Link } from './components/Link/Link';
 export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
 export * from './components/Head/Head';

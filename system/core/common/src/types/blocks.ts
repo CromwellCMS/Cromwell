@@ -144,16 +144,6 @@ type TImageSettings = {
     thumb?: string;
 };
 
-export type TPluginConfig = {
-    name: string;
-    adminDir?: string;
-    frontendDir?: string;
-    backend?: {
-        resolversDir?: string;
-        entitiesDir?: string;
-    };
-}
-
 export type TGallerySettings = {
     images: TImageSettings[];
     direction?: "horizontal" | "vertical";

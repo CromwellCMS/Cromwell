@@ -1,17 +1,20 @@
 import {
     getStoreItem, TThemeMainConfig, TCromwellBlockData, TPageConfig, TCmsConfig,
-    TPageInfo, TThemeConfig
+    TPageInfo, TThemeConfig, TPluginConfig
 } from '@cromwell/core';
 import { Router } from 'express';
 import fs from 'fs-extra';
 import { readCMSConfig } from '@cromwell/core-backend';
 
 import { projectRootDir } from '../constants';
+import { readPluginConfig } from './pluginsController';
+import { resolve } from 'path';
 
 export const getThemeController = (): Router => {
     const themeController = Router();
 
-    const settingsPath = `${projectRootDir}/settings/`;
+    const settingsPath = resolve(projectRootDir, 'settings');
+
 
     // < HELPERS >
 
@@ -41,7 +44,7 @@ export const getThemeController = (): Router => {
      * @param cb 
      */
     const readThemeUserConfig = (cmsConfig: TCmsConfig, cb: (config: TThemeConfig | null) => void) => {
-        const themeConfigPath = `${settingsPath}/themes/${cmsConfig.themeName}/theme.json`;
+        const themeConfigPath = resolve(settingsPath, 'themes', cmsConfig.themeName, 'theme.json');
         readThemeConfig(themeConfigPath, cb);
     }
 
@@ -51,7 +54,7 @@ export const getThemeController = (): Router => {
      * @param cb 
      */
     const readThemeOriginalConfig = (cmsConfig: TCmsConfig, cb: (config: TThemeConfig | null) => void) => {
-        const themeConfigPath = `${projectRootDir}/themes/${cmsConfig.themeName}/cromwell.config.js`;
+        const themeConfigPath =  resolve(projectRootDir, 'themes', cmsConfig.themeName, 'cromwell.config.js');
         readThemeConfig(themeConfigPath, cb);
     }
 
@@ -78,7 +81,7 @@ export const getThemeController = (): Router => {
      * @param cb 
      */
     const saveThemeUserConfig = (themeConfig: TThemeConfig, cmsConfig: TCmsConfig, cb: (success: boolean) => void) => {
-        const themeConfigPath = `${settingsPath}/themes/${cmsConfig.themeName}/theme.json`;
+        const themeConfigPath = resolve(settingsPath, 'themes', cmsConfig.themeName, 'theme.json');
         saveThemeConfig(themeConfigPath, themeConfig, cb);
     }
 
@@ -421,13 +424,21 @@ export const getThemeController = (): Router => {
 
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
             const pageRoute = req.query.pageRoute;
-            getPageConfig(pageRoute, (pageConfig) => {
+            getPageConfig(pageRoute, async (pageConfig) => {
                 if (pageConfig && pageConfig.modifications && Array.isArray(pageConfig.modifications)) {
-                    pageConfig.modifications.forEach(mod => {
-                        if (mod.type === 'plugin' && mod.plugin && mod.plugin.pluginName) {
-                            out[mod.plugin.pluginName] = mod.plugin.pluginConfig ? mod.plugin.pluginConfig : {};
+                    for (const mod of pageConfig.modifications) {
+                        const pluginName = mod?.plugin?.pluginName;
+                        if (pluginName) {
+                            const originalConf: TPluginConfig | undefined | null = await new Promise(res =>
+                                readPluginConfig(pluginName, conf => res(conf)));
+
+                            if (originalConf?.frontendBundle) originalConf.frontendBundle = resolve(
+                                projectRootDir, 'plugins', pluginName, originalConf.frontendBundle);
+
+                            const pluginConfig = Object.assign({}, mod?.plugin?.pluginConfig, originalConf);
+                            out[pluginName] = pluginConfig;
                         }
-                    })
+                    };
                 }
                 res.send(out);
 

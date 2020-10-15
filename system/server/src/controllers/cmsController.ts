@@ -3,6 +3,7 @@ import async from 'async';
 import { Router } from 'express';
 import fs from 'fs-extra';
 import { readCMSConfig } from '@cromwell/core-backend';
+import { resolve } from 'path';
 
 import { projectRootDir } from '../constants';
 
@@ -10,8 +11,8 @@ export const getCmsController = (): Router => {
 
     const cmsController = Router();
 
-    const settingsPath = `${projectRootDir}/settings/`;
-    const themesDir = `${projectRootDir}/themes`;
+    // const settingsPath = `${projectRootDir}/settings/`;
+    const themesDir = resolve(projectRootDir, 'themes');
 
     // < HELPERS >
     // < HELPERS />
@@ -57,10 +58,10 @@ export const getCmsController = (): Router => {
      */
     cmsController.get(`/themes`, function (req, res) {
         let out: (Record<string, any>)[] = [];
-        fs.readdir(themesDir, (err, files) => {
-            if (!err && files) {
-                async.each(files, function (file, callback) {
-                    const configPath = `${themesDir}/${file}/cromwell.config.js`;
+        fs.readdir(themesDir, (err, themeDirs) => {
+            if (!err && themeDirs) {
+                async.each(themeDirs, function (dirName, callback) {
+                    const configPath = resolve(themesDir, dirName, 'cromwell.config.js');
                     fs.access(configPath, fs.constants.R_OK, (err) => {
                         if (!err) {
                             try {

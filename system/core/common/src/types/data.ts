@@ -149,3 +149,16 @@ export type TPageConfig = TPageInfo & {
     modifications: TCromwellBlockData[];
     pageCustomConfig?: Record<string, any>;
 }
+
+export type TPluginConfig = {
+    name: string;
+    buildDir?: string;
+    adminDir?: string;
+    frontendBundle?: string;
+    frontendModule?: string;
+    backend?: {
+        resolversDir?: string;
+        entitiesDir?: string;
+    }
+    defaultSettings?: any;
+}

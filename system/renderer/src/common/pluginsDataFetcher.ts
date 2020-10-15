@@ -1,7 +1,7 @@
 import { BasePageNames, StaticPageContext, getStoreItem } from "@cromwell/core";
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { checkCMSConfig } from "../helpers/checkCMSConfig";
-
+import { projectRootDir } from '../constants';
 /**
  * Fetches data for all plugins at specified page. Server-side only.
  * @param pageName 
@@ -10,6 +10,7 @@ import { checkCMSConfig } from "../helpers/checkCMSConfig";
 export const pluginsDataFetcher = async (pageName: BasePageNames | string, context: StaticPageContext): Promise<{
     pluginsData: Record<string, any>;
     pluginsSettings: Record<string, any>;
+    pluginsBundles: Record<string, string>;
 }> => {
     const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.themeName) {
@@ -21,53 +22,71 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
 
     const pluginConfigs = pluginsModifications ? Object.entries(pluginsModifications) : undefined;
     // console.log('pageName', pageName, 'pluginConfigs', JSON.stringify(pluginConfigs))
-    const pluginsData: any = {};
-    const pluginsSettings: any = {}
+    const pluginsData: Record<string, any> = {};
+    const pluginsSettings: Record<string, any> = {}
+    const pluginsBundles: Record<string, string> = {};
+
 
     if (pluginConfigs && Array.isArray(pluginConfigs)) {
-        for (const pluginConfig of pluginConfigs) {
+        for (const pluginConfigEntry of pluginConfigs) {
             // console.log('pluginConfig', pluginConfig);
-            const pluginName = pluginConfig[0];
-            const pluginConfigObj: any = pluginConfig[1];
+            const pluginName = pluginConfigEntry[0];
+            const pluginConfig = pluginConfigEntry[1];
             const pluginContext = Object.assign({}, context);
-            pluginContext.pluginsConfig = pluginConfigObj;
+            pluginContext.pluginsConfig = pluginConfig;
 
             const settings = await restAPIClient?.getPluginSettings(pluginName);
             if (settings) pluginsSettings[pluginName] = settings;
-            // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
-            try {
-                // old way
-                // const plugin = await importPlugin(pluginName);
 
-                // @TODO read code as text and execute via Function();
-                const plugin = undefined;
+            // Get frontend bundle
+            const frontendBundle = await restAPIClient?.getPluginFrontendBundle(pluginName);
+            if (frontendBundle) pluginsBundles[pluginName] = frontendBundle;
 
-                if (!plugin) {
-                    console.error('Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)
-                } else {
-                    const getStaticProps = (plugin as any).getStaticProps;
-                    // console.log('plugin', plugin, 'getStaticProps', getStaticProps)
-
-                    let pluginStaticProps = {};
-                    if (getStaticProps) {
-                        try {
-                            pluginStaticProps = await getStaticProps(pluginContext);
-                            pluginStaticProps = JSON.parse(JSON.stringify(pluginStaticProps));
-                        } catch (e) {
-                            console.error('pluginsDataFetcher1', e);
-                        }
-                    }
-                    pluginsData[pluginName] = pluginStaticProps;
-                }
-
-            } catch (e) {
-                console.error('pluginsDataFetcher2', e);
+            if (!frontendBundle) {
+                console.error('Frontend bundle of the Plugin ' + pluginName + ' was not found, but used by name at page: ' + pageName)
             }
+
+            // Require module
+            // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
+            if (pluginConfig.frontendModule) {
+                try {
+
+
+                    // old way
+                    // const plugin = await importPlugin(pluginName);
+
+                    // @TODO read code as text and execute via Function();
+                    const plugin = require(pluginConfig.frontendModule);
+
+                    if (!plugin) {
+                        console.error('cjs build of the Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)
+                    } else {
+                        const getStaticProps = plugin.getStaticProps;
+                        // console.log('plugin', plugin, 'getStaticProps', getStaticProps)
+
+                        let pluginStaticProps = {};
+                        if (getStaticProps) {
+                            try {
+                                pluginStaticProps = await getStaticProps(pluginContext);
+                                pluginStaticProps = JSON.parse(JSON.stringify(pluginStaticProps));
+                            } catch (e) {
+                                console.error('pluginsDataFetcher1', e);
+                            }
+                        }
+                        pluginsData[pluginName] = pluginStaticProps;
+                    }
+
+                } catch (e) {
+                    console.error('pluginsDataFetcher2', e);
+                }
+            }
+
         }
     }
     return {
         pluginsData,
-        pluginsSettings
+        pluginsSettings,
+        pluginsBundles
     };
 }
 
