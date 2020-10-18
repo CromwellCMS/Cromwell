@@ -36,6 +36,16 @@ const main = async () => {
         }
     });
 
+    pluginInfos.forEach(info => {
+        if (info.frontendPath) {
+            pluginImports += `\nconst ${info.pluginName} = import('${info.frontendPath}');`;
+            pluginImportsSwitch += `if (pluginName === '${info.pluginName}') return ${info.pluginName};\n`;
+
+            dynamicPluginImports += `\nconst Dynamic${info.pluginName} = dynamic(() => import('${info.frontendPath}'));`;
+            dynamicPluginImportsSwitch += `if (pluginName === '${info.pluginName}') return Dynamic${info.pluginName};\n   `;
+        }
+    });
+
     // Read pages
     const themeExports = await readThemeExports(projectRootDir, config.themeName);
     const pageNames: string[] = [];
