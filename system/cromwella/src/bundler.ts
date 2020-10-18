@@ -5,7 +5,7 @@ import { dirname, isAbsolute, resolve } from 'path';
 import webpack from 'webpack';
 import { spawnSync } from "child_process";
 import { Configuration } from 'webpack';
-
+import cryptoRandomString from 'crypto-random-string';
 import {
     buildDirChunk,
     cromwellStoreImportsPath,
@@ -187,7 +187,8 @@ export const bundler = (projectRootDir: string, installationMode: string,
             return `
             '${importerKey}': () => {
                 return startImport(() => {
-                    return handleImport(import('${importPath}'), '${globalPropName}'${saveAsModulesStr});
+                    return handleImport(import( /* webpackChunkName: "${globalPropName}${cryptoRandomString({ length: 6 })}" */ 
+                        '${importPath}'), '${globalPropName}'${saveAsModulesStr});
                 });
             },
             `;
@@ -345,7 +346,9 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 if (excludeExports && excludeExports.includes(exportKey)) return;
 
 
-                const exportContentPath = resolve(moduleBuildDir, moduleExportsDirChunk, exportKey);
+                const exportContentPath = resolve(moduleBuildDir, moduleExportsDirChunk,
+                    exportKey + '_' + cryptoRandomString({ length: 5 }), 'index.js');
+
                 imports += makeImportString(exportKey, moduleName, exportContentPath, modulePath, saveAsModules);
 
                 if (jsOperators.includes(exportKey)) return;
@@ -356,8 +359,8 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 export default ${exportKey};
                 `;
 
-                await mkdirp(exportContentPath);
-                await fs.writeFile(resolve(exportContentPath, 'index.js'), exportContent);
+                await mkdirp(dirname(exportContentPath));
+                await fs.writeFile(exportContentPath, exportContent);
             }
 
             const exportKeys = getModuleInfo(moduleName, moduleVer)?.exportKeys;
@@ -377,6 +380,27 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 };
             }
 
+            const interopDefaultContent = `
+            const interopDefault = (lib, importName) => {
+                if (lib && typeof lib === 'object' && 'default' in lib) {
+
+                    if (importName !== 'default') {
+                        return lib.default;
+                    }
+
+                    if (typeof lib.default === 'object' || typeof lib.default === 'function') {
+                        if (Object.keys(lib).length === 1) {
+                            return lib.default;
+                        } else if ('default' in lib.default && Object.keys(lib).length === Object.keys(lib.default).length) {
+                            return lib.default;
+                        } else if (Object.keys(lib).length === Object.keys(lib.default).length + 1) {
+                            return lib.default;
+                        }
+                    } 
+                }
+                return lib;
+            }
+            `;
 
             // Main generated file that contains references to generated chunks
             let content = `
@@ -421,25 +445,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 return cb();
             }
 
-            const interopDefault = (lib, importName) => {
-                if (lib && typeof lib === 'object' && 'default' in lib) {
-
-                    if (importName !== 'default') {
-                        return lib.default;
-                    }
-
-                    if (typeof lib.default === 'object' || typeof lib.default === 'function') {
-                        if (Object.keys(lib).length === 1) {
-                            return lib.default;
-                        } else if ('default' in lib.default && Object.keys(lib).length === Object.keys(lib.default).length) {
-                            return lib.default;
-                        } else if (Object.keys(lib).length === Object.keys(lib.default).length + 1) {
-                            return lib.default;
-                        }
-                    } 
-                }
-                return lib;
-            }
+            ${interopDefaultContent}
 
             const handleImport = ((promise, importName, saveAsModules) => {
                 if (checkDidDefaultImport()) return;
@@ -474,7 +480,10 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
             // Main generated file that contains references to generated chunks
             let nodeContent = `
+            import * as defaultImport from '${modulePath}'
             const moduleName = '${moduleName}';
+            
+            ${interopDefaultContent}
 
             const getStore = () => {
                     if (!global.CromwellStore) global.CromwellStore = {};
@@ -485,7 +494,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
             if (!${cromwellStoreImportsPath}) ${cromwellStoreImportsPath} = {};
             if (!${cromwellStoreModulesPath}) ${cromwellStoreModulesPath} = {};
             if (!${getGlobalModuleStr(moduleName)}) {
-                ${getGlobalModuleStr(moduleName)} = require('${modulePath}');
+                ${getGlobalModuleStr(moduleName)} = interopDefault(defaultImport, 'default');
             }
             `;
 
@@ -514,13 +523,12 @@ export const bundler = (projectRootDir: string, installationMode: string,
             parsingWebpackConfig.externals = [
                 function (context, request, callback) {
                     if (isExternalForm(request)) {
-                        //@ts-ignore
-                        return callback(null, 'commonjs ' + request);
+                        return callback(null as any, 'commonjs ' + request);
                     }
                     //@ts-ignore
                     callback();
                 }
-            ]
+            ];
 
             const compiler = webpack(parsingWebpackConfig);
 
@@ -691,7 +699,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 return webpackConfig;
             }
 
-            const webpackConfig = makeConfig(commonWebpackConfig, libEntry, true);
+            const webpackConfig = makeConfig(webWebpackConfig, libEntry, true);
 
             webpackConfig.output!.publicPath = `/${buildDirChunk}/${moduleName}@${modulePackageJson.version}/`;
 
@@ -799,7 +807,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 //     }
 // }
 
-export const commonWebpackConfig: Configuration = {
+export const webWebpackConfig: Configuration = {
     target: 'web',
     output: {
         filename: moduleMainBuidFileName,
@@ -809,16 +817,8 @@ export const commonWebpackConfig: Configuration = {
     },
     optimization: {
         splitChunks: {
-            minSize: 20000,
-            maxSize: 100000,
+            maxSize: 50000,
             chunks: 'all',
-            // name: (module, chunks, cacheGroupKey) => {
-            //     const moduleFileName = module.identifier().replace(/\\/g, '/').split('/').reduceRight(item => item);
-            //     // console.log('moduleFileName', moduleFileName);
-            //     if (moduleFileName === 'main.js') return moduleFileName;
-            //     const allChunksNames = chunks.map((item) => item.name).join('~');
-            //     return `${cacheGroupKey}-${allChunksNames}-${moduleFileName}`;
-            // }
         },
     },
     module: {
@@ -837,6 +837,17 @@ export const commonWebpackConfig: Configuration = {
             }
         ]
     },
+    // // Webpack 5:
+    // resolve: {
+    //     fallback: {
+    //         "https": false,
+    //         'http': false,
+    //         'stream': false,
+    //         'tty': false,
+    //         'net': false,
+    //         'fs': false
+    //     }
+    // },
     node: {
         fs: 'empty',
         net: 'empty'
@@ -845,12 +856,11 @@ export const commonWebpackConfig: Configuration = {
     // stats: 'normal'
 };
 
-export const nodeWebpackConfigTemplate: any = {
+export const nodeWebpackConfigTemplate: Configuration = {
     target: 'node',
     output: {
         filename: moduleNodeBuidFileName,
-        libraryTarget: 'commonjs',
-        // libraryExport: 'default',
+        libraryTarget: 'commonjs2',
         globalObject: `(() => {
             if (typeof self !== 'undefined') {
                 return self;

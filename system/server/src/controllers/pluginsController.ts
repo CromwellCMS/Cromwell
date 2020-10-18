@@ -25,7 +25,7 @@ export const readPluginConfig = (pluginName: string, cb: (data: TPluginConfig | 
                     return;
                 }
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
         }
         console.error("Failed to read plugin's config at: " + filePath);
@@ -184,7 +184,6 @@ export const getPluginsController = (): Router => {
             readPluginConfig(pluginName, (config) => {
                 if (config?.frontendBundle) {
                     const filePath = resolve(pluginsPath, pluginName, config.frontendBundle);
-                    console.log('filePath', filePath);
                     fs.access(filePath, fs.constants.R_OK, (err) => {
                         if (!err) {
                             fs.readFile(filePath, (err, data) => {

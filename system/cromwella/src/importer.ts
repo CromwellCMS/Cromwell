@@ -38,7 +38,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
         if (!Cromwell.modules) Cromwell.modules = {};
         if (!Cromwell.moduleExternals) Cromwell.moduleExternals = {};
 
-        const metaFilepath = `/${buildDirChunk}/${moduleName}/${moduleMetaInfoFileName}`;
+        const metaFilepath = `${buildDirChunk}/${moduleName}/${moduleMetaInfoFileName}`;
         const importerFilepath = `/${buildDirChunk}/${moduleName}/${moduleMainBuidFileName}`;
         const importerNodeFilepath = `${buildDirChunk}/${moduleName}/${moduleNodeBuidFileName}`;
 
@@ -59,16 +59,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
             const resolve = Function('require', "return require('path').resolve")(require);
 
             try {
-                // Try to use Node.js resolution
-                const reqModule = require(moduleName);
-
-                if (!reqModule) throw new Error();
-
-                Cromwell.modules[moduleName] = reqModule;
-
-            } catch (e) {
-
-                // If failed, try to require from bundled modules
+                // Try to require from bundled modules
                 try {
                     const fullPath = resolve(serverPublicDir ? serverPublicDir :
                         resolve(process.cwd(), 'public'), metaFilepath);
@@ -97,8 +88,18 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                 } catch (e) {
                     console.error('Cromwella:bundler: Failed to require module server-side: ' + importerNodeFilepath, e);
                     Cromwell.importStatuses[moduleName] = 'failed';
-                    return false;
+                    throw new Error();
                 }
+
+            } catch (e) {
+                // If failed, try to use Node.js resolution
+                const reqModule = require(moduleName);
+
+                if (canShowInfo) console.log('reqModule: ' + moduleName + ' keys: ' + Object.keys(reqModule).length);
+
+                Cromwell.modules[moduleName] = reqModule;
+
+                return false;
             }
 
             if (canShowInfo) console.log('Cromwella:bundler: Successfully loaded module: ' + moduleName);
@@ -155,7 +156,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                     const importerPromise = fetch(importerFilepath).then(res => res.text());
 
                     // Load meta and externals if it has any
-                    const metaInfoPromise = fetch(metaFilepath).then(res => res.text());
+                    const metaInfoPromise = fetch(`/${metaFilepath}`).then(res => res.text());
 
                     try {
                         const metaInfoStr = await metaInfoPromise;
@@ -165,7 +166,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                             if (metaInfo && Cromwell?.importSciptExternals)
                                 await Cromwell.importSciptExternals(metaInfo)
                         } else {
-                            throw new Error('Failed to fetch file ' + metaFilepath)
+                            throw new Error('Failed to fetch file:  /' + metaFilepath)
                         }
                     } catch (e) {
                         console.error('Cromwella:bundler: Failed to load meta info about importer of the module: ' + moduleName, e);

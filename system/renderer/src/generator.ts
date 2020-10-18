@@ -9,6 +9,8 @@ import symlinkDir from 'symlink-dir';
 import { promisify } from 'util';
 const mkdir = promisify(gracefulfs.mkdir);
 
+const disableSSR = false;
+
 const main = async () => {
     const configPath = resolve(__dirname, '../', '../', 'cmsconfig.json');
     const projectRootDir = resolve(__dirname, '../../../').replace(/\\/g, '/');
@@ -121,9 +123,7 @@ const main = async () => {
 
     // Create pages in Nex.js pages dir based on theme's pages
 
-    const disableSSR = false;
-
-    console.log('pagesLocalDir', pagesLocalDir)
+    // console.log('pagesLocalDir', pagesLocalDir)
     await makeEmptyDir(pagesLocalDir, { recursive: true });
 
     for (const pageInfo of themeExports.pagesInfo) {
@@ -194,7 +194,8 @@ const main = async () => {
                     const props = await browserGetStaticProps();
                     console.log('browserGetStaticProps', props);
                     const forceUpdatePage = getStoreItem('forceUpdatePage');
-                    forceUpdatePage(props.childStaticProps)
+                    forceUpdatePage(props.childStaticProps);
+                    // forceUpdatePage();
                 } catch (e) {
                     console.log('browserGetStaticProps', e)
                 }

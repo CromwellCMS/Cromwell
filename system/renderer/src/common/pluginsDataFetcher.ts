@@ -1,7 +1,7 @@
 import { BasePageNames, StaticPageContext, getStoreItem } from "@cromwell/core";
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { checkCMSConfig } from "../helpers/checkCMSConfig";
-import { projectRootDir } from '../constants';
+
 /**
  * Fetches data for all plugins at specified page. Server-side only.
  * @param pageName 

@@ -46,8 +46,5 @@
     "watch": "npx rollup -cw",
     "gen": "node startup.js gen"
   },
-  "description": "",
-  "resolutions": {
-    "webpack": "^5.0.0-beta.22"
-  }
+  "description": ""
 }

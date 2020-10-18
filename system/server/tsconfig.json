@@ -23,7 +23,8 @@
   },
   "exclude": [
     "node_modules",
-    ".cromwell"
+    ".cromwell",
+    "build"
   ],
   "include": [
     "src/**/*.ts"
