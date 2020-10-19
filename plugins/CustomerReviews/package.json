@@ -33,6 +33,7 @@
   },
   "frontendDependencies": [
     "@apollo/client",
+    "@cromwell/core",
     "@cromwell/core-frontend",
     "@material-ui/core",
     "react",

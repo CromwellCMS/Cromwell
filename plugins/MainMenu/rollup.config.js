@@ -3,26 +3,30 @@ import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import json from '@rollup/plugin-json';
-import cromwellConfig from './cromwell.config.js';
 import { resolve } from 'path';
+import packageJson from './package.json';
+import { rollupPluginCromwellFrontend } from '@cromwell/cromwella';
+const cromwellConfig = require('./cromwell.config.js');
 
 const distDir = resolve(__dirname, cromwellConfig.buildDir);
 
-export default {
-    input: 'src/index.ts',
-    preserveModules: true,
-    output: [
-        {
-            dir: distDir,
-            format: "cjs",
-            exports: "auto"
-        }
-    ],
-    plugins: [
-        json(),
-        autoExternal(),
-        nodeResolve(),
-        commonjs(),
-        typescript()
-    ]
-};
+export default [
+    {
+        input: 'src/frontend/index.tsx',
+        output: [
+            {
+                file: resolve(__dirname, cromwellConfig.frontendBundle),
+                format: "iife",
+                name: cromwellConfig.name,
+            }
+        ],
+        plugins: [
+            rollupPluginCromwellFrontend({
+                type: 'plugin'
+            }),
+            nodeResolve(),
+            commonjs(),
+            typescript()
+        ]
+    }
+]

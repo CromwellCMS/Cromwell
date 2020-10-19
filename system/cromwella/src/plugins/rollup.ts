@@ -14,6 +14,7 @@ const external = id => !id.startsWith('\0') && !id.startsWith('.') && !id.starts
 
 export const rollupPluginCromwellFrontend = (settings?: {
     packageJsonPath?: string;
+    type?: 'plugin' | 'theme';
 }) => {
     // const deps = Object.keys(packageJson.dependencies);
     let packageJson;
@@ -36,17 +37,27 @@ export const rollupPluginCromwellFrontend = (settings?: {
         internals: string[];
     }> = {};
 
-    console.log('globals', globals);
+    let outputName: string | undefined;
+
+    // console.log('globals', globals);
     return {
         name: 'cromwell-frontend',
         options(options) {
-
             options.plugins.push(externalGlobals(globals));
 
             const handleOutput = (output) => {
-                if (output && output.format !== "esm") {
-                    console.log(colors.brightYellow('(!) Found wrong output format. Cromwell CMS works with output.format === "esm"'))
+                if (output && output.format !== "iife") {
+                    console.log(colors.brightYellow('(!) Found wrong output format. Cromwell CMS works with output.format === "iife"'))
                     // output.globals = Object.assign({}, output.globals, globals);;
+                }
+                if (output?.name) outputName = output?.name;
+
+                if (outputName && settings?.type === 'plugin') {
+                    output.banner = '(function() {'
+                    output.footer = `
+                    return ${outputName};
+                    });
+                    `;
                 }
             }
 

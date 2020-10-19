@@ -8,10 +8,16 @@ export type TFrontendDependency = {
     name: string;
     version: string;
     builtins?: string[];
-    externals?: string[];
+    externals?: TExternal[];
     excludeExports?: string[];
     ignore?: string[];
     addExports?: TAdditionalExports[];
+}
+
+export type TExternal = {
+    usedName: string;
+    moduleName?: string;
+    importName?: string;
 }
 
 export type TSciprtMetaInfo = {

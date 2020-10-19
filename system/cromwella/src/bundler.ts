@@ -22,7 +22,7 @@ import {
     getDepVersion
 } from './constants';
 import { getCromwellaConfigSync, globPackages, isExternalForm, collectPackagesInfo } from './shared';
-import { TAdditionalExports, TSciprtMetaInfo, TPackage, TFrontendDependency, TPackageJson } from './types';
+import { TAdditionalExports, TSciprtMetaInfo, TPackage, TFrontendDependency, TPackageJson, TExternal } from './types';
 import symlinkDir from 'symlink-dir';
 import makeEmptyDir from 'make-empty-dir';
 import importFrom from 'import-from';
@@ -95,7 +95,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
 
         // Parse cromwella.json configs
-        const moduleExternals: Record<string, string[]> = {};
+        const moduleExternals: Record<string, TExternal[]> = {};
         const moduleBuiltins: Record<string, string[]> = {};
         const modulesExcludeExports: Record<string, string[]> = {};
         const modulesToIgnore: Record<string, string[]> = {};
@@ -184,10 +184,11 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 globalPropName = 'default';
             }
 
+            // `/* webpackChunkName: "${globalPropName}${cryptoRandomString({ length: 6 })}" */ `
             return `
             '${importerKey}': () => {
                 return startImport(() => {
-                    return handleImport(import( /* webpackChunkName: "${globalPropName}${cryptoRandomString({ length: 6 })}" */ 
+                    return handleImport(import( 
                         '${importPath}'), '${globalPropName}'${saveAsModulesStr});
                 });
             },
@@ -284,8 +285,12 @@ export const bundler = (projectRootDir: string, installationMode: string,
             // Get package.json to set all Dependencies as external and then transpile them same way
             let modulePackageJson: TPackageJson | undefined;
             const packageExternals: string[] = [...frontendDependenciesNames];
-            if (moduleExternals[moduleName]) {
-                moduleExternals[moduleName].forEach(ext => packageExternals.push(ext));
+            const configuredExternals: TExternal[] | undefined = moduleExternals[moduleName] ?? [];
+            if (configuredExternals) {
+                configuredExternals.forEach(ext => {
+                    packageExternals.push(ext.usedName);
+                    if (ext.moduleName) packageExternals.push(ext.moduleName);
+                });
             }
 
             const collectedDependencies = {};
@@ -479,7 +484,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
 
             // Main generated file that contains references to generated chunks
-            let nodeContent = `
+            const nodeContent = `
             import * as defaultImport from '${modulePath}'
             const moduleName = '${moduleName}';
             
@@ -534,8 +539,21 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
 
             // Decryption of webpack's actually used modules via AST to define externals list
+            const configuredExternalsObj: Record<string, TExternal> = Object.assign({},
+                ...configuredExternals.map(ext => ({
+                    [ext.usedName]: ext
+                }))
+            )
+
             const handleStatement = (statement, source: string, exportName: string, identifierName: string) => {
                 if (!isExternalForm(source)) return;
+
+                const configuredSource = configuredExternalsObj[source];
+                if (configuredSource && configuredSource.moduleName && configuredSource.importName) {
+                    if (!usedExternals[configuredSource.moduleName]) usedExternals[configuredSource.moduleName] = [];
+                    usedExternals[configuredSource.moduleName].push(configuredSource.importName);
+                    return;
+                }
 
                 if (moduleBuiltins[moduleName] && moduleBuiltins[moduleName].includes(source)) return;
 
@@ -545,7 +563,9 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
                 const exportKeys = getModuleInfo(source, depVersion)?.exportKeys;
 
-                if (!exportKeys) return;
+                if (!exportKeys) {
+                    return;
+                }
 
                 if (!exportName && identifierName) {
                     if (exportKeys.includes(identifierName)) exportName = identifierName;
@@ -694,7 +714,16 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
                 webpackConfig.externals = Object.assign({}, ...packageExternals.map(ext => ({
                     [ext]: useGlobals ? `root ${getGlobalModuleStr(ext)}` : `commonjs ${ext}`
-                })));
+                })), ...configuredExternals.map(ext => {
+                    if (ext.moduleName && ext.importName) {
+                        return {
+                            [ext.usedName]: useGlobals ? `root ${getGlobalModuleStr(ext.moduleName)}['${ext.importName}']` :
+                                `commonjs ${ext.usedName}`
+                        }
+                    }
+                    return {};
+                })
+                );
 
                 return webpackConfig;
             }

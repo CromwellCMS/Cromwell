@@ -56,18 +56,27 @@
   "frontendDependencies": [
     "@material-ui/lab",
     "@material-ui/core",
-    "@material-ui/icons",
     "gridlex",
     "react-number-format",
     "react-router-dom",
     "react-toastify",
     "reset-css",
     {
+      "name": "@material-ui/icons",
+      "externals": [
+        {
+          "usedName": "@material-ui/core/SvgIcon",
+          "moduleName": "@material-ui/core",
+          "importName": "SvgIcon"
+        }
+      ]
+    },
+    {
       "name": "@cromwell/core-frontend",
       "externals": [
-        "next/head",
-        "next/router",
-        "next/link"
+        { "usedName": "next/head" },
+        { "usedName": "next/router" },
+        { "usedName": "next/link" }
       ]
     }
   ],
