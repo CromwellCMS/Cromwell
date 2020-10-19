@@ -1,5 +1,5 @@
 import { TDBEntity, TGraphQLNode } from './types/data';
-import { getCmsConfig } from './globalStore';
+import { getCmsConfig } from './GlobalStore';
 
 export enum BasePageNames {
     Index = 'index',

@@ -5,6 +5,7 @@ import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blo
 
 export type TCromwellStore = {
     pluginsData?: Record<string, any>;
+    pluginsComponents?: Record<string, any>;
     pluginsSettings?: Record<string, any>;
     cmsconfig?: TCmsConfig;
     pageConfig?: TPageConfig;

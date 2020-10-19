@@ -44,17 +44,17 @@ export const readThemeExports = async (projectRootDir: string, themeName: string
         pagesInfo: []
     }
 
-    if (fs.existsSync(pagesPath)) {
+    if (await fs.pathExists(pagesPath)) {
         const files: string[] = await readRecursive(pagesPath);
-        files.forEach(p => {
-            if (!/\.(m?jsx?|tsx?)$/.test(p)) return;
+        for (const p of files) {
+            if (!/\.(m?jsx?|tsx?)$/.test(p)) continue;
 
             let path: string | undefined = p.replace(/\\/g, '/');
             const name = path.replace(/\.js$/, '').replace(`${pagesPath}/`, '');
             const compName = `Theme_${themeName.replace(/\W/g, '_')}_Page_${name.replace(/\W/g, '_')}_${getRandStr()}`;
 
             let metaInfoPath: string | undefined = path + '_meta.json';
-            if (!fs.existsSync(metaInfoPath)) metaInfoPath = undefined;
+            if (!(await fs.pathExists(metaInfoPath))) metaInfoPath = undefined;
 
             let fileContent: string | undefined = undefined;
             // if (pageName === '_app' || pageName === '_document') {
@@ -69,13 +69,13 @@ export const readThemeExports = async (projectRootDir: string, themeName: string
                 fileContent,
                 metaInfoPath
             })
-        });
+        };
     }
 
     const adminPanelConfigDir = themeConfig?.main?.adminPanelDir;
     if (adminPanelConfigDir) {
         const adminPanelDir = resolve(themeDir, adminPanelConfigDir);
-        if (fs.existsSync(adminPanelDir)) {
+        if (await fs.pathExists(adminPanelDir)) {
             exportsInfo.adminPanelPath = adminPanelDir.replace(/\\/g, '/');
         }
     }

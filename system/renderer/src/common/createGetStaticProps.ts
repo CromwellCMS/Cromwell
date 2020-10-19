@@ -36,7 +36,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
             pagesInfo
         }
         return {
-            props: JSON.parse(JSON.stringify(props)),
+            props: props,
             revalidate: process.env.isProd ? 1 : undefined
         }
     }

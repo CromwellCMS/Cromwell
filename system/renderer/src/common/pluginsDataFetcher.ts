@@ -10,7 +10,7 @@ import { checkCMSConfig } from "../helpers/checkCMSConfig";
 export const pluginsDataFetcher = async (pageName: BasePageNames | string, context: StaticPageContext): Promise<{
     pluginsData: Record<string, any>;
     pluginsSettings: Record<string, any>;
-    pluginsBundles: Record<string, string>;
+    // pluginsBundles: Record<string, string>;
 }> => {
     const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.themeName) {
@@ -24,7 +24,7 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
     // console.log('pageName', pageName, 'pluginConfigs', JSON.stringify(pluginConfigs))
     const pluginsData: Record<string, any> = {};
     const pluginsSettings: Record<string, any> = {}
-    const pluginsBundles: Record<string, string> = {};
+    // const pluginsBundles: Record<string, string> = {};
 
 
     if (pluginConfigs && Array.isArray(pluginConfigs)) {
@@ -38,13 +38,7 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
             const settings = await restAPIClient?.getPluginSettings(pluginName);
             if (settings) pluginsSettings[pluginName] = settings;
 
-            // Get frontend bundle
-            const frontendBundle = await restAPIClient?.getPluginFrontendBundle(pluginName);
-            if (frontendBundle) pluginsBundles[pluginName] = frontendBundle;
 
-            if (!frontendBundle) {
-                console.error('Frontend bundle of the Plugin ' + pluginName + ' was not found, but used by name at page: ' + pageName)
-            }
 
             // Require module
             // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
@@ -86,7 +80,7 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
     return {
         pluginsData,
         pluginsSettings,
-        pluginsBundles
+        // pluginsBundles
     };
 }
 

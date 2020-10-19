@@ -2,9 +2,7 @@ import { TCromwellStore, TThemeMainConfig, TCmsConfig } from './types/data';
 import { TCommonComponentProps, TCromwellBlock } from './types/blocks';
 import { isServer, ECommonComponentNames } from './constants';
 
-const initialStore: TCromwellStore = {
-    pluginsData: {}
-}
+const initialStore: TCromwellStore = {}
 
 if (isServer()) {
     if (!global.CromwellStore)
