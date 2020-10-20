@@ -429,11 +429,10 @@ export const getThemeController = (): Router => {
                     for (const mod of pageConfig.modifications) {
                         const pluginName = mod?.plugin?.pluginName;
                         if (pluginName) {
-                            const originalConf: TPluginConfig | undefined | null = await new Promise(res =>
-                                readPluginConfig(pluginName, conf => res(conf)));
+                            const originalConf: TPluginConfig | undefined | null = await readPluginConfig(pluginName);
 
-                            if (originalConf?.frontendBundle) originalConf.frontendBundle = resolve(
-                                projectRootDir, 'plugins', pluginName, originalConf.frontendBundle);
+                            if (originalConf?.buildDir) originalConf.buildDir = resolve(
+                                projectRootDir, 'plugins', pluginName, originalConf.buildDir);
 
                             const pluginConfig = Object.assign({}, mod?.plugin?.pluginConfig, originalConf);
                             out[pluginName] = pluginConfig;

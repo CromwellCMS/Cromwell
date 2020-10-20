@@ -60,13 +60,18 @@ const main = async () => {
 
         const cmsConfig = ${JSON.stringify(config)};
         checkCMSConfig(cmsConfig);
-
+        
         const importer = getModuleImporter();
         ${cromwellStoreModulesPath}['react'] = React;
         ${cromwellStoreModulesPath}['react'].didDefaultImport = true;
         ${cromwellStoreModulesPath}['react-dom'] = ReactDOM;
         ${cromwellStoreModulesPath}['react-dom'].didDefaultImport = true;
         ${cromwellStoreModulesPath}['next/link'] = NextLink;
+        ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
+
+        // TEMP
+        ${cromwellStoreModulesPath}['@cromwell/core-frontend'] = require('@cromwell/core-frontend');
+        
         ${pageInfo.metaInfoPath ? `
         if (isServer()) {
             console.log('isServer pageInfo.name', '${pageInfo.name}');

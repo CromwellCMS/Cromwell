@@ -7,7 +7,9 @@ import {
     TPageConfig,
     TPageInfo,
     TThemeMainConfig,
-    TPluginConfig
+    TPluginConfig,
+    TSciprtMetaInfo,
+    TPluginFrontendBundle
 } from '@cromwell/core';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
@@ -121,7 +123,7 @@ class CRestAPIClient {
         return res?.data ?? null;
     }
 
-    public getPluginFrontendBundle = async (pluginName: string): Promise<any | null> => {
+    public getPluginFrontendBundle = async (pluginName: string): Promise<TPluginFrontendBundle | null> => {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/plugin/frontend-bundle/${pluginName}`);

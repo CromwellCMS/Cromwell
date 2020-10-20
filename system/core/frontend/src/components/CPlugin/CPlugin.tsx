@@ -1,9 +1,11 @@
 import React from 'react';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
-import { TCromwellBlockData, getStoreItem, setStoreItem } from '@cromwell/core';
+import { TCromwellBlockData, getStoreItem, setStoreItem, getStore, isServer } from '@cromwell/core';
 import { isValidElementType } from 'react-is';
 import { getRestAPIClient } from '../../api/CRestAPIClient';
-import dynamic from "next/dynamic";
+import dynamic from 'next/dynamic';
+
+const fallbackComponent = () => <></>;
 
 const getComponent = (pluginName: string) => {
     const pluginsComponents = getStoreItem('pluginsComponents');
@@ -14,23 +16,49 @@ const getComponent = (pluginName: string) => {
         // Get frontend bundle
         const frontendBundle = await restAPIClient?.getPluginFrontendBundle(pluginName);
         // if (frontendBundle) pluginsBundles[pluginName] = frontendBundle;
-        if (!frontendBundle) {
+        if (!frontendBundle || !frontendBundle.source) {
             console.error('Frontend bundle of the Plugin ' + pluginName + ' was not found, but used by name');
+            return fallbackComponent;
         }
+
+        if (frontendBundle.meta) {
+            const nodeModules = getStoreItem('nodeModules');
+            await nodeModules?.importSciptExternals?.(frontendBundle.meta);
+        }
+
+        let pluginsComponents = getStoreItem('pluginsComponents');
+        if (!pluginsComponents) pluginsComponents = {};
+        setStoreItem('pluginsComponents', pluginsComponents);
+
         let comp;
         try {
-            comp = Function(`return ${frontendBundle}`)();
+            if (!isServer()) {
+                frontendBundle.source = `
+                var comp = ${frontendBundle.source};
+                CromwellStore.pluginsComponents['${pluginName}'] = comp;
+                `;
+
+                await new Promise(res => {
+                    var s = document.createElement('script');
+                    s.innerHTML = frontendBundle.source ?? '';
+                    s.onload = () => res();
+                    document.head.appendChild(s);
+                });
+                comp = pluginsComponents[pluginName];
+            } else {
+                if (frontendBundle.cjsPath) {
+                    comp = require(frontendBundle.cjsPath).default;
+                } else {
+                    comp = Function('CromwellStore', `return ${frontendBundle.source}`)(getStore());
+                }
+                if (comp) pluginsComponents[pluginName] = comp;
+            }
             if (!comp) throw new Error('!comp');
         } catch (e) {
             console.error('Failed to execute plugin: ' + pluginName, e);
-            return () => {
-                return <></>
-            };
+            return fallbackComponent;
         }
-        let pluginsComponents = getStoreItem('pluginsComponents');
-        if (!pluginsComponents) pluginsComponents = {};
-        pluginsComponents[pluginName] = comp;
-        setStoreItem('pluginsComponents', pluginsComponents);
+
 
         return comp
     });
@@ -45,13 +73,14 @@ export const CPlugin = (props: { id: string, className?: string, pluginName?: st
     const { pluginName, ...rest } = props;
 
     return (
-        <CromwellBlock {...rest} type='image'
+        <CromwellBlock {...rest} type='plugin'
             content={(data) => {
                 const name = (data && data.plugin && data.plugin.pluginName) ? data.plugin.pluginName : pluginName;
                 let PluginComponent;
                 if (name) {
                     PluginComponent = getComponent(name);
                 }
+                // console.log('CPlugin name', name, 'PluginComponent', PluginComponent);
                 if (PluginComponent && isValidElementType(PluginComponent)) return (
                     <ErrorBoundary>
                         <PluginComponent />

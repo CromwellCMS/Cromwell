@@ -13,7 +13,7 @@ else {
         window.CromwellStore = initialStore;
 }
 
-const getStore = (): TCromwellStore => {
+export const getStore = (): TCromwellStore => {
     if (isServer()) {
         return global.CromwellStore;
     }

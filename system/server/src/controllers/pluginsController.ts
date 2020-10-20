@@ -1,8 +1,10 @@
 import { Router } from 'express';
-import fs from 'fs-extra';
+import fs, { pathExists } from 'fs-extra';
 import { TPluginConfig } from '@cromwell/core';
 import { projectRootDir } from '../constants';
 import { resolve } from 'path';
+import { getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath } from '@cromwell/core-backend';
+import { TSciprtMetaInfo, TPluginFrontendBundle } from '@cromwell/core';
 
 const settingsPath = resolve(projectRootDir, 'settings/plugins');
 const pluginsPath = resolve(projectRootDir, 'plugins');
@@ -14,23 +16,19 @@ const pluginsPath = resolve(projectRootDir, 'plugins');
  * @param pluginName 
  * @param cb 
  */
-export const readPluginConfig = (pluginName: string, cb: (data: TPluginConfig | null) => void) => {
+export const readPluginConfig = async (pluginName: string): Promise<TPluginConfig | null> => {
     const filePath = resolve(pluginsPath, pluginName, 'cromwell.config.js');
-    fs.access(filePath, fs.constants.R_OK, (err) => {
-        if (!err) {
-            try {
-                let out = require(filePath);
-                if (out && typeof out === 'object') {
-                    cb(out);
-                    return;
-                }
-            } catch (e) {
-                console.error(e);
+    if (await fs.pathExists(filePath)) {
+        try {
+            let out = require(filePath);
+            if (out && typeof out === 'object') {
+                return out;
             }
+        } catch (e) {
+            console.error(e);
         }
-        console.error("Failed to read plugin's config at: " + filePath);
-        cb(null);
-    })
+    }
+    return null;
 }
 
 /**
@@ -38,14 +36,12 @@ export const readPluginConfig = (pluginName: string, cb: (data: TPluginConfig | 
  * @param pluginName name of plugin and plugin's folder
  * @param cb callback with settings
  */
-const readPluginDefaultSettings = (pluginName: string, cb: (data: any) => void) => {
-    readPluginConfig(pluginName, (out) => {
-        if (out && out.defaultSettings) {
-            cb(out.defaultSettings);
-            return;
-        }
-        cb(null);
-    })
+const readPluginDefaultSettings = async (pluginName: string): Promise<any> => {
+    const out = await readPluginConfig(pluginName);
+    if (out && out.defaultSettings) {
+        return out.defaultSettings;
+    }
+    return null;
 }
 
 /**
@@ -53,26 +49,20 @@ const readPluginDefaultSettings = (pluginName: string, cb: (data: any) => void) 
  * @param pluginName name of plugin and plugin's directory
  * @param cb callback with settings
  */
-const readPluginSettings = (pluginName: string, cb: (data: any) => void) => {
+const readPluginSettings = async (pluginName: string): Promise<any> => {
     const filePath = resolve(settingsPath, pluginName, 'settings.json');
-    fs.access(filePath, fs.constants.R_OK, (err) => {
-        if (!err) {
-            fs.readFile(filePath, (err, data) => {
-                if (!err) {
-                    try {
-                        let out = JSON.parse(data.toString());
-                        cb(out);
-                        return;
-                    } catch (e) {
-                        console.error("Failed to read plugin's settings", e);
-                    }
-                }
-                cb(null);
-            })
-        } else {
-            cb(null);
+
+    if (await fs.pathExists(filePath)) {
+        try {
+            const data = await fs.readFile(filePath);
+            let out = JSON.parse(data.toString());
+            return out;
+        } catch (e) {
+            console.error("Failed to read plugin's settings", e);
         }
-    })
+    }
+
+
 }
 // < HELPERS />
 
@@ -104,16 +94,14 @@ export const getPluginsController = (): Router => {
      *       200:
      *         description: settings
      */
-    pluginsController.get(`/settings/:pluginName`, function (req, res) {
+    pluginsController.get(`/settings/:pluginName`, async (req, res) => {
         let out: Record<string, any> = {};
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {
-            readPluginSettings(pluginName, (settings) => {
-                readPluginDefaultSettings(pluginName, (defaultSettings) => {
-                    const out = Object.assign({}, defaultSettings, settings);
-                    res.send(out);
-                })
-            })
+            const settings = await readPluginSettings(pluginName);
+            const defaultSettings = await readPluginDefaultSettings(pluginName);
+            const out = Object.assign({}, defaultSettings, settings);
+            res.send(out);
         } else {
             res.status(404).send("Invalid pluginName")
         }
@@ -177,36 +165,44 @@ export const getPluginsController = (): Router => {
      *       200:
      *         description: bundle
      */
-    pluginsController.get(`/frontend-bundle/:pluginName`, function (req, res) {
-        let out: Record<string, any> = {};
+    pluginsController.get(`/frontend-bundle/:pluginName`, async (req, res) => {
+        let out: TPluginFrontendBundle;
+
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {
-            readPluginConfig(pluginName, (config) => {
-                if (config?.frontendBundle) {
-                    const filePath = resolve(pluginsPath, pluginName, config.frontendBundle);
-                    fs.access(filePath, fs.constants.R_OK, (err) => {
-                        if (!err) {
-                            fs.readFile(filePath, (err, data) => {
-                                if (!err) {
-                                    try {
-                                        let out = data.toString();
-                                        if (out) res.send(out);
-                                        return;
-                                    } catch (e) {
-                                        console.error("Failed to read plugin's settings", e);
-                                    }
-                                }
-                                res.status(404).send("Invalid plugin bundle");
-                            })
-                        } else {
-                            res.status(404).send("Invalid plugin bundle");
+            const config = await readPluginConfig(pluginName);
+            if (config?.buildDir) {
+                const filePath = getPluginFrontendBundlePath(resolve(pluginsPath, pluginName, config.buildDir));
+                let cjsPath: string | undefined = getPluginFrontendCjsPath(resolve(pluginsPath, pluginName, config.buildDir));
+                
+                if (!(await fs.pathExists(cjsPath))) cjsPath = undefined;
+
+                if (await fs.pathExists(filePath)) {
+                    try {
+                        const source = (await fs.readFile(filePath)).toString();
+
+                        let meta: TSciprtMetaInfo | undefined;
+                        if (await fs.pathExists(getMetaInfoPath(filePath))) {
+                            try {
+                                meta = JSON.parse((await fs.readFile(getMetaInfoPath(filePath))).toString());
+                            } catch (e) { }
                         }
-                    })
+
+                        out = {
+                            source,
+                            meta,
+                            cjsPath
+                        }
+
+                        if (out) res.send(out);
+                        return;
+                    } catch (e) {
+                        console.error("Failed to read plugin's settings", e);
+                    }
                 }
-            })
-        } else {
-            res.status(404).send("Invalid pluginName")
-        }
+            }
+        };
+        res.status(404).send("Invalid pluginName")
     })
 
     return pluginsController;

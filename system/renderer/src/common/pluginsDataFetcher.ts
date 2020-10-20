@@ -38,19 +38,14 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
             const settings = await restAPIClient?.getPluginSettings(pluginName);
             if (settings) pluginsSettings[pluginName] = settings;
 
-
+            const bundleInfo = await restAPIClient?.getPluginFrontendBundle(pluginName);
 
             // Require module
             // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
-            if (pluginConfig.frontendModule) {
+            if (bundleInfo?.cjsPath) {
                 try {
 
-
-                    // old way
-                    // const plugin = await importPlugin(pluginName);
-
-                    // @TODO read code as text and execute via Function();
-                    const plugin = require(pluginConfig.frontendModule);
+                    const plugin = require(bundleInfo.cjsPath);
 
                     if (!plugin) {
                         console.error('cjs build of the Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)

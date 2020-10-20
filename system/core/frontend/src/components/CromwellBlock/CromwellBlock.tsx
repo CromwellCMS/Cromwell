@@ -138,7 +138,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         this.readConfig();
 
         // console.log('CromwellBlock::render id: ' + this.id + ' data: ' + JSON.stringify(this.data));
-        if (this.data && this.data.isDeleted) {
+        if (this.data?.isDeleted) {
             return <></>;
         }
 
