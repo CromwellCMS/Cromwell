@@ -1,6 +1,6 @@
 module.exports = {
     "name": "MainMenu",
+    "type": "plugin",
     "buildDir": "dist",
-    "adminDir": "dist/src/admin",
-    "frontendBundle": "dist/src/frontend/index.js"
+    "frontendInputFile": "src/frontend/index.tsx"
 }

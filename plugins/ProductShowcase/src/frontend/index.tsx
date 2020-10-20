@@ -3,7 +3,7 @@ import { StaticPageContext, TProductCategory, TProduct, TFrontendPluginProps } f
 import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
 import { useStyles } from './styles';
 import { ECommonComponentNames, loadCommonComponent } from '@cromwell/core';
-import Swiper, { Navigation, Pagination, SwiperOptions, Lazy, Virtual } from 'swiper';
+import { Swiper, Navigation, Pagination, SwiperOptions, Lazy, Virtual } from 'swiper';
 import { VirtualData } from 'swiper/types/components/virtual';
 import { gql } from '@apollo/client';
 //@ts-ignore
@@ -13,7 +13,7 @@ import swiperCSS from "swiper/swiper-bundle.css";
 import styles from './CGallery.module.scss';
 Swiper.use([Navigation, Pagination, Virtual]);
 
-interface ProductShowcaseProps {
+type ProductShowcaseProps = {
     productShowcase?: TProductCategory;
 }
 

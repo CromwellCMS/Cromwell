@@ -1,7 +1,7 @@
 import { TCmsConfig, setStoreItem, TPluginConfig } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import { getPluginsDir } from './paths';
+import { getPluginsDir, getPluginFrontendBundlePath } from './paths';
 
 export type TPluginInfo = {
     pluginName: string;
@@ -40,8 +40,8 @@ export const readPluginsExports = (projectRootDir: string): TPluginInfo[] => {
                     pluginName: name
                 };
 
-                if (config.frontendBundle) {
-                    const frontendPath = resolve(pluginsDir, name, config.frontendBundle);
+                if (config.buildDir) {
+                    const frontendPath = getPluginFrontendBundlePath(resolve(pluginsDir, name, config.buildDir));
                     if (fs.existsSync(frontendPath)) {
                         pluginInfo.frontendPath = frontendPath.replace(/\\/g, '/');
                     }

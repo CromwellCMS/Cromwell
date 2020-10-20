@@ -8,6 +8,11 @@ export const getThemeDirSync = (projectRootDir: string, themeName: string): stri
     }
 }
 
+export const getMetaInfoPath = (filename: string) => `${filename}_meta.json`;
+
+export const getPluginFrontendBundlePath = (distDir: string) => resolve(distDir, 'frontend/index.js');
+export const getPluginFrontendCjsPath = (distDir: string) => resolve(distDir, 'frontend/cjs.js');
+
 export const getCMSConfigPath = (projectRootDir: string) =>
     resolve(projectRootDir, 'system/cmsconfig.json');
 

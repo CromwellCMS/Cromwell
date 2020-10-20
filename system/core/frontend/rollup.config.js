@@ -8,7 +8,7 @@ import { resolve } from 'path';
 import pkg from './package.json';
 
 const input = resolve(__dirname, 'src/index.ts');
-const external = ['next/link', 'next/head', "tslib"];
+const external = ['next/link', 'next/head', 'next/dynamic', "tslib"];
 const getOutput = (format = 'esm') => {
     if (format === 'esm') {
         return { dir: resolve(__dirname, pkg.module), format, sourcemap: true, };

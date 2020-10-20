@@ -11,8 +11,6 @@ export type TCromwellStore = {
     pageConfig?: TPageConfig;
     themeCustomConfig?: Record<string, any>;
     themeMainConfig?: TThemeMainConfig;
-    importPlugin?: (pluginName: string) => { default: ComponentType } | undefined;
-    importDynamicPlugin?: (pluginName: string) => ComponentType | undefined;
     rebuildPage?: (path: string) => void;
     /** { [ComponentName]: (Class/function) } */
     components?: Record<string, React.ComponentType<TCommonComponentProps>>;
@@ -27,7 +25,7 @@ export type TCromwellStore = {
     restAPIClient?: any;
     webSocketClient?: any;
     cstore?: any;
-    // nodeModules?: TCromwellNodeModules;
+    nodeModules?: TCromwellNodeModules;
 }
 
 declare global {
@@ -151,15 +149,41 @@ export type TPageConfig = TPageInfo & {
     pageCustomConfig?: Record<string, any>;
 }
 
-export type TPluginConfig = {
+export type TBuildConfig = {
     name: string;
+    type: 'plugin' | 'theme';
+}
+
+export type TPluginConfig = TBuildConfig & {
     buildDir?: string;
     adminDir?: string;
-    frontendBundle?: string;
+    frontendInputFile?: string
     frontendModule?: string;
     backend?: {
         resolversDir?: string;
         entitiesDir?: string;
     }
     defaultSettings?: any;
+}
+
+export type TCromwellNodeModules = {
+    importStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
+    scriptStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
+    imports?: Record<string, () => void>;
+    modules?: Record<string, Object>;
+    moduleExternals?: Record<string, string[]>;
+    importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean> | boolean;
+    importSciptExternals?: (metaInfo: TSciprtMetaInfo) => Promise<boolean>;
+};
+
+export type TSciprtMetaInfo = {
+    name: string;
+    // { [moduleName]: namedImports }
+    externalDependencies: Record<string, string[]>
+}
+
+export type TPluginFrontendBundle = {
+    source?: string;
+    meta?: TSciprtMetaInfo;
+    cjsPath?: string;
 }

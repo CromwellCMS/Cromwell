@@ -1,4 +1,4 @@
-import { TProduct } from '@cromwell/core';
+import { TProduct, TSciprtMetaInfo } from '@cromwell/core';
 
 export type TStoreListItem = {
     product?: TProduct;

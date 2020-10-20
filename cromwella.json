@@ -27,14 +27,6 @@
     "swiper",
     "tslib",
     {
-      "name": "@cromwell/core-frontend",
-      "externals": [
-        "next/head",
-        "next/router",
-        "next/link"
-      ]
-    },
-    {
       "name": "@babel/runtime",
       "addExports": [
         {

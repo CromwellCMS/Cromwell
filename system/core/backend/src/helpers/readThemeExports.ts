@@ -1,7 +1,9 @@
-import { TCmsConfig, TThemeConfig } from '@cromwell/core';
+import { TThemeConfig } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import readRecursive from 'recursive-readdir';
+
+import { getMetaInfoPath } from './paths';
 
 export type TThemeExportsInfo = {
     pagesInfo: TPagePathInfo[]
@@ -53,7 +55,7 @@ export const readThemeExports = async (projectRootDir: string, themeName: string
             const name = path.replace(/\.js$/, '').replace(`${pagesPath}/`, '');
             const compName = `Theme_${themeName.replace(/\W/g, '_')}_Page_${name.replace(/\W/g, '_')}_${getRandStr()}`;
 
-            let metaInfoPath: string | undefined = path + '_meta.json';
+            let metaInfoPath: string | undefined = getMetaInfoPath(path);
             if (!(await fs.pathExists(metaInfoPath))) metaInfoPath = undefined;
 
             let fileContent: string | undefined = undefined;

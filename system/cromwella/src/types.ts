@@ -20,12 +20,6 @@ export type TExternal = {
     importName?: string;
 }
 
-export type TSciprtMetaInfo = {
-    name: string;
-    // { [moduleName]: namedImports }
-    externalDependencies: Record<string, string[]>
-}
-
 export type TAdditionalExports = {
     name: string;
     path?: string;
@@ -77,16 +71,6 @@ export type TLocalSymlink = {
     linkPath: string;
     referredDir: string;
 }
-
-export type TCromwellNodeModules = {
-    importStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
-    scriptStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
-    imports?: Record<string, () => void>;
-    modules?: Record<string, Object>;
-    moduleExternals?: Record<string, string[]>;
-    importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean> | boolean;
-    importSciptExternals?: (metaInfo: TSciprtMetaInfo) => Promise<boolean>;
-};
 
 export type TGetDepsCb = (
     packages: TPackage[],

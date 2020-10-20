@@ -6,6 +6,7 @@ import webpack from 'webpack';
 import { spawnSync } from "child_process";
 import { Configuration } from 'webpack';
 import cryptoRandomString from 'crypto-random-string';
+import { TCromwellNodeModules, TSciprtMetaInfo } from '@cromwell/core';
 import {
     buildDirChunk,
     cromwellStoreImportsPath,
@@ -22,7 +23,7 @@ import {
     getDepVersion
 } from './constants';
 import { getCromwellaConfigSync, globPackages, isExternalForm, collectPackagesInfo } from './shared';
-import { TAdditionalExports, TSciprtMetaInfo, TPackage, TFrontendDependency, TPackageJson, TExternal } from './types';
+import { TAdditionalExports, TPackage, TFrontendDependency, TPackageJson, TExternal } from './types';
 import symlinkDir from 'symlink-dir';
 import makeEmptyDir from 'make-empty-dir';
 import importFrom from 'import-from';
@@ -76,12 +77,25 @@ export const bundler = (projectRootDir: string, installationMode: string,
                             name: dep,
                             version: depVersion
                         };
+                        if (!frontendDep.version) frontendDep.version = depVersion;
 
                         // if (!frontendDependencies.includes(dep))
-                        if (frontendDependencies.every(mainDep => {
-                            return !(mainDep.name === frontendDep.name && mainDep.version === frontendDep.version)
-                        })) {
+                        let index: number | undefined = undefined;
+                        frontendDependencies.every((mainDep, i) => {
+                            if (mainDep.name === frontendDep.name && mainDep.version === frontendDep.version) {
+                                index = i;
+                                return false;
+                            }
+                            return true;
+                        });
+
+                        if (index !== undefined) {
+                            if (typeof dep === 'object') {
+                                frontendDependencies[index] = frontendDep;
+                            }
+                        } else {
                             frontendDependencies.push(frontendDep);
+
                         }
                     })
                 }
@@ -288,7 +302,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
             const configuredExternals: TExternal[] | undefined = moduleExternals[moduleName] ?? [];
             if (configuredExternals) {
                 configuredExternals.forEach(ext => {
-                    packageExternals.push(ext.usedName);
+                    if (ext.usedName) packageExternals.push(ext.usedName);
                     if (ext.moduleName) packageExternals.push(ext.moduleName);
                 });
             }
@@ -715,12 +729,17 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 webpackConfig.externals = Object.assign({}, ...packageExternals.map(ext => ({
                     [ext]: useGlobals ? `root ${getGlobalModuleStr(ext)}` : `commonjs ${ext}`
                 })), ...configuredExternals.map(ext => {
+                    let extStr;
+                    if (ext.usedName) extStr = `root ${getGlobalModuleStr(ext.usedName)}`;
                     if (ext.moduleName && ext.importName) {
-                        return {
-                            [ext.usedName]: useGlobals ? `root ${getGlobalModuleStr(ext.moduleName)}['${ext.importName}']` :
-                                `commonjs ${ext.usedName}`
-                        }
+                        extStr = `root ${getGlobalModuleStr(ext.moduleName)}['${ext.importName}']`;
+
                     }
+                    if (extStr) {
+                        return {
+                            [ext.usedName]: useGlobals ? extStr : `commonjs ${ext.usedName}`
+                        }
+                    };
                     return {};
                 })
                 );

@@ -76,7 +76,8 @@
       "externals": [
         { "usedName": "next/head" },
         { "usedName": "next/router" },
-        { "usedName": "next/link" }
+        { "usedName": "next/link" },
+        { "usedName": "next/dynamic" }
       ]
     }
   ],

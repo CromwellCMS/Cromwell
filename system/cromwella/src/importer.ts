@@ -1,4 +1,4 @@
-import { TCromwellNodeModules, TSciprtMetaInfo } from './types';
+import { TCromwellNodeModules, TSciprtMetaInfo } from '@cromwell/core';
 import { buildDirChunk, moduleMainBuidFileName, moduleNodeBuidFileName, moduleMetaInfoFileName } from './constants';
 
 /**
