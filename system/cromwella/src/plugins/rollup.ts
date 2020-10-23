@@ -1,12 +1,17 @@
-import { TSciprtMetaInfo, TPluginConfig } from '@cromwell/core';
-import { getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath } from '@cromwell/core-backend';
+import { TSciprtMetaInfo, TPluginConfig, TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
+import {
+    getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath
+} from '@cromwell/core-backend';
 import colorsdef from 'colors/safe';
 import { walk } from 'estree-walker';
 import glob from 'glob';
 import { dirname, resolve, isAbsolute } from 'path';
+import normalizePath from 'normalize-path';
 import externalGlobals from 'rollup-plugin-external-globals';
 import { RollupOptions, Plugin, OutputOptions } from 'rollup'
 import virtual from '@rollup/plugin-virtual';
+import fs from 'fs-extra';
+import cryptoRandomString from 'crypto-random-string';
 
 import { cromwellStoreModulesPath } from '../constants';
 import { getNodeModuleVersion, isExternalForm } from '../shared';
@@ -15,66 +20,126 @@ const colors: any = colorsdef;
 const external = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/');
 
 
-export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig: TPluginConfig,
+export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig: TPluginConfig | TThemeConfig,
     specifiedOptions?: {
         frontendBundle?: RollupOptions;
         frontendCjs?: RollupOptions;
+        themePages?: RollupOptions;
     }): RollupOptions[] => {
 
-    if (!cromwellConfig?.type) throw new Error(`Please provide one of types to the CromwellConfig: 'plugin', 'theme'`);
-    if (!cromwellConfig?.name) throw new Error(`Please provide name in the CromwellConfig`);
+    if (!cromwellConfig) throw new Error(`CromwellPlugin Error. Provide cromwell.config as second argumet to the wrapper function`);
+    if (!cromwellConfig?.type) throw new Error(`CromwellPlugin Error. Provide one of types to the CromwellConfig: 'plugin', 'theme'`);
+    if (!cromwellConfig?.name) throw new Error(`CromwellPlugin Error. Provide name in the CromwellConfig`);
 
     const outOptions: RollupOptions[] = [];
 
-    if (cromwellConfig.type === 'plugin' && cromwellConfig.frontendInputFile && cromwellConfig.buildDir) {
-        const options = (Object.assign({}, specifiedOptions?.frontendBundle ? specifiedOptions.frontendBundle : inputOptions));
-        const inputPath = resolve(process.cwd(), cromwellConfig.frontendInputFile).replace(/\\/g, '/');
+    if (cromwellConfig.type === 'plugin') {
+        const pluginConfig = cromwellConfig as TPluginConfig;
+        if (pluginConfig.frontendInputFile && pluginConfig.buildDir) {
 
-        options.input = 'frontendInputFile';
-        options.output = Object.assign({}, options.output, {
-            file: getPluginFrontendBundlePath(resolve(process.cwd(), cromwellConfig.buildDir)),
-            format: "iife",
-            name: cromwellConfig.name,
-            banner: '(function() {',
-            footer: `
-                return ${cromwellConfig.name};
-                })();`
-        } as OutputOptions);
+            const options = (Object.assign({}, specifiedOptions?.frontendBundle ? specifiedOptions.frontendBundle : inputOptions));
+            const inputPath = resolve(process.cwd(), pluginConfig.frontendInputFile).replace(/\\/g, '/');
 
-        options.plugins = [...(options.plugins ?? [])];
+            options.input = './frontendInputFile';
+            options.output = Object.assign({}, options.output, {
+                file: getPluginFrontendBundlePath(resolve(process.cwd(), pluginConfig.buildDir)),
+                format: "iife",
+                name: pluginConfig.name,
+                banner: '(function() {',
+                footer: `return ${pluginConfig.name};})();`
+            } as OutputOptions);
 
-        options.plugins.push(virtual({
-            frontendInputFile: `
-                    import defaulComp from '${inputPath}';
-                    export default defaulComp;
-                    `
-        }))
-        options.plugins.unshift(rollupPluginCromwellFrontend());
-        outOptions.push(options);
+            options.plugins = [...(options.plugins ?? [])];
+
+            options.plugins.push(virtual({
+                './frontendInputFile': `
+                        import defaulComp from '${inputPath}';
+                        export default defaulComp;
+                        `
+            }))
+            options.plugins.unshift(rollupPluginCromwellFrontend());
+            outOptions.push(options);
 
 
-        const cjsOptions = Object.assign({}, specifiedOptions?.frontendCjs ? specifiedOptions.frontendCjs : inputOptions);
+            const cjsOptions = Object.assign({}, specifiedOptions?.frontendCjs ? specifiedOptions.frontendCjs : inputOptions);
 
-        // cjsOptions.input = 'cjsfrontendInputFile';
-        cjsOptions.input = inputPath;
-        cjsOptions.output = Object.assign({}, cjsOptions.output, {
-            file: getPluginFrontendCjsPath(resolve(process.cwd(), cromwellConfig.buildDir)),
-            format: "cjs",
-            name: cromwellConfig.name,
-        } as OutputOptions)
+            // cjsOptions.input = 'cjsfrontendInputFile';
+            cjsOptions.input = inputPath;
+            cjsOptions.output = Object.assign({}, cjsOptions.output, {
+                file: getPluginFrontendCjsPath(resolve(process.cwd(), pluginConfig.buildDir)),
+                format: "cjs",
+                name: pluginConfig.name,
+            } as OutputOptions)
 
-        cjsOptions.plugins = [...(cjsOptions.plugins ?? [])];
+            cjsOptions.plugins = [...(cjsOptions.plugins ?? [])];
 
-        // cjsOptions.plugins.push(virtual({
-        //     cjsfrontendInputFile: `
-        //         // const { getStaticProps } = require('${inputPath}');
-        //         // module.exports.getStaticProps = getStaticProps;
+            // cjsOptions.plugins.push(virtual({
+            //     cjsfrontendInputFile: `
+            //         // const { getStaticProps } = require('${inputPath}');
+            //         // module.exports.getStaticProps = getStaticProps;
 
-        //         export * as allExports from '${inputPath}';
-        //         `
-        // }))
-        cjsOptions.plugins.unshift(rollupPluginCromwellFrontend({ generateMeta: false }));
-        outOptions.push(cjsOptions);
+            //         export * as allExports from '${inputPath}';
+            //         `
+            // }))
+            cjsOptions.plugins.unshift(rollupPluginCromwellFrontend({ generateMeta: false }));
+            outOptions.push(cjsOptions);
+        }
+
+    }
+
+    if (cromwellConfig.type === 'theme') {
+        const themeConfig = cromwellConfig as TThemeConfig;
+        let pagesDir = themeConfig?.main?.pagesDir;
+        let buildDir = themeConfig?.main?.buildDir;
+        if (!pagesDir) throw new Error(`CromwellPlugin Error. Specify pagesDir in the cromwell.config.js. It is declared in TThemeConfig type of @cromwell/core module`);
+        if (!buildDir) throw new Error(`CromwellPlugin Error. Specify buildDir in the cromwell.config.js. It is declared in TThemeConfig type of @cromwell/core module`);
+        pagesDir = isAbsolute(pagesDir) ? pagesDir : resolve(process.cwd(), pagesDir);
+        buildDir = isAbsolute(buildDir) ? buildDir : resolve(process.cwd(), buildDir);
+
+        const options = (Object.assign({}, specifiedOptions?.themePages ? specifiedOptions.themePages : inputOptions));
+        if (fs.pathExistsSync(pagesDir)) {
+            const globStr = `${pagesDir}/**/*.+(ts|tsx|js|jsx)`;
+            const pageFiles = glob.sync(globStr);
+            const pagesMetaInfo: TPagesMetaInfo = { paths: [] }
+
+            if (pageFiles && pageFiles.length > 0) {
+
+                let pageImports = '';
+                for (let fileName of pageFiles) {
+                    fileName = normalizePath(fileName);
+                    const localPath = fileName.replace(normalizePath(pagesDir) + '/', '');
+                    pagesMetaInfo.paths.push({
+                        fullPath: normalizePath(resolve(buildDir, localPath)),
+                        localPath: localPath
+                    });
+                    pageImports += `export * as Page_${cryptoRandomString({ length: 12 })} from '${fileName}';\n`;
+                    // pageImports += `export const Page_${cryptoRandomString({ length: 12 })} = require('${fileName}');\n`;
+                };
+
+                options.plugins = [...(options.plugins ?? [])];
+
+                options.plugins.push(virtual({
+                    './pages': pageImports
+                }));
+
+                options.input = './pages';
+
+                options.output = Object.assign({}, options.output, {
+                    dir: buildDir,
+                    format: "esm",
+                } as OutputOptions);
+
+                options.preserveModules = true;
+
+                options.plugins.unshift(rollupPluginCromwellFrontend());
+
+                outOptions.push(options);
+
+                fs.outputFileSync(resolve(buildDir, 'pages_meta.json'), JSON.stringify(pagesMetaInfo, null, 2));
+            } else {
+                throw new Error('CromwellPlugin Error. No pages found at: ' + pagesDir);
+            }
+        }
     }
 
 
@@ -85,19 +150,6 @@ export const rollupPluginCromwellFrontend = (settings?: {
     packageJsonPath?: string;
     generateMeta?: boolean;
 }): Plugin => {
-
-    let packageJson;
-    try {
-        packageJson = require(resolve(settings?.packageJsonPath ?
-            settings?.packageJsonPath : process.cwd(), 'package.json'));
-    } catch (e) { console.log(e) }
-
-    const deps = packageJson?.frontendDependencies?.map(dep =>
-        typeof dep === 'object' ? dep.name : dep) ?? [];
-
-    const globals = Object.assign({}, ...deps.map(mod => ({
-        [mod]: `${cromwellStoreModulesPath}["${mod}"]`
-    })));
 
     const modulesInfo = {};
     const chunksInfo = {};
@@ -113,13 +165,15 @@ export const rollupPluginCromwellFrontend = (settings?: {
         options(options: RollupOptions) {
 
             if (!options.plugins) options.plugins = [];
-            options.plugins.push(externalGlobals(globals));
+            options.plugins.push(externalGlobals((id) => {
+                if (isExternalForm(id)) return `${cromwellStoreModulesPath}["${id}"]`;
+            }));
 
             return options;
         },
         resolveId(source) {
             // console.log('resolveId', source);
-            if (deps.includes(source)) {
+            if (isExternalForm(source)) {
                 // console.log('source', source)
                 return { id: source, external: true };
             }
@@ -195,7 +249,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                     let importedBindings = {};
                     if (importsInfo[modId]) {
                         Object.keys(importsInfo[modId].externals).forEach(libName => {
-                            if (!deps.includes(libName)) return;
+                            if (!isExternalForm(libName)) return;
 
                             const importsSpecs = importsInfo[modId].externals[libName];
                             importsSpecs?.forEach(spec => {
@@ -204,12 +258,11 @@ export const rollupPluginCromwellFrontend = (settings?: {
                                     importedBindings[libName].push(spec);
                                 }
                             });
+                        });
 
-                            importsInfo[modId].internals.forEach(internal => {
-                                const intBinds = getImportBingingsForModule(internal);
-                                importedBindings = mergeBindings(importedBindings, intBinds);
-                            })
-
+                        importsInfo[modId].internals.forEach(internal => {
+                            const intBinds = getImportBingingsForModule(internal);
+                            importedBindings = mergeBindings(importedBindings, intBinds);
                         })
                     }
                     return importedBindings;

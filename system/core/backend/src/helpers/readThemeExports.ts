@@ -1,9 +1,9 @@
-import { TThemeConfig } from '@cromwell/core';
+import { TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import readRecursive from 'recursive-readdir';
 
-import { getMetaInfoPath } from './paths';
+import { getMetaInfoPath, getThemePagesMetaPath } from './paths';
 
 export type TThemeExportsInfo = {
     pagesInfo: TPagePathInfo[]
@@ -23,9 +23,10 @@ const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.rando
  * Returns object with page names as keys paths as values: {"pageName": "pagePath"}
  * @param projectRootDir absolute path to the root of the CMS
  */
-export const readThemeExports = async (projectRootDir: string, themeName: string): Promise<TThemeExportsInfo> => {
-    const themesDir = resolve(projectRootDir, 'themes').replace(/\\/g, '/');
-    const themeDir = `${themesDir}/${themeName}`;
+export const readThemeExports = async (projectRootDir: string | null, themeName: string, themeAbsDir?: string): Promise<TThemeExportsInfo> => {
+    if (!projectRootDir && !themeAbsDir) throw new Error('readThemeExports: !projectRootDir && !themeAbsDir');
+
+    const themeDir = (themeAbsDir ? themeAbsDir : resolve(projectRootDir!, 'themes', themeName)).replace(/\\/g, '/');
 
     const themeConfigPath = `${themeDir}/cromwell.config.js`;
     let themeConfig: TThemeConfig | undefined = undefined;
@@ -38,24 +39,27 @@ export const readThemeExports = async (projectRootDir: string, themeName: string
         console.log('core/backend::readThemeExports cannot read Theme config at: ' + themeConfigPath);
     }
 
-    const pagesPath = (themeConfig && themeConfig.main && themeConfig.main.pagesDir) ?
-        resolve(themeDir, themeConfig.main.pagesDir).replace(/\\/g, '/') :
-        `${themeDir}/pages`;
-
     const exportsInfo: TThemeExportsInfo = {
         pagesInfo: []
     }
 
-    if (await fs.pathExists(pagesPath)) {
-        const files: string[] = await readRecursive(pagesPath);
-        for (const p of files) {
-            if (!/\.(m?jsx?|tsx?)$/.test(p)) continue;
+    const buildDir = themeConfig?.main?.buildDir;
+    const metainfoPath = getThemePagesMetaPath(buildDir ? buildDir : resolve(themeDir, 'pages'));
 
-            let path: string | undefined = p.replace(/\\/g, '/');
-            const name = path.replace(/\.js$/, '').replace(`${pagesPath}/`, '');
+    if (await fs.pathExists(metainfoPath)) {
+        const pagesMeta: TPagesMetaInfo = await fs.readJSON(metainfoPath);
+
+        if (!pagesMeta || !pagesMeta.paths) throw new Error('Could not find or read pages meta info file at: ' + metainfoPath);
+
+
+        for (const pagePaths of pagesMeta.paths) {
+            // if (!/\.(m?jsx?|tsx?)$/.test(p)) continue;
+            if (!(await fs.pathExists(pagePaths.fullPath))) continue;
+
+            const name = pagePaths.localPath.replace(/\.(m?jsx?|tsx?)$/, '')
             const compName = `Theme_${themeName.replace(/\W/g, '_')}_Page_${name.replace(/\W/g, '_')}_${getRandStr()}`;
 
-            let metaInfoPath: string | undefined = getMetaInfoPath(path);
+            let metaInfoPath: string | undefined = getMetaInfoPath(pagePaths.fullPath);
             if (!(await fs.pathExists(metaInfoPath))) metaInfoPath = undefined;
 
             let fileContent: string | undefined = undefined;
@@ -66,12 +70,14 @@ export const readThemeExports = async (projectRootDir: string, themeName: string
 
             exportsInfo.pagesInfo.push({
                 name,
-                path,
+                path: pagePaths.fullPath,
                 compName,
                 fileContent,
                 metaInfoPath
             })
         };
+    } else {
+        throw new Error('Could not find or read pages meta info file at: ' + metainfoPath);
     }
 
     const adminPanelConfigDir = themeConfig?.main?.adminPanelDir;

@@ -1,13 +1,15 @@
 'use strict';
 
-var config = {
+module.exports = {
+    name: "cromwell-demoshop",
+    type: 'theme',
     main: {
         themeName: "cromwell-demoshop",
         title: "Demoshop",
         previewImage: "/themes/cromwell-demoshop/shopping-cart.png",
         description: "Online shop theme",
         buildDir: "dist",
-        pagesDir: "dist/pages",
+        pagesDir: "src/pages",
         adminPanelDir: "dist/adminPanel",
         palette: {
             "primaryColor": "#9900CC"
@@ -158,5 +160,3 @@ var config = {
         }
     }
 };
-
-module.exports = config;

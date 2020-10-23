@@ -54,7 +54,7 @@ export const getThemeController = (): Router => {
      * @param cb 
      */
     const readThemeOriginalConfig = (cmsConfig: TCmsConfig, cb: (config: TThemeConfig | null) => void) => {
-        const themeConfigPath =  resolve(projectRootDir, 'themes', cmsConfig.themeName, 'cromwell.config.js');
+        const themeConfigPath = resolve(projectRootDir, 'themes', cmsConfig.themeName, 'cromwell.config.js');
         readThemeConfig(themeConfigPath, cb);
     }
 
@@ -230,6 +230,8 @@ export const getThemeController = (): Router => {
             // If userConfig is null, then theme is probably new and user has never saved mods. Create a new userConfig
             if (!userConfig) {
                 userConfig = {
+                    name: themeConfig?.main.themeName ?? '',
+                    type: 'theme',
                     main: { themeName: themeConfig?.main.themeName ?? '' },
                     pages: []
                 }

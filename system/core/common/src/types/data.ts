@@ -96,7 +96,13 @@ export type TCmsConfig = {
     currencyRatio?: Record<string, number>;
 }
 
-export type TThemeConfig = {
+export type TBuildConfig = {
+    name: string;
+    type: 'plugin' | 'theme';
+}
+
+
+export type TThemeConfig = TBuildConfig & {
     main: TThemeMainConfig;
     pages: TPageConfig[];
 
@@ -112,7 +118,7 @@ export type TThemeMainConfig = {
 
     /** Dir with production build of the theme. Path is relative from theme's root dir */
     buildDir?: string;
-    /** Theme's pages dir inside buildDir. Same as in Next.js "pages" dir. Path is relative from theme's root dir  */
+    /** Theme's source pages dir. Same as in Next.js "pages" dir, but with arbitrary path. Path is relative from theme's root dir  */
     pagesDir?: string;
     /** Path to component to use in Admin Panel */
     adminPanelDir?: string;
@@ -149,11 +155,6 @@ export type TPageConfig = TPageInfo & {
     pageCustomConfig?: Record<string, any>;
 }
 
-export type TBuildConfig = {
-    name: string;
-    type: 'plugin' | 'theme';
-}
-
 export type TPluginConfig = TBuildConfig & {
     buildDir?: string;
     adminDir?: string;
@@ -180,6 +181,13 @@ export type TSciprtMetaInfo = {
     name: string;
     // { [moduleName]: namedImports }
     externalDependencies: Record<string, string[]>
+}
+
+export type TPagesMetaInfo = {
+    paths: {
+        fullPath: string;
+        localPath: string; 
+    }[]
 }
 
 export type TPluginFrontendBundle = {

@@ -166,8 +166,8 @@ var fs = require('fs');
             var configPath = resolve(themeDir, 'cromwell.config.js');
             try {
                 var config = require(configPath);
-                if (config && config.main && config.main.pagesDir) {
-                    if (!fs.existsSync(resolve(themeDir, config.main.pagesDir))) {
+                if (config && config.main && config.main.buildDir) {
+                    if (!fs.existsSync(resolve(themeDir, config.main.buildDir))) {
                         console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
                         spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
                     }
