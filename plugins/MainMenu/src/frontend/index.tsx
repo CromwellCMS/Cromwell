@@ -9,8 +9,7 @@ import { useStyles } from './styles';
 
 const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
     const classes = useStyles();
-    const items = (props.settings && props.settings.items) ?
-        props.settings.items : defaultSettings.items ? defaultSettings.items : [];
+    const items = props?.settings?.items ?? defaultSettings?.items ?? [];
     const [activeItem, setActiveItem] = useState<string>('none');
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 

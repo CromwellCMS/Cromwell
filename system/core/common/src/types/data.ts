@@ -185,8 +185,9 @@ export type TSciprtMetaInfo = {
 
 export type TPagesMetaInfo = {
     paths: {
-        fullPath: string;
-        localPath: string; 
+        pageName: string;
+        localPath?: string;
+        srcFullPath?: string
     }[]
 }
 

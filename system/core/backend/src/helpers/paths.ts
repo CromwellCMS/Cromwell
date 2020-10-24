@@ -14,6 +14,7 @@ export const getPluginFrontendBundlePath = (distDir: string) => resolve(distDir,
 export const getPluginFrontendCjsPath = (distDir: string) => resolve(distDir, 'frontend/cjs.js');
 
 export const getThemePagesMetaPath = (distDir: string) => resolve(distDir, 'pages_meta.json');
+export const defaultDistDirName = 'dist';
 
 
 export const getCMSConfigPath = (projectRootDir: string) =>

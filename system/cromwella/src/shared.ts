@@ -9,7 +9,7 @@ import { TPackageJson, TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps, 
 
 const colors: any = colorsdef;
 
-export const isExternalForm = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
+export const isExternalForm = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id) && !id.startsWith('$$');
 
 export const getHoistedDependencies = (projectRootDir: string, isProduction: boolean, forceInstall: boolean, cb: TGetDepsCb) => {
     globPackages(projectRootDir, (packagePaths) => {

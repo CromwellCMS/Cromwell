@@ -318,6 +318,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
             if (metaInfo.name) Cromwell.scriptStatuses[metaInfo.name] = 'ready';
             if (success && !success.includes(false)) return true;
+            return true;
         }
 
         if (metaInfo.name) Cromwell.scriptStatuses[metaInfo.name] = 'failed';

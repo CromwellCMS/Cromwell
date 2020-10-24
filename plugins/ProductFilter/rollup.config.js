@@ -1,26 +1,14 @@
-import autoExternal from "rollup-plugin-auto-external";
 import typescript from "@rollup/plugin-typescript";
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
-import cromwellConfig from './cromwell.config.js';
 import { resolve } from 'path';
+import { rollupConfigWrapper } from '@cromwell/cromwella';
+const cromwellConfig = require('./cromwell.config.js');
 
-const distDir = resolve(__dirname, cromwellConfig.buildDir);
-
-export default {
-    input: 'src/index.ts',
-    preserveModules: true,
-    output: [
-        {
-            dir: distDir,
-            format: "cjs",
-            exports: "auto"
-        }
-    ],
+export default rollupConfigWrapper({
     plugins: [
-        autoExternal(),
         nodeResolve(),
         commonjs(),
         typescript()
     ]
-};
+}, cromwellConfig);

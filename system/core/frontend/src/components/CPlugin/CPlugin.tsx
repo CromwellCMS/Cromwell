@@ -33,21 +33,23 @@ const getComponent = (pluginName: string) => {
         let comp;
         try {
             if (!isServer()) {
-                frontendBundle.source = `
+                const source = `
                 var comp = ${frontendBundle.source};
                 CromwellStore.pluginsComponents['${pluginName}'] = comp;
                 `;
 
                 await new Promise(res => {
-                    var s = document.createElement('script');
-                    s.innerHTML = frontendBundle.source ?? '';
-                    s.onload = () => res();
-                    document.head.appendChild(s);
+                    const sourceBlob = new Blob([source], { type: 'text/javascript' });
+                    const objectURL = URL.createObjectURL(sourceBlob);
+                    const domScript = document.createElement('script');
+                    domScript.src = objectURL;
+                    domScript.onload = () => res();
+                    document.head.appendChild(domScript);
                 });
                 comp = pluginsComponents[pluginName];
             } else {
                 if (frontendBundle.cjsPath) {
-                    comp = require(frontendBundle.cjsPath).default;
+                    comp = Function('require', 'cjsPath', 'return require(cjsPath).default')(require, frontendBundle.cjsPath);
                 } else {
                     comp = Function('CromwellStore', `return ${frontendBundle.source}`)(getStore());
                 }

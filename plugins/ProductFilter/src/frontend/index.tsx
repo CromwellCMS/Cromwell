@@ -28,7 +28,7 @@ interface TProductFilterSettings {
 }
 
 const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductFilterSettings>): JSX.Element => {
-    const { attributes, productCategory, filterMeta } = props.data
+    const { attributes, productCategory, filterMeta } = props.data ?? {};
     const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
     const [collapsedItems, setCollapsedItems] = useState<Record<string, boolean>>({});
     const [minPrice, setMinPrice] = useState<number>(filterMeta?.minPrice || 0);

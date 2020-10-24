@@ -28,8 +28,8 @@ export type TCromwellPageCoreProps = {
 }
 
 export type TFrontendPluginProps<TData = any, TSettings = any> = {
-    data: TData;
-    settings: TSettings;
+    data?: TData;
+    settings?: TSettings;
 }
 
 export type TCromwellBlock = React.Component<TCromwellBlockProps> & {

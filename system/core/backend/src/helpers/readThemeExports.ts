@@ -1,9 +1,9 @@
 import { TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
 import fs from 'fs-extra';
-import { resolve } from 'path';
-import readRecursive from 'recursive-readdir';
+import { resolve, isAbsolute } from 'path';
+import normalizePath from 'normalize-path';
 
-import { getMetaInfoPath, getThemePagesMetaPath } from './paths';
+import { getMetaInfoPath, getThemePagesMetaPath, defaultDistDirName } from './paths';
 
 export type TThemeExportsInfo = {
     pagesInfo: TPagePathInfo[]
@@ -43,8 +43,9 @@ export const readThemeExports = async (projectRootDir: string | null, themeName:
         pagesInfo: []
     }
 
-    const buildDir = themeConfig?.main?.buildDir;
-    const metainfoPath = getThemePagesMetaPath(buildDir ? buildDir : resolve(themeDir, 'pages'));
+    let buildDir = themeConfig?.main?.buildDir ?? resolve(themeDir, defaultDistDirName);
+    if (!isAbsolute(buildDir)) buildDir = resolve(themeDir, buildDir)
+    const metainfoPath = getThemePagesMetaPath(buildDir);
 
     if (await fs.pathExists(metainfoPath)) {
         const pagesMeta: TPagesMetaInfo = await fs.readJSON(metainfoPath);
@@ -54,13 +55,16 @@ export const readThemeExports = async (projectRootDir: string | null, themeName:
 
         for (const pagePaths of pagesMeta.paths) {
             // if (!/\.(m?jsx?|tsx?)$/.test(p)) continue;
-            if (!(await fs.pathExists(pagePaths.fullPath))) continue;
+            if (!pagePaths.localPath) continue;
 
-            const name = pagePaths.localPath.replace(/\.(m?jsx?|tsx?)$/, '')
+            const fullPath = normalizePath(resolve(buildDir, pagePaths.localPath));
+            if (!(await fs.pathExists(fullPath))) continue;
+
+            const name = pagePaths.pageName;
             const compName = `Theme_${themeName.replace(/\W/g, '_')}_Page_${name.replace(/\W/g, '_')}_${getRandStr()}`;
 
-            let metaInfoPath: string | undefined = getMetaInfoPath(pagePaths.fullPath);
-            if (!(await fs.pathExists(metaInfoPath))) metaInfoPath = undefined;
+            let metaInfoPath: string | undefined = normalizePath(getMetaInfoPath(fullPath));
+            if (!metaInfoPath || !(await fs.pathExists(metaInfoPath))) metaInfoPath = undefined;
 
             let fileContent: string | undefined = undefined;
             // if (pageName === '_app' || pageName === '_document') {
@@ -70,7 +74,7 @@ export const readThemeExports = async (projectRootDir: string | null, themeName:
 
             exportsInfo.pagesInfo.push({
                 name,
-                path: pagePaths.fullPath,
+                path: fullPath,
                 compName,
                 fileContent,
                 metaInfoPath

@@ -20,8 +20,8 @@ type ProductShowcaseProps = {
 const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX.Element => {
     const classes = useStyles();
     const [virtualData, setVirtualData] = useState<VirtualData>({ slides: [] } as any);
-    const productShowcaseData = props.data.productShowcase;
-    // Try to load component if template has already defined common Product view
+    const productShowcaseData = props.data?.productShowcase;
+    // Try to load component if a Theme has already defined common Product view
     let CommmonProductComp = loadCommonComponent(ECommonComponentNames.ProductCard);
     if (!CommmonProductComp) {
         // Default view otherwise
@@ -49,8 +49,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
             direction: 'horizontal',
             virtual: {
                 slides: (function () {
-                    if (productShowcaseData && productShowcaseData.products &&
-                        productShowcaseData.products.elements &&
+                    if (productShowcaseData?.products?.elements &&
                         Array.isArray(productShowcaseData.products.elements)) {
                         return productShowcaseData.products.elements;
                     }
