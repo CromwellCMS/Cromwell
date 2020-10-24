@@ -30,7 +30,7 @@ export default [
             {
                 file: resolve(__dirname, buildDir, 'renderer.js'),
                 // dir: './build',
-                format: "cjs",
+                format: "esm",
             }
         ],
         external,

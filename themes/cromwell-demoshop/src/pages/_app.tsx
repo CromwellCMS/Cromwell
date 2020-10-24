@@ -1,11 +1,17 @@
 import '../styles/global.scss';
-import React from 'react';
+import * as React from 'react';
 import { AppProps } from 'next/app';
 import { ToastContainer } from 'react-toastify';
 import { ProductCard } from '../components/productCard/ProductCard';
-import { ECommonComponentNames, saveCommonComponent } from '@cromwell/core';
+import { ECommonComponentNames, saveCommonComponent, isServer } from '@cromwell/core';
+
+if (isServer()) {
+    // useLayoutEffect warnings disable
+    (React as any).useLayoutEffect = React.useEffect;
+}
 
 saveCommonComponent(ECommonComponentNames.ProductCard, ProductCard);
+
 
 function App(props: AppProps) {
     return (

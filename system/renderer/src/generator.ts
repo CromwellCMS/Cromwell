@@ -50,13 +50,13 @@ const main = async () => {
         ${globalCssImports}
         import React from 'react';
         import ReactDOM from 'react-dom';
-        import dynamic from "next/dynamic";
+        import dynamic from 'next/dynamic';
         import NextLink from 'next/link';
+        import * as NextRouter from 'next/router';
         import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
         import { isServer, getStoreItem } from "@cromwell/core";
-        const { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig } = require('build/renderer');
+        import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, fsRequire } from 'build/renderer';
 
-        console.log('pageInfo.name', '${pageInfo.name}');
 
         const cmsConfig = ${JSON.stringify(config)};
         checkCMSConfig(cmsConfig);
@@ -67,6 +67,7 @@ const main = async () => {
         ${cromwellStoreModulesPath}['react-dom'] = ReactDOM;
         ${cromwellStoreModulesPath}['react-dom'].didDefaultImport = true;
         ${cromwellStoreModulesPath}['next/link'] = NextLink;
+        ${cromwellStoreModulesPath}['next/router'] = NextRouter;
         ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
 
         // TEMP
@@ -75,7 +76,7 @@ const main = async () => {
         ${pageInfo.metaInfoPath ? `
         if (isServer()) {
             console.log('isServer pageInfo.name', '${pageInfo.name}');
-            const metaInfo = require('${pageInfo.metaInfoPath}');
+            const metaInfo = fsRequire("${pageInfo.metaInfoPath}", true);
             importer.importSciptExternals(metaInfo);
         } else {
             window.React = React;
@@ -146,6 +147,21 @@ const main = async () => {
         }
     }
     `);
+
+    // Create next.config.js
+    await fs.outputFile(resolve(tempDir, 'next.config.js'), `
+    module.exports = {
+        webpack: (config, { isServer }) => {
+            // Fixes npm packages that depend on 'fs' module
+            if (!isServer) {
+                config.node = {
+                    fs: 'empty',
+                    module: 'empty',
+                }
+            }
+            return config
+        }
+    }`);
 
     const tempDirPublic = resolve(tempDir, 'public');
     const tempDirBuild = resolve(tempDir, 'build')

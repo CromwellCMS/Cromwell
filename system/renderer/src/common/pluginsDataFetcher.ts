@@ -1,6 +1,7 @@
-import { BasePageNames, StaticPageContext, getStoreItem } from "@cromwell/core";
+import { BasePageNames, getStoreItem, isServer, StaticPageContext } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import { checkCMSConfig } from "../helpers/checkCMSConfig";
+
+import { fsRequire } from '../helpers/checkCMSConfig';
 
 /**
  * Fetches data for all plugins at specified page. Server-side only.
@@ -26,6 +27,8 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
     const pluginsSettings: Record<string, any> = {}
     // const pluginsBundles: Record<string, string> = {};
 
+    // console.log('pluginConfigs', pluginConfigs);
+
 
     if (pluginConfigs && Array.isArray(pluginConfigs)) {
         for (const pluginConfigEntry of pluginConfigs) {
@@ -42,10 +45,10 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
 
             // Require module
             // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
-            if (bundleInfo?.cjsPath) {
+            if (bundleInfo?.cjsPath && isServer()) {
                 try {
-
-                    const plugin = require(bundleInfo.cjsPath);
+                    // console.log('pluginsDataFetcher1 bundleInfo.cjsPath', bundleInfo.cjsPath)
+                    const plugin: any = fsRequire(bundleInfo.cjsPath);
 
                     if (!plugin) {
                         console.error('cjs build of the Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)

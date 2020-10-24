@@ -5,6 +5,7 @@ import { projectRootDir } from '../constants';
 import { resolve } from 'path';
 import { getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath } from '@cromwell/core-backend';
 import { TSciprtMetaInfo, TPluginFrontendBundle } from '@cromwell/core';
+import normalizePath from 'normalize-path';
 
 const settingsPath = resolve(projectRootDir, 'settings/plugins');
 const pluginsPath = resolve(projectRootDir, 'plugins');
@@ -173,9 +174,10 @@ export const getPluginsController = (): Router => {
             const config = await readPluginConfig(pluginName);
             if (config?.buildDir) {
                 const filePath = getPluginFrontendBundlePath(resolve(pluginsPath, pluginName, config.buildDir));
-                let cjsPath: string | undefined = getPluginFrontendCjsPath(resolve(pluginsPath, pluginName, config.buildDir));
-                
-                if (!(await fs.pathExists(cjsPath))) cjsPath = undefined;
+                let cjsPath: string | undefined = normalizePath(getPluginFrontendCjsPath(
+                    resolve(pluginsPath, pluginName, config.buildDir)));
+
+                if (cjsPath && !(await fs.pathExists(cjsPath))) cjsPath = undefined;
 
                 if (await fs.pathExists(filePath)) {
                     try {

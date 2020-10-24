@@ -18,6 +18,7 @@
     "fs-extra": "^9.0.1",
     "graphql": "^15.3.0",
     "http-proxy-middleware": "^1.0.5",
+    "normalize-path": "^3.0.0",
     "path": "^0.12.7",
     "reflect-metadata": "^0.1.13",
     "sqlite3": "^4.2.0",
