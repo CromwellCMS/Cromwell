@@ -1,6 +1,6 @@
 import { TSciprtMetaInfo, TPluginConfig, TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
 import {
-    getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath
+    getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, getPluginBackendPath
 } from '@cromwell/core-backend';
 import { walk } from 'estree-walker';
 import glob from 'glob';
@@ -18,6 +18,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
     specifiedOptions?: {
         frontendBundle?: RollupOptions;
         frontendCjs?: RollupOptions;
+        backend?: RollupOptions;
         themePages?: RollupOptions;
     }): RollupOptions[] => {
 
@@ -31,7 +32,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
         const pluginConfig = cromwellConfig as TPluginConfig;
         if (pluginConfig.frontendInputFile && pluginConfig.buildDir) {
 
-            const options = (Object.assign({}, specifiedOptions?.frontendBundle ? specifiedOptions.frontendBundle : inputOptions));
+            const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
             const inputPath = resolve(process.cwd(), pluginConfig.frontendInputFile).replace(/\\/g, '/');
 
             const optionsInput = '$$' + pluginConfig.name + '/' + pluginConfig.frontendInputFile;
@@ -58,7 +59,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
             outOptions.push(options);
 
 
-            const cjsOptions = Object.assign({}, specifiedOptions?.frontendCjs ? specifiedOptions.frontendCjs : inputOptions);
+            const cjsOptions = Object.assign({}, specifiedOptions?.frontendCjs ?? inputOptions);
 
             cjsOptions.input = optionsInput;
             cjsOptions.output = Object.assign({}, cjsOptions.output, {
@@ -80,6 +81,65 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
                 generateMeta: false, name: pluginConfig.name
             }));
             outOptions.push(cjsOptions);
+        }
+
+
+        if (pluginConfig.backend && pluginConfig.buildDir) {
+            let resolverFiles: string[] = [];
+            let entityFiles: string[] = [];
+
+            if (pluginConfig.backend.entitiesDir) {
+                const entitiesDir = resolve(process.cwd(), pluginConfig.backend.entitiesDir)
+                entityFiles = fs.readdirSync(entitiesDir).map(file => normalizePath(resolve(entitiesDir, file)));
+            }
+            if (pluginConfig.backend.resolversDir) {
+                const resolversDir = resolve(process.cwd(), pluginConfig.backend.resolversDir)
+                resolverFiles = fs.readdirSync(resolversDir).map(file => normalizePath(resolve(resolversDir, file)));
+            }
+
+            if (entityFiles.length > 0 || resolverFiles.length > 0) {
+                const cjsOptions = Object.assign({}, specifiedOptions?.backend ?? inputOptions);
+
+                const optionsInput = '$$' + pluginConfig.name + '/backend';
+
+                cjsOptions.input = optionsInput;
+                cjsOptions.output = Object.assign({}, cjsOptions.output, {
+                    file: getPluginBackendPath(resolve(process.cwd(), pluginConfig.buildDir)),
+                    format: "cjs",
+                    name: pluginConfig.name,
+                    exports: "auto"
+                } as OutputOptions)
+
+                cjsOptions.plugins = [...(cjsOptions.plugins ?? [])];
+
+                let exportsStr = '';
+                const resolverNames: string[] = [];
+                const entityNames: string[] = [];
+                resolverFiles.forEach(file => {
+                    const name = `resolver_${cryptoRandomString({ length: 8 })}`
+                    resolverNames.push(name);
+                    exportsStr += `import ${name} from '${file}'\n`;
+                });
+                entityFiles.forEach(file => {
+                    const name = `entity_${cryptoRandomString({ length: 8 })}`
+                    entityNames.push(name);
+                    exportsStr += `import ${name} from '${file}'\n`;
+                });
+
+                exportsStr += 'export const resolvers = [\n';
+                resolverNames.forEach(name => exportsStr += `\t${name},\n`);
+                exportsStr += '];\nexport const entities = [\n';
+                entityNames.forEach(name => exportsStr += `\t${name},\n`);
+                exportsStr += '];\n';
+
+                cjsOptions.plugins.push(virtual({
+                    [optionsInput]: exportsStr
+                }));
+
+                cjsOptions.external = isExternalForm;
+
+                outOptions.push(cjsOptions);
+            }
         }
 
     }

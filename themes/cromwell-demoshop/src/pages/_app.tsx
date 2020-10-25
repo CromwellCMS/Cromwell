@@ -6,7 +6,7 @@ import { ProductCard } from '../components/productCard/ProductCard';
 import { ECommonComponentNames, saveCommonComponent, isServer } from '@cromwell/core';
 
 if (isServer()) {
-    // useLayoutEffect warnings disable
+    // useLayoutEffect warnings ssr disable
     (React as any).useLayoutEffect = React.useEffect;
 }
 

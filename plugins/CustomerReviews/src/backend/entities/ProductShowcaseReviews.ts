@@ -3,7 +3,7 @@ import { ObjectType, Field, ID, Int } from "type-graphql";
 
 @Entity()
 @ObjectType()
-export class ProductShowcaseReviews {
+class ProductShowcaseReviews {
 
     @Field(() => ID)
     @PrimaryGeneratedColumn()
@@ -21,5 +21,7 @@ export class ProductShowcaseReviews {
     @Column()
     rating: number;
 }
+
+export default ProductShowcaseReviews;
 
 export type ProductShowcaseReviewsType = ProductShowcaseReviews;

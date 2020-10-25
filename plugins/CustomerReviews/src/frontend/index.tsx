@@ -12,7 +12,7 @@ interface CustomerReviewsProps {
 
 const CustomerReviews = (props: TFrontendPluginProps<CustomerReviewsProps>): JSX.Element => {
     const classes = useStyles();
-    const { productShowcase, productShowcaseReviews } = props.data;
+    const { productShowcase, productShowcaseReviews } = props.data ?? {};
     // console.log('ProductShowcase props', props)
     return (
         <div className={classes.wrapper}>

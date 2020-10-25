@@ -1,6 +1,6 @@
 import { Resolver, Query } from "type-graphql";
 import { getManager } from "typeorm";
-import { ProductShowcaseReviews } from '../entities/ProductShowcaseReviews';
+import ProductShowcaseReviews from '../entities/ProductShowcaseReviews';
 
 
 @Resolver(ProductShowcaseReviews)

@@ -12,6 +12,7 @@ export const getMetaInfoPath = (filename: string) => `${filename}_meta.json`;
 
 export const getPluginFrontendBundlePath = (distDir: string) => resolve(distDir, 'frontend/index.js');
 export const getPluginFrontendCjsPath = (distDir: string) => resolve(distDir, 'frontend/cjs.js');
+export const getPluginBackendPath = (distDir: string) => resolve(distDir, 'backend/index.js');
 
 export const getThemePagesMetaPath = (distDir: string) => resolve(distDir, 'pages_meta.json');
 export const defaultDistDirName = 'dist';

@@ -1,10 +1,11 @@
 module.exports = {
-    "name": "ProductShowcase",
-    "buildDir": "dist",
-    "adminDir": "dist/admin/index.js",
-    "frontendBundle": "dist/frontend/index.js",
-    "backend": {
-        "resolversDir": "dist/backend/resolvers",
-        "entitiesDir": "dist/backend/entities"
+    name: "ProductShowcase",
+    type: "plugin",
+    buildDir: "dist",
+    adminDir: "dist/admin/index.js",
+    frontendInputFile: "src/frontend/index.tsx",
+    backend: {
+        resolversDir: "src/backend/resolvers",
+        entitiesDir: "src/backend/entities"
     }
 }

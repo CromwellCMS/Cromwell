@@ -6,16 +6,15 @@ import {
     TPagedParams,
     TProduct,
     TProductInput,
+    TProductRating,
     TProductReview,
-    TProductRating
 } from '@cromwell/core';
 import { EntityRepository, getCustomRepository, Repository } from 'typeorm';
 
-import { Product, ProductRating } from '../entities/Product';
+import { Product } from '../entities/Product';
 import { applyGetManyFromOne, getPaged, handleBaseInput } from './BaseQueries';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { ProductReviewRepository } from './ProductReviewRepository';
-import { ProductReview } from '../entities/ProductReview';
 
 @EntityRepository(Product)
 export class ProductRepository extends Repository<Product> {
