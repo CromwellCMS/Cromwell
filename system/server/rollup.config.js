@@ -35,24 +35,5 @@ export default [
                 module: "ESNext"
             }),
         ]
-    },
-    {
-        // preserveModules: true,
-        input: resolve(__dirname, "src/generator.ts"),
-        watch: false,
-        output: [
-            {
-                file: resolve(__dirname, 'build/generator.js'),
-                format: "cjs",
-            }
-        ],
-        external: external,
-        plugins: [
-            nodeResolve(),
-            commonjs(),
-            typescript({
-                module: "ESNext"
-            }),
-        ]
     }
 ];

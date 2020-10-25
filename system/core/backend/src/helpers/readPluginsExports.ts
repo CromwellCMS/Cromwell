@@ -1,20 +1,13 @@
 import { TCmsConfig, setStoreItem, TPluginConfig } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import { getPluginsDir, getPluginFrontendBundlePath } from './paths';
+import { getPluginsDir, getPluginFrontendBundlePath, getPluginBackendPath } from './paths';
 
 export type TPluginInfo = {
     pluginName: string;
     frontendPath?: string
     adminPanelPath?: string;
-    resolvers?: {
-        name: string;
-        path: string;
-    }[];
-    entities?: {
-        name: string;
-        path: string;
-    }[];
+    backendPath?: string;
 }
 
 export const readPluginsExports = (projectRootDir: string): TPluginInfo[] => {
@@ -52,38 +45,11 @@ export const readPluginsExports = (projectRootDir: string): TPluginInfo[] => {
                         pluginInfo.adminPanelPath = adminPanelPath.replace(/\\/g, '/');
                     }
                 }
-                if (config.backend) {
-                    // Collect entities
-                    if (config.backend.entitiesDir) {
-                        pluginInfo.entities = [];
 
-                        const entitiesDir = resolve(pluginsDir, name, config.backend.entitiesDir);
-                        if (fs.existsSync(entitiesDir)) {
-                            const entityFiles: string[] = fs.readdirSync(entitiesDir);
-                            entityFiles.forEach(file => {
-                                const entityName = `Plugin_${name}_Entity_${file.replace(/.js$/, '')}`;
-                                pluginInfo.entities?.push({
-                                    name: entityName,
-                                    path: resolve(entitiesDir, file).replace(/\\/g, '/')
-                                })
-                            })
-                        }
-                    }
-                    // Collect resolvers
-                    if (config.backend.resolversDir) {
-                        pluginInfo.resolvers = [];
-
-                        const resolversDir = resolve(pluginsDir, name, config.backend.resolversDir);
-                        if (fs.existsSync(resolversDir)) {
-                            const resolverFiles: string[] = fs.readdirSync(resolversDir);
-                            resolverFiles.forEach(file => {
-                                const resolverName = `Plugin_${name}_Resolver_${file.replace(/.js$/, '')}`;
-                                pluginInfo.resolvers?.push({
-                                    name: resolverName,
-                                    path: resolve(resolversDir, file).replace(/\\/g, '/')
-                                })
-                            })
-                        }
+                if (config.backend && config.buildDir) {
+                    const backendPath = getPluginBackendPath(resolve(pluginsDir, name, config.buildDir));
+                    if (fs.existsSync(backendPath)) {
+                        pluginInfo.backendPath = backendPath
                     }
                 }
 

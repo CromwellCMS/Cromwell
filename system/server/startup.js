@@ -13,9 +13,7 @@ const main = async () => {
     }
 
     const isServiceBuild = () => {
-        return (fs.existsSync(buildDir) &&
-            fs.existsSync(resolve(buildDir, 'server.js')) &&
-            fs.existsSync(resolve(buildDir, 'generator.js')))
+        return (fs.existsSync(resolve(buildDir, 'server.js')))
     }
 
     if (scriptName === 'dev') {
@@ -24,9 +22,6 @@ const main = async () => {
         }
 
         spawn(`npx rollup -cw`, [],
-            { shell: true, stdio: 'inherit', cwd: serverRootDir });
-
-        spawnSync(`node ${buildDir}/generator.js`, [],
             { shell: true, stdio: 'inherit', cwd: serverRootDir });
 
         spawn(`npx nodemon --watch ${buildDir} ${buildDir}/server.js`, [],
@@ -41,9 +36,6 @@ const main = async () => {
         if (!isServiceBuild()) {
             buildServer();
         }
-
-        spawnSync(`node ./generator.js`, [],
-            { shell: true, stdio: 'inherit', cwd: buildDir });
 
         const serverProc = fork(resolve(buildDir, `server.js`));
 

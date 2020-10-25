@@ -1,12 +1,12 @@
-import { TCmsConfig, setStoreItem, TPluginConfig } from '@cromwell/core';
-import { readCMSConfigSync, readPluginsExports, readThemeExports } from '@cromwell/core-backend';
+import { readCMSConfigSync, readThemeExports } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import makeEmptyDir from 'make-empty-dir';
 import fs from 'fs-extra';
 import gracefulfs from 'graceful-fs';
-import { resolve, dirname } from 'path';
+import makeEmptyDir from 'make-empty-dir';
+import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import { promisify } from 'util';
+
 const mkdir = promisify(gracefulfs.mkdir);
 
 const disableSSR = false;
@@ -138,30 +138,36 @@ const main = async () => {
         await fs.outputFile(pagePath, pageContent);
     };
 
-
     // Create jsconfig for Next.js
-    await fs.outputFile(resolve(tempDir, 'jsconfig.json'), `
-    {
-        "compilerOptions": {
-          "baseUrl": "."
+    const jsconfigPath = resolve(tempDir, 'jsconfig.json')
+    if (!fs.existsSync(jsconfigPath)) {
+        await fs.outputFile(jsconfigPath, `
+        {
+            "compilerOptions": {
+            "baseUrl": "."
+            }
         }
+        `);
     }
-    `);
+
 
     // Create next.config.js
-    await fs.outputFile(resolve(tempDir, 'next.config.js'), `
-    module.exports = {
-        webpack: (config, { isServer }) => {
-            // Fixes npm packages that depend on 'fs' module
-            if (!isServer) {
-                config.node = {
-                    fs: 'empty',
-                    module: 'empty',
+    const nextConfigPath = resolve(tempDir, 'next.config.js');
+    if (!fs.existsSync(jsconfigPath)) {
+        await fs.outputFile(nextConfigPath, `
+        module.exports = {
+            webpack: (config, { isServer }) => {
+                // Fixes npm packages that depend on 'fs' module
+                if (!isServer) {
+                    config.node = {
+                        fs: 'empty',
+                        module: 'empty',
+                    }
                 }
+                return config
             }
-            return config
-        }
-    }`);
+        }`);
+    }
 
     const tempDirPublic = resolve(tempDir, 'public');
     const tempDirBuild = resolve(tempDir, 'build')

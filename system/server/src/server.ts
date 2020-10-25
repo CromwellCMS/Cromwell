@@ -13,15 +13,12 @@ import cors from 'cors';
 import swaggerUi from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-//@ts-ignore
-const { pluginsResolvers } = require('../.cromwell/imports/resolvers.imports.gen');
-//@ts-ignore
-const { pluginsEntities } = require('../.cromwell/imports/entities.imports.gen');
 import { getThemeController } from './controllers/themeController';
 import { getPluginsController } from './controllers/pluginsController';
 import { getCmsController } from './controllers/cmsController';
 import { getMockController } from './controllers/mockController';
 import { rebuildPage } from './helpers/PageBuilder';
+import { collectPlugins } from './helpers/collectPlugins';
 import { AuthorResolver } from './resolvers/AuthorResolver';
 import { PostResolver } from './resolvers/PostResolver';
 import { ProductCategoryResolver } from './resolvers/ProductCategoryResolver';
@@ -48,18 +45,15 @@ async function apiServer(): Promise<void> {
     if (!connectionOptions || !connectionOptions.type) throw new Error('server.ts: Cannot read connection options');
     setStoreItem('dbType', connectionOptions.type);
 
-    const _pluginsEntities = (pluginsEntities && Array.isArray(pluginsEntities)) ? pluginsEntities : [];
+    const pluginsExports = collectPlugins(projectRootDir);
     (connectionOptions.entities as any) = [
         Product, ProductCategory, Post, Author, Attribute, ProductReview,
-        ..._pluginsEntities
+        ...pluginsExports.entities
     ];
     if (typeof connectionOptions.database === 'string') {
         (connectionOptions.database as any) = resolve(__dirname, '../', connectionOptions.database);
         console.log('connectionOptions.database', connectionOptions.database);
     }
-
-    const _pluginsResolvers = (pluginsResolvers && Array.isArray(pluginsResolvers)) ? pluginsResolvers : [];
-
 
     if (connectionOptions) createConnection(connectionOptions);
     const schema = await buildSchema({
@@ -70,7 +64,7 @@ async function apiServer(): Promise<void> {
             ProductCategoryResolver,
             ProductResolver,
             ProductReviewResolver,
-            ..._pluginsResolvers
+            ...pluginsExports.resolvers
         ],
         dateScalarMode: "isoDate",
         validate: false
