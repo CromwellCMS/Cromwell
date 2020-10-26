@@ -77,7 +77,8 @@
         { "usedName": "next/head" },
         { "usedName": "next/router" },
         { "usedName": "next/link" },
-        { "usedName": "next/dynamic" }
+        { "usedName": "next/dynamic" },
+        { "usedName": "next/document" }
       ]
     }
   ],

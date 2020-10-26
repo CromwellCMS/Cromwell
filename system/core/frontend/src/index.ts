@@ -20,3 +20,5 @@ export * from './types';
 //@ts-ignore
 import CromwellBlockStyles from './components/CromwellBlock/CromwellBlock.module.scss';
 export const CromwellBlockCSSclass = CromwellBlockStyles.CromwellBlock;
+
+export { default as Document, Html, Main, NextScript, DocumentContext } from 'next/document';
