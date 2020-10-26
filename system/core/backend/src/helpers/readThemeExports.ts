@@ -8,6 +8,8 @@ import { getMetaInfoPath, getThemePagesMetaPath, defaultDistDirName } from './pa
 export type TThemeExportsInfo = {
     pagesInfo: TPagePathInfo[]
     adminPanelPath?: string;
+    themeDir: string;
+    themeBuildDir: string;
 }
 export type TPagePathInfo = {
     name: string;
@@ -39,13 +41,16 @@ export const readThemeExports = async (projectRootDir: string | null, themeName:
         console.log('core/backend::readThemeExports cannot read Theme config at: ' + themeConfigPath);
     }
 
-    const exportsInfo: TThemeExportsInfo = {
-        pagesInfo: []
-    }
 
     let buildDir = themeConfig?.main?.buildDir ?? resolve(themeDir, defaultDistDirName);
     if (!isAbsolute(buildDir)) buildDir = resolve(themeDir, buildDir)
     const metainfoPath = getThemePagesMetaPath(buildDir);
+
+    const exportsInfo: TThemeExportsInfo = {
+        pagesInfo: [],
+        themeDir,
+        themeBuildDir: buildDir
+    }
 
     if (await fs.pathExists(metainfoPath)) {
         const pagesMeta: TPagesMetaInfo = await fs.readJSON(metainfoPath);
@@ -67,10 +72,9 @@ export const readThemeExports = async (projectRootDir: string | null, themeName:
             if (!metaInfoPath || !(await fs.pathExists(metaInfoPath))) metaInfoPath = undefined;
 
             let fileContent: string | undefined = undefined;
-            // if (pageName === '_app' || pageName === '_document') {
-            //     fileContent = fs.readFileSync(pagePath).toString();
-            //     pagePath = undefined;
-            // }
+            if (pagePaths.pageName === '_app' || pagePaths.pageName === '_document') {
+                fileContent = (await fs.readFile(fullPath)).toString();
+            }
 
             exportsInfo.pagesInfo.push({
                 name,

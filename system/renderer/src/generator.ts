@@ -6,6 +6,7 @@ import makeEmptyDir from 'make-empty-dir';
 import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import { promisify } from 'util';
+import normalizePath from 'normalize-path';
 
 const mkdir = promisify(gracefulfs.mkdir);
 
@@ -19,6 +20,7 @@ const main = async () => {
     const localDir = resolve(__dirname, '../');
     const tempDir = resolve(localDir, '.cromwell');
     const pagesLocalDir = resolve(tempDir, 'pages');
+    const localThemeBuildDurChunk = 'theme';
 
     // Read pages
     const themeExports = await readThemeExports(projectRootDir, config.themeName);
@@ -29,6 +31,14 @@ const main = async () => {
     await makeEmptyDir(pagesLocalDir, { recursive: true });
 
     for (const pageInfo of themeExports.pagesInfo) {
+
+        const pageRelativePath = normalizePath(pageInfo.path).replace(
+            normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
+
+        let metaInfoRelativePath;
+        if (pageInfo.metaInfoPath) metaInfoRelativePath = normalizePath(
+            pageInfo.metaInfoPath).replace(normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
+
         let globalCssImports = '';
         if (pageInfo.name === '_app' && themeMainConfig && themeMainConfig.globalCss &&
             Array.isArray(themeMainConfig.globalCss) && themeMainConfig.globalCss.length > 0) {
@@ -39,20 +49,15 @@ const main = async () => {
 
         const pageDynamicImportName = pageInfo.compName + '_DynamicPage';
 
-
-        // pageDynamicImport = `
-        // import ${pageDynamicImportName} from '${pageInfo.path}';
-        // `;
-
         const cromwellStoreModulesPath = `CromwellStore.nodeModules.modules`;
 
-        let pageContent = `
-        ${globalCssImports}
+        const pageImports = `
         import React from 'react';
         import ReactDOM from 'react-dom';
         import dynamic from 'next/dynamic';
         import NextLink from 'next/link';
         import * as NextRouter from 'next/router';
+        import Document, { Html, Main, NextScript } from 'next/document';
         import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
         import { isServer, getStoreItem } from "@cromwell/core";
         import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, fsRequire } from 'build/renderer';
@@ -69,6 +74,7 @@ const main = async () => {
         ${cromwellStoreModulesPath}['next/link'] = NextLink;
         ${cromwellStoreModulesPath}['next/router'] = NextRouter;
         ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
+        // ${cromwellStoreModulesPath}['next/document'] = dynamic;
 
         // TEMP
         ${cromwellStoreModulesPath}['@cromwell/core-frontend'] = require('@cromwell/core-frontend');
@@ -78,21 +84,20 @@ const main = async () => {
             console.log('isServer pageInfo.name', '${pageInfo.name}');
             const metaInfo = fsRequire("${pageInfo.metaInfoPath}", true);
             importer.importSciptExternals(metaInfo);
-        } else {
-            window.React = React;
-            window.ReactDOM = ReactDOM;
         }
         ` : ''}
+        `
+        let pageContent = `
+        ${globalCssImports}
+        ${pageImports}
 
         const ${pageDynamicImportName} = dynamic(async () => {
             ${pageInfo.metaInfoPath ? `
-            const meta = await import('${pageInfo.metaInfoPath}');
+            const meta = await import('${metaInfoRelativePath}');
             await importer.importSciptExternals(meta);
             ` : ''} 
-            const pagePromise = import('${pageInfo.path}');
-            console.log('pagePromise', pagePromise);
+            const pagePromise = import('${pageRelativePath}');
             const pageComp = await pagePromise;
-            console.log('pageComp', pageComp);
 
             ${disableSSR ? `
             const browserGetStaticProps = createGetStaticProps('${pageInfo.name}', pageComp ? pageComp.getStaticProps : null);
@@ -114,13 +119,13 @@ const main = async () => {
         });;
 
 
-        ${disableSSR ? `` : `
-        const pageServerModule = require('${pageInfo.path}');
+        ${!disableSSR ? `
+        const pageServerModule = require('${pageRelativePath}');
 
         export const getStaticProps = createGetStaticProps('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticProps : null);
         
         export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticPaths : null);
-        `}
+        `: ''}
 
         const PageComp = getPage('${pageInfo.name}', ${pageDynamicImportName});
 
@@ -129,6 +134,15 @@ const main = async () => {
 
         if (!pageInfo.path && pageInfo.fileContent) {
             pageContent = pageInfo.fileContent + '';
+        }
+
+        console.log('pageInfo.name', pageInfo.name);
+        if (pageInfo.name === '_document') {
+            pageContent = `
+            ${pageImports}
+
+            ${pageInfo.fileContent}
+            `
         }
 
         const pagePath = resolve(pagesLocalDir, pageInfo.name + '.js');
@@ -184,6 +198,13 @@ const main = async () => {
             await symlinkDir(resolve(localDir, 'build'), tempDirBuild)
         } catch (e) { console.log(e) }
     }
+
+    // Link theme's build dir
+    const localThemeBuildDir = resolve(tempDir, localThemeBuildDurChunk);
+    try {
+        await symlinkDir(themeExports.themeBuildDir, localThemeBuildDir)
+    } catch (e) { console.log(e) }
+
 
 };
 

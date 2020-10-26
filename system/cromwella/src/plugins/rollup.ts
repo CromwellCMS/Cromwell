@@ -54,7 +54,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
                         `
             }))
             options.plugins.unshift(rollupPluginCromwellFrontend({
-                name: pluginConfig.name
+                cromwellConfig
             }));
             outOptions.push(options);
 
@@ -78,7 +78,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
                     `
             }))
             cjsOptions.plugins.unshift(rollupPluginCromwellFrontend({
-                generateMeta: false, name: pluginConfig.name
+                generateMeta: false, cromwellConfig
             }));
             outOptions.push(cjsOptions);
         }
@@ -189,7 +189,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
 
                 options.preserveModules = true;
 
-                options.plugins.unshift(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, name: themeConfig.name }));
+                options.plugins.unshift(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, cromwellConfig }));
 
                 outOptions.push(options);
 
@@ -208,7 +208,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
     generateMeta?: boolean;
     pagesMetaInfo?: TPagesMetaInfo;
     buildDir?: string
-    name: string
+    cromwellConfig: TPluginConfig | TThemeConfig;
 }): Plugin => {
 
     const modulesInfo = {};
@@ -218,6 +218,10 @@ export const rollupPluginCromwellFrontend = (settings?: {
         internals: string[];
     }> = {};
 
+    const stylesImports: Record<string, {
+        styles: string[];
+        localPath?: string;
+    }> = {};
 
     // console.log('globals', globals);
     const plugin: Plugin = {
@@ -227,12 +231,27 @@ export const rollupPluginCromwellFrontend = (settings?: {
             if (!options.plugins) options.plugins = [];
             options.plugins.push(externalGlobals((id) => {
                 if (isExternalForm(id)) return `${cromwellStoreModulesPath}["${id}"]`;
+            }, {
+                include: '**/*.+(ts|tsx|js|jsx)'
             }));
 
             return options;
         },
-        resolveId(source) {
+        resolveId(source, importer) {
             // console.log('resolveId', source);
+
+            if (settings?.cromwellConfig?.type === 'theme') {
+                if (importer && /\.s?css$/.test(source)) {
+                    if (!stylesImports[normalizePath(importer)]) stylesImports[normalizePath(importer)] = {
+                        styles: []
+                    }
+                    if (!stylesImports[normalizePath(importer)].styles.includes(source))
+                        stylesImports[normalizePath(importer)].styles.push(source);
+
+                    return { id: source, external: true };
+                }
+            }
+
             if (isExternalForm(source)) {
                 // console.log('source', source)
                 return { id: source, external: true };
@@ -347,7 +366,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                 })
 
                 const metaInfo: TSciprtMetaInfo = {
-                    name: settings?.name + '/' + info.fileName + '_' + cryptoRandomString({ length: 8 }),
+                    name: settings?.cromwellConfig?.name + '/' + info.fileName + '_' + cryptoRandomString({ length: 8 }),
                     externalDependencies: versionedImportedBindings,
                     // importsInfo
                     // info
@@ -369,9 +388,34 @@ export const rollupPluginCromwellFrontend = (settings?: {
                         return paths;
                     })
                 }
+
+                Object.keys(stylesImports).forEach(id => {
+                    if (id === normalizePath(info.facadeModuleId)) {
+                        stylesImports[id].localPath = info.fileName;
+                    }
+                })
             });
 
             if (settings?.pagesMetaInfo?.paths && settings.buildDir) {
+
+                // Copy locally imported stylesheets
+                for (const id of Object.keys(stylesImports)) {
+                    for (const styleSheet of stylesImports[id].styles) {
+                        const localPath = stylesImports[id].localPath
+                        if (localPath) {
+                            const styleSheetSourcePath = resolve(dirname(id), styleSheet);
+                            const styleSheetBuildPath = resolve(settings.buildDir, dirname(localPath), styleSheet);
+                            // console.log('styleSheetSourcePath', styleSheetSourcePath, 'styleSheetBuildPath', styleSheetBuildPath)
+                            if (!fs.existsSync(styleSheetBuildPath)) {
+                                fs.ensureDirSync(dirname(styleSheetBuildPath));
+                                fs.copyFileSync(styleSheetSourcePath, styleSheetBuildPath);
+                            }
+                        }
+
+                    }
+
+                }
+
                 fs.outputFileSync(resolve(settings.buildDir, 'pages_meta.json'), JSON.stringify(settings.pagesMetaInfo, null, 2));
             }
 

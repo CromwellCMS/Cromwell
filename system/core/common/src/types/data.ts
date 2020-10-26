@@ -187,7 +187,8 @@ export type TPagesMetaInfo = {
     paths: {
         pageName: string;
         localPath?: string;
-        srcFullPath?: string
+        srcFullPath?: string;
+        importedStyles?: string[];
     }[]
 }
 
