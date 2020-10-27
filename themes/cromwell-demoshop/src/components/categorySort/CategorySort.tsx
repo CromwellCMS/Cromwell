@@ -73,7 +73,7 @@ export const CategorySort = (props: {
                 onChange={handleKeyChange}
             >
                 {sortOptions.map(opt => (
-                    <MenuItem value={opt.title}>{opt.title}</MenuItem>
+                    <MenuItem value={opt.title} key={opt.title}>{opt.title}</MenuItem>
                 ))}
             </Select>
         </FormControl>

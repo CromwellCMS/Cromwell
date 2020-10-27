@@ -9,7 +9,7 @@
             "es2017"
         ],
         "baseUrl": ".",
-        "allowJs": true,
+        "allowJs": false,
         "jsx": "react",
         "strict": true,
         "esModuleInterop": true,

@@ -17,7 +17,7 @@ import {
     HighlightOff as HighlightOffIcon
 } from '@material-ui/icons';
 
-import config from '../../cromwell.config.js';
+import cromwellConfig from '../../cromwell.config.js';
 import { defaultSettings } from '../defaultSettings';
 import { TMainMenuItem, TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
@@ -34,13 +34,13 @@ export default function index() {
     useEffect(() => {
         (async () => {
             setIsloading(true);
-            const settings: TMainMenuSettings = await apiClient?.getPluginSettings(config.name);
+            const settings: TMainMenuSettings = await apiClient?.getPluginSettings(cromwellConfig.name);
             if (settings) {
                 items = settings.items || [];
                 setSettings(settings);
             }
             else {
-                await apiClient?.setPluginSettings(config.name, defaultSettings);
+                await apiClient?.setPluginSettings(cromwellConfig.name, defaultSettings);
                 items = defaultSettings.items || [];
                 setSettings(defaultSettings);
             }
@@ -74,7 +74,7 @@ export default function index() {
                                 setIsloading(true);
                                 if (settings) {
                                     settings.items = items;
-                                    await apiClient?.setPluginSettings(config.name, settings);
+                                    await apiClient?.setPluginSettings(cromwellConfig.name, settings);
                                 }
                                 setIsloading(false);
                             }}>

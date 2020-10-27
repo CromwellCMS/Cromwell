@@ -1,6 +1,7 @@
 import { TSciprtMetaInfo, TPluginConfig, TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
 import {
-    getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, getPluginBackendPath
+    getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, getPluginBackendPath,
+    buildDirName
 } from '@cromwell/core-backend';
 import { walk } from 'estree-walker';
 import glob from 'glob';
@@ -30,7 +31,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
 
     if (cromwellConfig.type === 'plugin') {
         const pluginConfig = cromwellConfig as TPluginConfig;
-        if (pluginConfig.frontendInputFile && pluginConfig.buildDir) {
+        if (pluginConfig.frontendInputFile) {
 
             const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
             const inputPath = resolve(process.cwd(), pluginConfig.frontendInputFile).replace(/\\/g, '/');
@@ -38,7 +39,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
             const optionsInput = '$$' + pluginConfig.name + '/' + pluginConfig.frontendInputFile;
             options.input = optionsInput;
             options.output = Object.assign({}, options.output, {
-                file: getPluginFrontendBundlePath(resolve(process.cwd(), pluginConfig.buildDir)),
+                file: getPluginFrontendBundlePath(resolve(process.cwd(), buildDirName)),
                 format: "iife",
                 name: pluginConfig.name,
                 banner: '(function() {',
@@ -63,7 +64,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
 
             cjsOptions.input = optionsInput;
             cjsOptions.output = Object.assign({}, cjsOptions.output, {
-                file: getPluginFrontendCjsPath(resolve(process.cwd(), pluginConfig.buildDir)),
+                file: getPluginFrontendCjsPath(resolve(process.cwd(), buildDirName)),
                 format: "cjs",
                 name: pluginConfig.name,
                 exports: "auto"
@@ -84,7 +85,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
         }
 
 
-        if (pluginConfig.backend && pluginConfig.buildDir) {
+        if (pluginConfig.backend) {
             let resolverFiles: string[] = [];
             let entityFiles: string[] = [];
 
@@ -104,7 +105,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
 
                 cjsOptions.input = optionsInput;
                 cjsOptions.output = Object.assign({}, cjsOptions.output, {
-                    file: getPluginBackendPath(resolve(process.cwd(), pluginConfig.buildDir)),
+                    file: getPluginBackendPath(resolve(process.cwd(), buildDirName)),
                     format: "cjs",
                     name: pluginConfig.name,
                     exports: "auto"
@@ -145,57 +146,64 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
     }
 
     if (cromwellConfig.type === 'theme') {
-        const themeConfig = cromwellConfig as TThemeConfig;
-        let pagesDir = themeConfig?.main?.pagesDir;
-        let buildDir = themeConfig?.main?.buildDir;
-        if (!pagesDir) throw new Error(`CromwellPlugin Error. Specify pagesDir in the cromwell.config.js. It is declared in TThemeConfig type of @cromwell/core module`);
-        if (!buildDir) throw new Error(`CromwellPlugin Error. Specify buildDir in the cromwell.config.js. It is declared in TThemeConfig type of @cromwell/core module`);
-        pagesDir = isAbsolute(pagesDir) ? pagesDir : resolve(process.cwd(), pagesDir);
-        buildDir = isAbsolute(buildDir) ? buildDir : resolve(process.cwd(), buildDir);
+        const buildDir = resolve(process.cwd(), buildDirName);
+
+
+        let srcDir = process.cwd();
+        let pagesDir = resolve(srcDir, 'pages');
+        let pagesRelativeDir = 'pages';
+
+        if (!fs.existsSync(pagesDir)) {
+            srcDir = resolve(process.cwd(), 'src');
+            pagesDir = resolve(srcDir, 'pages');
+            pagesRelativeDir = 'src/pages';
+        }
+
+        if (!fs.pathExistsSync(pagesDir)) {
+            throw new Error('Pages directory was not found')
+        }
 
         const options = (Object.assign({}, specifiedOptions?.themePages ? specifiedOptions.themePages : inputOptions));
-        if (fs.pathExistsSync(pagesDir)) {
-            const globStr = `${pagesDir}/**/*.+(ts|tsx|js|jsx)`;
-            const pageFiles = glob.sync(globStr);
-            const pagesMetaInfo: TPagesMetaInfo = { paths: [] }
+        const globStr = `${pagesDir}/**/*.+(ts|tsx|js|jsx)`;
+        const pageFiles = glob.sync(globStr);
+        const pagesMetaInfo: TPagesMetaInfo = { paths: [] }
 
-            if (pageFiles && pageFiles.length > 0) {
+        if (pageFiles && pageFiles.length > 0) {
 
-                let pageImports = '';
-                for (let fileName of pageFiles) {
-                    fileName = normalizePath(fileName);
-                    const pageName = fileName.replace(normalizePath(pagesDir) + '/', '').replace(/\.(m?jsx?|tsx?)$/, '');
-                    pagesMetaInfo.paths.push({
-                        srcFullPath: fileName,
-                        pageName
-                    });
-                    pageImports += `export * as Page_${cryptoRandomString({ length: 12 })} from '${fileName}';\n`;
-                    // pageImports += `export const Page_${cryptoRandomString({ length: 12 })} = require('${fileName}');\n`;
-                };
+            let pageImports = '';
+            for (let fileName of pageFiles) {
+                fileName = normalizePath(fileName);
+                const pageName = fileName.replace(normalizePath(pagesDir) + '/', '').replace(/\.(m?jsx?|tsx?)$/, '');
+                pagesMetaInfo.paths.push({
+                    srcFullPath: fileName,
+                    pageName
+                });
+                pageImports += `export * as Page_${cryptoRandomString({ length: 12 })} from '${fileName}';\n`;
+                // pageImports += `export const Page_${cryptoRandomString({ length: 12 })} = require('${fileName}');\n`;
+            };
 
-                options.plugins = [...(options.plugins ?? [])];
+            options.plugins = [...(options.plugins ?? [])];
 
 
-                const optionsInput = '$$' + themeConfig.name + '/' + themeConfig?.main?.pagesDir
-                options.plugins.push(virtual({
-                    [optionsInput]: pageImports
-                }));
-                options.input = optionsInput;
+            const optionsInput = '$$' + cromwellConfig.name + '/' + pagesRelativeDir;
+            options.plugins.push(virtual({
+                [optionsInput]: pageImports
+            }));
+            options.input = optionsInput;
 
-                options.output = Object.assign({}, options.output, {
-                    dir: buildDir,
-                    format: "esm",
-                } as OutputOptions);
+            options.output = Object.assign({}, options.output, {
+                dir: buildDir,
+                format: "esm",
+            } as OutputOptions);
 
-                options.preserveModules = true;
+            options.preserveModules = true;
 
-                options.plugins.unshift(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, cromwellConfig }));
+            options.plugins.unshift(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig }));
 
-                outOptions.push(options);
+            outOptions.push(options);
 
-            } else {
-                throw new Error('CromwellPlugin Error. No pages found at: ' + pagesDir);
-            }
+        } else {
+            throw new Error('CromwellPlugin Error. No pages found at: ' + pagesDir);
         }
     }
 
@@ -207,7 +215,8 @@ export const rollupPluginCromwellFrontend = (settings?: {
     packageJsonPath?: string;
     generateMeta?: boolean;
     pagesMetaInfo?: TPagesMetaInfo;
-    buildDir?: string
+    buildDir?: string;
+    srcDir?: string;
     cromwellConfig: TPluginConfig | TThemeConfig;
 }): Plugin => {
 
@@ -216,11 +225,6 @@ export const rollupPluginCromwellFrontend = (settings?: {
     const importsInfo: Record<string, {
         externals: Record<string, string[]>;
         internals: string[];
-    }> = {};
-
-    const stylesImports: Record<string, {
-        styles: string[];
-        localPath?: string;
     }> = {};
 
     // console.log('globals', globals);
@@ -241,13 +245,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
             // console.log('resolveId', source);
 
             if (settings?.cromwellConfig?.type === 'theme') {
-                if (importer && /\.s?css$/.test(source)) {
-                    if (!stylesImports[normalizePath(importer)]) stylesImports[normalizePath(importer)] = {
-                        styles: []
-                    }
-                    if (!stylesImports[normalizePath(importer)].styles.includes(source))
-                        stylesImports[normalizePath(importer)].styles.push(source);
-
+                if (/\.s?css$/.test(source)) {
                     return { id: source, external: true };
                 }
             }
@@ -388,32 +386,22 @@ export const rollupPluginCromwellFrontend = (settings?: {
                         return paths;
                     })
                 }
-
-                Object.keys(stylesImports).forEach(id => {
-                    if (id === normalizePath(info.facadeModuleId)) {
-                        stylesImports[id].localPath = info.fileName;
-                    }
-                })
             });
 
-            if (settings?.pagesMetaInfo?.paths && settings.buildDir) {
+            if (settings?.pagesMetaInfo?.paths && settings.srcDir && settings.buildDir) {
 
                 // Copy locally imported stylesheets
-                for (const id of Object.keys(stylesImports)) {
-                    for (const styleSheet of stylesImports[id].styles) {
-                        const localPath = stylesImports[id].localPath
-                        if (localPath) {
-                            const styleSheetSourcePath = resolve(dirname(id), styleSheet);
-                            const styleSheetBuildPath = resolve(settings.buildDir, dirname(localPath), styleSheet);
-                            // console.log('styleSheetSourcePath', styleSheetSourcePath, 'styleSheetBuildPath', styleSheetBuildPath)
-                            if (!fs.existsSync(styleSheetBuildPath)) {
-                                fs.ensureDirSync(dirname(styleSheetBuildPath));
-                                fs.copyFileSync(styleSheetSourcePath, styleSheetBuildPath);
-                            }
-                        }
+                const globStr = `${normalizePath(settings.srcDir)}/**/*.+(css|scss|sass)`;
+                const pageFiles = glob.sync(globStr);
+                for (const styleSheetPath of pageFiles) {
+                    const styleSheetBuildPath = normalizePath(styleSheetPath).replace(normalizePath(settings.srcDir),
+                        normalizePath(settings.buildDir));
 
+                    if (!fs.existsSync(styleSheetBuildPath)) {
+                        fs.ensureDirSync(dirname(styleSheetBuildPath));
+                        fs.copyFileSync(styleSheetPath, styleSheetBuildPath);
                     }
-
+                    // console.log('styleSheetSourcePath', styleSheetPath, 'styleSheetBuildPath', styleSheetBuildPath)
                 }
 
                 fs.outputFileSync(resolve(settings.buildDir, 'pages_meta.json'), JSON.stringify(settings.pagesMetaInfo, null, 2));

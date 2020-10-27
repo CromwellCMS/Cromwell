@@ -43,6 +43,10 @@ const main = async () => {
         if (pageInfo.name === '_app' && themeMainConfig && themeMainConfig.globalCss &&
             Array.isArray(themeMainConfig.globalCss) && themeMainConfig.globalCss.length > 0) {
             themeMainConfig.globalCss.forEach(css => {
+                if (css.startsWith('.')) {
+                    css = normalizePath(resolve(tempDir, dirname(pageRelativePath), css)).replace(
+                        normalizePath(tempDir) + '/', '');
+                }
                 globalCssImports += `import '${css}';\n`
             })
         }
@@ -201,9 +205,11 @@ const main = async () => {
 
     // Link theme's build dir
     const localThemeBuildDir = resolve(tempDir, localThemeBuildDurChunk);
-    try {
-        await symlinkDir(themeExports.themeBuildDir, localThemeBuildDir)
-    } catch (e) { console.log(e) }
+    // try {
+    //     await symlinkDir(themeExports.themeBuildDir, localThemeBuildDir)
+    // } catch (e) { console.log(e) }
+    await makeEmptyDir(localThemeBuildDir);
+    await fs.copy(themeExports.themeBuildDir, localThemeBuildDir)
 
 
 };

@@ -10,7 +10,7 @@ import { isElement } from 'react-is';
 // @ts-ignore
 import styles from './Layout.module.scss';
 // @ts-ignore
-import variables from '../../styles/variables.scss';
+import { primaryColor } from '../../constants';
 
 type TProps = {
     children: React.ReactNode;
@@ -19,9 +19,9 @@ type TProps = {
 const theme = createMuiTheme({
     palette: {
         primary: {
-            main: variables.primary,
-            light: variables.primary,
-            dark: variables.primary
+            main: primaryColor,
+            light: primaryColor,
+            dark: primaryColor
         },
     },
 });
