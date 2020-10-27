@@ -4,6 +4,7 @@ import { Router } from 'express';
 import fs from 'fs-extra';
 import { readCMSConfig } from '@cromwell/core-backend';
 import { resolve } from 'path';
+import decache from 'decache';
 
 import { projectRootDir } from '../constants';
 
@@ -65,6 +66,7 @@ export const getCmsController = (): Router => {
                     fs.access(configPath, fs.constants.R_OK, (err) => {
                         if (!err) {
                             try {
+                                decache(configPath);
                                 const themeConfig: TThemeConfig | undefined = require(configPath);
                                 if (themeConfig && themeConfig.main) {
                                     out.push(themeConfig.main);

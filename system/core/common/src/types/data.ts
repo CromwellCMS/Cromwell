@@ -116,10 +116,6 @@ export type TThemeConfig = TBuildConfig & {
 export type TThemeMainConfig = {
     themeName: string;
 
-    /** Dir with production build of the theme. Path is relative from theme's root dir */
-    buildDir?: string;
-    /** Theme's source pages dir. Same as in Next.js "pages" dir, but with arbitrary path. Path is relative from theme's root dir  */
-    pagesDir?: string;
     /** Path to component to use in Admin Panel */
     adminPanelDir?: string;
     /** Colors to use */
@@ -156,7 +152,6 @@ export type TPageConfig = TPageInfo & {
 }
 
 export type TPluginConfig = TBuildConfig & {
-    buildDir?: string;
     adminDir?: string;
     frontendInputFile?: string
     frontendModule?: string;

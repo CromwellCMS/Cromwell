@@ -8,7 +8,6 @@ import alias from '@rollup/plugin-alias';
 import cromwellConfig from './cromwell.config.js';
 import { resolve } from 'path';
 
-const distDir = resolve(__dirname, cromwellConfig.main.buildDir);
 
 export default {
     input: resolve(__dirname, 'src/index.ts'),

@@ -2,8 +2,9 @@ import { TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve, isAbsolute } from 'path';
 import normalizePath from 'normalize-path';
+import decache from 'decache';
 
-import { getMetaInfoPath, getThemePagesMetaPath, defaultDistDirName } from './paths';
+import { getMetaInfoPath, getThemePagesMetaPath, buildDirName } from './paths';
 
 export type TThemeExportsInfo = {
     pagesInfo: TPagePathInfo[]
@@ -30,20 +31,7 @@ export const readThemeExports = async (projectRootDir: string | null, themeName:
 
     const themeDir = (themeAbsDir ? themeAbsDir : resolve(projectRootDir!, 'themes', themeName)).replace(/\\/g, '/');
 
-    const themeConfigPath = `${themeDir}/cromwell.config.js`;
-    let themeConfig: TThemeConfig | undefined = undefined;
-    try {
-        themeConfig = require(themeConfigPath);
-    } catch (e) {
-        console.log('core/backend::readThemeExports ', e);
-    }
-    if (!themeConfig) {
-        console.log('core/backend::readThemeExports cannot read Theme config at: ' + themeConfigPath);
-    }
-
-
-    let buildDir = themeConfig?.main?.buildDir ?? resolve(themeDir, defaultDistDirName);
-    if (!isAbsolute(buildDir)) buildDir = resolve(themeDir, buildDir)
+    const buildDir = resolve(themeDir, buildDirName);
     const metainfoPath = getThemePagesMetaPath(buildDir);
 
     const exportsInfo: TThemeExportsInfo = {
@@ -88,13 +76,13 @@ export const readThemeExports = async (projectRootDir: string | null, themeName:
         throw new Error('Could not find or read pages meta info file at: ' + metainfoPath);
     }
 
-    const adminPanelConfigDir = themeConfig?.main?.adminPanelDir;
-    if (adminPanelConfigDir) {
-        const adminPanelDir = resolve(themeDir, adminPanelConfigDir);
-        if (await fs.pathExists(adminPanelDir)) {
-            exportsInfo.adminPanelPath = adminPanelDir.replace(/\\/g, '/');
-        }
-    }
+    // const adminPanelConfigDir = themeConfig?.main?.adminPanelDir;
+    // if (adminPanelConfigDir) {
+    //     const adminPanelDir = resolve(themeDir, adminPanelConfigDir);
+    //     if (await fs.pathExists(adminPanelDir)) {
+    //         exportsInfo.adminPanelPath = adminPanelDir.replace(/\\/g, '/');
+    //     }
+    // }
 
     return exportsInfo;
 }

@@ -1,5 +1,7 @@
 'use strict';
 
+const constants = require('./src/constants');
+
 module.exports = {
     name: "cromwell-demoshop",
     type: 'theme',
@@ -8,14 +10,13 @@ module.exports = {
         title: "Demoshop",
         previewImage: "/themes/cromwell-demoshop/shopping-cart.png",
         description: "Online shop theme",
-        buildDir: "dist",
-        pagesDir: "src/pages",
         adminPanelDir: "dist/adminPanel",
         palette: {
-            "primaryColor": "#9900CC"
+            primaryColor: constants.primaryColor
         },
         globalCss: [
-            "react-toastify/dist/ReactToastify.css"
+            "react-toastify/dist/ReactToastify.css",
+            '../styles/global.scss'
         ],
         headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap\" rel=\"stylesheet\" /><link href=\"https://unpkg.com/reset-css/reset.css\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />"
     },

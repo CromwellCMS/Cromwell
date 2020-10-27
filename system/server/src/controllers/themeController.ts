@@ -5,6 +5,7 @@ import {
 import { Router } from 'express';
 import fs from 'fs-extra';
 import { readCMSConfig } from '@cromwell/core-backend';
+import decache from 'decache';
 
 import { projectRootDir } from '../constants';
 import { readPluginConfig } from './pluginsController';
@@ -26,6 +27,7 @@ export const getThemeController = (): Router => {
     const readThemeConfig = (configPath: string, cb: (themeConfig: TThemeConfig | null) => void) => {
         let config: TThemeConfig | undefined;
         try {
+            decache(configPath);
             config = require(configPath);
         } catch (e) {
             console.error(e);
@@ -432,10 +434,6 @@ export const getThemeController = (): Router => {
                         const pluginName = mod?.plugin?.pluginName;
                         if (pluginName) {
                             const originalConf: TPluginConfig | undefined | null = await readPluginConfig(pluginName);
-
-                            if (originalConf?.buildDir) originalConf.buildDir = resolve(
-                                projectRootDir, 'plugins', pluginName, originalConf.buildDir);
-
                             const pluginConfig = Object.assign({}, mod?.plugin?.pluginConfig, originalConf);
                             out[pluginName] = pluginConfig;
                         }

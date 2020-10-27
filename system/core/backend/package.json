@@ -13,6 +13,7 @@
   "dependencies": {
     "@cromwell/core": "workspace:1.1.0",
     "class-validator": "^0.12.2",
+    "decache": "^4.6.0",
     "graphql": "^15.3.0",
     "fs-extra": "^9.0.1",
     "normalize-path": "^3.0.0",

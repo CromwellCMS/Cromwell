@@ -163,25 +163,17 @@ var fs = require('fs');
         for (var i = 0; i < themes.length; i++) {
             var theme = themes[i];
             var themeDir = resolve(themesDir, theme);
-            var configPath = resolve(themeDir, 'cromwell.config.js');
-            try {
-                var config = require(configPath);
-                if (config && config.main && config.main.buildDir) {
-                    if (!fs.existsSync(resolve(themeDir, config.main.buildDir))) {
-                        console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
-                        spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
-                    }
-
-                    // Check if current project root dir has no public folder and copy media from theme
-                    if (!hasPublicDir && config.main && config.main.themeName
-                        && fs.existsSync(resolve(themeDir, 'public'))) {
-                        copyFolderRecursiveSync(resolve(themeDir, 'public'),
-                            resolve(projectRootDir, `public/themes/${config.main.themeName}`));
-                    }
-                }
-            } catch (e) {
-                console.log(e);
+            if (!fs.existsSync(resolve(themeDir, '.cromwell'))) {
+                console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
+                spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
             }
+
+            // Check if current project root dir has no public folder and copy media from theme
+            if (!hasPublicDir && fs.existsSync(resolve(themeDir, 'public'))) {
+                copyFolderRecursiveSync(resolve(themeDir, 'public'),
+                    resolve(projectRootDir, `public/themes/${theme}`));
+            }
+
         }
     }
 
@@ -192,23 +184,15 @@ var fs = require('fs');
         for (var i = 0; i < plugins.length; i++) {
             var plugin = plugins[i];
             var pluginDir = resolve(pluginsDir, plugin);
-            var configPath = resolve(pluginDir, 'cromwell.config.js');
-            try {
-                var config = require(configPath);
-                if (config && config.buildDir) {
-                    if (!fs.existsSync(resolve(pluginDir, config.buildDir))) {
-                        console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
-                        spawnSync('npm run build', { shell: true, cwd: pluginDir, stdio: 'inherit' });
-                    }
-                }
+            if (!fs.existsSync(resolve(pluginDir, '.cromwell'))) {
+                console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
+                spawnSync('npm run build', { shell: true, cwd: pluginDir, stdio: 'inherit' });
+            }
 
-                // Check if current project root dir has no public folder and copy media from theme
-                if (!hasPublicDir && config.name && fs.existsSync(resolve(pluginDir, 'public'))) {
-                    copyFolderRecursiveSync(resolve(pluginDir, 'public'),
-                        resolve(projectRootDir, `public/plugins/${config.name}`));
-                }
-            } catch (e) {
-                console.log(e);
+            // Check if current project root dir has no public folder and copy media from theme
+            if (!hasPublicDir && fs.existsSync(resolve(pluginDir, 'public'))) {
+                copyFolderRecursiveSync(resolve(pluginDir, 'public'),
+                    resolve(projectRootDir, `public/plugins/${plugin}`));
             }
         }
     }

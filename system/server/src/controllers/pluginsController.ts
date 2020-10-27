@@ -3,9 +3,10 @@ import fs, { pathExists } from 'fs-extra';
 import { TPluginConfig } from '@cromwell/core';
 import { projectRootDir } from '../constants';
 import { resolve } from 'path';
-import { getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath } from '@cromwell/core-backend';
+import { getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, buildDirName } from '@cromwell/core-backend';
 import { TSciprtMetaInfo, TPluginFrontendBundle } from '@cromwell/core';
 import normalizePath from 'normalize-path';
+import decache from 'decache';
 
 const settingsPath = resolve(projectRootDir, 'settings/plugins');
 const pluginsPath = resolve(projectRootDir, 'plugins');
@@ -21,6 +22,7 @@ export const readPluginConfig = async (pluginName: string): Promise<TPluginConfi
     const filePath = resolve(pluginsPath, pluginName, 'cromwell.config.js');
     if (await fs.pathExists(filePath)) {
         try {
+            decache(filePath);
             let out = require(filePath);
             if (out && typeof out === 'object') {
                 return out;
@@ -171,36 +173,33 @@ export const getPluginsController = (): Router => {
 
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {
-            const config = await readPluginConfig(pluginName);
-            if (config?.buildDir) {
-                const filePath = getPluginFrontendBundlePath(resolve(pluginsPath, pluginName, config.buildDir));
-                let cjsPath: string | undefined = normalizePath(getPluginFrontendCjsPath(
-                    resolve(pluginsPath, pluginName, config.buildDir)));
+            const filePath = getPluginFrontendBundlePath(resolve(pluginsPath, pluginName, buildDirName));
+            let cjsPath: string | undefined = normalizePath(getPluginFrontendCjsPath(
+                resolve(pluginsPath, pluginName, buildDirName)));
 
-                if (cjsPath && !(await fs.pathExists(cjsPath))) cjsPath = undefined;
+            if (cjsPath && !(await fs.pathExists(cjsPath))) cjsPath = undefined;
 
-                if (await fs.pathExists(filePath)) {
-                    try {
-                        const source = (await fs.readFile(filePath)).toString();
+            if (await fs.pathExists(filePath)) {
+                try {
+                    const source = (await fs.readFile(filePath)).toString();
 
-                        let meta: TSciprtMetaInfo | undefined;
-                        if (await fs.pathExists(getMetaInfoPath(filePath))) {
-                            try {
-                                meta = JSON.parse((await fs.readFile(getMetaInfoPath(filePath))).toString());
-                            } catch (e) { }
-                        }
-
-                        out = {
-                            source,
-                            meta,
-                            cjsPath
-                        }
-
-                        if (out) res.send(out);
-                        return;
-                    } catch (e) {
-                        console.error("Failed to read plugin's settings", e);
+                    let meta: TSciprtMetaInfo | undefined;
+                    if (await fs.pathExists(getMetaInfoPath(filePath))) {
+                        try {
+                            meta = JSON.parse((await fs.readFile(getMetaInfoPath(filePath))).toString());
+                        } catch (e) { }
                     }
+
+                    out = {
+                        source,
+                        meta,
+                        cjsPath
+                    }
+
+                    if (out) res.send(out);
+                    return;
+                } catch (e) {
+                    console.error("Failed to read plugin's settings", e);
                 }
             }
         };
