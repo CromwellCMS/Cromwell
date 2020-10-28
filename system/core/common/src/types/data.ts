@@ -26,6 +26,7 @@ export type TCromwellStore = {
     webSocketClient?: any;
     cstore?: any;
     nodeModules?: TCromwellNodeModules;
+    fsRequire?: any;
 }
 
 declare global {
@@ -163,7 +164,7 @@ export type TPluginConfig = TBuildConfig & {
 }
 
 export type TCromwellNodeModules = {
-    importStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
+    importStatuses?: Record<string, 'failed' | 'ready' | 'default' | Promise<'failed' | 'ready' | 'default'>>;
     scriptStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
     imports?: Record<string, () => void>;
     modules?: Record<string, Object>;
@@ -175,7 +176,8 @@ export type TCromwellNodeModules = {
 export type TSciprtMetaInfo = {
     name: string;
     // { [moduleName]: namedImports }
-    externalDependencies: Record<string, string[]>
+    externalDependencies: Record<string, string[]>;
+    import?: 'chunks' | 'lib';
 }
 
 export type TPagesMetaInfo = {

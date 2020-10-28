@@ -1,5 +1,8 @@
 import { TCromwellNodeModules, TSciprtMetaInfo } from '@cromwell/core';
-import { buildDirChunk, moduleMainBuidFileName, moduleNodeBuidFileName, moduleMetaInfoFileName } from './constants';
+import {
+    buildDirChunk, moduleMainBuidFileName, moduleNodeBuidFileName,
+    moduleMetaInfoFileName, moduleLibBuidFileName
+} from './constants';
 
 /**
  * Node modules loading app for a Browser
@@ -31,7 +34,12 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
     if (!Cromwell.importModule) Cromwell.importModule = (moduleName, namedExports = ['default']): Promise<boolean> | boolean => {
         if (canShowInfo) console.log('Cromwella:bundler: importModule ' + moduleName + ' named: ' + namedExports);
-        if (namedExports.includes('default')) namedExports = ['default'];
+        let isDefaultImport = false;
+        let isLibImport = false;
+        if (namedExports.includes('default')) {
+            namedExports = ['default'];
+            isDefaultImport = true;
+        }
 
         if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
         if (!Cromwell.imports) Cromwell.imports = {};
@@ -40,6 +48,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
         const metaFilepath = `${buildDirChunk}/${moduleName}/${moduleMetaInfoFileName}`;
         const importerFilepath = `/${buildDirChunk}/${moduleName}/${moduleMainBuidFileName}`;
+        const importerEntireLibFilepath = `/${buildDirChunk}/${moduleName}/${moduleLibBuidFileName}`;
         const importerNodeFilepath = `${buildDirChunk}/${moduleName}/${moduleNodeBuidFileName}`;
 
         let moduleVer: string | undefined;
@@ -114,6 +123,10 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
             if (!Cromwell.imports) Cromwell.imports = {};
 
             const importAllNamed = async (): Promise<boolean[]> => {
+                if (isLibImport) {
+                    return [true];
+                }
+
                 const promises: Promise<boolean>[] = [];
                 namedExports.forEach(named => {
                     promises.push(useImporter(named));
@@ -141,19 +154,20 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
             // Module has been requested for the first time. Load main importer script of the module.
             if (!Cromwell.importStatuses[moduleName]) {
-
+                if (isDefaultImport) isLibImport = true;
                 if (Cromwell.modules?.[moduleName]) {
                     // Module has been asyc imported in some other importer or was bundled intentionally that way with reference in global store.
                     Cromwell.importStatuses[moduleName] = 'failed';
                     return true;
                 }
 
+                const scriptId = `${moduleName}@${moduleVer}-main-module-importer`;
+                if (document.getElementById(scriptId)) return true;
+
                 Cromwell.importStatuses[moduleName] = new Promise(async (onLoad) => {
 
                     if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
                     if (!Cromwell.imports) Cromwell.imports = {};
-
-                    const importerPromise = fetch(importerFilepath).then(res => res.text());
 
                     // Load meta and externals if it has any
                     const metaInfoPromise = fetch(`/${metaFilepath}`).then(res => res.text());
@@ -163,8 +177,12 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                         if (metaInfoStr) {
                             const metaInfo: TSciprtMetaInfo = JSON.parse(metaInfoStr);
                             // { [moduleName]: namedExports }
-                            if (metaInfo && Cromwell?.importSciptExternals)
-                                await Cromwell.importSciptExternals(metaInfo)
+                            if (metaInfo) {
+                                if (metaInfo.import === 'lib') {
+                                    isLibImport = true;
+                                }
+                                await Cromwell?.importSciptExternals?.(metaInfo)
+                            }
                         } else {
                             throw new Error('Failed to fetch file:  /' + metaFilepath)
                         }
@@ -172,31 +190,35 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                         console.error('Cromwella:bundler: Failed to load meta info about importer of the module: ' + moduleName, e);
                     }
 
+
+
                     if (Cromwell.modules?.[moduleName]) {
                         // Module has been asyc imported in some other importer or was bundled intentionally that way with reference in global store.
                         Cromwell.importStatuses[moduleName] = 'failed';
                         return true;
                     }
 
+                    const filePath = isLibImport ? importerEntireLibFilepath : importerFilepath
+                    const importerPromise = new Promise(res => {
+                        const domScript = document.createElement('script');
+                        domScript.id = scriptId;
+                        domScript.src = filePath;
+                        domScript.onload = () => res();
+                        document.head.appendChild(domScript);
+                    });
+
                     try {
-                        const jsText = await importerPromise;
+                        await importerPromise;
 
-                        if (Cromwell.modules?.[moduleName]) {
-                            // Module has been asyc imported in some other importer or was bundled intentionally that way with reference in global store.
-                            Cromwell.importStatuses[moduleName] = 'failed';
-                            return true;
-                        }
+                        if (canShowInfo) console.log(`Cromwella:bundler: Importer for module "${moduleName}" executed`);
 
-                        if (jsText) {
-                            if (isServer()) {
-                                Function('require', jsText)(require);
-                            } else {
-                                Function(jsText)();
-                            }
-                            if (canShowInfo) console.log(`Cromwella:bundler: Importer for module "${moduleName}" executed`);
-                        } else {
-                            throw new Error('Failed to fetch file ' + importerFilepath)
-                        }
+                        if (isLibImport && Cromwell?.modules?.[moduleName]) {
+                            //@ts-ignore
+                            Cromwell.imports[moduleName] = { 'default': () => { } };
+                        };
+                        if (canShowInfo) console.log(`Cromwella:bundler: isLibImport:`, isLibImport, 'Cromwell?.modules?.[moduleName]',
+                            Cromwell?.modules?.[moduleName], ' Cromwell.imports[moduleName] ', Cromwell.imports[moduleName]);
+
                     } catch (e) {
                         console.error('Cromwella:bundler: Failed to execute importer for module: ' + moduleName, e);
                         Cromwell.importStatuses[moduleName] = 'failed';
@@ -225,8 +247,13 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                         if (canShowInfo) console.log('Cromwella:bundler: All initially requested named exports for module "' + moduleName + '" have been successfully loaded', namedExports);
                     }
 
-                    Cromwell.importStatuses[moduleName] = 'ready';
-                    onLoad('ready');
+                    if (isLibImport) {
+                        Cromwell.importStatuses[moduleName] = 'default';
+                        onLoad('default');
+                    } else {
+                        Cromwell.importStatuses[moduleName] = 'ready';
+                        onLoad('ready');
+                    }
 
                     return true;
                 })
@@ -251,6 +278,10 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                 if (!Cromwell.imports[moduleName]) throw new Error('ready:!Cromwell.imports[moduleName]' + moduleName);
                 const success = await importAllNamed();
                 if (success.includes(false)) return false;
+                return true;
+            }
+
+            if (Cromwell.importStatuses[moduleName] === 'default') {
                 return true;
             }
 

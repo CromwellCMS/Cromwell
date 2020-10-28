@@ -217,7 +217,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
     pagesMetaInfo?: TPagesMetaInfo;
     buildDir?: string;
     srcDir?: string;
-    cromwellConfig: TPluginConfig | TThemeConfig;
+    cromwellConfig?: TPluginConfig | TThemeConfig;
 }): Plugin => {
 
     const modulesInfo = {};

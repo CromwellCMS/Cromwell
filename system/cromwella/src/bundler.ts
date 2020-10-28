@@ -1,5 +1,6 @@
 import colorsdef from 'colors/safe';
 import fs from 'fs-extra';
+import util from 'util';
 import mkdirp from 'mkdirp';
 import { dirname, isAbsolute, resolve } from 'path';
 import webpack from 'webpack';
@@ -14,6 +15,7 @@ import {
     getGlobalModuleStr,
     jsOperators,
     moduleMainBuidFileName,
+    moduleLibBuidFileName,
     moduleMetaInfoFileName,
     moduleChunksBuildDirChunk,
     moduleNodeBuidFileName,
@@ -28,7 +30,10 @@ import symlinkDir from 'symlink-dir';
 import makeEmptyDir from 'make-empty-dir';
 import importFrom from 'import-from';
 import resolveFrom from 'resolve-from';
-
+import rollup from 'rollup';
+import commonjs from "@rollup/plugin-commonjs";
+import { terser } from "rollup-plugin-terser";
+import normalizePath from 'normalize-path';
 const colors: any = colorsdef;
 
 
@@ -280,7 +285,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
          * used modules and bundle them same way recursively
          * @param moduleName 
          */
-        const bundleNodeModuleRecursive = async (moduleName: string, moduleVer: string) => {
+        const bundleNodeModuleRecursive = async (moduleName: string, moduleVer: string): Promise<string | undefined> => {
             getModuleInfo(moduleName, moduleVer);
 
             let modulePath: string | undefined;
@@ -334,10 +339,11 @@ export const bundler = (projectRootDir: string, installationMode: string,
             const moduleBuildDir = resolve(buildDir, `${moduleName}@${modulePackageJson.version}`);
             const libEntry = resolve(moduleBuildDir, moduleGeneratedFileName);
             const nodeLibEntry = resolve(moduleBuildDir, moduleNodeGeneratedFileName);
+            const metaInfoPath = resolve(moduleBuildDir, moduleMetaInfoFileName);
 
             if (fs.existsSync(libEntry)) {
                 // module has been bundled is some other chain of recursive calls
-                return;
+                return moduleBuildDir;
             }
 
             console.log(colors.cyan(`Cromwella:bundler: ${colors.brightCyan('Starting')} to build module: ${colors.brightCyan(`"${moduleName}"`)} from path: ${modulePath}`));
@@ -346,8 +352,8 @@ export const bundler = (projectRootDir: string, installationMode: string,
             try {
                 await makeEmptyDir(moduleBuildDir, { recursive: true });
             } catch (e) {
-                console.log('Failed to make dir: ' + moduleBuildDir, e);
-                return;
+                console.error('Failed to make dir: ' + moduleBuildDir, e);
+                return moduleBuildDir;
             }
 
 
@@ -504,9 +510,16 @@ export const bundler = (projectRootDir: string, installationMode: string,
             
             ${interopDefaultContent}
 
+            const isServer = () => (typeof window === 'undefined');
             const getStore = () => {
+                if (isServer()) {
                     if (!global.CromwellStore) global.CromwellStore = {};
                     return global.CromwellStore;
+                }
+                else {
+                    if (!window.CromwellStore) window.CromwellStore = {};
+                    return window.CromwellStore;
+                }
             }
             const CromwellStore = getStore();
 
@@ -539,15 +552,13 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
             const shouldLogBuild = false;
 
-            parsingWebpackConfig.externals = [
-                function (context, request, callback) {
-                    if (isExternalForm(request)) {
-                        return callback(null as any, 'commonjs ' + request);
-                    }
-                    //@ts-ignore
-                    callback();
+            parsingWebpackConfig.externals = function ({ context, request }, callback) {
+                if (isExternalForm(request)) {
+                    return callback(null as any, 'commonjs ' + request);
                 }
-            ];
+                //@ts-ignore
+                callback();
+            }
 
             const compiler = webpack(parsingWebpackConfig);
 
@@ -662,9 +673,9 @@ export const bundler = (projectRootDir: string, installationMode: string,
                     })
 
                     // Create meta info file with actually used dependencies
-                    const metaInfoPath = resolve(moduleBuildDir, moduleMetaInfoFileName);
                     const metaInfoContent: TSciprtMetaInfo = {
                         name: `${moduleName}@${moduleVer}`,
+                        import: 'chunks',
                         externalDependencies: versionedExternals,
                     };
 
@@ -705,7 +716,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
             // Build module for web.
 
             // console.log(JSON.stringify(webpackConfig.externals, null, 2));
-            const makeConfig = (templateConfig, templateLibEntry, useGlobals: boolean) => {
+            const makeConfig = (templateConfig, templateLibEntry, useGlobals: boolean): Configuration => {
                 const webpackConfig = Object.assign({}, templateConfig);
                 webpackConfig.output = Object.assign({}, templateConfig.output);
                 webpackConfig.entry = templateLibEntry;
@@ -713,7 +724,8 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 webpackConfig.output!.path = resolve(moduleBuildDir);
 
                 if (!isProduction) {
-                    webpackConfig.devtool = 'cheap-source-map';
+                    // webpackConfig.devtool = 'cheap-source-map';
+                    webpackConfig.devtool = false;
                 }
                 webpackConfig.mode = isProduction ? 'production' : 'development';
 
@@ -753,6 +765,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
             const buildCompiler = webpack(webpackConfig);
 
+            let webChunksSuccess = false;
             await new Promise((done) => {
 
                 buildCompiler.run(async (err, stats) => {
@@ -768,16 +781,8 @@ export const bundler = (projectRootDir: string, installationMode: string,
                     if (stats && !stats.hasErrors() && !err && fs.existsSync(resolve(moduleBuildDir, moduleMainBuidFileName))) {
                         console.log(colors.brightGreen('Cromwella:bundler: Successfully built module for web: ' + moduleName));
                         // console.log(colors.cyan('usedExternals: \n' + JSON.stringify(usedExternals, null, 4)));
-                        if (Object.keys(filteredUsedExternals).length > 0) {
-                            console.log(colors.cyan(`Cromwella:bundler: Starting to build following used dependencies of module ${moduleName}: ${Object.keys(filteredUsedExternals).join(', ')}`));
-                            // console.log('collectedDependencies', collectedDependencies)
-                            for (const ext of Object.keys(filteredUsedExternals)) {
-                                const version = collectedDependencies[ext];
-                                if (version)
-                                    await bundleNodeModuleRecursive(ext, version);
-                            }
-                            console.log(colors.cyan(`Cromwella:bundler: All dependencies of module ${moduleName} has been built`));
-                        }
+                        webChunksSuccess = true;
+
                     } else {
                         console.log(colors.brightRed('Cromwella:bundler: Failed to built module for web: ' + moduleName));
                         if (err) console.error(err);
@@ -786,8 +791,64 @@ export const bundler = (projectRootDir: string, installationMode: string,
                     // console.log(stats?.toString({ colors: true }))
                     done();
                 });
-
             })
+
+
+
+            // Additional one-chunk build
+            const webpackSingleConfig = makeConfig(webWebpackConfig, nodeLibEntry, true);
+            webpackSingleConfig.output!.publicPath = `/${buildDirChunk}/${moduleName}@${modulePackageJson.version}/`;
+            webpackSingleConfig!.output!.filename = moduleLibBuidFileName;
+            webpackSingleConfig!.optimization = undefined;
+            const singlebuildCompiler = webpack(webpackSingleConfig);
+
+            await new Promise((done) => {
+
+                singlebuildCompiler.run(async (err, stats) => {
+
+                    if (stats && !stats.hasErrors() && !err && fs.existsSync(resolve(moduleBuildDir, moduleMainBuidFileName))) {
+                        console.log(colors.brightGreen('Cromwella:bundler: Successfully built one-chunk module for web: ' + moduleName));
+                    } else {
+                        console.log(colors.brightRed('Cromwella:bundler: Failed to built one-chunk module for web: ' + moduleName));
+                        if (err) console.error(err);
+                        if (stats) console.error(stats?.toString({ colors: true }));
+                    }
+                    // console.log(stats?.toString({ colors: true }))
+                    done();
+                });
+
+            });
+
+
+
+            // BUNDLE ANALYZE
+            const chunkSizes: number[] = [];
+            const chunksDir = resolve(moduleBuildDir, moduleChunksBuildDirChunk)
+            if (await fs.pathExists(chunksDir)) {
+                const chunks = await fs.readdir(chunksDir);
+                for (const name of chunks) {
+                    const chunkPath = resolve(chunksDir, name);
+                    if (/\.m?js$/.test(chunkPath)) {
+                        const size = (await fs.stat(chunkPath)).size;
+                        chunkSizes.push(size);
+                    }
+                }
+            }
+            const libSize = (await fs.stat(resolve(moduleBuildDir, moduleLibBuidFileName))).size;
+            const importerSize = (await fs.stat(resolve(moduleBuildDir, moduleMainBuidFileName))).size;
+            const maxChunkSize = Math.max(...chunkSizes);
+            const chunksSumSize = chunkSizes.reduce((a, b) => a + b);
+            // console.log(libSize, maxChunkSize, chunksSumSize, importerSize);
+
+            let shouldAlwaysImportDefault = false
+            if (0.9 * libSize < maxChunkSize + importerSize) {
+                shouldAlwaysImportDefault = true;
+            }
+
+            const metaInfoContent: TSciprtMetaInfo = await fs.readJSON(metaInfoPath);
+            metaInfoContent.import = shouldAlwaysImportDefault ? 'lib' : 'chunks';
+            await fs.writeFile(metaInfoPath, JSON.stringify(metaInfoContent, null, 4));
+
 
 
             // 3. THIRD BUILD PASS
@@ -812,9 +873,63 @@ export const bundler = (projectRootDir: string, installationMode: string,
                     done();
                 });
 
-            })
+            });
+
+            // Build required modules recursively
+            const bundledDepsPaths: string[] = [];
+            if (webChunksSuccess) {
+                if (Object.keys(filteredUsedExternals).length > 0) {
+                    console.log(colors.cyan(`Cromwella:bundler: Starting to build following used dependencies of module ${moduleName}: ${Object.keys(filteredUsedExternals).join(', ')}`));
+                    // console.log('collectedDependencies', collectedDependencies)
+                    for (const ext of Object.keys(filteredUsedExternals)) {
+                        const version = collectedDependencies[ext];
+                        if (version) {
+                            const buildPath = await bundleNodeModuleRecursive(ext, version);
+                            if (buildPath) bundledDepsPaths.push(buildPath);
+                        }
+                    }
+                    console.log(colors.cyan(`Cromwella:bundler: All dependencies of module ${moduleName} has been built`));
+                }
+            }
+
+            // Optimize meta bindings
+            for (const depPath of bundledDepsPaths) {
+                const depName = normalizePath(depPath).replace(normalizePath(buildDir) + '/', '');
+                const depMetaPath = resolve(depPath, moduleMetaInfoFileName);
+                // If dependency can be imported only as a whole, mark it as 'default' in meta of this module
+                const depMetaInfo: TSciprtMetaInfo = await fs.readJSON(depMetaPath);
+                if (depMetaInfo) {
+                    if (depMetaInfo.import === 'lib' && metaInfoContent.externalDependencies[depName]) {
+                        metaInfoContent.externalDependencies[depName] = ['default'];
+                    }
+                }
+
+                // Add and/or merge dependency's dependencies into meta of this module
+                const depExts = depMetaInfo.externalDependencies;
+                const thisExts = metaInfoContent.externalDependencies;
+                for (const depDepName of Object.keys(depExts)) {
+                    if (thisExts[depDepName]?.includes('default')) continue;
+
+                    const bindings = depExts[depDepName];
+                    if (!thisExts[depDepName])
+                        thisExts[depDepName] = bindings;
+                    else {
+                        bindings.forEach(usedKey => {
+                            if (!thisExts[depDepName].includes(usedKey)) {
+                                thisExts[depDepName].push(usedKey);
+                            }
+                        });
+                        if (thisExts[depDepName].includes('default'))
+                            thisExts[depDepName] = ['default'];
+                    }
+                }
+            }
+
+            await fs.writeFile(metaInfoPath, JSON.stringify(metaInfoContent, null, 4));
 
             console.log(colors.cyan(`Cromwella:bundler: Module: ${colors.brightCyan(`"${moduleName}"`)} has been ${colors.brightCyan('processed')}`));
+
+            return moduleBuildDir;
         }
 
         for (const module of frontendDependencies) {
@@ -865,7 +980,9 @@ export const webWebpackConfig: Configuration = {
     },
     optimization: {
         splitChunks: {
-            maxSize: 50000,
+            minSize: 20000,
+            maxSize: 100000,
+            minRemainingSize: 20000,
             chunks: 'all',
         },
     },
@@ -886,20 +1003,17 @@ export const webWebpackConfig: Configuration = {
         ]
     },
     // // Webpack 5:
-    // resolve: {
-    //     fallback: {
-    //         "https": false,
-    //         'http': false,
-    //         'stream': false,
-    //         'tty': false,
-    //         'net': false,
-    //         'fs': false
-    //     }
-    // },
-    node: {
-        fs: 'empty',
-        net: 'empty'
+    resolve: {
+        fallback: {
+            "https": false,
+            'http': false,
+            'stream': false,
+            'tty': false,
+            'net': false,
+            'fs': false
+        }
     },
+    node: false,
     stats: 'errors-only'
     // stats: 'normal'
 };
