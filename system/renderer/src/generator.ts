@@ -60,15 +60,17 @@ const main = async () => {
         import ReactDOM from 'react-dom';
         import dynamic from 'next/dynamic';
         import NextLink from 'next/link';
+        import NextHead from 'next/head';
         import * as NextRouter from 'next/router';
         import Document, { Html, Main, NextScript } from 'next/document';
         import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
-        import { isServer, getStoreItem } from "@cromwell/core";
-        import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, fsRequire } from 'build/renderer';
+        import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
+        import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, 
+            fsRequire, importRendererDepsFrontend } from 'build/renderer';
 
 
         const cmsConfig = ${JSON.stringify(config)};
-        checkCMSConfig(cmsConfig);
+        checkCMSConfig(cmsConfig, getStoreItem, setStoreItem);
         
         const importer = getModuleImporter();
         ${cromwellStoreModulesPath}['react'] = React;
@@ -78,11 +80,9 @@ const main = async () => {
         ${cromwellStoreModulesPath}['next/link'] = NextLink;
         ${cromwellStoreModulesPath}['next/router'] = NextRouter;
         ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
+        ${cromwellStoreModulesPath}['next/head'] = NextHead;
         // ${cromwellStoreModulesPath}['next/document'] = dynamic;
 
-        // TEMP
-        ${cromwellStoreModulesPath}['@cromwell/core-frontend'] = require('@cromwell/core-frontend');
-        
         ${pageInfo.metaInfoPath ? `
         if (isServer()) {
             console.log('isServer pageInfo.name', '${pageInfo.name}');
@@ -96,12 +96,14 @@ const main = async () => {
         ${pageImports}
 
         const ${pageDynamicImportName} = dynamic(async () => {
+            await importRendererDepsFrontend();
             ${pageInfo.metaInfoPath ? `
             const meta = await import('${metaInfoRelativePath}');
             await importer.importSciptExternals(meta);
             ` : ''} 
             const pagePromise = import('${pageRelativePath}');
             const pageComp = await pagePromise;
+            
 
             ${disableSSR ? `
             const browserGetStaticProps = createGetStaticProps('${pageInfo.name}', pageComp ? pageComp.getStaticProps : null);
@@ -119,7 +121,7 @@ const main = async () => {
             }, 3000)
             ` : ''}
 
-            return pageComp.default;
+            return getPage('${pageInfo.name}', pageComp.default);
         });;
 
 
@@ -131,9 +133,9 @@ const main = async () => {
         export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticPaths : null);
         `: ''}
 
-        const PageComp = getPage('${pageInfo.name}', ${pageDynamicImportName});
+        
 
-        export default PageComp;
+        export default ${pageDynamicImportName};
         `;
 
         if (!pageInfo.path && pageInfo.fileContent) {
@@ -171,7 +173,7 @@ const main = async () => {
 
     // Create next.config.js
     const nextConfigPath = resolve(tempDir, 'next.config.js');
-    if (!fs.existsSync(jsconfigPath)) {
+    if (!fs.existsSync(nextConfigPath)) {
         await fs.outputFile(nextConfigPath, `
         module.exports = {
             webpack: (config, { isServer }) => {
@@ -180,6 +182,7 @@ const main = async () => {
                     config.node = {
                         fs: 'empty',
                         module: 'empty',
+                        path: 'empty'
                     }
                 }
                 return config

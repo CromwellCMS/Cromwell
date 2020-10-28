@@ -2,6 +2,9 @@ import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import packageJson from './package.json';
+import { rollupPluginCromwellFrontend } from '@cromwell/cromwella';
+import json from '@rollup/plugin-json';
+
 const { resolve } = require('path');
 
 const external = id => {
@@ -36,6 +39,7 @@ export default [
         external,
         plugins: [
             // autoExternal(),
+            rollupPluginCromwellFrontend({ generateMeta: false }),
             nodeResolve({
                 preferBuiltins: false
             }),
@@ -43,6 +47,7 @@ export default [
             typescript({
                 module: "ESNext"
             }),
+            json()
         ]
     },
     {

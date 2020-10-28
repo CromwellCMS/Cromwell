@@ -2,8 +2,8 @@ import React, { useState, useRef } from 'react';
 import { BasePageNames, TCromwellPage, TCromwellPageCoreProps } from "@cromwell/core";
 import { getStoreItem, setStoreItem } from "@cromwell/core";
 import { Head } from '@cromwell/core-frontend';
-import ReactHtmlParser from 'react-html-parser';
 import { isValidElementType } from 'react-is';
+const ReactHtmlParser = require('react-html-parser').default;
 
 function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state

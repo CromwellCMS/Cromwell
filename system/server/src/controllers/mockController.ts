@@ -76,7 +76,7 @@ export const getMockController = (): Router => {
         },
         {
             title: '',
-            description: 'Ryan do not recommend it',
+            description: 'Ryan does not recommend it',
             rating: 2.5,
             userName: 'Kelly',
         },

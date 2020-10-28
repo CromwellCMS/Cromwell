@@ -4,4 +4,6 @@
 
 // export { rollupPluginCromwellFrontend } from './plugins/rollup';
 export { getModuleImporter } from './importer';
-export { rollupConfigWrapper } from './plugins/rollup';
+export { rollupConfigWrapper, rollupPluginCromwellFrontend } from './plugins/rollup';
+export { getDepVersion, getDepNameWithVersion } from './constants';
+export { getNodeModuleVersion, getNodeModuleNameWithVersion } from './shared';

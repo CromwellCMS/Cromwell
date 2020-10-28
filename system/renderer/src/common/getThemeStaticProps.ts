@@ -1,6 +1,4 @@
-import { BasePageNames, StaticPageContext } from "@cromwell/core";
-import { getStoreItem } from "@cromwell/core";
-import { checkCMSConfig } from '../helpers/checkCMSConfig';
+import { BasePageNames, getStoreItem, StaticPageContext } from '@cromwell/core';
 
 /**
  * Server-side only

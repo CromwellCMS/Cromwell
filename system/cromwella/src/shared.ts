@@ -32,6 +32,11 @@ export const getNodeModuleVersion = (moduleName: string, importFromPath?: string
     return modulePackageJson?.version;
 }
 
+export const getNodeModuleNameWithVersion = (moduleName: string, importFromPath?: string): string | undefined => {
+    const ver = getNodeModuleVersion(moduleName);
+    if (ver) return `${moduleName}@${ver}`;
+}
+
 /**
  * Collect dependencies and devDependencies from all packages into provided @param store
  * Will calc usage number if package is already in the store and write different versions

@@ -49,7 +49,8 @@ const getComponent = (pluginName: string) => {
                 comp = pluginsComponents[pluginName];
             } else {
                 if (frontendBundle.cjsPath) {
-                    comp = Function('require', 'cjsPath', 'return require(cjsPath).default')(require, frontendBundle.cjsPath);
+                    const fsRequire = getStoreItem('fsRequire');
+                    comp = fsRequire(frontendBundle.cjsPath).default;
                 } else {
                     comp = Function('CromwellStore', `return ${frontendBundle.source}`)(getStore());
                 }

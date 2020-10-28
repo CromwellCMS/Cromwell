@@ -1,20 +1,26 @@
 import { getStoreItem, setStoreItem, TCmsConfig, isServer } from "@cromwell/core";
-import fs from 'fs';
-import requireFromString from "require-from-string";
 
-export const checkCMSConfig = (cmsConfig: TCmsConfig): void => {
-    const cmsconfig = getStoreItem('cmsconfig');
+export const checkCMSConfig = (cmsConfig: TCmsConfig,
+    getStoreItemRepl?: typeof getStoreItem,
+    setStoreItemRepl?: typeof setStoreItem,
+): void => {
+    const getStoreItemScoped = getStoreItemRepl ?? getStoreItem;
+    const setStoreItemScoped = setStoreItemRepl ?? setStoreItem;
+    const cmsconfig = getStoreItemScoped('cmsconfig');
     if (!cmsconfig || !cmsconfig.themeName) {
-        setStoreItem('cmsconfig', cmsConfig);
+        setStoreItemScoped('cmsconfig', cmsConfig);
     }
+    setStoreItemScoped('fsRequire', fsRequire);
 }
 
 export const fsRequire = (path: string, json?: boolean) => {
     if (!isServer()) return undefined;
-
+    const fs = require('fs');
+    const requireFromString = require('require-from-string');
     if (fs.existsSync(path)) {
         const str = fs.readFileSync(path).toString();
         if (json) return JSON.parse(str);
         return requireFromString(str);
     }
 }
+
