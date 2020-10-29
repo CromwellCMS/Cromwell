@@ -12,7 +12,7 @@
     "fs-extra": "^9.0.1",
     "graceful-fs": "^4.2.4",
     "make-empty-dir": "^1.0.0",
-    "next": "^9.5.5",
+    "next": "^10.0.0",
     "normalize-path": "^3.0.0",
     "npm-run": "^5.0.1",
     "npm-run-path": "^4.0.1",
@@ -57,5 +57,8 @@
     "watch": "npx rollup -cw",
     "gen": "node startup.js gen"
   },
-  "description": ""
+  "description": "",
+  "resolutions": {
+    "webpack": "^5.3.0"
+  }
 }

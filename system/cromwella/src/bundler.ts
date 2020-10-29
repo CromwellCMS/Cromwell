@@ -17,6 +17,7 @@ import {
     moduleMainBuidFileName,
     moduleLibBuidFileName,
     moduleMetaInfoFileName,
+    moduleBundleInfoFileName,
     moduleChunksBuildDirChunk,
     moduleNodeBuidFileName,
     moduleGeneratedFileName,
@@ -25,7 +26,7 @@ import {
     getDepVersion
 } from './constants';
 import { getCromwellaConfigSync, globPackages, isExternalForm, collectPackagesInfo } from './shared';
-import { TAdditionalExports, TPackage, TFrontendDependency, TPackageJson, TExternal } from './types';
+import { TAdditionalExports, TPackage, TFrontendDependency, TPackageJson, TExternal, TBundleInfo } from './types';
 import symlinkDir from 'symlink-dir';
 import makeEmptyDir from 'make-empty-dir';
 import importFrom from 'import-from';
@@ -340,6 +341,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
             const libEntry = resolve(moduleBuildDir, moduleGeneratedFileName);
             const nodeLibEntry = resolve(moduleBuildDir, moduleNodeGeneratedFileName);
             const metaInfoPath = resolve(moduleBuildDir, moduleMetaInfoFileName);
+            const bundleInfoPath = resolve(moduleBuildDir, moduleBundleInfoFileName);
 
             if (fs.existsSync(libEntry)) {
                 // module has been bundled is some other chain of recursive calls
@@ -574,11 +576,19 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 if (!isExternalForm(source)) return;
 
                 const configuredSource = configuredExternalsObj[source];
-                if (configuredSource && configuredSource.moduleName && configuredSource.importName) {
-                    if (!usedExternals[configuredSource.moduleName]) usedExternals[configuredSource.moduleName] = [];
-                    usedExternals[configuredSource.moduleName].push(configuredSource.importName);
+                if (configuredSource && configuredSource.moduleName) {
+                    if (configuredSource.importName) {
+                        if (!usedExternals[configuredSource.moduleName]) usedExternals[configuredSource.moduleName] = [];
+                        usedExternals[configuredSource.moduleName].push(configuredSource.importName);
+                    } else {
+                        if (!usedExternals[configuredSource.moduleName]) usedExternals[configuredSource.moduleName] = [];
+                        const usedKey = exportName ?? identifierName;
+                        if (!usedExternals[configuredSource.moduleName].includes(usedKey))
+                            usedExternals[configuredSource.moduleName].push(usedKey);
+                    }
                     return;
                 }
+
 
                 if (moduleBuiltins[moduleName] && moduleBuiltins[moduleName].includes(source)) return;
 
@@ -698,17 +708,20 @@ export const bundler = (projectRootDir: string, installationMode: string,
 
             // Check if found used node_modules that weren't included in package.json
             // and hence weren't marked as externals in webpack config. 
-            const notIncludedExts: string[] = []
+            const notIncludedExts: Record<string, string[]> = {};
             Object.keys(usedExternals).forEach(used => {
                 if (!packageExternals.includes(used)) {
-                    notIncludedExts.push(used);
+                    notIncludedExts[used] = usedExternals[used];
                 }
             });
 
-            if (notIncludedExts.length > 0) {
-                console.log(colors.brightYellow(`Cromwella:bundler: Found used node_modules of ${moduleName} that weren't included in package.json or cromwella.json : ${notIncludedExts.join(', ')}.`));
+            if (Object.keys(notIncludedExts).length > 0) {
+                console.log(colors.brightYellow(`Cromwella:bundler: Found used node_modules of ${moduleName} that weren't included in package.json or cromwella.json : ${Object.keys(notIncludedExts).join(', ')}. More info in bundle.info.json (bundledDependencies)`));
                 console.log(colors.brightYellow(`Cromwella:bundler: All listed modules will be bundled with ${moduleName} and hence not reusable for other modules. This may cause bloating of bundles. Please configure encountered modules as externals.`));
+            }
 
+            const bundleInfo: TBundleInfo = {
+                bundledDependencies: notIncludedExts
             }
 
 
@@ -745,7 +758,9 @@ export const bundler = (projectRootDir: string, installationMode: string,
                     if (ext.usedName) extStr = `root ${getGlobalModuleStr(ext.usedName)}`;
                     if (ext.moduleName && ext.importName) {
                         extStr = `root ${getGlobalModuleStr(ext.moduleName)}['${ext.importName}']`;
-
+                    }
+                    if (ext.moduleName && !ext.importName) {
+                        extStr = `root ${getGlobalModuleStr(ext.moduleName)}`;
                     }
                     if (extStr) {
                         return {
@@ -849,7 +864,10 @@ export const bundler = (projectRootDir: string, installationMode: string,
             metaInfoContent.import = shouldAlwaysImportDefault ? 'lib' : 'chunks';
             await fs.writeFile(metaInfoPath, JSON.stringify(metaInfoContent, null, 4));
 
-
+            bundleInfo.libSize = libSize;
+            bundleInfo.importerSize = importerSize;
+            bundleInfo.maxChunkSize = maxChunkSize;
+            bundleInfo.chunksSumSize = chunksSumSize;
 
             // 3. THIRD BUILD PASS
             // Build module for Node.js.
@@ -925,7 +943,9 @@ export const bundler = (projectRootDir: string, installationMode: string,
                 }
             }
 
-            await fs.writeFile(metaInfoPath, JSON.stringify(metaInfoContent, null, 4));
+            await fs.writeFile(metaInfoPath, isProduction ?
+                JSON.stringify(metaInfoContent) : JSON.stringify(metaInfoContent, null, 4));
+            await fs.writeFile(bundleInfoPath, JSON.stringify(bundleInfo, null, 4));
 
             console.log(colors.cyan(`Cromwella:bundler: Module: ${colors.brightCyan(`"${moduleName}"`)} has been ${colors.brightCyan('processed')}`));
 

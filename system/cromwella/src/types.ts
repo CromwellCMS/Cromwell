@@ -77,3 +77,12 @@ export type TGetDepsCb = (
     hoistedDependencies?: THoistedDeps,
     hoistedDevDependencies?: THoistedDeps
 ) => void;
+
+export type TBundleInfo = {
+    bundledDependencies?: Record<string, string[]>;
+    libSize?: number;
+    importerSize?: number;
+    maxChunkSize?: number;
+    chunksSumSize?: number;
+    import?: 'lib' | 'chunks';
+}

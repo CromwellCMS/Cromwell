@@ -13,7 +13,7 @@ function useForceUpdate() {
 export const getPage = (pageName: BasePageNames | string, PageComponent: React.ComponentType): TCromwellPage => {
     const cmsconfig = getStoreItem('cmsconfig');
     if (!cmsconfig || !cmsconfig.themeName) {
-        console.log('cmsconfig', cmsconfig)
+        console.log('cmsconfig', cmsconfig);
         throw new Error('getPage !cmsconfig.themeName');
     }
 
@@ -64,7 +64,6 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
             <>
                 <Head>
                     <meta charSet="utf-8" />
-                    <script src="/built_modules/importer.js"></script>
                 </Head>
                 <PageComponent {...pageCompProps} {...restProps} />
                 <Head>

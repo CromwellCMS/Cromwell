@@ -9,6 +9,7 @@ export const moduleMainBuidFileName = 'main.bundle.js';
 export const moduleLibBuidFileName = 'lib.bundle.js';
 export const moduleNodeBuidFileName = 'node.bundle.js';
 export const moduleMetaInfoFileName = 'meta.json';
+export const moduleBundleInfoFileName = 'bundle.info.json';
 
 export const moduleGeneratedFileName = 'generated.js';
 export const moduleNodeGeneratedFileName = 'generated.node.js';
