@@ -153,7 +153,7 @@ export type TPageConfig = TPageInfo & {
 }
 
 export type TPluginConfig = TBuildConfig & {
-    adminDir?: string;
+    adminInputFile?: string
     frontendInputFile?: string
     frontendModule?: string;
     backend?: {

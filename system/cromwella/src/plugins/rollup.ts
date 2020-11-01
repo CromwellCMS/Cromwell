@@ -1,7 +1,10 @@
 import { TSciprtMetaInfo, TPluginConfig, TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
 import {
     getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, getPluginBackendPath,
-    buildDirName
+    buildDirName, pluginFrontendBundlePath,
+    pluginFrontendCjsPath,
+    pluginAdminBundlePath,
+    pluginAdminCjsPath,
 } from '@cromwell/core-backend';
 import { walk } from 'estree-walker';
 import glob from 'glob';
@@ -31,15 +34,16 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
 
     if (cromwellConfig.type === 'plugin') {
         const pluginConfig = cromwellConfig as TPluginConfig;
-        if (pluginConfig.frontendInputFile) {
+
+        const handleInputFile = (inputFilePath: string, distChunk: string, cjsChunk: string) => {
 
             const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
-            const inputPath = resolve(process.cwd(), pluginConfig.frontendInputFile).replace(/\\/g, '/');
+            const inputPath = resolve(process.cwd(), inputFilePath).replace(/\\/g, '/');
 
-            const optionsInput = '$$' + pluginConfig.name + '/' + pluginConfig.frontendInputFile;
+            const optionsInput = '$$' + pluginConfig.name + '/' + inputFilePath;
             options.input = optionsInput;
             options.output = Object.assign({}, options.output, {
-                file: getPluginFrontendBundlePath(resolve(process.cwd(), buildDirName)),
+                file: resolve(process.cwd(), buildDirName, distChunk),
                 format: "iife",
                 name: pluginConfig.name,
                 banner: '(function() {',
@@ -64,7 +68,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
 
             cjsOptions.input = optionsInput;
             cjsOptions.output = Object.assign({}, cjsOptions.output, {
-                file: getPluginFrontendCjsPath(resolve(process.cwd(), buildDirName)),
+                file: resolve(process.cwd(), buildDirName, cjsChunk),
                 format: "cjs",
                 name: pluginConfig.name,
                 exports: "auto"
@@ -84,6 +88,12 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
             outOptions.push(cjsOptions);
         }
 
+        if (pluginConfig.frontendInputFile) {
+            handleInputFile(pluginConfig.frontendInputFile, pluginFrontendBundlePath, pluginFrontendCjsPath);
+        }
+        if (pluginConfig.adminInputFile) {
+            handleInputFile(pluginConfig.adminInputFile, pluginAdminBundlePath, pluginAdminCjsPath);
+        }
 
         if (pluginConfig.backend) {
             let resolverFiles: string[] = [];
@@ -322,8 +332,12 @@ export const rollupPluginCromwellFrontend = (settings?: {
                     return mergedBindings;
                 }
 
+                const importBingingsCache: Record<string, Record<string, string[]>> = {}
                 const getImportBingingsForModule = (modId: string): Record<string, string[]> => {
+                    if (importBingingsCache[modId]) return importBingingsCache[modId];
+
                     let importedBindings = {};
+                    importBingingsCache[modId] = {};
                     if (importsInfo[modId]) {
                         Object.keys(importsInfo[modId].externals).forEach(libName => {
                             if (!isExternalForm(libName)) return;
@@ -338,10 +352,11 @@ export const rollupPluginCromwellFrontend = (settings?: {
                         });
 
                         importsInfo[modId].internals.forEach(internal => {
-                            const intBinds = getImportBingingsForModule(internal);
-                            importedBindings = mergeBindings(importedBindings, intBinds);
+                            const internalBinds = getImportBingingsForModule(internal);
+                            importedBindings = mergeBindings(importedBindings, internalBinds);
                         })
                     }
+                    importBingingsCache[modId] = importedBindings;
                     return importedBindings;
                 }
 

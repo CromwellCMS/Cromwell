@@ -4,8 +4,12 @@ import fs from 'fs';
 import glob from 'glob';
 import path, { resolve, isAbsolute } from 'path';
 import importFrom from 'import-from';
-
-import { TPackageJson, TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps, TLocalSymlink, TNonHoisted, TPackage } from './types';
+import { spawnSync } from "child_process";
+import {
+    TPackageJson, TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps,
+    TLocalSymlink, TNonHoisted, TPackage, TModuleInfo
+} from './types';
+import { tempPckgName } from './constants';
 
 const colors: any = colorsdef;
 
@@ -35,6 +39,60 @@ export const getNodeModuleVersion = (moduleName: string, importFromPath?: string
 export const getNodeModuleNameWithVersion = (moduleName: string, importFromPath?: string): string | undefined => {
     const ver = getNodeModuleVersion(moduleName);
     if (ver) return `${moduleName}@${ver}`;
+}
+
+// Stores export keys of modules that have been requested
+const modulesExportKeys: Record<string, TModuleInfo> = {};
+export const getModuleInfo = (moduleName: string, moduleVer?: string, from?: string): TModuleInfo => {
+    let exportKeys: string[] | undefined;
+    let exactVersion: string | undefined;
+    if (!modulesExportKeys[moduleName]) {
+
+        const requireExportKeys = () => {
+            const imported: any = from ? importFrom(from, moduleName) : require(moduleName);
+            const keys = Object.keys(imported);
+            if (!keys.includes('default')) keys.unshift('default');
+            return keys;
+        }
+
+        try {
+            exportKeys = requireExportKeys();
+            if (!exportKeys) throw new Error('!exportKeys')
+        } catch (e) {
+            // Module not found, install
+            const fullDepName = moduleName + (moduleVer ? '@' + moduleVer : '');
+            const command = `pnpm add ${fullDepName} --filter ${tempPckgName}`;
+            console.log(colors.cyan(`Cromwella:bundler: Installing dependency. Command: ${command}`));
+            spawnSync(command, { shell: true, cwd: process.cwd(), stdio: 'ignore' });
+        }
+
+        if (!exportKeys) {
+            try {
+                exportKeys = requireExportKeys();
+                if (!exportKeys) throw new Error('!exportKeys')
+            } catch (e) {
+                console.log(colors.brightYellow(`Cromwella:bundler: Failed to install and require() module: ${moduleName}`));
+            }
+        }
+
+        try {
+            const modulePackageJson: TPackageJson | undefined = from ? importFrom(from, `${moduleName}/package.json`) as any :
+                require(`${moduleName}/package.json`);
+            exactVersion = modulePackageJson?.version;
+            if (!exactVersion) throw new Error('!exactVersion')
+        } catch (e) {
+            console.log(colors.brightYellow(`Cromwella:bundler: Failed to require() package.json of module: ${moduleName}`));
+        }
+
+        const info: TModuleInfo = {
+            exportKeys,
+            exactVersion
+        }
+        modulesExportKeys[moduleName] = info;
+        return info;
+    } else {
+        return modulesExportKeys[moduleName];
+    }
 }
 
 /**

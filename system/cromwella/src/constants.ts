@@ -31,3 +31,4 @@ export const getDepNameWithVersion = (pckg: any, depName: string): string | unde
 
 export const moduleChunksBuildDirChunk = 'chunks';
 
+export const tempPckgName = '@cromwell/temp-budler';

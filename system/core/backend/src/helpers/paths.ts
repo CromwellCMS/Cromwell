@@ -12,8 +12,12 @@ export const buildDirName = '.cromwell';
 
 export const getMetaInfoPath = (filename: string) => `${filename}_meta.json`;
 
-export const getPluginFrontendBundlePath = (distDir: string) => resolve(distDir, 'frontend/index.js');
-export const getPluginFrontendCjsPath = (distDir: string) => resolve(distDir, 'frontend/cjs.js');
+export const pluginFrontendBundlePath = 'frontend/index.js';
+export const pluginFrontendCjsPath = 'frontend/cjs.js';
+export const pluginAdminBundlePath = 'admin/index.js';
+export const pluginAdminCjsPath = 'admin/cjs.js';
+export const getPluginFrontendBundlePath = (distDir: string) => resolve(distDir, pluginFrontendBundlePath);
+export const getPluginFrontendCjsPath = (distDir: string) => resolve(distDir, pluginFrontendCjsPath);
 export const getPluginBackendPath = (distDir: string) => resolve(distDir, 'backend/index.js');
 
 export const getThemePagesMetaPath = (distDir: string) => resolve(distDir, 'pages_meta.json');

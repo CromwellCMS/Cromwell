@@ -82,7 +82,12 @@ export type TBundleInfo = {
     bundledDependencies?: Record<string, string[]>;
     libSize?: number;
     importerSize?: number;
-    maxChunkSize?: number;
+    maxChunkSize?: number | null;
     chunksSumSize?: number;
     import?: 'lib' | 'chunks';
 }
+
+export type TModuleInfo = {
+    exportKeys: string[] | undefined;
+    exactVersion: string | undefined;
+};
