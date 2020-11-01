@@ -16,7 +16,7 @@ import {
     Add as AddIcon, ExpandMore as ExpandMoreIcon,
     HighlightOff as HighlightOffIcon
 } from '@material-ui/icons';
-
+//@ts-ignore
 import cromwellConfig from '../../cromwell.config.js';
 import { defaultSettings } from '../defaultSettings';
 import { TMainMenuItem, TMainMenuSettings } from '../types';

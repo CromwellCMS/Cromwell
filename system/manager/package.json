@@ -24,9 +24,9 @@
   },
   "dependencies": {
     "@cromwell/core": "workspace:1.1.0",
-    "@cromwell/core-backend": "workspace:^1.0.0",
+    "@cromwell/core-backend": "workspace:1.0.0",
     "async": "^3.2.0",
-    "axios": "^0.19.2",
+    "axios": "0.19.2",
     "body-parser": "^1.19.0",
     "cacache": "^15.0.5",
     "chalk": "^4.1.0",
@@ -39,7 +39,7 @@
     "swagger-jsdoc": "^4.2.0",
     "swagger-ui-express": "^4.1.4",
     "tree-kill": "^1.2.2",
-    "tslib": "^2.0.1",
+    "tslib": "2.0.1",
     "ws": "^7.3.1"
   },
   "scripts": {

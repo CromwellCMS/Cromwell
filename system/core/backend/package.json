@@ -19,7 +19,7 @@
     "normalize-path": "^3.0.0",
     "path": "^0.12.7",
     "recursive-readdir": "^2.2.2",
-    "tslib": "^2.0.1",
+    "tslib": "2.0.1",
     "type-graphql": "^1.0.0",
     "typeorm": "^0.2.28"
   },
