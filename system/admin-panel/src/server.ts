@@ -3,28 +3,57 @@ import { resolve } from 'path';
 import webpack from 'webpack';
 import express from 'express';
 import { TCmsConfig, serviceLocator } from '@cromwell/core';
-import { appBuildDev, appBuildProd, publicStaticDir, projectRootDir } from './constants';
-import { readCMSConfigSync, adminPanelMessages } from '@cromwell/core-backend';
+import {
+    readCMSConfigSync, adminPanelMessages, getAdminPanelDir, getAdminPanelServiceBuildDir,
+    getAdminPanelWebPublicDir, getAdminPanelWebBuildDir, getCMSConfigPath, cmsConfigFileName,
+    getAdminPanelWebServiceBuildDir
+} from '@cromwell/core-backend';
+import symlinkDir from 'symlink-dir';
+
+const projectRootDir = resolve(__dirname, '../../../');
+const localProjectDir = resolve(__dirname, '../');
+
 const { getConfig } = require('../webpack.config');
 const chalk = require('react-dev-utils/chalk');
 
-const startDevServer = () => {
+const startDevServer = async () => {
     const watch = true;
-
     const CMSconfig = readCMSConfigSync(projectRootDir)
 
+    const publicDir = getAdminPanelWebPublicDir(projectRootDir);
+    const webTempDir = getAdminPanelWebBuildDir(projectRootDir);
+    if (!fs.existsSync(webTempDir)) await fs.mkdir(webTempDir);
+
+    // Link public dir in root to renderer's public dir for Express.js server
+    if (!fs.existsSync(publicDir) && fs.existsSync(resolve(projectRootDir, 'public'))) {
+        symlinkDir(resolve(projectRootDir, 'public'), publicDir)
+    }
+
+    const cmsConfigPath = getCMSConfigPath(projectRootDir);
+    const tempCmsConfigPath = resolve(webTempDir, cmsConfigFileName)
+    // Link CMS config for Express.js server
+    if (!fs.existsSync(tempCmsConfigPath) && fs.existsSync(cmsConfigPath)) {
+        symlinkDir(cmsConfigPath, tempCmsConfigPath);
+    }
+
+    // Link service build dir
+    const serviceBuildDir = getAdminPanelServiceBuildDir(projectRootDir);
+    const webTempServiceLink = getAdminPanelWebServiceBuildDir(projectRootDir);
+    if (!fs.existsSync(webTempServiceLink) && fs.existsSync(serviceBuildDir)) {
+        symlinkDir(serviceBuildDir, webTempServiceLink);
+    }
+
+    console.log('process.argv', process.argv);
     const env = process.argv[2];
 
-    let isDevelopment = env === 'development';
     let isProduction = env === 'production';
+    let isDevelopment = env === 'development';
 
-    const compiler = webpack(getConfig('buildWeb', env) as any);
 
     if (!isDevelopment && !isProduction)
-        throw (`devServer::startDevServer: rocess.argv[2] is invalid - ${env}
+        throw (`devServer::startDevServer: process.argv[2] is invalid - ${env}
     valid values - "development" and "production"`);
 
-    const buildDir = isDevelopment ? appBuildDev : appBuildProd;
     const port = process.env.PORT || CMSconfig.adminPanelPort;
 
     const app = express();
@@ -36,11 +65,11 @@ const startDevServer = () => {
         app.use(require('connect-browser-sync')(bs));
     }
 
-    app.use("/", express.static(buildDir));
-    app.use("/", express.static(publicStaticDir));
+    app.use("/", express.static(webTempDir));
+    app.use("/", express.static(publicDir));
 
     app.get(`*`, function (req, res) {
-        const filePath = `${buildDir}/index.html`;
+        const filePath = resolve(serviceBuildDir, 'index.html');
         fs.access(filePath, fs.constants.R_OK, (err) => {
             if (!err) {
                 res.sendFile(filePath);
@@ -56,9 +85,11 @@ const startDevServer = () => {
     }).on('error', (err) => {
         console.error(err);
         if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
-    });;
+    });
 
     if (isDevelopment) {
+        const compiler = webpack(getConfig(env));
+
         compiler.hooks.watchRun.tap('MyPlugin1', (params) => {
             console.log(chalk.cyan('\r\nBegin compile at ' + new Date() + '\r\n'));
         });
@@ -74,14 +105,14 @@ const startDevServer = () => {
 
 
         if (watch) compiler.watch({}, (err, stats) => {
-            console.log(stats.toString({
+            console.log(stats?.toString({
                 chunks: false,
                 colors: true
             }
             ))
         });
         else compiler.run((err, stats) => {
-            console.log(stats.toString({
+            console.log(stats?.toString({
                 chunks: false,
                 colors: true
             }));

@@ -7,8 +7,6 @@ import {
 } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip, Drawer, Collapse } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, HighlightOff as HighlightOffIcon, Settings as SettingsIcon } from '@material-ui/icons';
-//@ts-ignore
-import { ImportedThemeController, importLazyPage } from 'CromwellImports';
 import React, { Suspense, useEffect, useRef, useState } from 'react';
 import clsx from 'clsx';
 import { toast } from 'react-toastify';
@@ -30,6 +28,8 @@ class ThemeEditState {
     isSidebarOpen: boolean = true;
     activeTabNum: number = 0;
 }
+
+const importLazyPage = (route: string | undefined) => undefined;
 
 
 export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
@@ -156,6 +156,8 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
 
         const defaultPages = pageInfos?.filter(p => !p.isVirtual);
         const customPages = pageInfos?.filter(p => p.isVirtual);
+
+        const ImportedThemeController: null = null;
 
         return (
             <div className={styles.ThemeEdit}>

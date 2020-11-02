@@ -1,6 +1,4 @@
 import React from 'react';
-//@ts-ignore
-import { pluginNames, importPlugin } from 'CromwellImports';
 import HomePage from '../pages/home';
 import PluginsPage from '../pages/plugins';
 import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
@@ -63,14 +61,6 @@ export const productInfo: PageInfo = {
     component: ProductPage
 };
 
-const pluginPages: PageInfo[] = pluginNames.map((name: string) => {
-    return {
-        name,
-        route: '/plugins/' + name,
-        component: importPlugin(name) as React.ComponentType
-    }
-}).filter(i => Boolean(i.component));
-
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
     homePageInfo,
@@ -80,7 +70,6 @@ export const pageInfos: PageInfo[] = [
     productListInfo,
     productInfo,
     pluginsPageInfo,
-    ...pluginPages
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
@@ -103,9 +92,6 @@ export const sideBarLinks: SidebarLinkType[] = [
     {
         title: pluginsPageInfo.name,
         route: pluginsPageInfo.route,
-        sublinks: pluginPages.map(p => {
-            return { title: p.name, route: p.route }
-        }),
         icon: React.createElement(PowerIcon)
     }
 ]

@@ -1,29 +1,20 @@
-/// <reference path="./declarations.d.ts" />
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './components/layout/Layout';
-import { setStoreItem } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
-//@ts-ignore
-import { CMSconfig } from 'CromwellImports';
+import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
 
+const importer = getModuleImporter();
 
-export const runApp = () => {
-  // Define API port:
-  setStoreItem('cmsconfig', CMSconfig);
+(async () => {
+  const meta = await (await fetch('/build/meta.json')).json();
+  await importer.importSciptExternals(meta);
 
-  // Update config from api
-  if (CMSconfig) {
-    (async () => {
-      const cmsConfig = await getRestAPIClient()?.getCmsConfig();
-      setStoreItem('cmsconfig', cmsConfig);
-    })();
-  }
-
-
+  const App: any = await import('./components/layout/Layout');
   ReactDOM.render(
     React.createElement(App),
     document.getElementById('root')
   );
-}
+
+})();
+
+
 

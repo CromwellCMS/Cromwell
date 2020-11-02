@@ -162,11 +162,9 @@
     }
   ],
   "scripts": {
-    "buildService": "node startup.js buildService",
+    "build": "node startup.js buildService",
     "dev": "node startup.js dev",
-    "build": "node startup.js build",
-    "prod": "node startup.js prod",
-    "gen": "node startup.js gen"
+    "prod": "node startup.js prod"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -46,6 +46,7 @@ export class CromwellWebpackPlugin {
             this.modulePackageJson = require(resolve(process.cwd(), 'package.json'));
         } else this.modulePackageJson = options.modulePackageJson;
 
+
         this.handleStatement = (statement, source: string, exportName: string, identifierName: string) => {
             if (!isExternalForm(source)) return;
 
@@ -62,7 +63,6 @@ export class CromwellWebpackPlugin {
                 }
                 return;
             }
-
 
             if (moduleName && moduleBuiltins && moduleBuiltins[moduleName] && moduleBuiltins[moduleName].includes(source)) return;
 
@@ -104,16 +104,19 @@ export class CromwellWebpackPlugin {
     apply(compiler: Compiler) {
         const usedExternals = this.usedExternals;
         let filteredUsedExternals = this.filteredUsedExternals;
+        const moduleName = this.options.moduleName ?? this.modulePackageJson?.name;
+        const moduleVer = this.options.moduleVer ?? this.modulePackageJson?.version;
+        const moduleBuiltins = this.options.moduleBuiltins;
 
         compiler.hooks.compile.tap('CromwellWebpackPlugin', params => {
             new ExternalModuleFactoryPlugin(
                 undefined,
                 function ({ context, request }, callback) {
-                    if (isExternalForm(request)) {
-                        return callback(null as any, `root ${getGlobalModuleStr(request)}`);
-                    }
-                    //@ts-ignore
-                    callback();
+                    if (!isExternalForm(request)) return callback();
+                    if (moduleName && moduleBuiltins && moduleBuiltins[moduleName] &&
+                        moduleBuiltins[moduleName].includes(request)) return callback();
+
+                    return callback(null, `root ${getGlobalModuleStr(request)}`);
                 }
             ).apply(params.normalModuleFactory);
         });
@@ -174,8 +177,6 @@ export class CromwellWebpackPlugin {
                 versionedExternals[`${depName}@${exactVersion}`] = filteredUsedExternals[depName];
             })
 
-            const moduleName = this.options.moduleName ?? this.modulePackageJson?.name;
-            const moduleVer = this.options.moduleVer ?? this.modulePackageJson?.version;
             // Create meta info file with actually used dependencies
             const metaInfoContent: TSciprtMetaInfo = {
                 name: `${moduleName}@${moduleVer}`,

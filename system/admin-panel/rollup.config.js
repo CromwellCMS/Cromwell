@@ -3,6 +3,7 @@ import nodeResolve from "@rollup/plugin-node-resolve";
 import typescript from "@rollup/plugin-typescript";
 import packageJson from './package.json';
 import json from '@rollup/plugin-json';
+import fs from 'fs-extra';
 const { resolve } = require('path');
 
 const external = id => {
@@ -35,6 +36,8 @@ const typeScriptOptions = {
     outDir: resolve(__dirname, buildDir)
 };
 
+fs.copyFileSync(resolve(__dirname, 'src/index.html'), resolve(__dirname, buildDir, 'index.html'));
+
 export default [
     {
         // preserveModules: true,
@@ -49,26 +52,6 @@ export default [
         external,
         plugins: [
             json(),
-            nodeResolve({
-                preferBuiltins: false
-            }),
-            commonjs(),
-            typescript(typeScriptOptions),
-        ]
-    },
-    {
-        // preserveModules: true,
-        input: resolve(__dirname, "src/generator.ts"),
-        watch: false,
-        output: [
-            {
-                // file: resolve(__dirname, buildDir, 'generator.js'),
-                dir: resolve(__dirname, buildDir),
-                format: "cjs",
-            }
-        ],
-        external,
-        plugins: [
             nodeResolve({
                 preferBuiltins: false
             }),

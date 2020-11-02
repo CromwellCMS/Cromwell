@@ -4,15 +4,26 @@ import { TCromwellBlockData, getStoreItem, setStoreItem, getStore, isServer } fr
 import { isValidElementType } from 'react-is';
 import { getRestAPIClient } from '../../api/CRestAPIClient';
 import dynamic from 'next/dynamic';
+import loadable from '@loadable/component';
 
 const fallbackComponent = () => <></>;
 
 const getComponent = (pluginName: string) => {
-    const pluginsComponents = getStoreItem('pluginsComponents');
-    if (pluginsComponents?.[pluginName]) return pluginsComponents?.[pluginName];
+    let pluginsComponents = getStoreItem('pluginsComponents');
+    if (pluginsComponents?.[pluginName]) {
+        return pluginsComponents[pluginName];
+    }
+
+    if (!pluginsComponents) {
+        pluginsComponents = {};
+        setStoreItem('pluginsComponents', pluginsComponents);
+    }
+
+    // dynamic method is available in Next.js environment (Renderer), but is not in others (Admin Panel)
+    const dynamicLoader = dynamic ?? loadable;
 
     const restAPIClient = getRestAPIClient();
-    const dynamicComp = dynamic(async () => {
+    pluginsComponents[pluginName] = dynamicLoader(async () => {
         // Get frontend bundle
         const frontendBundle = await restAPIClient?.getPluginFrontendBundle(pluginName);
         // if (frontendBundle) pluginsBundles[pluginName] = frontendBundle;
@@ -25,10 +36,6 @@ const getComponent = (pluginName: string) => {
             const nodeModules = getStoreItem('nodeModules');
             await nodeModules?.importSciptExternals?.(frontendBundle.meta);
         }
-
-        let pluginsComponents = getStoreItem('pluginsComponents');
-        if (!pluginsComponents) pluginsComponents = {};
-        setStoreItem('pluginsComponents', pluginsComponents);
 
         let comp;
         try {
@@ -46,7 +53,7 @@ const getComponent = (pluginName: string) => {
                     domScript.onload = () => res();
                     document.head.appendChild(domScript);
                 });
-                comp = pluginsComponents[pluginName];
+                comp = pluginsComponents![pluginName];
             } else {
                 if (frontendBundle.cjsPath) {
                     const fsRequire = getStoreItem('fsRequire');
@@ -54,7 +61,7 @@ const getComponent = (pluginName: string) => {
                 } else {
                     comp = Function('CromwellStore', `return ${frontendBundle.source}`)(getStore());
                 }
-                if (comp) pluginsComponents[pluginName] = comp;
+                if (comp) pluginsComponents![pluginName] = comp;
             }
             if (!comp) throw new Error('!comp');
         } catch (e) {
@@ -62,10 +69,10 @@ const getComponent = (pluginName: string) => {
             return fallbackComponent;
         }
 
-
         return comp
     });
-    return dynamicComp;
+
+    return pluginsComponents[pluginName];
 }
 
 /**
