@@ -11,6 +11,7 @@
     "@material-ui/icons": "4.9.1",
     "@material-ui/lab": "4.0.0-alpha.56",
     "clsx": "1.1.1",
+    "compression": "^1.7.4",
     "debounce": "1.2.0",
     "express": "^4.17.1",
     "fs-extra": "^9.0.1",
@@ -56,12 +57,20 @@
     "webpack-cli": "^3.3.12"
   },
   "frontendDependencies": [
+    "@cromwell/core",
+    "@cromwell/core-frontend",
+    "@cromwell/cromwella",
+    "@loadable/component",
     "@material-ui/core",
-    "gridlex",
+    "@material-ui/icons",
+    "@material-ui/lab",
+    "clsx",
+    "react",
+    "react-dom",
     "react-number-format",
     "react-router-dom",
     "react-toastify",
-    "reset-css",
+    "tslib",
     {
       "name": "@material-ui/lab",
       "externals": [
@@ -153,11 +162,21 @@
     {
       "name": "@cromwell/core-frontend",
       "externals": [
-        { "usedName": "next/head" },
-        { "usedName": "next/router" },
-        { "usedName": "next/link" },
-        { "usedName": "next/dynamic" },
-        { "usedName": "next/document" }
+        {
+          "usedName": "next/head"
+        },
+        {
+          "usedName": "next/router"
+        },
+        {
+          "usedName": "next/link"
+        },
+        {
+          "usedName": "next/dynamic"
+        },
+        {
+          "usedName": "next/document"
+        }
       ]
     }
   ],

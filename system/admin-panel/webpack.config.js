@@ -8,13 +8,15 @@ const getConfig = (buildMode = 'production') => {
     return {
         mode: buildMode,
         target: "web",
-        devtool: isProduction ? false : "source-map",
-        entry: path.resolve(localProjectDir, 'src/app.ts'),
+        // devtool: isProduction ? false : "source-map",
+        devtool: false,
+        entry: path.resolve(localProjectDir, 'src/index.ts'),
         output: {
             path: path.resolve(localProjectDir, 'build'),
-            filename: isProduction
-                ? 'webapp.[contenthash:8].js'
-                : 'webapp.js',
+            // filename: isProduction
+            //     ? 'webapp.[contenthash:8].js'
+            //     : 'webapp.js',
+            filename: 'webapp.js',
             chunkFilename: 'chunks' + '/[name].bundle.js'
         },
         resolve: {
@@ -90,4 +92,3 @@ const getConfig = (buildMode = 'production') => {
 }
 
 module.exports = getConfig();
-module.exports.getConfig = getConfig;

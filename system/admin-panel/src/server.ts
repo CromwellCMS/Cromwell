@@ -9,11 +9,13 @@ import {
     getAdminPanelWebServiceBuildDir
 } from '@cromwell/core-backend';
 import symlinkDir from 'symlink-dir';
+import compress from 'compression';
+
 
 const projectRootDir = resolve(__dirname, '../../../');
 const localProjectDir = resolve(__dirname, '../');
 
-const { getConfig } = require('../webpack.config');
+const webpackConfig = require('../webpack.config');
 const chalk = require('react-dev-utils/chalk');
 
 const startDevServer = async () => {
@@ -26,21 +28,19 @@ const startDevServer = async () => {
 
     // Link public dir in root to renderer's public dir for Express.js server
     if (!fs.existsSync(publicDir) && fs.existsSync(resolve(projectRootDir, 'public'))) {
-        symlinkDir(resolve(projectRootDir, 'public'), publicDir)
+        await symlinkDir(resolve(projectRootDir, 'public'), publicDir)
     }
 
     const cmsConfigPath = getCMSConfigPath(projectRootDir);
     const tempCmsConfigPath = resolve(webTempDir, cmsConfigFileName)
     // Link CMS config for Express.js server
-    if (!fs.existsSync(tempCmsConfigPath) && fs.existsSync(cmsConfigPath)) {
-        symlinkDir(cmsConfigPath, tempCmsConfigPath);
-    }
+    await fs.copyFile(cmsConfigPath, tempCmsConfigPath);
 
     // Link service build dir
     const serviceBuildDir = getAdminPanelServiceBuildDir(projectRootDir);
     const webTempServiceLink = getAdminPanelWebServiceBuildDir(projectRootDir);
     if (!fs.existsSync(webTempServiceLink) && fs.existsSync(serviceBuildDir)) {
-        symlinkDir(serviceBuildDir, webTempServiceLink);
+        await symlinkDir(serviceBuildDir, webTempServiceLink);
     }
 
     console.log('process.argv', process.argv);
@@ -65,18 +65,27 @@ const startDevServer = async () => {
         app.use(require('connect-browser-sync')(bs));
     }
 
+    app.use(compress()); 
+
     app.use("/", express.static(webTempDir));
     app.use("/", express.static(publicDir));
 
     app.get(`*`, function (req, res) {
-        const filePath = resolve(serviceBuildDir, 'index.html');
-        fs.access(filePath, fs.constants.R_OK, (err) => {
-            if (!err) {
-                res.sendFile(filePath);
-            } else {
-                res.status(404).send("index.html not found. Run build command");
-            }
-        })
+        if (/.+\.\w+$/.test(req.path)) {
+            // file requested, 404
+            res.status(404).send("File not found.");
+        } else {
+            // route requested, send index.html 
+            const filePath = resolve(serviceBuildDir, 'index.html');
+            fs.access(filePath, fs.constants.R_OK, (err) => {
+                if (!err) {
+                    res.sendFile(filePath);
+                } else {
+                    res.status(404).send("index.html not found. Run build command");
+                }
+            })
+        }
+
     })
 
     app.listen(port, () => {
@@ -88,7 +97,8 @@ const startDevServer = async () => {
     });
 
     if (isDevelopment) {
-        const compiler = webpack(getConfig(env));
+        webpackConfig.mode = env;
+        const compiler = webpack(webpackConfig);
 
         compiler.hooks.watchRun.tap('MyPlugin1', (params) => {
             console.log(chalk.cyan('\r\nBegin compile at ' + new Date() + '\r\n'));
@@ -116,6 +126,7 @@ const startDevServer = async () => {
                 chunks: false,
                 colors: true
             }));
+
         });
     }
 

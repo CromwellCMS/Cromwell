@@ -13,7 +13,7 @@ export class CromwellWebpackPlugin {
     private usedExternals: Record<string, string[]>;
     private filteredUsedExternals: Record<string, string[]>;
     private handleStatement;
-    private modulePackageJson?: TPackageJson;
+    private modulePackageJson: TPackageJson;
 
     constructor(private options: {
         usedExternals?: Record<string, string[]>;
@@ -107,6 +107,8 @@ export class CromwellWebpackPlugin {
         const moduleName = this.options.moduleName ?? this.modulePackageJson?.name;
         const moduleVer = this.options.moduleVer ?? this.modulePackageJson?.version;
         const moduleBuiltins = this.options.moduleBuiltins;
+        const packageExternals = this.options.packageExternals;
+        const modulePackageJson = this.modulePackageJson;
 
         compiler.hooks.compile.tap('CromwellWebpackPlugin', params => {
             new ExternalModuleFactoryPlugin(
@@ -116,7 +118,22 @@ export class CromwellWebpackPlugin {
                     if (moduleName && moduleBuiltins && moduleBuiltins[moduleName] &&
                         moduleBuiltins[moduleName].includes(request)) return callback();
 
-                    return callback(null, `root ${getGlobalModuleStr(request)}`);
+                    let isExternal = false;
+                    if (packageExternals && packageExternals.includes(request)) {
+                        isExternal = true;
+                    }
+                    if (modulePackageJson?.frontendDependencies) {
+                        modulePackageJson?.frontendDependencies.forEach(dep => {
+                            if (typeof dep === 'object') {
+                                if (dep.name === request) isExternal = true;
+                            } else if (dep === request) isExternal = true;
+                        })
+                    }
+                    if (isExternal) {
+                        return callback(null, `root ${getGlobalModuleStr(request)}`);
+                    }
+
+                    return callback();
                 }
             ).apply(params.normalModuleFactory);
         });

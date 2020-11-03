@@ -44,6 +44,7 @@ export type TPackageJson = {
     peerDependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
     module?: string;
+    frontendDependencies?: (string | TFrontendDependency)[];
 };
 
 export type TPackage = {
@@ -52,7 +53,7 @@ export type TPackage = {
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
     peerDependencies?: Record<string, string>;
-    frontendDependencies?: (string | TFrontendDependency)[]
+    frontendDependencies?: (string | TFrontendDependency)[];
 };
 
 // { [project root dir]: info }
