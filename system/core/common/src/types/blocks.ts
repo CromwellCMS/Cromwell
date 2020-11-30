@@ -14,7 +14,7 @@ export type TGetStaticProps<
     Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: StaticPageContext) => Promise<P>;
 
 
-export type TCromwellPage<Props = {}> = NextPage<Props & TCromwellPageCoreProps>;
+export type TCromwellPage<Props = {} | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
 export type TCromwellPageCoreProps = {
     pluginsData: Record<string, any>;

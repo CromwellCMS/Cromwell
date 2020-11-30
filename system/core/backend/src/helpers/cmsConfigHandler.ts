@@ -24,35 +24,25 @@ export const readCMSConfigSync = (projectRootDir: string): TCmsConfig => {
  * Read CMS config from file in system/cmsconfig.json, saves it into the store and returns
  * @param projectRootDir 
  */
-export const readCMSConfig = (projectRootDir: string,
-    cb: (config?: TCmsConfig) => void) => {
+export const readCMSConfig = async (projectRootDir: string): Promise<TCmsConfig | undefined> => {
     const configPath = getCMSConfigPath(projectRootDir);
     let config: TCmsConfig | undefined = undefined;
 
-    fs.access(configPath, fs.constants.R_OK, (err) => {
-        if (!err) {
-            fs.readFile(configPath, (err, data) => {
-                if (!err) {
-                    try {
-                        config = JSON.parse(data.toString());
-                        if (config && typeof config === 'object') {
-                            setStoreItem('cmsconfig', config);
-                            cb(config);
-                            return;
-                        }
-                    } catch (e) {
-                        console.log('Failed to read CMS Config ', e);
-                    }
-                } else {
-                    console.log('Failed to read CMS Config ');
-                    cb();
-                }
-            })
-        } else {
-            console.log('Failed to read CMS Config ');
-            cb();
+    if (await fs.pathExists(configPath)) {
+        const data = await fs.readFile(configPath);
+        try {
+            config = JSON.parse(data.toString());
+            if (config && typeof config === 'object') {
+                setStoreItem('cmsconfig', config);
+                return config
+            }
+        } catch (e) {
+            console.error(e);
         }
-    })
+    }
+    console.log('Failed to read CMS Config ');
+    return;
+
 }
 
 // /**

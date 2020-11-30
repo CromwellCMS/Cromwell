@@ -4,7 +4,7 @@ import { TPluginConfig } from '@cromwell/core';
 import { projectRootDir } from '../constants';
 import { resolve } from 'path';
 import { getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, buildDirName } from '@cromwell/core-backend';
-import { TSciprtMetaInfo, TPluginFrontendBundle } from '@cromwell/core';
+import { TSciprtMetaInfo, TFrontendBundle } from '@cromwell/core';
 import normalizePath from 'normalize-path';
 import decache from 'decache';
 
@@ -169,7 +169,7 @@ export const getPluginsController = (): Router => {
      *         description: bundle
      */
     pluginsController.get(`/frontend-bundle/:pluginName`, async (req, res) => {
-        let out: TPluginFrontendBundle;
+        let out: TFrontendBundle;
 
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {

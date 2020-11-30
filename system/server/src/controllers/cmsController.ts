@@ -34,13 +34,12 @@ export const getCmsController = (): Router => {
      *       200:
      *         description: config
      */
-    cmsController.get(`/config`, function (req, res) {
-        readCMSConfig(projectRootDir, (config) => {
-            if (!config) res.status(404).send("Failed to read CMS Config")
-            else {
-                res.send(config);
-            }
-        })
+    cmsController.get(`/config`, async function (req, res) {
+        const config = await readCMSConfig(projectRootDir);
+        if (!config) res.status(404).send("Failed to read CMS Config")
+        else {
+            res.send(config);
+        }
     })
 
     /**
@@ -57,33 +56,29 @@ export const getCmsController = (): Router => {
      *       200:
      *         description: theme infos
      */
-    cmsController.get(`/themes`, function (req, res) {
+    cmsController.get(`/themes`, async function (req, res) {
         let out: (Record<string, any>)[] = [];
-        fs.readdir(themesDir, (err, themeDirs) => {
-            if (!err && themeDirs) {
-                async.each(themeDirs, function (dirName, callback) {
-                    const configPath = resolve(themesDir, dirName, 'cromwell.config.js');
-                    fs.access(configPath, fs.constants.R_OK, (err) => {
-                        if (!err) {
-                            try {
-                                decache(configPath);
-                                const themeConfig: TThemeConfig | undefined = require(configPath);
-                                if (themeConfig && themeConfig.main) {
-                                    out.push(themeConfig.main);
-                                }
-                            } catch (e) {
-                                console.error("Failed to read CMS Config at: " + configPath, e);
-                            }
-                            callback();
-                        }
-                    })
-                }, function (err) {
-                    res.send(out);
-                });
-            } else {
-                res.status(404).send("Failed to read plugins");
+        let themeDirs: string[] = [];
+        try {
+            themeDirs = await fs.readdir(themesDir);
+        } catch (e) {
+            console.error("Failed to read themeDirs at: " + themesDir, e);
+        }
+        for (const dirName of themeDirs) {
+            const configPath = resolve(themesDir, dirName, 'cromwell.config.js');
+            if (await fs.pathExists(configPath)) {
+                try {
+                    decache(configPath);
+                    const themeConfig: TThemeConfig | undefined = require(configPath);
+                    if (themeConfig && themeConfig.main) {
+                        out.push(themeConfig.main);
+                    }
+                } catch (e) {
+                    console.error("Failed to read CMS Config at: " + configPath, e);
+                }
             }
-        });
+        }
+        res.send(out);
     });
 
     return cmsController;

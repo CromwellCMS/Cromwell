@@ -46,7 +46,7 @@ export const getMockController = (): Router => {
     const reviewsMock: (Omit<TProductReviewInput, 'productId'>)[] = [
         {
             title: 'Just awesome',
-            description: 'Best product ever!',
+            description: 'Best product ever!!!',
             rating: 5,
             userName: 'Kevin',
         },
@@ -76,12 +76,12 @@ export const getMockController = (): Router => {
         },
         {
             title: '',
-            description: 'Ryan does not recommend it',
+            description: "Ryan doesn't like it",
             rating: 2.5,
             userName: 'Kelly',
         },
         {
-            title: 'It smells like death',
+            title: '',
             description: 'Remind me not to buy this stuff again',
             rating: 2,
             userName: 'Creed',

@@ -20,13 +20,17 @@ export type TCromwellStore = {
     currency?: string;
     forceUpdatePage?: () => void;
     dbType?: string;
-    env?: 'dev' | 'prod';
+    environment?: {
+        mode?: 'dev' | 'prod';
+        isAdminPanel?: boolean;
+    },
     graphQLClient?: any;
     restAPIClient?: any;
     webSocketClient?: any;
     cstore?: any;
     nodeModules?: TCromwellNodeModules;
-    fsRequire?: any;
+    themePageComponents?: Record<string, any>;
+    fsRequire?: (path: string) => any;
 }
 
 declare global {
@@ -189,7 +193,7 @@ export type TPagesMetaInfo = {
     }[]
 }
 
-export type TPluginFrontendBundle = {
+export type TFrontendBundle = {
     source?: string;
     meta?: TSciprtMetaInfo;
     cjsPath?: string;

@@ -1,8 +1,8 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
-import { ObjectType, Field, ID, Int } from "type-graphql";
+import { TPost } from '@cromwell/core';
+import { Field, ObjectType } from 'type-graphql';
+import { Column, Entity } from 'typeorm';
 import { Author } from './Author';
 import { BasePageEntity } from './BasePageEntity';
-import { TPost } from '@cromwell/core';
 
 @Entity()
 @ObjectType()

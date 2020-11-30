@@ -65,7 +65,7 @@ const startDevServer = async () => {
         app.use(require('connect-browser-sync')(bs));
     }
 
-    app.use(compress()); 
+    app.use(compress());
 
     app.use("/", express.static(webTempDir));
     app.use("/", express.static(publicDir));
@@ -118,8 +118,7 @@ const startDevServer = async () => {
             console.log(stats?.toString({
                 chunks: false,
                 colors: true
-            }
-            ))
+            }));
         });
         else compiler.run((err, stats) => {
             console.log(stats?.toString({

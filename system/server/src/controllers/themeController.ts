@@ -1,11 +1,12 @@
 import {
     getStoreItem, TThemeMainConfig, TCromwellBlockData, TPageConfig, TCmsConfig,
-    TPageInfo, TThemeConfig, TPluginConfig
+    TPageInfo, TThemeConfig, TPluginConfig, TFrontendBundle
 } from '@cromwell/core';
 import { Router } from 'express';
 import fs from 'fs-extra';
-import { readCMSConfig } from '@cromwell/core-backend';
+import { readCMSConfig, buildDirName } from '@cromwell/core-backend';
 import decache from 'decache';
+import normalizePath from 'normalize-path';
 
 import { projectRootDir } from '../constants';
 import { readPluginConfig } from './pluginsController';
@@ -24,7 +25,7 @@ export const getThemeController = (): Router => {
      * @param configPath 
      * @param cb 
      */
-    const readThemeConfig = (configPath: string, cb: (themeConfig: TThemeConfig | null) => void) => {
+    const readThemeConfig = (configPath: string): TThemeConfig | null => {
         let config: TThemeConfig | undefined;
         try {
             decache(configPath);
@@ -33,11 +34,10 @@ export const getThemeController = (): Router => {
             console.error(e);
         }
         if (config && typeof config === 'object') {
-            cb(config);
-            return;
+            return config;
         }
         console.error('Failed to read ThemeConfig at ' + configPath);
-        cb(null);
+        return null;
     }
 
     /**
@@ -47,7 +47,7 @@ export const getThemeController = (): Router => {
      */
     const readThemeUserConfig = (cmsConfig: TCmsConfig, cb: (config: TThemeConfig | null) => void) => {
         const themeConfigPath = resolve(settingsPath, 'themes', cmsConfig.themeName, 'theme.json');
-        readThemeConfig(themeConfigPath, cb);
+        cb(readThemeConfig(themeConfigPath));
     }
 
     /**
@@ -57,7 +57,7 @@ export const getThemeController = (): Router => {
      */
     const readThemeOriginalConfig = (cmsConfig: TCmsConfig, cb: (config: TThemeConfig | null) => void) => {
         const themeConfigPath = resolve(projectRootDir, 'themes', cmsConfig.themeName, 'cromwell.config.js');
-        readThemeConfig(themeConfigPath, cb);
+        cb(readThemeConfig(themeConfigPath));
     }
 
     /**
@@ -97,26 +97,25 @@ export const getThemeController = (): Router => {
      * and user's config from /modifications.
      * @param cb callback with both configs.
      */
-    const readConfigs = (cb: (themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null, cmsConfig?: TCmsConfig) => void): void => {
+    const readConfigs = async (cb: (themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null, cmsConfig?: TCmsConfig) => void) => {
         let themeConfig: TThemeConfig | null = null,
             userConfig: TThemeConfig | null = null;
 
         // Read CMS config, because theme can be changed
-        readCMSConfig(projectRootDir, (cmsConfig) => {
-            if (cmsConfig) {
+        const cmsConfig = await readCMSConfig(projectRootDir);
+        if (cmsConfig) {
 
-                // Read theme's original config
-                readThemeOriginalConfig(cmsConfig, (config) => {
-                    themeConfig = config;
+            // Read theme's original config
+            readThemeOriginalConfig(cmsConfig, (config) => {
+                themeConfig = config;
 
-                    // Read theme's user modifications
-                    readThemeUserConfig(cmsConfig, (config) => {
-                        userConfig = config;
-                        cb(themeConfig, userConfig, cmsConfig);
-                    })
+                // Read theme's user modifications
+                readThemeUserConfig(cmsConfig, (config) => {
+                    userConfig = config;
+                    cb(themeConfig, userConfig, cmsConfig);
                 })
-            }
-        });
+            })
+        }
     }
 
 
@@ -596,6 +595,60 @@ export const getThemeController = (): Router => {
             res.send(out);
         })
     });
+
+
+    /**
+     * @swagger
+     * 
+     * /theme/page-bundle:
+     *   get:
+     *     description: Returns page's admin panel bundle from theme dir
+     *     tags: 
+     *       - Theme
+     *     produces:
+     *       - application/javascript
+     *     parameters:
+     *       - name: pageRoute
+     *         description: page route from theme's config
+     *         in: query
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: bundle
+     */
+    themeController.get(`/page-bundle`, async (req, res) => {
+        let out: TFrontendBundle | null = null;
+
+        const pageRoute = req.query?.pageRoute;
+        if (pageRoute && pageRoute !== "" && typeof pageRoute === 'string') {
+            const cmsConfig = await readCMSConfig(projectRootDir);
+            if (cmsConfig && cmsConfig.themeName) {
+                const pagePath = resolve(projectRootDir, 'themes', cmsConfig.themeName, buildDirName, 'admin', pageRoute);
+                const pagePathBunle = normalizePath(pagePath) + '.js';
+                if (await fs.pathExists(pagePathBunle)) {
+                    out = {};
+                    try {
+                        out.source = (await fs.readFile(pagePathBunle)).toString();
+                    } catch (e) {
+                        console.log('Failed to read page file at: ' + pagePathBunle);
+                    }
+
+                    const pageMetaInfoPath = pagePathBunle + '_meta.json';
+                    if (await fs.pathExists(pageMetaInfoPath)) {
+                        try {
+                            if (out) out.meta = await fs.readJSON(pageMetaInfoPath);
+                        } catch (e) {
+                            console.log('Failed to read meta of page at: ' + pageMetaInfoPath);
+                        }
+                    }
+                    res.send(out);
+                    return;
+                }
+            }
+        };
+        res.status(404).send("Invalid pluginName")
+    })
 
     return themeController;
 

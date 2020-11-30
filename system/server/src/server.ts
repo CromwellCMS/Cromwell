@@ -30,7 +30,9 @@ import { projectRootDir } from './constants';
 setStoreItem('rebuildPage', rebuildPage);
 
 const env: 'dev' | 'prod' | undefined = process.env.ENV ? process.env.ENV as any : 'prod';
-setStoreItem('env', env);
+setStoreItem('environment', {
+    mode: env
+});
 
 const config = readCMSConfigSync(projectRootDir)
 
