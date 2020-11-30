@@ -1,11 +1,12 @@
-import { TCromwellNodeModules, TSciprtMetaInfo } from '@cromwell/core';
-import { getGlobalModuleStr, getDepVersion, jsOperators, moduleMetaInfoFileName } from '../constants';
-import { TExternal, TPackageJson } from '../types';
-import { isExternalForm, getModuleInfo } from '../shared';
-import ExternalModuleFactoryPlugin from 'webpack/lib/ExternalModuleFactoryPlugin';
-import { Compiler } from 'webpack';
+import { TSciprtMetaInfo } from '@cromwell/core';
 import fs from 'fs-extra';
-import { dirname, isAbsolute, resolve } from 'path';
+import { resolve } from 'path';
+import { Compiler } from 'webpack';
+import ExternalModuleFactoryPlugin from 'webpack/lib/ExternalModuleFactoryPlugin';
+
+import { getGlobalModuleStr, jsOperators, moduleMetaInfoFileName } from '../constants';
+import { getDepVersion, getModuleInfo, isExternalForm } from '../shared';
+import { TExternal, TPackageJson } from '../types';
 
 // Marks every node_module as external and collects import bindings for them in meta.json
 export class CromwellWebpackPlugin {

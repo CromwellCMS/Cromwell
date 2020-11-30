@@ -1,42 +1,38 @@
+import { TSciprtMetaInfo } from '@cromwell/core';
+import { spawnSync } from 'child_process';
 import colorsdef from 'colors/safe';
-import fs from 'fs-extra';
-import util from 'util';
-import mkdirp from 'mkdirp';
-import { dirname, isAbsolute, resolve } from 'path';
-import webpack from 'webpack';
-import { spawnSync } from "child_process";
-import { Configuration } from 'webpack';
 import cryptoRandomString from 'crypto-random-string';
-import { TCromwellNodeModules, TSciprtMetaInfo } from '@cromwell/core';
+import fs from 'fs-extra';
+import importFrom from 'import-from';
+import makeEmptyDir from 'make-empty-dir';
+import mkdirp from 'mkdirp';
+import normalizePath from 'normalize-path';
+import { dirname, resolve } from 'path';
+import resolveFrom from 'resolve-from';
+import symlinkDir from 'symlink-dir';
+import webpack, { Configuration } from 'webpack';
+
 import {
     buildDirChunk,
     cromwellStoreImportsPath,
     cromwellStoreModulesPath,
     getGlobalModuleStr,
     jsOperators,
-    moduleMainBuidFileName,
-    moduleLibBuidFileName,
-    moduleMetaInfoFileName,
     moduleBundleInfoFileName,
     moduleChunksBuildDirChunk,
-    moduleNodeBuidFileName,
-    moduleGeneratedFileName,
-    moduleNodeGeneratedFileName,
     moduleExportsDirChunk,
-    getDepVersion,
-    tempPckgName
+    moduleGeneratedFileName,
+    moduleLibBuidFileName,
+    moduleMainBuidFileName,
+    moduleMetaInfoFileName,
+    moduleNodeBuidFileName,
+    moduleNodeGeneratedFileName,
+    tempPckgName,
 } from './constants';
-import { CromwellWebpackPlugin } from './plugins/webpack'
-import { getCromwellaConfigSync, globPackages, isExternalForm, collectPackagesInfo, getModuleInfo } from './shared';
-import { TAdditionalExports, TPackage, TFrontendDependency, TPackageJson, TExternal, TBundleInfo } from './types';
-import symlinkDir from 'symlink-dir';
-import makeEmptyDir from 'make-empty-dir';
-import importFrom from 'import-from';
-import resolveFrom from 'resolve-from';
-import rollup from 'rollup';
-import commonjs from "@rollup/plugin-commonjs";
-import { terser } from "rollup-plugin-terser";
-import normalizePath from 'normalize-path';
+import { CromwellWebpackPlugin } from './plugins/webpack';
+import { collectPackagesInfo, getDepVersion, getModuleInfo, globPackages } from './shared';
+import { TAdditionalExports, TBundleInfo, TExternal, TFrontendDependency, TPackage, TPackageJson } from './types';
+
 const colors: any = colorsdef;
 
 

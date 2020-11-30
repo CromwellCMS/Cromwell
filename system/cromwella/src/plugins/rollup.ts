@@ -1,6 +1,6 @@
 import { TSciprtMetaInfo, TPluginConfig, TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
 import {
-    getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, getPluginBackendPath,
+    getMetaInfoPath, getPluginBackendPath,
     buildDirName, pluginFrontendBundlePath,
     pluginFrontendCjsPath,
     pluginAdminBundlePath,
@@ -16,7 +16,7 @@ import virtual from '@rollup/plugin-virtual';
 import fs from 'fs-extra';
 import cryptoRandomString from 'crypto-random-string';
 import { cromwellStoreModulesPath } from '../constants';
-import { getNodeModuleVersion, isExternalForm } from '../shared';
+import { getNodeModuleVersion, isExternalForm, getDepVersion } from '../shared';
 
 export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig: TPluginConfig | TThemeConfig,
     specifiedOptions?: {
@@ -24,6 +24,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
         frontendCjs?: RollupOptions;
         backend?: RollupOptions;
         themePages?: RollupOptions;
+        adminPanel?: RollupOptions;
     }): RollupOptions[] => {
 
     if (!cromwellConfig) throw new Error(`CromwellPlugin Error. Provide cromwell.config as second argumet to the wrapper function`);
@@ -160,13 +161,13 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
 
 
         let srcDir = process.cwd();
-        let pagesDir = resolve(srcDir, 'pages');
-        let pagesRelativeDir = 'pages';
+        let pagesDirChunk = 'pages';
+        let pagesDir = resolve(srcDir, pagesDirChunk);
 
         if (!fs.existsSync(pagesDir)) {
             srcDir = resolve(process.cwd(), 'src');
             pagesDir = resolve(srcDir, 'pages');
-            pagesRelativeDir = 'src/pages';
+            pagesDirChunk = 'src/pages';
         }
 
         if (!fs.pathExistsSync(pagesDir)) {
@@ -177,6 +178,8 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
         const globStr = `${pagesDir}/**/*.+(ts|tsx|js|jsx)`;
         const pageFiles = glob.sync(globStr);
         const pagesMetaInfo: TPagesMetaInfo = { paths: [] }
+
+        const adminPanelOptions: RollupOptions[] = [];
 
         if (pageFiles && pageFiles.length > 0) {
 
@@ -194,8 +197,7 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
 
             options.plugins = [...(options.plugins ?? [])];
 
-
-            const optionsInput = '$$' + cromwellConfig.name + '/' + pagesRelativeDir;
+            const optionsInput = '$$' + cromwellConfig.name + '/' + pagesDirChunk;
             options.plugins.push(virtual({
                 [optionsInput]: pageImports
             }));
@@ -204,16 +206,59 @@ export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig:
             options.output = Object.assign({}, options.output, {
                 dir: buildDir,
                 format: "esm",
+                preserveModules: true
             } as OutputOptions);
-
-            options.preserveModules = true;
 
             options.plugins.unshift(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig }));
 
             outOptions.push(options);
 
+
+            pagesMetaInfo.paths.forEach(pagePath => {
+                const adminOptions = (Object.assign({}, (specifiedOptions?.adminPanel ?? inputOptions)));
+                adminOptions.plugins = [...(adminOptions.plugins ?? [])];
+
+                const optionsInput = '$$' + cromwellConfig.name + '/admin/' + pagePath.pageName;
+                adminOptions.plugins.push(virtual({
+                    [optionsInput]: `import pageComp from '${pagePath.srcFullPath}';export default pageComp;`
+                }));
+                adminOptions.input = optionsInput;
+                adminOptions.plugins.unshift(rollupPluginCromwellFrontend({ buildDir, cromwellConfig }));
+                adminOptions.output = Object.assign({}, adminOptions.output, {
+                    dir: resolve(buildDir, 'admin', dirname(pagePath.pageName)),
+                    format: "iife",
+                } as OutputOptions);
+
+                adminPanelOptions.push(adminOptions);
+            });
+            adminPanelOptions.forEach(opt => outOptions.push(opt));
+
         } else {
             throw new Error('CromwellPlugin Error. No pages found at: ' + pagesDir);
+        }
+
+
+        const adminPanelDirChunk = 'adminPanel';
+        const adminPanelDir = resolve(srcDir, adminPanelDirChunk);
+        if (fs.pathExistsSync(adminPanelDir)) {
+            const adminOptions = (Object.assign({}, specifiedOptions?.themePages ? specifiedOptions.themePages : inputOptions));
+
+            adminOptions.plugins = [...(adminOptions.plugins ?? [])];
+
+            const optionsInput = '$$' + cromwellConfig.name + '/' + adminPanelDirChunk;
+            adminOptions.plugins.push(virtual({
+                [optionsInput]: `import settings from '${normalizePath(adminPanelDir)}'; export default settings`
+            }));
+            adminOptions.input = optionsInput;
+
+            adminOptions.output = Object.assign({}, adminOptions.output, {
+                dir: resolve(buildDir, 'admin', '_settings'),
+                format: "iife",
+            } as OutputOptions);
+
+            adminOptions.plugins.unshift(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig }));
+
+            outOptions.push(adminOptions);
         }
     }
 
@@ -254,7 +299,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
         resolveId(source, importer) {
             // console.log('resolveId', source);
 
-            if (settings?.cromwellConfig?.type === 'theme') {
+            if (settings?.cromwellConfig?.type === 'theme' && settings?.pagesMetaInfo?.paths) {
                 if (/\.s?css$/.test(source)) {
                     return { id: source, external: true };
                 }
@@ -371,7 +416,13 @@ export const rollupPluginCromwellFrontend = (settings?: {
 
                 const versionedImportedBindings = {};
                 Object.keys(totalImportedBindings).forEach(dep => {
-                    const ver = getNodeModuleVersion(dep);
+                    let ver = getNodeModuleVersion(dep, process.cwd());
+                    if (!ver) {
+                        try {
+                            const pckg = require(resolve(process.cwd(), 'package.json'));
+                            ver = getDepVersion(pckg, dep);
+                        } catch (e) { console.log(e) }
+                    }
                     if (ver) {
                         if (totalImportedBindings[dep].includes('default')) totalImportedBindings[dep] = ['default'];
                         versionedImportedBindings[`${dep}@${ver}`] = totalImportedBindings[dep];

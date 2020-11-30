@@ -7,7 +7,7 @@ import importFrom from 'import-from';
 import { spawnSync } from "child_process";
 import {
     TPackageJson, TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps,
-    TLocalSymlink, TNonHoisted, TPackage, TModuleInfo
+    TLocalSymlink, TNonHoisted, TPackage, TModuleInfo, TFrontendDependency
 } from './types';
 import { tempPckgName } from './constants';
 
@@ -30,7 +30,7 @@ export const getNodeModuleVersion = (moduleName: string, importFromPath?: string
         modulePackageJson = importFromPath ? importFrom(importFromPath, pckgImportName) as any :
             require(pckgImportName);
     } catch (e) {
-        console.log(`Cromwell bundler: Failed to require package from ${pckgImportName}. You may need to reconfigure your frontendDependencies`)
+        console.log(`Cromwell bundler: Failed to require package ${pckgImportName} ${importFromPath ? 'from ' + importFromPath : ''}. You may need to reconfigure your frontendDependencies`)
     }
 
     return modulePackageJson?.version;
@@ -40,6 +40,24 @@ export const getNodeModuleNameWithVersion = (moduleName: string, importFromPath?
     const ver = getNodeModuleVersion(moduleName);
     if (ver) return `${moduleName}@${ver}`;
 }
+
+export const getDepVersion = (pckg: any, depName: string): string | undefined => {
+    let ver = pckg?.dependencies?.[depName] ?? pckg?.devDependencies?.[depName] ?? pckg?.peerDependencies?.[depName];
+    if (ver) return ver;
+    const frontDeps: (string | TFrontendDependency)[] | undefined = pckg?.frontendDependencies;
+    if (frontDeps) {
+        frontDeps.forEach(dep => {
+            if (typeof dep === 'object' && dep.version) ver = dep.version;
+        })
+    }
+    return ver;
+}
+
+export const getDepNameWithVersion = (pckg: any, depName: string): string | undefined => {
+    const ver = getDepVersion(pckg, depName);
+    if (ver) return `${depName}@${ver}`;
+}
+
 
 // Stores export keys of modules that have been requested
 const modulesExportKeys: Record<string, TModuleInfo> = {};
