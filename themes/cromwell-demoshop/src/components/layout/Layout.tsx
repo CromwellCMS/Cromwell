@@ -20,14 +20,14 @@ const theme = createMuiTheme({
     palette: {
         primary: {
             main: primaryColor,
-            light: primaryColor,
-            dark: primaryColor
+            light:primaryColor,
+            dark: primaryColor,
         },
     },
 });
 
-export default function Layout(props: TProps) {
-    console.log('Layout render. props: ', isElement(props.children), props);
+export default function Layout(props: TProps | undefined) {
+    console.log('Layout render. props: ', isElement(props?.children), props);
 
     return (
         <ThemeProvider theme={theme}>
@@ -35,7 +35,7 @@ export default function Layout(props: TProps) {
                 <Header />
                 <CartModal />
                 <WishlistModal />
-                {isElement(props.children) && props.children}
+                {(props?.children && isElement(props?.children)) && props.children}
             </div>
         </ThemeProvider>
 

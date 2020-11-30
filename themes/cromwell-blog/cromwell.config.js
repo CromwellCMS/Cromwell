@@ -1,4 +1,4 @@
-{
+module.exports = {
     "main": {
         "themeName": "cromwell-blog",
         "title": "Blog",

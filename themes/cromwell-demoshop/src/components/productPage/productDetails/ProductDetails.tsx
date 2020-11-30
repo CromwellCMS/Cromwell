@@ -1,11 +1,10 @@
 import { getThemeCustomConfigProp, TAttribute, TProduct, TProductReview } from '@cromwell/core';
 import {
     CContainer, CGallery, CImage, CList, CText, getGraphQLClient,
-    getCStore, ProductAttributes
+    getCStore, ProductAttributes, useRouter
 } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import { Button } from '@material-ui/core';
-import { useRouter } from 'next/router';
 import React, { useState, useRef, useEffect } from 'react';
 
 import { LoadBox } from '../../loadbox/Loadbox';

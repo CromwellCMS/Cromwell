@@ -21,7 +21,7 @@ function App(props: AppProps) {
 
     return (
         <>
-            <props.Component {...props.pageProps} />
+            {props.Component && <props.Component {...(props.pageProps ?? {})} />}
             <ToastContainer />
             <div style={{ fontSize: '12px' }}>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
         </>

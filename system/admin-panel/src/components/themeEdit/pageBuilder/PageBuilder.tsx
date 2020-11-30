@@ -166,9 +166,7 @@ export class PageBuilder extends React.Component<{
         return (
             <div ref={this.editorWindowRef}>
                 <PageErrorBoundary>
-                    <Suspense fallback={<LoadBox />}>
-                        <EditingPage />
-                    </Suspense>
+                    <EditingPage />
                 </PageErrorBoundary>
             </div>
         )

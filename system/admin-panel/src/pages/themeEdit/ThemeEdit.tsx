@@ -67,8 +67,43 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
         this.changedPageInfo = null;
         this.changedModifications = null;
 
-        // const pageComp = importStaticPage(pageCofig.route);
-        const pageComp = importLazyPage(pageInfo.route);
+        let themePageComponents = getStoreItem('themePageComponents');
+        if (!themePageComponents) {
+            themePageComponents = {};
+            setStoreItem('themePageComponents', themePageComponents);
+        }
+        const nodeModules = getStoreItem('nodeModules');
+        const savedComp = themePageComponents?.[pageInfo.route];
+
+        let pageComp = undefined;
+
+        if (savedComp) {
+            pageComp = savedComp;
+        } else {
+            const bundle = await getRestAPIClient()?.getThemePageBundle(pageInfo.route);
+            if (bundle?.source) {
+                if (bundle?.meta) {
+                    await nodeModules?.importSciptExternals(bundle.meta);
+                }
+
+                const source = `
+                var comp = ${bundle.source};
+                CromwellStore.themePageComponents['${pageInfo.route}'] = comp;
+                `;
+
+                await new Promise(res => {
+                    const sourceBlob = new Blob([source], { type: 'text/javascript' });
+                    const objectURL = URL.createObjectURL(sourceBlob);
+                    const domScript = document.createElement('script');
+                    domScript.src = objectURL;
+                    domScript.onload = () => res();
+                    document.head.appendChild(domScript);
+                });
+                pageComp = themePageComponents[pageInfo.route];
+                console.log('pageComp', pageComp);
+            }
+        }
+        pageComp = pageComp.default ?? pageComp;
 
         this.setState({
             EditingPage: pageComp,

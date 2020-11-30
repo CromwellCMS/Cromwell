@@ -13,8 +13,8 @@ import { Rating } from '@material-ui/lab';
 export const ProductCard = (props: {
     data?: TProduct, className?: string,
     variant?: 'grid' | 'list'
-}) => {
-    const data = props.data;
+} | undefined) => {
+    const data = props?.data;
     const productLink = `/product/${data?.slug}`;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [imageHeigth, setImageHeigth] = useState(300);
@@ -22,14 +22,14 @@ export const ProductCard = (props: {
 
     useEffect(() => {
         if (wrapperRef && wrapperRef.current) {
-            const width = props.variant !== 'list' ? wrapperRef.current.offsetWidth : wrapperRef.current.offsetHeight;
+            const width = props?.variant !== 'list' ? wrapperRef.current.offsetWidth : wrapperRef.current.offsetHeight;
             setImageHeigth(width);
         }
     }, []);
 
     return (
         <div className={clsx(styles.Product, commonStyles.onHoverLinkContainer,
-            props.className, props.variant === 'list' ? styles.listVariant : undefined)} ref={wrapperRef}>
+            props?.className, props?.variant === 'list' ? styles.listVariant : undefined)} ref={wrapperRef}>
             <div className={styles.imageBlock} style={{ height: imageHeigth }}>
                 <Link href={productLink}>
                     <a><img className={styles.image} src={data?.mainImage} /></a>
@@ -67,7 +67,7 @@ export const ProductCard = (props: {
                 </div>
                 <div className={styles.ratingBlock}>
                     <Rating name="read-only" value={data?.rating?.average} precision={0.5} readOnly />
-                    {(data?.rating?.reviewsNumber && props.variant === 'list') && (
+                    {(data?.rating?.reviewsNumber && props?.variant === 'list') && (
                         <p className={styles.ratingCaption}>
                             {data?.rating?.average ? data?.rating?.average.toFixed(2) : ''} based on {data?.rating?.reviewsNumber} reviews.</p>
                     )}

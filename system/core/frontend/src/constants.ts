@@ -25,3 +25,5 @@ export const getBlockDataById = (blockId: string): TCromwellBlockData | undefine
     }
 
 }
+
+export const isAdminPanel = (): boolean => getStoreItem('environment')?.isAdminPanel ?? false;

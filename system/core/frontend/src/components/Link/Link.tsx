@@ -1,6 +1,6 @@
-import React from 'react';
+import { getStoreItem } from '@cromwell/core';
 import NextLink from 'next/link';
-import { TCromwellBlockData, getStoreItem, TGallerySettings } from '@cromwell/core';
+import React from 'react';
 
 type TLinkProps = {
     href: string;
@@ -25,12 +25,14 @@ export const Link = (props: TLinkProps) => {
             }
         })
     }
+    // NextLink in Next.js environment and <a> in Admin panel
+    const LinkComp = NextLink ?? ((props) => <a>{props.children ?? ''}</a>);
     return (
-        <NextLink
+        <LinkComp
             href={dynamicPageComp ? dynamicPageComp : href}
             as={dynamicPageComp ? href : undefined}
         >
-            {props.children}
-        </NextLink>
+            {props.children ?? ''}
+        </LinkComp>
     )
 }

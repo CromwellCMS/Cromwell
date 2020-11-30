@@ -59,7 +59,6 @@
   "frontendDependencies": [
     "@cromwell/core",
     "@cromwell/core-frontend",
-    "@cromwell/cromwella",
     "@loadable/component",
     "@material-ui/core",
     "@material-ui/icons",

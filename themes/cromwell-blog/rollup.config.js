@@ -21,9 +21,6 @@ export default {
     external: ['react', 'react-dom', '@cromwell/core', '@cromwell/core-frontend', 'next/document', 'next/app', 'next/router'],
     plugins: [
         postcss({
-            plugins: [
-                autoprefixer(),
-            ],
             extract: false,
             modules: true,
             writeDefinitions: false,

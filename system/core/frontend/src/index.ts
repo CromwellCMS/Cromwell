@@ -8,7 +8,6 @@ export { CGallery } from './components/CGallery/CGallery';
 export { CList, TCList, TCListProps, TItemComponentProps } from './components/CList/CList';
 export { Link } from './components/Link/Link';
 export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
-export * from './components/Head/Head';
 export * from './HOCs/FrontendPlugin';
 export * from './constants';
 export * from './api/CGraphQLClient';
@@ -22,3 +21,6 @@ import CromwellBlockStyles from './components/CromwellBlock/CromwellBlock.module
 export const CromwellBlockCSSclass = CromwellBlockStyles.CromwellBlock;
 
 export { default as Document, Html, Main, NextScript, DocumentContext } from 'next/document';
+export { useRouter } from 'next/router';
+export { default as Head } from 'next/head';
+
