@@ -24,6 +24,7 @@ export class AttributeRepository extends Repository<Attribute> {
         attribute.key = input.key;
         attribute.type = input.type;
         attribute.values = input.values;
+        if (input.isEnabled === undefined) attribute.isEnabled = true;
     }
 
     async createAttribute(createAttribute: TAttributeInput): Promise<TAttribute> {

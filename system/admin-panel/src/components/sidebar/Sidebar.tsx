@@ -66,6 +66,7 @@ function useForceUpdate() {
 
 function Sidebar() {
     const [expanded, setExpanded] = React.useState<string | false>(false);
+    const [activeId, setActiveId] = React.useState<string | null>(null);
     const forceUpdate = useForceUpdate()
     const toggleSubmenu = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
@@ -75,6 +76,8 @@ function Sidebar() {
             {sideBarLinks.map(link => <SidebarLink data={link} key={link.route}
                 toggleSubmenu={toggleSubmenu} expanded={expanded}
                 forceUpdate={forceUpdate}
+                activeId={activeId}
+                setActiveId={setActiveId}
             />)}
         </div>
     )
@@ -85,34 +88,35 @@ const SidebarLink = (props: {
     toggleSubmenu: (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => void,
     expanded: string | false;
     forceUpdate: () => void;
+    setActiveId: (id: string) => void;
+    activeId: string;
 }) => {
     const history = useHistory();
-    const handleNav = (route: string) => {
-        history.push(route);
-        props.forceUpdate();
-    }
+
     const isExpanded = props.expanded === props.data.route;
 
-    const head = (
-        <a href={props.data.route} onClick={(e) => e.preventDefault()}>
-            <MenuItem
-                onClick={e => {
-                    isExpanded ? e.stopPropagation() : '';
-                    handleNav(props.data.route);
-                }}
-                className={styles.SidebarLink__head}
-            >
-                <div className={styles.sidebarlinkIcon}>{props.data.icon}</div>
-                <p>{props.data.title}</p>
-            </MenuItem>
-        </a>
-    )
+    let head = (
+        <MenuItem
+            className={styles.SidebarLink__head}
+        >
+            <div className={styles.sidebarlinkIcon}>{props.data.icon}</div>
+            <p>{props.data.title}</p>
+        </MenuItem>
+    );
+    if (props.data.route) {
+        head = <Link to={props.data.route}
+            onClick={e => {
+                e.stopPropagation();
+                props.setActiveId(props.data.id);
+            }}
+        >{head}</Link>
+    }
 
     if (props.data.sublinks) return (
         <ExpansionPanel expanded={isExpanded} onChange={props.toggleSubmenu(props.data.route)} className={styles.SidebarLink}>
             <AccordionSummary
                 className={styles.ExpansionPanelSummary}
-                expandIcon={<ExpandMoreIcon style={{ marginRight: '0' }} className={styles.ExpandMoreIcon} />}
+                expandIcon={<ExpandMoreIcon style={{ marginRight: '0' }} className={styles.ExpandMoreIcon} htmlColor='#999' />}
                 aria-controls={`sublinks-${props.data.title}-content`}
             >
                 {head}
@@ -123,6 +127,8 @@ const SidebarLink = (props: {
                         <SidebarLink data={sublink} key={sublink.route}
                             expanded={props.expanded} toggleSubmenu={props.toggleSubmenu}
                             forceUpdate={props.forceUpdate}
+                            activeId={props.activeId}
+                            setActiveId={props.setActiveId}
                         />
                     ))}
                 </div>
@@ -131,7 +137,7 @@ const SidebarLink = (props: {
     );
 
     return (
-        <div className={`${styles.SidebarLink} ${history.location.pathname === props.data.route ? styles.SidebarLinkActive : ''}`}>
+        <div className={`${styles.SidebarLink} ${props.activeId === props.data.id ? styles.SidebarLinkActive : ''}`}>
             {head}
         </div>
     )

@@ -53,7 +53,7 @@ class CGraphQLClient {
     public query = <T = any>(options: QueryOptions): Promise<ApolloQueryResult<T>> =>
         this.apolloClient.query(options);
 
-    public returnData = (res: any, path: string) => res?.data ? res?.data[path] : undefined;
+    public returnData = (res: any, path: string) => res?.data?.[path];
 
     public PagedMetaFragment = gql`
         fragment PagedMetaFragment on PagedMeta {
@@ -353,6 +353,21 @@ class CGraphQLClient {
            `,
             variables: {
                 data: attribute,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public deleteAttribute = async (id: string) => {
+        const path = GraphQLPaths.Attribute.delete;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+               mutation coreDeleteAttribute($id: String!) {
+                ${path}(id: $id)
+               }
+           `,
+            variables: {
+                id
             }
         });
         return this.returnData(res, path);

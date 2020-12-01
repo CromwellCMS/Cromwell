@@ -1,21 +1,18 @@
 import '../../helpers/Draggable/Draggable.css';
 
-import { setStoreItem, getStoreItem, TCromwellBlockData, TPageConfig, TPageInfo } from '@cromwell/core';
-import {
-    CromwellBlockCSSclass, getRestAPIClient, cromwellBlockTypeFromClassname,
-    getBlockDataById, cromwellIdFromHTML
-} from '@cromwell/core-frontend';
-import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip, Drawer, Collapse } from '@material-ui/core';
-import { AddCircle as AddCircleIcon, HighlightOff as HighlightOffIcon, Settings as SettingsIcon } from '@material-ui/icons';
-import React, { Suspense, useEffect, useRef, useState } from 'react';
+import { getStoreItem, setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo } from '@cromwell/core';
+import { getRestAPIClient } from '@cromwell/core-frontend';
+import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip } from '@material-ui/core';
+import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import clsx from 'clsx';
+import React, { Suspense } from 'react';
 import { toast } from 'react-toastify';
 
+import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
+import { PageBuilder } from '../../components/themeEdit/pageBuilder/PageBuilder';
 import { PageListItem } from '../../components/themeEdit/pageListItem/PageListItem';
 import { PageSettings } from '../../components/themeEdit/pageSettings/PageSettings';
-import { PageBuilder } from '../../components/themeEdit/pageBuilder/PageBuilder';
-import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import styles from './ThemeEdit.module.scss';
 
 
@@ -100,7 +97,6 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
                     document.head.appendChild(domScript);
                 });
                 pageComp = themePageComponents[pageInfo.route];
-                console.log('pageComp', pageComp);
             }
         }
         pageComp = pageComp.default ?? pageComp;

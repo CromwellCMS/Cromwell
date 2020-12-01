@@ -3,7 +3,7 @@
     background: rgba(0, 0, 0, 0.04);
     height: 100%;
     background: #333;
-    padding: 10px 5px;
+    padding: 10px 7px;
 
     a {
         display: block;
@@ -15,8 +15,6 @@
         width: 100%;
         background: rgba(0,0,0,0.03);
         margin-bottom: 7px;
-        border-bottom: 1px solid #242424;
-        box-shadow: 2px 2px 2px -1px rgba(0, 0, 0, 0.3), 0px -3px 3px 0px rgba(0, 0, 0, 0.2), 0px 3px 3px 0px rgba(0, 0, 0, 0.12);
         border-radius: 6px;
         overflow: hidden;
         transition: 0.3s;
@@ -45,12 +43,12 @@
 
     .SidebarLink__sublinks-container {
         width: 100%;
-    
+        padding: 5px 5px 0 15px;
     }
 
     .SidebarLink__head {
-        padding-top: 6px;
-        padding-bottom: 6px;
+        padding-top: 9px;
+        padding-bottom: 9px;
         padding-left: 9px;
         padding-right: 9px;
         justify-content: normal;

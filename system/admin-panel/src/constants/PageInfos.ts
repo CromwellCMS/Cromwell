@@ -5,17 +5,22 @@ import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
 import ThemeListPage from '../pages/themeList/ThemeList';
 import ProductListPage from '../pages/productList/ProductList';
 import ProductPage from '../pages/product/Product';
+import AttributesPage from '../pages/attributes/AttributesPage';
 import {
     Dashboard as DashboardIcon,
     LocalMall as LocalMallIcon,
     Power as PowerIcon,
-    FormatPaint as FormatPaintIcon
+    FormatPaint as FormatPaintIcon,
+    FilterList as FilterListIcon,
+    Storage as StorageIcon,
+    Category as CategoryIcon
 } from '@material-ui/icons';
 
 
 export type SidebarLinkType = {
+    id: string;
     title: string;
-    route: string;
+    route?: string;
     baseRoute?: string;
     sublinks?: SidebarLinkType[];
     icon?: React.ReactNode;
@@ -60,6 +65,11 @@ export const productInfo: PageInfo = {
     baseRoute: '/product',
     component: ProductPage
 };
+export const attributesInfo: PageInfo = {
+    name: 'Attributes',
+    route: '/product-attributes',
+    component: AttributesPage
+};
 
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
@@ -70,26 +80,50 @@ export const pageInfos: PageInfo[] = [
     productListInfo,
     productInfo,
     pluginsPageInfo,
+    attributesInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
 export const sideBarLinks: SidebarLinkType[] = [
     {
+        id: '1_homePage',
         title: homePageInfo.name,
         route: homePageInfo.route,
         icon: React.createElement(DashboardIcon)
     },
     {
-        title: 'Products',
-        route: productListInfo.route,
-        icon: React.createElement(LocalMallIcon)
+        id: '2_Store',
+        title: 'Store',
+        icon: React.createElement(LocalMallIcon),
+        sublinks: [
+            {
+                id: '3_productList',
+                title: 'Products',
+                route: productListInfo.route,
+                icon: React.createElement(StorageIcon)
+            },
+            {
+                id: '4_Attributes',
+                title: 'Attributes',
+                route: attributesInfo.route,
+                icon: React.createElement(FilterListIcon)
+            },
+            {
+                id: '5_Categories',
+                title: 'Categories',
+                route: productListInfo.route,
+                icon: React.createElement(CategoryIcon)
+            },
+        ]
     },
     {
-        title: 'Edit theme',
+        id: '5_themeListPage',
+        title: 'Themes',
         route: themeListPageInfo.route,
         icon: React.createElement(FormatPaintIcon)
     },
     {
+        id: '6_pluginsPage',
         title: pluginsPageInfo.name,
         route: pluginsPageInfo.route,
         icon: React.createElement(PowerIcon)

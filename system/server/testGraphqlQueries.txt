@@ -1,11 +1,13 @@
 query getProduct {
-  getProductById(id: "32") {
+  getProductById(id: "1") {
     id
     slug
     name
     price
+    oldPrice
     views
     images
+    description
     pageTitle
     rating {
       average
@@ -38,7 +40,7 @@ query getProduct {
   }
 }
 query getProducts {
-  products(pagedParams: {pageNumber: 1, pageSize: 2}) {
+  products(pagedParams: {pageNumber: 1, pageSize: 1}) {
     pagedMeta {
 			pageSize
       

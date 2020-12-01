@@ -60,29 +60,6 @@ export default function TransferList(props: {
     const leftChecked = intersection(checked, left);
     const rightChecked = intersection(checked, right);
 
-    const handleToggle = (value: string) => () => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
-        }
-
-        setChecked(newChecked);
-    };
-
-    const numberOfChecked = (items: string[]) => intersection(checked, items).length;
-
-    const handleToggleAll = (items: string[]) => () => {
-        if (numberOfChecked(items) === items.length) {
-            setChecked(not(checked, items));
-        } else {
-            setChecked(union(checked, items));
-        }
-    };
-
     const handleCheckedRight = () => {
         setRight(right.concat(leftChecked));
         setLeft(not(left, leftChecked));
@@ -95,55 +72,16 @@ export default function TransferList(props: {
         setChecked(not(checked, rightChecked));
     };
 
-    const customList = (title: React.ReactNode, items: string[]) => (
-        <Card>
-            <CardHeader
-                className={classes.cardHeader}
-                avatar={
-                    <Checkbox
-                        color="primary"
-                        onClick={handleToggleAll(items)}
-                        checked={numberOfChecked(items) === items.length && items.length !== 0}
-                        indeterminate={numberOfChecked(items) !== items.length && numberOfChecked(items) !== 0}
-                        disabled={items.length === 0}
-                        inputProps={{ 'aria-label': 'all items selected' }}
-                    />
-                }
-                title={title}
-                subheader={`${numberOfChecked(items)}/${items.length} selected`}
-            />
-            <Divider />
-            <List className={classes.list} dense component="div" role="list">
-                {items.map((value: string) => {
-                    const labelId = `transfer-list-all-item-${value}-label`;
-
-                    return (
-                        <ListItem key={value} role="listitem" button onClick={handleToggle(value)}>
-                            <ListItemIcon>
-                                <Checkbox
-                                    color="primary"
-                                    checked={checked.indexOf(value) !== -1}
-                                    tabIndex={-1}
-                                    disableRipple
-                                    inputProps={{ 'aria-labelledby': labelId }}
-                                />
-                            </ListItemIcon>
-                            {props.itemComp ? (
-                                <props.itemComp value={value} />
-                            ) : (
-                                    <ListItemText id={labelId} primary={value} />
-                                )}
-                        </ListItem>
-                    );
-                })}
-                <ListItem />
-            </List>
-        </Card>
-    );
-
     return (
         <Grid container spacing={2} justify="center" alignItems="center" className={classes.root}>
-            <Grid item>{customList('Choices', left)}</Grid>
+            <Grid item>
+                <CheckList title='Choices'
+                    items={left}
+                    checked={checked}
+                    setChecked={setChecked}
+                    itemComp={props.itemComp}
+                />
+            </Grid>
             <Grid item>
                 <Grid container direction="column" alignItems="center">
                     <Button
@@ -168,7 +106,110 @@ export default function TransferList(props: {
           </Button>
                 </Grid>
             </Grid>
-            <Grid item>{customList('Chosen', right)}</Grid>
+            <Grid item>
+                <CheckList title='Chosen'
+                    items={right}
+                    checked={checked}
+                    setChecked={setChecked}
+                    itemComp={props.itemComp}
+                />
+            </Grid>
         </Grid>
     );
+}
+
+export const CheckList = (props: {
+    title: React.ReactNode;
+    items: string[];
+    itemComp?: React.ComponentType<{ value: string }>;
+    checked: string[];
+    setChecked: (items: string[]) => any;
+    actions?: React.ReactNode;
+    fullWidthToggle?: boolean;
+}) => {
+    const { title, items, itemComp, checked, setChecked, fullWidthToggle } = props;
+    const classes = useStyles();
+
+    const handleToggle = (value: string) => () => {
+        const currentIndex = checked.indexOf(value);
+        const newChecked = [...checked];
+
+        if (currentIndex === -1) {
+            newChecked.push(value);
+        } else {
+            newChecked.splice(currentIndex, 1);
+        }
+
+        setChecked(newChecked);
+    };
+
+    const numberOfChecked = (items: string[]) => intersection(checked, items).length;
+
+    const handleToggleAll = (items: string[]) => () => {
+        if (numberOfChecked(items) === items.length) {
+            setChecked(not(checked, items));
+        } else {
+            setChecked(union(checked, items));
+        }
+    };
+
+    return (
+        <Card>
+            <div
+                style={{ padding: '16px', display: 'flex', alignItems: 'center' }}
+                className={classes.cardHeader}
+            >
+                <div style={{ marginRight: '16px' }}>
+                    <Checkbox
+                        color="primary"
+                        onClick={handleToggleAll(items)}
+                        checked={numberOfChecked(items) === items.length && items.length !== 0}
+                        indeterminate={numberOfChecked(items) !== items.length && numberOfChecked(items) !== 0}
+                        disabled={items.length === 0}
+                        inputProps={{ 'aria-label': 'all items selected' }}
+                    />
+
+                </div>
+                <div>
+                    <p style={{ fontWeight: 500, fontSize: '1.1em', marginBottom: '6px' }}>{title}</p>
+                    <p>{`${numberOfChecked(items)}/${items.length} selected`}</p>
+                </div>
+                {props.actions}
+            </div>
+            <Divider />
+            <List className={classes.list} dense component="div" role="list">
+                {items.map((value: string, index: number) => {
+                    const labelId = `transfer-list-all-item-${value}-label`;
+
+                    return (
+                        <ListItem key={index}
+                            role="listitem" onClick={() => {
+                                if (fullWidthToggle !== false) handleToggle(value)();
+                            }}
+                            button={fullWidthToggle !== false ? true : undefined}
+                        >
+                            <ListItemIcon
+                                onClick={() => {
+                                    if (fullWidthToggle === false) handleToggle(value)();
+                                }}>
+                                <Checkbox
+                                    color="primary"
+                                    checked={checked.indexOf(value) !== -1}
+                                    tabIndex={-1}
+                                    disableRipple
+                                    inputProps={{ 'aria-labelledby': labelId }}
+                                />
+                            </ListItemIcon>
+                            {props.itemComp ? (
+                                <props.itemComp value={value} />
+                            ) : (
+                                    <ListItemText id={labelId} primary={value} />
+                                )}
+                        </ListItem>
+                    );
+                })}
+                <ListItem />
+            </List>
+        </Card >
+    )
 }
