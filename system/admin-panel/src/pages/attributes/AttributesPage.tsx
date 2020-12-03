@@ -3,6 +3,7 @@ import { getRestAPIClient, getGraphQLClient } from '@cromwell/core-frontend';
 import { TAttribute, TAttributeInput } from '@cromwell/core';
 import { CheckList } from '../../components/transferList/TransferList';
 import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip, TextField } from '@material-ui/core';
+import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import {
     Edit as EditIcon,
     Save as SaveIcon,
@@ -12,6 +13,7 @@ import {
 } from '@material-ui/icons';
 import { toast } from 'react-toastify';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
+import { ConfirmationModal } from '../../components/modal/Confirmation';
 
 function useForceUpdate() {
     const [value, setValue] = useState(0);
@@ -66,12 +68,25 @@ export default function AttributesPage() {
     )
 }
 
+export const useStyles = makeStyles((theme: Theme) =>
+    createStyles({
+        textFieldRoot: {
+            '& input': {
+                fontSize: '20px',
+                fontWeight: 500,
+            },
+        }
+    }),
+);
+
 const Attribute = (props: { data: TAttribute }) => {
     const attribute = useRef(props.data);
     const [checkedValues, setCheckedValues] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
     const forceUpdate = useForceUpdate();
     const graphClient = getGraphQLClient();
+    const styles = useStyles();
 
     const getAttribute = async () => {
         if (attribute.current?.id) {
@@ -114,15 +129,33 @@ const Attribute = (props: { data: TAttribute }) => {
     }
 
     const handleAddValue = () => {
-        attribute.current.values.push({ value: '' })
+        attribute.current.values.push({ value: '' });
         forceUpdate();
     }
 
-    const handleRenameAttribute = () => {
+    const handleAttributeNameChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const newName = event.target.value;
+        attribute.current.key = newName;
+        forceUpdate();
+    }
 
+    const handleCheckedValuesChange = (newChecked: string[]) => {
+        setCheckedValues(newChecked);
     }
 
     const handleDeleteAttribute = async () => {
+        if (checkedValues.length > 0) {
+            // remove checked values
+            attribute.current.values = attribute.current.values.filter(val => !checkedValues.includes(val.value));
+            setCheckedValues([]);
+        } else {
+            // remove entire attribute
+            setIsDeleteModalOpen(true);
+        }
+    }
+
+    const deleteAttributeConfirmed = async () => {
+        setIsDeleteModalOpen(false);
         let success = false;
         try {
             if (attribute.current?.id) await graphClient.deleteAttribute(attribute.current?.id);
@@ -139,25 +172,28 @@ const Attribute = (props: { data: TAttribute }) => {
         }
     }
 
-
     return (
         <>
             {attribute.current && <CheckList
-                title={attribute.current.key}
+                title={<TextField
+                    variant="outlined"
+                    size="small"
+                    style={{ marginRight: '15px' }}
+                    defaultValue={attribute.current.key}
+                    onChange={handleAttributeNameChange}
+                    classes={{
+                        root: styles.textFieldRoot
+                    }}
+                />}
                 items={attribute.current.values.map(val => val.value)}
                 checked={checkedValues}
-                setChecked={setCheckedValues}
+                setChecked={handleCheckedValuesChange}
                 fullWidthToggle={false}
                 actions={<div style={{ marginLeft: 'auto' }}>
-                    <Tooltip title="Rename attribute">
-                        <IconButton onClick={handleRenameAttribute}>
-                            <EditIcon />
-                        </IconButton>
-                    </Tooltip>
                     <Tooltip title="Add new value">
                         <IconButton onClick={handleAddValue}><AddCircleOutlineIcon /></IconButton>
                     </Tooltip>
-                    <Tooltip title="Remove attribute">
+                    <Tooltip title={checkedValues.length > 0 ? "Remove checked values" : "Remove attribute"}>
                         <IconButton onClick={handleDeleteAttribute}><DeleteIcon /></IconButton>
                     </Tooltip>
                     <Tooltip title="Save attribute">
@@ -211,6 +247,11 @@ const Attribute = (props: { data: TAttribute }) => {
                     )
                 }}
             />}
+            <ConfirmationModal open={isDeleteModalOpen}
+                text={'Delete attribute? (no undo)'}
+                onConfirm={deleteAttributeConfirmed}
+                onClose={() => setIsDeleteModalOpen(false)}
+            />
             <LoadingStatus isActive={isLoading} />
         </>
     )
