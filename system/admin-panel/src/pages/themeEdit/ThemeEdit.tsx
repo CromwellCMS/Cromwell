@@ -1,7 +1,7 @@
 import '../../helpers/Draggable/Draggable.css';
 
 import { getStoreItem, setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import clsx from 'clsx';
@@ -19,7 +19,7 @@ import styles from './ThemeEdit.module.scss';
 class ThemeEditState {
     pageInfos: TPageInfo[] | null = null;
     editingPageInfo: TPageInfo | null = null;
-    EditingPage: React.LazyExoticComponent<React.ComponentType<any>> | null | undefined = null;
+    EditingPage: React.ComponentType<any> | null | undefined = null;
     isPageLoading: boolean = false;
     isPageListLoading: boolean = true;
     isSidebarOpen: boolean = true;
@@ -64,42 +64,7 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
         this.changedPageInfo = null;
         this.changedModifications = null;
 
-        let themePageComponents = getStoreItem('themePageComponents');
-        if (!themePageComponents) {
-            themePageComponents = {};
-            setStoreItem('themePageComponents', themePageComponents);
-        }
-        const nodeModules = getStoreItem('nodeModules');
-        const savedComp = themePageComponents?.[pageInfo.route];
-
-        let pageComp = undefined;
-
-        if (savedComp) {
-            pageComp = savedComp;
-        } else {
-            const bundle = await getRestAPIClient()?.getThemePageBundle(pageInfo.route);
-            if (bundle?.source) {
-                if (bundle?.meta) {
-                    await nodeModules?.importSciptExternals(bundle.meta);
-                }
-
-                const source = `
-                var comp = ${bundle.source};
-                CromwellStore.themePageComponents['${pageInfo.route}'] = comp;
-                `;
-
-                await new Promise(res => {
-                    const sourceBlob = new Blob([source], { type: 'text/javascript' });
-                    const objectURL = URL.createObjectURL(sourceBlob);
-                    const domScript = document.createElement('script');
-                    domScript.src = objectURL;
-                    domScript.onload = () => res();
-                    document.head.appendChild(domScript);
-                });
-                pageComp = themePageComponents[pageInfo.route];
-            }
-        }
-        pageComp = pageComp.default ?? pageComp;
+        let pageComp = loadFrontendBundle(pageInfo.route, () => getRestAPIClient()?.getThemePageBundle(pageInfo.route));
 
         this.setState({
             EditingPage: pageComp,

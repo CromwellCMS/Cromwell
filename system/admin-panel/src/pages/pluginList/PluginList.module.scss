@@ -1,0 +1,17 @@
+.PluginList {
+    width: 100%;
+}
+
+.pluginItem {
+    width: 100%;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pluginName {
+    font-size: 20px;
+    font-weight: 500;
+}

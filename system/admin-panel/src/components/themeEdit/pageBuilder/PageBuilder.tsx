@@ -12,7 +12,7 @@ const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.rando
 
 
 export class PageBuilder extends React.Component<{
-    EditingPage: React.LazyExoticComponent<React.ComponentType<any>>;
+    EditingPage: React.ComponentType<any>;
     onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void;
 }>  {
     private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef();

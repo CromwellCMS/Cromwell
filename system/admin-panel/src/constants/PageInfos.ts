@@ -1,6 +1,7 @@
 import React from 'react';
 import HomePage from '../pages/home';
-import PluginsPage from '../pages/plugins';
+import PluginListPage from '../pages/pluginList/PluginList';
+import PluginPage from '../pages/plugin/PluginPage';
 import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
 import ThemeListPage from '../pages/themeList/ThemeList';
 import ProductListPage from '../pages/productList/ProductList';
@@ -38,11 +39,6 @@ export const homePageInfo: PageInfo = {
     route: '/',
     component: HomePage
 };
-export const pluginsPageInfo: PageInfo = {
-    name: 'Plugins',
-    route: '/plugins',
-    component: PluginsPage
-};
 export const themeListPageInfo: PageInfo = {
     name: 'ThemeList',
     route: '/theme-list',
@@ -70,6 +66,17 @@ export const attributesInfo: PageInfo = {
     route: '/product-attributes',
     component: AttributesPage
 };
+export const pluginListPageInfo: PageInfo = {
+    name: 'PluginList',
+    route: '/plugins',
+    component: PluginListPage
+};
+export const pluginPageInfo: PageInfo = {
+    name: 'Plugin',
+    baseRoute: '/plugins',
+    route: '/plugins/:pluginName',
+    component: PluginPage
+};
 
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
@@ -79,8 +86,9 @@ export const pageInfos: PageInfo[] = [
     productListInfo,
     productListInfo,
     productInfo,
-    pluginsPageInfo,
+    pluginListPageInfo,
     attributesInfo,
+    pluginPageInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
@@ -124,8 +132,8 @@ export const sideBarLinks: SidebarLinkType[] = [
     },
     {
         id: '6_pluginsPage',
-        title: pluginsPageInfo.name,
-        route: pluginsPageInfo.route,
+        title: 'Plugins',
+        route: pluginListPageInfo.route,
         icon: React.createElement(PowerIcon)
     }
 ]
