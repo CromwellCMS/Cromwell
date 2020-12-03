@@ -9,7 +9,8 @@ import {
     TThemeMainConfig,
     TPluginConfig,
     TSciprtMetaInfo,
-    TFrontendBundle
+    TFrontendBundle,
+    TPluginInfo
 } from '@cromwell/core';
 import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 
@@ -136,6 +137,23 @@ class CRestAPIClient {
         try {
             res = await axios.get(`${this.baseUrl}/plugin/frontend-bundle/${pluginName}`);
         } catch (e) { console.error('CRestAPIClient::getPluginFrontendBundle', e) }
+        return res?.data ?? null;
+    }
+
+    public getPluginAdminBundle = async (pluginName: string): Promise<TFrontendBundle | null> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/plugin/admin-bundle/${pluginName}`);
+        } catch (e) { console.error('CRestAPIClient::getPluginAdminBundle', e) }
+        return res?.data ?? null;
+    }
+
+
+    public getPluginList = async (): Promise<TPluginInfo[] | null> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/plugin/list`);
+        } catch (e) { console.error('CRestAPIClient::getPluginList', e) }
         return res?.data ?? null;
     }
 

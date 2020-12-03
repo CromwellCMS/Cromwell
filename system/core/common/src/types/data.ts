@@ -13,7 +13,7 @@ export type TCromwellStore = {
     themeMainConfig?: TThemeMainConfig;
     rebuildPage?: (path: string) => void;
     /** { [ComponentName]: (Class/function) } */
-    components?: Record<string, React.ComponentType<TCommonComponentProps>>;
+    components?: Record<string, React.ComponentType<TCommonComponentProps & { [x: string]: any }>>;
     /** { [CromwellBlockId]: Instance} */
     blockInstances?: Record<string, TCromwellBlock | undefined>;
     pagesInfo?: TPageInfo[];
@@ -197,4 +197,8 @@ export type TFrontendBundle = {
     source?: string;
     meta?: TSciprtMetaInfo;
     cjsPath?: string;
+}
+
+export type TPluginInfo = {
+    name: string;
 }

@@ -61,7 +61,7 @@ export type TContentComponentProps = {
 }
 
 export type TCommonComponentProps = {
-    data: TProduct;
+    data?: TProduct;
 }
 
 export type TBlockDestinationPositionType = 'before' | 'after' | 'inside';

@@ -1,9 +1,9 @@
 import { Router } from 'express';
 import fs, { pathExists } from 'fs-extra';
-import { TPluginConfig } from '@cromwell/core';
+import { TPluginConfig, TPluginInfo } from '@cromwell/core';
 import { projectRootDir } from '../constants';
 import { resolve } from 'path';
-import { getMetaInfoPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, buildDirName } from '@cromwell/core-backend';
+import { getMetaInfoPath, getPluginAdminBundlePath, getPluginAdminCjsPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, buildDirName } from '@cromwell/core-backend';
 import { TSciprtMetaInfo, TFrontendBundle } from '@cromwell/core';
 import normalizePath from 'normalize-path';
 import decache from 'decache';
@@ -64,9 +64,59 @@ const readPluginSettings = async (pluginName: string): Promise<any> => {
             console.error("Failed to read plugin's settings", e);
         }
     }
-
-
 }
+
+/**
+ * Reads files of a plugin in frontend or admin directory.
+ * @param pluginName 
+ * @param pathGetter 
+ */
+const getPluginBundle = async (pluginName: string, bundleType: 'admin' | 'frontend'): Promise<TFrontendBundle | undefined> => {
+    let out: TFrontendBundle | undefined = undefined;
+    let pathGetter: ((distDir: string) => string) | undefined = undefined;
+    let cjsPathGetter: ((distDir: string) => string) | undefined = undefined;
+
+    if (bundleType === 'admin') {
+        pathGetter = getPluginAdminBundlePath;
+        cjsPathGetter = getPluginAdminCjsPath;
+    }
+    if (bundleType === 'frontend') {
+        pathGetter = getPluginFrontendBundlePath;
+        cjsPathGetter = getPluginFrontendCjsPath;
+    }
+    if (!pathGetter) return;
+
+    const filePath = pathGetter(resolve(pluginsPath, pluginName, buildDirName));
+
+    let cjsPath: string | undefined = cjsPathGetter?.(
+        resolve(pluginsPath, pluginName, buildDirName));
+    if (cjsPath) cjsPath = normalizePath(cjsPath);
+
+    if (cjsPath && !(await fs.pathExists(cjsPath))) cjsPath = undefined;
+    console.log('filePath', filePath)
+    if (await fs.pathExists(filePath)) {
+        try {
+            const source = (await fs.readFile(filePath)).toString();
+
+            let meta: TSciprtMetaInfo | undefined;
+            if (await fs.pathExists(getMetaInfoPath(filePath))) {
+                try {
+                    meta = JSON.parse((await fs.readFile(getMetaInfoPath(filePath))).toString());
+                } catch (e) { }
+            }
+
+            out = {
+                source,
+                meta,
+                cjsPath
+            }
+        } catch (e) {
+            console.error("Failed to read plugin's settings", e);
+        }
+    }
+    return out;
+}
+
 // < HELPERS />
 
 
@@ -169,41 +219,70 @@ export const getPluginsController = (): Router => {
      *         description: bundle
      */
     pluginsController.get(`/frontend-bundle/:pluginName`, async (req, res) => {
-        let out: TFrontendBundle;
-
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {
-            const filePath = getPluginFrontendBundlePath(resolve(pluginsPath, pluginName, buildDirName));
-            let cjsPath: string | undefined = normalizePath(getPluginFrontendCjsPath(
-                resolve(pluginsPath, pluginName, buildDirName)));
-
-            if (cjsPath && !(await fs.pathExists(cjsPath))) cjsPath = undefined;
-
-            if (await fs.pathExists(filePath)) {
-                try {
-                    const source = (await fs.readFile(filePath)).toString();
-
-                    let meta: TSciprtMetaInfo | undefined;
-                    if (await fs.pathExists(getMetaInfoPath(filePath))) {
-                        try {
-                            meta = JSON.parse((await fs.readFile(getMetaInfoPath(filePath))).toString());
-                        } catch (e) { }
-                    }
-
-                    out = {
-                        source,
-                        meta,
-                        cjsPath
-                    }
-
-                    if (out) res.send(out);
-                    return;
-                } catch (e) {
-                    console.error("Failed to read plugin's settings", e);
-                }
-            }
+            const bundle = await getPluginBundle(pluginName, 'frontend');
+            if (bundle) res.send(bundle);
+            return;
         };
-        res.status(404).send("Invalid pluginName")
+        res.status(400).send("Invalid pluginName")
+    })
+
+    /**
+     * @swagger
+     * 
+     * /plugin/admin-bundle/{pluginName}:
+     *   get:
+     *     description: Returns plugin's JS admin bundle as a string.
+     *     tags: 
+     *       - Plugins
+     *     produces:
+     *       - application/javascript
+     *     parameters:
+     *       - name: pluginName
+     *         description: Name of a plugin to load bundle for.
+     *         in: path
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: bundle
+     */
+    pluginsController.get(`/admin-bundle/:pluginName`, async (req, res) => {
+        const pluginName = req.params?.pluginName;
+        if (pluginName && pluginName !== "") {
+            const bundle = await getPluginBundle(pluginName, 'admin');
+            if (bundle) res.send(bundle);
+            return;
+        };
+        res.status(400).send("Invalid pluginName")
+    })
+
+    /**
+     * @swagger
+     * 
+     * /plugin/list:
+     *   get:
+     *     description: Returns list of all installed plugins.
+     *     tags: 
+     *       - Plugins
+     *     produces:
+     *       - application/javascript
+     *     responses:
+     *       200:
+     *         description: list
+     */
+    pluginsController.get(`/list`, async (req, res) => {
+        const out: TPluginInfo[] = [];
+
+        const plugins: string[] = await fs.readdir(pluginsPath);
+        plugins.forEach(name => {
+            out.push({
+                name
+            });
+        })
+
+        res.send(out);
     })
 
     return pluginsController;
