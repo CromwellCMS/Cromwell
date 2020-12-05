@@ -15,6 +15,15 @@ export enum BasePagePaths {
 }
 
 export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
+    Generic: {
+        getOneBySlug: "getBySlug",
+        getOneById: "getById",
+        getMany: "getAll",
+        getManyPaged: "getPaged",
+        create: "create",
+        update: "update",
+        delete: "delete"
+    },
     Post: {
         getOneBySlug: "post",
         getOneById: "getPostById",
@@ -64,7 +73,8 @@ export const DBTableNames: { [K in TDBEntity]: string } = {
     Product: 'product',
     ProductCategory: 'product_category',
     Attribute: 'attribute',
-    ProductReview: 'product_review'
+    ProductReview: 'product_review',
+    Generic: '_Generic'
 }
 
 export const isServer = (): boolean => (typeof window === 'undefined');

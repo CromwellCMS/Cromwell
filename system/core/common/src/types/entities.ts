@@ -152,3 +152,27 @@ type TProductReviewCore = {
 export type TProductReview = TProductReviewCore & TBasePageEntity;
 
 export type TProductReviewInput = TProductReviewCore & TBasePageEntityInput;
+
+
+// Theme entity
+
+type TThemeEntityCore = {
+    name: string;
+    isInstalled: boolean;
+}
+
+export type TThemeEntity = TThemeEntityCore & TBasePageEntity;
+
+export type TThemeEntityInput = TThemeEntityCore & TBasePageEntityInput;
+
+
+// Plugin entity
+
+type TPluginEntityCore = {
+    name: string;
+    isInstalled: boolean;
+}
+
+export type TPluginEntity = TPluginEntityCore & TBasePageEntity;
+
+export type TPluginEntityInput = TPluginEntityCore & TBasePageEntityInput;

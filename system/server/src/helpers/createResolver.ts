@@ -1,4 +1,4 @@
-import { TPagedList } from '@cromwell/core';
+import { TPagedList, GraphQLPaths } from '@cromwell/core';
 import { BaseRepository, PagedMeta, PagedParamsInput } from '@cromwell/core-backend';
 import { Arg, Args, ArgsType, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { EntityRepository, getCustomRepository } from 'typeorm';
@@ -38,13 +38,13 @@ export const createResolver = <EntityType>(entityName: string, DBTableName: stri
         data: EntityType;
     }
 
-    const getPagedPath = 'getPaged' + entityName;
-    const getAllPath = 'getAll' + entityName;
-    const getBySlugPath = 'getBySlug' + entityName;
-    const getByIdPath = 'getById' + entityName;
-    const createPath = 'create' + entityName;
-    const updatePath = 'update' + entityName;
-    const deletePath = 'delete' + entityName;
+    const getPagedPath = GraphQLPaths.Generic.getManyPaged + entityName;
+    const getAllPath = GraphQLPaths.Generic.getMany + entityName;
+    const getBySlugPath = GraphQLPaths.Generic.getOneBySlug + entityName;
+    const getByIdPath = GraphQLPaths.Generic.getOneById + entityName;
+    const createPath = GraphQLPaths.Generic.create + entityName;
+    const updatePath = GraphQLPaths.Generic.update + entityName;
+    const deletePath = GraphQLPaths.Generic.delete + entityName;
 
     @Resolver(EntityClass)
     class GenericResolver {

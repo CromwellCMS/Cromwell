@@ -1,7 +1,10 @@
 import 'reflect-metadata';
 
 import { apiV1BaseRoute, TCmsConfig, setStoreItem, currentApiVersion, serviceLocator } from '@cromwell/core';
-import { Product, ProductCategory, Post, Author, Attribute, ProductReview, readCMSConfigSync, serverMessages } from '@cromwell/core-backend';
+import {
+    Product, ProductCategory, Post, Author, Attribute, ThemeEntity, PluginEntity,
+    ProductReview, readCMSConfigSync, serverMessages, InputThemeEntity, InputPluginEntity
+} from '@cromwell/core-backend';
 import { ApolloServer } from 'apollo-server-express';
 import express from 'express';
 import fs from 'fs-extra';
@@ -18,6 +21,7 @@ import { getPluginsController } from './controllers/pluginsController';
 import { getCmsController } from './controllers/cmsController';
 import { getMockController } from './controllers/mockController';
 import { rebuildPage } from './helpers/PageBuilder';
+import { createResolver } from './helpers/createResolver';
 import { collectPlugins } from './helpers/collectPlugins';
 import { AuthorResolver } from './resolvers/AuthorResolver';
 import { PostResolver } from './resolvers/PostResolver';
@@ -49,7 +53,7 @@ async function apiServer(): Promise<void> {
 
     const pluginsExports = collectPlugins(projectRootDir);
     (connectionOptions.entities as any) = [
-        Product, ProductCategory, Post, Author, Attribute, ProductReview,
+        Product, ProductCategory, Post, Author, Attribute, ProductReview, ThemeEntity, PluginEntity,
         ...pluginsExports.entities
     ];
     if (typeof connectionOptions.database === 'string') {
@@ -66,6 +70,8 @@ async function apiServer(): Promise<void> {
             ProductCategoryResolver,
             ProductResolver,
             ProductReviewResolver,
+            createResolver('Theme', 'theme', ThemeEntity, InputThemeEntity),
+            createResolver('Plugin', 'plugin', PluginEntity, InputPluginEntity),
             ...pluginsExports.resolvers
         ],
         dateScalarMode: "isoDate",

@@ -6,6 +6,7 @@ import {
     InMemoryCache,
     NormalizedCacheObject,
     QueryOptions,
+    DocumentNode
 } from '@apollo/client';
 import {
     apiV1BaseRoute,
@@ -62,7 +63,83 @@ class CGraphQLClient {
             totalPages
             totalElements
         }
-    `
+    `;
+
+    // <Generic>
+    public getAllEntities = async <EntityType>(entityName: string, fragment: DocumentNode, fragmentName: string): Promise<EntityType[]> => {
+        const path = GraphQLPaths.Generic.getMany + entityName;
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGenericGetEntities() {
+                    ${path}() {
+                        ...${fragmentName}
+                    }
+                }
+                ${fragment}
+            `
+        })
+        return this.returnData(res, path);
+    }
+
+    public getEntityById = async <EntityType>(entityName: string, fragment: DocumentNode, fragmentName: string, entityId: string)
+        : Promise<EntityType | undefined> => {
+        const path = GraphQLPaths.Generic.getOneById + entityName;
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGenericGetEntityById($entityId: String!) {
+                    ${path}(id: $entityId) {
+                        ...${fragmentName}
+                    }
+                }
+                ${fragment}
+            `,
+            variables: {
+                entityId,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public updateEntity = async <EntityType, EntityInputType>(entityName: string, entityInputName: string, fragment: DocumentNode,
+        fragmentName: string, entityId: string, data: EntityInputType): Promise<EntityType | undefined> => {
+        const path = GraphQLPaths.Generic.update + entityName;
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGenericUpdateEntity($entityId: String!, $data: ${entityInputName}) {
+                    ${path}(id: $entityId, data: $data) {
+                        ...${fragmentName}
+                    }
+                }
+                ${fragment}
+            `,
+            variables: {
+                entityId,
+                data,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public createEntity = async <EntityType, EntityInputType>(entityName: string, entityInputName: string, fragment: DocumentNode,
+        fragmentName: string, data: EntityInputType): Promise<EntityType | undefined> => {
+        const path = GraphQLPaths.Generic.update + entityName;
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGenericCreateEntity($data: ${entityInputName}) {
+                    ${path}(data: $data) {
+                        ...${fragmentName}
+                    }
+                }
+                ${fragment}
+            `,
+            variables: {
+                data,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    // </Generic>
 
     // <Product>
 
@@ -286,7 +363,7 @@ class CGraphQLClient {
             type
             isEnabled
        }
-   `
+   `;
 
     public getAttributes = async (): Promise<TAttribute[] | undefined> => {
         const path = GraphQLPaths.Attribute.getMany;
@@ -498,6 +575,23 @@ class CGraphQLClient {
 
 
     // </ProductReview>
+
+
+    // <Plugin>
+
+    public PluginFragment = gql`
+        fragment PluginFragment on Plugin {
+            id
+            slug
+            pageTitle
+            createDate
+            updateDate
+            isEnabled
+            name
+            isInstalled
+        }
+    `;
+    // </Plugin>
 
 
 }
