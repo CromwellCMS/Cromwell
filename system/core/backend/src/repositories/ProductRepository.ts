@@ -13,32 +13,27 @@ import { EntityRepository, getCustomRepository, Repository } from 'typeorm';
 
 import { Product } from '../entities/Product';
 import { applyGetManyFromOne, getPaged, handleBaseInput } from './BaseQueries';
+import { BaseRepository } from './BaseRepository';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { ProductReviewRepository } from './ProductReviewRepository';
 
 @EntityRepository(Product)
-export class ProductRepository extends Repository<Product> {
+export class ProductRepository extends BaseRepository<Product> {
+
+    constructor() {
+        super(DBTableNames.Product, Product)
+    }
 
     async getProducts(params: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
-        const qb = this.createQueryBuilder(DBTableNames.Product);
-        const paged = await getPaged(qb, DBTableNames.Product, params);
-        return paged;
+        return this.getPaged(params)
     }
 
     async getProductById(id: string): Promise<Product | undefined> {
-        const product = await this.findOne({
-            where: { id }
-        });
-        if (!product) throw new Error(`Product ${id} not found!`);
-        return product;
+        return this.getById(id);
     }
 
     async getProductBySlug(slug: string): Promise<Product | undefined> {
-        const product = await this.findOne({
-            where: { slug }
-        });
-        if (!product) throw new Error(`Product ${slug} not found!`);
-        return product;
+        return this.getBySlug(slug);
     }
 
     async handleProductInput(product: Product, input: TProductInput) {

@@ -1,16 +1,15 @@
-import { TPagedList, TProduct, TProductCategory, TProductReview, TProductRating, GraphQLPaths } from '@cromwell/core';
+import { GraphQLPaths, TPagedList, TProduct, TProductCategory, TProductRating, TProductReview } from '@cromwell/core';
 import {
     CreateProduct,
     PagedParamsInput,
     PagedProduct,
+    PagedProductReview,
     Product,
     ProductCategory,
     ProductCategoryRepository,
+    ProductRating,
     ProductRepository,
     UpdateProduct,
-    ProductReview,
-    PagedProductReview,
-    ProductRating
 } from '@cromwell/core-backend';
 import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
