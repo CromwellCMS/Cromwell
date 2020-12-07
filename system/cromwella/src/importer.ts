@@ -199,11 +199,11 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                     }
 
                     const filePath = isLibImport ? importerEntireLibFilepath : importerFilepath
-                    const importerPromise = new Promise(res => {
+                    const importerPromise = new Promise(done => {
                         const domScript = document.createElement('script');
                         domScript.id = scriptId;
                         domScript.src = filePath;
-                        domScript.onload = () => res();
+                        domScript.onload = () => done(true);
                         document.head.appendChild(domScript);
                     });
 

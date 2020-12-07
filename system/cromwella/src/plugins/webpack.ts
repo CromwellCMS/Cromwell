@@ -40,7 +40,7 @@ export class CromwellWebpackPlugin {
         if (!this.options.buildDir) this.options.buildDir = process.cwd();
         this.usedExternals = options.usedExternals ?? {};;
         this.filteredUsedExternals = options.filteredUsedExternals ?? {};
-        const usedExternals = this.usedExternals
+        const usedExternals = this.usedExternals;
         const moduleBuiltins = options.moduleBuiltins;
         const moduleName = options.moduleName;
         if (!options.modulePackageJson) {
@@ -90,7 +90,7 @@ export class CromwellWebpackPlugin {
                 !usedExternals[source].includes(exportName)) {
 
                 // Properties exported via "module.exports" can be the same as JS operators, we cannot code-split them
-                // with current implementation via "import { prop } from '...';"
+                // with the current implementation via "import { prop } from '...';"
                 // so just replace for 'default' to include whole lib instead 
                 if (jsOperators.includes(exportName)) {
                     exportName = 'default';
@@ -174,26 +174,22 @@ export class CromwellWebpackPlugin {
             if (this.options.packageExternals) {
                 for (const extName of Object.keys(usedExternals)) {
                     if (this.options.packageExternals.includes(extName)) {
-                        this.filteredUsedExternals[extName] = usedExternals[extName];
+                        filteredUsedExternals[extName] = usedExternals[extName];
                     }
                 };
             } else {
                 filteredUsedExternals = usedExternals;
             }
 
-
             // Get versions
             const versionedExternals: Record<string, string[]> = {};
             Object.keys(filteredUsedExternals).forEach(depName => {
-                const depVersion = getDepVersion(this.modulePackageJson, depName);
-                if (!depVersion) return;
-
-                const exactVersion = getModuleInfo(depName, depVersion, this.options.buildDir)?.exactVersion;
+                const exactVersion = getModuleInfo(depName, undefined, this.options.buildDir)?.exactVersion;
 
                 if (!exactVersion) return;
 
                 versionedExternals[`${depName}@${exactVersion}`] = filteredUsedExternals[depName];
-            })
+            });
 
             // Create meta info file with actually used dependencies
             const metaInfoContent: TSciprtMetaInfo = {

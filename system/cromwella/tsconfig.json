@@ -2,11 +2,6 @@
   "compilerOptions": {
     "module": "commonjs",
     "target": "ES2019",
-    "lib": [
-      "DOM",
-      "es2015",
-      "es2016",
-    ],
     "baseUrl": ".",
     "strict": true,
     "emitDecoratorMetadata": true,

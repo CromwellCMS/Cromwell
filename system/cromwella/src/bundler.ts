@@ -528,7 +528,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
                         if (stats) console.log(stats.toString({ colors: true }));
                     }
 
-                    done();
+                    done(true);
                 });
             });
 
@@ -629,7 +629,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
                         if (stats) console.error(stats?.toString({ colors: true }));
                     }
                     // console.log(stats?.toString({ colors: true }))
-                    done();
+                    done(true);
                 });
             })
 
@@ -654,7 +654,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
                         if (stats) console.error(stats?.toString({ colors: true }));
                     }
                     // console.log(stats?.toString({ colors: true }))
-                    done();
+                    done(true);
                 });
 
             });
@@ -717,7 +717,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
                         if (stats) console.error(stats?.toString({ colors: true }));
                     }
                     // console.log(stats?.toString({ colors: true }))
-                    done();
+                    done(true);
                 });
 
             });

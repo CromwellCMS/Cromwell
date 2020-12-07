@@ -23,7 +23,7 @@
     "react-dom": "16.13.1",
     "react-is": "16.13.1",
     "react-toastify": "6.0.8",
-    "style-inject": "0.3.0",
+    "style-inject": "^0.3.0",
     "swiper": "6.3.2",
     "tslib": "2.0.1"
   },

@@ -1,34 +1,38 @@
-import React, { useEffect, useState } from 'react';
-import { getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
-import { useHistory } from 'react-router-dom';
-import { TPluginConfig, TPluginInfo } from '@cromwell/core';
+import { TPluginInfo, TPluginEntity } from '@cromwell/core';
+import { getRestAPIClient, getGraphQLClient } from '@cromwell/core-frontend';
+import { Card, IconButton, Tooltip, Button } from '@material-ui/core';
 import {
-    createStyles, makeStyles, Theme, Card,
-    CardActionArea,
-    CardActions,
-    Collapse,
-    IconButton,
-    TextField,
-    MenuItem,
-    Button,
-    CircularProgress
-} from '@material-ui/core';
-import {
-    Edit as EditIcon,
-    Save as SaveIcon,
-    Delete as DeleteIcon,
+    Delete as DeleteIcon, Edit as EditIcon, LibraryAdd as LibraryAddIcon,
+    Settings as SettingsIcon, AddCircleOutline as AddCircleOutlineIcon,
 } from '@material-ui/icons';
+import React, { useEffect, useState } from 'react';
+import { useHistory } from 'react-router-dom';
 import { pluginPageInfo } from '../../constants/PageInfos';
-import styles from './PluginList.module.scss'
-import commonStyles from '../../styles/common.module.scss';
+import styles from './PluginList.module.scss';
+import { toast } from 'react-toastify';
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 
 export default function PluginList() {
     const history = useHistory();
-    const [pluginList, setPluginList] = useState<TPluginInfo[] | null>(null);
+    const [pluginInfoList, setPluginInfoList] = useState<TPluginInfo[] | null>(null);
+    const [pluginList, setPluginList] = useState<TPluginEntity[] | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const getPluginList = async () => {
-        const plugs = await getRestAPIClient()?.getPluginList();
-        if (plugs && Array.isArray(plugs)) setPluginList(plugs);
+        // Get info by parsing directory 
+        const pluginInfos = await getRestAPIClient()?.getPluginList();
+
+        // Get info from DB
+        const graphQLClient = getGraphQLClient();
+        if (graphQLClient) {
+            const pluginEntities: TPluginEntity[] = await graphQLClient.getAllEntities('Plugin',
+                graphQLClient.PluginFragment, 'PluginFragment');
+            if (pluginEntities && Array.isArray(pluginEntities)) setPluginList(pluginEntities);
+            console.log('pluginEntities', pluginEntities);
+        }
+
+        if (pluginInfos && Array.isArray(pluginInfos)) setPluginInfoList(pluginInfos);
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -44,21 +48,67 @@ export default function PluginList() {
 
     }
 
+    const handleInstallPlugin = (pluginName: string) => async () => {
+        setIsLoading(true);
+        let success = false;
+        try {
+            success = await getRestAPIClient()?.installPlugin(pluginName);
+            await getPluginList();
+        } catch (e) {
+            console.error(e);
+        }
+        setIsLoading(false);
+
+        if (success) {
+            toast.success('Plugin installed');
+        } else {
+            toast.error('Failed to install plugin');
+        }
+    }
+
+    const handleOpenMarket = () => {
+
+    }
+
     return (
         <div className={styles.PluginList}>
-            {pluginList && pluginList.map(pluginInfo => {
+            <div className={styles.pluginItem}>
+                <Button
+                    onClick={handleOpenMarket}
+                    variant="contained"
+                    color="primary"
+                    size="large"
+                    startIcon={<AddCircleOutlineIcon />}
+                >Add plugins</Button>
+            </div>
+            {pluginInfoList && pluginInfoList.map(pluginInfo => {
+                const pluginEntity = pluginList?.find(ent => ent.name === pluginInfo.name)
+
                 return (<Card className={styles.pluginItem}>
                     <p className={styles.pluginName}>{pluginInfo.name}</p>
                     <div>
-                        <IconButton onClick={handleOpenPluginPage(pluginInfo.name)}>
-                            <EditIcon />
-                        </IconButton>
-                        <IconButton onClick={handleDeletePlugin(pluginInfo.name)}>
-                            <DeleteIcon />
-                        </IconButton>
+                        {(pluginEntity && pluginEntity.isInstalled) ? (
+                            <Tooltip title="Settings">
+                                <IconButton onClick={handleOpenPluginPage(pluginInfo.name)}>
+                                    <SettingsIcon />
+                                </IconButton>
+                            </Tooltip>
+                        ) : (
+                                <Tooltip title="Install plugin">
+                                    <IconButton onClick={handleInstallPlugin(pluginInfo.name)}>
+                                        <LibraryAddIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
+                        <Tooltip title="Delete plugin">
+                            <IconButton onClick={handleDeletePlugin(pluginInfo.name)}>
+                                <DeleteIcon />
+                            </IconButton>
+                        </Tooltip>
                     </div>
                 </Card>)
             })}
+            <LoadingStatus isActive={isLoading} />
         </div>
     )
 }

@@ -45,12 +45,12 @@ const getComponent = (pluginName: string) => {
                 CromwellStore.pluginsComponents['${pluginName}'] = comp;
                 `;
 
-                await new Promise(res => {
+                await new Promise(done => {
                     const sourceBlob = new Blob([source], { type: 'text/javascript' });
                     const objectURL = URL.createObjectURL(sourceBlob);
                     const domScript = document.createElement('script');
                     domScript.src = objectURL;
-                    domScript.onload = () => res();
+                    domScript.onload = () => done(true);
                     document.head.appendChild(domScript);
                 });
                 comp = pluginsComponents![pluginName];

@@ -52,7 +52,7 @@ const main = async () => {
                 buildService();
             }
             gen();
-            await new Promise(res => {
+            await new Promise(done => {
                 const proc = spawn(`next build`, [],
                     { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
 
@@ -71,7 +71,7 @@ const main = async () => {
                 }
 
                 proc.on('close', () => {
-                    res();
+                    done();
                 })
             })
 

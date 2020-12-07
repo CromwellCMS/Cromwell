@@ -66,30 +66,20 @@ export const getModuleInfo = (moduleName: string, moduleVer?: string, from?: str
     let exactVersion: string | undefined;
     if (!modulesExportKeys[moduleName]) {
 
-        const requireExportKeys = () => {
+        try {
             const imported: any = from ? importFrom(from, moduleName) : require(moduleName);
             const keys = Object.keys(imported);
             if (!keys.includes('default')) keys.unshift('default');
-            return keys;
-        }
-
-        try {
-            exportKeys = requireExportKeys();
+            if (keys) exportKeys = keys;
             if (!exportKeys) throw new Error('!exportKeys')
         } catch (e) {
-            // Module not found, install
-            const fullDepName = moduleName + (moduleVer ? '@' + moduleVer : '');
-            const command = `pnpm add ${fullDepName} --filter ${tempPckgName}`;
-            console.log(colors.cyan(`Cromwella:bundler: Installing dependency. Command: ${command}`));
-            spawnSync(command, { shell: true, cwd: process.cwd(), stdio: 'ignore' });
-        }
-
-        if (!exportKeys) {
             try {
-                exportKeys = requireExportKeys();
-                if (!exportKeys) throw new Error('!exportKeys')
+                const imported: any = require(moduleName);
+                const keys = Object.keys(imported);
+                if (keys && !keys.includes('default')) keys.unshift('default');
+                if (keys) exportKeys = keys;
             } catch (e) {
-                console.log(colors.brightYellow(`Cromwella:bundler: Failed to install and require() module: ${moduleName}`));
+                console.log(colors.brightYellow(`Cromwella:bundler: Failed to require() module: ${moduleName}`));
             }
         }
 
