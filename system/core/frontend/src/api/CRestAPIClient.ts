@@ -148,12 +148,19 @@ class CRestAPIClient {
         return res?.data ?? null;
     }
 
-
     public getPluginList = async (): Promise<TPluginInfo[] | null> => {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/plugin/list`);
         } catch (e) { console.error('CRestAPIClient::getPluginList', e) }
+        return res?.data ?? null;
+    }
+
+    public installPlugin = async (pluginName: string): Promise<boolean> => {
+        let res: any;
+        try {
+            res = await axios.get(`${this.baseUrl}/plugin/install/${pluginName}`);
+        } catch (e) { console.error('CRestAPIClient::installPlugin', e) }
         return res?.data ?? null;
     }
 

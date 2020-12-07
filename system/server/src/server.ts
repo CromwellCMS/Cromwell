@@ -107,7 +107,7 @@ async function apiServer(): Promise<void> {
     ]
     app.use(`/${apiV1BaseRoute}/api-docs`, swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
-    await new Promise(resolve => {
+    await new Promise(done => {
         setTimeout(() => {
             app.use(`/${apiV1BaseRoute}/cms`, getCmsController());
             app.use(`/${apiV1BaseRoute}/theme`, getThemeController());
@@ -143,7 +143,7 @@ async function apiServer(): Promise<void> {
             });
             //// 
 
-            resolve();
+            done(true);
         }, 100)
     })
 }

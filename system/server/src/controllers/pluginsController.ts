@@ -1,12 +1,14 @@
 import { Router } from 'express';
 import fs, { pathExists } from 'fs-extra';
 import { TPluginConfig, TPluginInfo } from '@cromwell/core';
+import { getGraphQLClient } from '@cromwell/core-frontend';
 import { projectRootDir } from '../constants';
 import { resolve } from 'path';
 import { getMetaInfoPath, getPluginAdminBundlePath, getPluginAdminCjsPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, buildDirName } from '@cromwell/core-backend';
-import { TSciprtMetaInfo, TFrontendBundle } from '@cromwell/core';
+import { TSciprtMetaInfo, TFrontendBundle, TPluginEntityInput } from '@cromwell/core';
 import normalizePath from 'normalize-path';
 import decache from 'decache';
+import fetch from 'cross-fetch';
 
 const settingsPath = resolve(projectRootDir, 'settings/plugins');
 const pluginsPath = resolve(projectRootDir, 'plugins');
@@ -256,7 +258,7 @@ export const getPluginsController = (): Router => {
             return;
         };
         res.status(400).send("Invalid pluginName")
-    })
+    });
 
     /**
      * @swagger
@@ -283,7 +285,63 @@ export const getPluginsController = (): Router => {
         })
 
         res.send(out);
-    })
+    });
+
+
+    /**
+     * @swagger
+     * 
+     * /plugin/install/{pluginName}:
+     *   get:
+     *     description: Installs downloaded plugin
+     *     tags: 
+     *       - Plugins
+     *     produces:
+     *       - application/javascript
+     *     parameters:
+     *       - name: pluginName
+     *         description: Name of a plugin to load bundle for.
+     *         in: path
+     *         required: true
+     *         type: string
+     *     responses:
+     *       200:
+     *         description: ok
+     */
+    pluginsController.get(`/install/:pluginName`, async (req, res) => {
+        const pluginName = req.params?.pluginName;
+        console.log('install/:pluginName', pluginName);
+        if (pluginName && pluginName !== "") {
+            const pluginPath = resolve(pluginsPath, pluginName);
+            if (await fs.pathExists(pluginPath)) {
+
+                // @TODO Execute install script
+
+
+                const graphQLClient = getGraphQLClient(fetch);
+                if (graphQLClient) {
+                    try {
+                        const data = await graphQLClient.createEntity('Plugin', 'PluginInput',
+                            graphQLClient.PluginFragment, 'PluginFragment',
+                            {
+                                name: pluginName,
+                                slug: pluginName,
+                                isInstalled: true
+                            } as TPluginEntityInput
+                        );
+
+                        if (data) {
+                            res.send(true);
+                            return;
+                        }
+                    } catch (e) {
+                        console.error(e)
+                    }
+                }
+            }
+        };
+        res.status(400).send("Invalid pluginName")
+    });
 
     return pluginsController;
 }

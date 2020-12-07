@@ -29,11 +29,12 @@ class CGraphQLClient {
 
     public readonly apolloClient: ApolloClient<NormalizedCacheObject>;
 
-    constructor(private baseUrl: string) {
+    constructor(private baseUrl: string, fetch?: any) {
 
         const cache = new InMemoryCache();
         const link = createHttpLink({
             uri: this.baseUrl,
+            fetch
         });
         this.apolloClient = new ApolloClient({
             cache: cache,
@@ -70,8 +71,8 @@ class CGraphQLClient {
         const path = GraphQLPaths.Generic.getMany + entityName;
         const res = await this.apolloClient.query({
             query: gql`
-                query coreGenericGetEntities() {
-                    ${path}() {
+                query coreGenericGetEntities {
+                    ${path} {
                         ...${fragmentName}
                     }
                 }
@@ -103,9 +104,9 @@ class CGraphQLClient {
     public updateEntity = async <EntityType, EntityInputType>(entityName: string, entityInputName: string, fragment: DocumentNode,
         fragmentName: string, entityId: string, data: EntityInputType): Promise<EntityType | undefined> => {
         const path = GraphQLPaths.Generic.update + entityName;
-        const res = await this.apolloClient.query({
-            query: gql`
-                query coreGenericUpdateEntity($entityId: String!, $data: ${entityInputName}) {
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreGenericUpdateEntity($entityId: String!, $data: ${entityInputName}!) {
                     ${path}(id: $entityId, data: $data) {
                         ...${fragmentName}
                     }
@@ -122,10 +123,10 @@ class CGraphQLClient {
 
     public createEntity = async <EntityType, EntityInputType>(entityName: string, entityInputName: string, fragment: DocumentNode,
         fragmentName: string, data: EntityInputType): Promise<EntityType | undefined> => {
-        const path = GraphQLPaths.Generic.update + entityName;
-        const res = await this.apolloClient.query({
-            query: gql`
-                query coreGenericCreateEntity($data: ${entityInputName}) {
+        const path = GraphQLPaths.Generic.create + entityName;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreGenericCreateEntity($data: ${entityInputName}!) {
                     ${path}(data: $data) {
                         ...${fragmentName}
                     }
@@ -598,13 +599,13 @@ class CGraphQLClient {
 
 export type TCGraphQLClient = CGraphQLClient;
 
-export const getGraphQLClient = (): CGraphQLClient | undefined => {
+export const getGraphQLClient = (fetch?: any): CGraphQLClient | undefined => {
     let client = getStoreItem('graphQLClient');
     if (client) return client;
 
     const baseUrl = `${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/graphql`;
 
-    client = new CGraphQLClient(baseUrl);
+    client = new CGraphQLClient(baseUrl, fetch);
     setStoreItem('graphQLClient', client);
     return client;
 }

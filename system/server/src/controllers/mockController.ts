@@ -248,7 +248,7 @@ export const getMockController = (): Router => {
             }
 
             res.send(true);
-            done();
+            done(true);
         })
     })
 
@@ -303,7 +303,7 @@ export const getMockController = (): Router => {
             }
 
             res.send(true);
-            done();
+            done(true);
         })
     });
 
@@ -336,7 +336,7 @@ export const getMockController = (): Router => {
             }
 
             res.send(true);
-            done();
+            done(true);
         })
     });
 
@@ -378,7 +378,7 @@ export const getMockController = (): Router => {
             }
 
             res.send(true);
-            done();
+            done(true);
         })
     });
 
