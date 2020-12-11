@@ -1,5 +1,6 @@
 /.cromwell
 /build
+/.temp
 
 # Logs
 logs

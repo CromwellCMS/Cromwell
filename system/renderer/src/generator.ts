@@ -7,18 +7,21 @@ import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import { promisify } from 'util';
 import normalizePath from 'normalize-path';
+import yargs from 'yargs-parser';
 
 const mkdir = promisify(gracefulfs.mkdir);
 
 const disableSSR = false;
 
 const main = async () => {
+    const args = yargs(process.argv.slice(2));
     const projectRootDir = resolve(__dirname, '../../../');
     const config = readCMSConfigSync(projectRootDir);
 
     const themeMainConfig = await getRestAPIClient()?.getThemeMainConfig();
     const localDir = resolve(__dirname, '../');
-    const tempDir = resolve(localDir, '.cromwell');
+    const tempDirName = (args.dir && typeof args.dir === 'string' && args.dir !== '') ? args.dir : '.cromwell';
+    const tempDir = resolve(localDir, tempDirName);
     const pagesLocalDir = resolve(tempDir, 'pages');
     const localThemeBuildDurChunk = 'theme';
 

@@ -22,11 +22,21 @@ class CRestAPIClient {
         return axios.get(`${this.baseUrl}/${route}`, config);
     }
 
+    private logError = (name: string, e: any) => {
+        console.error(`CRestAPIClient::${name ?? ''}`, e?.syscall, e?.errno, e?.code,
+            `${e?.address}:${e?.port}`, {
+            url: e?.config?.url,
+            method: e?.config?.method,
+            headers: e?.config?.headers,
+            timeout: e?.config?.timeout,
+        })
+    }
+
     public getCmsConfig = async (): Promise<TCmsConfig> => {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/cms/config`);
-        } catch (e) { console.error('CRestAPIClient::getCmsConfig', e) }
+        } catch (e) { this.logError('getCmsConfig', e); }
         return res?.data;
     }
 
@@ -40,7 +50,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/cms/themes`);
-        } catch (e) { console.error('CRestAPIClient::getThemesInfo', e) }
+        } catch (e) { this.logError('getThemesInfo', e); }
         return res?.data;
     }
 
@@ -48,7 +58,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/page/?pageRoute=${pageRoute}`);
-        } catch (e) { console.error('CRestAPIClient::getPageConfig', e) }
+        } catch (e) { this.logError('getPageConfig', e); }
         return res?.data ?? [];
     }
 
@@ -56,7 +66,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.post(`${this.baseUrl}/theme/page`, config);
-        } catch (e) { console.error('CRestAPIClient::savePageConfig', e) }
+        } catch (e) { this.logError('savePageConfig', e); }
         return (res && res.data) ? res.data : false;
     }
 
@@ -64,7 +74,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/plugins?pageRoute=${pageRoute}`);
-        } catch (e) { console.error('CRestAPIClient::getPluginsModifications', e) }
+        } catch (e) { this.logError('getPluginsModifications', e); }
         return res?.data ?? {};
     }
 
@@ -72,7 +82,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/plugin-names`);
-        } catch (e) { console.error('CRestAPIClient::getPluginNames', e) }
+        } catch (e) { this.logError('getPluginNames', e); }
         return res?.data ?? [];
     }
 
@@ -80,7 +90,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/pages/info`);
-        } catch (e) { console.error('CRestAPIClient::getPagesInfo', e) }
+        } catch (e) { this.logError('getPagesInfo', e); }
         return res?.data ?? [];
     }
 
@@ -88,7 +98,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/pages/configs`);
-        } catch (e) { console.error('CRestAPIClient::getPageConfigs', e) }
+        } catch (e) { this.logError('getPageConfigs', e); }
         return res?.data ?? [];
     }
 
@@ -96,7 +106,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/main-config`);
-        } catch (e) { console.error('CRestAPIClient::getThemeMainConfig', e) }
+        } catch (e) { this.logError('getThemeMainConfig', e); }
         return res?.data ?? {};
     }
 
@@ -104,7 +114,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/custom-config`);
-        } catch (e) { console.error('CRestAPIClient::getThemeCustomConfig', e) }
+        } catch (e) { this.logError('getThemeCustomConfig', e); }
         return res?.data ?? {};
     }
 
@@ -112,7 +122,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/theme/page-bundle?pageRoute=${pageRoute}`);
-        } catch (e) { console.error('CRestAPIClient::getThemePageBundle', e) }
+        } catch (e) { this.logError('getThemePageBundle', e); }
         return res?.data ?? null;
     }
 
@@ -120,7 +130,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/plugin/settings/${pluginName}`);
-        } catch (e) { console.error('CRestAPIClient::getPluginSettings', e) }
+        } catch (e) { this.logError('getPluginSettings', e); }
         return res?.data ?? null;
     }
 
@@ -128,7 +138,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.post(`${this.baseUrl}/plugin/settings/${pluginName}`, settings);
-        } catch (e) { console.error('CRestAPIClient::setPluginSettings', e) }
+        } catch (e) { this.logError('setPluginSettings', e); }
         return res?.data ?? null;
     }
 
@@ -136,7 +146,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/plugin/frontend-bundle/${pluginName}`);
-        } catch (e) { console.error('CRestAPIClient::getPluginFrontendBundle', e) }
+        } catch (e) { this.logError('getPluginFrontendBundle', e); }
         return res?.data ?? null;
     }
 
@@ -144,7 +154,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/plugin/admin-bundle/${pluginName}`);
-        } catch (e) { console.error('CRestAPIClient::getPluginAdminBundle', e) }
+        } catch (e) { this.logError('getPluginAdminBundle', e); }
         return res?.data ?? null;
     }
 
@@ -152,7 +162,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/plugin/list`);
-        } catch (e) { console.error('CRestAPIClient::getPluginList', e) }
+        } catch (e) { this.logError('getPluginList', e); }
         return res?.data ?? null;
     }
 
@@ -160,7 +170,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/plugin/install/${pluginName}`);
-        } catch (e) { console.error('CRestAPIClient::installPlugin', e) }
+        } catch (e) { this.logError('installPlugin', e); }
         return res?.data ?? null;
     }
 
@@ -171,7 +181,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/manager/services/change-theme/${themeName}`);
-        } catch (e) { console.error('CRestAPIClient::changeTheme', e) }
+        } catch (e) { this.logError('changeTheme', e); }
         return res?.data ?? null;
     }
 
@@ -179,7 +189,7 @@ class CRestAPIClient {
         let res: any;
         try {
             res = await axios.get(`${this.baseUrl}/manager/services/rebuild-theme`);
-        } catch (e) { console.error('CRestAPIClient::changeTheme', e) }
+        } catch (e) { this.logError('rebuildTheme', e); }
         return res?.data ?? null;
     }
 

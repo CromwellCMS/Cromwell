@@ -7,15 +7,18 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
     pageGetStaticProps: ((context: StaticPageContext) => any) | undefined | null) => {
     return async function (context: StaticPageContext): Promise<
         { props: TCromwellPageCoreProps; revalidate?: number }> {
+
+        const serialize = (data: any) => JSON.parse(JSON.stringify(data ?? null));
+
         const apiClient = getRestAPIClient();
         const timestamp = Date.now();
         const childStaticProps = await getThemeStaticProps(pageName, pageGetStaticProps, context);
         const { pluginsData, pluginsSettings } = await pluginsDataFetcher(pageName, context);
-        const pageConfig = await apiClient?.getPageConfig(pageName);
-        const themeMainConfig = await apiClient?.getThemeMainConfig()
-        const cmsConfig = await apiClient?.getCmsConfig();
-        const themeCustomConfig = await apiClient?.getThemeCustomConfig();
-        const pagesInfo = await apiClient?.getPagesInfo();
+        const pageConfig = serialize(await apiClient?.getPageConfig(pageName));
+        const themeMainConfig = serialize(await apiClient?.getThemeMainConfig());
+        const cmsConfig = serialize(await apiClient?.getCmsConfig());
+        const themeCustomConfig = serialize(await apiClient?.getThemeCustomConfig());
+        const pagesInfo = serialize(await apiClient?.getPagesInfo());
 
         const timestamp2 = Date.now();
 

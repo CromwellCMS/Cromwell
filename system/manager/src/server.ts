@@ -9,7 +9,6 @@ import swaggerUi from 'swagger-ui-express';
 import WebSocket from 'ws';
 
 import config from './config';
-import { getAdminPanelController } from './controllers/adminPanelController';
 import { getRendererController } from './controllers/rendererController';
 import { getServiceController } from './controllers/serviceController';
 import { ManagerState } from './managerState';
@@ -45,8 +44,6 @@ export const startManagerServer = () => {
 
     app.use(`/${apiV1BaseRoute}/services`, getServiceController());
     app.use(`/${apiV1BaseRoute}/renderer`, getRendererController());
-    app.use(`/${apiV1BaseRoute}/admin-panel`, getAdminPanelController());
-
 
     const server = app.listen(cmsconfig.managerPort, () => {
         console.log(`Manager server has started at ${serviceLocator.getManagerUrl()}/${apiV1BaseRoute}/`);

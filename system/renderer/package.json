@@ -22,7 +22,9 @@
     "react-is": "16.13.1",
     "require-from-string": "^2.0.2",
     "symlink-dir": "^4.1.0",
-    "tslib": "2.0.1"
+    "tslib": "2.0.1",
+    "yargs-parser": "^19.0.4"
+
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.2",

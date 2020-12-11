@@ -424,7 +424,7 @@ const MainInfoCard = (props: {
                     inputComponent: NumberFormatCustom as any,
                 }}
             />
-            <TextField label="Old price (before sale)" variant="outlined"
+            <TextField label="Old price" variant="outlined"
                 value={product.oldPrice || ''}
                 className={styles.textField}
                 onChange={(e) => {

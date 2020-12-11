@@ -1,9 +1,10 @@
 const fs = require('fs-extra');
 const { spawn, spawnSync } = require('child_process');
 const { readCMSConfigSync, rendererMessages } = require('@cromwell/core-backend');
-const { projectRootDir, buildDir, tempDir, rendererRootDir } = require('./constants');
+const { projectRootDir, buildDir, rendererRootDir } = require('./constants');
 const { resolve } = require('path');
 const npmRunPath = require('npm-run-path');
+const yargs = require('yargs-parser');
 
 npmRunPath();
 
@@ -18,6 +19,11 @@ const scriptName = process.argv[2];
 
 
 const main = async () => {
+    const args = yargs(process.argv.slice(2));
+    const localDir = resolve(__dirname);
+    const tempDirName = (args.dir && typeof args.dir === 'string' && args.dir !== '') ? args.dir : '.cromwell';
+    const tempDir = resolve(localDir, tempDirName);
+
     let config = readCMSConfigSync(projectRootDir);
     if (!config) throw new Error('renderer::server cannot read CMS config');
 
@@ -41,7 +47,7 @@ const main = async () => {
     }
 
     const gen = () => {
-        spawnSync(`node ./generator.js`, [],
+        spawnSync(`node ./generator.js --dir=${tempDirName}`, [],
             { shell: true, stdio: 'inherit', cwd: buildDir });
     }
 
@@ -59,9 +65,6 @@ const main = async () => {
                 if (proc.stderr && proc.stderr.on && proc.stderr.once) {
                     proc.stderr.on('data', (data) => {
                         console.log(data.toString ? data.toString() : data);
-                    });
-                    proc.stderr.once('data', (data) => {
-                        if (process.send) process.send(rendererMessages.onBuildErrorMessage);
                     });
                 }
                 if (proc.stdout && proc.stdout.on) {
@@ -100,7 +103,7 @@ const main = async () => {
             setTimeout(() => {
                 console.log(data.toString ? data.toString() : data);
                 if (process.send) process.send(rendererMessages.onStartMessage);
-            }, 100);
+            }, 10);
         });
 
         if (proc && proc.stderr) proc.stderr.once('data', (data) => {

@@ -189,7 +189,7 @@ async function apiServer(): Promise<void> {
  *   get:
  *     description: Proxy route. More info in http://localhost:4016/api/v1/api-docs/#/Services/get_services_rebuild_theme
  *     tags:
- *       - Services
+ *       - Manager
  *     produces:
  *       - application/json
  *     responses:
