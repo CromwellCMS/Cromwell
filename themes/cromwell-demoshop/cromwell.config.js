@@ -1,6 +1,10 @@
-'use strict';
-
+const commonjs = require('@rollup/plugin-commonjs');
+const json = require('@rollup/plugin-json');
+const typescript = require('@rollup/plugin-typescript');
+const postcss = require('rollup-plugin-postcss');
+const autoprefixer = require("autoprefixer");
 const constants = require('./src/constants');
+
 
 module.exports = {
     name: "cromwell-demoshop",
@@ -19,6 +23,29 @@ module.exports = {
             '../styles/global.scss'
         ],
         headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap\" rel=\"stylesheet\" /><link href=\"https://unpkg.com/reset-css/reset.css\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />"
+    },
+    rollupConfig: {
+        main: {
+            plugins: [
+                commonjs(),
+                typescript(),
+                json(),
+            ]
+        },
+        adminPanel: {
+            plugins: [
+                commonjs(),
+                typescript(),
+                json(),
+                postcss({
+                    extract: false,
+                    modules: true,
+                    writeDefinitions: false,
+                    inject: true,
+                    use: ['sass'],
+                }),
+            ]
+        }
     },
     pages: [
         {

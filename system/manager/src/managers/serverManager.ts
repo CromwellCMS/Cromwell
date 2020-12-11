@@ -9,7 +9,7 @@ const { projectRootDir, cacheKeys, servicesEnv } = config;
 const serverDir = getServerDir(projectRootDir);
 const serverStartupPath = resolve(serverDir, 'startup.js');
 
-export const startServer = (cb: (success: boolean) => void, onLog?: (message: string) => void) => {
+export const startServer = async (onLog?: (message: string) => void): Promise<boolean> => {
     console.log('servicesEnv', servicesEnv)
     let serverProc;
     if (servicesEnv.server) {
@@ -18,25 +18,26 @@ export const startServer = (cb: (success: boolean) => void, onLog?: (message: st
     }
 
     if (serverProc) {
-        const onMessage = async (message: string) => {
-            if (message === serverMessages.onStartMessage) {
-                onLog?.(`ServerManager:: Server has successfully started`);
-                serverProc.removeListener('message', onMessage);
-                cb(true);
+        return new Promise(done => {
+            const onMessage = async (message: string) => {
+                if (message === serverMessages.onStartMessage) {
+                    onLog?.(`ServerManager:: Server has successfully started`);
+                    serverProc.removeListener('message', onMessage);
+                    done(true);
+                }
+                if (message === serverMessages.onStartErrorMessage) {
+                    onLog?.(`ServerManager:: Failed to start Server`);
+                    serverProc.removeListener('message', onMessage);
+                    done(false);
+                }
             }
-            if (message === serverMessages.onStartErrorMessage) {
-                onLog?.(`ServerManager:: Failed to start Server`);
-                serverProc.removeListener('message', onMessage);
-                cb(false);
-            }
-        }
-        serverProc.on('message', onMessage);
-    } else {
-        cb(false);
+            serverProc.on('message', onMessage);
+        })
     }
+    return false;
 }
 
-export const closeServer = (cb?: () => void) => {
-    closeService(cacheKeys.server, cb);
+export const closeServer = async (): Promise<boolean> => {
+    return closeService(cacheKeys.server);
 }
 

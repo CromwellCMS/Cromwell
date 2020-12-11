@@ -38,4 +38,24 @@ export default [
             }),
         ]
     },
+    {
+        input: resolve(__dirname, "src/cli.ts"),
+        output: [
+            {
+                file: resolve(__dirname, buildDir, 'cli.js'),
+                format: "cjs",
+            }
+        ],
+        external,
+        plugins: [
+            json(),
+            nodeResolve({
+                preferBuiltins: false
+            }),
+            commonjs(),
+            typescript({
+                module: "ESNext"
+            }),
+        ]
+    },
 ];

@@ -117,6 +117,14 @@ export type TThemeConfig = TBuildConfig & {
      */
     themeCustomConfig?: Record<string, any>;
     globalModifications?: TCromwellBlockData[];
+    rollupConfig?: {
+        main: Record<string, any>;
+        frontendBundle?: Record<string, any>;
+        frontendCjs?: Record<string, any>;
+        backend?: Record<string, any>;
+        themePages?: Record<string, any>;
+        adminPanel?: Record<string, any>;
+    }
 }
 
 export type TThemeMainConfig = {

@@ -50,13 +50,12 @@ export const getServiceController = (): Router => {
       *       200:
       *         description: true
       */
-    serviceController.get(`/change-theme/:themeName`, function (req, res) {
+    serviceController.get(`/change-theme/:themeName`, async function (req, res) {
         const themeName = req.params.themeName;
         if (themeName && themeName !== '') {
             ManagerState.clearLog();
-            changeTheme(themeName, (success) => {
-                res.send(success);
-            }, ManagerState.getLogger('base', true));
+            const success = await changeTheme(themeName, ManagerState.getLogger('base', true));
+            res.send(success);
         } else {
             res.send(false);
         }
@@ -76,11 +75,10 @@ export const getServiceController = (): Router => {
       *       200:
       *         description: true
       */
-    serviceController.get(`/rebuild-theme`, function (req, res) {
+    serviceController.get(`/rebuild-theme`, async function (req, res) {
         ManagerState.clearLog();
-        rebuildTheme((success) => {
-            res.send(success);
-        }, ManagerState.getLogger('base', true));
+        const success = await rebuildTheme(ManagerState.getLogger('base', true));
+        res.send(success);
     });
 
     return serviceController;

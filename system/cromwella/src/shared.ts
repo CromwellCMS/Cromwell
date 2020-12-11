@@ -3,13 +3,10 @@ import colorsdef from 'colors/safe';
 import fs from 'fs';
 import glob from 'glob';
 import path, { resolve, isAbsolute } from 'path';
-import importFrom from 'import-from';
-import { spawnSync } from "child_process";
 import {
     TPackageJson, TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps,
     TLocalSymlink, TNonHoisted, TPackage, TModuleInfo, TFrontendDependency
 } from './types';
-import { tempPckgName } from './constants';
 
 const colors: any = colorsdef;
 

@@ -33,14 +33,13 @@ export const getRendererController = (): Router => {
       *       200:
       *         description: true
       */
-    rendererController.get(`/change-theme/:themeName`, function (req, res) {
+    rendererController.get(`/change-theme/:themeName`, async function (req, res) {
         const themeName = req.params.themeName;
         if (themeName && themeName !== '') {
             const cmsconfig = readCMSConfigSync(projectRootDir);
             ManagerState.clearLog();
-            rendererChangeTheme(cmsconfig.themeName, themeName, (success) => {
-                res.send(success);
-            }, ManagerState.getLogger('renderer', true));
+            const success = await rendererChangeTheme(cmsconfig.themeName, themeName, ManagerState.getLogger('renderer', true));
+            res.send(success);
         } else {
             res.send(false);
         }
@@ -60,11 +59,10 @@ export const getRendererController = (): Router => {
       *       200:
       *         description: true
       */
-    rendererController.get(`/rebuild-theme`, function (req, res) {
+    rendererController.get(`/rebuild-theme`, async function (req, res) {
         ManagerState.clearLog();
-        rendererBuildAndStart((success) => {
-            res.send(success);
-        }, ManagerState.getLogger('renderer', true));
+        const success = await rendererBuildAndStart(ManagerState.getLogger('renderer', true));
+        res.send(success);
     });
 
 
@@ -82,11 +80,10 @@ export const getRendererController = (): Router => {
       *       200:
       *         description: true
       */
-    rendererController.get(`/close`, function (req, res) {
+    rendererController.get(`/close`, async function (req, res) {
         ManagerState.clearLog();
-        closeRenderer((success) => {
-            res.send(success);
-        }, ManagerState.getLogger('renderer', true));
+        const success = await closeRenderer(ManagerState.getLogger('renderer', true));
+        res.send(success);
     });
 
     return rendererController;

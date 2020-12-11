@@ -1,9 +1,9 @@
 import { resolve } from 'path';
 import fs from 'fs-extra';
 
-export const getThemeDirSync = (projectRootDir: string, themeName: string): string | undefined => {
+export const getThemeDir = async (projectRootDir: string, themeName: string): Promise<string | undefined> => {
     const dir = resolve(projectRootDir, 'themes', themeName);
-    if (fs.existsSync(dir)) {
+    if (await fs.pathExists(dir)) {
         return dir;
     }
 }
@@ -38,16 +38,16 @@ export const getRendererDir = (projectRootDir: string) =>
     resolve(projectRootDir, renderDirChunk);
 
 export const getRendererTempDir = (projectRootDir: string) =>
-    resolve(projectRootDir, renderDirChunk, '.cromwell');
+    resolve(projectRootDir, renderDirChunk, buildDirName);
 
 export const getRendererBuildDir = (projectRootDir: string) =>
     resolve(projectRootDir, renderDirChunk, 'build');
 
 export const getRendererTempNextDir = (projectRootDir: string) =>
-    resolve(projectRootDir, renderDirChunk, '.cromwell/.next');
+    resolve(projectRootDir, renderDirChunk, buildDirName, '.next');
 
 export const getRendererSavedBuildDirByTheme = (projectRootDir: string, themeName: string) =>
-    resolve(projectRootDir, renderDirChunk, '.cromwell/old', themeName);
+    resolve(projectRootDir, renderDirChunk, buildDirName, 'old', themeName);
 
 
 

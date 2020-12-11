@@ -1,18 +1,24 @@
-import { serviceLocator } from '@cromwell/core';
+import { serviceLocator, TThemeConfig } from '@cromwell/core';
 import {
     getRendererDir,
     getRendererSavedBuildDirByTheme,
     getRendererTempDir,
     getRendererTempNextDir,
-    getThemeDirSync,
+    getThemeDir,
+    getCurrentThemeDir,
     rendererMessages,
+    buildDirName,
 } from '@cromwell/core-backend';
 import axios from 'axios';
 import { resolve } from 'path';
+import fs from 'fs-extra';
+import makeEmptyDir from 'make-empty-dir';
+import { rollupConfigWrapper } from '@cromwell/cromwella';
+import { rollup } from 'rollup';
 
 import managerConfig from '../config';
 import { ManagerState } from '../managerState';
-import { closeService, isServiceRunning, startService, swithArchivedBuildsSync } from './baseManager';
+import { closeService, isServiceRunning, startService, swithArchivedBuilds } from './baseManager';
 
 const { projectRootDir, cacheKeys, servicesEnv } = managerConfig;
 
@@ -21,14 +27,12 @@ const rendererDir = getRendererDir(projectRootDir);
 const rendererTempDir = getRendererTempDir(projectRootDir);
 const rendererStartupPath = resolve(rendererDir, 'startup.js');
 
-export const startRenderer = (cb?: (success: boolean) => void,
-    onLog?: (message: string) => void) => {
+export const startRenderer = async (onLog?: (message: string) => void): Promise<boolean> => {
     if (ManagerState.rendererStatus === 'busy' ||
         ManagerState.rendererStatus === 'building' ||
         ManagerState.rendererStatus === 'running') {
         onLog?.(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, failed to startRenderer`)
-        cb?.(false);
-        return;
+        return false;
     }
     const rendererUrl = serviceLocator.getFrontendUrl();
 
@@ -38,148 +42,221 @@ export const startRenderer = (cb?: (success: boolean) => void,
             onLog?.(data?.toString() ?? data);
         }
         ManagerState.rendererStatus = 'busy';
-        const proc = startService(rendererStartupPath, cacheKeys.renderer, [servicesEnv.renderer], onOut)
+        const proc = startService(rendererStartupPath, cacheKeys.renderer, [servicesEnv.renderer], onOut, rendererDir)
 
-        const onMessage = async (message: string) => {
-            // console.log('rendererManager onMessage', message)
-            if (message === rendererMessages.onStartMessage) {
-                ManagerState.rendererStatus = 'busy';
-                let success = false;
-                try {
-                    success = (await axios.get(rendererUrl)).status < 400;
-                } catch (e) {
-                    onLog?.(e);
+        const onStartError = await new Promise(done => {
+            const onMessage = async (message: string) => {
+                // console.log('rendererManager onMessage', message)
+                if (message === rendererMessages.onStartMessage) {
+                    proc.removeListener('message', onMessage);
+                    proc.stdout?.removeListener('data', onOut);
+                    proc.stderr?.removeListener('data', onOut);
+                    done(true);
                 }
-                proc.removeListener('message', onMessage);
-                proc.stdout?.removeListener('data', onOut);
-                proc.stderr?.removeListener('data', onOut);
-
-                if (success) {
-                    ManagerState.rendererStatus = 'running';
-                } else {
-                    ManagerState.rendererStatus = 'inactive';
+                if (message === rendererMessages.onStartErrorMessage) {
+                    proc.removeListener('message', onMessage);
+                    proc.stdout?.removeListener('data', onOut);
+                    proc.stderr?.removeListener('data', onOut);
+                    done(false);
                 }
-                if (success) onLog?.(`RendererManager:: Renderer has successfully started`);
-                else onLog?.(`RendererManager:: Failed to start renderer`);
+            };
+            proc?.on('message', onMessage);
+        });
 
-                // console.log('success', success);
-                cb?.(success);
+        if (!onStartError) {
+            ManagerState.rendererStatus = 'busy';
+            let success = false;
+            try {
+                success = (await axios.get(rendererUrl)).status < 400;
+            } catch (e) {
+                onLog?.(e);
             }
-            if (message === rendererMessages.onStartErrorMessage) {
+
+            if (success) {
+                ManagerState.rendererStatus = 'running';
+            } else {
                 ManagerState.rendererStatus = 'inactive';
-                const mess = 'RendererManager:: failed to start Renderer';
-                onLog?.(mess);
-                // console.log(mess);
-                cb?.(false);
             }
-        };
+            if (success) onLog?.(`RendererManager:: Renderer has successfully started`);
+            else onLog?.(`RendererManager:: Failed to start renderer`);
 
-        proc?.on('message', onMessage);
-    }
-}
+            return success;
 
-export const closeRenderer = (cb?: (success) => void, onLog?: (message: string) => void) => {
-    closeService(cacheKeys.renderer, (success) => {
-        if (!success) {
-            onLog?.('RendererManager::closeRenderer: failed to close Renderer by pid. Renderer is still active');
         } else {
             ManagerState.rendererStatus = 'inactive';
-            onLog?.('RendererManager::closeRenderer: Renderer has been closed');
+            const mess = 'RendererManager:: failed to start Renderer';
+            onLog?.(mess);
+            return false;
         }
-        cb?.(success);
-    }, onLog);
-}
-
-export const isRendererRunning = (cb: (isActive: boolean) => void) => {
-    isServiceRunning(cacheKeys.renderer, cb);
-}
-
-export const restartRenderer = (cb?: (success) => void, onLog?: (message: string) => void) => {
-    closeRenderer((success) => {
-        startRenderer(cb, onLog);
-    }, onLog)
-}
-
-export const rendererBuildAndStart = (cb?: (success: boolean) => void,
-    onLog?: (message: string) => void) => {
-    if (ManagerState.rendererStatus === 'busy' ||
-        ManagerState.rendererStatus === 'building') {
-        onLog?.(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, failed to buildAndStart`)
-        cb?.(false);
-        return;
     }
-    const rendererInitialStatus = ManagerState.rendererStatus;
 
-    // ManagerState.rendererStatus = 'busy';
-    // // Delete current build of the theme
-    // const nextBuildDir = getRendererTempNextDir(projectRootDir);
-    // if (fs.existsSync(nextBuildDir)) {
-    //     onLog?.(`RendererManager:: removing current build ${nextBuildDir}`);
-    //     fs.removeSync(nextBuildDir);
-    // }
-    ManagerState.rendererStatus = 'building';
+    return false;
+}
+
+export const closeRenderer = async (onLog?: (message: string) => void): Promise<boolean> => {
+    const success = await closeService(cacheKeys.renderer, onLog);
+    if (!success) {
+        onLog?.('RendererManager::closeRenderer: failed to close Renderer by pid. Renderer is still active');
+    } else {
+        ManagerState.rendererStatus = 'inactive';
+        onLog?.('RendererManager::closeRenderer: Renderer has been closed');
+    }
+    return success;
+}
+
+export const isRendererRunning = async (): Promise<boolean> => {
+    return isServiceRunning(cacheKeys.renderer);
+}
+
+export const restartRenderer = async (onLog?: (message: string) => void): Promise<boolean> => {
+    const success = await closeRenderer(onLog);
+    return startRenderer(onLog);
+}
+
+export const rendererBuild = async (dir?: string, onLog?: (message: string) => void): Promise<boolean> => {
+
+    const tempDirName = dir ?? buildDirName;
+
     const commad: TRendererCommands = 'build';
     const onOut = (data) => {
         // console.log(`stdout: ${data}`);
         onLog?.(data?.toString() ?? data);
     }
-    const proc = startService(rendererStartupPath, cacheKeys.rendererBuilder, [commad], onOut);
-    let hasErrors = false;
-    proc.on('message', (message: string) => {
-        if (message === rendererMessages.onBuildErrorMessage) {
-            ManagerState.rendererStatus = rendererInitialStatus;
-            hasErrors = true;
-        }
-        if (message === rendererMessages.onBuildEndMessage) {
-            ManagerState.rendererStatus = rendererInitialStatus;
-            if (hasErrors) {
-                const mess = 'RendererManager:: Renderer build failed';
-                onLog?.(mess);
-                cb?.(false);
-                return;
-            } else {
-                restartRenderer(cb, onLog);
+    const proc = startService(rendererStartupPath, cacheKeys.rendererBuilder, [commad, `--dir=${tempDirName}`], onOut, rendererDir);
+
+    await new Promise(done => {
+        proc.on('message', async (message: string) => {
+            if (message === rendererMessages.onBuildEndMessage) {
+                done(true);
             }
-        }
-    });
+        });
+    })
+
+    const success = await isThemeBuilt(resolve(rendererDir, tempDirName));
+    console.log('resolve(rendererDir, tempDirName)', resolve(rendererDir, tempDirName), success);
+    if (success) {
+        onLog?.('RendererManager:: Renderer build succeeded');
+    } else {
+        onLog?.('RendererManager:: Renderer build failed');
+    }
+
+    return success;
 }
 
-export const rendererChangeTheme = (prevThemeName: string, nextThemeName: string, cb?: (success: boolean) => void,
-    onLog?: (message: string) => void) => {
+export const rendererBuildAndStart = async (onLog?: (message: string) => void): Promise<boolean> => {
+
+    if (ManagerState.rendererStatus === 'busy' ||
+        ManagerState.rendererStatus === 'building') {
+        onLog?.(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, failed to buildAndStart`)
+        return false;
+    }
+    const rendererInitialStatus = ManagerState.rendererStatus;
+    ManagerState.rendererStatus = 'building';
+
+    const buildSuccess = await rendererBuild('.temp', onLog);
+    if (buildSuccess) {
+        const success = await restartRenderer(onLog);
+        ManagerState.rendererStatus = rendererInitialStatus;
+        return success;
+    }
+
+    return false;
+}
+
+export const rendererBuildAndSaveTheme = async (onLog?: (message: string) => void): Promise<boolean> => {
+    const tempDirName = '.temp';
+    const tempDir = resolve(rendererDir, tempDirName);
+    const tempNextDir = resolve(tempDir, '.next');
+    const themeDir = await getCurrentThemeDir(projectRootDir);
+
+    let rollupBuildSuccess = false;
+    if (themeDir) {
+        const configPath = resolve(themeDir, 'cromwell.config.js');
+        try {
+            const config: TThemeConfig = require(configPath);
+            if (config?.rollupConfig?.main) {
+                onLog?.('RendererManager:: Starting to pre-build theme');
+
+                const rollupConfig = rollupConfigWrapper(config.rollupConfig.main, config, config.rollupConfig);
+                for (const optionsObj of rollupConfig) {
+                    const bundle = await rollup(optionsObj);
+
+                    if (optionsObj?.output && Array.isArray(optionsObj?.output)) {
+                        await Promise.all(optionsObj.output.map(bundle.write));
+
+                    } else if (optionsObj?.output && typeof optionsObj?.output === 'object') {
+                        //@ts-ignore
+                        await bundle.write(optionsObj.output)
+                    }
+                }
+                rollupBuildSuccess = true;
+            }
+        } catch (e) {
+            console.log(e);
+        }
+    }
+
+    if (!rollupBuildSuccess) {
+        onLog?.('RendererManager:: Failed to pre-build theme');
+        return false;
+    }
+    onLog?.('RendererManager:: Successfully pre-build theme');
+
+
+    const buildSuccess = await rendererBuild(tempDirName, onLog);
+    if (buildSuccess) {
+        if (themeDir) {
+            const themeBuildNextDir = resolve(themeDir, buildDirName, '.next');
+            if (await fs.pathExists(themeBuildNextDir)) await fs.remove(themeBuildNextDir);
+            await fs.move(tempNextDir, themeBuildNextDir);
+            await fs.remove(tempDir);
+            onLog?.('RendererManager:: successfully saved theme');
+            return true;
+        }
+    } else {
+
+    }
+
+    return false;
+}
+
+export const rendererChangeTheme = async (prevThemeName: string, nextThemeName: string,
+    onLog?: (message: string) => void): Promise<boolean> => {
     if (ManagerState.rendererStatus === 'busy' ||
         ManagerState.rendererStatus === 'building') {
         onLog?.(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, aborting changeTheme process..`)
-        cb?.(false);
-        return;
+        return false;
     }
-    const themeDir = getThemeDirSync(projectRootDir, nextThemeName);
+    const themeDir = await getThemeDir(projectRootDir, nextThemeName);
+
     onLog?.(`RendererManager:: changeTheme: ${nextThemeName}, ${themeDir}`);
     if (themeDir) {
-        const rendererInitialStatus = ManagerState.rendererStatus;
+        const themeBuildNextDir = resolve(themeDir, buildDirName, '.next');
+        if (await fs.pathExists(themeBuildNextDir)) {
 
-        ManagerState.rendererStatus = 'busy';
+            ManagerState.rendererStatus = 'busy';
 
-        const currentArchiveBuildDir = getRendererSavedBuildDirByTheme(projectRootDir, prevThemeName);
-        const newArchiveBuildDir = getRendererSavedBuildDirByTheme(projectRootDir, nextThemeName);
-        const currentBuildDir = getRendererTempNextDir(projectRootDir);
+            await closeRenderer();
 
-        const hasArchivedBuild = swithArchivedBuildsSync(currentArchiveBuildDir,
-            newArchiveBuildDir, currentBuildDir, onLog);
+            await makeEmptyDir(rendererTempDir);
+            const tempNextDir = resolve(rendererTempDir, '.next');
+            fs.copy(themeBuildNextDir, tempNextDir);
 
-        ManagerState.rendererStatus = rendererInitialStatus;
+            const success = await startRenderer();
 
-        if (hasArchivedBuild) {
-            restartRenderer((success) => {
-                cb?.(success);
-            }, onLog);
-        } else {
-            rendererBuildAndStart((success) => {
-                cb?.(success);
-            }, onLog)
+            ManagerState.rendererStatus = 'running';
+
+            return success;
         }
-
-
-    } else {
-        cb?.(false)
     }
+
+    return false;
+}
+
+const isThemeBuilt = async (dir: string): Promise<boolean> => {
+    return (await fs.pathExists(resolve(dir, '.next/static'))
+        && await fs.pathExists(resolve(dir, '.next/BUILD_ID'))
+        && await fs.pathExists(resolve(dir, '.next/build-manifest.json'))
+        && await fs.pathExists(resolve(dir, '.next/prerender-manifest.json'))
+    )
 }

@@ -11,7 +11,7 @@ import glob from 'glob';
 import { dirname, resolve, isAbsolute } from 'path';
 import normalizePath from 'normalize-path';
 import externalGlobals from 'rollup-plugin-external-globals';
-import { RollupOptions, Plugin, OutputOptions } from 'rollup'
+import { RollupOptions, Plugin, OutputOptions } from 'rollup';
 import virtual from '@rollup/plugin-virtual';
 import fs from 'fs-extra';
 import cryptoRandomString from 'crypto-random-string';

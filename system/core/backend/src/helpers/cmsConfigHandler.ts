@@ -1,7 +1,7 @@
 import { setStoreItem, getStoreItem, TCmsConfig } from '@cromwell/core';
 import { resolve } from 'path';
 import fs from 'fs-extra';
-import { getCMSConfigPath } from './paths';
+import { getCMSConfigPath, getThemeDir } from './paths';
 
 /**
  * Read CMS config from file in system/cmsconfig.json, saves it into the store and returns
@@ -63,4 +63,16 @@ export const readCMSConfig = async (projectRootDir: string): Promise<TCmsConfig 
 export const saveCMSConfigSync = (projectRootDir: string, config: TCmsConfig) => {
     const configPath = getCMSConfigPath(projectRootDir);
     fs.writeJSONSync(configPath, config, { spaces: 2 });
+}
+
+export const saveCMSConfig = async (projectRootDir: string, config: TCmsConfig) => {
+    const configPath = getCMSConfigPath(projectRootDir);
+    await fs.writeJSON(configPath, config, { spaces: 2 });
+}
+
+export const getCurrentThemeDir = async (projectRootDir: string): Promise<string | undefined> => {
+    const config = await readCMSConfig(projectRootDir);
+    if (config && config.themeName) {
+        return getThemeDir(projectRootDir, config.themeName);
+    }
 }

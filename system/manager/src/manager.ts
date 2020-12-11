@@ -11,20 +11,20 @@ import { loadCache } from './utils/cacheManager';
 
 type TScriptName = 'production' | 'development' | 'winDev';
 
-loadCache(() => {
+loadCache(async () => {
 
     const { projectRootDir, localProjectDir, closeAllOnExit, servicesDev,
         servicesProd, windowsDev, cacheKeys, servicesEnv } = config;
 
     const scriptName: TScriptName = config.scriptName;
 
-    const startSystem = () => {
-        startServer(() => {
-            startAdminPanel(undefined, ManagerState.getLogger('adminPanel'));
-            startRenderer(undefined, (message) => {
-                console.log(message);
-            });
-        }, ManagerState.getLogger('server'))
+    const startSystem = async () => {
+        await startServer(ManagerState.getLogger('server'));
+        
+        startAdminPanel(ManagerState.getLogger('adminPanel'));
+        startRenderer((message) => {
+            console.log(message);
+        });
     }
 
     // if (scriptName === 'winDev') {
