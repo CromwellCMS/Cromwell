@@ -26,4 +26,4 @@ export const getGlobalModuleStr = (moduleName: string) => `${cromwellStoreModule
 
 export const moduleChunksBuildDirChunk = 'chunks';
 
-export const tempPckgName = '@cromwell/temp-budler';
+export const tempPckgName = '@cromwell/temp-bundler';

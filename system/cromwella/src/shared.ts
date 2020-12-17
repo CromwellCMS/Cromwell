@@ -2,6 +2,7 @@ import { each as asyncEach } from 'async';
 import colorsdef from 'colors/safe';
 import fs from 'fs';
 import glob from 'glob';
+import importFrom from 'import-from';
 import path, { resolve, isAbsolute } from 'path';
 import {
     TPackageJson, TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps,

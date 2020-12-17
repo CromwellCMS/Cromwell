@@ -14,5 +14,12 @@
         "winRemoveNodeModules": "rmdir /Q /S \"./node_modules\"",
         "cromwellaNoCli": "node ./system/cromwella/bin/cromwella.js i",
         "buildCore": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend"
-    }
+    },
+    "workspaces": [
+        "system/*",
+        "system/core/*",
+        "plugins/*",
+        "themes/*",
+        ".cromwell/built_modules"
+    ]
 }

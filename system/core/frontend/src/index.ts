@@ -15,6 +15,7 @@ export * from './api/CRestAPIClient';
 export * from './api/CWebSocketClient';
 export * from './CStore';
 export * from './helpers/loadFrontendBundle';
+export * from './helpers/isomorphicFetch';
 export * from './types';
 
 //@ts-ignore

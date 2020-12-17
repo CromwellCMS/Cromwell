@@ -175,22 +175,26 @@ const main = async () => {
 
 
     // Create next.config.js
+    const themePckgJsonPath = resolve(themeExports.themeDir, 'package.json');
+    const themePckg = require(themePckgJsonPath);
     const nextConfigPath = resolve(tempDir, 'next.config.js');
     if (!fs.existsSync(nextConfigPath)) {
         await fs.outputFile(nextConfigPath, `
-        module.exports = {
-            webpack: (config, { isServer }) => {
-                // Fixes npm packages that depend on 'fs' module
-                if (!isServer) {
-                    config.node = {
-                        fs: 'empty',
-                        module: 'empty',
-                        path: 'empty'
+            module.exports = {
+                webpack: (config, { isServer }) => {
+                    config.resolve.symlinks = false
+                    // Fixes npm packages that depend on 'fs' module
+                    if (!isServer) {
+                        config.node = {
+                            fs: 'empty',
+                            module: 'empty',
+                            path: 'empty'
+                        }
                     }
+                    return config
                 }
-                return config
-            }
-        }`);
+            };`
+        );
     }
 
     const tempDirPublic = resolve(tempDir, 'public');
@@ -211,11 +215,11 @@ const main = async () => {
 
     // Link theme's build dir
     const localThemeBuildDir = resolve(tempDir, localThemeBuildDurChunk);
-    // try {
-    //     await symlinkDir(themeExports.themeBuildDir, localThemeBuildDir)
-    // } catch (e) { console.log(e) }
-    await makeEmptyDir(localThemeBuildDir);
-    await fs.copy(themeExports.themeBuildDir, localThemeBuildDir)
+    try {
+        await symlinkDir(themeExports.themeBuildDir, localThemeBuildDir)
+    } catch (e) { console.log(e) }
+    // await makeEmptyDir(localThemeBuildDir);
+    // await fs.copy(themeExports.themeBuildDir, localThemeBuildDir)
 
 
 };

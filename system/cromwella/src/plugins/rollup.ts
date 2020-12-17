@@ -18,19 +18,14 @@ import cryptoRandomString from 'crypto-random-string';
 import { cromwellStoreModulesPath } from '../constants';
 import { getNodeModuleVersion, isExternalForm, getDepVersion } from '../shared';
 
-export const rollupConfigWrapper = (inputOptions: RollupOptions, cromwellConfig: TPluginConfig | TThemeConfig,
-    specifiedOptions?: {
-        frontendBundle?: RollupOptions;
-        frontendCjs?: RollupOptions;
-        backend?: RollupOptions;
-        themePages?: RollupOptions;
-        adminPanel?: RollupOptions;
-    }): RollupOptions[] => {
+export const rollupConfigWrapper = (cromwellConfig: TPluginConfig | TThemeConfig): RollupOptions[] => {
 
     if (!cromwellConfig) throw new Error(`CromwellPlugin Error. Provide cromwell.config as second argumet to the wrapper function`);
     if (!cromwellConfig?.type) throw new Error(`CromwellPlugin Error. Provide one of types to the CromwellConfig: 'plugin', 'theme'`);
     if (!cromwellConfig?.name) throw new Error(`CromwellPlugin Error. Provide name in the CromwellConfig`);
 
+    const specifiedOptions = cromwellConfig.rollupConfig;
+    const inputOptions = specifiedOptions?.main;
     const outOptions: RollupOptions[] = [];
 
     if (cromwellConfig.type === 'plugin') {

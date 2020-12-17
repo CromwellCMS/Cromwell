@@ -95,7 +95,6 @@ const getPluginBundle = async (pluginName: string, bundleType: 'admin' | 'fronte
     if (cjsPath) cjsPath = normalizePath(cjsPath);
 
     if (cjsPath && !(await fs.pathExists(cjsPath))) cjsPath = undefined;
-    console.log('filePath', filePath)
     if (await fs.pathExists(filePath)) {
         try {
             const source = (await fs.readFile(filePath)).toString();

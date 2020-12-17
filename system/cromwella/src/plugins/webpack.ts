@@ -141,6 +141,7 @@ export class CromwellWebpackPlugin {
 
         compiler.hooks.normalModuleFactory.tap('CromwellaBundlerPlugin', factory => {
             factory.hooks.parser.for('javascript/auto').tap('CromwellaBundlerPlugin', (parser, options) => {
+                parser.hooks.import.tap('CromwellaBundlerPlugin', this.handleStatement);
                 parser.hooks.importSpecifier.tap('CromwellaBundlerPlugin', this.handleStatement);
                 parser.hooks.exportImportSpecifier.tap('CromwellaBundlerPlugin', (statement, source, identifierName, exportName) => {
                     this.handleStatement(statement, source, exportName, identifierName);
