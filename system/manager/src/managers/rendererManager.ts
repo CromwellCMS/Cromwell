@@ -13,8 +13,6 @@ import axios from 'axios';
 import { resolve } from 'path';
 import fs from 'fs-extra';
 import makeEmptyDir from 'make-empty-dir';
-import { rollupConfigWrapper } from '@cromwell/cromwella';
-import { rollup } from 'rollup';
 
 import managerConfig from '../config';
 import { ManagerState } from '../managerState';
@@ -133,7 +131,6 @@ export const rendererBuild = async (dir?: string, onLog?: (message: string) => v
     })
 
     const success = await isThemeBuilt(resolve(rendererDir, tempDirName));
-    console.log('resolve(rendererDir, tempDirName)', resolve(rendererDir, tempDirName), success);
     if (success) {
         onLog?.('RendererManager:: Renderer build succeeded');
     } else {
@@ -168,40 +165,6 @@ export const rendererBuildAndSaveTheme = async (onLog?: (message: string) => voi
     const tempDir = resolve(rendererDir, tempDirName);
     const tempNextDir = resolve(tempDir, '.next');
     const themeDir = await getCurrentThemeDir(projectRootDir);
-
-    let rollupBuildSuccess = false;
-    if (themeDir) {
-        const configPath = resolve(themeDir, 'cromwell.config.js');
-        try {
-            const config: TThemeConfig = require(configPath);
-            if (config?.rollupConfig?.main) {
-                onLog?.('RendererManager:: Starting to pre-build theme');
-
-                const rollupConfig = rollupConfigWrapper(config.rollupConfig.main, config, config.rollupConfig);
-                for (const optionsObj of rollupConfig) {
-                    const bundle = await rollup(optionsObj);
-
-                    if (optionsObj?.output && Array.isArray(optionsObj?.output)) {
-                        await Promise.all(optionsObj.output.map(bundle.write));
-
-                    } else if (optionsObj?.output && typeof optionsObj?.output === 'object') {
-                        //@ts-ignore
-                        await bundle.write(optionsObj.output)
-                    }
-                }
-                rollupBuildSuccess = true;
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    if (!rollupBuildSuccess) {
-        onLog?.('RendererManager:: Failed to pre-build theme');
-        return false;
-    }
-    onLog?.('RendererManager:: Successfully pre-build theme');
-
 
     const buildSuccess = await rendererBuild(tempDirName, onLog);
     if (buildSuccess) {
@@ -251,6 +214,24 @@ export const rendererChangeTheme = async (prevThemeName: string, nextThemeName: 
     }
 
     return false;
+}
+
+
+export const rendererStartWatchDev = async (onLog?: (message: string) => void) => {
+
+    if (ManagerState.rendererStatus === 'busy' ||
+        ManagerState.rendererStatus === 'building') {
+        onLog?.(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, failed to buildAndStart`)
+        return false;
+    }
+
+    await closeRenderer(onLog);
+
+    const tempDir = resolve(rendererDir, buildDirName);
+    await makeEmptyDir(tempDir);
+
+    const commad: TRendererCommands = 'dev';
+    const proc = startService(rendererStartupPath, cacheKeys.renderer, [commad], onLog, rendererDir)
 }
 
 const isThemeBuilt = async (dir: string): Promise<boolean> => {

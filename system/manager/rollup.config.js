@@ -19,7 +19,7 @@ const buildDir = 'build';
 
 export default [
     {
-        input: resolve(__dirname, "src/manager.ts"),
+        input: resolve(__dirname, "src/index.ts"),
         output: [
             {
                 file: resolve(__dirname, buildDir, 'manager.js'),
@@ -29,9 +29,6 @@ export default [
         external,
         plugins: [
             json(),
-            nodeResolve({
-                preferBuiltins: false
-            }),
             commonjs(),
             typescript({
                 module: "ESNext"
@@ -39,19 +36,14 @@ export default [
         ]
     },
     {
-        input: resolve(__dirname, "src/cli.ts"),
-        output: [
-            {
-                file: resolve(__dirname, buildDir, 'cli.js'),
-                format: "cjs",
-            }
-        ],
+        input: resolve(__dirname, "src/cli/cli.ts"),
+        output: {
+            file: resolve(__dirname, buildDir, 'cli.js'),
+            format: "cjs",
+        },
         external,
         plugins: [
             json(),
-            nodeResolve({
-                preferBuiltins: false
-            }),
             commonjs(),
             typescript({
                 module: "ESNext"

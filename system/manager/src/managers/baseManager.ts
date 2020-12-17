@@ -38,8 +38,9 @@ export const startService = (path: string, name: string, args: string[], onLog?:
     const proc = fork(path, args, { stdio: 'pipe', cwd: dir ?? process.cwd() });
     saveProcessPid(name, proc.pid);
     if (onLog) {
-        proc?.stdout?.on('data', onLog);
-        proc?.stderr?.on('data', onLog);
+        const onLogBuffer = buff => onLog(buff?.toString?.() ?? buff);
+        proc?.stdout?.on('data', onLogBuffer);
+        proc?.stderr?.on('data', onLogBuffer);
     }
     return proc;
 }
