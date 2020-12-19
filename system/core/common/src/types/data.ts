@@ -23,6 +23,7 @@ export type TCromwellStore = {
     environment?: {
         mode?: 'dev' | 'prod';
         isAdminPanel?: boolean;
+        logLevel?: TLogLevel;
     },
     graphQLClient?: any;
     restAPIClient?: any;
@@ -211,3 +212,5 @@ export type TFrontendBundle = {
 export type TPluginInfo = {
     name: string;
 }
+
+export type TLogLevel = "none" | "errors-only" | "errors-warnings" | "minimal" | "detailed" | "all";

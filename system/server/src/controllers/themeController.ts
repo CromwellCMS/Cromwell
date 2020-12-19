@@ -1,16 +1,23 @@
 import {
-    getStoreItem, TThemeMainConfig, TCromwellBlockData, TPageConfig, TCmsConfig,
-    TPageInfo, TThemeConfig, TPluginConfig, TFrontendBundle
+    logLevelMoreThan,
+    TCmsConfig,
+    TCromwellBlockData,
+    TFrontendBundle,
+    TPageConfig,
+    TPageInfo,
+    TPluginConfig,
+    TThemeConfig,
+    TThemeMainConfig,
 } from '@cromwell/core';
+import { buildDirName, readCMSConfig } from '@cromwell/core-backend';
+import decache from 'decache';
 import { Router } from 'express';
 import fs from 'fs-extra';
-import { readCMSConfig, buildDirName } from '@cromwell/core-backend';
-import decache from 'decache';
 import normalizePath from 'normalize-path';
+import { resolve } from 'path';
 
 import { projectRootDir } from '../constants';
 import { readPluginConfig } from './pluginsController';
-import { resolve } from 'path';
 
 export const getThemeController = (): Router => {
     const themeController = Router();
@@ -304,6 +311,7 @@ export const getThemeController = (): Router => {
      * @param cb cb to return pages info
      */
     const readAllPageConfigs = (cb: (pages: TPageConfig[]) => void) => {
+        if (logLevelMoreThan('detailed')) console.log('themeController::readAllPageConfigs');
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
             let pages: TPageConfig[] = [];
             if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
@@ -358,6 +366,7 @@ export const getThemeController = (): Router => {
      *         description: page config
      */
     themeController.get(`/page`, function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('themeController::/page');
         let out: TPageConfig | null = null;
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
             const pageRoute = req.query.pageRoute;
@@ -392,6 +401,7 @@ export const getThemeController = (): Router => {
      *         description: success
      */
     themeController.post(`/page`, function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('themeController::post /page');
         let input: TPageConfig | null = req.body;
         if (input && typeof input === 'object') {
             saveUserPageConfig(input, (success) => {
@@ -423,6 +433,7 @@ export const getThemeController = (): Router => {
      *         description: plugins' configs
      */
     themeController.get(`/plugins`, function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('themeController::/plugins');
         const out: Record<string, any> = {};
 
         if (req.query.pageRoute && typeof req.query.pageRoute === 'string') {
@@ -462,6 +473,7 @@ export const getThemeController = (): Router => {
      *         description: plugin names
      */
     themeController.get(`/plugin-names`, function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('themeController::/plugin-names');
         const out: string[] = [];
 
         readAllPageConfigs((pages) => {
@@ -493,6 +505,7 @@ export const getThemeController = (): Router => {
      *         description: pages info
      */
     themeController.get(`/pages/info`, function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('themeController::/pages/info');
         const out: TPageInfo[] = [];
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
             let pages: TPageConfig[] = [];
@@ -544,6 +557,7 @@ export const getThemeController = (): Router => {
      *         description: pages configs
      */
     themeController.get(`/pages/configs`, function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('themeController::/pages/configs');
         readAllPageConfigs((pages) => {
             res.send(pages);
         })
@@ -565,6 +579,7 @@ export const getThemeController = (): Router => {
      *         description: app config
      */
     themeController.get(`/main-config`, function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('themeController::/main-config');
         let out: TThemeMainConfig;
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
             out = Object.assign({}, themeConfig?.main, userConfig?.main);
@@ -589,6 +604,7 @@ export const getThemeController = (): Router => {
      *         description: app custom config
      */
     themeController.get(`/custom-config`, function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('themeController::/custom-config');
         let out: Record<string, any> = {};
         readConfigs((themeConfig: TThemeConfig | null, userConfig: TThemeConfig | null) => {
             out = Object.assign(out, themeConfig?.themeCustomConfig, userConfig?.themeCustomConfig);
@@ -618,6 +634,7 @@ export const getThemeController = (): Router => {
      *         description: bundle
      */
     themeController.get(`/page-bundle`, async (req, res) => {
+        if (logLevelMoreThan('detailed')) console.log('themeController::/page-bundle');
         let out: TFrontendBundle | null = null;
 
         const pageRoute = req.query?.pageRoute;

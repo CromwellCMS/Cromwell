@@ -1,11 +1,7 @@
-import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from "type-graphql";
-import { ProductCategory } from '@cromwell/core-backend';
-import { PagedParamsInput } from '@cromwell/core-backend';
-import { ProductCategoryRepository } from '@cromwell/core-backend';
-import { ProductRepository } from '@cromwell/core-backend';
-import { getCustomRepository } from "typeorm";
-import { TProduct, TPagedList } from "@cromwell/core";
-import { PagedProduct } from '@cromwell/core-backend';
+import { logLevelMoreThan } from '@cromwell/core';
+import { ProductCategory, ProductCategoryRepository } from '@cromwell/core-backend';
+import { Arg, Query, Resolver } from 'type-graphql';
+import { getCustomRepository } from 'typeorm';
 
 
 @Resolver(ProductCategory)
@@ -15,6 +11,13 @@ export default class ProductShowcaseResolver {
 
     @Query(() => ProductCategory)
     async productShowcase(@Arg("slug") slug: string) {
-        return await this.repo.getProductCategoryBySlug(slug);
+        if (logLevelMoreThan('detailed')) console.log('ProductShowcaseResolver::productShowcase slug:' + slug);
+        const timestamp = Date.now();
+        const category = await this.repo.getProductCategoryBySlug(slug);
+
+        const timestamp2 = Date.now();
+        if (logLevelMoreThan('detailed')) console.log('ProductShowcaseResolver::productShowcase time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+
+        return category;
     }
 }

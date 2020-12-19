@@ -8,6 +8,7 @@ import {
     TProductInput,
     TProductRating,
     TProductReview,
+    logLevelMoreThan
 } from '@cromwell/core';
 import { EntityRepository, getCustomRepository, Repository } from 'typeorm';
 
@@ -25,14 +26,17 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async getProducts(params: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
+        if (logLevelMoreThan('detailed')) console.log('ProductRepository::getProducts');
         return this.getPaged(params)
     }
 
     async getProductById(id: string): Promise<Product | undefined> {
+        if (logLevelMoreThan('detailed')) console.log('ProductRepository::getProductById id: ' + id);
         return this.getById(id);
     }
 
     async getProductBySlug(slug: string): Promise<Product | undefined> {
+        if (logLevelMoreThan('detailed')) console.log('ProductRepository::getProductBySlug slug: ' + slug);
         return this.getBySlug(slug);
     }
 
@@ -67,6 +71,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async createProduct(createProduct: TProductInput): Promise<Product> {
+        if (logLevelMoreThan('detailed')) console.log('ProductRepository::createProduct');
         let product = new Product();
 
         await this.handleProductInput(product, createProduct);
@@ -84,6 +89,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async updateProduct(id: string, updateProduct: TProductInput): Promise<Product> {
+        if (logLevelMoreThan('detailed')) console.log('ProductRepository::updateProduct id: ' + id);
         let product = await this.findOne({
             where: { id },
             relations: ["categories"]
@@ -100,7 +106,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async deleteProduct(id: string): Promise<boolean> {
-        console.log('ProductRepository::deleteProduct; id: ' + id)
+        if (logLevelMoreThan('detailed')) console.log('ProductRepository::deleteProduct; id: ' + id);
 
         const product = await this.getProductById(id);
         if (!product) {
@@ -113,6 +119,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
+        if (logLevelMoreThan('detailed')) console.log('ProductRepository::getProductsFromCategory id: ' + categoryId);
         const qb = this.createQueryBuilder(DBTableNames.Product);
         applyGetManyFromOne(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
         const paged = await getPaged(qb, DBTableNames.Product, params);
@@ -120,12 +127,14 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async getReviewsOfProduct(productId: string, params?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
+        if (logLevelMoreThan('detailed')) console.log('ProductRepository::getReviewsOfProduct id: ' + productId);
         const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(DBTableNames.ProductReview);
         applyGetManyFromOne(qb, DBTableNames.ProductReview, 'product', DBTableNames.Product, productId);
         return getPaged(qb, DBTableNames.ProductReview, params)
     }
 
     async getProductRating(productId: string): Promise<TProductRating> {
+        if (logLevelMoreThan('detailed')) console.log('ProductRepository::getProductRating id: ' + productId);
         const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(DBTableNames.ProductReview);
         applyGetManyFromOne(qb, DBTableNames.ProductReview, 'product', DBTableNames.Product, productId);
 

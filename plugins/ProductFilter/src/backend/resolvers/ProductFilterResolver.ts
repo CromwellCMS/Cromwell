@@ -1,4 +1,4 @@
-import { DBTableNames, TProduct, TPagedList } from '@cromwell/core';
+import { DBTableNames, TProduct, TPagedList, logLevelMoreThan } from '@cromwell/core';
 import {
     applyGetManyFromOne,
     getPaged,
@@ -23,6 +23,8 @@ export default class ProductFilterResolver {
         @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>,
         @Arg("filterParams", { nullable: true }) filterParams: ProductFilterInput
     ): Promise<TFilteredList<TProduct> | undefined> {
+        if (logLevelMoreThan('detailed')) console.log('ProductFilterResolver::getFilteredProductsFromCategory categoryId:' + categoryId, ' pagedParams:', pagedParams);
+        const timestamp = Date.now();
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
             const productRepo = getCustomRepository(ProductRepository);
@@ -55,6 +57,9 @@ export default class ProductFilterResolver {
 
         const filterMeta = await getFilterMeta();
         const paged = await getElements();
+
+        const timestamp2 = Date.now();
+        if (logLevelMoreThan('detailed')) console.log('ProductFilterResolver::getFilteredProductsFromCategory time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
         const filtered: TFilteredList<TProduct> = {
             ...paged,

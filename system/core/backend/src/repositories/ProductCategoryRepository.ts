@@ -2,7 +2,7 @@ import { EntityRepository, TreeRepository } from "typeorm";
 import { ProductCategory } from '../entities/ProductCategory'
 import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
-import { TProductCategory, TPagedParams, TProductCategoryInput } from '@cromwell/core';
+import { TProductCategory, TPagedParams, TProductCategoryInput, logLevelMoreThan } from '@cromwell/core';
 import { DBTableNames } from '@cromwell/core';
 import { getPaged, applyGetPaged, applyGetManyFromOne, handleBaseInput } from './BaseQueries';
 
@@ -10,12 +10,14 @@ import { getPaged, applyGetPaged, applyGetManyFromOne, handleBaseInput } from '.
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async getProductCategories(params: TPagedParams<TProductCategory>): Promise<TProductCategory[]> {
+        if (logLevelMoreThan('detailed')) console.log('ProductCategoryRepository::getProductCategories');
         const qb = this.createQueryBuilder(DBTableNames.Product);
         applyGetPaged(qb, DBTableNames.Product, params);
         return await qb.getMany();
     }
 
     async getProductCategoriesById(ids: string[]): Promise<ProductCategory[]> {
+        if (logLevelMoreThan('detailed')) console.log('ProductCategoryRepository::getProductCategoriesById ids: ' + ids.join(', '));
         const categories: ProductCategory[] = [];
         for (const id of ids) {
             const category = await this.getProductCategoryById(id);
@@ -25,6 +27,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async getProductCategoryById(id: string): Promise<ProductCategory> {
+        if (logLevelMoreThan('detailed')) console.log('ProductCategoryRepository::getProductCategoryById id: ' + id);
         const product = await this.findOne({
             where: { id }
         });
@@ -33,6 +36,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async getProductCategoryBySlug(slug: string): Promise<ProductCategory> {
+        if (logLevelMoreThan('detailed')) console.log('ProductCategoryRepository::getProductCategoryBySlug slug: ' + slug);
         const product = await this.findOne({
             where: { slug }
         });
@@ -56,8 +60,9 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async createProductCategory(createProductCategory: CreateProductCategory): Promise<ProductCategory> {
+        if (logLevelMoreThan('detailed')) console.log('ProductCategoryRepository::createProductCategory');
         const productCategory = new ProductCategory();
-  
+
         this.handleProductCategoryInput(productCategory, createProductCategory);
 
         await this.save(productCategory);
@@ -69,6 +74,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async updateProductCategory(id: string, updateProductCategory: UpdateProductCategory): Promise<ProductCategory> {
+        if (logLevelMoreThan('detailed')) console.log('ProductCategoryRepository::updateProductCategory id: ' + id);
         const productCategory = await this.getProductCategoryById(id);
         if (!productCategory) throw new Error(`ProductCategory ${id} not found!`);
 
@@ -79,6 +85,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async deleteProductCategory(id: string): Promise<boolean> {
+        if (logLevelMoreThan('detailed')) console.log('ProductCategoryRepository::deleteProductCategory id: ' + id);
         const productCategory = await this.getProductCategoryById(id);
         if (!productCategory) return false;
         await this.delete(productCategory.id);
@@ -86,6 +93,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async getCategoriesOfProduct(productId: string, params?: TPagedParams<TProductCategory>): Promise<TProductCategory[]> {
+        if (logLevelMoreThan('detailed')) console.log('ProductCategoryRepository::getCategoriesOfProduct id: ' + productId);
         const qb = this.createQueryBuilder(DBTableNames.ProductCategory);
         applyGetManyFromOne(qb, DBTableNames.ProductCategory, 'products', DBTableNames.Product, productId);
         applyGetPaged(qb, DBTableNames.ProductCategory, params);

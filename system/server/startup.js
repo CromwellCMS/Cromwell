@@ -24,7 +24,7 @@ const main = async () => {
         spawn(`npx rollup -cw`, [],
             { shell: true, stdio: 'inherit', cwd: serverRootDir });
 
-        spawn(`npx nodemon --watch ${buildDir} ${buildDir}/server.js`, [],
+        spawn(`npx nodemon --watch ${buildDir} ${buildDir}/server.js ${process.argv.slice(2).join(' ')}`, [],
             { shell: true, stdio: 'inherit', cwd: serverRootDir });
     }
 

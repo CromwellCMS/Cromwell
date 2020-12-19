@@ -1,4 +1,4 @@
-import { TThemeConfig } from '@cromwell/core';
+import { TThemeConfig, logLevelMoreThan } from '@cromwell/core';
 import async from 'async';
 import { Router } from 'express';
 import fs from 'fs-extra';
@@ -35,6 +35,7 @@ export const getCmsController = (): Router => {
      *         description: config
      */
     cmsController.get(`/config`, async function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('cmsController/config');
         const config = await readCMSConfig(projectRootDir);
         if (!config) res.status(404).send("Failed to read CMS Config")
         else {
@@ -57,6 +58,7 @@ export const getCmsController = (): Router => {
      *         description: theme infos
      */
     cmsController.get(`/themes`, async function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('cmsController/themes');
         let out: (Record<string, any>)[] = [];
         let themeDirs: string[] = [];
         try {

@@ -8,9 +8,9 @@ import { VirtualData } from 'swiper/types/components/virtual';
 import { gql } from '@apollo/client';
 //@ts-ignore
 import swiperCSS from "swiper/swiper-bundle.css";
-
 //@ts-ignore
 import styles from './CGallery.module.scss';
+
 Swiper.use([Navigation, Pagination, Virtual]);
 
 type ProductShowcaseProps = {
@@ -25,16 +25,16 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     let CommmonProductComp = loadCommonComponent(ECommonComponentNames.ProductCard);
     if (!CommmonProductComp) {
         // Default view otherwise
-        CommmonProductComp = (props: { data: TProduct }): JSX.Element => {
+        CommmonProductComp = (props: { data?: TProduct | undefined }): JSX.Element => {
             const p = props.data;
-            return (
+            if (p) return (
                 <div key={p.id}>
-                    <img src={p.mainImage} width="300px" />
+                    <img src={p?.mainImage} width="300px" />
                     <Link href={`/product/${p.slug}`}><a>{p.name}</a></Link>
                     <p>{p.price}</p>
                 </div>
             )
-
+            else return <></>
         }
     }
     const swiperId = `swiper-container_ProductShowcase`;
