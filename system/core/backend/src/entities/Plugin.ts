@@ -15,4 +15,12 @@ export class PluginEntity extends BasePageEntity implements TPluginEntity {
     @Column()
     isInstalled: boolean;
 
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    settings?: string;
+
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    defaultSettings?: string;
+
 }

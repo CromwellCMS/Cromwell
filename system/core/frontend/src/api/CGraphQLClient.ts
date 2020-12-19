@@ -590,9 +590,30 @@ class CGraphQLClient {
             isEnabled
             name
             isInstalled
+            settings
+            defaultSettings
         }
     `;
     // </Plugin>
+
+
+    // <Theme>
+
+    public ThemeFragment = gql`
+        fragment ThemeFragment on Theme {
+            id
+            slug
+            pageTitle
+            createDate
+            updateDate
+            isEnabled
+            name
+            isInstalled
+            settings
+            defaultSettings
+        }
+    `;
+    // </Theme>
 
 
 }

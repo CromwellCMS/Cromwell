@@ -2,7 +2,6 @@ import { TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve, isAbsolute } from 'path';
 import normalizePath from 'normalize-path';
-import decache from 'decache';
 
 import { getMetaInfoPath, getThemePagesMetaPath, buildDirName } from './paths';
 

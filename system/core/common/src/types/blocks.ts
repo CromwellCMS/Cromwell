@@ -111,8 +111,8 @@ export type TCromwellBlockData = {
         /** Plugin's name to render inside component. Same name must be in cromwell.config.js */
         pluginName?: string;
 
-        /** Custom editable plugin's config */
-        pluginConfig?: Record<string, any>;
+        /** Custom editable plugin's settings */
+        settings?: Record<string, any>;
     };
 
     /** For "image" block */

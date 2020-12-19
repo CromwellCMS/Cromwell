@@ -2,7 +2,6 @@ import { TCmsConfig, setStoreItem, TPluginConfig } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import { getPluginsDir, getPluginFrontendBundlePath, getPluginBackendPath, buildDirName } from './paths';
-import decache from 'decache';
 
 export type TPluginInfo = {
     pluginName: string;

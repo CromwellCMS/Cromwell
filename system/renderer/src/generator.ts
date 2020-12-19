@@ -88,7 +88,6 @@ const main = async () => {
 
         ${pageInfo.metaInfoPath ? `
         if (isServer()) {
-            console.log('isServer pageInfo.name', '${pageInfo.name}');
             const metaInfo = fsRequire("${pageInfo.metaInfoPath}", true);
             importer.importSciptExternals(metaInfo);
         }

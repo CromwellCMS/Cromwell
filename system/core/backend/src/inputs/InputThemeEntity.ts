@@ -9,4 +9,10 @@ export class InputThemeEntity extends BasePageInput implements TThemeEntityInput
 
     @Field(() => Boolean)
     isInstalled: boolean;
+
+    @Field(type => String, { nullable: true })
+    settings?: string;
+
+    @Field(type => String, { nullable: true })
+    defaultSettings?: string;
 }

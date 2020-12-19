@@ -47,7 +47,7 @@ export const loadFrontendBundle = (bundleName: string,
                     comp = Function('CromwellStore', `return ${bundle.source}`)(getStore());
                 }
                 if (comp) components![bundleName] = comp;
-                comp = comp.default ?? comp;
+                comp = comp?.default ?? comp;
                 if (comp) return comp;
             } else {
 
@@ -67,12 +67,12 @@ export const loadFrontendBundle = (bundleName: string,
                 });
 
                 comp = components?.[bundleName];
-                comp = comp.default ?? comp;
+                comp = comp?.default ?? comp;
                 if (comp) return comp;
             }
         }
 
-        return fallbackComponent;
+        return fallbackComponent ?? (() => null);
     }, dynamicLoaderProps);
 
     return comp;

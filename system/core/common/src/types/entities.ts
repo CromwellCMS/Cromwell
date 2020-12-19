@@ -159,6 +159,8 @@ export type TProductReviewInput = TProductReviewCore & TBasePageEntityInput;
 type TThemeEntityCore = {
     name: string;
     isInstalled: boolean;
+    settings?: string;
+    defaultSettings?: string;
 }
 
 export type TThemeEntity = TThemeEntityCore & TBasePageEntity;
@@ -171,6 +173,8 @@ export type TThemeEntityInput = TThemeEntityCore & TBasePageEntityInput;
 type TPluginEntityCore = {
     name: string;
     isInstalled: boolean;
+    settings?: string;
+    defaultSettings?: string;
 }
 
 export type TPluginEntity = TPluginEntityCore & TBasePageEntity;

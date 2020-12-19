@@ -126,6 +126,16 @@ class CRestAPIClient {
         return data ?? null;
     }
 
+    public installTheme = async (themeName: string): Promise<boolean> => {
+        let data: any;
+        try {
+            data = await this.get(`${this.baseUrl}/theme/install/${themeName}`);
+        } catch (e) { this.logError('installTheme', e); }
+        return data ?? null;
+    }
+
+
+
     public getPluginSettings = async (pluginName: string): Promise<any | null> => {
         let data: any;
         try {

@@ -3,7 +3,7 @@ import { Repository } from 'typeorm';
 
 import { getPaged } from './BaseQueries';
 
-export class BaseRepository<EntityType> extends Repository<EntityType> {
+export class BaseRepository<EntityType, EntityInputType = EntityType> extends Repository<EntityType> {
 
     constructor(
         private DBTableName: string,
@@ -42,7 +42,7 @@ export class BaseRepository<EntityType> extends Repository<EntityType> {
         return entity;
     }
 
-    async createEntity(input: EntityType): Promise<EntityType> {
+    async createEntity(input: EntityInputType): Promise<EntityType> {
         if (logLevelMoreThan('all')) console.log('BaseRepository::createEntity');
         let entity = new this.EntityClass();
         for (const key of Object.keys(input)) {
@@ -52,7 +52,7 @@ export class BaseRepository<EntityType> extends Repository<EntityType> {
         return entity;
     }
 
-    async updateEntity(id: string, input: EntityType): Promise<EntityType> {
+    async updateEntity(id: string, input: EntityInputType): Promise<EntityType> {
         if (logLevelMoreThan('all')) console.log('BaseRepository::updateEntity');
         let entity = await this.findOne({
             where: { id }
