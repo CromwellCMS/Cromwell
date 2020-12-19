@@ -11,7 +11,7 @@
   "author": "Cromwell",
   "license": "ISC",
   "dependencies": {
-    "@cromwell/core": "workspace:1.1.0",
+    "@cromwell/core": "~1.1.0",
     "class-validator": "^0.12.2",
     "decache": "^4.6.0",
     "graphql": "^15.3.0",

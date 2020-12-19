@@ -1,3 +1,6 @@
+const commonjs = require('@rollup/plugin-commonjs');
+const typescript = require('@rollup/plugin-typescript');
+
 module.exports = {
     name: "ProductFilter",
     type: "plugin",
@@ -8,5 +11,19 @@ module.exports = {
     },
     defaultSettings: {
         productListId: "Category_ProductList"
+    },
+    rollupConfig: {
+        main: {
+            plugins: [
+                commonjs(),
+                typescript()
+            ]
+        },
+        backend: {
+            plugins: [
+                commonjs(),
+                typescript({ target: 'es2019' })
+            ]
+        },
     }
 }

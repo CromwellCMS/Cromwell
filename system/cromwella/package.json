@@ -21,9 +21,9 @@
   },
   "dependencies": {
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@cromwell/core": "workspace:1.1.0",
-    "@cromwell/core-backend": "workspace:1.0.0",
-    "@cromwell/core-frontend": "workspace:1.0.0",
+    "@cromwell/core": "~1.1.0",
+    "@cromwell/core-backend": "~1.0.0",
+    "@cromwell/core-frontend": "~1.0.0",
     "async": "^3.2.0",
     "babel-loader": "^8.1.0",
     "babel-plugin-transform-commonjs": "^1.1.6",

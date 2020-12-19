@@ -6,7 +6,9 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 /.cromwell
+/package-lock.json
 /pnpm-lock.yaml
+/yarn.lock
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
@@ -101,5 +103,4 @@ plugins/*/es
 
 /public
 /system/.cromwell
-/package-lock.json
 # db.sqlite3

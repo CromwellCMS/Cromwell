@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/core": "workspace:1.1.0",
+    "@cromwell/core": "~1.1.0",
     "@loadable/component": "5.14.1",
     "debounce": "1.2.0",
     "graphql": "^15.3.0",
@@ -61,5 +61,8 @@
   "scripts": {
     "build": "npx rollup -c",
     "watch": "npx rollup -cw"
+  },
+  "resolutions": {
+    "webpack": "5.6.0"
   }
 }

@@ -8,10 +8,10 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/core": "workspace:1.1.0",
-    "@cromwell/core-backend": "workspace:1.0.0",
-    "@cromwell/core-frontend": "workspace:1.0.0",
-    "@cromwell/cromwella": "workspace:1.0.0",
+    "@cromwell/core": "~1.1.0",
+    "@cromwell/core-backend": "~1.0.0",
+    "@cromwell/core-frontend": "~1.0.0",
+    "@cromwell/cromwella": "~1.0.0",
     "@material-ui/core": "4.11.0",
     "@material-ui/icons": "4.9.1",
     "clsx": "1.1.1",
@@ -46,7 +46,7 @@
     "tslib"
   ],
   "scripts": {
-    "build": "npx rollup -c",
-    "watch": "npx rollup -cw"
+    "build": "npx cromwell b",
+    "watch": "npx cromwell w"
   }
 }

@@ -16,6 +16,12 @@ module.exports = {
                 commonjs(),
                 typescript()
             ]
-        }
+        },
+        backend: {
+            plugins: [
+                commonjs(),
+                typescript({ target: 'es2019' })
+            ]
+        },
     }
 }

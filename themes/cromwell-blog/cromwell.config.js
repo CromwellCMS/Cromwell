@@ -1,3 +1,10 @@
+const commonjs = require('@rollup/plugin-commonjs');
+const json = require('@rollup/plugin-json');
+const typescript = require('@rollup/plugin-typescript');
+const postcss = require('rollup-plugin-postcss');
+const autoprefixer = require("autoprefixer");
+const constants = require('./src/constants');
+
 module.exports = {
     "main": {
         "themeName": "cromwell-blog",
@@ -27,5 +34,28 @@ module.exports = {
         "ProductShowcaseDemo": {
             "options": {}
         }
-    }
+    },
+    rollupConfig: {
+        main: {
+            plugins: [
+                commonjs(),
+                typescript(),
+                json(),
+            ]
+        },
+        adminPanel: {
+            plugins: [
+                commonjs(),
+                typescript(),
+                json(),
+                postcss({
+                    extract: false,
+                    modules: true,
+                    writeDefinitions: false,
+                    inject: true,
+                    use: ['sass'],
+                }),
+            ]
+        }
+    },
 }

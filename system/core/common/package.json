@@ -32,5 +32,8 @@
   "scripts": {
     "build": "npx rollup -c",
     "watch": "npx rollup -cw"
+  },
+  "resolutions": {
+    "webpack": "5.6.0"
   }
 }
