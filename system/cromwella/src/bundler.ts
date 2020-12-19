@@ -42,7 +42,7 @@ const colors: any = colorsdef;
  */
 
 export const bundler = (projectRootDir: string, installationMode: string,
-    isProduction: boolean, rebundle: boolean) => {
+    isProduction: boolean, rebundle: boolean, noInstall?: boolean) => {
 
     // console.log('process', process.cwd(), '__dirname', __dirname, 'projectRootDir', projectRootDir)
 
@@ -156,7 +156,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
         // Install node_modules locally
 
 
-        if (!fs.existsSync(nodeModulesDir)) {
+        if (!noInstall && !fs.existsSync(nodeModulesDir)) {
             const tempPackageContent = {
                 "name": tempPckgName,
                 "version": "1.0.0",
@@ -168,7 +168,7 @@ export const bundler = (projectRootDir: string, installationMode: string,
             spawnSync(`pnpm i --filter ${tempPckgName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
         }
 
-        if (!fs.existsSync(nodeModulesDir)) {
+        if (!noInstall && !fs.existsSync(nodeModulesDir)) {
             console.log(colors.brightRed('Cromwella:bundler: Failed to install node_modules'));
             // return;
         }

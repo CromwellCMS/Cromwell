@@ -29,13 +29,7 @@ class CRestAPIClient {
     }
 
     private logError = (name: string, e: any) => {
-        console.error(`CRestAPIClient::${name ?? ''}`, e?.syscall, e?.errno, e?.code,
-            `${e?.address}:${e?.port}`, {
-            url: e?.config?.url,
-            method: e?.config?.method,
-            headers: e?.config?.headers,
-            timeout: e?.config?.timeout,
-        })
+        console.error(`CRestAPIClient::${name ?? ''}`, e);
     }
 
     public getCmsConfig = async (): Promise<TCmsConfig> => {

@@ -1,7 +1,16 @@
-import { isServer } from '@cromwell/core';
+import { isServer, getStore } from '@cromwell/core';
 import { fetch as fetchPolyfill } from 'whatwg-fetch';
 
 export const fetch = (...args) => {
-    const func = isServer() ? Function("return require('node-fetch')")() : fetchPolyfill;
+    let func: any;
+    if (isServer()) {
+        try {
+            //@ts-ignore
+            func = Function('require', "return require('node-fetch')")(require);
+        } catch (e) { }
+        if (!func) func = getStore()?.nodeModules?.modules?.['node-fetch'];
+        if (!func) throw new Error('@cromwell/core-frontend: Failed to require node-fetch');
+    } else func = fetchPolyfill;
+    
     return func(args);
 }

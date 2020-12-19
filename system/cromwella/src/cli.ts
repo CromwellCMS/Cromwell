@@ -22,16 +22,16 @@ const cli = () => {
     }
 
     const isProduction = Boolean(typeof args.production === 'boolean' && args.production)
+    const noInstall = Boolean(args['skip-install']);
     const installationMode = isProduction ? 'production' : 'development';
     const forceInstall = Boolean(args.f);
 
-
     if (scriptName === 'bundle' || scriptName === 'b') {
         const { bundler } = require('./bundler');
-        bundler(projectRootDir, installationMode, isProduction, false);
+        bundler(projectRootDir, installationMode, isProduction, false, noInstall);
     } else if (scriptName === 'rebundle' || scriptName === 'r') {
         const { bundler } = require('./bundler');
-        bundler(projectRootDir, installationMode, isProduction, true);
+        bundler(projectRootDir, installationMode, isProduction, true, noInstall);
     } else if (scriptName === 'install' || scriptName === 'i') {
         const { installer } = require('./installer');
         installer(projectRootDir, installationMode, isProduction, forceInstall);

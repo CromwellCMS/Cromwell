@@ -2,10 +2,10 @@ import pckg from '../../package.json';
 const { getModuleImporter } = require('@cromwell/cromwella/build/importer.js');
 
 export const importRendererDeps = () => {
+    const { isServer, getStore } = require('@cromwell/core');
     const React = require('react');
     const NextHead = require('next/head');
 
-    const { isServer, getStore } = require('@cromwell/core');
     const importer = getModuleImporter();
     //@ts-ignore
     getStore().nodeModules.modules['react'] = React;
@@ -15,6 +15,10 @@ export const importRendererDeps = () => {
     getStore().nodeModules.modules['next/head'] = NextHead;
 
     if (isServer()) {
+        const nodeFetch = require('node-fetch');
+        //@ts-ignore
+        getStore().nodeModules.modules['node-fetch'] = nodeFetch;
+
         importer.importSciptExternals?.({
             "name": "@cromwell/renderer",
             "externalDependencies": {
