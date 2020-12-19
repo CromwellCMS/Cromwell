@@ -1,15 +1,15 @@
-import { StaticPageContext, TFrontendPluginProps } from '@cromwell/core';
-import { FrontendPlugin, getRestAPIClient, Link } from '@cromwell/core-frontend';
+import { TFrontendPluginProps } from '@cromwell/core';
+import { FrontendPlugin, Link } from '@cromwell/core-frontend';
 import { MenuItem, Popover } from '@material-ui/core';
 import React, { useState } from 'react';
-import { defaultSettings } from '../defaultSettings';
+
 import { TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
 
 
 const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
     const classes = useStyles();
-    const items = props?.settings?.items ?? defaultSettings?.items ?? [];
+    const items = props?.settings?.items ?? [];
     const [activeItem, setActiveItem] = useState<string>('none');
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
 

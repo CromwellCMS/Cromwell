@@ -1,16 +1,19 @@
-import { TPluginInfo, TPluginEntity } from '@cromwell/core';
-import { getRestAPIClient, getGraphQLClient } from '@cromwell/core-frontend';
-import { Card, IconButton, Tooltip, Button } from '@material-ui/core';
+import { TPluginEntity, TPluginInfo } from '@cromwell/core';
+import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
+import { Button, Card, IconButton, Tooltip } from '@material-ui/core';
 import {
-    Delete as DeleteIcon, Edit as EditIcon, LibraryAdd as LibraryAddIcon,
-    Settings as SettingsIcon, AddCircleOutline as AddCircleOutlineIcon,
+    AddCircleOutline as AddCircleOutlineIcon,
+    Delete as DeleteIcon,
+    LibraryAdd as LibraryAddIcon,
+    Settings as SettingsIcon,
 } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
+
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { pluginPageInfo } from '../../constants/PageInfos';
 import styles from './PluginList.module.scss';
-import { toast } from 'react-toastify';
-import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 
 export default function PluginList() {
     const history = useHistory();
@@ -28,7 +31,6 @@ export default function PluginList() {
             const pluginEntities: TPluginEntity[] = await graphQLClient.getAllEntities('Plugin',
                 graphQLClient.PluginFragment, 'PluginFragment');
             if (pluginEntities && Array.isArray(pluginEntities)) setPluginList(pluginEntities);
-            console.log('pluginEntities', pluginEntities);
         }
 
         if (pluginInfos && Array.isArray(pluginInfos)) setPluginInfoList(pluginInfos);

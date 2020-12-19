@@ -1,18 +1,11 @@
-import { DBTableNames, TProduct, TPagedList, logLevelMoreThan } from '@cromwell/core';
-import {
-    applyGetManyFromOne,
-    getPaged,
-    PagedParamsInput,
-    PagedProduct,
-    Product,
-    ProductCategoryRepository,
-    ProductRepository,
-} from '@cromwell/core-backend';
+import { DBTableNames, logLevelMoreThan, TPagedList, TProduct } from '@cromwell/core';
+import { applyGetManyFromOne, getPaged, PagedParamsInput, Product, ProductRepository } from '@cromwell/core-backend';
 import { Arg, Query, Resolver } from 'type-graphql';
-import { Brackets, getCustomRepository, SelectQueryBuilder, LessThanOrEqual, MoreThanOrEqual } from 'typeorm';
-import { TProductFilterAttribute, TProductFilter, TFilteredList, TFilterMeta } from '../../types';
-import ProductFilterInput from '../entities/ProductFilter';
+import { Brackets, getCustomRepository, SelectQueryBuilder } from 'typeorm';
+
+import { TFilteredList, TFilterMeta, TProductFilter } from '../../types';
 import FilteredProduct from '../entities/FilteredProduct';
+import ProductFilterInput from '../entities/ProductFilter';
 
 @Resolver(Product)
 export default class ProductFilterResolver {
@@ -37,6 +30,7 @@ export default class ProductFilterResolver {
             }
             return qb;
         }
+
         const getFilterMeta = async (): Promise<TFilterMeta> => {
             // Get max price
             const qb = getQb(false);
@@ -50,6 +44,7 @@ export default class ProductFilterResolver {
                 minPrice, maxPrice
             }
         }
+        
         const getElements = async (): Promise<TPagedList<TProduct>> => {
             const qb = getQb();
             return await getPaged<TProduct>(qb, DBTableNames.Product, pagedParams);

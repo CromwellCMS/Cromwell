@@ -16,12 +16,10 @@ import {
     Add as AddIcon, ExpandMore as ExpandMoreIcon,
     HighlightOff as HighlightOffIcon
 } from '@material-ui/icons';
-//@ts-ignore
-import cromwellConfig from '../../cromwell.config.js';
-import { defaultSettings } from '../defaultSettings';
 import { TMainMenuItem, TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
 
+const pluginName = 'MainMenu';
 let items: TMainMenuItem[] = [];
 
 export default function index() {
@@ -34,15 +32,10 @@ export default function index() {
     useEffect(() => {
         (async () => {
             setIsloading(true);
-            const settings: TMainMenuSettings = await apiClient?.getPluginSettings(cromwellConfig.name);
+            const settings: TMainMenuSettings = await apiClient?.getPluginSettings(pluginName);
             if (settings) {
-                items = settings.items || [];
+                items = settings.items ?? [];
                 setSettings(settings);
-            }
-            else {
-                await apiClient?.setPluginSettings(cromwellConfig.name, defaultSettings);
-                items = defaultSettings.items || [];
-                setSettings(defaultSettings);
             }
             setIsloading(false);
         })()
@@ -54,7 +47,7 @@ export default function index() {
                 <LoadBox />
             ) : (
                     <>
-                        <h2>Settigns</h2>
+                        <h2>Main menu settings</h2>
                         <div className={classes.itemList}>
                             {items && items.map((data, i) => {
                                 return <Item i={i} updateList={forceUpdate} />
@@ -74,7 +67,7 @@ export default function index() {
                                 setIsloading(true);
                                 if (settings) {
                                     settings.items = items;
-                                    await apiClient?.setPluginSettings(cromwellConfig.name, settings);
+                                    await apiClient?.setPluginSettings(pluginName, settings);
                                 }
                                 setIsloading(false);
                             }}>
