@@ -1,41 +1,56 @@
 import 'reflect-metadata';
 
-import { apiV1BaseRoute, TCmsConfig, setStoreItem, currentApiVersion, serviceLocator } from '@cromwell/core';
+import { apiV1BaseRoute, currentApiVersion, serviceLocator, setStoreItem, logLevelMoreThan } from '@cromwell/core';
 import {
-    Product, ProductCategory, Post, Author, Attribute, ThemeEntity, PluginEntity,
-    ProductReview, readCMSConfigSync, serverMessages, InputThemeEntity, InputPluginEntity
+    Attribute,
+    Author,
+    InputPluginEntity,
+    InputThemeEntity,
+    PluginEntity,
+    Post,
+    Product,
+    ProductCategory,
+    ProductReview,
+    readCMSConfigSync,
+    serverMessages,
+    ThemeEntity,
 } from '@cromwell/core-backend';
 import { ApolloServer } from 'apollo-server-express';
-import express from 'express';
-import fs from 'fs-extra';
-import { resolve } from 'path';
-import { buildSchema } from 'type-graphql';
-import { createConnection, ConnectionOptions } from 'typeorm';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import swaggerUi from 'swagger-ui-express';
-import swaggerJSDoc from 'swagger-jsdoc';
+import express from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
-import { getThemeController } from './controllers/themeController';
-import { getPluginsController } from './controllers/pluginsController';
+import { resolve } from 'path';
+import swaggerJSDoc from 'swagger-jsdoc';
+import swaggerUi from 'swagger-ui-express';
+import { buildSchema } from 'type-graphql';
+import { ConnectionOptions, createConnection } from 'typeorm';
+import yargs from 'yargs-parser';
+
+import { projectRootDir } from './constants';
 import { getCmsController } from './controllers/cmsController';
 import { getMockController } from './controllers/mockController';
-import { rebuildPage } from './helpers/PageBuilder';
-import { createResolver } from './helpers/createResolver';
+import { getPluginsController } from './controllers/pluginsController';
+import { getThemeController } from './controllers/themeController';
 import { collectPlugins } from './helpers/collectPlugins';
+import { GenericTheme, GenericPlugin } from './helpers/genericEntities';
+import { rebuildPage } from './helpers/PageBuilder';
+import { AttributeResolver } from './resolvers/AttributeResolver';
 import { AuthorResolver } from './resolvers/AuthorResolver';
 import { PostResolver } from './resolvers/PostResolver';
 import { ProductCategoryResolver } from './resolvers/ProductCategoryResolver';
 import { ProductResolver } from './resolvers/ProductResolver';
-import { AttributeResolver } from './resolvers/AttributeResolver';
 import { ProductReviewResolver } from './resolvers/ProductReviewResolver';
-import { projectRootDir } from './constants';
 
 setStoreItem('rebuildPage', rebuildPage);
+const args = yargs(process.argv.slice(2));
 
-const env: 'dev' | 'prod' | undefined = process.env.ENV ? process.env.ENV as any : 'prod';
+const env: 'dev' | 'prod' = args.env ?? 'prod';
+const logLevel = args.logLevel ?? 'errors-only';
+
 setStoreItem('environment', {
-    mode: env
+    mode: env,
+    logLevel
 });
 
 const config = readCMSConfigSync(projectRootDir)
@@ -70,8 +85,8 @@ async function apiServer(): Promise<void> {
             ProductCategoryResolver,
             ProductResolver,
             ProductReviewResolver,
-            createResolver('Theme', 'theme', ThemeEntity, InputThemeEntity),
-            createResolver('Plugin', 'plugin', PluginEntity, InputPluginEntity),
+            GenericPlugin.resolver,
+            GenericTheme.resolver,
             ...pluginsExports.resolvers
         ],
         dateScalarMode: "isoDate",

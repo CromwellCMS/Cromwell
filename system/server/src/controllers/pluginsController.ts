@@ -1,14 +1,29 @@
-import { Router } from 'express';
-import fs, { pathExists } from 'fs-extra';
-import { TPluginConfig, TPluginInfo } from '@cromwell/core';
-import { getGraphQLClient } from '@cromwell/core-frontend';
-import { projectRootDir } from '../constants';
-import { resolve } from 'path';
-import { getMetaInfoPath, getPluginAdminBundlePath, getPluginAdminCjsPath, getPluginFrontendBundlePath, getPluginFrontendCjsPath, buildDirName } from '@cromwell/core-backend';
-import { TSciprtMetaInfo, TFrontendBundle, TPluginEntityInput } from '@cromwell/core';
-import normalizePath from 'normalize-path';
+import {
+    logLevelMoreThan,
+    TFrontendBundle,
+    TPluginEntity,
+    TPluginEntityInput,
+    TPluginInfo,
+    TSciprtMetaInfo,
+} from '@cromwell/core';
+import {
+    buildDirName,
+    getMetaInfoPath,
+    getPluginAdminBundlePath,
+    getPluginAdminCjsPath,
+    getPluginFrontendBundlePath,
+    getPluginFrontendCjsPath,
+} from '@cromwell/core-backend';
 import decache from 'decache';
-import fetch from 'cross-fetch';
+import { Router } from 'express';
+import fs from 'fs-extra';
+import normalizePath from 'normalize-path';
+import { resolve } from 'path';
+import symlinkDir from 'symlink-dir';
+import { getCustomRepository } from 'typeorm';
+
+import { projectRootDir } from '../constants';
+import { GenericPlugin } from '../helpers/genericEntities';
 
 const settingsPath = resolve(projectRootDir, 'settings/plugins');
 const pluginsPath = resolve(projectRootDir, 'plugins');
@@ -16,64 +31,12 @@ const pluginsPath = resolve(projectRootDir, 'plugins');
 // < HELPERS >
 
 /**
- * Returns original config from plugin's directory
- * @param pluginName 
- * @param cb 
- */
-export const readPluginConfig = async (pluginName: string): Promise<TPluginConfig | null> => {
-    const filePath = resolve(pluginsPath, pluginName, 'cromwell.config.js');
-    if (await fs.pathExists(filePath)) {
-        try {
-            decache(filePath);
-            let out = require(filePath);
-            if (out && typeof out === 'object') {
-                return out;
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
-    return null;
-}
-
-/**
- * Read default settings from plugin's folder 
- * @param pluginName name of plugin and plugin's folder
- * @param cb callback with settings
- */
-const readPluginDefaultSettings = async (pluginName: string): Promise<any> => {
-    const out = await readPluginConfig(pluginName);
-    if (out && out.defaultSettings) {
-        return out.defaultSettings;
-    }
-    return null;
-}
-
-/**
- * Read plugin's user settings
- * @param pluginName name of plugin and plugin's directory
- * @param cb callback with settings
- */
-const readPluginSettings = async (pluginName: string): Promise<any> => {
-    const filePath = resolve(settingsPath, pluginName, 'settings.json');
-
-    if (await fs.pathExists(filePath)) {
-        try {
-            const data = await fs.readFile(filePath);
-            let out = JSON.parse(data.toString());
-            return out;
-        } catch (e) {
-            console.error("Failed to read plugin's settings", e);
-        }
-    }
-}
-
-/**
  * Reads files of a plugin in frontend or admin directory.
  * @param pluginName 
  * @param pathGetter 
  */
 const getPluginBundle = async (pluginName: string, bundleType: 'admin' | 'frontend'): Promise<TFrontendBundle | undefined> => {
+    if (logLevelMoreThan('detailed')) console.log('pluginsController::getPluginBundle');
     let out: TFrontendBundle | undefined = undefined;
     let pathGetter: ((distDir: string) => string) | undefined = undefined;
     let cjsPathGetter: ((distDir: string) => string) | undefined = undefined;
@@ -118,6 +81,20 @@ const getPluginBundle = async (pluginName: string, bundleType: 'admin' | 'fronte
     return out;
 }
 
+
+/**
+ * Returns a Plugin data from DB
+ * @param pluginName 
+ */
+export const getPluginEntity = async (pluginName: string): Promise<TPluginEntity | undefined> => {
+    const pluginRepo = getCustomRepository(GenericPlugin.repository);
+    return pluginRepo.findOne({
+        where: {
+            name: pluginName
+        }
+    });
+}
+
 // < HELPERS />
 
 
@@ -149,16 +126,34 @@ export const getPluginsController = (): Router => {
      *         description: settings
      */
     pluginsController.get(`/settings/:pluginName`, async (req, res) => {
+        if (logLevelMoreThan('detailed')) console.log('pluginsController::/settings/:pluginName');
         let out: Record<string, any> = {};
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {
-            const settings = await readPluginSettings(pluginName);
-            const defaultSettings = await readPluginDefaultSettings(pluginName);
-            const out = Object.assign({}, defaultSettings, settings);
-            res.send(out);
-        } else {
-            res.status(404).send("Invalid pluginName")
+            const plugin = await getPluginEntity(pluginName);
+
+            if (plugin) {
+                let defaultSettings;
+                let settings;
+                try {
+                    if (plugin.defaultSettings) defaultSettings = JSON.parse(plugin.defaultSettings);
+                } catch (e) {
+                    if (logLevelMoreThan('detailed')) console.error(e)
+                }
+                try {
+                    if (plugin.settings) settings = JSON.parse(plugin.settings);
+                } catch (e) {
+                    if (logLevelMoreThan('detailed')) console.error(e)
+                }
+
+                const out = Object.assign({}, defaultSettings, settings);
+                res.send(out);
+                return;
+            }
         }
+
+        res.status(404).send("Invalid pluginName");
+
     })
 
 
@@ -182,20 +177,23 @@ export const getPluginsController = (): Router => {
      *       200:
      *         description: success
      */
-    pluginsController.post(`/settings/:pluginName`, function (req, res) {
-        if (req.params.pluginName && req.params.pluginName !== "") {
-            const filePath = resolve(settingsPath, req.params.pluginName, 'settings.json');
-            fs.outputFile(filePath, JSON.stringify(req.body, null, 2), (err) => {
-                if (err) {
-                    console.error(err);
-                    res.send(false);
-                }
+    pluginsController.post(`/settings/:pluginName`, async function (req, res) {
+        if (logLevelMoreThan('detailed')) console.log('pluginsController::post /settings/:pluginName');
+        const pluginName = req.params?.pluginName;
+        if (pluginName && pluginName !== "") {
+
+            const plugin = await getPluginEntity(pluginName);
+            if (plugin) {
+                plugin.settings = JSON.stringify(req.body, null, 2);
+                const pluginRepo = getCustomRepository(GenericPlugin.repository);
+                await pluginRepo.save(plugin);
                 res.send(true);
-            });
+                return;
+            } else {
+                if (logLevelMoreThan('errors-only')) console.error(`pluginsController::post: Error Plugin ${pluginName} was no found!`);
+            }
         }
-        else {
-            res.send(false);
-        }
+        res.send(false);
     });
 
 
@@ -220,6 +218,7 @@ export const getPluginsController = (): Router => {
      *         description: bundle
      */
     pluginsController.get(`/frontend-bundle/:pluginName`, async (req, res) => {
+        if (logLevelMoreThan('detailed')) console.log('pluginsController::/frontend-bundle/:pluginName');
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {
             const bundle = await getPluginBundle(pluginName, 'frontend');
@@ -250,6 +249,7 @@ export const getPluginsController = (): Router => {
      *         description: bundle
      */
     pluginsController.get(`/admin-bundle/:pluginName`, async (req, res) => {
+        if (logLevelMoreThan('detailed')) console.log('pluginsController::/admin-bundle/:pluginName');
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {
             const bundle = await getPluginBundle(pluginName, 'admin');
@@ -274,6 +274,7 @@ export const getPluginsController = (): Router => {
      *         description: list
      */
     pluginsController.get(`/list`, async (req, res) => {
+        if (logLevelMoreThan('detailed')) console.log('pluginsController::/list');
         const out: TPluginInfo[] = [];
 
         const plugins: string[] = await fs.readdir(pluginsPath);
@@ -299,7 +300,7 @@ export const getPluginsController = (): Router => {
      *       - application/javascript
      *     parameters:
      *       - name: pluginName
-     *         description: Name of a plugin to load bundle for.
+     *         description: Name of a Plugin install.
      *         in: path
      *         required: true
      *         type: string
@@ -308,8 +309,8 @@ export const getPluginsController = (): Router => {
      *         description: ok
      */
     pluginsController.get(`/install/:pluginName`, async (req, res) => {
+        if (logLevelMoreThan('detailed')) console.log('pluginsController::/install/:pluginName');
         const pluginName = req.params?.pluginName;
-        console.log('install/:pluginName', pluginName);
         if (pluginName && pluginName !== "") {
             const pluginPath = resolve(pluginsPath, pluginName);
             if (await fs.pathExists(pluginPath)) {
@@ -317,25 +318,54 @@ export const getPluginsController = (): Router => {
                 // @TODO Execute install script
 
 
-                const graphQLClient = getGraphQLClient(fetch);
-                if (graphQLClient) {
-                    try {
-                        const data = await graphQLClient.createEntity('Plugin', 'PluginInput',
-                            graphQLClient.PluginFragment, 'PluginFragment',
-                            {
-                                name: pluginName,
-                                slug: pluginName,
-                                isInstalled: true
-                            } as TPluginEntityInput
-                        );
 
-                        if (data) {
-                            res.send(true);
-                            return;
-                        }
+                // Read plugin config
+                let pluginConfig;
+                const filePath = resolve(pluginPath, 'cromwell.config.js');
+                if (await fs.pathExists(filePath)) {
+                    try {
+                        decache(filePath);
+                        pluginConfig = require(filePath);
                     } catch (e) {
-                        console.error(e)
+                        console.error(e);
                     }
+                }
+                const defaultSettings = pluginConfig?.defaultSettings;
+
+                // Make symlink for public static content
+                const pluginPublicDir = resolve(pluginPath, 'public');
+                if (await fs.pathExists(pluginPublicDir)) {
+                    try {
+                        const publicPluginsDir = resolve(projectRootDir, 'public/plugins');
+                        await fs.ensureDir(publicPluginsDir);
+                        await symlinkDir(pluginPublicDir, resolve(publicPluginsDir, pluginName))
+                    } catch (e) { console.log(e) }
+                }
+
+                // Create DB entity
+                const input: TPluginEntityInput = {
+                    name: pluginName,
+                    slug: pluginName,
+                    isInstalled: true,
+                };
+                if (defaultSettings) {
+                    try {
+                        input.defaultSettings = JSON.stringify(defaultSettings);
+                        input.settings = JSON.stringify(defaultSettings);
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+
+                const pluginRepo = getCustomRepository(GenericPlugin.repository);
+                try {
+                    const entity = await pluginRepo.createEntity(input);
+                    if (entity) {
+                        res.send(true);
+                        return;
+                    }
+                } catch (e) {
+                    console.error(e)
                 }
             }
         };

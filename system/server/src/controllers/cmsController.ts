@@ -4,7 +4,6 @@ import { Router } from 'express';
 import fs from 'fs-extra';
 import { readCMSConfig } from '@cromwell/core-backend';
 import { resolve } from 'path';
-import decache from 'decache';
 
 import { projectRootDir } from '../constants';
 
@@ -48,7 +47,7 @@ export const getCmsController = (): Router => {
      * 
      * /cms/themes:
      *   get:
-     *     description: Returns list of themes info.
+     *     description: Returns list of themes in filedir.
      *     tags: 
      *       - CMS
      *     produces:
@@ -70,7 +69,6 @@ export const getCmsController = (): Router => {
             const configPath = resolve(themesDir, dirName, 'cromwell.config.js');
             if (await fs.pathExists(configPath)) {
                 try {
-                    decache(configPath);
                     const themeConfig: TThemeConfig | undefined = require(configPath);
                     if (themeConfig && themeConfig.main) {
                         out.push(themeConfig.main);

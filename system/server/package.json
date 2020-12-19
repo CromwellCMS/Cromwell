@@ -27,6 +27,7 @@
     "sqlite3": "^4.2.0",
     "swagger-jsdoc": "^4.2.0",
     "swagger-ui-express": "^4.1.4",
+    "symlink-dir": "^4.1.0",
     "tslib": "2.0.1",
     "type-graphql": "^1.0.0",
     "typeorm": "^0.2.28",

@@ -186,5 +186,14 @@ module.exports = {
                 }
             ]
         }
-    }
+    },
+    globalModifications: [
+        {
+            "type": "plugin",
+            "componentId": "header_main_menu",
+            "plugin": {
+                "pluginName": "MainMenu"
+            }
+        }
+    ]
 };

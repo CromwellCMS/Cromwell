@@ -2,24 +2,24 @@ const commonjs = require('@rollup/plugin-commonjs');
 const json = require('@rollup/plugin-json');
 const typescript = require('@rollup/plugin-typescript');
 const postcss = require('rollup-plugin-postcss');
-const autoprefixer = require("autoprefixer");
-const constants = require('./src/constants');
 
 module.exports = {
-    "main": {
-        "themeName": "cromwell-blog",
-        "title": "Blog",
-        "previewImage": "/themes/cromwell-blog/blog.png",
-        "description": "Simple blog website",
-        "palette": {
+    name: "cromwell-blog",
+    type: 'theme',
+    main: {
+        themeName: "cromwell-blog",
+        title: "Blog",
+        previewImage: "/themes/cromwell-blog/blog.png",
+        description: "Simple blog website",
+        palette: {
             "primaryColor": "#9900CC"
         },
-        "globalCss": [
+        globalCss: [
             "react-toastify/dist/ReactToastify.css"
         ],
-        "headHtml": "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap\" rel=\"stylesheet\" /><link href=\"https://unpkg.com/reset-css/reset.css\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />"
+        headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap\" rel=\"stylesheet\" /><link href=\"https://unpkg.com/reset-css/reset.css\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />"
     },
-    "pages": [
+    pages: [
         {
             "route": "index",
             "name": "index",
@@ -27,7 +27,7 @@ module.exports = {
             "modifications": []
         }
     ],
-    "plugins": {
+    plugins: {
         "ProductShowcase": {
             "options": {}
         },

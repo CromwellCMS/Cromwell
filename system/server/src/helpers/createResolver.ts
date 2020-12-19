@@ -3,12 +3,12 @@ import { BaseRepository, PagedMeta, PagedParamsInput } from '@cromwell/core-back
 import { Arg, Args, ArgsType, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { EntityRepository, getCustomRepository } from 'typeorm';
 
-export const createResolver = <EntityType>(entityName: string, DBTableName: string,
+export const createResolver = <EntityType, EntityInputType = EntityType>(entityName: string, DBTableName: string,
     EntityClass: new (...args: any[]) => EntityType,
-    InputEntityClass: new (...args: any[]) => EntityType) => {
+    InputEntityClass: new (...args: any[]) => EntityInputType) => {
 
     @EntityRepository(EntityClass)
-    class GenericRepository extends BaseRepository<EntityType> {
+    class GenericRepository extends BaseRepository<EntityType, EntityInputType> {
         constructor() {
             super(DBTableName, EntityClass)
         }
@@ -26,7 +26,7 @@ export const createResolver = <EntityType>(entityName: string, DBTableName: stri
     @ArgsType()
     class CreateArgs {
         @Field(() => InputEntityClass)
-        data: EntityType;
+        data: EntityInputType;
     }
 
     @ArgsType()
@@ -35,7 +35,7 @@ export const createResolver = <EntityType>(entityName: string, DBTableName: stri
         id: string;
 
         @Field(() => InputEntityClass)
-        data: EntityType;
+        data: EntityInputType;
     }
 
     const getPagedPath = GraphQLPaths.Generic.getManyPaged + entityName;
@@ -89,6 +89,12 @@ export const createResolver = <EntityType>(entityName: string, DBTableName: stri
 
     }
 
-    return GenericResolver;
+    return {
+        resolver: GenericResolver,
+        repository: GenericRepository,
+        pagedEntity: PagedEntity,
+        createArgs: CreateArgs,
+        updateArgs: UpdateArgs
+    }
 }
 
