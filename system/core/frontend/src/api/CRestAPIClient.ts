@@ -17,190 +17,138 @@ import {
 class CRestAPIClient {
     constructor(private baseUrl: string) { }
 
-    public get = async <T>(route: string): Promise<T> => {
-        return (await fetch(route)).json();
-    }
-
-    public post = async <T>(route: string, data: any): Promise<T> => {
-        return (await fetch(route, {
-            method: 'post',
-            body: JSON.stringify(data)
-        })).json();
-    }
-
-    private logError = (name: string, e: any) => {
-        console.error(`CRestAPIClient::${name ?? ''}`, e);
-    }
-
-    public getCmsConfig = async (): Promise<TCmsConfig> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/cms/config`);
-        } catch (e) { this.logError('getCmsConfig', e); }
+    private handleError = (responce: Response, data: any, route: string): any => {
+        if (responce.status >= 400) {
+            this.logError(route, `Request failed, status: ${responce.status}. ${data?.message}`)
+            return undefined;
+        }
         return data;
     }
 
-    public getCmsConfigAndSave = async (): Promise<TCmsConfig> => {
+    private logError = (route: string, e?: any) => {
+        console.error(`CRestAPIClient route: ${route}`, e);
+    }
+
+    public get = async <T>(route: string): Promise<T | undefined> => {
+        try {
+            const res = await fetch(route);
+            const data = await res.json();
+            return this.handleError(res, data, route);
+        } catch (e) {
+            this.logError(route, e);
+        }
+    }
+
+    public post = async <T>(route: string, input: any): Promise<T | undefined> => {
+        try {
+            const res = await window.fetch(route, {
+                method: 'post',
+                body: JSON.stringify(input)
+            })
+            const data = await res.json();
+            return this.handleError(res, data, route);
+        } catch (e) {
+            this.logError(route, e);
+        }
+    }
+
+    public getCmsConfig = async (): Promise<TCmsConfig | undefined> => {
+        return this.get(`${this.baseUrl}/cms/config`);
+    }
+
+    public getCmsConfigAndSave = async (): Promise<TCmsConfig | undefined> => {
         const config = await this.getCmsConfig();
-        setStoreItem('cmsconfig', config);
-        return config;
+        if (config) {
+            setStoreItem('cmsconfig', config);
+            return config;
+        }
     }
 
-    public getThemesInfo = async (): Promise<TThemeMainConfig[]> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/cms/themes`);
-        } catch (e) { this.logError('getThemesInfo', e); }
-        return data;
+    public getThemesInfo = async (): Promise<TThemeMainConfig[] | undefined> => {
+        return this.get(`${this.baseUrl}/cms/themes`);
     }
 
-    public getPageConfig = async (pageRoute: string): Promise<TPageConfig> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/theme/page/?pageRoute=${pageRoute}`);
-        } catch (e) { this.logError('getPageConfig', e); }
-        return data ?? [];
+    public getPageConfig = async (pageRoute: string): Promise<TPageConfig | undefined> => {
+        return this.get(`${this.baseUrl}/theme/page/?pageRoute=${pageRoute}`);
     }
 
     public savePageConfig = async (config: TPageConfig): Promise<boolean> => {
-        let data: any;
-        try {
-            data = await this.post(`${this.baseUrl}/theme/page`, config);
-        } catch (e) { this.logError('savePageConfig', e); }
+        const data = await this.post<boolean>(`${this.baseUrl}/theme/page`, config);
         return data ?? false;
     }
 
-    public getPluginsModifications = async (pageRoute: string): Promise<Record<string, TPluginConfig & { [x: string]: any }>> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/theme/plugins?pageRoute=${pageRoute}`);
-        } catch (e) { this.logError('getPluginsModifications', e); }
-        return data ?? {};
+    public getPluginsModifications = async (pageRoute: string): Promise<Record<string, TPluginConfig & { [x: string]: any }> | undefined> => {
+        return this.get(`${this.baseUrl}/theme/plugins?pageRoute=${pageRoute}`);
     }
 
-    public getPluginNames = async (): Promise<string[]> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/theme/plugin-names`);
-        } catch (e) { this.logError('getPluginNames', e); }
-        return data ?? [];
+    public getPluginNames = async (): Promise<string[] | undefined> => {
+        return this.get(`${this.baseUrl}/theme/plugin-names`);
     }
 
-    public getPagesInfo = async (): Promise<TPageInfo[]> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/theme/pages/info`);
-        } catch (e) { this.logError('getPagesInfo', e); }
-        return data ?? [];
+    public getPagesInfo = async (): Promise<TPageInfo[] | undefined> => {
+        return this.get(`${this.baseUrl}/theme/pages/info`);
     }
 
-    public getPageConfigs = async (): Promise<TPageConfig[]> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/theme/pages/configs`);
-        } catch (e) { this.logError('getPageConfigs', e); }
-        return data ?? [];
+    public getPageConfigs = async (): Promise<TPageConfig[] | undefined> => {
+        return this.get(`${this.baseUrl}/theme/pages/configs`);
     }
 
-    public getThemeMainConfig = async (): Promise<TThemeMainConfig> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/theme/main-config`);
-        } catch (e) { this.logError('getThemeMainConfig', e); }
-        return data ?? {};
+    public getThemeMainConfig = async (): Promise<TThemeMainConfig | undefined> => {
+        return this.get(`${this.baseUrl}/theme/main-config`);
     }
 
-    public getThemeCustomConfig = async (): Promise<Record<string, any>> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/theme/custom-config`);
-        } catch (e) { this.logError('getThemeCustomConfig', e); }
-        return data ?? {};
+    public getThemeCustomConfig = async (): Promise<Record<string, any> | undefined> => {
+        return this.get(`${this.baseUrl}/theme/custom-config`);
     }
 
-    public getThemePageBundle = async (pageRoute: string): Promise<TFrontendBundle | null> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/theme/page-bundle?pageRoute=${pageRoute}`);
-        } catch (e) { this.logError('getThemePageBundle', e); }
-        return data ?? null;
+    public getThemePageBundle = async (pageRoute: string): Promise<TFrontendBundle | undefined> => {
+        return this.get(`${this.baseUrl}/theme/page-bundle?pageRoute=${pageRoute}`);
     }
 
     public installTheme = async (themeName: string): Promise<boolean> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/theme/install/${themeName}`);
-        } catch (e) { this.logError('installTheme', e); }
-        return data ?? null;
+        const data = await this.get<boolean>(`${this.baseUrl}/theme/install/${themeName}`);
+        return data ?? false;
     }
 
 
 
-    public getPluginSettings = async (pluginName: string): Promise<any | null> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/plugin/settings/${pluginName}`);
-        } catch (e) { this.logError('getPluginSettings', e); }
-        return data ?? null;
+    public getPluginSettings = async (pluginName: string): Promise<any | undefined> => {
+        return this.get(`${this.baseUrl}/plugin/settings/${pluginName}`);
     }
 
     public setPluginSettings = async (pluginName: string, settings: any): Promise<boolean> => {
-        let data: any;
-        try {
-            data = await this.post(`${this.baseUrl}/plugin/settings/${pluginName}`, settings);
-        } catch (e) { this.logError('setPluginSettings', e); }
-        return data ?? null;
+        const data = await this.post<boolean>(`${this.baseUrl}/plugin/settings/${pluginName}`, settings);
+        return data ?? false;
     }
 
-    public getPluginFrontendBundle = async (pluginName: string): Promise<TFrontendBundle | null> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/plugin/frontend-bundle/${pluginName}`);
-        } catch (e) { this.logError('getPluginFrontendBundle', e); }
-        return data ?? null;
+    public getPluginFrontendBundle = async (pluginName: string): Promise<TFrontendBundle | undefined> => {
+        return this.get(`${this.baseUrl}/plugin/frontend-bundle/${pluginName}`);
     }
 
-    public getPluginAdminBundle = async (pluginName: string): Promise<TFrontendBundle | null> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/plugin/admin-bundle/${pluginName}`);
-        } catch (e) { this.logError('getPluginAdminBundle', e); }
-        return data ?? null;
+    public getPluginAdminBundle = async (pluginName: string): Promise<TFrontendBundle | undefined> => {
+        return this.get(`${this.baseUrl}/plugin/admin-bundle/${pluginName}`);
     }
 
-    public getPluginList = async (): Promise<TPluginInfo[] | null> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/plugin/list`);
-        } catch (e) { this.logError('getPluginList', e); }
-        return data ?? null;
+    public getPluginList = async (): Promise<TPluginInfo[] | undefined> => {
+        return this.get(`${this.baseUrl}/plugin/list`);
     }
 
     public installPlugin = async (pluginName: string): Promise<boolean> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/plugin/install/${pluginName}`);
-        } catch (e) { this.logError('installPlugin', e); }
-        return data ?? null;
+        const data = await this.get<boolean>(`${this.baseUrl}/plugin/install/${pluginName}`);
+        return data ?? false;
     }
 
 
     // < Manager >
 
-    public changeTheme = async (themeName: string): Promise<boolean | null> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/manager/services/change-theme/${themeName}`);
-        } catch (e) { this.logError('changeTheme', e); }
-        return data ?? null;
+    public changeTheme = async (themeName: string): Promise<boolean> => {
+        const data = await this.get<boolean>(`${this.baseUrl}/manager/services/change-theme/${themeName}`);
+        return data ?? false;
     }
 
-    public rebuildTheme = async (): Promise<boolean | null> => {
-        let data: any;
-        try {
-            data = await this.get(`${this.baseUrl}/manager/services/rebuild-theme`);
-        } catch (e) { this.logError('rebuildTheme', e); }
-        return data ?? null;
+    public rebuildTheme = async (): Promise<boolean> => {
+        const data = await this.get<boolean>(`${this.baseUrl}/manager/services/rebuild-theme`);
+        return data ?? false;
     }
 
     // < / Manager >

@@ -1,38 +1,10 @@
-var spawnSync = require("child_process").spawnSync;
-var path = require('path');
-var resolve = path.resolve;
-var fs = require('fs');
+const spawnSync = require("child_process").spawnSync;
+const resolve = require('path').resolve;
+const fs = require('fs');
 
-(function () {
-    function copyFileSync(source, target) {
-        var targetFile = target;
-        if (fs.existsSync(target)) {
-            if (fs.lstatSync(target).isDirectory()) {
-                targetFile = path.join(target, path.basename(source));
-            }
-        }
-        fs.writeFileSync(targetFile, fs.readFileSync(source));
-    }
-    function copyFolderRecursiveSync(source, target) {
-        var files = [];
-        var targetFolder = target;
-        if (!fs.existsSync(targetFolder)) {
-            fs.mkdirSync(targetFolder, { recursive: true });
-        }
-        if (fs.lstatSync(source).isDirectory()) {
-            files = fs.readdirSync(source);
-            files.forEach(function (file) {
-                var curSource = path.join(source, file);
-                if (fs.lstatSync(curSource).isDirectory()) {
-                    copyFolderRecursiveSync(curSource, targetFolder);
-                } else {
-                    copyFileSync(curSource, targetFolder);
-                }
-            });
-        }
-    }
+(() => {
 
-    function isCoreBuilt() {
+    const isCoreBuilt = () => {
         return !(!fs.existsSync(resolve(coreDir, 'common/dist')) ||
             !fs.existsSync(resolve(coreDir, 'backend/dist')) ||
             !fs.existsSync(resolve(coreDir, 'frontend/dist')) ||
@@ -42,17 +14,17 @@ var fs = require('fs');
     }
 
 
-    var projectRootDir = __dirname;
-    var coreDir = resolve(projectRootDir, 'system/core');
-    var rootNodeModulesDir = resolve(projectRootDir, 'node_modules');
+    const projectRootDir = __dirname;
+    const coreDir = resolve(projectRootDir, 'system/core');
+    const rootNodeModulesDir = resolve(projectRootDir, 'node_modules');
 
-    var rendererBuild = resolve(projectRootDir, 'system/renderer/build');
-    var serverBuild = resolve(projectRootDir, 'system/server/build');
-    var adminPanelBuild = resolve(projectRootDir, 'system/admin-panel/build');
-    var managerBuild = resolve(projectRootDir, 'system/manager/build');
-    var cromwellaBuild = resolve(projectRootDir, 'system/cromwella/build');
+    const rendererBuild = resolve(projectRootDir, 'system/renderer/build');
+    const serverBuild = resolve(projectRootDir, 'system/server/build');
+    const adminPanelBuild = resolve(projectRootDir, 'system/admin-panel/build');
+    const managerBuild = resolve(projectRootDir, 'system/manager/build');
+    const cromwellaBuild = resolve(projectRootDir, 'system/cromwella/build');
 
-    function hasNodeModules() {
+    const hasNodeModules = () => {
         return !(
             !fs.existsSync(rootNodeModulesDir) ||
             !fs.existsSync(resolve(coreDir, 'backend/node_modules')) ||
@@ -68,7 +40,7 @@ var fs = require('fs');
         // If all builds are persisting then will use prod mode (install only dependencies), 
         // otherwise it'll need to build services using dev mode and installing devDependencies additionally
 
-        var isProd = true;
+        const isProd = true;
 
         if (!fs.existsSync(rendererBuild) ||
             !fs.existsSync(serverBuild) ||
@@ -78,8 +50,8 @@ var fs = require('fs');
             !isCoreBuilt()
         ) isProd = false;
 
-        var mode = isProd ? 'production' : 'development';
-        var modeStr = mode === 'production' ? '--prod' : '';
+        const mode = isProd ? 'production' : 'development';
+        const modeStr = mode === 'production' ? '--prod' : '';
 
         // Install pnpm
         console.log('\x1b[36m%s\x1b[0m', `Installing pnpm...`);
@@ -122,8 +94,8 @@ var fs = require('fs');
         }
     }
 
-    var crowellaProjectDir = resolve(projectRootDir, 'system/cromwella');
-    var crowellaPath = resolve(crowellaProjectDir, 'build/cli.js');
+    const crowellaProjectDir = resolve(projectRootDir, 'system/cromwella');
+    const crowellaPath = resolve(crowellaProjectDir, 'build/cli.js');
 
     // Build Cromwella if it is not built
     if (!fs.existsSync(crowellaPath)) {
@@ -143,61 +115,35 @@ var fs = require('fs');
     }
 
 
-    var hasPublicDir = true;
-    var cmsConfig;
-    if (!fs.existsSync(resolve(projectRootDir, 'public'))) {
-        hasPublicDir = false;
-        var cmsConfigPath = resolve(projectRootDir, 'system/cmsconfig.json');
-        try {
-            cmsConfig = JSON.parse(fs.readFileSync(cmsConfigPath).toString());
-        } catch (e) {
-            console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup Failed to read CMS config');
-            console.log(e);
-        }
-    }
-
     // Check themes
-    var themesDir = resolve(projectRootDir, 'themes');
+    const themesDir = resolve(projectRootDir, 'themes');
     if (fs.existsSync(themesDir)) {
-        var themes = fs.readdirSync(themesDir);
-        for (var i = 0; i < themes.length; i++) {
-            var theme = themes[i];
-            var themeDir = resolve(themesDir, theme);
+        const themes = fs.readdirSync(themesDir);
+        for (const i = 0; i < themes.length; i++) {
+            const theme = themes[i];
+            const themeDir = resolve(themesDir, theme);
             if (!fs.existsSync(resolve(themeDir, '.cromwell'))) {
                 console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
                 spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
             }
-
-            // Check if current project root dir has no public folder and copy media from theme
-            if (!hasPublicDir && fs.existsSync(resolve(themeDir, 'public'))) {
-                copyFolderRecursiveSync(resolve(themeDir, 'public'),
-                    resolve(projectRootDir, `public/themes/${theme}`));
-            }
-
         }
     }
 
     // Check plugins
-    var pluginsDir = resolve(projectRootDir, 'plugins');
+    const pluginsDir = resolve(projectRootDir, 'plugins');
     if (fs.existsSync(pluginsDir)) {
-        var plugins = fs.readdirSync(pluginsDir);
-        for (var i = 0; i < plugins.length; i++) {
-            var plugin = plugins[i];
-            var pluginDir = resolve(pluginsDir, plugin);
+        const plugins = fs.readdirSync(pluginsDir);
+        for (const i = 0; i < plugins.length; i++) {
+            const plugin = plugins[i];
+            const pluginDir = resolve(pluginsDir, plugin);
             if (!fs.existsSync(resolve(pluginDir, '.cromwell'))) {
                 console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
                 spawnSync('npm run build', { shell: true, cwd: pluginDir, stdio: 'inherit' });
             }
-
-            // Check if current project root dir has no public folder and copy media from theme
-            if (!hasPublicDir && fs.existsSync(resolve(pluginDir, 'public'))) {
-                copyFolderRecursiveSync(resolve(pluginDir, 'public'),
-                    resolve(projectRootDir, `public/plugins/${plugin}`));
-            }
         }
     }
 
-    var managerPath = resolve(projectRootDir, 'system/manager/startup.js')
+    const managerPath = resolve(projectRootDir, 'system/manager/startup.js')
     // Start system
     try {
         spawnSync(`node ${managerPath} production`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });

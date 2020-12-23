@@ -144,7 +144,6 @@ const main = async () => {
             pageContent = pageInfo.fileContent + '';
         }
 
-        console.log('pageInfo.name', pageInfo.name);
         if (pageInfo.name === '_document') {
             pageContent = `
             ${pageImports}

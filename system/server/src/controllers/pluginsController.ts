@@ -152,7 +152,7 @@ export const getPluginsController = (): Router => {
             }
         }
 
-        res.status(404).send("Invalid pluginName");
+        res.status(400).send({ message: "Invalid pluginName" });
 
     })
 
@@ -222,10 +222,12 @@ export const getPluginsController = (): Router => {
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {
             const bundle = await getPluginBundle(pluginName, 'frontend');
-            if (bundle) res.send(bundle);
-            return;
+            if (bundle) {
+                res.send(bundle);
+                return;
+            }
         };
-        res.status(400).send("Invalid pluginName")
+        res.status(400).send({ message: "Invalid pluginName" })
     })
 
     /**
@@ -253,10 +255,12 @@ export const getPluginsController = (): Router => {
         const pluginName = req.params?.pluginName;
         if (pluginName && pluginName !== "") {
             const bundle = await getPluginBundle(pluginName, 'admin');
-            if (bundle) res.send(bundle);
-            return;
+            if (bundle) {
+                res.send(bundle);
+                return;
+            }
         };
-        res.status(400).send("Invalid pluginName")
+        res.status(400).send({ message: "Invalid pluginName" })
     });
 
     /**
@@ -369,7 +373,7 @@ export const getPluginsController = (): Router => {
                 }
             }
         };
-        res.status(400).send("Invalid pluginName")
+        res.status(400).send({ message: "Invalid pluginName" })
     });
 
     return pluginsController;

@@ -36,7 +36,7 @@ export const getCmsController = (): Router => {
     cmsController.get(`/config`, async function (req, res) {
         if (logLevelMoreThan('detailed')) console.log('cmsController/config');
         const config = await readCMSConfig(projectRootDir);
-        if (!config) res.status(404).send("Failed to read CMS Config")
+        if (!config) res.status(500).send({ message: "Failed to read CMS Config" })
         else {
             res.send(config);
         }

@@ -373,9 +373,8 @@ export const getThemeController = (): Router => {
         if (input && typeof input === 'object') {
             const success = await saveUserPageConfig(input);
             res.send(success);
-        } else {
-            res.send(false);
         }
+        res.send(false);
     })
 
     /**
@@ -621,7 +620,7 @@ export const getThemeController = (): Router => {
                 }
             }
         };
-        res.status(404).send("Invalid pluginName")
+        res.status(400).send({ message: "Invalid pluginName" })
     });
 
 
@@ -704,7 +703,7 @@ export const getThemeController = (): Router => {
                 }
             }
         };
-        res.status(400).send("Invalid themeName")
+        res.status(400).send({ message: "Invalid themeName" })
     });
 
 
