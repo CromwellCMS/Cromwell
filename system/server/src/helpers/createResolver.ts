@@ -5,7 +5,9 @@ import { EntityRepository, getCustomRepository } from 'typeorm';
 
 export const createResolver = <EntityType, EntityInputType = EntityType>(entityName: string, DBTableName: string,
     EntityClass: new (...args: any[]) => EntityType,
-    InputEntityClass: new (...args: any[]) => EntityInputType) => {
+    InputEntityClass?: new (...args: any[]) => EntityInputType) => {
+
+    if (!InputEntityClass) InputEntityClass = EntityClass as any;
 
     @EntityRepository(EntityClass)
     class GenericRepository extends BaseRepository<EntityType, EntityInputType> {
@@ -25,7 +27,7 @@ export const createResolver = <EntityType, EntityInputType = EntityType>(entityN
 
     @ArgsType()
     class CreateArgs {
-        @Field(() => InputEntityClass)
+        @Field(() => InputEntityClass!)
         data: EntityInputType;
     }
 
@@ -34,7 +36,7 @@ export const createResolver = <EntityType, EntityInputType = EntityType>(entityN
         @Field(() => String)
         id: string;
 
-        @Field(() => InputEntityClass)
+        @Field(() => InputEntityClass!)
         data: EntityInputType;
     }
 

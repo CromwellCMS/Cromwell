@@ -180,3 +180,17 @@ type TPluginEntityCore = {
 export type TPluginEntity = TPluginEntityCore & TBasePageEntity;
 
 export type TPluginEntityInput = TPluginEntityCore & TBasePageEntityInput;
+
+
+
+// CMS entity
+
+type TCmsEntityCore = {
+    protocol?: 'http' | 'https';
+    themeName: string;
+    defaultPageSize?: number;
+}
+
+export type TCmsEntity = TCmsEntityCore & TBasePageEntity;
+
+export type TCmsEntityInput = TCmsEntityCore & TBasePageEntityInput;

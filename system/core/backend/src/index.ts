@@ -7,6 +7,7 @@ export * from './entities/AttributeInstance';
 export * from './entities/ProductReview';
 export * from './entities/Plugin';
 export * from './entities/Theme';
+export * from './entities/Cms';
 
 export * from './entities/paged/PagedProduct';
 export * from './entities/paged/PagedMeta';
