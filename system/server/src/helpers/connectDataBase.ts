@@ -16,8 +16,7 @@ import { ConnectionOptions, createConnection } from 'typeorm';
 import { projectRootDir } from '../constants';
 import { collectPlugins } from './collectPlugins';
 
-export const connectDataBase = async (env: string) => {
-
+export const connectDatabase = async (env: string) => {
 
     let connectionOptions: ConnectionOptions | undefined = undefined;
     if (env === 'dev') {

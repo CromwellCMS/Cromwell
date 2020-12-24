@@ -1,5 +1,5 @@
 import {
-    logLevelMoreThan,
+    logFor,
     TCmsEntity,
     TCromwellBlockData,
     TPageConfig,
@@ -80,12 +80,12 @@ export class ThemeService {
             try {
                 if (theme?.defaultSettings) themeConfig = JSON.parse(theme.defaultSettings);
             } catch (e) {
-                if (logLevelMoreThan('detailed')) console.error(e)
+                logFor('detailed', e,  console.error);
             }
             try {
                 if (theme?.settings) userConfig = JSON.parse(theme.settings);
             } catch (e) {
-                if (logLevelMoreThan('detailed')) console.error(e)
+                logFor('detailed', e,  console.error);
             }
         }
 
@@ -281,7 +281,7 @@ export class ThemeService {
      * @param cb cb to return pages info
      */
     public async readAllPageConfigs(): Promise<TPageConfig[]> {
-        if (logLevelMoreThan('detailed')) console.log('themeController::readAllPageConfigs');
+        logFor('detailed', 'themeController::readAllPageConfigs');
 
         const { themeConfig, userConfig, cmsConfig } = await this.readConfigs();
 

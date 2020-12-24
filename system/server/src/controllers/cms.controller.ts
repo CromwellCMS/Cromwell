@@ -1,4 +1,4 @@
-import { logLevelMoreThan, TCmsConfig, TThemeConfig, TThemeMainConfig } from '@cromwell/core';
+import { logFor, TCmsConfig, TThemeConfig, TThemeMainConfig } from '@cromwell/core';
 import { readCMSConfig } from '@cromwell/core-backend';
 import { Controller, Get, HttpException, HttpStatus } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -27,7 +27,7 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getConfig(): Promise<TCmsConfig | undefined> {
-        if (logLevelMoreThan('detailed')) console.log('CmsController::getConfig');
+        logFor('detailed', 'CmsController::getConfig');
         const config = await readCMSConfig(projectRootDir);
         if (!config) {
             throw new HttpException('CmsController::getConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -43,13 +43,13 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getThemes(): Promise<TThemeMainConfig[] | undefined> {
-        if (logLevelMoreThan('detailed')) console.log('cmsController/themes');
+        logFor('detailed', 'cmsController/themes');
         let out: TThemeMainConfig[] = [];
         let themeDirs: string[] = [];
         try {
             themeDirs = await fs.readdir(this.themesDir);
         } catch (e) {
-            if (logLevelMoreThan('errors-only')) console.error("CmsController::getThemes Failed to read themeDirs at: " + this.themesDir, e);
+            logFor('errors-only', "CmsController::getThemes Failed to read themeDirs at: " + this.themesDir, e);
         }
         for (const dirName of themeDirs) {
             const themeEntity = await this.themeService.findOne(dirName);
@@ -60,7 +60,7 @@ export class CmsController {
                         out.push(themeConfig.main);
                     }
                 } catch (e) {
-                    if (logLevelMoreThan('errors-only')) console.error(`CmsController::getThemes Failed to parse settings of ${dirName} theme`)
+                    logFor('errors-only', `CmsController::getThemes Failed to parse settings of ${dirName} theme`)
                 }
             }
 

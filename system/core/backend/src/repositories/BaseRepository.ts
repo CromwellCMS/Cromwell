@@ -1,4 +1,4 @@
-import { TPagedList, TPagedParams, logLevelMoreThan } from '@cromwell/core';
+import { TPagedList, TPagedParams, logFor } from '@cromwell/core';
 import { Repository } from 'typeorm';
 
 import { getPaged } from './BaseQueries';
@@ -13,19 +13,19 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async getPaged(params: TPagedParams<EntityType>): Promise<TPagedList<EntityType>> {
-        if (logLevelMoreThan('all')) console.log('BaseRepository::getPaged');
+        logFor('all', 'BaseRepository::getPaged');
         const qb = this.createQueryBuilder(this.DBTableName);
         const paged = await getPaged(qb, this.DBTableName, params);
         return paged;
     }
 
     async getAll(): Promise<EntityType[]> {
-        if (logLevelMoreThan('all')) console.log('BaseRepository::getAll');
+        logFor('all', 'BaseRepository::getAll');
         return this.find()
     }
 
     async getById(id: string): Promise<EntityType | undefined> {
-        if (logLevelMoreThan('all')) console.log('BaseRepository::getById');
+        logFor('all', 'BaseRepository::getById');
         const entity = await this.findOne({
             where: { id }
         });
@@ -34,7 +34,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async getBySlug(slug: string): Promise<EntityType | undefined> {
-        if (logLevelMoreThan('all')) console.log('BaseRepository::getBySlug');
+        logFor('all', 'BaseRepository::getBySlug');
         const entity = await this.findOne({
             where: { slug }
         });
@@ -43,7 +43,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async createEntity(input: EntityInputType): Promise<EntityType> {
-        if (logLevelMoreThan('all')) console.log('BaseRepository::createEntity');
+        logFor('all', 'BaseRepository::createEntity');
         let entity = new this.EntityClass();
         for (const key of Object.keys(input)) {
             entity[key] = input[key];
@@ -53,7 +53,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async updateEntity(id: string, input: EntityInputType): Promise<EntityType> {
-        if (logLevelMoreThan('all')) console.log('BaseRepository::updateEntity');
+        logFor('all', 'BaseRepository::updateEntity');
         let entity = await this.findOne({
             where: { id }
         });
@@ -68,7 +68,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async deleteEntity(id: string): Promise<boolean> {
-        if (logLevelMoreThan('all')) console.log('BaseRepository::deleteEntity');
+        logFor('all', 'BaseRepository::deleteEntity');
         const entity = await this.getById(id);
         if (!entity) {
             console.log(`BaseRepository::deleteEntity failed to find ${this.DBTableName} ${id} by id: ${id}`);

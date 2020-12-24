@@ -1,9 +1,12 @@
 import { readPluginsExports, } from '@cromwell/core-backend';
 
+let pluginsCache;
+
 export const collectPlugins = (projectRootDir): {
     resolvers: any[],
     entities: any[]
 } => {
+    if (pluginsCache) return pluginsCache;
     const pluginInfos = readPluginsExports(projectRootDir);
 
     let pluginsResolvers: any[] = [];
@@ -16,8 +19,11 @@ export const collectPlugins = (projectRootDir): {
         }
 
     });
-    return {
+
+    pluginsCache = {
         resolvers: pluginsResolvers,
         entities: pluginsEntities
     }
+    
+    return pluginsCache;
 }

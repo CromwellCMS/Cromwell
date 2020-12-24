@@ -1,4 +1,4 @@
-import { logLevelMoreThan } from '@cromwell/core';
+import { logFor } from '@cromwell/core';
 import { Controller, Get } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -21,7 +21,7 @@ export class MockController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockProducts(): Promise<boolean> {
 
-        if (logLevelMoreThan('detailed')) console.log('MockController::mockProducts');
+        logFor('detailed', 'MockController::mockProducts');
 
         return this.mockService.mockProducts();
     }
@@ -36,7 +36,7 @@ export class MockController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockCategories(): Promise<boolean> {
 
-        if (logLevelMoreThan('detailed')) console.log('MockController::mockCategories');
+        logFor('detailed', 'MockController::mockCategories');
 
         return this.mockService.mockCategories();
     }
@@ -51,7 +51,7 @@ export class MockController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockAttributes(): Promise<boolean> {
 
-        if (logLevelMoreThan('detailed')) console.log('MockController::mockAttributes');
+        logFor('detailed', 'MockController::mockAttributes');
 
         return this.mockService.mockAttributes();
     }
@@ -66,7 +66,7 @@ export class MockController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockReviews(): Promise<boolean> {
 
-        if (logLevelMoreThan('detailed')) console.log('MockController::mockReviews');
+        logFor('detailed', 'MockController::mockReviews');
 
         return this.mockService.mockReviews();
     }

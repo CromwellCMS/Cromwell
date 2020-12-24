@@ -1,4 +1,4 @@
-import { logLevelMoreThan, TFrontendBundle, TPluginConfig, TPluginEntityInput } from '@cromwell/core';
+import { logFor, TFrontendBundle, TPluginConfig, TPluginEntityInput } from '@cromwell/core';
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import decache from 'decache';
@@ -30,7 +30,7 @@ export class PluginController {
         status: 200,
     })
     async getPluginConfig(@Param('pluginName') pluginName: string): Promise<TPluginConfig | undefined> {
-        if (logLevelMoreThan('detailed')) console.log('PluginController::/settings/:pluginName: ' + pluginName);
+        logFor('detailed', 'PluginController::/settings/:pluginName: ' + pluginName);
 
         if (pluginName && pluginName !== "") {
             const plugin = await this.pluginService.findOne(pluginName);
@@ -41,12 +41,12 @@ export class PluginController {
                 try {
                     if (plugin.defaultSettings) defaultSettings = JSON.parse(plugin.defaultSettings);
                 } catch (e) {
-                    if (logLevelMoreThan('detailed')) console.error(e)
+                    logFor('detailed', e, console.error);
                 }
                 try {
                     if (plugin.settings) settings = JSON.parse(plugin.settings);
                 } catch (e) {
-                    if (logLevelMoreThan('detailed')) console.error(e)
+                    logFor('detailed', e, console.error);
                 }
 
                 const out = Object.assign({}, defaultSettings, settings);
@@ -69,7 +69,7 @@ export class PluginController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async savePluginConfig(@Param('pluginName') pluginName: string, @Body() input): Promise<boolean> {
 
-        if (logLevelMoreThan('detailed')) console.log('PluginController::savePluginConfig');
+        logFor('detailed', 'PluginController::savePluginConfig');
         if (pluginName && pluginName !== "") {
             const plugin = await this.pluginService.findOne(pluginName);
             if (plugin) {
@@ -77,7 +77,7 @@ export class PluginController {
                 await this.pluginService.save(plugin);
                 return true;
             } else {
-                if (logLevelMoreThan('errors-only')) console.error(`pluginsController::post: Error Plugin ${pluginName} was no found!`);
+                logFor('errors-only', `PluginController::savePluginConfig Error Plugin ${pluginName} was no found!`);
             }
         }
         return false;
@@ -94,7 +94,7 @@ export class PluginController {
         type: FrontendBundleDto
     })
     async getPluginFrontendBundle(@Param('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
-        if (logLevelMoreThan('detailed')) console.log('PluginController::getPluginFrontendBundle');
+        logFor('detailed', 'PluginController::getPluginFrontendBundle');
 
         if (pluginName && pluginName !== "") {
             const bundle = await this.pluginService.getPluginBundle(pluginName, 'frontend');
@@ -118,7 +118,7 @@ export class PluginController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPluginAdminBundle(@Param('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
-        if (logLevelMoreThan('detailed')) console.log('PluginController::getPluginAdminBundle');
+        logFor('detailed', 'PluginController::getPluginAdminBundle');
 
         if (pluginName && pluginName !== "") {
             const bundle = await this.pluginService.getPluginBundle(pluginName, 'admin');
@@ -141,7 +141,7 @@ export class PluginController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPluginList(): Promise<string[]> {
-        if (logLevelMoreThan('detailed')) console.log('PluginController::getPluginList');
+        logFor('detailed', 'PluginController::getPluginList');
         return (await this.pluginService.getAll()).map(ent => ent.name);
     }
 
@@ -158,7 +158,7 @@ export class PluginController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async installPlugin(@Param('pluginName') pluginName: string): Promise<boolean> {
-        if (logLevelMoreThan('detailed')) console.log('PluginController::installPlugin');
+        logFor('detailed', 'PluginController::installPlugin');
 
         if (pluginName && pluginName !== "") {
             const pluginPath = resolve(this.pluginService.pluginsPath, pluginName);

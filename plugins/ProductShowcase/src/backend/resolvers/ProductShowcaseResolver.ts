@@ -1,4 +1,4 @@
-import { logLevelMoreThan } from '@cromwell/core';
+import { logFor } from '@cromwell/core';
 import { ProductCategory, ProductCategoryRepository } from '@cromwell/core-backend';
 import { Arg, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -11,12 +11,12 @@ export default class ProductShowcaseResolver {
 
     @Query(() => ProductCategory)
     async productShowcase(@Arg("slug") slug: string) {
-        if (logLevelMoreThan('detailed')) console.log('ProductShowcaseResolver::productShowcase slug:' + slug);
+        logFor('detailed', 'ProductShowcaseResolver::productShowcase slug:' + slug);
         const timestamp = Date.now();
         const category = await this.repo.getProductCategoryBySlug(slug);
 
         const timestamp2 = Date.now();
-        if (logLevelMoreThan('detailed')) console.log('ProductShowcaseResolver::productShowcase time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+        logFor('detailed', 'ProductShowcaseResolver::productShowcase time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
         return category;
     }

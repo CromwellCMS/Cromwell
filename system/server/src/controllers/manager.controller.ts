@@ -1,4 +1,4 @@
-import { apiV1BaseRoute, logLevelMoreThan, serviceLocator } from '@cromwell/core';
+import { apiV1BaseRoute, logFor, serviceLocator } from '@cromwell/core';
 import { Controller, Get, Param } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import axios from 'axios';
@@ -19,8 +19,8 @@ export class ManagerController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async changeTheme(@Param('themeName') themeName: string) {
-        if (logLevelMoreThan('detailed')) console.log('ManagerController::changeTheme');
-
+        logFor('detailed', 'ManagerController::changeTheme');
+         
         const managerUrl = `${serviceLocator.getManagerUrl()}/${apiV1BaseRoute}/services/change-theme/${themeName}`;
         return axios.get(managerUrl);
     }
@@ -36,7 +36,7 @@ export class ManagerController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async rebuildTheme() {
-        if (logLevelMoreThan('detailed')) console.log('ManagerController::rebuildTheme');
+        logFor('detailed', 'ManagerController::rebuildTheme');
 
         const managerUrl = `${serviceLocator.getManagerUrl()}/${apiV1BaseRoute}/services/rebuild-theme`;
         return axios.get(managerUrl);

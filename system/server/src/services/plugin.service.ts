@@ -1,4 +1,4 @@
-import { logLevelMoreThan, TFrontendBundle, TPluginEntity, TSciprtMetaInfo } from '@cromwell/core';
+import { logFor, TFrontendBundle, TPluginEntity, TSciprtMetaInfo } from '@cromwell/core';
 import {
     buildDirName,
     getMetaInfoPath,
@@ -48,7 +48,7 @@ export class PluginService {
      * @param pathGetter 
      */
     public async getPluginBundle(pluginName: string, bundleType: 'admin' | 'frontend'): Promise<TFrontendBundle | undefined> {
-        if (logLevelMoreThan('detailed')) console.log('pluginsController::getPluginBundle');
+        logFor('detailed', 'pluginsController::getPluginBundle');
         let out: TFrontendBundle | undefined = undefined;
         let pathGetter: ((distDir: string) => string) | undefined = undefined;
         let cjsPathGetter: ((distDir: string) => string) | undefined = undefined;

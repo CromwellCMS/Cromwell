@@ -175,3 +175,7 @@ export const logLevelMoreThan = (level: TLogLevel): boolean => {
     }
     return false;
 }
+
+export const logFor = (level: TLogLevel, msg: string, func?: (msg: string) => any) => {
+    if (logLevelMoreThan(level)) func ? func(msg) : console.log(msg);
+}

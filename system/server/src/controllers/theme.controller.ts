@@ -1,5 +1,5 @@
 import {
-    logLevelMoreThan,
+    logFor,
     TFrontendBundle,
     TPageConfig,
     TPageInfo,
@@ -47,7 +47,7 @@ export class ThemeController {
     })
     async getPageConfig(@Query('pageRoute') pageRoute: string): Promise<TPageConfig | null> {
 
-        if (logLevelMoreThan('detailed')) console.log('ThemeController::getPageConfig');
+        logFor('detailed', 'ThemeController::getPageConfig');
 
         let out: TPageConfig | null = null;
         if (pageRoute && typeof pageRoute === 'string') {
@@ -68,7 +68,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async savePageConfig(@Body() input: PageConfigDto): Promise<boolean> {
 
-        if (logLevelMoreThan('detailed')) console.log('ThemeController::savePageConfig');
+        logFor('detailed', 'ThemeController::savePageConfig');
 
         if (input && typeof input === 'object') {
             return await this.themeService.saveUserPageConfig(input);
@@ -87,7 +87,7 @@ export class ThemeController {
     })
     async getPluginsAtPage(@Query('pageRoute') pageRoute: string): Promise<Record<string, any>> {
 
-        if (logLevelMoreThan('detailed')) console.log('ThemeController::getPluginsAtPage');
+        logFor('detailed', 'ThemeController::getPluginsAtPage');
         const out: Record<string, any> = {};
 
         if (pageRoute && typeof pageRoute === 'string') {
@@ -119,7 +119,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getAllPluginNames(): Promise<string[]> {
 
-        if (logLevelMoreThan('detailed')) console.log('ThemeController::getAllPluginNames');
+        logFor('detailed', 'ThemeController::getAllPluginNames');
         const out: string[] = [];
 
         const pages = await this.themeService.readAllPageConfigs();
@@ -146,7 +146,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPagesInfo(): Promise<TPageInfo[]> {
 
-        if (logLevelMoreThan('detailed')) console.log('ThemeController::getPagesInfo');
+        logFor('detailed', 'ThemeController::getPagesInfo');
         const out: TPageInfo[] = [];
         const { themeConfig, userConfig, cmsConfig } = await this.themeService.readConfigs();
 
@@ -193,7 +193,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getAllPageConfigs(): Promise<TPageConfig[]> {
 
-        if (logLevelMoreThan('detailed')) console.log('ThemeController::getAllPageConfigs');
+        logFor('detailed', 'ThemeController::getAllPageConfigs');
         return this.themeService.readAllPageConfigs();
     }
 
@@ -210,7 +210,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getMainConfig(): Promise<TThemeMainConfig | null> {
 
-        if (logLevelMoreThan('detailed')) console.log('ThemeController::getMainConfig');
+        logFor('detailed', 'ThemeController::getMainConfig');
         let out: TThemeMainConfig;
         const { themeConfig, userConfig } = await this.themeService.readConfigs();
 
@@ -228,7 +228,7 @@ export class ThemeController {
     })
     async getCustomConfig(): Promise<Record<string, any>> {
 
-        if (logLevelMoreThan('detailed')) console.log('ThemeController::getCustomConfig');
+        logFor('detailed', 'ThemeController::getCustomConfig');
         let out: Record<string, any> = {};
         const { themeConfig, userConfig } = await this.themeService.readConfigs();
 
@@ -248,7 +248,7 @@ export class ThemeController {
     })
     async getPageBundle(@Query('pageRoute') pageRoute: string): Promise<TFrontendBundle | null> {
 
-        if (logLevelMoreThan('detailed')) console.log('ThemeController::getPageBundle');
+        logFor('detailed', 'ThemeController::getPageBundle');
         let out: TFrontendBundle | null = null;
 
         if (pageRoute && pageRoute !== "" && typeof pageRoute === 'string') {
@@ -293,7 +293,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async installTheme(@Param('themeName') themeName: string): Promise<boolean> {
 
-        if (logLevelMoreThan('detailed')) console.log('ThemeController::installTheme');
+        logFor('detailed', 'ThemeController::installTheme');
 
         if (themeName && themeName !== "") {
             const themePath = await getThemeDir(projectRootDir, themeName);

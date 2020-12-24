@@ -1,4 +1,4 @@
-import { DBTableNames, logLevelMoreThan, TPagedList, TProduct } from '@cromwell/core';
+import { DBTableNames, logFor, TPagedList, TProduct } from '@cromwell/core';
 import { applyGetManyFromOne, getPaged, PagedParamsInput, Product, ProductRepository } from '@cromwell/core-backend';
 import { Arg, Query, Resolver } from 'type-graphql';
 import { Brackets, getCustomRepository, SelectQueryBuilder } from 'typeorm';
@@ -16,7 +16,7 @@ export default class ProductFilterResolver {
         @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>,
         @Arg("filterParams", { nullable: true }) filterParams: ProductFilterInput
     ): Promise<TFilteredList<TProduct> | undefined> {
-        if (logLevelMoreThan('detailed')) console.log('ProductFilterResolver::getFilteredProductsFromCategory categoryId:' + categoryId, ' pagedParams:', pagedParams);
+        logFor('detailed', 'ProductFilterResolver::getFilteredProductsFromCategory categoryId:' + categoryId, ' pagedParams:', pagedParams);
         const timestamp = Date.now();
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
@@ -54,7 +54,7 @@ export default class ProductFilterResolver {
         const paged = await getElements();
 
         const timestamp2 = Date.now();
-        if (logLevelMoreThan('detailed')) console.log('ProductFilterResolver::getFilteredProductsFromCategory time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+        logFor('detailed', 'ProductFilterResolver::getFilteredProductsFromCategory time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
         const filtered: TFilteredList<TProduct> = {
             ...paged,
