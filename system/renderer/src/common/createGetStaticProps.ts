@@ -16,7 +16,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         const { pluginsData, pluginsSettings } = await pluginsDataFetcher(pageName, context);
         const pageConfig = serialize(await apiClient?.getPageConfig(pageName));
         const themeMainConfig = serialize(await apiClient?.getThemeMainConfig());
-        const cmsConfig = serialize(await apiClient?.getCmsConfig());
+        const cmsSettings = serialize(await apiClient?.getCmsSettings());
         const themeCustomConfig = serialize(await apiClient?.getThemeCustomConfig());
         const pagesInfo = serialize(await apiClient?.getPagesInfo());
 
@@ -33,7 +33,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
             pluginsSettings,
             childStaticProps,
             pageConfig,
-            cmsConfig,
+            cmsSettings,
             themeMainConfig,
             themeCustomConfig,
             pagesInfo

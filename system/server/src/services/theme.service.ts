@@ -6,6 +6,7 @@ import {
     TThemeConfig,
     TThemeEntity,
     TThemeEntityInput,
+    TCmsSettings
 } from '@cromwell/core';
 import { Injectable } from '@nestjs/common';
 import { getCustomRepository } from 'typeorm';
@@ -46,9 +47,9 @@ export class ThemeService {
     * @param cb 
     */
     public async saveThemeUserConfig(themeConfig: TThemeConfig): Promise<boolean> {
-        const cmsConfig = await this.cmsService.getConfig();
-        if (cmsConfig?.themeName) {
-            let theme = await this.findOne(cmsConfig.themeName)
+        const cmsSettings = await this.cmsService.getSettings();
+        if (cmsSettings?.themeName) {
+            let theme = await this.findOne(cmsSettings.themeName)
             if (theme) {
                 theme.settings = JSON.stringify(themeConfig, null, 4);
                 this.saveEntity(theme);
@@ -67,32 +68,32 @@ export class ThemeService {
     public async readConfigs(): Promise<{
         themeConfig: TThemeConfig | null;
         userConfig: TThemeConfig | null;
-        cmsConfig: TCmsEntity | undefined;
+        cmsSettings: TCmsSettings | undefined;
     }> {
         let themeConfig: TThemeConfig | null = null,
             userConfig: TThemeConfig | null = null;
 
-        const cmsConfig = await this.cmsService.getConfig();
-        if (cmsConfig?.themeName) {
+        const cmsSettings = await this.cmsService.getSettings();
+        if (cmsSettings?.themeName) {
 
-            const theme = await this.findOne(cmsConfig.themeName)
+            const theme = await this.findOne(cmsSettings.themeName)
 
             try {
                 if (theme?.defaultSettings) themeConfig = JSON.parse(theme.defaultSettings);
             } catch (e) {
-                logFor('detailed', e,  console.error);
+                logFor('detailed', e, console.error);
             }
             try {
                 if (theme?.settings) userConfig = JSON.parse(theme.settings);
             } catch (e) {
-                logFor('detailed', e,  console.error);
+                logFor('detailed', e, console.error);
             }
         }
 
         return {
             themeConfig,
             userConfig,
-            cmsConfig
+            cmsSettings
         }
     }
 
@@ -203,7 +204,7 @@ export class ThemeService {
             return false;
         }
 
-        let { themeConfig, userConfig, cmsConfig } = await this.readConfigs();
+        let { themeConfig, userConfig, cmsSettings } = await this.readConfigs();
 
         // If userConfig is null, then theme is probably new and user has never saved mods. Create a new userConfig
         if (!userConfig) {
@@ -268,7 +269,7 @@ export class ThemeService {
         }
 
         // Save config
-        if (cmsConfig) {
+        if (cmsSettings) {
             return this.saveThemeUserConfig(userConfig);
         }
 
@@ -283,7 +284,7 @@ export class ThemeService {
     public async readAllPageConfigs(): Promise<TPageConfig[]> {
         logFor('detailed', 'themeController::readAllPageConfigs');
 
-        const { themeConfig, userConfig, cmsConfig } = await this.readConfigs();
+        const { themeConfig, userConfig, cmsSettings } = await this.readConfigs();
 
         let pages: TPageConfig[] = [];
         if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {

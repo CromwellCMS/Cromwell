@@ -4,7 +4,7 @@ import { TypeGraphQLModule } from 'typegraphql-nestjs';
 
 import { projectRootDir } from '../constants';
 import { collectPlugins } from '../helpers/collectPlugins';
-import { GenericPlugin, GenericTheme } from '../helpers/genericEntities';
+import { GenericPluginResolver, GenericThemeResolver } from '../helpers/genericEntities';
 import { setEnv } from '../helpers/setEnv';
 import { AttributeResolver } from '../resolvers/AttributeResolver';
 import { AuthorResolver } from '../resolvers/AuthorResolver';
@@ -23,8 +23,8 @@ const envMode = setEnv();
         ProductCategoryResolver,
         ProductResolver,
         ProductReviewResolver,
-        GenericPlugin.resolver,
-        GenericTheme.resolver,
+        GenericPluginResolver,
+        GenericThemeResolver,
         ...(collectPlugins(projectRootDir).resolvers),
     ],
     imports: [

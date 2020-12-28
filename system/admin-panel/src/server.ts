@@ -2,7 +2,7 @@ import fs from 'fs-extra';
 import { resolve } from 'path';
 import webpack from 'webpack';
 import express from 'express';
-import { TCmsConfig, serviceLocator } from '@cromwell/core';
+import { TCmsConfig, serviceLocator, setStoreItem } from '@cromwell/core';
 import {
     readCMSConfigSync, adminPanelMessages, getAdminPanelDir, getAdminPanelServiceBuildDir,
     getAdminPanelWebPublicDir, getAdminPanelWebBuildDir, getCMSConfigPath, cmsConfigFileName,
@@ -20,7 +20,8 @@ const chalk = require('react-dev-utils/chalk');
 
 const startDevServer = async () => {
     const watch = true;
-    const CMSconfig = readCMSConfigSync(projectRootDir)
+    const CMSconfig = readCMSConfigSync(projectRootDir);
+    setStoreItem('cmsSettings', CMSconfig);
 
     const publicDir = getAdminPanelWebPublicDir(projectRootDir);
     const webTempDir = getAdminPanelWebBuildDir(projectRootDir);
@@ -43,7 +44,6 @@ const startDevServer = async () => {
         await symlinkDir(serviceBuildDir, webTempServiceLink);
     }
 
-    console.log('process.argv', process.argv);
     const env = process.argv[2];
 
     let isProduction = env === 'production';
@@ -54,7 +54,7 @@ const startDevServer = async () => {
         throw (`devServer::startDevServer: process.argv[2] is invalid - ${env}
     valid values - "development" and "production"`);
 
-    const port = process.env.PORT || CMSconfig.adminPanelPort;
+    const port = process.env.PORT ?? CMSconfig.adminPanelPort;
 
     const app = express();
 
@@ -76,14 +76,34 @@ const startDevServer = async () => {
             res.status(404).send("File not found.");
         } else {
             // route requested, send index.html 
-            const filePath = resolve(serviceBuildDir, 'index.html');
-            fs.access(filePath, fs.constants.R_OK, (err) => {
-                if (!err) {
-                    res.sendFile(filePath);
-                } else {
-                    res.status(404).send("index.html not found. Run build command");
-                }
-            })
+            res.send(`
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cromwell CMS Admin Panel</title>
+    <script src="/built_modules/importer.js"></script>
+    <script>
+    CromwellStore = {
+        cmsSettings: ${JSON.stringify(CMSconfig)}
+    }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script src="/build/webapp.js"></script>
+</body>
+            `)
+            // const filePath = resolve(serviceBuildDir, 'index.html');
+            // fs.access(filePath, fs.constants.R_OK, (err) => {
+            //     if (!err) {
+            //         res.sendFile(filePath);
+            //     } else {
+            //         res.status(404).send("index.html not found. Run build command");
+            //     }
+            // })
         }
 
     })

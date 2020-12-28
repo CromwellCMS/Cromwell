@@ -1,8 +1,8 @@
-import { readCMSConfig, saveCMSConfig } from '@cromwell/core-backend';
 import { ChildProcess, fork } from 'child_process';
 import fs from 'fs-extra';
 import isRunning from 'is-running';
 import treeKill from 'tree-kill';
+import { getRestAPIClient } from '@cromwell/core-frontend';
 
 import managerConfig from '../config';
 import { ManagerState } from '../managerState';
@@ -64,29 +64,26 @@ export const changeTheme = async (themeName: string, onLog?: (message: string) =
         return false;
     }
 
-    const cmsconfig = await readCMSConfig(projectRootDir);
-    if (!cmsconfig) {
-        onLog?.(`BaseManager::changeTheme: failed to read cmsconfig`);
+    const cmsSettings = await getRestAPIClient()?.getCmsSettings();
+    if (!cmsSettings) {
+        onLog?.(`BaseManager::changeTheme: failed to get cmsSettings`);
         return false;
     }
-    const prevThemeName = cmsconfig.themeName;
+    const prevThemeName = cmsSettings.themeName;
     const nextThemeName = themeName;
 
     // Save into CMS config
-    cmsconfig.themeName = nextThemeName;
     onLog?.(`BaseManager:: saving CMS config with themeName: ${nextThemeName}`)
-    await saveCMSConfig(projectRootDir, cmsconfig);
+    await getRestAPIClient()?.saveThemeName(themeName);
 
-
-    const rendererSuccess = await rendererChangeTheme(prevThemeName, nextThemeName, onLog);
+    const rendererSuccess = await rendererChangeTheme(nextThemeName, onLog);
     if (!rendererSuccess) {
         onLog?.(`BaseManager:: At least one build failed. Cancelling theme changing. Rollback...`);
-        const rendererRollbackSuccess = await rendererChangeTheme(nextThemeName, prevThemeName, onLog);
-        if (rendererRollbackSuccess !== null) {
-            cmsconfig.themeName = prevThemeName;
-            await saveCMSConfig(projectRootDir, cmsconfig);
-            onLog?.(`BaseManager:: Rollback completed. Restored ${prevThemeName} theme`);
-        }
+        if (prevThemeName)
+            await rendererChangeTheme(prevThemeName, onLog);
+
+        await getRestAPIClient()?.saveThemeName(prevThemeName);
+        onLog?.(`BaseManager:: Rollback completed. Restored ${prevThemeName} theme`);
         return false;
 
     } else {

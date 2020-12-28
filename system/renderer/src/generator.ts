@@ -1,12 +1,13 @@
-import { readCMSConfigSync, readThemeExports } from '@cromwell/core-backend';
+import { readCMSConfig, readThemeExports } from '@cromwell/core-backend';
+import { TCmsSettings, TCmsEntity, getStoreItem, setStoreItem, TCmsConfig } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import fs from 'fs-extra';
 import gracefulfs from 'graceful-fs';
 import makeEmptyDir from 'make-empty-dir';
+import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import { promisify } from 'util';
-import normalizePath from 'normalize-path';
 import yargs from 'yargs-parser';
 
 const mkdir = promisify(gracefulfs.mkdir);
@@ -16,9 +17,12 @@ const disableSSR = false;
 const main = async () => {
     const args = yargs(process.argv.slice(2));
     const projectRootDir = resolve(__dirname, '../../../');
-    const config = readCMSConfigSync(projectRootDir);
+
+    const config = await readCMSConfig(projectRootDir);
+    if (config) setStoreItem('cmsSettings', config);
 
     const themeMainConfig = await getRestAPIClient()?.getThemeMainConfig();
+    const cmsSettings = await getRestAPIClient()?.getCmsSettings();
     const localDir = resolve(__dirname, '../');
     const tempDirName = (args.dir && typeof args.dir === 'string' && args.dir !== '') ? args.dir : '.cromwell';
     const tempDir = resolve(localDir, tempDirName);
@@ -26,7 +30,7 @@ const main = async () => {
     const localThemeBuildDurChunk = 'theme';
 
     // Read pages
-    const themeExports = await readThemeExports(projectRootDir, config.themeName);
+    const themeExports = await readThemeExports(projectRootDir, cmsSettings?.themeName);
 
     // Create pages in Nex.js pages dir based on theme's pages
 
@@ -72,8 +76,8 @@ const main = async () => {
             fsRequire, importRendererDepsFrontend } from 'build/renderer';
 
 
-        const cmsConfig = ${JSON.stringify(config)};
-        checkCMSConfig(cmsConfig, getStoreItem, setStoreItem);
+        const cmsSettings = ${JSON.stringify(cmsSettings)};
+        checkCMSConfig(cmsSettings, getStoreItem, setStoreItem);
         
         const importer = getModuleImporter();
         ${cromwellStoreModulesPath}['react'] = React;

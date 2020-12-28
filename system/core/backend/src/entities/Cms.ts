@@ -9,9 +9,9 @@ import { BasePageEntity } from './BasePageEntity';
 })
 export class CmsEntity extends BasePageEntity implements TCmsEntity {
 
-    @Field()
+    @Field(type => String, { nullable: true })
     @Column()
-    themeName: string;
+    themeName?: string;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })

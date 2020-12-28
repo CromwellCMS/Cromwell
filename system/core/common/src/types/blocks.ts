@@ -1,6 +1,6 @@
 import { NextPage } from 'next';
 import { TProduct } from './entities';
-import { TPageConfig, TCmsConfig, TThemeMainConfig, TPageInfo } from './data';
+import { TPageConfig, TCmsConfig, TThemeMainConfig, TPageInfo, TCmsSettings } from './data';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
 export type StaticPageContext<Q extends ParsedUrlQuery = ParsedUrlQuery> = {
@@ -21,7 +21,7 @@ export type TCromwellPageCoreProps = {
     pluginsSettings: Record<string, any>;
     childStaticProps: Record<string, any>;
     pageConfig?: TPageConfig;
-    cmsConfig?: TCmsConfig;
+    cmsSettings?: TCmsSettings;
     themeMainConfig?: TThemeMainConfig;
     themeCustomConfig?: Record<string, any>;
     pagesInfo?: TPageInfo[];

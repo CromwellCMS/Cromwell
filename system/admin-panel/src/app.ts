@@ -1,11 +1,12 @@
+import { setStoreItem } from '@cromwell/core';
+import { getRestAPIClient } from '@cromwell/core-frontend';
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import Layout from './components/layout/Layout';
-import { setStoreItem } from '@cromwell/core';
 
 (async () => {
-  const cmsConf = await (await fetch('/cmsconfig.json')).json();
-  setStoreItem('cmsconfig', cmsConf);
+  await getRestAPIClient()?.getCmsSettingsAndSave();
   setStoreItem('environment', {
     isAdminPanel: true
   });

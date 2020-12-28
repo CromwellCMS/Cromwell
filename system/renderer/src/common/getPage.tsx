@@ -11,10 +11,9 @@ function useForceUpdate() {
 }
 
 export const getPage = (pageName: BasePageNames | string, PageComponent: React.ComponentType): TCromwellPage => {
-    const cmsconfig = getStoreItem('cmsconfig');
-    if (!cmsconfig || !cmsconfig.themeName) {
-        console.log('cmsconfig', cmsconfig);
-        throw new Error('getPage !cmsconfig.themeName');
+    const cmsSettings = getStoreItem('cmsSettings');
+    if (!cmsSettings?.themeName) {
+        throw new Error('getPage !cmsSettings.themeName ' + cmsSettings);
     }
 
     if (!PageComponent) throw new Error('getPage !PageComponent');
@@ -22,9 +21,9 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
     // const Page: any = importPage(pageName)?.default;
 
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
-        const { pluginsData, pluginsSettings, pageConfig, themeCustomConfig, childStaticProps, cmsConfig, themeMainConfig, pagesInfo, ...restProps } = props;
+        const { pluginsData, pluginsSettings, pageConfig, themeCustomConfig, childStaticProps, cmsSettings, themeMainConfig, pagesInfo, ...restProps } = props;
         const forcedChildStaticProps = useRef(null);
-        if (cmsConfig) setStoreItem('cmsconfig', cmsConfig);
+        if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
         if (pluginsData) setStoreItem('pluginsData', pluginsData);
         if (pluginsSettings) setStoreItem('pluginsSettings', pluginsSettings);
         if (pageConfig) setStoreItem('pageConfig', pageConfig);

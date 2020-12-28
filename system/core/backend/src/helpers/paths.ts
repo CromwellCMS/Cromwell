@@ -1,5 +1,10 @@
 import { resolve } from 'path';
 import fs from 'fs-extra';
+import { serverLogFor } from './constants';
+import { TThemeConfig } from '@cromwell/core';
+
+export const buildDirName = '.cromwell';
+export const configFileName = 'cromwell.config.js';
 
 export const getThemeDir = async (projectRootDir: string, themeName: string): Promise<string | undefined> => {
     const dir = resolve(projectRootDir, 'themes', themeName);
@@ -8,7 +13,17 @@ export const getThemeDir = async (projectRootDir: string, themeName: string): Pr
     }
 }
 
-export const buildDirName = '.cromwell';
+export const getThemeConfig = async (projectRootDir: string, themeName: string): Promise<TThemeConfig | undefined> => {
+    const path = await getThemeDir(projectRootDir, themeName);
+    if (path) {
+        const configPath = resolve(path, configFileName);
+        try {
+            return require(configPath);
+        } catch (e) {
+            serverLogFor('errors-only', 'Failed to require theme config at: ' + configPath, 'Error');
+        }
+    }
+}
 
 export const getMetaInfoPath = (filename: string) => `${filename}_meta.json`;
 

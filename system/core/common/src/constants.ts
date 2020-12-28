@@ -1,5 +1,5 @@
 import { TDBEntity, TGraphQLNode, TLogLevel } from './types/data';
-import { getCmsConfig, getStoreItem } from './GlobalStore';
+import { getCmsSettings, getStoreItem } from './GlobalStore';
 
 export enum BasePageNames {
     Index = 'index',
@@ -87,9 +87,9 @@ export const apiV1BaseRoute = 'api/v1';
 
 export const serviceLocator = {
     getApiUrl: () => {
-        const cmsConfig = getCmsConfig();
+        const cmsConfig = getCmsSettings();
         if (!cmsConfig) throw new Error('core:serviceLocator:getApiUrl !cmsConfig');
-        const protocol = cmsConfig.protocol ? cmsConfig.protocol : 'http';
+        const protocol = cmsConfig.protocol ?? 'http';
 
         if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
             return `${protocol}://${cmsConfig.domain}`
@@ -100,7 +100,7 @@ export const serviceLocator = {
     },
     // Websocket API URL
     getApiWsUrl: () => {
-        const cmsConfig = getCmsConfig();
+        const cmsConfig = getCmsSettings();
         if (!cmsConfig) throw new Error('core:serviceLocator:getApiUrl !cmsConfig');
         const protocol = 'ws';
 
@@ -112,9 +112,9 @@ export const serviceLocator = {
         }
     },
     getManagerUrl: () => {
-        const cmsConfig = getCmsConfig();
+        const cmsConfig = getCmsSettings();
         if (!cmsConfig) throw new Error('core:serviceLocator:getManagerUrl !cmsConfig');
-        const protocol = cmsConfig.protocol ? cmsConfig.protocol : 'http';
+        const protocol = cmsConfig.protocol ?? 'http';
 
         if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
             return `${protocol}://${cmsConfig.domain}`
@@ -125,7 +125,7 @@ export const serviceLocator = {
     },
     getManagerWsUrl: () => {
         // Only available at localhost for usage of API Server (as a proxy)
-        const cmsConfig = getCmsConfig();
+        const cmsConfig = getCmsSettings();
         if (!cmsConfig) throw new Error('core:serviceLocator:getManagerWS !cmsConfig');
         const protocol = 'ws';
 
@@ -133,9 +133,9 @@ export const serviceLocator = {
         return `${protocol}://localhost:${cmsConfig.managerPort}`
     },
     getFrontendUrl: () => {
-        const cmsConfig = getCmsConfig();
+        const cmsConfig = getCmsSettings();
         if (!cmsConfig) throw new Error('core:serviceLocator:getFrontendUrl !cmsConfig');
-        const protocol = cmsConfig.protocol ? cmsConfig.protocol : 'http';
+        const protocol = cmsConfig.protocol ?? 'http';
 
         if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
             return `${protocol}://${cmsConfig.domain}`
@@ -145,9 +145,9 @@ export const serviceLocator = {
         }
     },
     getAdminPanelUrl: () => {
-        const cmsConfig = getCmsConfig();
+        const cmsConfig = getCmsSettings();
         if (!cmsConfig) throw new Error('core:serviceLocator:getAdminPanelUrl !cmsConfig');
-        const protocol = cmsConfig.protocol ? cmsConfig.protocol : 'http';
+        const protocol = cmsConfig.protocol ?? 'http';
 
         if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
             return `${protocol}://${cmsConfig.domain}/admin`

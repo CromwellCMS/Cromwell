@@ -17,7 +17,7 @@ async function bootstrap(): Promise<void> {
     const envMode = setEnv();
 
     const config = readCMSConfigSync(projectRootDir)
-    if (!config || !config.apiPort) throw new Error('Failed read CMS config ' + JSON.stringify(config));
+    if (!config || !config.apiPort) throw new Error('Failed to read CMS config ' + JSON.stringify(config));
 
 
     // Connect to DB via TypeOrm
@@ -27,6 +27,7 @@ async function bootstrap(): Promise<void> {
     // Launch REST API server via Nest.js
 
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+    app.setGlobalPrefix(apiV1BaseRoute);
     app.use(cors({
         origin: [serviceLocator.getFrontendUrl(), serviceLocator.getAdminPanelUrl()]
     }));
@@ -35,14 +36,13 @@ async function bootstrap(): Promise<void> {
     const options = new DocumentBuilder()
         .setTitle('Cromwell Server API')
         .setVersion(currentApiVersion)
-        .setBasePath(`${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/`)
         .addBearerAuth()
         .build();
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup(`/${apiV1BaseRoute}/api-docs`, app, document);
 
 
-    await app.listen(config?.apiPort);
+    await app.listen(config.apiPort ?? 4032);
     console.log(`Application is running on: ${await app.getUrl()}`);
 
 }

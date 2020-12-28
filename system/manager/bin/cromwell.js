@@ -1,11 +1,14 @@
 #!/usr/bin/env node
-const { spawn, execSync } = require('child_process');
+const { execSync } = require('child_process');
 const { resolve } = require('path');
 
 // check for node_modules installed
 try {
     require.resolve('yargs-parser');
     require.resolve('@cromwell/core');
+    require.resolve('node-cleanup');
+    require.resolve('rimraf');
+    require.resolve('symlink-dir');
 } catch (e) {
     const packageJson = require('../package.json');
     const deps = packageJson.startupDependencies;

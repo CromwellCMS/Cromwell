@@ -1,7 +1,7 @@
-import { TCmsConfig, setStoreItem, TPluginConfig } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import { getPluginsDir, getPluginFrontendBundlePath, getPluginBackendPath, buildDirName } from './paths';
+
+import { buildDirName, configFileName, getPluginBackendPath, getPluginFrontendBundlePath, getPluginsDir } from './paths';
 
 export type TPluginInfo = {
     pluginName: string;
@@ -19,7 +19,7 @@ export const readPluginsExports = (projectRootDir: string): TPluginInfo[] => {
     // console.log('Core:readPluginsExports:: Plugins found:', pluginNames);
 
     pluginNames?.forEach(name => {
-        const configPath = resolve(pluginsDir, name, 'cromwell.config.js');
+        const configPath = resolve(pluginsDir, name, configFileName);
         if (fs.existsSync(configPath)) {
 
 

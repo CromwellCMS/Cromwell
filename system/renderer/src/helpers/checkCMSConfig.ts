@@ -1,14 +1,14 @@
-import { getStoreItem, setStoreItem, TCmsConfig, isServer } from "@cromwell/core";
+import { getStoreItem, setStoreItem, TCmsSettings, isServer } from "@cromwell/core";
 
-export const checkCMSConfig = (cmsConfig: TCmsConfig,
+export const checkCMSConfig = (newSettings: TCmsSettings,
     getStoreItemRepl?: typeof getStoreItem,
     setStoreItemRepl?: typeof setStoreItem,
 ): void => {
     const getStoreItemScoped = getStoreItemRepl ?? getStoreItem;
     const setStoreItemScoped = setStoreItemRepl ?? setStoreItem;
-    const cmsconfig = getStoreItemScoped('cmsconfig');
-    if (!cmsconfig || !cmsconfig.themeName) {
-        setStoreItemScoped('cmsconfig', cmsConfig);
+    const cmsSettings = getStoreItemScoped('cmsSettings');
+    if (!cmsSettings?.themeName) {
+        setStoreItemScoped('cmsSettings', newSettings);
     }
     setStoreItemScoped('fsRequire', fsRequire);
 }

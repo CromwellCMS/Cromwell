@@ -25,8 +25,9 @@ const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.rando
  * Returns object with page names as keys paths as values: {"pageName": "pagePath"}
  * @param projectRootDir absolute path to the root of the CMS
  */
-export const readThemeExports = async (projectRootDir: string | null, themeName: string, themeAbsDir?: string): Promise<TThemeExportsInfo> => {
+export const readThemeExports = async (projectRootDir: string | null, themeName: string | undefined, themeAbsDir?: string): Promise<TThemeExportsInfo> => {
     if (!projectRootDir && !themeAbsDir) throw new Error('readThemeExports: !projectRootDir && !themeAbsDir');
+    if (!themeName) throw new Error('readThemeExports: !themeName');
 
     const themeDir = (themeAbsDir ? themeAbsDir : resolve(projectRootDir!, 'themes', themeName)).replace(/\\/g, '/');
 

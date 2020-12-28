@@ -4,13 +4,13 @@ import {
     getStoreItem,
     serviceLocator,
     setStoreItem,
-    TCmsConfig,
     TPageConfig,
     TPageInfo,
     TThemeMainConfig,
     TPluginConfig,
     TFrontendBundle,
-    TPluginInfo
+    TPluginInfo,
+    TCmsSettings
 } from '@cromwell/core';
 
 
@@ -52,14 +52,18 @@ class CRestAPIClient {
         }
     }
 
-    public getCmsConfig = async (): Promise<TCmsConfig | undefined> => {
+    public getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
         return this.get(`${this.baseUrl}/cms/config`);
     }
 
-    public getCmsConfigAndSave = async (): Promise<TCmsConfig | undefined> => {
-        const config = await this.getCmsConfig();
+    public saveThemeName = async (themeName?: string): Promise<boolean | undefined> => {
+        return this.get(`${this.baseUrl}/cms/set-theme/${themeName ?? ''}`);
+    }
+
+    public getCmsSettingsAndSave = async (): Promise<TCmsSettings | undefined> => {
+        const config = await this.getCmsSettings();
         if (config) {
-            setStoreItem('cmsconfig', config);
+            setStoreItem('cmsSettings', config);
             return config;
         }
     }
@@ -69,7 +73,7 @@ class CRestAPIClient {
     }
 
     public getPageConfig = async (pageRoute: string): Promise<TPageConfig | undefined> => {
-        return this.get(`${this.baseUrl}/theme/page/?pageRoute=${pageRoute}`);
+        return this.get(`${this.baseUrl}/theme/page?pageRoute=${pageRoute}`);
     }
 
     public savePageConfig = async (config: TPageConfig): Promise<boolean> => {

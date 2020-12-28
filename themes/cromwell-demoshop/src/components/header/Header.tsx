@@ -1,4 +1,4 @@
-import { getThemeCustomConfigTextProp, getThemeCustomConfigProp, getCmsConfig, isServer, setStoreItem } from '@cromwell/core';
+import { getThemeCustomConfigTextProp, getThemeCustomConfigProp, getCmsSettings, isServer, setStoreItem } from '@cromwell/core';
 import { Link, CHTML, CContainer, CPlugin, getCStore } from '@cromwell/core-frontend';
 import React, { useEffect, useState } from 'react';
 import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core';
@@ -50,7 +50,7 @@ const TextField = withStyles({
 
 const Header = observer(() => {
     const topLinks: TTopLink[] | undefined = getThemeCustomConfigProp('header/topLinks');
-    const cmsConfig = getCmsConfig();
+    const cmsConfig = getCmsSettings();
     const currencyOptions: string[] = cmsConfig && cmsConfig.currencyOptions ? cmsConfig.currencyOptions : [];
     const logoHref: string | undefined = getThemeCustomConfigProp('header/logo');
     const contactPhone: string | undefined = getThemeCustomConfigProp('header/contactPhone');

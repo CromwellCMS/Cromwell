@@ -1,4 +1,5 @@
 import { logFor, TFrontendBundle, TPluginConfig, TPluginEntityInput } from '@cromwell/core';
+import { configFileName } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import decache from 'decache';
@@ -170,7 +171,7 @@ export class PluginController {
 
                 // Read plugin config
                 let pluginConfig;
-                const filePath = resolve(pluginPath, 'cromwell.config.js');
+                const filePath = resolve(pluginPath, configFileName);
                 if (await fs.pathExists(filePath)) {
                     try {
                         decache(filePath);

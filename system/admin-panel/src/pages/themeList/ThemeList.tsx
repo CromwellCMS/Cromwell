@@ -1,4 +1,4 @@
-import { getCmsConfig, TCmsConfig, TThemeEntity, TThemeMainConfig } from '@cromwell/core';
+import { getCmsSettings, TCmsSettings, TThemeEntity, TThemeMainConfig } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
 import { Badge, Button, Card, CardActionArea, CardActions, CardContent, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
@@ -16,12 +16,12 @@ export default function ThemeList() {
     const [isListLoading, setIsListLoading] = useState<boolean>(true);
     const [isChangingTheme, setIsChangingTheme] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [cmsConfig, setCmsConfig] = useState<TCmsConfig | undefined>(getCmsConfig());
+    const [cmsConfig, setCmsConfig] = useState<TCmsSettings | undefined>(getCmsSettings());
     const history = useHistory();
     const client = getRestAPIClient();
 
     const getThemeList = async () => {
-        const updatedConfig = await client?.getCmsConfigAndSave();
+        const updatedConfig = await client?.getCmsSettingsAndSave();
         setCmsConfig(updatedConfig);
 
         // Get info by parsing directory 
@@ -53,7 +53,7 @@ export default function ThemeList() {
             } else {
                 toast.error('Failed to set a new theme');
             }
-            const updatedConfig = await client.getCmsConfig();
+            const updatedConfig = await client.getCmsSettings();
             infos?.sort((a, b) => (updatedConfig && a.themeName === updatedConfig.themeName) ? -1 : 1)
             setCmsConfig(updatedConfig);
             setIsChangingTheme(false);
@@ -105,7 +105,7 @@ export default function ThemeList() {
                     <Card className={styles.themeCard} key={info.themeName}>
                         <CardActionArea>
                             <div
-                                style={{ backgroundImage: `url(${info.previewImage})` }}
+                                style={{ backgroundImage: `url("data:image/png;base64,${info.previewImage}")` }}
                                 className={styles.themeImage}
                             ></div>
                             <CardContent>

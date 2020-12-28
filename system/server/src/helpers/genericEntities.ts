@@ -1,8 +1,20 @@
-import { InputPluginEntity, InputThemeEntity, PluginEntity, ThemeEntity, CmsEntity } from '@cromwell/core-backend';
-import { TThemeEntity, TThemeEntityInput, TPluginEntity, TPluginEntityInput, TCmsEntity  } from '@cromwell/core';
+import { TCmsEntity, TPluginEntity, TPluginEntityInput, TThemeEntity, TThemeEntityInput, TCmsEntityInput } from '@cromwell/core';
+import { CmsEntity, InputPluginEntity, InputThemeEntity, PluginEntity, ThemeEntity, InputCmsEntity } from '@cromwell/core-backend';
+import { Resolver } from 'type-graphql';
 
-import { createResolver } from './createResolver';
+import { createGenericEntity } from './createResolver';
 
-export const GenericTheme = createResolver<TThemeEntity, TThemeEntityInput>('Theme', 'theme', ThemeEntity, InputThemeEntity);
-export const GenericPlugin = createResolver<TPluginEntity, TPluginEntityInput>('Plugin', 'plugin', PluginEntity, InputPluginEntity);
-export const GenericCms = createResolver<TCmsEntity>('Cms', 'cms', CmsEntity);
+
+export const GenericTheme = createGenericEntity<TThemeEntity, TThemeEntityInput>('Theme', 'theme', ThemeEntity, InputThemeEntity);
+export const GenericPlugin = createGenericEntity<TPluginEntity, TPluginEntityInput>('Plugin', 'plugin', PluginEntity, InputPluginEntity);
+export const GenericCms = createGenericEntity<TCmsEntity, TCmsEntityInput>('Cms', 'cms', CmsEntity, InputCmsEntity);
+
+
+@Resolver(ThemeEntity)
+export class GenericThemeResolver extends GenericTheme.abstractResolver { }
+
+@Resolver(PluginEntity)
+export class GenericPluginResolver extends GenericPlugin.abstractResolver { }
+
+@Resolver(CmsEntity)
+export class GenericCmsResolver extends GenericCms.abstractResolver { }

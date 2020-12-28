@@ -385,11 +385,11 @@ class CStore {
     // < CURRENCY >
 
     private getDafaultCurrency = (): string | undefined => {
-        const cmsconfig = getStoreItem('cmsconfig');
+        const cmsSettings = getStoreItem('cmsSettings');
         let defaultCurrency;
-        if (cmsconfig && cmsconfig.currencyOptions && Array.isArray(cmsconfig.currencyOptions) &&
-            cmsconfig.currencyOptions.length > 0) {
-            defaultCurrency = cmsconfig.currencyOptions[0];
+        if (cmsSettings && cmsSettings.currencyOptions && Array.isArray(cmsSettings.currencyOptions) &&
+            cmsSettings.currencyOptions.length > 0) {
+            defaultCurrency = cmsSettings.currencyOptions[0];
         }
         return defaultCurrency;
     }
@@ -400,13 +400,13 @@ class CStore {
             return '';
         //return 'Not available';
         let priceStr = price + '';
-        const cmsconfig = getStoreItem('cmsconfig');
+        const cmsSettings = getStoreItem('cmsSettings');
         const currency = this.getActiveCurrency();
         const defaultCurrency = this.getDafaultCurrency();
 
         if (currency && defaultCurrency) {
 
-            const priceRatio = cmsconfig?.currencyRatio;
+            const priceRatio = cmsSettings?.currencyRatio;
             if (priceRatio) {
                 const convertPrice = (price: number, from: string, to: string) => {
                     return (price * (priceRatio[to] / priceRatio[from])).toFixed(2);
@@ -414,7 +414,7 @@ class CStore {
                 priceStr = convertPrice(price, defaultCurrency, currency);
             }
 
-            const currencySymbols = cmsconfig?.currencySymbols;
+            const currencySymbols = cmsSettings?.currencySymbols;
             if (currencySymbols && currencySymbols[currency]) {
                 priceStr = currencySymbols[currency] + priceStr;
             }
@@ -440,8 +440,8 @@ class CStore {
     public getActiveCurrencySymbol = (): string | undefined => {
         let symb;
         const currency = this.getActiveCurrency();
-        const cmsconfig = getStoreItem('cmsconfig');
-        const currencySymbols = cmsconfig?.currencySymbols;
+        const cmsSettings = getStoreItem('cmsSettings');
+        const currencySymbols = cmsSettings?.currencySymbols;
         if (currencySymbols && currency) {
             symb = currencySymbols[currency];
         }

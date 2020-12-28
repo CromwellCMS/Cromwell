@@ -6,7 +6,7 @@ import {
     TThemeEntityInput,
     TThemeMainConfig,
 } from '@cromwell/core';
-import { buildDirName, getThemeDir } from '@cromwell/core-backend';
+import { buildDirName, getThemeDir, configFileName } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import decache from 'decache';
@@ -148,8 +148,7 @@ export class ThemeController {
 
         logFor('detailed', 'ThemeController::getPagesInfo');
         const out: TPageInfo[] = [];
-        const { themeConfig, userConfig, cmsConfig } = await this.themeService.readConfigs();
-
+        const { themeConfig, userConfig, cmsSettings } = await this.themeService.readConfigs();
         let pages: TPageConfig[] = [];
         if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
             pages = themeConfig.pages;
@@ -252,9 +251,9 @@ export class ThemeController {
         let out: TFrontendBundle | null = null;
 
         if (pageRoute && pageRoute !== "" && typeof pageRoute === 'string') {
-            const cmsConfig = await this.cmsService.getConfig();
-            if (cmsConfig && cmsConfig.themeName) {
-                const pagePath = resolve(projectRootDir, 'themes', cmsConfig.themeName, buildDirName, 'admin', pageRoute);
+            const cmsSettings = await this.cmsService.getSettings();
+            if (cmsSettings && cmsSettings.themeName) {
+                const pagePath = resolve(projectRootDir, 'themes', cmsSettings.themeName, buildDirName, 'admin', pageRoute);
                 const pagePathBunle = normalizePath(pagePath) + '.js';
                 if (await fs.pathExists(pagePathBunle)) {
                     out = {};
@@ -305,7 +304,7 @@ export class ThemeController {
 
                 // Read theme config
                 let themeConfig;
-                const filePath = resolve(themePath, 'cromwell.config.js');
+                const filePath = resolve(themePath, configFileName);
                 if (await fs.pathExists(filePath)) {
                     try {
                         decache(filePath);

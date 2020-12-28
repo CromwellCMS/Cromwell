@@ -20,7 +20,7 @@ import { getNodeModuleVersion, isExternalForm, getDepVersion } from '../shared';
 
 export const rollupConfigWrapper = (cromwellConfig: TPluginConfig | TThemeConfig): RollupOptions[] => {
 
-    if (!cromwellConfig) throw new Error(`CromwellPlugin Error. Provide cromwell.config as second argumet to the wrapper function`);
+    if (!cromwellConfig) throw new Error(`CromwellPlugin Error. Provide config as second argumet to the wrapper function`);
     if (!cromwellConfig?.type) throw new Error(`CromwellPlugin Error. Provide one of types to the CromwellConfig: 'plugin', 'theme'`);
     if (!cromwellConfig?.name) throw new Error(`CromwellPlugin Error. Provide name in the CromwellConfig`);
 

@@ -1,11 +1,12 @@
 import { TPluginConfig, TThemeConfig } from '@cromwell/core';
 import { rollupConfigWrapper } from '@cromwell/cromwella';
-import { resolve } from 'path';
-import { spawn, spawnSync } from 'child_process';
-import { rollup, watch as rollupWatch, RollupWatcherEvent } from 'rollup';
+import { configFileName } from '@cromwell/core-backend';
 import dateTime from 'date-time';
+import { resolve } from 'path';
 import prettyBytes from 'pretty-bytes';
 import ms from 'pretty-ms';
+import { rollup, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
+
 import { rendererBuildAndSaveTheme, rendererStartWatchDev } from '../managers/rendererManager';
 
 const { handleError, bold, underline, cyan, stderr, green } = require('rollup/dist/shared/loadConfigFile.js');
@@ -90,7 +91,7 @@ const rollupBuild = async (config: TPluginConfig | TThemeConfig, watch?: boolean
 export const buildTask = async (watch?: boolean) => {
     const workingDir = process.cwd();
 
-    const configPath = resolve(workingDir, 'cromwell.config.js');
+    const configPath = resolve(workingDir, configFileName);
     let config: TThemeConfig | TPluginConfig | undefined = undefined;
     try {
         config = require(configPath);
@@ -121,7 +122,7 @@ export const buildTask = async (watch?: boolean) => {
                     console.log(message);
                 });
             } else {
-                await rendererBuildAndSaveTheme((message: string) => {
+                await rendererBuildAndSaveTheme(config.name, (message: string) => {
                     console.log(message);
                 })
             }

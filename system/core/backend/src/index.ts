@@ -25,6 +25,7 @@ export * from './inputs/AttributeInput';
 export * from './inputs/ProductReviewInput';
 export * from './inputs/InputThemeEntity';
 export * from './inputs/InputPluginEntity';
+export * from './inputs/InputCmsEntity';
 
 export * from './repositories/BaseQueries';
 export * from './repositories/ProductCategoryRepository';

@@ -10,10 +10,9 @@ export const getThemeStaticProps = async (pageName: BasePageNames | string,
     pageGetStaticProps: ((context: StaticPageContext) => any) | undefined | null,
     context: StaticPageContext): Promise<Record<string, any>> => {
         
-    const cmsconfig = getStoreItem('cmsconfig');
-    if (!cmsconfig || !cmsconfig.themeName) {
-        console.log('cmsconfig', cmsconfig)
-        throw new Error('getThemeStaticProps !cmsconfig.themeName');
+    const cmsSettings = getStoreItem('cmsSettings');
+    if (!cmsSettings?.themeName) {
+        throw new Error('getThemeStaticProps !cmsSettings.themeName ' + cmsSettings);
     }
     let childStaticProps = {}
     console.log('getThemeStaticProps', 'pageName', pageName, 'pageGetStaticProps', pageGetStaticProps)

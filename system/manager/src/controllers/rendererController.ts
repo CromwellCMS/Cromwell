@@ -1,4 +1,3 @@
-import { readCMSConfigSync } from '@cromwell/core-backend';
 import { Router } from 'express';
 
 import managerConfig from '../config';
@@ -36,9 +35,8 @@ export const getRendererController = (): Router => {
     rendererController.get(`/change-theme/:themeName`, async function (req, res) {
         const themeName = req.params.themeName;
         if (themeName && themeName !== '') {
-            const cmsconfig = readCMSConfigSync(projectRootDir);
             ManagerState.clearLog();
-            const success = await rendererChangeTheme(cmsconfig.themeName, themeName, ManagerState.getLogger('renderer', true));
+            const success = await rendererChangeTheme(themeName, ManagerState.getLogger('renderer', true));
             res.send(success);
         } else {
             res.send(false);

@@ -1,13 +1,13 @@
 
-import { ComponentType } from 'react';
 import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks'
+import { TCmsEntityCore } from './entities';
 
 
 export type TCromwellStore = {
     pluginsData?: Record<string, any>;
     pluginsComponents?: Record<string, any>;
     pluginsSettings?: Record<string, any>;
-    cmsconfig?: TCmsConfig;
+    cmsSettings?: TCmsSettings;
     pageConfig?: TPageConfig;
     themeCustomConfig?: Record<string, any>;
     themeMainConfig?: TThemeMainConfig;
@@ -86,6 +86,7 @@ export type TPagedMeta = {
     totalElements?: number;
 }
 
+// Stored in cmsconfig.json
 export type TCmsConfig = {
     domain?: string;
     protocol?: 'http' | 'https';
@@ -93,15 +94,11 @@ export type TCmsConfig = {
     adminPanelPort: number;
     frontendPort: number;
     managerPort: number;
-    themeName: string;
-    defaultPageSize?: number;
-    /** Array of available currencies: ['USD', 'EURO', ...] */
-    currencyOptions?: string[];
-    /** Object of local curency symbols that will be added to price in getPriceWithCurrency method: {"USD": "$","EURO": "€"}  */
-    currencySymbols?: Record<string, string>;
-    /** Ratio between currencies: {"USD": 1,"EURO": 0.8} */
-    currencyRatio?: Record<string, number>;
+    defaultSettings?: TCmsEntityCore;
 }
+
+// Info form cmsconfig.json and settings from DB
+export type TCmsSettings = TCmsConfig & TCmsEntityCore;
 
 export type TBuildConfig = {
     name: string;
@@ -151,9 +148,9 @@ export type TPageInfo = {
     route: string;
     /** Name */
     name: string;
-    /** SEO title */
+    /** Meta title (SEO) */
     title?: string;
-    /** SEO description */
+    /** Meta description (SEO) */
     description?: string;
     /** Is using next.js dynamic routes? */
     isDynamic?: boolean;

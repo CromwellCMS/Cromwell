@@ -1,14 +1,14 @@
 import { SelectQueryBuilder } from "typeorm";
 import { TPagedParams, TPagedList, TBasePageEntity, TBasePageEntityInput } from '@cromwell/core';
 import { getStoreItem } from '@cromwell/core';
-const cmsconfig = getStoreItem('cmsconfig');
 
 export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, entityName?: string, params?: TPagedParams<T>): SelectQueryBuilder<T> => {
+    const cmsSettings = getStoreItem('cmsSettings');
     const p = params ? params : {};
     if (!p.pageNumber) p.pageNumber = 1;
     if (!p.pageSize) {
-        const defaultPageSize = cmsconfig ? cmsconfig.defaultPageSize : undefined;
-        p.pageSize = (defaultPageSize && typeof defaultPageSize === 'number') ? defaultPageSize : 15;
+        const def = cmsSettings?.defaultPageSize
+        p.pageSize = def && typeof def === 'number' ? def : 15;
     }
 
     if (p.orderBy && entityName) {

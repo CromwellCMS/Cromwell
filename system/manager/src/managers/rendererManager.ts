@@ -5,7 +5,6 @@ import {
     getRendererTempDir,
     getRendererTempNextDir,
     getThemeDir,
-    getCurrentThemeDir,
     rendererMessages,
     buildDirName,
 } from '@cromwell/core-backend';
@@ -160,11 +159,11 @@ export const rendererBuildAndStart = async (onLog?: (message: string) => void): 
     return false;
 }
 
-export const rendererBuildAndSaveTheme = async (onLog?: (message: string) => void): Promise<boolean> => {
+export const rendererBuildAndSaveTheme = async (themeName: string, onLog?: (message: string) => void): Promise<boolean> => {
     const tempDirName = '.temp';
     const tempDir = resolve(rendererDir, tempDirName);
     const tempNextDir = resolve(tempDir, '.next');
-    const themeDir = await getCurrentThemeDir(projectRootDir);
+    const themeDir = await getThemeDir(projectRootDir, themeName);
 
     const buildSuccess = await rendererBuild(tempDirName, onLog);
     if (buildSuccess) {
@@ -183,7 +182,7 @@ export const rendererBuildAndSaveTheme = async (onLog?: (message: string) => voi
     return false;
 }
 
-export const rendererChangeTheme = async (prevThemeName: string, nextThemeName: string,
+export const rendererChangeTheme = async (nextThemeName: string,
     onLog?: (message: string) => void): Promise<boolean> => {
     if (ManagerState.rendererStatus === 'busy' ||
         ManagerState.rendererStatus === 'building') {

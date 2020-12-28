@@ -12,7 +12,7 @@ module.exports = {
     main: {
         themeName: "cromwell-demoshop",
         title: "Demoshop",
-        previewImage: "/themes/cromwell-demoshop/shopping-cart.png",
+        previewImage: "public/shopping-cart.png",
         description: "Online shop theme",
         adminPanelDir: "dist/adminPanel",
         palette: {

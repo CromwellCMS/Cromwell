@@ -1,13 +1,11 @@
-import { TPagedList, GraphQLPaths } from '@cromwell/core';
+import { GraphQLPaths, TPagedList } from '@cromwell/core';
 import { BaseRepository, PagedMeta, PagedParamsInput } from '@cromwell/core-backend';
 import { Arg, Args, ArgsType, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { EntityRepository, getCustomRepository } from 'typeorm';
 
-export const createResolver = <EntityType, EntityInputType = EntityType>(entityName: string, DBTableName: string,
+export const createGenericEntity = <EntityType, EntityInputType = EntityType>(entityName: string, DBTableName: string,
     EntityClass: new (...args: any[]) => EntityType,
     InputEntityClass?: new (...args: any[]) => EntityInputType) => {
-
-    if (!InputEntityClass) InputEntityClass = EntityClass as any;
 
     @EntityRepository(EntityClass)
     class GenericRepository extends BaseRepository<EntityType, EntityInputType> {
@@ -27,7 +25,7 @@ export const createResolver = <EntityType, EntityInputType = EntityType>(entityN
 
     @ArgsType()
     class CreateArgs {
-        @Field(() => InputEntityClass!)
+        @Field(() => InputEntityClass ?? String)
         data: EntityInputType;
     }
 
@@ -36,7 +34,7 @@ export const createResolver = <EntityType, EntityInputType = EntityType>(entityN
         @Field(() => String)
         id: string;
 
-        @Field(() => InputEntityClass!)
+        @Field(() => InputEntityClass ?? String)
         data: EntityInputType;
     }
 
@@ -48,8 +46,8 @@ export const createResolver = <EntityType, EntityInputType = EntityType>(entityN
     const updatePath = GraphQLPaths.Generic.update + entityName;
     const deletePath = GraphQLPaths.Generic.delete + entityName;
 
-    @Resolver(EntityClass)
-    class GenericResolver {
+    @Resolver(EntityClass, { isAbstract: true })
+    abstract class GenericResolver {
 
         private repository = getCustomRepository(GenericRepository)
 
@@ -92,7 +90,7 @@ export const createResolver = <EntityType, EntityInputType = EntityType>(entityN
     }
 
     return {
-        resolver: GenericResolver,
+        abstractResolver: GenericResolver,
         repository: GenericRepository,
         pagedEntity: PagedEntity,
         createArgs: CreateArgs,

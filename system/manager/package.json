@@ -25,6 +25,7 @@
   "dependencies": {
     "@cromwell/core": "~1.1.0",
     "@cromwell/core-backend": "~1.0.0",
+    "@cromwell/core-frontend": "~1.0.0",
     "@cromwell/cromwella": "~1.0.0",
     "async": "^3.2.0",
     "axios": "0.19.2",
@@ -52,7 +53,11 @@
   "startupDependencies": {
     "colors": "^1.4.0",
     "glob": "^7.1.6",
+    "import-from": "^3.0.0",
+    "mkdirp": "^1.0.4",
     "node-cleanup": "^2.1.2",
+    "rimraf": "^3.0.2",
+    "symlink-dir": "^4.1.0",
     "tslib": "2.0.1",
     "yargs-parser": "^19.0.4"
   },
