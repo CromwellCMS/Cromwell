@@ -1,7 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TCmsConfig } from '@cromwell/core';
+import { TCmsSettings, TCurrency } from '@cromwell/core';
 
-export class CmsConfigDto implements TCmsConfig {
+export class CurrencyDto implements TCurrency {
+    @ApiProperty()
+    tag: string;
+
+    @ApiProperty()
+    title?: string;
+
+    @ApiProperty()
+    symbol?: string;
+
+    @ApiProperty()
+    ratio?: number;
+}
+
+export class CmsConfigDto implements TCmsSettings {
     @ApiProperty()
     domain?: string;
 
@@ -26,12 +40,7 @@ export class CmsConfigDto implements TCmsConfig {
     @ApiProperty()
     defaultPageSize?: number;
 
-    @ApiProperty({ type: [String] })
-    currencyOptions?: string[];
-
-    @ApiProperty()
-    currencySymbols?: Record<string, string>;
-
-    @ApiProperty()
-    currencyRatio?: Record<string, number>;
+    @ApiProperty({ type: [CurrencyDto] })
+    currencies?: TCurrency[];
 }
+

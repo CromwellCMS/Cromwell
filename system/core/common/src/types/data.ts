@@ -172,6 +172,7 @@ export type TPluginConfig = TBuildConfig & {
         entitiesDir?: string;
     }
     defaultSettings?: any;
+    title?: string;
 }
 
 export type TCromwellNodeModules = {

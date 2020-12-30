@@ -31,7 +31,7 @@ class CRestAPIClient {
 
     public get = async <T>(route: string): Promise<T | undefined> => {
         try {
-            const res = await fetch(route);
+            const res = await fetch(`${this.baseUrl}/${route}`);
             const data = await res.json();
             return this.handleError(res, data, route);
         } catch (e) {
@@ -41,7 +41,7 @@ class CRestAPIClient {
 
     public post = async <T>(route: string, input: any): Promise<T | undefined> => {
         try {
-            const res = await window.fetch(route, {
+            const res = await window.fetch(`${this.baseUrl}/${route}`, {
                 method: 'post',
                 body: JSON.stringify(input)
             })
@@ -53,11 +53,11 @@ class CRestAPIClient {
     }
 
     public getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
-        return this.get(`${this.baseUrl}/cms/config`);
+        return this.get(`cms/config`);
     }
 
     public saveThemeName = async (themeName?: string): Promise<boolean | undefined> => {
-        return this.get(`${this.baseUrl}/cms/set-theme/${themeName ?? ''}`);
+        return this.get(`cms/set-theme/${themeName ?? ''}`);
     }
 
     public getCmsSettingsAndSave = async (): Promise<TCmsSettings | undefined> => {
@@ -69,76 +69,77 @@ class CRestAPIClient {
     }
 
     public getThemesInfo = async (): Promise<TThemeMainConfig[] | undefined> => {
-        return this.get(`${this.baseUrl}/cms/themes`);
+        return this.get(`cms/themes`);
     }
 
+    public getPluginList = async (): Promise<string[] | undefined> => {
+        return this.get(`cms/plugins`);
+    }
+
+
     public getPageConfig = async (pageRoute: string): Promise<TPageConfig | undefined> => {
-        return this.get(`${this.baseUrl}/theme/page?pageRoute=${pageRoute}`);
+        return this.get(`theme/page?pageRoute=${pageRoute}`);
     }
 
     public savePageConfig = async (config: TPageConfig): Promise<boolean> => {
-        const data = await this.post<boolean>(`${this.baseUrl}/theme/page`, config);
+        const data = await this.post<boolean>(`theme/page`, config);
         return data ?? false;
     }
 
     public getPluginsModifications = async (pageRoute: string): Promise<Record<string, TPluginConfig & { [x: string]: any }> | undefined> => {
-        return this.get(`${this.baseUrl}/theme/plugins?pageRoute=${pageRoute}`);
+        return this.get(`theme/plugins?pageRoute=${pageRoute}`);
     }
 
     public getPluginNames = async (): Promise<string[] | undefined> => {
-        return this.get(`${this.baseUrl}/theme/plugin-names`);
+        return this.get(`theme/plugin-names`);
     }
 
     public getPagesInfo = async (): Promise<TPageInfo[] | undefined> => {
-        return this.get(`${this.baseUrl}/theme/pages/info`);
+        return this.get(`theme/pages/info`);
     }
 
     public getPageConfigs = async (): Promise<TPageConfig[] | undefined> => {
-        return this.get(`${this.baseUrl}/theme/pages/configs`);
+        return this.get(`theme/pages/configs`);
     }
 
     public getThemeMainConfig = async (): Promise<TThemeMainConfig | undefined> => {
-        return this.get(`${this.baseUrl}/theme/main-config`);
+        return this.get(`theme/main-config`);
     }
 
     public getThemeCustomConfig = async (): Promise<Record<string, any> | undefined> => {
-        return this.get(`${this.baseUrl}/theme/custom-config`);
+        return this.get(`theme/custom-config`);
     }
 
     public getThemePageBundle = async (pageRoute: string): Promise<TFrontendBundle | undefined> => {
-        return this.get(`${this.baseUrl}/theme/page-bundle?pageRoute=${pageRoute}`);
+        return this.get(`theme/page-bundle?pageRoute=${pageRoute}`);
     }
 
     public installTheme = async (themeName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`${this.baseUrl}/theme/install/${themeName}`);
+        const data = await this.get<boolean>(`theme/install/${themeName}`);
         return data ?? false;
     }
 
 
 
     public getPluginSettings = async (pluginName: string): Promise<any | undefined> => {
-        return this.get(`${this.baseUrl}/plugin/settings/${pluginName}`);
+        return this.get(`plugin/settings/${pluginName}`);
     }
 
     public setPluginSettings = async (pluginName: string, settings: any): Promise<boolean> => {
-        const data = await this.post<boolean>(`${this.baseUrl}/plugin/settings/${pluginName}`, settings);
+        const data = await this.post<boolean>(`plugin/settings/${pluginName}`, settings);
         return data ?? false;
     }
 
     public getPluginFrontendBundle = async (pluginName: string): Promise<TFrontendBundle | undefined> => {
-        return this.get(`${this.baseUrl}/plugin/frontend-bundle/${pluginName}`);
+        return this.get(`plugin/frontend-bundle/${pluginName}`);
     }
 
     public getPluginAdminBundle = async (pluginName: string): Promise<TFrontendBundle | undefined> => {
-        return this.get(`${this.baseUrl}/plugin/admin-bundle/${pluginName}`);
-    }
-
-    public getPluginList = async (): Promise<TPluginInfo[] | undefined> => {
-        return this.get(`${this.baseUrl}/plugin/list`);
+        return this.get(`plugin/admin-bundle/${pluginName}`);
     }
 
     public installPlugin = async (pluginName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`${this.baseUrl}/plugin/install/${pluginName}`);
+        const data = await this.get<boolean>(`plugin/install/${pluginName}`);
         return data ?? false;
     }
 
@@ -146,12 +147,12 @@ class CRestAPIClient {
     // < Manager >
 
     public changeTheme = async (themeName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`${this.baseUrl}/manager/services/change-theme/${themeName}`);
+        const data = await this.get<boolean>(`manager/services/change-theme/${themeName}`);
         return data ?? false;
     }
 
     public rebuildTheme = async (): Promise<boolean> => {
-        const data = await this.get<boolean>(`${this.baseUrl}/manager/services/rebuild-theme`);
+        const data = await this.get<boolean>(`manager/services/rebuild-theme`);
         return data ?? false;
     }
 

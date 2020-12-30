@@ -104,7 +104,7 @@ export class PluginController {
             }
         };
 
-        throw new HttpException('Invalid pluginName', HttpStatus.NOT_ACCEPTABLE);
+        throw new HttpException('Invalid pluginName or frontend bundle not found', HttpStatus.NOT_ACCEPTABLE);
     }
 
 
@@ -128,7 +128,7 @@ export class PluginController {
             }
         };
 
-        throw new HttpException('Invalid pluginName', HttpStatus.NOT_ACCEPTABLE);
+        throw new HttpException('Invalid pluginName or admin panel bundle not found', HttpStatus.NOT_ACCEPTABLE);
     }
 
 
@@ -170,7 +170,7 @@ export class PluginController {
 
 
                 // Read plugin config
-                let pluginConfig;
+                let pluginConfig: TPluginConfig | undefined;
                 const filePath = resolve(pluginPath, configFileName);
                 if (await fs.pathExists(filePath)) {
                     try {
@@ -192,11 +192,18 @@ export class PluginController {
                     } catch (e) { console.log(e) }
                 }
 
+                // Check for admin bundle
+                let hasAdminBundle = false;
+                const bundle = await this.pluginService.getPluginBundle(pluginName, 'admin');
+                if (bundle) hasAdminBundle = true;
+
                 // Create DB entity
                 const input: TPluginEntityInput = {
                     name: pluginName,
                     slug: pluginName,
+                    title: pluginConfig?.title,
                     isInstalled: true,
+                    hasAdminBundle
                 };
                 if (defaultSettings) {
                     try {

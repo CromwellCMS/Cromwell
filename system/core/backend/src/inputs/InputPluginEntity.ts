@@ -7,8 +7,14 @@ export class InputPluginEntity extends BasePageInput implements TPluginEntityInp
     @Field(() => String)
     name: string;
 
+    @Field(type => String, { nullable: true })
+    title?: string;
+
     @Field(() => Boolean)
     isInstalled: boolean;
+
+    @Field(type => Boolean, { nullable: true })
+    hasAdminBundle?: boolean;
 
     @Field(type => String, { nullable: true })
     settings?: string;

@@ -7,7 +7,7 @@ export const buildDirName = '.cromwell';
 export const configFileName = 'cromwell.config.js';
 
 export const getThemeDir = async (projectRootDir: string, themeName: string): Promise<string | undefined> => {
-    const dir = resolve(projectRootDir, 'themes', themeName);
+    const dir = resolve(getThemesDir(projectRootDir), themeName);
     if (await fs.pathExists(dir)) {
         return dir;
     }
@@ -45,6 +45,9 @@ export const getCMSConfigPath = (projectRootDir: string) =>
 
 export const getPluginsDir = (projectRootDir: string) =>
     resolve(projectRootDir, 'plugins');
+
+export const getThemesDir = (projectRootDir: string) =>
+    resolve(projectRootDir, 'themes');
 
 
 const renderDirChunk = 'system/renderer';

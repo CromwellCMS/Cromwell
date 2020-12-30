@@ -48,7 +48,7 @@ export class PluginService {
      * @param pathGetter 
      */
     public async getPluginBundle(pluginName: string, bundleType: 'admin' | 'frontend'): Promise<TFrontendBundle | undefined> {
-        logFor('detailed', 'pluginsController::getPluginBundle');
+        logFor('detailed', 'PluginService::getPluginBundle');
         let out: TFrontendBundle | undefined = undefined;
         let pathGetter: ((distDir: string) => string) | undefined = undefined;
         let cjsPathGetter: ((distDir: string) => string) | undefined = undefined;

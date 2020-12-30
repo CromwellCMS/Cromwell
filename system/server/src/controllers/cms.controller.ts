@@ -1,5 +1,5 @@
 import { logFor, TCmsSettings, TThemeConfig, TThemeMainConfig } from '@cromwell/core';
-import { getThemeConfig, readCMSConfig } from '@cromwell/core-backend';
+import { getThemeConfig, getPluginsDir, getThemesDir } from '@cromwell/core-backend';
 import { Controller, Get, HttpException, HttpStatus, Param } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
@@ -21,11 +21,12 @@ export class CmsController {
         private readonly cmsService: CmsService
     ) { }
 
-    private readonly themesDir = resolve(projectRootDir, 'themes');
+    private readonly themesDir = getThemesDir(projectRootDir);
+    private readonly pluginsDir = getPluginsDir(projectRootDir);
 
 
     @Get('config')
-    @ApiOperation({ description: 'Returns CMS settings from DB' })
+    @ApiOperation({ description: 'Returns CMS settings from DB and cmsconfig.json' })
     @ApiResponse({
         status: 200,
         type: CmsConfigDto,
@@ -43,13 +44,13 @@ export class CmsController {
 
     @Get('set-theme/:themeName')
     @ApiOperation({
-        description: 'Returns CMS settings from DB',
+        description: 'Update new theme name in DB',
         parameters: [{ name: 'themeName', in: 'path', required: true }]
 
     })
     @ApiResponse({
         status: 200,
-        type: CmsConfigDto,
+        type: Boolean,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async setThemeName(@Param('themeName') themeName: string): Promise<boolean> {
@@ -63,7 +64,7 @@ export class CmsController {
 
 
     @Get('themes')
-    @ApiOperation({ description: 'Returns info from configs of all themes present in directory' })
+    @ApiOperation({ description: 'Returns info from configs of all themes present in "themes" directory' })
     @ApiResponse({
         status: 200,
         type: [ThemeMainConfigDto],
@@ -93,5 +94,24 @@ export class CmsController {
             }
         }
         return out;
+    }
+
+
+    @Get('plugins')
+    @ApiOperation({ description: 'Returns names of all plugins present in "plugins" directory' })
+    @ApiResponse({
+        status: 200,
+        type: [String],
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async getPlugins(): Promise<string[]> {
+        logFor('detailed', 'CmsController::getPlugins');
+        let dirs: string[] = [];
+        try {
+            dirs = await fs.readdir(this.pluginsDir);
+        } catch (e) {
+            logFor('errors-only', "CmsController::getThemes Failed to read pluginsDir at: " + this.pluginsDir + e);
+        }
+        return dirs;
     }
 }

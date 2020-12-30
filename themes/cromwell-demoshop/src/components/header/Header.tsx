@@ -1,26 +1,30 @@
-import { getThemeCustomConfigTextProp, getThemeCustomConfigProp, getCmsSettings, isServer, setStoreItem } from '@cromwell/core';
-import { Link, CHTML, CContainer, CPlugin, getCStore } from '@cromwell/core-frontend';
-import React, { useEffect, useState } from 'react';
-import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core';
 import {
-    MenuItem,
+    getCmsSettings,
+    getThemeCustomConfig,
+    getThemeCustomConfigProp,
+    TCurrency,
+} from '@cromwell/core';
+import { CHTML, CPlugin, getCStore, Link } from '@cromwell/core-frontend';
+import {
+    createStyles,
     FormControl,
+    ListItem,
+    makeStyles,
+    MenuItem,
     Select as MuiSelect,
     TextField as MuiTextField,
-    ListItem,
-    IconButton,
-    Modal,
-    Button
+    Theme,
+    withStyles,
 } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon, ShoppingCart as ShoppingCartIcon } from '@material-ui/icons';
-import { TTopLink } from '../../types';
-import { productListStore } from '../../helpers/ProductListStore';
-import { observer } from "mobx-react";
+import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import React, { useEffect, useState } from 'react';
 
-// @ts-ignore
-import styles from './Header.module.scss';
+import { productListStore } from '../../helpers/ProductListStore';
 // @ts-ignore
 import commonStyles from '../../styles/common.module.scss';
+import { TTopLink } from '../../types';
+// @ts-ignore
+import styles from './Header.module.scss';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -48,16 +52,16 @@ const TextField = withStyles({
 })(MuiTextField);
 
 
-const Header = observer(() => {
+const Header = () => {
     const topLinks: TTopLink[] | undefined = getThemeCustomConfigProp('header/topLinks');
     const cmsConfig = getCmsSettings();
-    const currencyOptions: string[] = cmsConfig && cmsConfig.currencyOptions ? cmsConfig.currencyOptions : [];
+    const currencies: TCurrency[] = cmsConfig?.currencies ?? [];
     const logoHref: string | undefined = getThemeCustomConfigProp('header/logo');
     const contactPhone: string | undefined = getThemeCustomConfigProp('header/contactPhone');
     const classes = useStyles();
     const cstore = getCStore();
     const [itemsInCart, setItemsInCart] = useState(cstore.getCart().length);
-    const [currency, setCurrency] = React.useState<string | null | undefined>(cstore.getActiveCurrency());
+    const [currency, setCurrency] = React.useState<string | null | undefined>(cstore.getActiveCurrencyTag());
 
     const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const val = event.target.value as string;
@@ -68,8 +72,7 @@ const Header = observer(() => {
     const handleCartClick = () => {
         productListStore.isCartOpen = true;
     }
-
-
+    const CustomConfig = getThemeCustomConfig();
 
     useEffect(() => {
         cstore.addOnCartUpdatedCallback((cart) => {
@@ -90,8 +93,8 @@ const Header = observer(() => {
                                     value={currency}
                                     onChange={handleCurrencyChange}
                                 >
-                                    {currencyOptions && currencyOptions.map(c => (
-                                        <MenuItem value={c} key={c}>{c}</MenuItem>
+                                    {currencies && Array.isArray(currencies) && currencies.map(curr => (
+                                        <MenuItem value={curr.tag} key={curr.tag}>{curr.tag}</MenuItem>
                                     ))}
                                 </Select>
                             </FormControl>
@@ -105,7 +108,7 @@ const Header = observer(() => {
 
                     <div className={styles.rightBlock}>
                         <CHTML id="header_03" className={styles.welcomeMessage}>
-                            <p>{getThemeCustomConfigTextProp('header/welcomeMessage')}</p>
+                            <p>{getThemeCustomConfigProp('header/welcomeMessage')}</p>
                         </CHTML>
                         <CHTML id="header_04" className={styles.topPanelLinks}>
                             <>
@@ -152,6 +155,6 @@ const Header = observer(() => {
             </div>
         </div>
     )
-})
+}
 
 export default Header;

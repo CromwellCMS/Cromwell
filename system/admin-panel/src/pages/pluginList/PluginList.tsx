@@ -17,7 +17,7 @@ import styles from './PluginList.module.scss';
 
 export default function PluginList() {
     const history = useHistory();
-    const [pluginInfoList, setPluginInfoList] = useState<TPluginInfo[] | null>(null);
+    const [pluginInfoList, setPluginInfoList] = useState<string[] | null>(null);
     const [pluginList, setPluginList] = useState<TPluginEntity[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -28,9 +28,11 @@ export default function PluginList() {
         // Get info from DB
         const graphQLClient = getGraphQLClient();
         if (graphQLClient) {
-            const pluginEntities: TPluginEntity[] = await graphQLClient.getAllEntities('Plugin',
-                graphQLClient.PluginFragment, 'PluginFragment');
-            if (pluginEntities && Array.isArray(pluginEntities)) setPluginList(pluginEntities);
+            try {
+                const pluginEntities: TPluginEntity[] = await graphQLClient.getAllEntities('Plugin',
+                    graphQLClient.PluginFragment, 'PluginFragment');
+                if (pluginEntities && Array.isArray(pluginEntities)) setPluginList(pluginEntities);
+            } catch (e) { console.error(e); }
         }
 
         if (pluginInfos && Array.isArray(pluginInfos)) setPluginInfoList(pluginInfos);
@@ -83,27 +85,32 @@ export default function PluginList() {
                     startIcon={<AddCircleOutlineIcon />}
                 >Add plugins</Button>
             </div>
-            {pluginInfoList && pluginInfoList.map(pluginInfo => {
-                const pluginEntity = pluginList?.find(ent => ent.name === pluginInfo.name)
+            {pluginInfoList && pluginInfoList.map(pluginName => {
+                const pluginEntity = pluginList?.find(ent => ent.name === pluginName)
+                const title = pluginEntity?.title ?? pluginName;
 
                 return (<Card className={styles.pluginItem}>
-                    <p className={styles.pluginName}>{pluginInfo.name}</p>
-                    <div>
+                    <p className={styles.pluginName}>{title}</p>
+                    <div className={styles.actions}>
                         {(pluginEntity && pluginEntity.isInstalled) ? (
-                            <Tooltip title="Settings">
-                                <IconButton onClick={handleOpenPluginPage(pluginInfo.name)}>
-                                    <SettingsIcon />
-                                </IconButton>
-                            </Tooltip>
+                            pluginEntity.hasAdminBundle ? (
+                                <Tooltip title="Settings">
+                                    <IconButton onClick={handleOpenPluginPage(pluginName)}>
+                                        <SettingsIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            ) : (
+                                    <div style={{ opacity: 0.3, padding: '12px' }}><SettingsIcon /></div>
+                                )
                         ) : (
                                 <Tooltip title="Install plugin">
-                                    <IconButton onClick={handleInstallPlugin(pluginInfo.name)}>
+                                    <IconButton onClick={handleInstallPlugin(pluginName)}>
                                         <LibraryAddIcon />
                                     </IconButton>
                                 </Tooltip>
                             )}
                         <Tooltip title="Delete plugin">
-                            <IconButton onClick={handleDeletePlugin(pluginInfo.name)}>
+                            <IconButton onClick={handleDeletePlugin(pluginName)}>
                                 <DeleteIcon />
                             </IconButton>
                         </Tooltip>

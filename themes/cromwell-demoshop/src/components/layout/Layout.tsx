@@ -20,14 +20,14 @@ const theme = createMuiTheme({
     palette: {
         primary: {
             main: primaryColor,
-            light:primaryColor,
+            light: primaryColor,
             dark: primaryColor,
         },
     },
 });
 
 export default function Layout(props: TProps | undefined) {
-    console.log('Layout render. props: ', isElement(props?.children), props);
+    // console.log('Layout render. props: ', isElement(props?.children), props);
 
     return (
         <ThemeProvider theme={theme}>

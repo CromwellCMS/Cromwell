@@ -10,7 +10,7 @@ const getThemeEntity = async (): Promise<TCmsEntity | undefined> => {
     const cmsRepo = getCustomRepository(GenericCms.repository);
     const all = await cmsRepo.find();
     let entity = all?.[0];
-    
+
     if (!entity) {
         // Probably CMS was launched for the first time and no settings persist in DB.
         // Create settings record
@@ -33,12 +33,24 @@ export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
 
     if (!cmsSettings && !config) {
         serverLogFor('errors-only', 'getCmsSettings: Failed to read CMS config', 'Error');
-        return undefined;
+        return;
     }
 
     const entity = await getThemeEntity();
 
-    const settings: TCmsSettings = Object.assign({}, cmsSettings, config, entity)
+    const settings: TCmsSettings = Object.assign({}, cmsSettings, config, entity);
+    delete settings.defaultSettings;
+
+    //@ts-ignore
+    if (settings._currencies) {
+        try {
+            //@ts-ignore
+            settings.currencies = JSON.parse(settings._currencies)
+        } catch (e) { serverLogFor('errors-only', 'getCmsSettings: Failed parse currencies', 'Error'); }
+        //@ts-ignore
+        delete settings._currencies;
+    }
+
     setStoreItem('cmsSettings', settings);
     return settings;
 }

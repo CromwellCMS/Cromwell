@@ -10,6 +10,9 @@ export class InputThemeEntity extends BasePageInput implements TThemeEntityInput
     @Field(() => Boolean)
     isInstalled: boolean;
 
+    @Field(type => Boolean, { nullable: true })
+    hasAdminBundle?: boolean;
+
     @Field(type => String, { nullable: true })
     settings?: string;
 

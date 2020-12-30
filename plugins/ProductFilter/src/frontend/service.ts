@@ -74,7 +74,6 @@ export const filterCList = (checkedAttrs: Record<string, string[]>, priceRange: 
 export const getStaticProps: TGetStaticProps = async (context): Promise<TProductFilterData> => {
     // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
-    console.log('CategoryThemePage::getStaticProps: slug', slug, 'context.params', context.params)
 
     const client = getGraphQLClient();
 

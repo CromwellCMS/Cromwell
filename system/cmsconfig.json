@@ -6,20 +6,25 @@
   "defaultSettings": {
     "themeName": "cromwell-demoshop",
     "defaultPageSize": 15,
-    "currencyOptions": [
-      "USD",
-      "EURO",
-      "RUB"
-    ],
-    "currencySymbols": {
-      "USD": "$",
-      "EURO": "€",
-      "RUB": "₽"
-    },
-    "currencyRatio": {
-      "USD": 1,
-      "EURO": 0.8,
-      "RUB": 60
-    }
+    "currencies": [
+      {
+        "tag": "USD",
+        "title": "US Dollar",
+        "symbol": "$",
+        "ratio": 1
+      },
+      {
+        "tag": "EUR",
+        "title": "Euro",
+        "symbol": "€",
+        "ratio": 0.8
+      },
+      {
+        "tag": "RUB",
+        "title": "Russian Ruble",
+        "symbol": "₽",
+        "ratio": 74
+      }
+    ]
   }
 }

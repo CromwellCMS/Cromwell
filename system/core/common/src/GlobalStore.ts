@@ -49,6 +49,7 @@ export const getThemeCustomConfig = (): Record<string, any> | undefined => {
 
 export const getThemeCustomConfigProp = (propPath: string): any => {
     const getProp = (obj: any, paths: string[]): any => {
+        if (!obj) return;
         if (obj[paths[0]]) {
             if (paths.length === 1) return obj[paths[0]];
             else {
@@ -57,19 +58,9 @@ export const getThemeCustomConfigProp = (propPath: string): any => {
                 return getProp(obj[paths[0]], p);
             }
         }
-        return undefined;
     }
-    const paths = propPath.split('/');
-    const config = getThemeCustomConfig();
-    const prop = config ? getProp(config, paths) : undefined;
-    return prop;
+    return getProp(getThemeCustomConfig(), propPath.split('/'));
 }
-
-export const getThemeCustomConfigTextProp = (propPath: string): string => {
-    const prop = getThemeCustomConfigProp(propPath);
-    return prop ? prop : `{themeCustomConfig/${propPath}}`;
-}
-
 
 export const loadCommonComponent = (componentName: ECommonComponentNames | string): React.ComponentType<TCommonComponentProps> | undefined => {
     const components = getStore().components;

@@ -384,50 +384,55 @@ class CStore {
 
     // < CURRENCY >
 
-    private getDafaultCurrency = (): string | undefined => {
+    private getDafaultCurrencyTag = (): string | undefined => {
         const cmsSettings = getStoreItem('cmsSettings');
         let defaultCurrency;
-        if (cmsSettings && cmsSettings.currencyOptions && Array.isArray(cmsSettings.currencyOptions) &&
-            cmsSettings.currencyOptions.length > 0) {
-            defaultCurrency = cmsSettings.currencyOptions[0];
+        if (cmsSettings && cmsSettings.currencies && Array.isArray(cmsSettings.currencies) &&
+            cmsSettings.currencies.length > 0) {
+            defaultCurrency = cmsSettings.currencies[0].tag;
         }
         return defaultCurrency;
     }
 
     /** Returns merged price with sign of active (picked by user or default) currency */
-    public getPriceWithCurrency = (price: number | undefined | null): string => {
+    public getPriceWithCurrency = (price: any): string => {
         if (price === undefined || price === null)
             return '';
         //return 'Not available';
         let priceStr = price + '';
         const cmsSettings = getStoreItem('cmsSettings');
-        const currency = this.getActiveCurrency();
-        const defaultCurrency = this.getDafaultCurrency();
+        const currency = this.getActiveCurrencyTag();
+        const defaultCurrency = this.getDafaultCurrencyTag();
 
         if (currency && defaultCurrency) {
+            priceStr = this.convertPrice(price, defaultCurrency, currency) + '';
 
-            const priceRatio = cmsSettings?.currencyRatio;
-            if (priceRatio) {
-                const convertPrice = (price: number, from: string, to: string) => {
-                    return (price * (priceRatio[to] / priceRatio[from])).toFixed(2);
-                }
-                priceStr = convertPrice(price, defaultCurrency, currency);
-            }
-
-            const currencySymbols = cmsSettings?.currencySymbols;
-            if (currencySymbols && currencySymbols[currency]) {
-                priceStr = currencySymbols[currency] + priceStr;
-            }
+            const currencySymbol = cmsSettings?.currencies?.find(curr => curr.tag === currency)?.symbol;
+            if (currencySymbol) priceStr = currencySymbol + priceStr;
         }
         return priceStr;
     }
 
-    public getActiveCurrency = (): string | undefined => {
+    public convertPrice = (price: number | string, from: string, to: string) => {
+        if (from === to) return price;
+        if (typeof price === 'string') {
+            const priceInt = parseInt(price);
+            if (isNaN(priceInt)) return price;
+            price = priceInt;
+        }
+        const cmsSettings = getStoreItem('cmsSettings');
+        const ratioFrom = cmsSettings?.currencies?.find(curr => curr.tag === from)?.ratio;
+        const ratioTo = cmsSettings?.currencies?.find(curr => curr.tag === to)?.ratio;
+        if (ratioFrom && ratioTo) return (price * (ratioTo / ratioFrom)).toFixed(2);
+        return price.toFixed(2);
+    }
+
+    public getActiveCurrencyTag = (): string | undefined => {
         let currency = getStoreItem('currency');
         if (!currency) {
             let _currency: string | null | undefined = !isServer() ? window.localStorage.getItem(currencyKey) : null;
             if (!_currency || _currency === "") {
-                _currency = this.getDafaultCurrency();;
+                _currency = this.getDafaultCurrencyTag();;
             }
             if (_currency) {
                 setStoreItem('currency', _currency);
@@ -438,14 +443,8 @@ class CStore {
     }
 
     public getActiveCurrencySymbol = (): string | undefined => {
-        let symb;
-        const currency = this.getActiveCurrency();
-        const cmsSettings = getStoreItem('cmsSettings');
-        const currencySymbols = cmsSettings?.currencySymbols;
-        if (currencySymbols && currency) {
-            symb = currencySymbols[currency];
-        }
-        return symb;
+        const currency = this.getActiveCurrencyTag();
+        return getStoreItem('cmsSettings')?.currencies?.find(curr => curr.tag === currency)?.symbol;
     }
 
     public setActiveCurrency = (currency: string) => {

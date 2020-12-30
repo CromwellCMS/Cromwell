@@ -1,7 +1,8 @@
-import { TCmsEntityInput } from '@cromwell/core';
+import { TCmsEntityInput, TCurrency } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
 
 import { BasePageInput } from './BasePageInput';
+import { CurrencySettings } from '../entities/Cms';
 
 @InputType('CmsInput')
 export class InputCmsEntity extends BasePageInput implements TCmsEntityInput {
@@ -13,4 +14,7 @@ export class InputCmsEntity extends BasePageInput implements TCmsEntityInput {
 
     @Field(type => Number, { nullable: true })
     defaultPageSize?: number;
+
+    @Field(type => [CurrencySettings])
+    currencies: TCurrency[];
 }

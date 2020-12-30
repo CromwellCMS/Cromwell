@@ -16,7 +16,7 @@ export default class ProductFilterResolver {
         @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>,
         @Arg("filterParams", { nullable: true }) filterParams: ProductFilterInput
     ): Promise<TFilteredList<TProduct> | undefined> {
-        logFor('detailed', 'ProductFilterResolver::getFilteredProductsFromCategory categoryId:' + categoryId, ' pagedParams:', pagedParams);
+        logFor('detailed', 'ProductFilterResolver::getFilteredProductsFromCategory categoryId:' + categoryId + ' pagedParams:' + pagedParams);
         const timestamp = Date.now();
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
@@ -44,7 +44,7 @@ export default class ProductFilterResolver {
                 minPrice, maxPrice
             }
         }
-        
+
         const getElements = async (): Promise<TPagedList<TProduct>> => {
             const qb = getQb();
             return await getPaged<TProduct>(qb, DBTableNames.Product, pagedParams);

@@ -159,6 +159,8 @@ export type TProductReviewInput = TProductReviewCore & TBasePageEntityInput;
 type TThemeEntityCore = {
     name: string;
     isInstalled: boolean;
+    hasAdminBundle?: boolean;
+    title?: string;
     settings?: string;
     defaultSettings?: string;
 }
@@ -172,7 +174,9 @@ export type TThemeEntityInput = TThemeEntityCore & TBasePageEntityInput;
 
 type TPluginEntityCore = {
     name: string;
+    title?: string;
     isInstalled: boolean;
+    hasAdminBundle?: boolean;
     settings?: string;
     defaultSettings?: string;
 }
@@ -189,12 +193,16 @@ export type TCmsEntityCore = {
     protocol?: 'http' | 'https';
     themeName?: string;
     defaultPageSize?: number;
-    /** Array of available currencies: ['USD', 'EURO', ...] */
-    currencyOptions?: string[];
-    /** Object of local curency symbols that will be added to price in getPriceWithCurrency method: {"USD": "$","EURO": "€"}  */
-    currencySymbols?: Record<string, string>;
-    /** Ratio between currencies: {"USD": 1,"EURO": 0.8} */
-    currencyRatio?: Record<string, number>;
+    currencies?: TCurrency[];
+}
+
+export type TCurrency = {
+    tag: string;
+    title?: string;
+    /** Local curency symbols that will be added to price in getPriceWithCurrency method */
+    symbol?: string;
+    /** Ratio for currencies to compare: "USD": 1,"EURO": 0.8, etc. */
+    ratio?: number;
 }
 
 export type TCmsEntity = TCmsEntityCore & TBasePageEntity;

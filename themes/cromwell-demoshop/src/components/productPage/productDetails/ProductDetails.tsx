@@ -12,11 +12,10 @@ import { Pagination } from '../../pagination/Pagination';
 import { SwipeableTabs } from '../../tabs/Tabs';
 import { ProductActions } from '../../productPage/actions/ProductActions';
 import { ReviewItem } from '../../productPage/reviewItem/ReviewItem';
-import { observer } from "mobx-react";
 //@ts-ignore
 import styles from './ProductDetails.module.scss';
 
-const ProductDetailsComp = (props: {
+export const ProductDetails = (props: {
     product?: TProduct | null;
     attributes?: TAttribute[];
 }) => {
@@ -204,5 +203,3 @@ const ProductDetailsComp = (props: {
 
     )
 }
-
-export const ProductDetails = observer(ProductDetailsComp);

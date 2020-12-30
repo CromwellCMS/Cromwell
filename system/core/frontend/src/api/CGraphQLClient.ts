@@ -589,7 +589,9 @@ class CGraphQLClient {
             updateDate
             isEnabled
             name
+            title
             isInstalled
+            hasAdminBundle
             settings
             defaultSettings
         }
@@ -609,6 +611,7 @@ class CGraphQLClient {
             isEnabled
             name
             isInstalled
+            hasAdminBundle
             settings
             defaultSettings
         }
