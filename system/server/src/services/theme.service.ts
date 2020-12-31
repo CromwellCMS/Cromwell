@@ -1,15 +1,20 @@
 import {
     logFor,
-    TCmsEntity,
+    TCmsSettings,
     TCromwellBlockData,
     TPageConfig,
     TThemeConfig,
     TThemeEntity,
     TThemeEntityInput,
-    TCmsSettings
 } from '@cromwell/core';
+import { buildDirName, getNodeModuleDir, configFileName, getThemeAdminPanelBundleDir, serverLogFor, getPublicThemesDir } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import { getCustomRepository } from 'typeorm';
+import decache from 'decache';
+import fs from 'fs-extra';
+import normalizePath from 'normalize-path';
+import { resolve } from 'path';
+import symlinkDir from 'symlink-dir';
 
 import { GenericTheme } from '../helpers/genericEntities';
 import { CmsService } from './cms.service';
@@ -76,7 +81,11 @@ export class ThemeService {
         const cmsSettings = await this.cmsService.getSettings();
         if (cmsSettings?.themeName) {
 
-            const theme = await this.findOne(cmsSettings.themeName)
+            const theme = await this.findOne(cmsSettings.themeName);
+
+            if (!theme) {
+                serverLogFor('errors-only', `Current theme ${cmsSettings?.themeName} was not registered in DB`, 'Error');
+            }
 
             try {
                 if (theme?.defaultSettings) themeConfig = JSON.parse(theme.defaultSettings);
@@ -312,4 +321,62 @@ export class ThemeService {
         return pages;
     }
 
+
+    public async installTheme(themeName: string): Promise<boolean> {
+        const themePath = await getNodeModuleDir(themeName);
+        if (themePath) {
+
+            // @TODO Execute install script
+
+
+
+            // Read theme config
+            let themeConfig;
+            const filePath = resolve(themePath, configFileName);
+            if (await fs.pathExists(filePath)) {
+                try {
+                    decache(filePath);
+                    themeConfig = require(filePath);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            // Make symlink for public static content
+            const themePublicDir = resolve(themePath, 'public');
+            if (await fs.pathExists(themePublicDir)) {
+                try {
+                    const publicThemesDir = getPublicThemesDir();
+                    await fs.ensureDir(publicThemesDir);
+                    await symlinkDir(themePublicDir, resolve(publicThemesDir, themeName))
+                } catch (e) { console.log(e) }
+            }
+
+            // Create DB entity
+            const input: TThemeEntityInput = {
+                name: themeName,
+                slug: themeName,
+                isInstalled: true,
+            };
+            if (themeConfig) {
+                try {
+                    input.defaultSettings = JSON.stringify(themeConfig);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+
+            try {
+                const entity = await this.createEntity(input)
+                if (entity) {
+                    return true;
+                }
+            } catch (e) {
+                console.error(e)
+            }
+        }
+
+        return false;
+    }
 }

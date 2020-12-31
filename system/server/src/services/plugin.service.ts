@@ -1,4 +1,5 @@
 import { logFor, TFrontendBundle, TPluginEntity, TSciprtMetaInfo } from '@cromwell/core';
+import { TPluginConfig, TPluginEntityInput } from '@cromwell/core';
 import {
     buildDirName,
     getMetaInfoPath,
@@ -6,21 +7,21 @@ import {
     getPluginAdminCjsPath,
     getPluginFrontendBundlePath,
     getPluginFrontendCjsPath,
+    serverLogFor,
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import { getCustomRepository } from 'typeorm';
-
+import { configFileName, getPublicPluginsDir, getNodeModuleDir } from '@cromwell/core-backend';
+import decache from 'decache';
+import symlinkDir from 'symlink-dir';
 import { GenericPlugin } from '../helpers/genericEntities';
-import { projectRootDir } from '../constants';
 
 
 @Injectable()
 export class PluginService {
-
-    public pluginsPath = resolve(projectRootDir, 'plugins');
 
     public async findOne(pluginName: string): Promise<TPluginEntity | undefined> {
         const pluginRepo = getCustomRepository(GenericPlugin.repository);
@@ -63,10 +64,15 @@ export class PluginService {
         }
         if (!pathGetter) return;
 
-        const filePath = pathGetter(resolve(this.pluginsPath, pluginName, buildDirName));
+        const pluginDir = await getNodeModuleDir(pluginName);
+        if (!pluginDir) {
+            serverLogFor('errors-only', 'Failed to resolve plugin directory of: ' + pluginName, 'Error');
+            return;
+        }
+        const filePath = pathGetter(resolve(pluginDir, buildDirName));
 
         let cjsPath: string | undefined = cjsPathGetter?.(
-            resolve(this.pluginsPath, pluginName, buildDirName));
+            resolve(pluginDir, pluginName, buildDirName));
         if (cjsPath) cjsPath = normalizePath(cjsPath);
 
         if (cjsPath && !(await fs.pathExists(cjsPath))) cjsPath = undefined;
@@ -91,5 +97,74 @@ export class PluginService {
             }
         }
         return out;
+    }
+
+
+    public async installPlugin(pluginName: string): Promise<boolean> {
+        const pluginPath = await getNodeModuleDir(pluginName);
+        if (pluginPath && await fs.pathExists(pluginPath)) {
+
+            // @TODO Execute install script
+
+
+            // Read plugin config
+            let pluginConfig: TPluginConfig | undefined;
+            const filePath = resolve(pluginPath, configFileName);
+            if (await fs.pathExists(filePath)) {
+                try {
+                    decache(filePath);
+                    pluginConfig = require(filePath);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+            const defaultSettings = pluginConfig?.defaultSettings;
+
+            // Make symlink for public static content
+            const pluginPublicDir = resolve(pluginPath, 'public');
+            if (await fs.pathExists(pluginPublicDir)) {
+                try {
+                    const publicPluginsDir = getPublicPluginsDir();
+                    await fs.ensureDir(publicPluginsDir);
+                    await symlinkDir(pluginPublicDir, resolve(publicPluginsDir, pluginName))
+                } catch (e) { console.log(e) }
+            }
+
+
+            // Check for admin bundle
+            let hasAdminBundle = false;
+            const bundle = await this.getPluginBundle(pluginName, 'admin');
+            if (bundle) hasAdminBundle = true;
+
+            // Create DB entity
+            const input: TPluginEntityInput = {
+                name: pluginName,
+                slug: pluginName,
+                title: pluginConfig?.title,
+                isInstalled: true,
+                hasAdminBundle
+            };
+            if (defaultSettings) {
+                try {
+                    input.defaultSettings = JSON.stringify(defaultSettings);
+                    input.settings = JSON.stringify(defaultSettings);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            const pluginRepo = getCustomRepository(GenericPlugin.repository);
+            try {
+                const entity = await pluginRepo.createEntity(input);
+
+                if (entity) {
+                    return true;
+                }
+            } catch (e) {
+                console.error(e)
+            }
+        }
+
+        return false;
     }
 }

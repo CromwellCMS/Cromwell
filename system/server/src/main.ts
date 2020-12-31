@@ -7,7 +7,6 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cors from 'cors';
 
-import { projectRootDir } from './constants';
 import { connectDatabase } from './helpers/connectDatabase';
 import { setEnv } from './helpers/setEnv';
 import { AppModule } from './modules/app.module';
@@ -16,7 +15,7 @@ import { AppModule } from './modules/app.module';
 async function bootstrap(): Promise<void> {
     const envMode = setEnv();
 
-    const config = readCMSConfigSync(projectRootDir)
+    const config = readCMSConfigSync()
     if (!config || !config.apiPort) throw new Error('Failed to read CMS config ' + JSON.stringify(config));
 
 

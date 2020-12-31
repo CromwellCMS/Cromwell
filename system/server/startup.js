@@ -25,7 +25,7 @@ const main = async () => {
             { shell: true, stdio: 'inherit', cwd: serverRootDir });
 
         spawn(`npx nodemon --watch ${buildDir} ${buildDir}/server.js ${process.argv.slice(2).join(' ')}`, [],
-            { shell: true, stdio: 'inherit', cwd: serverRootDir });
+            { shell: true, stdio: 'inherit', cwd: process.cwd() });
     }
 
     if (scriptName === 'build') {

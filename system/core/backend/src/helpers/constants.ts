@@ -1,4 +1,4 @@
-import { logFor, TLogLevel } from '@cromwell/core';
+import { logFor, TLogLevel, TCmsConfig } from '@cromwell/core';
 import colorsdef from 'colors/safe';
 const colors: any = colorsdef;
 
@@ -37,4 +37,35 @@ export const serverLogFor = (level: TLogLevel, msg: string,
         msg = colors.brightRed('Error: ') + msg;
     }
     logFor(level, msg, func);
+}
+
+export const defaultCmsConfig: TCmsConfig = {
+    "managerPort": 4016,
+    "apiPort": 4032,
+    "adminPanelPort": 4064,
+    "frontendPort": 4128,
+    "defaultSettings": {
+        "themeName": "@cromwell/theme-store",
+        "defaultPageSize": 15,
+        "currencies": [
+            {
+                "tag": "USD",
+                "title": "US Dollar",
+                "symbol": "$",
+                "ratio": 1
+            },
+            {
+                "tag": "EUR",
+                "title": "Euro",
+                "symbol": "€",
+                "ratio": 0.8
+            },
+            {
+                "tag": "RUB",
+                "title": "Russian Ruble",
+                "symbol": "₽",
+                "ratio": 74
+            }
+        ]
+    }
 }

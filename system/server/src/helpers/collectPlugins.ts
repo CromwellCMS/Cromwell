@@ -1,13 +1,16 @@
-import { readPluginsExports, } from '@cromwell/core-backend';
+import { readPluginsExportsSync, serverLogFor } from '@cromwell/core-backend';
 
 let pluginsCache;
 
-export const collectPlugins = (projectRootDir): {
+export const collectPlugins = (): {
     resolvers: any[],
     entities: any[]
 } => {
     if (pluginsCache) return pluginsCache;
-    const pluginInfos = readPluginsExports(projectRootDir);
+    const pluginInfos = readPluginsExportsSync();
+
+    serverLogFor('detailed', `Found ${pluginInfos.length} plugins. `
+        + pluginInfos.map(info => info.pluginName).join(', '));
 
     let pluginsResolvers: any[] = [];
     let pluginsEntities: any[] = [];
@@ -24,6 +27,6 @@ export const collectPlugins = (projectRootDir): {
         resolvers: pluginsResolvers,
         entities: pluginsEntities
     }
-    
+
     return pluginsCache;
 }

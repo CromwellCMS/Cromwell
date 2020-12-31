@@ -2,7 +2,6 @@ import { apiV1BaseRoute } from '@cromwell/core';
 import { Module } from '@nestjs/common';
 import { TypeGraphQLModule } from 'typegraphql-nestjs';
 
-import { projectRootDir } from '../constants';
 import { collectPlugins } from '../helpers/collectPlugins';
 import { GenericPluginResolver, GenericThemeResolver } from '../helpers/genericEntities';
 import { setEnv } from '../helpers/setEnv';
@@ -25,7 +24,7 @@ const envMode = setEnv();
         ProductReviewResolver,
         GenericPluginResolver,
         GenericThemeResolver,
-        ...(collectPlugins(projectRootDir).resolvers),
+        ...(collectPlugins().resolvers),
     ],
     imports: [
         TypeGraphQLModule.forRoot({

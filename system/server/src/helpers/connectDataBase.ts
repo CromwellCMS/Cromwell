@@ -9,23 +9,39 @@ import {
     ProductCategory,
     ProductReview,
     ThemeEntity,
-    readCMSConfig
+    getOrmConfigPath,
+    getServerTempDir,
+    readCmsModules
 } from '@cromwell/core-backend';
 import { resolve } from 'path';
 import { ConnectionOptions, createConnection } from 'typeorm';
+import { getCustomRepository } from 'typeorm';
 
-import { projectRootDir } from '../constants';
 import { collectPlugins } from './collectPlugins';
-import { getCmsSettings } from '../services/cms.service';
+import { getCmsSettings, CmsService } from '../services/cms.service';
+import { PluginService } from '../services/plugin.service';
+import { ThemeService } from '../services/theme.service';
+import { GenericPlugin, GenericTheme } from './genericEntities';
+
+const defaultOrmConfig: ConnectionOptions = {
+    "type": "sqlite",
+    "database": resolve(getServerTempDir(), 'db.sqlite3'),
+    "synchronize": true
+}
 
 export const connectDatabase = async (env: string) => {
 
-    const ormconfig = env === 'dev' ? require('../ormconfig.dev.json') : require('../ormconfig.prod.json');
+    let ormconfig: ConnectionOptions | undefined;
+    try {
+        ormconfig = require(getOrmConfigPath())
+    } catch (e) { }
 
-    if (!ormconfig || !ormconfig.type) throw new Error('server.ts: Cannot read ormconfig');
+    ormconfig = Object.assign({}, defaultOrmConfig, ormconfig)
+
+    if (!ormconfig || !ormconfig.type) throw new Error('Invalid ormconfig');
     setStoreItem('dbType', ormconfig.type);
 
-    const pluginsExports = collectPlugins(projectRootDir);
+    const pluginsExports = await collectPlugins();
     const connectionOptions: ConnectionOptions = {
         ...ormconfig,
         entities: [
@@ -33,14 +49,40 @@ export const connectDatabase = async (env: string) => {
             ...pluginsExports.entities,
             ...(ormconfig.entities ?? [])
         ],
-        database: typeof ormconfig.database === 'string' ? resolve(__dirname, '../', ormconfig.database) : ormconfig.database
     };
 
     if (connectionOptions) await createConnection(connectionOptions);
 
+    // Check CmsSettings
     const settings = await getCmsSettings();
     if (settings) {
         setStoreItem('cmsSettings', settings)
     }
 
+
+    // Check installed cms modules. All available themes and plugins should be registered in DB
+    // If some are not, then install them here at Server startup
+    const cmsModules = await readCmsModules();
+
+    const pluginRepo = getCustomRepository(GenericPlugin.repository);
+    const dbPlugins = await pluginRepo.getAll();
+    const pluginService = new PluginService();
+
+    for (const pluginName of cmsModules.plugins) {
+        if (!dbPlugins.find(plugin => plugin.name === pluginName)) {
+            await pluginService.installPlugin(pluginName)
+        }
+    }
+
+    const themeRepo = getCustomRepository(GenericTheme.repository);
+    const dbThemes = await themeRepo.getAll();
+    const themeService = new ThemeService(new CmsService());
+
+    for (const themeName of cmsModules.themes) {
+        if (!dbThemes.find(theme => theme.name === themeName)) {
+            await themeService.installTheme(themeName)
+        }
+    }
+
 }
+

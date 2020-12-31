@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import { resolve, isAbsolute } from 'path';
 import normalizePath from 'normalize-path';
 
-import { getMetaInfoPath, getThemePagesMetaPath, buildDirName } from './paths';
+import { getMetaInfoPath, getThemePagesMetaPath, buildDirName, getNodeModuleDir } from './paths';
 
 export type TThemeExportsInfo = {
     pagesInfo: TPagePathInfo[]
@@ -23,13 +23,13 @@ const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.rando
 
 /**
  * Returns object with page names as keys paths as values: {"pageName": "pagePath"}
- * @param projectRootDir absolute path to the root of the CMS
  */
-export const readThemeExports = async (projectRootDir: string | null, themeName: string | undefined, themeAbsDir?: string): Promise<TThemeExportsInfo> => {
-    if (!projectRootDir && !themeAbsDir) throw new Error('readThemeExports: !projectRootDir && !themeAbsDir');
-    if (!themeName) throw new Error('readThemeExports: !themeName');
+export const readThemeExports = async (themeModuleName: string | undefined): Promise<TThemeExportsInfo> => {
 
-    const themeDir = (themeAbsDir ? themeAbsDir : resolve(projectRootDir!, 'themes', themeName)).replace(/\\/g, '/');
+    if (!themeModuleName) throw new Error('readThemeExports: !themeName');
+
+    const themeDir = await getNodeModuleDir(themeModuleName);
+    if (!themeDir) throw new Error('readThemeExports: !themeDir of ' + themeDir);
 
     const buildDir = resolve(themeDir, buildDirName);
     const metainfoPath = getThemePagesMetaPath(buildDir);
@@ -54,7 +54,7 @@ export const readThemeExports = async (projectRootDir: string | null, themeName:
             if (!(await fs.pathExists(fullPath))) continue;
 
             const name = pagePaths.pageName;
-            const compName = `Theme_${themeName.replace(/\W/g, '_')}_Page_${name.replace(/\W/g, '_')}_${getRandStr()}`;
+            const compName = `Theme_${themeModuleName.replace(/\W/g, '_')}_Page_${name.replace(/\W/g, '_')}_${getRandStr()}`;
 
             let metaInfoPath: string | undefined = normalizePath(getMetaInfoPath(fullPath));
             if (!metaInfoPath || !(await fs.pathExists(metaInfoPath))) metaInfoPath = undefined;

@@ -1,26 +1,113 @@
-import { resolve } from 'path';
+import { resolve, dirname } from 'path';
 import fs from 'fs-extra';
 import { serverLogFor } from './constants';
-import { TThemeConfig } from '@cromwell/core';
+import { TPluginConfig, TThemeConfig } from '@cromwell/core';
 
-export const buildDirName = '.cromwell';
+export const cmsName = 'cromwell';
+export const buildDirName = `.${cmsName}`;
 export const configFileName = 'cromwell.config.js';
+export const cmsConfigFileName = 'cmsconfig.json';
 
-export const getThemeDir = async (projectRootDir: string, themeName: string): Promise<string | undefined> => {
-    const dir = resolve(getThemesDir(projectRootDir), themeName);
-    if (await fs.pathExists(dir)) {
-        return dir;
+export const getTempDir = () => resolve(process.cwd(), buildDirName);
+
+const resolveModulePath = (moduleName: string): string | undefined => {
+    try {
+        return require.resolve(`${moduleName}/package.json`);
+    } catch (e) {
+        serverLogFor('errors-only', 'Failed to resolve module path of: ' + moduleName + e, 'Error');
+    }
+}
+export const getNodeModuleDirSync = (moduleName: string) => {
+    const modulePath = resolveModulePath(moduleName);
+    if (modulePath) return dirname(fs.realpathSync(modulePath));
+}
+
+export const getNodeModuleDir = async (moduleName: string) => {
+    const modulePath = resolveModulePath(moduleName);
+    if (modulePath) return dirname(await fs.realpath(modulePath));
+}
+
+export const getCMSConfigPath = () => resolve(process.cwd(), cmsConfigFileName);
+
+export const getCoreCommonDir = () => getNodeModuleDirSync('@cromwell/core');
+export const getCoreFrontendDir = () => getNodeModuleDirSync('@cromwell/core-backend');
+export const getCoreBackendDir = () => getNodeModuleDirSync('@cromwell/core-frontend');
+
+
+// Manager
+export const getManagerDir = () => getNodeModuleDirSync('@cromwell/manager');
+export const getManagerTempDir = () => resolve(getTempDir(), 'manager');
+
+
+// Renderer
+export const getRendererDir = () => getNodeModuleDirSync('@cromwell/renderer');
+export const getRendererStartupPath = () => {
+    const rendererDir = getRendererDir();
+    if (rendererDir) return resolve(rendererDir, 'startup.js');
+}
+export const getRendererTempDir = () => resolve(getTempDir(), 'renderer');
+export const getRendererBuildDir = () => {
+    const rendererDir = getRendererDir();
+    if (rendererDir) return resolve(rendererDir, 'build');
+}
+
+
+// Admin panel
+
+export const getAdminPanelDir = () => getNodeModuleDirSync('@cromwell/admin-panel');
+export const getAdminPanelServiceBuildDir = () => {
+    const adminPanelDir = getAdminPanelDir();
+    if (adminPanelDir) return resolve(adminPanelDir, 'build');
+}
+export const getAdminPanelTempDir = () => resolve(getTempDir(), 'admin-panel');
+
+export const getAdminPanelWebBuildDir = () =>
+    resolve(getAdminPanelTempDir(), buildDirName);
+
+export const getAdminPanelWebServiceBuildDir = () =>
+    resolve(getAdminPanelTempDir(), buildDirName, 'build');
+
+export const getAdminPanelWebPublicDir = () =>
+    resolve(getAdminPanelTempDir(), 'public');
+
+export const getAdminPanelStartupPath = () => {
+    const adminPanelDir = getAdminPanelDir();
+    if (adminPanelDir) return resolve(adminPanelDir, 'startup.js');
+}
+
+// Server
+export const getServerDir = () => getNodeModuleDirSync('@cromwell/server');
+export const getServerStartupPath = () => {
+    const serverDir = getServerDir();
+    if (serverDir) return resolve(serverDir, 'startup.js');
+}
+export const getOrmConfigPath = () => resolve(process.cwd(), 'ormconfig.json');
+export const getServerTempDir = () => resolve(getTempDir(), 'server');
+
+
+
+// Theme
+export const getThemeBuildDir = async (themeModuleName: string) => {
+    const themeDir = await getNodeModuleDir(themeModuleName);
+    if (themeDir) {
+        return resolve(themeDir, buildDirName);
+    }
+}
+export const getThemeAdminPanelBundleDir = async (themeModuleName: string, pageRoute: string) => {
+    const themeBuildDir = await getThemeBuildDir(themeModuleName);
+    if (themeBuildDir) {
+        return resolve(themeBuildDir, 'admin', pageRoute)
     }
 }
 
-export const getThemeConfig = async (projectRootDir: string, themeName: string): Promise<TThemeConfig | undefined> => {
-    const path = await getThemeDir(projectRootDir, themeName);
+export const getCmsModuleConfig = async <T = (TThemeConfig & TPluginConfig)>(moduleName: string): Promise<T | undefined> => {
+    const path = await getNodeModuleDir(moduleName);
     if (path) {
         const configPath = resolve(path, configFileName);
         try {
             return require(configPath);
         } catch (e) {
-            serverLogFor('errors-only', 'Failed to require theme config at: ' + configPath, 'Error');
+            serverLogFor('errors-only', 'Failed to require module config at: ' + configPath, 'Error');
         }
     }
 }
@@ -36,59 +123,8 @@ export const getPluginFrontendCjsPath = (distDir: string) => resolve(distDir, pl
 export const getPluginAdminBundlePath = (distDir: string) => resolve(distDir, pluginAdminBundlePath);
 export const getPluginAdminCjsPath = (distDir: string) => resolve(distDir, pluginAdminCjsPath);
 export const getPluginBackendPath = (distDir: string) => resolve(distDir, 'backend/index.js');
-
 export const getThemePagesMetaPath = (distDir: string) => resolve(distDir, 'pages_meta.json');
 
-export const cmsConfigFileName = 'cmsconfig.json';
-export const getCMSConfigPath = (projectRootDir: string) =>
-    resolve(projectRootDir, 'system', cmsConfigFileName);
-
-export const getPluginsDir = (projectRootDir: string) =>
-    resolve(projectRootDir, 'plugins');
-
-export const getThemesDir = (projectRootDir: string) =>
-    resolve(projectRootDir, 'themes');
-
-
-const renderDirChunk = 'system/renderer';
-
-export const getRendererDir = (projectRootDir: string) =>
-    resolve(projectRootDir, renderDirChunk);
-
-export const getRendererTempDir = (projectRootDir: string) =>
-    resolve(projectRootDir, renderDirChunk, buildDirName);
-
-export const getRendererBuildDir = (projectRootDir: string) =>
-    resolve(projectRootDir, renderDirChunk, 'build');
-
-export const getRendererTempNextDir = (projectRootDir: string) =>
-    resolve(projectRootDir, renderDirChunk, buildDirName, '.next');
-
-export const getRendererSavedBuildDirByTheme = (projectRootDir: string, themeName: string) =>
-    resolve(projectRootDir, renderDirChunk, buildDirName, 'old', themeName);
-
-
-
-const adminPanelDirChunk = 'system/admin-panel';
-
-export const getAdminPanelDir = (projectRootDir: string) =>
-    resolve(projectRootDir, adminPanelDirChunk);
-
-export const getAdminPanelServiceBuildDir = (projectRootDir: string) =>
-    resolve(projectRootDir, adminPanelDirChunk, 'build');
-
-export const getAdminPanelWebBuildDir = (projectRootDir: string) =>
-    resolve(getAdminPanelDir(projectRootDir), buildDirName);
-
-export const getAdminPanelWebServiceBuildDir = (projectRootDir: string) =>
-    resolve(getAdminPanelDir(projectRootDir), buildDirName, 'build');
-
-export const getAdminPanelWebPublicDir = (projectRootDir: string) =>
-    resolve(getAdminPanelWebBuildDir(projectRootDir), 'public');
-
-
-
-const serverDirChunk = 'system/server';
-
-export const getServerDir = (projectRootDir: string) =>
-    resolve(projectRootDir, serverDirChunk);
+export const getPublicDir = () => resolve(process.cwd(), 'public');
+export const getPublicPluginsDir = () => resolve(getPublicDir(), 'plugins');
+export const getPublicThemesDir = () => resolve(getPublicDir(), 'themes');

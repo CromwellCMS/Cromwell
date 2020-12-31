@@ -1,7 +1,11 @@
 import fs from 'fs-extra';
 import { resolve } from 'path';
 
-import { buildDirName, configFileName, getPluginBackendPath, getPluginFrontendBundlePath, getPluginsDir } from './paths';
+import {
+    buildDirName, configFileName, getPluginBackendPath, getPluginFrontendBundlePath,
+    getNodeModuleDirSync
+} from './paths';
+import { readCmsModulesSync } from './readCmsModules';
 
 export type TPluginInfo = {
     pluginName: string;
@@ -10,44 +14,44 @@ export type TPluginInfo = {
     backendPath?: string;
 }
 
-export const readPluginsExports = (projectRootDir: string): TPluginInfo[] => {
+export const readPluginsExportsSync = (): TPluginInfo[] => {
 
     const infos: TPluginInfo[] = [];
 
-    const pluginsDir = getPluginsDir(projectRootDir);
-    const pluginNames: string[] = fs.readdirSync(pluginsDir);
-    // console.log('Core:readPluginsExports:: Plugins found:', pluginNames);
+    const pluginNames: string[] = readCmsModulesSync().plugins;
 
-    pluginNames?.forEach(name => {
-        const configPath = resolve(pluginsDir, name, configFileName);
-        if (fs.existsSync(configPath)) {
+    for (const name of pluginNames) {
+        const pluginDir = getNodeModuleDirSync(name);
+        if (pluginDir) {
+            const configPath = resolve(pluginDir, configFileName);
+
+            if (fs.existsSync(configPath)) {
+
+                const pluginInfo: TPluginInfo = {
+                    pluginName: name
+                };
+
+                const frontendPath = getPluginFrontendBundlePath(resolve(pluginDir, buildDirName));
+                if (fs.existsSync(frontendPath)) {
+                    pluginInfo.frontendPath = frontendPath.replace(/\\/g, '/');
+                }
 
 
+                // const adminPanelPath = resolve(pluginsDir, name, config.adminDir, 'index.js');
+                // if (fs.existsSync(adminPanelPath)) {
+                //     pluginInfo.adminPanelPath = adminPanelPath.replace(/\\/g, '/');
+                // }
 
-            const pluginInfo: TPluginInfo = {
-                pluginName: name
-            };
+                const backendPath = getPluginBackendPath(resolve(pluginDir, buildDirName));
+                if (fs.existsSync(backendPath)) {
+                    pluginInfo.backendPath = backendPath
+                }
 
-
-            const frontendPath = getPluginFrontendBundlePath(resolve(pluginsDir, name, buildDirName));
-            if (fs.existsSync(frontendPath)) {
-                pluginInfo.frontendPath = frontendPath.replace(/\\/g, '/');
+                infos.push(pluginInfo);
             }
-
-
-            // const adminPanelPath = resolve(pluginsDir, name, config.adminDir, 'index.js');
-            // if (fs.existsSync(adminPanelPath)) {
-            //     pluginInfo.adminPanelPath = adminPanelPath.replace(/\\/g, '/');
-            // }
-
-            const backendPath = getPluginBackendPath(resolve(pluginsDir, name, buildDirName));
-            if (fs.existsSync(backendPath)) {
-                pluginInfo.backendPath = backendPath
-            }
-
-            infos.push(pluginInfo);
         }
-    });
+
+    };
 
     return infos;
 

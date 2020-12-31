@@ -6,7 +6,7 @@ import {
     TThemeEntityInput,
     TThemeMainConfig,
 } from '@cromwell/core';
-import { buildDirName, getThemeDir, configFileName } from '@cromwell/core-backend';
+import { buildDirName, getNodeModuleDir, configFileName, getThemeAdminPanelBundleDir, serverLogFor, getPublicThemesDir } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import decache from 'decache';
@@ -15,7 +15,6 @@ import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 
-import { projectRootDir } from '../constants';
 import { FrontendBundleDto } from '../dto/FrontendBundle.dto';
 import { PageConfigDto } from '../dto/PageConfig.dto';
 import { PageInfoDto } from '../dto/PageInfo.dto';
@@ -98,8 +97,13 @@ export class ThemeController {
                     const pluginName = mod?.plugin?.pluginName;
                     if (pluginName) {
                         const pluginEntity = await this.pluginService.findOne(pluginName);
-                        const pluginConfig = Object.assign({}, mod?.plugin?.settings, pluginEntity?.settings);
-                        out[pluginName] = pluginConfig;
+                        try {
+                            const pluginConfig = Object.assign({}, mod?.plugin?.settings,
+                                JSON.parse(pluginEntity?.settings ?? '{}'));
+                            out[pluginName] = pluginConfig;
+                        } catch (e) {
+                            serverLogFor('errors-only', 'Failed to parse plugin settings of ' + pluginName + e, 'Error')
+                        }
                     }
                 };
             }
@@ -226,11 +230,9 @@ export class ThemeController {
         status: 200,
     })
     async getCustomConfig(): Promise<Record<string, any>> {
-
         logFor('detailed', 'ThemeController::getCustomConfig');
         let out: Record<string, any> = {};
         const { themeConfig, userConfig } = await this.themeService.readConfigs();
-
         out = Object.assign(out, themeConfig?.themeCustomConfig, userConfig?.themeCustomConfig);
         return out;
     }
@@ -250,104 +252,55 @@ export class ThemeController {
         logFor('detailed', 'ThemeController::getPageBundle');
         let out: TFrontendBundle | null = null;
 
-        if (pageRoute && pageRoute !== "" && typeof pageRoute === 'string') {
-            const cmsSettings = await this.cmsService.getSettings();
-            if (cmsSettings && cmsSettings.themeName) {
-                const pagePath = resolve(projectRootDir, 'themes', cmsSettings.themeName, buildDirName, 'admin', pageRoute);
-                const pagePathBunle = normalizePath(pagePath) + '.js';
-                if (await fs.pathExists(pagePathBunle)) {
-                    out = {};
-                    try {
-                        out.source = (await fs.readFile(pagePathBunle)).toString();
-                    } catch (e) {
-                        console.log('Failed to read page file at: ' + pagePathBunle);
-                    }
+        if (!pageRoute || pageRoute === "") throw new HttpException('Invalid pageRoute or bundle not found', HttpStatus.NOT_ACCEPTABLE);
 
-                    const pageMetaInfoPath = pagePathBunle + '_meta.json';
-                    if (await fs.pathExists(pageMetaInfoPath)) {
-                        try {
-                            if (out) out.meta = await fs.readJSON(pageMetaInfoPath);
-                        } catch (e) {
-                            console.log('Failed to read meta of page at: ' + pageMetaInfoPath);
-                        }
-                    }
-                    return out;
+        const cmsSettings = await this.cmsService.getSettings();
+        if (!cmsSettings?.themeName) throw new HttpException('!cmsSettings?.themeName', HttpStatus.INTERNAL_SERVER_ERROR);
+
+        const pagePath = await getThemeAdminPanelBundleDir(cmsSettings.themeName, pageRoute);
+        if (!pagePath) throw new HttpException('page path cannot be resolved', HttpStatus.NOT_ACCEPTABLE);
+
+        const pagePathBunle = normalizePath(pagePath) + '.js';
+        if (await fs.pathExists(pagePathBunle)) {
+            try {
+                out = {};
+                out.source = (await fs.readFile(pagePathBunle)).toString();
+            } catch (e) {
+                serverLogFor('errors-only', 'Failed to read page file at: ' + pagePathBunle, 'Error');
+            }
+
+            const pageMetaInfoPath = pagePathBunle + '_meta.json';
+            if (await fs.pathExists(pageMetaInfoPath)) {
+                try {
+                    if (out) out.meta = await fs.readJSON(pageMetaInfoPath);
+                } catch (e) {
+                    serverLogFor('errors-only', 'Failed to read meta of page at: ' + pageMetaInfoPath, 'Error');
                 }
             }
-        };
+            return out;
+        }
 
-        throw new HttpException('Invalid pageRoute or bundle not found', HttpStatus.NOT_ACCEPTABLE);
+        throw new HttpException("Page bundle doesn't exist", HttpStatus.NOT_ACCEPTABLE);
+
     }
 
 
-    @Get('install/:themeName')
+    @Get('install')
     @ApiOperation({
         description: `Installs downloaded theme`,
-        parameters: [{ name: 'themeName', in: 'path', required: true }]
+        parameters: [{ name: 'themeName', in: 'query', required: true }]
     })
     @ApiResponse({
         status: 200,
         type: Boolean
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async installTheme(@Param('themeName') themeName: string): Promise<boolean> {
+    async installTheme(@Query('themeName') themeName: string): Promise<boolean> {
 
         logFor('detailed', 'ThemeController::installTheme');
 
         if (themeName && themeName !== "") {
-            const themePath = await getThemeDir(projectRootDir, themeName);
-            if (themePath) {
-
-                // @TODO Execute install script
-
-
-
-                // Read theme config
-                let themeConfig;
-                const filePath = resolve(themePath, configFileName);
-                if (await fs.pathExists(filePath)) {
-                    try {
-                        decache(filePath);
-                        themeConfig = require(filePath);
-                    } catch (e) {
-                        console.error(e);
-                    }
-                }
-
-                // Make symlink for public static content
-                const themePublicDir = resolve(themePath, 'public');
-                if (await fs.pathExists(themePublicDir)) {
-                    try {
-                        const publicThemesDir = resolve(projectRootDir, 'public/themes');
-                        await fs.ensureDir(publicThemesDir);
-                        await symlinkDir(themePublicDir, resolve(publicThemesDir, themeName))
-                    } catch (e) { console.log(e) }
-                }
-
-                // Create DB entity
-                const input: TThemeEntityInput = {
-                    name: themeName,
-                    slug: themeName,
-                    isInstalled: true,
-                };
-                if (themeConfig) {
-                    try {
-                        input.defaultSettings = JSON.stringify(themeConfig);
-                    } catch (e) {
-                        console.error(e);
-                    }
-                }
-
-
-                try {
-                    const entity = await this.themeService.createEntity(input)
-                    if (entity) {
-                        return true;
-                    }
-                } catch (e) {
-                    console.error(e)
-                }
-            }
+            this.themeService.installTheme(themeName);
         };
 
         throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);

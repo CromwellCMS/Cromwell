@@ -1,11 +1,10 @@
 import { logFor, TCmsSettings, TThemeConfig, TThemeMainConfig } from '@cromwell/core';
-import { getThemeConfig, getPluginsDir, getThemesDir } from '@cromwell/core-backend';
-import { Controller, Get, HttpException, HttpStatus, Param } from '@nestjs/common';
+import { getCmsModuleConfig, getNodeModuleDir, readCmsModules } from '@cromwell/core-backend';
+import { Controller, Get, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 
-import { projectRootDir } from '../constants';
 import { CmsConfigDto } from '../dto/CmsConfig.dto';
 import { ThemeMainConfigDto } from '../dto/ThemeMainConfig.dto';
 import { ThemeService } from '../services/theme.service';
@@ -20,10 +19,6 @@ export class CmsController {
         private readonly themeService: ThemeService,
         private readonly cmsService: CmsService
     ) { }
-
-    private readonly themesDir = getThemesDir(projectRootDir);
-    private readonly pluginsDir = getPluginsDir(projectRootDir);
-
 
     @Get('config')
     @ApiOperation({ description: 'Returns CMS settings from DB and cmsconfig.json' })
@@ -42,10 +37,10 @@ export class CmsController {
     }
 
 
-    @Get('set-theme/:themeName')
+    @Get('set-theme')
     @ApiOperation({
         description: 'Update new theme name in DB',
-        parameters: [{ name: 'themeName', in: 'path', required: true }]
+        parameters: [{ name: 'themeName', in: 'query', required: true }]
 
     })
     @ApiResponse({
@@ -53,7 +48,7 @@ export class CmsController {
         type: Boolean,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async setThemeName(@Param('themeName') themeName: string): Promise<boolean> {
+    async setThemeName(@Query('themeName') themeName: string): Promise<boolean> {
         logFor('detailed', 'CmsController::setThemeName');
 
         if (themeName && themeName !== "") {
@@ -73,22 +68,23 @@ export class CmsController {
     async getThemes(): Promise<TThemeMainConfig[] | undefined> {
         logFor('detailed', 'CmsController::getThemes');
         let out: TThemeMainConfig[] = [];
-        let themeDirs: string[] = [];
-        try {
-            themeDirs = await fs.readdir(this.themesDir);
-        } catch (e) {
-            logFor('errors-only', "CmsController::getThemes Failed to read themeDirs at: " + this.themesDir + e);
-        }
-        for (const dirName of themeDirs) {
-            const themeConfig: TThemeConfig | undefined = await getThemeConfig(projectRootDir, dirName);
+
+        const themeModuleNames = (await readCmsModules()).themes;
+
+        for (const themeName of themeModuleNames) {
+            const themeConfig = await getCmsModuleConfig(themeName);
             if (themeConfig && themeConfig.main) {
                 if (themeConfig.main.previewImage) {
                     // Read image and convert to base64
-                    const imgPath = resolve(this.themesDir, dirName, themeConfig.main.previewImage);
-                    if (await fs.pathExists(imgPath)) {
-                        const data = (await fs.readFile(imgPath))?.toString('base64');
-                        if (data) themeConfig.main.previewImage = data;
+                    const themeDir = await getNodeModuleDir(themeName);
+                    if (themeDir) {
+                        const imgPath = resolve(themeDir, themeConfig.main.previewImage);
+                        if (await fs.pathExists(imgPath)) {
+                            const data = (await fs.readFile(imgPath))?.toString('base64');
+                            if (data) themeConfig.main.previewImage = data;
+                        }
                     }
+
                 }
                 out.push(themeConfig.main);
             }
@@ -106,12 +102,6 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPlugins(): Promise<string[]> {
         logFor('detailed', 'CmsController::getPlugins');
-        let dirs: string[] = [];
-        try {
-            dirs = await fs.readdir(this.pluginsDir);
-        } catch (e) {
-            logFor('errors-only', "CmsController::getThemes Failed to read pluginsDir at: " + this.pluginsDir + e);
-        }
-        return dirs;
+        return (await readCmsModules()).plugins;
     }
 }

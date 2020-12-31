@@ -1,41 +1,37 @@
-import { TCmsConfig } from '@cromwell/core';
+import { logFor, TCmsConfig } from '@cromwell/core';
 import fs from 'fs-extra';
-
 import { getCMSConfigPath } from './paths';
+import { serverLogFor, defaultCmsConfig } from './constants';
 
 /**
- * Read CMS config from file in system/cmsconfig.json, saves it into the store and returns
- * @param projectRootDir 
+ * Read CMS config from file in [project root]/cmsconfig.json, saves it into the store and returns
  */
-export const readCMSConfigSync = (projectRootDir: string): TCmsConfig => {
-    const configPath = getCMSConfigPath(projectRootDir);
-    let config: TCmsConfig | undefined = undefined;
-    try {
-        config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
-    } catch (e) {
-        console.log('renderer::server ', e);
+export const readCMSConfigSync = (): TCmsConfig => {
+    const configPath = getCMSConfigPath();
+    if (fs.pathExistsSync(configPath)) {
+        try {
+            const config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
+            if (config && typeof config === 'object') return config;
+        } catch (e) {
+            serverLogFor('errors-only', 'Failed to read CMS config at: ' + configPath + e, 'Error');
+        }
     }
-    if (!config) throw new Error('core::readConfig cannot read CMS config');
-    return config;
+
+    return defaultCmsConfig;
 }
 
 /**
- * Read CMS config from file in system/cmsconfig.json, saves it into the store and returns
- * @param projectRootDir 
+ * Read CMS config from file in [project root]/cmsconfig.json, saves it into the store and returns
  */
-export const readCMSConfig = async (projectRootDir: string): Promise<TCmsConfig | undefined> => {
-    const configPath = getCMSConfigPath(projectRootDir);
+export const readCMSConfig = async (): Promise<TCmsConfig> => {
+    const configPath = getCMSConfigPath();
     if (await fs.pathExists(configPath)) {
         try {
             const config: TCmsConfig | undefined = await fs.readJSON(configPath);
-            if (config && typeof config === 'object') {
-                return config
-            }
+            if (config && typeof config === 'object') return config
         } catch (e) {
             console.error(e);
         }
     }
-    console.log('Failed to read CMS Config ');
-    return;
-
+    return defaultCmsConfig;
 }

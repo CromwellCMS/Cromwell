@@ -39,3 +39,4 @@ export * from './helpers/cmsConfigHandler';
 export * from './helpers/paths';
 export * from './helpers/constants';
 export * from './helpers/readPluginsExports';
+export * from './helpers/readCmsModules';
