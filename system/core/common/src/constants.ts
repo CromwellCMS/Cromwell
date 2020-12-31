@@ -167,12 +167,10 @@ export enum ECommonComponentNames {
 export const logLevels = ["none", "errors-only", "errors-warnings", "minimal", "detailed", "all"];
 
 export const logLevelMoreThan = (level: TLogLevel): boolean => {
-    const currentLevel = getStoreItem('environment')?.logLevel;
-    if (currentLevel) {
-        const currentLevelIdx = logLevels.indexOf(currentLevel);
-        const levelIdx = logLevels.indexOf(level);
-        if (currentLevelIdx >= 0 && levelIdx >= 0 && currentLevelIdx >= levelIdx) return true;
-    }
+    const currentLevel = getStoreItem('environment')?.logLevel ?? "errors-only";
+    const currentLevelIdx = logLevels.indexOf(currentLevel);
+    const levelIdx = logLevels.indexOf(level);
+    if (currentLevelIdx >= 0 && levelIdx >= 0 && currentLevelIdx >= levelIdx) return true;
     return false;
 }
 

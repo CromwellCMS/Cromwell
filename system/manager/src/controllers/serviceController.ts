@@ -43,16 +43,16 @@ export const getServiceController = (): Router => {
       *     parameters:
       *       - name: themeName
       *         description: Name of a new theme to change
-      *         in: path
+      *         in: query
       *         required: true
       *         type: string
       *     responses:
       *       200:
       *         description: true
       */
-    serviceController.get(`/change-theme/:themeName`, async function (req, res) {
-        const themeName = req.params.themeName;
-        if (themeName && themeName !== '') {
+    serviceController.get(`/change-theme`, async function (req, res) {
+        const themeName = req.query?.themeName;
+        if (themeName && themeName !== '' && typeof themeName === 'string') {
             ManagerState.clearLog();
             const success = await changeTheme(themeName, ManagerState.getLogger('base', true));
             res.send(success);

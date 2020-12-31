@@ -15,37 +15,6 @@ export const getRendererController = (): Router => {
     /**
       * @swagger
       * 
-      * /renderer/change-theme/{themeName}:
-      *   get:
-      *     description: Changes current theme and re-runs renderer with build (if no previous builds found) and start.
-      *     tags: 
-      *       - Renderer
-      *     produces:
-      *       - application/json
-      *     parameters:
-      *       - name: themeName
-      *         description: Name of a new theme to change
-      *         in: path
-      *         required: true
-      *         type: string
-      *     responses:
-      *       200:
-      *         description: true
-      */
-    rendererController.get(`/change-theme/:themeName`, async function (req, res) {
-        const themeName = req.params.themeName;
-        if (themeName && themeName !== '') {
-            ManagerState.clearLog();
-            const success = await rendererChangeTheme(themeName, ManagerState.getLogger('renderer', true));
-            res.send(success);
-        } else {
-            res.send(false);
-        }
-    });
-
-    /**
-      * @swagger
-      * 
       * /renderer/rebuild-theme:
       *   get:
       *     description: Rebulds current theme by Next.js "build" command and restarts Renderer.

@@ -1,15 +1,12 @@
+import { getRestAPIClient } from '@cromwell/core-frontend';
 import { ChildProcess, fork } from 'child_process';
 import fs from 'fs-extra';
 import isRunning from 'is-running';
 import treeKill from 'tree-kill';
-import { getRestAPIClient } from '@cromwell/core-frontend';
 
-import managerConfig from '../config';
 import { ManagerState } from '../managerState';
 import { getProcessPid, saveProcessPid } from '../utils/cacheManager';
 import { rendererBuildAndStart, rendererChangeTheme } from './rendererManager';
-
-const { projectRootDir } = managerConfig;
 
 export const closeService = async (name: string, onLog?: (message: string) => void): Promise<boolean> => {
     return new Promise(done => {

@@ -1,10 +1,9 @@
 const fs = require('fs-extra');
 const { spawn, spawnSync } = require('child_process');
 const { readCMSConfigSync, rendererMessages } = require('@cromwell/core-backend');
-const { projectRootDir, buildDir, rendererRootDir } = require('./constants');
+const { buildDir, rendererRootDir, tempDir } = require('./constants');
 const { resolve } = require('path');
 const npmRunPath = require('npm-run-path');
-const yargs = require('yargs-parser');
 
 npmRunPath();
 
@@ -19,13 +18,7 @@ const scriptName = process.argv[2];
 
 
 const main = async () => {
-    const args = yargs(process.argv.slice(2));
-    const localDir = resolve(__dirname);
-    const tempDirName = (args.dir && typeof args.dir === 'string' && args.dir !== '') ? args.dir : '.cromwell';
-    const tempDir = resolve(localDir, tempDirName);
-
-    let config = readCMSConfigSync(projectRootDir);
-    if (!config) throw new Error('renderer::server cannot read CMS config');
+    const config = readCMSConfigSync();
 
     const isServiceBuilt = () => {
         return (fs.existsSync(buildDir)
@@ -39,16 +32,16 @@ const main = async () => {
     }
 
     const isFrontendBuilt = () => {
-        return (fs.existsSync(`${tempDir}/.next/static`)
-            && fs.existsSync(`${tempDir}/.next/BUILD_ID`)
-            && fs.existsSync(`${tempDir}/.next/build-manifest.json`)
-            && fs.existsSync(`${tempDir}/.next/prerender-manifest.json`)
+        return (fs.existsSync(resolve(tempDir, '.next/static'))
+            && fs.existsSync(resolve(tempDir, '.next/BUILD_ID'))
+            && fs.existsSync(resolve(tempDir, '.next/build-manifest.json'))
+            && fs.existsSync(resolve(tempDir, '.next/prerender-manifest.json'))
         )
     }
 
     const gen = () => {
-        spawnSync(`node ./generator.js --dir=${tempDirName}`, [],
-            { shell: true, stdio: 'inherit', cwd: buildDir });
+        spawnSync(`node ${resolve(buildDir, 'generator.js')} ${process.argv.slice(2).join(' ')}`, [],
+            { shell: true, stdio: 'inherit', cwd: process.cwd() });
     }
 
     const build = async () => {
@@ -124,9 +117,6 @@ const main = async () => {
             buildService();
         }
         gen();
-
-        spawn(`rollup -cw`, [],
-            { shell: true, stdio: 'inherit', cwd: rendererRootDir });
 
         spawn(`next dev -p ${config.frontendPort}`, [],
             { shell: true, stdio: 'inherit', cwd: tempDir, env: npmRunPath.env() });

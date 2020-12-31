@@ -1,16 +1,16 @@
-import { adminPanelMessages, getAdminPanelDir } from '@cromwell/core-backend';
+import { adminPanelMessages, getAdminPanelDir, getAdminPanelStartupPath } from '@cromwell/core-backend';
 import { resolve } from 'path';
 
 import config from '../config';
 import { ManagerState } from '../managerState';
 import { closeService, startService } from './baseManager';
 
-const { projectRootDir, cacheKeys, servicesEnv } = config;
+const { cacheKeys, servicesEnv } = config;
 
 type TAdminPanelCommands = 'buildService' | 'build' | 'dev' | 'prod';
 
-const adminPanelDir = getAdminPanelDir(projectRootDir);
-const adminPanelStartupPath = resolve(adminPanelDir, 'startup.js');
+const adminPanelDir = getAdminPanelDir();
+const adminPanelStartupPath = getAdminPanelStartupPath();
 
 export const startAdminPanel = async (onLog?: (message: string) => void): Promise<boolean> => {
     if (ManagerState.adminPanelStatus === 'busy' ||
@@ -20,7 +20,7 @@ export const startAdminPanel = async (onLog?: (message: string) => void): Promis
         return false;
     }
 
-    if (servicesEnv.adminPanel) {
+    if (servicesEnv.adminPanel && adminPanelStartupPath) {
         const onOut = (data) => {
             // console.log(`stdout: ${data}`);
             onLog?.(data?.toString() ?? data);

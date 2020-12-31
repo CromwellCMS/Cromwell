@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 import { resolve } from 'path';
-
+import { getCoreCommonDir, getCoreFrontendDir, getCoreBackendDir } from '@cromwell/core-backend';
 import config from './config';
 import { startAdminPanel } from './managers/adminPanelManager';
 import { startRenderer } from './managers/rendererManager';
@@ -20,7 +20,7 @@ loadCache(async () => {
 
     const startSystem = async () => {
         await startServer(ManagerState.getLogger('server'));
-        
+
         startAdminPanel(ManagerState.getLogger('adminPanel'));
         startRenderer((message) => {
             console.log(message);
@@ -42,11 +42,11 @@ loadCache(async () => {
     if (scriptName === 'development') {
 
         spawn(`npx rollup -cw`, [],
-            { shell: true, stdio: 'inherit', cwd: resolve(projectRootDir, 'system/core/common') });
+            { shell: true, stdio: 'inherit', cwd: getCoreCommonDir() });
         spawn(`npx rollup -cw`, [],
-            { shell: true, stdio: 'inherit', cwd: resolve(projectRootDir, 'system/core/backend') });
+            { shell: true, stdio: 'inherit', cwd: getCoreBackendDir() });
         spawn(`npx rollup -cw`, [],
-            { shell: true, stdio: 'inherit', cwd: resolve(projectRootDir, 'system/core/frontend') });
+            { shell: true, stdio: 'inherit', cwd: getCoreFrontendDir() });
 
         windowsDev.otherDirs.forEach((dir, i) => {
             spawn(`npx rollup -cw`, [],

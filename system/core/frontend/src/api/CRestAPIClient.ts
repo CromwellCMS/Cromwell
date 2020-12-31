@@ -57,7 +57,7 @@ class CRestAPIClient {
     }
 
     public saveThemeName = async (themeName?: string): Promise<boolean | undefined> => {
-        return this.get(`cms/set-theme/${themeName ?? ''}`);
+        return this.get(`cms/set-theme?themeName=${themeName ?? ''}`);
     }
 
     public getCmsSettingsAndSave = async (): Promise<TCmsSettings | undefined> => {
@@ -115,31 +115,31 @@ class CRestAPIClient {
     }
 
     public installTheme = async (themeName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`theme/install/${themeName}`);
+        const data = await this.get<boolean>(`theme/install?themeName=${themeName}`);
         return data ?? false;
     }
 
 
 
     public getPluginSettings = async (pluginName: string): Promise<any | undefined> => {
-        return this.get(`plugin/settings/${pluginName}`);
+        return this.get(`plugin/settings?pluginName=${pluginName}`);
     }
 
     public setPluginSettings = async (pluginName: string, settings: any): Promise<boolean> => {
-        const data = await this.post<boolean>(`plugin/settings/${pluginName}`, settings);
+        const data = await this.post<boolean>(`plugin/settings?pluginName=${pluginName}`, settings);
         return data ?? false;
     }
 
     public getPluginFrontendBundle = async (pluginName: string): Promise<TFrontendBundle | undefined> => {
-        return this.get(`plugin/frontend-bundle/${pluginName}`);
+        return this.get(`plugin/frontend-bundle?pluginName=${pluginName}`);
     }
 
     public getPluginAdminBundle = async (pluginName: string): Promise<TFrontendBundle | undefined> => {
-        return this.get(`plugin/admin-bundle/${pluginName}`);
+        return this.get(`plugin/admin-bundle?pluginName=${pluginName}`);
     }
 
     public installPlugin = async (pluginName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`plugin/install/${pluginName}`);
+        const data = await this.get<boolean>(`plugin/install?pluginName=${pluginName}`);
         return data ?? false;
     }
 

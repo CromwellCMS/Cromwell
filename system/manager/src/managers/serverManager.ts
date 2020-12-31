@@ -1,18 +1,16 @@
-import { getServerDir, serverMessages } from '@cromwell/core-backend';
-import { resolve } from 'path';
+import { getServerStartupPath, serverMessages } from '@cromwell/core-backend';
 
 import config from '../config';
 import { closeService, startService } from './baseManager';
 
-const { projectRootDir, cacheKeys, servicesEnv } = config;
+const { cacheKeys, servicesEnv } = config;
 
-const serverDir = getServerDir(projectRootDir);
-const serverStartupPath = resolve(serverDir, 'startup.js');
+const serverStartupPath = getServerStartupPath();
 
 export const startServer = async (onLog?: (message: string) => void): Promise<boolean> => {
     console.log('servicesEnv', servicesEnv)
     let serverProc;
-    if (servicesEnv.server) {
+    if (servicesEnv.server && serverStartupPath) {
         serverProc = startService(serverStartupPath, cacheKeys.server, [servicesEnv.server],
             (data) => onLog?.(data?.toString() ?? data))
     }

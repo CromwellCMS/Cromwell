@@ -7,7 +7,7 @@ export const checkCMSConfig = (newSettings: TCmsSettings,
     const getStoreItemScoped = getStoreItemRepl ?? getStoreItem;
     const setStoreItemScoped = setStoreItemRepl ?? setStoreItem;
     const cmsSettings = getStoreItemScoped('cmsSettings');
-    if (!cmsSettings?.themeName) {
+    if (!cmsSettings) {
         setStoreItemScoped('cmsSettings', newSettings);
     }
     setStoreItemScoped('fsRequire', fsRequire);

@@ -14,9 +14,7 @@ import { getServiceController } from './controllers/serviceController';
 import { ManagerState } from './managerState';
 
 export const startManagerServer = () => {
-    const { projectRootDir, localProjectDir } = config;
-
-    const cmsconfig = readCMSConfigSync(projectRootDir)
+    const cmsconfig = readCMSConfigSync()
 
     const app = express();
     app.use(bodyParser.urlencoded({ extended: false }));

@@ -12,8 +12,8 @@ function useForceUpdate() {
 
 export const getPage = (pageName: BasePageNames | string, PageComponent: React.ComponentType): TCromwellPage => {
     const cmsSettings = getStoreItem('cmsSettings');
-    if (!cmsSettings?.themeName) {
-        throw new Error('getPage !cmsSettings.themeName ' + cmsSettings);
+    if (!cmsSettings) {
+        throw new Error('getPage !cmsSettings ' + cmsSettings);
     }
 
     if (!PageComponent) throw new Error('getPage !PageComponent');

@@ -1,4 +1,7 @@
-import { readCMSConfig, readThemeExports } from '@cromwell/core-backend';
+import {
+    readCMSConfig, readThemeExports, serverLogFor, getCmsModuleConfig,
+    getNodeModuleDir, getPublicDir, getRendererTempDir, getRendererBuildDir
+} from '@cromwell/core-backend';
 import { TCmsSettings, TCmsEntity, getStoreItem, setStoreItem, TCmsConfig } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import fs from 'fs-extra';
@@ -16,21 +19,31 @@ const disableSSR = false;
 
 const main = async () => {
     const args = yargs(process.argv.slice(2));
-    const projectRootDir = resolve(__dirname, '../../../');
 
-    const config = await readCMSConfig(projectRootDir);
+    const config = await readCMSConfig();
     if (config) setStoreItem('cmsSettings', config);
 
-    const themeMainConfig = await getRestAPIClient()?.getThemeMainConfig();
-    const cmsSettings = await getRestAPIClient()?.getCmsSettings();
-    const localDir = resolve(__dirname, '../');
-    const tempDirName = (args.dir && typeof args.dir === 'string' && args.dir !== '') ? args.dir : '.cromwell';
-    const tempDir = resolve(localDir, tempDirName);
+    const themeName = args.themeName;
+    if (!themeName) {
+        serverLogFor('errors-only', 'No theme name provided', 'Error');
+        return;
+    }
+
+    const themeDir = await getNodeModuleDir(themeName);
+    if (!themeDir) {
+        serverLogFor('errors-only', 'Theme directory was not found for: ' + themeName, 'Error');
+        return;
+    }
+
+    const themeConfig = await getCmsModuleConfig(themeName);
+    const themeMainConfig = themeConfig?.main;
+
+    const tempDir = getRendererTempDir();
     const pagesLocalDir = resolve(tempDir, 'pages');
     const localThemeBuildDurChunk = 'theme';
 
     // Read pages
-    const themeExports = await readThemeExports(projectRootDir, cmsSettings?.themeName);
+    const themeExports = await readThemeExports(themeName);
 
     // Create pages in Nex.js pages dir based on theme's pages
 
@@ -76,7 +89,7 @@ const main = async () => {
             fsRequire, importRendererDepsFrontend } from 'build/renderer';
 
 
-        const cmsSettings = ${JSON.stringify(cmsSettings)};
+        const cmsSettings = ${JSON.stringify(config)};
         checkCMSConfig(cmsSettings, getStoreItem, setStoreItem);
         
         const importer = getModuleImporter();
@@ -201,17 +214,19 @@ const main = async () => {
 
     const tempDirPublic = resolve(tempDir, 'public');
     const tempDirBuild = resolve(tempDir, 'build')
+    const rendererBuildDir = getRendererBuildDir();
+
     // Link public dir in root to renderer's public dir for Next.js server
     if (!fs.existsSync(tempDirPublic)) {
         try {
-            await symlinkDir(resolve(projectRootDir, 'public'), tempDirPublic)
+            await symlinkDir(getPublicDir(), tempDirPublic)
         } catch (e) { console.log(e) }
     }
 
     // Link renderer's build dir into next dir
-    if (!fs.existsSync(tempDirBuild)) {
+    if (!fs.existsSync(tempDirBuild) && rendererBuildDir) {
         try {
-            await symlinkDir(resolve(localDir, 'build'), tempDirBuild)
+            await symlinkDir(rendererBuildDir, tempDirBuild)
         } catch (e) { console.log(e) }
     }
 

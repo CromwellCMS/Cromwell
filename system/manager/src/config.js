@@ -1,17 +1,13 @@
 const { resolve } = require('path');
 const fs = require('fs-extra');
-const localProjectDir = resolve(__dirname);
-const projectRootDir = resolve(localProjectDir, '../../../');
-const systemDir = resolve(projectRootDir, 'system');
+const { getManagerTempDir } = require('@cromwell/core-backend');
 
-// DO NOT EDIT THIS CONFIG!
-// This is default settings.
+// Do not edit this config. This is default settings.
 // Create your own copy at "/usr/share/cromwell/devconfig.json"
 const userConfigPath = resolve('/usr/share/cromwell/devconfig.json');
 // Configs will be merged via Object.assign
 
 const config = {
-    projectRootDir, systemDir, localProjectDir,
     /** Config for root "dev" script */
     "servicesDev": {
         "adminPanel": "dev", // 'dev' | 'prod' | 'build' | null
@@ -35,7 +31,7 @@ const config = {
         "adminPanelBuilder": "admin_panel_builder",
         "manager": "manager",
     },
-    "cachePath": resolve(systemDir, '.cromwell/cache'),
+    "cachePath": resolve(getManagerTempDir(), 'cache'),
     "cacheKey": 'CromwellProcessManager',
     "cleanCacheOnStart": false,
 

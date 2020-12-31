@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es2016",
-    "lib": [
-      "es2015",
-      "es2016",
-    ],
+    "target": "ES2019",
     "baseUrl": ".",
     "strict": true,
     "emitDecoratorMetadata": true,
@@ -23,6 +19,7 @@
   "include": [
     "src/**/*.ts",
     "src/utils/cacheManager.js",
-    "src/utils/windowsDev.js", "src/config.js"
+    "src/utils/windowsDev.js",
+    "src/config.js"
   ],
 }

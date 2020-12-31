@@ -2,8 +2,6 @@ const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, execSync } = require('child_process');
 const localProjectRootDir = resolve(__dirname);
-const systemRootDir = resolve(localProjectRootDir, '../')
-const buildDir = resolve(localProjectRootDir, 'build');
 const buildScriptPath = resolve(localProjectRootDir, 'build/manager.js');
 
 /**

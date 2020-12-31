@@ -14,8 +14,8 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
     // pluginsBundles: Record<string, string>;
 }> => {
     const cmsSettings = getStoreItem('cmsSettings');
-    if (!cmsSettings?.themeName) {
-        throw new Error('pluginsDataFetcher !cmsSettings.themeName ' + cmsSettings);
+    if (!cmsSettings) {
+        throw new Error('pluginsDataFetcher !cmsSettings ' + cmsSettings);
     }
     const restAPIClient = getRestAPIClient();
     const pluginsModifications = await restAPIClient?.getPluginsModifications(pageName);
@@ -25,13 +25,11 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
     const pluginsData: Record<string, any> = {};
     const pluginsSettings: Record<string, any> = {}
     // const pluginsBundles: Record<string, string> = {};
-
     // console.log('pluginConfigs', pluginConfigs);
-
 
     if (pluginConfigs && Array.isArray(pluginConfigs)) {
         for (const pluginConfigEntry of pluginConfigs) {
-            // console.log('pluginConfig', pluginConfig);
+            // console.log('pluginConfig', pluginConfigEntry);
             const pluginName = pluginConfigEntry[0];
             const pluginConfig = pluginConfigEntry[1];
             const pluginContext = Object.assign({}, context);
@@ -39,6 +37,7 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
 
             const settings = await restAPIClient?.getPluginSettings(pluginName);
             if (settings) pluginsSettings[pluginName] = settings;
+            // console.log('settings', settings);
 
             const bundleInfo = await restAPIClient?.getPluginFrontendBundle(pluginName);
 

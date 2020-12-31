@@ -1,12 +1,11 @@
 import { serviceLocator, TThemeConfig } from '@cromwell/core';
 import {
     getRendererDir,
-    getRendererSavedBuildDirByTheme,
     getRendererTempDir,
-    getRendererTempNextDir,
-    getThemeDir,
+    getNodeModuleDir,
     rendererMessages,
     buildDirName,
+    getRendererStartupPath
 } from '@cromwell/core-backend';
 import axios from 'axios';
 import { resolve } from 'path';
@@ -17,12 +16,12 @@ import managerConfig from '../config';
 import { ManagerState } from '../managerState';
 import { closeService, isServiceRunning, startService, swithArchivedBuilds } from './baseManager';
 
-const { projectRootDir, cacheKeys, servicesEnv } = managerConfig;
+const { cacheKeys, servicesEnv } = managerConfig;
 
 type TRendererCommands = 'buildService' | 'dev' | 'build' | 'buildStart' | 'prod';
-const rendererDir = getRendererDir(projectRootDir);
-const rendererTempDir = getRendererTempDir(projectRootDir);
-const rendererStartupPath = resolve(rendererDir, 'startup.js');
+const rendererDir = getRendererDir();
+const rendererTempDir = getRendererTempDir();
+const rendererStartupPath = getRendererStartupPath();
 
 export const startRenderer = async (onLog?: (message: string) => void): Promise<boolean> => {
     if (ManagerState.rendererStatus === 'busy' ||
@@ -33,7 +32,7 @@ export const startRenderer = async (onLog?: (message: string) => void): Promise<
     }
     const rendererUrl = serviceLocator.getFrontendUrl();
 
-    if (servicesEnv.renderer) {
+    if (servicesEnv.renderer && rendererStartupPath) {
         const onOut = (data) => {
             // console.log(`stdout: ${data}`);
             onLog?.(data?.toString() ?? data);
@@ -110,16 +109,15 @@ export const restartRenderer = async (onLog?: (message: string) => void): Promis
     return startRenderer(onLog);
 }
 
-export const rendererBuild = async (dir?: string, onLog?: (message: string) => void): Promise<boolean> => {
-
-    const tempDirName = dir ?? buildDirName;
+export const rendererBuild = async (onLog?: (message: string) => void): Promise<boolean> => {
+    if (!rendererStartupPath) return false;
 
     const commad: TRendererCommands = 'build';
     const onOut = (data) => {
         // console.log(`stdout: ${data}`);
         onLog?.(data?.toString() ?? data);
     }
-    const proc = startService(rendererStartupPath, cacheKeys.rendererBuilder, [commad, `--dir=${tempDirName}`], onOut, rendererDir);
+    const proc = startService(rendererStartupPath, cacheKeys.rendererBuilder, [commad], onOut, rendererDir);
 
     await new Promise(done => {
         proc.on('message', async (message: string) => {
@@ -129,7 +127,7 @@ export const rendererBuild = async (dir?: string, onLog?: (message: string) => v
         });
     })
 
-    const success = await isThemeBuilt(resolve(rendererDir, tempDirName));
+    const success = await isThemeBuilt(getRendererTempDir());
     if (success) {
         onLog?.('RendererManager:: Renderer build succeeded');
     } else {
@@ -149,7 +147,7 @@ export const rendererBuildAndStart = async (onLog?: (message: string) => void): 
     const rendererInitialStatus = ManagerState.rendererStatus;
     ManagerState.rendererStatus = 'building';
 
-    const buildSuccess = await rendererBuild('.temp', onLog);
+    const buildSuccess = await rendererBuild(onLog);
     if (buildSuccess) {
         const success = await restartRenderer(onLog);
         ManagerState.rendererStatus = rendererInitialStatus;
@@ -159,39 +157,40 @@ export const rendererBuildAndStart = async (onLog?: (message: string) => void): 
     return false;
 }
 
-export const rendererBuildAndSaveTheme = async (themeName: string, onLog?: (message: string) => void): Promise<boolean> => {
-    const tempDirName = '.temp';
-    const tempDir = resolve(rendererDir, tempDirName);
+export const rendererBuildAndSaveTheme = async (themeModuleName: string, onLog?: (message: string) => void): Promise<boolean> => {
+    const tempDir = getRendererTempDir();
     const tempNextDir = resolve(tempDir, '.next');
-    const themeDir = await getThemeDir(projectRootDir, themeName);
+    const themeDir = await getNodeModuleDir(themeModuleName);
 
-    const buildSuccess = await rendererBuild(tempDirName, onLog);
-    if (buildSuccess) {
-        if (themeDir) {
+    if (themeDir) {
+        const buildSuccess = await rendererBuild(onLog);
+        if (buildSuccess) {
             const themeBuildNextDir = resolve(themeDir, buildDirName, '.next');
             if (await fs.pathExists(themeBuildNextDir)) await fs.remove(themeBuildNextDir);
             await fs.move(tempNextDir, themeBuildNextDir);
             await fs.remove(tempDir);
             onLog?.('RendererManager:: successfully saved theme');
             return true;
-        }
-    } else {
+        } else {
 
+        }
     }
+
+
 
     return false;
 }
 
-export const rendererChangeTheme = async (nextThemeName: string,
+export const rendererChangeTheme = async (nextThemeModuleName: string,
     onLog?: (message: string) => void): Promise<boolean> => {
     if (ManagerState.rendererStatus === 'busy' ||
         ManagerState.rendererStatus === 'building') {
         onLog?.(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, aborting changeTheme process..`)
         return false;
     }
-    const themeDir = await getThemeDir(projectRootDir, nextThemeName);
+    const themeDir = await getNodeModuleDir(nextThemeModuleName);
 
-    onLog?.(`RendererManager:: changeTheme: ${nextThemeName}, ${themeDir}`);
+    onLog?.(`RendererManager:: changeTheme: ${nextThemeModuleName}, ${themeDir}`);
     if (themeDir) {
         const themeBuildNextDir = resolve(themeDir, buildDirName, '.next');
         if (await fs.pathExists(themeBuildNextDir)) {
@@ -217,6 +216,7 @@ export const rendererChangeTheme = async (nextThemeName: string,
 
 
 export const rendererStartWatchDev = async (onLog?: (message: string) => void) => {
+    if (!rendererStartupPath) return false;
 
     if (ManagerState.rendererStatus === 'busy' ||
         ManagerState.rendererStatus === 'building') {
@@ -226,8 +226,7 @@ export const rendererStartWatchDev = async (onLog?: (message: string) => void) =
 
     await closeRenderer(onLog);
 
-    const tempDir = resolve(rendererDir, buildDirName);
-    await makeEmptyDir(tempDir);
+    await makeEmptyDir(getRendererTempDir());
 
     const commad: TRendererCommands = 'dev';
     const proc = startService(rendererStartupPath, cacheKeys.renderer, [commad], onLog, rendererDir)
