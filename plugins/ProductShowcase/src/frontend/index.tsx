@@ -1,6 +1,6 @@
 import React, { Component, useEffect, useState } from 'react';
 import { StaticPageContext, TProductCategory, TProduct, TFrontendPluginProps } from '@cromwell/core';
-import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
+import { getGraphQLClient, Link } from '@cromwell/core-frontend';
 import { useStyles } from './styles';
 import { ECommonComponentNames, loadCommonComponent } from '@cromwell/core';
 import { Swiper, Navigation, Pagination, SwiperOptions, Lazy, Virtual } from 'swiper';
@@ -137,4 +137,4 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     }
 }
 
-export default FrontendPlugin(ProductShowcase, 'ProductShowcase');
+export default ProductShowcase;

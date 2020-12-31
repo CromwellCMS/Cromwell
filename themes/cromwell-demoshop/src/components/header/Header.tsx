@@ -72,7 +72,6 @@ const Header = () => {
     const handleCartClick = () => {
         productListStore.isCartOpen = true;
     }
-    const CustomConfig = getThemeCustomConfig();
 
     useEffect(() => {
         cstore.addOnCartUpdatedCallback((cart) => {

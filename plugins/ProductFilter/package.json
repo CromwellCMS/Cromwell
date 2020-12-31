@@ -1,5 +1,5 @@
 {
-  "name": "cromwell-plugin-product-filter",
+  "name": "@cromwell/plugin-product-filter",
   "version": "1.0.0",
   "description": "",
   "main": "dist",

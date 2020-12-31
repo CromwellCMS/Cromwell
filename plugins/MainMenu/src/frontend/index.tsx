@@ -1,5 +1,5 @@
 import { TFrontendPluginProps } from '@cromwell/core';
-import { FrontendPlugin, Link } from '@cromwell/core-frontend';
+import { Link } from '@cromwell/core-frontend';
 import { MenuItem, Popover } from '@material-ui/core';
 import React, { useState } from 'react';
 
@@ -86,4 +86,4 @@ const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
     )
 }
 
-export default FrontendPlugin<null, TMainMenuSettings>(MainMenu, 'MainMenu');
+export default MainMenu;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { StaticPageContext, TProductCategory, TFrontendPluginProps } from '@cromwell/core';
-import { getGraphQLClient, FrontendPlugin, Link } from '@cromwell/core-frontend';
+import { getGraphQLClient, Link } from '@cromwell/core-frontend';
 import { ProductShowcaseReviewsType } from '../backend/entities/ProductShowcaseReviews';
 import { useStyles } from './styles';
 import { gql } from '@apollo/client';
@@ -92,4 +92,4 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Custom
     }
 }
 
-export default FrontendPlugin<CustomerReviewsProps>(CustomerReviews, 'CustomerReviews');
+export default CustomerReviews;

@@ -103,14 +103,16 @@ export type TCmsSettings = TCmsConfig & TCmsEntityCore;
 export type TBuildConfig = {
     name: string;
     type: 'plugin' | 'theme';
-    rollupConfig?: {
-        main: Record<string, any>;
-        frontendBundle?: Record<string, any>;
-        frontendCjs?: Record<string, any>;
-        backend?: Record<string, any>;
-        themePages?: Record<string, any>;
-        adminPanel?: Record<string, any>;
-    }
+    rollupConfig?: () => TRollupConfig | Promise<TRollupConfig>;
+}
+
+export type TRollupConfig = {
+    main: Record<string, any>;
+    frontendBundle?: Record<string, any>;
+    frontendCjs?: Record<string, any>;
+    backend?: Record<string, any>;
+    themePages?: Record<string, any>;
+    adminPanel?: Record<string, any>;
 }
 
 

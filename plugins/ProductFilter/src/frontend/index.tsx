@@ -1,5 +1,5 @@
 import { TAttributeValue, TFrontendPluginProps, TProduct } from '@cromwell/core';
-import { FrontendPlugin, getGraphQLClient } from '@cromwell/core-frontend';
+import { getGraphQLClient } from '@cromwell/core-frontend';
 import {
     Card,
     CardHeader,
@@ -203,4 +203,4 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
 
 export { getStaticProps } from './service'
 
-export default FrontendPlugin(ProductFilter, 'ProductFilter');
+export default ProductFilter;

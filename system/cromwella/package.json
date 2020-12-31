@@ -34,6 +34,7 @@
     "flatted": "^3.1.0",
     "fs-extra": "^9.0.1",
     "import-from": "^3.0.0",
+    "is-promise": "^4.0.0",
     "make-empty-dir": "^1.0.0",
     "resolve-from": "^5.0.0",
     "colors": "^1.4.0",

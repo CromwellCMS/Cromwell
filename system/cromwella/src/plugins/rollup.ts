@@ -1,30 +1,45 @@
-import { TSciprtMetaInfo, TPluginConfig, TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
+import { TPagesMetaInfo, TPluginConfig, TSciprtMetaInfo, TThemeConfig, TRollupConfig } from '@cromwell/core';
 import {
-    getMetaInfoPath, getPluginBackendPath,
-    buildDirName, pluginFrontendBundlePath,
-    pluginFrontendCjsPath,
+    buildDirName,
+    getMetaInfoPath,
+    getPluginBackendPath,
     pluginAdminBundlePath,
     pluginAdminCjsPath,
+    pluginFrontendBundlePath,
+    pluginFrontendCjsPath,
+    serverLogFor
 } from '@cromwell/core-backend';
-import { walk } from 'estree-walker';
-import glob from 'glob';
-import { dirname, resolve, isAbsolute } from 'path';
-import normalizePath from 'normalize-path';
-import externalGlobals from 'rollup-plugin-external-globals';
-import { RollupOptions, Plugin, OutputOptions } from 'rollup';
 import virtual from '@rollup/plugin-virtual';
-import fs from 'fs-extra';
 import cryptoRandomString from 'crypto-random-string';
+import { walk } from 'estree-walker';
+import fs from 'fs-extra';
+import glob from 'glob';
+import normalizePath from 'normalize-path';
+import { dirname, resolve } from 'path';
+import { OutputOptions, Plugin, RollupOptions } from 'rollup';
+import externalGlobals from 'rollup-plugin-external-globals';
+import isPromise from 'is-promise';
 import { cromwellStoreModulesPath } from '../constants';
-import { getNodeModuleVersion, isExternalForm, getDepVersion } from '../shared';
+import { getDepVersion, getNodeModuleVersion, isExternalForm } from '../shared';
 
-export const rollupConfigWrapper = (cromwellConfig: TPluginConfig | TThemeConfig): RollupOptions[] => {
+export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TThemeConfig): Promise<RollupOptions[]> => {
 
     if (!cromwellConfig) throw new Error(`CromwellPlugin Error. Provide config as second argumet to the wrapper function`);
     if (!cromwellConfig?.type) throw new Error(`CromwellPlugin Error. Provide one of types to the CromwellConfig: 'plugin', 'theme'`);
-    if (!cromwellConfig?.name) throw new Error(`CromwellPlugin Error. Provide name in the CromwellConfig`);
 
-    const specifiedOptions = cromwellConfig.rollupConfig;
+    try {
+        const pckg = require(resolve(process.cwd(), 'package.json'));
+        if (pckg?.name) cromwellConfig.name = pckg.name;
+    } catch (e) { console.error(e) };
+
+    if (!cromwellConfig.name) throw new Error(`CromwellPlugin Error. Failed to find name of the package in working directory`);
+
+    const strippedName = cromwellConfig.name.replace(/\W/g, '_');
+
+    let specifiedOptions: TRollupConfig | undefined = cromwellConfig.rollupConfig?.() as any;
+    //@ts-ignore
+    if (isPromise(specifiedOptions)) specifiedOptions = await specifiedOptions;
+
     const inputOptions = specifiedOptions?.main;
     const outOptions: RollupOptions[] = [];
 
@@ -34,24 +49,25 @@ export const rollupConfigWrapper = (cromwellConfig: TPluginConfig | TThemeConfig
         const handleInputFile = (inputFilePath: string, distChunk: string, cjsChunk: string) => {
 
             const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
-            const inputPath = resolve(process.cwd(), inputFilePath).replace(/\\/g, '/');
+            const inputPath = normalizePath(resolve(process.cwd(), inputFilePath));
 
             const optionsInput = '$$' + pluginConfig.name + '/' + inputFilePath;
             options.input = optionsInput;
             options.output = Object.assign({}, options.output, {
                 file: resolve(process.cwd(), buildDirName, distChunk),
                 format: "iife",
-                name: pluginConfig.name,
+                name: strippedName,
                 banner: '(function() {',
-                footer: `return ${pluginConfig.name};})();`
+                footer: `return ${strippedName};})();`
             } as OutputOptions);
 
             options.plugins = [...(options.plugins ?? [])];
 
             options.plugins.push(virtual({
                 [optionsInput]: `
+                        import { FrontendPlugin } from '@cromwell/core-frontend';
                         import defaulComp from '${inputPath}';
-                        export default defaulComp;
+                        export default FrontendPlugin(defaulComp, '${cromwellConfig.name}');
                         `
             }))
             options.plugins.unshift(rollupPluginCromwellFrontend({
@@ -462,7 +478,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                         fs.ensureDirSync(dirname(styleSheetBuildPath));
                         fs.copyFileSync(styleSheetPath, styleSheetBuildPath);
                     }
-                    // console.log('styleSheetSourcePath', styleSheetPath, 'styleSheetBuildPath', styleSheetBuildPath)
+                    console.log('styleSheetSourcePath', styleSheetPath, 'styleSheetBuildPath', styleSheetBuildPath)
                 }
 
                 fs.outputFileSync(resolve(settings.buildDir, 'pages_meta.json'), JSON.stringify(settings.pagesMetaInfo, null, 2));

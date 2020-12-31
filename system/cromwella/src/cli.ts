@@ -16,11 +16,6 @@ const cli = () => {
     const projectRootDir: string = (!args.path || typeof args.path !== 'string' || args.path == '') ?
         process.cwd() : args.path;
 
-    if (!projectRootDir || typeof projectRootDir !== 'string' || projectRootDir == '') {
-        console.log(colors.brightRed(`\nCromwella:: Error. Please pass absolute project root directory as --path argument\n`));
-        return;
-    }
-
     const isProduction = Boolean(typeof args.production === 'boolean' && args.production)
     const noInstall = Boolean(args['skip-install']);
     const installationMode = isProduction ? 'production' : 'development';

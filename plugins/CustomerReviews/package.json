@@ -1,5 +1,5 @@
 {
-  "name": "cromwell-plugin-customer-reviews",
+  "name": "@cromwell/plugin-customer-reviews",
   "version": "1.0.0",
   "description": "",
   "main": "dist",

@@ -1,5 +1,7 @@
 {
-    "name": "cromwell",
+    "name": "@cromwell/main",
+    "version": "1.0.0",
+    "main": "startup.js",
     "private": true,
     "scripts": {
         "startup": "node ./startup.js",
@@ -21,5 +23,13 @@
         "plugins/*",
         "themes/*",
         ".cromwell/built_modules"
-    ]
+    ],
+    "cromwell": {
+        "plugins": [
+            "@cromwell/plugin-customer-reviews"
+        ],
+        "themes": [
+            "@cromwell/theme-store"
+        ]
+    }
 }

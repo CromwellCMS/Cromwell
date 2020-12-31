@@ -1,13 +1,6 @@
-const commonjs = require('@rollup/plugin-commonjs');
-const json = require('@rollup/plugin-json');
-const typescript = require('@rollup/plugin-typescript');
-const postcss = require('rollup-plugin-postcss');
-const autoprefixer = require("autoprefixer");
 const constants = require('./src/constants');
 
-
 module.exports = {
-    name: "cromwell-demoshop",
     type: 'theme',
     main: {
         themeName: "cromwell-demoshop",
@@ -24,27 +17,34 @@ module.exports = {
         ],
         headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap\" rel=\"stylesheet\" /><link href=\"https://unpkg.com/reset-css/reset.css\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />"
     },
-    rollupConfig: {
-        main: {
-            plugins: [
-                commonjs(),
-                typescript(),
-                json(),
-            ]
-        },
-        adminPanel: {
-            plugins: [
-                commonjs(),
-                typescript(),
-                json(),
-                postcss({
-                    extract: false,
-                    modules: true,
-                    writeDefinitions: false,
-                    inject: true,
-                    use: ['sass'],
-                }),
-            ]
+    rollupConfig: () => {
+        const commonjs = require('@rollup/plugin-commonjs');
+        const json = require('@rollup/plugin-json');
+        const typescript = require('@rollup/plugin-typescript');
+        const postcss = require('rollup-plugin-postcss');
+        const autoprefixer = require("autoprefixer");
+        return {
+            main: {
+                plugins: [
+                    commonjs(),
+                    typescript(),
+                    json(),
+                ]
+            },
+            adminPanel: {
+                plugins: [
+                    commonjs(),
+                    typescript(),
+                    json(),
+                    postcss({
+                        extract: false,
+                        modules: true,
+                        writeDefinitions: false,
+                        inject: true,
+                        use: ['sass'],
+                    }),
+                ]
+            }
         }
     },
     pages: [
@@ -84,7 +84,7 @@ module.exports = {
                     "type": "plugin",
                     "componentId": "main_showcase",
                     "plugin": {
-                        "pluginName": "ProductShowcase"
+                        "pluginName": "@cromwell/plugin-product-showcase"
                     }
                 }
             ]
@@ -102,7 +102,7 @@ module.exports = {
                     "destinationPosition": "after",
                     "isVirtual": true,
                     "plugin": {
-                        "pluginName": "ProductFilter"
+                        "pluginName": "@cromwell/plugin-product-filter"
                     }
                 }
             ]
@@ -120,7 +120,7 @@ module.exports = {
                     "destinationPosition": "after",
                     "isVirtual": true,
                     "plugin": {
-                        "pluginName": "ProductShowcase"
+                        "pluginName": "@cromwell/plugin-product-showcase"
                     }
                 }
             ]
@@ -134,7 +134,7 @@ module.exports = {
                     "type": "plugin",
                     "componentId": "5",
                     "plugin": {
-                        "pluginName": "ProductShowcase"
+                        "pluginName": "@cromwell/plugin-product-showcase"
                     }
                 },
                 {
@@ -192,7 +192,7 @@ module.exports = {
             "type": "plugin",
             "componentId": "header_main_menu",
             "plugin": {
-                "pluginName": "MainMenu"
+                "pluginName": "@cromwell/plugin-main-menu"
             }
         }
     ]

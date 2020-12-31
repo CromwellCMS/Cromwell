@@ -1,5 +1,5 @@
 {
-  "name": "cromwell-plugin-main-menu",
+  "name": "@cromwell/plugin-main-menu",
   "version": "1.0.0",
   "description": "",
   "main": "dist",

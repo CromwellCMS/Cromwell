@@ -16,7 +16,7 @@ const rollupBuild = async (config: TPluginConfig | TThemeConfig, watch?: boolean
     if (!config) return false;
     let rollupBuildSuccess = false;
     try {
-        const rollupConfig = rollupConfigWrapper(config);
+        const rollupConfig = await rollupConfigWrapper(config);
 
         if (watch) {
             const watcher = rollupWatch(rollupConfig);
