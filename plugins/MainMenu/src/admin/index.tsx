@@ -1,28 +1,28 @@
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
 import {
-    createStyles, makeStyles, Theme, Card,
+    Button,
+    Card,
     CardActionArea,
     CardActions,
+    CircularProgress,
     Collapse,
+    createStyles,
     IconButton,
-    TextField,
+    makeStyles,
     MenuItem,
-    Button,
-    CircularProgress
+    TextField,
+    Theme,
 } from '@material-ui/core';
-import {
-    Add as AddIcon, ExpandMore as ExpandMoreIcon,
-    HighlightOff as HighlightOffIcon
-} from '@material-ui/icons';
+import { Add as AddIcon, ExpandMore as ExpandMoreIcon, HighlightOff as HighlightOffIcon } from '@material-ui/icons';
+import clsx from 'clsx';
+import React, { useEffect, useState } from 'react';
+
 import { TMainMenuItem, TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
 
-const pluginName = 'MainMenu';
 let items: TMainMenuItem[] = [];
 
-export default function index() {
+export default function index({ pluginName }: { pluginName: string }) {
     const apiClient = getRestAPIClient();
     const classes = useStyles();
     const [settings, setSettings] = useState<TMainMenuSettings | null>(null);

@@ -1,7 +1,9 @@
 .Header {
+    display: flex;
+    align-items: center;
     position: relative;
-    padding: 1em;
+    padding: 0 1em;
     z-index: 1;
     // border-bottom: 2px solid #333;
-    box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.05), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+    // box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.05), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
 }

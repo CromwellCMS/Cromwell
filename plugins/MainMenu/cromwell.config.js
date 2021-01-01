@@ -1,5 +1,6 @@
 module.exports = {
     type: "plugin",
+    title: "Main menu",
     adminInputFile: "src/admin/index.tsx",
     frontendInputFile: "src/frontend/index.tsx",
     rollupConfig: () => {

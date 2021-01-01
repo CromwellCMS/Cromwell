@@ -44,7 +44,7 @@ export default function PluginList() {
     }, []);
 
     const handleOpenPluginPage = (pluginName: string) => () => {
-        const route = `${pluginPageInfo.baseRoute}/${pluginName}`;
+        const route = `${pluginPageInfo.baseRoute}?pluginName=${pluginName}`;
         history.push(route);
     }
 

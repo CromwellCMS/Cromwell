@@ -33,9 +33,13 @@ export default function ThemeList() {
         // Get info from DB
         const graphQLClient = getGraphQLClient();
         if (graphQLClient) {
-            const themeEntities: TThemeEntity[] = await graphQLClient.getAllEntities('Theme',
-                graphQLClient.ThemeFragment, 'ThemeFragment');
-            if (themeEntities && Array.isArray(themeEntities)) setThemeList(themeEntities);
+            try {
+                const themeEntities: TThemeEntity[] = await graphQLClient.getAllEntities('Theme',
+                    graphQLClient.ThemeFragment, 'ThemeFragment');
+                if (themeEntities && Array.isArray(themeEntities)) setThemeList(themeEntities);
+            } catch (e) {
+                console.error(e);
+            }
         }
         setIsLoading(false);
     }

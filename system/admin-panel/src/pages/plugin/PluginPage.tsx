@@ -1,9 +1,9 @@
 import React from 'react';
 import { getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
-import { useParams } from 'react-router-dom';
 
 const PluginPage = () => {
-    const { pluginName } = useParams<{ pluginName: string }>();
+    const urlParams = new URLSearchParams(window.location.search);
+    const pluginName = urlParams.get('pluginName');
 
     const PageComp = loadFrontendBundle(pluginName,
         () => getRestAPIClient()?.getPluginAdminBundle(pluginName));

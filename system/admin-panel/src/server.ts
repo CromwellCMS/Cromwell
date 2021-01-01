@@ -1,60 +1,57 @@
+import { serviceLocator, setStoreItem } from '@cromwell/core';
+import {
+    adminPanelMessages,
+    getAdminPanelServiceBuildDir,
+    getAdminPanelTempDir,
+    getAdminPanelWebPublicDir,
+    getAdminPanelWebServiceBuildDir,
+    getPublicDir,
+    readCMSConfigSync,
+    getAdminPanelDir
+} from '@cromwell/core-backend';
+import compress from 'compression';
+import express from 'express';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import webpack from 'webpack';
-import express from 'express';
-import { TCmsConfig, serviceLocator, setStoreItem } from '@cromwell/core';
-import {
-    readCMSConfigSync, adminPanelMessages, getAdminPanelDir, getAdminPanelServiceBuildDir,
-    getAdminPanelWebPublicDir, getAdminPanelWebBuildDir, getCMSConfigPath, cmsConfigFileName,
-    getAdminPanelWebServiceBuildDir
-} from '@cromwell/core-backend';
 import symlinkDir from 'symlink-dir';
-import compress from 'compression';
+import webpack from 'webpack';
 
-
-const projectRootDir = resolve(__dirname, '../../../');
-const localProjectDir = resolve(__dirname, '../');
 
 const webpackConfig = require('../webpack.config');
 const chalk = require('react-dev-utils/chalk');
 
 const startDevServer = async () => {
     const watch = true;
-    const CMSconfig = readCMSConfigSync(projectRootDir);
-    setStoreItem('cmsSettings', CMSconfig);
-
-    const publicDir = getAdminPanelWebPublicDir(projectRootDir);
-    const webTempDir = getAdminPanelWebBuildDir(projectRootDir);
-    if (!fs.existsSync(webTempDir)) await fs.mkdir(webTempDir);
-
-    // Link public dir in root to renderer's public dir for Express.js server
-    if (!fs.existsSync(publicDir) && fs.existsSync(resolve(projectRootDir, 'public'))) {
-        await symlinkDir(resolve(projectRootDir, 'public'), publicDir)
-    }
-
-    const cmsConfigPath = getCMSConfigPath(projectRootDir);
-    const tempCmsConfigPath = resolve(webTempDir, cmsConfigFileName)
-    // Link CMS config for Express.js server
-    await fs.copyFile(cmsConfigPath, tempCmsConfigPath);
-
-    // Link service build dir
-    const serviceBuildDir = getAdminPanelServiceBuildDir(projectRootDir);
-    const webTempServiceLink = getAdminPanelWebServiceBuildDir(projectRootDir);
-    if (!fs.existsSync(webTempServiceLink) && fs.existsSync(serviceBuildDir)) {
-        await symlinkDir(serviceBuildDir, webTempServiceLink);
-    }
+    const cmsConfig = readCMSConfigSync();
+    setStoreItem('cmsSettings', cmsConfig);
 
     const env = process.argv[2];
 
     let isProduction = env === 'production';
     let isDevelopment = env === 'development';
-
-
     if (!isDevelopment && !isProduction)
-        throw (`devServer::startDevServer: process.argv[2] is invalid - ${env}
-    valid values - "development" and "production"`);
+        throw (`devServer::startDevServer: process.argv[2] is invalid - ${env} valid values - "development" and "production"`);
 
-    const port = process.env.PORT ?? CMSconfig.adminPanelPort;
+    
+    const projectPublicDir = isProduction ? getPublicDir() : resolve(getAdminPanelDir(), '../../public');
+    const publicDir = getAdminPanelWebPublicDir();
+    const webTempDir = getAdminPanelTempDir();
+    if (!fs.existsSync(webTempDir)) await fs.ensureDir(webTempDir);
+
+    // Link public dir in root to renderer's public dir for Express.js server
+    if (!fs.existsSync(publicDir) && fs.existsSync(projectPublicDir)) {
+        await symlinkDir(projectPublicDir, publicDir)
+    }
+
+    // Link service build dir
+    const serviceBuildDir = getAdminPanelServiceBuildDir();
+    const webTempServiceLink = getAdminPanelWebServiceBuildDir();
+    if (!fs.existsSync(webTempServiceLink) && fs.existsSync(serviceBuildDir)) {
+        await symlinkDir(serviceBuildDir, webTempServiceLink);
+    }
+
+
+    const port = process.env.PORT ?? cmsConfig.adminPanelPort;
 
     const app = express();
 
@@ -84,7 +81,7 @@ const startDevServer = async () => {
     <script src="/built_modules/importer.js"></script>
     <script>
     CromwellStore = {
-        cmsSettings: ${JSON.stringify(CMSconfig)}
+        cmsSettings: ${JSON.stringify(cmsConfig)}
     }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;900&display=swap" rel="stylesheet">

@@ -73,8 +73,8 @@ export const pluginListPageInfo: PageInfo = {
 };
 export const pluginPageInfo: PageInfo = {
     name: 'Plugin',
-    baseRoute: '/plugins',
-    route: '/plugins/:pluginName',
+    baseRoute: '/plugin',
+    route: '/plugin',
     component: PluginPage
 };
 

@@ -27,8 +27,12 @@ export default function AttributesPage() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const getAttributes = async () => {
-        const attrs = await graphClient?.getAttributes();
-        if (attrs && Array.isArray(attrs)) attributes.current = attrs;
+        try {
+            const attrs = await graphClient?.getAttributes();
+            if (attrs && Array.isArray(attrs)) attributes.current = attrs;
+        } catch (e) {
+            console.error(e);
+        }
         setIsLoading(false);
     }
 
@@ -90,8 +94,12 @@ const Attribute = (props: { data: TAttribute }) => {
 
     const getAttribute = async () => {
         if (attribute.current?.id) {
-            const attr = await graphClient.getAttributeById(attribute.current.id)
-            attribute.current = attr;
+            try {
+                const attr = await graphClient.getAttributeById(attribute.current.id)
+                attribute.current = attr;
+            } catch (e) {
+                console.error(e);
+            }
         }
     }
 

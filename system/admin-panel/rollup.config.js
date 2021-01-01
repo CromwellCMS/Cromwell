@@ -37,7 +37,6 @@ const typeScriptOptions = {
 };
 
 fs.ensureDirSync(resolve(__dirname, buildDir));
-fs.copyFileSync(resolve(__dirname, 'src/index.html'), resolve(__dirname, buildDir, 'index.html'));
 
 export default [
     {

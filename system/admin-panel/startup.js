@@ -1,15 +1,16 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, spawnSync, fork } = require('child_process');
-const { adminPanelMessages } = require('@cromwell/core-backend');
+const { getAdminPanelServiceBuildDir, getAdminPanelTempDir, getAdminPanelDir } = require('@cromwell/core-backend');
 const localProjectDir = __dirname;
-const buildDir = resolve(localProjectDir, 'build');
-const tempDir = resolve(localProjectDir, '.cromwell');
 
 // 'buildService' | 'build' | 'dev' | 'prod'
 const scriptName = process.argv[2];
 
 const main = async () => {
+
+    const buildDir = getAdminPanelServiceBuildDir();
+    const tempDir = getAdminPanelTempDir();
 
     const isServiceBuilt = () => {
         return (fs.existsSync(buildDir)
@@ -37,7 +38,7 @@ const main = async () => {
             buildService();
         }
 
-        spawn(`node ./build/server.js development`, [],
+        spawn(`node ${resolve(buildDir, 'server.js')}`, ['development'],
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
 
         return;
@@ -48,8 +49,8 @@ const main = async () => {
             buildService();
         }
 
-        const serverProc = fork(`./build/server.js`, ['production'],
-            { shell: true, stdio: 'inherit', cwd: localProjectDir });
+        const serverProc = fork(resolve(buildDir, 'server.js'), ['production'],
+            { shell: true, stdio: 'inherit', cwd: process.cwd() });
 
         serverProc.on('message', (message) => {
             if (process.send) process.send(message);
