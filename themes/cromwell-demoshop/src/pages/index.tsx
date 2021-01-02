@@ -45,7 +45,7 @@ const Index: TCromwellPage = (props) => {
                     <CContainer id="main_20" className={styles.mainBlock}>
                         <CContainer id="main_21" className={styles.mainSidebar}>
                             <CImage id="main_sidebar_image_1" src="/themes/@cromwell/theme-store/sidebar_banner_1.png" className={styles.sidebarBanner} />
-                            <CPlugin id="NewsletterForm_sidebar" pluginName="NewsletterForm" />
+                            {/* <CPlugin id="NewsletterForm_sidebar" pluginName="NewsletterForm" /> */}
                         </CContainer>
                         <CContainer id="main_22" className={styles.mainContent}>
                             <CContainer id="main_23" className={styles.mainSubBanners}>

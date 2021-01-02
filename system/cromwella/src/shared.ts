@@ -1,14 +1,10 @@
 import { getTempDir, serverLogFor } from '@cromwell/core-backend';
 import { each as asyncEach } from 'async';
 import colorsdef from 'colors/safe';
-import extractZip from 'extract-zip';
 import fs from 'fs-extra';
-import moduleDownloader from 'github-directory-downloader';
 import glob from 'glob';
 import importFrom from 'import-from';
-import fetch from 'node-fetch';
 import path, { isAbsolute, resolve } from 'path';
-import { promisify } from 'util';
 
 import { bundledModulesDirName, defaultFrontendDeps } from './constants';
 import {
@@ -374,51 +370,4 @@ export const collectFrontendDependencies = (packages: TPackage[]): TFrontendDepe
     });
 
     return frontendDependencies;
-}
-
-export const downloadBundle = async (moduleName: string, saveTo: string) => {
-    const repo = 'https://github.com/CromwellCMS/bundled-modules/tree/master';
-    const url = `${repo}/${moduleName}`;
-
-    const stats = await moduleDownloader(url, resolve(saveTo, moduleName));
-
-    if (!stats.success || stats.downloaded === 0) {
-        serverLogFor('errors-only', `Failed to download module ${moduleName}` + stats.error, 'Error');
-        await fs.remove(resolve(saveTo, moduleName));
-    }
-}
-
-export const downloadBundleZipped = async (moduleName: string, saveTo: string): Promise<boolean> => {
-    const repo = 'https://raw.githubusercontent.com/CromwellCMS/bundled-modules/master';
-    const url = `${repo}/${moduleName}/module.zip`;
-
-    let responseBody;
-    try {
-        const response = await fetch(url);
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.statusText} for ${url}`);
-        }
-        responseBody = response.body;
-    } catch (e) {
-        serverLogFor('errors-only', `Failed to download module ${moduleName}` + e, 'Error');
-        return false;
-    }
-
-    const moduleDir = resolve(saveTo, moduleName);
-    const zipPath = resolve(moduleDir, 'module.zip');
-
-    await fs.ensureDir(moduleDir);
-
-    const streamPipeline = promisify(require('stream').pipeline);
-    await streamPipeline(responseBody, fs.createWriteStream(zipPath));
-
-    try {
-        await extractZip(zipPath, { dir: moduleDir })
-    } catch (err) {
-        serverLogFor('errors-only', `Failed to unzip module ${moduleName}`, 'Error');
-        await fs.remove(moduleDir);
-        return false;
-    }
-
-    return true;
 }

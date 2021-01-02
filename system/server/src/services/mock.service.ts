@@ -32,9 +32,9 @@ export class MockService {
     },
     {
         key: 'Color',
-        values: [{ value: "Orange", icon: '/plugins/ProductFilter/color_orange.png' },
-        { value: "Purple", icon: '/plugins/ProductFilter/color_purple.png' },
-        { value: "Blue", icon: '/plugins/ProductFilter/color_blue.png' }],
+        values: [{ value: "Orange", icon: '/plugins/@cromwell/plugin-product-filter/color_orange.png' },
+        { value: "Purple", icon: '/plugins/@cromwell/plugin-product-filter/color_purple.png' },
+        { value: "Blue", icon: '/plugins/@cromwell/plugin-product-filter/color_blue.png' }],
         type: 'radio'
     },
     {

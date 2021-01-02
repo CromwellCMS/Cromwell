@@ -66,13 +66,13 @@ export class PluginService {
 
         const pluginDir = await getNodeModuleDir(pluginName);
         if (!pluginDir) {
-            serverLogFor('errors-only', 'Failed to resolve plugin directory of: ' + pluginName, 'Error');
+            serverLogFor('errors-only', 'Failed to resolve plugin directory of: ' + pluginName + ". Probably plugin was used in module cofig by name but wasn't installed in node_modules", 'Error');
             return;
         }
         const filePath = pathGetter(resolve(pluginDir, buildDirName));
 
         let cjsPath: string | undefined = cjsPathGetter?.(
-            resolve(pluginDir, pluginName, buildDirName));
+            resolve(pluginDir, buildDirName));
         if (cjsPath) cjsPath = normalizePath(cjsPath);
 
         if (cjsPath && !(await fs.pathExists(cjsPath))) cjsPath = undefined;

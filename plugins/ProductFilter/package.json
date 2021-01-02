@@ -2,8 +2,10 @@
   "name": "@cromwell/plugin-product-filter",
   "version": "1.0.0",
   "description": "",
-  "main": "dist",
-  "module": "es",
+  "files": [
+    "build",
+    "static"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

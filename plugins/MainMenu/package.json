@@ -2,6 +2,9 @@
   "name": "@cromwell/plugin-main-menu",
   "version": "1.0.0",
   "description": "",
+  "files": [
+    "build"
+  ],
   "main": "dist",
   "module": "es",
   "author": "",

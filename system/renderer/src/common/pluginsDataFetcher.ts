@@ -40,7 +40,6 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
             // console.log('settings', settings);
 
             const bundleInfo = await restAPIClient?.getPluginFrontendBundle(pluginName);
-
             // Require module
             // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
             if (bundleInfo?.cjsPath && isServer()) {

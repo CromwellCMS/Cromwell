@@ -45,7 +45,6 @@ export const startRenderer = async (env?: TRendererCommands): Promise<boolean> =
         cmsConfig?.defaultSettings?.themeName;
 
     const rendererUrl = serviceLocator.getFrontendUrl();
-    console.log('rendererUrl', rendererUrl)
 
     const rendererEnv = env ?? servicesEnv.renderer;
     if (rendererEnv && rendererStartupPath) {
@@ -55,7 +54,6 @@ export const startRenderer = async (env?: TRendererCommands): Promise<boolean> =
 
         const onStartError = await new Promise(done => {
             const onMessage = async (message: string) => {
-                // console.log('rendererManager onMessage', message)
                 if (message === rendererMessages.onStartMessage) {
                     done(false);
                 }

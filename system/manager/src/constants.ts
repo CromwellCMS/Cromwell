@@ -13,7 +13,9 @@ export type TScriptName = 'build' | 'b' |
     'install' | 'i' |
     'bundle-modules' | 'bm' |
     'rebundle-modules' | 'rm' |
+    'download' | 'd' |
     'start' | 's';
 
 export const commands = ['build', 'b', 'watch', 'w', 'install', 'i',
-    'bundle-modules', 'bm', 'rebundle-modules', 'rm', 'start', 's']
+    'bundle-modules', 'bm', 'rebundle-modules', 'rm', 'start', 's',
+    'download', 'd']

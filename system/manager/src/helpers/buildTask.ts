@@ -1,13 +1,15 @@
 import { TPluginConfig, TThemeConfig } from '@cromwell/core';
-import { configFileName } from '@cromwell/core-backend';
+import { configFileName, getThemeRollupBuildDir, getThemeNextBuildDir } from '@cromwell/core-backend';
 import { rollupConfigWrapper } from '@cromwell/cromwella';
 import dateTime from 'date-time';
 import { resolve } from 'path';
 import prettyBytes from 'pretty-bytes';
 import ms from 'pretty-ms';
+import fs from 'fs-extra';
 import { rollup, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
 
 import { rendererBuildAndSaveTheme, rendererStartWatchDev } from '../managers/rendererManager';
+import { fstat } from 'fs';
 
 const { handleError, bold, underline, cyan, stderr, green } = require('rollup/dist/shared/loadConfigFile.js');
 const { relativeId } = require('rollup/dist/shared/rollup.js');
@@ -17,8 +19,10 @@ export const buildTask = async (watch?: boolean) => {
 
     const configPath = resolve(workingDir, configFileName);
     let config: TThemeConfig | TPluginConfig | undefined = undefined;
+    let packageJson;
     try {
         config = require(configPath);
+        packageJson = require(resolve(workingDir, 'package.json'));
     } catch (e) {
         console.error('Failed to read config at ' + configPath);
         console.error('Make sure config exists and valid');
@@ -29,6 +33,10 @@ export const buildTask = async (watch?: boolean) => {
 
         if (config.type === 'theme') {
             isConfigValid = true;
+
+            // Clean old build
+            const rollupBuildDir = await getThemeRollupBuildDir(packageJson?.name)
+            if (rollupBuildDir && await fs.pathExists(rollupBuildDir)) await fs.remove(rollupBuildDir);
 
             console.log(`Starting to pre-build ${config.type}...`);
             const rollupBuildSuccess = await rollupBuild(config, watch);
@@ -43,7 +51,11 @@ export const buildTask = async (watch?: boolean) => {
 
             if (watch) {
                 rendererStartWatchDev(config.name);
+                
             } else {
+                const nextBuildDir = await getThemeNextBuildDir(packageJson?.name);
+                if (nextBuildDir && await fs.pathExists(nextBuildDir)) await fs.remove(nextBuildDir);
+
                 await rendererBuildAndSaveTheme(config.name)
             }
         }

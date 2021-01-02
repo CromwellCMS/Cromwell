@@ -3,6 +3,7 @@ import typescript from "@rollup/plugin-typescript";
 import packageJson from './package.json';
 import { resolve } from 'path';
 import json from '@rollup/plugin-json';
+import { terser } from "rollup-plugin-terser";
 
 const external = id => {
     const exts = ['util', 'path', 'colors/safe', 'webpack', 'webpack/lib/ExternalModuleFactoryPlugin'];
@@ -24,39 +25,19 @@ const plugins = [
     typescript({
         module: "ESNext"
     }),
-    json()
+    json(),
+    terser()
 ]
 
 const buildDir = 'build';
 
 export default [
     {
-        input: resolve(__dirname, "src/installer.ts"),
-        output: [
-            {
-                file: resolve(__dirname, buildDir, 'installer.js'),
-                format: "cjs",
-            }
-        ],
-        external,
-        plugins: plugins
-    },
-    {
-        input: resolve(__dirname, "src/bundler.ts"),
-        output: [
-            {
-                file: resolve(__dirname, buildDir, 'bundler.js'),
-                format: "cjs",
-            }
-        ],
-        external,
-        plugins: plugins
-    },
-    {
+        preserveModules: true,
         input: resolve(__dirname, "src/cli.ts"),
         output: [
             {
-                file: resolve(__dirname, buildDir, 'cli.js'),
+                dir: resolve(__dirname, buildDir),
                 format: "cjs",
             }
         ],
@@ -78,10 +59,10 @@ export default [
                 target: "es5"
             }),
             commonjs(),
+            terser()
         ]
     },
     {
-        preserveModules: true,
         input: resolve(__dirname, "src/exports.ts"),
         output: [
             {
@@ -91,10 +72,6 @@ export default [
         ],
         external,
         plugins: [
-            // nodeResolve({
-            //     preferBuiltins: false
-            // }),
-            // commonjs(),
             typescript({
                 module: "ESNext",
                 declaration: true,
@@ -102,7 +79,8 @@ export default [
                 rootDir: resolve(__dirname, 'src'),
                 declarationDir: resolve(__dirname, buildDir)
             }),
-            json()
+            json(),
+            terser(),
         ]
     },
 ];

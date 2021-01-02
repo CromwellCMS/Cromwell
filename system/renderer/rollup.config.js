@@ -4,6 +4,7 @@ import typescript from "@rollup/plugin-typescript";
 import packageJson from './package.json';
 import { rollupPluginCromwellFrontend } from '@cromwell/cromwella';
 import json from '@rollup/plugin-json';
+import { terser } from "rollup-plugin-terser";
 
 const { resolve } = require('path');
 
@@ -47,7 +48,8 @@ export default [
             typescript({
                 module: "ESNext"
             }),
-            json()
+            json(),
+            terser()
         ]
     },
     {
@@ -70,6 +72,7 @@ export default [
             typescript({
                 module: "ESNext"
             }),
+            terser(),
         ]
     },
 ];

@@ -1,6 +1,6 @@
 import { setStoreItem } from '@cromwell/core';
 import { readCMSConfig } from '@cromwell/core-backend';
-import { bundler, installer } from '@cromwell/cromwella';
+import { bundler, installer, downloader } from '@cromwell/cromwella';
 import colorsdef from 'colors/safe';
 import { isAbsolute, resolve } from 'path';
 import yargs from 'yargs-parser';
@@ -48,9 +48,11 @@ const cli = async () => {
     })
 
     if (scriptName === 'build' || scriptName === 'b') {
+        await checkModules(isDevelopment);
         await buildTask();
 
     } else if (scriptName === 'watch' || scriptName === 'w') {
+        await checkModules(isDevelopment);
         await buildTask(true);
 
     } else if (scriptName === 'bundle-modules' || scriptName === 'bm') {
@@ -61,6 +63,9 @@ const cli = async () => {
 
     } else if (scriptName === 'install' || scriptName === 'i') {
         installer(projectRootDir, installationMode, isProduction, forceInstall);
+
+    } else if (scriptName === 'download' || scriptName === 'd') {
+        downloader(projectRootDir);
 
     } else if (scriptName === 'start' || scriptName === 's') {
         if (serviceToStart) {

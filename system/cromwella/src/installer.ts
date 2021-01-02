@@ -1,5 +1,4 @@
 import { readCMSConfig } from '@cromwell/core-backend';
-import { TSciprtMetaInfo } from '@cromwell/core/es';
 import { each as asyncEach } from 'async';
 import { spawn, spawnSync } from 'child_process';
 import colorsdef from 'colors/safe';
@@ -10,15 +9,8 @@ import path, { resolve } from 'path';
 import { sync as rimraf } from 'rimraf';
 import symlinkDir from 'symlink-dir';
 
-import { moduleMetaInfoFileName } from './constants';
-import {
-    collectFrontendDependencies,
-    collectPackagesInfo,
-    downloadBundleZipped,
-    getBundledModulesDir,
-    globPackages,
-    hoistDependencies,
-} from './shared';
+import { downloader } from './downloader';
+import { collectPackagesInfo, globPackages, hoistDependencies } from './shared';
 import { THoistedDeps, TPackage } from './types';
 
 const colors: any = colorsdef;
@@ -229,49 +221,7 @@ export const installer = async (projectRootDir: string, installationMode: string
 
     if (packageManager === 'yarn') {
         spawnSync(`yarn ${process.argv.slice(3).join(' ')}`, { shell: true, cwd: process.cwd(), stdio: 'inherit' });
-
     }
 
-    // Check for bundled modules
-
-    if (packages) {
-        const frontendDeps = collectFrontendDependencies(packages);
-        const bundledModulesDir = getBundledModulesDir();
-
-        await fs.ensureDir(bundledModulesDir);
-
-        const dowloadDepsRecursively = async (depName: string) => {
-            const depDir = resolve(bundledModulesDir, depName);
-            if (await fs.pathExists(depDir)) return;
-
-            console.log(colors.cyan(`\nCromwella:: Downloading frontend module: ${colors.brightCyan(depName)}`));
-
-            const success = await downloadBundleZipped(depName, bundledModulesDir);
-            if (!success) return;
-            // await downloadBundle(depName, bundledModulesDir);
-
-            let meta: TSciprtMetaInfo;
-            try {
-                meta = require(resolve(depDir, moduleMetaInfoFileName));
-                if (meta?.externalDependencies) {
-                    const subdeps = Object.keys(meta.externalDependencies);
-                    for (const subdep of subdeps) {
-
-                        const subdepDir = resolve(bundledModulesDir, subdep);
-                        if (!await fs.pathExists(subdepDir)) {
-                            await dowloadDepsRecursively(subdep);
-                        }
-                    }
-                }
-            } catch (e) { };
-        }
-
-        for (const dep of frontendDeps) {
-            if (dep.name && dep.version) {
-                const depName = `${dep.name}@${dep.version}`;
-                await dowloadDepsRecursively(depName);
-            }
-        }
-    }
-
+    downloader(projectRootDir, packages);
 }

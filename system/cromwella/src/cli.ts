@@ -1,5 +1,8 @@
 import yargs from 'yargs-parser';
 import colorsdef from 'colors/safe';
+
+import { bundler } from './bundler';
+import { installer } from './installer';
 const colors: any = colorsdef;
 
 /**
@@ -22,14 +25,14 @@ const cli = () => {
     const forceInstall = Boolean(args.f);
 
     if (scriptName === 'bundle' || scriptName === 'b') {
-        const { bundler } = require('./bundler');
         bundler(projectRootDir, installationMode, isProduction, false, noInstall);
+
     } else if (scriptName === 'rebundle' || scriptName === 'r') {
-        const { bundler } = require('./bundler');
         bundler(projectRootDir, installationMode, isProduction, true, noInstall);
+
     } else if (scriptName === 'install' || scriptName === 'i') {
-        const { installer } = require('./installer');
         installer(projectRootDir, installationMode, isProduction, forceInstall);
+
     } else {
         console.error(colors.brightRed(`\nCromwella:: Error. Invalid command. Available commands are: ${commands.join(', ')} \n`));
     }

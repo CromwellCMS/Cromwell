@@ -1,10 +1,15 @@
 import { resolve, dirname } from 'path';
 import { getNodeModuleDir, getNodeModuleDirSync, cmsName } from './paths';
 
+const defaultThemes = ["@cromwell/theme-store"];
+
 export const readCmsModules = async () => {
     const themes: string[] = [];
     const plugins: string[] = [];
     const mainPackage = require(resolve(process.cwd(), 'package.json'));
+    if (!mainPackage[cmsName]) mainPackage[cmsName] = {};
+    if (!mainPackage[cmsName].themes) mainPackage[cmsName].themes = [];
+    mainPackage[cmsName].themes = [...defaultThemes, ...mainPackage[cmsName].themes];
 
     const getPackageModules = async (packageName?: string, pckgObj?: object) => {
         const packagePath = packageName && await getNodeModuleDir(packageName);
@@ -40,6 +45,9 @@ export const readCmsModulesSync = () => {
     const themes: string[] = [];
     const plugins: string[] = [];
     const mainPackage = require(resolve(process.cwd(), 'package.json'));
+    if (!mainPackage[cmsName]) mainPackage[cmsName] = {};
+    if (!mainPackage[cmsName].themes) mainPackage[cmsName].themes = [];
+    mainPackage[cmsName].themes = [...defaultThemes, ...mainPackage[cmsName].themes];
 
     const getPackageModules = (packageName?: string, pckgObj?: object) => {
         const packagePath = packageName && getNodeModuleDirSync(packageName);
@@ -47,7 +55,7 @@ export const readCmsModulesSync = () => {
             const pckg = packagePath ? require(resolve(packagePath, 'package.json')) : pckgObj;
             const packageThemes = pckg?.[cmsName]?.themes ?? [];
             const packagePlugins = pckg?.[cmsName]?.plugins ?? [];
-
+            
             for (const themeName of packageThemes) {
                 if (!themes.includes(themeName)) {
                     themes.push(themeName);

@@ -76,7 +76,7 @@ const loadServiceNames = (cb) => {
             } catch (e) {
             }
         }
-    }).catch((e) => { console.log(e) }
+    }).catch((e) => {  }
     ).finally(() => {
         if (cache) {
             serviceNames = cache;

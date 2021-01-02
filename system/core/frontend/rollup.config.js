@@ -1,10 +1,12 @@
-import commonjs from "@rollup/plugin-commonjs";
-import nodeResolve from "@rollup/plugin-node-resolve";
-import autoExternal from "rollup-plugin-auto-external";
-import typescript from "@rollup/plugin-typescript";
-import autoprefixer from "autoprefixer";
-import postcss from 'rollup-plugin-postcss';
+import commonjs from '@rollup/plugin-commonjs';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
+import autoprefixer from 'autoprefixer';
 import { resolve } from 'path';
+import autoExternal from 'rollup-plugin-auto-external';
+import postcss from 'rollup-plugin-postcss';
+import { terser } from 'rollup-plugin-terser';
+
 import pkg from './package.json';
 
 const input = resolve(__dirname, 'src/index.ts');
@@ -33,7 +35,8 @@ const getPlugins = (format = 'esm') => {
             writeDefinitions: false,
             autoModules: true,
             use: ['sass'],
-        })
+        }),
+        terser(),
     ];
 };
 
