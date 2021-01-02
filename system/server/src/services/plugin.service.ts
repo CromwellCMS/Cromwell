@@ -121,7 +121,7 @@ export class PluginService {
             const defaultSettings = pluginConfig?.defaultSettings;
 
             // Make symlink for public static content
-            const pluginPublicDir = resolve(pluginPath, 'public');
+            const pluginPublicDir = resolve(pluginPath, 'static');
             if (await fs.pathExists(pluginPublicDir)) {
                 try {
                     const publicPluginsDir = getPublicPluginsDir();

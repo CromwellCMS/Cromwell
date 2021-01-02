@@ -11,11 +11,13 @@ import {
     ThemeEntity,
     getOrmConfigPath,
     getServerTempDir,
-    readCmsModules
+    readCmsModules,
+    getServerDir
 } from '@cromwell/core-backend';
 import { resolve } from 'path';
 import { ConnectionOptions, createConnection } from 'typeorm';
 import { getCustomRepository } from 'typeorm';
+import fs from 'fs-extra';
 
 import { collectPlugins } from './collectPlugins';
 import { getCmsSettings, CmsService } from '../services/cms.service';
@@ -23,9 +25,11 @@ import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 import { GenericPlugin, GenericTheme } from './genericEntities';
 
+const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
+
 const defaultOrmConfig: ConnectionOptions = {
     "type": "sqlite",
-    "database": resolve(getServerTempDir(), 'db.sqlite3'),
+    "database": tempDBPath,
     "synchronize": true
 }
 
@@ -35,6 +39,18 @@ export const connectDatabase = async (env: string) => {
     try {
         ormconfig = require(getOrmConfigPath())
     } catch (e) { }
+
+    if (!ormconfig?.database) {
+        const serverDir = getServerDir();
+        if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {
+            // Server probably was launched at the first time and has no DB created
+            // Use demo DB
+            const dempDBPath = resolve(serverDir, 'db.sqlite3');
+            if (await fs.pathExists(dempDBPath)) {
+                await fs.copy(dempDBPath, tempDBPath);
+            }
+        }
+    }
 
     ormconfig = Object.assign({}, defaultOrmConfig, ormconfig)
 

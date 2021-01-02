@@ -5,7 +5,7 @@ module.exports = {
     main: {
         themeName: "@cromwell/theme-store",
         title: "Store",
-        previewImage: "public/shopping-cart.png",
+        previewImage: "static/shopping-cart.png",
         description: "Online store theme",
         adminPanelDir: "dist/adminPanel",
         palette: {
@@ -59,19 +59,19 @@ module.exports = {
                     "gallery": {
                         "images": [
                             {
-                                "src": "/themes/cromwell-demoshop/main_banner_1.png",
+                                "src": "/themes/@cromwell/theme-store/main_banner_1.png",
                                 "href": "/pages/some_page"
                             },
                             {
-                                "src": "/themes/cromwell-demoshop/main_banner_2.png",
+                                "src": "/themes/@cromwell/theme-store/main_banner_2.png",
                                 "href": "/pages/some_page"
                             },
                             {
-                                "src": "/themes/cromwell-demoshop/main_banner_3.png",
+                                "src": "/themes/@cromwell/theme-store/main_banner_3.png",
                                 "href": "/pages/some_page"
                             },
                             {
-                                "src": "/themes/cromwell-demoshop/main_banner_4.png",
+                                "src": "/themes/@cromwell/theme-store/main_banner_4.png",
                                 "href": "/pages/some_page"
                             }
                         ],
@@ -160,7 +160,7 @@ module.exports = {
     themeCustomConfig: {
         "store": {},
         "header": {
-            "logo": "/themes/cromwell-demoshop/shopping-cart.png",
+            "logo": "/themes/@cromwell/theme-store/shopping-cart.png",
             "contactPhone": "+123 (456) 78-90",
             "welcomeMessage": "Welcome message",
             "topLinks": [

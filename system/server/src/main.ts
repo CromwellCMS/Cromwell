@@ -44,6 +44,7 @@ async function bootstrap(): Promise<void> {
     await app.listen(config.apiPort ?? 4032);
     console.log(`Application is running on: ${await app.getUrl()}`);
 
+    if (process.send) process.send(serverMessages.onStartMessage);
 }
 
 (async () => {

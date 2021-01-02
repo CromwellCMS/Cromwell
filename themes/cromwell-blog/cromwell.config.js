@@ -9,7 +9,7 @@ module.exports = {
     main: {
         themeName: "cromwell-blog",
         title: "Blog",
-        previewImage: "public/blog.png",
+        previewImage: "static/blog.png",
         description: "Simple blog website",
         palette: {
             "primaryColor": "#9900CC"

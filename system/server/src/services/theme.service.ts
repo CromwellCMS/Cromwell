@@ -7,14 +7,13 @@ import {
     TThemeEntity,
     TThemeEntityInput,
 } from '@cromwell/core';
-import { buildDirName, getNodeModuleDir, configFileName, getThemeAdminPanelBundleDir, serverLogFor, getPublicThemesDir } from '@cromwell/core-backend';
+import { configFileName, getNodeModuleDir, getPublicThemesDir, serverLogFor } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
-import { getCustomRepository } from 'typeorm';
 import decache from 'decache';
 import fs from 'fs-extra';
-import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
+import { getCustomRepository } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
 import { CmsService } from './cms.service';
@@ -343,7 +342,7 @@ export class ThemeService {
             }
 
             // Make symlink for public static content
-            const themePublicDir = resolve(themePath, 'public');
+            const themePublicDir = resolve(themePath, 'static');
             if (await fs.pathExists(themePublicDir)) {
                 try {
                     const publicThemesDir = getPublicThemesDir();

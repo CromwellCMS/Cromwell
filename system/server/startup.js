@@ -1,9 +1,12 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, spawnSync, fork } = require('child_process');
+const { getServerDir } = require('@cromwell/core-backend');
+const normalizePath = require('normalize-path');
+
 const scriptName = process.argv[2];
-const serverRootDir = resolve(__dirname);
-const buildDir = resolve(serverRootDir, 'build');
+const serverRootDir = getServerDir();
+const buildDir = normalizePath(resolve(serverRootDir, 'build'));
 
 const main = async () => {
 
@@ -16,16 +19,20 @@ const main = async () => {
         return (fs.existsSync(resolve(buildDir, 'server.js')))
     }
 
+
     if (scriptName === 'dev') {
         if (!isServiceBuild()) {
             buildServer();
         }
 
-        spawn(`npx rollup -cw`, [],
-            { shell: true, stdio: 'inherit', cwd: serverRootDir });
-
         spawn(`npx nodemon --watch ${buildDir} ${buildDir}/server.js ${process.argv.slice(2).join(' ')}`, [],
             { shell: true, stdio: 'inherit', cwd: process.cwd() });
+
+        const rollupProc = spawn(`npx rollup -cw`, [],
+            { shell: true, stdio: 'pipe', cwd: serverRootDir });
+
+        rollupProc?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff));
+        rollupProc?.stderr?.on('data', buff => console.log(buff?.toString?.() ?? buff));
     }
 
     if (scriptName === 'build') {

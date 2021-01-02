@@ -7,7 +7,6 @@ import { resolve } from 'path';
 
 import { CmsConfigDto } from '../dto/CmsConfig.dto';
 import { ThemeMainConfigDto } from '../dto/ThemeMainConfig.dto';
-import { ThemeService } from '../services/theme.service';
 import { CmsService } from '../services/cms.service';
 
 @ApiBearerAuth()
@@ -16,7 +15,6 @@ import { CmsService } from '../services/cms.service';
 export class CmsController {
 
     constructor(
-        private readonly themeService: ThemeService,
         private readonly cmsService: CmsService
     ) { }
 
@@ -73,7 +71,9 @@ export class CmsController {
 
         for (const themeName of themeModuleNames) {
             const themeConfig = await getCmsModuleConfig(themeName);
+            
             if (themeConfig && themeConfig.main) {
+
                 if (themeConfig.main.previewImage) {
                     // Read image and convert to base64
                     const themeDir = await getNodeModuleDir(themeName);
