@@ -21,8 +21,7 @@
         "system/*",
         "system/core/*",
         "plugins/*",
-        "themes/*",
-        ".cromwell/built_modules"
+        "themes/*"
     ],
     "cromwell": {
         "plugins": [

@@ -2,22 +2,12 @@
   "name": "@cromwell/theme-store",
   "version": "1.0.0",
   "author": "cromwell",
-  "homepage": "https://github.com/CromwellCMS/Cromwell",
   "license": "ISC",
-  "main": "dist",
-  "module": "es",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CromwellCMS/Cromwell.git"
-  },
-  "bugs": {
-    "url": "https://github.com/CromwellCMS/Cromwell/issues"
-  },
   "dependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/core": "~1.1.0",
-    "@cromwell/core-frontend": "~1.0.0",
-    "@cromwell/cromwella": "~1.0.0",
+    "@cromwell/core": "1.1.0",
+    "@cromwell/core-frontend": "1.0.0",
+    "@cromwell/cromwella": "1.0.0",
     "@cromwell/plugin-customer-reviews": "^1.0.0",
     "@cromwell/plugin-product-filter": "^1.0.0",
     "@cromwell/plugin-main-menu": "^1.0.0",
@@ -35,7 +25,7 @@
     "react-swipeable-views": "0.13.9",
     "react-toastify": "6.0.8",
     "reset-css": "5.0.1",
-    "tslib": "2.0.1"
+    "tslib": "2.0.3"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.1",
@@ -59,6 +49,9 @@
       "@cromwell/plugin-product-filter",
       "@cromwell/plugin-main-menu",
       "@cromwell/plugin-product-showcase"
+    ],
+    "themes": [
+      "@cromwell/theme-store"
     ]
   },
   "frontendDependencies": [
@@ -85,6 +78,6 @@
     "watch": "cromwell w"
   },
   "resolutions": {
-    "webpack": "5.6.0"
+    "webpack": "5.11.1"
   }
 }

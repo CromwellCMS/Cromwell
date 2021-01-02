@@ -19,7 +19,7 @@
     "graphql": "^15.3.0",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "tslib": "2.0.1",
+    "tslib": "2.0.3",
     "type-graphql": "^1.0.0",
     "typeorm": "^0.2.28"
   },

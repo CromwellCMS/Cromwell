@@ -3,10 +3,10 @@ const constants = require('./src/constants');
 module.exports = {
     type: 'theme',
     main: {
-        themeName: "cromwell-demoshop",
-        title: "Demoshop",
+        themeName: "@cromwell/theme-store",
+        title: "Store",
         previewImage: "public/shopping-cart.png",
-        description: "Online shop theme",
+        description: "Online store theme",
         adminPanelDir: "dist/adminPanel",
         palette: {
             primaryColor: constants.primaryColor

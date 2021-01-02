@@ -39,7 +39,7 @@ const main = async () => {
         }
 
         spawn(`node ${resolve(buildDir, 'server.js')}`, ['development'],
-            { shell: true, stdio: 'inherit', cwd: localProjectDir });
+            { shell: true, stdio: 'inherit', cwd: process.cwd() });
 
         return;
     }

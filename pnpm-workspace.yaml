@@ -5,4 +5,3 @@ packages:
   - 'system/core/*'
   - 'plugins/*'
   - 'themes/*'
-  - '.cromwell/built_modules'

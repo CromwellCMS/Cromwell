@@ -1,26 +1,24 @@
 import { serviceLocator, setStoreItem } from '@cromwell/core';
 import {
     adminPanelMessages,
+    getAdminPanelDir,
     getAdminPanelServiceBuildDir,
     getAdminPanelTempDir,
     getAdminPanelWebPublicDir,
     getAdminPanelWebServiceBuildDir,
+    getCromwellaImporterPath,
     getPublicDir,
     readCMSConfigSync,
-    getAdminPanelDir
 } from '@cromwell/core-backend';
+import { bundledModulesDirName, getBundledModulesDir } from '@cromwell/cromwella';
+import { fork } from 'child_process';
 import compress from 'compression';
 import express from 'express';
 import fs from 'fs-extra';
-import { resolve } from 'path';
+import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
-import webpack from 'webpack';
 
-
-const webpackConfig = require('../webpack.config');
-const chalk = require('react-dev-utils/chalk');
-
-const startDevServer = async () => {
+const start = async () => {
     const watch = true;
     const cmsConfig = readCMSConfigSync();
     setStoreItem('cmsSettings', cmsConfig);
@@ -32,13 +30,15 @@ const startDevServer = async () => {
     if (!isDevelopment && !isProduction)
         throw (`devServer::startDevServer: process.argv[2] is invalid - ${env} valid values - "development" and "production"`);
 
-    
-    const projectPublicDir = isProduction ? getPublicDir() : resolve(getAdminPanelDir(), '../../public');
+
+    const projectPublicDir = getPublicDir();
     const publicDir = getAdminPanelWebPublicDir();
     const webTempDir = getAdminPanelTempDir();
+    console.log('process.cwd()', process.cwd())
+    console.log('webTempDir', webTempDir)
     if (!fs.existsSync(webTempDir)) await fs.ensureDir(webTempDir);
 
-    // Link public dir in root to renderer's public dir for Express.js server
+    // Link public dir in project root to admin panel temp public dir for Express.js server
     if (!fs.existsSync(publicDir) && fs.existsSync(projectPublicDir)) {
         await symlinkDir(projectPublicDir, publicDir)
     }
@@ -50,6 +50,19 @@ const startDevServer = async () => {
         await symlinkDir(serviceBuildDir, webTempServiceLink);
     }
 
+    // Link bundled modules dir
+    const bundledModulesDir = getBundledModulesDir();
+    const bundledLocalLink = resolve(webTempDir, bundledModulesDirName);
+    if (!fs.existsSync(bundledLocalLink) && fs.existsSync(bundledModulesDir)) {
+        await symlinkDir(bundledModulesDir, bundledLocalLink);
+    }
+
+    // Link importer.js script
+    const importerPath = getCromwellaImporterPath();
+    const importerLinkDir = resolve(webTempDir, 'importer');
+    if (!fs.existsSync(importerLinkDir) && fs.existsSync(importerPath)) {
+        await symlinkDir(dirname(importerPath), importerLinkDir);
+    }
 
     const port = process.env.PORT ?? cmsConfig.adminPanelPort;
 
@@ -66,6 +79,7 @@ const startDevServer = async () => {
 
     app.use("/", express.static(webTempDir));
     app.use("/", express.static(publicDir));
+    app.use("/", express.static(importerLinkDir));
 
     app.get(`*`, function (req, res) {
         if (/.+\.\w+$/.test(req.path)) {
@@ -78,7 +92,7 @@ const startDevServer = async () => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cromwell CMS Admin Panel</title>
-    <script src="/built_modules/importer.js"></script>
+    <script src="/importer.js"></script>
     <script>
     CromwellStore = {
         cmsSettings: ${JSON.stringify(cmsConfig)}
@@ -114,42 +128,21 @@ const startDevServer = async () => {
     });
 
     if (isDevelopment) {
-        webpackConfig.mode = env;
-        const compiler = webpack(webpackConfig);
 
-        compiler.hooks.watchRun.tap('MyPlugin1', (params) => {
-            console.log(chalk.cyan('\r\nBegin compile at ' + new Date() + '\r\n'));
-        });
+        const buildProc = fork(resolve(serviceBuildDir, 'compiler.js'), watch ? ['--watch'] : [],
+            { stdio: 'inherit', cwd: getAdminPanelDir() });
 
-        compiler.hooks.done.tap('MyPlugin2', (params) => {
-            setTimeout(() => {
-                console.log(chalk.cyan('\r\nEnd compile at ' + new Date() + '\r\n'));
-                if (isDevelopment && bs) {
-                    bs.reload();
-                }
-            }, 100)
-        });
-
-
-        if (watch) compiler.watch({}, (err, stats) => {
-            console.log(stats?.toString({
-                chunks: false,
-                colors: true
-            }));
-        });
-        else compiler.run((err, stats) => {
-            console.log(stats?.toString({
-                chunks: false,
-                colors: true
-            }));
-
+        buildProc.on('message', (message) => {
+            if (message === adminPanelMessages.onBuildEndMessage && bs) {
+                bs.reload();
+            }
         });
     }
 
 }
 
 try {
-    startDevServer();
+    start();
 } catch (e) {
     console.error(e);
     if (process.send) process.send(adminPanelMessages.onStartErrorMessage);

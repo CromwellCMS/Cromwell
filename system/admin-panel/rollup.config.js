@@ -59,4 +59,24 @@ export default [
             typescript(typeScriptOptions),
         ]
     },
+    {
+        // preserveModules: true,
+        input: resolve(__dirname, "src/compiler.ts"),
+        output: [
+            {
+                // file: resolve(__dirname, buildDir, 'server.js'),
+                dir: resolve(__dirname, buildDir),
+                format: "cjs",
+            }
+        ],
+        external,
+        plugins: [
+            json(),
+            nodeResolve({
+                preferBuiltins: false
+            }),
+            commonjs(),
+            typescript(typeScriptOptions),
+        ]
+    },
 ];

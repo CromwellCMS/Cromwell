@@ -9,5 +9,3 @@ const importer = getModuleImporter();
     await import('./app');
 })();
 
-
-

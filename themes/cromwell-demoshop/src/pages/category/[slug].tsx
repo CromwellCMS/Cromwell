@@ -77,10 +77,10 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<ProductP
             category = await getGraphQLClient()?.
                 getProductCategoryBySlug(slug);
         } catch (e) {
-            console.error('Product::getStaticProps', e)
+            console.error('ProductCategory::getStaticProps', e)
         }
     } else {
-        console.error('Product::getStaticProps: !pid')
+        console.error('ProductCategory::getStaticProps: !pid')
     }
     let products: TPagedList<TProduct> | undefined | null = null;
     if (category) {
@@ -88,7 +88,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<ProductP
             products = await getGraphQLClient()?.getProductsFromCategory(category.id,
                 { pageSize: 20 })
         } catch (e) {
-            console.error('Product::getStaticProps', e)
+            console.error('ProductCategory::getStaticProps', e)
         }
     }
 

@@ -2,21 +2,13 @@
   "name": "cromwell-blog",
   "version": "1.0.0",
   "author": "cromwell",
-  "homepage": "https://github.com/CromwellCMS/Cromwell",
   "license": "ISC",
   "main": "dist",
   "module": "es",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/CromwellCMS/Cromwell.git"
-  },
-  "bugs": {
-    "url": "https://github.com/CromwellCMS/Cromwell/issues"
-  },
   "dependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/core": "~1.1.0",
-    "@cromwell/core-frontend": "~1.0.0",
+    "@cromwell/core": "1.1.0",
+    "@cromwell/core-frontend": "1.0.0",
     "@material-ui/core": "4.11.0",
     "@material-ui/icons": "4.9.1",
     "@material-ui/lab": "4.0.0-alpha.56",
@@ -29,7 +21,7 @@
     "react-swipeable-views": "0.13.9",
     "react-toastify": "6.0.8",
     "reset-css": "5.0.1",
-    "tslib": "2.0.1"
+    "tslib": "2.0.3"
   },
   "devDependencies": {
     "@rollup/plugin-alias": "^3.1.1",
@@ -51,6 +43,6 @@
     "watch": "cromwell w"
   },
   "resolutions": {
-    "webpack": "5.6.0"
+    "webpack": "5.11.1"
   }
 }
