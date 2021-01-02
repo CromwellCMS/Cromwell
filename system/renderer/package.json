@@ -5,10 +5,10 @@
   "author": "cromwell",
   "license": "ISC",
   "dependencies": {
-    "@cromwell/core": "~1.1.0",
-    "@cromwell/core-backend": "~1.0.0",
-    "@cromwell/core-frontend": "~1.0.0",
-    "@cromwell/cromwella": "~1.0.0",
+    "@cromwell/core": "1.1.0",
+    "@cromwell/core-backend": "1.0.0",
+    "@cromwell/core-frontend": "1.0.0",
+    "@cromwell/cromwella": "1.0.0",
     "fs-extra": "^9.0.1",
     "graceful-fs": "^4.2.4",
     "make-empty-dir": "^1.0.0",
@@ -24,7 +24,7 @@
     "react-is": "16.13.1",
     "require-from-string": "^2.0.2",
     "symlink-dir": "^4.1.0",
-    "tslib": "2.0.1",
+    "tslib": "2.0.3",
     "yargs-parser": "^19.0.4"
   },
   "devDependencies": {
@@ -63,6 +63,6 @@
   },
   "description": "",
   "resolutions": {
-    "webpack": "5.6.0"
+    "webpack": "5.11.1"
   }
 }

@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import { resolve, isAbsolute } from 'path';
 import normalizePath from 'normalize-path';
 
-import { getMetaInfoPath, getThemePagesMetaPath, buildDirName, getNodeModuleDir, getThemeRollupBuildDir } from './paths';
+import { getMetaInfoPath, getThemePagesMetaPath, getNodeModuleDir, getThemeRollupBuildDir } from './paths';
 
 export type TThemeExportsInfo = {
     pagesInfo: TPagePathInfo[]

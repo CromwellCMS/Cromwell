@@ -1,4 +1,4 @@
-import { logFor, TLogLevel, TCmsConfig } from '@cromwell/core';
+import { logFor, TLogLevel, TCmsConfig, logLevelMoreThan } from '@cromwell/core';
 import colorsdef from 'colors/safe';
 const colors: any = colorsdef;
 
@@ -37,6 +37,22 @@ export const serverLogFor = (level: TLogLevel, msg: string,
         msg = colors.brightRed('Error: ') + msg;
     }
     logFor(level, msg, func);
+}
+
+export const getLogger = (level: TLogLevel, func?: (...args) => any) => {
+    return {
+        log: (...args) => {
+            if (logLevelMoreThan(level)) func ? func(...args) : console.log(...args);
+        },
+        warn: (...args) => {
+            const msg = colors.brightYellow('Warning: ') + args.join(' ');
+            if (logLevelMoreThan(level)) func ? func(msg) : console.log(msg);
+        },
+        error: (...args) => {
+            const msg = colors.brightRed('Error: ') + args.join(' ');
+            if (logLevelMoreThan(level)) func ? func(msg) : console.log(msg);
+        }
+    }
 }
 
 export const defaultCmsConfig: TCmsConfig = {

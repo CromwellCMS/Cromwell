@@ -80,9 +80,10 @@ const main = async () => {
     const start = async () => {
         let proc;
         try {
-            if (!isFrontendBuilt()) {
-                await build();
-            }
+            // if (!isFrontendBuilt()) {
+            //     await build();
+            // }
+            gen();
 
             proc = spawn(`next start -p ${config.frontendPort}`, [],
                 { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });

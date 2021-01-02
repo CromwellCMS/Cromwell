@@ -1,9 +1,10 @@
 import {
     readCMSConfig, readThemeExports, serverLogFor, getCmsModuleConfig,
-    getNodeModuleDir, getPublicDir, getRendererTempDir, getRendererBuildDir
+    getNodeModuleDir, getPublicDir, getRendererTempDir, getRendererBuildDir, getThemeBuildDir
 } from '@cromwell/core-backend';
 import { TCmsSettings, TCmsEntity, getStoreItem, setStoreItem, TCmsConfig } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getBundledModulesDir, bundledModulesDirName } from '@cromwell/cromwella';
 import fs from 'fs-extra';
 import gracefulfs from 'graceful-fs';
 import makeEmptyDir from 'make-empty-dir';
@@ -19,6 +20,7 @@ const disableSSR = false;
 
 const main = async () => {
     const args = yargs(process.argv.slice(2));
+    const scriptName = process.argv[2];
 
     const config = await readCMSConfig();
     if (config) setStoreItem('cmsSettings', config);
@@ -216,6 +218,17 @@ const main = async () => {
     const tempDirBuild = resolve(tempDir, 'build')
     const rendererBuildDir = getRendererBuildDir();
 
+    // if prod, recreate .next dir from theme's build dir
+    const themeBuildDir = await getThemeBuildDir(themeName);
+    if (scriptName === 'prod' && themeBuildDir) {
+        const rendererTempNextDir = resolve(getRendererTempDir(), '.next');
+        const themeNextBuildDir = resolve(themeBuildDir, '.next');
+        if (fs.existsSync(themeNextBuildDir)) {
+            await fs.remove(rendererTempNextDir);
+            await fs.copy(themeNextBuildDir, rendererTempNextDir);
+        }
+    }
+
     // Link public dir in root to renderer's public dir for Next.js server
     if (!fs.existsSync(tempDirPublic)) {
         try {
@@ -235,9 +248,15 @@ const main = async () => {
     try {
         await symlinkDir(themeExports.themeBuildDir, localThemeBuildDir)
     } catch (e) { console.log(e) }
-    // await makeEmptyDir(localThemeBuildDir);
-    // await fs.copy(themeExports.themeBuildDir, localThemeBuildDir)
 
+    // Link bundled modules
+    const bundledDir = getBundledModulesDir();
+    const bundledPublicDir = resolve(getPublicDir(), bundledModulesDirName);
+    if (!fs.existsSync(bundledPublicDir) && fs.existsSync(bundledDir)) {
+        try {
+            await symlinkDir(bundledDir, bundledPublicDir)
+        } catch (e) { console.log(e) }
+    }
 
 };
 

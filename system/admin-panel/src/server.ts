@@ -6,7 +6,6 @@ import {
     getAdminPanelTempDir,
     getAdminPanelWebPublicDir,
     getAdminPanelWebServiceBuildDir,
-    getCromwellaImporterPath,
     getPublicDir,
     readCMSConfigSync,
 } from '@cromwell/core-backend';
@@ -15,7 +14,7 @@ import { fork } from 'child_process';
 import compress from 'compression';
 import express from 'express';
 import fs from 'fs-extra';
-import { dirname, resolve } from 'path';
+import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 
 const start = async () => {
@@ -34,8 +33,6 @@ const start = async () => {
     const projectPublicDir = getPublicDir();
     const publicDir = getAdminPanelWebPublicDir();
     const webTempDir = getAdminPanelTempDir();
-    console.log('process.cwd()', process.cwd())
-    console.log('webTempDir', webTempDir)
     if (!fs.existsSync(webTempDir)) await fs.ensureDir(webTempDir);
 
     // Link public dir in project root to admin panel temp public dir for Express.js server
@@ -57,13 +54,6 @@ const start = async () => {
         await symlinkDir(bundledModulesDir, bundledLocalLink);
     }
 
-    // Link importer.js script
-    const importerPath = getCromwellaImporterPath();
-    const importerLinkDir = resolve(webTempDir, 'importer');
-    if (!fs.existsSync(importerLinkDir) && fs.existsSync(importerPath)) {
-        await symlinkDir(dirname(importerPath), importerLinkDir);
-    }
-
     const port = process.env.PORT ?? cmsConfig.adminPanelPort;
 
     const app = express();
@@ -79,7 +69,6 @@ const start = async () => {
 
     app.use("/", express.static(webTempDir));
     app.use("/", express.static(publicDir));
-    app.use("/", express.static(importerLinkDir));
 
     app.get(`*`, function (req, res) {
         if (/.+\.\w+$/.test(req.path)) {
@@ -92,7 +81,6 @@ const start = async () => {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cromwell CMS Admin Panel</title>
-    <script src="/importer.js"></script>
     <script>
     CromwellStore = {
         cmsSettings: ${JSON.stringify(cmsConfig)}

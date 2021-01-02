@@ -5,7 +5,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
-/.cromwell
+.cromwell
 /package-lock.json
 /pnpm-lock.yaml
 /yarn.lock
@@ -102,5 +102,4 @@ plugins/*/dist
 plugins/*/es
 
 /public
-/system/.cromwell
 # db.sqlite3

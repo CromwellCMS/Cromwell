@@ -1,31 +1,29 @@
-import { getServerStartupPath, serverMessages } from '@cromwell/core-backend';
+import { getLogger, getServerStartupPath, serverMessages } from '@cromwell/core-backend';
 
 import config from '../config';
+import { TServerCommands } from '../constants';
 import { closeService, startService } from './baseManager';
 
 const { cacheKeys, servicesEnv } = config;
-
+const logger = getLogger('errors-only');
 const serverStartupPath = getServerStartupPath();
 
-export const startServer = async (onLog?: (message: string) => void): Promise<boolean> => {
-    console.log('servicesEnv', servicesEnv)
+export const startServer = async (command?: TServerCommands): Promise<boolean> => {
     let serverProc;
-    if (servicesEnv.server && serverStartupPath) {
-        serverProc = startService(serverStartupPath, cacheKeys.server, [servicesEnv.server],
-            (data) => onLog?.(data?.toString() ?? data))
+    const env = command ?? servicesEnv.server;
+    if (env && serverStartupPath) {
+        serverProc = startService(serverStartupPath, cacheKeys.server, [env])
     }
 
     if (serverProc) {
         return new Promise(done => {
             const onMessage = async (message: string) => {
                 if (message === serverMessages.onStartMessage) {
-                    onLog?.(`ServerManager:: Server has successfully started`);
-                    serverProc.removeListener('message', onMessage);
+                    logger.log(`ServerManager:: Server has successfully started`);
                     done(true);
                 }
                 if (message === serverMessages.onStartErrorMessage) {
-                    onLog?.(`ServerManager:: Failed to start Server`);
-                    serverProc.removeListener('message', onMessage);
+                    logger.error(`ServerManager:: Failed to start Server`);
                     done(false);
                 }
             }

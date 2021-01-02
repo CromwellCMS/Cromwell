@@ -50,7 +50,7 @@ const main = async () => {
         }
 
         const serverProc = fork(resolve(buildDir, 'server.js'), ['production'],
-            { shell: true, stdio: 'inherit', cwd: process.cwd() });
+            { stdio: 'inherit', cwd: process.cwd() });
 
         serverProc.on('message', (message) => {
             if (process.send) process.send(message);

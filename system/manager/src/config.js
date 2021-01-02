@@ -8,6 +8,8 @@ const userConfigPath = resolve('/usr/share/cromwell/devconfig.json');
 // Configs will be merged via Object.assign
 
 const config = {
+    /** Default startup mode */
+    "mode": "prod", // 'dev' | 'prod'
     /** Config for root "dev" script */
     "servicesDev": {
         "adminPanel": "dev", // 'dev' | 'prod' | 'build' | null
@@ -87,9 +89,8 @@ const mergedConfig = Object.assign({}, config, userConfig);
   * development
   * winDev - start dev environment in Windows OS
   */
-const scriptName = process.argv[2];
-const servicesEnv = scriptName === 'production' ? mergedConfig.servicesProd :
-    scriptName === 'development' ? mergedConfig.servicesDev : {};
+const scriptName = process.argv[2] ?? 'production';
+const servicesEnv = scriptName === 'development' ? mergedConfig.servicesDev : mergedConfig.servicesProd;
 
 mergedConfig.servicesEnv = servicesEnv;
 mergedConfig.scriptName = scriptName;

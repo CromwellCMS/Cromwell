@@ -1,7 +1,7 @@
 {
-  "name": "@cromwell/manager",
+  "name": "@cromwell/cms",
   "version": "1.0.0",
-  "main": "manager.js",
+  "main": "build/cli.js",
   "keywords": [],
   "author": "Cromwell",
   "license": "ISC",
@@ -23,10 +23,14 @@
     "typescript": "^4.0.3"
   },
   "dependencies": {
-    "@cromwell/core": "~1.1.0",
-    "@cromwell/core-backend": "~1.0.0",
-    "@cromwell/core-frontend": "~1.0.0",
-    "@cromwell/cromwella": "~1.0.0",
+    "@cromwell/admin-panel": "1.0.0",
+    "@cromwell/core": "1.1.0",
+    "@cromwell/core-backend": "1.0.0",
+    "@cromwell/core-frontend": "1.0.0",
+    "@cromwell/cromwella": "1.0.0",
+    "@cromwell/renderer": "1.0.0",
+    "@cromwell/server": "1.0.0",
+    "@cromwell/theme-store": "1.0.0",
     "async": "^3.2.0",
     "axios": "0.19.2",
     "body-parser": "^1.19.0",
@@ -46,7 +50,7 @@
     "swagger-jsdoc": "^4.2.0",
     "swagger-ui-express": "^4.1.4",
     "tree-kill": "^1.2.2",
-    "tslib": "2.0.1",
+    "tslib": "2.0.3",
     "ws": "^7.3.1",
     "yargs-parser": "^19.0.4"
   },
@@ -58,7 +62,7 @@
     "node-cleanup": "^2.1.2",
     "rimraf": "^3.0.2",
     "symlink-dir": "^4.1.0",
-    "tslib": "2.0.1",
+    "tslib": "2.0.3",
     "yargs-parser": "^19.0.4"
   },
   "scripts": {

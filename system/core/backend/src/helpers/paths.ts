@@ -4,11 +4,12 @@ import { serverLogFor } from './constants';
 import { TPluginConfig, TThemeConfig } from '@cromwell/core';
 
 export const cmsName = 'cromwell';
-export const buildDirName = `.${cmsName}`;
+export const tempDirName = `.${cmsName}`;
+export const buildDirName = `build`;
 export const configFileName = 'cromwell.config.js';
 export const cmsConfigFileName = 'cmsconfig.json';
 
-export const getTempDir = () => resolve(process.cwd(), buildDirName);
+export const getTempDir = () => resolve(process.cwd(), tempDirName);
 
 const resolveModulePath = (moduleName: string): string | undefined => {
     try {

@@ -19,24 +19,7 @@ const buildDir = 'build';
 
 export default [
     {
-        input: resolve(__dirname, "src/index.ts"),
-        output: [
-            {
-                file: resolve(__dirname, buildDir, 'manager.js'),
-                format: "cjs",
-            }
-        ],
-        external,
-        plugins: [
-            json(),
-            commonjs(),
-            typescript({
-                module: "ESNext"
-            }),
-        ]
-    },
-    {
-        input: resolve(__dirname, "src/cli/cli.ts"),
+        input: resolve(__dirname, "src/cli.ts"),
         output: {
             file: resolve(__dirname, buildDir, 'cli.js'),
             format: "cjs",
