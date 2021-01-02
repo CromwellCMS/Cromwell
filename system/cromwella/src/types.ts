@@ -73,11 +73,11 @@ export type TLocalSymlink = {
     referredDir: string;
 }
 
-export type TGetDepsCb = (
+export type TGetDeps = {
     packages: TPackage[],
     hoistedDependencies?: THoistedDeps,
     hoistedDevDependencies?: THoistedDeps
-) => void;
+}
 
 export type TBundleInfo = {
     bundledDependencies?: Record<string, string[]>;

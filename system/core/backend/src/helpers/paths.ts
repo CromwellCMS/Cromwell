@@ -61,11 +61,8 @@ export const getAdminPanelServiceBuildDir = () => {
 }
 export const getAdminPanelTempDir = () => resolve(getTempDir(), 'admin-panel');
 
-export const getAdminPanelWebBuildDir = () =>
-    resolve(getAdminPanelTempDir(), buildDirName);
-
 export const getAdminPanelWebServiceBuildDir = () =>
-    resolve(getAdminPanelTempDir(), buildDirName, 'build');
+    resolve(getAdminPanelTempDir(), 'build');
 
 export const getAdminPanelWebPublicDir = () =>
     resolve(getAdminPanelTempDir(), 'public');
@@ -85,12 +82,25 @@ export const getOrmConfigPath = () => resolve(process.cwd(), 'ormconfig.json');
 export const getServerTempDir = () => resolve(getTempDir(), 'server');
 
 
+// Cromwella
+export const getCromwellaDir = () => getNodeModuleDirSync('@cromwell/cromwella');
+export const getCromwellaImporterPath = () => {
+    const cromwellaDir = getCromwellaDir();
+    if (cromwellaDir) return resolve(cromwellaDir, 'build/browser/importer.js');
+}
+
 
 // Theme
 export const getThemeBuildDir = async (themeModuleName: string) => {
     const themeDir = await getNodeModuleDir(themeModuleName);
     if (themeDir) {
         return resolve(themeDir, buildDirName);
+    }
+}
+export const getThemeRollupBuildDir = async (themeModuleName: string) => {
+    const themeBuildDir = await getThemeBuildDir(themeModuleName);
+    if (themeBuildDir) {
+        return resolve(themeBuildDir, 'theme')
     }
 }
 export const getThemeAdminPanelBundleDir = async (themeModuleName: string, pageRoute: string) => {

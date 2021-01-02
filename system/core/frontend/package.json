@@ -12,7 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/core": "~1.1.0",
+    "@cromwell/core": "1.1.0",
     "@loadable/component": "5.14.1",
     "debounce": "1.2.0",
     "graphql": "^15.3.0",
@@ -25,8 +25,8 @@
     "react-toastify": "6.0.8",
     "style-inject": "^0.3.0",
     "swiper": "6.3.2",
-    "tslib": "2.0.1",
-    "whatwg-fetch": "^3.5.0"
+    "tslib": "2.0.3",
+    "whatwg-fetch": "3.5.0"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.2",
@@ -63,6 +63,6 @@
     "watch": "npx rollup -cw"
   },
   "resolutions": {
-    "webpack": "5.6.0"
+    "webpack": "5.11.1"
   }
 }

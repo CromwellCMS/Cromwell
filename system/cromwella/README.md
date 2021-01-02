@@ -58,7 +58,7 @@ Bundles node modules into specific format for Cromwell module loader. Similar to
 ```sh
 npx cromwella b
 ``` 
-Will scan over packages for frontendDependencies prop array and bundle each module in .cromwell/built_modules
+Will scan over packages for frontendDependencies prop array and bundle each module in ./.cromwell/bundled-modules
 Cromwell bundler plugins for Rollup and Webpack after building theme or plugin emit imports map which is supposed to be used with such bundled node modules via this cli command.
 
 ### Options:
@@ -74,4 +74,4 @@ Will enable production mode of webpack. Development by default.
 npx cromwella r
 ``` 
 Will delete all bundled modules and bundle new. 
-By default "cromwella b" command bundles only newly found modules that aren't exist in .cromwell/built_modules (caching)
+By default "cromwella b" command bundles only newly found modules that aren't exist in ./.cromwell/bundled-modules (caching)

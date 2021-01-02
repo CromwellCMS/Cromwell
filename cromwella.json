@@ -4,40 +4,6 @@
     "system/*",
     "system/core/*",
     "plugins/*",
-    "themes/*",
-    ".cromwell/built_modules"
-  ],
-  "frontendDependencies": [
-    "@apollo/client",
-    "@cromwell/core",
-    "@material-ui/lab",
-    "@material-ui/core",
-    "@material-ui/icons",
-    "debounce",
-    "gridlex",
-    "whatwg-fetch",
-    "query-string",
-    "react",
-    "react-dom",
-    "react-number-format",
-    "react-html-parser",
-    "react-router-dom",
-    "react-toastify",
-    "reset-css",
-    "swiper",
-    "tslib",
-    {
-      "name": "@babel/runtime",
-      "addExports": [
-        {
-          "name": "interopRequireWildcard",
-          "path": "@babel/runtime/helpers/interopRequireWildcard",
-          "importType": "default",
-          "saveAsModules": [
-            "@babel/runtime/helpers/interopRequireWildcard"
-          ]
-        }
-      ]
-    }
+    "themes/*"
   ]
 }

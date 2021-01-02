@@ -1,7 +1,7 @@
 import { TCromwellNodeModules, TSciprtMetaInfo } from '@cromwell/core';
 import {
-    buildDirChunk, moduleMainBuidFileName, moduleNodeBuidFileName,
-    moduleMetaInfoFileName, moduleLibBuidFileName
+    moduleMainBuidFileName, moduleNodeBuidFileName,
+    moduleMetaInfoFileName, moduleLibBuidFileName, bundledModulesDirName
 } from './constants';
 
 /**
@@ -46,10 +46,10 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
         if (!Cromwell.modules) Cromwell.modules = {};
         if (!Cromwell.moduleExternals) Cromwell.moduleExternals = {};
 
-        const metaFilepath = `${buildDirChunk}/${moduleName}/${moduleMetaInfoFileName}`;
-        const importerFilepath = `/${buildDirChunk}/${moduleName}/${moduleMainBuidFileName}`;
-        const importerEntireLibFilepath = `/${buildDirChunk}/${moduleName}/${moduleLibBuidFileName}`;
-        const importerNodeFilepath = `${buildDirChunk}/${moduleName}/${moduleNodeBuidFileName}`;
+        const metaFilepath = `${bundledModulesDirName}/${moduleName}/${moduleMetaInfoFileName}`;
+        const importerFilepath = `/${bundledModulesDirName}/${moduleName}/${moduleMainBuidFileName}`;
+        const importerEntireLibFilepath = `/${bundledModulesDirName}/${moduleName}/${moduleLibBuidFileName}`;
+        const importerNodeFilepath = `${bundledModulesDirName}/${moduleName}/${moduleNodeBuidFileName}`;
 
         let moduleVer: string | undefined;
         if (/@\d+\.\d+\.\d+/.test(moduleName)) {

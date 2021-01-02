@@ -14,7 +14,7 @@ export function FrontendPlugin<TData = any, TSettings = any>(Component: React.Co
         const settings = pluginsSettings ? pluginsSettings[pluginName] : {};
         // console.log('FrontendPlugin pluginName', pluginName, 'data', data, 'pluginsData', pluginsData);
         return (
-            <Component data={data} settings={settings} />
+            <Component data={data} settings={settings} pluginName={pluginName} />
         )
     }
 }

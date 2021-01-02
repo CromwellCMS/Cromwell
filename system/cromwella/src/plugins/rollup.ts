@@ -7,7 +7,8 @@ import {
     pluginAdminCjsPath,
     pluginFrontendBundlePath,
     pluginFrontendCjsPath,
-    serverLogFor
+    serverLogFor,
+    getThemeRollupBuildDir
 } from '@cromwell/core-backend';
 import virtual from '@rollup/plugin-virtual';
 import cryptoRandomString from 'crypto-random-string';
@@ -168,8 +169,8 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
     }
 
     if (cromwellConfig.type === 'theme') {
-        const buildDir = resolve(process.cwd(), buildDirName);
-
+        const buildDir = await getThemeRollupBuildDir(cromwellConfig.name);
+        if (!buildDir) throw new Error(`CromwellPlugin Error. Failed to find package directory of ` + cromwellConfig.name);
 
         let srcDir = process.cwd();
         let pagesDirChunk = 'pages';

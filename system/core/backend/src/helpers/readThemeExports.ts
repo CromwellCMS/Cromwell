@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import { resolve, isAbsolute } from 'path';
 import normalizePath from 'normalize-path';
 
-import { getMetaInfoPath, getThemePagesMetaPath, buildDirName, getNodeModuleDir } from './paths';
+import { getMetaInfoPath, getThemePagesMetaPath, buildDirName, getNodeModuleDir, getThemeRollupBuildDir } from './paths';
 
 export type TThemeExportsInfo = {
     pagesInfo: TPagePathInfo[]
@@ -29,9 +29,11 @@ export const readThemeExports = async (themeModuleName: string | undefined): Pro
     if (!themeModuleName) throw new Error('readThemeExports: !themeName');
 
     const themeDir = await getNodeModuleDir(themeModuleName);
-    if (!themeDir) throw new Error('readThemeExports: !themeDir of ' + themeDir);
+    if (!themeDir) throw new Error('readThemeExports: !themeDir of ' + themeModuleName);
 
-    const buildDir = resolve(themeDir, buildDirName);
+    const buildDir = await getThemeRollupBuildDir(themeModuleName);
+    if (!buildDir) throw new Error('readThemeExports: !buildDir of ' + themeModuleName);
+
     const metainfoPath = getThemePagesMetaPath(buildDir);
 
     const exportsInfo: TThemeExportsInfo = {

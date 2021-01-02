@@ -67,7 +67,7 @@ export default [
         input: resolve(__dirname, "src/browser.ts"),
         output: [
             {
-                file: resolve(__dirname, '../../.cromwell/built_modules/importer.js'),
+                file: resolve(__dirname, buildDir, 'browser/importer.js'),
                 format: "iife",
             }
         ],

@@ -11,7 +11,7 @@
   "author": "Cromwell",
   "license": "ISC",
   "dependencies": {
-    "@cromwell/core": "~1.1.0",
+    "@cromwell/core": "1.1.0",
     "class-validator": "^0.12.2",
     "decache": "^4.6.0",
     "graphql": "^15.3.0",
@@ -19,7 +19,7 @@
     "normalize-path": "^3.0.0",
     "path": "^0.12.7",
     "recursive-readdir": "^2.2.2",
-    "tslib": "2.0.1",
+    "tslib": "2.0.3",
     "type-graphql": "^1.0.0",
     "typeorm": "^0.2.28"
   },

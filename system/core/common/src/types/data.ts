@@ -95,6 +95,7 @@ export type TCmsConfig = {
     frontendPort: number;
     managerPort: number;
     defaultSettings?: TCmsEntityCore;
+    pm?: 'yarn' | 'cromwella';
 }
 
 // Info form cmsconfig.json and settings from DB

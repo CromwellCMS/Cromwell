@@ -1,13 +1,24 @@
+import { readCMSConfig } from '@cromwell/core-backend';
+import { TSciprtMetaInfo } from '@cromwell/core/es';
 import { each as asyncEach } from 'async';
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
 import colorsdef from 'colors/safe';
-import fs from 'fs';
+import fs from 'fs-extra';
 import { sync as mkdirp } from 'mkdirp';
 import nodeCleanup from 'node-cleanup';
 import path, { resolve } from 'path';
 import { sync as rimraf } from 'rimraf';
 import symlinkDir from 'symlink-dir';
-import { getCromwellaConfigSync, getHoistedDependencies } from './shared';
+
+import { moduleMetaInfoFileName } from './constants';
+import {
+    collectFrontendDependencies,
+    collectPackagesInfo,
+    downloadBundleZipped,
+    getBundledModulesDir,
+    globPackages,
+    hoistDependencies,
+} from './shared';
 import { THoistedDeps, TPackage } from './types';
 
 const colors: any = colorsdef;
@@ -17,8 +28,6 @@ const colors: any = colorsdef;
 
 export const installer = async (projectRootDir: string, installationMode: string,
     isProduction: boolean, forceInstall: boolean) => {
-
-    const installPaths: string[] = [projectRootDir];
 
     /**
      * For local packages (1) that depends on other local packages (2) will create symlinks  
@@ -94,104 +103,109 @@ export const installer = async (projectRootDir: string, installationMode: string
         }
     }
 
+    const packagePaths = await globPackages(projectRootDir);
+    const packages = collectPackagesInfo(packagePaths);
 
+    const main = async () => {
 
-    const main = () => {
-        const cromwellaConfig = getCromwellaConfigSync(projectRootDir, true);
+        const installPaths: string[] = [projectRootDir];
 
-        getHoistedDependencies(projectRootDir, isProduction, forceInstall, (packages: TPackage[],
-            hoistedDependencies,
-            hoistedDevDependencies) => {
+        nodeCleanup(function (exitCode, signal) {
+            installPaths.forEach(path => removeInstallPackage(path));
+        });
 
-            if (packages.length === 0 || !hoistedDependencies && !hoistedDevDependencies) {
-                console.log(colors.brightRed(`\nCromwella:: Error. No packages found\n`));
-                return
-            }
+        const { hoistedDependencies,
+            hoistedDevDependencies
+        } = hoistDependencies(packages, isProduction, forceInstall);
 
-            // Clean node_modules in local packages. Some non-hoisted modules could be installed before
-            // But if now versions are changed/fixed, we need to delete old modules. 
-            // If they weren't fixed, than we install them again dooing a double job here :|
-            const rootModules = resolve(projectRootDir, 'node_modules');
-            for (const pkg of packages) {
-                if (pkg.path) {
-                    const modulesPath = resolve(path.dirname(pkg.path), 'node_modules');
-                    const packageLockPath = resolve(path.dirname(pkg.path), 'package-lock.json');
-                    if (modulesPath !== rootModules) {
-                        if (fs.existsSync(modulesPath)) {
-                            // console.log('modulesPath', modulesPath)
-                            try {
-                                rimraf(modulesPath);
-                            } catch (e) {
-                                console.log(e);
-                            }
-                        }
-                    }
-                    if (fs.existsSync(packageLockPath)) {
+        if (packages.length === 0 || !hoistedDependencies && !hoistedDevDependencies) {
+            console.log(colors.brightRed(`\nCromwella:: Error. No packages found\n`));
+            return
+        }
+
+        // Clean node_modules in local packages. Some non-hoisted modules could be installed before
+        // But if now versions are changed/fixed, we need to delete old modules. 
+        // If they weren't fixed, than we install them again dooing a double job here :|
+        const rootModules = resolve(projectRootDir, 'node_modules');
+        for (const pkg of packages) {
+            if (pkg.path) {
+                const modulesPath = resolve(path.dirname(pkg.path), 'node_modules');
+                const packageLockPath = resolve(path.dirname(pkg.path), 'package-lock.json');
+                if (modulesPath !== rootModules) {
+                    if (fs.existsSync(modulesPath)) {
+                        // console.log('modulesPath', modulesPath)
                         try {
-                            fs.unlinkSync(packageLockPath);
+                            rimraf(modulesPath);
                         } catch (e) {
                             console.log(e);
                         }
                     }
                 }
-            }
-
-
-            // Write all dependencies in temp package.json in root and backup original
-            createInstallPackage(projectRootDir, {
-                dependencies: hoistedDependencies?.hoisted,
-                devDependencies: hoistedDevDependencies?.hoisted
-            });
-
-            // Do the same for all packages with non-hoisted modules
-            // { [package root dir]: modules }
-            const uniques: Record<string, {
-                deps?: Record<string, string>;
-                devDeps?: Record<string, string>;
-            }> = {}
-
-            if (hoistedDependencies?.nonHoisted)
-                Object.entries(hoistedDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
-                    if (!uniques[packagePath]) {
-                        uniques[packagePath] = {};
+                if (fs.existsSync(packageLockPath)) {
+                    try {
+                        fs.unlinkSync(packageLockPath);
+                    } catch (e) {
+                        console.log(e);
                     }
-                    uniques[packagePath].deps = packageModules.modules;
-                });
-
-            if (hoistedDevDependencies?.nonHoisted)
-                Object.entries(hoistedDevDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
-                    if (!uniques[packagePath]) {
-                        uniques[packagePath] = {};
-                    }
-                    uniques[packagePath].devDeps = packageModules.modules;
-                });
-
-            Object.keys(uniques).forEach(uni => {
-                installPaths.push(uni);
-                createInstallPackage(uni, {
-                    dependencies: uniques[uni].deps,
-                    devDependencies: uniques[uni].devDeps
-                });
-            });
-
-            asyncEach(installPaths, (path: string, callback: () => void) => {
-                console.log(colors.cyan(`\nCromwella:: Installing modules for: ${colors.brightCyan(`${path}`)} package in ${colors.brightCyan(`${installationMode}`)} mode...\n`));
-                const modeStr = isProduction ? ' --production' : '';
-                try {
-                    const proc = spawn(`npm install${modeStr}`, { shell: true, cwd: path, stdio: 'inherit' });
-                    proc.on('close', (code: number) => {
-                        console.log(colors.brightCyan(`\nCromwella:: Installation for ${path} package completed\n`));
-                        removeInstallPackage(path);
-                        callback();
-                    });
-                } catch (e) {
-                    console.log(colors.brightRed(`\nCromwella:: Error. Failed to install node_modules for ${path} package\n`))
                 }
-            }, () => onInstallationDone(hoistedDependencies, hoistedDevDependencies));
-        })
+            }
+        }
+
+
+        // Write all dependencies in temp package.json in root and backup original
+        createInstallPackage(projectRootDir, {
+            dependencies: hoistedDependencies?.hoisted,
+            devDependencies: hoistedDevDependencies?.hoisted
+        });
+
+        // Do the same for all packages with non-hoisted modules
+        // { [package root dir]: modules }
+        const uniques: Record<string, {
+            deps?: Record<string, string>;
+            devDeps?: Record<string, string>;
+        }> = {}
+
+        if (hoistedDependencies?.nonHoisted)
+            Object.entries(hoistedDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
+                if (!uniques[packagePath]) {
+                    uniques[packagePath] = {};
+                }
+                uniques[packagePath].deps = packageModules.modules;
+            });
+
+        if (hoistedDevDependencies?.nonHoisted)
+            Object.entries(hoistedDevDependencies.nonHoisted).forEach(([packagePath, packageModules]) => {
+                if (!uniques[packagePath]) {
+                    uniques[packagePath] = {};
+                }
+                uniques[packagePath].devDeps = packageModules.modules;
+            });
+
+        Object.keys(uniques).forEach(uni => {
+            installPaths.push(uni);
+            createInstallPackage(uni, {
+                dependencies: uniques[uni].deps,
+                devDependencies: uniques[uni].devDeps
+            });
+        });
+
+        asyncEach(installPaths, (path: string, callback: () => void) => {
+            console.log(colors.cyan(`\nCromwella:: Installing modules for: ${colors.brightCyan(`${path}`)} package in ${colors.brightCyan(`${installationMode}`)} mode...\n`));
+            const modeStr = isProduction ? ' --production' : '';
+            try {
+                const proc = spawn(`npm install${modeStr}`, { shell: true, cwd: path, stdio: 'inherit' });
+                proc.on('close', (code: number) => {
+                    console.log(colors.brightCyan(`\nCromwella:: Installation for ${path} package completed\n`));
+                    removeInstallPackage(path);
+                    callback();
+                });
+            } catch (e) {
+                console.log(colors.brightRed(`\nCromwella:: Error. Failed to install node_modules for ${path} package\n`))
+            }
+        }, () => onInstallationDone(hoistedDependencies, hoistedDevDependencies, packages));
     }
 
-    const onInstallationDone = (hoistedDependencies?: THoistedDeps, hoistedDevDependencies?: THoistedDeps) => {
+    const onInstallationDone = (hoistedDependencies?: THoistedDeps, hoistedDevDependencies?: THoistedDeps, packages?: TPackage[]) => {
         // Make symlinks between local packages
         hoistedDependencies?.localSymlinks?.forEach(link => {
             makeSymlink(link.linkPath, link.referredDir);
@@ -201,16 +215,63 @@ export const installer = async (projectRootDir: string, installationMode: string
         });
     }
 
+    const config = await readCMSConfig();
+    const packageManager = config?.pm ?? 'yarn';
 
-    nodeCleanup(function (exitCode, signal) {
-        installPaths.forEach(path => removeInstallPackage(path));
-    });
+    if (packageManager === 'cromwella') {
+        // cromwella installation
+        try {
+            main();
+        } catch (e) {
+            console.log(e);
+        }
+    }
 
+    if (packageManager === 'yarn') {
+        spawnSync(`yarn ${process.argv.slice(3).join(' ')}`, { shell: true, cwd: process.cwd(), stdio: 'inherit' });
 
-    try {
-        main();
-    } catch (e) {
-        console.log(e);
+    }
+
+    // Check for bundled modules
+
+    if (packages) {
+        const frontendDeps = collectFrontendDependencies(packages);
+        const bundledModulesDir = getBundledModulesDir();
+
+        await fs.ensureDir(bundledModulesDir);
+
+        const dowloadDepsRecursively = async (depName: string) => {
+            const depDir = resolve(bundledModulesDir, depName);
+            if (await fs.pathExists(depDir)) return;
+
+            console.log(colors.cyan(`\nCromwella:: Downloading frontend module: ${colors.brightCyan(depName)}`));
+
+            const success = await downloadBundleZipped(depName, bundledModulesDir);
+            if (!success) return;
+            // await downloadBundle(depName, bundledModulesDir);
+
+            let meta: TSciprtMetaInfo;
+            try {
+                meta = require(resolve(depDir, moduleMetaInfoFileName));
+                if (meta?.externalDependencies) {
+                    const subdeps = Object.keys(meta.externalDependencies);
+                    for (const subdep of subdeps) {
+
+                        const subdepDir = resolve(bundledModulesDir, subdep);
+                        if (!await fs.pathExists(subdepDir)) {
+                            await dowloadDepsRecursively(subdep);
+                        }
+                    }
+                }
+            } catch (e) { };
+        }
+
+        for (const dep of frontendDeps) {
+            if (dep.name && dep.version) {
+                const depName = `${dep.name}@${dep.version}`;
+                await dowloadDepsRecursively(depName);
+            }
+        }
     }
 
 }

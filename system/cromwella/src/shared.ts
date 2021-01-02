@@ -1,24 +1,39 @@
+import { getTempDir, serverLogFor } from '@cromwell/core-backend';
 import { each as asyncEach } from 'async';
 import colorsdef from 'colors/safe';
-import fs from 'fs';
+import extractZip from 'extract-zip';
+import fs from 'fs-extra';
+import moduleDownloader from 'github-directory-downloader';
 import glob from 'glob';
 import importFrom from 'import-from';
-import path, { resolve, isAbsolute } from 'path';
+import fetch from 'node-fetch';
+import path, { isAbsolute, resolve } from 'path';
+import { promisify } from 'util';
+
+import { bundledModulesDirName, defaultFrontendDeps } from './constants';
 import {
-    TPackageJson, TCromwellaConfig, TDependency, TGetDepsCb, THoistedDeps,
-    TLocalSymlink, TNonHoisted, TPackage, TModuleInfo, TFrontendDependency
+    TCromwellaConfig,
+    TDependency,
+    TFrontendDependency,
+    TGetDeps,
+    THoistedDeps,
+    TLocalSymlink,
+    TModuleInfo,
+    TNonHoisted,
+    TPackage,
+    TPackageJson,
 } from './types';
 
 const colors: any = colorsdef;
 
 export const isExternalForm = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id) && !id.startsWith('$$');
 
-export const getHoistedDependencies = (projectRootDir: string, isProduction: boolean, forceInstall: boolean, cb: TGetDepsCb) => {
-    globPackages(projectRootDir, (packagePaths) => {
-        collectPackagesInfo(packagePaths, (packages) => {
-            hoistDependencies(packages, isProduction, forceInstall, cb);
-        })
-    });
+export const getBundledModulesDir = () => resolve(getTempDir(), bundledModulesDirName);
+
+export const getHoistedDependencies = async (projectRootDir: string, isProduction: boolean, forceInstall: boolean): Promise<TGetDeps> => {
+    const packagePaths = await globPackages(projectRootDir);
+    const packages = collectPackagesInfo(packagePaths);
+    return hoistDependencies(packages, isProduction, forceInstall);
 }
 
 export const getNodeModuleVersion = (moduleName: string, importFromPath?: string): string | undefined => {
@@ -233,34 +248,34 @@ export const getCromwellaConfigSync = (projectRootDir: string, canLog?: boolean)
 }
 
 
-export const globPackages = (projectRootDir: string, cb: (packagePaths: string[]) => void) => {
+export const globPackages = async (projectRootDir: string): Promise<string[]> => {
     console.log(colors.cyan(`Cromwella:: Start. Scannig for local packages from ./cromwella.json...\n`));
     const globOptions = {};
 
     const cromwellaConfig = getCromwellaConfigSync(projectRootDir);
-    if (!cromwellaConfig || !cromwellaConfig.packages) {
-        cb([]);
-        return;
-    }
+    const packageNames = cromwellaConfig?.packages ?? [''];
 
     const packagePaths: string[] = [];
 
-    asyncEach(cromwellaConfig.packages, function (pkg: string, callback: () => void) {
-        const globPath = resolve(projectRootDir, pkg, 'package.json');
-        glob(globPath, globOptions, function (er: any, files: string[]) {
-            files.forEach(f => packagePaths.push(resolve(projectRootDir, f)));
-            callback();
-        })
-    }, () => cb(packagePaths));
+    await new Promise(done => {
+        asyncEach(packageNames, function (pkgPath: string, callback: () => void) {
+            const globPath = resolve(projectRootDir, pkgPath, 'package.json');
+            glob(globPath, globOptions, function (er: any, files: string[]) {
+                files.forEach(f => packagePaths.push(resolve(projectRootDir, f)));
+                callback();
+            })
+        }, () => done(true));
+    });
+
+    return packagePaths;
 }
 
 
-export const collectPackagesInfo = (packagePaths: string[], cb: (packages: TPackage[]) => void) => {
+export const collectPackagesInfo = (packagePaths: string[]): TPackage[] => {
     packagePaths = Array.from(new Set(packagePaths));
     if (packagePaths.length === 0) {
         console.log(colors.brightYellow(`\nCromwella:: No local packages found\n`))
-        cb([])
-        return;
+        return [];
     }
     console.log(colors.cyan(`Cromwella:: Bootstraping local packages:`));
     packagePaths.forEach(path => {
@@ -287,11 +302,10 @@ export const collectPackagesInfo = (packagePaths: string[], cb: (packages: TPack
         }
     }
 
-    cb(packages);
-
+    return packages;
 }
 
-export const hoistDependencies = (packages: TPackage[], isProduction, forceInstall, cb: TGetDepsCb) => {
+export const hoistDependencies = (packages: TPackage[], isProduction, forceInstall): TGetDeps => {
     // Collect dependencies and devDependencies from all packages
     const dependencies: TDependency[] = [];
     const devDependencies: TDependency[] = [];
@@ -313,5 +327,98 @@ export const hoistDependencies = (packages: TPackage[], isProduction, forceInsta
     const hoistedDevDependencies: THoistedDeps = JSON.parse(JSON.stringify(hoistDeps(devDependencies, packages, isProduction, forceInstall)));
     // All ok -> can start installation.
 
-    cb(packages, hoistedDependencies, hoistedDevDependencies);
+    return { packages, hoistedDependencies, hoistedDevDependencies };
+}
+
+export const collectFrontendDependencies = (packages: TPackage[]): TFrontendDependency[] => {
+    const frontendDependencies: TFrontendDependency[] = defaultFrontendDeps.map(dep => {
+        return {
+            name: dep,
+            version: getNodeModuleVersion(dep)!
+        }
+    });
+
+    packages.forEach(pckg => {
+        if (pckg?.frontendDependencies && Array.isArray(pckg.frontendDependencies)) {
+            pckg.frontendDependencies.forEach(dep => {
+                const depName = typeof dep === 'object' ? dep.name : dep;
+                const depVersion = getDepVersion(pckg, depName);
+                if (!depVersion) return;
+
+                const frontendDep: TFrontendDependency = typeof dep === 'object' ? dep : {
+                    name: dep,
+                    version: depVersion
+                };
+                if (!frontendDep.version) frontendDep.version = depVersion;
+
+                // if (!frontendDependencies.includes(dep))
+                let index: number | undefined = undefined;
+                frontendDependencies.every((mainDep, i) => {
+                    if (mainDep.name === frontendDep.name && mainDep.version === frontendDep.version) {
+                        index = i;
+                        return false;
+                    }
+                    return true;
+                });
+
+                if (index !== undefined) {
+                    if (typeof dep === 'object') {
+                        frontendDependencies[index] = frontendDep;
+                    }
+                } else {
+                    frontendDependencies.push(frontendDep);
+
+                }
+            })
+        }
+    });
+
+    return frontendDependencies;
+}
+
+export const downloadBundle = async (moduleName: string, saveTo: string) => {
+    const repo = 'https://github.com/CromwellCMS/bundled-modules/tree/master';
+    const url = `${repo}/${moduleName}`;
+
+    const stats = await moduleDownloader(url, resolve(saveTo, moduleName));
+
+    if (!stats.success || stats.downloaded === 0) {
+        serverLogFor('errors-only', `Failed to download module ${moduleName}` + stats.error, 'Error');
+        await fs.remove(resolve(saveTo, moduleName));
+    }
+}
+
+export const downloadBundleZipped = async (moduleName: string, saveTo: string): Promise<boolean> => {
+    const repo = 'https://raw.githubusercontent.com/CromwellCMS/bundled-modules/master';
+    const url = `${repo}/${moduleName}/module.zip`;
+
+    let responseBody;
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.statusText} for ${url}`);
+        }
+        responseBody = response.body;
+    } catch (e) {
+        serverLogFor('errors-only', `Failed to download module ${moduleName}` + e, 'Error');
+        return false;
+    }
+
+    const moduleDir = resolve(saveTo, moduleName);
+    const zipPath = resolve(moduleDir, 'module.zip');
+
+    await fs.ensureDir(moduleDir);
+
+    const streamPipeline = promisify(require('stream').pipeline);
+    await streamPipeline(responseBody, fs.createWriteStream(zipPath));
+
+    try {
+        await extractZip(zipPath, { dir: moduleDir })
+    } catch (err) {
+        serverLogFor('errors-only', `Failed to unzip module ${moduleName}`, 'Error');
+        await fs.remove(moduleDir);
+        return false;
+    }
+
+    return true;
 }
