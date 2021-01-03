@@ -49,7 +49,7 @@ export default [
                 module: "ESNext"
             }),
             json(),
-            terser()
+            // terser()
         ]
     },
     {
@@ -72,7 +72,7 @@ export default [
             typescript({
                 module: "ESNext"
             }),
-            terser(),
+            // terser(),
         ]
     },
 ];

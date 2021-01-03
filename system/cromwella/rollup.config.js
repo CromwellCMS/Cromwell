@@ -26,7 +26,7 @@ const plugins = [
         module: "ESNext"
     }),
     json(),
-    terser()
+    // terser()
 ]
 
 const buildDir = 'build';
@@ -59,10 +59,11 @@ export default [
                 target: "es5"
             }),
             commonjs(),
-            terser()
+            // terser()
         ]
     },
     {
+        preserveModules: true,
         input: resolve(__dirname, "src/exports.ts"),
         output: [
             {
@@ -80,7 +81,7 @@ export default [
                 declarationDir: resolve(__dirname, buildDir)
             }),
             json(),
-            terser(),
+            // terser(),
         ]
     },
 ];

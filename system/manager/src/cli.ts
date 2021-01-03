@@ -48,11 +48,9 @@ const cli = async () => {
     })
 
     if (scriptName === 'build' || scriptName === 'b') {
-        await checkModules(isDevelopment);
         await buildTask();
 
     } else if (scriptName === 'watch' || scriptName === 'w') {
-        await checkModules(isDevelopment);
         await buildTask(true);
 
     } else if (scriptName === 'bundle-modules' || scriptName === 'bm') {

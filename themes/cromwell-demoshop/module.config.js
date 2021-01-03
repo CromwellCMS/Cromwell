@@ -15,20 +15,21 @@ module.exports = {
             "react-toastify/dist/ReactToastify.css",
             '../styles/global.scss'
         ],
-        headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap\" rel=\"stylesheet\" /><link href=\"https://unpkg.com/reset-css/reset.css\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />"
+        headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />"
     },
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
         const json = require('@rollup/plugin-json');
         const typescript = require('@rollup/plugin-typescript');
         const postcss = require('rollup-plugin-postcss');
-        const autoprefixer = require("autoprefixer");
+        const { terser } = require('rollup-plugin-terser');
         return {
             main: {
                 plugins: [
                     commonjs(),
                     typescript(),
                     json(),
+                    // terser(),
                 ]
             },
             adminPanel: {
@@ -43,6 +44,7 @@ module.exports = {
                         inject: true,
                         use: ['sass'],
                     }),
+                    terser()
                 ]
             }
         }

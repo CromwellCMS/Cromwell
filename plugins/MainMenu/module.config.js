@@ -5,12 +5,14 @@ module.exports = {
     frontendInputFile: "src/frontend/index.tsx",
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
+        const { terser } = require('rollup-plugin-terser');
         const typescript = require('@rollup/plugin-typescript');
         return {
             main: {
                 plugins: [
                     commonjs(),
-                    typescript()
+                    typescript(),
+                    // terser()
                 ]
             }
         }

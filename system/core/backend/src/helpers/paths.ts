@@ -6,7 +6,7 @@ import { TPluginConfig, TThemeConfig } from '@cromwell/core';
 export const cmsName = 'cromwell';
 export const tempDirName = `.${cmsName}`;
 export const buildDirName = `build`;
-export const configFileName = 'cromwell.config.js';
+export const configFileName = 'module.config.js';
 export const cmsConfigFileName = 'cmsconfig.json';
 
 export const getTempDir = () => resolve(process.cwd(), tempDirName);
@@ -145,3 +145,12 @@ export const getThemePagesMetaPath = (distDir: string) => resolve(distDir, 'page
 export const getPublicDir = () => resolve(process.cwd(), 'public');
 export const getPublicPluginsDir = () => resolve(getPublicDir(), 'plugins');
 export const getPublicThemesDir = () => resolve(getPublicDir(), 'themes');
+
+
+export const getModulePackage = (moduleName: string): any => {
+    try {
+        return require(`${moduleName}/package.json`);
+    } catch (e) {
+        serverLogFor('errors-only', 'Failed to resolve module path of: ' + moduleName + e, 'Error');
+    }
+}

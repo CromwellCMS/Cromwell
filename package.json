@@ -24,9 +24,6 @@
         "themes/*"
     ],
     "cromwell": {
-        "plugins": [
-            "@cromwell/plugin-customer-reviews"
-        ],
         "themes": [
             "@cromwell/theme-store"
         ]

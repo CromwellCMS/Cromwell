@@ -26,7 +26,7 @@ const getPlugins = (format = 'esm') => {
         nodeResolve(),
         commonjs(),
         typescript(typeScriptOptions),
-        terser(),
+        // terser(),
     ];
 };
 

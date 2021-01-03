@@ -109,7 +109,7 @@ export type TCromwellBlockData = {
 
     /** For plugin block */
     plugin?: {
-        /** Plugin's name to render inside component. Same name must be in cromwell.config.js */
+        /** Plugin's name to render inside component. Same name must be in module.config.js */
         pluginName?: string;
 
         /** Custom editable plugin's settings */

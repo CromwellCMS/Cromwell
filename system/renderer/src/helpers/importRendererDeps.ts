@@ -19,20 +19,7 @@ export const importRendererDeps = () => {
         //@ts-ignore
         getStore().nodeModules.modules['node-fetch'] = nodeFetch;
 
-        importer.importSciptExternals?.({
-            "name": "@cromwell/renderer",
-            "externalDependencies": {
-                "@cromwell/core@1.1.0": [
-                    "default"
-                ],
-                "@cromwell/core-frontend@1.0.0": [
-                    "default"
-                ],
-                "react-is@16.13.1": [
-                    "default"
-                ]
-            }
-        });
+        importRendererDepsFrontend();
     }
 
 }
