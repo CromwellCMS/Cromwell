@@ -15,12 +15,10 @@ import {
 } from '@material-ui/core';
 import { Add as AddIcon, ExpandMore as ExpandMoreIcon, HighlightOff as HighlightOffIcon } from '@material-ui/icons';
 import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
 import { TMainMenuItem, TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
-
-let items: TMainMenuItem[] = [];
 
 export default function index({ pluginName }: { pluginName: string }) {
     const apiClient = getRestAPIClient();
@@ -28,13 +26,14 @@ export default function index({ pluginName }: { pluginName: string }) {
     const [settings, setSettings] = useState<TMainMenuSettings | null>(null);
     const [isLoading, setIsloading] = useState(false);
     const forceUpdate = useForceUpdate();
+    const items = useRef<TMainMenuItem[]>([]);
 
     useEffect(() => {
         (async () => {
             setIsloading(true);
             const settings: TMainMenuSettings = await apiClient?.getPluginSettings(pluginName);
             if (settings) {
-                items = settings.items ?? [];
+                items.current = settings.items ?? [];
                 setSettings(settings);
             }
             setIsloading(false);
@@ -49,14 +48,14 @@ export default function index({ pluginName }: { pluginName: string }) {
                     <>
                         <h2>Main menu settings</h2>
                         <div className={classes.itemList}>
-                            {items && items.map((data, i) => {
-                                return <Item i={i} updateList={forceUpdate} />
+                            {items.current.map((data, i) => {
+                                return <Item i={i} updateList={forceUpdate} items={items.current} />
                             })}
                         </div>
                         <Card className={classes.card}>
                             <MenuItem
                                 className={classes.addBtn}
-                                onClick={() => { items.push({ title: '' }); forceUpdate(); }}>
+                                onClick={() => { items.current.push({ title: '' }); forceUpdate(); }}>
                                 <AddIcon />
                             </MenuItem>
                         </Card>
@@ -66,8 +65,8 @@ export default function index({ pluginName }: { pluginName: string }) {
                             onClick={async () => {
                                 setIsloading(true);
                                 if (settings) {
-                                    settings.items = items;
-                                    await apiClient?.setPluginSettings(pluginName, settings);
+                                    settings.items = items.current;
+                                    await apiClient?.savePluginSettings(pluginName, settings);
                                 }
                                 setIsloading(false);
                             }}>
@@ -84,14 +83,19 @@ function useForceUpdate() {
     return () => setValue(value => ++value);
 }
 
-const Item = (props: { i: number, updateList: () => void }) => {
+const Item = (props: {
+    i: number;
+    updateList: () => void;
+    items: TMainMenuItem[];
+}
+) => {
     const forceUpdate = useForceUpdate();
     const classes = useStyles();
     const [expanded, setExpanded] = React.useState(false);
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
-    const item = items[props.i];
+    const item = props.items[props.i];
     const handleChange = (prop: keyof TMainMenuItem, val: string) => {
         (item as any)[prop] = val;
         forceUpdate();
@@ -116,7 +120,7 @@ const Item = (props: { i: number, updateList: () => void }) => {
                     </IconButton>
                     <IconButton onClick={(e) => {
                         e.stopPropagation();
-                        items.splice(props.i, 1);
+                        props.items.splice(props.i, 1);
                         props.updateList();
                     }}>
                         <HighlightOffIcon />

@@ -1,4 +1,4 @@
-import { logFor, TCmsSettings, TThemeConfig, TThemeMainConfig } from '@cromwell/core';
+import { logFor, TCmsSettings, TThemeMainConfig } from '@cromwell/core';
 import { getCmsModuleConfig, getNodeModuleDir, readCmsModules } from '@cromwell/core-backend';
 import { Controller, Get, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';

@@ -1,15 +1,8 @@
-import { logFor, TFrontendBundle, TPluginConfig, TPluginEntityInput } from '@cromwell/core';
-import { configFileName, getPublicPluginsDir, getNodeModuleDir } from '@cromwell/core-backend';
-import { Body, Controller, Get, HttpException, HttpStatus, Param, Post, Query } from '@nestjs/common';
+import { logFor, TFrontendBundle, TPluginConfig } from '@cromwell/core';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import decache from 'decache';
-import fs from 'fs-extra';
-import { resolve } from 'path';
-import symlinkDir from 'symlink-dir';
-import { getCustomRepository } from 'typeorm';
 
 import { FrontendBundleDto } from '../dto/FrontendBundle.dto';
-import { GenericPlugin } from '../helpers/genericEntities';
 import { PluginService } from '../services/plugin.service';
 
 
@@ -50,6 +43,7 @@ export class PluginController {
                 }
 
                 const out = Object.assign({}, defaultSettings, settings);
+
                 return out;
             }
         }
@@ -73,7 +67,7 @@ export class PluginController {
         if (pluginName && pluginName !== "") {
             const plugin = await this.pluginService.findOne(pluginName);
             if (plugin) {
-                plugin.settings = JSON.stringify(input);
+                plugin.settings = typeof input === 'string' ? input : JSON.stringify(input);
                 await this.pluginService.save(plugin);
                 return true;
             } else {

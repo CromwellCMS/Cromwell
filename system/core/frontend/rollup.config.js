@@ -36,7 +36,7 @@ const getPlugins = (format = 'esm') => {
             autoModules: true,
             use: ['sass'],
         }),
-        terser(),
+        // terser(),
     ];
 };
 

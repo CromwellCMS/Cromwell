@@ -16,7 +16,8 @@ const streamPipeline = promisify(require('stream').pipeline);
 const colors: any = colorsdef;
 const logger = getLogger('errors-only');
 
-export const downloader = async (projectRootDir: string, pckgs?: TPackage[]) => {
+export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) => {
+    projectRootDir = projectRootDir ?? process.cwd();
     let packages: TPackage[] = [];
     if (!pckgs) {
         const packagePaths = await globPackages(projectRootDir);

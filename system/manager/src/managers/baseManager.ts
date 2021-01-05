@@ -1,4 +1,4 @@
-import { getCoreBackendDir, getCoreCommonDir, getCoreFrontendDir, getLogger } from '@cromwell/core-backend';
+import { getCoreBackendDir, getCoreCommonDir, getCoreFrontendDir, getLogger, getModulePackage } from '@cromwell/core-backend';
 import { ChildProcess, fork, spawn } from 'child_process';
 import isRunning from 'is-running';
 import { resolve } from 'path';
@@ -90,7 +90,8 @@ export const startNamedService = async (serviceName: TServiceNames, isDevelopmen
     }
 
     if (serviceName === 'adminPanel') {
-        await checkModules(isDevelopment);
+        const pckg = getModulePackage('@cromwell/admin-panel')
+        await checkModules(isDevelopment, pckg ? [pckg] : undefined);
         startAdminPanel(isDevelopment ? 'dev' : 'prod');
     }
 

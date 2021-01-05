@@ -8,6 +8,7 @@ import {
     getRendererTempDir,
     readCMSConfig,
     rendererMessages,
+    getModulePackage
 } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import axios from 'axios';
@@ -16,6 +17,7 @@ import makeEmptyDir from 'make-empty-dir';
 import { resolve } from 'path';
 
 import managerConfig from '../config';
+import { checkModules } from '../helpers/checkModules';
 import { TRendererCommands } from '../constants';
 import { ManagerState } from '../managerState';
 import { closeService, isServiceRunning, startService } from './baseManager';
@@ -25,7 +27,7 @@ const logger = getLogger('detailed');
 const rendererDir = getRendererDir();
 const rendererTempDir = getRendererTempDir();
 const rendererStartupPath = getRendererStartupPath();
-const errorLogger = getLogger('errors-only');
+const errorLogger = getLogger('errors-only').error;
 
 export const startRenderer = async (env?: TRendererCommands): Promise<boolean> => {
     if (ManagerState.rendererStatus === 'busy' ||
@@ -39,10 +41,19 @@ export const startRenderer = async (env?: TRendererCommands): Promise<boolean> =
     const cmsConfig = await readCMSConfig();
 
     if (!cmsSettings) {
-        errorLogger.error(`Failed to get cmsSettings from API server`);
+        errorLogger(`Failed to get cmsSettings from API server`);
     }
     const themeName = cmsSettings?.themeName ?? cmsSettings?.defaultSettings?.themeName ??
         cmsConfig?.defaultSettings?.themeName;
+
+    if (!themeName) {
+        errorLogger(`Failed to find active theme name`);
+        return false;
+    }
+
+    const pckg = getModulePackage(themeName)
+    if (pckg) await checkModules(Boolean(env === 'dev'), [pckg]);
+
 
     const rendererUrl = serviceLocator.getFrontendUrl();
 
@@ -78,15 +89,15 @@ export const startRenderer = async (env?: TRendererCommands): Promise<boolean> =
             } else {
                 ManagerState.rendererStatus = 'inactive';
             }
-            if (success) errorLogger.log(`RendererManager:: Renderer has successfully started`);
-            else errorLogger.error(`RendererManager:: Failed to start renderer`);
+            if (success) getLogger('errors-only').log(`RendererManager:: Renderer has successfully started`);
+            else errorLogger(`RendererManager:: Failed to start renderer`);
 
             return success;
 
         } else {
             ManagerState.rendererStatus = 'inactive';
             const mess = 'RendererManager:: failed to start Renderer';
-            errorLogger.error(mess);
+            errorLogger(mess);
             return false;
         }
     }

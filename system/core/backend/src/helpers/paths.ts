@@ -111,7 +111,7 @@ export const getThemeNextBuildDir = async (themeModuleName: string) => {
     }
 }
 export const getThemeAdminPanelBundleDir = async (themeModuleName: string, pageRoute: string) => {
-    const themeBuildDir = await getThemeBuildDir(themeModuleName);
+    const themeBuildDir = await getThemeRollupBuildDir(themeModuleName);
     if (themeBuildDir) {
         return resolve(themeBuildDir, 'admin', pageRoute)
     }

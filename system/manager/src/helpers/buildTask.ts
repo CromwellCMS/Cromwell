@@ -9,7 +9,7 @@ import fs from 'fs-extra';
 import { rollup, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
 
 import { rendererBuildAndSaveTheme, rendererStartWatchDev } from '../managers/rendererManager';
-import { fstat } from 'fs';
+import { checkModules } from './checkModules';
 
 const { handleError, bold, underline, cyan, stderr, green } = require('rollup/dist/shared/loadConfigFile.js');
 const { relativeId } = require('rollup/dist/shared/rollup.js');
@@ -34,6 +34,8 @@ export const buildTask = async (watch?: boolean) => {
         if (config.type === 'theme') {
             isConfigValid = true;
 
+            await checkModules();
+
             // Clean old build
             const rollupBuildDir = await getThemeRollupBuildDir(packageJson?.name)
             if (rollupBuildDir && await fs.pathExists(rollupBuildDir)) await fs.remove(rollupBuildDir);
@@ -51,7 +53,7 @@ export const buildTask = async (watch?: boolean) => {
 
             if (watch) {
                 rendererStartWatchDev(config.name);
-                
+
             } else {
                 const nextBuildDir = await getThemeNextBuildDir(packageJson?.name);
                 if (nextBuildDir && await fs.pathExists(nextBuildDir)) await fs.remove(nextBuildDir);
@@ -85,7 +87,7 @@ const rollupBuild = async (config: TPluginConfig | TThemeConfig, watch?: boolean
     if (!config) return false;
     let rollupBuildSuccess = false;
     try {
-        const rollupConfig = await rollupConfigWrapper(config);
+        const rollupConfig = await rollupConfigWrapper(config, watch);
 
         if (watch) {
             const watcher = rollupWatch(rollupConfig);

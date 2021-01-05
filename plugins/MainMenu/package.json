@@ -49,7 +49,6 @@
     "tslib"
   ],
   "scripts": {
-    "publish": "npm publish --access public",
     "build": "npx cromwell b",
     "watch": "npx cromwell w"
   }

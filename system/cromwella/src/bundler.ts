@@ -124,25 +124,25 @@ export const bundler = async (projectRootDir: string, installationMode: string,
         if (pckg.peerDependencies) Object.keys(pckg.peerDependencies).forEach(pushDep)
     }
 
+    
     // Install node_modules locally
 
+    // if (!noInstall && !fs.existsSync(nodeModulesDir)) {
+    //     const tempPackageContent = {
+    //         "name": tempPckgName,
+    //         "version": "1.0.0",
+    //         "private": true,
+    //         "dependencies": Object.assign({}, ...frontendDependencies.map(dep => ({ [dep.name]: dep.version })))
+    //     }
+    //     await fs.outputFile(resolve(buildDir, 'package.json'), JSON.stringify(tempPackageContent, null, 4));
 
-    if (!noInstall && !fs.existsSync(nodeModulesDir)) {
-        const tempPackageContent = {
-            "name": tempPckgName,
-            "version": "1.0.0",
-            "private": true,
-            "dependencies": Object.assign({}, ...frontendDependencies.map(dep => ({ [dep.name]: dep.version })))
-        }
-        await fs.outputFile(resolve(buildDir, 'package.json'), JSON.stringify(tempPackageContent, null, 4));
+    //     spawnSync(`pnpm i --filter ${tempPckgName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+    // }
 
-        spawnSync(`pnpm i --filter ${tempPckgName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-    }
-
-    if (!noInstall && !fs.existsSync(nodeModulesDir)) {
-        console.log(colors.brightRed('Cromwella:bundler: Failed to install node_modules'));
-        // return;
-    }
+    // if (!noInstall && !fs.existsSync(nodeModulesDir)) {
+    //     console.log(colors.brightRed('Cromwella:bundler: Failed to install node_modules'));
+    //     // return;
+    // }
 
 
     /**

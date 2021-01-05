@@ -43,7 +43,7 @@ class CRestAPIClient {
         try {
             const res = await window.fetch(`${this.baseUrl}/${route}`, {
                 method: 'post',
-                body: JSON.stringify(input)
+                body: typeof input === 'string' ? input : JSON.stringify(input)
             })
             const data = await res.json();
             return this.handleError(res, data, route);
@@ -125,7 +125,7 @@ class CRestAPIClient {
         return this.get(`plugin/settings?pluginName=${pluginName}`);
     }
 
-    public setPluginSettings = async (pluginName: string, settings: any): Promise<boolean> => {
+    public savePluginSettings = async (pluginName: string, settings: any): Promise<boolean> => {
         const data = await this.post<boolean>(`plugin/settings?pluginName=${pluginName}`, settings);
         return data ?? false;
     }

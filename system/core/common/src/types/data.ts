@@ -30,7 +30,6 @@ export type TCromwellStore = {
     webSocketClient?: any;
     cstore?: any;
     nodeModules?: TCromwellNodeModules;
-    themePageComponents?: Record<string, any>;
     fsRequire?: (path: string) => any;
 }
 

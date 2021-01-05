@@ -1,29 +1,30 @@
-import { TPagesMetaInfo, TPluginConfig, TSciprtMetaInfo, TThemeConfig, TRollupConfig } from '@cromwell/core';
+import { TPagesMetaInfo, TPluginConfig, TRollupConfig, TSciprtMetaInfo, TThemeConfig } from '@cromwell/core';
 import {
     buildDirName,
     getMetaInfoPath,
     getPluginBackendPath,
+    getThemeRollupBuildDir,
     pluginAdminBundlePath,
     pluginAdminCjsPath,
     pluginFrontendBundlePath,
     pluginFrontendCjsPath,
-    serverLogFor,
-    getThemeRollupBuildDir
 } from '@cromwell/core-backend';
 import virtual from '@rollup/plugin-virtual';
+import chokidar from 'chokidar';
 import cryptoRandomString from 'crypto-random-string';
 import { walk } from 'estree-walker';
 import fs from 'fs-extra';
 import glob from 'glob';
+import isPromise from 'is-promise';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
 import { OutputOptions, Plugin, RollupOptions } from 'rollup';
 import externalGlobals from 'rollup-plugin-external-globals';
-import isPromise from 'is-promise';
+
 import { cromwellStoreModulesPath } from '../constants';
 import { getDepVersion, getNodeModuleVersion, isExternalForm } from '../shared';
 
-export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TThemeConfig): Promise<RollupOptions[]> => {
+export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TThemeConfig, watch?: boolean): Promise<RollupOptions[]> => {
 
     if (!cromwellConfig) throw new Error(`CromwellPlugin Error. Provide config as second argumet to the wrapper function`);
     if (!cromwellConfig?.type) throw new Error(`CromwellPlugin Error. Provide one of types to the CromwellConfig: 'plugin', 'theme'`);
@@ -193,6 +194,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
 
         const adminPanelOptions: RollupOptions[] = [];
 
+        // Frontend config
         if (pageFiles && pageFiles.length > 0) {
 
             let pageImports = '';
@@ -225,25 +227,27 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
 
             outOptions.push(options);
 
+            // Admin panel config
+            if (!watch) {
+                pagesMetaInfo.paths.forEach(pagePath => {
+                    const adminOptions = (Object.assign({}, (specifiedOptions?.adminPanel ?? inputOptions)));
+                    adminOptions.plugins = [...(adminOptions.plugins ?? [])];
 
-            pagesMetaInfo.paths.forEach(pagePath => {
-                const adminOptions = (Object.assign({}, (specifiedOptions?.adminPanel ?? inputOptions)));
-                adminOptions.plugins = [...(adminOptions.plugins ?? [])];
+                    const optionsInput = '$$' + cromwellConfig.name + '/admin/' + pagePath.pageName;
+                    adminOptions.plugins.push(virtual({
+                        [optionsInput]: `import pageComp from '${pagePath.srcFullPath}';export default pageComp;`
+                    }));
+                    adminOptions.input = optionsInput;
+                    adminOptions.plugins.unshift(rollupPluginCromwellFrontend({ buildDir, cromwellConfig }));
+                    adminOptions.output = Object.assign({}, adminOptions.output, {
+                        dir: resolve(buildDir, 'admin', dirname(pagePath.pageName)),
+                        format: "iife",
+                    } as OutputOptions);
 
-                const optionsInput = '$$' + cromwellConfig.name + '/admin/' + pagePath.pageName;
-                adminOptions.plugins.push(virtual({
-                    [optionsInput]: `import pageComp from '${pagePath.srcFullPath}';export default pageComp;`
-                }));
-                adminOptions.input = optionsInput;
-                adminOptions.plugins.unshift(rollupPluginCromwellFrontend({ buildDir, cromwellConfig }));
-                adminOptions.output = Object.assign({}, adminOptions.output, {
-                    dir: resolve(buildDir, 'admin', dirname(pagePath.pageName)),
-                    format: "iife",
-                } as OutputOptions);
-
-                adminPanelOptions.push(adminOptions);
-            });
-            adminPanelOptions.forEach(opt => outOptions.push(opt));
+                    adminPanelOptions.push(adminOptions);
+                });
+                adminPanelOptions.forEach(opt => outOptions.push(opt));
+            }
 
         } else {
             throw new Error('CromwellPlugin Error. No pages found at: ' + pagesDir);
@@ -284,6 +288,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
     pagesMetaInfo?: TPagesMetaInfo;
     buildDir?: string;
     srcDir?: string;
+    watch?: boolean;
     cromwellConfig?: TPluginConfig | TThemeConfig;
 }): Plugin => {
 
@@ -293,6 +298,9 @@ export const rollupPluginCromwellFrontend = (settings?: {
         externals: Record<string, string[]>;
         internals: string[];
     }> = {};
+
+    if (settings?.srcDir && settings?.buildDir)
+        initStylesheetsLoader(settings?.srcDir, settings?.buildDir, settings?.watch);
 
     // console.log('globals', globals);
     const plugin: Plugin = {
@@ -468,20 +476,6 @@ export const rollupPluginCromwellFrontend = (settings?: {
 
             if (settings?.pagesMetaInfo?.paths && settings.srcDir && settings.buildDir) {
 
-                // Copy locally imported stylesheets
-                const globStr = `${normalizePath(settings.srcDir)}/**/*.+(css|scss|sass)`;
-                const pageFiles = glob.sync(globStr);
-                for (const styleSheetPath of pageFiles) {
-                    const styleSheetBuildPath = normalizePath(styleSheetPath).replace(normalizePath(settings.srcDir),
-                        normalizePath(settings.buildDir));
-
-                    if (!fs.existsSync(styleSheetBuildPath)) {
-                        fs.ensureDirSync(dirname(styleSheetBuildPath));
-                        fs.copyFileSync(styleSheetPath, styleSheetBuildPath);
-                    }
-                    console.log('styleSheetSourcePath', styleSheetPath, 'styleSheetBuildPath', styleSheetBuildPath)
-                }
-
                 fs.outputFileSync(resolve(settings.buildDir, 'pages_meta.json'), JSON.stringify(settings.pagesMetaInfo, null, 2));
             }
 
@@ -489,4 +483,47 @@ export const rollupPluginCromwellFrontend = (settings?: {
     }
 
     return plugin;
+}
+
+
+
+const stylesheetsLoaderDirs: string[] = [];
+
+const initStylesheetsLoader = (srcDir: string, buildDir: string, watch?: boolean) => {
+    if (stylesheetsLoaderDirs.includes(srcDir)) return;
+    stylesheetsLoaderDirs.push(srcDir);
+
+    const globStr = `${normalizePath(srcDir)}/**/*.+(css|scss|sass)`;
+
+    const copyFile = async (styleSheetPath: string) => {
+        const styleSheetBuildPath = normalizePath(styleSheetPath).replace(normalizePath(srcDir),
+            normalizePath(buildDir));
+        await fs.ensureDir(dirname(styleSheetBuildPath));
+        await fs.copyFile(styleSheetPath, styleSheetBuildPath);
+    }
+
+    const removeFile = async (styleSheetPath: string) => {
+        const styleSheetBuildPath = normalizePath(styleSheetPath).replace(normalizePath(srcDir),
+            normalizePath(buildDir));
+        await fs.remove(styleSheetBuildPath);
+    }
+
+    if (!watch) {
+        const targetFiles = glob.sync(globStr);
+
+        targetFiles.forEach(copyFile);
+        return;
+    }
+
+    const watcher = chokidar.watch(globStr, {
+        ignored: /(^|[\/\\])\../, // ignore dotfiles
+        persistent: true
+    });
+
+
+
+    watcher
+        .on('add', copyFile)
+        .on('change', copyFile)
+        .on('unlink', removeFile);
 }

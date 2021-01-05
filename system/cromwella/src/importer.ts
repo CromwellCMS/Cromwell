@@ -170,10 +170,9 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                     if (!Cromwell.imports) Cromwell.imports = {};
 
                     // Load meta and externals if it has any
-                    const metaInfoPromise = fetch(`/${metaFilepath}`).then(res => res.text());
 
                     try {
-                        const metaInfoStr = await metaInfoPromise;
+                        const metaInfoStr = await fetch(`/${metaFilepath}`).then(res => res.text());
                         if (metaInfoStr) {
                             const metaInfo: TSciprtMetaInfo = JSON.parse(metaInfoStr);
                             // { [moduleName]: namedExports }
@@ -199,16 +198,15 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                     }
 
                     const filePath = isLibImport ? importerEntireLibFilepath : importerFilepath
-                    const importerPromise = new Promise(done => {
-                        const domScript = document.createElement('script');
-                        domScript.id = scriptId;
-                        domScript.src = filePath;
-                        domScript.onload = () => done(true);
-                        document.head.appendChild(domScript);
-                    });
 
                     try {
-                        await importerPromise;
+                        await new Promise(done => {
+                            const domScript = document.createElement('script');
+                            domScript.id = scriptId;
+                            domScript.src = filePath;
+                            domScript.onload = () => done(true);
+                            document.head.appendChild(domScript);
+                        });
 
                         if (canShowInfo) console.log(`Cromwella:bundler: Importer for module "${moduleName}" executed`);
 
