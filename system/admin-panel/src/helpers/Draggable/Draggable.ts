@@ -48,6 +48,11 @@ export class Draggable {
     private lastPosition: 'before' | 'after' | 'inside' | null = null;
     private lastOptions: TDraggableOptions | null = null;
 
+    private dragStartInfo: {
+        mousePosYinsideBlock: number;
+        mousePosXinsideBlock: number;
+    } | null = null;
+
     /**
      * Movable shadow of a block. Gets inserted into the DOM when user starts drag a block
      */
@@ -79,6 +84,7 @@ export class Draggable {
 
     private draggableFrameClass: string = 'DraggableBlock__frame';
     private draggableBlockClass: string = 'DraggableBlock';
+    public draggableShadowClass: string = 'DraggableBlock__shadow';
 
     private draggableFrameHoveredCSSclass?: string;
     private draggableFrameSelectedCSSclass?: string;
@@ -186,20 +192,34 @@ export class Draggable {
         block.onmouseleave = null;
     }
 
-    private onMouseMove = (event) => {
+    private onMouseMove = (event: MouseEvent) => {
         // console.log('canDragBlock', canDragBlock, 'draggingBlock', draggingBlock);
         if (this.canDragBlock && this.draggingBlock && this.draggingBlockMoveableCopy) {
             if (!this.isDragging) {
                 this.isDragging = true;
-                this.draggingBlockMoveableCopy.style.display = '';
-                if (this.draggingBlock && this.draggingBlockMoveableCopy) {
-                    this.draggingBlock.style.opacity = '0.4';
-                }
+                this.onDragStart(event);
             }
-            this.draggingBlockMoveableCopy.style.top = (event.clientY - this.draggingBlockMoveableCopy.offsetHeight / 2) + 'px';
-            this.draggingBlockMoveableCopy.style.left = (event.clientX - this.draggingBlockMoveableCopy.offsetWidth / 2) + 'px';
+            const mousePosYinsideBlock = this.dragStartInfo?.mousePosYinsideBlock ?? 0;
+            const mousePosXinsideBlock = this.dragStartInfo?.mousePosXinsideBlock ?? 0;
+
+            this.draggingBlockMoveableCopy.style.top = (event.clientY - mousePosYinsideBlock) + 'px';
+            this.draggingBlockMoveableCopy.style.left = (event.clientX - mousePosXinsideBlock) + 'px';
 
             this.tryToInsert(event);
+        }
+    }
+
+    private onDragStart = (event: MouseEvent) => {
+        this.draggingBlockMoveableCopy.style.display = '';
+        if (this.draggingBlock && this.draggingBlockMoveableCopy) {
+            this.draggingBlock.style.opacity = '0.4';
+        }
+
+        const rect = this.draggingBlock.getBoundingClientRect();
+
+        this.dragStartInfo = {
+            mousePosYinsideBlock: event.clientY - rect.top + 10,
+            mousePosXinsideBlock: event.clientX - rect.left + 10
         }
     }
 
@@ -207,12 +227,20 @@ export class Draggable {
     private tryToInsert = debounce((event: MouseEvent) => {
         // console.log('this.draggingBlockId', this.draggingBlockId, this.draggingBlock, this.hoveredBlockId, this.hoveredBlock);
         if (this.hoveredBlock && this.draggingBlock && this.hoveredBlockId !== this.draggingBlockId) {
+
+            if (this.draggingBlock.contains(this.hoveredBlock)) return;
+
             const rect = this.hoveredBlock.getBoundingClientRect();
             // const x = event.clientX - rect.left;
             const mousePosYinsideBlock = event.clientY - rect.top;
 
-            const draggingBlockShadowCopy = this.draggingBlock.cloneNode(true) as HTMLElement;
-            draggingBlockShadowCopy.style.pointerEvents = 'none';
+            let draggingBlockShadowCopy: HTMLElement | null = null;
+
+            const createShadowCopy = () => {
+                draggingBlockShadowCopy = this.draggingBlock.cloneNode(true) as HTMLElement;
+                draggingBlockShadowCopy.style.pointerEvents = 'none';
+                draggingBlockShadowCopy.classList.add(this.draggableShadowClass);
+            }
 
             const parent = this.hoveredBlock.parentNode;
             let hasInserted = false;
@@ -225,9 +253,12 @@ export class Draggable {
 
                 const tryToInsertAbove = () => {
                     if (this.hoveredBlock && this.draggingBlock) {
+                        if (this.draggingBlock.nextSibling === this.hoveredBlock) return;
                         const canInsert = (!this.canInsertBlock) ? true : this.canInsertBlock(this.draggingBlock, this.hoveredBlock, 'before');
                         if (canInsert) {
-                            console.log('move above', this.hoveredBlock, this.draggingBlockId);
+                            // console.log('move above', this.hoveredBlock, this.draggingBlockId);
+                            createShadowCopy();
+
                             parent.insertBefore(draggingBlockShadowCopy, this.hoveredBlock);
                             this.lastPosition = 'before';
                             this.lastTargetBlock = this.hoveredBlock;
@@ -238,9 +269,13 @@ export class Draggable {
 
                 const tryToInsertBelow = () => {
                     if (this.hoveredBlock && this.draggingBlock) {
+                        if (this.hoveredBlock.nextSibling === this.draggingBlock) return;
+
                         const canInsert = (!this.canInsertBlock) ? true : this.canInsertBlock(this.draggingBlock, this.hoveredBlock, 'after');
                         if (canInsert) {
-                            console.log('move below', this.hoveredBlock, this.draggingBlockId);
+                            // console.log('move below', this.hoveredBlock, this.draggingBlockId);
+                            createShadowCopy();
+
                             parent.insertBefore(draggingBlockShadowCopy, this.hoveredBlock.nextSibling);
                             this.lastPosition = 'after';
                             this.lastTargetBlock = this.hoveredBlock;
@@ -253,7 +288,9 @@ export class Draggable {
                     if (this.hoveredBlock && this.draggingBlock) {
                         const canInserInside = (!this.canInsertBlock) ? true : this.canInsertBlock(this.draggingBlock, this.hoveredBlock, 'inside');
                         if (canInserInside && this.hoveredBlock) {
-                            console.log('move inside', this.hoveredBlock, this.draggingBlockId);
+                            // console.log('move inside', this.hoveredBlock, this.draggingBlockId);
+                            createShadowCopy();
+
                             this.hoveredBlock.insertBefore(draggingBlockShadowCopy, null);
                             this.lastPosition = 'inside';
                             this.lastTargetBlock = this.hoveredBlock;
@@ -286,11 +323,14 @@ export class Draggable {
                 }
                 // Save new shadow
                 this.draggingBlockShadowCopy = draggingBlockShadowCopy;
-                this.showBlock(this.draggingBlockShadowCopy);
-                // this.hideBlock(this.draggingBlock);
+
+                if (draggingBlockShadowCopy) {
+                    this.showBlock(draggingBlockShadowCopy);
+                    this.hideBlock(this.draggingBlock)
+                }
             }
             else {
-                draggingBlockShadowCopy.remove();
+                if (draggingBlockShadowCopy) draggingBlockShadowCopy.remove();
             }
             // console.log('x', x, 'y', y, 'clientHeight', this.hoveredBlock.offsetHeight)
         }

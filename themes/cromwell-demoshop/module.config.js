@@ -44,7 +44,7 @@ module.exports = {
                         inject: true,
                         use: ['sass'],
                     }),
-                    terser()
+                    // terser()
                 ]
             }
         }
@@ -57,7 +57,7 @@ module.exports = {
             "modifications": [
                 {
                     "type": "gallery",
-                    "componentId": "main_gallery_01",
+                    "id": "main_gallery_01",
                     "gallery": {
                         "images": [
                             {
@@ -84,7 +84,7 @@ module.exports = {
                 },
                 {
                     "type": "plugin",
-                    "componentId": "main_showcase",
+                    "id": "main_showcase",
                     "plugin": {
                         "pluginName": "@cromwell/plugin-product-showcase"
                     }
@@ -99,8 +99,8 @@ module.exports = {
             "modifications": [
                 {
                     "type": "plugin",
-                    "componentId": "Category_ProductFilter_Plugin",
-                    "destinationComponentId": "Category_ProductFilter",
+                    "id": "Category_ProductFilter_Plugin",
+                    "parentId": "Category_ProductFilter",
                     "destinationPosition": "after",
                     "isVirtual": true,
                     "plugin": {
@@ -117,8 +117,8 @@ module.exports = {
             "modifications": [
                 {
                     "type": "plugin",
-                    "componentId": "Product_ProductShowcase_Plugin",
-                    "destinationComponentId": "Product_ProductShowcase",
+                    "id": "Product_ProductShowcase_Plugin",
+                    "parentId": "Product_ProductShowcase",
                     "destinationPosition": "after",
                     "isVirtual": true,
                     "plugin": {
@@ -134,28 +134,34 @@ module.exports = {
             "modifications": [
                 {
                     "type": "plugin",
-                    "componentId": "5",
+                    "id": "5",
                     "plugin": {
                         "pluginName": "@cromwell/plugin-product-showcase"
                     }
                 },
                 {
                     "type": "HTML",
-                    "componentId": "1",
-                    "destinationComponentId": "2",
+                    "id": "1",
+                    "parentId": "somep_1",
                     "destinationPosition": "after"
                 },
                 {
                     "type": "plugin",
-                    "componentId": "111",
-                    "destinationComponentId": "2",
+                    "id": "111",
+                    "parentId": "2",
                     "destinationPosition": "after",
                     "isVirtual": true,
                     "styles": "background: red;",
                     "plugin": {
                         "pluginName": "ProductShowcaseDemo"
                     }
-                }
+                },
+                {
+                    "type": "text",
+                    "id": "3",
+                    "parentId": "somep_1",
+                    "index": "0"
+                },
             ]
         }
     ],
@@ -192,7 +198,7 @@ module.exports = {
     globalModifications: [
         {
             "type": "plugin",
-            "componentId": "header_main_menu",
+            "id": "header_main_menu",
             "plugin": {
                 "pluginName": "@cromwell/plugin-main-menu"
             }

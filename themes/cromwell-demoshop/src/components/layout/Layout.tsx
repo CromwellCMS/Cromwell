@@ -35,7 +35,7 @@ export default function Layout(props: TProps | undefined) {
                 <Header />
                 <CartModal />
                 <WishlistModal />
-                {(props?.children && isElement(props?.children)) && props.children}
+                {props?.children}
             </div>
         </ThemeProvider>
 

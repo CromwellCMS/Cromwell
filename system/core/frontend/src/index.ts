@@ -9,7 +9,17 @@ export { CList, TCList, TCListProps, TItemComponentProps } from './components/CL
 export { Link } from './components/Link/Link';
 export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
 export * from './HOCs/FrontendPlugin';
-export * from './constants';
+export {
+    cromwellIdToHTML,
+    cromwellIdFromHTML,
+    cromwellBlockTypeToClassname,
+    cromwellBlockTypeFromClassname,
+    cromwellBlockPluginNameToClassname,
+    getBlockDataById,
+    isAdminPanel,
+    BlockGetContentProvider,
+    getBlockData
+} from './constants';
 export * from './api/CGraphQLClient';
 export * from './api/CRestAPIClient';
 export * from './api/CWebSocketClient';

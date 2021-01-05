@@ -155,7 +155,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                 content={(data, blockRef) => {
                     this.gallerySettings = (data && data.gallery) ? data.gallery : settings;
                     this.blockRef = blockRef;
-                    this.swiperId = `swiper-container_${data?.componentId}`;
+                    this.swiperId = `swiper-container_${data?.id}`;
                     this.swiperThumbsId = `${this.swiperId}_thumbs`;
                     let _height = '0px';
                     const gallerySettings = this.gallerySettings;

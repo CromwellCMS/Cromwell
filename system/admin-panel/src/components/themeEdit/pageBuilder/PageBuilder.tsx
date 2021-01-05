@@ -1,12 +1,14 @@
-import React, { Suspense } from 'react';
-import { Draggable } from '../../../helpers/Draggable/Draggable';
-import { setStoreItem, getStoreItem, TCromwellBlockData, TPageConfig, TPageInfo } from '@cromwell/core';
+import { getStoreItem, setStoreItem, TCromwellBlockData } from '@cromwell/core';
 import {
-    CromwellBlockCSSclass, getRestAPIClient, cromwellBlockTypeFromClassname,
-    getBlockDataById, cromwellIdFromHTML
+    BlockGetContentProvider,
+    CromwellBlockCSSclass,
+    cromwellBlockTypeFromClassname,
+    getBlockData,
 } from '@cromwell/core-frontend';
+import React from 'react';
+
+import { Draggable } from '../../../helpers/Draggable/Draggable';
 import PageErrorBoundary from '../../errorBoundaries/PageErrorBoundary';
-import LoadBox from '../../loadBox/LoadBox';
 
 const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
 
@@ -33,6 +35,7 @@ export class PageBuilder extends React.Component<{
     }
 
     componentDidMount() {
+
         this.draggable = new Draggable({
             draggableBlocksSelector: `.${CromwellBlockCSSclass}`,
             editorWindowElem: this.editorWindowRef.current ? this.editorWindowRef.current : undefined,
@@ -45,64 +48,89 @@ export class PageBuilder extends React.Component<{
                     console.log('blockType', blockType);
                     if (blockType !== 'container') return false;
                 }
+                const parentData = getBlockData(targetBlock.parentNode);
+                if (!parentData?.id) {
+                    return false;
+                }
+
                 return true;
             },
             onBlockInserted: (draggedBlock: HTMLElement, targetBlock: HTMLElement,
                 position: 'before' | 'after' | 'inside') => {
-                // console.log('draggedBlock', draggedBlock);
-                // console.log('targetBlock', targetBlock);
-                const draggedBlockId = cromwellIdFromHTML(draggedBlock.id)
-                const destinationComponentId = cromwellIdFromHTML(targetBlock.id);
 
-                const blockData = Object.assign({}, getBlockDataById(draggedBlockId));
+
+                const blockData = Object.assign({}, getBlockData(draggedBlock));
+                const parentData = getBlockData(targetBlock.parentNode)
+                const targetData = getBlockData(targetBlock)
 
                 // Ivalid block - no id, or instance was not found in the global store.
-                if (!blockData.componentId) {
-                    console.error('!blockData.componentId: ', draggedBlock);
+                if (!blockData?.id) {
+                    console.error('!blockData.id: ', draggedBlock);
                     return;
                 }
-                console.log('blockData before', blockData);
+                if (!parentData?.id) {
+                    console.error('!parentData.id: ', draggedBlock);
+                    return;
+                }
+                if (!targetData?.id) {
+                    console.error('!targetData.id: ', draggedBlock);
+                    return;
+                }
+                // console.log('onBlockInserted parentData.id', parentData.id, 'targetData.id', targetData.id, 'position', position)
+                // console.log('blockData before', JSON.stringify(blockData, null, 2));
 
                 // Cannot move near / inside itself
-                if (destinationComponentId === draggedBlockId) return;
+                if (targetData.id === blockData.id) return;
 
-                // Cannot move into same position
-                if (blockData.destinationPosition === position &&
-                    blockData.destinationComponentId === destinationComponentId) return;
+                // Move block:
+                // 1. Set Parent
+                blockData.parentId = parentData.id;
 
+                // 2. Set index in parent's child array
 
-                // We cannot currently move non-virtual blocks because they have persisting 
-                // JSX elements in files of the theme. We don't modify theme's files.
-                // So here the workaround:
-                if (!blockData.isVirtual) {
-                    // 1. Create new virtual block copying current non-virtual with a new Id and new position
-                    const virtualBlockData = Object.assign({}, blockData);
-                    virtualBlockData.isVirtual = true;
-                    virtualBlockData.componentId = virtualBlockData.componentId + '_' + getRandStr();
-                    virtualBlockData.destinationPosition = position;
-                    virtualBlockData.destinationComponentId = destinationComponentId;
+                let iteration = 0;
+                const childrenData: TCromwellBlockData[] = [];
+                Array.from(targetBlock.parentNode.children).forEach((child) => {
+                    const childData = Object.assign({}, getBlockData(child));
+                    if (childData.id) {
+                        if (child.classList.contains(this.draggable.draggableShadowClass)) return;
 
-                    // 2. Delete non-virtual block
-                    blockData.isDeleted = true;
+                        childrenData.push(childData);
+                        childData.parentId = parentData.id;
 
-                    // 3. Save
-                    this.modifyBlock(blockData);
-                    this.modifyBlock(virtualBlockData);
+                        if (childData.id === targetData.id) {
+                            if (position === 'before') {
+                                blockData.index = iteration;
+                                iteration++;
+                                childData.index = iteration;
+                            }
+                            if (position === 'after') {
+                                childData.index = iteration;
+                                iteration++;
+                                blockData.index = iteration;
+                            }
+                        } else {
+                            childData.index = iteration;
+                        }
 
-                    console.log('blockData after blockData', blockData);
-                    console.log('blockData after virtualBlockData', virtualBlockData);
+                        this.modifyBlock(childData);
 
+                        iteration++;
+                    }
+                })
 
-                } else {
-                    blockData.destinationPosition = position;
-                    blockData.destinationComponentId = destinationComponentId;
-                    this.modifyBlock(blockData);
-                    console.log('blockData after', blockData);
-                }
+                this.modifyBlock(blockData);
+
+                // console.log('blockData after', JSON.stringify(blockData, null, 2));
+
+                this.rerenderBlock(blockData.id);
+                childrenData.forEach(child => {
+                    this.rerenderBlock(child.id);
+                })
+                this.rerenderBlock(parentData.id);
 
                 // Update Draggable blocks
                 this.draggable?.updateBlocks();
-
             }
         });
     }
@@ -127,7 +155,7 @@ export class PageBuilder extends React.Component<{
         let modIndex: number | null = null;
         mods = [...mods];
         mods.forEach((mod, i) => {
-            if (mod.componentId === data.componentId) modIndex = i;
+            if (mod.id === data.id) modIndex = i;
         });
         if (modIndex !== null) {
             mods[modIndex] = data;
@@ -142,7 +170,6 @@ export class PageBuilder extends React.Component<{
      * @param data 
      */
     private modifyBlockGlobally = (data: TCromwellBlockData) => {
-        // console.log('modifyBlockGlobally')
         // data.text = { content: '23234' };
         // Add to Store
         const pageConfig = getStoreItem('pageConfig');
@@ -151,11 +178,27 @@ export class PageBuilder extends React.Component<{
         };
         setStoreItem('pageConfig', pageConfig);
 
+
+    }
+
+    private rerenderBlock(id: string) {
         // Re-render blocks
         const instances = getStoreItem('blockInstances');
         if (instances) {
             Object.values(instances).forEach(inst => {
-                inst?.forceUpdate();
+                if (inst?.getData()?.id === id && inst?.forceUpdate)
+                    inst.forceUpdate();
+            })
+        }
+    }
+
+    private rerenderBlocks() {
+        // Re-render blocks
+        const instances = getStoreItem('blockInstances');
+        if (instances) {
+            Object.values(instances).forEach(inst => {
+                if (inst?.forceUpdate)
+                    inst.forceUpdate();
             })
         }
     }
@@ -165,9 +208,30 @@ export class PageBuilder extends React.Component<{
 
         return (
             <div ref={this.editorWindowRef}>
-                <PageErrorBoundary>
-                    <EditingPage />
-                </PageErrorBoundary>
+                <BlockGetContentProvider value={(block) => {
+                    const bType = block?.getData()?.type;
+                    if (bType === 'container') {
+                        return block.getDefaultContent();
+                    }
+                    if (bType === 'plugin') {
+                        return (
+                            <div>
+                                <p>{block?.getData()?.plugin?.pluginName} Plugin</p>
+                            </div>
+                        )
+                    }
+
+                    return block.getDefaultContent();
+                    // return (
+                    //     <div>
+                    //         <p>Block {block.getData().type}</p>
+                    //     </div>
+                    // )
+                }}>
+                    <PageErrorBoundary>
+                        <EditingPage />
+                    </PageErrorBoundary>
+                </BlockGetContentProvider>
             </div>
         )
     }

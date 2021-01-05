@@ -117,7 +117,7 @@ export class ThemeService {
             userMods.forEach(userMod => {
                 let hasOriginaly = false;
                 mods.forEach((themeMod, i) => {
-                    if (themeMod.componentId === userMod.componentId) {
+                    if (themeMod.id === userMod.id) {
                         mods[i] = userMod;
                         hasOriginaly = true;
                     }
@@ -237,24 +237,24 @@ export class ThemeService {
                 let hasUserSameMod = false;
 
                 oldUserPageConfig?.modifications.forEach(userMod => {
-                    if (userMod.componentId === mod.componentId) hasUserSameMod = true;
+                    if (userMod.id === mod.id) hasUserSameMod = true;
                 });
                 // If hasUserSameMod === false, then mod exists only in theme's config
                 if (!hasUserSameMod) {
                     // Just remove from user's config
                     if (oldUserPageConfig && oldUserPageConfig.modifications) {
                         oldUserPageConfig.modifications = oldUserPageConfig.modifications.filter(
-                            userMode => userMode.componentId !== mod.componentId
+                            userMode => userMode.id !== mod.id
                         )
                     }
                     filteredUserPageConfig.modifications = filteredUserPageConfig.modifications.filter(
-                        userMode => userMode.componentId !== mod.componentId
+                        userMode => userMode.id !== mod.id
                     )
                 } else {
                     // optimize space for mode to leave only flag and id
                     filteredUserPageConfig.modifications = filteredUserPageConfig.modifications.map(userMode =>
-                        userMode.componentId === mod.componentId ? {
-                            componentId: mod.componentId,
+                        userMode.id === mod.id ? {
+                            id: mod.id,
                             isDeleted: true,
                             type: mod.type
                         } : userMode

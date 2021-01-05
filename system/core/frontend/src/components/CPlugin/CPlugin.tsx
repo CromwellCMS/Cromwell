@@ -1,11 +1,10 @@
-import loadable from '@loadable/component';
-import dynamic from 'next/dynamic';
 import React from 'react';
 import { isValidElementType } from 'react-is';
 
 import { getRestAPIClient } from '../../api/CRestAPIClient';
 import { loadFrontendBundle } from '../../helpers/loadFrontendBundle';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { dynamicLoader } from '../../constants';
 
 const fallbackComponent = () => <></>;
 
@@ -22,8 +21,6 @@ export const CPlugin = (props: { id: string, className?: string, pluginName?: st
                 const name = (data && data.plugin && data.plugin.pluginName) ? data.plugin.pluginName : pluginName;
                 let PluginComponent;
                 if (name) {
-                    const dynamicLoader = dynamic ?? loadable;
-
                     PluginComponent = loadFrontendBundle(name, async () => {
                         const restAPIClient = getRestAPIClient();
                         return restAPIClient?.getPluginFrontendBundle(name);

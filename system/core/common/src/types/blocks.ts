@@ -1,6 +1,7 @@
 import { NextPage } from 'next';
 import { TProduct } from './entities';
 import { TPageConfig, TCmsConfig, TThemeMainConfig, TPageInfo, TCmsSettings } from './data';
+import { ReactNode } from 'react';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
 export type StaticPageContext<Q extends ParsedUrlQuery = ParsedUrlQuery> = {
@@ -35,8 +36,13 @@ export type TFrontendPluginProps<TData = any, TSettings = any> = {
 
 export type TCromwellBlock = React.Component<TCromwellBlockProps> & {
     getContentInstance: () => React.Component;
+    setContentInstance: (contentInstance: React.Component) => void;
     getData: () => TCromwellBlockData | undefined;
     getBlockRef: () => React.RefObject<HTMLDivElement>;
+    contentRender: (getContent?: TBlockContentGetter | null) => React.ReactNode | null;
+    finalRender: () => React.ReactNode | null;
+    getDefaultContent: () => React.ReactNode | null;
+    notifyChildRegister: (inst: TCromwellBlock) => void;
 }
 
 export type TDataComponentProps<Data> = {
@@ -65,8 +71,6 @@ export type TCommonComponentProps = {
     data?: TProduct;
 }
 
-export type TBlockDestinationPositionType = 'before' | 'after' | 'inside';
-
 export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image' | 'gallery' | 'list';
 
 export type TCromwellBlockData = {
@@ -78,25 +82,23 @@ export type TCromwellBlockData = {
     /**
      * Component's id, must be unique in a page.
      */
-    componentId: string;
+    id: string;
 
     /**
-     * If true, indicates that this component was created in builder and it doesn't exist in JSX.
+     * If true, indicates that this component was created in builder and it doesn't exist in source files.
      * Exists only in page's config. 
      */
     isVirtual?: boolean;
 
     /**
      * Id of Destination Component where this component will be displayed. 
-     * Works only for virtual blocks.
      */
-    destinationComponentId?: string;
+    parentId?: string;
 
     /**
-     * Position around Destination Component where this component will be displayed.
-     * Works only for virtual blocks.
+     * Index inside children array of parent element 
      */
-    destinationPosition?: TBlockDestinationPositionType;
+    index?: number;
 
     /** CSS styles to apply to this block's wrapper*/
     styles?: string;
@@ -173,3 +175,5 @@ export type TGallerySettings = {
         imgWrapper?: React.ComponentType<{ image: TImageSettings }>;
     };
 }
+
+export type TBlockContentGetter = (block: TCromwellBlock) => React.ReactNode | null;
