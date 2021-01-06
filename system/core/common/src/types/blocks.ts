@@ -40,9 +40,9 @@ export type TCromwellBlock = React.Component<TCromwellBlockProps> & {
     getData: () => TCromwellBlockData | undefined;
     getBlockRef: () => React.RefObject<HTMLDivElement>;
     contentRender: (getContent?: TBlockContentGetter | null) => React.ReactNode | null;
-    finalRender: () => React.ReactNode | null;
+    consumerRender: () => React.ReactNode | null;
     getDefaultContent: () => React.ReactNode | null;
-    notifyChildRegister: (inst: TCromwellBlock) => void;
+    notifyChildRegistered: (inst: TCromwellBlock) => void;
 }
 
 export type TDataComponentProps<Data> = {

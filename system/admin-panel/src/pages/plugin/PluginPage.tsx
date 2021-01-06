@@ -1,16 +1,18 @@
+import { CPlugin } from '@cromwell/core-frontend';
 import React from 'react';
-import { getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
+
+import styles from './PluginPage.module.scss';
 
 const PluginPage = () => {
     const urlParams = new URLSearchParams(window.location.search);
     const pluginName = urlParams.get('pluginName');
 
-    const PageComp = loadFrontendBundle(pluginName,
-        () => getRestAPIClient()?.getPluginAdminBundle(pluginName));
-
-    return PageComp ? (
-        <PageComp />
-    ) : <div></div>;
+    return (
+        <CPlugin id={pluginName}
+            pluginName={pluginName}
+            className={styles.PluginPage}
+        />
+    )
 }
 
 export default PluginPage;

@@ -1,4 +1,4 @@
-import { getStoreItem, setStoreItem, TFrontendBundle, isServer, getStore } from '@cromwell/core';
+import { getStoreItem, setStoreItem, TFrontendBundle, isServer, getStore, logFor } from '@cromwell/core';
 import loadableComponent from '@loadable/component';
 
 export const loadFrontendBundle = (bundleName: string,
@@ -13,18 +13,15 @@ export const loadFrontendBundle = (bundleName: string,
         components = {};
         setStoreItem('components', components);
     }
-    const nodeModules = getStoreItem('nodeModules');
-    const savedComp = components?.[bundleName];
 
-    let comp: any = undefined;
-
+    const savedComp = components[bundleName];
     if (savedComp) {
-        comp = (savedComp as any)?.default ?? savedComp;
-        return comp;
+        return (savedComp as any)?.default ?? savedComp;
     }
 
     const loadableFunc = loadable ?? loadableComponent;
-    comp = loadableFunc(async () => {
+
+    return loadableFunc(async () => {
 
         let bundle;
         try {
@@ -35,22 +32,35 @@ export const loadFrontendBundle = (bundleName: string,
 
         if (bundle?.source) {
             if (bundle?.meta) {
+                const nodeModules = getStoreItem('nodeModules');
                 await nodeModules?.importSciptExternals?.(bundle.meta);
             }
 
+            let comp: any;
+
             if (isServer()) {
                 // Server-side
-                if (bundle.cjsPath) {
-                    const fsRequire = getStoreItem('fsRequire');
-                    comp = fsRequire?.(bundle.cjsPath).default;
-                } else {
-                    comp = Function('CromwellStore', `return ${bundle.source}`)(getStore());
+                const evalCode = () => {
+                    try {
+                        comp = Function('CromwellStore', `return ${bundle.source}`)(getStore());
+                    } catch (e) {
+                        logFor('errors-only', 'loadFrontendBundle: Failed to evaluate code of a bundle: ' + bundleName, console.error);
+                    }
                 }
-                if (comp) components![bundleName] = comp;
-                comp = comp?.default ?? comp;
-                if (comp) return comp;
-            } else {
 
+                if (bundle.cjsPath) {
+                    try {
+                        const fsRequire = getStoreItem('fsRequire');
+                        comp = fsRequire?.(bundle.cjsPath).default;
+                    } catch (e) {
+                        logFor('errors-only', 'loadFrontendBundle: Failed to fsRequire bundle at: ' + bundle.cjsPath, console.error);
+                        evalCode();
+                    }
+                } else {
+                    evalCode();
+                }
+
+            } else {
                 // Browser-side
                 const source = `
                 var comp = ${bundle.source};
@@ -66,14 +76,19 @@ export const loadFrontendBundle = (bundleName: string,
                     document.head.appendChild(domScript);
                 });
 
+                const components = getStoreItem('components');
                 comp = components?.[bundleName];
-                comp = comp?.default ?? comp;
-                if (comp) return comp;
+            }
+
+            comp = comp?.default ?? comp;
+
+            const components = getStoreItem('components');
+            if (comp) {
+                components![bundleName] = comp;
+                return comp;
             }
         }
 
         return fallbackComponent ?? (() => null);
     }, dynamicLoaderProps);
-
-    return comp;
 }

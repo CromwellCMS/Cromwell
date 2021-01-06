@@ -45,7 +45,6 @@ export class PageBuilder extends React.Component<{
                 // can insert inside only 'container' blocks
                 if (position === 'inside') {
                     const blockType = cromwellBlockTypeFromClassname(targetBlock.classList.toString());
-                    console.log('blockType', blockType);
                     if (blockType !== 'container') return false;
                 }
                 const parentData = getBlockData(targetBlock.parentNode);
@@ -187,17 +186,6 @@ export class PageBuilder extends React.Component<{
         if (instances) {
             Object.values(instances).forEach(inst => {
                 if (inst?.getData()?.id === id && inst?.forceUpdate)
-                    inst.forceUpdate();
-            })
-        }
-    }
-
-    private rerenderBlocks() {
-        // Re-render blocks
-        const instances = getStoreItem('blockInstances');
-        if (instances) {
-            Object.values(instances).forEach(inst => {
-                if (inst?.forceUpdate)
                     inst.forceUpdate();
             })
         }

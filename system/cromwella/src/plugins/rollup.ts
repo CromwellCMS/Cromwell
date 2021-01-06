@@ -67,9 +67,8 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
 
             options.plugins.push(virtual({
                 [optionsInput]: `
-                        import { FrontendPlugin } from '@cromwell/core-frontend';
                         import defaulComp from '${inputPath}';
-                        export default FrontendPlugin(defaulComp, '${cromwellConfig.name}');
+                        export default defaulComp;
                         `
             }))
             options.plugins.unshift(rollupPluginCromwellFrontend({
@@ -239,9 +238,15 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                     }));
                     adminOptions.input = optionsInput;
                     adminOptions.plugins.unshift(rollupPluginCromwellFrontend({ buildDir, cromwellConfig }));
+                    
+                    const pageStrippedName = pagePath?.pageName?.replace(/\W/g, '_') ?? strippedName;
+                    
                     adminOptions.output = Object.assign({}, adminOptions.output, {
                         dir: resolve(buildDir, 'admin', dirname(pagePath.pageName)),
                         format: "iife",
+                        name: pagePath?.pageName?.replace(/\W/g, '_'),
+                        banner: '(function() {',
+                        footer: `return ${pageStrippedName};})();`
                     } as OutputOptions);
 
                     adminPanelOptions.push(adminOptions);

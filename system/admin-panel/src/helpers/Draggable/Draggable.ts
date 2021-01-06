@@ -18,6 +18,8 @@ type TDraggableOptions = {
     canInsertBlock?: (draggedBlock: HTMLElement, targetBlock: HTMLElement,
         position: 'before' | 'after' | 'inside') => boolean;
 
+    onBlockSelected?: (draggedBlock: HTMLElement) => void;
+
 
     /**
      * Should actually insert original elements into targets? If false, will
@@ -28,6 +30,11 @@ type TDraggableOptions = {
      * True by default
      */
     hasToMoveElements?: boolean;
+
+    /**
+     * Color of frames
+     */
+    primaryColor?: string;
 
     // draggableFrameSelector: string,
     // draggableFrameHoveredCSSclass?: string,
@@ -48,7 +55,12 @@ export class Draggable {
     private lastPosition: 'before' | 'after' | 'inside' | null = null;
     private lastOptions: TDraggableOptions | null = null;
 
-    private dragStartInfo: {
+    private onMouseDownInfo: {
+        clientY: number;
+        clientX: number;
+    } | null = null;
+
+    private onDragStartInfo: {
         mousePosYinsideBlock: number;
         mousePosXinsideBlock: number;
     } | null = null;
@@ -86,8 +98,8 @@ export class Draggable {
     private draggableBlockClass: string = 'DraggableBlock';
     public draggableShadowClass: string = 'DraggableBlock__shadow';
 
-    private draggableFrameHoveredCSSclass?: string;
-    private draggableFrameSelectedCSSclass?: string;
+    private draggableFrameHoveredCSSclass: string = 'DraggableBlock__frame_hovered';
+    private draggableFrameSelectedCSSclass: string = 'DraggableBlock__frame_selected';
 
     private canInsertBlock?: TDraggableOptions['canInsertBlock'];
     private onBlockInserted?: TDraggableOptions['onBlockInserted'];
@@ -96,9 +108,6 @@ export class Draggable {
     constructor(options: TDraggableOptions) {
         // check for underlying blocks to move to
         const bodyElem = document.querySelector('body');
-
-        this.draggableFrameHoveredCSSclass = 'DraggableBlock__frame_hovered';
-        this.draggableFrameSelectedCSSclass = 'DraggableBlock__frame_selected';
 
         if (bodyElem) {
             bodyElem.onmousemove = this.onMouseMove;
@@ -163,13 +172,16 @@ export class Draggable {
 
         this.draggableFrames.push(draggableFrame);
 
-        draggableFrame.onclick = () => {
-            console.log('draggableElement', block.id);
-        }
+        draggableFrame.addEventListener('click', (e) => {
+            this.onBlockClick(block, draggableFrame, e);
+        })
+        block.addEventListener('click', (e) => {
+            this.onBlockClick(block, draggableFrame, e);
+        })
 
         block.onmousedown = (e) => {
             e.stopPropagation();
-            this.onBlockMouseDown(block, editorWindowElem);
+            this.onBlockMouseDown(block, editorWindowElem, e);
         }
 
         block.onmouseover = (e) => {
@@ -199,8 +211,8 @@ export class Draggable {
                 this.isDragging = true;
                 this.onDragStart(event);
             }
-            const mousePosYinsideBlock = this.dragStartInfo?.mousePosYinsideBlock ?? 0;
-            const mousePosXinsideBlock = this.dragStartInfo?.mousePosXinsideBlock ?? 0;
+            const mousePosYinsideBlock = this.onDragStartInfo?.mousePosYinsideBlock ?? 0;
+            const mousePosXinsideBlock = this.onDragStartInfo?.mousePosXinsideBlock ?? 0;
 
             this.draggingBlockMoveableCopy.style.top = (event.clientY - mousePosYinsideBlock) + 'px';
             this.draggingBlockMoveableCopy.style.left = (event.clientX - mousePosXinsideBlock) + 'px';
@@ -217,9 +229,9 @@ export class Draggable {
 
         const rect = this.draggingBlock.getBoundingClientRect();
 
-        this.dragStartInfo = {
-            mousePosYinsideBlock: event.clientY - rect.top + 10,
-            mousePosXinsideBlock: event.clientX - rect.left + 10
+        this.onDragStartInfo = {
+            mousePosYinsideBlock: (this.onMouseDownInfo?.clientY ?? 0) - rect.top + 10,
+            mousePosXinsideBlock: (this.onMouseDownInfo?.clientX ?? 0) - rect.left + 10
         }
     }
 
@@ -368,7 +380,7 @@ export class Draggable {
         block.style.pointerEvents = '';
     }
 
-    private onBlockMouseDown = (block: HTMLElement, editorWindowElem?: HTMLElement) => {
+    private onBlockMouseDown = (block: HTMLElement, editorWindowElem?: HTMLElement, event?: MouseEvent) => {
         this.draggingBlock = block;
         this.draggingBlockId = block.id;
 
@@ -386,6 +398,11 @@ export class Draggable {
         this.draggingBlockMoveableCopy.style.transition = 'none'
         this.draggingBlockMoveableCopy.style.pointerEvents = 'none';
         this.draggingBlockMoveableCopy.style.zIndex = '9999';
+
+        this.onMouseDownInfo = {
+            clientY: event.clientY,
+            clientX: event.clientX,
+        }
 
         setTimeout(() => {
             if (this.draggingBlock && this.draggingBlockMoveableCopy) {
@@ -408,11 +425,9 @@ export class Draggable {
         this.hoveredBlock = block;
         this.hoveredBlockId = block.id;
 
-        this.draggableFrames.forEach(f => this.draggableFrameHoveredCSSclass && f.classList.remove(this.draggableFrameHoveredCSSclass))
+        this.draggableFrames.forEach(this.deselectFrame);
 
-        if (frame && this.draggableFrameHoveredCSSclass) {
-            frame.classList.add(this.draggableFrameHoveredCSSclass)
-        }
+        this.hoverFrame(frame)
 
         this.draggableBlocks && this.draggableBlocks.forEach(b => b ? b.style.zIndex = '2' : '');
         this.hoveredBlock.style.zIndex = '5';
@@ -421,11 +436,35 @@ export class Draggable {
 
     private onBlockHoverEnd = () => {
         if (!this.hoveredBlockId) return;
-        this.draggableFrames.forEach(f => this.draggableFrameHoveredCSSclass && f.classList.remove(this.draggableFrameHoveredCSSclass));
+        this.draggableFrames.forEach(this.deselectFrame);
         this.draggableBlocks && this.draggableBlocks.forEach(b => b ? b.style.zIndex = '2' : '');
         this.hoveredBlock = null;
         this.hoveredBlockId = null;
         // console.log('onmouseleave hoveredBlockId', this.hoveredBlockId);
+    }
+
+    private onBlockClick = (block: HTMLElement, frame: HTMLElement, event: MouseEvent) => {
+        event.stopPropagation();
+        this.draggableFrames.forEach(this.deselectFrame);
+        this.selectFrame(frame);
+        this.lastOptions?.onBlockSelected?.(block);
+    }
+
+    private hoverFrame = (frame: HTMLElement) => {
+        const color = this.lastOptions?.primaryColor ?? '#9900CC';
+        frame.classList.add(this.draggableFrameHoveredCSSclass);
+        frame.style.border = `1px solid ${color}`;
+    }
+
+    private selectFrame = (frame: HTMLElement) => {
+        const color = this.lastOptions?.primaryColor ?? '#9900CC';
+        frame.classList.add(this.draggableFrameHoveredCSSclass);
+        frame.style.border = `2px solid ${color}`;
+    }
+
+    private deselectFrame = (frame: HTMLElement) => {
+        frame.classList.remove(this.draggableFrameHoveredCSSclass);
+        frame.style.border = '0';
     }
 
     private stopDragBlock = () => {

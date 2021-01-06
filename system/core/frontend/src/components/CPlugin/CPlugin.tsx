@@ -1,10 +1,11 @@
+import { getStoreItem, TFrontendPluginProps, TCromwellBlockProps } from '@cromwell/core';
 import React from 'react';
 import { isValidElementType } from 'react-is';
 
 import { getRestAPIClient } from '../../api/CRestAPIClient';
+import { dynamicLoader } from '../../constants';
 import { loadFrontendBundle } from '../../helpers/loadFrontendBundle';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
-import { dynamicLoader } from '../../constants';
 
 const fallbackComponent = () => <></>;
 
@@ -12,24 +13,45 @@ const fallbackComponent = () => <></>;
  * Used internally to import and render plugin at frontend
  * @param props 
  */
-export const CPlugin = (props: { id: string, className?: string, pluginName?: string }) => {
-    const { pluginName, ...rest } = props;
+export const CPlugin = (props: {
+    id: string;
+    className?: string;
+    pluginName?: string;
+    component?: React.ComponentType<TFrontendPluginProps>;
+} & TCromwellBlockProps) => {
+    const { pluginName, component, ...rest } = props;
 
     return (
         <CromwellBlock {...rest} type='plugin'
             content={(data) => {
-                const name = (data && data.plugin && data.plugin.pluginName) ? data.plugin.pluginName : pluginName;
-                let PluginComponent;
-                if (name) {
-                    PluginComponent = loadFrontendBundle(name, async () => {
-                        const restAPIClient = getRestAPIClient();
-                        return restAPIClient?.getPluginFrontendBundle(name);
-                    }, dynamicLoader, fallbackComponent, { loading: () => <p>loading plugin...</p> })
+                const name = data?.plugin?.pluginName ?? pluginName;
+                if (!name) return <></>;
+
+                let PluginComponent = component;
+                if (name && !component) {
+
+                    const restAPIClient = getRestAPIClient();
+                    const loader = getStoreItem('environment')?.isAdminPanel ?
+                        restAPIClient?.getPluginAdminBundle : restAPIClient?.getPluginFrontendBundle;
+
+                    PluginComponent = loadFrontendBundle(
+                        name,
+                        async () => loader?.(name),
+                        dynamicLoader,
+                        fallbackComponent,
+                        { loading: () => <p>loading plugin...</p> }
+                    )
                 }
+
+                const pluginsData = getStoreItem('pluginsData');
+                const pluginsSettings = getStoreItem('pluginsSettings');
+                const pluginData = pluginsData?.[name] ?? {};
+                const settings = pluginsSettings?.[name] ?? {};
+
                 // console.log('CPlugin name', name, 'PluginComponent', PluginComponent);
                 if (PluginComponent && isValidElementType(PluginComponent)) return (
                     <ErrorBoundary>
-                        <PluginComponent />
+                        <PluginComponent data={pluginData} settings={settings} pluginName={name} />
                     </ErrorBoundary>
                 );
                 else return <></>

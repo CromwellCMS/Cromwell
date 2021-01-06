@@ -25,14 +25,18 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private childBlocks: TCromwellBlockData[] = [];
     private hasBeenMoved?: boolean = false;
     private blockRef = React.createRef<HTMLDivElement>();
-
     private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
 
     public getData = () => this.data;
     public getBlockRef = () => this.blockRef;
+    public getContentInstance = () => this.contentInstance;
+    public setContentInstance = (contentInstance: React.Component) => this.contentInstance = contentInstance;
+    public getBlockInstance = (id: string): TCromwellBlock | undefined => getStoreItem('blockInstances')?.[id];
+
 
     constructor(props: TCromwellBlockProps) {
         super(props);
+
         let instances = getStoreItem('blockInstances');
         if (!instances) instances = {}
         instances[this.props.id] = this;
@@ -40,18 +44,12 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
         this.readConfig();
 
-        if (this.data?.parentId) {
-            this.hasBeenMoved = true;
-
+        if (this.data?.parentId && this.hasBeenMoved) {
             const parentInst = this.getBlockInstance(this.data?.parentId);
             if (parentInst) {
-                parentInst.notifyChildRegister(this);
+                parentInst.notifyChildRegistered(this);
             }
         }
-    }
-
-    public getBlockInstance(id: string): TCromwellBlock | undefined {
-        return getStoreItem('blockInstances')?.[id];
     }
 
     componentWillUnmount() {
@@ -69,24 +67,8 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         }
     }
 
-    public getContentInstance = () => this.contentInstance;
-    public setContentInstance = (contentInstance: React.Component) => this.contentInstance = contentInstance;
-
-    public notifyChildRegister(inst: TCromwellBlock) {
-        const id = inst.getData()?.id;
-        if (id) {
-            const resolver = this.childResolvers[id];
-            if (resolver) {
-                this.childResolvers[id] = undefined;
-                resolver(inst);
-            }
-        }
-    }
-
-
-    private readConfig = () => {
+    private readConfig() {
         this.data = undefined;
-        // console.log('readConfig', this.props.id)
 
         if (this.props.type) this.data = { id: this.props.id, type: this.props.type };
 
@@ -95,7 +77,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         this.childBlocks = [];
         const pageConfig = getStoreItem('pageConfig');
 
-        // console.log('pageConfig', pageConfig)
         if (pageConfig && pageConfig.modifications && Array.isArray(pageConfig.modifications)) {
             pageConfig.modifications.forEach(d => {
 
@@ -108,6 +89,10 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                     this.childBlocks.push(d)
                 }
             })
+        }
+
+        if (this.data?.parentId && !this.data?.isVirtual) {
+            this.hasBeenMoved = true;
         }
 
     }
@@ -158,6 +143,18 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         )
     }
 
+
+    public notifyChildRegistered(inst: TCromwellBlock) {
+        const id = inst.getData()?.id;
+        if (id) {
+            const resolver = this.childResolvers[id];
+            if (resolver) {
+                this.childResolvers[id] = undefined;
+                resolver(inst);
+            }
+        }
+    }
+
     public getChildBlocks(): React.ReactNode[] {
         this.childBlocks = this.childBlocks.sort((a, b) => {
             const ai = a?.index ?? 0;
@@ -172,7 +169,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
             const blockInst = this.getBlockInstance(block.id);
             if (blockInst) {
-                return blockInst.finalRender();
+                return blockInst.consumerRender();
 
             } else {
                 // Child wasnt wan't initialized yet. Wait until it registers in the store 
@@ -183,11 +180,10 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                 const DynamicComp = dynamicLoader(async (): Promise<React.ComponentType> => {
                     const child = await childPromise;
                     return () => {
-                        return <>{child.finalRender()}</>
+                        return <>{child.consumerRender()}</>
                     }
                 });
                 return <DynamicComp />;
-
             }
         })
     }
@@ -240,7 +236,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         );
     }
 
-    public finalRender(): React.ReactNode | null {
+    public consumerRender(): React.ReactNode | null {
         return <BlockGetContentConsumer>
             {(getContent) => {
                 return this.contentRender(getContent)
@@ -249,17 +245,13 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     }
 
     render(): React.ReactNode | null {
-        // console.log('CromwellBlock::render id: ' + this.id + ' data: ' + JSON.stringify(this.data));
+        // console.log('CromwellBlock::render id: ' + this.props.id + ' data: ' + JSON.stringify(this.data));
         this.readConfig();
-
-        if (this.data?.parentId) {
-            this.hasBeenMoved = true;
-        }
 
         if (this.hasBeenMoved) {
             return <></>;
         } else {
-            return this.finalRender();
+            return this.consumerRender();
         }
 
     }

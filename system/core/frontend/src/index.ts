@@ -8,7 +8,6 @@ export { CGallery } from './components/CGallery/CGallery';
 export { CList, TCList, TCListProps, TItemComponentProps } from './components/CList/CList';
 export { Link } from './components/Link/Link';
 export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
-export * from './HOCs/FrontendPlugin';
 export {
     cromwellIdToHTML,
     cromwellIdFromHTML,

@@ -21,6 +21,7 @@ const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
         setAnchorEl(null);
         setActiveItem('none');
     };
+
     return (
         <div className={classes.menuList}>
             {items.map((i, index) => {

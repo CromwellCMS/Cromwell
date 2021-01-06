@@ -30,6 +30,8 @@ export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) =>
         logger.error('No packages found');
         return;
     }
+    let downloads = 0;
+    let successfulDownloads = 0;
 
     const frontendDeps = collectFrontendDependencies(packages);
 
@@ -46,12 +48,14 @@ export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) =>
         process.stdout.write(colors.cyan(`Cromwella:: Downloading frontend module: ${colors.brightCyan(depName)}`));
         process.stdout.cursorTo(0);
 
+        downloads++;
         const success = await downloadBundleZipped(depName, bundledModulesDir);
         if (!success) {
             colors.cyan(`Cromwella:: Downloading frontend module, second attempt: ${colors.brightCyan(depName)}`)
             const success2 = await downloadBundleZipped(depName, bundledModulesDir);
             if (!success2) return;
         }
+        successfulDownloads++;
         // await downloadBundle(depName, bundledModulesDir);
 
         let meta: TSciprtMetaInfo;
@@ -78,8 +82,12 @@ export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) =>
         return dowloadDepsRecursively(depName);
     })
 
-    console.log('\n')
-    console.log(colors.cyan(`Cromwella:: All modules have been downloaded`));
+    if (downloads > 0) {
+        process.stdout.clearLine(-1);
+        process.stdout.clearLine(0);
+        console.log('\n')
+        console.log(colors.cyan(`Cromwella:: Downloaded ${successfulDownloads}/${downloads} modules`));
+    }
 }
 
 

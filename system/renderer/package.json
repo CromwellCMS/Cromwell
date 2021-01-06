@@ -15,7 +15,7 @@
     "fs-extra": "^9.0.1",
     "graceful-fs": "^4.2.4",
     "make-empty-dir": "^1.0.0",
-    "next": "10.0.4",
+    "next": "10.0.3",
     "next-transpile-modules": "^6.0.0",
     "node-fetch": "^2.6.1",
     "normalize-path": "^3.0.0",

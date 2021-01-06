@@ -101,7 +101,6 @@ module.exports = {
                     "type": "plugin",
                     "id": "Category_ProductFilter_Plugin",
                     "parentId": "Category_ProductFilter",
-                    "destinationPosition": "after",
                     "isVirtual": true,
                     "plugin": {
                         "pluginName": "@cromwell/plugin-product-filter"
@@ -119,7 +118,7 @@ module.exports = {
                     "type": "plugin",
                     "id": "Product_ProductShowcase_Plugin",
                     "parentId": "Product_ProductShowcase",
-                    "destinationPosition": "after",
+                    "index": 1,
                     "isVirtual": true,
                     "plugin": {
                         "pluginName": "@cromwell/plugin-product-showcase"
@@ -143,18 +142,6 @@ module.exports = {
                     "type": "HTML",
                     "id": "1",
                     "parentId": "somep_1",
-                    "destinationPosition": "after"
-                },
-                {
-                    "type": "plugin",
-                    "id": "111",
-                    "parentId": "2",
-                    "destinationPosition": "after",
-                    "isVirtual": true,
-                    "styles": "background: red;",
-                    "plugin": {
-                        "pluginName": "ProductShowcaseDemo"
-                    }
                 },
                 {
                     "type": "text",

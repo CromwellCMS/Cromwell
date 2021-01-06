@@ -7,7 +7,7 @@ const defaultThemes = ["@cromwell/theme-store"];
 const reqModule = (name: string) => {
     try {
         return require(name);
-    } catch (e) { serverLogFor('errors-only', 'readCmsModules: Failed to require ' + name, 'Error') }
+    } catch (e) { serverLogFor('errors-warnings', 'readCmsModules: Failed to require ' + name, 'Warning') }
 }
 
 export const readCmsModules = async () => {

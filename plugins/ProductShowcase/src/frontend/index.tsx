@@ -1,15 +1,19 @@
-import React, { Component, useEffect, useState } from 'react';
-import { StaticPageContext, TProductCategory, TProduct, TFrontendPluginProps } from '@cromwell/core';
-import { getGraphQLClient, Link } from '@cromwell/core-frontend';
-import { useStyles } from './styles';
-import { ECommonComponentNames, loadCommonComponent } from '@cromwell/core';
-import { Swiper, Navigation, Pagination, SwiperOptions, Lazy, Virtual } from 'swiper';
-import { VirtualData } from 'swiper/types/components/virtual';
 import { gql } from '@apollo/client';
-//@ts-ignore
-import swiperCSS from "swiper/swiper-bundle.css";
-//@ts-ignore
-import styles from './CGallery.module.scss';
+import {
+    ECommonComponentNames,
+    loadCommonComponent,
+    StaticPageContext,
+    TFrontendPluginProps,
+    TProduct,
+    TProductCategory,
+} from '@cromwell/core';
+import { getGraphQLClient, Link } from '@cromwell/core-frontend';
+import React, { useEffect, useState } from 'react';
+import { Navigation, Pagination, Swiper, SwiperOptions, Virtual } from 'swiper';
+import { VirtualData } from 'swiper/types/components/virtual';
+
+import { useStyles } from './styles';
+import "swiper/swiper-bundle.css";
 
 Swiper.use([Navigation, Pagination, Virtual]);
 
@@ -72,7 +76,9 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
         const swiper = new Swiper(`#${swiperId}`, options);
 
         setTimeout(() => swiper.update(), 100);
-    }, [])
+    }, []);
+
+
     return (
         <div className={classes.wrapper}>
             <h3 className={classes.title}>Featured items</h3>

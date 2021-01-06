@@ -83,9 +83,35 @@ const getConfig = (buildMode = 'production') => {
                 moduleName: '@cromwell/admin-panel',
                 moduleBuiltins: {
                     '@cromwell/admin-panel': [
-                        '@cromwell/cromwella/build/importer.js'
+                        '@cromwell/cromwella/build/importer.js',
+                        '@cromwell/core-frontend',
+                        '@cromwell/core'
                     ]
-                }
+                },
+                packageExternals: [
+                    "clsx",
+                    "next/head",
+                    "next/router",
+                    "next/link",
+                    "next/dynamic",
+                    "next/document",
+                    "@material-ui/core",
+                    "@material-ui/icons",
+                    "@material-ui/lab",
+                    "@apollo/client",
+                    "@loadable/component",
+                    "debounce",
+                    "whatwg-fetch",
+                    "query-string",
+                    "react",
+                    "react-dom",
+                    "react-number-format",
+                    "react-router-dom",
+                    "react-toastify",
+                    "style-inject",
+                    "swiper",
+                    "tslib"
+                ]
             })
         ],
     }
