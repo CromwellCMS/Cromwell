@@ -1,0 +1,17 @@
+.BaseBlock {
+    // display: flex;
+    position: relative;
+}
+
+.actions {
+    display: flex;
+    position: absolute;
+    top: -46px;
+    left: -10px;
+    background-color: #fff;
+    box-shadow: 0 3px 4px 0 rgba(0,0,0,.05), 0 0 8px 0 rgba(0,0,0,.05);
+}
+
+.action {
+    padding: 5px;
+}

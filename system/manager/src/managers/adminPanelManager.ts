@@ -20,12 +20,12 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
             proc?.on('message', async (message: string) => {
                 if (message === adminPanelMessages.onStartMessage) {
                     ManagerState.adminPanelStatus = 'running';
-                    logger.log(`AdminPanelManager:: AdminPanel has successfully started`)
+                    logger.log(`AdminPanel has successfully started`)
                     done?.(true);
                 }
                 if (message === adminPanelMessages.onStartErrorMessage) {
                     ManagerState.adminPanelStatus = 'inactive';
-                    logger.log(`AdminPanelManager:: failed to start AdminPanel`, 'Error')
+                    logger.log(`Failed to start AdminPanel`, 'Error')
                     done?.(false);
                 }
             });

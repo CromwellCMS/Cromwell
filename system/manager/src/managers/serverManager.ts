@@ -19,11 +19,11 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
         return new Promise(done => {
             const onMessage = async (message: string) => {
                 if (message === serverMessages.onStartMessage) {
-                    logger.log(`ServerManager:: Server has successfully started`);
+                    logger.log(`Server has successfully started`);
                     done(true);
                 }
                 if (message === serverMessages.onStartErrorMessage) {
-                    logger.error(`ServerManager:: Failed to start Server`);
+                    logger.error(`Failed to start Server`);
                     done(false);
                 }
             }

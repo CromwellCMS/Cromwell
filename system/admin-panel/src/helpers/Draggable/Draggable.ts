@@ -20,6 +20,8 @@ type TDraggableOptions = {
 
     onBlockSelected?: (draggedBlock: HTMLElement) => void;
 
+    onBlockDeSelected?: (draggedBlock: HTMLElement) => void;
+
 
     /**
      * Should actually insert original elements into targets? If false, will
@@ -93,6 +95,8 @@ export class Draggable {
     private hoveredBlockId: string | null = null;
     private canDragBlock: boolean = false;
 
+    private selectedBlock: HTMLElement | null = null;
+    private selectedFrame: HTMLElement | null = null;
 
     private draggableFrameClass: string = 'DraggableBlock__frame';
     private draggableBlockClass: string = 'DraggableBlock';
@@ -110,10 +114,9 @@ export class Draggable {
         const bodyElem = document.querySelector('body');
 
         if (bodyElem) {
-            bodyElem.onmousemove = this.onMouseMove;
-            bodyElem.onmouseup = () => {
-                this.stopDragBlock();
-            }
+            bodyElem.addEventListener('mousemove', this.onMouseMove);
+            bodyElem.addEventListener('mouseup', this.stopDragBlock);
+            bodyElem.addEventListener('click', this.onPageBodyClick);
         }
 
         this.setupDraggableBlocks(options);
@@ -129,7 +132,6 @@ export class Draggable {
         // temp timeout
         setTimeout(() => {
             this.draggableBlocks = Array.from(document.querySelectorAll(draggableBlocksSelector)) as HTMLElement[];
-            // console.log('draggableBlocks', this.draggableBlocks, draggableBlocksSelector);
             this.draggableBlocks.forEach(b => {
                 if (b) this.setupBlock(b);
             })
@@ -180,18 +182,15 @@ export class Draggable {
         })
 
         block.onmousedown = (e) => {
-            e.stopPropagation();
             this.onBlockMouseDown(block, editorWindowElem, e);
         }
 
         block.onmouseover = (e) => {
-            e.stopPropagation();
-            this.onBlockHoverStart(block, draggableFrame);
+            this.onBlockHoverStart(block, draggableFrame, e);
         }
 
         block.onmouseleave = (e) => {
-            e.stopPropagation();
-            this.onBlockHoverEnd();
+            this.onBlockHoverEnd(block, draggableFrame, e);
         }
     }
 
@@ -237,7 +236,7 @@ export class Draggable {
 
     // Inserts immovable shadow at a hovered place if possible
     private tryToInsert = debounce((event: MouseEvent) => {
-        // console.log('this.draggingBlockId', this.draggingBlockId, this.draggingBlock, this.hoveredBlockId, this.hoveredBlock);
+        // console.log('tryToInsert this.draggingBlockId', this.draggingBlockId, this.draggingBlock, this.hoveredBlockId, this.hoveredBlock);
         if (this.hoveredBlock && this.draggingBlock && this.hoveredBlockId !== this.draggingBlockId) {
 
             if (this.draggingBlock.contains(this.hoveredBlock)) return;
@@ -268,6 +267,7 @@ export class Draggable {
                         if (this.draggingBlock.nextSibling === this.hoveredBlock) return;
                         const canInsert = (!this.canInsertBlock) ? true : this.canInsertBlock(this.draggingBlock, this.hoveredBlock, 'before');
                         if (canInsert) {
+
                             // console.log('move above', this.hoveredBlock, this.draggingBlockId);
                             createShadowCopy();
 
@@ -344,7 +344,6 @@ export class Draggable {
             else {
                 if (draggingBlockShadowCopy) draggingBlockShadowCopy.remove();
             }
-            // console.log('x', x, 'y', y, 'clientHeight', this.hoveredBlock.offsetHeight)
         }
     }, 100);
 
@@ -381,6 +380,9 @@ export class Draggable {
     }
 
     private onBlockMouseDown = (block: HTMLElement, editorWindowElem?: HTMLElement, event?: MouseEvent) => {
+        if ((event as any).hitBlock) return;
+        (event as any).hitBlock = true;
+
         this.draggingBlock = block;
         this.draggingBlockId = block.id;
 
@@ -419,35 +421,66 @@ export class Draggable {
         }, 100);
     }
 
-    private onBlockHoverStart = (block: HTMLElement, frame: HTMLElement) => {
+    private onBlockHoverStart = (block: HTMLElement, frame: HTMLElement, event: MouseEvent) => {
+        if ((event as any).hitBlock) return;
+        (event as any).hitBlock = true;
         if (this.hoveredBlockId === block.id) return;
+
+        if (this.hoveredBlock && this.hoveredBlock !== this.selectedBlock) {
+            this.hoveredBlock.style.zIndex = '2';
+        }
 
         this.hoveredBlock = block;
         this.hoveredBlockId = block.id;
 
-        this.draggableFrames.forEach(this.deselectFrame);
-
-        this.hoverFrame(frame)
-
-        this.draggableBlocks && this.draggableBlocks.forEach(b => b ? b.style.zIndex = '2' : '');
-        this.hoveredBlock.style.zIndex = '5';
-        // console.log('onmouseover hoveredBlockId', this.hoveredBlockId);
+        if (block !== this.selectedBlock) {
+            this.hoverFrame(frame);
+            this.hoveredBlock.style.zIndex = '5';
+        }
     }
 
-    private onBlockHoverEnd = () => {
-        if (!this.hoveredBlockId) return;
-        this.draggableFrames.forEach(this.deselectFrame);
-        this.draggableBlocks && this.draggableBlocks.forEach(b => b ? b.style.zIndex = '2' : '');
+    private onBlockHoverEnd = (block: HTMLElement, frame: HTMLElement, event: MouseEvent) => {
+        if ((event as any).hitBlock) return;
+        (event as any).hitBlock = true;
+        if (block !== this.selectedBlock) {
+            this.deselectFrame(frame);
+            block.style.zIndex = '2';
+        }
+
         this.hoveredBlock = null;
         this.hoveredBlockId = null;
-        // console.log('onmouseleave hoveredBlockId', this.hoveredBlockId);
     }
 
     private onBlockClick = (block: HTMLElement, frame: HTMLElement, event: MouseEvent) => {
-        event.stopPropagation();
+        if ((event as any).hitBlock) return;
+        (event as any).hitBlock = true;
+
+        if (block !== this.selectedBlock) {
+            this.deselectCurrentBlock();
+
+            this.lastOptions?.onBlockSelected?.(block);
+            this.selectedBlock = block;
+            this.selectedFrame = frame;
+            this.selectFrame(frame);
+            block.style.zIndex = '6';
+        }
+
+    }
+
+    private onPageBodyClick = (event: MouseEvent) => {
+        if ((event as any).hitBlock) return;
         this.draggableFrames.forEach(this.deselectFrame);
-        this.selectFrame(frame);
-        this.lastOptions?.onBlockSelected?.(block);
+        this.deselectCurrentBlock();
+    }
+
+    private deselectCurrentBlock = () => {
+        if (this.selectedFrame) this.deselectFrame(this.selectedFrame);
+        if (this.selectedBlock) {
+            this.lastOptions?.onBlockDeSelected?.(this.selectedBlock);
+            this.selectedBlock.style.zIndex = '2';
+        }
+        this.selectedBlock = null;
+        this.selectedFrame = null;
     }
 
     private hoverFrame = (frame: HTMLElement) => {

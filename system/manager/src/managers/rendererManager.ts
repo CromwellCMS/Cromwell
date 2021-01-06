@@ -89,8 +89,8 @@ export const startRenderer = async (env?: TRendererCommands): Promise<boolean> =
             } else {
                 ManagerState.rendererStatus = 'inactive';
             }
-            if (success) getLogger('errors-only').log(`RendererManager:: Renderer has successfully started`);
-            else errorLogger(`RendererManager:: Failed to start renderer`);
+            if (success) getLogger('errors-only').log(`Renderer has successfully started`);
+            else errorLogger(`Failed to start renderer`);
 
             return success;
 

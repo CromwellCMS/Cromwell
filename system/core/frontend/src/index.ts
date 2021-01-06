@@ -5,7 +5,8 @@ export { CContainer } from './components/CContainer/CContainer';
 export { CImage } from './components/CImage/CImage';
 export { CPlugin } from './components/CPlugin/CPlugin';
 export { CGallery } from './components/CGallery/CGallery';
-export { CList, TCList, TCListProps, TItemComponentProps } from './components/CList/CList';
+export { CList } from './components/CList/CList';
+export { TCList, TCListProps, TItemComponentProps } from './components/CList/types';
 export { Link } from './components/Link/Link';
 export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
 export {
@@ -19,12 +20,12 @@ export {
     BlockGetContentProvider,
     getBlockData
 } from './constants';
-export * from './api/CGraphQLClient';
-export * from './api/CRestAPIClient';
-export * from './api/CWebSocketClient';
-export * from './CStore';
-export * from './helpers/loadFrontendBundle';
-export * from './helpers/isomorphicFetch';
+export { getGraphQLClient } from './api/CGraphQLClient';
+export { getRestAPIClient } from './api/CRestAPIClient';
+export { getWebSocketClient } from './api/CWebSocketClient';
+export { getCStore } from './CStore';
+export { loadFrontendBundle } from './helpers/loadFrontendBundle';
+export { fetch } from './helpers/isomorphicFetch';
 export * from './types';
 
 //@ts-ignore

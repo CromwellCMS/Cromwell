@@ -10,9 +10,9 @@ import { toast } from 'react-toastify';
 
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
-import { PageBuilder } from '../../components/themeEdit/pageBuilder/PageBuilder';
-import { PageListItem } from '../../components/themeEdit/pageListItem/PageListItem';
-import { PageSettings } from '../../components/themeEdit/pageSettings/PageSettings';
+import { PageBuilder } from './pageBuilder/PageBuilder';
+import { PageListItem } from './pageListItem/PageListItem';
+import { PageSettings } from './pageSettings/PageSettings';
 import styles from './ThemeEdit.module.scss';
 
 
