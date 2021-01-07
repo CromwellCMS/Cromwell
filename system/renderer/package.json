@@ -49,9 +49,6 @@
     "typescript": "^4.0.3",
     "webpack": "5.11.1"
   },
-  "frontendDependencies": [
-    "react-html-parser"
-  ],
   "rendererFrontendDependencies": {
     "@cromwell/core": "1.1.0",
     "@cromwell/core-frontend": "1.0.0",

@@ -1,4 +1,5 @@
-import { getTempDir, serverLogFor } from '@cromwell/core-backend';
+import { TCromwellaConfig, TFrontendDependency, TPackageJson } from '@cromwell/core';
+import { getNodeModuleDir, getTempDir, readCmsModules } from '@cromwell/core-backend';
 import { each as asyncEach } from 'async';
 import colorsdef from 'colors/safe';
 import fs from 'fs-extra';
@@ -7,30 +8,13 @@ import importFrom from 'import-from';
 import path, { isAbsolute, resolve } from 'path';
 
 import { bundledModulesDirName, defaultFrontendDeps } from './constants';
-import {
-    TCromwellaConfig,
-    TDependency,
-    TFrontendDependency,
-    TGetDeps,
-    THoistedDeps,
-    TLocalSymlink,
-    TModuleInfo,
-    TNonHoisted,
-    TPackage,
-    TPackageJson,
-} from './types';
+import { TDependency, TGetDeps, THoistedDeps, TLocalSymlink, TModuleInfo, TNonHoisted, TPackage } from './types';
 
 const colors: any = colorsdef;
 
 export const isExternalForm = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id) && !id.startsWith('$$');
 
 export const getBundledModulesDir = () => resolve(getTempDir(), bundledModulesDirName);
-
-export const getHoistedDependencies = async (projectRootDir: string, isProduction: boolean, forceInstall: boolean): Promise<TGetDeps> => {
-    const packagePaths = await globPackages(projectRootDir);
-    const packages = collectPackagesInfo(packagePaths);
-    return hoistDependencies(packages, isProduction, forceInstall);
-}
 
 export const getNodeModuleVersion = (moduleName: string, importFromPath?: string): string | undefined => {
     const pckgImportName = `${moduleName}/package.json`;
@@ -50,10 +34,12 @@ export const getNodeModuleNameWithVersion = (moduleName: string, importFromPath?
     if (ver) return `${moduleName}@${ver}`;
 }
 
-export const getDepVersion = (pckg: any, depName: string): string | undefined => {
+export const getDepVersion = (pckg: TPackageJson | TPackage, depName: string): string | undefined => {
     let ver = pckg?.dependencies?.[depName] ?? pckg?.devDependencies?.[depName] ?? pckg?.peerDependencies?.[depName];
     if (ver) return ver;
-    const frontDeps: (string | TFrontendDependency)[] | undefined = pckg?.frontendDependencies;
+    const frontDeps: (string | TFrontendDependency)[] | undefined = (pckg as TPackage)?.frontendDependencies ??
+        (pckg as TPackageJson)?.cromwell?.frontendDependencies;
+
     if (frontDeps) {
         frontDeps.forEach(dep => {
             if (typeof dep === 'object' && dep.version) ver = dep.version;
@@ -62,7 +48,7 @@ export const getDepVersion = (pckg: any, depName: string): string | undefined =>
     return ver;
 }
 
-export const getDepNameWithVersion = (pckg: any, depName: string): string | undefined => {
+export const getDepNameWithVersion = (pckg: TPackageJson, depName: string): string | undefined => {
     const ver = getDepVersion(pckg, depName);
     if (ver) return `${depName}@${ver}`;
 }
@@ -198,13 +184,13 @@ const hoistDeps = (store: TDependency[], packages: TPackage[],
                         const packageName = packages?.find(p => p.path === packagePath)?.name;
 
                         console.log(colors.brightYellow(`\nCromwella:: Local package ${packageName} at ${packagePath} dependent on different version of hoisted package ${module.name}. \nHoisted (commonly used) ${module.name} is "${hoistedVersion}", but dependent is "${ver}".\n`));
-                        if (!isProduction && !forceInstall) {
-                            console.log(colors.brightRed(`Cromwella:: Error. Abort operation. Please fix "${module.name}": "${ver}" or run installation in force mode (add -f flag).\n`));
+                        if (!forceInstall) {
+                            console.log(colors.brightRed(`Cromwella:: Error. Abort operation. Please fix "${module.name}": "${ver}" or run command in force mode (add -f flag).\n`));
                             process.exit();
                         }
-                        if (isProduction || (!isProduction && forceInstall)) {
-                            console.log(colors.brightYellow(`Cromwella:: Installing ${module.name}: "${ver}" locally...\n`));
-                        }
+                        // if (isProduction || (!isProduction && forceInstall)) {
+                        //     console.log(colors.brightYellow(`Cromwella:: Installing ${module.name}: "${ver}" locally...\n`));
+                        // }
 
                         if (!nonHoisted[path.dirname(packagePath)]) {
                             nonHoisted[path.dirname(packagePath)] = {
@@ -248,13 +234,13 @@ export const globPackages = async (projectRootDir: string): Promise<string[]> =>
     console.log(colors.cyan(`Cromwella:: Start. Scannig for local packages from ./cromwella.json...\n`));
     const globOptions = {};
 
+    // From Cromwella config
     const cromwellaConfig = getCromwellaConfigSync(projectRootDir);
-    const packageNames = cromwellaConfig?.packages ?? [''];
-
+    const packageGlobs = cromwellaConfig?.packages ?? [''];
     const packagePaths: string[] = [];
 
     await new Promise(done => {
-        asyncEach(packageNames, function (pkgPath: string, callback: () => void) {
+        asyncEach(packageGlobs, function (pkgPath: string, callback: () => void) {
             const globPath = resolve(projectRootDir, pkgPath, 'package.json');
             glob(globPath, globOptions, function (er: any, files: string[]) {
                 files.forEach(f => packagePaths.push(resolve(projectRootDir, f)));
@@ -262,6 +248,22 @@ export const globPackages = async (projectRootDir: string): Promise<string[]> =>
             })
         }, () => done(true));
     });
+
+    // From main package.json as cms modules
+    const cmsModules = await readCmsModules();
+
+    const addDir = async (mod) => {
+        const dir = await getNodeModuleDir(mod);
+        if (dir) {
+            packagePaths.push(resolve(dir, 'package.json'))
+        }
+    }
+    for (const p of cmsModules.plugins) {
+        await addDir(p);
+    }
+    for (const p of cmsModules.themes) {
+        await addDir(p);
+    }
 
     return packagePaths;
 }
@@ -283,14 +285,14 @@ export const collectPackagesInfo = (packagePaths: string[]): TPackage[] => {
 
     for (const pkgPath of packagePaths) {
         try {
-            const pkgJson = JSON.parse(fs.readFileSync(pkgPath).toString());
+            const pkgJson: TPackageJson = JSON.parse(fs.readFileSync(pkgPath).toString());
             const pckg: TPackage = {
                 name: pkgJson.name,
                 path: pkgPath,
                 dependencies: pkgJson.dependencies,
                 devDependencies: pkgJson.devDependencies,
                 peerDependencies: pkgJson.peerDependencies,
-                frontendDependencies: pkgJson.frontendDependencies
+                frontendDependencies: pkgJson?.cromwell?.frontendDependencies
             };
             packages.push(pckg);
         } catch (e) {
@@ -326,8 +328,12 @@ export const hoistDependencies = (packages: TPackage[], isProduction, forceInsta
     return { packages, hoistedDependencies, hoistedDevDependencies };
 }
 
-export const collectFrontendDependencies = (packages: TPackage[]): TFrontendDependency[] => {
+export const collectFrontendDependencies = (packages: TPackage[], forceInstall?: boolean): TFrontendDependency[] => {
     const frontendDependencies: TFrontendDependency[] = defaultFrontendDeps.map(dep => {
+        if (typeof dep === 'object') {
+            if (!dep.version) dep.version = getNodeModuleVersion(dep.name);
+            return dep;
+        }
         return {
             name: dep,
             version: getNodeModuleVersion(dep)!
@@ -338,6 +344,7 @@ export const collectFrontendDependencies = (packages: TPackage[]): TFrontendDepe
         if (pckg?.frontendDependencies && Array.isArray(pckg.frontendDependencies)) {
             pckg.frontendDependencies.forEach(dep => {
                 const depName = typeof dep === 'object' ? dep.name : dep;
+
                 const depVersion = getDepVersion(pckg, depName);
                 if (!depVersion) return;
 
@@ -350,8 +357,17 @@ export const collectFrontendDependencies = (packages: TPackage[]): TFrontendDepe
                 // if (!frontendDependencies.includes(dep))
                 let index: number | undefined = undefined;
                 frontendDependencies.every((mainDep, i) => {
-                    if (mainDep.name === frontendDep.name && mainDep.version === frontendDep.version) {
-                        index = i;
+                    if (mainDep.name === frontendDep.name) {
+
+                        if (mainDep.version !== frontendDep.version) {
+                            console.log(colors.brightYellow(`\nCromwella:: Local package ${pckg.name} at ${pckg.path} dependent on different version of used frontend module ${frontendDep.name}. \nAlready used ${frontendDep.name} is "${mainDep.version}", but dependent is "${frontendDep.version}".\n`));
+                            if (!forceInstall) {
+                                console.log(colors.brightRed(`Cromwella:: Error. Abort operation. Please fix "${frontendDep.name}": "${frontendDep.version}" or run command in force mode (add -f flag).\n`));
+                                process.exit();
+                            }
+                        } else {
+                            index = i;
+                        }
                         return false;
                     }
                     return true;

@@ -20,7 +20,7 @@ export {
     BlockGetContentProvider,
     getBlockData
 } from './constants';
-export { getGraphQLClient } from './api/CGraphQLClient';
+export { getGraphQLClient, TCGraphQLClient } from './api/CGraphQLClient';
 export { getRestAPIClient } from './api/CRestAPIClient';
 export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore } from './CStore';

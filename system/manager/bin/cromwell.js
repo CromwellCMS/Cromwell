@@ -10,11 +10,7 @@ try {
     require.resolve('rimraf');
     require.resolve('symlink-dir');
 } catch (e) {
-    const packageJson = require('../package.json');
-    const deps = packageJson.startupDependencies;
-    const depsStr = Object.keys(deps).map(depName => `${depName}@${deps[depName]}`).join(' ');
-    console.log('depsStr', depsStr)
-    execSync(`npm i ${depsStr} --no-package-lock --no-save`,
+    execSync(`yarn install`,
         { shell: true, stdio: 'inherit', cwd: resolve(process.cwd()) });
 }
 

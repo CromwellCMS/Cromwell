@@ -1,3 +1,4 @@
+import { TPackageJson } from '@cromwell/core';
 import { resolve, dirname } from 'path';
 import { serverLogFor } from './constants';
 import { getNodeModuleDir, getNodeModuleDirSync, cmsName } from './paths';
@@ -13,19 +14,19 @@ const reqModule = (name: string) => {
 export const readCmsModules = async () => {
     const themes: string[] = [];
     const plugins: string[] = [];
-    let mainPackage = reqModule(resolve(process.cwd(), 'package.json'));
+    let mainPackage: TPackageJson | undefined = reqModule(resolve(process.cwd(), 'package.json'));
 
     if (!mainPackage) mainPackage = {};
-    if (!mainPackage[cmsName]) mainPackage[cmsName] = {};
-    if (!mainPackage[cmsName].themes) mainPackage[cmsName].themes = [];
-    mainPackage[cmsName].themes = [...defaultThemes, ...mainPackage[cmsName].themes];
+    if (!mainPackage.cromwell) mainPackage.cromwell = {};
+    if (!mainPackage.cromwell.themes) mainPackage.cromwell.themes = [];
+    mainPackage.cromwell.themes = [...defaultThemes, ...mainPackage.cromwell.themes];
 
-    const getPackageModules = async (packageName?: string, pckgObj?: object) => {
+    const getPackageModules = async (packageName?: string, pckgObj?: TPackageJson) => {
         const packagePath = packageName && await getNodeModuleDir(packageName);
         if (packagePath || pckgObj) {
-            const pckg = packagePath ? reqModule(resolve(packagePath, 'package.json')) : pckgObj;
-            const packageThemes = pckg?.[cmsName]?.themes ?? [];
-            const packagePlugins = pckg?.[cmsName]?.plugins ?? [];
+            const pckg: TPackageJson | undefined = packagePath ? reqModule(resolve(packagePath, 'package.json')) : pckgObj;
+            const packageThemes = pckg?.cromwell?.themes ?? [];
+            const packagePlugins = pckg?.cromwell?.plugins ?? [];
 
             for (const themeName of packageThemes) {
                 if (!themes.includes(themeName)) {
@@ -54,18 +55,18 @@ export const readCmsModules = async () => {
 export const readCmsModulesSync = () => {
     const themes: string[] = [];
     const plugins: string[] = [];
-    let mainPackage = reqModule(resolve(process.cwd(), 'package.json'));
+    let mainPackage: TPackageJson | undefined = reqModule(resolve(process.cwd(), 'package.json'));
     if (!mainPackage) mainPackage = {};
-    if (!mainPackage[cmsName]) mainPackage[cmsName] = {};
-    if (!mainPackage[cmsName].themes) mainPackage[cmsName].themes = [];
-    mainPackage[cmsName].themes = [...defaultThemes, ...mainPackage[cmsName].themes];
+    if (!mainPackage.cromwell) mainPackage.cromwell = {};
+    if (!mainPackage.cromwell.themes) mainPackage.cromwell.themes = [];
+    mainPackage.cromwell.themes = [...defaultThemes, ...mainPackage.cromwell.themes];
 
     const getPackageModules = (packageName?: string, pckgObj?: object) => {
         const packagePath = packageName && getNodeModuleDirSync(packageName);
         if (packagePath || pckgObj) {
             const pckg = packagePath ? reqModule(resolve(packagePath, 'package.json')) : pckgObj;
-            const packageThemes = pckg?.[cmsName]?.themes ?? [];
-            const packagePlugins = pckg?.[cmsName]?.plugins ?? [];
+            const packageThemes = pckg?.cromwell?.themes ?? [];
+            const packagePlugins = pckg?.cromwell?.plugins ?? [];
 
             for (const themeName of packageThemes) {
                 if (!themes.includes(themeName)) {

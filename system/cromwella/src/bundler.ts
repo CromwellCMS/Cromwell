@@ -1,7 +1,6 @@
-import { TSciprtMetaInfo } from '@cromwell/core';
+import { TAdditionalExports, TExternal, TPackageJson, TSciprtMetaInfo } from '@cromwell/core';
 import { getPublicDir } from '@cromwell/core-backend';
 import archiver from 'archiver';
-import { spawnSync } from 'child_process';
 import colorsdef from 'colors/safe';
 import cryptoRandomString from 'crypto-random-string';
 import fs from 'fs-extra';
@@ -30,7 +29,6 @@ import {
     moduleMetaInfoFileName,
     moduleNodeBuidFileName,
     moduleNodeGeneratedFileName,
-    tempPckgName,
 } from './constants';
 import { CromwellWebpackPlugin } from './plugins/webpack';
 import {
@@ -40,7 +38,7 @@ import {
     getModuleInfo,
     globPackages,
 } from './shared';
-import { TAdditionalExports, TBundleInfo, TExternal, TPackageJson } from './types';
+import { TBundleInfo } from './types';
 
 const colors: any = colorsdef;
 
@@ -48,8 +46,7 @@ const colors: any = colorsdef;
  * Cromwella Bundler
  * Bundles frontend node_modules
  */
-export const bundler = async (projectRootDir: string, installationMode: string,
-    isProduction: boolean, rebundle: boolean, noInstall?: boolean) => {
+export const bundler = async (projectRootDir: string, isProduction: boolean, rebundle: boolean, forceInstall?: boolean) => {
 
     // console.log('process', process.cwd(), '__dirname', __dirname, 'projectRootDir', projectRootDir)
 
@@ -71,17 +68,17 @@ export const bundler = async (projectRootDir: string, installationMode: string,
         await mkdirp(buildDir);
     }
 
-    await symlinkDir(buildDir, publicBuildLink);
+    if (!await fs.pathExists(publicBuildLink))
+        await symlinkDir(buildDir, publicBuildLink);
 
     // Collect frontendDependencies from cromwella.json in all packages 
-    const frontendDependencies = collectFrontendDependencies(packages);
+    const frontendDependencies = collectFrontendDependencies(packages, forceInstall);
 
 
     // frontendDependencies = [
     //     // { name: '@cromwell/core', version: 'workspace:1.1.0' },
     //     { name: 'clsx', version: '^1.1.1' },
     // ];
-
 
     // Parse cromwella.json configs
     const moduleExternals: Record<string, TExternal[]> = {};
@@ -110,11 +107,11 @@ export const bundler = async (projectRootDir: string, installationMode: string,
         frontendDependenciesNames.push(dep.name);
     });
 
-    console.log(colors.cyan(`Cromwella:bundler: Found ${frontendDependencies.length} frontend modules to build: ${JSON.stringify(frontendDependencies, null, 2)}\n`));
+    console.log(colors.cyan(`Cromwella:bundler: Found ${frontendDependencies.length} used frontend modules: ${frontendDependenciesNames.join(', ')}\n`));
 
 
     const allDependencyNames: string[] = [...frontendDependenciesNames];
-    const collectAllNames = (pckg: any) => {
+    const collectAllNames = (pckg: TPackageJson) => {
         const pushDep = ((dep: string) => {
             if (!allDependencyNames.includes(dep)) allDependencyNames.push(dep);
         })
@@ -123,26 +120,6 @@ export const bundler = async (projectRootDir: string, installationMode: string,
         if (pckg.devDependencies) Object.keys(pckg.devDependencies).forEach(pushDep)
         if (pckg.peerDependencies) Object.keys(pckg.peerDependencies).forEach(pushDep)
     }
-
-    
-    // Install node_modules locally
-
-    // if (!noInstall && !fs.existsSync(nodeModulesDir)) {
-    //     const tempPackageContent = {
-    //         "name": tempPckgName,
-    //         "version": "1.0.0",
-    //         "private": true,
-    //         "dependencies": Object.assign({}, ...frontendDependencies.map(dep => ({ [dep.name]: dep.version })))
-    //     }
-    //     await fs.outputFile(resolve(buildDir, 'package.json'), JSON.stringify(tempPackageContent, null, 4));
-
-    //     spawnSync(`pnpm i --filter ${tempPckgName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-    // }
-
-    // if (!noInstall && !fs.existsSync(nodeModulesDir)) {
-    //     console.log(colors.brightRed('Cromwella:bundler: Failed to install node_modules'));
-    //     // return;
-    // }
 
 
     /**

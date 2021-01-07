@@ -1,4 +1,4 @@
-import { TPagesMetaInfo, TPluginConfig, TRollupConfig, TSciprtMetaInfo, TThemeConfig } from '@cromwell/core';
+import { TPackageJson, TPagesMetaInfo, TPluginConfig, TRollupConfig, TSciprtMetaInfo, TThemeConfig } from '@cromwell/core';
 import {
     buildDirName,
     getMetaInfoPath,
@@ -30,7 +30,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
     if (!cromwellConfig?.type) throw new Error(`CromwellPlugin Error. Provide one of types to the CromwellConfig: 'plugin', 'theme'`);
 
     try {
-        const pckg = require(resolve(process.cwd(), 'package.json'));
+        const pckg: TPackageJson = require(resolve(process.cwd(), 'package.json'));
         if (pckg?.name) cromwellConfig.name = pckg.name;
     } catch (e) { console.error(e) };
 
@@ -444,7 +444,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                     let ver = getNodeModuleVersion(dep, process.cwd());
                     if (!ver) {
                         try {
-                            const pckg = require(resolve(process.cwd(), 'package.json'));
+                            const pckg: TPackageJson = require(resolve(process.cwd(), 'package.json'));
                             ver = getDepVersion(pckg, dep);
                         } catch (e) { console.log(e) }
                     }

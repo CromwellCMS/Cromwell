@@ -89,7 +89,10 @@ export const getCromwellaImporterPath = () => {
     const cromwellaDir = getCromwellaDir();
     if (cromwellaDir) return resolve(cromwellaDir, 'build/browser/importer.js');
 }
-
+export const getCromwellaBuildDir = () => {
+    const cromwellaDir = getCromwellaDir();
+    if (cromwellaDir) return resolve(cromwellaDir, 'build');
+}
 
 // Theme
 export const getThemeBuildDir = async (themeModuleName: string) => {

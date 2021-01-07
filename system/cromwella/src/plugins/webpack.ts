@@ -1,4 +1,4 @@
-import { TSciprtMetaInfo } from '@cromwell/core';
+import { TExternal, TPackageJson, TSciprtMetaInfo } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import { Compiler } from 'webpack';
@@ -6,7 +6,6 @@ import ExternalModuleFactoryPlugin from 'webpack/lib/ExternalModuleFactoryPlugin
 
 import { getGlobalModuleStr, jsOperators, moduleMetaInfoFileName } from '../constants';
 import { getDepVersion, getModuleInfo, isExternalForm } from '../shared';
-import { TExternal, TPackageJson } from '../types';
 
 // Marks every node_module as external and collects import bindings for them in meta.json
 export class CromwellWebpackPlugin {
@@ -123,8 +122,8 @@ export class CromwellWebpackPlugin {
                     if (packageExternals && packageExternals.includes(request)) {
                         isExternal = true;
                     }
-                    if (modulePackageJson?.frontendDependencies) {
-                        modulePackageJson?.frontendDependencies.forEach(dep => {
+                    if (modulePackageJson?.cromwell?.frontendDependencies) {
+                        modulePackageJson?.cromwell?.frontendDependencies.forEach(dep => {
                             if (typeof dep === 'object') {
                                 if (dep.name === request) isExternal = true;
                             } else if (dep === request) isExternal = true;

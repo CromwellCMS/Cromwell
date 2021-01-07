@@ -69,6 +69,7 @@ export const startSystem = async (isDevelopment?: boolean) => {
             { shell: true, stdio: 'inherit', cwd: getCoreFrontendDir() });
 
         const { windowsDev } = config;
+        
         windowsDev.otherDirs.forEach((dir, i) => {
             spawn(`npx rollup -cw`, [],
                 { shell: true, stdio: 'inherit', cwd: resolve(process.cwd(), dir) });

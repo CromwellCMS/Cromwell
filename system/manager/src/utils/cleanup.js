@@ -1,6 +1,8 @@
 const fs = require('fs-extra');
 const { resolve } = require("path");
-const { projectRootDir, systemDir } = require('../config');
+
+const projectRootDir = process.cwd();
+const systemDir = resolve(projectRootDir, 'system')
 
 
 const folders = [
@@ -38,9 +40,7 @@ const folders = [
 
     // projectRootDir + '\\node_modules',
 
-]
-
-const files = [
+    // Files
     systemDir + '\\core\\backend\\package-lock.json',
     systemDir + '\\core\\common\\package-lock.json',
     systemDir + '\\core\\frontend\\package-lock.json',
@@ -49,9 +49,8 @@ const files = [
     systemDir + '\\cromwella\\package-lock.json',
     systemDir + '\\manager\\package-lock.json',
     projectRootDir + '\\package-lock.json',
-    projectRootDir + '\\themes\\cromwell-demoshop\\package-lock.json',
-]
 
+]
 
 // Add themes
 var themesDir = resolve(projectRootDir, 'themes');
@@ -63,6 +62,7 @@ if (fs.existsSync(themesDir)) {
         folders.push(resolve(themeDir, 'node_modules'));
         folders.push(resolve(themeDir, 'package-lock.json'));
         folders.push(resolve(themeDir, '.cromwell'));
+        folders.push(resolve(themeDir, 'build'));
     }
 }
 
@@ -76,24 +76,17 @@ if (fs.existsSync(pluginsDir)) {
         folders.push(resolve(pluginDir, 'node_modules'));
         folders.push(resolve(pluginDir, 'package-lock.json'));
         folders.push(resolve(pluginDir, '.cromwell'));
+        folders.push(resolve(pluginDir, 'build'));
     }
 }
 
 // console.log(folders);
 // console.log(files);
 
-files.forEach(path => {
-    if (fs.existsSync(path)) {
-        console.log('Removing file: ' + path);
-        try {
-            fs.removeSync(path);
-        } catch (e) { console.log(e) }
-    }
-})
 
 folders.forEach(path => {
-    if (fs.existsSync(path)) {
-        console.log('Removing folder: ' + path);
+    if (fs.pathExistsSync(path)) {
+        console.log('Removing: ' + path);
         try {
             fs.removeSync(path);
         } catch (e) { console.log(e) }

@@ -35,7 +35,6 @@ const cli = async () => {
 
     const isProduction = Boolean(args.production || args.prod);
     const isDevelopment = Boolean(args.development || args.dev);
-    const noInstall = Boolean(args['skip-install']);
     const installationMode = isProduction ? 'production' : 'development';
     const forceInstall = Boolean(args.f);
     const serviceToStart = args.service;
@@ -54,10 +53,10 @@ const cli = async () => {
         await buildTask(true);
 
     } else if (scriptName === 'bundle-modules' || scriptName === 'bm') {
-        bundler(projectRootDir, installationMode, isProduction, false, noInstall);
+        bundler(projectRootDir, isProduction, false, forceInstall);
 
     } else if (scriptName === 'rebundle-modules' || scriptName === 'rm') {
-        bundler(projectRootDir, installationMode, isProduction, true, noInstall);
+        bundler(projectRootDir, isProduction, true, forceInstall);
 
     } else if (scriptName === 'install' || scriptName === 'i') {
         installer(projectRootDir, installationMode, isProduction, forceInstall);

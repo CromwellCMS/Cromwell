@@ -1,31 +1,4 @@
-
-export type TCromwellaConfig = {
-    packages: string[];
-    frontendDependencies?: (string | TFrontendDependency)[];
-}
-
-export type TFrontendDependency = {
-    name: string;
-    version: string;
-    builtins?: string[];
-    externals?: TExternal[];
-    excludeExports?: string[];
-    ignore?: string[];
-    addExports?: TAdditionalExports[];
-}
-
-export type TExternal = {
-    usedName: string;
-    moduleName?: string;
-    importName?: string;
-}
-
-export type TAdditionalExports = {
-    name: string;
-    path?: string;
-    importType?: 'default' | 'named';
-    saveAsModules?: string[];
-}
+import { TFrontendDependency } from '@cromwell/core';
 
 export type TInstallationMode = 'development' | 'production';
 
@@ -35,16 +8,6 @@ export type TDependency = {
     versions: Record<string, number>;
     // { [path to package.json] : version }
     packages: Record<string, string>;
-};
-
-export type TPackageJson = {
-    name: string;
-    version: string;
-    dependencies?: Record<string, string>;
-    peerDependencies?: Record<string, string>;
-    devDependencies?: Record<string, string>;
-    module?: string;
-    frontendDependencies?: (string | TFrontendDependency)[];
 };
 
 export type TPackage = {

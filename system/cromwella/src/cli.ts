@@ -1,8 +1,9 @@
-import yargs from 'yargs-parser';
 import colorsdef from 'colors/safe';
+import yargs from 'yargs-parser';
 
 import { bundler } from './bundler';
 import { installer } from './installer';
+
 const colors: any = colorsdef;
 
 /**
@@ -20,15 +21,14 @@ const cli = () => {
         process.cwd() : args.path;
 
     const isProduction = Boolean(typeof args.production === 'boolean' && args.production)
-    const noInstall = Boolean(args['skip-install']);
     const installationMode = isProduction ? 'production' : 'development';
     const forceInstall = Boolean(args.f);
 
     if (scriptName === 'bundle' || scriptName === 'b') {
-        bundler(projectRootDir, installationMode, isProduction, false, noInstall);
+        bundler(projectRootDir, isProduction, false, forceInstall);
 
     } else if (scriptName === 'rebundle' || scriptName === 'r') {
-        bundler(projectRootDir, installationMode, isProduction, true, noInstall);
+        bundler(projectRootDir, isProduction, true, forceInstall);
 
     } else if (scriptName === 'install' || scriptName === 'i') {
         installer(projectRootDir, installationMode, isProduction, forceInstall);

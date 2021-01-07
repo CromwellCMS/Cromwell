@@ -2,8 +2,7 @@ import {
     readCMSConfig, readThemeExports, serverLogFor, getCmsModuleConfig,
     getNodeModuleDir, getPublicDir, getRendererTempDir, getRendererBuildDir, getThemeBuildDir
 } from '@cromwell/core-backend';
-import { TCmsSettings, TCmsEntity, getStoreItem, setStoreItem, TCmsConfig } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { setStoreItem } from '@cromwell/core';
 import { getBundledModulesDir, bundledModulesDirName } from '@cromwell/cromwella';
 import fs from 'fs-extra';
 import gracefulfs from 'graceful-fs';

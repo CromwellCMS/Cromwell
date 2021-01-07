@@ -23,7 +23,7 @@
     "react-dom": "16.13.1",
     "react-is": "16.13.1",
     "react-toastify": "6.0.8",
-    "style-inject": "^0.3.0",
+    "style-inject": "0.3.0",
     "swiper": "6.3.2",
     "tslib": "2.0.3",
     "whatwg-fetch": "3.5.0"
@@ -44,20 +44,6 @@
     "typescript": "^4.0.3",
     "typescript-plugin-css-modules": "^2.7.0"
   },
-  "frontendDependencies": [
-    "@apollo/client",
-    "@cromwell/core",
-    "@loadable/component",
-    "debounce",
-    "whatwg-fetch",
-    "query-string",
-    "react",
-    "react-dom",
-    "react-toastify",
-    "style-inject",
-    "swiper",
-    "tslib"
-  ],
   "description": "",
   "scripts": {
     "build": "npx rollup -c",

@@ -33,15 +33,6 @@
     "rollup-plugin-auto-external": "^2.0.0",
     "typescript": "^4.0.3"
   },
-  "frontendDependencies": [
-    "@apollo/client",
-    "@cromwell/core",
-    "@cromwell/core-frontend",
-    "@material-ui/core",
-    "react",
-    "react-dom",
-    "tslib"
-  ],
   "scripts": {
     "build": "npx cromwell b",
     "watch": "npx cromwell w"

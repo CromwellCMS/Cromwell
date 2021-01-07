@@ -56,27 +56,11 @@
     ],
     "themes": [
       "@cromwell/theme-store"
+    ],
+    "frontendDependencies": [
+      "react-swipeable-views"
     ]
   },
-  "frontendDependencies": [
-    "@apollo/client",
-    "@cromwell/core",
-    "@cromwell/core-frontend",
-    "@material-ui/core",
-    "@material-ui/icons",
-    "@material-ui/lab",
-    "clsx",
-    "mobx",
-    "mobx-react",
-    "react",
-    "react-dom",
-    "reset-css",
-    "react-is",
-    "react-swipeable-views",
-    "react-toastify",
-    "style-inject",
-    "tslib"
-  ],
   "scripts": {
     "build": "cromwell b",
     "watch": "cromwell w"

@@ -33,7 +33,7 @@ export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) =>
     let downloads = 0;
     let successfulDownloads = 0;
 
-    const frontendDeps = collectFrontendDependencies(packages);
+    const frontendDeps = collectFrontendDependencies(packages, true);
 
     const bundledModulesDir = getBundledModulesDir();
 
