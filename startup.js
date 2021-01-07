@@ -18,12 +18,8 @@ const fs = require('fs');
     const coreDir = resolve(projectRootDir, 'system/core');
     const rootNodeModulesDir = resolve(projectRootDir, 'node_modules');
 
-    const rendererBuild = resolve(projectRootDir, 'system/renderer/build');
-    const serverBuild = resolve(projectRootDir, 'system/server/build');
-    const adminPanelBuild = resolve(projectRootDir, 'system/admin-panel/build');
-    const managerDir = resolve(projectRootDir, 'system/manager');
-    const cromwellaBuild = resolve(projectRootDir, 'system/cromwella/build');
     const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js')
+    const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js')
 
     const hasNodeModules = () => {
         return !(
@@ -35,9 +31,6 @@ const fs = require('fs');
 
     // Check node_modules
     if (!hasNodeModules()) {
-        // link cli
-        spawnSync(`yarn global add link:${managerDir}`, { shell: true, cwd: process.cwd(), stdio: 'inherit' });
-
         spawnSync(`yarn install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
@@ -61,6 +54,9 @@ const fs = require('fs');
 
     // Build manager
     spawnSync(`node ${managerStartupPath} buildService`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+
+    // Build cli
+    spawnSync(`node ${cliStartupPath} buildService`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
 
 
     // Check themes

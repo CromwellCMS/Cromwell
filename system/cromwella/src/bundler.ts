@@ -46,7 +46,7 @@ const colors: any = colorsdef;
  * Cromwella Bundler
  * Bundles frontend node_modules
  */
-export const bundler = async (projectRootDir: string, isProduction: boolean, rebundle: boolean, forceInstall?: boolean) => {
+export const bundler = async (projectRootDir: string, isProduction: boolean, rebundle?: boolean, forceInstall?: boolean) => {
 
     // console.log('process', process.cwd(), '__dirname', __dirname, 'projectRootDir', projectRootDir)
 

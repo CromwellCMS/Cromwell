@@ -2,11 +2,9 @@ const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, execSync } = require('child_process');
 const { getCromwellaBuildDir, getCromwellaDir, getRendererBuildDir, getRendererDir } = require('@cromwell/core-backend');
-const binLinks = require('bin-links')
-const readPackageJson = require('read-package-json-fast')
 
 const localProjectRootDir = resolve(__dirname);
-const buildScriptPath = resolve(localProjectRootDir, 'build/cli.js');
+const buildScriptPath = resolve(localProjectRootDir, 'build/index.js');
 
 /**
   * @scriptName

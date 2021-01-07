@@ -22,9 +22,9 @@ const buildDir = 'build';
 
 export default [
     {
-        input: resolve(__dirname, "src/cli.ts"),
+        input: resolve(__dirname, "src/index.ts"),
         output: {
-            file: resolve(__dirname, buildDir, 'cli.js'),
+            dir: resolve(__dirname, buildDir),
             format: "cjs",
         },
         external,
@@ -32,7 +32,11 @@ export default [
             json(),
             commonjs(),
             typescript({
-                module: "ESNext"
+                module: "ESNext",
+                declaration: true,
+                declarationMap: true,
+                rootDir: resolve(__dirname, 'src'),
+                declarationDir: resolve(__dirname, buildDir)
             }),
             // terser(),
         ]

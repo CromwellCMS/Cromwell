@@ -1,4 +1,5 @@
 import { getCoreBackendDir, getCoreCommonDir, getCoreFrontendDir, getLogger, getModulePackage } from '@cromwell/core-backend';
+import { setStoreItem } from '@cromwell/core';
 import { ChildProcess, fork, spawn } from 'child_process';
 import isRunning from 'is-running';
 import { resolve } from 'path';
@@ -6,7 +7,7 @@ import treeKill from 'tree-kill';
 
 import config from '../config';
 import { serviceNames, TServiceNames } from '../constants';
-import { checkModules } from '../helpers/checkModules';
+import { checkModules } from '../tasks/checkModules';
 import { getProcessPid, loadCache, saveProcessPid } from '../utils/cacheManager';
 import { startAdminPanel } from './adminPanelManager';
 import { startRenderer } from './rendererManager';
@@ -57,6 +58,11 @@ export const isServiceRunning = (name: string): Promise<boolean> => {
 
 export const startSystem = async (isDevelopment?: boolean) => {
 
+    setStoreItem('environment', {
+        mode: isDevelopment ? 'dev' : 'prod',
+        logLevel: isDevelopment ? 'detailed' : 'errors-only'
+    })
+
     await new Promise(resolve => loadCache(resolve));
 
     if (isDevelopment) {
@@ -69,7 +75,7 @@ export const startSystem = async (isDevelopment?: boolean) => {
             { shell: true, stdio: 'inherit', cwd: getCoreFrontendDir() });
 
         const { windowsDev } = config;
-        
+
         windowsDev.otherDirs.forEach((dir, i) => {
             spawn(`npx rollup -cw`, [],
                 { shell: true, stdio: 'inherit', cwd: resolve(process.cwd(), dir) });
@@ -84,11 +90,16 @@ export const startSystem = async (isDevelopment?: boolean) => {
 }
 
 
-export const startNamedService = async (serviceName: TServiceNames, isDevelopment?: boolean) => {
+export const startServiceByName = async (serviceName: TServiceNames, isDevelopment?: boolean) => {
 
     if (!serviceNames.includes(serviceName)) {
         errorLogger.error('Invalid service name. Available names are: ' + serviceNames);
     }
+
+    setStoreItem('environment', {
+        mode: isDevelopment ? 'dev' : 'prod',
+        logLevel: isDevelopment ? 'detailed' : 'errors-only'
+    })
 
     if (serviceName === 'adminPanel') {
         const pckg = getModulePackage('@cromwell/admin-panel')

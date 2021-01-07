@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "build/exports.js",
   "module": "build/exports.js",
+  "types": "build/exports.d.ts",
   "files": [
     "build",
     "bin"

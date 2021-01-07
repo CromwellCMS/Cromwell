@@ -17,7 +17,7 @@ import makeEmptyDir from 'make-empty-dir';
 import { resolve } from 'path';
 
 import managerConfig from '../config';
-import { checkModules } from '../helpers/checkModules';
+import { checkModules } from '../tasks/checkModules';
 import { TRendererCommands } from '../constants';
 import { ManagerState } from '../managerState';
 import { closeService, isServiceRunning, startService } from './baseManager';

@@ -1,16 +1,17 @@
 {
   "name": "@cromwell/cms",
   "version": "1.0.0",
-  "main": "build/cli.js",
+  "main": "build/index.js",
+  "types": "build",
   "files": [
-    "build",
-    "bin"
+    "build"
   ],
   "keywords": [],
   "author": "Cromwell",
   "license": "ISC",
   "dependencies": {
     "@cromwell/admin-panel": "1.0.0",
+    "@cromwell/cli": "1.0.0",
     "@cromwell/core": "1.1.0",
     "@cromwell/core-backend": "1.0.0",
     "@cromwell/core-frontend": "1.0.0",
@@ -20,7 +21,6 @@
     "@cromwell/theme-store": "1.0.0",
     "async": "^3.2.0",
     "axios": "0.19.2",
-    "bin-links": "^2.2.1",
     "body-parser": "^1.19.0",
     "cacache": "^15.0.5",
     "chalk": "^4.1.0",
@@ -75,8 +75,5 @@
   "scripts": {
     "build": "npx rollup -c",
     "watch": "npx rollup -cw"
-  },
-  "bin": {
-    "cromwell": "./bin/cromwell.js"
   }
 }

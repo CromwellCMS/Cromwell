@@ -23,5 +23,5 @@ Open http://localhost:4128 to see your web-site and http://localhost:4064 for ad
 
 ### Development
 
-Core development guide > https://github.com/CromwellCMS/Cromwell/tree/master/system/manager#readme
+Core development guide > https://github.com/CromwellCMS/Cromwell/tree/master/system#readme
 
