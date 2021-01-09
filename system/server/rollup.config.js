@@ -24,7 +24,7 @@ export default [
             typescript({
                 module: "ESNext"
             }),
-            terser()
+            // terser()
         ]
     }
 ];

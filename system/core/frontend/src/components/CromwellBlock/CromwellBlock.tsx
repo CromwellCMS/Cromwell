@@ -10,7 +10,7 @@ import { CImage } from '../CImage/CImage';
 import { CPlugin } from '../CPlugin/CPlugin';
 import { CGallery } from '../CGallery/CGallery';
 import {
-    cromwellBlockTypeToClassname, cromwellIdToHTML,
+    blockTypeToClassname, cromwellIdToHTML,
     cromwellBlockPluginNameToClassname, BlockGetContentConsumer, dynamicLoader
 } from '../../constants';
 //@ts-ignore
@@ -27,7 +27,8 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private blockRef = React.createRef<HTMLDivElement>();
     private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
 
-    public getData = () => this.data;
+    public getData = () => Object.assign({}, this.data, this.props);
+
     public getBlockRef = () => this.blockRef;
     public getContentInstance = () => this.contentInstance;
     public setContentInstance = (contentInstance: React.Component) => this.contentInstance = contentInstance;
@@ -216,7 +217,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
         const elementClassName = styles.CromwellBlock
             // + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '')
-            + (this.data && this.data.type ? ' ' + cromwellBlockTypeToClassname(this.data.type) : '')
+            + (this.data && this.data.type ? ' ' + blockTypeToClassname(this.data.type) : '')
             + (this.props.className ? ` ${this.props.className}` : '')
             + (this.data && this.data.type && this.data.type === 'plugin' && this.data.plugin && this.data.plugin.pluginName
                 ? ` ${cromwellBlockPluginNameToClassname(this.data.plugin.pluginName)}` : '');

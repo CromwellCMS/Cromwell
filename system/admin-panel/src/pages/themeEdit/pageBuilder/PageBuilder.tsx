@@ -1,10 +1,14 @@
-import { TCromwellBlockData } from '@cromwell/core';
-import { BlockGetContentProvider } from '@cromwell/core-frontend';
+import { getStoreItem, TCromwellBlockData } from '@cromwell/core';
+import { BlockGetContentProvider, CContainer } from '@cromwell/core-frontend';
 import React from 'react';
 
 import PageErrorBoundary from '../../../components/errorBoundaries/PageErrorBoundary';
-import { BaseBlock } from './blocks/BaseBlock';
 import { PageBuilderService } from './PageBuilderService';
+import { IBaseBlock } from './blocks/BaseBlock';
+import { TextBlock } from './blocks/TextBlock';
+import { PluginBlock } from './blocks/PluginBlock';
+import { ContainerBlock } from './blocks/ContainerBlock';
+import { HTMLBlock } from './blocks/HTMLBlock';
 
 const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
 
@@ -15,17 +19,19 @@ export class PageBuilder extends React.Component<{
 }>  {
 
     private pageBuilderService: PageBuilderService;
-    private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef()
-    private blockInstances: Record<string, BaseBlock> = {};
+    private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef();
+    private blockInstances: Record<string, IBaseBlock> = {};
 
     componentDidMount() {
 
-        this.pageBuilderService = new PageBuilderService(
-            this.props.onPageModificationsChange,
-            this.editorWindowRef,
-            this.onBlockSelected,
-            this.onBlockDeSelected,
-        );
+        setTimeout(() => {
+            this.pageBuilderService = new PageBuilderService(
+                this.props.onPageModificationsChange,
+                this.editorWindowRef.current,
+                this.onBlockSelected,
+                this.onBlockDeSelected,
+            );
+        }, 100);
     }
 
     public onBlockSelected = (data: TCromwellBlockData) => {
@@ -35,45 +41,71 @@ export class PageBuilder extends React.Component<{
         this.blockInstances[data.id]?.setMenuVisibility(false);
     }
 
-    render() {
-        const { EditingPage } = this.props;
+    public handleSaveInst = (bId: string) => (inst: IBaseBlock) => {
+        this.blockInstances[bId] = inst;
+    }
 
+    public modifyBlock = (data: TCromwellBlockData) => {
+        this.pageBuilderService?.modifyBlock(data);
+    }
+
+    public deleteBlock = (data?: TCromwellBlockData) => {
+        if (data) this.pageBuilderService?.deleteBlock(data);
+    }
+
+    render() {
+        const pageCofig = getStoreItem('pageConfig')?.adminPanelProps ?? {};
+
+        const { EditingPage } = this.props;
         return (
             <div ref={this.editorWindowRef}>
-                <BlockGetContentProvider value={(block) => {
-                    const bType = block?.getData()?.type ?? block?.props?.type;
-                    const bId = block?.getData()?.id ?? block?.props?.id;
+                <BlockGetContentProvider
+                    value={(block) => {
+                        const data = block?.getData();
+                        const bId = data?.id ?? block?.props?.id;
+                        const bType = data?.type ?? block?.props?.type;
+                        const deleteBlock = () => this.deleteBlock(data);
 
-                    let blockContent;
+                        if (bType === 'text') {
+                            return <TextBlock
+                                saveInst={this.handleSaveInst(bId)}
+                                block={block}
+                                modifyData={this.modifyBlock}
+                                deleteBlock={deleteBlock}
+                            />
+                        }
+                        if (bType === 'plugin') {
+                            return <PluginBlock
+                                saveInst={this.handleSaveInst(bId)}
+                                block={block}
+                                modifyData={this.modifyBlock}
+                                deleteBlock={deleteBlock}
+                            />
+                        }
+                        if (bType === 'container') {
+                            return <ContainerBlock
+                                saveInst={this.handleSaveInst(bId)}
+                                block={block}
+                                modifyData={this.modifyBlock}
+                                deleteBlock={deleteBlock}
+                            />
+                        }
+                        if (bType === 'HTML') {
+                            return <HTMLBlock
+                                saveInst={this.handleSaveInst(bId)}
+                                block={block}
+                                modifyData={this.modifyBlock}
+                                deleteBlock={deleteBlock}
+                            />
+                        }
 
-                    if (
-                        bType === 'container'
-                        || bType === 'HTML'
-                        || bType === 'image'
-                        || bType === 'list'
-                        || bType === 'text'
-                    ) {
-                        blockContent = block.getDefaultContent();
-                    }
-                    if (bType === 'plugin') {
-                        blockContent = (
-                            <div>
-                                <p>{block?.getData()?.plugin?.pluginName} Plugin</p>
-                            </div>
-                        )
-                    }
-
-                    return (
-                        <BaseBlock
-                            content={blockContent}
-                            saveInst={(inst) => {
-                                this.blockInstances[bId] = inst;
-                            }}
-                        />
-                    )
-                }}>
+                        return block.getDefaultContent();
+                    }}
+                >
                     <PageErrorBoundary>
-                        <EditingPage />
+                        <CContainer id="page-root-container" isConstant={true}>
+                            <EditingPage {...pageCofig} />
+                        </CContainer>
                     </PageErrorBoundary>
                 </BlockGetContentProvider>
             </div>

@@ -1,4 +1,5 @@
 import { isServer, TPagedList, TPagedParams } from '@cromwell/core';
+import { TCromwellBlockProps } from '@cromwell/core';
 import debounce from 'debounce';
 import React from 'react';
 
@@ -11,7 +12,7 @@ import { Pagination } from './CListPagination';
 import styles from './CList.module.scss';
 
 
-export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCListProps<DataType, ListItemProps>> implements TCList<DataType, ListItemProps> {
+export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCListProps<DataType, ListItemProps> & TCromwellBlockProps> implements TCList<DataType, ListItemProps> {
 
     private dataList: DataType[][] = [];
     private list: {
@@ -178,7 +179,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                 this.pageStatuses[i] = 'deffered';
             }
         }
-        
+
         this.pageStatuses[this.currentPageNum] = 'fetched';
 
         if (data.elements) {
@@ -430,9 +431,11 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
 
     private wrapContent = (content: JSX.Element): JSX.Element => {
         const props = this.getProps();
+        const { id, ...rest } = props;
         return (
             <CromwellBlock id={props.id} type='list'
                 className={props.className}
+                {...rest}
                 content={(data, blockRef, setContentInstance) => {
                     setContentInstance(this);
                     return (

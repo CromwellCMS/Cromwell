@@ -34,3 +34,19 @@
 .DraggableBlock__frame_selected {
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
+
+.DraggableBlock__dragging {
+    opacity: 0.4;
+}
+
+.DraggableBlock__dragging .DraggableBlock__frame {
+    background-color:rgb(170, 90, 255, 0.6)
+}
+
+.DraggableBlock__cursor {
+    position: fixed;
+    opacity: 0.6;
+    transition: none;
+    pointer-events: none;
+    z-index: 9999;
+}

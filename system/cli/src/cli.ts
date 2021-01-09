@@ -1,7 +1,9 @@
 import { TServiceNames } from '@cromwell/cms';
 import yargs from 'yargs/yargs';
+import { createTask } from './tasks/create';
 
 const args = yargs(process.argv.slice(2))
+    // START
     .command<{ service?: string; development?: boolean }>({
         command: 'start [options]',
         describe: 'starts CMS or specified service',
@@ -33,6 +35,7 @@ const args = yargs(process.argv.slice(2))
             }
         }
     })
+    // BUILD
     .command<{ watch?: boolean }>({
         command: 'build [options]',
         describe: 'builds CMS module - theme or plugin',
@@ -50,6 +53,23 @@ const args = yargs(process.argv.slice(2))
             buildTask(argv.watch);
         }
     })
+    // CREATE
+    .command<{ name?: string; type?: string }>({
+        command: 'create <name> [options]',
+        describe: 'creates new Cromwell project',
+        aliases: ['create', 'c'],
+        builder: (yargs) => {
+            return yargs.option('type', {
+                alias: 't',
+                desc: 'type of project - default, plugin, theme',
+                type: 'string'
+            })
+        },
+        handler: (argv) => {
+            createTask(argv.name)
+        }
+    })
+    // BUNDLE MODULES
     .command<{ remove?: boolean; development?: boolean; force?: boolean; }>({
         command: 'bm [options]',
         describe: 'bundle frontend node_modules',
@@ -77,6 +97,7 @@ const args = yargs(process.argv.slice(2))
             bundler(process.cwd(), !argv.development, argv.remove, argv.force);
         }
     })
+    // DOWNLOAD
     .command({
         command: 'download',
         describe: 'download bundled frontend modules',

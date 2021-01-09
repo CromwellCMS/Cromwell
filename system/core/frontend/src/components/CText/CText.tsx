@@ -1,15 +1,15 @@
-import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
-import React from 'react'
-//@ts-ignore
-import styles from './CromwellTextBlock.module.scss';
+import { TCromwellBlockProps } from '@cromwell/core';
+import React from 'react';
 
-export const CText = (props: { id: string, className?: string, children?: string, type?: keyof React.ReactHTML }) => {
-    const { children, type, ...rest } = props;
+import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+
+export const CText = (props: { children?: string; element?: keyof React.ReactHTML } & TCromwellBlockProps) => {
+    const { children, element, ...rest } = props;
     return (
         <CromwellBlock {...rest} type='text' content={(data) => {
-            let _type = data && data.text && data.text.textElementType ? data.text.textElementType : type;
+            let _type = data?.text?.textElementType ?? element;
             if (!_type) _type = 'p';
-            const _text = data && data.text && data.text.content ? data.text.content : children;
+            const _text = data?.text?.content ?? children;
 
             // If text was passed as child in JSX element, save it into config
             if (data && (_text || _type)) {

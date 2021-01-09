@@ -1,24 +1,25 @@
+import { getStoreItem, TCromwellBlockProps, TGallerySettings } from '@cromwell/core';
 import React, { useEffect, useState } from 'react';
-import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
-import { TCromwellBlockData, getStoreItem, TGallerySettings } from '@cromwell/core';
-import { Link } from '../Link/Link';
-import Swiper, { Navigation, Pagination, SwiperOptions, Lazy, Thumbs, Zoom } from 'swiper';
 import styleInject from 'style-inject';
+import Swiper, { Lazy, Navigation, Pagination, SwiperOptions, Thumbs, Zoom } from 'swiper';
 //@ts-ignore
-import swiperCSS from "swiper/swiper-bundle.css";
-styleInject(swiperCSS);
+import swiperCSS from 'swiper/swiper-bundle.css';
 
+import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { Link } from '../Link/Link';
 //@ts-ignore
 import styles from './CGallery.module.scss';
+
+styleInject(swiperCSS);
+
 Swiper.use([Navigation, Pagination, Lazy, Thumbs, Zoom]);
 
 
 type TCGalleryProps = {
-    id: string;
     className?: string;
     settings?: TGallerySettings;
     shouldComponentUpdate?: boolean;
-}
+} & TCromwellBlockProps;
 
 export class CGallery extends React.Component<TCGalleryProps> {
 

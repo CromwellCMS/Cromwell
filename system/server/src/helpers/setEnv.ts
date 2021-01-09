@@ -10,9 +10,10 @@ export const setEnv = (): 'dev' | 'prod' => {
 
     setStoreItem('rebuildPage', rebuildPage);
     const args = yargs(process.argv.slice(2));
+    const scriptName = process.argv[2] as 'dev' | 'prod' | undefined;
 
-    envMode = args.env ?? 'prod';
-    const logLevel = args.logLevel ?? 'errors-only';
+    envMode = scriptName ?? 'prod';
+    const logLevel = args.logLevel ?? scriptName === 'dev' ? 'detailed' : 'errors-only';
 
     setStoreItem('environment', {
         mode: envMode,

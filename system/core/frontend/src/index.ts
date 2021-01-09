@@ -12,13 +12,14 @@ export { ProductAttributes } from './components/ProductAttributes/ProductAttribu
 export {
     cromwellIdToHTML,
     cromwellIdFromHTML,
-    cromwellBlockTypeToClassname,
+    blockTypeToClassname,
     cromwellBlockTypeFromClassname,
     cromwellBlockPluginNameToClassname,
     getBlockDataById,
     isAdminPanel,
     BlockGetContentProvider,
-    getBlockData
+    getBlockData,
+    getBlockDyId
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient } from './api/CGraphQLClient';
 export { getRestAPIClient } from './api/CRestAPIClient';

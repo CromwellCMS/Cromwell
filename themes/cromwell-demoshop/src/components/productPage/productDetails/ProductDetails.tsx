@@ -73,7 +73,7 @@ export const ProductDetails = (props: {
                             }} />
                         </CContainer>
                         <CContainer id="product_3" className={styles.captionBlock}>
-                            <CText id="product_4" className={styles.productName} type="h1">{product?.name}</CText>
+                            <CText id="product_4" className={styles.productName} element="h1">{product?.name}</CText>
                             <div className={styles.ratingBlock}>
                                 <Rating name="read-only" value={product?.rating?.average} precision={0.5} readOnly />
                                 {product?.rating?.reviewsNumber ? (

@@ -1,7 +1,9 @@
-import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
-import React from 'react'
+import { TCromwellBlockProps } from '@cromwell/core';
+import React from 'react';
 
-export const CHTML = (props: { id: string, className?: string, children?: React.ReactNode }) => {
+import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+
+export const CHTML = (props: { children?: React.ReactNode } & TCromwellBlockProps) => {
     const { children, ...rest } = props;
     return (
         <CromwellBlock {...rest} type='HTML' >

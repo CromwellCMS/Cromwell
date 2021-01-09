@@ -59,7 +59,7 @@ export type TCromwellBlockProps = {
         blockRef: React.RefObject<HTMLDivElement>,
         setContentInstance: (inst: React.Component) => void
     ) => React.ReactNode;
-}
+} & TCromwellBlockData;
 
 export type TContentComponentProps = {
     id: string;
@@ -77,7 +77,7 @@ export type TCromwellBlockData = {
     /**
      * Component's type
      */
-    type: TCromwellBlockType;
+    type?: TCromwellBlockType;
 
     /**
      * Component's id, must be unique in a page.
@@ -138,6 +138,9 @@ export type TCromwellBlockData = {
         content?: string;
         textElementType?: keyof React.ReactHTML;
     };
+
+    /** If true, user can't delete or modify this block in the editor */
+    isConstant?: boolean;
 }
 
 type TImageSettings = {

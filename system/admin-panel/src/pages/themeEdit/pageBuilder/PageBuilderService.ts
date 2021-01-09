@@ -1,6 +1,8 @@
 import { getStoreItem, setStoreItem, TCromwellBlockData } from '@cromwell/core';
-import { CromwellBlockCSSclass, cromwellBlockTypeFromClassname, getBlockData } from '@cromwell/core-frontend';
-import React from 'react';
+import {
+    CromwellBlockCSSclass, cromwellBlockTypeFromClassname,
+    getBlockData, blockTypeToClassname, getBlockDyId
+} from '@cromwell/core-frontend';
 
 import { Draggable } from '../../../helpers/Draggable/Draggable';
 
@@ -10,13 +12,14 @@ export class PageBuilderService {
 
     constructor(
         private onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void,
-        private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef(),
+        private editorWindow: HTMLElement | null = null,
         private onBlockSelected: (data: TCromwellBlockData) => void,
         private onBlockDeSelected: (data: TCromwellBlockData) => void,
     ) {
         this.draggable = new Draggable({
-            draggableBlocksSelector: `.${CromwellBlockCSSclass}`,
-            editorWindowElem: this.editorWindowRef.current ? this.editorWindowRef.current : undefined,
+            draggableSelector: `.${CromwellBlockCSSclass}`,
+            containerSelector: `.${blockTypeToClassname('container')}`,
+            editorWindowElem: this.editorWindow,
             hasToMoveElements: false,
             canInsertBlock: this.canInsertBlock,
             onBlockInserted: this.onBlockInserted,
@@ -40,14 +43,8 @@ export class PageBuilderService {
     }
 
 
-    private canInsertBlock = (draggedBlock: HTMLElement, targetBlock: HTMLElement,
-        position: 'before' | 'after' | 'inside'): boolean => {
-        // can insert inside only 'container' blocks
-        if (position === 'inside') {
-            const blockType = cromwellBlockTypeFromClassname(targetBlock.classList.toString());
-            if (blockType !== 'container') return false;
-        }
-        const parentData = getBlockData(targetBlock.parentNode);
+    private canInsertBlock = (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: HTMLElement | null): boolean => {
+        const parentData = getBlockData(container);
         if (!parentData?.id) {
             return false;
         }
@@ -55,12 +52,10 @@ export class PageBuilderService {
         return true;
     }
 
-    private onBlockInserted = (draggedBlock: HTMLElement, targetBlock: HTMLElement,
-        position: 'before' | 'after' | 'inside') => {
+    private onBlockInserted = (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: HTMLElement | null) => {
 
         const blockData = Object.assign({}, getBlockData(draggedBlock));
-        const parentData = getBlockData(targetBlock.parentNode)
-        const targetData = getBlockData(targetBlock)
+        const parentData = Object.assign({}, getBlockData(container));
 
         // Ivalid block - no id, or instance was not found in the global store.
         if (!blockData?.id) {
@@ -71,62 +66,33 @@ export class PageBuilderService {
             console.error('!parentData.id: ', draggedBlock);
             return;
         }
-        if (!targetData?.id) {
-            console.error('!targetData.id: ', draggedBlock);
-            return;
-        }
         // console.log('onBlockInserted parentData.id', parentData.id, 'targetData.id', targetData.id, 'position', position)
         // console.log('blockData before', JSON.stringify(blockData, null, 2));
 
-        // Cannot move near / inside itself
-        if (targetData.id === blockData.id) return;
 
-        // Move block:
-        // 1. Set Parent
-        blockData.parentId = parentData.id;
+        // Set parent and index in parent's child array
 
-        // 2. Set index in parent's child array
-
-        let iteration = 0;
         const childrenData: TCromwellBlockData[] = [];
-        Array.from(targetBlock.parentNode.children).forEach((child) => {
+
+        Array.from(container.children).forEach((child, i) => {
             const childData = Object.assign({}, getBlockData(child));
             if (childData.id) {
-                if (child.classList.contains(this.draggable.draggableShadowClass)) return;
+                if (child.classList.contains(this.draggable.cursorClass)) return;
 
-                childrenData.push(childData);
+                childData.index = i;
                 childData.parentId = parentData.id;
 
-                if (childData.id === targetData.id) {
-                    if (position === 'before') {
-                        blockData.index = iteration;
-                        iteration++;
-                        childData.index = iteration;
-                    }
-                    if (position === 'after') {
-                        childData.index = iteration;
-                        iteration++;
-                        blockData.index = iteration;
-                    }
-                } else {
-                    childData.index = iteration;
-                }
-
                 this.modifyBlock(childData);
-
-                iteration++;
             }
         })
 
-        this.modifyBlock(blockData);
-
         // console.log('blockData after', JSON.stringify(blockData, null, 2));
 
-        this.rerenderBlock(blockData.id);
-        childrenData.forEach(child => {
-            this.rerenderBlock(child.id);
-        })
-        this.rerenderBlock(parentData.id);
+        // this.rerenderBlock(blockData.id);
+        // childrenData.forEach(child => {
+        //     this.rerenderBlock(child.id);
+        // })
+        // this.rerenderBlock(parentData.id);
 
         // Update Draggable blocks
         this.draggable?.updateBlocks();
@@ -134,7 +100,7 @@ export class PageBuilderService {
 
 
 
-    private modifyBlock = (blockData: TCromwellBlockData) => {
+    public modifyBlock = (blockData: TCromwellBlockData) => {
         if (!this.changedModifications) this.changedModifications = [];
 
         // Add to local changedModifications (contains only newly added changes);
@@ -142,6 +108,19 @@ export class PageBuilderService {
 
         // Save to global modifcations in pageConfig.
         this.modifyBlockGlobally(blockData);
+
+
+        if (blockData.isDeleted) {
+            const element = getBlockDyId(blockData.id);
+            if (element) element.remove();
+        }
+    }
+
+    public deleteBlock = (blockData: TCromwellBlockData) => {
+        if (blockData) {
+            blockData.isDeleted = true;
+            this.modifyBlock(blockData);
+        }
     }
 
     /**

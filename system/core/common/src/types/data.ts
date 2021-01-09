@@ -163,6 +163,7 @@ export type TPageInfo = {
 export type TPageConfig = TPageInfo & {
     modifications: TCromwellBlockData[];
     pageCustomConfig?: Record<string, any>;
+    adminPanelProps?: any;
 }
 
 export type TPluginConfig = TBuildConfig & {

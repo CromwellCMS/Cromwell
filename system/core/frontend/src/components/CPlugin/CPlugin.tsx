@@ -1,4 +1,4 @@
-import { getStoreItem, TFrontendPluginProps, TCromwellBlockProps } from '@cromwell/core';
+import { getStoreItem, TCromwellBlockProps, TFrontendPluginProps } from '@cromwell/core';
 import React from 'react';
 import { isValidElementType } from 'react-is';
 
@@ -15,7 +15,6 @@ const fallbackComponent = () => <></>;
  */
 export const CPlugin = (props: {
     id: string;
-    className?: string;
     pluginName?: string;
     component?: React.ComponentType<TFrontendPluginProps>;
 } & TCromwellBlockProps) => {

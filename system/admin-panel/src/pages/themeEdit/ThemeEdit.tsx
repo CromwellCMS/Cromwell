@@ -91,7 +91,7 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
     private handleSaveEditingPage = async () => {
         if (!this.changedPageInfo &&
             (!this.changedModifications || this.changedModifications.length === 0)) {
-            // nothing to save
+            toast.warning('No changes to save');
             return;
         }
 
