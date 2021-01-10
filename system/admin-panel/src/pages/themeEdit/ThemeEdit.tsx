@@ -2,8 +2,8 @@ import '../../helpers/Draggable/Draggable.css';
 
 import { getStoreItem, setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo } from '@cromwell/core';
 import { getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
-import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip } from '@material-ui/core';
-import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-ui/icons';
+import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip, Collapse, Fab } from '@material-ui/core';
+import { AddCircle as AddCircleIcon, Settings as SettingsIcon, Add as AddIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { Suspense } from 'react';
 import { toast } from 'react-toastify';
@@ -163,7 +163,7 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
                     )}
                     {!isPageListLoading && (
                         <div className={styles.mainContainer}>
-                            <div className={styles.sidebar}>
+                            <div className={`${styles.sidebar} ${isSidebarOpen ? '' : styles.sidebarClosed}`}>
                                 {ImportedThemeController && (
                                     <div className={styles.pageList}>
                                         <MenuItem className={styles.navBarItem}
@@ -235,14 +235,18 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
                                             indicatorColor="primary"
                                             textColor="primary"
                                             onChange={(event: React.ChangeEvent<{}>, newValue: number) => {
-                                                this.setState({ activeTabNum: newValue });
+                                                if (activeTabNum === newValue) return;
+                                                this.setState({
+                                                    activeTabNum: newValue,
+                                                    isSidebarOpen: newValue === 0
+                                                });
                                             }}
                                         >
                                             <Tab label="Page settings" />
                                             <Tab label="Page builder" />
                                         </Tabs>
                                         <div>
-                                            <Button variant="outlined" color="primary"
+                                            <Button variant="contained" color="primary"
                                                 className={styles.saveBtn}
                                                 size="small"
                                                 onClick={() => this.handleSaveEditingPage()}>
@@ -268,7 +272,8 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
                                     {!isPageLoading && EditingPage && (
                                         <PageBuilder
                                             onPageModificationsChange={this.handlePageModificationsChange}
-                                            EditingPage={EditingPage} />
+                                            EditingPage={EditingPage}
+                                        />
                                     )}
                                 </TabPanel>
                                 {isPageLoading && (<LoadBox />)}

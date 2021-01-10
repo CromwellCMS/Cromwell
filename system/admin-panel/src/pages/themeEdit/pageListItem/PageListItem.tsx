@@ -41,13 +41,12 @@ export const PageListItem = (props: {
                         <DeleteForeverIcon />
                     </IconButton>
                 </Tooltip> */}
-                <IconButton
+                {/* <IconButton
                     aria-label="Open page builder"
                 // onClick={() => handleOpenPageBuilder(page)}
                 >
-                    {/* <FormatPaintIcon /> */}
                     <SettingsIcon />
-                </IconButton>
+                </IconButton> */}
             </div>
         </MenuItem>
     )

@@ -27,25 +27,25 @@ type TDraggableOptions = {
 
     onBlockDeSelected?: (draggedBlock: HTMLElement) => void;
 
+    canDeselectBlock?: (draggedBlock: HTMLElement) => boolean;
+
+    ignoreDraggableClass?: string;
 
     /**
-     * Should actually insert original elements into targets? If false, will
-     * be used in "preview" mode and it'll create only block's shadows and remove
+     * Disable actual DOM insert of elements into new positions? If true, will
+     * be used in "preview" mode and it'll create only block's shadows at new positions and remove
      * them at mouseUp event, so no modification will be applied to the DOM at the end
-     * of a drag action.
-     * Useful with onBlockInserted prop to handle insertion manually.
-     * True by default
+     * of a drag action. 
+     * Use it to prevent React errors, since React must manage its elements by itself.
+     * In this case handle insertion manually via onBlockInserted prop.
      */
-    hasToMoveElements?: boolean;
+    disableInsert?: boolean;
 
     /**
      * Color of frames
      */
     primaryColor?: string;
 
-    // draggableFrameSelector: string,
-    // draggableFrameHoveredCSSclass?: string,
-    // draggableFrameSelectedCSSclass?: string
 }
 
 export class Draggable {
@@ -60,6 +60,7 @@ export class Draggable {
     private hoveredFrame: HTMLElement | null = null;
     private selectedBlock: HTMLElement | null = null;
     private selectedFrame: HTMLElement | null = null;
+    private draggingBlockShadow: HTMLElement | null = null;
 
     private draggableBlocks: (HTMLElement | null)[] | null = [];
     private draggableFrames: (HTMLElement | null)[] = [];
@@ -82,6 +83,12 @@ export class Draggable {
     private onDragStartInfo: {
         mousePosYinsideBlock: number;
         mousePosXinsideBlock: number;
+    } | null = null;
+
+    private lastInsertionData: {
+        draggingBlock: HTMLElement;
+        container: HTMLElement;
+        afterElement: HTMLElement;
     } | null = null;
 
     private draggableFrameClass: string = 'DraggableBlock__frame';
@@ -139,11 +146,15 @@ export class Draggable {
         draggableFrame.addEventListener('click', (e) => {
             this.onBlockClick(block, draggableFrame, e);
         })
+
         block.addEventListener('click', (e) => {
             this.onBlockClick(block, draggableFrame, e);
         })
 
         block.addEventListener('mousedown', (e) => {
+            if (this.options.ignoreDraggableClass &&
+                block.classList.contains(this.options.ignoreDraggableClass)) return;
+
             if (draggableFrame) this.onBlockMouseDown(e, block);
         });
 
@@ -208,6 +219,45 @@ export class Draggable {
         }, 100);
     }
 
+    private onDragStart = (block: HTMLElement, event: MouseEvent) => {
+        const rect = this.draggingBlock.getBoundingClientRect();
+
+        this.deselectCurrentBlock();
+
+        this.onDragStartInfo = {
+            mousePosYinsideBlock: (this.onMouseDownInfo?.clientY ?? 0) - rect.top + 10,
+            mousePosXinsideBlock: (this.onMouseDownInfo?.clientX ?? 0) - rect.left + 10
+        }
+
+        this.draggingCursor = block.cloneNode(true) as HTMLElement;
+        this.draggingCursor.classList.add(this.cursorClass);
+        this.draggingCursor.style.height = this.draggingBlock.offsetHeight + 'px';
+        this.draggingCursor.style.width = this.draggingBlock.offsetWidth + 'px';
+
+        const { editorWindowElem } = this.options;
+        if (editorWindowElem) {
+            editorWindowElem.appendChild(this.draggingCursor);
+        } else if (this.bodyElem) {
+            this.bodyElem.appendChild(this.draggingCursor);
+        }
+
+        this.draggingBlock.classList.add(this.draggingClass);
+
+        if (this.options.disableInsert) {
+            this.lastInsertionData = null;
+
+            if (this.draggingBlockShadow) this.draggingBlockShadow.remove();
+            this.draggingBlockShadow = this.draggingBlock.cloneNode() as HTMLElement;
+
+            if (editorWindowElem) {
+                editorWindowElem.appendChild(this.draggingBlockShadow);
+            } else if (this.bodyElem) {
+                this.bodyElem.appendChild(this.draggingBlockShadow);
+            }
+        }
+    }
+
+
     private onMouseMove = (event: MouseEvent) => {
         // console.log('canDragBlock', canDragBlock, 'draggingBlock', draggingBlock);
         if (this.canDragBlock && this.draggingBlock) {
@@ -239,17 +289,35 @@ export class Draggable {
                 this.canInsertBlock(this.hoveredBlock, this.draggingBlock, afterElement) : true;
 
             if (canInsert) {
+                let blockToInsert: HTMLElement | null = null;
+
+                if (this.options.disableInsert) {
+                    blockToInsert = this.draggingBlockShadow;
+
+                    this.draggingBlock.style.display = 'none';
+                    this.draggingBlockShadow.style.display = '';
+                    this.lastInsertionData = {
+                        draggingBlock: this.draggingBlock,
+                        container: this.hoveredBlock,
+                        afterElement: afterElement as HTMLElement
+                    }
+                } else {
+                    blockToInsert = this.draggingBlock;
+                }
+
                 try {
                     if (afterElement) {
-                        this.hoveredBlock.insertBefore(this.draggingBlock, afterElement)
+                        this.hoveredBlock.insertBefore(blockToInsert, afterElement)
                     } else {
-                        this.hoveredBlock.appendChild(this.draggingBlock)
+                        this.hoveredBlock.appendChild(blockToInsert);
                     }
 
-                    this.onBlockInserted(this.hoveredBlock, this.draggingBlock, afterElement);
+                    if (!this.options.disableInsert)
+                        this.onBlockInserted?.(this.hoveredBlock, this.draggingBlock, afterElement);
                 } catch (e) {
                     console.error(e);
                 }
+
             }
         }
     });
@@ -274,37 +342,23 @@ export class Draggable {
         return closestElement;
     }
 
-    private onDragStart = (block: HTMLElement, event: MouseEvent) => {
-        const rect = this.draggingBlock.getBoundingClientRect();
-
-        this.deselectCurrentBlock();
-
-        this.onDragStartInfo = {
-            mousePosYinsideBlock: (this.onMouseDownInfo?.clientY ?? 0) - rect.top + 10,
-            mousePosXinsideBlock: (this.onMouseDownInfo?.clientX ?? 0) - rect.left + 10
-        }
-
-        this.draggingCursor = block.cloneNode(true) as HTMLElement;
-        this.draggingCursor.classList.add(this.cursorClass);
-        this.draggingCursor.style.height = this.draggingBlock.offsetHeight + 'px';
-        this.draggingCursor.style.width = this.draggingBlock.offsetWidth + 'px';
-
-        const { editorWindowElem } = this.options;
-        if (editorWindowElem) {
-            editorWindowElem.appendChild(this.draggingCursor);
-        } else if (this.bodyElem) {
-            this.bodyElem.appendChild(this.draggingCursor);
-        }
-
-        this.draggingBlock.classList.add(this.draggingClass);
-    }
-
     private onDragStop = () => {
         this.canDragBlock = false;
         this.isDragging = false;
 
         if (this.draggingBlock) {
             this.draggingBlock.classList.remove(this.draggingClass);
+        }
+
+        if (this.options.disableInsert) {
+            if (this.draggingBlockShadow) this.draggingBlockShadow.remove();
+            if (this.draggingBlock) this.draggingBlock.style.display = '';
+            this.draggingBlockShadow = null;
+            this.lastInsertionData = null;
+
+            if (this.lastInsertionData)
+                this.onBlockInserted?.(this.lastInsertionData.container,
+                    this.lastInsertionData.draggingBlock, this.lastInsertionData.afterElement);
         }
 
         this.draggingBlock = null;
@@ -362,7 +416,8 @@ export class Draggable {
         (event as any).hitBlock = true;
 
         if (block !== this.selectedBlock) {
-            this.deselectCurrentBlock();
+            const canDeselectBlock = this.deselectCurrentBlock();
+            if (!canDeselectBlock) return;
 
             this.options?.onBlockSelected?.(block);
             this.selectedBlock = block;
@@ -376,7 +431,12 @@ export class Draggable {
         this.deselectCurrentBlock();
     }
 
-    private deselectCurrentBlock = () => {
+    private deselectCurrentBlock = (): boolean => {
+        if (this.options.canDeselectBlock) {
+            const canDeselectBlock = this.options.canDeselectBlock(this.selectedBlock);
+            if (canDeselectBlock === false) return false;
+        }
+
         if (this.selectedBlock) {
             this.styleDeselectedBlock(this.selectedBlock, this.selectedFrame)
             this.options?.onBlockDeSelected?.(this.selectedBlock);
@@ -386,6 +446,7 @@ export class Draggable {
         }
         this.selectedBlock = null;
         this.selectedFrame = null;
+        return true;
     }
 
     private styleHoveredBlock = (block: HTMLElement, frame: HTMLElement) => {

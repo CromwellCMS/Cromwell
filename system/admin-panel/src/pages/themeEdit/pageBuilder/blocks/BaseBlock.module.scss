@@ -1,3 +1,5 @@
+@import '../../../../constants/constants.scss';
+
 .BaseBlock {
     // display: flex;
     position: relative;
@@ -14,6 +16,24 @@
     padding-left: 5px;
 }
 
+.bottomActions {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    bottom: -33px;
+    left: calc(50% - 24px);
+}
+
+.addIcon {
+    background-color: #fff;
+    color: $builderPrimary;
+    border-radius: 100%;
+}
+
 .action {
     padding: 5px;
+}
+
+.widgetsContainer {
+    padding: 10px
 }

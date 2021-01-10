@@ -5,6 +5,8 @@ body .pageItem {
     padding: 0 0 0 15px;
     display: flex;
     justify-content: space-between;
+    border: 1px solid #e6e6e6;
+    min-height: 45px;
 }
 .pageItemActions {
     display: flex;

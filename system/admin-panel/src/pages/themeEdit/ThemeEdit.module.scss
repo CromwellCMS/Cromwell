@@ -9,6 +9,13 @@
     }
     .sidebar {
         max-width: 300px;
+        opacity: 1;
+        transition: 0.3s;
+    }
+
+    .sidebarClosed {
+        max-width: 0;
+        opacity: 0;
     }
 
     .pageList {
@@ -43,6 +50,8 @@
         margin-bottom: 10px;
         border-radius: 8px;
         overflow: hidden;
+        padding-right: 10px;
+        border: 1px solid #e6e6e6;
     }
     .pageBarTitle {
         font-size: 18px;
@@ -64,6 +73,7 @@
         margin: 15px 0;
         background-color: #fff;
         border-radius: 8px;
+        border: 1px solid #e6e6e6;
     } 
 
     .saveBtn {

@@ -49,6 +49,7 @@ export const TextBlock = (props: TBaseBlockProps) => {
                 <TextField
                     value={blockValue}
                     onChange={(e) => { setBlockValue(e.target.value) }}
+                    multiline
                 />
             ) : props?.block?.getDefaultContent()}
 

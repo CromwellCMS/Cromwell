@@ -21,6 +21,7 @@ export class PageBuilder extends React.Component<{
     private pageBuilderService: PageBuilderService;
     private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef();
     private blockInstances: Record<string, IBaseBlock> = {};
+    private ignoreDraggableClass: string = 'page-root-container';
 
     componentDidMount() {
 
@@ -30,6 +31,8 @@ export class PageBuilder extends React.Component<{
                 this.editorWindowRef.current,
                 this.onBlockSelected,
                 this.onBlockDeSelected,
+                this.ignoreDraggableClass,
+                this.canDeselectBlock
             );
         }, 100);
     }
@@ -53,7 +56,12 @@ export class PageBuilder extends React.Component<{
         if (data) this.pageBuilderService?.deleteBlock(data);
     }
 
+    public canDeselectBlock = (data?: TCromwellBlockData) => {
+        return this.blockInstances[data.id]?.canDeselectBlock?.() ?? true;
+    }
+
     render() {
+        // console.log('PageBuilder render')
         const pageCofig = getStoreItem('pageConfig')?.adminPanelProps ?? {};
 
         const { EditingPage } = this.props;
@@ -103,7 +111,10 @@ export class PageBuilder extends React.Component<{
                     }}
                 >
                     <PageErrorBoundary>
-                        <CContainer id="page-root-container" isConstant={true}>
+                        <CContainer id="page-root-container"
+                            className={this.ignoreDraggableClass}
+                            isConstant={true}
+                        >
                             <EditingPage {...pageCofig} />
                         </CContainer>
                     </PageErrorBoundary>

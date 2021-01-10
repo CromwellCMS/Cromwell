@@ -9,22 +9,26 @@ import { Draggable } from '../../../helpers/Draggable/Draggable';
 export class PageBuilderService {
 
     private draggable: Draggable;
-
+    
     constructor(
         private onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void,
         private editorWindow: HTMLElement | null = null,
         private onBlockSelected: (data: TCromwellBlockData) => void,
         private onBlockDeSelected: (data: TCromwellBlockData) => void,
+        private ignoreDraggableClass: string | null = null,
+        private canDeselectBlock: (data: TCromwellBlockData) => boolean,
     ) {
         this.draggable = new Draggable({
             draggableSelector: `.${CromwellBlockCSSclass}`,
             containerSelector: `.${blockTypeToClassname('container')}`,
             editorWindowElem: this.editorWindow,
-            hasToMoveElements: false,
+            // disableInsert: true,
             canInsertBlock: this.canInsertBlock,
             onBlockInserted: this.onBlockInserted,
             onBlockSelected: this.onDraggableBlockSelected,
             onBlockDeSelected: this.onDraggableBlockDeSelected,
+            ignoreDraggableClass: this.ignoreDraggableClass,
+            canDeselectBlock: this.canDeselectDraggableBlock
         });
     }
 
@@ -81,6 +85,8 @@ export class PageBuilderService {
 
                 childData.index = i;
                 childData.parentId = parentData.id;
+
+                childrenData.push(childData)
 
                 this.modifyBlock(childData);
             }
@@ -182,6 +188,14 @@ export class PageBuilderService {
         if (blockData?.id) {
             this.onBlockDeSelected(blockData)
         }
+    }
+
+    private canDeselectDraggableBlock = (draggedBlock: HTMLElement): boolean => {
+        const blockData = Object.assign({}, getBlockData(draggedBlock));
+        if (blockData?.id) {
+            return this.canDeselectBlock(blockData);
+        }
+        return true;
     }
 
 }

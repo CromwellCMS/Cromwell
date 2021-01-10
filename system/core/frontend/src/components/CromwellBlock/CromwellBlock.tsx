@@ -27,7 +27,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private blockRef = React.createRef<HTMLDivElement>();
     private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
 
-    public getData = () => Object.assign({}, this.data, this.props);
+    public getData = () => Object.assign({}, this.props, this.data);
 
     public getBlockRef = () => this.blockRef;
     public getContentInstance = () => this.contentInstance;
