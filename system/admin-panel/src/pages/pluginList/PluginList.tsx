@@ -76,15 +76,14 @@ export default function PluginList() {
 
     return (
         <div className={styles.PluginList}>
-            <div className={styles.pluginItem}>
-                <Button
-                    onClick={handleOpenMarket}
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    startIcon={<AddCircleOutlineIcon />}
-                >Add plugins</Button>
-            </div>
+            <Button
+                className={styles.addBtn}
+                onClick={handleOpenMarket}
+                variant="contained"
+                color="primary"
+                size="large"
+                startIcon={<AddCircleOutlineIcon />}
+            >Add plugins</Button>
             {pluginInfoList && pluginInfoList.map(pluginName => {
                 const pluginEntity = pluginList?.find(ent => ent.name === pluginName)
                 const title = pluginEntity?.title ?? pluginName;

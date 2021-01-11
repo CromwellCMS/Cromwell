@@ -19,7 +19,11 @@ export {
     isAdminPanel,
     BlockGetContentProvider,
     getBlockData,
-    getBlockDyId
+    getBlockById,
+    getBlockElementById,
+    pageRootContainerId,
+    awaitBlocksRender,
+    awaitImporter
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient } from './api/CGraphQLClient';
 export { getRestAPIClient } from './api/CRestAPIClient';

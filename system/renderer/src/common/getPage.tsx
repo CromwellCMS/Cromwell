@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { BasePageNames, TCromwellPage, TCromwellPageCoreProps } from "@cromwell/core";
 import { getStoreItem, setStoreItem } from "@cromwell/core";
-import { Head, CContainer } from '@cromwell/core-frontend';
+import { Head, CContainer, pageRootContainerId } from '@cromwell/core-frontend';
 import { isValidElementType } from 'react-is';
 const ReactHtmlParser = require('react-html-parser').default;
 
@@ -64,7 +64,7 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
                 <Head>
                     <meta charSet="utf-8" />
                 </Head>
-                <CContainer id="page-root-container" isConstant={true}>
+                <CContainer id={pageRootContainerId} isConstant={true}>
                     <PageComponent {...pageCompProps} {...restProps} />
                 </CContainer>
                 <Head>

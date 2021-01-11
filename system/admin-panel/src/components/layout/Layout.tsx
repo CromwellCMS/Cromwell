@@ -1,6 +1,5 @@
 import 'gridlex/src/gridlex.scss';
 import 'react-toastify/dist/ReactToastify.css';
-import 'reset-css';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import React from 'react';

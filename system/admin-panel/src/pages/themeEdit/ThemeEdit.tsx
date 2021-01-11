@@ -1,16 +1,16 @@
 import '../../helpers/Draggable/Draggable.css';
 
-import { getStoreItem, setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo } from '@cromwell/core';
+import { setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo } from '@cromwell/core';
 import { getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
-import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip, Collapse, Fab } from '@material-ui/core';
-import { AddCircle as AddCircleIcon, Settings as SettingsIcon, Add as AddIcon } from '@material-ui/icons';
+import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip } from '@material-ui/core';
+import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { Suspense } from 'react';
 import { toast } from 'react-toastify';
 
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
-import { PageBuilder } from './pageBuilder/PageBuilder';
+import { PageBuilderView } from './pageBuilder/PageBuilderView';
 import { PageListItem } from './pageListItem/PageListItem';
 import { PageSettings } from './pageSettings/PageSettings';
 import styles from './ThemeEdit.module.scss';
@@ -25,8 +25,6 @@ class ThemeEditState {
     isSidebarOpen: boolean = true;
     activeTabNum: number = 0;
 }
-
-const importLazyPage = (route: string | undefined) => undefined;
 
 
 export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
@@ -209,12 +207,6 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
                                         </Tooltip>
                                     </div>
                                 )}
-                                <IconButton
-                                    aria-label="close"
-                                    onClick={() => this.setState(prev => ({ isSidebarOpen: !prev.isSidebarOpen }))}
-                                >
-                                    <AddCircleIcon />
-                                </IconButton>
                             </div>
                             <div className={styles.pageSettingsContainer}>
                                 {/** If no page selected to edit settings, display Theme's AdminPanel controller */}
@@ -270,7 +262,8 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
                                 </TabPanel>
                                 <TabPanel value={activeTabNum} index={1}>
                                     {!isPageLoading && EditingPage && (
-                                        <PageBuilder
+                                        <PageBuilderView
+                                            editingPageInfo={editingPageInfo}
                                             onPageModificationsChange={this.handlePageModificationsChange}
                                             EditingPage={EditingPage}
                                         />

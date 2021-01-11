@@ -35,5 +35,20 @@
 }
 
 .widgetsContainer {
-    padding: 10px
+    padding: 10px;
+    max-height: 60vh;
+    width: 400px;
+}
+
+.widgetsContainer .widgetItem {
+    // border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 12px 7px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+
+    > p {
+        margin-left: 4px;
+    }
 }

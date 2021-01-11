@@ -62,7 +62,7 @@ export class Draggable {
     private selectedFrame: HTMLElement | null = null;
     private draggingBlockShadow: HTMLElement | null = null;
 
-    private draggableBlocks: (HTMLElement | null)[] | null = [];
+    private draggableBlocks: (HTMLElement | null)[] = [];
     private draggableFrames: (HTMLElement | null)[] = [];
 
     private containers: (HTMLElement | null)[] | null = [];
@@ -247,7 +247,7 @@ export class Draggable {
             this.lastInsertionData = null;
 
             if (this.draggingBlockShadow) this.draggingBlockShadow.remove();
-            this.draggingBlockShadow = this.draggingBlock.cloneNode() as HTMLElement;
+            this.draggingBlockShadow = this.draggingBlock.cloneNode(true) as HTMLElement;
 
             if (editorWindowElem) {
                 editorWindowElem.appendChild(this.draggingBlockShadow);
@@ -353,12 +353,13 @@ export class Draggable {
         if (this.options.disableInsert) {
             if (this.draggingBlockShadow) this.draggingBlockShadow.remove();
             if (this.draggingBlock) this.draggingBlock.style.display = '';
-            this.draggingBlockShadow = null;
-            this.lastInsertionData = null;
 
             if (this.lastInsertionData)
                 this.onBlockInserted?.(this.lastInsertionData.container,
                     this.lastInsertionData.draggingBlock, this.lastInsertionData.afterElement);
+
+            this.draggingBlockShadow = null;
+            this.lastInsertionData = null;
         }
 
         this.draggingBlock = null;

@@ -2,20 +2,20 @@ import { Tooltip } from '@material-ui/core';
 import { Power as PowerIcon } from '@material-ui/icons';
 import React from 'react';
 
-import { BaseBlock } from './BaseBlock';
+import { BaseMenu, TBaseMenuProps } from './BaseMenu';
 
-export class PluginBlock extends BaseBlock {
-
-    render() {
-        return (
-            <>
-                {this.getBaseMenu((
+export function PluginBlock(props: TBaseMenuProps) {
+    return (
+        <>
+            <BaseMenu
+                {...props}
+                icon={(
                     <Tooltip title="Plugin block">
                         <PowerIcon />
                     </Tooltip>
-                ))}
-                <p>Plugin {this.props.block?.getData()?.plugin?.pluginName}</p>
-            </>
-        );
-    }
+                )}
+            />
+            <p><b>Plugin </b>[{props.block?.getData()?.plugin?.pluginName}]</p>
+        </>
+    );
 }

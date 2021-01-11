@@ -1,20 +1,21 @@
 import { Tooltip } from '@material-ui/core';
 import { Widgets as WidgetsIcon } from '@material-ui/icons';
 import React from 'react';
-import { BaseBlock } from './BaseBlock';
 
-export class ContainerBlock extends BaseBlock {
+import { BaseMenu, TBaseMenuProps } from './BaseMenu';
 
-    render() {
-        return (
-            <>
-                {this.getBaseMenu((
+export function ContainerBlock(props: TBaseMenuProps) {
+    return (
+        <>
+            <BaseMenu
+                {...props}
+                icon={(
                     <Tooltip title="Container block">
                         <WidgetsIcon />
                     </Tooltip>
-                ))}
-                {this.props.block?.getDefaultContent()}
-            </>
-        );
-    }
+                )}
+            />
+            {props.block?.getDefaultContent()}
+        </>
+    );
 }

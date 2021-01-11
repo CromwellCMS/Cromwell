@@ -26,6 +26,12 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private hasBeenMoved?: boolean = false;
     private blockRef = React.createRef<HTMLDivElement>();
     private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
+    private childPromises: Record<string, (Promise<TCromwellBlock>) | undefined> = {};
+
+    private rerenderResolver: (() => void) | null = null;
+    private rerenderPromise: Promise<void> | null = null;
+
+    private didUpdateListeners: Record<string, (() => void)> = {};
 
     public getData = () => Object.assign({}, this.props, this.data);
 
@@ -33,7 +39,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     public getContentInstance = () => this.contentInstance;
     public setContentInstance = (contentInstance: React.Component) => this.contentInstance = contentInstance;
     public getBlockInstance = (id: string): TCromwellBlock | undefined => getStoreItem('blockInstances')?.[id];
-
+    public getRenderPromise = () => this.rerenderPromise;
 
     constructor(props: TCromwellBlockProps) {
         super(props);
@@ -51,6 +57,50 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                 parentInst.notifyChildRegistered(this);
             }
         }
+    }
+
+    componentDidMount() {
+        this.didUpdate();
+    }
+
+    componentDidUpdate() {
+        this.didUpdate();
+    }
+
+    private didUpdate = async () => {
+        const childPromises = Object.values(this.childPromises).filter(p => Boolean(p?.then));
+        if (childPromises.length > 0) {
+            await Promise.all([childPromises]);
+        }
+
+        Object.values(this.didUpdateListeners).forEach(func => func());
+
+        const res = this.rerenderResolver;
+
+        this.rerenderPromise = null;
+        this.rerenderResolver = null;
+
+        res?.();
+    }
+
+
+    public addDidUpdateListener = (id: string, func: () => void) => {
+        this.didUpdateListeners[id] = func;
+    }
+
+    public rerender = async () => {
+        if (this.rerenderPromise) {
+            await this.rerenderPromise;
+            return;
+        }
+
+        this.rerenderPromise = new Promise<void>(async done => {
+            this.rerenderResolver = done;
+        });
+
+        this.forceUpdate();
+
+        if (this.rerenderPromise) await this.rerenderPromise;
     }
 
     componentWillUnmount() {
@@ -99,47 +149,48 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     }
 
     private getVirtualBlock = (b: TCromwellBlockData): JSX.Element => {
+        const data = this.getData();
+
+        const defProps = {
+            id: b.id,
+            key: b.id,
+            jsxParentId: data?.id,
+        }
+
         if (b.type === 'HTML') {
             return <CHTML
-                id={b.id}
-                key={b.id}
+                {...defProps}
             />
         }
         if (b.type === 'image') {
             return <CImage
-                id={b.id}
-                key={b.id}
+                {...defProps}
             />
         }
         if (b.type === 'container') {
             return <CContainer
-                id={b.id}
-                key={b.id}
+                {...defProps}
             />
         }
         if (b.type === 'text') {
             return <CText
-                id={b.id}
-                key={b.id}
+                {...defProps}
             />
         }
         if (b.type === 'gallery') {
             return <CGallery
-                id={b.id}
-                key={b.id}
+                {...defProps}
             />
         }
         if (b.type === 'plugin') {
             return <CPlugin
-                id={b.id}
-                key={b.id}
+                {...defProps}
             />
         }
 
         return (
             <CromwellBlock
-                id={b.id}
-                key={b.id}
+                {...defProps}
             />
         )
     }
@@ -151,12 +202,15 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
             const resolver = this.childResolvers[id];
             if (resolver) {
                 this.childResolvers[id] = undefined;
+                this.childPromises[id] = undefined;
                 resolver(inst);
             }
         }
     }
 
     public getChildBlocks(): React.ReactNode[] {
+        const data = this.getData();
+
         this.childBlocks = this.childBlocks.sort((a, b) => {
             const ai = a?.index ?? 0;
             const bi = b?.index ?? 0;
@@ -170,18 +224,20 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
             const blockInst = this.getBlockInstance(block.id);
             if (blockInst) {
-                return blockInst.consumerRender();
+                return blockInst.consumerRender(data?.id);
 
             } else {
                 // Child wasnt wan't initialized yet. Wait until it registers in the store 
                 // and notifies this parent component
                 const childPromise = new Promise<TCromwellBlock>(done => {
                     this.childResolvers[block.id] = done;
-                })
+                });
+                this.childPromises[block.id] = childPromise;
+
                 const DynamicComp = dynamicLoader(async (): Promise<React.ComponentType> => {
                     const child = await childPromise;
                     return () => {
-                        return <>{child.consumerRender()}</>
+                        return <>{child.consumerRender(data?.id)}</>
                     }
                 });
                 return <DynamicComp />;
@@ -190,7 +246,8 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     }
 
     public getDefaultContent(): React.ReactNode | null {
-        if (this.data?.type === 'container') {
+        const data = this.getData();
+        if (data?.type === 'container') {
             return (
                 <>
                     {this.props.children}
@@ -237,7 +294,13 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         );
     }
 
-    public consumerRender(): React.ReactNode | null {
+    public consumerRender(jsxParentId?: string): React.ReactNode | null {
+        const data = this.getData();
+
+        if (data?.parentId && jsxParentId && jsxParentId !== data.parentId) {
+            return <></>;
+        }
+
         return <BlockGetContentConsumer>
             {(getContent) => {
                 return this.contentRender(getContent)
@@ -246,8 +309,14 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     }
 
     render(): React.ReactNode | null {
-        // console.log('CromwellBlock::render id: ' + this.props.id + ' data: ' + JSON.stringify(this.data));
+        // console.log('CromwellBlock::render id: ' + this.props.id);
         this.readConfig();
+
+        if (!this.rerenderPromise && !this.rerenderResolver) {
+            this.rerenderPromise = new Promise<void>(async done => {
+                this.rerenderResolver = done;
+            });
+        }
 
         if (this.hasBeenMoved) {
             return <></>;
