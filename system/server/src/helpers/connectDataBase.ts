@@ -1,7 +1,7 @@
 import { setStoreItem } from '@cromwell/core';
 import {
     Attribute,
-    Author,
+    User,
     CmsEntity,
     PluginEntity,
     Post,
@@ -61,7 +61,7 @@ export const connectDatabase = async (env: string) => {
     const connectionOptions: ConnectionOptions = {
         ...ormconfig,
         entities: [
-            Product, ProductCategory, Post, Author, Attribute, ProductReview, ThemeEntity, PluginEntity, CmsEntity,
+            Product, ProductCategory, Post, User, Attribute, ProductReview, ThemeEntity, PluginEntity, CmsEntity,
             ...pluginsExports.entities,
             ...(ormconfig.entities ?? [])
         ],

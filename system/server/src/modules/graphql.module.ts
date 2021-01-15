@@ -6,7 +6,6 @@ import { collectPlugins } from '../helpers/collectPlugins';
 import { GenericPluginResolver, GenericThemeResolver } from '../helpers/genericEntities';
 import { setEnv } from '../helpers/setEnv';
 import { AttributeResolver } from '../resolvers/AttributeResolver';
-import { AuthorResolver } from '../resolvers/AuthorResolver';
 import { PostResolver } from '../resolvers/PostResolver';
 import { ProductCategoryResolver } from '../resolvers/ProductCategoryResolver';
 import { ProductResolver } from '../resolvers/ProductResolver';
@@ -17,7 +16,6 @@ const envMode = setEnv();
 @Module({
     providers: [
         AttributeResolver,
-        AuthorResolver,
         PostResolver,
         ProductCategoryResolver,
         ProductResolver,

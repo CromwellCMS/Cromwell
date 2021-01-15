@@ -1,4 +1,4 @@
-import { Author, CreatePostInput, Post, UpdatePostInput } from '@cromwell/core-backend';
+import { CreatePostInput, Post, UpdatePostInput } from '@cromwell/core-backend';
 import { Arg, FieldResolver, Mutation, Query, Resolver } from 'type-graphql';
 
 @Resolver(Post)
@@ -44,10 +44,8 @@ export class PostResolver {
 
   @FieldResolver({ nullable: true })
   async author() {
-    // const author = await new AuthorResolver().author("1")
-    const author: Author = await Author.findOne({ where: { id: 1 } }) || { name: 'no author' } as Author;
-    if (author) {
-      return author;
-    }
+    // const author: Author = await Author.findOne({ where: { id: 1 } }) || { name: 'no author' } as Author;
+
+    return null;
   }
 }
