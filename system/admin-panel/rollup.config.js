@@ -1,6 +1,6 @@
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
-import typescript from "@rollup/plugin-typescript";
+import typescript from "rollup-plugin-typescript2";
 import packageJson from './package.json';
 import json from '@rollup/plugin-json';
 import fs from 'fs-extra';
@@ -56,7 +56,7 @@ export default [
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript(typeScriptOptions),
+            typescript({ tsconfigOverride: typeScriptOptions })
         ]
     },
     {
@@ -76,7 +76,7 @@ export default [
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript(typeScriptOptions),
+            typescript({ tsconfigOverride: typeScriptOptions })
         ]
     },
 ];

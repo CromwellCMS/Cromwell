@@ -1,5 +1,5 @@
 import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
+import typescript from "rollup-plugin-typescript2";
 import packageJson from './package.json';
 import { resolve } from 'path';
 import json from '@rollup/plugin-json';
@@ -23,7 +23,9 @@ const external = id => {
 const plugins = [
     commonjs(),
     typescript({
-        module: "ESNext"
+        tsconfigOverride: {
+            module: "ESNext"
+        }
     }),
     json(),
     // terser()
@@ -54,9 +56,11 @@ export default [
         ],
         plugins: [
             typescript({
-                module: "ESNext",
-                lib: ["es5", "es6", "dom"],
-                target: "es5"
+                tsconfigOverride: {
+                    module: "ESNext",
+                    lib: ["es5", "es6", "dom"],
+                    target: "es5"
+                }
             }),
             commonjs(),
             // terser()
@@ -74,11 +78,13 @@ export default [
         external,
         plugins: [
             typescript({
-                module: "ESNext",
-                declaration: true,
-                declarationMap: true,
-                rootDir: resolve(__dirname, 'src'),
-                declarationDir: resolve(__dirname, buildDir)
+                tsconfigOverride: {
+                    module: "ESNext",
+                    declaration: true,
+                    declarationMap: true,
+                    rootDir: resolve(__dirname, 'src'),
+                    declarationDir: resolve(__dirname, buildDir)
+                }
             }),
             json(),
             // terser(),

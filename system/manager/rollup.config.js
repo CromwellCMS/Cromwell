@@ -1,5 +1,5 @@
 import commonjs from "@rollup/plugin-commonjs";
-import typescript from "@rollup/plugin-typescript";
+import typescript from "rollup-plugin-typescript2";
 import packageJson from './package.json';
 import { resolve } from 'path';
 import json from '@rollup/plugin-json';
@@ -31,12 +31,15 @@ export default [
         plugins: [
             json(),
             commonjs(),
+            commonjs(),
             typescript({
-                module: "ESNext",
-                declaration: true,
-                declarationMap: true,
-                rootDir: resolve(__dirname, 'src'),
-                declarationDir: resolve(__dirname, buildDir)
+                tsconfigOverride: {
+                    module: "ESNext",
+                    declaration: true,
+                    declarationMap: true,
+                    rootDir: resolve(__dirname, 'src'),
+                    declarationDir: resolve(__dirname, buildDir)
+                }
             }),
             // terser(),
         ]

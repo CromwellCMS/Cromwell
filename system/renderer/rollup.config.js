@@ -1,6 +1,6 @@
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
-import typescript from "@rollup/plugin-typescript";
+import typescript from "rollup-plugin-typescript2";
 import packageJson from './package.json';
 import { rollupPluginCromwellFrontend } from '@cromwell/cromwella';
 import json from '@rollup/plugin-json';
@@ -46,7 +46,9 @@ export default [
             }),
             commonjs(),
             typescript({
-                module: "ESNext"
+                tsconfigOverride: {
+                    module: "ESNext"
+                }
             }),
             json(),
             // terser()
@@ -70,7 +72,9 @@ export default [
             }),
             commonjs(),
             typescript({
-                module: "ESNext"
+                tsconfigOverride: {
+                    module: "ESNext"
+                }
             }),
             // terser(),
         ]

@@ -1,6 +1,4 @@
-import commonjs from '@rollup/plugin-commonjs';
-import nodeResolve from '@rollup/plugin-node-resolve';
-import typescript from '@rollup/plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
 import autoprefixer from 'autoprefixer';
 import { resolve } from 'path';
 import autoExternal from 'rollup-plugin-auto-external';
@@ -25,9 +23,9 @@ const getPlugins = (format = 'esm') => {
         } : {};
     return [
         autoExternal(),
-        nodeResolve(),
-        commonjs(),
-        typescript(typeScriptOptions),
+        typescript(
+            { tsconfigOverride: typeScriptOptions }
+        ),
         postcss({
             plugins: [autoprefixer()],
             extract: false,
@@ -46,11 +44,29 @@ export default [
         output: getOutput('cjs'),
         plugins: getPlugins('cjs'),
         external,
+        watch: {
+            clearScreen: false,
+            buildDelay: 1000,
+            exclude: [
+                'node_modules/**',
+                'dist/**',
+                'es/**',
+            ]
+        }
     },
     {
         input,
         output: getOutput('esm'),
         plugins: getPlugins('esm'),
         external,
+        watch: {
+            clearScreen: false,
+            buildDelay: 1000,
+            exclude: [
+                'node_modules/**',
+                'dist/**',
+                'es/**',
+            ]
+        }
     },
 ];

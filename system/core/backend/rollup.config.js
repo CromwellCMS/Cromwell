@@ -1,6 +1,4 @@
-import commonjs from '@rollup/plugin-commonjs';
-import nodeResolve from '@rollup/plugin-node-resolve';
-import typescript from '@rollup/plugin-typescript';
+import typescript from 'rollup-plugin-typescript2';
 import { resolve } from 'path';
 import autoExternal from 'rollup-plugin-auto-external';
 import { terser } from 'rollup-plugin-terser';
@@ -23,9 +21,9 @@ const getPlugins = (format = 'esm') => {
         } : {};
     return [
         autoExternal(),
-        nodeResolve(),
-        commonjs(),
-        typescript(typeScriptOptions),
+        typescript(
+            { tsconfigOverride: typeScriptOptions }
+        ),
         // terser(),
     ];
 };
@@ -36,11 +34,29 @@ export default [
         output: getOutput('cjs'),
         plugins: getPlugins('cjs'),
         external,
+        watch: {
+            clearScreen: false,
+            buildDelay: 1000,
+            exclude: [
+                'node_modules/**',
+                'dist/**',
+                'es/**',
+            ]
+        }
     },
     {
         input,
         output: getOutput('esm'),
         plugins: getPlugins('esm'),
         external,
+        watch: {
+            clearScreen: false,
+            buildDelay: 1000,
+            exclude: [
+                'node_modules/**',
+                'dist/**',
+                'es/**',
+            ]
+        }
     },
 ];

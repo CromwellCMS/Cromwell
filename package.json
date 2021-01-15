@@ -8,6 +8,7 @@
         "startSystem": "node ./system/manager/startup.js production",
         "dev": "node ./system/manager/startup.js development",
         "winDev": "node ./system/manager/src/utils/windowsDev.js",
+        "link-cli": "cd ./system/cli && npm link && yarn",
         "cromwellaDev": "npx cromwella i",
         "cromwellaDevForce": "npx cromwella i -f",
         "cromwellaProd": "npx cromwella i --production",

@@ -9,7 +9,9 @@ const { resolve } = require("path");
 
 const winStart = () => {
 
-    const { projectRootDir, closeAllOnExit, cacheKeys, windowsDevServices } = config;
+    const projectRootDir = process.cwd();
+
+    const { closeAllOnExit, cacheKeys, windowsDevServices } = config;
     const { panelWidth, corePanelHeight, rendererHeigth, serverHeigth, padding, overlayShift,
         monitorNum, startIfNotFound, watch, watchPollTimeout,
         overallTimeout, otherDirs } = config.windowsDev;

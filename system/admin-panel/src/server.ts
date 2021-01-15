@@ -8,6 +8,7 @@ import {
     getAdminPanelWebServiceBuildDir,
     getPublicDir,
     readCMSConfigSync,
+    getAdminPanelStaticDir
 } from '@cromwell/core-backend';
 import { bundledModulesDirName, getBundledModulesDir } from '@cromwell/cromwella';
 import { fork } from 'child_process';
@@ -69,6 +70,7 @@ const start = async () => {
 
     app.use("/", express.static(webTempDir));
     app.use("/", express.static(publicDir));
+    app.use("/", express.static(getAdminPanelStaticDir()));
 
     app.get(`*`, function (req, res) {
         if (/.+\.\w+$/.test(req.path)) {

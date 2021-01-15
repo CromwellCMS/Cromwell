@@ -183,27 +183,35 @@ class CGraphQLClient {
         }
     `
 
-    public getProducts = async (pagedParams?: TPagedParams<TProduct>, withCategories: boolean = false): Promise<TPagedList<TProduct>> => {
+    public getProducts = async (pagedParams?: TPagedParams<TProduct>, withCategories: boolean | null = false,
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TProduct>> => {
+
+        const productFragment = customFragment ?? this.ProductFragment;
+        const productFragmentName = customFragmentName ?? 'ProductFragment';
+
         const path = GraphQLPaths.Product.getMany;
+
+        const variables: Record<string, any> = {
+            pagedParams: pagedParams ?? {},
+        };
+        if (withCategories !== null) variables.withCategories = withCategories;
+
         const res = await this.apolloClient.query({
             query: gql`
-                query coreGetProducts($pagedParams: PagedParamsInput!, $withCategories: Boolean!) {
+                query coreGetProducts($pagedParams: PagedParamsInput!${withCategories === null ? '' : `, $withCategories: Boolean!`}) {
                     ${path}(pagedParams: $pagedParams) {
                         pagedMeta {
                             ...PagedMetaFragment
                         }
                         elements {
-                            ...ProductFragment
+                            ...${productFragmentName}
                         }
                     }
                 }
-                ${this.ProductFragment}
+                ${productFragment}
                 ${this.PagedMetaFragment}
             `,
-            variables: {
-                pagedParams: pagedParams ? pagedParams : {},
-                withCategories
-            }
+            variables
         })
         return this.returnData(res, path);
     }
@@ -305,7 +313,7 @@ class CGraphQLClient {
             `,
             variables: {
                 withCategories,
-                pagedParams: pagedParams ? pagedParams : {},
+                pagedParams: pagedParams ?? {},
                 categoryId
             }
         })
@@ -505,7 +513,7 @@ class CGraphQLClient {
                 ${this.PagedMetaFragment}
             `,
             variables: {
-                pagedParams: pagedParams ? pagedParams : {},
+                pagedParams: pagedParams ?? {},
             }
         })
         return this.returnData(res, path);
@@ -530,7 +538,7 @@ class CGraphQLClient {
             `,
             variables: {
                 productId,
-                pagedParams: pagedParams ? pagedParams : {},
+                pagedParams: pagedParams ?? {},
             }
         })
         return this.returnData(res, path);

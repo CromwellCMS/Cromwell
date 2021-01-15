@@ -1,6 +1,6 @@
 import React from 'react';
 import { getGraphQLClient, CList } from '@cromwell/core-frontend';
-import { TProduct, TPagedList } from '@cromwell/core';
+import { TProduct, TPagedList, TPagedParams } from '@cromwell/core';
 import { productInfo } from '../../constants/PageInfos';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { Link } from 'react-router-dom';
@@ -15,11 +15,29 @@ import {
     DeleteForever as DeleteForeverIcon,
     Edit as EditIcon
 } from '@material-ui/icons';
-
+import {
+    gql,
+    DocumentNode
+} from '@apollo/client';
 
 
 const ProductList = () => {
     const client = getGraphQLClient();
+
+    const handleGetProducts = async (params: TPagedParams<TProduct>) => {
+        return client?.getProducts(params, null, gql`
+            fragment ProductListFragment on Product {
+                id
+                slug
+                pageTitle
+                name
+                price
+                oldPrice
+                mainImage
+            }
+        `, 'ProductListFragment');
+    }
+
     return (
         <div className={styles.ProductList}>
             <div className={styles.productListHeader}>
@@ -44,9 +62,7 @@ const ProductList = () => {
                 useAutoLoading
                 usePagination
                 useQueryPagination
-                loader={(params) => {
-                    return client?.getProducts(params);
-                }}
+                loader={handleGetProducts}
                 cssClasses={{ scrollBox: styles.list }}
                 elements={{
                     pagination: (props) => {
