@@ -1,7 +1,7 @@
 export * from './entities/Product';
 export * from './entities/ProductCategory';
 export * from './entities/Post';
-export * from './entities/Author';
+export * from './entities/User';
 export * from './entities/Attribute';
 export * from './entities/AttributeInstance';
 export * from './entities/ProductReview';
@@ -13,7 +13,7 @@ export * from './entities/paged/PagedProduct';
 export * from './entities/paged/PagedMeta';
 export * from './entities/paged/PagedProductReview';
 
-export * from './inputs/CreateAuthor';
+export * from './inputs/CreateUser';
 export * from './inputs/CreatePostInput';
 export * from './inputs/CreateProduct';
 export * from './inputs/CreateProductCategory';
@@ -21,6 +21,7 @@ export * from './inputs/PagedParamsInput';
 export * from './inputs/UpdatePostInput';
 export * from './inputs/UpdateProduct';
 export * from './inputs/UpdateProductCategory';
+export * from './inputs/UpdateUser';
 export * from './inputs/AttributeInput';
 export * from './inputs/ProductReviewInput';
 export * from './inputs/InputThemeEntity';
@@ -33,6 +34,7 @@ export * from './repositories/ProductRepository';
 export * from './repositories/AttributeRepository';
 export * from './repositories/ProductReviewRepository';
 export * from './repositories/BaseRepository';
+export * from './repositories/UserRepository';
 
 export * from './helpers/readThemeExports';
 export * from './helpers/cmsConfigHandler';

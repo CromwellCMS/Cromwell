@@ -1,7 +1,7 @@
 import { TPost } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity } from 'typeorm';
-import { Author } from './Author';
+import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { User } from './User';
 import { BasePageEntity } from './BasePageEntity';
 
 @Entity()
@@ -14,8 +14,10 @@ export class Post extends BasePageEntity implements TPost {
   @Column()
   authorId: string;
 
-  @Field()
-  author: Author;
+  @Field(type => User, { nullable: true })
+  @OneToOne(() => User)
+  @JoinColumn()
+  author: User;
 
   @Field()
   @Column()
@@ -28,5 +30,5 @@ export class Post extends BasePageEntity implements TPost {
   @Field()
   @Column()
   description: string;
-  
+
 }

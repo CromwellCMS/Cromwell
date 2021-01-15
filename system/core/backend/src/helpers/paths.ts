@@ -72,6 +72,10 @@ export const getAdminPanelStartupPath = () => {
     const adminPanelDir = getAdminPanelDir();
     if (adminPanelDir) return resolve(adminPanelDir, 'startup.js');
 }
+export const getAdminPanelStaticDir = () => {
+    const adminPanelDir = getAdminPanelDir();
+    if (adminPanelDir) return resolve(adminPanelDir, 'static');
+}
 
 // Server
 export const getServerDir = () => getNodeModuleDirSync('@cromwell/server');

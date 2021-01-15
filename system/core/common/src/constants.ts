@@ -41,6 +41,14 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         delete: "deleteProduct",
         getFromCategory: "getProductsFromCategory"
     },
+    User: {
+        getOneBySlug: "user",
+        getOneById: "getUserById",
+        getMany: "users",
+        create: "createUser",
+        update: "updateUser",
+        delete: "deleteUser"
+    },
     ProductCategory: {
         getOneBySlug: "productCategory",
         getOneById: "getProductCategoryById",
@@ -69,6 +77,7 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
 }
 
 export const DBTableNames: { [K in TDBEntity]: string } = {
+    User: 'user',
     Post: 'post',
     Product: 'product',
     ProductCategory: 'product_category',

@@ -46,6 +46,7 @@ declare global {
 
 export type TDBEntity = keyof {
     Post;
+    User;
     Product;
     ProductCategory;
     ProductReview;
