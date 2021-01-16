@@ -1,14 +1,13 @@
-import React, { Component, useRef, useEffect, useState } from 'react';
 import { TProduct } from '@cromwell/core';
-import { Link, getCStore } from '@cromwell/core-frontend';
-//@ts-ignore
-import styles from './ProductCard.module.scss';
-//@ts-ignore
-import commonStyles from '../../styles/common.module.scss';
-import clsx from 'clsx';
+import { getCStore, Link } from '@cromwell/core-frontend';
 import { IconButton } from '@material-ui/core';
 import { AddShoppingCart as AddShoppingCartIcon } from '@material-ui/icons';
 import { Rating } from '@material-ui/lab';
+import clsx from 'clsx';
+import React, { Component, useEffect, useRef, useState } from 'react';
+
+import commonStyles from '../../styles/common.module.scss';
+import styles from './ProductCard.module.scss';
 
 export const ProductCard = (props: {
     data?: TProduct, className?: string,

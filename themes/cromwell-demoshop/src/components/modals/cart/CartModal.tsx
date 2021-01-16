@@ -1,16 +1,12 @@
+import { Button, Modal } from '@material-ui/core';
+import { ShoppingCart as ShoppingCartIcon } from '@material-ui/icons';
+import { observer } from 'mobx-react';
 import React from 'react';
-import {
-    Modal,
-    Button
-} from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon, ShoppingCart as ShoppingCartIcon } from '@material-ui/icons';
+
 import { productListStore } from '../../../helpers/ProductListStore';
-import { CartProductList } from '../../checkoutPage/productList/CartProductList';
-import { observer } from "mobx-react";
-// @ts-ignore
 import commonStyles from '../../../styles/common.module.scss';
-// @ts-ignore
-import styles from './CartModal.module.scss'
+import { CartProductList } from '../../checkoutPage/productList/CartProductList';
+import styles from './CartModal.module.scss';
 
 export const CartModal = observer(() => {
     const handleCartClose = () => {

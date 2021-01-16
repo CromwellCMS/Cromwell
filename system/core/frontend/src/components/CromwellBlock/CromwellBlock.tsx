@@ -13,7 +13,6 @@ import {
     blockTypeToClassname, cromwellIdToHTML,
     cromwellBlockPluginNameToClassname, BlockGetContentConsumer, dynamicLoader
 } from '../../constants';
-//@ts-ignore
 import styles from './CromwellBlock.module.scss';
 
 

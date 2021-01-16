@@ -1,4 +1,4 @@
-import { getThemeCustomConfigProp, getCmsSettings } from '@cromwell/core';
+import { getCmsSettings, getThemeCustomConfigProp } from '@cromwell/core';
 import { CPlugin, Link } from '@cromwell/core-frontend';
 import {
     createStyles,
@@ -11,10 +11,8 @@ import {
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 
-// @ts-ignore
 import commonStyles from '../../styles/common.module.scss';
 import { TTopLink } from '../../types';
-// @ts-ignore
 import styles from './Header.module.scss';
 
 const useStyles = makeStyles((theme: Theme) =>

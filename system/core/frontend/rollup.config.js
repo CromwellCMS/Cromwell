@@ -1,14 +1,23 @@
 import typescript from 'rollup-plugin-typescript2';
+import nodeResolve from "@rollup/plugin-node-resolve";
+import commonjs from '@rollup/plugin-commonjs';
 import autoprefixer from 'autoprefixer';
-import { resolve } from 'path';
+import { resolve, isAbsolute } from 'path';
 import autoExternal from 'rollup-plugin-auto-external';
 import postcss from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
 
 import pkg from './package.json';
 
+const external = id => {
+    if (id === 'swiper/swiper-bundle.min.css') return false;
+
+    return !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
+}
+
 const input = resolve(__dirname, 'src/index.ts');
-const external = ['next/link', 'next/head', 'next/dynamic', 'next/document', "tslib"];
+// const external = ['next/link', 'next/head', 'next/dynamic', 'next/document', "tslib"];
+
 const getOutput = (format = 'esm') => {
     if (format === 'esm') {
         return { dir: resolve(__dirname, pkg.module), format, sourcemap: true, };
@@ -22,10 +31,6 @@ const getPlugins = (format = 'esm') => {
             declarationDir: resolve(__dirname, pkg.module)
         } : {};
     return [
-        autoExternal(),
-        typescript(
-            { tsconfigOverride: typeScriptOptions }
-        ),
         postcss({
             plugins: [autoprefixer()],
             extract: false,
@@ -34,6 +39,9 @@ const getPlugins = (format = 'esm') => {
             autoModules: true,
             use: ['sass'],
         }),
+        typescript({ tsconfigOverride: { compilerOptions: typeScriptOptions } }),
+        nodeResolve(),
+        commonjs(),
         // terser(),
     ];
 };

@@ -1,7 +1,7 @@
-import { TAttribute, TAttributeInstance, TAttributeInstanceValue, TProduct } from '@cromwell/core';
+import { TAttribute, TAttributeInstanceValue, TProduct } from '@cromwell/core';
 import React, { useState } from 'react';
+
 import { getCStore } from '../../CStore';
-//@ts-ignore
 import styles from './ProductAttributes.module.scss';
 
 

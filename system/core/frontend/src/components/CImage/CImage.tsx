@@ -3,7 +3,6 @@ import React from 'react';
 
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { Link } from '../Link/Link';
-//@ts-ignore
 import styles from './CImage.module.scss';
 
 export const CImage = (props: { src?: string; link?: string; withEffect?: boolean } & TCromwellBlockProps) => {

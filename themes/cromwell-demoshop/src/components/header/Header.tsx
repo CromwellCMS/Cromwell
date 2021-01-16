@@ -1,9 +1,4 @@
-import {
-    getCmsSettings,
-    getThemeCustomConfig,
-    getThemeCustomConfigProp,
-    TCurrency,
-} from '@cromwell/core';
+import { getCmsSettings, getThemeCustomConfigProp, TCurrency } from '@cromwell/core';
 import { CHTML, CPlugin, getCStore, Link } from '@cromwell/core-frontend';
 import {
     createStyles,
@@ -20,10 +15,8 @@ import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 
 import { productListStore } from '../../helpers/ProductListStore';
-// @ts-ignore
 import commonStyles from '../../styles/common.module.scss';
 import { TTopLink } from '../../types';
-// @ts-ignore
 import styles from './Header.module.scss';
 
 const useStyles = makeStyles((theme: Theme) =>

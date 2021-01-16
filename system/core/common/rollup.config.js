@@ -16,15 +16,15 @@ const getOutput = (format = 'esm') => {
 const getPlugins = (format = 'esm') => {
     const typeScriptOptions = format === 'esm' ?
         {
-            declaration: true, declarationMap: true, rootDir: resolve(__dirname, 'src'),
-            declarationDir: resolve(__dirname, pkg.module)
+            compilerOptions: {
+                declaration: true, declarationMap: true, rootDir: resolve(__dirname, 'src'),
+                declarationDir: resolve(__dirname, pkg.module)
+            }
         } : {};
 
     return [
         autoExternal(),
-        typescript(
-            { tsconfigOverride: typeScriptOptions }
-        ),
+        typescript({ tsconfigOverride: typeScriptOptions })
         // terser(),
     ];
 };

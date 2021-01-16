@@ -4,7 +4,6 @@ import React from 'react';
 
 import Layout from '../../components/layout/Layout';
 import { ProductDetails } from '../../components/productPage/productDetails/ProductDetails';
-//@ts-ignore
 import commonStyles from '../../styles/common.module.scss';
 
 interface ProductProps {

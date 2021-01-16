@@ -1,19 +1,18 @@
-import React, { useState } from 'react';
-import { Button, TextField, IconButton, Input } from '@material-ui/core';
-import {
-    AddShoppingCart as AddShoppingCartIcon,
-    ShoppingCart as ShoppingCartIcon,
-    Favorite as FavoriteIcon,
-    Equalizer as EqualizerIcon,
-    Remove as RemoveIcon,
-    Add as AddIcon
-} from '@material-ui/icons';
-import { toast } from 'react-toastify';
-import { productListStore } from '../../../helpers/ProductListStore';
-//@ts-ignore
-import styles from './ProductActions.module.scss';
-import { isServer, TProduct, TAttributeInstance } from '@cromwell/core';
+import { TProduct } from '@cromwell/core';
 import { getCStore, TStoreListItem } from '@cromwell/core-frontend';
+import { Button, IconButton, Input } from '@material-ui/core';
+import {
+    Add as AddIcon,
+    AddShoppingCart as AddShoppingCartIcon,
+    Equalizer as EqualizerIcon,
+    Favorite as FavoriteIcon,
+    Remove as RemoveIcon,
+    ShoppingCart as ShoppingCartIcon,
+} from '@material-ui/icons';
+import React, { useState } from 'react';
+
+import { productListStore } from '../../../helpers/ProductListStore';
+import styles from './ProductActions.module.scss';
 
 
 function useForceUpdate() {

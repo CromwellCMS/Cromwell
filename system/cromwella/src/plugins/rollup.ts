@@ -71,7 +71,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                         export default defaulComp;
                         `
             }))
-            options.plugins.unshift(rollupPluginCromwellFrontend({
+            options.plugins.push(rollupPluginCromwellFrontend({
                 cromwellConfig
             }));
             outOptions.push(options);
@@ -95,7 +95,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                     export default allExports;
                     `
             }))
-            cjsOptions.plugins.unshift(rollupPluginCromwellFrontend({
+            cjsOptions.plugins.push(rollupPluginCromwellFrontend({
                 generateMeta: false, cromwellConfig
             }));
             outOptions.push(cjsOptions);
@@ -222,7 +222,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                 preserveModules: true
             } as OutputOptions);
 
-            options.plugins.unshift(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig }));
+            options.plugins.push(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig }));
 
             outOptions.push(options);
 
@@ -237,10 +237,10 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                         [optionsInput]: `import pageComp from '${pagePath.srcFullPath}';export default pageComp;`
                     }));
                     adminOptions.input = optionsInput;
-                    adminOptions.plugins.unshift(rollupPluginCromwellFrontend({ buildDir, cromwellConfig }));
-                    
+                    adminOptions.plugins.push(rollupPluginCromwellFrontend({ buildDir, cromwellConfig }));
+
                     const pageStrippedName = pagePath?.pageName?.replace(/\W/g, '_') ?? strippedName;
-                    
+
                     adminOptions.output = Object.assign({}, adminOptions.output, {
                         dir: resolve(buildDir, 'admin', dirname(pagePath.pageName)),
                         format: "iife",
@@ -277,7 +277,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                 format: "iife",
             } as OutputOptions);
 
-            adminOptions.plugins.unshift(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig }));
+            adminOptions.plugins.push(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig }));
 
             outOptions.push(adminOptions);
         }

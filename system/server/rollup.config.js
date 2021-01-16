@@ -23,9 +23,10 @@ export default [
             commonjs(),
             typescript({
                 tsconfigOverride: {
-                    module: "ESNext",
-                    target: "ES2019",
-                    noEmitOnError: true
+                    compilerOptions: {
+                        module: "ESNext",
+                        target: "ES2019",
+                    }
                 }
             }),
             // terser()

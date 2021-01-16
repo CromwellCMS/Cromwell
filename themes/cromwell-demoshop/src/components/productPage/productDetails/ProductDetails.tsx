@@ -1,18 +1,24 @@
 import { getThemeCustomConfigProp, TAttribute, TProduct, TProductReview } from '@cromwell/core';
 import {
-    CContainer, CGallery, CImage, CList, CText, getGraphQLClient,
-    getCStore, ProductAttributes, useRouter
+    CContainer,
+    CGallery,
+    CImage,
+    CList,
+    CText,
+    getCStore,
+    getGraphQLClient,
+    ProductAttributes,
+    useRouter,
 } from '@cromwell/core-frontend';
-import { Rating } from '@material-ui/lab';
 import { Button } from '@material-ui/core';
-import React, { useState, useRef, useEffect } from 'react';
+import { Rating } from '@material-ui/lab';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { LoadBox } from '../../loadbox/Loadbox';
 import { Pagination } from '../../pagination/Pagination';
-import { SwipeableTabs } from '../../tabs/Tabs';
 import { ProductActions } from '../../productPage/actions/ProductActions';
 import { ReviewItem } from '../../productPage/reviewItem/ReviewItem';
-//@ts-ignore
+import { SwipeableTabs } from '../../tabs/Tabs';
 import styles from './ProductDetails.module.scss';
 
 export const ProductDetails = (props: {

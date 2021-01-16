@@ -11,6 +11,10 @@
   "keywords": [],
   "author": "Cromwell",
   "license": "ISC",
+  "scripts": {
+    "build": "npx rollup -c",
+    "watch": "npx rollup -cw"
+  },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.2",
     "@rollup/plugin-json": "^4.1.0",
@@ -76,10 +80,6 @@
     "symlink-dir": "^4.1.0",
     "tslib": "2.0.3",
     "yargs-parser": "^19.0.4"
-  },
-  "scripts": {
-    "build": "npx rollup -c",
-    "watch": "npx rollup -cw"
   },
   "bin": {
     "cromwella": "./bin/cromwella.js"

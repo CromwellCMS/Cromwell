@@ -1,15 +1,13 @@
-import { isServer, TPagedList, TPagedParams } from '@cromwell/core';
-import { TCromwellBlockProps } from '@cromwell/core';
+import { isServer, TCromwellBlockProps, TPagedList, TPagedParams } from '@cromwell/core';
 import debounce from 'debounce';
 import React from 'react';
 
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { throbber } from '../throbber';
-import { TCListProps, TListenerType, TCList } from './types';
-import { getPageId, getPageNumsAround, getPagedUrl } from './helpers';
-import { Pagination } from './CListPagination';
-//@ts-ignore
 import styles from './CList.module.scss';
+import { Pagination } from './CListPagination';
+import { getPagedUrl, getPageId, getPageNumsAround } from './helpers';
+import { TCList, TCListProps, TListenerType } from './types';
 
 
 export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCListProps<DataType, ListItemProps> & TCromwellBlockProps> implements TCList<DataType, ListItemProps> {

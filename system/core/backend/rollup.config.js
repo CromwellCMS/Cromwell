@@ -21,9 +21,7 @@ const getPlugins = (format = 'esm') => {
         } : {};
     return [
         autoExternal(),
-        typescript(
-            { tsconfigOverride: typeScriptOptions }
-        ),
+        typescript({ tsconfigOverride: { compilerOptions: typeScriptOptions } })
         // terser(),
     ];
 };

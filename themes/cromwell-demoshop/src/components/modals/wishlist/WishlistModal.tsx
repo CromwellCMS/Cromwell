@@ -1,18 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import {
-    Modal,
-    Button
-} from '@material-ui/core';
-import { getCStore, Link, TStoreListItem } from '@cromwell/core-frontend';
+import { getCStore, TStoreListItem } from '@cromwell/core-frontend';
+import { Modal } from '@material-ui/core';
 import clsx from 'clsx';
-import { ExpandMore as ExpandMoreIcon, ShoppingCart as ShoppingCartIcon } from '@material-ui/icons';
+import { observer } from 'mobx-react';
+import React, { useEffect, useState } from 'react';
+
 import { productListStore } from '../../../helpers/ProductListStore';
-import { ProductCard } from '../../productCard/ProductCard';
-import { observer } from "mobx-react";
-// @ts-ignore
 import commonStyles from '../../../styles/common.module.scss';
-// @ts-ignore
-import styles from './WishlistModal.module.scss'
+import { ProductCard } from '../../productCard/ProductCard';
+import styles from './WishlistModal.module.scss';
 
 export const WishlistModal = observer(() => {
     const handleCartClose = () => {

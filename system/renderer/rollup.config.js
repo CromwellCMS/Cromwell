@@ -45,11 +45,7 @@ export default [
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({
-                tsconfigOverride: {
-                    module: "ESNext"
-                }
-            }),
+            typescript({ tsconfigOverride: { compilerOptions: { module: "ESNext" } } }),
             json(),
             // terser()
         ]
@@ -71,11 +67,7 @@ export default [
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({
-                tsconfigOverride: {
-                    module: "ESNext"
-                }
-            }),
+            typescript({ tsconfigOverride: { compilerOptions: { module: "ESNext" } } }),
             // terser(),
         ]
     },

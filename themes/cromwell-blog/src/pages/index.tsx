@@ -1,7 +1,7 @@
-import React from 'react';
 import { TCromwellPage } from '@cromwell/core';
+import React from 'react';
+
 import Layout from '../components/layout/Layout';
-// @ts-ignore
 import styles from '../styles/pages/Index.module.scss';
 
 const Index: TCromwellPage = (props) => {

@@ -34,11 +34,13 @@ export default [
             commonjs(),
             typescript({
                 tsconfigOverride: {
-                    module: "ESNext",
-                    declaration: true,
-                    declarationMap: true,
-                    rootDir: resolve(__dirname, 'src'),
-                    declarationDir: resolve(__dirname, buildDir)
+                    compilerOptions: {
+                        module: "ESNext",
+                        declaration: true,
+                        declarationMap: true,
+                        rootDir: resolve(__dirname, 'src'),
+                        declarationDir: resolve(__dirname, buildDir)
+                    }
                 }
             }),
             // terser(),

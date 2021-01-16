@@ -1,11 +1,10 @@
-import React from 'react';
 import { TCromwellPage } from '@cromwell/core';
-import { Link, CText, CHTML, CromwellBlock, CContainer, CImage, CGallery, CPlugin } from '@cromwell/core-frontend';
+import { CContainer, CGallery, CImage, CPlugin, CText } from '@cromwell/core-frontend';
+import React from 'react';
+
 import Layout from '../components/layout/Layout';
-// @ts-ignore
-import styles from '../styles/pages/Index.module.scss';
-// @ts-ignore
 import commonStyles from '../styles/common.module.scss';
+import styles from '../styles/pages/Index.module.scss';
 
 const Index: TCromwellPage = (props) => {
     console.log('IndexTheme props', props);

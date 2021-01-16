@@ -22,11 +22,7 @@ const external = id => {
 
 const plugins = [
     commonjs(),
-    typescript({
-        tsconfigOverride: {
-            module: "ESNext"
-        }
-    }),
+    typescript({ tsconfigOverride: { compilerOptions: { module: "ESNext" } } }),
     json(),
     // terser()
 ]
@@ -57,9 +53,11 @@ export default [
         plugins: [
             typescript({
                 tsconfigOverride: {
-                    module: "ESNext",
-                    lib: ["es5", "es6", "dom"],
-                    target: "es5"
+                    compilerOptions: {
+                        module: "ESNext",
+                        lib: ["es5", "es6", "dom"],
+                        target: "es5"
+                    }
                 }
             }),
             commonjs(),
@@ -79,11 +77,13 @@ export default [
         plugins: [
             typescript({
                 tsconfigOverride: {
-                    module: "ESNext",
-                    declaration: true,
-                    declarationMap: true,
-                    rootDir: resolve(__dirname, 'src'),
-                    declarationDir: resolve(__dirname, buildDir)
+                    compilerOptions: {
+                        module: "ESNext",
+                        declaration: true,
+                        declarationMap: true,
+                        rootDir: resolve(__dirname, 'src'),
+                        declarationDir: resolve(__dirname, buildDir)
+                    }
                 }
             }),
             json(),

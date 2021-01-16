@@ -1,8 +1,8 @@
 import React from 'react';
-//@ts-ignore
+
 import styles from './CList.module.scss';
+import { getPagedUrl, getPageId, getPageNumsAround } from './helpers';
 import { TCssClasses, TElements } from './types';
-import { getPageId, getPageNumsAround, getPagedUrl } from './helpers';
 
 
 export class Pagination extends React.Component<{

@@ -56,7 +56,7 @@ export default [
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({ tsconfigOverride: typeScriptOptions })
+            typescript({ tsconfigOverride: { compilerOptions: typeScriptOptions } })
         ]
     },
     {
@@ -76,7 +76,7 @@ export default [
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({ tsconfigOverride: typeScriptOptions })
+            typescript({ tsconfigOverride: { compilerOptions: typeScriptOptions } })
         ]
     },
 ];

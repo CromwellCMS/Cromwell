@@ -1,13 +1,9 @@
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import React from 'react';
-import Header from '../header/Header';
-import {
-    createMuiTheme,
-    ThemeProvider,
-} from '@material-ui/core';
-// @ts-ignore
-import styles from './Layout.module.scss';
-// @ts-ignore
+
 import variables from '../../styles/variables.scss';
+import Header from '../header/Header';
+import styles from './Layout.module.scss';
 
 type TProps = {
     children: React.ReactNode;

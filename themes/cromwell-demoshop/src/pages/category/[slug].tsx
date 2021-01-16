@@ -1,18 +1,14 @@
+import { TCromwellPage, TGetStaticProps, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import { CContainer, CList, getGraphQLClient } from '@cromwell/core-frontend';
 import React from 'react';
-import { TCromwellPage, TProductCategory, TGetStaticProps, TProduct, TPagedList } from '@cromwell/core';
-import { Link } from '@cromwell/core-frontend';
-import { CContainer, getGraphQLClient, CList } from '@cromwell/core-frontend';
-import Layout from '../../components/layout/Layout';
-import { ProductCard } from '../../components/productCard/ProductCard';
+
 import { CategorySort } from '../../components/categorySort/CategorySort';
-import { Pagination } from '../../components/pagination/Pagination';
-//@ts-ignore
-import commonStyles from '../../styles/common.module.scss';
-//@ts-ignore
-import styles from '../../styles/pages/Category.module.scss';
-//@ts-ignore
+import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
-import { gql } from '@apollo/client';
+import { Pagination } from '../../components/pagination/Pagination';
+import { ProductCard } from '../../components/productCard/ProductCard';
+import commonStyles from '../../styles/common.module.scss';
+import styles from '../../styles/pages/Category.module.scss';
 
 interface ProductProps {
     category?: TProductCategory | null;

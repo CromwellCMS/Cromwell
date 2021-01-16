@@ -20,11 +20,7 @@ export default [
         plugins: [
             json(),
             commonjs(),
-            typescript({
-                tsconfigOverride: {
-                    module: "ESNext"
-                }
-            }),
+            typescript({ tsconfigOverride: { compilerOptions: { module: "ESNext" } } }),
             // terser(),
         ]
     },

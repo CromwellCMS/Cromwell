@@ -1,13 +1,12 @@
 import { getCStore, Link, TStoreListItem } from '@cromwell/core-frontend';
 import { IconButton } from '@material-ui/core';
 import { DeleteForever as DeleteForeverIcon } from '@material-ui/icons';
-import React, { useEffect, useState } from 'react';
 import clsx from 'clsx';
-import { LoadBox } from '../../loadbox/Loadbox';
-//@ts-ignore
-import styles from './CartProductList.module.scss';
-//@ts-ignore
+import React, { useEffect, useState } from 'react';
+
 import commonStyles from '../../../styles/common.module.scss';
+import { LoadBox } from '../../loadbox/Loadbox';
+import styles from './CartProductList.module.scss';
 
 export const CartProductList = () => {
     const [cart, setCart] = useState<TStoreListItem[]>([]);

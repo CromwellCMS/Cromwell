@@ -23,7 +23,7 @@ module.exports = {
             backend: {
                 plugins: [
                     commonjs(),
-                    typescript({ tsconfigOverride: { target: 'es2019' } })
+                    typescript({ tsconfigOverride: { compilerOptions: { target: 'es2019' } } })
                 ]
 
             }
