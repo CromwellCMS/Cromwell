@@ -1,35 +1,28 @@
-import { gql } from '@apollo/client';
-import { TPagedParams, TProduct } from '@cromwell/core';
+import { TPost, TPagedParams } from '@cromwell/core';
 import { CList, getGraphQLClient } from '@cromwell/core-frontend';
 import { IconButton } from '@material-ui/core';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
 import { Pagination } from '@material-ui/lab';
 import React from 'react';
+import {
+    gql,
+    DocumentNode
+} from '@apollo/client';
 
 import LoadBox from '../../components/loadBox/LoadBox';
-import styles from './ProductList.module.scss';
-import { ProductListItem } from './ProductListItem';
+import styles from './PostList.module.scss';
+import { PostListItem } from './PostListItem';
 
 
-const ProductList = () => {
+const PostList = () => {
     const client = getGraphQLClient();
 
-    const handleGetProducts = async (params: TPagedParams<TProduct>) => {
-        return client?.getProducts(params, null, gql`
-            fragment ProductListFragment on Product {
-                id
-                slug
-                pageTitle
-                name
-                price
-                oldPrice
-                mainImage
-            }
-        `, 'ProductListFragment');
+    const handleGetProducts = async (params: TPagedParams<TPost>) => {
+        return client?.getPosts(params);
     }
 
     return (
-        <div className={styles.ProductList}>
+        <div className={styles.PostList}>
             <div className={styles.listHeader}>
                 <div style={{ width: '10%' }}>
                     <p>id</p>
@@ -45,10 +38,10 @@ const ProductList = () => {
                     </IconButton>
                 </div>
             </div>
-            <CList<TProduct>
+            <CList<TPost>
                 className={styles.listWrapper}
-                id="Admin_ProductsList"
-                ListItem={ProductListItem}
+                id="Admin_PostList"
+                ListItem={PostListItem}
                 useAutoLoading
                 usePagination
                 useQueryPagination
@@ -75,4 +68,4 @@ const ProductList = () => {
     )
 }
 
-export default ProductList;
+export default PostList;

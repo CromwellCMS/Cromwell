@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { pluginPageInfo } from '../../constants/PageInfos';
 import styles from './PluginList.module.scss';
+import commonStyles from '../../styles/common.module.scss';
 
 export default function PluginList() {
     const history = useHistory();
@@ -88,7 +89,7 @@ export default function PluginList() {
                 const pluginEntity = pluginList?.find(ent => ent.name === pluginName)
                 const title = pluginEntity?.title ?? pluginName;
 
-                return (<Card className={styles.pluginItem}>
+                return (<div className={`${styles.pluginItem} ${commonStyles.paper}`}>
                     <p className={styles.pluginName}>{title}</p>
                     <div className={styles.actions}>
                         {(pluginEntity && pluginEntity.isInstalled) ? (
@@ -114,7 +115,7 @@ export default function PluginList() {
                             </IconButton>
                         </Tooltip>
                     </div>
-                </Card>)
+                </div>)
             })}
             <LoadingStatus isActive={isLoading} />
         </div>

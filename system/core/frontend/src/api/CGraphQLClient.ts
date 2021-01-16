@@ -23,6 +23,8 @@ import {
     TProductInput,
     TProductReview,
     TProductReviewInput,
+    TPost,
+    TPostInput,
 } from '@cromwell/core';
 
 class CGraphQLClient {
@@ -55,7 +57,12 @@ class CGraphQLClient {
     public query = <T = any>(options: QueryOptions): Promise<ApolloQueryResult<T>> =>
         this.apolloClient.query(options);
 
-    public returnData = (res: any, path: string) => res?.data?.[path];
+    public returnData = (res: any, path: string) => {
+        const data = res?.data?.[path];
+        if (data) return data;
+        const errors = res?.errors;
+        return errors ?? null;
+    }
 
     public PagedMetaFragment = gql`
         fragment PagedMetaFragment on PagedMeta {
@@ -141,6 +148,7 @@ class CGraphQLClient {
     }
 
     // </Generic>
+
 
     // <Product>
 
@@ -280,7 +288,7 @@ class CGraphQLClient {
         const res = await this.apolloClient.mutate({
             mutation: gql`
                 mutation coreCreateProduct($data: CreateProduct!, $withCategories: Boolean!) {
-                    ${path}(id: $id, data: $data) {
+                    ${path}(data: $data) {
                         ...ProductFragment
                     }
                 }
@@ -317,6 +325,22 @@ class CGraphQLClient {
                 categoryId
             }
         })
+        return this.returnData(res, path);
+    }
+
+    public deleteProduct = async (productId: string) => {
+        const path = GraphQLPaths.Product.delete;
+
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteProduct($id: String!) {
+                    ${path}(id: $id)
+                }
+            `,
+            variables: {
+                id: productId,
+            }
+        });
         return this.returnData(res, path);
     }
 
@@ -582,8 +606,168 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
+    public deleteProductReview = async (productId: string) => {
+        const path = GraphQLPaths.ProductReview.delete;
+
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteProductReview($id: String!) {
+                    ${path}(id: $id)
+                }
+            `,
+            variables: {
+                id: productId,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
 
     // </ProductReview>
+
+
+    // <Post>
+
+    public PostFragment = gql`
+        fragment PostFragment on Post {
+            id
+            slug
+            title
+            author {
+                fullName
+                email
+                avatar
+            }
+            mainImage
+            content
+            isEnabled
+      }
+  `
+
+    public getPosts = async (pagedParams?: TPagedParams<TPost>,
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TPost>> => {
+
+        const postFragment = customFragment ?? this.PostFragment;
+        const postFragmentName = customFragmentName ?? 'PostFragment';
+
+        const path = GraphQLPaths.Post.getMany;
+
+        const variables: Record<string, any> = {
+            pagedParams: pagedParams ?? {},
+        };
+
+        const res = await this.apolloClient.query({
+            query: gql`
+              query coreGetPosts($pagedParams: PagedParamsInput!) {
+                  ${path}(pagedParams: $pagedParams) {
+                      pagedMeta {
+                          ...PagedMetaFragment
+                      }
+                      elements {
+                          ...${postFragmentName}
+                      }
+                  }
+              }
+              ${postFragment}
+              ${this.PagedMetaFragment}
+          `,
+            variables
+        })
+        return this.returnData(res, path);
+    }
+
+    public getPostById = async (postId: string)
+        : Promise<TPost | undefined> => {
+        const path = GraphQLPaths.Post.getOneById;
+        const res = await this.apolloClient.query({
+            query: gql`
+              query coreGetPostById($postId: String!) {
+                  ${path}(id: $postId) {
+                      ...PostFragment
+                  }
+              }
+              ${this.PostFragment}
+          `,
+            variables: {
+                postId,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public getPostBySlug = async (slug: string): Promise<TPost | undefined> => {
+        const path = GraphQLPaths.Post.getOneBySlug;
+        const res = await this.apolloClient.query({
+            query: gql`
+              query coreGetPostBySlug($slug: String!) {
+                  ${path}(slug: $slug) {
+                      ...PostFragment
+                  }
+              }
+              ${this.PostFragment}
+          `,
+            variables: {
+                slug,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public updatePost = async (id: string, post: TPostInput) => {
+        const path = GraphQLPaths.Post.update;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+              mutation coreUpdatePost($id: String!, $data: UpdatePost!) {
+                  ${path}(id: $id, data: $data) {
+                      ...PostFragment
+                  }
+              }
+              ${this.PostFragment}
+          `,
+            variables: {
+                id,
+                data: post,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public createPost = async (post: TPostInput) => {
+        const path = GraphQLPaths.Post.create;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+              mutation coreCreatePost($data: CreatePost!) {
+                  ${path}(id: $id, data: $data) {
+                      ...PostFragment
+                  }
+              }
+              ${this.PostFragment}
+          `,
+            variables: {
+                data: post,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public deletePost = async (postId: string) => {
+        const path = GraphQLPaths.Post.delete;
+
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeletePost($id: String!) {
+                    ${path}(id: $id)
+                }
+            `,
+            variables: {
+                id: postId,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+
+    // </Post>
 
 
     // <Plugin>

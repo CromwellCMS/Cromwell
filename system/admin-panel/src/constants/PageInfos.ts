@@ -1,21 +1,24 @@
-import React from 'react';
-import HomePage from '../pages/home';
-import PluginListPage from '../pages/pluginList/PluginList';
-import PluginPage from '../pages/plugin/PluginPage';
-import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
-import ThemeListPage from '../pages/themeList/ThemeList';
-import ProductListPage from '../pages/productList/ProductList';
-import ProductPage from '../pages/product/Product';
-import AttributesPage from '../pages/attributes/AttributesPage';
 import {
+    Category as CategoryIcon,
     Dashboard as DashboardIcon,
+    FilterList as FilterListIcon,
+    FormatPaint as FormatPaintIcon,
     LocalMall as LocalMallIcon,
     Power as PowerIcon,
-    FormatPaint as FormatPaintIcon,
-    FilterList as FilterListIcon,
     Storage as StorageIcon,
-    Category as CategoryIcon
+    LibraryBooks as LibraryBooksIcon
 } from '@material-ui/icons';
+import React from 'react';
+import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
+import AttributesPage from '../pages/attributes/AttributesPage';
+import HomePage from '../pages/home';
+import PluginPage from '../pages/plugin/PluginPage';
+import PluginListPage from '../pages/pluginList/PluginList';
+import ProductPage from '../pages/product/Product';
+import ProductListPage from '../pages/productList/ProductList';
+import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
+import ThemeListPage from '../pages/themeList/ThemeList';
+import PostListPage from '../pages/postList/PostList';
 
 
 export type SidebarLinkType = {
@@ -78,6 +81,12 @@ export const pluginPageInfo: PageInfo = {
     component: PluginPage
 };
 
+export const postListInfo: PageInfo = {
+    name: 'Posts',
+    route: '/post-list',
+    component: PostListPage
+};
+
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
     homePageInfo,
@@ -89,6 +98,7 @@ export const pageInfos: PageInfo[] = [
     pluginListPageInfo,
     attributesInfo,
     pluginPageInfo,
+    postListInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
@@ -121,6 +131,22 @@ export const sideBarLinks: SidebarLinkType[] = [
                 title: 'Categories',
                 route: productListInfo.route,
                 icon: React.createElement(CategoryIcon)
+            },
+        ]
+    },
+    {
+        id: '6_Blog',
+        title: 'Blog',
+        icon: React.createElement('div', {
+            className: sidebarStyles.customIcon,
+            style: { backgroundImage: 'url(icon_blogging.png)' }
+        }),
+        sublinks: [
+            {
+                id: '7_Posts',
+                title: 'Posts',
+                route: postListInfo.route,
+                icon: React.createElement(LibraryBooksIcon)
             },
         ]
     },

@@ -1,6 +1,6 @@
 @import "../../styles/common.module.scss";
 
-.ProductList {
+.PostList {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -30,15 +30,16 @@
     @include paper;
 
     display: flex;
-    padding: 5px 20px;
     align-items: center;
     border-bottom: 1px solid #ddd;
     margin-bottom: 3px;
     transition: 0.3s;
+    border: 1px solid transparent;
 }
 
 .listItem:hover {
-    background-color: #eee;
+    background-color: #f4f4f4;
+    border: 1px solid #ccc;
 }
 
 .list {
@@ -60,4 +61,10 @@
 .pagination {
     @include paper;
     padding: 5px 10px;
+}
+
+.itemImage {
+    @include bckgrCover;
+    height: 60px;
+    width: 80px;
 }

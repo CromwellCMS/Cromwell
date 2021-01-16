@@ -21,9 +21,9 @@ const theme = createMuiTheme({
       dark: '#482880',
     },
     secondary: {
-      main: '#d500f9',
-      light: '#dd33fa',
-      dark: '#9500ae',
+      main: '#910081',
+      light: '#910081',
+      dark: '#910081',
     }
   },
 });
@@ -34,12 +34,12 @@ function Layout() {
     <ThemeProvider theme={theme}>
       <div className={classes.Layout}>
         <BrowserRouter>
-          <div className={classes.header}>
-            <Header />
+          <div className={classes.sidebar}>
+            <Sidebar />
           </div>
           <div className={classes.main}>
-            <div className={classes.sidebar}>
-              <Sidebar />
+            <div className={classes.header}>
+              <Header />
             </div>
             <div className={classes.content}>
               <Switch>

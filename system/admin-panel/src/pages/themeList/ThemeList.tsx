@@ -9,6 +9,7 @@ import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { ManagerLogger } from '../../components/managerLogger/ManagerLogger';
 import { themeEditPageInfo } from '../../constants/PageInfos';
 import styles from './ThemeList.module.scss';
+import commonStyles from '../../styles/common.module.scss';
 
 export default function ThemeList() {
     const [infos, setInfos] = useState<TThemeMainConfig[]>([]);
@@ -106,7 +107,7 @@ export default function ThemeList() {
                 const isInstalled = entity?.isInstalled ?? false;
 
                 return (
-                    <Card className={styles.themeCard} key={info.themeName}>
+                    <div className={`${styles.themeCard} ${commonStyles.paper}`} key={info.themeName}>
                         <CardActionArea>
                             <div
                                 style={{ backgroundImage: `url("data:image/png;base64,${info.previewImage}")` }}
@@ -168,7 +169,7 @@ export default function ThemeList() {
                                 </Button>
                             )}
                         </CardActions>
-                    </Card>
+                    </div>
                 )
             })}
             <ManagerLogger isActive={isChangingTheme} />
