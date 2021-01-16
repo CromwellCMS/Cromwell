@@ -1,12 +1,15 @@
-import { TAttributeInput, TProductCategoryInput, TProductReviewInput } from '@cromwell/core';
+import { TAttributeInput, TProductCategoryInput, TProductReviewInput, TUserInput } from '@cromwell/core';
 import {
     AttributeRepository,
     ProductCategoryRepository,
     ProductRepository,
     ProductReviewRepository,
+    PostRepository,
+    UserRepository
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import { getCustomRepository } from 'typeorm';
+import nameGenerator from 'project-name-generator';
 
 @Injectable()
 export class MockService {
@@ -15,6 +18,8 @@ export class MockService {
     private productCategoryRepo = getCustomRepository(ProductCategoryRepository);
     private attributeRepo = getCustomRepository(AttributeRepository);
     private productReviewRepo = getCustomRepository(ProductReviewRepository);
+    private postRepo = getCustomRepository(PostRepository);
+    private userRepo = getCustomRepository(UserRepository);
 
     private shuffleArray = <T extends Array<any>>(array: T): T => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -99,7 +104,9 @@ export class MockService {
             rating: 1,
             userName: 'Michael',
         },
-    ]
+    ];
+
+    private randomHTMLText = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</p><ul><li><i class="porto-icon-ok"></i>Any Product types that You want - Simple, Configurable</li><li><i class="porto-icon-ok"></i>Downloadable/Digital Products, Virtual Products</li><li><i class="porto-icon-ok"></i>Inventory Management with Backordered items</li></ul><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, <br>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
 
 
     public async mockProducts(): Promise<boolean> {
@@ -155,7 +162,7 @@ export class MockService {
 
         const sizeVals = this.attributesMock[0].values;
 
-        const description = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</p><ul><li><i class="porto-icon-ok"></i>Any Product types that You want - Simple, Configurable</li><li><i class="porto-icon-ok"></i>Downloadable/Digital Products, Virtual Products</li><li><i class="porto-icon-ok"></i>Inventory Management with Backordered items</li></ul><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, <br>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
+        const description = this.randomHTMLText
 
         // Clear
         const prodsOld = await this.productRepo.find();
@@ -307,6 +314,74 @@ export class MockService {
                 }
                 await this.productReviewRepo.createProductReview(review);
             }
+        }
+
+        return true;
+    }
+
+    public async mockUsers() {
+        // Clear
+        const usersOld = await this.userRepo.find();
+        for (const item of usersOld) {
+            await this.userRepo.deleteUser(item.id);
+        }
+
+        const users: TUserInput[] = [
+            {
+                fullName: 'Kevin',
+                email: 'Kevin@office.com',
+                password: '12345',
+                avatar: ''
+            },
+            {
+                fullName: 'Angela',
+                email: 'Angela@office.com',
+                password: '54321',
+                avatar: ''
+            },
+            {
+                fullName: 'Michael',
+                email: 'Michael@office.com',
+                password: 'qwerty',
+                avatar: ''
+            }
+        ]
+
+        for (let user of users) {
+            await this.userRepo.createUser(user);
+        }
+
+        return true;
+    }
+
+    public async mockPosts() {
+        // Clear
+        const postsOld = await this.postRepo.find();
+        for (const item of postsOld) {
+            await this.postRepo.deletePost(item.id);
+        }
+
+        const users = await this.userRepo.find();
+
+        const images = [
+            '/themes/@cromwell/theme-store/product.jpg',
+            '/themes/@cromwell/theme-store/product_2.jpg',
+            '/themes/@cromwell/theme-store/product_3.jpg'
+        ];
+
+        const getRandImg = () => images[Math.floor(Math.random() * (images.length))];
+
+
+        for (let i = 0; i < 20; i++) {
+            const randName = (nameGenerator().spaced).replace(/\b\w/g, l => l.toUpperCase());
+
+            await this.postRepo.createPost({
+                content: this.randomHTMLText,
+                authorId: users[Math.floor(Math.random() * (users.length))].id,
+                title: randName,
+                mainImage: getRandImg(),
+                isPublished: true
+            })
         }
 
         return true;

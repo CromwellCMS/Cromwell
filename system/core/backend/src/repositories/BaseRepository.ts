@@ -24,19 +24,21 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return this.find()
     }
 
-    async getById(id: string): Promise<EntityType | undefined> {
+    async getById(id: string, relations?: string[]): Promise<EntityType | undefined> {
         logFor('all', 'BaseRepository::getById');
         const entity = await this.findOne({
-            where: { id }
+            where: { id },
+            relations
         });
         if (!entity) throw new Error(`${this.DBTableName} ${id} not found!`);
         return entity;
     }
 
-    async getBySlug(slug: string): Promise<EntityType | undefined> {
+    async getBySlug(slug: string, relations?: string[]): Promise<EntityType | undefined> {
         logFor('all', 'BaseRepository::getBySlug');
         const entity = await this.findOne({
-            where: { slug }
+            where: { slug },
+            relations
         });
         if (!entity) throw new Error(`${this.DBTableName} ${slug} not found!`);
         return entity;

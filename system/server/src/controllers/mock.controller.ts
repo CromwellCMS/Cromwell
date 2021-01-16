@@ -65,9 +65,38 @@ export class MockController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockReviews(): Promise<boolean> {
-
         logFor('detailed', 'MockController::mockReviews');
 
         return this.mockService.mockReviews();
     }
+
+
+    @Get('users')
+    @ApiOperation({ description: 'Delete all users and mock new' })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async mockUsers(): Promise<boolean> {
+        logFor('detailed', 'MockController::mockUsers');
+
+        return this.mockService.mockUsers();
+    }
+
+
+    @Get('posts')
+    @ApiOperation({ description: 'Delete all posts and mock new' })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async mockPosts(): Promise<boolean> {
+        logFor('detailed', 'MockController::mockPosts');
+
+        return this.mockService.mockPosts();
+    }
+    
+
 }

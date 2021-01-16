@@ -82,9 +82,4 @@ export class ProductResolver {
         return this.repository.getProductRating(product.id);
     }
 
-    @FieldResolver()
-    views(): number {
-        return Math.floor(Math.random() * 10);
-    }
-
 }

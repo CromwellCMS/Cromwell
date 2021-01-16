@@ -35,10 +35,9 @@ export class AuthService {
         return bcrypt.compare(plain, hash);
     }
 
-    async login(user: TAuthUserInfo) {
+    generateToken(user: TAuthUserInfo): string {
         const payload = { username: user.email, sub: user.id };
-        return {
-            access_token: this.jwtService.sign(payload),
-        };
+
+        return this.jwtService.sign(payload);
     }
 }

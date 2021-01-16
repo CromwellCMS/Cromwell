@@ -7,9 +7,9 @@ import { TAuthUserInfo } from '../auth/constants';
 import { AuthService } from '../services/auth.service';
 
 @ApiBearerAuth()
-@ApiTags('User')
-@Controller('user')
-export class UserController {
+@ApiTags('Auth')
+@Controller('auth')
+export class AuthController {
 
     constructor(private authService: AuthService) { }
 
@@ -22,17 +22,7 @@ export class UserController {
     async login(@Request() req: {
         user: TAuthUserInfo
     }) {
-        return this.authService.login(req.user);
+        return this.authService.generateToken(req.user);
     }
 
-    @ApiOperation({
-        description: 'Get user profile',
-    })
-    @UseGuards(JwtAuthGuard)
-    @Get('profile')
-    getProfile(@Request() req: {
-        user: TAuthUserInfo
-    }) {
-        return req.user;
-    }
 }

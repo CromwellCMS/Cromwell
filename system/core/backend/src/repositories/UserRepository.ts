@@ -83,7 +83,7 @@ export class UserRepository extends BaseRepository<User> {
         }
         const res = await this.delete(id);
         return true;
-        
+
     }
 
 }

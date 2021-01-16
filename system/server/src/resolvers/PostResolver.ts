@@ -1,51 +1,57 @@
-import { CreatePostInput, Post, UpdatePostInput } from '@cromwell/core-backend';
-import { Arg, FieldResolver, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLPaths, TPagedList, TPost, TUser } from '@cromwell/core';
+import { CreatePost, PagedParamsInput, PagedPost, Post, PostRepository, UpdatePost, User, UserRepository } from '@cromwell/core-backend';
+import { Arg, Mutation, Query, Resolver, FieldResolver, Root } from 'type-graphql';
+import { getCustomRepository } from 'typeorm';
+
+const getOneBySlugPath = GraphQLPaths.Post.getOneBySlug;
+const getOneByIdPath = GraphQLPaths.Post.getOneById;
+const getManyPath = GraphQLPaths.Post.getMany;
+const createPath = GraphQLPaths.Post.create;
+const updatePath = GraphQLPaths.Post.update;
+const deletePath = GraphQLPaths.Post.delete;
+
+const authorKey: keyof TPost = 'author';
 
 @Resolver(Post)
 export class PostResolver {
-  @Query(() => [Post])
-  posts() {
-    return Post.find();
+
+  private repository = getCustomRepository(PostRepository);
+  private userRepository = getCustomRepository(UserRepository);
+
+  @Query(() => PagedPost)
+  async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<Post>):
+    Promise<TPagedList<TPost>> {
+    return this.repository.getPosts(pagedParams);
   }
 
   @Query(() => Post)
-  post(@Arg("id") id: string) {
-    return Post.findOne({ where: { id } });
+  async [getOneBySlugPath](@Arg("slug") slug: string): Promise<Post | undefined> {
+    return this.repository.getPostBySlug(slug);
+  }
+
+  @Query(() => Post)
+  async [getOneByIdPath](@Arg("id") id: string): Promise<Post | undefined> {
+    return this.repository.getPostById(id);
   }
 
   @Mutation(() => Post)
-  async createPost(@Arg("data") data: CreatePostInput) {
-    const post = Post.create(data);
-    await post.save();
-    return post;
+  async [createPath](@Arg("data") data: CreatePost): Promise<Post> {
+    return this.repository.createPost(data);
   }
 
   @Mutation(() => Post)
-  async updatePost(@Arg("id") id: string, @Arg("data") data: UpdatePostInput) {
-    const post = await Post.findOne({ where: { id } });
-    if (!post) throw new Error("Post not found!");
-    Object.assign(post, data);
-    await post.save();
-    return post;
+  async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdatePost): Promise<Post> {
+    return this.repository.updatePost(id, data);
   }
 
   @Mutation(() => Boolean)
-  async deletePost(@Arg("id") id: string) {
-    const post = await Post.findOne({ where: { id } });
-    if (!post) throw new Error("Post not found!");
-    await post.remove();
-    return true;
+  async [deletePath](@Arg("id") id: string): Promise<boolean> {
+    return this.repository.deletePost(id);
   }
 
-  @FieldResolver()
-  views(): number {
-    return Math.floor(Math.random() * 10);
+  @FieldResolver(() => User)
+  async [authorKey](@Root() post: Post): Promise<TUser | undefined> {
+    return this.userRepository.getUserById(post.authorId);
   }
 
-  @FieldResolver({ nullable: true })
-  async author() {
-    // const author: Author = await Author.findOne({ where: { id: 1 } }) || { name: 'no author' } as Author;
-
-    return null;
-  }
 }

@@ -44,6 +44,7 @@ export type TProductCategoryInput = TBasePageEntityInput & Omit<TProductCategory
     childIds?: string[];
 };
 
+
 // PRODUCT
 
 export interface TProduct extends TBasePageEntity {
@@ -82,22 +83,25 @@ export type TProductInput = Omit<TProduct, TDBAuxiliaryColumns | 'categories' | 
     categoryIds?: string[];
 };
 
+
 // POST
 
 export interface TPost extends TBasePageEntity {
     // Title of post (h1)
     title: string;
     // User-author
-    author: TUser;
+    author?: TUser;
     // Href of main image
-    mainImage: string;
-    // Short description
-    description: string;
+    mainImage?: string;
     // Post content, stringified JSON from editorjs
     content: string;
+    // Is published?
+    isPublished: boolean;
 }
 
-export type TPostInput = Omit<TProduct, TDBAuxiliaryColumns>;
+export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author'> & {
+    authorId: string;
+};
 
 
 // USER / AUTHOR

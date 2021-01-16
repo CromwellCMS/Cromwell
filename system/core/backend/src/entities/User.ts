@@ -1,8 +1,9 @@
 import { TUser } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToMany } from 'typeorm';
 
 import { BasePageEntity } from './BasePageEntity';
+import { Post } from './Post';
 
 @Entity()
 @ObjectType()
