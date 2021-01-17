@@ -35,7 +35,7 @@ export const ProductDetails = (props: {
         modifiedProductRef.current = props.product;
     }
     const product = modifiedProductRef.current;
-    const router = useRouter();
+    const router = useRouter?.();
     const customTabs = getThemeCustomConfigProp('product/customTabs');
     const client = getGraphQLClient();
 

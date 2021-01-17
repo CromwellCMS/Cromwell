@@ -72,7 +72,11 @@ class CRestAPIClient {
         return this.get(`cms/themes`);
     }
 
-    public getPluginList = async (): Promise<string[] | undefined> => {
+    public getPluginList = async (): Promise<({
+        name: string;
+        icon?: string;
+        info?: string;
+    })[] | undefined> => {
         return this.get(`cms/plugins`);
     }
 

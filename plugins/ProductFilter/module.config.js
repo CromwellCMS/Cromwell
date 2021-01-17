@@ -1,6 +1,7 @@
 module.exports = {
     type: "plugin",
     title: "Product filter",
+    icon: "static/icon_funnel.png",
     frontendInputFile: "src/frontend/index.tsx",
     backend: {
         resolversDir: "src/backend/resolvers",

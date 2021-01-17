@@ -1,6 +1,6 @@
 import { Controller, Post, Request, UseGuards, Get } from '@nestjs/common';
 import { ApiOperation, ApiTags, ApiBody, ApiBearerAuth } from '@nestjs/swagger';
-import { LoginDto } from '../dto/Login.dto';
+import { LoginDto } from '../dto/login.dto';
 import { LocalAuthGuard } from '../auth/local-auth.guard';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { TAuthUserInfo } from '../auth/constants';

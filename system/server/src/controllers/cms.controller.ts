@@ -1,12 +1,13 @@
-import { logFor, TCmsSettings, TThemeMainConfig } from '@cromwell/core';
+import { logFor, TCmsSettings, TThemeMainConfig, TPluginConfig } from '@cromwell/core';
 import { getCmsModuleConfig, getNodeModuleDir, readCmsModules } from '@cromwell/core-backend';
 import { Controller, Get, HttpException, HttpStatus, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 
-import { CmsConfigDto } from '../dto/CmsConfig.dto';
-import { ThemeMainConfigDto } from '../dto/ThemeMainConfig.dto';
+import { CmsConfigDto } from '../dto/cms-config.dto';
+import { PluginInfoDto } from '../dto/plugin-info.dto';
+import { ThemeMainConfigDto } from '../dto/theme-main-config.dto';
 import { CmsService } from '../services/cms.service';
 
 @ApiBearerAuth()
@@ -71,7 +72,7 @@ export class CmsController {
 
         for (const themeName of themeModuleNames) {
             const themeConfig = await getCmsModuleConfig(themeName);
-            
+
             if (themeConfig && themeConfig.main) {
 
                 if (themeConfig.main.previewImage) {
@@ -94,14 +95,44 @@ export class CmsController {
 
 
     @Get('plugins')
-    @ApiOperation({ description: 'Returns names of all plugins present in "plugins" directory' })
+    @ApiOperation({ description: 'Returns info for all plugins present in "plugins" directory' })
     @ApiResponse({
         status: 200,
-        type: [String],
+        type: [PluginInfoDto],
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getPlugins(): Promise<string[]> {
+    async getPlugins(): Promise<PluginInfoDto[]> {
         logFor('detailed', 'CmsController::getPlugins');
-        return (await readCmsModules()).plugins;
+        let out: PluginInfoDto[] = [];
+
+        const pluginModules = (await readCmsModules()).plugins;
+
+        for (const pluginName of pluginModules) {
+
+
+            const pluginConfig = await getCmsModuleConfig<TPluginConfig>(pluginName);
+
+            const info: PluginInfoDto = {
+                name: pluginName,
+                info: pluginConfig?.info
+            }
+
+            if (pluginConfig?.icon) {
+                const pluginDir = await getNodeModuleDir(pluginName);
+
+                // Read icon and convert to base64
+                if (pluginDir) {
+                    const imgPath = resolve(pluginDir, pluginConfig?.icon);
+                    if (await fs.pathExists(imgPath)) {
+                        const data = (await fs.readFile(imgPath))?.toString('base64');
+                        if (data) info.icon = data;
+                    }
+                }
+
+            }
+            out.push(info);
+        }
+
+        return out;
     }
 }

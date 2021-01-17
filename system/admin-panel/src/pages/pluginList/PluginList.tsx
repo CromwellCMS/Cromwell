@@ -18,7 +18,10 @@ import commonStyles from '../../styles/common.module.scss';
 
 export default function PluginList() {
     const history = useHistory();
-    const [pluginInfoList, setPluginInfoList] = useState<string[] | null>(null);
+    const [pluginInfoList, setPluginInfoList] = useState<{
+        name: string;
+        icon?: string;
+    }[] | null>(null);
     const [pluginList, setPluginList] = useState<TPluginEntity[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -85,12 +88,19 @@ export default function PluginList() {
                 size="large"
                 startIcon={<AddCircleOutlineIcon />}
             >Add plugins</Button>
-            {pluginInfoList && pluginInfoList.map(pluginName => {
+            {pluginInfoList && pluginInfoList.map(info => {
+                const pluginName = info.name;
+                const pluginIcon = info.icon;
                 const pluginEntity = pluginList?.find(ent => ent.name === pluginName)
                 const title = pluginEntity?.title ?? pluginName;
 
-                return (<div className={`${styles.pluginItem} ${commonStyles.paper}`}>
-                    <p className={styles.pluginName}>{title}</p>
+                return (<div className={styles.pluginItem}>
+                    <div className={styles.info}>
+                        <div className={styles.icon}
+                            style={{ backgroundImage: pluginIcon ? `url("data:image/png;base64,${pluginIcon}")` : '' }}
+                        ></div>
+                        <p className={styles.pluginName}>{title}</p>
+                    </div>
                     <div className={styles.actions}>
                         {(pluginEntity && pluginEntity.isInstalled) ? (
                             pluginEntity.hasAdminBundle ? (

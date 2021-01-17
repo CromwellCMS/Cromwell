@@ -5,10 +5,10 @@ import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 
-import { FrontendBundleDto } from '../dto/FrontendBundle.dto';
-import { PageConfigDto } from '../dto/PageConfig.dto';
-import { PageInfoDto } from '../dto/PageInfo.dto';
-import { ThemeMainConfigDto } from '../dto/ThemeMainConfig.dto';
+import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
+import { PageConfigDto } from '../dto/page-config.dto';
+import { PageInfoDto } from '../dto/page-info.dto';
+import { ThemeMainConfigDto } from '../dto/theme-main-config.dto';
 import { CmsService } from '../services/cms.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';

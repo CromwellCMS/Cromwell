@@ -2,7 +2,7 @@ import { logFor, TFrontendBundle, TPluginConfig } from '@cromwell/core';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { FrontendBundleDto } from '../dto/FrontendBundle.dto';
+import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { PluginService } from '../services/plugin.service';
 
 

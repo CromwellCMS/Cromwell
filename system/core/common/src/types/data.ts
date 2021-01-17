@@ -177,6 +177,8 @@ export type TPluginConfig = TBuildConfig & {
     }
     defaultSettings?: any;
     title?: string;
+    info?: string;
+    icon?: string;
 }
 
 export type TCromwellNodeModules = {

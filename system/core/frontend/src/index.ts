@@ -38,6 +38,10 @@ import CromwellBlockStyles from './components/CromwellBlock/CromwellBlock.module
 export const CromwellBlockCSSclass = CromwellBlockStyles.CromwellBlock;
 
 export { default as Document, Html, Main, NextScript, DocumentContext } from 'next/document';
-export { useRouter } from 'next/router';
-export { default as Head } from 'next/head';
+
+import { useRouter as nextuseRouter } from 'next/router';
+export const useRouter: typeof nextuseRouter | undefined = nextuseRouter
+
+import { default as NextHead } from 'next/head';
+export const Head: typeof NextHead | undefined = NextHead;
 

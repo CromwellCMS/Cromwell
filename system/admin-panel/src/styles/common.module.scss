@@ -48,3 +48,13 @@
   background-size: contain;
   background-repeat: no-repeat;
 }
+
+@mixin icon {
+  @include bckgrCover;
+  width: 24px;
+  height: 24px;
+}
+
+:global(.MuiButtonBase-root.MuiIconButton-root) {
+  color: #333;
+}

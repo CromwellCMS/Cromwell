@@ -1,3 +1,5 @@
+@import "../../styles/common.module.scss";
+
 .Sidebar {
     width: 100%;
     height: 100%;
@@ -96,9 +98,7 @@
 }
 
 .customIcon {
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
+    @include bckgrCover;
     width: 24px;
     height: 24px;
     opacity: 0.6;

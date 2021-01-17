@@ -1,6 +1,8 @@
 module.exports = {
     type: "plugin",
     title: "Product showcase",
+    icon: "static/icon_showcase.png",
+    info: '',
     frontendInputFile: "src/frontend/index.tsx",
     backend: {
         resolversDir: "src/backend/resolvers",
