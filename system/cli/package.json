@@ -33,6 +33,7 @@
     "watch": "npx rollup -cw"
   },
   "bin": {
-    "cromwell": "./bin/cromwell"
+    "cromwell": "./bin/cromwell",
+    "crw": "./bin/cromwell"
   }
 }

@@ -85,7 +85,11 @@ const start = async () => {
     <title>Cromwell CMS Admin Panel</title>
     <script>
     CromwellStore = {
-        cmsSettings: ${JSON.stringify(cmsConfig)}
+        cmsSettings: ${JSON.stringify(cmsConfig)},
+        environment: {
+            isAdminPanel: true,
+            mode: '${isDevelopment ? 'dev' : 'prod'}'
+        }
     }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;900&display=swap" rel="stylesheet">

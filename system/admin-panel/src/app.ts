@@ -15,10 +15,6 @@ importer.modules['@cromwell/core'] = core;
 
 (async () => {
   await getRestAPIClient()?.getCmsSettingsAndSave();
-  setStoreItem('environment', {
-    isAdminPanel: true
-  });
-
 
   ReactDOM.render(
     React.createElement(Layout),

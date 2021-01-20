@@ -135,4 +135,14 @@ export class CmsController {
 
         return out;
     }
+
+    // @Get('upload-image')
+    // @ApiOperation({ description: 'Uploads image' })
+    // @ApiResponse({
+    //     status: 200,
+    // })
+    // @ApiForbiddenResponse({ description: 'Forbidden.' })
+    // async uploadImage(): Promise<boolean> {
+
+    // }
 }

@@ -13,7 +13,7 @@ const args = yargs(process.argv.slice(2))
                 .option('service', {
                     alias: 'sv',
                     desc: 'Specify service to start: "server", "renderer", "adminPanel"',
-                    choices: ["server", "renderer", "adminPanel"]
+                    choices: ["server", "s", "renderer", "r", "adminPanel", "a"]
                 })
                 .option('development', {
                     alias: 'dev',

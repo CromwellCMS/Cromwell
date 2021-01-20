@@ -101,18 +101,18 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
         logLevel: isDevelopment ? 'detailed' : 'errors-only'
     })
 
-    if (serviceName === 'adminPanel') {
+    if (serviceName === 'adminPanel' || serviceName === 'a') {
         const pckg = getModulePackage('@cromwell/admin-panel')
         await checkModules(isDevelopment, pckg ? [pckg] : undefined);
         startAdminPanel(isDevelopment ? 'dev' : 'prod');
     }
 
-    if (serviceName === 'renderer') {
+    if (serviceName === 'renderer' || serviceName === 'r') {
         await checkModules(isDevelopment);
         startRenderer(isDevelopment ? 'dev' : 'prod');
     }
 
-    if (serviceName === 'server') {
+    if (serviceName === 'server' || serviceName === 's') {
         startServer(isDevelopment ? 'dev' : 'prod');
     }
 

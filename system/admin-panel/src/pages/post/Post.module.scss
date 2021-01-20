@@ -1,0 +1,22 @@
+@import "../../styles/common.module.scss";
+
+.Post {
+    @include paper;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.editor {
+    width: 100%;
+    height: 100%;
+}
+
+// :global(.ql-toolbar) {
+//     position: absolute;
+//     width: 100%;
+// }
+
+// :global(.ql-container) {
+//     padding-top: 42px;
+// }

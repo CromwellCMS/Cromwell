@@ -4,7 +4,7 @@ import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@material-
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { productInfo } from '../../constants/PageInfos';
+import { postPageInfo } from '../../constants/PageInfos';
 import styles from './PostList.module.scss';
 import commonStyles from '../../styles/common.module.scss';
 
@@ -18,7 +18,7 @@ export const PostListItem = (props: TPostListItemProps) => {
         <Grid container className={styles.listItem}>
             {props.data && (
                 <>
-                    <Grid xs={3}>
+                    <Grid xs={2}>
                         <div
                             style={{ backgroundImage: `url(${props?.data?.mainImage})` }}
                             className={styles.itemImage}
@@ -30,8 +30,8 @@ export const PostListItem = (props: TPostListItemProps) => {
                     <Grid xs={3}>
                         <p>{props.data?.author?.fullName}</p>
                     </Grid>
-                    <Grid xs={3}>
-                        <Link to={`${productInfo.baseRoute}/${props.data?.id}`}>
+                    <Grid xs={4} className={styles.listItemActions}>
+                        <Link to={`${postPageInfo.baseRoute}/${props.data?.id}`}>
                             <IconButton
                                 aria-label="edit"
                             >

@@ -65,5 +65,10 @@
 .itemImage {
     @include bckgrCover;
     height: 60px;
-    width: 80px;
+    width: 90px;
+}
+
+.listItemActions {
+    display: flex;
+    justify-content: flex-end;
 }

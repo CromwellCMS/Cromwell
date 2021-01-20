@@ -31,7 +31,6 @@ export default [
         plugins: [
             json(),
             commonjs(),
-            commonjs(),
             typescript({
                 tsconfigOverride: {
                     compilerOptions: {

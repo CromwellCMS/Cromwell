@@ -19,6 +19,7 @@ import ProductListPage from '../pages/productList/ProductList';
 import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
 import ThemeListPage from '../pages/themeList/ThemeList';
 import PostListPage from '../pages/postList/PostList';
+import PostPage from '../pages/post/Post';
 
 
 export type SidebarLinkType = {
@@ -86,6 +87,12 @@ export const postListInfo: PageInfo = {
     route: '/post-list',
     component: PostListPage
 };
+export const postPageInfo: PageInfo = {
+    name: 'Post',
+    route: '/post/:id',
+    component: PostPage,
+    baseRoute: '/post',
+};
 
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
@@ -99,6 +106,7 @@ export const pageInfos: PageInfo[] = [
     attributesInfo,
     pluginPageInfo,
     postListInfo,
+    postPageInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
