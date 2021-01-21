@@ -152,6 +152,7 @@ export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     "mobx",
     "mobx-react",
     "query-string",
+    "quill",
     "react",
     "react-dom",
     "react-html-parser",

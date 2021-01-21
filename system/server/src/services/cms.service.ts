@@ -1,7 +1,11 @@
 import { getStoreItem, setStoreItem, TCmsConfig, TCmsEntity, TCmsSettings } from '@cromwell/core';
 import { readCMSConfig, serverLogFor } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
+import fs from 'fs-extra';
+import { join } from 'path';
+import stream from 'stream';
 import { getCustomRepository } from 'typeorm';
+import * as util from 'util';
 
 import { GenericCms } from '../helpers/genericEntities';
 
@@ -69,4 +73,33 @@ export class CmsService {
         }
         return false;
     }
+
+    async uploadFile(req: any, dirName: string): Promise<any> {
+        //Check request is multipart
+        if (!req.isMultipart()) {
+            return
+        }
+
+        const handler = async (field: string, file: any, filename: string, encoding: string, mimetype: string): Promise<void> => {
+            const fullPath = join(`${dirName}/${filename}`);
+            if (await fs.pathExists(fullPath)) return;
+
+            const pipeline = util.promisify(stream.pipeline);
+            const writeStream = fs.createWriteStream(fullPath); //File path
+            try {
+                await pipeline(file, writeStream);
+            } catch (err) {
+                console.error('Pipeline failed', err);
+            }
+        }
+
+        const mp = await req.multipart(handler, (err) => {
+
+        });
+        // for key value pairs in request
+        mp.on('field', function (key: any, value: any) {
+            console.log('form-data', key, value);
+        });
+    }
+
 }

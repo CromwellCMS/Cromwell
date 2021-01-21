@@ -1,9 +1,9 @@
-import { logFor, TCmsSettings, TThemeMainConfig, TPluginConfig } from '@cromwell/core';
-import { getCmsModuleConfig, getNodeModuleDir, readCmsModules } from '@cromwell/core-backend';
-import { Controller, Get, HttpException, HttpStatus, Query } from '@nestjs/common';
+import { logFor, TCmsSettings, TPluginConfig, TThemeMainConfig } from '@cromwell/core';
+import { getCmsModuleConfig, getNodeModuleDir, getPublicDir, readCmsModules } from '@cromwell/core-backend';
+import { Controller, Get, HttpException, HttpStatus, Post, Query, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
-import { resolve } from 'path';
+import { join, resolve } from 'path';
 
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { PluginInfoDto } from '../dto/plugin-info.dto';
@@ -136,13 +136,74 @@ export class CmsController {
         return out;
     }
 
-    // @Get('upload-image')
-    // @ApiOperation({ description: 'Uploads image' })
-    // @ApiResponse({
-    //     status: 200,
-    // })
-    // @ApiForbiddenResponse({ description: 'Forbidden.' })
-    // async uploadImage(): Promise<boolean> {
 
-    // }
+    @Get('read-public-dir')
+    @ApiOperation({
+        description: 'Read files and directories in specified subfolder of "public" files',
+        parameters: [{ name: 'path', in: 'query' }]
+    })
+    @ApiResponse({
+        status: 200,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async readPublicDir(@Query('path') path: string): Promise<string[] | null> {
+        const fullPath = join(getPublicDir(), path ?? '');
+        if (! await fs.pathExists(fullPath)) return null;
+        return fs.readdir(fullPath);
+    }
+
+    @Get('create-public-dir')
+    @ApiOperation({
+        description: 'Creates new directory in specified subfolder of "public" files',
+        parameters: [
+            { name: 'inPath', in: 'query' },
+            { name: 'dirName', in: 'query' }]
+    })
+    @ApiResponse({
+        status: 200,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async createDir(@Query('inPath') inPath: string, @Query('dirName') dirName: string): Promise<boolean> {
+        const fullPath = join(getPublicDir(), inPath ?? '', dirName);
+        if (await fs.pathExists(fullPath)) return false;
+        await fs.mkdir(fullPath);
+        return true;
+    }
+
+    @Get('remove-public-dir')
+    @ApiOperation({
+        description: 'Removes directory in specified subfolder of "public" files',
+        parameters: [
+            { name: 'inPath', in: 'query' },
+            { name: 'dirName', in: 'query' }]
+    })
+    @ApiResponse({
+        status: 200,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async removeDir(@Query('inPath') inPath: string, @Query('dirName') dirName: string): Promise<boolean> {
+        const fullPath = join(getPublicDir(), inPath ?? '', dirName);
+        if (! await fs.pathExists(fullPath)) return false;
+        await fs.remove(fullPath);
+        return true;
+    }
+
+    @Post('upload-public-file')
+    @ApiOperation({
+        description: 'Uploads a file to specified subfolder of "public" files',
+        parameters: [
+            { name: 'inPath', in: 'query' },
+            { name: 'fileName', in: 'query' }]
+    })
+    @ApiResponse({
+        status: 200,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async uploadFile(@Query('inPath') inPath: string, @Query('fileName') fileName: string,
+        @Req() req: any): Promise<boolean> {
+        const fullPath = join(getPublicDir(), inPath ?? '');
+
+        await this.cmsService.uploadFile(req, fullPath)
+        return true;
+    }
 }

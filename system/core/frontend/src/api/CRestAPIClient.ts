@@ -68,6 +68,22 @@ class CRestAPIClient {
         }
     }
 
+    public readPublicDir = (path?: string): Promise<string[] | null | undefined> => {
+        return this.get(`cms/read-public-dir?path=${path ?? '/'}`);
+    }
+
+    public createPublicDir = (dirName: string, inPath?: string): Promise<string[] | null | undefined> => {
+        return this.get(`cms/create-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`);
+    }
+
+    public removePublicDir = (dirName: string, inPath?: string): Promise<string[] | null | undefined> => {
+        return this.get(`cms/remove-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`);
+    }
+
+    public uploadPublicFile = (dirName: string, inPath?: string): Promise<string[] | null | undefined> => {
+        return this.get(`cms/remove-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`);
+    }
+
     public getThemesInfo = async (): Promise<TThemeMainConfig[] | undefined> => {
         return this.get(`cms/themes`);
     }

@@ -6,7 +6,6 @@ import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cors from 'cors';
-
 import { connectDatabase } from './helpers/connectDatabase';
 import { setEnv } from './helpers/setEnv';
 import { AppModule } from './modules/app.module';
@@ -30,6 +29,7 @@ async function bootstrap(): Promise<void> {
     app.use(cors({
         origin: [serviceLocator.getFrontendUrl(), serviceLocator.getAdminPanelUrl()]
     }));
+    app.register(require('fastify-multipart'));
 
     // Setup SwaggerUI
     const options = new DocumentBuilder()

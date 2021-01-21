@@ -85,7 +85,7 @@ const getConfig = (buildMode = 'production') => {
                     '@cromwell/admin-panel': [
                         '@cromwell/cromwella/build/importer.js',
                         '@cromwell/core-frontend',
-                        '@cromwell/core'
+                        '@cromwell/core',
                     ]
                 },
                 packageExternals: [

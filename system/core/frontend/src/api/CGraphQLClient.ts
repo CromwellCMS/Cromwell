@@ -634,12 +634,14 @@ class CGraphQLClient {
             slug
             title
             author {
+                id
                 fullName
                 email
                 avatar
             }
             mainImage
             content
+            isPublished
             isEnabled
       }
   `
