@@ -27,7 +27,7 @@ class ThemeEditState {
 }
 
 
-export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
+export default class ThemeEdit extends React.Component<any, ThemeEditState> {
 
     private changedPageInfo: TPageInfo | null = null;
 
@@ -35,7 +35,7 @@ export default class ThemeEdit extends React.Component<{}, ThemeEditState> {
     // We need to send to the server only newly added modifications! 
     private changedModifications: TCromwellBlockData[] | null | undefined = null;
 
-    constructor(props: {}) {
+    constructor(props: any) {
         super(props);
         this.state = new ThemeEditState();
     }

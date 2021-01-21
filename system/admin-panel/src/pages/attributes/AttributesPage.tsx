@@ -1,19 +1,19 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { getRestAPIClient, getGraphQLClient } from '@cromwell/core-frontend';
 import { TAttribute, TAttributeInput } from '@cromwell/core';
-import { CheckList } from '../../components/transferList/TransferList';
-import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip, TextField } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { getGraphQLClient } from '@cromwell/core-frontend';
+import { Button, createStyles, IconButton, makeStyles, TextField, Theme, Tooltip } from '@material-ui/core';
 import {
-    Edit as EditIcon,
-    Save as SaveIcon,
-    Delete as DeleteIcon,
     AddCircleOutline as AddCircleOutlineIcon,
-    Image as ImageIcon
+    Delete as DeleteIcon,
+    Image as ImageIcon,
+    Save as SaveIcon,
 } from '@material-ui/icons';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
+
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { ConfirmationModal } from '../../components/modal/Confirmation';
+import { CheckList } from '../../components/transferList/TransferList';
+import styles from './Attributes.module.scss';
 
 function useForceUpdate() {
     const [value, setValue] = useState(0);
@@ -50,7 +50,7 @@ export default function AttributesPage() {
     }
 
     return (
-        <div style={{ width: '100%' }}>
+        <div className={styles.Attributes}>
             {attributes.current && attributes.current.map(attribute => (
                 <div style={{ marginBottom: '20px' }}>
                     <Attribute data={attribute} />

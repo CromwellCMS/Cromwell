@@ -1,28 +1,22 @@
 import React from 'react';
 import { CircularProgress } from '@material-ui/core';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
-
-export const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        LoadBox: {
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        }
-    }),
-);
+import { throbber } from '@cromwell/core-frontend';
+import styles from './LoadBox.module.scss';
 
 interface LoadBoxProps {
-    size?: number
+    size?: number;
+    absolute?: boolean;
 }
 
 const LoadBox = (props: LoadBoxProps) => {
-    const classes = useStyles();
+    const size = props.size ?? 150;
     return (
-        <div className={classes.LoadBox} >
-            <CircularProgress size={(props.size ? props.size : 150)} />
+        <div className={styles.LoadBox} style={{ position: props.absolute ? 'absolute' : 'relative' }} >
+            <div
+                style={{ width: size + 'px', height: size + 'px' }}
+                dangerouslySetInnerHTML={{ __html: throbber }}
+            ></div>
         </div>
     )
 }

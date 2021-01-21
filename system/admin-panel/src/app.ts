@@ -13,6 +13,7 @@ const importer = getModuleImporter();
 importer.modules['@cromwell/core-frontend'] = coreFrontend;
 importer.modules['@cromwell/core'] = core;
 
+
 (async () => {
   await getRestAPIClient()?.getCmsSettingsAndSave();
 

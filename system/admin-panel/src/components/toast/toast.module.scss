@@ -1,0 +1,17 @@
+.success {
+    // background: #009625;
+    display: flex;
+    align-items: center;
+}
+
+:global(.Toastify__toast) {
+    border-radius: 10px;
+    // box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.05), 0 0 17px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 25px 2px rgba(91, 0, 82, 0.7);
+    background: linear-gradient(144deg, #28006f 0%, #600155 100%);
+}
+
+.Toastify__toast--warning {
+}
+.Toastify__toast--error {
+}
