@@ -1,0 +1,141 @@
+@import "../../styles/common.module.scss";
+
+.FileManager {
+    width: 850px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+
+    @mixin headerPart {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+    .header {
+        @include paper;
+        @include headerPart;
+        padding: 5px;
+        justify-content: space-between;
+    }
+    .headerLeft {
+        @include headerPart;
+    }
+    .headerRight {
+        @include headerPart;
+    }
+
+    .action {
+        margin-right: 5px;
+    }
+
+    .content {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        padding: 20px;
+        height: 100%;
+    }
+
+    .item {
+        display: flex;
+        position: relative;
+        align-items: center;
+        flex-direction: column;
+        width: 100px;
+        height: auto;
+        margin: 4px;
+        transition: 0.2s;
+        border-radius: 5px;
+        padding: 10px;
+        text-align: center;
+        white-space: normal;
+        word-break: break-all;
+        border: 2px solid transparent;
+
+        &:hover {
+            background-color: #eee;
+
+            .zoomItemBtn {
+                opacity: 1;
+            }
+        }
+    }
+
+    .itemIcon {
+        margin-bottom: 5px;
+        width: 60px;
+        height: 60px;
+    }
+
+    .itemImage {
+        @extend .itemIcon;
+        @include bckgrContain;
+        width: 100%;
+    }
+
+    .zoomItemBtn {
+        position: absolute;
+        top: calc(50% - 50px);
+        left: calc(50% - 24px);
+        opacity: 0;
+        transition: 0.2s;
+        background: #fff;
+        &:hover {
+            background: #fff;
+        }
+    }
+
+    .photoPreviewCloseBtn {
+        position: absolute;
+        background: #333;
+        top: 0;
+        right: 0;
+    }
+
+    .photoPreviewCloseIcon {
+        color: #fff;
+        width: 40px;
+        height: 40px;
+    }
+
+    .selectedItem {
+        border: 2px solid #333;
+    }
+
+    .selectBtn {
+        margin-right: 10px;
+    }
+}
+
+.photoPreviewContainer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.photoPreview {
+    width: auto;
+    height: auto;
+    max-width: 100vw;
+    max-height: 100vh;
+}
+
+.createFolderWindow {
+    position: absolute;
+    top: 50px;
+    display: flex;
+    align-items: center;
+    z-index: 22;
+    background-color: #fff;
+    box-shadow: 0 0 25px 2px rgba(0, 0, 0, 0.2);
+    border-radius: 7px;
+    padding: 5px 10px;
+}
