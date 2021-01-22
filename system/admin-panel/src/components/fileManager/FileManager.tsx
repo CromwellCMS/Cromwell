@@ -14,7 +14,7 @@ import {
     ZoomIn as ZoomInIcon,
 } from '@material-ui/icons';
 import React from 'react';
-
+import LazyLoad from 'react-lazy-load';
 import LoadBox from '../loadBox/LoadBox';
 import { Modal } from '../modal/Modal';
 import styles from './FileManager.module.scss';
@@ -348,9 +348,12 @@ export class FileManager extends React.Component<any, TState> implements IFileMa
                             ItemIcon = <DescriptionIcon className={styles.itemIcon} />;
                         }
                         if (itemType === 'image') {
-                            ItemIcon = <div className={styles.itemImage}
-                                style={{ backgroundImage: `url(${this.normalize(`/${this.currentPath}/${item}`)})` }}
-                            ></div>;
+                            ItemIcon = (<div className={styles.itemImageContainer}>
+                                <LazyLoad height={60} offsetVertical={60}>
+                                    <img className={styles.itemImage}
+                                        src={this.normalize(`/${this.currentPath}/${item}`)} />
+                                </LazyLoad>
+                            </div>);
                         }
                         if (itemType === 'folder') {
                             ItemIcon = <FolderOpenIcon className={styles.itemIcon} />;

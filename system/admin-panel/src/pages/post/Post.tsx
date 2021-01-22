@@ -6,10 +6,11 @@ import { Button, IconButton, MenuItem, Tooltip } from '@material-ui/core';
 import { NavigateBefore as NavigateBeforeIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { getFileManager } from '../../components/fileManager/helpers';
 import { toast } from '../../components/toast/toast';
+import { postListInfo } from '../../constants/PageInfos';
 import styles from './Post.module.scss';
 
 const Post = (props) => {
@@ -19,6 +20,7 @@ const Post = (props) => {
     const [isLoading, setIsloading] = useState(false);
     const mode = getStoreItem('environment')?.mode;
     const quillEditor = useRef<any>(null);
+    const history = useHistory();
 
     const getPostData = async (): Promise<TPost | undefined> => {
         setIsloading(true);
@@ -52,12 +54,13 @@ const Post = (props) => {
             },
         });
 
-        var toolbar = quillEditor.current.getModule('toolbar');
+        const toolbar = quillEditor.current.getModule('toolbar');
         toolbar.addHandler('image', async (prop) => {
             const photoPath = await getFileManager()?.getPhoto();
-            console.log('photoPath', photoPath);
-            const selection = quillEditor.current.getSelection()
-            quillEditor.current.insertEmbed(selection.index, 'image', photoPath);
+            if (photoPath) {
+                const selection = quillEditor.current.getSelection();
+                quillEditor.current.insertEmbed(selection.index, 'image', photoPath);
+            }
         });
 
         if (postContent) {
@@ -104,7 +107,9 @@ const Post = (props) => {
     return (
         <div className={styles.Post}>
             <div className={styles.postHeader}>
-                <MenuItem className={styles.backIcon}>
+                <MenuItem className={styles.backIcon}
+                    onClick={() => history.push(postListInfo.route)}
+                >
                     <NavigateBeforeIcon style={{ marginLeft: '-8px' }} />
                     <p>Back</p>
                 </MenuItem>

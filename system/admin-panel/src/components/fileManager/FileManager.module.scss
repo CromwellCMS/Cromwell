@@ -69,10 +69,18 @@
         height: 60px;
     }
 
+    .itemImageContainer {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
     .itemImage {
-        @extend .itemIcon;
-        @include bckgrContain;
-        width: 100%;
+        max-height: 60px;
+        max-width: 60px;
+        width: auto;
+        height: auto;
     }
 
     .zoomItemBtn {
@@ -106,6 +114,13 @@
 
     .selectBtn {
         margin-right: 10px;
+    }
+
+    .preloader > div {
+        box-shadow: 0 0 25px 2px rgba(91, 0, 82, 0.7);
+        background: linear-gradient(144deg, #28006f 0%, #600155 100%);
+        border-radius: 100%;
+        transition: 0.3s;
     }
 }
 

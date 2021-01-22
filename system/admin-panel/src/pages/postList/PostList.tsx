@@ -18,7 +18,23 @@ const PostList = () => {
     const client = getGraphQLClient();
 
     const handleGetProducts = async (params: TPagedParams<TPost>) => {
-        return client?.getPosts(params);
+        return client?.getPosts(params, gql`
+        fragment PostListFragment on Post {
+            id
+            slug
+            pageTitle
+            createDate
+            updateDate
+            title
+            author {
+                id
+                fullName
+                avatar
+            }
+            mainImage
+            isPublished
+        }
+    `, 'PostListFragment');
     }
 
     return (

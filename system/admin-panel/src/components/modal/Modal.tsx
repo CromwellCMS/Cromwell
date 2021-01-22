@@ -15,7 +15,7 @@ export const Modal = (props: {
             const elem = document.querySelector(props.blurSelector) as HTMLElement;
             if (elem) {
                 if (props.open) {
-                    elem.style.filter = 'blur(8px)';
+                    elem.style.filter = 'blur(4px)';
                 } else {
                     elem.style.filter = '';
                 }

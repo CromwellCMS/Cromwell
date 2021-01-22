@@ -1,26 +1,26 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 * {
+  box-sizing: border-box;
+  &::before,
+  &::after {
     box-sizing: border-box;
-    &::before, &::after {
-      box-sizing: border-box;
-    }   
+  }
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1em;
-    font-weight: 300;
-    line-height: 1.5;
-    color: $text;
-    background: $bg;
-    @media (min-width: 48rem) {
-      font-size: 1.25em;
-    }
+  font-family: "Roboto", sans-serif;
+  font-size: 1em;
+  font-weight: 300;
+  line-height: 1.5;
+  color: $text;
+  background: $bg;
+  @media (min-width: 48rem) {
+    font-size: 1.25em;
+  }
 }
 
-
 :global(.column) {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }

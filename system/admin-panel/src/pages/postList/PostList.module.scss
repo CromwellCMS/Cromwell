@@ -63,13 +63,40 @@
     padding: 5px 10px;
 }
 
+.listItemActions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.itemMain {
+    display: flex;
+}
+
 .itemImage {
     @include bckgrCover;
     height: 60px;
     width: 90px;
 }
 
-.listItemActions {
+.itemMainInfo {
     display: flex;
-    justify-content: flex-end;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+.itemTitle {
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+.itemAuthor {
+    font-size: 12px;
+}
+
+.itemPublished {
+    margin-bottom: 4px;
+    font-weight: 500;
+}
+.itemCreate {
+    font-size: 12px;
 }

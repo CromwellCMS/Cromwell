@@ -156,6 +156,9 @@ class CGraphQLClient {
         fragment ProductFragment on Product {
             id
             slug
+            createDate
+            updateDate
+            isEnabled
             pageTitle
             name
             price
@@ -182,7 +185,6 @@ class CGraphQLClient {
                     }
                 }
             }
-            isEnabled
             categories(pagedParams: {pageSize: 9999}) @include(if: $withCategories) {
                 id
                 name
@@ -388,13 +390,17 @@ class CGraphQLClient {
     public AttributeFragment = gql`
        fragment AttributeFragment on Attribute {
             id
+            slug
+            pageTitle
+            createDate
+            updateDate
+            isEnabled
             key
             values {
                 value
                 icon
             }
             type
-            isEnabled
        }
    `;
 
@@ -632,6 +638,10 @@ class CGraphQLClient {
         fragment PostFragment on Post {
             id
             slug
+            pageTitle
+            createDate
+            updateDate
+            isEnabled
             title
             author {
                 id
@@ -642,7 +652,6 @@ class CGraphQLClient {
             mainImage
             content
             isPublished
-            isEnabled
       }
   `
 

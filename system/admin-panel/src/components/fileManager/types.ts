@@ -9,7 +9,7 @@ export type TState = {
 export interface IFileManager {
     getPhoto: (settings?: {
         initialPath?: string;
-    }) => Promise<string>;
+    }) => Promise<string | undefined>;
 }
 
 declare global {

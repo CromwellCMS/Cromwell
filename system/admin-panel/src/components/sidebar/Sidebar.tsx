@@ -17,11 +17,11 @@ function Sidebar() {
     const toggleSubmenu = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
     };
-    
+
     return (
         <div className={styles.Sidebar}>
             <div className={styles.sidebarHeader}>
-                <img src="logo_small_white.png" alt="logo" className={styles.logo} />
+                <img src="/logo_icon.png" alt="logo" className={styles.logo} />
                 <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p>
             </div>
             {sideBarLinks.map(link => <SidebarLink data={link} key={link.route}

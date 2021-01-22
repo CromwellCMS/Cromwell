@@ -22,6 +22,9 @@ const getConfig = (buildMode = 'production') => {
         resolve: {
             extensions: ['.ts', '.tsx', '.js', 'jsx']
         },
+        watchOptions: {
+            ignored: ['build/**', '.cromwell/**', 'node_modules/**']
+        },
         optimization: {
             splitChunks: {
                 minSize: 20000,

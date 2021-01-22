@@ -147,7 +147,7 @@ export const sideBarLinks: SidebarLinkType[] = [
         title: 'Blog',
         icon: React.createElement('div', {
             className: sidebarStyles.customIcon,
-            style: { backgroundImage: 'url(icon_blogging.png)' }
+            style: { backgroundImage: 'url(/icon_blogging.png)' }
         }),
         sublinks: [
             {
