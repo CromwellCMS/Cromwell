@@ -1,6 +1,8 @@
+import { TCromwellBlockProps } from '@cromwell/core';
 import { getStoreItem } from '@cromwell/core';
 import NextLink from 'next/link';
 import React from 'react';
+import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 
 type TLinkProps = {
     href: string;
@@ -8,9 +10,9 @@ type TLinkProps = {
 }
 
 export const Link = (props: TLinkProps) => {
+    const LinkComp = NextLink ?? ((props) => <a>{props.children ?? ''}</a>);
     const pagesInfo = getStoreItem('pagesInfo');
-    let dynamicPageComp: string | undefined = undefined;
-    const href = props.href;
+    let dynamicPageCompHref: string | undefined = undefined;
     if (pagesInfo && Array.isArray(pagesInfo)) {
         pagesInfo.forEach(i => {
             if (i.isDynamic && i.route) {
@@ -19,20 +21,34 @@ export const Link = (props: TLinkProps) => {
                     route = `/${route}`;
                 }
                 let baseRoute = route.replace(/\[.*\]$/, '');
-                if (href.startsWith(baseRoute)) {
-                    dynamicPageComp = route;
+                if (props.href.startsWith(baseRoute)) {
+                    dynamicPageCompHref = route;
                 }
             }
         })
     }
-    // NextLink in Next.js environment and <a> in Admin panel
-    const LinkComp = NextLink ?? ((props) => <a>{props.children ?? ''}</a>);
     return (
         <LinkComp
-            href={dynamicPageComp ? dynamicPageComp : href}
-            as={dynamicPageComp ? href : undefined}
+            href={dynamicPageCompHref ?? props.href}
+            as={dynamicPageCompHref ? props.href : undefined}
         >
             {props.children ?? ''}
         </LinkComp>
+    )
+}
+
+export const CLink = (props: TLinkProps & TCromwellBlockProps) => {
+    const { children, href, ...rest } = props;
+
+    // NextLink in Next.js environment and <a> in Admin panel
+    return (
+        <CromwellBlock
+            type='link'
+            {...rest}
+            content={(data) => {
+                const _href = data?.link?.href ?? href;
+                const _text = data?.link?.text ?? props.children ?? '';
+                return <Link href={_href}>{_text}</Link>
+            }} />
     )
 }

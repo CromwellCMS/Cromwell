@@ -5,6 +5,7 @@ export type TProductFilter = {
     minPrice?: number;
     maxPrice?: number;
     attributes?: TProductFilterAttribute[];
+    nameSearch?: string;
 }
 export type TProductFilterAttribute = {
     key: string;

@@ -202,7 +202,7 @@ export const ProductDetails = (props: {
                         </CContainer>
                     </CContainer>
                     <CImage id="product_10" src="/themes/@cromwell/theme-store/sub_banner_3.jpg"
-                        className={styles.infoBanner} link="/category/1" withEffect={true} />
+                        className={styles.infoBanner} imgLink="/category/1" withEffect={true} />
                 </CContainer>
             </>)}
         </CContainer>

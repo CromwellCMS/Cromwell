@@ -1,4 +1,3 @@
-
 .cartModal {
     width: 600px;
     height: 500px;
@@ -6,7 +5,7 @@
     max-width: 100vw;
     display: flex;
     flex-direction: column;
-    background-color: #eee;
+    background-color: #fff;
     padding: 20px;
     border-radius: 10px;
     outline: none;
@@ -17,7 +16,6 @@
         width: 100%;
         height: 100%;
         overflow: hidden;
-        border: 1px solid #ddd;
     }
 
     .checkoutBtn {

@@ -5,13 +5,13 @@ import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { Link } from '../Link/Link';
 import styles from './CImage.module.scss';
 
-export const CImage = (props: { src?: string; link?: string; withEffect?: boolean } & TCromwellBlockProps) => {
-    const { src, link, withEffect, ...rest } = props;
+export const CImage = (props: { src?: string; imgLink?: string; withEffect?: boolean } & TCromwellBlockProps) => {
+    const { src, imgLink, withEffect, ...rest } = props;
     return (
         <CromwellBlock {...rest} type='image'
             content={(data) => {
                 const _src = data?.image?.src ?? src;
-                const _link = data?.image?.link ?? link;
+                const _link = data?.image?.link ?? imgLink;
                 const _withEffect = data?.image?.withEffect ?? withEffect;
 
                 const classes = _withEffect ? styles.CImageHoverEffect : undefined;

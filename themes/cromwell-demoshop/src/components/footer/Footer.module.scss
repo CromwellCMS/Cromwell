@@ -1,0 +1,60 @@
+.Footer {
+    background: linear-gradient(144deg, #1b004b 0%, #34002e 100%);
+    width: 100%;
+    color: #fff;
+}
+
+.subscribe {
+    padding: 30px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-bottom: 2px solid #ddd;
+}
+
+.subscribeText {
+    display: flex;
+    flex-direction: column;
+}
+
+.subscribeTitle {
+    font-size: 30px;
+}
+
+.subscribeInputContainer {
+    margin-left: 40px;
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.subscribeInput {
+    background-color: #fff;
+    padding: 5px 10px;
+}
+
+.linksSection {
+    display: flex;
+    justify-content: space-between;
+    padding: 30px 0;
+}
+
+.linksBlock {
+    display: flex;
+    flex-direction: column;
+}
+
+.blockHeader {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+.blockSubHeader {
+    font-size: 16px;
+    color: #fff;
+}
+
+.blockLink {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 10px;
+}

@@ -16,6 +16,9 @@ class ProductFilterInput implements TProductFilter {
 
     @Field(type => [ProductFilterAttributes], { nullable: true })
     attributes: ProductFilterAttributes[];
+
+    @Field(type => String, { nullable: true })
+    nameSearch: string;
 }
 
 export default ProductFilterInput;

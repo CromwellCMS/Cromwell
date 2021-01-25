@@ -1,5 +1,5 @@
-import { getCmsSettings, getThemeCustomConfigProp, TCurrency } from '@cromwell/core';
-import { CHTML, CPlugin, getCStore, Link } from '@cromwell/core-frontend';
+import { getCmsSettings, getThemeCustomConfigProp, TCurrency, TPagedParams, TProduct } from '@cromwell/core';
+import { CHTML, CPlugin, getCStore, Link, CContainer, getGraphQLClient } from '@cromwell/core-frontend';
 import {
     createStyles,
     FormControl,
@@ -13,11 +13,12 @@ import {
 } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-
+import { gql } from '@apollo/client';
 import { productListStore } from '../../helpers/ProductListStore';
 import commonStyles from '../../styles/common.module.scss';
 import { TTopLink } from '../../types';
 import styles from './Header.module.scss';
+// import { debounce } from 'throttle-debounce';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -45,7 +46,7 @@ const TextField = withStyles({
 })(MuiTextField);
 
 
-const Header = () => {
+export const Header = () => {
     const topLinks: TTopLink[] | undefined = getThemeCustomConfigProp('header/topLinks');
     const cmsConfig = getCmsSettings();
     const currencies: TCurrency[] = cmsConfig?.currencies ?? [];
@@ -73,11 +74,56 @@ const Header = () => {
         }, 'headerCart');
     }, []);
 
+    const handleSearch = async (productName: string) => {
+        const pagedParams: TPagedParams<TProduct> = {
+            pageNumber: 1,
+            pageSize: 10,
+        }
+        const filterParams = {
+            nameSearch: productName
+        }
+
+        const client = getGraphQLClient();
+        try {
+            const data = await client?.query({
+                query: gql`
+            query getFilteredProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!, $withCategories: Boolean!) {
+                getFilteredProductsFromCategory(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
+                    pagedMeta {
+                        ...PagedMetaFragment
+                    }
+                    filterMeta {
+                        minPrice
+                        maxPrice
+                    }
+                    elements {
+                        ...ProductFragment
+                    }
+                }
+            }
+            ${client?.ProductFragment}
+            ${client?.PagedMetaFragment}
+        `,
+                variables: {
+                    pagedParams,
+                    withCategories: false,
+                    filterParams,
+                    categoryId: ' 1'
+                }
+            });
+
+            return data?.data?.getFilteredProductsFromCategory
+
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
     return (
         <div className={`${styles.Header} ${commonStyles.text}`}>
             <div className={styles.topPanel}>
                 <div className={`${commonStyles.content} ${styles.topPanelContent}`}>
-                    <div className={styles.leftBlock}>
+                    <CContainer className={styles.leftBlock} id="header_11">
                         <CHTML id="header_01" className={styles.currencyOption}>
                             <FormControl className={styles.formControl}>
                                 <Select
@@ -96,9 +142,9 @@ const Header = () => {
 
                             </div>
                         </CHTML>
-                    </div>
+                    </CContainer>
 
-                    <div className={styles.rightBlock}>
+                    <CContainer className={styles.rightBlock} id="header_12">
                         <CHTML id="header_03" className={styles.welcomeMessage}>
                             <p>{getThemeCustomConfigProp('header/welcomeMessage')}</p>
                         </CHTML>
@@ -113,7 +159,7 @@ const Header = () => {
                                 ))}
                             </>
                         </CHTML>
-                    </div>
+                    </CContainer>
                 </div>
             </div>
 
@@ -125,7 +171,9 @@ const Header = () => {
                         </Link>
                     </div>
                     <div className={styles.search}>
-                        <TextField id="outlined-basic" label="Search..." variant="outlined" size="small" />
+                        <TextField id="outlined-basic" label="Search..."
+                            variant="outlined" size="small"
+                            onChange={(event) => handleSearch(event.currentTarget.value)} />
                     </div>
                     <div className={styles.phone}>
                         <p className={styles.phoneActionTip}>Call us now!</p>
@@ -141,12 +189,10 @@ const Header = () => {
                 </div>
             </div>
             <div className={styles.mainMenu}>
-                <div className={`${commonStyles.content} ${styles.mainMenuContent}`}>
+                <CContainer className={`${commonStyles.content} ${styles.mainMenuContent}`} id="header_13">
                     <CPlugin id="header_main_menu" />
-                </div>
+                </CContainer>
             </div>
         </div>
     )
 }
-
-export default Header;

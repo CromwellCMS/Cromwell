@@ -204,6 +204,7 @@ export type TPagesMetaInfo = {
         localPath?: string;
         srcFullPath?: string;
         importedStyles?: string[];
+        basePath?: string;
     }[]
 }
 

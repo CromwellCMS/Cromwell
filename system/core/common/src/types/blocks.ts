@@ -75,7 +75,7 @@ export type TCommonComponentProps = {
     data?: TProduct;
 }
 
-export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image' | 'gallery' | 'list';
+export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image' | 'gallery' | 'list' | 'link';
 
 export type TCromwellBlockData = {
     /**
@@ -145,6 +145,12 @@ export type TCromwellBlockData = {
 
     /** If true, user can't delete or modify this block in the editor */
     isConstant?: boolean;
+
+    /** For link block */
+    link?: {
+        href?: string;
+        text?: string;
+    }
 }
 
 type TImageSettings = {

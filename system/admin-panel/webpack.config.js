@@ -111,7 +111,6 @@ const getConfig = (buildMode = 'production') => {
                     "react-number-format",
                     "react-router-dom",
                     "react-toastify",
-                    "style-inject",
                     "swiper",
                     "tslib"
                 ]

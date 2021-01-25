@@ -5,14 +5,14 @@ import { Brackets, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
 import { TFilteredList, TFilterMeta, TProductFilter } from '../../types';
 import FilteredProduct from '../entities/FilteredProduct';
-import ProductFilterInput from '../entities/ProductFilter';
+import ProductFilterInput from '../entities/ProductFilterInput';
 
 @Resolver(Product)
 export default class ProductFilterResolver {
 
     @Query(() => FilteredProduct)
     async getFilteredProductsFromCategory(
-        @Arg("categoryId") categoryId: string,
+        @Arg("categoryId", { nullable: true }) categoryId: string,
         @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>,
         @Arg("filterParams", { nullable: true }) filterParams: ProductFilterInput
     ): Promise<TFilteredList<TProduct> | undefined> {
@@ -96,6 +96,12 @@ export default class ProductFilterResolver {
                     qbAddWhere(brackets);
                 }
             });
+        }
+
+        if (filterParams.nameSearch && filterParams.nameSearch !== '') {
+            const likeStr = `%${filterParams.nameSearch}%`;
+            const query = `${DBTableNames.Product}.name LIKE :likeStr`;
+            qbAddWhere(query, { likeStr })
         }
 
         // // Attempt to make a proper filtration for SQLite. Isn't finished. Works for only one attribute 

@@ -16,8 +16,8 @@
 }
 
 .product {
-    width: 220px;
-    margin-left: 15px;
+    width: 30%;
+    margin-left: 1%;
     margin-bottom: 15px;
 }
 
@@ -27,3 +27,8 @@
     margin: 20px 0 20px 20px;
 }
 
+@media only screen and (min-width: 720px) {
+    .product {
+        width: 23%;
+    }
+}

@@ -1,4 +1,4 @@
-@import '../../styles/variables.scss';
+@import "../../styles/variables.scss";
 
 .Product {
     display: flex;
@@ -7,7 +7,7 @@
     z-index: 3;
     width: 100%;
     max-width: 300px;
-    min-width: 200px;
+    min-width: 170px;
     border-radius: 8px;
     transition-property: box-shadow, z-index;
     transition-duration: 0.3s;
@@ -80,7 +80,6 @@
         margin-left: 10px;
     }
 
-
     &.listVariant {
         flex-direction: row;
         max-width: 100%;
@@ -124,5 +123,4 @@
             padding: 20px;
         }
     }
-
 }

@@ -231,7 +231,7 @@ export const getCromwellaConfigSync = (projectRootDir: string, canLog?: boolean)
 
 
 export const globPackages = async (projectRootDir: string): Promise<string[]> => {
-    console.log(colors.cyan(`Cromwella:: Start. Scannig for local packages from ./cromwella.json...\n`));
+    // console.log(colors.cyan(`Cromwella:: Start. Scannig for local packages from ./cromwella.json...\n`));
     const globOptions = {};
 
     // From Cromwella config
@@ -275,10 +275,10 @@ export const collectPackagesInfo = (packagePaths: string[]): TPackage[] => {
         console.log(colors.brightYellow(`\nCromwella:: No local packages found\n`))
         return [];
     }
-    console.log(colors.cyan(`Cromwella:: Bootstraping local packages:`));
-    packagePaths.forEach(path => {
-        console.log(colors.blue(path));
-    });
+    // console.log(colors.cyan(`Cromwella:: Bootstraping local packages:`));
+    // packagePaths.forEach(path => {
+    //     console.log(colors.blue(path));
+    // });
 
     // Collect info about package.json files
     const packages: TPackage[] = [];
