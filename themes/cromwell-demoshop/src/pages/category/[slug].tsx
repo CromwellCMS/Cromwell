@@ -35,7 +35,11 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
                         {category && (
                             <CList<TProduct>
                                 id={listId}
-                                ListItem={(props) => <ProductCard data={props.data} className={styles.product} key={props.data?.id} />}
+                                ListItem={(props) => (
+                                    <div className={styles.productWrapper}>
+                                        <ProductCard data={props.data} className={styles.product} key={props.data?.id} />
+                                    </div>
+                                )}
                                 usePagination
                                 useShowMoreButton
                                 useQueryPagination

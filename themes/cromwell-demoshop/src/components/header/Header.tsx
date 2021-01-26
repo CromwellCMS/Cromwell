@@ -1,24 +1,29 @@
+import { gql } from '@apollo/client';
 import { getCmsSettings, getThemeCustomConfigProp, TCurrency, TPagedParams, TProduct } from '@cromwell/core';
-import { CHTML, CPlugin, getCStore, Link, CContainer, getGraphQLClient } from '@cromwell/core-frontend';
+import { CContainer, CHTML, CPlugin, getCStore, getGraphQLClient, Link } from '@cromwell/core-frontend';
 import {
     createStyles,
+    Fade,
     FormControl,
+    Grid,
     ListItem,
     makeStyles,
     MenuItem,
+    Popper,
     Select as MuiSelect,
     TextField as MuiTextField,
     Theme,
     withStyles,
+    ClickAwayListener
 } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
-import React, { useEffect, useState } from 'react';
-import { gql } from '@apollo/client';
+import React, { useEffect, useRef, useState } from 'react';
+import { debounce } from 'throttle-debounce';
+
 import { productListStore } from '../../helpers/ProductListStore';
 import commonStyles from '../../styles/common.module.scss';
 import { TTopLink } from '../../types';
 import styles from './Header.module.scss';
-// import { debounce } from 'throttle-debounce';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -55,7 +60,11 @@ export const Header = () => {
     const classes = useStyles();
     const cstore = getCStore();
     const [itemsInCart, setItemsInCart] = useState(cstore.getCart().length);
+    const [searchOpen, setSearchOpen] = useState(false);
+    const [searchItems, setSearchItems] = useState<TProduct[]>([]);
     const [currency, setCurrency] = React.useState<string | null | undefined>(cstore.getActiveCurrencyTag());
+    const searchAnchorRef = useRef<HTMLDivElement | null>(null);
+
 
     const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const val = event.target.value as string;
@@ -74,7 +83,7 @@ export const Header = () => {
         }, 'headerCart');
     }, []);
 
-    const handleSearch = async (productName: string) => {
+    const handleSearch = debounce(1000, async (productName: string) => {
         const pagedParams: TPagedParams<TProduct> = {
             pageNumber: 1,
             pageSize: 10,
@@ -87,37 +96,46 @@ export const Header = () => {
         try {
             const data = await client?.query({
                 query: gql`
-            query getFilteredProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!, $withCategories: Boolean!) {
+            query getFilteredProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!) {
                 getFilteredProductsFromCategory(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
                     pagedMeta {
                         ...PagedMetaFragment
                     }
-                    filterMeta {
-                        minPrice
-                        maxPrice
-                    }
                     elements {
-                        ...ProductFragment
+                        id
+                        isEnabled
+                        slug
+                        pageTitle
+                        name
+                        price
+                        oldPrice
+                        mainImage
                     }
                 }
             }
-            ${client?.ProductFragment}
             ${client?.PagedMetaFragment}
         `,
                 variables: {
                     pagedParams,
-                    withCategories: false,
                     filterParams,
                     categoryId: ' 1'
                 }
             });
 
-            return data?.data?.getFilteredProductsFromCategory
+            if (!searchOpen) {
+                setSearchOpen(true);
+            }
 
+            const products = data?.data?.getFilteredProductsFromCategory?.elements;
+            if (products) setSearchItems(products);
         } catch (e) {
             console.error(e);
         }
-    };
+    });
+
+    const handleSearchClose = () => {
+        setSearchOpen(false);
+    }
 
     return (
         <div className={`${styles.Header} ${commonStyles.text}`}>
@@ -173,7 +191,49 @@ export const Header = () => {
                     <div className={styles.search}>
                         <TextField id="outlined-basic" label="Search..."
                             variant="outlined" size="small"
+                            ref={searchAnchorRef}
+                            // onBlur={handleSearchClose}
                             onChange={(event) => handleSearch(event.currentTarget.value)} />
+                        <Popper open={searchOpen} anchorEl={searchAnchorRef.current}
+                            style={{ zIndex: 10 }}
+                            transition>
+                            {({ TransitionProps }) => (
+                                <Fade {...TransitionProps} timeout={350}>
+                                    <ClickAwayListener onClickAway={handleSearchClose}>
+                                        <div className={styles.searchContent} onClick={handleSearchClose}>
+                                            {searchItems.length === 0 && (
+                                                <p className={styles.notFoundText}>No items found</p>
+                                            )}
+                                            {searchItems.map(product => {
+                                                return (
+                                                    <Link href={`/product/${product.slug}`}>
+                                                        <Grid container className={styles.listItem}>
+                                                            <Grid xs={7} className={styles.itemMain}>
+                                                                <div
+                                                                    style={{ backgroundImage: `url(${product?.mainImage})` }}
+                                                                    className={styles.itemImage}
+                                                                ></div>
+                                                                <div className={styles.itemMainInfo}>
+                                                                    <p className={styles.itemTitle}>{product.name}</p>
+                                                                </div>
+                                                            </Grid>
+                                                            <Grid xs={5} className={styles.itemSubInfo}>
+                                                                <div className={styles.priceBlock}>
+                                                                    {(product.oldPrice !== undefined && product.oldPrice !== null) && (
+                                                                        <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(product.oldPrice)}</p>
+                                                                    )}
+                                                                    <p className={styles.price}>{cstore.getPriceWithCurrency(product.price)}</p>
+                                                                </div>
+                                                            </Grid>
+                                                        </Grid>
+                                                    </Link>
+                                                )
+                                            })}
+                                        </div>
+                                    </ClickAwayListener>
+                                </Fade>
+                            )}
+                        </Popper>
                     </div>
                     <div className={styles.phone}>
                         <p className={styles.phoneActionTip}>Call us now!</p>

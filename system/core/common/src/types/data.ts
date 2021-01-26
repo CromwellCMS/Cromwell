@@ -205,7 +205,8 @@ export type TPagesMetaInfo = {
         srcFullPath?: string;
         importedStyles?: string[];
         basePath?: string;
-    }[]
+    }[];
+    basePath?: string;
 }
 
 export type TFrontendBundle = {

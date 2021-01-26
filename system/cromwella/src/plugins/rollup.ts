@@ -1,4 +1,4 @@
-import { TPackageJson, TPagesMetaInfo, TPluginConfig, TRollupConfig, TSciprtMetaInfo, TThemeConfig } from '@cromwell/core';
+import { TFrontendDependency, TPackageJson, TPagesMetaInfo, TPluginConfig, TRollupConfig, TSciprtMetaInfo, TThemeConfig } from '@cromwell/core';
 import {
     buildDirName,
     getMetaInfoPath,
@@ -17,12 +17,31 @@ import fs from 'fs-extra';
 import glob from 'glob';
 import isPromise from 'is-promise';
 import normalizePath from 'normalize-path';
-import { dirname, resolve } from 'path';
+import { dirname, join, resolve } from 'path';
 import { OutputOptions, Plugin, RollupOptions } from 'rollup';
 import externalGlobals from 'rollup-plugin-external-globals';
+import { collectFrontendDependencies, collectPackagesInfo, getBundledModulesDir, globPackages } from '../shared';
 
 import { cromwellStoreModulesPath } from '../constants';
 import { getDepVersion, getNodeModuleVersion, isExternalForm } from '../shared';
+
+const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): boolean => {
+    // Mark all as external for backend and only included in frontendDeps for frontend 
+    if (isExternalForm(source)) {
+        if (frontendDeps) {
+            // Frontend
+            if (frontendDeps.some(dep => dep.name === source)) {
+                return true;
+            } else {
+                return false;
+            }
+        } else {
+            // Backend
+            return true;
+        }
+    }
+    return false;
+}
 
 export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TThemeConfig, watch?: boolean): Promise<RollupOptions[]> => {
 
@@ -38,6 +57,11 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
 
     const strippedName = cromwellConfig.name.replace(/\W/g, '_');
 
+
+    const packagePaths = await globPackages(process.cwd());
+    const packages = collectPackagesInfo(packagePaths);
+    const frontendDeps = collectFrontendDependencies(packages, false);
+
     let specifiedOptions: TRollupConfig | undefined = cromwellConfig.rollupConfig?.() as any;
     //@ts-ignore
     if (isPromise(specifiedOptions)) specifiedOptions = await specifiedOptions;
@@ -50,6 +74,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
 
         const handleInputFile = (inputFilePath: string, distChunk: string, cjsChunk: string) => {
 
+            // Plugin frontend
             const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
             const inputPath = normalizePath(resolve(process.cwd(), inputFilePath));
 
@@ -72,11 +97,12 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                         `
             }))
             options.plugins.push(rollupPluginCromwellFrontend({
-                cromwellConfig
+                cromwellConfig,
+                frontendDeps,
             }));
             outOptions.push(options);
 
-
+            // Plugin frontend cjs (for getStatic paths at server)
             const cjsOptions = Object.assign({}, specifiedOptions?.frontendCjs ?? inputOptions);
 
             cjsOptions.input = optionsInput;
@@ -108,6 +134,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
             handleInputFile(pluginConfig.adminInputFile, pluginAdminBundlePath, pluginAdminCjsPath);
         }
 
+        // Plugin backend
         if (pluginConfig.backend) {
             let resolverFiles: string[] = [];
             let entityFiles: string[] = [];
@@ -193,7 +220,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
 
         const adminPanelOptions: RollupOptions[] = [];
 
-        // Frontend config
+        // Theme frontend
         if (pageFiles && pageFiles.length > 0) {
 
             let pageImports = '';
@@ -222,11 +249,11 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                 preserveModules: true
             } as OutputOptions);
 
-            options.plugins.push(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig }));
+            options.plugins.push(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig, watch, frontendDeps }));
 
             outOptions.push(options);
 
-            // Admin panel config
+            // Theme admin panel config
             if (!watch) {
                 pagesMetaInfo.paths.forEach(pagePath => {
                     const adminOptions = (Object.assign({}, (specifiedOptions?.adminPanel ?? inputOptions)));
@@ -237,7 +264,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                         [optionsInput]: `import pageComp from '${pagePath.srcFullPath}';export default pageComp;`
                     }));
                     adminOptions.input = optionsInput;
-                    adminOptions.plugins.push(rollupPluginCromwellFrontend({ buildDir, cromwellConfig }));
+                    adminOptions.plugins.push(rollupPluginCromwellFrontend({ buildDir, cromwellConfig, frontendDeps }));
 
                     const pageStrippedName = pagePath?.pageName?.replace(/\W/g, '_') ?? strippedName;
 
@@ -259,9 +286,10 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
         }
 
 
+        // Theme admin panel page-controller 
         const adminPanelDirChunk = 'adminPanel';
         const adminPanelDir = resolve(srcDir, adminPanelDirChunk);
-        if (fs.pathExistsSync(adminPanelDir)) {
+        if (!watch && fs.pathExistsSync(adminPanelDir)) {
             const adminOptions = (Object.assign({}, specifiedOptions?.themePages ? specifiedOptions.themePages : inputOptions));
 
             adminOptions.plugins = [...(adminOptions.plugins ?? [])];
@@ -277,7 +305,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                 format: "iife",
             } as OutputOptions);
 
-            adminOptions.plugins.push(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig }));
+            adminOptions.plugins.push(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig, frontendDeps }));
 
             outOptions.push(adminOptions);
         }
@@ -295,6 +323,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
     srcDir?: string;
     watch?: boolean;
     cromwellConfig?: TPluginConfig | TThemeConfig;
+    frontendDeps?: TFrontendDependency[];
 }): Plugin => {
 
     const modulesInfo = {};
@@ -304,17 +333,25 @@ export const rollupPluginCromwellFrontend = (settings?: {
         internals: string[];
     }> = {};
 
-    if (settings?.srcDir && settings?.buildDir)
-        initStylesheetsLoader(settings?.srcDir, settings?.buildDir, settings?.watch);
+    // Defer stylesheetsLoader until compile info available. Look for: stylesheetsLoaderStarter()
+    let stylesheetsLoaderStarter;
+    if (settings?.srcDir && settings?.buildDir) {
+        (async () => {
+            await new Promise(resolve => {
+                stylesheetsLoaderStarter = resolve;
+            })
+            if (settings?.srcDir && settings?.buildDir)
+                initStylesheetsLoader(settings?.srcDir, settings?.buildDir, settings?.pagesMetaInfo?.basePath, settings?.watch);
+        })();
+    }
 
-    // console.log('globals', globals);
     const plugin: Plugin = {
         name: 'cromwell-frontend',
         options(options: RollupOptions) {
 
             if (!options.plugins) options.plugins = [];
             options.plugins.push(externalGlobals((id) => {
-                if (isExternalForm(id)) return `${cromwellStoreModulesPath}["${id}"]`;
+                if (resolveExternal(id, settings?.frontendDeps)) return `${cromwellStoreModulesPath}["${id}"]`;
             }, {
                 include: '**/*.+(ts|tsx|js|jsx)'
             }));
@@ -329,10 +366,12 @@ export const rollupPluginCromwellFrontend = (settings?: {
                     return { id: source, external: true };
                 }
             }
+            if (resolveExternal(source, settings?.frontendDeps)) {
+                return { id: source, external: true };
+            }
 
             if (isExternalForm(source)) {
-                // console.log('source', source)
-                return { id: source, external: true };
+                return { id: require.resolve(source), external: false };
             }
             return null;
         },
@@ -359,26 +398,24 @@ export const rollupPluginCromwellFrontend = (settings?: {
                         if (!isExternalForm(source)) {
                             const absolutePath = resolve(dirname(id), source);
                             const globStr = `${absolutePath}.+(ts|tsx|js|jsx)`;
-                            // console.log('globStr', globStr)
                             const targetFiles = glob.sync(globStr);
-                            // console.log('targetFiles', targetFiles);
                             if (targetFiles[0]) importsInfo[id].internals.push(targetFiles[0]);
                             return;
                         }
 
                         // Add external
+                        if (resolveExternal(source, settings?.frontendDeps)) {
+                            if (!importsInfo[id].externals[source]) importsInfo[id].externals[source] = [];
 
-                        if (!importsInfo[id].externals[source]) importsInfo[id].externals[source] = [];
-
-                        node.specifiers.forEach(spec => {
-                            if (spec.type === 'ImportDefaultSpecifier' || spec.type === 'ImportNamespaceSpecifier') {
-                                importsInfo[id].externals[source].push('default')
-                            }
-                            if (spec.type === 'ImportSpecifier' && spec.imported) {
-                                importsInfo[id].externals[source].push(spec.imported.name)
-                            }
-                        })
-
+                            node.specifiers.forEach(spec => {
+                                if (spec.type === 'ImportDefaultSpecifier' || spec.type === 'ImportNamespaceSpecifier') {
+                                    importsInfo[id].externals[source].push('default')
+                                }
+                                if (spec.type === 'ImportSpecifier' && spec.imported) {
+                                    importsInfo[id].externals[source].push(spec.imported.name)
+                                }
+                            })
+                        }
                     }
                 }
             });
@@ -446,7 +483,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                         try {
                             const pckg: TPackageJson = require(resolve(process.cwd(), 'package.json'));
                             ver = getDepVersion(pckg, dep);
-                        } catch (e) { console.log(e) }
+                        } catch (e) { console.error(e) }
                     }
                     if (ver) {
                         if (totalImportedBindings[dep].includes('default')) totalImportedBindings[dep] = ['default'];
@@ -472,8 +509,29 @@ export const rollupPluginCromwellFrontend = (settings?: {
                     settings.pagesMetaInfo.paths = settings.pagesMetaInfo.paths.map(paths => {
                         if (info.fileName && paths.srcFullPath === normalizePath(info.facadeModuleId)) {
                             paths.localPath = info.fileName;
+
+                            // Get base path chunk that appended in build dir relatively src dir.
+                            // Since we use preserveModules: true, node_modules can appear in build dir.
+                            // That will relatively move rollup's options.output.dir on a prefix 
+                            // We don't know this prefix (basePath) before compile, so we calc it here: 
+                            if (settings?.srcDir && info.facadeModuleId) {
+                                let baseFileName: any = normalizePath(info.facadeModuleId).replace(normalizePath(settings.srcDir), '').split('.');
+                                baseFileName.length > 1 ? baseFileName = baseFileName.slice(0, -1).join('.') : baseFileName.join('.');
+                                let basePath: any = normalizePath(info.fileName).split('.');
+                                basePath.length > 1 ? basePath = basePath.slice(0, -1).join('.') : basePath.join('.');
+                                basePath = normalizePath(basePath).replace(baseFileName, '');
+                                if (basePath !== '' && settings?.pagesMetaInfo) {
+                                    settings.pagesMetaInfo.basePath = basePath;
+                                    if (stylesheetsLoaderStarter) {
+                                        stylesheetsLoaderStarter();
+                                        stylesheetsLoaderStarter = null;
+                                    }
+                                }
+                            }
+
                             delete paths.srcFullPath;
                         }
+
                         return paths;
                     })
                 }
@@ -494,22 +552,26 @@ export const rollupPluginCromwellFrontend = (settings?: {
 
 const stylesheetsLoaderDirs: string[] = [];
 
-const initStylesheetsLoader = (srcDir: string, buildDir: string, watch?: boolean) => {
+const initStylesheetsLoader = (srcDir: string, buildDir: string, basePath?: string, watch?: boolean) => {
     if (stylesheetsLoaderDirs.includes(srcDir)) return;
     stylesheetsLoaderDirs.push(srcDir);
 
     const globStr = `${normalizePath(srcDir)}/**/*.+(css|scss|sass)`;
 
+    const getBuildPath = (styleSheetPath: string) => {
+        const finalBuildDir = basePath ? join(buildDir, basePath) : buildDir;
+        return normalizePath(styleSheetPath).replace(normalizePath(srcDir),
+            normalizePath(finalBuildDir));
+    }
+
     const copyFile = async (styleSheetPath: string) => {
-        const styleSheetBuildPath = normalizePath(styleSheetPath).replace(normalizePath(srcDir),
-            normalizePath(buildDir));
+        const styleSheetBuildPath = getBuildPath(styleSheetPath);
         await fs.ensureDir(dirname(styleSheetBuildPath));
         await fs.copyFile(styleSheetPath, styleSheetBuildPath);
     }
 
     const removeFile = async (styleSheetPath: string) => {
-        const styleSheetBuildPath = normalizePath(styleSheetPath).replace(normalizePath(srcDir),
-            normalizePath(buildDir));
+        const styleSheetBuildPath = getBuildPath(styleSheetPath);
         await fs.remove(styleSheetBuildPath);
     }
 

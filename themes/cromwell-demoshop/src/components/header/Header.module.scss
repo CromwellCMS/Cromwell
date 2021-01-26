@@ -1,4 +1,5 @@
-@import '../../styles/variables.scss';
+@import "../../styles/variables.scss";
+@import "../../styles/common.module.scss";
 
 .Header {
     display: flex;
@@ -73,11 +74,8 @@
         margin: 0 40px 0 20px;
     }
 
-
-
     .mainPanel {
         display: flex;
-        
     }
     .mainPanelContent {
         display: flex;
@@ -96,7 +94,7 @@
         width: 35%;
         min-width: 200px;
     }
-     
+
     .phone {
         display: flex;
         flex-direction: column;
@@ -118,7 +116,7 @@
         width: 40px;
         height: 40px;
         cursor: pointer;
-        background: url('/themes/@cromwell/theme-store/bag.png') no-repeat center / contain;
+        background: url("/themes/@cromwell/theme-store/bag.png") no-repeat center / contain;
     }
     .cartExpandBlock {
         display: flex;
@@ -148,4 +146,74 @@
         padding: 0;
         // border-bottom: 2px solid #333;
     }
+}
+
+.searchContent {
+    @include paperElevated;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 400px;
+    max-height: 300px;
+    width: 400px;
+    height: 300px;
+    overflow: auto;
+    z-index: 10;
+}
+
+.listItem {
+    display: flex;
+    align-items: center;
+    transition: 0.3s;
+    border: 1px solid transparent;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+}
+
+.listItem:hover {
+    background-color: #f4f4f4;
+    // border: 1px solid #ccc;
+}
+
+.itemMain {
+    display: flex;
+}
+
+.itemImage {
+    @include bckgrCover;
+    height: 60px;
+    width: 90px;
+    min-width: 90px;
+}
+
+.itemMainInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+.itemTitle {
+    margin-bottom: 4px;
+}
+
+.priceBlock {
+    display: flex;
+    font-size: 18px;
+    margin: 6px 0;
+}
+.price {
+    font-weight: 500;
+}
+.oldPrice {
+    text-decoration: line-through;
+    opacity: 0.7;
+    margin-right: 10px;
+}
+
+.notFoundText {
+    font-weight: 500;
+    font-size: 18px;
+    top: calc(50% - 14px);
+    position: absolute;
 }

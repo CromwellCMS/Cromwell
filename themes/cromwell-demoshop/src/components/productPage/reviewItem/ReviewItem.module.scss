@@ -1,4 +1,7 @@
-.ReviewItem {
+@import "../../../styles/common.module.scss";
+
+div.ReviewItem {
+    @include paper;
     margin: 20px 0;
     padding: 15px;
 
