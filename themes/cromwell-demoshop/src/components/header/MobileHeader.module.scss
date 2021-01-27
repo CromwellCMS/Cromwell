@@ -1,0 +1,46 @@
+.MobileHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+
+    svg:global(.MuiSvgIcon-root) {
+        color: #333;
+    }
+}
+
+.drawer {
+    min-width: 300px;
+    background-color: #fff;
+    height: 100vh;
+    padding: 10px;
+}
+
+.logo {
+    height: 40px;
+    width: auto;
+}
+
+.leftActions {
+    display: flex;
+    align-items: center;
+}
+.rightActions {
+    display: flex;
+    align-items: center;
+}
+
+.menuActions {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+
+    svg:global(.MuiSvgIcon-root) {
+        color: #333;
+    }
+}
+
+.mobileSearch {
+    width: 100%;
+    margin-bottom: 15px;
+}

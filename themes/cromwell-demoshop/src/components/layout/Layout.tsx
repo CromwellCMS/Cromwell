@@ -20,6 +20,15 @@ const theme = createMuiTheme({
             dark: primaryColor,
         },
     },
+    breakpoints: {
+        values: {
+            xs: 0,
+            sm: 600,
+            md: 960,
+            lg: 1280,
+            xl: 1920,
+        },
+    },
 });
 
 export default function Layout(props: TProps | undefined) {
