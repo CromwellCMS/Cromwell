@@ -1,5 +1,14 @@
-import { DBTableNames, TProduct, TPagedList } from '@cromwell/core';
+import { TPagedList } from '@cromwell/core';
 
+export type TProductFilterSettings = {
+    productListId?: string;
+    mobileIconPosition?: {
+        top: number;
+        left: number;
+    },
+    collapsedByDefault?: boolean;
+    mobileCollapsedByDefault?: boolean;
+}
 
 export type TProductFilter = {
     minPrice?: number;

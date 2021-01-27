@@ -4,7 +4,7 @@ export const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         card: {
             margin: '15px 0',
-            boxShadow: '0 3px 6px 0 rgba(0, 0, 0, 0.04), 0 0 10px 3px rgba(0, 0, 0, 0.05)',
+            boxShadow: '0 3px 6px 0 rgba(0, 0, 0, 0.04), 0 0 4px 0px rgba(0, 0, 0, 0.05)',
             backgroundColor: '#fff',
             borderRadius: '5px'
         },
@@ -49,6 +49,32 @@ export const useStyles = makeStyles((theme: Theme) =>
             boxShadow: '0 3px 6px 0 rgba(0, 0, 0, 0.04), 0 0 10px 3px rgba(0, 0, 0, 0.05)',
             backgroundColor: '#fff',
             borderRadius: '5px'
+        },
+        mobileOpenBtn: {
+            position: 'fixed',
+            top: '100px',
+            left: '10px',
+            boxShadow: '0 3px 6px 0 rgba(0, 0, 0, 0.04), 0 0 10px 3px rgba(0, 0, 0, 0.05)',
+            backgroundColor: '#fff',
+            zIndex: 11,
+            color: '#111',
+        },
+        drawer: {
+            minWidth: '300px',
+            backgroundColor: '#fff',
+            height: '100vh',
+            padding: '10px',
+        },
+        mobileCloseBtn: {
+            color: '#111',
+        },
+        mobileHeader: {
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            fontWeight: 500,
+            paddingLeft: '10px',
+            fontSize: '18px',
         }
     }),
 );

@@ -34,6 +34,11 @@ export type TFrontendPluginProps<TData = any, TSettings = any> = {
     pluginName: string;
 }
 
+export type TAdminPanelPluginProps<TSettings = any> = {
+    settings?: TSettings;
+    pluginName: string;
+}
+
 export type TCromwellBlock = React.Component<TCromwellBlockProps> & {
     getContentInstance: () => React.Component;
     setContentInstance: (contentInstance: React.Component) => void;

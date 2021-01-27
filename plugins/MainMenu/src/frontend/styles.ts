@@ -7,8 +7,21 @@ export const useStyles = makeStyles((theme: Theme) =>
             width: '100%',
             // padding: '10px'
         },
+        mobileMenuList: {
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+            // padding: '10px'
+        },
+        listItemWrapper: {
+            padding: '10px 20px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-start'
+        },
         listItem: {
-            padding: '10px 20px'
+            display: 'flex',
+            alignItems: 'center'
         },
         popover: {
             pointerEvents: 'none',
@@ -18,6 +31,24 @@ export const useStyles = makeStyles((theme: Theme) =>
             // display: 'flex',
             pointerEvents: 'initial',
             padding: '15px'
+        },
+        expandMoreIcon: {
+            transition: '0.3s',
+            marginLeft: '10px'
+        },
+        menuSubitems: {
+            display: 'grid',
+        },
+        menuSubitemsMobile: {
+            display: 'flex',
+            flexDirection: 'column',
+            width: '100%',
+        },
+        linkTitle: {
+            color: '#111'
+        },
+        sublinkTitle: {
+            color: '#111'
         }
     }),
 );

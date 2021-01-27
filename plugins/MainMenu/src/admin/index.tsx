@@ -1,4 +1,5 @@
 import { getRestAPIClient } from '@cromwell/core-frontend';
+import { TAdminPanelPluginProps } from '@cromwell/core';
 import {
     Button,
     Card,
@@ -20,25 +21,23 @@ import React, { useEffect, useState, useRef } from 'react';
 import { TMainMenuItem, TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
 
-export default function index({ pluginName }: { pluginName: string }) {
+export default function index(props: TAdminPanelPluginProps<TMainMenuSettings>) {
     const apiClient = getRestAPIClient();
     const classes = useStyles();
-    const [settings, setSettings] = useState<TMainMenuSettings | null>(null);
     const [isLoading, setIsloading] = useState(false);
     const forceUpdate = useForceUpdate();
-    const items = useRef<TMainMenuItem[]>([]);
+    const { pluginName, settings } = props;
+    const items = useRef<TMainMenuItem[]>(settings?.items ?? []);
 
-    useEffect(() => {
-        (async () => {
-            setIsloading(true);
-            const settings: TMainMenuSettings = await apiClient?.getPluginSettings(pluginName);
-            if (settings) {
-                items.current = settings.items ?? [];
-                setSettings(settings);
-            }
-            setIsloading(false);
-        })()
-    }, []);
+    const handleSave = async () => {
+        setIsloading(true);
+        if (settings) {
+            settings.items = items.current;
+            await apiClient?.savePluginSettings(pluginName, settings);
+        }
+        setIsloading(false);
+    }
+
     return (
         <div className={classes.mainMenu}>
 
@@ -52,24 +51,17 @@ export default function index({ pluginName }: { pluginName: string }) {
                                 return <Item i={i} updateList={forceUpdate} items={items.current} />
                             })}
                         </div>
-                        <Card className={classes.card}>
+                        <div className={`${classes.card} ${classes.paper}`}>
                             <MenuItem
                                 className={classes.addBtn}
                                 onClick={() => { items.current.push({ title: '' }); forceUpdate(); }}>
                                 <AddIcon />
                             </MenuItem>
-                        </Card>
+                        </div>
                         <Button variant="contained" color="primary"
                             className={classes.saveBtn}
                             size="large"
-                            onClick={async () => {
-                                setIsloading(true);
-                                if (settings) {
-                                    settings.items = items.current;
-                                    await apiClient?.savePluginSettings(pluginName, settings);
-                                }
-                                setIsloading(false);
-                            }}>
+                            onClick={handleSave}>
                             Save
                         </Button>
                     </>
@@ -102,7 +94,7 @@ const Item = (props: {
     }
 
     return (
-        <Card className={classes.card}>
+        <div className={`${classes.card} ${classes.paper}`}>
             <CardActionArea
                 className={classes.cardHeader}
                 onClick={handleExpandClick}
@@ -197,7 +189,7 @@ const Item = (props: {
                     </div>
                 </div>
             </Collapse>
-        </Card>
+        </div>
     )
 }
 

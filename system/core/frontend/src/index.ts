@@ -9,6 +9,7 @@ export { CList } from './components/CList/CList';
 export { TCList, TCListProps, TItemComponentProps } from './components/CList/types';
 export { CLink, Link } from './components/Link/Link';
 export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
+export { LoadBox } from './components/loadBox/Loadbox';
 export {
     cromwellIdToHTML,
     cromwellIdFromHTML,

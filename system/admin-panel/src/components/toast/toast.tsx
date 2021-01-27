@@ -1,5 +1,6 @@
 
 import React from "react";
+import { setStoreItem } from '@cromwell/core';
 import { toast as toastify } from "react-toastify";
 import {
     CheckCircleOutline as CheckCircleOutlineIcon,
@@ -17,3 +18,5 @@ export const toast = {
         </div>)
     }
 }
+
+setStoreItem('notifier', toast);

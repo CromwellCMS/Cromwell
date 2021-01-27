@@ -39,6 +39,6 @@
   },
   "scripts": {
     "build": "npx cromwell b",
-    "watch": "npx cromwell w"
+    "watch": "npx cromwell b -w"
   }
 }

@@ -31,6 +31,7 @@ export type TCromwellStore = {
     cstore?: any;
     nodeModules?: TCromwellNodeModules;
     fsRequire?: (path: string) => any;
+    notifier?: TCromwellNotify;
 }
 
 declare global {
@@ -220,3 +221,11 @@ export type TPluginInfo = {
 }
 
 export type TLogLevel = "none" | "errors-only" | "errors-warnings" | "minimal" | "detailed" | "all";
+
+// react-toastify, for example
+export type TCromwellNotify = {
+    success?: (message: string) => void;
+    warning?: (message: string) => void;
+    error?: (message: string) => void;
+    info?: (message: string) => void;
+}

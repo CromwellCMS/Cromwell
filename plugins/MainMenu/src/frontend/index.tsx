@@ -1,42 +1,95 @@
 import { TFrontendPluginProps } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
-import { MenuItem, Popover } from '@material-ui/core';
+import { Collapse, IconButton, MenuItem, Popover, useMediaQuery, useTheme } from '@material-ui/core';
+import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
 
-import { TMainMenuSettings } from '../types';
+import { TMainMenuItem, TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
-
 
 const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
     const classes = useStyles();
     const items = props?.settings?.items ?? [];
     const [activeItem, setActiveItem] = useState<string>('none');
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
     const handlePopoverOpen = (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
         setAnchorEl(event.currentTarget);
     };
 
     const handlePopoverClose = () => {
-        setAnchorEl(null);
-        setActiveItem('none');
+        if (!isMobile) {
+            setAnchorEl(null);
+            setActiveItem('none');
+        }
     };
 
+    const handleItemMouseOver = (item: TMainMenuItem) => (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        if (!isMobile) {
+            handlePopoverOpen(event);
+            setActiveItem(item.title);
+        }
+    }
+
+    const handleItemMobileClick = (item: TMainMenuItem) => (event: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        event.stopPropagation();
+        event.preventDefault();
+        setActiveItem(item.title);
+    }
+
     return (
-        <div className={classes.menuList}>
+        <div className={isMobile ? classes.mobileMenuList : classes.menuList}>
             {items.map((i, index) => {
                 const isActive = activeItem === i.title;
+
+                const menuSubitems = (
+                    <div style={{
+                        gridTemplateColumns: `repeat(${i.sublinkCols ? i.sublinkCols : 1}, 1fr)`
+                    }}
+                        className={isMobile ? classes.menuSubitemsMobile : classes.menuSubitems}
+                    >
+                        {i.sublinks && i.sublinks.map((sub, subIndex) => {
+                            return (
+                                <MenuItem
+                                    style={{
+                                        // width: i.sublinkCols ? `${100 / i.sublinkCols}px` : '100%'
+                                    }}
+                                    key={subIndex}
+                                ><Link href={sub.href + ''}>
+                                        <p className={classes.sublinkTitle}>{sub.title}</p>
+                                    </Link>
+                                </MenuItem>
+                            )
+                        })}
+                    </div>
+                )
+
                 const menuItem = (
-                    <MenuItem className={classes.listItem}
+                    <MenuItem className={classes.listItemWrapper}
                         key={index}
                         onMouseLeave={handlePopoverClose}
-                        onMouseOver={(e) => {
-                            handlePopoverOpen(e);
-                            setActiveItem(i.title);
-                        }}
+                        onMouseOver={handleItemMouseOver(i)}
                     >
-                        <p>{i.title}</p>
-                        {(i.sublinks || i.html) && (
+                        <div className={classes.listItem}>
+                            <p className={classes.linkTitle}>{i.title}</p>
+                            {isMobile && (i.sublinks || i.html) && (
+                                <IconButton onClick={handleItemMobileClick(i)}>
+                                    <ExpandMoreIcon
+                                        className={classes.expandMoreIcon}
+                                        style={{ transform: isActive ? 'rotate(180deg)' : '' }}
+                                    />
+                                </IconButton>
+                            )}
+
+                        </div>
+                        {(i.sublinks || i.html) && isMobile && (
+                            <Collapse in={isActive} timeout="auto" unmountOnExit>
+                                {menuSubitems}
+                            </Collapse>
+                        )}
+                        {(i.sublinks || i.html) && !isMobile && (
                             <Popover
                                 id={i.title}
                                 open={isActive}
@@ -57,22 +110,7 @@ const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
 
                                 onClose={handlePopoverClose}
                             >
-                                <div style={{
-                                    // width: i.width ? `${i.width}px` : undefined
-                                    display: 'grid',
-                                    gridTemplateColumns: `repeat(${i.sublinkCols ? i.sublinkCols : 1}, 1fr)`
-                                }}>
-                                    {i.sublinks && i.sublinks.map((sub, subIndex) => {
-                                        return (
-                                            <MenuItem
-                                                style={{
-                                                    // width: i.sublinkCols ? `${100 / i.sublinkCols}px` : '100%'
-                                                }}
-                                                key={subIndex}
-                                            ><Link href={sub.href + ''}><p>{sub.title}</p></Link></MenuItem>
-                                        )
-                                    })}
-                                </div>
+                                {menuSubitems}
                             </Popover>
                         )}
                     </MenuItem>

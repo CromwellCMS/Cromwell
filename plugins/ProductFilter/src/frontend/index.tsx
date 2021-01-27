@@ -11,21 +11,21 @@ import {
     ListItem,
     ListItemIcon,
     ListItemText,
+    SwipeableDrawer,
     Typography,
+    useMediaQuery,
+    useTheme,
 } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import { ExpandMore as ExpandMoreIcon, FilterList as FilterListIcon, Close as CloseIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import { debounce } from 'debounce';
 import React, { Component, useEffect, useRef, useState } from 'react';
 
-import { TFilteredList } from '../types';
+import { TFilteredList, TProductFilterSettings } from '../types';
 import { Slider } from './components/slider';
 import { filterCList, TProductFilterData } from './service';
 import { useStyles } from './styles';
-
-interface TProductFilterSettings {
-    productListId: string;
-}
+import { defaultSettings } from '../constants';
 
 const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductFilterSettings>): JSX.Element => {
     const { attributes, productCategory, filterMeta } = props.data ?? {};
@@ -33,9 +33,16 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     const [collapsedItems, setCollapsedItems] = useState<Record<string, boolean>>({});
     const [minPrice, setMinPrice] = useState<number>(filterMeta?.minPrice || 0);
     const [maxPrice, setMaxPrice] = useState<number>(filterMeta?.maxPrice || 0);
+    const [isMobileOpen, setIsMobileOpen] = useState(false);
     const priceRange = useRef<number[]>([])
     const classes = useStyles();
     const client = getGraphQLClient();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+
+    const _collapsedByDefault = props.settings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
+    const _mobileCollapsedByDefault = props.settings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
+    const collapsedByDefault = isMobile ? _mobileCollapsedByDefault : _collapsedByDefault;
 
     const handleSetAttribute = (key: string, checks: string[]) => {
         setCheckedAttrs(prev => {
@@ -70,10 +77,27 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         applyFilter();
     }, 500);
 
-    const isPriceExpanded = !collapsedItems['price'];
+    const isPriceExpanded = collapsedItems['price'] === undefined ? !collapsedByDefault : collapsedItems['price'];
 
-    return (
+    const handleMobileOpen = () => {
+        setIsMobileOpen(true);
+    }
+    const handleMobileClose = () => {
+        setIsMobileOpen(false);
+    }
+
+    const filterContent = (
         <div>
+            {isMobile && (
+                <div className={classes.mobileHeader}>
+                    <p>Filter</p>
+                    <IconButton
+                        className={classes.mobileCloseBtn}
+                        onClick={handleMobileClose}>
+                        <CloseIcon />
+                    </IconButton>
+                </div>
+            )}
             <Card className={classes.card}>
                 <div className={classes.headerWrapper}>
                     <Typography id="price-range-slider" gutterBottom style={{
@@ -118,7 +142,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                             }
                         }
                     }
-                    const isExpanded = !collapsedItems[attr.key];
+                    const isExpanded = collapsedItems[attr.key] === undefined ? !collapsedByDefault : collapsedItems[attr.key];
                     return (
                         <Card className={classes.card} key={attr.key}>
                             <div className={classes.headerWrapper}>
@@ -198,7 +222,41 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                 })
             )}
         </div>
-    )
+    );
+
+    if (isMobile) {
+
+        const onOpen = () => {
+
+        }
+        const mobileIconPosition = props.settings?.mobileIconPosition ?? defaultSettings.mobileIconPosition;
+
+        return (
+            <div>
+                <IconButton
+                    className={classes.mobileOpenBtn}
+                    style={{
+                        top: mobileIconPosition.top + 'px',
+                        left: mobileIconPosition.left + 'px'
+                    }}
+                    onClick={handleMobileOpen}>
+                    <FilterListIcon />
+                </IconButton>
+                <SwipeableDrawer
+                    open={isMobileOpen}
+                    onClose={handleMobileClose}
+                    onOpen={onOpen}
+                >
+                    <div className={classes.drawer}>
+                        {filterContent}
+                    </div>
+                </SwipeableDrawer>
+            </div>
+        )
+
+    }
+    return filterContent;
+
 }
 
 export { getStaticProps } from './service'

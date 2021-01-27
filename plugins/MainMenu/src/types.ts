@@ -1,6 +1,7 @@
 
 export type TMainMenuSettings = {
     items?: TMainMenuItem[];
+    mobileBreakpoint?: number;
 }
 
 export type TMainMenuItem = {
