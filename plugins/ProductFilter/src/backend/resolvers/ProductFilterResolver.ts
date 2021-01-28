@@ -18,9 +18,9 @@ export default class ProductFilterResolver {
     ): Promise<TFilteredList<TProduct> | undefined> {
         logFor('detailed', 'ProductFilterResolver::getFilteredProductsFromCategory categoryId:' + categoryId + ' pagedParams:' + pagedParams);
         const timestamp = Date.now();
+        const productRepo = getCustomRepository(ProductRepository);
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
-            const productRepo = getCustomRepository(ProductRepository);
             const qb = productRepo.createQueryBuilder(DBTableNames.Product);
             applyGetManyFromOne(qb, DBTableNames.Product, 'categories',
                 DBTableNames.ProductCategory, categoryId);
@@ -34,10 +34,12 @@ export default class ProductFilterResolver {
         const getFilterMeta = async (): Promise<TFilterMeta> => {
             // Get max price
             const qb = getQb(false);
-            let maxPrice = (await qb.select(`MAX(${DBTableNames.Product}.price)`, "maxPrice").getRawOne()).maxPrice;
-            if (maxPrice && typeof maxPrice === 'string') maxPrice = parseInt(maxPrice);
 
-            let minPrice = (await qb.select(`MIN(${DBTableNames.Product}.price)`, "minPrice").getRawOne()).minPrice;
+            let [maxPrice, minPrice] = await Promise.all([
+                qb.select(`MAX(${DBTableNames.Product}.price)`, "maxPrice").getRawOne().then(res => res?.maxPrice),
+                qb.select(`MIN(${DBTableNames.Product}.price)`, "minPrice").getRawOne().then(res => res?.minPrice)
+            ]);
+            if (maxPrice && typeof maxPrice === 'string') maxPrice = parseInt(maxPrice);
             if (minPrice && typeof minPrice === 'string') minPrice = parseInt(minPrice);
 
             return {
@@ -47,11 +49,10 @@ export default class ProductFilterResolver {
 
         const getElements = async (): Promise<TPagedList<TProduct>> => {
             const qb = getQb();
-            return await getPaged<TProduct>(qb, DBTableNames.Product, pagedParams);
+            return productRepo.applyAndGetPagedProducts(qb, pagedParams);
         }
 
-        const filterMeta = await getFilterMeta();
-        const paged = await getElements();
+        const [filterMeta, paged] = await Promise.all([getFilterMeta(), getElements()]);
 
         const timestamp2 = Date.now();
         logFor('detailed', 'ProductFilterResolver::getFilteredProductsFromCategory time elapsed: ' + (timestamp2 - timestamp) + 'ms');
@@ -87,9 +88,9 @@ export default class ProductFilterResolver {
                             const query = `${DBTableNames.Product}.attributesJSON LIKE :${valKey}`;
                             if (isFirstVal) {
                                 isFirstVal = false;
-                                subQb.where(query, { [valKey]: likeStr })
+                                subQb.where(query, { [valKey]: likeStr });
                             } else {
-                                subQb.orWhere(query, { [valKey]: likeStr })
+                                subQb.orWhere(query, { [valKey]: likeStr });
                             }
                         })
                     });
@@ -101,10 +102,10 @@ export default class ProductFilterResolver {
         if (filterParams.nameSearch && filterParams.nameSearch !== '') {
             const likeStr = `%${filterParams.nameSearch}%`;
             const query = `${DBTableNames.Product}.name LIKE :likeStr`;
-            qbAddWhere(query, { likeStr })
+            qbAddWhere(query, { likeStr });
         }
 
-        // // Attempt to make a proper filtration for SQLite. Isn't finished. Works for only one attribute 
+        // // Attempt to make a proper json filtration for SQLite. Isn't finished. Works for only one attribute 
         // if (filterParams.attributes && filterParams.attributes.length > 0) {
         //     qb.disableEscaping()
         //     qb.innerJoin('json_each(product.attributesJSON)', 't_attributes')

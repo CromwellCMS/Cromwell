@@ -1,4 +1,4 @@
-import { TAttributeInput, TProductCategoryInput, TProductReviewInput, TUserInput } from '@cromwell/core';
+import { TAttributeInput, TProduct, TProductCategoryInput, TProductReview, TProductReviewInput, TUserInput } from '@cromwell/core';
 import {
     AttributeRepository,
     ProductCategoryRepository,
@@ -166,13 +166,16 @@ export class MockService {
 
         // Clear
         const prodsOld = await this.productRepo.find();
+        const deletePromises: Promise<boolean>[] = []
         for (const oldProd of prodsOld) {
-            await this.productRepo.deleteProduct(oldProd.id);
+            deletePromises.push(this.productRepo.deleteProduct(oldProd.id));
         }
+        await Promise.all([deletePromises]);
 
         const cats = await this.productCategoryRepo.find();
 
         const times = 50; // will create (times * 9) products
+        const promises: Promise<TProduct>[] = [];
 
         for (let i = 0; i < times; i++) {
             for (const mock of mockedProdList) {
@@ -188,7 +191,7 @@ export class MockService {
 
                 const condition = Math.random() > 0.3 ? 'New' : 'Used';
 
-                await this.productRepo.createProduct({
+                promises.push(this.productRepo.createProduct({
                     name: mock.name,
                     categoryIds,
                     price: mock.price,
@@ -236,9 +239,10 @@ export class MockService {
                         }
                     ],
                     views: Math.floor(Math.random() * 1000)
-                })
+                }));
             }
         }
+        await Promise.all([promises]);
 
         return true;
     }
@@ -304,6 +308,7 @@ export class MockService {
         }
 
         const products = await this.productRepo.find();
+        const promises: Promise<TProductReview>[] = [];
         for (const prod of products) {
             this.shuffleArray(this.reviewsMock);
             const reviewsNum = Math.floor(Math.random() * this.reviewsMock.length)
@@ -312,9 +317,10 @@ export class MockService {
                     ...this.reviewsMock[i],
                     productId: prod.id
                 }
-                await this.productReviewRepo.createProductReview(review);
+                promises.push(this.productReviewRepo.createProductReview(review));
             }
         }
+        await Promise.all([promises]);
 
         return true;
     }

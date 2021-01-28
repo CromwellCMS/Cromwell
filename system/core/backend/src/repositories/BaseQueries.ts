@@ -2,7 +2,7 @@ import { SelectQueryBuilder } from "typeorm";
 import { TPagedParams, TPagedList, TBasePageEntity, TBasePageEntityInput } from '@cromwell/core';
 import { getStoreItem } from '@cromwell/core';
 
-export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, entityName?: string, params?: TPagedParams<T>): SelectQueryBuilder<T> => {
+export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, sortByTableName?: string, params?: TPagedParams<T>): SelectQueryBuilder<T> => {
     const cmsSettings = getStoreItem('cmsSettings');
     const p = params ? params : {};
     if (!p.pageNumber) p.pageNumber = 1;
@@ -11,10 +11,12 @@ export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, entityName?: string,
         p.pageSize = def && typeof def === 'number' ? def : 15;
     }
 
-    if (p.orderBy && entityName) {
+    if (p.orderBy) {
         if (!p.order) p.order = 'DESC';
-        qb.orderBy(`${entityName}.${p.orderBy}`, p.order)
+        if (sortByTableName) qb.orderBy(`${sortByTableName}.${p.orderBy}` + '', p.order);
+        else qb.orderBy(p.orderBy + '', p.order);
     }
+
     return qb.skip(p.pageSize * (p.pageNumber - 1)).take(p.pageSize);
 }
 
@@ -32,11 +34,15 @@ export const applyGetManyFromOne = <T>(qb: SelectQueryBuilder<T>, firstEntityNam
         { entityId: secondEntityId });
 }
 
-export const getPaged = async <T>(qb: SelectQueryBuilder<T>, entityName?: string,
+export const getPaged = async <T>(qb: SelectQueryBuilder<T>, sortByTableName?: string,
     params?: TPagedParams<T>): Promise<TPagedList<T>> => {
-    const count = await qb.getCount();
-    applyGetPaged(qb, entityName, params)
-    const elements = await qb.getMany();
+
+    const [count, elements] = await Promise.all([qb.getCount(), (() => {
+        applyGetPaged(qb, sortByTableName, params);
+        // console.log('qb.getSql()', qb.getSql())
+        return qb.getMany();
+    })()]);
+
     const pagedMeta = {
         pageNumber: params?.pageNumber,
         pageSize: params?.pageSize,
@@ -45,7 +51,6 @@ export const getPaged = async <T>(qb: SelectQueryBuilder<T>, entityName?: string
     }
 
     return { pagedMeta, elements };
-
 }
 
 export const handleBaseInput = (entity: TBasePageEntity, input: TBasePageEntityInput) => {

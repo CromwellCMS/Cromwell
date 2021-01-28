@@ -38,7 +38,7 @@ export default function index(props: TAdminPanelPluginProps<TProductFilterSettin
 
         } catch (e) {
             console.error(e);
-            getStoreItem('notifier')?.error?.('Saved!');
+            getStoreItem('notifier')?.error?.('Failed to save');
         }
         setIsloading(false);
     }
@@ -59,7 +59,7 @@ export default function index(props: TAdminPanelPluginProps<TProductFilterSettin
                         color="primary"
                     />
                 }
-                label="All options collapsed by default"
+                label="All options collapsed by default at desktop screen"
             />
             <FormControlLabel
                 control={

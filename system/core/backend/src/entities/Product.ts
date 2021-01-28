@@ -1,5 +1,5 @@
-import { Entity, ManyToMany, JoinTable, Column, OneToMany, ConnectionOptions } from "typeorm";
-import { ObjectType, Field, ID } from "type-graphql";
+import { Entity, ManyToMany, JoinTable, Column, OneToMany, ConnectionOptions, ViewColumn } from "typeorm";
+import { ObjectType, Field, ID, Float } from "type-graphql";
 import { TProduct, TProductCategory, TProductReview, getStoreItem, TProductRating } from '@cromwell/core';
 import { BasePageEntity } from './BasePageEntity';
 import { ProductCategory } from './ProductCategory';
@@ -57,6 +57,12 @@ export class Product extends BasePageEntity implements TProduct {
     @Field(type => Number, { nullable: true })
     @Column({ type: "bigint", nullable: true })
     views?: number;
+
+    @Column({ type: "decimal", nullable: true, select: false, insert: false, readonly: true })
+    averageRating?: number;
+
+    @Column({ type: "int", nullable: true, select: false, insert: false, readonly: true })
+    reviewsCount?: number;
 }
 
 @ObjectType()

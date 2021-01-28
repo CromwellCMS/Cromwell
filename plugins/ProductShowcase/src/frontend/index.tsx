@@ -45,10 +45,24 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     // console.log('ProductShowcase props', props)
     useEffect(() => {
         const options: SwiperOptions = {
-            slidesPerView: 3,
+            slidesPerView: 2,
+            breakpoints: {
+                640: {
+                    slidesPerView: 3,
+                    spaceBetween: 10,
+                },
+                768: {
+                    slidesPerView: 4,
+                    spaceBetween: 10,
+                },
+                1024: {
+                    slidesPerView: 5,
+                    spaceBetween: 10,
+                },
+            },
             // slidesPerView: 3,
             // centeredSlides: true,
-            spaceBetween: 30,
+            spaceBetween: 10,
             // Optional parameters
             direction: 'horizontal',
             virtual: {

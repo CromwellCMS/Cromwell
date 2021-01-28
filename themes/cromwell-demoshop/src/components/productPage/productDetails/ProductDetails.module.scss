@@ -1,8 +1,9 @@
+@import "../../../styles/variables.scss";
 
 .ProductDetails {
     display: flex;
     margin: 20px 0;
-    box-shadow: 0 3px 4px 0 rgba(0,0,0,.05), 0 0 8px 0 rgba(0,0,0,.05);
+    box-shadow: 0 3px 4px 0 rgba(0, 0, 0, 0.05), 0 0 8px 0 rgba(0, 0, 0, 0.05);
     border-radius: 8px;
     overflow: hidden;
     background-color: #fff;
@@ -19,7 +20,7 @@
 .mainBlock {
     display: flex;
     flex-direction: column;
-    width: 78%; 
+    width: 78%;
 }
 
 .imageAndCaptionBlock {
@@ -63,10 +64,8 @@
 }
 .price {
     font-size: 26px;
-    font-weight: 900; 
+    font-weight: 900;
 }
-
-
 
 .infoBlock {
     display: flex;
@@ -98,7 +97,6 @@
 .infoBanner {
     margin-top: 20px;
 }
-
 
 .tabsBlock {
     position: relative;
@@ -134,3 +132,27 @@ body .attrValue {
     margin-right: 10px;
 }
 
+@media screen and (max-width: $mobileBreakpoint) {
+    .infoBlock {
+        display: none;
+    }
+
+    .mainBlock {
+        width: 100%;
+    }
+
+    .imageAndCaptionBlock {
+        flex-direction: column;
+    }
+
+    .imageBlock {
+        width: 100%;
+    }
+    .captionBlock {
+        width: 100%;
+    }
+
+    .tabsBlock {
+        padding-right: 0;
+    }
+}

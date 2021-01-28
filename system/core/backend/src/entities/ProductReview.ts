@@ -9,16 +9,15 @@ import { Product } from './Product';
 @ObjectType()
 export class ProductReview extends BasePageEntity implements TProductReview {
 
+    @Column()
+    @Field(type => String, { nullable: true })
+    productId: string;
+
     @ManyToOne(type => Product, product => product.reviews, {
         onDelete: "CASCADE"
     })
-    @JoinColumn()
+    @JoinColumn({ name: "productId" })
     product: Product;
-
-    @Field(type => String, { nullable: true })
-    get productId(): string {
-        return this.product.id;
-    }
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })

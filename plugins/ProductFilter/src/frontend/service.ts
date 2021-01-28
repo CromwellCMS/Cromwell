@@ -60,7 +60,7 @@ export const filterCList = (checkedAttrs: Record<string, string[]>, priceRange: 
     const list: TCList | undefined = getBlockInstance(productListId)?.getContentInstance() as any;
     if (list) {
         const listProps = Object.assign({}, list.getProps());
-        listProps.loader = (pagedParams: TPagedParams<TProduct>): Promise<TFilteredList<TProduct> | undefined> => {
+        listProps.loader = async (pagedParams: TPagedParams<TProduct>): Promise<TFilteredList<TProduct> | undefined> => {
             const filterOptions: TProductFilter = {
                 attributes: Object.keys(checkedAttrs).map(key => ({
                     key, values: checkedAttrs[key]
@@ -68,7 +68,11 @@ export const filterCList = (checkedAttrs: Record<string, string[]>, priceRange: 
                 minPrice: priceRange[0],
                 maxPrice: priceRange[1]
             }
-            return getFiltered(client, productCategoryId, pagedParams, filterOptions, cb);
+            // const timestamp = Date.now();
+            const filtered = await getFiltered(client, productCategoryId, pagedParams, filterOptions, cb);
+            // const timestamp2 = Date.now();
+            // console.log('ProductFilterResolver::getFilteredProductsFromCategory time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+            return filtered;
         };
         listProps.firstBatch = undefined;
         list.setProps(listProps);

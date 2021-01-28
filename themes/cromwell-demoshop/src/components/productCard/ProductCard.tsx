@@ -1,6 +1,6 @@
 import { TProduct } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
-import { IconButton } from '@material-ui/core';
+import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';
 import { AddShoppingCart as AddShoppingCartIcon } from '@material-ui/icons';
 import { Rating } from '@material-ui/lab';
 import clsx from 'clsx';
@@ -18,6 +18,8 @@ export const ProductCard = (props: {
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [imageHeigth, setImageHeigth] = useState(300);
     const cstore = getCStore();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
     useEffect(() => {
         if (wrapperRef && wrapperRef.current) {
@@ -29,7 +31,9 @@ export const ProductCard = (props: {
     return (
         <div className={clsx(styles.Product, commonStyles.onHoverLinkContainer,
             props?.className, props?.variant === 'list' ? styles.listVariant : undefined)} ref={wrapperRef}>
-            <div className={styles.imageBlock} style={{ height: imageHeigth }}>
+            <div className={styles.imageBlock}
+            // style={{ height: isMobile ? 'auto' : imageHeigth }}
+            >
                 <Link href={productLink}>
                     <a><img className={styles.image} src={data?.mainImage} /></a>
                 </Link>
@@ -66,7 +70,7 @@ export const ProductCard = (props: {
                 </div>
                 <div className={styles.ratingBlock}>
                     <Rating name="read-only" value={data?.rating?.average} precision={0.5} readOnly />
-                    {(data?.rating?.reviewsNumber && props?.variant === 'list') && (
+                    {(data?.rating?.reviewsNumber !== undefined && props?.variant === 'list') && (
                         <p className={styles.ratingCaption}>
                             {data?.rating?.average ? data?.rating?.average.toFixed(2) : ''} based on {data?.rating?.reviewsNumber} reviews.</p>
                     )}

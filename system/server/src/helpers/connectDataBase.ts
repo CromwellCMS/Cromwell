@@ -61,7 +61,9 @@ export const connectDatabase = async (env: string) => {
     const connectionOptions: ConnectionOptions = {
         ...ormconfig,
         entities: [
-            Product, ProductCategory, Post, User, Attribute, ProductReview, ThemeEntity, PluginEntity, CmsEntity,
+            Product, ProductCategory, Post, User,
+            Attribute, ProductReview,
+            ThemeEntity, PluginEntity, CmsEntity,
             ...pluginsExports.entities,
             ...(ormconfig.entities ?? [])
         ],
@@ -74,7 +76,6 @@ export const connectDatabase = async (env: string) => {
     if (settings) {
         setStoreItem('cmsSettings', settings)
     }
-
 
     // Check installed cms modules. All available themes and plugins should be registered in DB
     // If some are not, then install them here at Server startup

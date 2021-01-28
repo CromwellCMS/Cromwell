@@ -79,7 +79,9 @@ export class ProductResolver {
 
     @FieldResolver(() => ProductRating)
     async [ratingKey](@Root() product: Product): Promise<TProductRating> {
-        return this.repository.getProductRating(product.id);
+        return {
+            reviewsNumber: product.reviewsCount,
+            average: product.averageRating,
+        }
     }
-
 }

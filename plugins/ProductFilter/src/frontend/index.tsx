@@ -34,15 +34,20 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     const [minPrice, setMinPrice] = useState<number>(filterMeta?.minPrice || 0);
     const [maxPrice, setMaxPrice] = useState<number>(filterMeta?.maxPrice || 0);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
-    const priceRange = useRef<number[]>([])
+    const priceRange = useRef<number[]>([]);
+    const collapsedByDefault = useRef<boolean>(false);
     const classes = useStyles();
     const client = getGraphQLClient();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
-    const _collapsedByDefault = props.settings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
-    const _mobileCollapsedByDefault = props.settings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
-    const collapsedByDefault = isMobile ? _mobileCollapsedByDefault : _collapsedByDefault;
+    const pcCollapsedByDefault = props.settings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
+    const mobileCollapsedByDefault = props.settings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
+    const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
+    if (collapsedByDefault.current !== _collapsedByDefault) {
+        collapsedByDefault.current = _collapsedByDefault;
+        setCollapsedItems({});
+    }
 
     const handleSetAttribute = (key: string, checks: string[]) => {
         setCheckedAttrs(prev => {
@@ -77,7 +82,10 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         applyFilter();
     }, 500);
 
-    const isPriceExpanded = collapsedItems['price'] === undefined ? !collapsedByDefault : collapsedItems['price'];
+    if (collapsedItems['price'] === undefined) {
+        collapsedItems['price'] = collapsedByDefault.current;
+    }
+    const isPriceExpanded = !collapsedItems['price'];
 
     const handleMobileOpen = () => {
         setIsMobileOpen(true);
@@ -142,7 +150,10 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                             }
                         }
                     }
-                    const isExpanded = collapsedItems[attr.key] === undefined ? !collapsedByDefault : collapsedItems[attr.key];
+                    if (collapsedItems[attr.key] === undefined) {
+                        collapsedItems[attr.key] = collapsedByDefault.current;
+                    }
+                    const isExpanded = !collapsedItems[attr.key];
                     return (
                         <Card className={classes.card} key={attr.key}>
                             <div className={classes.headerWrapper}>

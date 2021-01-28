@@ -6,7 +6,7 @@ import { getPaged } from './BaseQueries';
 export class BaseRepository<EntityType, EntityInputType = EntityType> extends Repository<EntityType> {
 
     constructor(
-        private DBTableName: string,
+        public DBTableName: string,
         private EntityClass: new (...args: any[]) => EntityType
     ) {
         super();

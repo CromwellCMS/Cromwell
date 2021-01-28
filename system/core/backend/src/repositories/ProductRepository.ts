@@ -2,21 +2,26 @@ import {
     BasePagePaths,
     DBTableNames,
     getStoreItem,
+    logFor,
     TPagedList,
     TPagedParams,
     TProduct,
     TProductInput,
     TProductRating,
     TProductReview,
-    logFor
 } from '@cromwell/core';
-import { EntityRepository, getCustomRepository, Repository } from 'typeorm';
+import { EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
 import { Product } from '../entities/Product';
+import { ProductReview } from '../entities/ProductReview';
 import { applyGetManyFromOne, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { ProductReviewRepository } from './ProductReviewRepository';
+
+const averageKey: keyof Product = 'averageRating';
+const reviewsCountKey: keyof Product = 'reviewsCount'
+const ratingKey: keyof TProductReview = 'rating';
 
 @EntityRepository(Product)
 export class ProductRepository extends BaseRepository<Product> {
@@ -25,19 +30,44 @@ export class ProductRepository extends BaseRepository<Product> {
         super(DBTableNames.Product, Product)
     }
 
+    async applyGetProductRating(qb: SelectQueryBuilder<TProduct>) {
+        qb.addSelect(`AVG(${DBTableNames.ProductReview}.${ratingKey})`, 'product_' + averageKey)
+            .addSelect(`COUNT(${DBTableNames.ProductReview}.id)`, 'product_' + reviewsCountKey)
+            .leftJoin(ProductReview, DBTableNames.ProductReview, `${DBTableNames.ProductReview}.productId = ${DBTableNames.Product}.id `)
+            .groupBy(`${DBTableNames.Product}.id`);
+    }
+
+    async applyAndGetPagedProducts(qb: SelectQueryBuilder<TProduct>, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
+        this.applyGetProductRating(qb);
+
+        if (params?.orderBy === "rating") {
+            params.orderBy = 'product_' + averageKey as any;
+            return getPaged(qb, undefined, params);
+        }
+        return getPaged(qb, this.DBTableName, params);
+    }
+
     async getProducts(params: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         logFor('detailed', 'ProductRepository::getProducts');
-        return this.getPaged(params)
+        const qb = this.createQueryBuilder(DBTableNames.Product);
+        const prods = await this.applyAndGetPagedProducts(qb, params)
+        return prods;
     }
 
     async getProductById(id: string): Promise<Product | undefined> {
         logFor('detailed', 'ProductRepository::getProductById id: ' + id);
-        return this.getById(id);
+        const qb = this.createQueryBuilder(DBTableNames.Product);
+        this.applyGetProductRating(qb);
+        return qb.where(`${DBTableNames.Product}.id = :id`, { id })
+            .getOne();
     }
 
     async getProductBySlug(slug: string): Promise<Product | undefined> {
         logFor('detailed', 'ProductRepository::getProductBySlug slug: ' + slug);
-        return this.getBySlug(slug);
+        const qb = this.createQueryBuilder(DBTableNames.Product);
+        this.applyGetProductRating(qb);
+        return qb.where(`${DBTableNames.Product}.slug = :slug`, { slug })
+            .getOne();
     }
 
     async handleProductInput(product: Product, input: TProductInput) {
@@ -122,8 +152,7 @@ export class ProductRepository extends BaseRepository<Product> {
         logFor('detailed', 'ProductRepository::getProductsFromCategory id: ' + categoryId);
         const qb = this.createQueryBuilder(DBTableNames.Product);
         applyGetManyFromOne(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
-        const paged = await getPaged(qb, DBTableNames.Product, params);
-        return paged;
+        return this.applyAndGetPagedProducts(qb, params);
     }
 
     async getReviewsOfProduct(productId: string, params?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {

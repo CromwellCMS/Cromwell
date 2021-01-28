@@ -25,7 +25,7 @@
         justify-content: center;
         align-items: center;
         border-radius: 8px 8px 0 0;
-        height: 300px;
+        // height: 300px;
         width: 100%;
     }
     .image {
@@ -121,6 +121,14 @@
 
         .caption {
             padding: 20px;
+        }
+    }
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .Product {
+        .imageBlock {
+            height: auto;
         }
     }
 }
