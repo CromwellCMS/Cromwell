@@ -83,7 +83,7 @@ module.exports = {
             },
             {
                 title: 'Blog',
-                href: '/'
+                href: '/blog'
             }
         ]
     }

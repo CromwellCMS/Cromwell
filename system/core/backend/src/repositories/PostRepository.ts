@@ -1,4 +1,5 @@
 import { DBTableNames, logFor, TPagedList, TPagedParams, TPostInput } from '@cromwell/core';
+import sanitizeHtml from 'sanitize-html';
 import { EntityRepository, getCustomRepository } from 'typeorm';
 
 import { Post } from '../entities/Post';
@@ -36,7 +37,8 @@ export class PostRepository extends BaseRepository<Post> {
 
         post.title = input.title;
         post.mainImage = input.mainImage;
-        post.content = input.content;
+        post.content = sanitizeHtml(input.content);
+        post.delta = input.delta;
         post.isPublished = input.isPublished;
         post.authorId = input.authorId;
     }

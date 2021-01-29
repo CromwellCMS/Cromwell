@@ -17,6 +17,10 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntity {
     @Column({ type: "varchar", nullable: true })
     pageTitle?: string;
 
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    pageDescription?: string;
+
     @Field(() => Date)
     @CreateDateColumn()
     createDate: Date;

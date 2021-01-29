@@ -170,7 +170,7 @@ export const serviceLocator = {
 
 export enum ECommonComponentNames {
     ProductCard = 'ProductCard',
-    Post = 'Post'
+    PostCard = 'PostCard',
 }
 
 export const logLevels = ["none", "errors-only", "errors-warnings", "minimal", "detailed", "all"];

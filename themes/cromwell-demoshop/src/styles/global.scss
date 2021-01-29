@@ -1,28 +1,35 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 * {
+  box-sizing: border-box;
+  &::before,
+  &::after {
     box-sizing: border-box;
-    &::before, &::after {
-      box-sizing: border-box;
-    }   
+  }
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1em;
-    font-weight: 300;
-    line-height: 1.5;
-    color: $text;
-    background: $bg;
-    @media (min-width: 48rem) {
-      font-size: 1.25em;
-    }
+  font-family: "Roboto", sans-serif;
+  font-size: 1em;
+  font-weight: 300;
+  line-height: 1.5;
+  color: $text;
+  background: $bg;
+  @media (min-width: 48rem) {
+    font-size: 1.25em;
+  }
 }
 
+div.ql-editor,
+div.ql-container.ql-snow {
+  padding: 0;
+  border: 0;
+  overflow: visible;
+}
 
 :global(.column) {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, a, abbr, acronym, address, big, cite, code, del, dfn, em, img, ins, kbd, q, s, samp, small, strike, strong, sub, sup, tt, var, b, u, i, center, dl, dt, dd, menu, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, main, menu, nav, output, ruby, section, summary, time, mark, audio, video {

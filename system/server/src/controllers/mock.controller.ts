@@ -12,6 +12,19 @@ export class MockController {
 
     constructor(private readonly mockService: MockService) { }
 
+    @Get('all')
+    @ApiOperation({ description: 'Use all available mocks' })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async mockAll(): Promise<boolean> {
+        logFor('detailed', 'MockController::mockAll');
+
+        return this.mockService.mockAll();
+    }
+
     @Get('products')
     @ApiOperation({ description: 'Delete all products and mock new' })
     @ApiResponse({
@@ -97,6 +110,6 @@ export class MockController {
 
         return this.mockService.mockPosts();
     }
-    
+
 
 }

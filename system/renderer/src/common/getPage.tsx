@@ -10,7 +10,7 @@ function useForceUpdate() {
     return () => setValue(value => ++value); // update the state to force render
 }
 
-export const getPage = (pageName: BasePageNames | string, PageComponent: React.ComponentType): TCromwellPage => {
+export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwellPage): TCromwellPage => {
     const cmsSettings = getStoreItem('cmsSettings');
     if (!cmsSettings) {
         throw new Error('getPage !cmsSettings ' + cmsSettings);
@@ -65,7 +65,7 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: React.C
                     <meta charSet="utf-8" />
                 </Head>
                 <CContainer id={pageRootContainerId} isConstant={true}>
-                    <PageComponent {...pageCompProps} {...restProps} />
+                    <PageComponent {...pageCompProps} {...props} />
                 </CContainer>
                 <Head>
                     {headHtml && ReactHtmlParser(headHtml)}

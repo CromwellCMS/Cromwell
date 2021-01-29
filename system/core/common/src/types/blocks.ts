@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { TProduct } from './entities';
+import { TPost, TProduct } from './entities';
 import { TPageConfig, TCmsConfig, TThemeMainConfig, TPageInfo, TCmsSettings } from './data';
 import { ReactNode } from 'react';
 
@@ -18,9 +18,9 @@ export type TGetStaticProps<
 export type TCromwellPage<Props = {} | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
 export type TCromwellPageCoreProps = {
-    pluginsData: Record<string, any>;
-    pluginsSettings: Record<string, any>;
-    childStaticProps: Record<string, any>;
+    pluginsData?: Record<string, any>;
+    pluginsSettings?: Record<string, any>;
+    childStaticProps?: Record<string, any>;
     pageConfig?: TPageConfig;
     cmsSettings?: TCmsSettings;
     themeMainConfig?: TThemeMainConfig;
@@ -77,7 +77,7 @@ export type TContentComponentProps = {
 }
 
 export type TCommonComponentProps = {
-    data?: TProduct;
+    data?: TProduct | TPost | any;
 }
 
 export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image' | 'gallery' | 'list' | 'link';

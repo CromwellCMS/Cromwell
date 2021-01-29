@@ -7,6 +7,8 @@ export type TBasePageEntity = {
     slug?: string;
     // Page SEO title
     pageTitle?: string;
+    // Page SEO description
+    pageDescription?: string;
     // DB createDate
     createDate: Date;
     // DB updateDate
@@ -93,8 +95,10 @@ export interface TPost extends TBasePageEntity {
     author?: TUser;
     // Href of main image
     mainImage?: string;
-    // Post content, stringified JSON from editorjs
+    // Post content, HTML
     content: string;
+    // Post content, stringified JSON from Quill.js
+    delta: string;
     // Is published?
     isPublished: boolean;
 }

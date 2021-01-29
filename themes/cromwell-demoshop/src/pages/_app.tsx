@@ -2,6 +2,7 @@ import * as React from 'react';
 import { AppProps } from 'next/app';
 import { ToastContainer } from 'react-toastify';
 import { ProductCard } from '../components/productCard/ProductCard';
+import { PostCard } from '../components/postCard/PostCard';
 import { ECommonComponentNames, saveCommonComponent, isServer } from '@cromwell/core';
 
 if (isServer()) {
@@ -10,6 +11,7 @@ if (isServer()) {
 }
 
 saveCommonComponent(ECommonComponentNames.ProductCard, ProductCard);
+saveCommonComponent(ECommonComponentNames.PostCard, PostCard);
 
 
 function App(props: AppProps) {

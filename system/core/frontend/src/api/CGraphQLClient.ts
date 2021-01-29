@@ -651,6 +651,7 @@ class CGraphQLClient {
             }
             mainImage
             content
+            delta
             isPublished
       }
   `

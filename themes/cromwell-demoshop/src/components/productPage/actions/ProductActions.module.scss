@@ -7,18 +7,21 @@
 
     .actionButton {
         margin-right: 15px;
+        margin-bottom: 10px;
     }
 
     .cartAndAMountBlock {
         display: flex;
         flex-wrap: wrap;
-        margin-bottom: 15px;
+        align-items: center;
+        margin-bottom: 5px;
     }
 
     .amountPicker {
         display: flex;
         align-items: center;
         margin-left: 15px;
+        margin-bottom: 10px;
         // border: 1px solid #ccc;
         // border-radius: 30px;
     }

@@ -19,7 +19,7 @@ const Post = (props) => {
     const client = getGraphQLClient();
     const [isLoading, setIsloading] = useState(false);
     const mode = getStoreItem('environment')?.mode;
-    const quillEditor = useRef<any>(null);
+    const quillEditor = useRef<Quill | null>(null);
     const history = useHistory();
 
     const getPostData = async (): Promise<TPost | undefined> => {
@@ -33,7 +33,7 @@ const Post = (props) => {
         return post;
     }
 
-    const initEditor = (postContent?: any[] | null) => {
+    const initEditor = (postContent?: any) => {
         quillEditor.current = new Quill('#editor', {
             theme: 'snow',
             placeholder: 'Let`s write an awesome story!',
@@ -71,9 +71,9 @@ const Post = (props) => {
     const init = async () => {
         const post = await getPostData();
         let postContent: any = null;
-        if (post?.content) {
+        if (post?.delta) {
             try {
-                postContent = JSON.parse(post?.content);
+                postContent = JSON.parse(post?.delta);
             } catch (e) { console.error(e) }
         }
         initEditor(postContent);
@@ -86,8 +86,10 @@ const Post = (props) => {
 
     const handleSave = async () => {
         console.log(quillEditor.current.getContents());
+        quillEditor.current.disable()
+        const outerHTML = document.querySelector('#editor')?.outerHTML;
 
-        if (postData?.id) {
+        if (postData?.id && outerHTML) {
             const updatePost: TPostInput = {
                 slug: postData.slug,
                 pageTitle: postData.pageTitle,
@@ -96,7 +98,8 @@ const Post = (props) => {
                 isPublished: postData.isPublished,
                 isEnabled: postData.isEnabled,
                 authorId: postData?.author?.id,
-                content: JSON.stringify(quillEditor.current.getContents())
+                delta: JSON.stringify(quillEditor.current.getContents()),
+                content: outerHTML
             }
             await client?.updatePost(postData.id, updatePost);
 

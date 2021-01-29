@@ -10,13 +10,13 @@ import { ProductCard } from '../../components/productCard/ProductCard';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Category.module.scss';
 
-interface ProductProps {
+interface CategoryProps {
     category?: TProductCategory | null;
     products?: TPagedList<TProduct> | null;
     slug?: string;
 }
 
-const ProductCategory: TCromwellPage<ProductProps> = (props) => {
+const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
     // console.log('ProductThemePage props', props);
     const category = props.category;
     const client = getGraphQLClient();
@@ -67,10 +67,10 @@ const ProductCategory: TCromwellPage<ProductProps> = (props) => {
     );
 }
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<ProductProps> => {
+export const getStaticProps: TGetStaticProps = async (context): Promise<CategoryProps> => {
     // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
-    console.log('CategoryThemePage::getStaticProps: slug', slug, 'context.params', context.params)
+    // console.log('CategoryThemePage::getStaticProps: slug', slug, 'context.params', context.params)
     let category: TProductCategory | undefined | null = null;
     if (slug && typeof slug === 'string') {
         try {

@@ -1,0 +1,57 @@
+@import "../variables.scss";
+
+
+.postList {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+    padding-right: 0;
+}
+
+.postWrapper {
+    width: 25%;
+    margin: 0;
+    margin-bottom: 15px;
+    padding: 5px;
+}
+
+.sortContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin: 20px 0 20px 20px;
+}
+
+@media (max-width: 985px) {
+    .postWrapper {
+        width: 33%;
+    }
+}
+
+@media (max-width: 725px) {
+    .postWrapper {
+        width: 50%;
+    }
+}
+
+@media (max-width: 498px) {
+    .product {
+        min-width: 70px;
+    }
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .sidebar {
+        height: 0;
+        width: 0;
+        overflow: hidden;
+    }
+
+    .main {
+        width: 100%;
+    }
+
+    .productList {
+        padding: 20px;
+        padding-right: 20px;
+    }
+}

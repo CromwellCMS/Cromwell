@@ -9,12 +9,12 @@ import React, { Component, useEffect, useRef, useState } from 'react';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './ProductCard.module.scss';
 
-export const ProductCard = (props: {
+export const ProductCard = (props?: {
     data?: TProduct, className?: string,
     variant?: 'grid' | 'list'
-} | undefined) => {
+}) => {
     const data = props?.data;
-    const productLink = `/product/${data?.slug}`;
+    const productLink = `/product/${data?.slug ?? data?.id}`;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [imageHeigth, setImageHeigth] = useState(300);
     const cstore = getCStore();

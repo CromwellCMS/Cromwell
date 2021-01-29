@@ -20,6 +20,10 @@ export class Post extends BasePageEntity implements TPost {
 
   @Field()
   @Column()
+  delta: string;
+  
+  @Field()
+  @Column()
   mainImage?: string;
 
   @Field()

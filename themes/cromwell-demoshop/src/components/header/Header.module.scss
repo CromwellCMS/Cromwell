@@ -155,7 +155,7 @@ div.cart {
     align-items: center;
     max-width: 100vw;
     max-height: calc(100vh - 15px);
-    width: 400px;
+    width: 470px;
     height: 300px;
     min-height: 140px;
     overflow: auto;
@@ -200,6 +200,9 @@ div.cart {
 
 .priceBlock {
     display: flex;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    padding-right: 20px;
     font-size: 18px;
     margin: 6px 0;
 }

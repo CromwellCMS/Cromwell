@@ -1,0 +1,134 @@
+@import "../../styles/variables.scss";
+
+.PostCard {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 300px;
+    min-width: 170px;
+    border-radius: 8px;
+    transition-property: box-shadow, z-index;
+    transition-duration: 0.3s;
+    background-color: #fff;
+    border: 1px solid #eee;
+
+    &:hover {
+        box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+        z-index: 5;
+    }
+
+    .imageBlock {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        align-items: center;
+        border-radius: 8px 8px 0 0;
+        // height: 300px;
+        width: 100%;
+    }
+    .image {
+        width: 100%;
+        object-fit: contain;
+    }
+
+    .caption {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        padding: 0 15px 20px 15px;
+    }
+
+    .productName {
+        color: $text;
+        font-size: 18px;
+    }
+
+    .priceCartBlock {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .priceBlock {
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 18px;
+        margin: 6px 0;
+    }
+    .price {
+        font-weight: 500;
+    }
+    .oldPrice {
+        text-decoration: line-through;
+        opacity: 0.7;
+        margin-right: 10px;
+    }
+
+    .description {
+        display: none;
+    }
+    .descriptionGradient {
+        display: none;
+    }
+
+    .ratingBlock {
+        display: flex;
+    }
+    .ratingCaption {
+        margin-left: 10px;
+    }
+
+    &.listVariant {
+        flex-direction: row;
+        max-width: 100%;
+
+        .description {
+            display: block;
+            position: relative;
+            height: 80px;
+            overflow: hidden;
+            font-size: 16px;
+        }
+
+        .descriptionGradient {
+            display: block;
+            position: absolute;
+            width: 100%;
+            bottom: 0;
+            height: 50px;
+            background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 1));
+        }
+
+        .productName {
+            font-weight: 500;
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .imageBlock {
+            width: auto;
+            > a {
+                height: 100%;
+            }
+        }
+
+        .image {
+            height: 100%;
+            width: auto;
+        }
+
+        .caption {
+            padding: 20px;
+        }
+    }
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .Product {
+        .imageBlock {
+            height: auto;
+        }
+    }
+}

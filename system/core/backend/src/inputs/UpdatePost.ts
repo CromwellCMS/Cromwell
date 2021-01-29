@@ -18,5 +18,8 @@ export class UpdatePost extends BasePageInput implements TPostInput {
     content: string;
 
     @Field()
+    delta: string;
+
+    @Field()
     isPublished: boolean;
 }
