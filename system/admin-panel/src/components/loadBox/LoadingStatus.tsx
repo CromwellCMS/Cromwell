@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
 import Loadbox from './LoadBox';
 import { createStyles, makeStyles, Theme } from '@material-ui/core';
@@ -17,6 +17,12 @@ export const LoadingStatus = (props: { isActive: boolean }) => {
     const lastState = React.useRef<boolean>(false);
     const toastId = React.useRef<null | string | number>(null);
     const classes = useStyles();
+
+    useEffect(() => {
+        return () => {
+            if (toastId.current) toast.dismiss(toastId.current);
+        }
+    }, []);
 
     if (props.isActive && !lastState.current) {
         // open loader

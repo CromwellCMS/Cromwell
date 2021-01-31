@@ -2,6 +2,7 @@ import { Button, Modal } from '@material-ui/core';
 import { ShoppingCart as ShoppingCartIcon } from '@material-ui/icons';
 import { observer } from 'mobx-react';
 import React from 'react';
+import { Link } from '@cromwell/core-frontend'
 
 import { productListStore } from '../../../helpers/ProductListStore';
 import commonStyles from '../../../styles/common.module.scss';
@@ -20,15 +21,19 @@ export const CartModal = observer(() => {
         >
             <div className={styles.cartModal}>
                 <div className={styles.cartList}>
-                    <CartProductList />
+                    <CartProductList onProductOpen={handleCartClose} />
                 </div>
-                <Button
-                    className={styles.checkoutBtn}
-                    variant="contained"
-                    color="primary"
-                    size="large"
-                    startIcon={<ShoppingCartIcon />}
-                >Checkout</Button>
+                <Link href="/checkout">
+                    <a onClick={handleCartClose} style={{ display: 'flex' }}>
+                        <Button
+                            className={styles.checkoutBtn}
+                            variant="contained"
+                            color="primary"
+                            size="large"
+                            startIcon={<ShoppingCartIcon />}
+                        >Checkout</Button>
+                    </a>
+                </Link>
             </div>
         </Modal>
     )

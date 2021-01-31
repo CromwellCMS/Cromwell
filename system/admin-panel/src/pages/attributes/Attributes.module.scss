@@ -1,4 +1,11 @@
+@import "../../styles/common.module.scss";
+
 .Attributes {
     padding: 20px;
     width: 100%;
+}
+
+.listItem {
+    @include paper;
+    margin-bottom: 20px;
 }

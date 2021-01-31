@@ -10,7 +10,6 @@ type TLinkProps = {
 }
 
 export const Link = (props: TLinkProps) => {
-    const LinkComp = NextLink ?? ((props) => <a>{props.children ?? ''}</a>);
     const pagesInfo = getStoreItem('pagesInfo');
     let dynamicPageCompHref: string | undefined = undefined;
     if (pagesInfo && Array.isArray(pagesInfo)) {
@@ -27,13 +26,18 @@ export const Link = (props: TLinkProps) => {
             }
         })
     }
+    if (NextLink) {
+        return (
+            <NextLink
+                href={dynamicPageCompHref ?? props.href}
+                as={dynamicPageCompHref ? props.href : undefined}
+            >
+                {props.children ?? ''}
+            </NextLink>
+        )
+    }
     return (
-        <LinkComp
-            href={dynamicPageCompHref ?? props.href}
-            as={dynamicPageCompHref ? props.href : undefined}
-        >
-            {props.children ?? ''}
-        </LinkComp>
+        <a href={props.href + ''}>{props.children ?? ''}</a>
     )
 }
 

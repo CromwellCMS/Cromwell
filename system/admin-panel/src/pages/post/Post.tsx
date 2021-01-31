@@ -86,7 +86,7 @@ const Post = (props) => {
 
     const handleSave = async () => {
         console.log(quillEditor.current.getContents());
-        quillEditor.current.disable()
+        quillEditor.current.disable();
         const outerHTML = document.querySelector('#editor')?.outerHTML;
 
         if (postData?.id && outerHTML) {
@@ -101,9 +101,15 @@ const Post = (props) => {
                 delta: JSON.stringify(quillEditor.current.getContents()),
                 content: outerHTML
             }
-            await client?.updatePost(postData.id, updatePost);
+            try {
+                await client?.updatePost(postData.id, updatePost);
+                toast.success('Saved!');
 
-            toast.success('Saved!');
+            } catch(e) {
+                toast.error('Falied to save');
+                console.error(e)
+            }
+            quillEditor.current.enable();
         }
     }
 

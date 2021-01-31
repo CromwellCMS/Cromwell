@@ -46,11 +46,12 @@ export default function index(props: TAdminPanelPluginProps<TProductFilterSettin
     return (
         <div className={`${classes.paper} ${classes.content}`}>
             <h1 style={{ marginBottom: '10px' }}>ProductFilter</h1>
-            <h3 style={{ marginBottom: '10px' }}>Mobile icon position (in pixels):</h3>
+            <h3 style={{ marginBottom: '10px', marginTop: '10px' }}>Mobile icon position (in pixels):</h3>
             <TextField label="Top" value={iconTop} style={{ marginBottom: '10px' }}
                 onChange={e => setIconTop(parseInt(e.target.value))} />
             <TextField label="Left" value={iconLeft} style={{ marginBottom: '10px' }}
                 onChange={e => setIconLeft(parseInt(e.target.value))} />
+            <h3 style={{ marginBottom: '10px', marginTop: '10px' }}>Options visibility</h3>
             <FormControlLabel
                 control={
                     <Checkbox

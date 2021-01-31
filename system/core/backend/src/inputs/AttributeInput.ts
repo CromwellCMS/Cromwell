@@ -1,8 +1,9 @@
 import { TAttributeInput, TAttributeValue } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
+import { BasePageInput } from './BasePageInput';
 
 @InputType("AttributeInput")
-export class AttributeInput implements TAttributeInput {
+export class AttributeInput extends BasePageInput implements TAttributeInput {
     @Field(type => String)
     key: string;
 

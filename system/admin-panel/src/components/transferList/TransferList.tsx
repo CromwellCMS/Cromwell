@@ -154,7 +154,7 @@ export const CheckList = (props: {
     };
 
     return (
-        <Card>
+        <div>
             <div
                 style={{ padding: '16px', display: 'flex', alignItems: 'center' }}
                 className={classes.cardHeader}
@@ -210,6 +210,6 @@ export const CheckList = (props: {
                 })}
                 <ListItem />
             </List>
-        </Card >
+        </div >
     )
 }

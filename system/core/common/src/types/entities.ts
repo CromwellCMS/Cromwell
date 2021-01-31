@@ -127,15 +127,14 @@ export type TUserInput = Omit<TUser, TDBAuxiliaryColumns> & {
 
 // Attribute
 
-type TAttributeCore = {
+export interface TAttribute extends TBasePageEntity {
     key: string;
     values: TAttributeValue[];
     type: 'radio' | 'checkbox';
     icon?: string;
 }
-export type TAttribute = TAttributeCore & TBasePageEntity;
 
-export type TAttributeInput = TAttributeCore & TBasePageEntityInput;
+export type TAttributeInput = Omit<TAttribute, TDBAuxiliaryColumns>;
 
 export type TAttributeValue = {
     value: string;

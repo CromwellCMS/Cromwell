@@ -1,0 +1,58 @@
+@import "../common.module.scss";
+
+.CheckoutPage {
+    @include paper;
+    display: flex;
+    padding: 15px;
+    margin: 15px 0;
+
+    .inputZone {
+        width: 60%;
+        padding-right: 20px;
+    }
+
+    .cartZone {
+        width: 40%;
+        padding-left: 20px;
+    }
+
+    .signInBlock {
+        display: flex;
+        margin: 20px 0 20px 0;
+
+        .singinBtn {
+            margin-right: 15px;
+        }
+    }
+
+    .emailBlock {
+        width: 60%;
+    }
+
+    .pageTitle {
+        margin: 15px 0;
+        font-size: 32px;
+    }
+
+    .input {
+        margin-bottom: 20px;
+    }
+
+    .delimiter {
+        width: 100%;
+        border-bottom: 2px solid #eee;
+        margin: 20px 0px;
+    }
+
+    .subHeader {
+        font-size: 23px;
+        font-weight: 400;
+    }
+
+    .orderBtnWrapper {
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+}
