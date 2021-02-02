@@ -10,7 +10,6 @@ import { connectDatabase } from './helpers/connectDatabase';
 import { setEnv } from './helpers/setEnv';
 import { AppModule } from './modules/app.module';
 
-
 async function bootstrap(): Promise<void> {
     const envMode = setEnv();
 
@@ -26,10 +25,12 @@ async function bootstrap(): Promise<void> {
 
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
     app.setGlobalPrefix(apiV1BaseRoute);
-    app.use(cors({
-        origin: [serviceLocator.getFrontendUrl(), serviceLocator.getAdminPanelUrl()]
-    }));
+
     app.register(require('fastify-multipart'));
+
+    app.enableCors({
+        origin: '*'
+    })
 
     // Setup SwaggerUI
     const options = new DocumentBuilder()

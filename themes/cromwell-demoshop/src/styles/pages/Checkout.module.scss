@@ -1,4 +1,5 @@
 @import "../common.module.scss";
+@import "../variables.scss";
 
 .CheckoutPage {
     @include paper;
@@ -54,5 +55,27 @@
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .CheckoutPage {
+        flex-direction: column;
+
+        .inputZone,
+        .cartZone {
+            width: 100%;
+            padding: 0;
+        }
+
+        .pageTitle {
+            order: 0;
+        }
+        .cartZone {
+            order: 1;
+        }
+        .inputZone {
+            order: 2;
+        }
     }
 }

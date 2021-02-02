@@ -1,7 +1,7 @@
 import { Link } from '@cromwell/core-frontend';
 import { CContainer, CHTML, CPlugin, getCStore } from '@cromwell/core-frontend';
 import { getCmsSettings, getThemeCustomConfigProp, TCurrency } from '@cromwell/core';
-import { IconButton, SwipeableDrawer } from '@material-ui/core';
+import { IconButton, SwipeableDrawer, AppBar, Toolbar, Slide, useScrollTrigger } from '@material-ui/core';
 import {
     Equalizer as EqualizerIcon,
     Favorite as FavoriteIcon,
@@ -31,26 +31,38 @@ export const MobileHeader = () => {
     const logoHref: string | undefined = getThemeCustomConfigProp('header/logo');
 
     return (
-        <div className={styles.MobileHeader}>
-            <div className={styles.leftActions}>
-                <div className={styles.logo}>
-                    <Link href="/">
-                        <img className={styles.logo} src={logoHref} alt="logo" />
-                    </Link>
-                </div>
+        <>
+            <Toolbar className={styles.dummyToolbar} />
+            <HideOnScroll>
+                <AppBar
+                    className={styles.appBar}
+                    color="transparent"
+                >
+                    <Toolbar>
+                        <div className={styles.appBarContent}>
+                            <div className={styles.leftActions}>
+                                <div className={styles.logo}>
+                                    <Link href="/">
+                                        <img className={styles.logo} src={logoHref} alt="logo" />
+                                    </Link>
+                                </div>
 
-            </div>
-            <div className={styles.rightActions}>
-                <IconButton onClick={handleOpenCart}>
-                    <FavoriteIcon />
-                </IconButton>
-                <IconButton onClick={handleOpenCart}>
-                    <ShoppingCartIcon />
-                </IconButton>
-                <IconButton onClick={handleOpenMenu}>
-                    <MenuIcon />
-                </IconButton>
-            </div>
+                            </div>
+                            <div className={styles.rightActions}>
+                                <IconButton onClick={handleOpenCart}>
+                                    <FavoriteIcon />
+                                </IconButton>
+                                <IconButton onClick={handleOpenCart}>
+                                    <ShoppingCartIcon />
+                                </IconButton>
+                                <IconButton onClick={handleOpenMenu}>
+                                    <MenuIcon />
+                                </IconButton>
+                            </div>
+                        </div>
+                    </Toolbar>
+                </AppBar>
+            </HideOnScroll>
             <SwipeableDrawer
                 open={menuOpen}
                 onClose={handleCloseMenu}
@@ -82,6 +94,16 @@ export const MobileHeader = () => {
                     </CContainer>
                 </div>
             </SwipeableDrawer>
-        </div>
+        </>
+    );
+}
+
+function HideOnScroll(props: { children: React.ReactElement }) {
+    const trigger = useScrollTrigger();
+
+    return (
+        <Slide appear={false} direction="down" in={!trigger}>
+            {props.children}
+        </Slide>
     );
 }

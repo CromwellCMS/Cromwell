@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
 import { TCromwellPage } from '@cromwell/core';
-import styles from '../styles/pages/Checkout.module.scss';
-import Layout from '../components/layout/Layout';
+import { Button, TextField, useMediaQuery, useTheme } from '@material-ui/core';
+import React, { useState } from 'react';
+
 import { CartProductList } from '../components/checkoutPage/productList/CartProductList';
-import { ClickAwayListener, Button, Fade, Grid, Popper, TextField, withStyles } from '@material-ui/core';
+import Layout from '../components/layout/Layout';
 import commonStyles from '../styles/common.module.scss';
+import styles from '../styles/pages/Checkout.module.scss';
 
 
 const CheckoutPage: TCromwellPage = (props) => {
@@ -15,6 +16,9 @@ const CheckoutPage: TCromwellPage = (props) => {
         phone?: string;
         address?: string;
     }>({});
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
 
     const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
         const { name, value } = event.target;
@@ -101,7 +105,7 @@ const CheckoutPage: TCromwellPage = (props) => {
 
                     </div>
                     <div className={styles.cartZone}>
-                        <CartProductList />
+                        <CartProductList collapsedByDefault={isMobile} />
                     </div>
                 </div>
             </div>

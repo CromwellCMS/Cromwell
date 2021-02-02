@@ -37,7 +37,8 @@ const main = async () => {
 
   if (scriptName === 'buildService') return;
 
-  execSync(`node ${buildScriptPath} ${scriptName}`, { shell: true, cwd: process.cwd(), stdio: 'inherit' });
+  const { startSystem } = require('./build/index');
+  startSystem();
 }
 
 main();

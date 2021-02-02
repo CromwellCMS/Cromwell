@@ -158,7 +158,7 @@
   },
   "scripts": {
     "build": "cromwell b",
-    "watch": "cromwell w"
+    "watch": "cromwell b -w"
   },
   "resolutions": {
     "webpack": "5.11.1"

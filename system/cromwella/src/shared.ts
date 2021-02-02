@@ -37,8 +37,7 @@ export const getNodeModuleNameWithVersion = (moduleName: string, importFromPath?
 export const getDepVersion = (pckg: TPackageJson | TPackage, depName: string): string | undefined => {
     let ver = pckg?.dependencies?.[depName] ?? pckg?.devDependencies?.[depName] ?? pckg?.peerDependencies?.[depName];
     if (ver) return ver;
-    const frontDeps: (string | TFrontendDependency)[] | undefined = (pckg as TPackage)?.frontendDependencies ??
-        (pckg as TPackageJson)?.cromwell?.frontendDependencies;
+    const frontDeps: (string | TFrontendDependency)[] | undefined = pckg?.cromwell?.frontendDependencies;
 
     if (frontDeps) {
         frontDeps.forEach(dep => {
@@ -292,7 +291,9 @@ export const collectPackagesInfo = (packagePaths: string[]): TPackage[] => {
                 dependencies: pkgJson.dependencies,
                 devDependencies: pkgJson.devDependencies,
                 peerDependencies: pkgJson.peerDependencies,
-                frontendDependencies: pkgJson?.cromwell?.frontendDependencies
+                cromwell: {
+                    frontendDependencies: pkgJson?.cromwell?.frontendDependencies
+                }
             };
             packages.push(pckg);
         } catch (e) {
@@ -328,7 +329,7 @@ export const hoistDependencies = (packages: TPackage[], isProduction, forceInsta
     return { packages, hoistedDependencies, hoistedDevDependencies };
 }
 
-export const collectFrontendDependencies = (packages: TPackage[], forceInstall?: boolean): TFrontendDependency[] => {
+export const collectFrontendDependencies = (packages: (TPackage)[], forceInstall?: boolean): TFrontendDependency[] => {
     const frontendDependencies: TFrontendDependency[] = defaultFrontendDeps.map(dep => {
         if (typeof dep === 'object') {
             if (!dep.version) dep.version = getNodeModuleVersion(dep.name);
@@ -341,8 +342,9 @@ export const collectFrontendDependencies = (packages: TPackage[], forceInstall?:
     });
 
     packages.forEach(pckg => {
-        if (pckg?.frontendDependencies && Array.isArray(pckg.frontendDependencies)) {
-            pckg.frontendDependencies.forEach(dep => {
+        const pckheDeps = pckg?.cromwell?.frontendDependencies;
+        if (pckheDeps && Array.isArray(pckheDeps)) {
+            pckheDeps.forEach(dep => {
                 const depName = typeof dep === 'object' ? dep.name : dep;
 
                 const depVersion = getDepVersion(pckg, depName);

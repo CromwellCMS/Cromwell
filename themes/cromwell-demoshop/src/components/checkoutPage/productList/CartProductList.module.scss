@@ -1,3 +1,5 @@
+@import "../../../styles/variables.scss";
+
 .CartProductList {
     width: 100%;
     height: 100%;
@@ -50,7 +52,7 @@
     margin-right: auto;
 }
 
-.cartInfo {
+.cartHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -58,8 +60,14 @@
     border-bottom: 1px solid #ddd;
     flex-wrap: wrap;
 
+    .cartInfo {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
     .priceBlock {
-        font-weight: 500;
         margin-right: 15px;
     }
 }
@@ -70,4 +78,14 @@
 }
 
 .itemsText {
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .cartHeader {
+        .cartInfo {
+            flex-direction: column;
+            width: auto;
+            align-items: flex-start;
+        }
+    }
 }

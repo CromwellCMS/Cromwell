@@ -5,11 +5,11 @@ import { TAdminPanelCommands } from '../constants';
 import { ManagerState } from '../managerState';
 import { closeService, startService } from './baseManager';
 
-const { cacheKeys, servicesEnv } = config;
 const logger = getLogger('errors-only');
 const adminPanelStartupPath = getAdminPanelStartupPath();
 
 export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<boolean> => {
+    const { cacheKeys, servicesEnv } = config;
     const env = command ?? servicesEnv.adminPanel;
 
     if (env && adminPanelStartupPath) {
@@ -36,6 +36,7 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
 }
 
 export const closeAdminPanel = async (): Promise<boolean> => {
+    const { cacheKeys, servicesEnv } = config;
     const success = await closeService(cacheKeys.adminPanel);
     if (success) {
         ManagerState.adminPanelStatus = 'inactive';

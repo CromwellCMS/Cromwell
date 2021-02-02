@@ -1,8 +1,27 @@
-.MobileHeader {
+@import "../../styles/common.module.scss";
+@import "../../styles/variables.scss";
+
+header.appBar {
+    padding: 0;
+    box-shadow: none;
+    @include paperElevated;
+
+    > div {
+        padding: 0;
+    }
+}
+
+.dummyToolbar {
+    height: 68px;
+}
+
+.appBarContent {
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 10px;
+    width: 100%;
+    background-color: #fff;
 
     svg:global(.MuiSvgIcon-root) {
         color: #333;

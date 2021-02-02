@@ -31,7 +31,8 @@ const fs = require('fs');
 
     // Check node_modules
     if (!hasNodeModules()) {
-        spawnSync(`yarn install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`npm i yarn --no-save`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`npx yarn install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
     // Build core
@@ -97,7 +98,7 @@ const fs = require('fs');
 
     // Start system
     try {
-        spawnSync(`node ${managerStartupPath} start`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`node ${managerStartupPath} production`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     } catch (e) {
         console.log(e);
         console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager:Failed to Start system');

@@ -5,7 +5,6 @@ const { buildDir, rendererRootDir, tempDir } = require('./constants');
 const { resolve } = require('path');
 const npmRunPath = require('npm-run-path');
 
-npmRunPath();
 
 /**
  * 'buildService' - compile "src" files into "build" dir
@@ -85,7 +84,7 @@ const main = async () => {
             // }
             gen();
 
-            proc = spawn(`next start -p ${config.frontendPort}`, [],
+            proc = spawn(`npx --no-install next start -p ${config.frontendPort}`, [],
                 { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
         } catch (e) {
             if (process.send) process.send(rendererMessages.onStartErrorMessage);

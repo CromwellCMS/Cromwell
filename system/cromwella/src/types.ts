@@ -16,7 +16,9 @@ export type TPackage = {
     dependencies?: Record<string, string>;
     devDependencies?: Record<string, string>;
     peerDependencies?: Record<string, string>;
-    frontendDependencies?: (string | TFrontendDependency)[];
+    cromwell?: {
+        frontendDependencies?: (string | TFrontendDependency)[];
+    }
 };
 
 // { [project root dir]: info }

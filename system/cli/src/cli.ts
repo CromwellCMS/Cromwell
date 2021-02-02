@@ -107,6 +107,8 @@ const args = yargs(process.argv.slice(2))
             downloader(process.cwd());
         }
     })
+
+    // CLEAN
     .command({
         command: 'clean',
         describe: 'remove all compiled directories',
