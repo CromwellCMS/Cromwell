@@ -112,7 +112,7 @@ export class PluginService {
             const filePath = resolve(pluginPath, configFileName);
             if (await fs.pathExists(filePath)) {
                 try {
-                    decache(filePath);
+                    // decache(filePath);
                     pluginConfig = require(filePath);
                 } catch (e) {
                     console.error(e);

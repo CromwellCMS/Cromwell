@@ -15,7 +15,7 @@ import {
     getServerDir
 } from '@cromwell/core-backend';
 import { resolve } from 'path';
-import { ConnectionOptions, createConnection } from 'typeorm';
+import { ConnectionOptions, createConnection, getConnection } from 'typeorm';
 import { getCustomRepository } from 'typeorm';
 import fs from 'fs-extra';
 
@@ -25,15 +25,16 @@ import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 import { GenericPlugin, GenericTheme } from './genericEntities';
 
-const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
 
-const defaultOrmConfig: ConnectionOptions = {
-    "type": "sqlite",
-    "database": tempDBPath,
-    "synchronize": true
-}
+export const connectDatabase = async (env: 'dev' | 'prod' | 'test') => {
 
-export const connectDatabase = async (env: string) => {
+    const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
+
+    const defaultOrmConfig: ConnectionOptions = {
+        "type": "sqlite",
+        "database": tempDBPath,
+        "synchronize": true
+    }
 
     let ormconfig: ConnectionOptions | undefined;
     try {
@@ -44,7 +45,7 @@ export const connectDatabase = async (env: string) => {
         const serverDir = getServerDir();
         if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {
             // Server probably was launched at the first time and has no DB created
-            // Use demo DB
+            // Use mocked DB
             const dempDBPath = resolve(serverDir, 'db.sqlite3');
             if (await fs.pathExists(dempDBPath)) {
                 await fs.copy(dempDBPath, tempDBPath);
@@ -103,3 +104,6 @@ export const connectDatabase = async (env: string) => {
 
 }
 
+export const closeConnection = async () => {
+    await getConnection().close();
+}

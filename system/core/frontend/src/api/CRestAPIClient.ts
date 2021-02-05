@@ -81,8 +81,16 @@ class CRestAPIClient {
         return this.get(`cms/remove-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`);
     }
 
-    public uploadPublicFile = (dirName: string, inPath?: string): Promise<string[] | null | undefined> => {
-        return this.get(`cms/remove-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`);
+    public uploadPublicFiles = async (inPath: string, files: File[]): Promise<boolean | null | undefined> => {
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append(file.name, file);
+        }
+        const response = await fetch(`${this.baseUrl}/cms/upload-public-file?inPath=${inPath ?? '/'}`, {
+            method: 'POST',
+            body: formData
+        });
+        return response.body;
     }
 
     public getThemesInfo = async (): Promise<TThemeMainConfig[] | undefined> => {

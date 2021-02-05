@@ -234,20 +234,15 @@ export class FileManager extends React.Component<any, TState> implements IFileMa
             var files = e.target?.files;
             if (!files) return;
 
-            const formData = new FormData();
-
-            for (const file of files) {
-                formData.append(file.name, file);
-            }
-
             this.setState({ isLoading: true });
 
-            const response = await fetch(`${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/cms/upload-public-file?inPath=${this.currentPath ?? '/'}`, {
-                method: 'POST',
-                body: formData
-            });
+            try {
+                await getRestAPIClient()?.uploadPublicFiles(this.currentPath, files)
+                this.fetchCurrentItems();
+            } catch (e) {
+                console.error(e)
+            }
 
-            this.fetchCurrentItems();
         })
     }
 

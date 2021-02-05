@@ -1,6 +1,6 @@
 import { logFor, TCmsSettings, TPluginConfig, TThemeMainConfig } from '@cromwell/core';
 import { getCmsModuleConfig, getNodeModuleDir, getPublicDir, readCmsModules } from '@cromwell/core-backend';
-import { Controller, Get, HttpException, HttpStatus, Post, Query, Req } from '@nestjs/common';
+import { Controller, Get, HttpException, HttpStatus, Post, Query, Req, Header } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
@@ -189,6 +189,7 @@ export class CmsController {
     }
 
     @Post('upload-public-file')
+    @Header('content-type', 'multipart/form-data')
     @ApiOperation({
         description: 'Uploads a file to specified subfolder of "public" files',
         parameters: [

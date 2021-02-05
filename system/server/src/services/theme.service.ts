@@ -334,7 +334,7 @@ export class ThemeService {
             const filePath = resolve(themePath, configFileName);
             if (await fs.pathExists(filePath)) {
                 try {
-                    decache(filePath);
+                    // decache(filePath);
                     themeConfig = require(filePath);
                 } catch (e) {
                     console.error(e);

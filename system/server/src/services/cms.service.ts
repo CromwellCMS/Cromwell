@@ -68,7 +68,7 @@ export class CmsService {
         if (entity) {
             entity.themeName = themeName;
             const cmsRepo = getCustomRepository(GenericCms.repository);
-            cmsRepo.save(entity);
+            await cmsRepo.save(entity);
             return true;
         }
         return false;

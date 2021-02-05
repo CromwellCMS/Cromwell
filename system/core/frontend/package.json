@@ -10,6 +10,10 @@
   ],
   "author": "Cromwell",
   "license": "ISC",
+  "scripts": {
+    "build": "npx rollup -c",
+    "watch": "npx rollup -cw"
+  },
   "dependencies": {
     "@apollo/client": "3.2.1",
     "@cromwell/core": "1.1.0",
@@ -44,10 +48,6 @@
     "typescript-plugin-css-modules": "^2.7.0"
   },
   "description": "",
-  "scripts": {
-    "build": "npx rollup -c",
-    "watch": "npx rollup -cw"
-  },
   "resolutions": {
     "webpack": "5.11.1"
   }
