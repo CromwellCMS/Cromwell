@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "ES2019",
-        "module": "esnext",
+        "module": "ESNext",
         "lib": [
             "dom",
             "es2015",
@@ -13,16 +13,19 @@
         "jsx": "react",
         "strict": true,
         "esModuleInterop": true,
+        "isolatedModules": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
         "strictPropertyInitialization": false,
         "resolveJsonModule": true,
+        "noImplicitAny": false,
         "moduleResolution": "node",
         "plugins": [
             {
                 "name": "typescript-plugin-css-modules"
             }
-        ]
+        ],
+        "incremental": true,
     },
     "include": [
         "src/**/*.ts",

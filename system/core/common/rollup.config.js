@@ -1,4 +1,4 @@
-import typescript from 'rollup-plugin-typescript2';
+import typescript from 'rollup-plugin-ts';
 import { resolve } from 'path';
 import autoExternal from 'rollup-plugin-auto-external';
 import { terser } from 'rollup-plugin-terser';
@@ -16,15 +16,16 @@ const getOutput = (format = 'esm') => {
 const getPlugins = (format = 'esm') => {
     const typeScriptOptions = format === 'esm' ?
         {
-            compilerOptions: {
-                declaration: true, declarationMap: true, rootDir: resolve(__dirname, 'src'),
-                declarationDir: resolve(__dirname, pkg.module)
-            }
+            declaration: true,
+            declarationMap: true,
+            declarationDir: resolve(__dirname, pkg.module)
         } : {};
 
     return [
         autoExternal(),
-        typescript({ tsconfigOverride: typeScriptOptions })
+        typescript({
+            tsconfig: resolvedConfig => ({ ...resolvedConfig, ...typeScriptOptions })
+        }),
         // terser(),
     ];
 };

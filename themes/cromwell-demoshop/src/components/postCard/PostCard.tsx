@@ -1,5 +1,5 @@
 import React, { Component, useEffect, useRef, useState } from 'react';
-import { TPost } from '@cromwell/core/es';
+import { TPost } from '@cromwell/core';
 import { TProduct } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
 import { IconButton, useMediaQuery, useTheme } from '@material-ui/core';

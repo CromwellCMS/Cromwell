@@ -10,6 +10,7 @@
     ],
     "allowJs": true,
     "strict": true,
+    "rootDir": "./",
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,

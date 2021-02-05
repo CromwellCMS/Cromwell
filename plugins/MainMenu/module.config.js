@@ -7,7 +7,7 @@ module.exports = {
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
         const { terser } = require('rollup-plugin-terser');
-        const typescript = require('rollup-plugin-typescript2');
+        const typescript = require('rollup-plugin-ts');
         return {
             main: {
                 plugins: [

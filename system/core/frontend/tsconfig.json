@@ -10,6 +10,7 @@
     ],
     "allowJs": true,
     "jsx": "react",
+    "baseUrl": ".",
     "strict": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,

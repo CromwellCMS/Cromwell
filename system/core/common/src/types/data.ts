@@ -182,6 +182,8 @@ export type TPluginConfig = TBuildConfig & {
     icon?: string;
 }
 
+export type TModuleConfig = TThemeConfig & TPluginConfig;
+
 export type TCromwellNodeModules = {
     importStatuses?: Record<string, 'failed' | 'ready' | 'default' | Promise<'failed' | 'ready' | 'default'>>;
     scriptStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;

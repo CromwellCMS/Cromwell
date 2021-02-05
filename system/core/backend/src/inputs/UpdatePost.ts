@@ -1,4 +1,4 @@
-import { TPostInput } from "@cromwell/core/es";
+import { TPostInput } from "@cromwell/core";
 import { InputType, Field, ID } from "type-graphql";
 import { BasePageInput } from './BasePageInput';
 

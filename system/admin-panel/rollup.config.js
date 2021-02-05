@@ -1,9 +1,10 @@
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
-import typescript from "rollup-plugin-typescript2";
+import typescript from "rollup-plugin-ts";
 import packageJson from './package.json';
 import json from '@rollup/plugin-json';
 import fs from 'fs-extra';
+import ts from 'typescript';
 const { resolve } = require('path');
 
 const external = id => {
@@ -30,7 +31,7 @@ const external = id => {
 
 const buildDir = 'build';
 const typeScriptOptions = {
-    module: "ESNext",
+    module: ts.ModuleKind.ESNext,
     rootDir: resolve(__dirname, 'src'),
     allowJs: true,
     outDir: resolve(__dirname, buildDir)
@@ -56,7 +57,9 @@ export default [
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({ tsconfigOverride: { compilerOptions: typeScriptOptions } })
+            typescript({
+                tsconfig: resolvedConfig => ({ ...resolvedConfig, ...typeScriptOptions })
+            }),
         ]
     },
     {
@@ -76,7 +79,9 @@ export default [
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({ tsconfigOverride: { compilerOptions: typeScriptOptions } })
+            typescript({
+                tsconfig: resolvedConfig => ({ ...resolvedConfig, ...typeScriptOptions })
+            }),
         ]
     },
 ];

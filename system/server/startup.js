@@ -11,7 +11,7 @@ const buildDir = normalizePath(resolve(serverRootDir, 'build'));
 const main = async () => {
 
     const buildServer = () => {
-        spawnSync(`npx rollup -c`, [],
+        spawnSync(`npx --no-install rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: serverRootDir });
     }
 
@@ -25,10 +25,10 @@ const main = async () => {
             buildServer();
         }
 
-        spawn(`npx nodemon --watch ${buildDir} ${buildDir}/server.js ${process.argv.slice(2).join(' ')}`, [],
+        spawn(`npx --no-install nodemon --watch ${buildDir} ${buildDir}/server.js ${process.argv.slice(2).join(' ')}`, [],
             { shell: true, stdio: 'inherit', cwd: process.cwd() });
 
-        const rollupProc = spawn(`npx rollup -cw`, [],
+        const rollupProc = spawn(`npx --no-install rollup -cw`, [],
             { shell: true, stdio: 'pipe', cwd: serverRootDir });
 
         rollupProc?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff));

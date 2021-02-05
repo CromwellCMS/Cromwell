@@ -3,7 +3,12 @@ import React from 'react';
 
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 
-export const CText = (props: { children?: string; element?: keyof React.ReactHTML } & TCromwellBlockProps) => {
+type CTextProps = {
+    children?: string;
+    element?: keyof React.ReactHTML
+} & TCromwellBlockProps;
+
+export const CText = (props: CTextProps) => {
     const { children, element, ...rest } = props;
     return (
         <CromwellBlock

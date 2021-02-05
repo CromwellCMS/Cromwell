@@ -31,7 +31,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async applyGetProductRating(qb: SelectQueryBuilder<TProduct>) {
-        qb.addSelect(`AVG(${DBTableNames.ProductReview}.${ratingKey})`, 'product_' + averageKey)
+        qb.addSelect(`AVG(${DBTableNames.ProductReview}.${String(ratingKey)})`, 'product_' + averageKey)
             .addSelect(`COUNT(${DBTableNames.ProductReview}.id)`, 'product_' + reviewsCountKey)
             .leftJoin(ProductReview, DBTableNames.ProductReview, `${DBTableNames.ProductReview}.productId = ${DBTableNames.Product}.id `)
             .groupBy(`${DBTableNames.Product}.id`);

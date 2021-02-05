@@ -20,23 +20,25 @@ module.exports = {
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
         const json = require('@rollup/plugin-json');
-        const typescript = require('rollup-plugin-typescript2');
         const postcss = require('rollup-plugin-postcss');
         const { terser } = require('rollup-plugin-terser');
+        const typescript = require('rollup-plugin-ts');
+
+        const getDefaultPlugins = () => [
+            commonjs(),
+            json(),
+            typescript(),
+            // terser()
+        ];
+
         return {
             main: {
                 plugins: [
-                    commonjs(),
-                    typescript(),
-                    json(),
-                    // terser(),
+                    ...getDefaultPlugins(),
                 ]
             },
             adminPanel: {
                 plugins: [
-                    commonjs(),
-                    typescript(),
-                    json(),
                     postcss({
                         extract: false,
                         modules: true,
@@ -44,7 +46,7 @@ module.exports = {
                         inject: true,
                         use: ['sass'],
                     }),
-                    // terser()
+                    ...getDefaultPlugins(),
                 ]
             }
         }

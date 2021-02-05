@@ -13,6 +13,7 @@ import {
     TCmsSettings
 } from '@cromwell/core';
 
+type TPluginsModifications = TPluginConfig & { [x: string]: any };
 
 class CRestAPIClient {
     constructor(private baseUrl: string) { }
@@ -106,7 +107,7 @@ class CRestAPIClient {
         return data ?? false;
     }
 
-    public getPluginsModifications = async (pageRoute: string): Promise<Record<string, TPluginConfig & { [x: string]: any }> | undefined> => {
+    public getPluginsModifications = async (pageRoute: string): Promise<Record<string, TPluginsModifications> | undefined> => {
         return this.get(`theme/plugins?pageRoute=${pageRoute}`);
     }
 

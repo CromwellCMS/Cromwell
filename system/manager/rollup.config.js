@@ -1,10 +1,11 @@
 import commonjs from "@rollup/plugin-commonjs";
-import typescript from "rollup-plugin-typescript2";
+import typescript from "rollup-plugin-ts";
 import packageJson from './package.json';
 import { resolve } from 'path';
 import json from '@rollup/plugin-json';
 import { terser } from "rollup-plugin-terser";
 import { dirname, isAbsolute } from 'path';
+import ts from 'typescript';
 
 // const external = id => {
 //     const exts = ['util', 'path'];
@@ -32,15 +33,13 @@ export default [
             json(),
             commonjs(),
             typescript({
-                tsconfigOverride: {
-                    compilerOptions: {
-                        module: "ESNext",
-                        declaration: true,
-                        declarationMap: true,
-                        rootDir: resolve(__dirname, 'src'),
-                        declarationDir: resolve(__dirname, buildDir)
-                    }
-                }
+                tsconfig: resolvedConfig => ({
+                    ...resolvedConfig,
+                    module: ts.ModuleKind.ESNext,
+                    declaration: true,
+                    declarationMap: true,
+                    declarationDir: resolve(__dirname, buildDir)
+                })
             }),
             // terser(),
         ]

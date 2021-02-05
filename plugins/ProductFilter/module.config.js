@@ -13,8 +13,9 @@ module.exports = {
     },
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
-        const typescript = require('rollup-plugin-typescript2');
+        const typescript = require('rollup-plugin-ts');
         const { terser } = require('rollup-plugin-terser');
+        const ts = require('typescript');
         return {
             main: {
                 plugins: [
@@ -26,7 +27,12 @@ module.exports = {
             backend: {
                 plugins: [
                     commonjs(),
-                    typescript({ tsconfigOverride: { compilerOptions: { target: 'es2019' } } })
+                    typescript({
+                        tsconfig: resolvedConfig => ({
+                            ...resolvedConfig,
+                            target: ts.ScriptTarget.ES2019
+                        })
+                    })
                 ]
             },
         }

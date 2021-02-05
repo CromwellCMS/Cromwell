@@ -249,6 +249,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
                 preserveModules: true
             } as OutputOptions);
 
+            options.plugins.unshift(scssExternalPlugin());
             options.plugins.push(rollupPluginCromwellFrontend({ pagesMetaInfo, buildDir, srcDir, cromwellConfig, watch, frontendDeps }));
 
             outOptions.push(options);
@@ -315,6 +316,18 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
     return outOptions;
 }
 
+const scssExternalPlugin = (): Plugin => {
+    return {
+        name: 'cromwell-scssExternalPlugin',
+        resolveId(source, importer) {
+            if (/\.s?css$/.test(source)) {
+                return { id: source, external: true };
+            }
+        }
+    }
+
+}
+
 export const rollupPluginCromwellFrontend = (settings?: {
     packageJsonPath?: string;
     generateMeta?: boolean;
@@ -359,7 +372,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
             return options;
         },
         resolveId(source, importer) {
-            // console.log('resolveId', source);
+
 
             if (settings?.cromwellConfig?.type === 'theme' && settings?.pagesMetaInfo?.paths) {
                 if (/\.s?css$/.test(source)) {
@@ -373,6 +386,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
             if (isExternalForm(source)) {
                 return { id: require.resolve(source), external: false };
             }
+
             return null;
         },
     };
@@ -380,6 +394,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
     if (settings?.generateMeta !== false) {
         plugin.transform = function (code, id): string | null {
             // console.log('id', id);
+            id = normalizePath(id);
             if (!/\.(m?jsx?|tsx?)$/.test(id)) return null;
 
             //@ts-ignore
@@ -441,6 +456,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
 
                 const importBingingsCache: Record<string, Record<string, string[]>> = {}
                 const getImportBingingsForModule = (modId: string): Record<string, string[]> => {
+                    modId = normalizePath(modId);
                     if (importBingingsCache[modId]) return importBingingsCache[modId];
 
                     let importedBindings = {};
@@ -505,6 +521,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                     source: JSON.stringify(metaInfo, null, 2)
                 });
 
+
                 if (settings?.pagesMetaInfo?.paths) {
                     settings.pagesMetaInfo.paths = settings.pagesMetaInfo.paths.map(paths => {
                         if (info.fileName && paths.srcFullPath === normalizePath(info.facadeModuleId)) {
@@ -538,7 +555,6 @@ export const rollupPluginCromwellFrontend = (settings?: {
             });
 
             if (settings?.pagesMetaInfo?.paths && settings.srcDir && settings.buildDir) {
-
                 fs.outputFileSync(resolve(settings.buildDir, 'pages_meta.json'), JSON.stringify(settings.pagesMetaInfo, null, 2));
             }
 

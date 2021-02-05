@@ -20,10 +20,10 @@ const main = async () => {
     }
 
     const buildService = () => {
-        spawnSync(`npx rollup -c`, [],
+        spawnSync(`npx --no-install rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
 
-        spawnSync(`npx cross-env NODE_ENV=development npx webpack`, [],
+        spawnSync(`npx --no-install cross-env NODE_ENV=development npx webpack`, [],
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
     }
 

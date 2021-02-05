@@ -1,6 +1,5 @@
 const commonjs = require('@rollup/plugin-commonjs');
 const json = require('@rollup/plugin-json');
-const typescript = require('rollup-plugin-typescript2');
 const postcss = require('rollup-plugin-postcss');
 
 module.exports = {
@@ -39,14 +38,12 @@ module.exports = {
         main: {
             plugins: [
                 commonjs(),
-                typescript(),
                 json(),
             ]
         },
         adminPanel: {
             plugins: [
                 commonjs(),
-                typescript(),
                 json(),
                 postcss({
                     extract: false,

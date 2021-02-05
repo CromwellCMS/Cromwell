@@ -31,8 +31,8 @@ const fs = require('fs');
 
     // Check node_modules
     if (!hasNodeModules()) {
-        spawnSync(`npm i yarn --no-save`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-        spawnSync(`npx yarn install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`npm i yarn -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`yarn install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
     // Build core

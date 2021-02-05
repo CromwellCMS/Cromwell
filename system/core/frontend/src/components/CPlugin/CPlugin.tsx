@@ -9,15 +9,17 @@ import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 
 const fallbackComponent = () => <></>;
 
+type CPluginProps = {
+    id: string;
+    pluginName?: string;
+    component?: React.ComponentType<TFrontendPluginProps>;
+} & TCromwellBlockProps;
+
 /**
  * Used internally to import and render plugin at frontend
  * @param props 
  */
-export const CPlugin = (props: {
-    id: string;
-    pluginName?: string;
-    component?: React.ComponentType<TFrontendPluginProps>;
-} & TCromwellBlockProps) => {
+export const CPlugin = (props: CPluginProps) => {
     const { pluginName, component, ...rest } = props;
 
     return (

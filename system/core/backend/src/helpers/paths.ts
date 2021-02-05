@@ -1,7 +1,8 @@
-import { resolve, dirname } from 'path';
+import { TModuleConfig } from '@cromwell/core';
 import fs from 'fs-extra';
+import { dirname, resolve } from 'path';
+
 import { serverLogFor } from './constants';
-import { TPluginConfig, TThemeConfig } from '@cromwell/core';
 
 export const cmsName = 'cromwell';
 export const tempDirName = `.${cmsName}`;
@@ -124,7 +125,7 @@ export const getThemeAdminPanelBundleDir = async (themeModuleName: string, pageR
     }
 }
 
-export const getCmsModuleConfig = async <T = (TThemeConfig & TPluginConfig)>(moduleName: string): Promise<T | undefined> => {
+export const getCmsModuleConfig = async <T = TModuleConfig>(moduleName: string): Promise<T | undefined> => {
     const path = await getNodeModuleDir(moduleName);
     if (path) {
         const configPath = resolve(path, configFileName);

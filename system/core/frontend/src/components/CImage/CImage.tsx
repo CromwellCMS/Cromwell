@@ -5,7 +5,9 @@ import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { Link } from '../Link/Link';
 import styles from './CImage.module.scss';
 
-export const CImage = (props: { src?: string; imgLink?: string; withEffect?: boolean } & TCromwellBlockProps) => {
+type CImageProps = { src?: string; imgLink?: string; withEffect?: boolean } & TCromwellBlockProps;
+
+export const CImage = (props: CImageProps) => {
     const { src, imgLink, withEffect, ...rest } = props;
     return (
         <CromwellBlock {...rest} type='image'
