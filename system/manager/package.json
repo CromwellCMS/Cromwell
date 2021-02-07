@@ -9,6 +9,10 @@
   "keywords": [],
   "author": "Cromwell",
   "license": "ISC",
+  "scripts": {
+    "build": "npx rollup -c",
+    "watch": "npx rollup -cw"
+  },
   "dependencies": {
     "@cromwell/admin-panel": "1.0.0",
     "@cromwell/cli": "1.0.0",
@@ -18,6 +22,7 @@
     "@cromwell/cromwella": "1.0.0",
     "@cromwell/renderer": "1.0.0",
     "@cromwell/server": "1.0.0",
+    "@cromwell/theme-blog": "1.0.0",
     "@cromwell/theme-store": "1.0.0",
     "async": "^3.2.0",
     "axios": "0.19.2",
@@ -71,9 +76,5 @@
     "symlink-dir": "^4.1.0",
     "tslib": "2.0.3",
     "yargs-parser": "^19.0.4"
-  },
-  "scripts": {
-    "build": "npx rollup -c",
-    "watch": "npx rollup -cw"
   }
 }

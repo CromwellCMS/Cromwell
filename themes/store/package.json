@@ -2,11 +2,15 @@
   "name": "@cromwell/theme-store",
   "version": "1.0.0",
   "author": "cromwell",
+  "license": "ISC",
   "files": [
     "build",
     "static"
   ],
-  "license": "ISC",
+  "scripts": {
+    "build": "cromwell b",
+    "watch": "cromwell b -w"
+  },
   "dependencies": {
     "@apollo/client": "3.2.1",
     "@cromwell/core": "1.1.0",
@@ -155,10 +159,6 @@
         ]
       }
     ]
-  },
-  "scripts": {
-    "build": "cromwell b",
-    "watch": "cromwell b -w"
   },
   "resolutions": {
     "webpack": "5.11.1"

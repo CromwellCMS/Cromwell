@@ -17,7 +17,6 @@ const getPlugins = (format = 'esm') => {
     const typeScriptOptions = format === 'esm' ?
         {
             declaration: true,
-            declarationMap: true,
             declarationDir: resolve(__dirname, pkg.module)
         } : {};
     return [

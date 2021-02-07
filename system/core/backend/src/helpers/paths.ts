@@ -112,11 +112,19 @@ export const getThemeRollupBuildDir = async (themeModuleName: string) => {
         return resolve(themeBuildDir, 'theme')
     }
 }
+export const getThemeRollupBuildDirByPath = (themeDir: string) => {
+    return resolve(themeDir, buildDirName, 'theme');
+}
+
 export const getThemeNextBuildDir = async (themeModuleName: string) => {
     const themeBuildDir = await getThemeBuildDir(themeModuleName);
     if (themeBuildDir) {
         return resolve(themeBuildDir, '.next')
     }
+}
+export const getThemeNextBuildDirByPath = (themeDir: string) => {
+    return resolve(themeDir, buildDirName, '.next');
+
 }
 export const getThemeAdminPanelBundleDir = async (themeModuleName: string, pageRoute: string) => {
     const themeBuildDir = await getThemeRollupBuildDir(themeModuleName);

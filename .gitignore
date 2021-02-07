@@ -103,3 +103,5 @@ plugins/*/es
 
 /public
 # db.sqlite3
+
+tsconfig.tsbuildinfo

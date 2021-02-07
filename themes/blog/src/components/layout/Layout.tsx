@@ -1,20 +1,20 @@
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import React from 'react';
 
-import variables from '../../styles/variables.scss';
 import Header from '../header/Header';
 import styles from './Layout.module.scss';
 
 type TProps = {
     children: React.ReactNode;
 }
+const primaryColor = "#9900CC";
 
 const theme = createMuiTheme({
     palette: {
         primary: {
-            main: variables.primary,
-            light: variables.primary,
-            dark: variables.primary
+            main: primaryColor,
+            light: primaryColor,
+            dark: primaryColor
         },
     },
 });

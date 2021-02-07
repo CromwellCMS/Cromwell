@@ -94,5 +94,6 @@ out
 .pnp.*
 
 
-dist
-es
+/dist
+/es
+tsconfig.tsbuildinfo

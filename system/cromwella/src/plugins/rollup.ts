@@ -531,13 +531,17 @@ export const rollupPluginCromwellFrontend = (settings?: {
                             // Since we use preserveModules: true, node_modules can appear in build dir.
                             // That will relatively move rollup's options.output.dir on a prefix 
                             // We don't know this prefix (basePath) before compile, so we calc it here: 
-                            if (settings?.srcDir && info.facadeModuleId) {
+                            if (!settings?.pagesMetaInfo?.basePath && settings?.srcDir && info.facadeModuleId) {
                                 let baseFileName: any = normalizePath(info.facadeModuleId).replace(normalizePath(settings.srcDir), '').split('.');
                                 baseFileName.length > 1 ? baseFileName = baseFileName.slice(0, -1).join('.') : baseFileName.join('.');
+
                                 let basePath: any = normalizePath(info.fileName).split('.');
                                 basePath.length > 1 ? basePath = basePath.slice(0, -1).join('.') : basePath.join('.');
+                                if ((basePath as string).startsWith('/')) basePath = (basePath as string).substring(1);
+                                if ((baseFileName as string).startsWith('/')) baseFileName = (baseFileName as string).substring(1);
+
                                 basePath = normalizePath(basePath).replace(baseFileName, '');
-                                if (basePath !== '' && settings?.pagesMetaInfo) {
+                                if (settings?.pagesMetaInfo) {
                                     settings.pagesMetaInfo.basePath = basePath;
                                     if (stylesheetsLoaderStarter) {
                                         stylesheetsLoaderStarter();

@@ -44,7 +44,6 @@ const TextField = withStyles({
 const Header = observer(() => {
     const topLinks: TTopLink[] | undefined = getThemeCustomConfigProp('header/topLinks');
     const cmsConfig = getCmsSettings();
-    const currencyOptions: string[] = cmsConfig && cmsConfig.currencyOptions ? cmsConfig.currencyOptions : [];
     let logoHref: string | undefined = getThemeCustomConfigProp('header/logo');
     logoHref = '/themes/cromwell-blog/blog.png';
 

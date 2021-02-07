@@ -1,55 +1,48 @@
 const fs = require('fs-extra');
-const { resolve } = require("path");
+const { resolve, join } = require("path");
 
 const projectRootDir = process.cwd();
 const systemDir = resolve(projectRootDir, 'system')
 
 
 const folders = [
-    systemDir + '\\core\\backend\\node_modules',
-    systemDir + '\\core\\common\\node_modules',
-    systemDir + '\\core\\frontend\\node_modules',
-    systemDir + '\\core\\backend\\dist',
-    systemDir + '\\core\\common\\dist',
-    systemDir + '\\core\\frontend\\dist',
-    systemDir + '\\core\\backend\\es',
-    systemDir + '\\core\\common\\es',
-    systemDir + '\\core\\frontend\\es',
+    join(systemDir, 'core/backend/node_modules'),
+    join(systemDir, 'core/common/node_modules'),
+    join(systemDir, 'core/frontend/node_modules'),
+    join(systemDir, 'core/backend/dist'),
+    join(systemDir, 'core/common/dist'),
+    join(systemDir, 'core/frontend/dist'),
+    join(systemDir, 'core/backend/es'),
+    join(systemDir, 'core/common/es'),
+    join(systemDir, 'core/frontend/es'),
+    join(systemDir, 'server/node_modules'),
+    join(systemDir, 'server/.cromwell'),
+    join(systemDir, 'server/build'),
+    join(systemDir, 'renderer/node_modules'),
+    join(systemDir, 'renderer/build'),
+    join(systemDir, 'renderer/.cromwell'),
+    join(systemDir, 'admin-panel/.cromwell'),
+    join(systemDir, 'admin-panel/node_modules'),
+    join(systemDir, 'admin-panel/build'),
+    join(systemDir, 'manager/.cromwell'),
+    join(systemDir, 'manager/node_modules'),
+    join(systemDir, 'manager/build'),
+    join(systemDir, 'cromwella/.cromwell'),
+    join(systemDir, 'cromwella/node_modules'),
+    join(systemDir, 'cromwella/build'),
+    join(systemDir, 'cli/.cromwell'),
+    join(systemDir, 'cli/node_modules'),
+    join(systemDir, 'cli/build'),
+    join(systemDir, '.cromwell'),
+    join(systemDir, 'core/backend/package-lock.json'),
+    join(systemDir, 'core/common/package-lock.json'),
+    join(systemDir, 'core/frontend/package-lock.json'),
+    join(systemDir, 'server/package-lock.json'),
+    join(systemDir, 'renderer/package-lock.json'),
+    join(systemDir, 'cromwella/package-lock.json'),
+    join(systemDir, 'manager/package-lock.json'),
 
-    systemDir + '\\server\\node_modules',
-    systemDir + '\\server\\.cromwell',
-    systemDir + '\\server\\build',
-
-    systemDir + '\\renderer\\node_modules',
-    systemDir + '\\renderer\\build',
-    systemDir + '\\renderer\\.cromwell',
-
-    systemDir + '\\admin-panel\\.cromwell',
-    systemDir + '\\admin-panel\\node_modules',
-    systemDir + '\\admin-panel\\build',
-
-    systemDir + '\\manager\\.cromwell',
-    systemDir + '\\manager\\node_modules',
-    systemDir + '\\manager\\build',
-
-    systemDir + '\\cromwella\\.cromwell',
-    systemDir + '\\cromwella\\node_modules',
-    systemDir + '\\cromwella\\build',
-
-    systemDir + '\\.cromwell',
-
-    // projectRootDir + '\\node_modules',
-
-    // Files
-    systemDir + '\\core\\backend\\package-lock.json',
-    systemDir + '\\core\\common\\package-lock.json',
-    systemDir + '\\core\\frontend\\package-lock.json',
-    systemDir + '\\server\\package-lock.json',
-    systemDir + '\\renderer\\package-lock.json',
-    systemDir + '\\cromwella\\package-lock.json',
-    systemDir + '\\manager\\package-lock.json',
-    projectRootDir + '\\package-lock.json',
-
+    join(projectRootDir, 'package-lock.json'),
 ]
 
 // Add themes

@@ -20,6 +20,7 @@
     "noImplicitAny": false,
     "removeComments": false,
     "moduleResolution": "node",
+    "incremental": true,
     "plugins": [
       {
         "name": "typescript-plugin-css-modules"

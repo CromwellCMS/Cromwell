@@ -1,5 +1,5 @@
 import { TPluginConfig, TThemeConfig } from '@cromwell/core';
-import { configFileName, getThemeRollupBuildDir, getThemeNextBuildDir } from '@cromwell/core-backend';
+import { configFileName, getThemeRollupBuildDirByPath, getThemeNextBuildDirByPath } from '@cromwell/core-backend';
 import { rollupConfigWrapper } from '@cromwell/cromwella';
 import dateTime from 'date-time';
 import { resolve } from 'path';
@@ -37,7 +37,7 @@ export const buildTask = async (watch?: boolean) => {
             await checkModules();
 
             // Clean old build
-            const rollupBuildDir = await getThemeRollupBuildDir(packageJson?.name)
+            const rollupBuildDir = getThemeRollupBuildDirByPath(workingDir);
             if (rollupBuildDir && await fs.pathExists(rollupBuildDir)) await fs.remove(rollupBuildDir);
 
             console.log(`Starting to pre-build ${config.type}...`);
@@ -55,7 +55,7 @@ export const buildTask = async (watch?: boolean) => {
                 rendererStartWatchDev(config.name);
 
             } else {
-                const nextBuildDir = await getThemeNextBuildDir(packageJson?.name);
+                const nextBuildDir = getThemeNextBuildDirByPath(workingDir);
                 if (nextBuildDir && await fs.pathExists(nextBuildDir)) await fs.remove(nextBuildDir);
 
                 await rendererBuildAndSaveTheme(config.name)

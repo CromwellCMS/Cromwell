@@ -10,6 +10,10 @@
   ],
   "author": "Cromwell",
   "license": "ISC",
+  "scripts": {
+    "build": "npx rollup -c",
+    "watch": "npx rollup -cw"
+  },
   "dependencies": {
     "@cromwell/core": "1.1.0",
     "class-validator": "^0.12.2",
@@ -38,9 +42,5 @@
     "rollup-plugin-terser": "^7.0.2",
     "typescript": "^4.0.3"
   },
-  "description": "",
-  "scripts": {
-    "build": "npx rollup -c",
-    "watch": "npx rollup -cw"
-  }
+  "description": ""
 }

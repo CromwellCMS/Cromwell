@@ -11,6 +11,7 @@
     "allowJs": true,
     "strict": true,
     "rootDir": "./",
+    "sourceMap": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -18,7 +19,8 @@
     "resolveJsonModule": true,
     "noImplicitAny": false,
     "removeComments": false,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "incremental": true,
   },
   "include": [
     "src/**/*.ts",
