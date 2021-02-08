@@ -4,7 +4,7 @@ const { spawn, spawnSync, fork } = require('child_process');
 const { getAdminPanelServiceBuildDir, getAdminPanelTempDir, getAdminPanelDir } = require('@cromwell/core-backend');
 const localProjectDir = __dirname;
 
-// 'buildService' | 'build' | 'dev' | 'prod'
+// 'build' | 'dev' | 'prod'
 const scriptName = process.argv[2];
 
 const main = async () => {
@@ -27,8 +27,8 @@ const main = async () => {
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
     }
 
-
-    if (scriptName === 'buildService') {
+    console.log('scriptName', scriptName)
+    if (scriptName === 'build') {
         buildService();
         return;
     }

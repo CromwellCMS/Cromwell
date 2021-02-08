@@ -6,7 +6,7 @@ import { resolve } from 'path';
 import treeKill from 'tree-kill';
 
 import config from '../config';
-import { serviceNames, TServiceNames } from '../constants';
+import { serviceNames, TServiceNames, TScriptName } from '../constants';
 import { checkModules } from '../tasks/checkModules';
 import { getProcessPid, loadCache, saveProcessPid } from '../utils/cacheManager';
 import { startAdminPanel } from './adminPanelManager';
@@ -39,8 +39,8 @@ export const closeService = async (name: string): Promise<boolean> => {
 
 }
 
-export const startService = (path: string, name: string, args: string[], dir?: string): ChildProcess => {
-    const proc = fork(path, args, { stdio: 'pipe', cwd: dir ?? process.cwd() });
+export const startService = (path: string, name: string, args: string[], dir?: string, sync?: boolean): ChildProcess => {
+    const proc = fork(path, args, { stdio: sync ? 'inherit' : 'pipe', cwd: dir ?? process.cwd() });
     saveProcessPid(name, proc.pid);
     proc?.stdout?.on('data', buff => logger.log(buff?.toString?.() ?? buff));
     proc?.stderr?.on('data', buff => logger.log(buff?.toString?.() ?? buff));
@@ -56,7 +56,9 @@ export const isServiceRunning = (name: string): Promise<boolean> => {
 }
 
 
-export const startSystem = async (isDevelopment?: boolean) => {
+export const startSystem = async (scriptName: TScriptName) => {
+
+    const isDevelopment = scriptName === 'development';
 
     setStoreItem('environment', {
         mode: isDevelopment ? 'dev' : 'prod',
@@ -64,6 +66,14 @@ export const startSystem = async (isDevelopment?: boolean) => {
     })
 
     await new Promise(resolve => loadCache(resolve));
+
+    if (scriptName === 'build') {
+        await startServer('build');
+        await startAdminPanel('build');
+        await startRenderer('buildService');
+
+        return;
+    }
 
     if (isDevelopment) {
 

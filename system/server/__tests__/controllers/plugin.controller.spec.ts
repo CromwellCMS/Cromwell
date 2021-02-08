@@ -9,7 +9,7 @@ describe('Plugin Controller', () => {
     let testDir;
 
     beforeAll(async () => {
-        [server, app, testDir] = await setupController();
+        [server, app, testDir] = await setupController('plugin');
     });
 
     it(`/GET settings`, () => {

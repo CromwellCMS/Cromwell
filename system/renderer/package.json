@@ -7,6 +7,14 @@
     "build"
   ],
   "license": "ISC",
+  "scripts": {
+    "buildRenderer": "node startup.js buildService",
+    "dev": "node startup.js dev",
+    "build": "node startup.js build",
+    "start": "node startup.js prod",
+    "watch": "npx rollup -cw",
+    "gen": "node startup.js gen"
+  },
   "dependencies": {
     "@cromwell/core": "1.1.0",
     "@cromwell/core-backend": "1.0.0",
@@ -54,14 +62,6 @@
     "@cromwell/core-frontend": "1.0.0",
     "react-is": "16.13.1",
     "react-html-parser": "2.0.2"
-  },
-  "scripts": {
-    "buildRenderer": "node startup.js buildService",
-    "dev": "node startup.js dev",
-    "build": "node startup.js build",
-    "start": "node startup.js prod",
-    "watch": "npx rollup -cw",
-    "gen": "node startup.js gen"
   },
   "description": "",
   "resolutions": {

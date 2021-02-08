@@ -14,7 +14,10 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
 
     if (env && adminPanelStartupPath) {
         ManagerState.adminPanelStatus = 'busy';
-        const proc = startService(adminPanelStartupPath, cacheKeys.adminPanel, [env])
+        const proc = startService(adminPanelStartupPath, cacheKeys.adminPanel, [env],
+            undefined, command === 'build' ? true : false);
+
+        if (command === 'build') return true;
 
         return new Promise(done => {
             proc?.on('message', async (message: string) => {

@@ -10,7 +10,7 @@ describe('CMS Controller', () => {
     let testDir;
 
     beforeAll(async () => {
-        [server, app, testDir] = await setupController();
+        [server, app, testDir] = await setupController('cms');
     });
 
     it(`/GET config`, () => {

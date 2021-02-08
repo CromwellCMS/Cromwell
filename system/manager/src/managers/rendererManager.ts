@@ -8,7 +8,6 @@ import {
     getRendererTempDir,
     readCMSConfig,
     rendererMessages,
-    getModulePackage
 } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import axios from 'axios';
@@ -17,7 +16,6 @@ import makeEmptyDir from 'make-empty-dir';
 import { resolve } from 'path';
 
 import managerConfig from '../config';
-import { checkModules } from '../tasks/checkModules';
 import { TRendererCommands } from '../constants';
 import { ManagerState } from '../managerState';
 import { closeService, isServiceRunning, startService } from './baseManager';
@@ -29,7 +27,7 @@ const rendererTempDir = getRendererTempDir();
 const rendererStartupPath = getRendererStartupPath();
 const errorLogger = getLogger('errors-only').error;
 
-export const startRenderer = async (env?: TRendererCommands): Promise<boolean> => {
+export const startRenderer = async (command?: TRendererCommands): Promise<boolean> => {
     if (ManagerState.rendererStatus === 'busy' ||
         ManagerState.rendererStatus === 'building' ||
         ManagerState.rendererStatus === 'running') {
@@ -51,17 +49,16 @@ export const startRenderer = async (env?: TRendererCommands): Promise<boolean> =
         return false;
     }
 
-    const pckg = getModulePackage(themeName)
-    if (pckg) await checkModules(Boolean(env === 'dev'), [pckg]);
-
-
     const rendererUrl = serviceLocator.getFrontendUrl();
 
-    const rendererEnv = env ?? servicesEnv.renderer;
+    const rendererEnv = command ?? servicesEnv.renderer;
     if (rendererEnv && rendererStartupPath) {
         ManagerState.rendererStatus = 'busy';
         const proc = startService(rendererStartupPath, cacheKeys.renderer,
-            [rendererEnv, `--theme-name=${themeName}`])
+            [rendererEnv, `--theme-name=${themeName}`], undefined,
+            command === 'build' ? true : false);
+
+        if (command === 'build') return true;
 
         const onStartError = await new Promise(done => {
             const onMessage = async (message: string) => {

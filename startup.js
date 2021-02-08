@@ -4,6 +4,8 @@ const fs = require('fs');
 
 (() => {
 
+    const scriptName = process.argv[2] ? process.argv[2] : 'production';
+
     const isCoreBuilt = () => {
         return !(!fs.existsSync(resolve(coreDir, 'common/dist')) ||
             !fs.existsSync(resolve(coreDir, 'backend/dist')) ||
@@ -98,7 +100,7 @@ const fs = require('fs');
 
     // Start system
     try {
-        spawnSync(`node ${managerStartupPath} production`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     } catch (e) {
         console.log(e);
         console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager:Failed to Start system');

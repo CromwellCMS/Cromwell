@@ -10,6 +10,8 @@ const buildScriptPath = resolve(localProjectRootDir, 'build/index.js');
   * @scriptName
   * production
   * development
+  * buildService - build manager service
+  * build - build all services
   * winDev - start dev environment in Windows OS
   */
 const scriptName = process.argv[2];
@@ -38,7 +40,7 @@ const main = async () => {
   if (scriptName === 'buildService') return;
 
   const { startSystem } = require('./build/index');
-  startSystem();
+  startSystem(scriptName);
 }
 
 main();

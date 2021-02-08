@@ -12,7 +12,8 @@
     "build": "node startup.js build",
     "dev": "node startup.js dev -- --logLevel=all --env=dev",
     "prod": "node startup.js prod",
-    "watch": "npx rollup -cw"
+    "watch": "npx rollup -cw",
+    "test": "npx jest"
   },
   "dependencies": {
     "@cromwell/core": "1.1.0",

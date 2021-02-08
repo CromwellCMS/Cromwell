@@ -5,18 +5,15 @@
     "private": true,
     "scripts": {
         "startup": "node ./startup.js",
-        "startSystem": "node ./system/manager/startup.js production",
+        "build": "node ./startup.js build",
+        "start-system": "node ./system/manager/startup.js production",
         "dev": "node ./system/manager/startup.js development",
-        "winDev": "node ./system/manager/src/utils/windowsDev.js",
+        "win-dev": "node ./system/manager/src/utils/windowsDev.js",
         "link-cli": "cd ./system/cli && npm link && yarn",
-        "cromwellaDev": "npx cromwella i",
-        "cromwellaDevForce": "npx cromwella i -f",
-        "cromwellaProd": "npx cromwella i --production",
-        "cromwellaBundle": "npx cromwella b --production",
+        "bundle-modules": "npx crw bm",
         "clean": "node system/cli/src/utils/cleanup.js",
-        "winRemoveNodeModules": "rmdir \"./node_modules\" /q /s",
-        "cromwellaNoCli": "node ./system/cromwella/bin/cromwella.js i",
-        "buildCore": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend"
+        "win-remove-node-modules": "rmdir \"./node_modules\" /q /s",
+        "build-core": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend"
     },
     "workspaces": [
         "system/*",

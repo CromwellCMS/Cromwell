@@ -10,8 +10,8 @@ import { AppModule } from '../src/modules/app.module';
 
 
 
-export const mockWorkingDirectory = (): string => {
-    const testDir = join(getServerTempDir(), 'test');
+export const mockWorkingDirectory = (name: string): string => {
+    const testDir = join(getServerTempDir(), 'test', name);
 
     const spy = jest.spyOn(process, 'cwd');
     spy.mockReturnValue(testDir);
@@ -25,8 +25,8 @@ export const mockWorkingDirectory = (): string => {
     return testDir;
 }
 
-export const setupController = async () => {
-    const testDir = mockWorkingDirectory();
+export const setupController = async (name: string) => {
+    const testDir = mockWorkingDirectory(name);
 
     await connectDatabase('test');
 

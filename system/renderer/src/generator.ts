@@ -1,6 +1,7 @@
 import {
     readCMSConfig, readThemeExports, serverLogFor, getCmsModuleConfig,
-    getNodeModuleDir, getPublicDir, getRendererTempDir, getRendererBuildDir, getThemeBuildDir
+    getNodeModuleDir, getPublicDir, getRendererTempDir, getRendererBuildDir, getThemeBuildDir,
+    getModulePackage
 } from '@cromwell/core-backend';
 import { setStoreItem } from '@cromwell/core';
 import { getBundledModulesDir, bundledModulesDirName } from '@cromwell/cromwella';
@@ -12,6 +13,7 @@ import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import { promisify } from 'util';
 import yargs from 'yargs-parser';
+import { downloader, TPackage } from '@cromwell/cromwella';
 
 const mkdir = promisify(gracefulfs.mkdir);
 
@@ -24,7 +26,7 @@ const main = async () => {
     const config = await readCMSConfig();
     if (config) setStoreItem('cmsSettings', config);
 
-    const themeName = args.themeName;
+    const themeName = args.themeName ?? config?.defaultSettings?.themeName;
     if (!themeName) {
         serverLogFor('errors-only', 'No theme name provided', 'Error');
         return;
@@ -35,6 +37,9 @@ const main = async () => {
         serverLogFor('errors-only', 'Theme directory was not found for: ' + themeName, 'Error');
         return;
     }
+
+    const pckg = getModulePackage(themeName);
+    if (pckg) await downloader(process.cwd(), [pckg]);
 
     const themeConfig = await getCmsModuleConfig(themeName);
     const themeMainConfig = themeConfig?.main;
@@ -49,7 +54,7 @@ const main = async () => {
     // Create pages in Nex.js pages dir based on theme's pages
 
     // console.log('pagesLocalDir', pagesLocalDir)
-    await makeEmptyDir(pagesLocalDir, { recursive: true });
+    await makeEmptyDir(tempDir, { recursive: true });
 
     for (const pageInfo of themeExports.pagesInfo) {
 
@@ -256,7 +261,6 @@ const main = async () => {
             await symlinkDir(bundledDir, bundledPublicDir)
         } catch (e) { console.log(e) }
     }
-
 };
 
 main();

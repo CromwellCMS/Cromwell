@@ -31,7 +31,7 @@ const args = yargs(process.argv.slice(2))
                 startServiceByName(serviceToStart, development);
             } else {
                 await checkModules(development);
-                startSystem(development);
+                startSystem(development ? 'development' : 'production');
             }
         }
     })

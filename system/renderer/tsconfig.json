@@ -23,7 +23,8 @@
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "moduleResolution": "node",
-    "isolatedModules": true
+    "isolatedModules": true,
+    "incremental": true,
   },
   "include": [
     "src/**/*.ts",
