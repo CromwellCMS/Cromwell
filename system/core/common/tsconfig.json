@@ -18,7 +18,8 @@
     "resolveJsonModule": true,
     "noImplicitAny": false,
     "removeComments": false,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "incremental": true,
   },
   "include": [
     "src/**/*.ts",

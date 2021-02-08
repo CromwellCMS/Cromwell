@@ -12,15 +12,35 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-{{ checksum "yarn.lock" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
+          - tsbuildinfo
 
       - run: npm run build
 
       - save_cache:
+          key: v1-dependencies-{{ checksum "yarn.lock" }}
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
+
+      - save_cache:
+          key: tsbuildinfo
+          paths:
+            - plugins/customer-reviews/tsconfig.tsbuildinfo
+            - plugins/main-menu/tsconfig.tsbuildinfo
+            - plugins/product-filter/tsconfig.tsbuildinfo
+            - plugins/product-showcase/tsconfig.tsbuildinfo
+            - themes/blog/tsconfig.tsbuildinfo
+            - themes/store/tsconfig.tsbuildinfo
+            - system/admin-panel/tsconfig.tsbuildinfo
+            - system/cli/tsconfig.tsbuildinfo
+            - system/core/backend/tsconfig.tsbuildinfo
+            - system/core/common/tsconfig.tsbuildinfo
+            - system/core/frontend/tsconfig.tsbuildinfo
+            - system/cromwella/tsconfig.tsbuildinfo
+            - system/manager/tsconfig.tsbuildinfo
+            - system/renderer/tsconfig.tsbuildinfo
+            - system/server/tsconfig.tsbuildinfo
 
       - run: cd system/server && npm run test

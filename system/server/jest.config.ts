@@ -4,6 +4,9 @@ import type { Config } from '@jest/types';
 const config: Config.InitialOptions = {
   preset: 'ts-jest',
   testEnvironment: 'node',
+  moduleNameMapper: {
+    '@App/(.*)': '<rootDir>/src/$1'
+  },
   // silent: false,
   testRegex: "/__tests__/.*\\.(test|spec)\\.[jt]sx?$",
   // maxConcurrency: 1,

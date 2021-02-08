@@ -16,6 +16,7 @@
         "emitDecoratorMetadata": true,
         "strictPropertyInitialization": false,
         "resolveJsonModule": true,
+        "incremental": true,
         "moduleResolution": "node"
     },
     "include": [
