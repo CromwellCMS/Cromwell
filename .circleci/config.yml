@@ -12,22 +12,13 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "yarn.lock" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
-          - tsbuildinfo
-          - cromwell-cache
+          - cache
 
       - run: npm run build
 
       - save_cache:
-          key: v1-dependencies-{{ checksum "yarn.lock" }}
-          paths:
+          key: cache
             - node_modules
-
-      - save_cache:
-          key: tsbuildinfo
-          paths:
             - plugins/customer-reviews/tsconfig.tsbuildinfo
             - plugins/main-menu/tsconfig.tsbuildinfo
             - plugins/product-filter/tsconfig.tsbuildinfo
@@ -43,10 +34,6 @@ jobs:
             - system/manager/tsconfig.tsbuildinfo
             - system/renderer/tsconfig.tsbuildinfo
             - system/server/tsconfig.tsbuildinfo
-
-      - save_cache:
-          key: cromwell-cache
-          paths:
             - .cromwell
             - themes/blog/.cromwell
             - themes/store/.cromwell
