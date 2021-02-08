@@ -19,7 +19,8 @@ export default [
         external: external,
         plugins: [
             nodeResolve({
-                preferBuiltins: false
+                extensions: ['js', 'ts'],
+                preferBuiltins: false,
             }),
             // autoExternal(),
             typescript(),
