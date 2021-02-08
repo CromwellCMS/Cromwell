@@ -1,11 +1,11 @@
 import 'reflect-metadata';
 
-import { apiV1BaseRoute, currentApiVersion, serviceLocator } from '@cromwell/core';
+import { apiV1BaseRoute, currentApiVersion } from '@cromwell/core';
 import { readCMSConfigSync, serverMessages } from '@cromwell/core-backend';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import cors from 'cors';
+
 import { connectDatabase } from './helpers/connectDatabase';
 import { setEnv } from './helpers/setEnv';
 import { AppModule } from './modules/app.module';
