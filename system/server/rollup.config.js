@@ -19,10 +19,7 @@ export default [
         external: external,
         plugins: [
             // autoExternal(),
-            nodeResolve(),
-            commonjs(),
-            typescript({
-            }),
+            typescript(),
             // terser()
         ],
         watch: {

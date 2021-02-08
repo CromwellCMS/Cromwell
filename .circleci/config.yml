@@ -16,6 +16,7 @@ jobs:
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
           - tsbuildinfo
+          - cromwell-cache
 
       - run: npm run build
 
@@ -42,5 +43,12 @@ jobs:
             - system/manager/tsconfig.tsbuildinfo
             - system/renderer/tsconfig.tsbuildinfo
             - system/server/tsconfig.tsbuildinfo
+
+      - save_cache:
+          key: cromwell-cache
+          paths:
+            - .cromwell
+            - themes/blog/.cromwell
+            - themes/store/.cromwell
 
       - run: cd system/server && npm run test

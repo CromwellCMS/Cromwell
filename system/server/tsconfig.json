@@ -20,7 +20,7 @@
     "incremental": true,
     "paths": {
       "@App/*": [
-        "src/*"
+        "./src/*"
       ],
     },
   },

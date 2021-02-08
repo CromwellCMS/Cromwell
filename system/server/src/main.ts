@@ -13,7 +13,7 @@ import { AppModule } from './modules/app.module';
 async function bootstrap(): Promise<void> {
     const envMode = setEnv();
 
-    const config = readCMSConfigSync()
+    const config = readCMSConfigSync();
     if (!config || !config.apiPort) throw new Error('Failed to read CMS config ' + JSON.stringify(config));
 
 
