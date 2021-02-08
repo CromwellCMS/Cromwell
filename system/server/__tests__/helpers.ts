@@ -5,7 +5,7 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { Test } from '@nestjs/testing';
 import { join } from 'path';
 
-import { closeConnection, connectDatabase } from '@App/helpers/connectDatabase';
+import { closeConnection, connectDatabase } from '@App/helpers/connectDataBase';
 import { AppModule } from '@App/modules/app.module';
 
 
