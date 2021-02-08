@@ -31,8 +31,8 @@ const main = async () => {
         const rollupProc = spawn(`npx --no-install rollup -cw`, [],
             { shell: true, stdio: 'pipe', cwd: serverRootDir });
 
-        rollupProc?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff));
-        rollupProc?.stderr?.on('data', buff => console.log(buff?.toString?.() ?? buff));
+        rollupProc.stdout.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
+        rollupProc.stderr.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
     }
 
     if (scriptName === 'build') {
