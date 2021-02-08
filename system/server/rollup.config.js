@@ -18,6 +18,9 @@ export default [
         ],
         external: external,
         plugins: [
+            nodeResolve({
+                preferBuiltins: false
+            }),
             // autoExternal(),
             typescript(),
             // terser()

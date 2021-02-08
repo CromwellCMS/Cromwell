@@ -14,9 +14,7 @@
     "moduleResolution": "node",
     "incremental": true,
     "paths": {
-      "@App/*": [
-        "src/*"
-      ],
+      "@App/*": ["src/*"],
     },
   },
   "exclude": [
