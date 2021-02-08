@@ -18,6 +18,7 @@ jobs:
 
       - save_cache:
           key: cache
+          paths:
             - node_modules
             - plugins/customer-reviews/tsconfig.tsbuildinfo
             - plugins/main-menu/tsconfig.tsbuildinfo
