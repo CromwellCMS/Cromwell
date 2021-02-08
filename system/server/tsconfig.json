@@ -2,12 +2,7 @@
   "compilerOptions": {
     "module": "CommonJS",
     "target": "ES2019",
-    "lib": [
-      "es2015",
-      "es2016",
-      "es2017",
-      "es2018"
-    ],
+    "baseUrl": ".",
     "strict": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
@@ -20,7 +15,7 @@
     "incremental": true,
     "paths": {
       "@App/*": [
-        "./src/*"
+        "src/*"
       ],
     },
   },
