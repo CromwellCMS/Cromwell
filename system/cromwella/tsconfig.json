@@ -18,6 +18,8 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "skipLibCheck": true,
+    "outDir": "./build",
     "incremental": true,
   },
   "exclude": [

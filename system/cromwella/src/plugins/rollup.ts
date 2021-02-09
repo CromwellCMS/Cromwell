@@ -288,7 +288,7 @@ export const rollupConfigWrapper = async (cromwellConfig: TPluginConfig | TTheme
 
 
         // Theme admin panel page-controller 
-        const adminPanelDirChunk = 'adminPanel';
+        const adminPanelDirChunk = 'admin-panel';
         const adminPanelDir = resolve(srcDir, adminPanelDirChunk);
         if (!watch && fs.pathExistsSync(adminPanelDir)) {
             const adminOptions = (Object.assign({}, specifiedOptions?.themePages ? specifiedOptions.themePages : inputOptions));
@@ -397,7 +397,6 @@ export const rollupPluginCromwellFrontend = (settings?: {
             id = normalizePath(id);
             if (!/\.(m?jsx?|tsx?)$/.test(id)) return null;
 
-            //@ts-ignore
             const ast = this.parse(code);
             walk(ast, {
                 enter(node: any, walker) {

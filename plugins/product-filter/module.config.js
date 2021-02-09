@@ -16,23 +16,30 @@ module.exports = {
         const typescript = require('rollup-plugin-ts');
         const { terser } = require('rollup-plugin-terser');
         const ts = require('typescript');
+        const { tsCompilerPlugin } = require('@cromwell/cromwella');
         return {
             main: {
                 plugins: [
+                    tsCompilerPlugin(),
                     commonjs(),
-                    typescript(),
+                    // typescript(),
                     // terser()
                 ]
             },
             backend: {
                 plugins: [
-                    commonjs(),
-                    typescript({
-                        tsconfig: resolvedConfig => ({
-                            ...resolvedConfig,
+                    tsCompilerPlugin({
+                        compilerOptions: {
                             target: ts.ScriptTarget.ES2019
-                        })
-                    })
+                        }
+                    }),
+                    commonjs(),
+                    // typescript({
+                    //     tsconfig: resolvedConfig => ({
+                    //         ...resolvedConfig,
+                    //         target: ts.ScriptTarget.ES2019
+                    //     })
+                    // })
                 ]
             },
         }

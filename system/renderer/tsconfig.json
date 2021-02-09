@@ -24,6 +24,7 @@
     "noEmit": true,
     "moduleResolution": "node",
     "isolatedModules": true,
+    "outDir": "./build",
     "incremental": true,
   },
   "include": [

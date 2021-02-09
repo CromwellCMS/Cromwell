@@ -20,12 +20,8 @@
     "noImplicitAny": false,
     "removeComments": false,
     "moduleResolution": "node",
+    "outDir": "./es",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "typescript-plugin-css-modules"
-      }
-    ]
   },
   "include": [
     "src/**/*.ts",

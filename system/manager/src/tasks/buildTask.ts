@@ -37,8 +37,8 @@ export const buildTask = async (watch?: boolean) => {
             await checkModules();
 
             // Clean old build
-            const rollupBuildDir = getThemeRollupBuildDirByPath(workingDir);
-            if (rollupBuildDir && await fs.pathExists(rollupBuildDir)) await fs.remove(rollupBuildDir);
+            // const rollupBuildDir = getThemeRollupBuildDirByPath(workingDir);
+            // if (rollupBuildDir && await fs.pathExists(rollupBuildDir)) await fs.remove(rollupBuildDir);
 
             console.log(`Starting to pre-build ${config.type}...`);
             const rollupBuildSuccess = await rollupBuild(config, watch);

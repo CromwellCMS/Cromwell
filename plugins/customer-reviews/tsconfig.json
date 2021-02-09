@@ -16,8 +16,10 @@
         "emitDecoratorMetadata": true,
         "strictPropertyInitialization": false,
         "resolveJsonModule": true,
+        "moduleResolution": "node",
+        "skipLibCheck": true,
         "incremental": true,
-        "moduleResolution": "node"
+        "outDir": "./build",
     },
     "include": [
         "src/**/*.ts",

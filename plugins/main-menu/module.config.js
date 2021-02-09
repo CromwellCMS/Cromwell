@@ -8,11 +8,13 @@ module.exports = {
         const commonjs = require('@rollup/plugin-commonjs');
         const { terser } = require('rollup-plugin-terser');
         const typescript = require('rollup-plugin-ts');
+        const { resolve } = require('path');
+        const { tsCompilerPlugin } = require('@cromwell/cromwella');
         return {
             main: {
                 plugins: [
+                    tsCompilerPlugin(),
                     commonjs(),
-                    typescript(),
                     // terser()
                 ]
             }

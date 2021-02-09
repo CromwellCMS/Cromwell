@@ -12,9 +12,13 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
+    "outDir": "./build",
+    "skipLibCheck": true,
     "incremental": true,
     "paths": {
-      "@App/*": ["src/*"],
+      "@App/*": [
+        "src/*"
+      ],
     },
   },
   "exclude": [

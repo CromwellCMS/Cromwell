@@ -17,6 +17,9 @@
         "strictPropertyInitialization": false,
         "resolveJsonModule": true,
         "moduleResolution": "node",
+        "noImplicitAny": false,
+        "skipLibCheck": true,
+        "outDir": "./build",
         "incremental": true,
     },
     "include": [

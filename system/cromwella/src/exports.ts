@@ -5,6 +5,7 @@
 // export { rollupPluginCromwellFrontend } from './plugins/rollup';
 export { getModuleImporter } from './importer';
 export { rollupConfigWrapper, rollupPluginCromwellFrontend } from './plugins/rollup';
+export { tsCompilerPlugin } from './plugins/ts-compiler';
 export { CromwellWebpackPlugin } from './plugins/webpack';
 export { getNodeModuleVersion, getNodeModuleNameWithVersion, getBundledModulesDir } from './shared';
 export { bundler } from './bundler';

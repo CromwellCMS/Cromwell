@@ -14,12 +14,8 @@
     "moduleResolution": "node",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
+    "outDir": "./build",
     "incremental": true,
-    "plugins": [
-      {
-        "name": "typescript-plugin-css-modules"
-      }
-    ]
   },
   "exclude": [
     "node_modules",

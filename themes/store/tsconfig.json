@@ -19,19 +19,17 @@
         "strictPropertyInitialization": false,
         "resolveJsonModule": true,
         "noImplicitAny": false,
+        "importHelpers": true,
         "moduleResolution": "node",
-        "plugins": [
-            {
-                "name": "typescript-plugin-css-modules"
-            }
-        ],
-        "incremental": true,
+        "skipLibCheck": true,
+        "outDir": "./build",
     },
     "include": [
         "src/**/*.ts",
         "src/**/*.tsx"
     ],
     "exclude": [
+        "build",
         "node_modules"
     ]
 }

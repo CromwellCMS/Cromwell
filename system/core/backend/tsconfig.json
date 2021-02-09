@@ -20,6 +20,7 @@
     "noImplicitAny": false,
     "removeComments": false,
     "moduleResolution": "node",
+    "outDir": "./es",
     "incremental": true,
   },
   "include": [
