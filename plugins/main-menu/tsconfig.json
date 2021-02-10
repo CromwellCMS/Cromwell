@@ -16,7 +16,8 @@
         "emitDecoratorMetadata": true,
         "strictPropertyInitialization": false,
         "resolveJsonModule": true,
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "incremental": true,
     },
     "include": [
         "src/**/*.ts",

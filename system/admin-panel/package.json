@@ -1,6 +1,19 @@
 {
   "name": "@cromwell/admin-panel",
   "version": "1.0.0",
+  "main": "build/server.js",
+  "files": [
+    "build",
+    "static"
+  ],
+  "keywords": [],
+  "author": "cromwell",
+  "license": "ISC",
+  "scripts": {
+    "build": "node startup.js build",
+    "dev": "node startup.js dev",
+    "prod": "node startup.js prod"
+  },
   "dependencies": {
     "@cromwell/core": "1.1.0",
     "@cromwell/core-backend": "1.0.0",
@@ -61,11 +74,6 @@
     "typescript-plugin-css-modules": "^2.7.0",
     "webpack": "5.11.1",
     "webpack-cli": "^3.3.12"
-  },
-  "scripts": {
-    "build": "node startup.js buildService",
-    "dev": "node startup.js dev",
-    "prod": "node startup.js prod"
   },
   "eslintConfig": {
     "extends": "react-app"

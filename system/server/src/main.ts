@@ -1,19 +1,19 @@
 import 'reflect-metadata';
 
-import { apiV1BaseRoute, currentApiVersion, serviceLocator } from '@cromwell/core';
+import { apiV1BaseRoute, currentApiVersion } from '@cromwell/core';
 import { readCMSConfigSync, serverMessages } from '@cromwell/core-backend';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import cors from 'cors';
-import { connectDatabase } from './helpers/connectDatabase';
+
+import { connectDatabase } from './helpers/connectDataBase';
 import { setEnv } from './helpers/setEnv';
 import { AppModule } from './modules/app.module';
 
 async function bootstrap(): Promise<void> {
     const envMode = setEnv();
 
-    const config = readCMSConfigSync()
+    const config = readCMSConfigSync();
     if (!config || !config.apiPort) throw new Error('Failed to read CMS config ' + JSON.stringify(config));
 
 

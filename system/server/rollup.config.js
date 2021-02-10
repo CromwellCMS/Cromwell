@@ -18,11 +18,12 @@ export default [
         ],
         external: external,
         plugins: [
-            // autoExternal(),
-            nodeResolve(),
-            commonjs(),
-            typescript({
+            nodeResolve({
+                extensions: ['js', 'ts'],
+                preferBuiltins: false,
             }),
+            // autoExternal(),
+            typescript(),
             // terser()
         ],
         watch: {
