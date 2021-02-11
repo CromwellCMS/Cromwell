@@ -1,10 +1,11 @@
 name: tests
 
-on:
-  push:
-    branches: [ $default-branch ]
-  pull_request:
-    branches: [ $default-branch ]
+on: push
+# on:
+#   push:
+#     branches: [ $default-branch ]
+#   pull_request:
+#     branches: [ $default-branch ]
     
 jobs:
   build:
@@ -49,4 +50,3 @@ jobs:
 
       - run: npm run build
       - run: cd system/server && npm run test
-      
