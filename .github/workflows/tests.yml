@@ -49,3 +49,4 @@ jobs:
 
       - run: npm run build
       - run: cd system/server && npm run test
+      
