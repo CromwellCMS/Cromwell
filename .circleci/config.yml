@@ -2,7 +2,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/node:14.15.4
+      - image: circleci/node:12.20.1
 
     working_directory: ~/repo
 

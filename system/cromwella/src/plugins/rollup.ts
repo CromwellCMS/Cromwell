@@ -560,7 +560,6 @@ export const rollupPluginCromwellFrontend = (settings?: {
             if (settings?.pagesMetaInfo?.paths && settings.srcDir && settings.buildDir) {
                 fs.outputFileSync(resolve(settings.buildDir, 'pages_meta.json'), JSON.stringify(settings.pagesMetaInfo, null, 2));
             }
-
         }
     }
 

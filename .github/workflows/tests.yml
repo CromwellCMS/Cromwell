@@ -1,0 +1,51 @@
+name: tests
+
+on:
+  push:
+    branches: [ $default-branch ]
+  pull_request:
+    branches: [ $default-branch ]
+    
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: '12.x'
+
+      - name: Cache node modules
+        uses: actions/cache@v2
+        env:
+          cache-name: cache-node-modules
+        with:
+          path: |
+            node_modules
+            plugins/customer-reviews/build
+            plugins/main-menu/build
+            plugins/product-filter/build
+            plugins/product-showcase/build
+            themes/blog/build
+            themes/blog/.cromwell
+            themes/store/build
+            themes/store/.cromwell
+            system/admin-panel/build
+            system/cli/build
+            system/core/backend/es
+            system/core/backend/dist
+            system/core/common/es
+            system/core/common/dist
+            system/core/frontend/es
+            system/core/frontend/dist
+            system/cromwella/build
+            system/manager/build
+            system/renderer/build
+            system/server/build
+            .cromwell/bundled-modules
+          key: node-modules-${{ hashFiles('package-lock.json') }}
+
+      - run: npm run build
+      - run: cd system/server && npm run test

@@ -89,7 +89,7 @@ const mergedConfig = Object.assign({}, config, userConfig);
   * development
   * winDev - start dev environment in Windows OS
   */
-const scriptName = process.argv[2] ?? 'production';
+const scriptName = process.argv[2] || 'production';
 const servicesEnv = scriptName === 'development' ? mergedConfig.servicesDev : mergedConfig.servicesProd;
 
 mergedConfig.servicesEnv = servicesEnv;

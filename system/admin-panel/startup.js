@@ -27,7 +27,6 @@ const main = async () => {
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
     }
 
-    console.log('scriptName', scriptName)
     if (scriptName === 'build') {
         buildService();
         return;
