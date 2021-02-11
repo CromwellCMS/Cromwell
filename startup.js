@@ -38,7 +38,7 @@ const fs = require('fs');
     }
 
     // Build core
-    if (!isCoreBuilt() && scriptName !== 'build') {
+    if (!isCoreBuilt() || scriptName === 'build') {
         console.log('\x1b[36m%s\x1b[0m', 'Building Core...');
         try {
             spawnSync('npm run build', { shell: true, cwd: resolve(coreDir, 'common'), stdio: 'inherit' });
@@ -56,10 +56,11 @@ const fs = require('fs');
     }
 
     // Build manager
-    spawnSync(`node ${managerStartupPath} buildService`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+    const managerCommand = scriptName === 'build' ? 'buildService' : 'check';
+    spawnSync(`node ${managerStartupPath} ${managerCommand}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
 
     // Build cli
-    spawnSync(`node ${cliStartupPath} buildService`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+    spawnSync(`node ${cliStartupPath} ${managerCommand}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
 
 
     // Check themes
@@ -69,7 +70,7 @@ const fs = require('fs');
         for (let i = 0; i < themes.length; i++) {
             const theme = themes[i];
             const themeDir = resolve(themesDir, theme);
-            if (!fs.existsSync(resolve(themeDir, 'build'))) {
+            if (!fs.existsSync(resolve(themeDir, 'build')) || scriptName === 'build') {
                 console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
                 try {
                     spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
@@ -87,7 +88,7 @@ const fs = require('fs');
         for (let i = 0; i < plugins.length; i++) {
             const plugin = plugins[i];
             const pluginDir = resolve(pluginsDir, plugin);
-            if (!fs.existsSync(resolve(pluginDir, 'build'))) {
+            if (!fs.existsSync(resolve(pluginDir, 'build')) || scriptName === 'build') {
                 console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
                 try {
                     spawnSync('npm run build', { shell: true, cwd: pluginDir, stdio: 'inherit' });

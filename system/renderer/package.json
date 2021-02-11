@@ -8,7 +8,7 @@
   ],
   "license": "ISC",
   "scripts": {
-    "buildRenderer": "node startup.js buildService",
+    "buildService": "node startup.js buildService",
     "dev": "node startup.js dev",
     "build": "node startup.js build",
     "start": "node startup.js prod",

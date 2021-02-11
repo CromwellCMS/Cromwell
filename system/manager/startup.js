@@ -10,6 +10,7 @@ const buildScriptPath = resolve(localProjectRootDir, 'build/index.js');
   * @scriptName
   * production
   * development
+  * check - build if previous build does not exist
   * buildService - build manager service
   * build - build all services
   * winDev - start dev environment in Windows OS
@@ -21,23 +22,23 @@ const main = async () => {
   const cromwellaDir = getCromwellaDir();
   const cromwellaBuildDir = getCromwellaBuildDir();
 
-  if (cromwellaBuildDir && !fs.existsSync(cromwellaBuildDir)) {
+  if (cromwellaBuildDir && (!fs.existsSync(cromwellaBuildDir) || scriptName === 'buildService')) {
     execSync('npm run build', { shell: true, cwd: cromwellaDir, stdio: 'inherit' });
   }
 
   const rendererDir = getRendererDir();
   const rendererBuildDir = getRendererBuildDir();
 
-  if (rendererBuildDir && !fs.existsSync(rendererBuildDir)) {
-    execSync('npm run buildRenderer', { shell: true, cwd: rendererDir, stdio: 'inherit' });
+  if (rendererBuildDir && (!fs.existsSync(rendererBuildDir) || scriptName === 'buildService')) {
+    execSync('npm run buildService', { shell: true, cwd: rendererDir, stdio: 'inherit' });
   }
 
-  if (!fs.existsSync(buildScriptPath)) {
+  if (!fs.existsSync(buildScriptPath) || scriptName === 'buildService') {
     console.log('\x1b[36m%s\x1b[0m', `Building Manager service...`);
     execSync('npm run build', { shell: true, cwd: localProjectRootDir, stdio: 'inherit' });
   }
 
-  if (scriptName === 'buildService') return;
+  if (scriptName === 'buildService' || scriptName === 'check') return;
 
   const { startSystem } = require('./build/index');
   startSystem(scriptName);
