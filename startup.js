@@ -38,7 +38,7 @@ const fs = require('fs');
     }
 
     // Build core
-    if (!isCoreBuilt()) {
+    if (!isCoreBuilt() && scriptName !== 'build') {
         console.log('\x1b[36m%s\x1b[0m', 'Building Core...');
         try {
             spawnSync('npm run build', { shell: true, cwd: resolve(coreDir, 'common'), stdio: 'inherit' });

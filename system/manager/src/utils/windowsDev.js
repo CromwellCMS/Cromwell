@@ -1,5 +1,13 @@
-const { windowManager } = require("node-window-manager");
-const { execSync } = require('child_process');
+const { execSync, spawnSync } = require('child_process');
+let windowManager;
+try {
+    windowManager = require("node-window-manager").windowManager;
+} catch (e) {
+    // Adding "node-window-manager" into package.json is causing errors during npm install on Linux
+    spawnSync(`npm i node-window-manager --no-save --no-package-lock`, { shell: true, cwd: __dirname, stdio: 'inherit' });
+    windowManager = require("node-window-manager").windowManager;
+}
+
 const isRunning = require('is-running');
 const config = require('../config');
 const { saveProcessPid, getProcessPid, getAllServices, loadCache, getRunTimeCache, cleanCache } = require('./cacheManager');
