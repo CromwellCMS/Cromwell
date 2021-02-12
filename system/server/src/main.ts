@@ -42,7 +42,7 @@ async function bootstrap(): Promise<void> {
     SwaggerModule.setup(`/${apiV1BaseRoute}/api-docs`, app, document);
 
 
-    await app.listen(config.apiPort ?? 4032);
+    await app.listen(config.apiPort ?? 4032, '::');
     console.log(`Application is running on: ${await app.getUrl()}`);
 
     if (process.send) process.send(serverMessages.onStartMessage);
