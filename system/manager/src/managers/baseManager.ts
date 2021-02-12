@@ -75,7 +75,7 @@ export const startSystem = async (scriptName: TScriptName) => {
         return;
     }
 
-    closeSystem();
+    await closeSystem();
 
     if (isDevelopment) {
 
