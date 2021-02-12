@@ -10,6 +10,7 @@ export type TPackageJson = {
         frontendDependencies?: (string | TFrontendDependency)[];
         themes?: string[];
         plugins?: string[];
+        bundledDependencies?: string[];
     }
 };
 

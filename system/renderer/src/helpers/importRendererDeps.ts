@@ -8,11 +8,11 @@ export const importRendererDeps = () => {
 
     const importer = getModuleImporter();
     //@ts-ignore
-    getStore().nodeModules.modules['react'] = React;
+    importer.modules['react'] = React;
     //@ts-ignore
-    getStore().nodeModules.modules['react'].didDefaultImport = true;
+    importer.modules['react'].didDefaultImport = true;
     //@ts-ignore
-    getStore().nodeModules.modules['next/head'] = NextHead;
+    importer.modules['next/head'] = NextHead;
 
     if (isServer()) {
         const nodeFetch = require('node-fetch');

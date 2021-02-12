@@ -1,4 +1,4 @@
-import { TThemeConfig, TPagesMetaInfo } from '@cromwell/core';
+import { TThemeConfig, TPagesMetaInfo, getRandStr } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve, isAbsolute } from 'path';
 import normalizePath from 'normalize-path';
@@ -17,9 +17,8 @@ export type TPagePathInfo = {
     compName?: string;
     fileContent?: string;
     metaInfoPath?: string;
+    depsBundlePath?: string;
 }
-
-const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
 
 /**
  * Returns object with page names as keys paths as values: {"pageName": "pagePath"}
@@ -66,12 +65,21 @@ export const readThemeExports = async (themeModuleName: string | undefined): Pro
                 fileContent = (await fs.readFile(fullPath)).toString();
             }
 
+            let depsBundlePath;
+            if (pagePaths.localDepsBundle && pagePaths.pageName !== '_app' && pagePaths.pageName !== '_document') {
+                const depsPath = resolve(buildDir, pagePaths.localDepsBundle);
+                if (await fs.pathExists(depsPath)) {
+                    depsBundlePath = normalizePath(depsPath);
+                }
+            }
+
             exportsInfo.pagesInfo.push({
                 name,
                 path: fullPath,
                 compName,
                 fileContent,
-                metaInfoPath
+                metaInfoPath,
+                depsBundlePath
             })
         };
     } else {

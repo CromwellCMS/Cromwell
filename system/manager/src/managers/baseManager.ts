@@ -43,8 +43,8 @@ export const closeService = async (name: string): Promise<boolean> => {
 export const startService = async (path: string, name: string, args: string[], dir?: string, sync?: boolean): Promise<ChildProcess> => {
     const proc = fork(path, args, { stdio: sync ? 'inherit' : 'pipe', cwd: dir ?? process.cwd() });
     await saveProcessPid(name, proc.pid);
-    proc?.stdout?.on('data', buff => logger.log(buff?.toString?.() ?? buff));
-    proc?.stderr?.on('data', buff => logger.log(buff?.toString?.() ?? buff));
+    proc?.stdout?.on('data', buff => errorLogger.log(buff?.toString?.() ?? buff));
+    proc?.stderr?.on('data', buff => errorLogger.log(buff?.toString?.() ?? buff));
     return proc;
 }
 

@@ -192,6 +192,7 @@ export type TCromwellNodeModules = {
     moduleExternals?: Record<string, string[]>;
     importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean> | boolean;
     importSciptExternals?: (metaInfo: TSciprtMetaInfo) => Promise<boolean>;
+    hasBeenExecuted?: boolean;
 };
 
 export type TSciprtMetaInfo = {
@@ -208,8 +209,11 @@ export type TPagesMetaInfo = {
         srcFullPath?: string;
         importedStyles?: string[];
         basePath?: string;
+        localDepsBundle?: string;
     }[];
     basePath?: string;
+    rootBuildDir?: string;
+    buildDir?: string;
 }
 
 export type TFrontendBundle = {

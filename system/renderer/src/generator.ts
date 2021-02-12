@@ -87,12 +87,15 @@ const main = async () => {
         import dynamic from 'next/dynamic';
         import NextLink from 'next/link';
         import NextHead from 'next/head';
+        import * as cromwellCore from '@cromwell/core';
+        import * as cromwellCoreFrontend from '@cromwell/core-frontend';
+        import * as reactIs from 'react-is';
         import * as NextRouter from 'next/router';
         import Document, { Html, Main, NextScript } from 'next/document';
         import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
         import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
         import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, 
-            fsRequire, importRendererDepsFrontend } from 'build/renderer';
+            fsRequire } from 'build/renderer';
 
 
         const cmsSettings = ${JSON.stringify(config)};
@@ -107,7 +110,12 @@ const main = async () => {
         ${cromwellStoreModulesPath}['next/router'] = NextRouter;
         ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
         ${cromwellStoreModulesPath}['next/head'] = NextHead;
-        // ${cromwellStoreModulesPath}['next/document'] = dynamic;
+        ${cromwellStoreModulesPath}['@cromwell/core'] = cromwellCore;
+        ${cromwellStoreModulesPath}['@cromwell/core'].didDefaultImport = true;
+        ${cromwellStoreModulesPath}['@cromwell/core-frontend'] = cromwellCoreFrontend;
+        ${cromwellStoreModulesPath}['@cromwell/core-frontend'].didDefaultImport = true;
+        ${cromwellStoreModulesPath}['react-is'] = reactIs;
+        ${cromwellStoreModulesPath}['react-is'].didDefaultImport = true;
 
         ${pageInfo.metaInfoPath ? `
         if (isServer()) {
@@ -121,7 +129,13 @@ const main = async () => {
         ${pageImports}
 
         const ${pageDynamicImportName} = dynamic(async () => {
-            await importRendererDepsFrontend();
+
+            ${pageInfo.depsBundlePath ? `
+            if (!importer.hasBeenExecuted) {
+                await import('${pageInfo.depsBundlePath}');
+            }
+            ` : ''}
+
             ${pageInfo.metaInfoPath ? `
             const meta = await import('${metaInfoRelativePath}');
             await importer.importSciptExternals(meta);
