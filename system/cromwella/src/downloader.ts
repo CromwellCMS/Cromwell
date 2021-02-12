@@ -84,8 +84,8 @@ export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) =>
     })
 
     if (downloads > 0) {
-        process.stdout.clearLine(-1);
-        process.stdout.clearLine(0);
+        readline.clearLine(process.stdout, -1);
+        readline.clearLine(process.stdout, 0);
         console.log('\n')
         console.log(colors.cyan(`Cromwella:: Downloaded ${successfulDownloads}/${downloads} modules`));
     }
