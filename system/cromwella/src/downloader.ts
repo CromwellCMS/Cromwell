@@ -8,7 +8,7 @@ import fetch from 'node-fetch';
 import { resolve } from 'path';
 import { promisify } from 'util';
 import decompress from 'decompress';
-
+import readline from 'readline';
 import { moduleMetaInfoFileName } from './constants';
 import { collectFrontendDependencies, collectPackagesInfo, getBundledModulesDir, globPackages } from './shared';
 import { TPackage } from './types';
@@ -44,10 +44,10 @@ export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) =>
         const depDir = resolve(bundledModulesDir, depName);
         if (await fs.pathExists(depDir)) return;
 
-        process.stdout.clearLine(-1);
-        process.stdout.clearLine(0);
+        readline.clearLine(process.stdout, -1);
+        readline.clearLine(process.stdout, 0);
         process.stdout.write(colors.cyan(`Cromwella:: Downloading frontend module: ${colors.brightCyan(depName)}`));
-        process.stdout.cursorTo(0);
+        readline.cursorTo(process.stdout, 0);
 
         downloads++;
         const success = await downloadBundleZipped(depName, bundledModulesDir);
@@ -84,8 +84,8 @@ export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) =>
     })
 
     if (downloads > 0) {
-        process.stdout.clearLine(-1);
-        process.stdout.clearLine(0);
+        readline.clearLine(process.stdout, -1);
+        readline.clearLine(process.stdout, 0);
         console.log('\n')
         console.log(colors.cyan(`Cromwella:: Downloaded ${successfulDownloads}/${downloads} modules`));
     }

@@ -389,3 +389,33 @@ export const collectFrontendDependencies = (packages: (TPackage)[], forceInstall
 
     return frontendDependencies;
 }
+
+
+export const interopDefaultContent = `
+const interopDefault = (lib, importName) => {
+    if (lib && typeof lib === 'object' && 'default' in lib) {
+
+        if (importName !== 'default') {
+            return lib.default;
+        }
+
+        if (typeof lib.default === 'object' || typeof lib.default === 'function') {
+            if (Object.keys(lib).length === 1) {
+                return lib.default;
+            } else if ('default' in lib.default && Object.keys(lib).length === Object.keys(lib.default).length) {
+                return lib.default;
+            } else if (Object.keys(lib).length === Object.keys(lib.default).length + 1) {
+                return lib.default;
+            }
+        } 
+    }
+    return lib;
+}
+`;
+
+export const rendererDefaultDeps = [
+    'react',
+    'react-dom',
+    '@cromwell/core-frontend',
+    '@cromwell/core',
+];

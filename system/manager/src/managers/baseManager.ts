@@ -9,22 +9,23 @@ import config from '../config';
 import { serviceNames, TServiceNames, TScriptName } from '../constants';
 import { checkModules } from '../tasks/checkModules';
 import { getProcessPid, loadCache, saveProcessPid } from '../utils/cacheManager';
-import { startAdminPanel } from './adminPanelManager';
-import { startRenderer } from './rendererManager';
-import { startServer } from './serverManager';
+import { startAdminPanel, closeAdminPanel } from './adminPanelManager';
+import { startRenderer, closeRenderer } from './rendererManager';
+import { startServer, closeServer } from './serverManager';
 
-const logger = getLogger('errors-only');
+const logger = getLogger('detailed');
 const errorLogger = getLogger('errors-only');
+const { cacheKeys, servicesEnv } = config;
 
 export const closeService = async (name: string): Promise<boolean> => {
     return new Promise(done => {
         getProcessPid(name, (pid: number) => {
             treeKill(pid, 'SIGKILL', async (err) => {
-                if (err) errorLogger.error(err);
+                if (err) logger.log(err);
                 if (err) {
                     const isActive = await isServiceRunning(name);
                     if (isActive) {
-                        logger.error(`BaseManager::closeService: failed to close service ${name} by pid. Service is still active!`);
+                        logger.log(`BaseManager::closeService: failed to close service ${name} by pid. Service is still active!`);
                         done(false);
                     } else {
                         logger.log(`BaseManager::closeService: failed to close service ${name} by pid. Service already closed. Return success=true`);
@@ -39,11 +40,11 @@ export const closeService = async (name: string): Promise<boolean> => {
 
 }
 
-export const startService = (path: string, name: string, args: string[], dir?: string, sync?: boolean): ChildProcess => {
+export const startService = async (path: string, name: string, args: string[], dir?: string, sync?: boolean): Promise<ChildProcess> => {
     const proc = fork(path, args, { stdio: sync ? 'inherit' : 'pipe', cwd: dir ?? process.cwd() });
-    saveProcessPid(name, proc.pid);
-    proc?.stdout?.on('data', buff => logger.log(buff?.toString?.() ?? buff));
-    proc?.stderr?.on('data', buff => logger.log(buff?.toString?.() ?? buff));
+    await saveProcessPid(name, proc.pid);
+    proc?.stdout?.on('data', buff => errorLogger.log(buff?.toString?.() ?? buff));
+    proc?.stderr?.on('data', buff => errorLogger.log(buff?.toString?.() ?? buff));
     return proc;
 }
 
@@ -75,6 +76,8 @@ export const startSystem = async (scriptName: TScriptName) => {
         return;
     }
 
+    await closeSystem();
+
     if (isDevelopment) {
 
         spawn(`npx rollup -cw`, [],
@@ -92,11 +95,11 @@ export const startSystem = async (scriptName: TScriptName) => {
         });
     }
 
+    await saveProcessPid(cacheKeys.manager, process.pid)
+
     await startServer();
-
     await startAdminPanel();
-
-    startRenderer();
+    await startRenderer();
 }
 
 
@@ -114,16 +117,24 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
     if (serviceName === 'adminPanel' || serviceName === 'a') {
         const pckg = getModulePackage('@cromwell/admin-panel')
         await checkModules(isDevelopment, pckg ? [pckg] : undefined);
-        startAdminPanel(isDevelopment ? 'dev' : 'prod');
+        await startAdminPanel(isDevelopment ? 'dev' : 'prod');
     }
 
     if (serviceName === 'renderer' || serviceName === 'r') {
         await checkModules(isDevelopment);
-        startRenderer(isDevelopment ? 'dev' : 'prod');
+        await startRenderer(isDevelopment ? 'dev' : 'prod');
     }
 
     if (serviceName === 'server' || serviceName === 's') {
-        startServer(isDevelopment ? 'dev' : 'prod');
+        await startServer(isDevelopment ? 'dev' : 'prod');
     }
 
+}
+
+
+export const closeSystem = async () => {
+    await closeAdminPanel();
+    await closeRenderer();
+    await closeServer();
+    await closeService(cacheKeys.manager);
 }

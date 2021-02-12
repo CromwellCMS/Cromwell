@@ -33,6 +33,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
     const canShowInfo = false;
 
     if (!Cromwell.importModule) Cromwell.importModule = (moduleName, namedExports = ['default']): Promise<boolean> | boolean => {
+        Cromwell.hasBeenExecuted = true;
         if (canShowInfo) console.log('Cromwella:bundler: importModule ' + moduleName + ' named: ' + namedExports);
         let isDefaultImport = false;
         let isLibImport = false;
@@ -296,6 +297,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
     }
 
     if (!Cromwell.importSciptExternals) Cromwell.importSciptExternals = async (metaInfo: TSciprtMetaInfo | undefined): Promise<boolean> => {
+        Cromwell.hasBeenExecuted = true;
         const externals = metaInfo?.externalDependencies;
         if (!metaInfo || !externals) return false;
 

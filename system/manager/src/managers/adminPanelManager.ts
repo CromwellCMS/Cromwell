@@ -5,7 +5,8 @@ import { TAdminPanelCommands } from '../constants';
 import { ManagerState } from '../managerState';
 import { closeService, startService } from './baseManager';
 
-const logger = getLogger('errors-only');
+const logger = getLogger('detailed');
+const errorLogger = getLogger('errors-only');
 const adminPanelStartupPath = getAdminPanelStartupPath();
 
 export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<boolean> => {
@@ -14,7 +15,7 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
 
     if (env && adminPanelStartupPath) {
         ManagerState.adminPanelStatus = 'busy';
-        const proc = startService(adminPanelStartupPath, cacheKeys.adminPanel, [env],
+        const proc = await startService(adminPanelStartupPath, cacheKeys.adminPanel, [env],
             undefined, command === 'build' ? true : false);
 
         if (command === 'build') return true;
@@ -23,12 +24,12 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
             proc?.on('message', async (message: string) => {
                 if (message === adminPanelMessages.onStartMessage) {
                     ManagerState.adminPanelStatus = 'running';
-                    logger.log(`AdminPanel has successfully started`)
+                    errorLogger.log(`AdminPanel has successfully started`)
                     done?.(true);
                 }
                 if (message === adminPanelMessages.onStartErrorMessage) {
                     ManagerState.adminPanelStatus = 'inactive';
-                    logger.log(`Failed to start AdminPanel`, 'Error')
+                    errorLogger.log(`Failed to start AdminPanel`, 'Error')
                     done?.(false);
                 }
             });

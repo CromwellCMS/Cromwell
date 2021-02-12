@@ -12,18 +12,22 @@ const getCacheKey = (serviceName) => {
     return `${cachePath}_${serviceName}`
 }
 
-const saveProcessPid = (title, pid, cb) => {
+const saveProcessPid = async (title, pid) => {
     // console.log('saveProcessPid', title, pid);
-    saveServiceName(title);
-    cacache.put(cachePath, getCacheKey(title), String(pid)).finally(cb);
+    await saveServiceName(title);
+    await new Promise(done => {
+        cacache.put(cachePath, getCacheKey(title), String(pid)).finally(done);
+    });
 }
 
 let serviceNames = [];
 
-const saveServiceName = (name, cb) => {
+const saveServiceName = async (name, cb) => {
     if (!serviceNames.includes(name)) {
         serviceNames.push(name);
-        cacache.put(cachePath, getCacheKey(serviceNamesKey), JSON.stringify(serviceNames)).then(cb)
+        await new Promise(done => {
+            cacache.put(cachePath, getCacheKey(serviceNamesKey), JSON.stringify(serviceNames)).then(done);
+        })
     }
 }
 
@@ -76,7 +80,7 @@ const loadServiceNames = (cb) => {
             } catch (e) {
             }
         }
-    }).catch((e) => {  }
+    }).catch((e) => { }
     ).finally(() => {
         if (cache) {
             serviceNames = cache;

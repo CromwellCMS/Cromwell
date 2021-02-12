@@ -52,7 +52,7 @@ export const buildTask = async (watch?: boolean) => {
             console.log('Running Next.js build...');
 
             if (watch) {
-                rendererStartWatchDev(config.name);
+                await rendererStartWatchDev(config.name);
 
             } else {
                 const nextBuildDir = getThemeNextBuildDirByPath(workingDir);

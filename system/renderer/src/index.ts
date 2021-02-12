@@ -1,5 +1,5 @@
 import { importRendererDeps } from './helpers/importRendererDeps';
-importRendererDeps();
+// importRendererDeps();
 
 export { createGetStaticProps } from './common/createGetStaticProps';
 export { createGetStaticPaths } from './common/createGetStaticPaths';

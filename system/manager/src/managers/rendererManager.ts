@@ -54,7 +54,7 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
     const rendererEnv = command ?? servicesEnv.renderer;
     if (rendererEnv && rendererStartupPath) {
         ManagerState.rendererStatus = 'busy';
-        const proc = startService(rendererStartupPath, cacheKeys.renderer,
+        const proc = await startService(rendererStartupPath, cacheKeys.renderer,
             [rendererEnv, `--theme-name=${themeName}`], undefined,
             command === 'build' ? true : false);
 
@@ -130,7 +130,7 @@ export const rendererBuild = async (themeName: string): Promise<boolean> => {
     if (!rendererStartupPath) return false;
 
     const commad: TRendererCommands = 'build';
-    const proc = startService(rendererStartupPath, cacheKeys.rendererBuilder,
+    const proc = await startService(rendererStartupPath, cacheKeys.rendererBuilder,
         [commad, `--theme-name=${themeName}`]);
 
     await new Promise(done => {
@@ -208,7 +208,7 @@ export const rendererStartWatchDev = async (themeName: string) => {
     await makeEmptyDir(getRendererTempDir());
 
     const commad: TRendererCommands = 'dev';
-    const proc = startService(rendererStartupPath, cacheKeys.renderer,
+    const proc = await startService(rendererStartupPath, cacheKeys.renderer,
         [commad, `--theme-name=${themeName}`])
 }
 

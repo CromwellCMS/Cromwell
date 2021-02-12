@@ -37,6 +37,7 @@ import {
     getBundledModulesDir,
     getModuleInfo,
     globPackages,
+    interopDefaultContent
 } from './shared';
 import { TBundleInfo } from './types';
 
@@ -296,28 +297,6 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
                 if (path) await handleExportKey(key.name, path, key.importType, key.saveAsModules)
             };
         }
-
-        const interopDefaultContent = `
-            const interopDefault = (lib, importName) => {
-                if (lib && typeof lib === 'object' && 'default' in lib) {
-
-                    if (importName !== 'default') {
-                        return lib.default;
-                    }
-
-                    if (typeof lib.default === 'object' || typeof lib.default === 'function') {
-                        if (Object.keys(lib).length === 1) {
-                            return lib.default;
-                        } else if ('default' in lib.default && Object.keys(lib).length === Object.keys(lib.default).length) {
-                            return lib.default;
-                        } else if (Object.keys(lib).length === Object.keys(lib.default).length + 1) {
-                            return lib.default;
-                        }
-                    } 
-                }
-                return lib;
-            }
-            `;
 
         // Main generated file that contains references to generated chunks
         let content = `
