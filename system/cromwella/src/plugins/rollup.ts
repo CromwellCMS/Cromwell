@@ -590,8 +590,6 @@ export const rollupPluginCromwellFrontend = (settings?: {
                         let importsStr = `${interopDefaultContent}\n`;
 
                         for (const depName of packageJson.cromwell.bundledDependencies) {
-                            if (rendererDefaultDeps.includes(depName) ||
-                                depName.startsWith('next/')) continue;
 
                             const strippedDepName = depName.replace(/\W/g, '_') + '_' + getRandStr(4);
                             importsStr += `
