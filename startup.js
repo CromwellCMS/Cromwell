@@ -1,4 +1,4 @@
-const spawnSync = require("child_process").spawnSync;
+const { spawnSync, spawn } = require("child_process");
 const resolve = require('path').resolve;
 const fs = require('fs');
 
@@ -101,7 +101,7 @@ const fs = require('fs');
 
     // Start system
     try {
-        spawnSync(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawn(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     } catch (e) {
         console.log(e);
         console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager:Failed to Start system');
