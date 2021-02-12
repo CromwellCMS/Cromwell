@@ -13,7 +13,7 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
 
     const env = command ?? servicesEnv.server;
     if (env && serverStartupPath) {
-        serverProc = startService(serverStartupPath, cacheKeys.server, [env], undefined, command === 'build' ? true : false)
+        serverProc = await startService(serverStartupPath, cacheKeys.server, [env], undefined, command === 'build' ? true : false)
     }
 
     if (command === 'build') return true;
