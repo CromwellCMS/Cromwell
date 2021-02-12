@@ -9,9 +9,9 @@ import config from '../config';
 import { serviceNames, TServiceNames, TScriptName } from '../constants';
 import { checkModules } from '../tasks/checkModules';
 import { getProcessPid, loadCache, saveProcessPid } from '../utils/cacheManager';
-import { startAdminPanel } from './adminPanelManager';
-import { startRenderer } from './rendererManager';
-import { startServer } from './serverManager';
+import { startAdminPanel, closeAdminPanel } from './adminPanelManager';
+import { startRenderer, closeRenderer } from './rendererManager';
+import { startServer, closeServer } from './serverManager';
 
 const logger = getLogger('errors-only');
 const errorLogger = getLogger('errors-only');
@@ -75,6 +75,8 @@ export const startSystem = async (scriptName: TScriptName) => {
         return;
     }
 
+    closeSystem();
+
     if (isDevelopment) {
 
         spawn(`npx rollup -cw`, [],
@@ -126,4 +128,12 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
         startServer(isDevelopment ? 'dev' : 'prod');
     }
 
+}
+
+
+export const closeSystem = async () => {
+
+    await closeAdminPanel();
+    await closeRenderer();
+    await closeServer();
 }
