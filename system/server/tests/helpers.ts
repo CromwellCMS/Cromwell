@@ -32,8 +32,7 @@ export const setupController = async (name: string) => {
 
     const moduleRef = await Test.createTestingModule({
         imports: [AppModule],
-    })
-        .compile();
+    }).compile();
 
     const app = moduleRef.createNestApplication<NestFastifyApplication>(
         new FastifyAdapter(),

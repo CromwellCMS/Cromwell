@@ -149,6 +149,7 @@ export class ThemeController {
 
         logFor('detailed', 'ThemeController::getPagesInfo');
         const out: TPageInfo[] = [];
+        
         const { themeConfig, userConfig, cmsSettings } = await this.themeService.readConfigs();
         let pages: TPageConfig[] = [];
         if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {

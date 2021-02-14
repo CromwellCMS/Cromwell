@@ -8,13 +8,13 @@ const config: Config.InitialOptions = {
     '@App/(.*)': '<rootDir>/src/$1'
   },
   // silent: false,
-  testRegex: "/__tests__/.*\\.(test|spec)\\.[jt]sx?$",
+  testRegex: "/tests/.*\\.(test|spec)\\.[jt]sx?$",
   // maxConcurrency: 1,
   globals: {
     "ts-jest": {
     }
   },
-  globalTeardown: "<rootDir>/__tests__/teardown.ts"
+  globalTeardown: "<rootDir>/tests/teardown.ts"
 };
 
 export default config;
