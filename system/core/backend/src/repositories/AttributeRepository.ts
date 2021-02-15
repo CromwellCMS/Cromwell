@@ -2,21 +2,18 @@ import { TAttribute, TAttributeInput } from '@cromwell/core';
 import { EntityRepository, Repository } from 'typeorm';
 
 import { Attribute } from '../entities/Attribute';
+import { BaseRepository } from './BaseRepository';
 import { handleBaseInput } from './BaseQueries';
 
 @EntityRepository(Attribute)
-export class AttributeRepository extends Repository<Attribute> {
+export class AttributeRepository extends BaseRepository<Attribute> {
 
     async getAttributes(): Promise<Attribute[]> {
         return this.find();
     }
 
-    async getAttribute(id: string): Promise<Attribute> {
-        const attribute = await this.findOne({
-            where: { id }
-        });
-        if (!attribute) throw new Error(`Attribute ${id} not found!`);
-        return attribute;
+    async getAttribute(id: string): Promise<Attribute | undefined> {
+        return this.getById(id);
     }
 
     async handleAttributeInput(attribute: Attribute, input: TAttributeInput) {
@@ -24,6 +21,7 @@ export class AttributeRepository extends Repository<Attribute> {
         attribute.key = input.key;
         attribute.type = input.type;
         attribute.values = input.values;
+        attribute.icon = input.icon;
         if (input.isEnabled === undefined) attribute.isEnabled = true;
     }
 
@@ -51,19 +49,13 @@ export class AttributeRepository extends Repository<Attribute> {
 
         attribute = await this.save(attribute);
 
+
         return attribute;
     }
 
     async deleteAttribute(id: string): Promise<boolean> {
         console.log('AttributeRepository::deleteAttribute; id: ' + id)
-
-        const attribute = await this.getAttribute(id);
-        if (!attribute) {
-            console.log('AttributeRepository::deleteAttribute failed to find attribute by id');
-            return false;
-        }
-        const res = await this.delete(id);
-        return true;
+        return this.deleteEntity(id);
     }
 
 

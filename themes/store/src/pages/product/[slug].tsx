@@ -33,7 +33,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<ProductP
     let product: TProduct | undefined = undefined;
     if (slug && typeof slug === 'string') {
         try {
-            product = await client?.getProductBySlug(slug, false);
+            product = await client?.getProductBySlug(slug);
         } catch (e) {
             console.error('Product::getStaticProps', e)
         }

@@ -1,12 +1,13 @@
-import { DBTableNames, TProductReview, TProductReviewInput, TPagedList, TPagedParams } from '@cromwell/core';
-import { EntityRepository, Repository, getCustomRepository } from 'typeorm';
+import { DBTableNames, TPagedList, TPagedParams, TProductReview, TProductReviewInput } from '@cromwell/core';
+import { EntityRepository, getCustomRepository } from 'typeorm';
 
 import { ProductReview } from '../entities/ProductReview';
 import { getPaged, handleBaseInput } from './BaseQueries';
+import { BaseRepository } from './BaseRepository';
 import { ProductRepository } from './ProductRepository';
 
 @EntityRepository(ProductReview)
-export class ProductReviewRepository extends Repository<ProductReview> {
+export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
     private productRepo = getCustomRepository(ProductRepository);
     async getProductReviews(params: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {

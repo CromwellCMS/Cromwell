@@ -412,10 +412,3 @@ const interopDefault = (lib, importName) => {
     return lib;
 }
 `;
-
-export const rendererDefaultDeps = [
-    'react',
-    'react-dom',
-    '@cromwell/core-frontend',
-    '@cromwell/core',
-];

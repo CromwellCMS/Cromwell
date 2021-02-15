@@ -113,7 +113,7 @@ export class ProductRepository extends BaseRepository<Product> {
             await this.save(product);
         }
 
-        this.buildProductPage(product);
+        // this.buildProductPage(product);
 
         return product;
     }
@@ -130,7 +130,7 @@ export class ProductRepository extends BaseRepository<Product> {
 
         product = await this.save(product);
 
-        this.buildProductPage(product);
+        // this.buildProductPage(product);
 
         return product;
     }
@@ -144,7 +144,7 @@ export class ProductRepository extends BaseRepository<Product> {
             return false;
         }
         const res = await this.delete(id);
-        this.buildProductPage(product);
+        // this.buildProductPage(product);
         return true;
     }
 

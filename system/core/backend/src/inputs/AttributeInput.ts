@@ -13,6 +13,9 @@ export class AttributeInput extends BasePageInput implements TAttributeInput {
     @Field(type => String)
     type: 'radio' | 'checkbox';
 
+    @Field(type => String, { nullable: true })
+    icon?: string;
+
 }
 
 @InputType("AttributeValueInput")

@@ -1,7 +1,7 @@
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
-import { setupController, tearDownController } from '../helpers';
+import { setupController, tearDownController } from '../controller.helpers';
 
 describe('Plugin Controller', () => {
     let server;

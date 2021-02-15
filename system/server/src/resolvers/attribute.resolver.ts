@@ -20,7 +20,7 @@ export class AttributeResolver {
     }
 
     @Query(() => Attribute)
-    async [getOneByIdPath](@Arg("id") id: string): Promise<Attribute> {
+    async [getOneByIdPath](@Arg("id") id: string): Promise<Attribute | undefined> {
         return await this.repository.getAttribute(id);
     }
 

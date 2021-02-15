@@ -66,7 +66,7 @@ const ProductPage = () => {
         (async () => {
             setIsloading(loadingProgress.slice().splice(0, 1, true));
             try {
-                const prod = await client?.getProductById(id, true);
+                const prod = await client?.getProductById(id);
                 if (prod) setProdData(prod);
             } catch (e) { console.log(e) }
 
@@ -118,7 +118,7 @@ const ProductPage = () => {
             setIsloading(loadingProgress.slice().splice(0, 1, true));
             try {
                 await client?.updateProduct(product.id, input);
-                const prod = await client?.getProductById(id, true);
+                const prod = await client?.getProductById(id);
                 if (prod) setProdData(prod);
             } catch (e) { console.log(e) }
 

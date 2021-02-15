@@ -185,15 +185,10 @@ class CGraphQLClient {
                     }
                 }
             }
-            categories(pagedParams: {pageSize: 9999}) @include(if: $withCategories) {
-                id
-                name
-                slug
-            }
         }
     `
 
-    public getProducts = async (pagedParams?: TPagedParams<TProduct>, withCategories: boolean | null = false,
+    public getProducts = async (pagedParams?: TPagedParams<TProduct>,
         customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TProduct>> => {
 
         const productFragment = customFragment ?? this.ProductFragment;
@@ -204,11 +199,10 @@ class CGraphQLClient {
         const variables: Record<string, any> = {
             pagedParams: pagedParams ?? {},
         };
-        if (withCategories !== null) variables.withCategories = withCategories;
 
         const res = await this.apolloClient.query({
             query: gql`
-                query coreGetProducts($pagedParams: PagedParamsInput!${withCategories === null ? '' : `, $withCategories: Boolean!`}) {
+                query coreGetProducts($pagedParams: PagedParamsInput!) {
                     ${path}(pagedParams: $pagedParams) {
                         pagedMeta {
                             ...PagedMetaFragment
@@ -226,12 +220,12 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public getProductById = async (productId: string, withCategories: boolean = false)
+    public getProductById = async (productId: string)
         : Promise<TProduct | undefined> => {
         const path = GraphQLPaths.Product.getOneById;
         const res = await this.apolloClient.query({
             query: gql`
-                query coreGetProductById($productId: String!, $withCategories: Boolean!) {
+                query coreGetProductById($productId: String!) {
                     ${path}(id: $productId) {
                         ...ProductFragment
                     }
@@ -240,17 +234,16 @@ class CGraphQLClient {
             `,
             variables: {
                 productId,
-                withCategories
             }
         });
         return this.returnData(res, path);
     }
 
-    public getProductBySlug = async (slug: string, withCategories: boolean = false): Promise<TProduct | undefined> => {
+    public getProductBySlug = async (slug: string): Promise<TProduct | undefined> => {
         const path = GraphQLPaths.Product.getOneBySlug;
         const res = await this.apolloClient.query({
             query: gql`
-                query coreGetProductBySlug($slug: String!, $withCategories: Boolean!) {
+                query coreGetProductBySlug($slug: String!) {
                     ${path}(slug: $slug) {
                         ...ProductFragment
                     }
@@ -259,17 +252,16 @@ class CGraphQLClient {
             `,
             variables: {
                 slug,
-                withCategories
             }
         });
         return this.returnData(res, path);
     }
 
-    public updateProduct = async (id: string, product: TProductInput, withCategories: boolean = false) => {
+    public updateProduct = async (id: string, product: TProductInput) => {
         const path = GraphQLPaths.Product.update;
         const res = await this.apolloClient.mutate({
             mutation: gql`
-                mutation coreUpdateProduct($id: String!, $data: UpdateProduct!, $withCategories: Boolean!) {
+                mutation coreUpdateProduct($id: String!, $data: UpdateProduct!) {
                     ${path}(id: $id, data: $data) {
                         ...ProductFragment
                     }
@@ -279,17 +271,16 @@ class CGraphQLClient {
             variables: {
                 id,
                 data: product,
-                withCategories
             }
         });
         return this.returnData(res, path);
     }
 
-    public createProduct = async (product: TProductInput, withCategories: boolean = false) => {
+    public createProduct = async (product: TProductInput) => {
         const path = GraphQLPaths.Product.create;
         const res = await this.apolloClient.mutate({
             mutation: gql`
-                mutation coreCreateProduct($data: CreateProduct!, $withCategories: Boolean!) {
+                mutation coreCreateProduct($data: CreateProduct!) {
                     ${path}(data: $data) {
                         ...ProductFragment
                     }
@@ -298,17 +289,16 @@ class CGraphQLClient {
             `,
             variables: {
                 data: product,
-                withCategories: withCategories
             }
         });
         return this.returnData(res, path);
     }
 
-    public getProductsFromCategory = async (categoryId: string, pagedParams?: TPagedParams<TProduct>, withCategories: boolean = false): Promise<TPagedList<TProduct>> => {
+    public getProductsFromCategory = async (categoryId: string, pagedParams?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> => {
         const path = GraphQLPaths.Product.getFromCategory;
         const res = await this.apolloClient.query({
             query: gql`
-                query coreGetProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $withCategories: Boolean!) {
+                query coreGetProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!) {
                     ${path}(categoryId: $categoryId, pagedParams: $pagedParams) {
                         pagedMeta {
                             ...PagedMetaFragment
@@ -322,7 +312,6 @@ class CGraphQLClient {
                 ${this.PagedMetaFragment}
             `,
             variables: {
-                withCategories,
                 pagedParams: pagedParams ?? {},
                 categoryId
             }
@@ -355,7 +344,7 @@ class CGraphQLClient {
         const path = GraphQLPaths.ProductCategory.getOneBySlug;
         const res = await this.apolloClient.query({
             query: gql`
-                query coreGetProductCategory($slug: String!, $productsPagedParams: PagedParamsInput!, $withCategories: Boolean!) {
+                query coreGetProductCategory($slug: String!, $productsPagedParams: PagedParamsInput!) {
                     ${path}(slug: $slug) {
                         id
                         name
@@ -375,7 +364,6 @@ class CGraphQLClient {
             variables: {
                 slug,
                 productsPagedParams: productsPagedParams ? productsPagedParams : {},
-                withCategories: false
             }
         });
 
@@ -579,7 +567,7 @@ class CGraphQLClient {
         const path = GraphQLPaths.ProductReview.update;
         const res = await this.apolloClient.mutate({
             mutation: gql`
-              mutation coreUpdateAttribute($id: String!, $data: AttributeInput!) {
+              mutation coreUpdateAttribute($id: String!, $data: ProductReviewInput!) {
                 ${path}(id: $id, data: $data) {
                       ...ProductReviewFragment
                   }
@@ -598,7 +586,7 @@ class CGraphQLClient {
         const path = GraphQLPaths.ProductReview.create;
         const res = await this.apolloClient.mutate({
             mutation: gql`
-              mutation coreCreateProductReview($data: AttributeInput!) {
+              mutation coreCreateProductReview($data: ProductReviewInput!) {
                 ${path}(data: $data) {
                       ...ProductReviewFragment
                   }

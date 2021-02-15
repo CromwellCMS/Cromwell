@@ -29,7 +29,7 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntity {
     @UpdateDateColumn()
     updateDate: Date;
 
-    @Field(() => Boolean)
-    @Column({ type: "boolean", default: true })
+    @Field(() => Boolean, { nullable: true })
+    @Column({ type: "boolean", default: true, nullable: true })
     isEnabled?: boolean;
 }

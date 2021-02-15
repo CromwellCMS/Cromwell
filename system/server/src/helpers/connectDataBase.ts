@@ -26,7 +26,7 @@ import { ThemeService } from '../services/theme.service';
 import { GenericPlugin, GenericTheme } from './genericEntities';
 
 
-export const connectDatabase = async (env: 'dev' | 'prod' | 'test') => {
+export const connectDatabase = async () => {
 
     const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
 

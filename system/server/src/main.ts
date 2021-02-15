@@ -18,7 +18,7 @@ async function bootstrap(): Promise<void> {
 
 
     // Connect to DB via TypeOrm
-    await connectDatabase(envMode);
+    await connectDatabase();
 
 
     // Launch REST API server via Nest.js

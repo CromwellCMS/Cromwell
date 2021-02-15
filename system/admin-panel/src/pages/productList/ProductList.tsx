@@ -15,7 +15,7 @@ const ProductList = () => {
     const client = getGraphQLClient();
 
     const handleGetProducts = async (params: TPagedParams<TProduct>) => {
-        return client?.getProducts(params, null, gql`
+        return client?.getProducts(params, gql`
             fragment ProductListFragment on Product {
                 id
                 slug

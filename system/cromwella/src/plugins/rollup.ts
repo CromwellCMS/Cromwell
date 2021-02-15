@@ -1,15 +1,24 @@
-import { TFrontendDependency, TPackageJson, TPagesMetaInfo, TPluginConfig, TRollupConfig, TSciprtMetaInfo, TThemeConfig, getRandStr } from '@cromwell/core';
+import {
+    getRandStr,
+    TFrontendDependency,
+    TPackageJson,
+    TPagesMetaInfo,
+    TPluginConfig,
+    TRollupConfig,
+    TSciprtMetaInfo,
+    TThemeConfig,
+} from '@cromwell/core';
 import {
     buildDirName,
     getMetaInfoPath,
     getPluginBackendPath,
-    getThemeRollupBuildDir,
     getThemeBuildDir,
+    getThemePagesMetaPath,
+    getThemeRollupBuildDir,
     pluginAdminBundlePath,
     pluginAdminCjsPath,
     pluginFrontendBundlePath,
     pluginFrontendCjsPath,
-    getThemePagesMetaPath
 } from '@cromwell/core-backend';
 import virtual from '@rollup/plugin-virtual';
 import chokidar from 'chokidar';
@@ -22,12 +31,16 @@ import normalizePath from 'normalize-path';
 import { dirname, join, resolve } from 'path';
 import { OutputOptions, Plugin, RollupOptions } from 'rollup';
 import externalGlobals from 'rollup-plugin-external-globals';
-import { collectFrontendDependencies, collectPackagesInfo, getBundledModulesDir, globPackages } from '../shared';
 
 import { cromwellStoreModulesPath, getGlobalModuleStr } from '../constants';
 import {
-    getDepVersion, getNodeModuleVersion, isExternalForm,
-    interopDefaultContent, rendererDefaultDeps
+    collectFrontendDependencies,
+    collectPackagesInfo,
+    getDepVersion,
+    getNodeModuleVersion,
+    globPackages,
+    interopDefaultContent,
+    isExternalForm,
 } from '../shared';
 
 const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): boolean => {
