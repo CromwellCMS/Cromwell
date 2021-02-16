@@ -3,14 +3,14 @@ import { BaseRepository, PagedMeta, PagedParamsInput } from '@cromwell/core-back
 import { Arg, Args, ArgsType, Field, Mutation, ObjectType, Query, Resolver } from 'type-graphql';
 import { EntityRepository, getCustomRepository } from 'typeorm';
 
-export const createGenericEntity = <EntityType, EntityInputType = EntityType>(entityName: string, DBTableName: string,
+export const createGenericEntity = <EntityType, EntityInputType = EntityType>(entityName: string,
     EntityClass: new (...args: any[]) => EntityType,
     InputEntityClass?: new (...args: any[]) => EntityInputType) => {
 
     @EntityRepository(EntityClass)
     class GenericRepository extends BaseRepository<EntityType, EntityInputType> {
         constructor() {
-            super(DBTableName, EntityClass)
+            super(EntityClass)
         }
     }
 

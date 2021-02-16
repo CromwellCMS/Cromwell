@@ -7,6 +7,7 @@ import {
     ProductCategoryRepository,
     ProductRepository,
     UpdateProductCategory,
+    PagedProductCategory,
 } from '@cromwell/core-backend';
 import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -19,6 +20,8 @@ const updatePath = GraphQLPaths.ProductCategory.update;
 const deletePath = GraphQLPaths.ProductCategory.delete;
 
 const productsKey: keyof TProductCategory = 'products';
+const parentKey: keyof TProductCategory = 'parent';
+const childrenKey: keyof TProductCategory = 'children';
 
 @Resolver(ProductCategory)
 export class ProductCategoryResolver {
@@ -26,8 +29,8 @@ export class ProductCategoryResolver {
     private repository = getCustomRepository(ProductCategoryRepository)
     private productRepository = getCustomRepository(ProductRepository)
 
-    @Query(() => [ProductCategory])
-    async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<TProductCategory>) {
+    @Query(() => PagedProductCategory)
+    async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<TProductCategory>): Promise<TPagedList<TProductCategory>> {
         return await this.repository.getProductCategories(pagedParams);
     }
 
@@ -61,6 +64,15 @@ export class ProductCategoryResolver {
         return await this.productRepository.getProductsFromCategory(productCategory.id, pagedParams);
     }
 
+    @FieldResolver(() => ProductCategory, { nullable: true })
+    async [parentKey](@Root() productCategory: ProductCategory): Promise<TProductCategory | undefined | null> {
+        return await this.repository.getParentCategory(productCategory);
+    }
+
+    @FieldResolver(() => [ProductCategory])
+    async [childrenKey](@Root() productCategory: ProductCategory): Promise<TProductCategory[]> {
+        return await this.repository.getChildrenCategories(productCategory);
+    }
 
     @FieldResolver()
     views(): number {

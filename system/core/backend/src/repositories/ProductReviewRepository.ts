@@ -1,4 +1,4 @@
-import { DBTableNames, TPagedList, TPagedParams, TProductReview, TProductReviewInput } from '@cromwell/core';
+import { TPagedList, TPagedParams, TProductReview, TProductReviewInput, logFor } from '@cromwell/core';
 import { EntityRepository, getCustomRepository } from 'typeorm';
 
 import { ProductReview } from '../entities/ProductReview';
@@ -11,10 +11,11 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
     private productRepo = getCustomRepository(ProductRepository);
     async getProductReviews(params: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
-        return getPaged(this.createQueryBuilder(), DBTableNames.ProductReview, params);
+        return getPaged(this.createQueryBuilder(), this.metadata.tablePath, params);
     }
 
     async getProductReview(id: string): Promise<ProductReview> {
+        logFor('detailed', 'ProductReviewRepository::getProductReview id: ' + id);
         const productReview = await this.findOne({
             where: { id }
         });
@@ -36,6 +37,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
     }
 
     async createProductReview(createProductReview: TProductReviewInput): Promise<TProductReview> {
+        logFor('detailed', 'ProductReviewRepository::createProductReview');
         let productReview = new ProductReview();
 
         await this.handleProductReviewInput(productReview, createProductReview);
@@ -50,6 +52,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
     }
 
     async updateProductReview(id: string, updateProductReview: TProductReviewInput): Promise<ProductReview> {
+        logFor('detailed', 'ProductReviewRepository::updateProductReview; id: ' + id);
         let productReview = await this.findOne({
             where: { id }
         });
@@ -63,11 +66,10 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
     }
 
     async deleteProductReview(id: string): Promise<boolean> {
-        console.log('ProductReviewRepository::deleteProductReview; id: ' + id)
+        logFor('detailed', 'ProductReviewRepository::deleteProductReview; id: ' + id);
 
         const productReview = await this.getProductReview(id);
         if (!productReview) {
-            console.log('ProductReviewRepository::deleteProductReview failed to find productReview by id');
             return false;
         }
         const res = await this.delete(id);

@@ -13,6 +13,7 @@ export * from './entities/paged/PagedProduct';
 export * from './entities/paged/PagedMeta';
 export * from './entities/paged/PagedProductReview';
 export * from './entities/paged/PagedPost';
+export * from './entities/paged/PagedProductCategory';
 
 export * from './inputs/CreateUser';
 export * from './inputs/CreatePost';

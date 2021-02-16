@@ -1,4 +1,4 @@
-import { DBTableNames, logFor, TPagedList, TPagedParams, TUserInput } from '@cromwell/core';
+import { logFor, TPagedList, TPagedParams, TUserInput } from '@cromwell/core';
 import { EntityRepository } from 'typeorm';
 
 import { User } from '../entities/User';
@@ -9,7 +9,7 @@ import { BaseRepository } from './BaseRepository';
 export class UserRepository extends BaseRepository<User> {
 
     constructor() {
-        super(DBTableNames.User, User)
+        super(User)
     }
 
     async getUsers(params: TPagedParams<User>): Promise<TPagedList<User>> {

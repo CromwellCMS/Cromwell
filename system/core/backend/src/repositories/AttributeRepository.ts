@@ -1,4 +1,4 @@
-import { TAttribute, TAttributeInput } from '@cromwell/core';
+import { TAttribute, TAttributeInput, logFor } from '@cromwell/core';
 import { EntityRepository, Repository } from 'typeorm';
 
 import { Attribute } from '../entities/Attribute';
@@ -9,10 +9,12 @@ import { handleBaseInput } from './BaseQueries';
 export class AttributeRepository extends BaseRepository<Attribute> {
 
     async getAttributes(): Promise<Attribute[]> {
+        logFor('detailed', 'AttributeRepository::getAttributes');
         return this.find();
     }
 
     async getAttribute(id: string): Promise<Attribute | undefined> {
+        logFor('detailed', 'AttributeRepository::getAttribute; id: ' + id);
         return this.getById(id);
     }
 
@@ -26,6 +28,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
     }
 
     async createAttribute(createAttribute: TAttributeInput): Promise<TAttribute> {
+        logFor('detailed', 'AttributeRepository::createAttribute');
         let attribute = new Attribute();
 
         await this.handleAttributeInput(attribute, createAttribute);
@@ -40,6 +43,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
     }
 
     async updateAttribute(id: string, updateAttribute: TAttributeInput): Promise<Attribute> {
+        logFor('detailed', 'AttributeRepository::updateAttribute; id: ' + id);
         let attribute = await this.findOne({
             where: { id }
         });
@@ -54,7 +58,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
     }
 
     async deleteAttribute(id: string): Promise<boolean> {
-        console.log('AttributeRepository::deleteAttribute; id: ' + id)
+        logFor('detailed', 'AttributeRepository::deleteAttribute; id: ' + id);
         return this.deleteEntity(id);
     }
 

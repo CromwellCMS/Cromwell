@@ -34,7 +34,7 @@ type TProductCategoryCore = {
     // DB children
     children?: TProductCategory[];
     // DB parent
-    parent?: TProductCategory;
+    parent?: TProductCategory | null;
     // Products in category
     products?: TPagedList<TProduct>;
 }

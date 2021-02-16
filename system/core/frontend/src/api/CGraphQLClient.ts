@@ -25,6 +25,7 @@ import {
     TProductReviewInput,
     TPost,
     TPostInput,
+    TProductCategoryInput,
 } from '@cromwell/core';
 
 class CGraphQLClient {
@@ -186,7 +187,7 @@ class CGraphQLClient {
                 }
             }
         }
-    `
+    `;
 
     public getProducts = async (pagedParams?: TPagedParams<TProduct>,
         customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TProduct>> => {
@@ -340,35 +341,153 @@ class CGraphQLClient {
 
     // <ProductCategory>
 
-    public getProductCategoryBySlug = async (slug: string, productsPagedParams?: TPagedParams<TProduct>): Promise<TProductCategory | undefined> => {
+    public ProductCategoryFragment = gql`
+        fragment ProductCategoryFragment on ProductCategory {
+            id
+            slug
+            createDate
+            updateDate
+            isEnabled
+            pageTitle
+            name
+            mainImage
+            description
+            children {
+                id
+                slug
+            }
+            parent {
+                id
+                slug
+            }
+        }
+    `;
+
+    public getProductCategories = async (pagedParams?: TPagedParams<TProductCategory>,
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TProductCategory>> => {
+
+        const productFragment = customFragment ?? this.ProductCategoryFragment;
+        const productFragmentName = customFragmentName ?? 'ProductCategoryFragment';
+
+        const path = GraphQLPaths.ProductCategory.getMany;
+
+        const variables: Record<string, any> = {
+            pagedParams: pagedParams ?? {},
+        };
+
+        const res = await this.apolloClient.query({
+            query: gql`
+            query coreGetProductCategories($pagedParams: PagedParamsInput!) {
+                ${path}(pagedParams: $pagedParams) {
+                    pagedMeta {
+                        ...PagedMetaFragment
+                    }
+                    elements {
+                        ...${productFragmentName}
+                    }
+                }
+            }
+            ${productFragment}
+            ${this.PagedMetaFragment}
+        `,
+            variables
+        })
+        return this.returnData(res, path);
+    }
+
+    public getProductCategoryById = async (id: string)
+        : Promise<TProductCategory | undefined> => {
+        const path = GraphQLPaths.ProductCategory.getOneById;
+        const res = await this.apolloClient.query({
+            query: gql`
+            query coreGetProductCategoryById($id: String!) {
+                ${path}(id: $id) {
+                    ...ProductCategoryFragment
+                }
+            }
+            ${this.ProductCategoryFragment}
+        `,
+            variables: {
+                id,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public getProductCategoryBySlug = async (slug: string, pagedParams?: TPagedParams<TProductCategory>): Promise<TProductCategory | undefined> => {
         const path = GraphQLPaths.ProductCategory.getOneBySlug;
         const res = await this.apolloClient.query({
             query: gql`
-                query coreGetProductCategory($slug: String!, $productsPagedParams: PagedParamsInput!) {
+                query coreGetProductCategory($slug: String!) {
                     ${path}(slug: $slug) {
-                        id
-                        name
-                        products(pagedParams: $productsPagedParams) {
-                            pagedMeta {
-                                ...PagedMetaFragment
-                            }
-                            elements {
-                                ...ProductFragment
-                            }
-                        }
+                    ...ProductCategoryFragment
                     }
                 }
-                ${this.ProductFragment}
+                ${this.ProductCategoryFragment}
                 ${this.PagedMetaFragment}
             `,
             variables: {
                 slug,
-                productsPagedParams: productsPagedParams ? productsPagedParams : {},
+                pagedParams: pagedParams ?? {},
             }
         });
 
         return this.returnData(res, path);
     }
+
+    public updateProductCategory = async (id: string, productCategory: TProductCategoryInput) => {
+        const path = GraphQLPaths.ProductCategory.update;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+            mutation coreUpdateProductCategory($id: String!, $data: UpdateProductCategory!) {
+                ${path}(id: $id, data: $data) {
+                    ...ProductCategoryFragment
+                }
+            }
+            ${this.ProductCategoryFragment}
+        `,
+            variables: {
+                id,
+                data: productCategory,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public createProductCategory = async (productCategory: TProductCategoryInput) => {
+        const path = GraphQLPaths.ProductCategory.create;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+            mutation coreCreateProductCategory($data: CreateProductCategory!) {
+                ${path}(data: $data) {
+                    ...ProductCategoryFragment
+                }
+            }
+            ${this.ProductCategoryFragment}
+        `,
+            variables: {
+                data: productCategory,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public deleteProductCategory = async (id: string) => {
+        const path = GraphQLPaths.ProductCategory.delete;
+
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteProductCategory($id: String!) {
+                    ${path}(id: $id)
+                }
+            `,
+            variables: {
+                id,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
 
     // </ProductCategory>
 

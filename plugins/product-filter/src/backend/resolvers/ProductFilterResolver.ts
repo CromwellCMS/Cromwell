@@ -1,5 +1,5 @@
-import { DBTableNames, logFor, TPagedList, TProduct } from '@cromwell/core';
-import { applyGetManyFromOne, getPaged, PagedParamsInput, Product, ProductRepository } from '@cromwell/core-backend';
+import { logFor, TPagedList, TProduct } from '@cromwell/core';
+import { applyGetManyFromOne, getPaged, PagedParamsInput, Product, ProductRepository, ProductCategoryRepository } from '@cromwell/core-backend';
 import { Arg, Query, Resolver } from 'type-graphql';
 import { Brackets, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
@@ -21,9 +21,9 @@ export default class ProductFilterResolver {
         const productRepo = getCustomRepository(ProductRepository);
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
-            const qb = productRepo.createQueryBuilder(DBTableNames.Product);
-            applyGetManyFromOne(qb, DBTableNames.Product, 'categories',
-                DBTableNames.ProductCategory, categoryId);
+            const qb = productRepo.createQueryBuilder(productRepo.metadata.tablePath);
+            applyGetManyFromOne(qb, productRepo.metadata.tablePath, 'categories',
+                getCustomRepository(ProductCategoryRepository).metadata.tablePath, categoryId);
 
             if (filterParams) {
                 this.applyProductFilter(qb, filterParams, shouldApplyPriceFilter);
@@ -36,8 +36,8 @@ export default class ProductFilterResolver {
             const qb = getQb(false);
 
             let [maxPrice, minPrice] = await Promise.all([
-                qb.select(`MAX(${DBTableNames.Product}.price)`, "maxPrice").getRawOne().then(res => res?.maxPrice),
-                qb.select(`MIN(${DBTableNames.Product}.price)`, "minPrice").getRawOne().then(res => res?.minPrice)
+                qb.select(`MAX(${productRepo.metadata.tablePath}.price)`, "maxPrice").getRawOne().then(res => res?.maxPrice),
+                qb.select(`MIN(${productRepo.metadata.tablePath}.price)`, "minPrice").getRawOne().then(res => res?.minPrice)
             ]);
             if (maxPrice && typeof maxPrice === 'string') maxPrice = parseInt(maxPrice);
             if (minPrice && typeof minPrice === 'string') minPrice = parseInt(minPrice);
@@ -66,6 +66,7 @@ export default class ProductFilterResolver {
 
     private applyProductFilter(qb: SelectQueryBuilder<TProduct>, filterParams: TProductFilter, shouldApplyPriceFilter = true) {
         let isFirstAttr = true;
+        const productRepo = getCustomRepository(ProductRepository);
 
         const qbAddWhere: typeof qb.where = (where, params) => {
             if (isFirstAttr) {
@@ -85,7 +86,7 @@ export default class ProductFilterResolver {
                         attr.values.forEach(val => {
                             const likeStr = `%{"key":"${attr.key}","values":[%{"value":"${val}"%]}%`;
                             const valKey = `${attr.key}_${val}`;
-                            const query = `${DBTableNames.Product}.attributesJSON LIKE :${valKey}`;
+                            const query = `${productRepo.metadata.tablePath}.attributesJSON LIKE :${valKey}`;
                             if (isFirstVal) {
                                 isFirstVal = false;
                                 subQb.where(query, { [valKey]: likeStr });
@@ -101,7 +102,7 @@ export default class ProductFilterResolver {
 
         if (filterParams.nameSearch && filterParams.nameSearch !== '') {
             const likeStr = `%${filterParams.nameSearch}%`;
-            const query = `${DBTableNames.Product}.name LIKE :likeStr`;
+            const query = `${productRepo.metadata.tablePath}.name LIKE :likeStr`;
             qbAddWhere(query, { likeStr });
         }
 
@@ -137,11 +138,11 @@ export default class ProductFilterResolver {
 
         if (shouldApplyPriceFilter) {
             if (filterParams.maxPrice) {
-                const query = `${DBTableNames.Product}.price <= :maxPrice`;
+                const query = `${productRepo.metadata.tablePath}.price <= :maxPrice`;
                 qbAddWhere(query, { maxPrice: filterParams.maxPrice })
             }
             if (filterParams.minPrice) {
-                const query = `${DBTableNames.Product}.price >= :minPrice`;
+                const query = `${productRepo.metadata.tablePath}.price >= :minPrice`;
                 qbAddWhere(query, { minPrice: filterParams.minPrice })
             }
         }

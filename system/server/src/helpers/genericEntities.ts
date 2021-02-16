@@ -5,9 +5,9 @@ import { Resolver } from 'type-graphql';
 import { createGenericEntity } from './createResolver';
 
 
-export const GenericTheme = createGenericEntity<TThemeEntity, TThemeEntityInput>('Theme', 'theme', ThemeEntity, InputThemeEntity);
-export const GenericPlugin = createGenericEntity<TPluginEntity, TPluginEntityInput>('Plugin', 'plugin', PluginEntity, InputPluginEntity);
-export const GenericCms = createGenericEntity<TCmsEntity, TCmsEntityInput>('Cms', 'cms', CmsEntity, InputCmsEntity);
+export const GenericTheme = createGenericEntity<TThemeEntity, TThemeEntityInput>('Theme', ThemeEntity, InputThemeEntity);
+export const GenericPlugin = createGenericEntity<TPluginEntity, TPluginEntityInput>('Plugin', PluginEntity, InputPluginEntity);
+export const GenericCms = createGenericEntity<TCmsEntity, TCmsEntityInput>('Cms', CmsEntity, InputCmsEntity);
 
 
 @Resolver(ThemeEntity)

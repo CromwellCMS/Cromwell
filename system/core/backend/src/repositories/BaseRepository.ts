@@ -6,7 +6,6 @@ import { getPaged } from './BaseQueries';
 export class BaseRepository<EntityType, EntityInputType = EntityType> extends Repository<EntityType> {
 
     constructor(
-        public DBTableName: string,
         private EntityClass: new (...args: any[]) => EntityType
     ) {
         super();
@@ -14,8 +13,8 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
 
     async getPaged(params: TPagedParams<EntityType>): Promise<TPagedList<EntityType>> {
         logFor('all', 'BaseRepository::getPaged');
-        const qb = this.createQueryBuilder(this.DBTableName);
-        const paged = await getPaged(qb, this.DBTableName, params);
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        const paged = await getPaged(qb, this.metadata.tablePath, params);
         return paged;
     }
 
@@ -30,7 +29,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
             where: { id },
             relations
         });
-        if (!entity) throw new Error(`${this.DBTableName} ${id} not found!`);
+        if (!entity) throw new Error(`${this.metadata.tablePath} ${id} not found!`);
         return entity;
     }
 
@@ -40,7 +39,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
             where: { slug },
             relations
         });
-        if (!entity) throw new Error(`${this.DBTableName} ${slug} not found!`);
+        if (!entity) throw new Error(`${this.metadata.tablePath} ${slug} not found!`);
         return entity;
     }
 
@@ -59,7 +58,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         let entity = await this.findOne({
             where: { id }
         });
-        if (!entity) throw new Error(`${this.DBTableName} ${id} not found!`);
+        if (!entity) throw new Error(`${this.metadata.tablePath} ${id} not found!`);
 
         for (const key of Object.keys(input)) {
             entity[key] = input[key];
@@ -73,7 +72,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         logFor('all', 'BaseRepository::deleteEntity');
         const entity = await this.getById(id);
         if (!entity) {
-            console.log(`BaseRepository::deleteEntity failed to find ${this.DBTableName} ${id} by id: ${id}`);
+            console.log(`BaseRepository::deleteEntity failed to find ${this.metadata.tablePath} ${id} by id: ${id}`);
             return false;
         }
         const res = await this.delete(id);

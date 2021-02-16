@@ -108,6 +108,8 @@ export class MockService {
 
     private randomHTMLText = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</p><ul><li><i class="porto-icon-ok"></i>Any Product types that You want - Simple, Configurable</li><li><i class="porto-icon-ok"></i>Downloadable/Digital Products, Virtual Products</li><li><i class="porto-icon-ok"></i>Inventory Management with Backordered items</li></ul><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, <br>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
 
+    public getRandomName = () => (nameGenerator().spaced).replace(/\b\w/g, l => l.toUpperCase());
+
     public async mockAll(): Promise<boolean> {
         await this.mockUsers();
         await this.mockPosts();
@@ -146,7 +148,6 @@ export class MockService {
         const promises: Promise<TProduct>[] = [];
 
         for (let i = 0; i < times; i++) {
-            const randName = (nameGenerator().spaced).replace(/\b\w/g, l => l.toUpperCase());
             const mainImage = getRandImg();
             const price = Math.round(Math.random() * 1000)
             const oldPrice = Math.random() > 0.5 ? Math.round(price / Math.random()) : undefined;
@@ -163,7 +164,7 @@ export class MockService {
             const condition = Math.random() > 0.3 ? 'New' : 'Used';
 
             promises.push(this.productRepo.createProduct({
-                name: randName,
+                name: this.getRandomName(),
                 categoryIds,
                 price: price,
                 oldPrice: oldPrice,
@@ -228,10 +229,10 @@ export class MockService {
 
         const categoriesMock: TProductCategoryInput[] = []
         for (let i = 0; i < 20; i++) {
-            const name = 'Category ' + (i + 1);
+            const name = this.getRandomName();
             categoriesMock.push({
                 name,
-                description: name + ' description'
+                description: name + ' description goes here...'
             })
         }
 
@@ -240,12 +241,12 @@ export class MockService {
             const subCatsNum = Math.floor(Math.random() * 5);
             const subCats: TProductCategoryInput[] = [];
             for (let j = 0; j < subCatsNum; j++) {
-                const name = 'Subcategory ' + (j + 1);
+                const name = 'Subcategory ' + this.getRandomName();
                 const subcat = {
                     name,
                     description: name + ' description',
                     parentId: catEntity.id
-                };
+                } as TProductCategoryInput;
                 await this.productCategoryRepo.createProductCategory(subcat);
             }
 
@@ -353,13 +354,12 @@ export class MockService {
         const promises: Promise<TPost>[] = [];
 
         for (let i = 0; i < 20; i++) {
-            const randName = (nameGenerator().spaced).replace(/\b\w/g, l => l.toUpperCase());
 
             promises.push(this.postRepo.createPost({
                 content: postContent,
                 delta: postQuillDelta,
                 authorId: users[Math.floor(Math.random() * (users.length))].id,
-                title: randName,
+                title: this.getRandomName(),
                 mainImage: getRandImg(),
                 isPublished: true,
                 isEnabled: true
@@ -370,3 +370,6 @@ export class MockService {
         return true;
     }
 }
+
+
+

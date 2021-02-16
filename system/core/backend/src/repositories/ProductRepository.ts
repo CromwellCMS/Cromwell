@@ -1,6 +1,5 @@
 import {
     BasePagePaths,
-    DBTableNames,
     getStoreItem,
     logFor,
     TPagedList,
@@ -27,14 +26,15 @@ const ratingKey: keyof TProductReview = 'rating';
 export class ProductRepository extends BaseRepository<Product> {
 
     constructor() {
-        super(DBTableNames.Product, Product)
+        super(Product)
     }
 
     async applyGetProductRating(qb: SelectQueryBuilder<TProduct>) {
-        qb.addSelect(`AVG(${DBTableNames.ProductReview}.${String(ratingKey)})`, 'product_' + averageKey)
-            .addSelect(`COUNT(${DBTableNames.ProductReview}.id)`, 'product_' + reviewsCountKey)
-            .leftJoin(ProductReview, DBTableNames.ProductReview, `${DBTableNames.ProductReview}.productId = ${DBTableNames.Product}.id `)
-            .groupBy(`${DBTableNames.Product}.id`);
+        const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
+        qb.addSelect(`AVG(${reviewTable}.${String(ratingKey)})`, 'product_' + averageKey)
+            .addSelect(`COUNT(${reviewTable}.id)`, 'product_' + reviewsCountKey)
+            .leftJoin(ProductReview, reviewTable, `${reviewTable}.productId = ${this.metadata.tablePath}.id `)
+            .groupBy(`${this.metadata.tablePath}.id`);
     }
 
     async applyAndGetPagedProducts(qb: SelectQueryBuilder<TProduct>, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
@@ -44,29 +44,29 @@ export class ProductRepository extends BaseRepository<Product> {
             params.orderBy = 'product_' + averageKey as any;
             return getPaged(qb, undefined, params);
         }
-        return getPaged(qb, this.DBTableName, params);
+        return getPaged(qb, this.metadata.tablePath, params);
     }
 
     async getProducts(params: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         logFor('detailed', 'ProductRepository::getProducts');
-        const qb = this.createQueryBuilder(DBTableNames.Product);
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
         const prods = await this.applyAndGetPagedProducts(qb, params)
         return prods;
     }
 
     async getProductById(id: string): Promise<Product | undefined> {
         logFor('detailed', 'ProductRepository::getProductById id: ' + id);
-        const qb = this.createQueryBuilder(DBTableNames.Product);
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
         this.applyGetProductRating(qb);
-        return qb.where(`${DBTableNames.Product}.id = :id`, { id })
+        return qb.where(`${this.metadata.tablePath}.id = :id`, { id })
             .getOne();
     }
 
     async getProductBySlug(slug: string): Promise<Product | undefined> {
         logFor('detailed', 'ProductRepository::getProductBySlug slug: ' + slug);
-        const qb = this.createQueryBuilder(DBTableNames.Product);
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
         this.applyGetProductRating(qb);
-        return qb.where(`${DBTableNames.Product}.slug = :slug`, { slug })
+        return qb.where(`${this.metadata.tablePath}.slug = :slug`, { slug })
             .getOne();
     }
 
@@ -150,22 +150,26 @@ export class ProductRepository extends BaseRepository<Product> {
 
     async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         logFor('detailed', 'ProductRepository::getProductsFromCategory id: ' + categoryId);
-        const qb = this.createQueryBuilder(DBTableNames.Product);
-        applyGetManyFromOne(qb, DBTableNames.Product, 'categories', DBTableNames.ProductCategory, categoryId);
+        const categoryTable = getCustomRepository(ProductCategoryRepository).metadata.tablePath;
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        applyGetManyFromOne(qb, this.metadata.tablePath, 'categories', categoryTable, categoryId);
         return this.applyAndGetPagedProducts(qb, params);
     }
 
     async getReviewsOfProduct(productId: string, params?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
         logFor('detailed', 'ProductRepository::getReviewsOfProduct id: ' + productId);
-        const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(DBTableNames.ProductReview);
-        applyGetManyFromOne(qb, DBTableNames.ProductReview, 'product', DBTableNames.Product, productId);
-        return getPaged(qb, DBTableNames.ProductReview, params)
+        const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
+
+        const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable);
+        applyGetManyFromOne(qb, reviewTable, 'product', this.metadata.tablePath, productId);
+        return getPaged(qb, reviewTable, params)
     }
 
     async getProductRating(productId: string): Promise<TProductRating> {
         logFor('detailed', 'ProductRepository::getProductRating id: ' + productId);
-        const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(DBTableNames.ProductReview);
-        applyGetManyFromOne(qb, DBTableNames.ProductReview, 'product', DBTableNames.Product, productId);
+        const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
+        const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable);
+        applyGetManyFromOne(qb, reviewTable, 'product', this.metadata.tablePath, productId);
 
         const reviewsNumberKey: keyof TProductRating = 'reviewsNumber';
         const averageKey: keyof TProductRating = 'average';

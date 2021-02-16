@@ -76,16 +76,6 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
     }
 }
 
-export const DBTableNames: { [K in TDBEntity]: string } = {
-    User: 'user',
-    Post: 'post',
-    Product: 'product',
-    ProductCategory: 'product_category',
-    Attribute: 'attribute',
-    ProductReview: 'product_review',
-    Generic: '_Generic'
-}
-
 export const isServer = (): boolean => (typeof window === 'undefined');
 
 export const currentApiVersion = '1.0.0';

@@ -1,4 +1,4 @@
-import { DBTableNames, logFor, TPagedList, TPagedParams, TPostInput } from '@cromwell/core';
+import { logFor, TPagedList, TPagedParams, TPostInput } from '@cromwell/core';
 import sanitizeHtml from 'sanitize-html';
 import { EntityRepository, getCustomRepository } from 'typeorm';
 
@@ -11,7 +11,7 @@ import { UserRepository } from './UserRepository';
 export class PostRepository extends BaseRepository<Post> {
 
     constructor() {
-        super(DBTableNames.Post, Post)
+        super(Post)
     }
 
     async getPosts(params: TPagedParams<Post>): Promise<TPagedList<Post>> {
