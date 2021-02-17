@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { sideBarLinks } from '../../constants/PageInfos';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Sidebar.module.scss';
-import { SidebarLink } from './SidebarLink';
+import SidebarLink from './SidebarLink';
 
 function useForceUpdate() {
     const [value, setValue] = useState(0);
@@ -24,8 +24,10 @@ function Sidebar() {
                 <img src="/logo_icon.png" alt="logo" className={styles.logo} />
                 <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p>
             </div>
-            {sideBarLinks.map(link => <SidebarLink data={link} key={link.route}
-                toggleSubmenu={toggleSubmenu} expanded={expanded}
+            {sideBarLinks.map(link => <SidebarLink data={link}
+                key={link.id}
+                toggleSubmenu={toggleSubmenu}
+                expanded={expanded}
                 forceUpdate={forceUpdate}
                 activeId={activeId}
                 setActiveId={setActiveId}

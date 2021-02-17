@@ -15,6 +15,10 @@
     "outDir": "./build",
     "skipLibCheck": true,
     "incremental": true,
+    "types": [
+      "node",
+      "jest",
+    ],
     "paths": {
       "@App/*": [
         "src/*"

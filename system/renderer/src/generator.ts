@@ -91,6 +91,7 @@ const main = async () => {
         import * as cromwellCoreFrontend from '@cromwell/core-frontend';
         import * as reactIs from 'react-is';
         import * as NextRouter from 'next/router';
+        import ReactHtmlParser from 'react-html-parser';
         import Document, { Html, Main, NextScript } from 'next/document';
         import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
         import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
@@ -116,6 +117,8 @@ const main = async () => {
         ${cromwellStoreModulesPath}['@cromwell/core-frontend'].didDefaultImport = true;
         ${cromwellStoreModulesPath}['react-is'] = reactIs;
         ${cromwellStoreModulesPath}['react-is'].didDefaultImport = true;
+        ${cromwellStoreModulesPath}['react-html-parser'] = ReactHtmlParser;
+        ${cromwellStoreModulesPath}['react-html-parser'].didDefaultImport = true;
 
         ${pageInfo.metaInfoPath ? `
         if (isServer()) {

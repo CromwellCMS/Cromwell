@@ -58,7 +58,6 @@ export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     "debounce",
     "query-string",
     "quill",
-    "react-html-parser",
     "react",
     "react-dom",
     "react-is",

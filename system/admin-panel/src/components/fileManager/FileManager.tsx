@@ -16,12 +16,12 @@ import {
 import React from 'react';
 import LazyLoad from 'react-lazy-load';
 import LoadBox from '../loadBox/LoadBox';
-import { Modal } from '../modal/Modal';
+import Modal from '../modal/Modal';
 import styles from './FileManager.module.scss';
 import { IFileManager, TItemType, TState } from './types';
 
 
-export class FileManager extends React.Component<any, TState> implements IFileManager {
+class FileManager extends React.Component<any, TState> implements IFileManager {
 
     private filePromise: Promise<string | undefined> | null = null;
     private fileResolver: (fileName?: string) => void;
@@ -257,20 +257,24 @@ export class FileManager extends React.Component<any, TState> implements IFileMa
                 <div className={styles.header}>
                     <div className={styles.headerLeft}>
                         <Tooltip title="Back">
-                            <IconButton className={styles.action}
-                                disabled={this.previousPaths.length === 0}
-                                onClick={this.goBack}
-                            >
-                                <ArrowBackIcon />
-                            </IconButton>
+                            <span>
+                                <IconButton className={styles.action}
+                                    disabled={this.previousPaths.length === 0}
+                                    onClick={this.goBack}
+                                >
+                                    <ArrowBackIcon />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                         <Tooltip title="Forward">
-                            <IconButton className={styles.action}
-                                disabled={this.nextPaths.length === 0}
-                                onClick={this.goForward}
-                            >
-                                <ArrowForwardIcon />
-                            </IconButton>
+                            <span>
+                                <IconButton className={styles.action}
+                                    disabled={this.nextPaths.length === 0}
+                                    onClick={this.goForward}
+                                >
+                                    <ArrowForwardIcon />
+                                </IconButton>
+                            </span>
                         </Tooltip>
                         <Tooltip title="Create new folder">
                             <IconButton className={styles.action}
@@ -322,8 +326,8 @@ export class FileManager extends React.Component<any, TState> implements IFileMa
                                 onClick={this.handleApplySelect}
                                 ref={this.selectButton}
                                 style={{ opacity: '0.5' }}
-                            >
-                                Select</Button>
+                                role="button"
+                            >Select</Button>
                         )}
                         <Tooltip title="Close">
                             <IconButton className={styles.action}
@@ -400,3 +404,5 @@ export class FileManager extends React.Component<any, TState> implements IFileMa
     }
 
 }
+
+export default FileManager;

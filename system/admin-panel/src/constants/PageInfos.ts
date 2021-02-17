@@ -19,6 +19,7 @@ import ProductListPage from '../pages/productList/ProductList';
 import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
 import ThemeListPage from '../pages/themeList/ThemeList';
 import PostListPage from '../pages/postList/PostList';
+import CategoriesPage from '../pages/categories/CategoriesPage';
 import PostPage from '../pages/post/Post';
 
 
@@ -94,6 +95,12 @@ export const postPageInfo: PageInfo = {
     baseRoute: '/post',
 };
 
+export const categoriesPageInfo: PageInfo = {
+    name: 'Categories',
+    route: '/categories',
+    component: CategoriesPage,
+};
+
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
     homePageInfo,
@@ -137,7 +144,7 @@ export const sideBarLinks: SidebarLinkType[] = [
             {
                 id: '5_Categories',
                 title: 'Categories',
-                route: productListInfo.route,
+                route: categoriesPageInfo.route,
                 icon: React.createElement(CategoryIcon)
             },
         ]

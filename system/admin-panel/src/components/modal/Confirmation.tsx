@@ -6,11 +6,11 @@ import {
 import styles from './Confirmation.module.scss'
 import commonStyles from '../../styles/common.module.scss';
 
-export const ConfirmationModal = (props: {
-    text: string;
+const ConfirmationModal = (props: {
+    title: string;
     open: boolean;
-    onClose: () => void;
-    onConfirm: () => void;
+    onClose?: () => void;
+    onConfirm?: () => void;
 }) => {
 
     return (
@@ -20,15 +20,17 @@ export const ConfirmationModal = (props: {
             className={commonStyles.center}
         >
             <div className={styles.ConfirmationModal}>
-                <p className={styles.text}>{props.text}</p>
+                <p className={styles.text}>{props.title}</p>
                 <div className={styles.actions}>
                     <Button
+                        role="button"
                         variant="outlined"
                         color="primary"
                         onClick={props.onClose}
                         className={styles.actionBtn}
                     >Cancel</Button>
                     <Button
+                        role="button"
                         variant="contained"
                         color="primary"
                         onClick={props.onConfirm}
@@ -39,3 +41,7 @@ export const ConfirmationModal = (props: {
         </Modal>
     )
 };
+
+export default ConfirmationModal;
+
+export const modalStyles = styles;

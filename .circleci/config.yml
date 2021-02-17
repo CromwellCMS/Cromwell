@@ -42,4 +42,5 @@ jobs:
             - system/server/build
             - .cromwell/bundled-modules
 
-      - run: cd system/server && npm run test
+      - run: npm run test:server
+      - run: npm run test:admin

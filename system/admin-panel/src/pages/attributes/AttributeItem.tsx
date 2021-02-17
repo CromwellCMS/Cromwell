@@ -11,7 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
-import { ConfirmationModal } from '../../components/modal/Confirmation';
+import ConfirmationModal from '../../components/modal/Confirmation';
 import { CheckList } from '../../components/transferList/TransferList';
 import styles from './Attributes.module.scss';
 import { getFileManager } from '../../components/fileManager/helpers';
@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-export const AttributeItem = (props: { data: TAttribute }) => {
+const AttributeItem = (props: { data: TAttribute }) => {
     const attribute = useRef(props.data);
     const [checkedValues, setCheckedValues] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -205,7 +205,7 @@ export const AttributeItem = (props: { data: TAttribute }) => {
                 }}
             />}
             <ConfirmationModal open={isDeleteModalOpen}
-                text={'Delete attribute? (no undo)'}
+                title={'Delete attribute? (no undo)'}
                 onConfirm={deleteAttributeConfirmed}
                 onClose={() => setIsDeleteModalOpen(false)}
             />
@@ -219,3 +219,5 @@ function useForceUpdate() {
     const [value, setValue] = useState(0);
     return () => setValue(value => ++value);
 }
+
+export default AttributeItem;

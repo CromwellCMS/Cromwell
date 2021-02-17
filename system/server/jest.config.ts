@@ -1,6 +1,5 @@
 import type { Config } from '@jest/types';
 
-// Sync object
 const config: Config.InitialOptions = {
   preset: 'ts-jest',
   testEnvironment: 'node',
@@ -9,7 +8,7 @@ const config: Config.InitialOptions = {
   },
   // silent: false,
   testRegex: "/tests/.*\\.(test|spec)\\.[jt]sx?$",
-  // maxConcurrency: 1,
+  maxConcurrency: 2,
   globals: {
     "ts-jest": {
     }

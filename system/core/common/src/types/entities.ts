@@ -10,9 +10,9 @@ export type TBasePageEntity = {
     // Page SEO description
     pageDescription?: string;
     // DB createDate
-    createDate: Date;
+    createDate?: Date;
     // DB updateDate
-    updateDate: Date;
+    updateDate?: Date;
     // Is displaying at frontend
     isEnabled?: boolean;
 }

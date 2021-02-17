@@ -3,7 +3,7 @@ import { BasePageNames, TCromwellPage, TCromwellPageCoreProps } from "@cromwell/
 import { getStoreItem, setStoreItem } from "@cromwell/core";
 import { Head, CContainer, pageRootContainerId } from '@cromwell/core-frontend';
 import { isValidElementType } from 'react-is';
-const ReactHtmlParser = require('react-html-parser').default;
+import ReactHtmlParser from 'react-html-parser';
 
 function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state

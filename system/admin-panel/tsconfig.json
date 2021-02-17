@@ -10,12 +10,24 @@
       "es2017",
       "es2018"
     ],
+    "baseUrl": ".",
     "jsx": "react",
     "moduleResolution": "node",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
     "outDir": "./build",
     "incremental": true,
+    "esModuleInterop": true,
+    "types": [
+      "jest",
+      "node",
+      "@testing-library/jest-dom"
+    ],
+    "paths": {
+      "@App/*": [
+        "src/*"
+      ],
+    },
   },
   "exclude": [
     "node_modules",
@@ -24,6 +36,8 @@
   ],
   "include": [
     "src/**/*.ts",
-    "src/**/*.tsx"
+    "src/**/*.tsx",
+    "tests/**/*.ts",
+    "tests/**/*.tsx"
   ]
 }

@@ -35,7 +35,7 @@ const MenuItem = withStyles({
 })(MuiMenuItem);
 
 
-export const SidebarLink = (props: {
+const SidebarLink = (props: {
     data: SidebarLinkType,
     toggleSubmenu: (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => void,
     expanded: string | false;
@@ -71,7 +71,11 @@ export const SidebarLink = (props: {
     }
 
     if (props.data.sublinks) return (
-        <ExpansionPanel expanded={isExpanded} onChange={props.toggleSubmenu(props.data.id)} className={styles.SidebarLink}>
+        <ExpansionPanel
+            key={props.data.id}
+            expanded={isExpanded}
+            onChange={props.toggleSubmenu(props.data.id)}
+            className={styles.SidebarLink}>
             <AccordionSummary
                 className={styles.ExpansionPanelSummary}
                 aria-controls={`sublinks-${props.data.title}-content`}
@@ -81,9 +85,10 @@ export const SidebarLink = (props: {
 
             </AccordionSummary>
             <ExpansionPanelDetails>
-                <div className={styles["SidebarLink__sublinks-container"]}>
+                <div className={styles.sublinksContainer}>
                     {props.data.sublinks.map(sublink => (
-                        <SidebarLink data={sublink} key={sublink.route}
+                        <SidebarLink data={sublink}
+                            key={sublink.id}
                             expanded={props.expanded} toggleSubmenu={props.toggleSubmenu}
                             forceUpdate={props.forceUpdate}
                             activeId={props.activeId}
@@ -96,9 +101,13 @@ export const SidebarLink = (props: {
     );
 
     return (
-        <div className={`${styles.SidebarLink} ${props.activeId === props.data.id ? styles.SidebarLinkActive : ''}`}>
+        <div className={`${styles.SidebarLink} ${props.activeId === props.data.id ? styles.SidebarLinkActive : ''}`}
+            key={props.data.id}
+        >
             {head}
         </div>
     )
 
 }
+
+export default SidebarLink;

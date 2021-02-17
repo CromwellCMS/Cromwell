@@ -10,7 +10,7 @@ import { pageInfos } from '../../constants/PageInfos';
 import Page404 from '../../pages/404page/404page';
 import Sidebar from '../sidebar/Sidebar';
 import classes from './Layout.module.scss';
-import { FileManager } from '../fileManager/FileManager';
+import FileManager from '../fileManager/FileManager';
 
 const theme = createMuiTheme({
   palette: {

@@ -5,7 +5,7 @@ import { AddCircleOutline as AddCircleOutlineIcon } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
-import { AttributeItem } from './AttributeItem';
+import AttributeItem from './AttributeItem';
 import styles from './Attributes.module.scss';
 
 function useForceUpdate() {
@@ -31,7 +31,6 @@ export default function AttributesPage() {
 
     useEffect(() => {
         getAttributes();
-
     }, []);
 
     const handleAddAttribute = () => {
@@ -45,8 +44,9 @@ export default function AttributesPage() {
 
     return (
         <div className={styles.Attributes}>
+            <p>{attributes.current?.[0]?.key}</p>
             {attributes.current && attributes.current.map(attribute => (
-                <div className={styles.listItem}>
+                <div className={styles.listItem} key={attribute.id}>
                     <AttributeItem data={attribute} />
                 </div>
             ))}

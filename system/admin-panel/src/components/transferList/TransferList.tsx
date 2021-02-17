@@ -171,7 +171,9 @@ export const CheckList = (props: {
 
                 </div>
                 <div>
-                    <p style={{ fontWeight: 500, fontSize: '1.1em', marginBottom: '6px' }}>{title}</p>
+                    {typeof title !== 'object' ? (
+                        <p style={{ fontWeight: 500, fontSize: '1.1em', marginBottom: '6px' }}>{title}</p>
+                    ) : title}
                     <p>{`${numberOfChecked(items)}/${items.length} selected`}</p>
                 </div>
                 {props.actions}

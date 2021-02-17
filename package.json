@@ -13,7 +13,9 @@
         "bundle-modules": "npx crw bm",
         "clean": "node system/cli/src/utils/cleanup.js",
         "win-remove-node-modules": "rmdir \"./node_modules\" /q /s",
-        "build-core": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend"
+        "build-core": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend",
+        "test:server": "cd system/server && npm run test",
+        "test:admin": "cd system/admin-panel && npm run test"
     },
     "workspaces": [
         "system/*",
