@@ -1,4 +1,4 @@
-import { getCmsSettings, TCmsSettings, TThemeEntity, TThemeMainConfig } from '@cromwell/core';
+import { getCmsSettings, TCmsSettings, TThemeEntity, TPackageCromwellConfig } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
 import { Badge, Button, Card, CardActionArea, CardActions, CardContent, Typography } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
@@ -12,7 +12,7 @@ import styles from './ThemeList.module.scss';
 import commonStyles from '../../styles/common.module.scss';
 
 export default function ThemeList() {
-    const [infos, setInfos] = useState<TThemeMainConfig[]>([]);
+    const [infos, setInfos] = useState<TPackageCromwellConfig[]>([]);
     const [themeList, setThemeList] = useState<TThemeEntity[] | null>(null);
     const [isListLoading, setIsListLoading] = useState<boolean>(true);
     const [isChangingTheme, setIsChangingTheme] = useState<boolean>(false);
@@ -27,7 +27,7 @@ export default function ThemeList() {
 
         // Get info by parsing directory 
         const infos = await client?.getThemesInfo();
-        infos?.sort((a, b) => (updatedConfig && a.themeName === updatedConfig.themeName) ? -1 : 1)
+        infos?.sort((a, b) => (updatedConfig && a.name === updatedConfig.themeName) ? -1 : 1)
         if (infos) setInfos(infos);
         setIsListLoading(false);
 
@@ -48,18 +48,18 @@ export default function ThemeList() {
         getThemeList();
     }, []);
 
-    const handleSetActiveTheme = async (info: TThemeMainConfig) => {
+    const handleSetActiveTheme = async (info: TPackageCromwellConfig) => {
         if (client) {
             setIsChangingTheme(true);
             setIsLoading(true);
-            const success = await client.changeTheme(info.themeName);
+            const success = await client.changeTheme(info.name);
             if (success) {
                 toast.success('Applied a new theme');
             } else {
                 toast.error('Failed to set a new theme');
             }
             const updatedConfig = await client.getCmsSettings();
-            infos?.sort((a, b) => (updatedConfig && a.themeName === updatedConfig.themeName) ? -1 : 1)
+            infos?.sort((a, b) => (updatedConfig && a.name === updatedConfig.themeName) ? -1 : 1)
             setCmsConfig(updatedConfig);
             setIsChangingTheme(false);
             setIsLoading(false);
@@ -102,12 +102,12 @@ export default function ThemeList() {
     return (
         <div className={styles.ThemeList}>
             {infos.map(info => {
-                const isActive = Boolean(cmsConfig && cmsConfig.themeName === info.themeName);
-                const entity = themeList?.find(ent => ent.name === info.themeName);
+                const isActive = Boolean(cmsConfig && cmsConfig.themeName === info.name);
+                const entity = themeList?.find(ent => ent.name === info.name);
                 const isInstalled = entity?.isInstalled ?? false;
 
                 return (
-                    <div className={`${styles.themeCard} ${commonStyles.paper}`} key={info.themeName}>
+                    <div className={`${styles.themeCard} ${commonStyles.paper}`} key={info.name}>
                         <CardActionArea>
                             <div
                                 style={{ backgroundImage: `url("data:image/png;base64,${info.previewImage}")` }}
@@ -127,7 +127,7 @@ export default function ThemeList() {
                         <CardActions className={styles.themeActions} disableSpacing>
                             {!isInstalled && (
                                 <Button size="small" color="primary" variant="contained"
-                                    onClick={handleInstallTheme(info.themeName)}
+                                    onClick={handleInstallTheme(info.name)}
                                     disabled={isChangingTheme}
                                 >
                                     Install theme
@@ -136,7 +136,7 @@ export default function ThemeList() {
                             {isInstalled && isActive && (
                                 <Button size="small" color="primary" variant="contained"
                                     onClick={() => {
-                                        const route = `${themeEditPageInfo.baseRoute}/${info.themeName}`;
+                                        const route = `${themeEditPageInfo.baseRoute}/${info.name}`;
                                         history.push(route);
                                     }}
                                     disabled={isChangingTheme}

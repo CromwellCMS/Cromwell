@@ -1,7 +1,8 @@
 import { NextPage } from 'next';
-import { TPost, TProduct } from './entities';
-import { TPageConfig, TCmsConfig, TThemeMainConfig, TPageInfo, TCmsSettings } from './data';
 import { ReactNode } from 'react';
+
+import { TCmsSettings, TPageConfig, TPageInfo, TPalette } from './data';
+import { TPost, TProduct } from './entities';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
 export type StaticPageContext<Q extends ParsedUrlQuery = ParsedUrlQuery> = {
@@ -23,9 +24,10 @@ export type TCromwellPageCoreProps = {
     childStaticProps?: Record<string, any>;
     pageConfig?: TPageConfig;
     cmsSettings?: TCmsSettings;
-    themeMainConfig?: TThemeMainConfig;
     themeCustomConfig?: Record<string, any>;
     pagesInfo?: TPageInfo[];
+    headHtml?: string | null;
+    palette?: TPalette | null;
 }
 
 export type TFrontendPluginProps<TData = any, TSettings = any> = {

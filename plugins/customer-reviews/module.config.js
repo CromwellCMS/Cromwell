@@ -1,6 +1,4 @@
 module.exports = {
-    type: "plugin",
-    title: "Customer reviews",
     frontendInputFile: "src/frontend/index.tsx",
     adminInputFile: "src/admin/index.tsx",
     backend: {

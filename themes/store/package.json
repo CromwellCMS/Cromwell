@@ -57,6 +57,10 @@
     "typescript": "^4.0.3"
   },
   "cromwell": {
+    "type": "theme",
+    "title": "Store",
+    "previewImage": "static/shopping-cart.png",
+    "description": "Online store theme",
     "plugins": [
       "@cromwell/plugin-customer-reviews",
       "@cromwell/plugin-product-filter",

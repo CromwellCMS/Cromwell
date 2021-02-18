@@ -1,5 +1,5 @@
-import { TPluginConfig, TThemeConfig } from '@cromwell/core';
-import { configFileName, getThemeRollupBuildDirByPath, getThemeNextBuildDirByPath } from '@cromwell/core-backend';
+import { TModuleConfig, TPackageCromwellConfig, TPluginConfig, TThemeConfig } from '@cromwell/core';
+import { configFileName, getCmsModuleConfig, getThemeNextBuildDirByPath, getCmsModuleInfo, getLogger } from '@cromwell/core-backend';
 import { rollupConfigWrapper } from '@cromwell/cromwella';
 import dateTime from 'date-time';
 import { resolve } from 'path';
@@ -13,81 +13,92 @@ import { checkModules } from './checkModules';
 
 const { handleError, bold, underline, cyan, stderr, green } = require('rollup/dist/shared/loadConfigFile.js');
 const { relativeId } = require('rollup/dist/shared/rollup.js');
+const errorLogger = getLogger('errors-only').error;
 
 export const buildTask = async (watch?: boolean) => {
     const workingDir = process.cwd();
 
-    const configPath = resolve(workingDir, configFileName);
-    let config: TThemeConfig | TPluginConfig | undefined = undefined;
-    let packageJson;
-    try {
-        config = require(configPath);
-        packageJson = require(resolve(workingDir, 'package.json'));
-    } catch (e) {
-        console.error('Failed to read config at ' + configPath);
-        console.error('Make sure config exists and valid');
-        console.error(e);
-    }
+    const moduleInfo = getCmsModuleInfo();
+    const moduleConfig = await getCmsModuleConfig();
+
     let isConfigValid = false;
-    if (config && config.type) {
 
-        if (config.type === 'theme') {
-            isConfigValid = true;
+    if (!moduleInfo?.name) {
+        errorLogger('Package.json must have "name" property');
+        return;
+    }
 
-            await checkModules();
-
-            // Clean old build
-            // const rollupBuildDir = getThemeRollupBuildDirByPath(workingDir);
-            // if (rollupBuildDir && await fs.pathExists(rollupBuildDir)) await fs.remove(rollupBuildDir);
-
-            console.log(`Starting to pre-build ${config.type}...`);
-            const rollupBuildSuccess = await rollupBuild(config, watch);
-
-            if (!rollupBuildSuccess) {
-                console.error(`Failed to pre-build ${config.type}`);
-                return false;
+    if (!moduleInfo?.type) {
+        errorLogger(`package.json must have CMS module config with "type" property. Eg.: 
+        {
+            "name": "cromwell-plugin-your-plugin",
+            "dependencies": {},
+            "cromwell" : {
+                "type": "plugin"
             }
-            console.log(`Successfully pre-build ${config.type}`);
+        }`);
+        return;
+    }
 
-            console.log('Running Next.js build...');
 
-            if (watch) {
-                await rendererStartWatchDev(config.name);
+    if (moduleInfo.type === 'theme') {
+        isConfigValid = true;
 
-            } else {
-                const nextBuildDir = getThemeNextBuildDirByPath(workingDir);
-                if (nextBuildDir && await fs.pathExists(nextBuildDir)) await fs.remove(nextBuildDir);
+        await checkModules();
 
-                await rendererBuildAndSaveTheme(config.name)
-            }
+        // Clean old build
+        // const rollupBuildDir = getThemeRollupBuildDirByPath(workingDir);
+        // if (rollupBuildDir && await fs.pathExists(rollupBuildDir)) await fs.remove(rollupBuildDir);
+
+        console.log(`Starting to pre-build ${moduleInfo.type}...`);
+        const rollupBuildSuccess = await rollupBuild(moduleInfo, moduleConfig, watch);
+
+        if (!rollupBuildSuccess) {
+            console.error(`Failed to pre-build ${moduleInfo.type}`);
+            return false;
         }
+        console.log(`Successfully pre-build ${moduleInfo.type}`);
 
-        if (config.type === 'plugin') {
-            isConfigValid = true;
+        console.log('Running Next.js build...');
 
-            console.log(`Starting to build ${config.type}...`);
-            const rollupBuildSuccess = await rollupBuild(config, watch);
+        if (watch) {
+            await rendererStartWatchDev(moduleInfo.name);
 
-            if (!rollupBuildSuccess) {
-                console.error(`Failed to build ${config.type}`);
-                return false;
-            }
-            console.log(`Successfully build ${config.type}`);
+        } else {
+            const nextBuildDir = getThemeNextBuildDirByPath(workingDir);
+            if (nextBuildDir && await fs.pathExists(nextBuildDir)) await fs.remove(nextBuildDir);
+
+            await rendererBuildAndSaveTheme(moduleInfo.name)
         }
     }
 
-    if (!isConfigValid) {
-        console.error('Error. Config must have "type" property with a value "theme" or "plugin"');
+    if (moduleInfo.type === 'plugin') {
+        isConfigValid = true;
 
+        console.log(`Starting to build ${moduleInfo.type}...`);
+        const rollupBuildSuccess = await rollupBuild(moduleInfo, moduleConfig, watch);
+
+        if (!rollupBuildSuccess) {
+            console.error(`Failed to build ${moduleInfo.type}`);
+            return false;
+        }
+        console.log(`Successfully build ${moduleInfo.type}`);
     }
+
+
 }
 
 
-const rollupBuild = async (config: TPluginConfig | TThemeConfig, watch?: boolean): Promise<boolean> => {
-    if (!config) return false;
+const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean): Promise<boolean> => {
+    if (!moduleInfo) return false;
     let rollupBuildSuccess = false;
     try {
-        const rollupConfig = await rollupConfigWrapper(config, watch);
+        const rollupConfig = await rollupConfigWrapper(moduleInfo, moduleConfig, watch);
+        
+        if (rollupConfig.length === 0) {
+            errorLogger('Failed to find input files');
+            return false;
+        }
 
         if (watch) {
             const watcher = rollupWatch(rollupConfig);
@@ -112,7 +123,7 @@ const rollupBuild = async (config: TPluginConfig | TThemeConfig, watch?: boolean
         }
 
     } catch (e) {
-        console.log(e);
+        errorLogger(e);
     }
     return rollupBuildSuccess;
 }

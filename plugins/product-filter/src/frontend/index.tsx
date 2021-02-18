@@ -67,10 +67,16 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     const applyFilter = () => {
         const productListId = props?.settings?.productListId;
         const productCategoryId = productCategory?.id;
-        if (productListId && productCategoryId) {
-            filterCList(checkedAttrs, priceRange.current, productListId,
-                productCategoryId, client, updateFilterMeta)
+        if (!productListId) {
+            console.error('ProductFilter:applyFilter: !productListId', props?.settings)
+            return;
         }
+        if (!productCategoryId) {
+            console.error('ProductFilter:applyFilter: !productCategoryId', productCategory)
+            return;
+        }
+        filterCList(checkedAttrs, priceRange.current, productListId,
+            productCategoryId, client, updateFilterMeta)
     }
 
     useEffect(() => {

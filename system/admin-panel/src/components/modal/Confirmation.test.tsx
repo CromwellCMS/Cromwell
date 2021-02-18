@@ -28,8 +28,7 @@ describe('ConfirmationModal component', () => {
         expect(buttons.length === 2).toBeTruthy();
 
         buttons.forEach(btn => {
-            fireEvent.click(btn)
-
+            fireEvent.click(btn);
         })
         expect(confirmed).toBeTruthy();
         expect(closed).toBeTruthy();

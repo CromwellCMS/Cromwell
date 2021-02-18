@@ -49,32 +49,31 @@ export class HeaderSearch extends React.Component<{}, {
         try {
             const data = await client?.query({
                 query: gql`
-        query getFilteredProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!) {
-            getFilteredProductsFromCategory(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
-                pagedMeta {
-                    ...PagedMetaFragment
-                }
-                elements {
-                    id
-                    isEnabled
-                    slug
-                    pageTitle
-                    name
-                    price
-                    oldPrice
-                    mainImage
-                }
-            }
-        }
-        ${client?.PagedMetaFragment}
-    `,
+                    query getFilteredProducts($categoryId: String, $pagedParams: PagedParamsInput, $filterParams: ProductFilterInput) {
+                        getFilteredProducts(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
+                            pagedMeta {
+                                ...PagedMetaFragment
+                            }
+                            elements {
+                                id
+                                isEnabled
+                                slug
+                                pageTitle
+                                name
+                                price
+                                oldPrice
+                                mainImage
+                            }
+                        }
+                    }
+                    ${client?.PagedMetaFragment}
+                    `,
                 variables: {
                     pagedParams,
                     filterParams,
-                    categoryId: ' 1'
                 }
             });
-            const products = data?.data?.getFilteredProductsFromCategory?.elements;
+            const products = data?.data?.getFilteredProducts?.elements;
             if (products) this.setState({ searchItems: products });
 
         } catch (e) {

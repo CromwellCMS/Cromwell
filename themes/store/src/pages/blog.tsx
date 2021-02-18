@@ -79,7 +79,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProp
     try {
         posts = await handleGetPosts({ pageSize: 20 });
     } catch (e) {
-        console.error('ProductCategory::getStaticProps', e)
+        console.error('BlogPage::getStaticProps', e)
     }
     return {
         posts

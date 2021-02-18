@@ -42,7 +42,6 @@ const main = async () => {
     if (pckg) await downloader(process.cwd(), [pckg]);
 
     const themeConfig = await getCmsModuleConfig(themeName);
-    const themeMainConfig = themeConfig?.main;
 
     const tempDir = getRendererTempDir();
     const pagesLocalDir = resolve(tempDir, 'pages');
@@ -66,9 +65,9 @@ const main = async () => {
             pageInfo.metaInfoPath).replace(normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
 
         let globalCssImports = '';
-        if (pageInfo.name === '_app' && themeMainConfig && themeMainConfig.globalCss &&
-            Array.isArray(themeMainConfig.globalCss) && themeMainConfig.globalCss.length > 0) {
-            themeMainConfig.globalCss.forEach(css => {
+        if (pageInfo.name === '_app' && themeConfig?.globalCss &&
+            themeConfig.globalCss?.length > 0) {
+            themeConfig.globalCss.forEach(css => {
                 if (css.startsWith('.')) {
                     css = normalizePath(resolve(tempDir, dirname(pageRelativePath), css)).replace(
                         normalizePath(tempDir) + '/', '');

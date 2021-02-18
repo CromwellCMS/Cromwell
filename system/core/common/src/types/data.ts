@@ -10,7 +10,6 @@ export type TCromwellStore = {
     cmsSettings?: TCmsSettings;
     pageConfig?: TPageConfig;
     themeCustomConfig?: Record<string, any>;
-    themeMainConfig?: TThemeMainConfig;
     rebuildPage?: (path: string) => void;
     /** { [ComponentName]: (Class/function) } */
     components?: Record<string, React.ComponentType<TCommonComponentProps & { [x: string]: any }>>;
@@ -32,6 +31,7 @@ export type TCromwellStore = {
     nodeModules?: TCromwellNodeModules;
     fsRequire?: (path: string) => any;
     notifier?: TCromwellNotify;
+    palette?: TPalette;
 }
 
 declare global {
@@ -102,12 +102,6 @@ export type TCmsConfig = {
 // Info form cmsconfig.json and settings from DB
 export type TCmsSettings = TCmsConfig & TCmsEntityCore;
 
-export type TBuildConfig = {
-    name: string;
-    type: 'plugin' | 'theme';
-    rollupConfig?: () => TRollupConfig | Promise<TRollupConfig>;
-}
-
 export type TRollupConfig = {
     main: Record<string, any>;
     frontendBundle?: Record<string, any>;
@@ -117,35 +111,27 @@ export type TRollupConfig = {
     adminPanel?: Record<string, any>;
 }
 
-
-export type TThemeConfig = TBuildConfig & {
-    main: TThemeMainConfig;
-    pages: TPageConfig[];
-
-    /**
-     * Custom config that will be available at every page in the Store inside pageConfig props
-     */
-    themeCustomConfig?: Record<string, any>;
-    globalModifications?: TCromwellBlockData[];
-}
-
-export type TThemeMainConfig = {
-    themeName: string;
-
-    /** Path to component to use in Admin Panel */
-    adminPanelDir?: string;
+export type TThemeConfig = {
+    /** Configs for Rollup */
+    rollupConfig?: () => TRollupConfig | Promise<TRollupConfig>;
     /** Colors to use */
-    palette?: { primaryColor?: string };
+    palette?: TPalette;
     /** Custom HTML to add into head of every page */
     headHtml?: string;
     /** Global CSS files to import from node_modules */
     globalCss?: string[];
-
-    /** View fields to display in Admin Panel: */
-    previewImage?: string;
-    title?: string;
-    description?: string;
+    /** Pages' description and modifications */
+    pages?: TPageConfig[];
+    /** Custom config that will be available at every page in the Store inside pageConfig props */
+    themeCustomConfig?: Record<string, any>;
+    /** Modifications to apply on all pages */
+    globalModifications?: TCromwellBlockData[];
 }
+
+export type TPalette = {
+    primaryColor?: string;
+    secondaryColor?: string;
+};
 
 export type TPageInfo = {
     /** Path of page's react component */
@@ -168,7 +154,9 @@ export type TPageConfig = TPageInfo & {
     adminPanelProps?: any;
 }
 
-export type TPluginConfig = TBuildConfig & {
+export type TPluginConfig = {
+    /** Configs for Rollup */
+    rollupConfig?: () => TRollupConfig | Promise<TRollupConfig>;
     adminInputFile?: string
     frontendInputFile?: string
     frontendModule?: string;
@@ -177,9 +165,6 @@ export type TPluginConfig = TBuildConfig & {
         entitiesDir?: string;
     }
     defaultSettings?: any;
-    title?: string;
-    info?: string;
-    icon?: string;
 }
 
 export type TModuleConfig = TThemeConfig & TPluginConfig;
@@ -234,4 +219,55 @@ export type TCromwellNotify = {
     warning?: (message: string) => void;
     error?: (message: string) => void;
     info?: (message: string) => void;
+}
+
+export type TPackageJson = {
+    name?: string;
+    version?: string;
+    dependencies?: Record<string, string>;
+    devDependencies?: Record<string, string>;
+    peerDependencies?: Record<string, string>;
+    module?: string;
+    cromwell?: TPackageCromwellConfig;
+};
+
+export type TPackageCromwellConfig = {
+    name?: string;
+    type?: 'plugin' | 'theme';
+    title?: string;
+    description?: string;
+    icon?: string;
+    previewImage?: string;
+    frontendDependencies?: (string | TFrontendDependency)[];
+    themes?: string[];
+    plugins?: string[];
+    bundledDependencies?: string[];
+}
+
+export type TCromwellaConfig = {
+    packages: string[];
+    frontendDependencies?: (string | TFrontendDependency)[];
+}
+
+export type TFrontendDependency = {
+    name: string;
+    version?: string;
+    builtins?: string[];
+    externals?: TExternal[];
+    excludeExports?: string[];
+    ignore?: string[];
+    addExports?: TAdditionalExports[];
+}
+
+export type TExternal = {
+    usedName: string;
+    moduleName?: string;
+    importName?: string;
+}
+
+export type TAdditionalExports = {
+    name: string;
+    path?: string;
+    importType?: 'default' | 'named';
+    saveAsModules?: string[];
 }

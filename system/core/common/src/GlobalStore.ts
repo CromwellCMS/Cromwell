@@ -1,4 +1,4 @@
-import { TCromwellStore, TThemeMainConfig, TCmsSettings } from './types/data';
+import { TCromwellStore, TCmsSettings } from './types/data';
 import { TCommonComponentProps, TCromwellBlock } from './types/blocks';
 import { isServer, ECommonComponentNames } from './constants';
 
@@ -35,9 +35,6 @@ export const getPageCustomConfig = (): Record<string, any> | undefined => {
 }
 
 
-export const getThemeMainConfig = (): TThemeMainConfig | undefined => {
-    return getStore()?.themeMainConfig;
-}
 export const getCmsSettings = (): TCmsSettings | undefined => {
     return getStore()?.cmsSettings;
 }

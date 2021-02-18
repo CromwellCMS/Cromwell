@@ -11,19 +11,24 @@ import ProductFilterInput from '../entities/ProductFilterInput';
 export default class ProductFilterResolver {
 
     @Query(() => FilteredProduct)
-    async getFilteredProductsFromCategory(
-        @Arg("categoryId", { nullable: true }) categoryId: string,
-        @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>,
-        @Arg("filterParams", { nullable: true }) filterParams: ProductFilterInput
+    async getFilteredProducts(
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProduct>,
+        @Arg("filterParams", { nullable: true }) filterParams?: ProductFilterInput,
+        @Arg("categoryId", { nullable: true }) categoryId?: string,
     ): Promise<TFilteredList<TProduct> | undefined> {
-        logFor('detailed', 'ProductFilterResolver::getFilteredProductsFromCategory categoryId:' + categoryId + ' pagedParams:' + pagedParams);
+        logFor('detailed', 'ProductFilterResolver::getFilteredProducts categoryId:' + categoryId + ' pagedParams:' + pagedParams);
         const timestamp = Date.now();
         const productRepo = getCustomRepository(ProductRepository);
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
             const qb = productRepo.createQueryBuilder(productRepo.metadata.tablePath);
-            applyGetManyFromOne(qb, productRepo.metadata.tablePath, 'categories',
-                getCustomRepository(ProductCategoryRepository).metadata.tablePath, categoryId);
+
+            if (categoryId) {
+                applyGetManyFromOne(qb, productRepo.metadata.tablePath, 'categories',
+                    getCustomRepository(ProductCategoryRepository).metadata.tablePath, categoryId);
+            } else {
+                qb.select();
+            }
 
             if (filterParams) {
                 this.applyProductFilter(qb, filterParams, shouldApplyPriceFilter);
@@ -48,14 +53,13 @@ export default class ProductFilterResolver {
         }
 
         const getElements = async (): Promise<TPagedList<TProduct>> => {
-            const qb = getQb();
-            return productRepo.applyAndGetPagedProducts(qb, pagedParams);
+            return productRepo.applyAndGetPagedProducts(getQb(), pagedParams);
         }
 
         const [filterMeta, paged] = await Promise.all([getFilterMeta(), getElements()]);
 
         const timestamp2 = Date.now();
-        logFor('detailed', 'ProductFilterResolver::getFilteredProductsFromCategory time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+        logFor('detailed', 'ProductFilterResolver::getFilteredProducts time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
         const filtered: TFilteredList<TProduct> = {
             ...paged,

@@ -18,4 +18,7 @@ export class InputThemeEntity extends BasePageInput implements TThemeEntityInput
 
     @Field(type => String, { nullable: true })
     defaultSettings?: string;
+
+    @Field(type => String, { nullable: true })
+    moduleInfo?: string;
 }

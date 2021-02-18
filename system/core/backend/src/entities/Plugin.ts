@@ -31,4 +31,7 @@ export class PluginEntity extends BasePageEntity implements TPluginEntity {
     @Column({ type: "varchar", nullable: true })
     defaultSettings?: string;
 
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    moduleInfo?: string;
 }

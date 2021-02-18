@@ -8,6 +8,7 @@ import {
     getPluginFrontendBundlePath,
     getPluginFrontendCjsPath,
     serverLogFor,
+    getCmsModuleInfo,
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
@@ -107,6 +108,11 @@ export class PluginService {
             // @TODO Execute install script
 
 
+            // Read module info from package.json
+            const moduleInfo = getCmsModuleInfo(pluginName);
+            delete moduleInfo?.frontendDependencies;
+            delete moduleInfo?.bundledDependencies;
+
             // Read plugin config
             let pluginConfig: TPluginConfig | undefined;
             const filePath = resolve(pluginPath, configFileName);
@@ -140,7 +146,8 @@ export class PluginService {
             const input: TPluginEntityInput = {
                 name: pluginName,
                 slug: pluginName,
-                title: pluginConfig?.title,
+                title: moduleInfo?.title,
+                pageTitle: moduleInfo?.title,
                 isInstalled: true,
                 hasAdminBundle
             };
@@ -148,6 +155,14 @@ export class PluginService {
                 try {
                     input.defaultSettings = JSON.stringify(defaultSettings);
                     input.settings = JSON.stringify(defaultSettings);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            if (moduleInfo) {
+                try {
+                    input.moduleInfo = JSON.stringify(moduleInfo);
                 } catch (e) {
                     console.error(e);
                 }

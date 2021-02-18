@@ -1,4 +1,4 @@
-import { TPagedList } from './data';
+import { TPackageCromwellConfig, TPagedList } from './data';
 
 export type TBasePageEntity = {
     // DB id
@@ -185,6 +185,7 @@ type TThemeEntityCore = {
     title?: string;
     settings?: string;
     defaultSettings?: string;
+    moduleInfo?: string;
 }
 
 export type TThemeEntity = TThemeEntityCore & TBasePageEntity;
@@ -201,6 +202,7 @@ type TPluginEntityCore = {
     hasAdminBundle?: boolean;
     settings?: string;
     defaultSettings?: string;
+    moduleInfo?: string;
 }
 
 export type TPluginEntity = TPluginEntityCore & TBasePageEntity;

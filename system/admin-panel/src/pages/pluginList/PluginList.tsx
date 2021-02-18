@@ -14,7 +14,6 @@ import { toast } from 'react-toastify';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { pluginPageInfo } from '../../constants/PageInfos';
 import styles from './PluginList.module.scss';
-import commonStyles from '../../styles/common.module.scss';
 
 export default function PluginList() {
     const history = useHistory();

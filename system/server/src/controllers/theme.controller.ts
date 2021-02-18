@@ -1,4 +1,4 @@
-import { logFor, TFrontendBundle, TPageConfig, TPageInfo, TThemeMainConfig } from '@cromwell/core';
+import { logFor, TFrontendBundle, TPageConfig, TPageInfo, TThemeConfig, TPackageCromwellConfig } from '@cromwell/core';
 import { getThemeAdminPanelBundleDir, serverLogFor } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -8,7 +8,8 @@ import normalizePath from 'normalize-path';
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { PageConfigDto } from '../dto/page-config.dto';
 import { PageInfoDto } from '../dto/page-info.dto';
-import { ThemeMainConfigDto } from '../dto/theme-main-config.dto';
+import { ModuleInfoDto } from '../dto/module-info.dto';
+import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { CmsService } from '../services/cms.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
@@ -149,7 +150,7 @@ export class ThemeController {
 
         logFor('detailed', 'ThemeController::getPagesInfo');
         const out: TPageInfo[] = [];
-        
+
         const { themeConfig, userConfig, cmsSettings } = await this.themeService.readConfigs();
         let pages: TPageConfig[] = [];
         if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
@@ -199,24 +200,36 @@ export class ThemeController {
     }
 
 
-    @Get('main-config')
+    @Get('config')
     @ApiOperation({
-        description: `Returns merged main config (theme meta info).`,
-        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
+        description: `Returns theme's module config from module.config.js.`,
     })
     @ApiResponse({
         status: 200,
-        type: ThemeMainConfigDto
+        type: ThemeConfigDto
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getMainConfig(): Promise<TThemeMainConfig | null> {
+    async getThemeConfig(): Promise<TThemeConfig | null> {
+        logFor('detailed', 'ThemeController::getThemeConfig');
+        const { themeConfig } = await this.themeService.readConfigs();
 
-        logFor('detailed', 'ThemeController::getMainConfig');
-        let out: TThemeMainConfig;
-        const { themeConfig, userConfig } = await this.themeService.readConfigs();
+        return themeConfig;
+    }
 
-        out = Object.assign({}, themeConfig?.main, userConfig?.main);
-        return out;
+    @Get('info')
+    @ApiOperation({
+        description: `Returns theme's info from package.json.`,
+    })
+    @ApiResponse({
+        status: 200,
+        type: ModuleInfoDto
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async getThemeInfo(): Promise<TPackageCromwellConfig | null> {
+        logFor('detailed', 'ThemeController::getThemeInfo');
+        const { themeInfo } = await this.themeService.readConfigs();
+
+        return themeInfo;
     }
 
 

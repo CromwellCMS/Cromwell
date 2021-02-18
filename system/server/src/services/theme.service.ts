@@ -2,12 +2,13 @@ import {
     logFor,
     TCmsSettings,
     TCromwellBlockData,
+    TPackageCromwellConfig,
     TPageConfig,
     TThemeConfig,
     TThemeEntity,
     TThemeEntityInput,
 } from '@cromwell/core';
-import { configFileName, getNodeModuleDir, getPublicThemesDir, serverLogFor } from '@cromwell/core-backend';
+import { configFileName, getNodeModuleDir, getPublicThemesDir, serverLogFor, getCmsModuleInfo } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import decache from 'decache';
 import fs from 'fs-extra';
@@ -73,9 +74,11 @@ export class ThemeService {
         themeConfig: TThemeConfig | null;
         userConfig: TThemeConfig | null;
         cmsSettings: TCmsSettings | undefined;
+        themeInfo: TPackageCromwellConfig | null;
     }> {
         let themeConfig: TThemeConfig | null = null,
-            userConfig: TThemeConfig | null = null;
+            userConfig: TThemeConfig | null = null,
+            themeInfo: TPackageCromwellConfig | null = null;
 
         const cmsSettings = await this.cmsService.getSettings();
         if (cmsSettings?.themeName) {
@@ -96,12 +99,19 @@ export class ThemeService {
             } catch (e) {
                 logFor('detailed', e, console.error);
             }
+
+            try {
+                if (theme?.moduleInfo) themeInfo = JSON.parse(theme.moduleInfo);
+            } catch (e) {
+                logFor('detailed', e, console.error);
+            }
         }
 
         return {
             themeConfig,
             userConfig,
-            cmsSettings
+            cmsSettings,
+            themeInfo
         }
     }
 
@@ -217,12 +227,10 @@ export class ThemeService {
         // If userConfig is null, then theme is probably new and user has never saved mods. Create a new userConfig
         if (!userConfig) {
             userConfig = {
-                name: themeConfig?.main.themeName ?? '',
-                type: 'theme',
-                main: { themeName: themeConfig?.main.themeName ?? '' },
                 pages: []
             }
         }
+        if (!userConfig?.pages) userConfig.pages = [];
 
         const oldUserPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userPageConfig.route, userConfig);
         const oldOriginalPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userPageConfig.route, themeConfig);
@@ -341,6 +349,11 @@ export class ThemeService {
                 }
             }
 
+            // Read module info from package.json
+            const moduleInfo = getCmsModuleInfo(themeName);
+            delete moduleInfo?.frontendDependencies;
+            delete moduleInfo?.bundledDependencies;
+
             // Make symlink for public static content
             const themePublicDir = resolve(themePath, 'static');
             if (await fs.pathExists(themePublicDir)) {
@@ -356,10 +369,20 @@ export class ThemeService {
                 name: themeName,
                 slug: themeName,
                 isInstalled: true,
+                title: moduleInfo?.title,
+                pageTitle: moduleInfo?.title
             };
             if (themeConfig) {
                 try {
                     input.defaultSettings = JSON.stringify(themeConfig);
+                } catch (e) {
+                    console.error(e);
+                }
+            }
+
+            if (moduleInfo) {
+                try {
+                    input.moduleInfo = JSON.stringify(moduleInfo);
                 } catch (e) {
                     console.error(e);
                 }

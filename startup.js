@@ -72,11 +72,7 @@ const fs = require('fs');
             const themeDir = resolve(themesDir, theme);
             if (!fs.existsSync(resolve(themeDir, 'build')) || scriptName === 'build') {
                 console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
-                try {
-                    spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
-                } catch (e) {
-                    console.error(e);
-                }
+                spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
             }
         }
     }
@@ -90,11 +86,7 @@ const fs = require('fs');
             const pluginDir = resolve(pluginsDir, plugin);
             if (!fs.existsSync(resolve(pluginDir, 'build')) || scriptName === 'build') {
                 console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
-                try {
-                    spawnSync('npm run build', { shell: true, cwd: pluginDir, stdio: 'inherit' });
-                } catch (e) {
-                    console.error(e);
-                }
+                spawnSync('npm run build', { shell: true, cwd: pluginDir, stdio: 'inherit' });
             }
         }
     }

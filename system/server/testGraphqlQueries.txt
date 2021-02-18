@@ -153,30 +153,29 @@ query getProdCat {
   }
 }
 
-query getAllProdCats {
-  productCategories(pagedParams: {}) {
-    id
-    name
-    products(pagedParams: {
-      pageSize: 4,
-      order: "ASC",
-      orderBy: "name"
-    }) {
-       pagedMeta {
-        pageSize
-      }
-      elements {
-        id
-        name
-        slug
-        categories(pagedParams: {}) {
+query getProdCatBySlug {
+  productCategory(slug: "1") {
           id
-          name
-        }
-      }
-    }
+            slug
+            createDate
+            updateDate
+            isEnabled
+            pageTitle
+            name
+            mainImage
+            description
+            children {
+                id
+                slug
+            }
+            parent {
+                id
+                slug
+            }
   }
 }
+
+
 mutation deletePrCat {
   deleteProductCategory(id: "1")
 }
@@ -217,19 +216,20 @@ mutation createAttribute {
   }
 }
 
-query getFilteredProductsFromCategory {
-  getFilteredProductsFromCategory(categoryId: "1", pagedParams: {
+query getFilteredProducts {
+  getFilteredProducts(pagedParams: {
       pageSize: 20
     }, filterParams: {
 			attributes: [{
 				key: "Size",
-        values: ["35"]
+        values: ["38"]
       }],
-      minPrice: 1000,
+      minPrice: 100,
       maxPrice: 9999990
     }) {
       pagedMeta {
 				pageSize
+        totalElements
       }
     	filterMeta {
           minPrice
@@ -260,4 +260,47 @@ query getProductReviewsOfProduct {
         isEnabled
       }
   }
+}
+
+
+query getPosts {
+  posts(pagedParams: {pageNumber: 1, pageSize: 10}) {
+    pagedMeta {
+			pageSize
+    }
+    elements {
+      id
+      title
+      slug
+    }
+  }
+}
+
+query getProductCategories {
+  productCategories(pagedParams: {pageNumber: 1, pageSize: 100}) {
+    pagedMeta {
+			pageSize
+      
+    }
+    elements {
+           id
+            slug
+            createDate
+            updateDate
+            isEnabled
+            pageTitle
+            name
+            mainImage
+            description
+            children {
+							id
+            }
+            parent {
+							id
+            }
+    }
+  }
+}
+mutation deleteCategory {
+  	deleteProductCategory(id: "6")
 }

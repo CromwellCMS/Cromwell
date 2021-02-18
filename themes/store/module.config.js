@@ -1,22 +1,15 @@
 const constants = require('./src/constants');
 
 module.exports = {
-    type: 'theme',
-    main: {
-        themeName: "@cromwell/theme-store",
-        title: "Store",
-        previewImage: "static/shopping-cart.png",
-        description: "Online store theme",
-        adminPanelDir: "dist/adminPanel",
-        palette: {
-            primaryColor: constants.primaryColor
-        },
-        globalCss: [
-            "react-toastify/dist/ReactToastify.css",
-            '../styles/global.scss'
-        ],
-        headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />"
+    adminPanelDir: "dist/adminPanel",
+    palette: {
+        primaryColor: constants.primaryColor
     },
+    globalCss: [
+        "react-toastify/dist/ReactToastify.css",
+        '../styles/global.scss'
+    ],
+    headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />",
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
         const json = require('@rollup/plugin-json');

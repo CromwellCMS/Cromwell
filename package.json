@@ -6,14 +6,14 @@
     "scripts": {
         "startup": "node ./startup.js",
         "build": "node ./startup.js build",
-        "start-system": "node ./system/manager/startup.js production",
+        "build:core": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend",
         "dev": "node ./system/manager/startup.js development",
-        "win-dev": "node ./system/manager/src/utils/windowsDev.js",
-        "link-cli": "cd ./system/cli && npm link && yarn",
-        "bundle-modules": "npx crw bm",
+        "dev:win": "node ./system/manager/src/utils/windowsDev.js",
+        "link:cli": "cd ./system/cli && npm link && yarn",
+        "bundle:modules": "npx crw bm",
         "clean": "node system/cli/src/utils/cleanup.js",
         "win-remove-node-modules": "rmdir \"./node_modules\" /q /s",
-        "build-core": "npm run build --prefix ./system/core/common && npm run build --prefix ./system/core/backend && npm run build --prefix ./system/core/frontend",
+        "test": "npm run test:server && npm run test:admin",
         "test:server": "cd system/server && npm run test",
         "test:admin": "cd system/admin-panel && npm run test"
     },
@@ -25,7 +25,8 @@
     ],
     "cromwell": {
         "themes": [
-            "@cromwell/theme-store"
+            "@cromwell/theme-store",
+            "@cromwell/theme-blog"
         ]
     }
 }

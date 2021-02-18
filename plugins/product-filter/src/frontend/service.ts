@@ -15,14 +15,14 @@ export type TProductFilterData = {
 }
 
 const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: string, pagedParams: TPagedParams<TProduct>,
-    filterParams: TProductFilter, cb?: (data: TFilteredList<TProduct> | undefined) => void, withCategories = false): Promise<TFilteredList<TProduct> | undefined> => {
+    filterParams: TProductFilter, cb?: (data: TFilteredList<TProduct> | undefined) => void): Promise<TFilteredList<TProduct> | undefined> => {
     // console.log('getFiltered', filterParams);
     let data;
     try {
         data = await client?.query({
             query: gql`
-            query getFilteredProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!, $withCategories: Boolean!) {
-                getFilteredProductsFromCategory(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
+            query getFilteredProducts($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!) {
+                getFilteredProducts(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
                     pagedMeta {
                         ...PagedMetaFragment
                     }
@@ -40,7 +40,6 @@ const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: stri
         `,
             variables: {
                 pagedParams,
-                withCategories,
                 filterParams,
                 categoryId
             }
@@ -49,7 +48,7 @@ const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: stri
         console.error('ProductFilter::getFiltered error: ', e.message)
     }
 
-    const filteredList: TFilteredList<TProduct> | undefined = data?.data?.getFilteredProductsFromCategory;
+    const filteredList: TFilteredList<TProduct> | undefined = data?.data?.getFilteredProducts;
     if (cb) cb(filteredList);
     return filteredList;
 }
@@ -71,7 +70,7 @@ export const filterCList = (checkedAttrs: Record<string, string[]>, priceRange: 
             // const timestamp = Date.now();
             const filtered = await getFiltered(client, productCategoryId, pagedParams, filterOptions, cb);
             // const timestamp2 = Date.now();
-            // console.log('ProductFilterResolver::getFilteredProductsFromCategory time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+            // console.log('ProductFilterResolver::getFilteredProducts time elapsed: ' + (timestamp2 - timestamp) + 'ms');
             return filtered;
         };
         listProps.firstBatch = undefined;
@@ -90,7 +89,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<TProduct
     let productCategory: TProductCategory | undefined = undefined;
     if (slug && typeof slug === 'string') {
         try {
-            productCategory = await client?.getProductCategoryBySlug(slug, { pageSize: 20 });
+            productCategory = await client?.getProductCategoryBySlug(slug);
         } catch (e) {
             console.error('ProductFilter::getStaticProps', e.message)
         }

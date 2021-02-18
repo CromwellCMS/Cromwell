@@ -1,4 +1,4 @@
-import { TCmsSettings, TPluginConfig, TThemeMainConfig } from '@cromwell/core';
+import { TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
 
@@ -49,9 +49,9 @@ describe('CMS Controller', () => {
             .get('/cms/themes')
             .expect(200)
             .then(response => {
-                const configs = response.body as TThemeMainConfig[];
+                const configs = response.body as TPackageCromwellConfig[];
                 expect(configs.length >= 1).toBeTruthy();
-                expect(typeof configs[0].themeName === 'string').toBeTruthy();
+                expect(configs[0].type === 'theme').toBeTruthy();
             })
     });
 
@@ -60,9 +60,9 @@ describe('CMS Controller', () => {
             .get('/cms/plugins')
             .expect(200)
             .then(response => {
-                const configs = response.body as TPluginConfig[];
+                const configs = response.body as TPackageCromwellConfig[];
                 expect(configs.length >= 1).toBeTruthy();
-                expect(typeof configs[0].name === 'string').toBeTruthy();
+                expect(configs[0].type === 'plugin').toBeTruthy();
             });
     });
 

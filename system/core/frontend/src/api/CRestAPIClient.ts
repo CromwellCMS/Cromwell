@@ -6,11 +6,12 @@ import {
     setStoreItem,
     TPageConfig,
     TPageInfo,
-    TThemeMainConfig,
     TPluginConfig,
     TFrontendBundle,
+    TPackageCromwellConfig,
     TPluginInfo,
-    TCmsSettings
+    TCmsSettings,
+    TThemeConfig
 } from '@cromwell/core';
 
 type TPluginsModifications = TPluginConfig & { [x: string]: any };
@@ -53,6 +54,9 @@ class CRestAPIClient {
         }
     }
 
+
+    // < CMS >
+
     public getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
         return this.get(`cms/config`);
     }
@@ -93,7 +97,7 @@ class CRestAPIClient {
         return response.body;
     }
 
-    public getThemesInfo = async (): Promise<TThemeMainConfig[] | undefined> => {
+    public getThemesInfo = async (): Promise<TPackageCromwellConfig[] | undefined> => {
         return this.get(`cms/themes`);
     }
 
@@ -105,6 +109,10 @@ class CRestAPIClient {
         return this.get(`cms/plugins`);
     }
 
+    // < / CMS >
+
+
+    // < Theme >
 
     public getPageConfig = async (pageRoute: string): Promise<TPageConfig | undefined> => {
         return this.get(`theme/page?pageRoute=${pageRoute}`);
@@ -131,8 +139,12 @@ class CRestAPIClient {
         return this.get(`theme/pages/configs`);
     }
 
-    public getThemeMainConfig = async (): Promise<TThemeMainConfig | undefined> => {
-        return this.get(`theme/main-config`);
+    public getThemeInfo = async (): Promise<TPackageCromwellConfig | undefined> => {
+        return this.get(`theme/info`);
+    }
+
+    public getThemeConfig = async (): Promise<TThemeConfig | undefined> => {
+        return this.get(`theme/config`);
     }
 
     public getThemeCustomConfig = async (): Promise<Record<string, any> | undefined> => {
@@ -148,7 +160,10 @@ class CRestAPIClient {
         return data ?? false;
     }
 
+    // < / Theme >
 
+
+    // < Plugin >
 
     public getPluginSettings = async (pluginName: string): Promise<any | undefined> => {
         return this.get(`plugin/settings?pluginName=${pluginName}`);
@@ -171,6 +186,8 @@ class CRestAPIClient {
         const data = await this.get<boolean>(`plugin/install?pluginName=${pluginName}`);
         return data ?? false;
     }
+
+    // < / Plugin >
 
 
     // < Manager >

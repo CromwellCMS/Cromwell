@@ -414,7 +414,7 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public getProductCategoryBySlug = async (slug: string, pagedParams?: TPagedParams<TProductCategory>): Promise<TProductCategory | undefined> => {
+    public getProductCategoryBySlug = async (slug: string): Promise<TProductCategory | undefined> => {
         const path = GraphQLPaths.ProductCategory.getOneBySlug;
         const res = await this.apolloClient.query({
             query: gql`
@@ -424,11 +424,9 @@ class CGraphQLClient {
                     }
                 }
                 ${this.ProductCategoryFragment}
-                ${this.PagedMetaFragment}
             `,
             variables: {
                 slug,
-                pagedParams: pagedParams ?? {},
             }
         });
 

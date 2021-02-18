@@ -1,4 +1,5 @@
 import { INestApplication } from '@nestjs/common';
+import { TModuleConfig, TPackageCromwellConfig } from '@cromwell/core';
 import request from 'supertest';
 
 import { setupController, tearDownController } from '../controller.helpers';
@@ -92,12 +93,21 @@ describe('Theme Controller', () => {
     });
 
 
-    it(`/GET main-config`, () => {
+    it(`/GET config`, () => {
         return request(server)
-            .get(`/theme/main-config`)
+            .get(`/theme/config`)
             .expect(200)
             .then(response => {
-                expect(response.body.themeName).toBeTruthy();
+                expect((response.body as TModuleConfig).pages).toBeTruthy();
+            })
+    });
+
+    it(`/GET info`, () => {
+        return request(server)
+            .get(`/theme/info`)
+            .expect(200)
+            .then(response => {
+                expect((response.body as TPackageCromwellConfig).name).toBeTruthy();
             })
     });
 

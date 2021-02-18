@@ -12,6 +12,11 @@
     "build": "npx cromwell b",
     "watch": "npx cromwell b -w"
   },
+  "cromwell": {
+    "type": "plugin",
+    "title": "Product filter",
+    "icon": "static/icon_funnel.png"
+  },
   "dependencies": {
     "@apollo/client": "3.2.1",
     "@cromwell/core": "1.1.0",

@@ -1,4 +1,4 @@
-import { BasePageNames, TCromwellPageCoreProps, StaticPageContext } from '@cromwell/core';
+import { BasePageNames, TCromwellPageCoreProps, StaticPageContext, TThemeConfig } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { getThemeStaticProps } from './getThemeStaticProps';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
@@ -15,12 +15,15 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         const childStaticProps = await getThemeStaticProps(pageName, pageGetStaticProps, context);
         const { pluginsData, pluginsSettings } = await pluginsDataFetcher(pageName, context);
         const pageConfig = serialize(await apiClient?.getPageConfig(pageName));
-        const themeMainConfig = serialize(await apiClient?.getThemeMainConfig());
+        const themeConfig: TThemeConfig | null = serialize(await apiClient?.getThemeConfig());
         const cmsSettings = serialize(await apiClient?.getCmsSettings());
         const themeCustomConfig = serialize(await apiClient?.getThemeCustomConfig());
         const pagesInfo = serialize(await apiClient?.getPagesInfo());
 
         const timestamp2 = Date.now();
+
+        const headHtml = themeConfig?.headHtml ?? null;
+        const palette = themeConfig?.palette ?? null;
 
         // if (context && context.params && context.params.slug) {
         //     pageRoute += '/' + context.params.slug;
@@ -34,9 +37,10 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
             childStaticProps,
             pageConfig,
             cmsSettings,
-            themeMainConfig,
             themeCustomConfig,
-            pagesInfo
+            pagesInfo,
+            headHtml,
+            palette,
         }
         return {
             props: props,

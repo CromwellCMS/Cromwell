@@ -21,4 +21,7 @@ export class InputPluginEntity extends BasePageInput implements TPluginEntityInp
 
     @Field(type => String, { nullable: true })
     defaultSettings?: string;
+
+    @Field(type => String, { nullable: true })
+    moduleInfo?: string;
 }

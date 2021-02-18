@@ -1,15 +1,15 @@
-import { getStoreItem, setStoreItem, TCmsConfig, TCmsEntity, TCmsSettings } from '@cromwell/core';
-import { readCMSConfig, serverLogFor } from '@cromwell/core-backend';
+import { getStoreItem, setStoreItem, TCmsConfig, TCmsEntity, TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
+import { getNodeModuleDir, readCMSConfig, serverLogFor } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
-import { join } from 'path';
+import { join, resolve } from 'path';
 import stream from 'stream';
 import { getCustomRepository } from 'typeorm';
 import * as util from 'util';
 
 import { GenericCms } from '../helpers/genericEntities';
 
-const getThemeEntity = async (): Promise<TCmsEntity | undefined> => {
+const getCmsEntity = async (): Promise<TCmsEntity | undefined> => {
     const cmsRepo = getCustomRepository(GenericCms.repository);
     const all = await cmsRepo.find();
     let entity = all?.[0];
@@ -19,7 +19,7 @@ const getThemeEntity = async (): Promise<TCmsEntity | undefined> => {
         // Create settings record
         const config = await readCMSConfig();
         if (!config) {
-            serverLogFor('errors-only', 'getThemeEntity: Failed to read CMS config', 'Error');
+            serverLogFor('errors-only', 'getCmsEntity: Failed to read CMS config', 'Error');
             return undefined;
         }
         entity = await cmsRepo.createEntity(Object.assign({}, config.defaultSettings))
@@ -39,7 +39,7 @@ export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
         return;
     }
 
-    const entity = await getThemeEntity();
+    const entity = await getCmsEntity();
 
     const settings: TCmsSettings = Object.assign({}, cmsSettings, config, entity);
     delete settings.defaultSettings;
@@ -64,7 +64,7 @@ export class CmsService {
     public getSettings = getCmsSettings;
 
     public async setThemeName(themeName: string) {
-        const entity = await getThemeEntity();
+        const entity = await getCmsEntity();
         if (entity) {
             entity.themeName = themeName;
             const cmsRepo = getCustomRepository(GenericCms.repository);
@@ -100,6 +100,33 @@ export class CmsService {
         mp.on('field', function (key: any, value: any) {
             console.log('form-data', key, value);
         });
+    }
+
+
+    public async parseModuleConfigImages(moduleInfo: TPackageCromwellConfig, moduleName: string) {
+        if (moduleInfo?.icon) {
+            const moduleDir = await getNodeModuleDir(moduleName);
+            // Read icon and convert to base64
+            if (moduleDir) {
+                const imgPath = resolve(moduleDir, moduleInfo?.icon);
+                if (await fs.pathExists(imgPath)) {
+                    const data = (await fs.readFile(imgPath))?.toString('base64');
+                    if (data) moduleInfo.icon = data;
+                }
+            }
+        }
+
+        if (moduleInfo?.previewImage) {
+            // Read image and convert to base64
+            const moduleDir = await getNodeModuleDir(moduleName);
+            if (moduleDir) {
+                const imgPath = resolve(moduleDir, moduleInfo.previewImage);
+                if (await fs.pathExists(imgPath)) {
+                    const data = (await fs.readFile(imgPath))?.toString('base64');
+                    if (data) moduleInfo.previewImage = data;
+                }
+            }
+        }
     }
 
 }

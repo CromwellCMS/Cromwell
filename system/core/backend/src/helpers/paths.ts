@@ -1,4 +1,4 @@
-import { TModuleConfig } from '@cromwell/core';
+import { TModuleConfig, TPackageCromwellConfig, TPackageJson } from '@cromwell/core';
 import fs from 'fs-extra';
 import { dirname, resolve } from 'path';
 
@@ -133,8 +133,8 @@ export const getThemeAdminPanelBundleDir = async (themeModuleName: string, pageR
     }
 }
 
-export const getCmsModuleConfig = async <T = TModuleConfig>(moduleName: string): Promise<T | undefined> => {
-    const path = await getNodeModuleDir(moduleName);
+export const getCmsModuleConfig = async (moduleName?: string): Promise<TModuleConfig | undefined> => {
+    const path = moduleName ? await getNodeModuleDir(moduleName) : process.cwd();
     if (path) {
         const configPath = resolve(path, configFileName);
         try {
@@ -142,6 +142,14 @@ export const getCmsModuleConfig = async <T = TModuleConfig>(moduleName: string):
         } catch (e) {
             serverLogFor('errors-only', 'Failed to require module config at: ' + configPath, 'Error');
         }
+    }
+}
+
+export const getCmsModuleInfo = (moduleName?: string): TPackageCromwellConfig | undefined => {
+    const pckg = getModulePackage(moduleName);
+    if (pckg?.cromwell) {
+        if (!pckg.cromwell.name) pckg.cromwell.name = pckg.name;
+        return pckg.cromwell;
     }
 }
 
@@ -163,7 +171,8 @@ export const getPublicPluginsDir = () => resolve(getPublicDir(), 'plugins');
 export const getPublicThemesDir = () => resolve(getPublicDir(), 'themes');
 
 
-export const getModulePackage = (moduleName: string): any => {
+export const getModulePackage = (moduleName?: string): TPackageJson | undefined => {
+    if (!moduleName) moduleName = process.cwd();
     try {
         return require(`${moduleName}/package.json`);
     } catch (e) {
