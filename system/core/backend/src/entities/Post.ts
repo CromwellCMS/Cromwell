@@ -9,18 +9,18 @@ import { BasePageEntity } from './BasePageEntity';
 export class Post extends BasePageEntity implements TPost {
   @Field()
   @Column({ type: "varchar" })
-  title: string;
+  title?: string;
 
   @Column()
   authorId: string;
 
   @Field()
   @Column()
-  content: string;
+  content?: string;
 
   @Field()
   @Column()
-  delta: string;
+  delta?: string;
   
   @Field()
   @Column()
@@ -28,5 +28,5 @@ export class Post extends BasePageEntity implements TPost {
 
   @Field()
   @Column()
-  isPublished: boolean;
+  isPublished?: boolean;
 }

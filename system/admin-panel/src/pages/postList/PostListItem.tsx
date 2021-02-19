@@ -17,7 +17,7 @@ export const PostListItem = (props: TPostListItemProps) => {
         <Grid container className={styles.listItem}>
             {props.data && (
                 <>
-                    <Grid xs={5} className={styles.itemMain}>
+                    <Grid item xs={5} className={styles.itemMain}>
                         <div
                             style={{ backgroundImage: `url(${props?.data?.mainImage})` }}
                             className={styles.itemImage}
@@ -27,14 +27,14 @@ export const PostListItem = (props: TPostListItemProps) => {
                             <p className={styles.itemAuthor}>by <span style={{ fontWeight: 500 }}>{props.data?.author?.fullName}</span></p>
                         </div>
                     </Grid>
-                    <Grid xs={1}>
+                    <Grid item xs={1}>
 
                     </Grid>
-                    <Grid xs={2} className={styles.itemSubInfo}>
+                    <Grid item xs={2} className={styles.itemSubInfo}>
                         <p className={styles.itemPublished}>{props.data?.isPublished ? 'published' : 'draft'}</p>
                         <p className={styles.itemCreate} >{toLocaleDateString(props.data?.createDate)}</p>
                     </Grid>
-                    <Grid xs={4} className={styles.listItemActions}>
+                    <Grid item xs={4} className={styles.listItemActions}>
                         <Link to={`${postPageInfo.baseRoute}/${props.data?.id}`}>
                             <IconButton
                                 aria-label="edit"

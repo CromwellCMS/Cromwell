@@ -46,7 +46,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
     private throbberAutoloadingBefore: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private throbberAutoloadingAfter: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private forcedProps: TCListProps<DataType, ListItemProps> | null;
-    private listeners: Record<TListenerType, { cb: () => void; id?: string }[]> = { componentDidUpdate: [], componentWillUpdate: [] };
+    private listeners: Record<TListenerType, { cb: () => void; id?: string }[]> = { componentDidUpdate: [] };
     private paginationInst?: Pagination;
 
     constructor(props: TCListProps<DataType, ListItemProps>) {
@@ -62,10 +62,6 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
 
     public setProps(props: TCListProps<DataType, ListItemProps> | null): void {
         this.forcedProps = props;
-    }
-
-    componentWillUpdate() {
-        this.triggerListener('componentWillUpdate');
     }
 
     componentDidUpdate(prevProps: TCListProps<DataType, ListItemProps>) {

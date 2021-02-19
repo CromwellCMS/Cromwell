@@ -1,8 +1,9 @@
-import React from 'react';
-import PluginPage from './PluginPage';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import * as coreFrontend from '@cromwell/core-frontend';
-import { render, screen, waitFor, act, findAllByDisplayValue } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import React from 'react';
+
+import PluginPage from './PluginPage';
 
 describe('AttributesPage', () => {
 

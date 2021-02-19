@@ -90,17 +90,17 @@ export type TProductInput = Omit<TProduct, TDBAuxiliaryColumns | 'categories' | 
 
 export interface TPost extends TBasePageEntity {
     // Title of post (h1)
-    title: string;
+    title?: string;
     // User-author
     author?: TUser;
     // Href of main image
     mainImage?: string;
     // Post content, HTML
-    content: string;
+    content?: string;
     // Post content, stringified JSON from Quill.js
-    delta: string;
+    delta?: string;
     // Is published?
-    isPublished: boolean;
+    isPublished?: boolean;
 }
 
 export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author'> & {

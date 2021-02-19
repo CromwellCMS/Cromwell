@@ -165,7 +165,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                         <div className={styles.mainContainer}>
                             <div className={`${styles.sidebar} ${isSidebarOpen ? '' : styles.sidebarClosed}`}>
                                 {ImportedThemeController && (
-                                    <div className={styles.pageList}>
+                                    <div className={styles.pageList} key="_1_">
                                         <MenuItem className={styles.navBarItem}
                                             onClick={this.handleCloseEditingPage}
                                         >
@@ -177,20 +177,26 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                     </div>
                                 )}
                                 {defaultPages && defaultPages.length > 0 && (
-                                    <div className={styles.pageList}>
+                                    <div className={styles.pageList} key="_2_">
                                         <p className={styles.pageListHeader}>Default pages</p>
                                         {defaultPages.filter(p => !p.isVirtual).map(p => (
-                                            <PageListItem page={p} handleOpenPageBuilder={this.handleOpenPageBuilder}
+                                            <PageListItem
+                                                key={p.route}
+                                                page={p}
+                                                handleOpenPageBuilder={this.handleOpenPageBuilder}
                                                 handleDeletePage={this.handleDeletePage}
                                             />
                                         ))}
                                     </div>
                                 )}
                                 {customPages && (
-                                    <div className={styles.pageList}>
+                                    <div className={styles.pageList} key="_3_">
                                         <p className={styles.pageListHeader}>Custom pages</p>
                                         {customPages.filter(p => p.isVirtual).map(p => (
-                                            <PageListItem page={p} handleOpenPageBuilder={this.handleOpenPageBuilder}
+                                            <PageListItem
+                                                key={p.route}
+                                                page={p}
+                                                handleOpenPageBuilder={this.handleOpenPageBuilder}
                                                 handleDeletePage={this.handleDeletePage}
                                             />
 
@@ -213,7 +219,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                             <div className={styles.pageSettingsContainer}>
                                 {/** If no page selected to edit settings, display Theme's AdminPanel controller */}
                                 {!editingPageInfo && ImportedThemeController && (
-                                    <div className={styles.adminPanelThemeController}>
+                                    <div className={styles.adminPanelThemeController} >
                                         <PageErrorBoundary>
                                             <Suspense fallback={<LoadBox />}>
                                                 <ImportedThemeController />

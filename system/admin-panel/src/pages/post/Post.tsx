@@ -85,7 +85,7 @@ const Post = (props) => {
 
 
     const handleSave = async () => {
-        console.log(quillEditor.current.getContents());
+        // console.log(quillEditor.current.getContents());
         quillEditor.current.disable();
         const outerHTML = document.querySelector('#editor')?.outerHTML;
 
@@ -105,7 +105,7 @@ const Post = (props) => {
                 await client?.updatePost(postData.id, updatePost);
                 toast.success('Saved!');
 
-            } catch(e) {
+            } catch (e) {
                 toast.error('Falied to save');
                 console.error(e)
             }

@@ -120,7 +120,7 @@ export type TCList<DataType = any, ListItemProps = any> = {
 
 }
 
-export type TListenerType = 'componentDidUpdate' | 'componentWillUpdate';
+export type TListenerType = 'componentDidUpdate';
 
 export type TItemComponentProps<DataType, ListItemProps> = {
     data?: DataType;

@@ -129,9 +129,7 @@ export default function ThemeList() {
                                 <Button size="small" color="primary" variant="contained"
                                     onClick={handleInstallTheme(info.name)}
                                     disabled={isChangingTheme}
-                                >
-                                    Install theme
-                                </Button>
+                                >Install theme</Button>
                             )}
                             {isInstalled && isActive && (
                                 <Button size="small" color="primary" variant="contained"

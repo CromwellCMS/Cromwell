@@ -1,4 +1,4 @@
-import { TPluginEntity, TPluginInfo } from '@cromwell/core';
+import { TPluginEntity, TPackageCromwellConfig } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, Card, IconButton, Tooltip } from '@material-ui/core';
 import {
@@ -17,10 +17,7 @@ import styles from './PluginList.module.scss';
 
 export default function PluginList() {
     const history = useHistory();
-    const [pluginInfoList, setPluginInfoList] = useState<{
-        name: string;
-        icon?: string;
-    }[] | null>(null);
+    const [pluginInfoList, setPluginInfoList] = useState<TPackageCromwellConfig[] | null>(null);
     const [pluginList, setPluginList] = useState<TPluginEntity[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -91,9 +88,9 @@ export default function PluginList() {
                 const pluginName = info.name;
                 const pluginIcon = info.icon;
                 const pluginEntity = pluginList?.find(ent => ent.name === pluginName)
-                const title = pluginEntity?.title ?? pluginName;
+                const title = pluginEntity?.title ?? info.title ?? pluginName;
 
-                return (<div className={styles.pluginItem}>
+                return (<div className={styles.pluginItem} key={info.name}>
                     <div className={styles.info}>
                         <div className={styles.icon}
                             style={{ backgroundImage: pluginIcon ? `url("data:image/png;base64,${pluginIcon}")` : '' }}
