@@ -12,12 +12,13 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - cache
+          - cache-v1-{{ checksum "package.json" }}
+          - cache-v1
 
       - run: npm run build
 
       - save_cache:
-          key: cache
+          key: cache-v1-{{ checksum "package.json" }}
           paths:
             - node_modules
             - plugins/customer-reviews/build
