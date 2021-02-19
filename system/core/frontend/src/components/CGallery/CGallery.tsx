@@ -13,7 +13,6 @@ Swiper.use([Navigation, Pagination, Lazy, Thumbs, Zoom]);
 
 type TCGalleryProps = {
     className?: string;
-    settings?: TGallerySettings;
     shouldComponentUpdate?: boolean;
 } & TCromwellBlockProps;
 
@@ -145,7 +144,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
     }
 
     render() {
-        const { settings, ...rest } = this.props;
+        const { gallery: settings, ...rest } = this.props;
 
         return (
             <CromwellBlock {...rest} type='image'
@@ -173,7 +172,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                         }
                     }
 
-                    if (gallerySettings) {
+                    if (gallerySettings && (gallerySettings.images || gallerySettings.slides)) {
                         return (
                             <div className={`swiper-container ${styles.swiperContainer}`}
                                 id={this.swiperId}
@@ -197,43 +196,48 @@ export class CGallery extends React.Component<TCGalleryProps> {
                                     }
                                 }}
                             >
-                                <div className="swiper-wrapper"
+                                <div className={`swiper-wrapper ${styles.swiperWrapper}`}
                                     style={{
-                                        height: this.height ? this.height : _height
-                                    }}>
+                                        // height: this.height ? this.height : _height
+                                        maxHeight: typeof settings?.maxHeight === 'string' ? settings.maxHeight :
+                                            typeof settings?.maxHeight === 'number' ? settings.maxHeight + 'px' : undefined
+                                    }}
+                                >
                                     {gallerySettings.images && gallerySettings.images.map((i, index) => {
                                         let el = (
-                                            <div
-                                                data-background={i.src}
-                                                attr-data-background={i.src}
-                                                style={{
-                                                    width: gallerySettings.width ? gallerySettings.width : '100%',
-                                                    height: this.height ? this.height : _height,
-                                                    backgroundSize: gallerySettings.backgroundSize
-                                                    // backgroundImage: `url('${i.src}')`
-                                                }}
-                                                className={`${styles.swiperImage} swiper-lazy ${gallerySettings.zoom ? 'swiper-zoom-target' : ''}`}
-                                                onMouseEnter={() => {
-                                                    if (this.swiper && gallerySettings.zoom && gallerySettings.zoom.zoomOnHover) {
-                                                        this.swiper.zoom.enable();
-                                                        this.swiper.zoom.in();
-                                                        this.swiper.$el.addClass(styles.swiperZommedIn);
-                                                    }
-                                                }}
-                                                onMouseLeave={() => {
-                                                    if (this.swiper && gallerySettings.zoom && gallerySettings.zoom.zoomOnHover) {
-                                                        this.swiper.zoom.out();
-                                                        this.swiper.zoom.disable();
-                                                        this.swiper.$el.removeClass(styles.swiperZommedIn);
-                                                    }
-                                                }}
-                                            >
+                                            <>
+                                                <img
+                                                    data-src={i.src}
+                                                    className={`${styles.swiperImage} swiper-lazy ${gallerySettings.zoom ? 'swiper-zoom-target' : ''}`}
+                                                    onMouseEnter={() => {
+                                                        if (this.swiper && gallerySettings.zoom && gallerySettings.zoom.zoomOnHover) {
+                                                            this.swiper.zoom.enable();
+                                                            this.swiper.zoom.in();
+                                                            this.swiper.$el.addClass(styles.swiperZommedIn);
+                                                        }
+                                                    }}
+                                                    alt={i.alt}
+                                                    onMouseLeave={() => {
+                                                        if (this.swiper && gallerySettings.zoom && gallerySettings.zoom.zoomOnHover) {
+                                                            this.swiper.zoom.out();
+                                                            this.swiper.zoom.disable();
+                                                            this.swiper.$el.removeClass(styles.swiperZommedIn);
+                                                        }
+                                                    }}
+                                                    style={{
+                                                        // height: this.height ? this.height : _height
+                                                        maxHeight: typeof settings?.maxHeight === 'string' ? settings.maxHeight :
+                                                            typeof settings?.maxHeight === 'number' ? settings.maxHeight + 'px' : undefined,
+                                                        width: settings?.maxHeight ? 'auto' : '100%',
+                                                        maxWidth: '100%',
+                                                    }}
+                                                />
                                                 <div className="swiper-lazy-preloader swiper-lazy-preloader-white"
                                                     style={{
                                                         border: `4px solid ${this.primaryColor ? this.primaryColor : '#fff'}`,
                                                         borderTopColor: 'transparent'
                                                     }}></div>
-                                            </div>
+                                            </>
                                         );
                                         if (gallerySettings.components && gallerySettings.components.imgWrapper) {
                                             const WrapComp = gallerySettings.components.imgWrapper;
@@ -254,6 +258,22 @@ export class CGallery extends React.Component<TCGalleryProps> {
                                             </div>
                                         );
 
+                                        return el;
+                                    })}
+                                    {gallerySettings.slides && gallerySettings.slides.map((slideJsx, index) => {
+                                        let el = slideJsx;
+                                        if (gallerySettings.components && gallerySettings.components.imgWrapper) {
+                                            const WrapComp = gallerySettings.components.imgWrapper;
+                                            el = <WrapComp>{el}</WrapComp>
+                                        }
+                                        if (gallerySettings.zoom) {
+                                            el = <div className="swiper-zoom-container">{el}</div>
+                                        }
+                                        el = (
+                                            <div key={`slide_${index}`} className={`swiper-slide ${styles.swiperSlide}`}>
+                                                {el}
+                                            </div>
+                                        );
                                         return el;
                                     })}
                                 </div>

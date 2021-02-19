@@ -1,4 +1,5 @@
-import typescript from 'rollup-plugin-ts';
+// import typescript from 'rollup-plugin-ts';
+import typescript from 'rollup-plugin-typescript2';
 import nodeResolve from "@rollup/plugin-node-resolve";
 import commonjs from '@rollup/plugin-commonjs';
 import autoprefixer from 'autoprefixer';
@@ -34,8 +35,11 @@ const getPlugins = (format = 'esm') => {
     return [
         nodeResolve(),
         commonjs(),
+        // typescript({
+        //     tsconfig: resolvedConfig => ({ ...resolvedConfig, ...typeScriptOptions })
+        // }),
         typescript({
-            tsconfig: resolvedConfig => ({ ...resolvedConfig, ...typeScriptOptions })
+            tsconfigOverride: { compilerOptions: typeScriptOptions }
         }),
         postcss({
             extract: false,

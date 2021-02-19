@@ -10,7 +10,7 @@
     ],
     "allowJs": true,
     "strict": true,
-    "rootDir": "./",
+    "baseUrl": ".",
     "sourceMap": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
@@ -28,6 +28,8 @@
     "src/**/*.tsx"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "dist",
+    "es"
   ]
 }

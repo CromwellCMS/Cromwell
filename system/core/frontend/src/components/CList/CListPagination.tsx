@@ -40,7 +40,11 @@ export class Pagination extends React.Component<{
         }
 
         if (props.scrollContainerSelector) {
+            this.scrollboxEl = null;
             this.scrollboxEl = document.querySelector(props.scrollContainerSelector);
+            if (!this.scrollboxEl) {
+                console.error('CList: scrollContainerSelector was passed but target element wan not found in DOM');
+            }
 
         } else if (props.scrollBoxRef.current) {
             this.scrollboxEl = props.scrollBoxRef.current;

@@ -1,6 +1,10 @@
+div.swiperWrapper {
+    height: auto;
+}
+
 .swiperContainer {
     width: 100%;
-    height: 100%;
+    height: auto;
 
     :global(.swiper-pagination) {
         :global(.swiper-pagination-bullet) {
@@ -22,23 +26,14 @@
     text-align: center;
     font-size: 18px;
     background: #fff;
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: -webkit-flex;
     display: flex;
-    -webkit-box-pack: center;
-    -ms-flex-pack: center;
-    -webkit-justify-content: center;
     justify-content: center;
-    -webkit-box-align: center;
-    -ms-flex-align: center;
-    -webkit-align-items: center;
     align-items: center;
 }
 
 .swiperImage {
     width: 100%;
-    height: 400px;
+    height: auto;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -66,4 +61,3 @@
     // padding: 5px;
     // border-radius: 10px;
 }
-

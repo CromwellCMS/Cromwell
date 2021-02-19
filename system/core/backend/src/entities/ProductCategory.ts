@@ -22,15 +22,11 @@ export class ProductCategory extends BasePageEntity implements TProductCategory 
     description?: string;
 
     @TreeChildren()
-    children: ProductCategory[];
+    children?: ProductCategory[];
 
     @TreeParent()
     parent?: ProductCategory | null;
 
-    // @Field(() => Number)
-    // @TreeLevelColumn()
-    // level: number;
-
-    @ManyToMany(type => Product, question => question.categories)
-    products: TPagedList<TProduct>;
+    @ManyToMany(type => Product, product => product.categories)
+    products?: TPagedList<TProduct>;
 }

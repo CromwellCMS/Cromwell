@@ -15,9 +15,11 @@ export const ProductAttributes = (props: {
     /** All available attributes */
     attributes?: TAttribute[];
 
-    /** Called when user picks any attribute, if picked value has productVariant,
-    * it applies modifications to "product" prop and calls this method.
-    * If value has no productVariant, then original product will be returned  */
+    /** 
+     * Called when user picks any attribute, if picked value has productVariant,
+     * it applies modifications to "product" prop and calls this method.
+     * If value has no productVariant, then original product will be returned  
+     * */
     onChange: (checkedAttrs: Record<string, string[]>, modifiedProduct: TProduct) => void;
 
     /** UI elements to replace default ones */

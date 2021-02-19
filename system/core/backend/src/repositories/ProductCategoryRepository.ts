@@ -133,7 +133,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async getChildrenCategories(category: ProductCategory): Promise<ProductCategory[]> {
         logFor('detailed', 'ProductCategoryRepository::getChildrenCategories id: ' + category.id);
-        return (await this.findDescendantsTree(category)).children;
+        return (await this.findDescendantsTree(category)).children ?? [];
     }
 
     async getParentCategory(category: ProductCategory): Promise<ProductCategory | undefined | null> {

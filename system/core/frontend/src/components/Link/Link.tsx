@@ -26,6 +26,7 @@ export const Link = (props: TLinkProps) => {
             }
         })
     }
+    // NextLink in Next.js environment and <a> in Admin panel
     if (NextLink) {
         return (
             <NextLink
@@ -44,7 +45,6 @@ export const Link = (props: TLinkProps) => {
 export const CLink = (props: TLinkProps & TCromwellBlockProps) => {
     const { children, href, ...rest } = props;
 
-    // NextLink in Next.js environment and <a> in Admin panel
     return (
         <CromwellBlock
             type='link'

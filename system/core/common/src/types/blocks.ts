@@ -134,6 +134,7 @@ export type TCromwellBlockData = {
         src?: string;
         link?: string;
         withEffect?: boolean;
+        alt?: string;
     };
 
     /** For "HTML" block */
@@ -165,13 +166,16 @@ type TImageSettings = {
     id?: string | number;
     href?: string;
     thumb?: string;
+    alt?: string;
 };
 
 export type TGallerySettings = {
-    images: TImageSettings[];
+    images?: TImageSettings[];
+    slides?: React.ReactNode[];
     direction?: "horizontal" | "vertical";
     loop?: boolean;
     height?: number | string;
+    maxHeight?: number | string;
     width?: number | string;
     /** ratio = width / height */
     ratio?: number;
@@ -192,7 +196,7 @@ export type TGallerySettings = {
         maxRatio?: number;
     };
     components?: {
-        imgWrapper?: React.ComponentType<{ image: TImageSettings }>;
+        imgWrapper?: React.ComponentType<{ image?: TImageSettings }>;
     };
 }
 

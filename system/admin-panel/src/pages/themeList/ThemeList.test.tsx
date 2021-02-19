@@ -49,14 +49,14 @@ describe('ThemeList page', () => {
     });
 
     it("renders themes", async () => {
-        const { container } = render(<ThemeListPage />);
+        render(<ThemeListPage />);
 
         await screen.findByText('_test1_title');
         await screen.findByText('_test2_title');
     });
 
     it('installs theme', async () => {
-        const { container } = render(<ThemeListPage />);
+        render(<ThemeListPage />);
 
         await screen.findByText('_test1_title');
         await screen.findByText('_test2_title');

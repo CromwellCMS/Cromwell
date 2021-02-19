@@ -46,8 +46,8 @@ export const isAdminPanel = (): boolean => getStoreItem('environment')?.isAdminP
 
 export const { Consumer: BlockGetContentConsumer, Provider: BlockGetContentProvider } = React.createContext<TBlockContentGetter | null>(null);
 
-// In Next.js environment there will be available dynamic function, in any other env Next.js module
-// will be excluded and hence @loadable/component used
+// In Next.js environment there will be available "dynamic" function, in any other env Next.js module
+// will be excluded and @loadable/component used instead
 export const dynamicLoader = dynamic ?? loadable;
 
 export const pageRootContainerId = 'page-root-container';

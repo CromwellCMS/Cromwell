@@ -19,6 +19,7 @@ import { useParams } from 'react-router-dom';
 import LoadBox from '../../components/loadBox/LoadBox';
 import TransferList from '../../components/transferList/TransferList';
 import styles from './Product.module.scss';
+import 'swiper/swiper-bundle.min.css';
 
 interface NumberFormatCustomProps {
     inputRef: (instance: NumberFormat | null) => void;
@@ -438,10 +439,10 @@ const MainInfoCard = (props: {
             <div className={styles.imageBlock}>
                 <CGallery id={"CGallery" + galleryId}
                     shouldComponentUpdate={isNewVariant ? true : canUpdateGallery}
-                    settings={{
+                    gallery={{
                         images: product.images ? product.images.map((src, id) => ({ src, id })) : [],
-                        height: '350px',
-                        slidesPerView: 3,
+                        maxHeight: '350px',
+                        slidesPerView: 4,
                         showPagination: true,
                         navigation: {},
                         loop: false,
