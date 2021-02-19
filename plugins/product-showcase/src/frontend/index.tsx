@@ -4,6 +4,7 @@ import {
     loadCommonComponent,
     StaticPageContext,
     TFrontendPluginProps,
+    TPagedList,
     TProduct,
     TProductCategory,
 } from '@cromwell/core';
@@ -18,7 +19,7 @@ import "swiper/swiper-bundle.css";
 Swiper.use([Navigation, Pagination, Virtual]);
 
 type ProductShowcaseProps = {
-    productShowcase?: TProductCategory;
+    productShowcase?: TPagedList<TProduct>;
 }
 
 const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX.Element => {
@@ -67,9 +68,9 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
             direction: 'horizontal',
             virtual: {
                 slides: (function () {
-                    if (productShowcaseData?.products?.elements &&
-                        Array.isArray(productShowcaseData.products.elements)) {
-                        return productShowcaseData.products.elements;
+                    if (productShowcaseData?.elements &&
+                        Array.isArray(productShowcaseData.elements)) {
+                        return productShowcaseData.elements;
                     }
                     else return [];
                 }()),
@@ -117,39 +118,40 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
 }
 
 export const getStaticProps = async (context: StaticPageContext): Promise<ProductShowcaseProps> => {
+    // slug of a product page
+    const slug = context?.params?.slug ?? null;
     let data;
     const limit = 20;
     try {
         data = await getGraphQLClient()?.query({
             query: gql`
-                query productShowcase {
-                    productShowcase(slug: "1") {
-                        id
-                        name
-                        products(pagedParams: {pageNumber: 1, pageSize: 10}) {
-                            pagedMeta {
-                                pageSize
-                            }
-                            elements {
-                                id
-                                slug
-                                name
-                                price
-                                oldPrice
-                                mainImage
-                                rating {
-                                    average
-                                    reviewsNumber
-                                }
+                query productShowcase($slug: String) {
+                    productShowcase(slug: $slug) {
+                        pagedMeta {
+                            pageSize
+                        }
+                        elements {
+                            id
+                            slug
+                            name
+                            price
+                            oldPrice
+                            mainImage
+                            rating {
+                                average
+                                reviewsNumber
                             }
                         }
                     }
                 }
-            `
+            `,
+            variables: {
+                slug
+            }
         });
 
     } catch (e) {
-        console.error('ProductShowcase::getStaticProps', e)
+        console.error('ProductShowcase::getStaticProps', e, JSON.stringify(e?.result?.errors ?? null), null, 2)
     }
 
     return {

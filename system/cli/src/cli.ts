@@ -54,7 +54,7 @@ const args = yargs(process.argv.slice(2))
         }
     })
     // CREATE
-    .command<{ name?: string; type?: string }>({
+    .command<{ name?: string; type?: string; noInstall?: boolean }>({
         command: 'create <name> [options]',
         describe: 'creates new Cromwell project',
         aliases: ['create', 'c'],
@@ -63,10 +63,14 @@ const args = yargs(process.argv.slice(2))
                 alias: 't',
                 desc: 'type of project - default, plugin, theme',
                 type: 'string'
+            }).option('noInstall', {
+                alias: 'noInstall',
+                desc: 'do not run npm install',
+                type: 'boolean'
             })
         },
         handler: (argv) => {
-            createTask(argv.name)
+            createTask(argv.name, argv.noInstall)
         }
     })
     // BUNDLE MODULES

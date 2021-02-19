@@ -38,6 +38,7 @@ export * from './repositories/AttributeRepository';
 export * from './repositories/ProductReviewRepository';
 export * from './repositories/BaseRepository';
 export * from './repositories/UserRepository';
+export * from './repositories/PluginRepository';
 export * from './repositories/PostRepository';
 
 export * from './helpers/readThemeExports';

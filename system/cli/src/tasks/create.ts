@@ -3,7 +3,7 @@ import fs from 'fs';
 import { resolve } from 'path';
 import { promisify } from 'util';
 
-export const createTask = async (name?: string) => {
+export const createTask = async (name?: string, noInstall?: boolean) => {
     if (!name) return;
 
     const dir = resolve(process.cwd(), name + '');
@@ -12,5 +12,7 @@ export const createTask = async (name?: string) => {
 
     spawnSync(`npm init -y`, [], { shell: true, stdio: 'inherit', cwd: dir });
 
-    spawnSync(`npm i @cromwell/cms`, [], { shell: true, stdio: 'inherit', cwd: dir });
+    if (!noInstall) {
+        spawnSync(`npm i @cromwell/cms`, [], { shell: true, stdio: 'inherit', cwd: dir });
+    }
 }

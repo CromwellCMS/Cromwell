@@ -47,11 +47,11 @@ const fs = require('fs');
         } catch (e) {
             console.log(e);
             console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to build Core');
-            return;
+            throw new Error('Failed to build Core');
         }
         if (!isCoreBuilt()) {
             console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Failed to build Core');
-            return;
+            throw new Error('Failed to build Core');
         }
     }
 
@@ -96,8 +96,8 @@ const fs = require('fs');
         spawn(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     } catch (e) {
         console.log(e);
-        console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager:Failed to Start system');
-        return;
+        console.log('\x1b[31m%s\x1b[0m', 'Cromwell::startup. Manager: Failed to Start system');
+        throw new Error('Failed to Start system');
     }
 
 })();

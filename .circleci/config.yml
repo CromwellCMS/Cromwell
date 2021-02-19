@@ -43,4 +43,6 @@ jobs:
             - .cromwell/bundled-modules
 
       - run: npm run test:server
+      - run: npm run test:frontend
       - run: npm run test:admin
+      - run: npm run test:cli
