@@ -12,7 +12,8 @@
   "dependencies": {
     "yargs": "^16.2.0",
     "bin-links": "^2.2.1",
-    "read-package-json-fast": "^2.0.1"
+    "read-package-json-fast": "^2.0.1",
+    "@pnpm/link-bins": "^5.3.22"
   },
   "scripts": {
     "build": "npx rollup -c",
