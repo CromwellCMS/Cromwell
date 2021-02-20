@@ -1,31 +1,35 @@
-import { getRestAPIClient } from '@cromwell/core-frontend';
-import * as coreFrontend from '@cromwell/core-frontend';
-import { render, screen } from '@testing-library/react';
 import React from 'react';
+
+const settings = {
+    key: 'test'
+};
+jest.mock('@cromwell/core-frontend', () => {
+    return {
+        getRestAPIClient: () => {
+            return {
+                getPluginSettings: jest.fn().mockImplementation(() => settings)
+            }
+        },
+        CPlugin: (props) => {
+            return <p>{props.pluginName}</p>
+        },
+        LoadBox: () => <div></div>
+    }
+});
+
+import { render, screen } from '@testing-library/react';
 
 import PluginPage from './PluginPage';
 
 describe('AttributesPage', () => {
 
-    const coreFrontendSpy = jest.spyOn(coreFrontend, 'CPlugin');
-    coreFrontendSpy.mockImplementation((props) => {
-        return <p>{props.pluginName}</p>
-    });
-
     const testPluginName = '_test_';
-    const settings = {
-        key: 'test'
-    };
 
     jest.spyOn(URLSearchParams.prototype, 'get')
         .mockImplementation((key) => {
             if (key === 'pluginName') return testPluginName;
             return null;
         });
-
-    const apiClient = getRestAPIClient();
-    const getPluginSettingsSpy = jest.spyOn(apiClient, 'getPluginSettings');
-    getPluginSettingsSpy.mockImplementation(async () => settings)
 
     it("renders plugin", async () => {
         render(<PluginPage />);

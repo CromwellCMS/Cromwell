@@ -1,4 +1,3 @@
-import { setStoreItem } from '@cromwell/core';
 import * as core from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import * as coreFrontend from '@cromwell/core-frontend';

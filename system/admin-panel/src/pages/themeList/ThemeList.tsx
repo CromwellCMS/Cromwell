@@ -101,7 +101,7 @@ export default function ThemeList() {
 
     return (
         <div className={styles.ThemeList}>
-            {infos.map(info => {
+            {!isLoading && infos.map(info => {
                 const isActive = Boolean(cmsConfig && cmsConfig.themeName === info.name);
                 const entity = themeList?.find(ent => ent.name === info.name);
                 const isInstalled = entity?.isInstalled ?? false;

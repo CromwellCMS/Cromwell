@@ -78,7 +78,6 @@ const ProductPage = () => {
             setIsloading(loadingProgress.slice().splice(1, 1, true));
             try {
                 const attr = await client?.getAttributes();
-                console.log('attr', attr);
                 if (attr) setAttributes(attr);
             } catch (e) { console.log(e) }
 

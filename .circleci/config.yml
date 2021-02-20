@@ -5,6 +5,9 @@ jobs:
 
     working_directory: ~/repo
 
+    requires:
+      - shellcheck
+
     steps:
 
       - checkout
@@ -13,6 +16,11 @@ jobs:
           keys:
           - cache-v2-{{ checksum "package.json" }}
           - cache-v2
+
+      - run:
+          name: Git reset source code
+          command: |
+            git reset --hard HEAD
 
       - checkout
 

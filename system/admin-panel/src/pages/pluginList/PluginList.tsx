@@ -84,7 +84,7 @@ export default function PluginList() {
                 size="large"
                 startIcon={<AddCircleOutlineIcon />}
             >Add plugins</Button>
-            {pluginInfoList && pluginInfoList.map(info => {
+            {!isLoading && pluginInfoList && pluginInfoList.map(info => {
                 const pluginName = info.name;
                 const pluginIcon = info.icon;
                 const pluginEntity = pluginList?.find(ent => ent.name === pluginName)

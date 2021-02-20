@@ -1,52 +1,60 @@
-import { TPackageCromwellConfig, TThemeEntity } from '@cromwell/core';
-import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { TCmsSettings, TPackageCromwellConfig, TThemeEntity } from '@cromwell/core';
 import React from 'react';
+
+const testDataAll: TPackageCromwellConfig[] = [
+    {
+        name: '_test1_',
+        title: '_test1_title'
+    },
+    {
+        name: '_test2_',
+        title: '_test2_title'
+    }
+];
+const testDataDB: TThemeEntity[] = [
+    {
+        id: '_test1_',
+        name: '_test1_',
+        title: '_test1_title',
+        isInstalled: true,
+    },
+]
+const cmsSettings: TCmsSettings = {
+    apiPort: 1,
+    adminPanelPort: 1,
+    frontendPort: 1,
+    managerPort: 1,
+    themeName: '_test1_'
+}
+
+const installTheme = jest.fn().mockImplementation(async () => true);
+
+jest.mock('@cromwell/core-frontend', () => {
+    return {
+        getGraphQLClient: () => {
+            return {
+                getAllEntities: jest.fn().mockImplementation(async () => testDataDB),
+            }
+        },
+        getRestAPIClient: () => {
+            return {
+                getThemesInfo: jest.fn().mockImplementation(async () => testDataAll),
+                getCmsSettingsAndSave: jest.fn().mockImplementation(async () => cmsSettings),
+                installTheme,
+            }
+        },
+        getWebSocketClient: () => undefined,
+    }
+});
+
+import { getRestAPIClient } from '@cromwell/core-frontend';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import ThemeListPage from './ThemeList';
 
 describe('ThemeList page', () => {
 
-    const testDataAll: TPackageCromwellConfig[] = [
-        {
-            name: '_test1_',
-            title: '_test1_title'
-        },
-        {
-            name: '_test2_',
-            title: '_test2_title'
-        }
-    ];
-    const testDataDB: TThemeEntity[] = [
-        {
-            id: '_test1_',
-            name: '_test1_',
-            title: '_test1_title',
-            isInstalled: true,
-        },
-    ]
-
     const apiClient = getRestAPIClient();
-    const getThemesInfo = jest.spyOn(apiClient, 'getThemesInfo');
-    getThemesInfo.mockImplementation(async () => testDataAll);
-
-    const graphClient = getGraphQLClient();
-    const getAllEntities = jest.spyOn(graphClient, 'getAllEntities');
-    getAllEntities.mockImplementation(async () => testDataDB);
-
-    const getCmsSettingsAndSave = jest.spyOn(apiClient, 'getCmsSettingsAndSave');
-    getCmsSettingsAndSave.mockImplementation(async () => ({
-        apiPort: 1,
-        adminPanelPort: 1,
-        frontendPort: 1,
-        managerPort: 1,
-        themeName: '_test1_'
-    }));
-
-    const installTheme = jest.spyOn(apiClient, 'installTheme');
-    installTheme.mockImplementation(() => {
-        return new Promise(done => true);
-    });
 
     it("renders themes", async () => {
         render(<ThemeListPage />);
@@ -63,6 +71,8 @@ describe('ThemeList page', () => {
 
         const installBtn = screen.getByText('Install theme');
         fireEvent.click(installBtn);
+
+        await screen.findByText('_test2_title');
 
         expect(installTheme.mock.calls.length === 1).toBeTruthy();
     })
