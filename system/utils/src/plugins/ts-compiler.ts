@@ -83,7 +83,7 @@ export const tsCompilerPlugin = (settings?: {
                 await new Promise<void>(done => {
                     state.program.emit(sourceFile, emitFile(state, () => {
                         done();
-                    }))
+                    }));
                 })
             }
             return state.builtFiles.get(id) ?? null;
@@ -114,6 +114,10 @@ const startCompiler = (state: State, compilerOptionsOverwrite?: Object) => {
         ts.sys,
         "./"
     );
+    if (options.importHelpers === null || options.importHelpers === undefined) {
+        options.importHelpers = true;
+    }
+
     state.compilerOptions = Object.assign({}, options, compilerOptionsOverwrite);
     state.rootFileNames = fileNames;
 
