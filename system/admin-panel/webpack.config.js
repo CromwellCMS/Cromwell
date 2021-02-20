@@ -1,5 +1,5 @@
 const path = require('path');
-const { CromwellWebpackPlugin } = require('@cromwell/cromwella');
+const { CromwellWebpackPlugin } = require('@cromwell/utils');
 const localProjectDir = __dirname;
 
 const getConfig = (buildMode = 'production') => {
@@ -86,7 +86,7 @@ const getConfig = (buildMode = 'production') => {
                 moduleName: '@cromwell/admin-panel',
                 moduleBuiltins: {
                     '@cromwell/admin-panel': [
-                        '@cromwell/cromwella/build/importer.js',
+                        '@cromwell/utils/build/importer.js',
                         '@cromwell/core-frontend',
                         '@cromwell/core',
                     ]

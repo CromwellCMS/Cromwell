@@ -16,7 +16,7 @@ module.exports = {
         const postcss = require('rollup-plugin-postcss');
         const { terser } = require('rollup-plugin-terser');
         const { nodeResolve } = require("@rollup/plugin-node-resolve");
-        const { tsCompilerPlugin } = require('@cromwell/cromwella');
+        const { tsCompilerPlugin } = require('@cromwell/utils');
 
         // All plugins below will be instantiated for every output options (pages, admin panel, etc)
         // But tsCompilerPlugin with shared state object will have only one instance across all compilations.

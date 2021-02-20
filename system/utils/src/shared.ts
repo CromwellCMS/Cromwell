@@ -73,7 +73,7 @@ export const getModuleInfo = (moduleName: string, moduleVer?: string, from?: str
                 if (keys && !keys.includes('default')) keys.unshift('default');
                 if (keys) exportKeys = keys;
             } catch (e) {
-                console.log(colors.brightYellow(`Cromwella:bundler: Failed to require() module: ${moduleName}`));
+                console.log(colors.brightYellow(`Cromwell: Failed to require() module: ${moduleName}`));
             }
         }
 
@@ -83,7 +83,7 @@ export const getModuleInfo = (moduleName: string, moduleVer?: string, from?: str
             exactVersion = modulePackageJson?.version;
             if (!exactVersion) throw new Error('!exactVersion')
         } catch (e) {
-            console.log(colors.brightYellow(`Cromwella:bundler: Failed to require() package.json of module: ${moduleName}`));
+            console.log(colors.brightYellow(`Cromwell: Failed to require() package.json of module: ${moduleName}`));
         }
 
         const info: TModuleInfo = {
@@ -182,13 +182,13 @@ const hoistDeps = (store: TDependency[], packages: TPackage[],
                     if (packageVer === ver) {
                         const packageName = packages?.find(p => p.path === packagePath)?.name;
 
-                        console.log(colors.brightYellow(`\nCromwella:: Local package ${packageName} at ${packagePath} dependent on different version of hoisted package ${module.name}. \nHoisted (commonly used) ${module.name} is "${hoistedVersion}", but dependent is "${ver}".\n`));
+                        console.log(colors.brightYellow(`\nCromwell:: Local package ${packageName} at ${packagePath} dependent on different version of hoisted package ${module.name}. \nHoisted (commonly used) ${module.name} is "${hoistedVersion}", but dependent is "${ver}".\n`));
                         if (!forceInstall) {
-                            console.log(colors.brightRed(`Cromwella:: Error. Abort operation. Please fix "${module.name}": "${ver}" or run command in force mode (add -f flag).\n`));
+                            console.log(colors.brightRed(`Cromwell:: Error. Abort operation. Please fix "${module.name}": "${ver}" or run command in force mode (add -f flag).\n`));
                             process.exit();
                         }
                         // if (isProduction || (!isProduction && forceInstall)) {
-                        //     console.log(colors.brightYellow(`Cromwella:: Installing ${module.name}: "${ver}" locally...\n`));
+                        //     console.log(colors.brightYellow(`Cromwell:: Installing ${module.name}: "${ver}" locally...\n`));
                         // }
 
                         if (!nonHoisted[path.dirname(packagePath)]) {
@@ -271,10 +271,10 @@ export const globPackages = async (projectRootDir: string): Promise<string[]> =>
 export const collectPackagesInfo = (packagePaths: string[]): TPackage[] => {
     packagePaths = Array.from(new Set(packagePaths));
     if (packagePaths.length === 0) {
-        console.log(colors.brightYellow(`\nCromwella:: No local packages found\n`))
+        console.log(colors.brightYellow(`\nCromwell:: No local packages found\n`))
         return [];
     }
-    // console.log(colors.cyan(`Cromwella:: Bootstraping local packages:`));
+    // console.log(colors.cyan(`Cromwell:: Bootstraping local packages:`));
     // packagePaths.forEach(path => {
     //     console.log(colors.blue(path));
     // });
@@ -329,8 +329,8 @@ export const hoistDependencies = (packages: TPackage[], isProduction, forceInsta
     return { packages, hoistedDependencies, hoistedDevDependencies };
 }
 
-export const collectFrontendDependencies = (packages: (TPackage)[], forceInstall?: boolean): TFrontendDependency[] => {
-    const frontendDependencies: TFrontendDependency[] = defaultFrontendDeps.map(dep => {
+export const parseFrontendDeps = (dependencies: (string | TFrontendDependency)[]): TFrontendDependency[] => {
+    return dependencies.map(dep => {
         if (typeof dep === 'object') {
             if (!dep.version) dep.version = getNodeModuleVersion(dep.name);
             return dep;
@@ -340,6 +340,10 @@ export const collectFrontendDependencies = (packages: (TPackage)[], forceInstall
             version: getNodeModuleVersion(dep)!
         }
     });
+}
+
+export const collectFrontendDependencies = (packages: (TPackage)[], forceInstall?: boolean): TFrontendDependency[] => {
+    const frontendDependencies = parseFrontendDeps(defaultFrontendDeps);
 
     packages.forEach(pckg => {
         const pckheDeps = pckg?.cromwell?.frontendDependencies;
@@ -362,9 +366,9 @@ export const collectFrontendDependencies = (packages: (TPackage)[], forceInstall
                     if (mainDep.name === frontendDep.name) {
 
                         if (mainDep.version !== frontendDep.version) {
-                            console.log(colors.brightYellow(`\nCromwella:: Local package ${pckg.name} at ${pckg.path} dependent on different version of used frontend module ${frontendDep.name}. \nAlready used ${frontendDep.name} is "${mainDep.version}", but dependent is "${frontendDep.version}".\n`));
+                            console.log(colors.brightYellow(`\nCromwell:: Local package ${pckg.name} at ${pckg.path} dependent on different version of used frontend module ${frontendDep.name}. \nAlready used ${frontendDep.name} is "${mainDep.version}", but dependent is "${frontendDep.version}".\n`));
                             if (!forceInstall) {
-                                console.log(colors.brightRed(`Cromwella:: Error. Abort operation. Please fix "${frontendDep.name}": "${frontendDep.version}" or run command in force mode (add -f flag).\n`));
+                                console.log(colors.brightRed(`Cromwell:: Error. Abort operation. Please fix "${frontendDep.name}": "${frontendDep.version}" or run command in force mode (add -f flag).\n`));
                                 process.exit();
                             }
                         } else {

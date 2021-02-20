@@ -42,15 +42,12 @@ Supposed to be started after Server service up and running.
 
 Uses dedicated server to serve Admin Panel files and public media files. 
 
-### 4. Cromwella
-- Path - system/cromwella
-- NPM Module - @cromwell/cromwella
+### 4. Utils
+- Path - system/utils
+- NPM Module - @cromwell/utils
 
 Modules bundler / compiler / package manager with built-in cli
-> https://github.com/CromwellCMS/Cromwell/tree/master/system/cromwella#readme
-```sh
-npx cromwella
-```
+> https://github.com/CromwellCMS/Cromwell/tree/master/system/utils#readme
 
 ### 5. Manager
 - Path - system/manager

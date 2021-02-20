@@ -1,4 +1,4 @@
-import { TSciprtMetaInfo } from '@cromwell/core';
+import { TFrontendDependency, TSciprtMetaInfo } from '@cromwell/core';
 import { getLogger, serverLogFor } from '@cromwell/core-backend';
 import colorsdef from 'colors/safe';
 import extractZip from 'extract-zip';
@@ -10,31 +10,42 @@ import { promisify } from 'util';
 import decompress from 'decompress';
 import readline from 'readline';
 import { moduleMetaInfoFileName } from './constants';
-import { collectFrontendDependencies, collectPackagesInfo, getBundledModulesDir, globPackages } from './shared';
+import { collectFrontendDependencies, collectPackagesInfo, getBundledModulesDir, globPackages, parseFrontendDeps } from './shared';
 import { TPackage } from './types';
 
 const streamPipeline = promisify(require('stream').pipeline);
 const colors: any = colorsdef;
 const logger = getLogger('errors-only');
 
-export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) => {
-    projectRootDir = projectRootDir ?? process.cwd();
-    let packages: TPackage[] = [];
-    if (!pckgs) {
-        const packagePaths = await globPackages(projectRootDir);
-        packages = collectPackagesInfo(packagePaths);
-    } else packages = pckgs;
+export const downloader = async (options?: {
+    rootDir?: string;
+    packages?: TPackage[];
+    targetModule?: string;
+}) => {
+    let { rootDir, packages, targetModule } = options ?? {};
+    rootDir = rootDir ?? process.cwd();
 
     // Check for bundled modules
-
-    if (!packages) {
-        logger.error('No packages found');
-        return;
-    }
     let downloads = 0;
     let successfulDownloads = 0;
 
-    const frontendDeps = collectFrontendDependencies(packages, true);
+    let frontendDeps: TFrontendDependency[] = [];
+
+    if (targetModule) {
+        frontendDeps = parseFrontendDeps([targetModule]);
+
+    } else {
+        // Collect frontendDependencies from cromwella.json in all packages
+        if (!packages) {
+            const packagePaths = await globPackages(rootDir);
+            packages = collectPackagesInfo(packagePaths);
+        };
+        if (!packages) {
+            logger.error('No packages found');
+            return;
+        }
+        frontendDeps = collectFrontendDependencies(packages, true);
+    }
 
     const bundledModulesDir = getBundledModulesDir();
 
@@ -46,13 +57,13 @@ export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) =>
 
         readline.clearLine(process.stdout, -1);
         readline.clearLine(process.stdout, 0);
-        process.stdout.write(colors.cyan(`Cromwella:: Downloading frontend module: ${colors.brightCyan(depName)}`));
+        process.stdout.write(colors.cyan(`Cromwell:: Downloading frontend module: ${colors.brightCyan(depName)}`));
         readline.cursorTo(process.stdout, 0);
 
         downloads++;
         const success = await downloadBundleZipped(depName, bundledModulesDir);
         if (!success) {
-            colors.cyan(`Cromwella:: Downloading frontend module, second attempt: ${colors.brightCyan(depName)}`)
+            colors.cyan(`Cromwell:: Downloading frontend module, second attempt: ${colors.brightCyan(depName)}`)
             const success2 = await downloadBundleZipped(depName, bundledModulesDir);
             if (!success2) return;
         }
@@ -87,7 +98,7 @@ export const downloader = async (projectRootDir?: string, pckgs?: TPackage[]) =>
         readline.clearLine(process.stdout, -1);
         readline.clearLine(process.stdout, 0);
         console.log('\n')
-        console.log(colors.cyan(`Cromwella:: Downloaded ${successfulDownloads}/${downloads} modules`));
+        console.log(colors.cyan(`Cromwell:: Downloaded ${successfulDownloads}/${downloads} modules`));
     }
 }
 

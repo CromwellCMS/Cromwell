@@ -4,7 +4,7 @@ import {
     getModulePackage
 } from '@cromwell/core-backend';
 import { setStoreItem } from '@cromwell/core';
-import { getBundledModulesDir, bundledModulesDirName } from '@cromwell/cromwella';
+import { getBundledModulesDir, bundledModulesDirName } from '@cromwell/utils';
 import fs from 'fs-extra';
 import gracefulfs from 'graceful-fs';
 import makeEmptyDir from 'make-empty-dir';
@@ -13,7 +13,7 @@ import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import { promisify } from 'util';
 import yargs from 'yargs-parser';
-import { downloader, TPackage } from '@cromwell/cromwella';
+import { downloader, TPackage } from '@cromwell/utils';
 
 const mkdir = promisify(gracefulfs.mkdir);
 
@@ -39,7 +39,10 @@ const main = async () => {
     }
 
     const pckg = getModulePackage(themeName);
-    if (pckg) await downloader(process.cwd(), [pckg]);
+    if (pckg) await downloader({
+        rootDir: process.cwd(),
+        packages: [pckg],
+    });
 
     const themeConfig = await getCmsModuleConfig(themeName);
 
@@ -92,7 +95,7 @@ const main = async () => {
         import * as NextRouter from 'next/router';
         import ReactHtmlParser from 'react-html-parser';
         import Document, { Html, Main, NextScript } from 'next/document';
-        import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
+        import { getModuleImporter } from '@cromwell/utils/build/importer.js';
         import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
         import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, 
             fsRequire } from 'build/renderer';

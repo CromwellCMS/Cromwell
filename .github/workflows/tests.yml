@@ -40,7 +40,7 @@ jobs:
             system/core/common/dist
             system/core/frontend/es
             system/core/frontend/dist
-            system/cromwella/build
+            system/utils/build
             system/manager/build
             system/renderer/build
             system/server/build

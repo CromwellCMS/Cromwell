@@ -17,7 +17,8 @@
         "test:server": "cd system/server && npm run test",
         "test:admin": "cd system/admin-panel && npm run test",
         "test:frontend": "cd system/core/frontend && npm run test",
-        "test:cli": "cd system/cli && npm run test"
+        "test:cli": "cd system/cli && npm run test",
+        "test:utils": "cd system/utils && npm run test"
     },
     "workspaces": [
         "system/*",
@@ -30,5 +31,6 @@
             "@cromwell/theme-store",
             "@cromwell/theme-blog"
         ]
-    }
+    },
+    "cache-version": "0.0.1; modify this string to reset circleci cache"
 }

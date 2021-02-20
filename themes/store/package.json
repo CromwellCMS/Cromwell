@@ -16,7 +16,7 @@
     "@apollo/client": "3.2.1",
     "@cromwell/core": "1.1.0",
     "@cromwell/core-frontend": "1.0.0",
-    "@cromwell/cromwella": "1.0.0",
+    "@cromwell/utils": "1.0.0",
     "@cromwell/plugin-customer-reviews": "^1.0.0",
     "@cromwell/plugin-product-filter": "^1.0.0",
     "@cromwell/plugin-main-menu": "^1.0.0",

@@ -37,18 +37,6 @@ const buildDir = 'build';
 
 export default [
     {
-        preserveModules: true,
-        input: resolve(__dirname, "src/cli.ts"),
-        output: [
-            {
-                dir: resolve(__dirname, buildDir),
-                format: "cjs",
-            }
-        ],
-        external,
-        plugins: plugins
-    },
-    {
         input: resolve(__dirname, "src/browser.ts"),
         output: [
             {

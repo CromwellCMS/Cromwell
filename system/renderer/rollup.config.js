@@ -2,7 +2,7 @@ import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
 import typescript from "rollup-plugin-ts";
 import packageJson from './package.json';
-import { rollupPluginCromwellFrontend } from '@cromwell/cromwella';
+import { rollupPluginCromwellFrontend } from '@cromwell/utils';
 import json from '@rollup/plugin-json';
 import { terser } from "rollup-plugin-terser";
 import ts from 'typescript';

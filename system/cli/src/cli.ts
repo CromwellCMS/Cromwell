@@ -97,8 +97,13 @@ const args = yargs(process.argv.slice(2))
                 })
         },
         handler: (argv) => {
-            const { bundler } = require('@cromwell/cromwella');
-            bundler(process.cwd(), !argv.development, argv.remove, argv.force);
+            const { bundler } = require('@cromwell/utils');
+            bundler({
+                projectRootDir: process.cwd(),
+                isProduction: !argv.development,
+                rebundle: argv.remove,
+                forceInstall: argv.force,
+            });
         }
     })
     // DOWNLOAD
@@ -107,8 +112,8 @@ const args = yargs(process.argv.slice(2))
         describe: 'download bundled frontend modules',
         aliases: ['download', 'd'],
         handler: (argv) => {
-            const { downloader } = require('@cromwell/cromwella');
-            downloader(process.cwd());
+            const { downloader } = require('@cromwell/utils');
+            downloader();
         }
     })
 

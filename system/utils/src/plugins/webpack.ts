@@ -138,17 +138,17 @@ export class CromwellWebpackPlugin {
             ).apply(params.normalModuleFactory);
         });
 
-        compiler.hooks.normalModuleFactory.tap('CromwellaBundlerPlugin', factory => {
-            factory.hooks.parser.for('javascript/auto').tap('CromwellaBundlerPlugin', (parser, options) => {
-                parser.hooks.import.tap('CromwellaBundlerPlugin', this.handleStatement);
-                parser.hooks.importSpecifier.tap('CromwellaBundlerPlugin', this.handleStatement);
-                parser.hooks.exportImportSpecifier.tap('CromwellaBundlerPlugin', (statement, source, identifierName, exportName) => {
+        compiler.hooks.normalModuleFactory.tap('CromwellBundlerPlugin', factory => {
+            factory.hooks.parser.for('javascript/auto').tap('CromwellBundlerPlugin', (parser, options) => {
+                parser.hooks.import.tap('CromwellBundlerPlugin', this.handleStatement);
+                parser.hooks.importSpecifier.tap('CromwellBundlerPlugin', this.handleStatement);
+                parser.hooks.exportImportSpecifier.tap('CromwellBundlerPlugin', (statement, source, identifierName, exportName) => {
                     this.handleStatement(statement, source, exportName, identifierName);
                 });
             });
         });
 
-        compiler.hooks.done.tap('CromwellaBundlerPlugin', () => {
+        compiler.hooks.done.tap('CromwellBundlerPlugin', () => {
             // Optimize used externals:
             // If has "default" key with any other, leave only "default"
             Object.keys(usedExternals).forEach(extName => {
