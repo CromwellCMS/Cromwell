@@ -9,8 +9,8 @@
     "static"
   ],
   "scripts": {
-    "build": "cromwell b",
-    "watch": "cromwell b -w"
+    "build": "npx --no-install cromwell b",
+    "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
     "@apollo/client": "3.2.1",

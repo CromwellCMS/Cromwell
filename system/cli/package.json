@@ -15,7 +15,8 @@
   "scripts": {
     "build": "npx rollup -c",
     "watch": "npx rollup -cw",
-    "test": "npx --no-install jest"
+    "test": "npx --no-install jest",
+    "buildService": "node startup.js buildService"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.2",

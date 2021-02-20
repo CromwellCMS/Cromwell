@@ -21,7 +21,7 @@ const main = async () => {
     console.log('\x1b[36m%s\x1b[0m', `Building CLI service...`);
     spawnSync('npm run build', { shell: true, cwd: localProjectRootDir, stdio: 'inherit' });
 
-    spawnSync(`npm link --only=production`, { shell: true, cwd: localProjectRootDir, stdio: 'inherit' });
+    spawnSync(`yarn link`, { shell: true, cwd: localProjectRootDir, stdio: 'inherit' });
   }
 }
 

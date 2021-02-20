@@ -24,14 +24,37 @@ jobs:
 
       - checkout
 
-      - run: npm run build
+      - run: 
+        name: build
+        command: npm run build
+        environment:
+          NODE_OPTIONS: --max_old_space_size=4096
 
       - save_cache:
           key: cache-v2-{{ checksum "package.json" }}
           paths:
             - ~/repo
 
-      - run: npm run test:server
-      - run: npm run test:frontend
-      - run: npm run test:admin
-      - run: npm run test:cli
+      - run: 
+        name: test server
+        command: npm run test:server
+        environment:
+          NODE_OPTIONS: --max_old_space_size=4096
+
+      - run: 
+        name: test core frontend
+        command: npm run test:frontend
+        environment:
+          NODE_OPTIONS: --max_old_space_size=4096
+
+      - run: 
+        name: test admin panel
+        command: npm run test:admin
+        environment:
+          NODE_OPTIONS: --max_old_space_size=4096
+
+      - run: 
+        name: test cli
+        command: npm run test:cli
+        environment:
+          NODE_OPTIONS: --max_old_space_size=4096
