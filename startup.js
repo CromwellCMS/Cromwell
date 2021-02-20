@@ -22,6 +22,7 @@ const fs = require('fs');
 
     const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js')
     const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js')
+    const cliDir = resolve(projectRootDir, 'system/cli')
 
     const hasNodeModules = () => {
         return !(
@@ -62,6 +63,14 @@ const fs = require('fs');
     // Build cli
     spawnSync(`node ${cliStartupPath} ${managerCommand}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
 
+    const binLinks = require('bin-links');
+    const readPackageJson = require('read-package-json-fast');
+
+    binLinks({
+        path: cliDir,
+        pkg: readPackageJson(resolve(cliDir, 'package.json')),
+        global: true,
+    });
 
     // Check themes
     const themesDir = resolve(projectRootDir, 'themes');
@@ -72,7 +81,6 @@ const fs = require('fs');
             const themeDir = resolve(themesDir, theme);
             if (!fs.existsSync(resolve(themeDir, 'build')) || scriptName === 'build') {
                 console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
-                spawnSync('yarn link "@cromwell/cli"', { shell: true, cwd: themeDir, stdio: 'inherit' });
                 spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
             }
         }
@@ -87,7 +95,6 @@ const fs = require('fs');
             const pluginDir = resolve(pluginsDir, plugin);
             if (!fs.existsSync(resolve(pluginDir, 'build')) || scriptName === 'build') {
                 console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
-                spawnSync('yarn link "@cromwell/cli"', { shell: true, cwd: themeDir, stdio: 'inherit' });
                 spawnSync('npm run build', { shell: true, cwd: pluginDir, stdio: 'inherit' });
             }
         }
