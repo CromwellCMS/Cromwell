@@ -16,11 +16,14 @@ const scriptName = process.argv[2];
 
 const main = async () => {
 
-  if (!fs.existsSync(buildScriptPath) || scriptName === 'buildService') {
+  const hasBuild = fs.existsSync(buildScriptPath);
+  if (!hasBuild || scriptName === 'buildService') {
     console.log('\x1b[36m%s\x1b[0m', `Building CLI service...`);
     spawnSync('npm run build', { shell: true, cwd: localProjectRootDir, stdio: 'inherit' });
 
-    spawnSync(`npm link --only=production`, { shell: true, cwd: localProjectRootDir, stdio: 'inherit' });
+    if (!hasBuild) {
+      spawnSync(`npm link --only=production`, { shell: true, cwd: localProjectRootDir, stdio: 'inherit' });
+    }
   }
 }
 

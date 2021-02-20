@@ -21,7 +21,7 @@ export default function index(props: TAdminPanelPluginProps<TSettings>) {
         setIsloading(false);
     }
 
-    const handleChangeValue = (event) => {
+    const handleChangeValue = (event: any) => {
         const valInt = parseInt(event.target.value);
         if (!isNaN(valInt)) {
             setSize(valInt)

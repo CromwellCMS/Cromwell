@@ -43,8 +43,6 @@ const SidebarLink = (props: {
     setActiveId: (id: string) => void;
     activeId: string;
 }) => {
-    const history = useHistory();
-
     const isExpanded = props.expanded === props.data.id;
 
     let head = (
@@ -80,9 +78,7 @@ const SidebarLink = (props: {
                 className={styles.ExpansionPanelSummary}
                 aria-controls={`sublinks-${props.data.title}-content`}
 
-            >
-                {head}
-
+            >{head}
             </AccordionSummary>
             <ExpansionPanelDetails>
                 <div className={styles.sublinksContainer}>
@@ -103,8 +99,7 @@ const SidebarLink = (props: {
     return (
         <div className={`${styles.SidebarLink} ${props.activeId === props.data.id ? styles.SidebarLinkActive : ''}`}
             key={props.data.id}
-        >
-            {head}
+        >{head}
         </div>
     )
 
