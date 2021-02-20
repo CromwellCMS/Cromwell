@@ -10,7 +10,7 @@ import {
     readCMSConfigSync,
     getAdminPanelStaticDir
 } from '@cromwell/core-backend';
-import { bundledModulesDirName, getBundledModulesDir, downloader } from '@cromwell/cromwella';
+import { bundledModulesDirName, getBundledModulesDir, downloader } from '@cromwell/utils';
 import { fork } from 'child_process';
 import compress from 'compression';
 import express from 'express';
@@ -30,7 +30,7 @@ const start = async () => {
     if (!isDevelopment && !isProduction)
         throw (`devServer::startDevServer: process.argv[2] is invalid - ${env} valid values - "development" and "production"`);
 
-    await downloader(process.cwd());
+    await downloader();
 
     const projectPublicDir = getPublicDir();
     const publicDir = getAdminPanelWebPublicDir();

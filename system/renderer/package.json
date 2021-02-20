@@ -19,7 +19,7 @@
     "@cromwell/core": "1.1.0",
     "@cromwell/core-backend": "1.0.0",
     "@cromwell/core-frontend": "1.0.0",
-    "@cromwell/cromwella": "1.0.0",
+    "@cromwell/utils": "1.0.0",
     "fs-extra": "^9.0.1",
     "graceful-fs": "^4.2.4",
     "make-empty-dir": "^1.0.0",

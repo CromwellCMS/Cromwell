@@ -1,6 +1,6 @@
 import { TModuleConfig, TPackageCromwellConfig, TPluginConfig, TThemeConfig } from '@cromwell/core';
 import { configFileName, getCmsModuleConfig, getThemeNextBuildDirByPath, getCmsModuleInfo, getLogger } from '@cromwell/core-backend';
-import { rollupConfigWrapper } from '@cromwell/cromwella';
+import { rollupConfigWrapper } from '@cromwell/utils';
 import dateTime from 'date-time';
 import { resolve } from 'path';
 import prettyBytes from 'pretty-bytes';

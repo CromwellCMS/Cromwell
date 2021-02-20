@@ -21,11 +21,23 @@
     "skipLibCheck": true,
     "outDir": "./build",
     "incremental": true,
+    "types": [
+      "jest",
+      "node",
+    ],
+    "paths": {
+      "@App/*": [
+        "src/*"
+      ],
+    },
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    ".cromwell",
+    "build"
   ],
   "include": [
-    "src/**/*.ts"
+    "src/**/*.ts",
+    "tests/**/*.ts",
   ],
 }

@@ -15,9 +15,9 @@ import { THoistedDeps, TPackage } from './types';
 
 const colors: any = colorsdef;
 /**
+ * DEPRECATED
  * Cromwella package manager.
  */
-
 export const installer = async (projectRootDir: string, installationMode: string,
     isProduction: boolean, forceInstall: boolean) => {
 
@@ -223,5 +223,5 @@ export const installer = async (projectRootDir: string, installationMode: string
         spawnSync(`yarn ${process.argv.slice(3).join(' ')}`, { shell: true, cwd: process.cwd(), stdio: 'inherit' });
     }
 
-    downloader(projectRootDir, packages);
+    downloader({ rootDir: projectRootDir, packages: packages });
 }

@@ -1,4 +1,4 @@
-import { TAdditionalExports, TExternal, TPackageJson, TSciprtMetaInfo } from '@cromwell/core';
+import { TAdditionalExports, TExternal, TFrontendDependency, TPackageJson, TSciprtMetaInfo } from '@cromwell/core';
 import { getPublicDir } from '@cromwell/core-backend';
 import archiver from 'archiver';
 import colorsdef from 'colors/safe';
@@ -37,17 +37,23 @@ import {
     getBundledModulesDir,
     getModuleInfo,
     globPackages,
-    interopDefaultContent
+    interopDefaultContent,
+    parseFrontendDeps
 } from './shared';
 import { TBundleInfo } from './types';
 
 const colors: any = colorsdef;
 
 /**
- * Cromwella Bundler
- * Bundles frontend node_modules
+ * Node modules Bundler
  */
-export const bundler = async (projectRootDir: string, isProduction: boolean, rebundle?: boolean, forceInstall?: boolean) => {
+export const bundler = async ({ projectRootDir, isProduction, rebundle, forceInstall, targetPackage }: {
+    projectRootDir: string;
+    isProduction?: boolean;
+    rebundle?: boolean;
+    forceInstall?: boolean;
+    targetPackage?: string;
+}) => {
 
     // console.log('process', process.cwd(), '__dirname', __dirname, 'projectRootDir', projectRootDir)
 
@@ -57,10 +63,6 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
     const publicBuildLink = resolve(publicDir, bundledModulesDirName);
 
     const nodeModulesDir = resolve(buildDir, 'node_modules');
-
-    const packagePaths = await globPackages(projectRootDir);
-    const packages = await collectPackagesInfo(packagePaths);
-
 
     if (rebundle) {
         await makeEmptyDir(buildDir, { recursive: true });
@@ -72,16 +74,23 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
     if (!await fs.pathExists(publicBuildLink))
         await symlinkDir(buildDir, publicBuildLink);
 
-    // Collect frontendDependencies from cromwella.json in all packages 
-    const frontendDependencies = collectFrontendDependencies(packages, forceInstall);
+    let frontendDependencies: TFrontendDependency[] = [];
 
+    if (targetPackage) {
+        frontendDependencies = parseFrontendDeps([targetPackage]);
+
+    } else {
+        // Collect frontendDependencies from cromwella.json in all packages
+        const packagePaths = await globPackages(projectRootDir);
+        const packages = await collectPackagesInfo(packagePaths);
+        frontendDependencies = collectFrontendDependencies(packages, forceInstall);
+    }
 
     // frontendDependencies = [
     //     // { name: '@cromwell/core', version: 'workspace:1.1.0' },
     //     { name: 'clsx', version: '^1.1.1' },
     // ];
 
-    // Parse cromwella.json configs
     const moduleExternals: Record<string, TExternal[]> = {};
     const moduleBuiltins: Record<string, string[]> = {};
     const modulesExcludeExports: Record<string, string[]> = {};
@@ -108,7 +117,7 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
         frontendDependenciesNames.push(dep.name);
     });
 
-    console.log(colors.cyan(`Cromwella:bundler: Found ${frontendDependencies.length} used frontend modules: ${frontendDependenciesNames.join(', ')}\n`));
+    console.log(colors.cyan(`Cromwell:bundler: Found ${frontendDependencies.length} used frontend modules: ${frontendDependenciesNames.join(', ')}\n`));
 
 
     const allDependencyNames: string[] = [...frontendDependenciesNames];
@@ -181,7 +190,7 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
             modulePath = resolveFrom(buildDir, moduleName).replace(/\\/g, '/');
             moduleRootPath = dirname(resolveFrom(buildDir, `${moduleName}/package.json`)).replace(/\\/g, '/');
         } catch (e) {
-            console.log(colors.brightRed('Cromwella:bundler: required module ' + moduleName + ' is not found'));
+            console.log(colors.brightRed('Cromwell:bundler: required module ' + moduleName + ' is not found'));
             return;
         }
         if (!moduleRootPath && modulePath) {
@@ -218,7 +227,7 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
                 };
             }
         } catch (e) {
-            console.error(colors.brightRed('Cromwella:bundler:: Failed to read package.json dependencies of module: ' + moduleName));
+            console.error(colors.brightRed('Cromwell:bundler:: Failed to read package.json dependencies of module: ' + moduleName));
             return;
         }
 
@@ -239,7 +248,7 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
             return moduleBuildDir;
         }
 
-        console.log(colors.cyan(`Cromwella:bundler: ${colors.brightCyan('Starting')} to build module: ${colors.brightCyan(`"${moduleName}"`)} from path: ${modulePath}`));
+        console.log(colors.cyan(`Cromwell:bundler: ${colors.brightCyan('Starting')} to build module: ${colors.brightCyan(`"${moduleName}"`)} from path: ${modulePath}`));
         let imports = '';
 
         try {
@@ -284,7 +293,7 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
         const exportKeys = getModuleInfo(moduleName, moduleVer, buildDir)?.exportKeys;
 
         if (exportKeys && modulePath) {
-            console.log(colors.cyan(`Cromwella:bundler: Found ${exportKeys.length} exports for module ${moduleName}`));
+            console.log(colors.cyan(`Cromwell:bundler: Found ${exportKeys.length} exports for module ${moduleName}`));
             for (const exportKey of exportKeys) {
                 await handleExportKey(exportKey, modulePath);
             }
@@ -441,7 +450,7 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
         const compiler = webpack(parsingWebpackConfig);
 
 
-        compiler.hooks.shouldEmit.tap('CromwellaBundlerPlugin', (compilation) => {
+        compiler.hooks.shouldEmit.tap('CromwellBundlerPlugin', (compilation) => {
             return false;
         });
 
@@ -451,9 +460,9 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
                 const hasErrors = stats?.hasErrors();
                 const existMetaInfo = fs.existsSync(metaInfoPath);
                 if (hasErrors === false && !err && existMetaInfo) {
-                    console.log(colors.cyan('Cromwella:bundler: Parsed imports for module: ' + moduleName));
+                    console.log(colors.cyan('Cromwell:bundler: Parsed imports for module: ' + moduleName));
                 } else {
-                    console.log(colors.brightRed('Cromwella:bundler: Failed to parse imports for module: ' + moduleName));
+                    console.log(colors.brightRed('Cromwell:bundler: Failed to parse imports for module: ' + moduleName));
                     console.log('stats.hasErrors()', hasErrors, 'err', err, 'fs.existsSync(metaInfoPath)', existMetaInfo);
                     console.log('usedExternals', usedExternals);
                     if (err) console.error(err);
@@ -474,8 +483,8 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
         });
 
         if (Object.keys(notIncludedExts).length > 0) {
-            console.log(colors.brightYellow(`Cromwella:bundler: Found used node_modules of ${moduleName} that weren't included in package.json or cromwella.json : ${Object.keys(notIncludedExts).join(', ')}. More info in bundle.info.json (bundledDependencies)`));
-            console.log(colors.brightYellow(`Cromwella:bundler: All listed modules will be bundled with ${moduleName} and hence not reusable for other modules. This may cause bloating of bundles. Please configure encountered modules as externals.`));
+            console.log(colors.brightYellow(`Cromwell:bundler: Found used node_modules of ${moduleName} that weren't included in package.json : ${Object.keys(notIncludedExts).join(', ')}. More info in bundle.info.json (bundledDependencies)`));
+            console.log(colors.brightYellow(`Cromwell:bundler: All listed modules will be bundled with ${moduleName} and hence not reusable for other modules. This may cause bloating of bundles. Please configure encountered modules as externals.`));
         }
 
         const bundleInfo: TBundleInfo = {
@@ -552,11 +561,11 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
                 }
 
                 if (stats && !stats.hasErrors() && !err && fs.existsSync(resolve(moduleBuildDir, moduleMainBuidFileName))) {
-                    console.log(colors.brightGreen('Cromwella:bundler: Successfully built module for web: ' + moduleName));
+                    console.log(colors.brightGreen('Cromwell:bundler: Successfully built module for web: ' + moduleName));
                     webChunksSuccess = true;
 
                 } else {
-                    console.log(colors.brightRed('Cromwella:bundler: Failed to built module for web: ' + moduleName));
+                    console.log(colors.brightRed('Cromwell:bundler: Failed to built module for web: ' + moduleName));
                     if (err) console.error(err);
                     if (stats) console.error(stats?.toString({ colors: true }));
                 }
@@ -579,9 +588,9 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
             singlebuildCompiler.run(async (err, stats) => {
 
                 if (stats && !stats.hasErrors() && !err && fs.existsSync(moduleMainBuildPath)) {
-                    console.log(colors.brightGreen('Cromwella:bundler: Successfully built one-chunk module for web: ' + moduleName));
+                    console.log(colors.brightGreen('Cromwell:bundler: Successfully built one-chunk module for web: ' + moduleName));
                 } else {
-                    console.log(colors.brightRed('Cromwella:bundler: Failed to built one-chunk module for web: ' + moduleName));
+                    console.log(colors.brightRed('Cromwell:bundler: Failed to built one-chunk module for web: ' + moduleName));
                     if (err) console.error(err);
                     if (stats) console.error(stats?.toString({ colors: true }));
                 }
@@ -641,9 +650,9 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
             nodeBuildCompiler.run(async (err, stats) => {
 
                 if (stats && !stats.hasErrors() && !err && fs.existsSync(resolve(moduleBuildDir, moduleNodeBuidFileName))) {
-                    console.log(colors.brightGreen('Cromwella:bundler: Successfully built module for Node.js: ' + moduleName));
+                    console.log(colors.brightGreen('Cromwell:bundler: Successfully built module for Node.js: ' + moduleName));
                 } else {
-                    console.log(colors.brightRed('Cromwella:bundler: Failed to built module for Node.js: ' + moduleName));
+                    console.log(colors.brightRed('Cromwell:bundler: Failed to built module for Node.js: ' + moduleName));
                     if (err) console.error(err);
                     if (stats) console.error(stats?.toString({ colors: true }));
                 }
@@ -657,7 +666,7 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
         const bundledDepsPaths: string[] = [];
         if (webChunksSuccess) {
             if (Object.keys(filteredUsedExternals).length > 0) {
-                console.log(colors.cyan(`Cromwella:bundler: Starting to build following used dependencies of module ${moduleName}: ${Object.keys(filteredUsedExternals).join(', ')}`));
+                console.log(colors.cyan(`Cromwell:bundler: Starting to build following used dependencies of module ${moduleName}: ${Object.keys(filteredUsedExternals).join(', ')}`));
                 // console.log('collectedDependencies', collectedDependencies)
                 for (const ext of Object.keys(filteredUsedExternals)) {
                     const version = collectedDependencies[ext];
@@ -666,7 +675,7 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
                         if (buildPath) bundledDepsPaths.push(buildPath);
                     }
                 }
-                console.log(colors.cyan(`Cromwella:bundler: All dependencies of module ${moduleName} has been built`));
+                console.log(colors.cyan(`Cromwell:bundler: All dependencies of module ${moduleName} has been built`));
             }
         }
 
@@ -733,7 +742,7 @@ export const bundler = async (projectRootDir: string, isProduction: boolean, reb
         await fs.move(tempZipPath, moduleArchivePath);
 
 
-        console.log(colors.cyan(`Cromwella:bundler: Module: ${colors.brightCyan(`"${moduleName}"`)} has been ${colors.brightCyan('processed')}`));
+        console.log(colors.cyan(`Cromwell:bundler: Module: ${colors.brightCyan(`"${moduleName}"`)} has been ${colors.brightCyan('processed')}`));
 
         return moduleBuildDir;
     }

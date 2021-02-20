@@ -1,5 +1,5 @@
 /**
- * Main cjs exports to be used as "require('@cromwell/cromwella');"
+ * Main cjs exports to be used as "require('@cromwell/utils');"
  */
 
 // export { rollupPluginCromwellFrontend } from './plugins/rollup';

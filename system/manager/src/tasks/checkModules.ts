@@ -1,11 +1,11 @@
-import { downloader, TPackage } from '@cromwell/cromwella';
+import { downloader, TPackage } from '@cromwell/utils';
 
 // If cms launched for the first time, we need to download bundled modules
 export const checkModules = async (isDevelopment?: boolean, pckgs?: TPackage[]) => {
     if (!pckgs) {
-        await downloader(process.cwd());
+        await downloader();
     }
     if (pckgs) {
-        await downloader(process.cwd(), pckgs);
+        await downloader({ packages: pckgs });
     }
 }

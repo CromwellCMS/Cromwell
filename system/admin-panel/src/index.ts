@@ -1,4 +1,4 @@
-import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
+import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 
 const importer = getModuleImporter();
 

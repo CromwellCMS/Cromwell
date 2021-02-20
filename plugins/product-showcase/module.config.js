@@ -17,7 +17,7 @@ module.exports = {
         const postcss = require('rollup-plugin-postcss');
         const { terser } = require('rollup-plugin-terser');
         const ts = require('typescript');
-        const { tsCompilerPlugin } = require('@cromwell/cromwella');
+        const { tsCompilerPlugin } = require('@cromwell/utils');
         return {
             main: {
                 plugins: [

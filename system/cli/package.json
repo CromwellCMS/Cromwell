@@ -39,7 +39,7 @@
   },
   "peerDependencies": {
     "@cromwell/cms": "1.0.0",
-    "@cromwell/cromwella": "1.0.0",
+    "@cromwell/utils": "1.0.0",
     "fs-extra": "^9.0.1"
   },
   "bin": {

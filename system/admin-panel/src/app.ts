@@ -1,7 +1,7 @@
 import * as core from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import * as coreFrontend from '@cromwell/core-frontend';
-import { getModuleImporter } from '@cromwell/cromwella/build/importer.js';
+import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 

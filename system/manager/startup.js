@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, execSync } = require('child_process');
-const { getCromwellaBuildDir, getCromwellaDir, getRendererBuildDir, getRendererDir } = require('@cromwell/core-backend');
+const { getUtilsBuildDir, getUtilsDir, getRendererBuildDir, getRendererDir } = require('@cromwell/core-backend');
 
 const localProjectRootDir = resolve(__dirname);
 const buildScriptPath = resolve(localProjectRootDir, 'build/index.js');
@@ -19,11 +19,11 @@ const scriptName = process.argv[2];
 
 const main = async () => {
 
-  const cromwellaDir = getCromwellaDir();
-  const cromwellaBuildDir = getCromwellaBuildDir();
+  const utilsDir = getUtilsDir();
+  const utilsBuildDir = getUtilsBuildDir();
 
-  if (cromwellaBuildDir && (!fs.existsSync(cromwellaBuildDir) || scriptName === 'buildService')) {
-    execSync('npm run build', { shell: true, cwd: cromwellaDir, stdio: 'inherit' });
+  if (utilsBuildDir && (!fs.existsSync(utilsBuildDir) || scriptName === 'buildService')) {
+    execSync('npm run build', { shell: true, cwd: utilsDir, stdio: 'inherit' });
   }
 
   const rendererDir = getRendererDir();

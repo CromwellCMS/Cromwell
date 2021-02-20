@@ -88,16 +88,17 @@ export const getOrmConfigPath = () => resolve(process.cwd(), 'ormconfig.json');
 export const getServerTempDir = () => resolve(getTempDir(), 'server');
 
 
-// Cromwella
-export const getCromwellaDir = () => getNodeModuleDirSync('@cromwell/cromwella');
-export const getCromwellaImporterPath = () => {
-    const cromwellaDir = getCromwellaDir();
-    if (cromwellaDir) return resolve(cromwellaDir, 'build/browser/importer.js');
+// Utils
+export const getUtilsDir = () => getNodeModuleDirSync('@cromwell/utils');
+export const getUtilsImporterPath = () => {
+    const utilsDir = getUtilsDir();
+    if (utilsDir) return resolve(utilsDir, 'build/browser/importer.js');
 }
-export const getCromwellaBuildDir = () => {
-    const cromwellaDir = getCromwellaDir();
-    if (cromwellaDir) return resolve(cromwellaDir, 'build');
+export const getUtilsBuildDir = () => {
+    const utilsDir = getUtilsDir();
+    if (utilsDir) return resolve(utilsDir, 'build');
 }
+export const getUtilsTempDir = () => resolve(getTempDir(), 'utils');
 
 // Theme
 export const getThemeBuildDir = async (themeModuleName: string) => {

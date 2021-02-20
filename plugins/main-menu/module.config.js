@@ -6,7 +6,7 @@ module.exports = {
         const { terser } = require('rollup-plugin-terser');
         const typescript = require('rollup-plugin-ts');
         const { resolve } = require('path');
-        const { tsCompilerPlugin } = require('@cromwell/cromwella');
+        const { tsCompilerPlugin } = require('@cromwell/utils');
         return {
             main: {
                 plugins: [

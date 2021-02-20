@@ -1,5 +1,5 @@
 import pckg from '../../package.json';
-const { getModuleImporter } = require('@cromwell/cromwella/build/importer.js');
+const { getModuleImporter } = require('@cromwell/utils/build/importer.js');
 
 export const importRendererDeps = () => {
     const { isServer, getStore } = require('@cromwell/core');
