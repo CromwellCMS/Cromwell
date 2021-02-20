@@ -1,47 +1,25 @@
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/node:12.20.1
 
     working_directory: ~/repo
 
     steps:
-      - checkout
-
-      # Download and cache dependencies
+      
       - restore_cache:
           keys:
-          - cache-v1-{{ checksum "package.json" }}
-          - cache-v1
+          - cache-v2-{{ checksum "package.json" }}
+          - cache-v2
+
+      - checkout
 
       - run: npm run build
 
       - save_cache:
-          key: cache-v1-{{ checksum "package.json" }}
+          key: cache-v2-{{ checksum "package.json" }}
           paths:
-            - node_modules
-            - plugins/customer-reviews/build
-            - plugins/main-menu/build
-            - plugins/product-filter/build
-            - plugins/product-showcase/build
-            - themes/blog/build
-            - themes/blog/.cromwell
-            - themes/store/build
-            - themes/store/.cromwell
-            - system/admin-panel/build
-            - system/cli/build
-            - system/core/backend/es
-            - system/core/backend/dist
-            - system/core/common/es
-            - system/core/common/dist
-            - system/core/frontend/es
-            - system/core/frontend/dist
-            - system/cromwella/build
-            - system/manager/build
-            - system/renderer/build
-            - system/server/build
-            - .cromwell/bundled-modules
+            - ~/repo
 
       - run: npm run test:server
       - run: npm run test:frontend
