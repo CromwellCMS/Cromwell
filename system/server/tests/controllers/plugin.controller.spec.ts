@@ -32,6 +32,8 @@ describe('Plugin Controller', () => {
                 expect(response.body).toBeTruthy();
             });
 
+        await new Promise(done => setTimeout(done, 10));
+
         return request(server)
             .get(`/plugin/settings?pluginName=${defaultPlugin}`)
             .expect(200)

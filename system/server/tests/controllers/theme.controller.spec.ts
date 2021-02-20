@@ -44,6 +44,8 @@ describe('Theme Controller', () => {
                 expect(response.body).toBeTruthy();
             });
 
+        await new Promise(done => setTimeout(done, 10));
+
         return request(server)
             .get(`/theme/page?pageRoute=${defaultPage}`)
             .expect(200)

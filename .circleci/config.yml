@@ -1,48 +1,60 @@
 jobs:
   build:
     docker:
-      # specify the version you desire here
       - image: circleci/node:12.20.1
 
     working_directory: ~/repo
 
+    requires:
+      - shellcheck
+
     steps:
+
       - checkout
 
-      # Download and cache dependencies
       - restore_cache:
           keys:
-          - cache
+          - cache-v2-{{ checksum "package.json" }}
+          - cache-v2
 
-      - run: npm run build
+      - run:
+          name: Git reset source code
+          command: |
+            git reset --hard HEAD
+
+      - checkout
+
+      - run: 
+          name: build
+          command: npm run build
+          environment:
+            NODE_OPTIONS: --max_old_space_size=4096
 
       - save_cache:
-          key: cache
+          key: cache-v2-{{ checksum "package.json" }}
           paths:
-            - node_modules
-            - plugins/customer-reviews/build
-            - plugins/main-menu/build
-            - plugins/product-filter/build
-            - plugins/product-showcase/build
-            - themes/blog/build
-            - themes/blog/.cromwell
-            - themes/store/build
-            - themes/store/.cromwell
-            - system/admin-panel/build
-            - system/cli/build
-            - system/core/backend/es
-            - system/core/backend/dist
-            - system/core/common/es
-            - system/core/common/dist
-            - system/core/frontend/es
-            - system/core/frontend/dist
-            - system/cromwella/build
-            - system/manager/build
-            - system/renderer/build
-            - system/server/build
-            - .cromwell/bundled-modules
+            - ~/repo
 
-      - run: npm run test:server
-      - run: npm run test:frontend
-      - run: npm run test:admin
-      - run: npm run test:cli
+      - run: 
+          name: test server
+          command: npm run test:server
+          environment:
+            NODE_OPTIONS: --max_old_space_size=4096
+
+      - run: 
+          name: test core frontend
+          command: npm run test:frontend
+          environment:
+            NODE_OPTIONS: --max_old_space_size=4096
+
+      - run: 
+          name: test admin panel
+          command: npm run test:admin
+          environment:
+            NODE_OPTIONS: --max_old_space_size=4096
+
+      - run: 
+          name: test cli
+          command: npm run test:cli
+          environment:
+            NODE_OPTIONS: --max_old_space_size=4096

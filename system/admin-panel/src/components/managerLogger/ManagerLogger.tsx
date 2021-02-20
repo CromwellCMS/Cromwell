@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from 'react';
-import { getRestAPIClient, getWebSocketClient } from '@cromwell/core-frontend';
+import { getWebSocketClient } from '@cromwell/core-frontend';
+import { Modal } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
-import { Modal, IconButton } from '@material-ui/core';
-import { HighlightOff as HighlightOffIcon } from '@material-ui/icons';
-import classes from './ManagerLogger.module.scss';
+
 import commonClasses from '../../styles/common.module.scss';
+import classes from './ManagerLogger.module.scss';
 
 export const ManagerLogger = (props: { isActive: boolean }) => {
     const [log, setLog] = useState<string[]>([]);

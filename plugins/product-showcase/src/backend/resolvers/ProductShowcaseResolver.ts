@@ -14,7 +14,6 @@ import { TSettings } from '../../types';
 @Resolver(ProductCategory)
 export default class ProductShowcaseResolver {
 
-    private get repo() { return getCustomRepository(ProductCategoryRepository) }
     private get productRepo() { return getCustomRepository(ProductRepository) }
 
     @Query(() => PagedProduct)

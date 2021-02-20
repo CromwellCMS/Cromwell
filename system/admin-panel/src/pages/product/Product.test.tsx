@@ -1,22 +1,35 @@
 import { TProduct } from '@cromwell/core';
-import { getGraphQLClient } from '@cromwell/core-frontend';
-import { render, screen } from '@testing-library/react';
 import React from 'react';
+
+const testData: TProduct = {
+    id: '1',
+    name: '_test1_',
+    categories: []
+};
+
+jest.mock('@cromwell/core-frontend', () => {
+    return {
+        getGraphQLClient: () => {
+            return {
+                getProductById: jest.fn().mockImplementation(async () => testData),
+                getAttributes: jest.fn().mockImplementation(async () => []),
+            }
+        },
+        CGallery: () => {
+            return <div>...images mock</div>
+        },
+        getCStore: () => ({
+            getActiveCurrencySymbol: () => ''
+        }),
+    }
+});
+
+import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
 import ProductPage from './Product';
 
 describe('Product page', () => {
-
-    const productData: TProduct = {
-        id: '1',
-        name: '_test1_',
-        categories: []
-    };
-
-    const graphClient = getGraphQLClient();
-    const getProductById = jest.spyOn(graphClient, 'getProductById');
-    getProductById.mockImplementation(async () => productData);
 
     it("renders product main", async () => {
         render(<Router><ProductPage /></Router>);

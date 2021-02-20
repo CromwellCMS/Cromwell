@@ -2,7 +2,7 @@ const { spawnSync, spawn } = require("child_process");
 const resolve = require('path').resolve;
 const fs = require('fs');
 
-(() => {
+(async () => {
 
     const scriptName = process.argv[2] ? process.argv[2] : 'production';
 
@@ -22,6 +22,7 @@ const fs = require('fs');
 
     const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js')
     const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js')
+    const cliDir = resolve(projectRootDir, 'system/cli')
 
     const hasNodeModules = () => {
         return !(
@@ -32,7 +33,9 @@ const fs = require('fs');
     }
 
     // Check node_modules
-    if (!hasNodeModules()) {
+    let didInstall = false;
+    if (!hasNodeModules() || scriptName === 'build') {
+        didInstall = true;
         spawnSync(`npm i yarn -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
         spawnSync(`yarn install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
@@ -62,6 +65,17 @@ const fs = require('fs');
     // Build cli
     spawnSync(`node ${cliStartupPath} ${managerCommand}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
 
+    if (didInstall) {
+        const readPackageJson = require('read-package-json-fast');
+        const { linkBinsOfPackages } = require('@pnpm/link-bins');
+
+        function warn(msg) { console.warn(msg) };
+        const packages = [{
+            manifest: readPackageJson(resolve(cliDir, 'package.json')),
+            location: resolve(cliDir, 'package.json'),
+        }];
+        await linkBinsOfPackages(packages, 'node_modules/.bin', { warn });
+    }
 
     // Check themes
     const themesDir = resolve(projectRootDir, 'themes');

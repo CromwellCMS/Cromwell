@@ -10,12 +10,16 @@
   "author": "Cromwell",
   "license": "ISC",
   "dependencies": {
-    "yargs": "^16.2.0"
+    "yargs": "^16.2.0",
+    "bin-links": "^2.2.1",
+    "read-package-json-fast": "^2.0.1",
+    "@pnpm/link-bins": "^5.3.22"
   },
   "scripts": {
     "build": "npx rollup -c",
     "watch": "npx rollup -cw",
-    "test": "npx --no-install jest"
+    "test": "npx --no-install jest",
+    "buildService": "node startup.js buildService"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.2",

@@ -9,8 +9,8 @@
   "author": "",
   "license": "ISC",
   "scripts": {
-    "build": "npx cromwell b",
-    "watch": "npx cromwell b -w"
+    "build": "npx --no-install cromwell b",
+    "watch": "npx --no-install cromwell b -w"
   },
   "cromwell": {
     "type": "plugin",
