@@ -32,7 +32,7 @@ const fs = require('fs');
     }
 
     // Check node_modules
-    if (!hasNodeModules()) {
+    if (!hasNodeModules() || scriptName === 'build') {
         spawnSync(`npm i yarn -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
         spawnSync(`yarn install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
