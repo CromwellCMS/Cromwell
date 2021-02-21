@@ -6,7 +6,7 @@ const config: Config.InitialOptions = {
     moduleNameMapper: {
         '@App/(.*)': '<rootDir>/src/$1',
     },
-    testRegex: "/(tests|src)/.*rollup\\.(test|spec)\\.[jt]sx?$",
+    testRegex: "/(tests|src)/.*\\.(test|spec)\\.[jt]sx?$",
     maxConcurrency: 2,
     silent: false,
     globals: {
