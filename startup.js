@@ -22,13 +22,15 @@ const fs = require('fs');
 
     const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js')
     const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js')
-    const cliDir = resolve(projectRootDir, 'system/cli')
+    const cliDir = resolve(projectRootDir, 'system/cli');
+    const backendNode_modules = resolve(coreDir, 'backend/node_modules')
+    const frontendNode_modules = resolve(coreDir, 'frontend/node_modules')
 
     const hasNodeModules = () => {
         return !(
             !fs.existsSync(rootNodeModulesDir) ||
-            !fs.existsSync(resolve(coreDir, 'backend/node_modules')) ||
-            !fs.existsSync(resolve(coreDir, 'frontend/node_modules'))
+            !fs.existsSync(backendNode_modules) ||
+            !fs.existsSync(frontendNode_modules)
         )
     }
 
@@ -36,6 +38,15 @@ const fs = require('fs');
     let didInstall = false;
     if (!hasNodeModules() || scriptName === 'build') {
         didInstall = true;
+
+        if (scriptName === 'build') {
+            if (fs.existsSync(backendNode_modules))
+                fs.rmdirSync(backendNode_modules, { recursive: true });
+
+            if (fs.existsSync(frontendNode_modules))
+                fs.rmdirSync(frontendNode_modules, { recursive: true });
+        }
+
         spawnSync(`npm i yarn -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
         spawnSync(`yarn install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
