@@ -15,8 +15,7 @@
     "moduleResolution": "node",
     "noImplicitAny": false,
     "allowSyntheticDefaultImports": true,
-    "outDir": "./build",
-    "incremental": true,
+    "allowJs": true,
     "esModuleInterop": true,
     "types": [
       "jest",

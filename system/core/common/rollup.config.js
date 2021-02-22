@@ -1,9 +1,7 @@
-// import typescript from 'rollup-plugin-ts';
-import typescript from 'rollup-plugin-typescript2';
 import { resolve } from 'path';
 import autoExternal from 'rollup-plugin-auto-external';
 import { terser } from 'rollup-plugin-terser';
-
+import typescript from 'rollup-plugin-ts-compiler';
 import pkg from './package.json';
 
 const input = resolve(__dirname, 'src/index.ts');
@@ -14,22 +12,19 @@ const getOutput = (format = 'esm') => {
     }
     return { file: resolve(__dirname, pkg.main), format };
 };
-const getPlugins = (format = 'esm') => {
-    const typeScriptOptions = format === 'esm' ?
-        {
-            declaration: true,
-            declarationMap: true,
-            declarationDir: resolve(__dirname, pkg.module)
-        } : {};
+const sharedState = {};
 
+const getPlugins = () => {
     return [
-        autoExternal(),
-        // typescript({
-        //     tsconfig: resolvedConfig => ({ ...resolvedConfig, ...typeScriptOptions })
-        // }),
         typescript({
-            tsconfigOverride: { compilerOptions: typeScriptOptions }
+            sharedState,
+            compilerOptions: {
+                declaration: true,
+                declarationMap: true,
+                declarationDir: resolve(__dirname, pkg.module)
+            }
         }),
+        autoExternal(),
         // terser(),
     ];
 };
@@ -38,7 +33,7 @@ export default [
     {
         input,
         output: getOutput('cjs'),
-        plugins: getPlugins('cjs'),
+        plugins: getPlugins(),
         external,
         watch: {
             clearScreen: false,
@@ -53,7 +48,7 @@ export default [
     {
         input,
         output: getOutput('esm'),
-        plugins: getPlugins('esm'),
+        plugins: getPlugins(),
         external,
         watch: {
             clearScreen: false,

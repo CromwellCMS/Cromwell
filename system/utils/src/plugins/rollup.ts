@@ -313,7 +313,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                 preserveModules: true
             } as OutputOptions);
 
-            options.plugins.unshift(scssExternalPlugin());
+            options.plugins.push(scssExternalPlugin());
             options.plugins.push(rollupPluginCromwellFrontend({
                 pagesMetaInfo, buildDir, srcDir, moduleInfo,
                 moduleConfig, watch,

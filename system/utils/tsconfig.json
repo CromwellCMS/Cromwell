@@ -19,8 +19,6 @@
     "esModuleInterop": true,
     "moduleResolution": "node",
     "skipLibCheck": true,
-    "outDir": "./build",
-    "incremental": true,
     "types": [
       "jest",
       "node",
@@ -38,6 +36,6 @@
   ],
   "include": [
     "src/**/*.ts",
-    "tests/**/*.ts",
+    // "tests/**/*.ts",
   ],
 }

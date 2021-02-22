@@ -7,7 +7,6 @@ import moduleDownloader from 'github-directory-downloader';
 import fetch from 'node-fetch';
 import { resolve } from 'path';
 import { promisify } from 'util';
-import decompress from 'decompress';
 import readline from 'readline';
 import { moduleMetaInfoFileName } from './constants';
 import { collectFrontendDependencies, collectPackagesInfo, getBundledModulesDir, globPackages, parseFrontendDeps } from './shared';
@@ -138,9 +137,10 @@ export const downloadBundleZipped = async (moduleName: string, saveTo: string): 
 
     await streamPipeline(responseBody, fs.createWriteStream(zipPath));
 
+    await new Promise(done => setTimeout(done, 500));
+
     try {
-        await decompress(zipPath, moduleDir)
-        // await extractZip(zipPath, { dir: moduleDir })
+        await extractZip(zipPath, { dir: moduleDir })
     } catch (err) {
         serverLogFor('errors-only', `Failed to unzip module ${moduleName}` + err, 'Error');
         await fs.remove(moduleDir);

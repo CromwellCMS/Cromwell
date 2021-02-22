@@ -22,7 +22,6 @@
         "importHelpers": true,
         "moduleResolution": "node",
         "skipLibCheck": true,
-        "outDir": "./build",
     },
     "include": [
         "src/**/*.ts",

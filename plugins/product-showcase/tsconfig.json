@@ -18,8 +18,6 @@
         "resolveJsonModule": true,
         "moduleResolution": "node",
         "skipLibCheck": true,
-        "outDir": "./build",
-        "incremental": true,
     },
     "include": [
         "src/**/*.ts",

@@ -13,15 +13,13 @@ module.exports = {
     },
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
-        const typescript = require('rollup-plugin-ts');
+        const typescript = require('rollup-plugin-ts-compiler');
         const postcss = require('rollup-plugin-postcss');
         const { terser } = require('rollup-plugin-terser');
-        const ts = require('typescript');
-        const { tsCompilerPlugin } = require('@cromwell/utils');
         return {
             main: {
                 plugins: [
-                    tsCompilerPlugin(),
+                    typescript(),
                     commonjs(),
                     postcss({
                         extract: false,
@@ -32,18 +30,12 @@ module.exports = {
             },
             backend: {
                 plugins: [
-                    tsCompilerPlugin({
+                    typescript({
                         compilerOptions: {
-                            target: ts.ScriptTarget.ES2019
+                            target: 'ES2019'
                         }
                     }),
                     commonjs(),
-                    // typescript({
-                    //     tsconfig: resolvedConfig => ({
-                    //         ...resolvedConfig,
-                    //         target: ts.ScriptTarget.ES2019
-                    //     })
-                    // }),
                     postcss({
                         extract: false,
                         inject: true,

@@ -19,8 +19,6 @@
         "moduleResolution": "node",
         "skipLibCheck": true,
         "noImplicitAny": false,
-        "incremental": true,
-        "outDir": "./build",
     },
     "include": [
         "src/**/*.ts",
