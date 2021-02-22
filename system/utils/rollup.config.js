@@ -1,9 +1,8 @@
 import commonjs from "@rollup/plugin-commonjs";
-import typescript from "rollup-plugin-ts";
+import typescript from "rollup-plugin-ts-compiler";
 import packageJson from './package.json';
 import { resolve } from 'path';
 import json from '@rollup/plugin-json';
-import ts from 'typescript';
 import { terser } from "rollup-plugin-terser";
 
 const external = id => {
@@ -21,18 +20,6 @@ const external = id => {
     }
 }
 
-const plugins = [
-    commonjs(),
-    typescript({
-        tsconfig: resolvedConfig => ({
-            ...resolvedConfig,
-            module: ts.ModuleKind.ESNext
-        })
-    }),
-    json(),
-    // terser()
-]
-
 const buildDir = 'build';
 
 export default [
@@ -46,11 +33,10 @@ export default [
         ],
         plugins: [
             typescript({
-                tsconfig: resolvedConfig => ({
-                    ...resolvedConfig,
-                    module: ts.ModuleKind.ESNext,
-                    target: ts.ScriptTarget.ES5
-                })
+                compilerOptions: {
+                    module: 'ESNext',
+                    target: 'ES5'
+                }
             }),
             commonjs(),
             // terser()
@@ -68,13 +54,12 @@ export default [
         external,
         plugins: [
             typescript({
-                tsconfig: resolvedConfig => ({
-                    ...resolvedConfig,
-                    module: ts.ModuleKind.ESNext,
+                compilerOptions: {
+                    module: 'ESNext',
                     declaration: true,
                     declarationMap: true,
                     declarationDir: resolve(__dirname, buildDir)
-                })
+                }
             }),
             json(),
             // terser(),

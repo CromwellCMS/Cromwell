@@ -1,10 +1,9 @@
 import commonjs from "@rollup/plugin-commonjs";
-import typescript from "rollup-plugin-ts";
+import typescript from "rollup-plugin-ts-compiler";
 import { resolve } from 'path';
 import json from '@rollup/plugin-json';
 import { terser } from "rollup-plugin-terser";
 import { isAbsolute } from 'path';
-import ts from 'typescript';
 
 const external = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
 
@@ -19,11 +18,13 @@ export default [
         },
         external,
         plugins: [
+            typescript({
+                compilerOptions: {
+                    module: 'ESNext'
+                }
+            }),
             json(),
             commonjs(),
-            typescript({
-                tsconfig: resolvedConfig => ({ ...resolvedConfig, module: ts.ModuleKind.ESNext })
-            }),
             // terser(),
         ]
     },

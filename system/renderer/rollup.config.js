@@ -1,11 +1,10 @@
 import commonjs from "@rollup/plugin-commonjs";
 import nodeResolve from "@rollup/plugin-node-resolve";
-import typescript from "rollup-plugin-ts";
+import typescript from "rollup-plugin-ts-compiler";
 import packageJson from './package.json';
 import { rollupPluginCromwellFrontend } from '@cromwell/utils';
 import json from '@rollup/plugin-json';
 import { terser } from "rollup-plugin-terser";
-import ts from 'typescript';
 
 const { resolve } = require('path');
 
@@ -24,6 +23,7 @@ const external = id => {
         }
     }
 }
+const sharedState = {};
 
 const buildDir = 'build';
 
@@ -38,47 +38,44 @@ export default [
                 format: "esm",
             }
         ],
-        external,
+        // external,
         plugins: [
             // autoExternal(),
+            typescript({
+                compilerOptions: {
+                    module: 'ESNext',
+                },
+                sharedState
+            }),
             rollupPluginCromwellFrontend({ generateMeta: false }),
             nodeResolve({
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({
-                tsconfig: resolvedConfig => ({
-                    ...resolvedConfig,
-                    module: ts.ModuleKind.ESNext
-                })
-            }),
             json(),
             // terser()
         ]
     },
     {
-        // preserveModules: true,
         input: resolve(__dirname, "src/generator.ts"),
-        // watch: false,
         output: [
             {
                 file: resolve(__dirname, buildDir, 'generator.js'),
-                // dir: './build',
                 format: "cjs",
             }
         ],
         external,
         plugins: [
+            typescript({
+                compilerOptions: {
+                    module: 'ESNext',
+                },
+                sharedState
+            }),
             nodeResolve({
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({
-                tsconfig: resolvedConfig => ({
-                    ...resolvedConfig,
-                    module: ts.ModuleKind.ESNext
-                })
-            }),
             // terser(),
         ]
     },

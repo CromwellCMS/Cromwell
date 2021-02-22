@@ -57,7 +57,7 @@ export const ProductDetails = (props: {
                 <CContainer id="product_0" className={styles.mainBlock}>
                     <CContainer id="product_0" className={styles.imageAndCaptionBlock}>
                         <CContainer id="product_2" className={styles.imageBlock}>
-                            <CGallery id="product_1" settings={{
+                            <CGallery id="product_1" gallery={{
                                 images: product.images ? product.images.map(i => {
                                     return {
                                         src: i

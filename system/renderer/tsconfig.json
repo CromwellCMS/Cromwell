@@ -3,14 +3,10 @@
     "target": "ES2019",
     "module": "esnext",
     "lib": [
-      "dom",
+      "DOM",
+      "ES2019"
     ],
     "baseUrl": ".",
-    "paths": {
-      "common/*": [
-        "./src/common/*"
-      ]
-    },
     "allowJs": true,
     "jsx": "react",
     "strict": true,
@@ -21,11 +17,9 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "noEmit": true,
+    "noEmit": false,
     "moduleResolution": "node",
     "isolatedModules": true,
-    "outDir": "./build",
-    "incremental": true,
   },
   "include": [
     "src/**/*.ts",

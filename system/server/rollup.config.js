@@ -1,5 +1,5 @@
 import nodeResolve from "@rollup/plugin-node-resolve";
-import typescript from "rollup-plugin-ts";
+import typescript from "rollup-plugin-ts-compiler";
 import commonjs from "@rollup/plugin-commonjs";
 import packageJson from './package.json';
 import { resolve, isAbsolute } from 'path';
@@ -18,12 +18,12 @@ export default [
         ],
         external: external,
         plugins: [
+            typescript(),
             nodeResolve({
                 extensions: ['js', 'ts'],
                 preferBuiltins: false,
             }),
             // autoExternal(),
-            typescript(),
             // terser()
         ],
         watch: {

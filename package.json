@@ -13,7 +13,7 @@
         "bundle:modules": "npx crw bm",
         "clean": "node system/cli/src/utils/cleanup.js",
         "win-remove-node-modules": "rmdir \"./node_modules\" /q /s",
-        "test": "npm run test:server && npm run test:frontend && npm run test:admin && npm run test:cli",
+        "test": "npm run test:server && npm run test:frontend && npm run test:admin && npm run test:cli && npm run test:utils",
         "test:server": "cd system/server && npm run test",
         "test:admin": "cd system/admin-panel && npm run test",
         "test:frontend": "cd system/core/frontend && npm run test",
@@ -32,5 +32,5 @@
             "@cromwell/theme-blog"
         ]
     },
-    "cache-version": "0.0.1; modify this string to reset circleci cache"
+    "cache-version": "0.0.2; modify this string to reset circleci cache"
 }

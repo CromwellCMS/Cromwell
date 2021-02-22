@@ -1,12 +1,11 @@
-import { TModuleConfig, TPackageCromwellConfig, TPluginConfig, TThemeConfig } from '@cromwell/core';
-import { configFileName, getCmsModuleConfig, getThemeNextBuildDirByPath, getCmsModuleInfo, getLogger } from '@cromwell/core-backend';
+import { TModuleConfig, TPackageCromwellConfig } from '@cromwell/core';
+import { getCmsModuleConfig, getCmsModuleInfo, getLogger, getThemeNextBuildDirByPath } from '@cromwell/core-backend';
 import { rollupConfigWrapper } from '@cromwell/utils';
 import dateTime from 'date-time';
-import { resolve } from 'path';
+import fs from 'fs-extra';
 import prettyBytes from 'pretty-bytes';
 import ms from 'pretty-ms';
-import fs from 'fs-extra';
-import { rollup, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
+import { OutputOptions, rollup, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
 
 import { rendererBuildAndSaveTheme, rendererStartWatchDev } from '../managers/rendererManager';
 import { checkModules } from './checkModules';
@@ -94,7 +93,7 @@ const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TM
     let rollupBuildSuccess = false;
     try {
         const rollupConfig = await rollupConfigWrapper(moduleInfo, moduleConfig, watch);
-        
+
         if (rollupConfig.length === 0) {
             errorLogger('Failed to find input files');
             return false;
@@ -109,15 +108,44 @@ const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TM
         } else {
 
             for (const optionsObj of rollupConfig) {
+
+                const outputFiles: (string | undefined)[] = []
+
+                if (optionsObj?.output && Array.isArray(optionsObj?.output)) {
+                    optionsObj.output.forEach(out => {
+                        outputFiles.push(out.dir ?? out.file);
+                    });
+                } else if (optionsObj?.output && typeof optionsObj?.output === 'object') {
+                    outputFiles.push((optionsObj.output as OutputOptions).dir ?? (optionsObj.output as OutputOptions).file)
+                }
+
+                onRollupEvent()({
+                    code: 'BUNDLE_START',
+                    input: optionsObj.input,
+                    output: (outputFiles.filter(Boolean) as string[])
+                });
+                const dateStart = Date.now();
+
                 const bundle = await rollup(optionsObj);
 
                 if (optionsObj?.output && Array.isArray(optionsObj?.output)) {
                     await Promise.all(optionsObj.output.map(bundle.write));
 
                 } else if (optionsObj?.output && typeof optionsObj?.output === 'object') {
-                    //@ts-ignore
-                    await bundle.write(optionsObj.output)
+                    await bundle.write(optionsObj.output as OutputOptions)
                 }
+
+                const dateEnd = Date.now();
+
+                onRollupEvent()({
+                    code: 'BUNDLE_END',
+                    input: optionsObj.input,
+                    output: (outputFiles.filter(Boolean) as string[]),
+                    result: bundle,
+                    duration: (dateEnd - dateStart)
+                });
+
+                await bundle.close();
             }
             rollupBuildSuccess = true;
         }
@@ -130,11 +158,11 @@ const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TM
 
 
 // Copied from rollup's repo
-const onRollupEvent = (done: (success: boolean) => void) => (event: RollupWatcherEvent) => {
+const onRollupEvent = (done?: (success: boolean) => void) => (event: RollupWatcherEvent) => {
     switch (event.code) {
         case 'ERROR':
             handleError(event.error, true);
-            done(false);
+            done?.(false);
             break;
 
         case 'BUNDLE_START':
@@ -166,7 +194,7 @@ const onRollupEvent = (done: (success: boolean) => void) => (event: RollupWatche
 
         case 'END':
             stderr(`\n[${dateTime()}] waiting for changes...`);
-            done(true);
+            done?.(true);
     }
 }
 

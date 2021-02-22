@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
+    "module": "ESNext",
     "target": "ES2019",
     "baseUrl": ".",
     "strict": true,
@@ -12,9 +12,7 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
-    "outDir": "./build",
     "skipLibCheck": true,
-    "incremental": true,
     "types": [
       "node",
       "jest",
@@ -32,6 +30,5 @@
   ],
   "include": [
     "src/**/*.ts",
-    "tests/**/*.ts",
   ],
 }

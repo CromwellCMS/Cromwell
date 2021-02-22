@@ -1,6 +1,6 @@
 import { TModuleConfig, TPackageCromwellConfig, TPackageJson } from '@cromwell/core';
 import fs from 'fs-extra';
-import { dirname, resolve } from 'path';
+import { dirname, isAbsolute, resolve } from 'path';
 
 import { serverLogFor } from './constants';
 
@@ -102,7 +102,7 @@ export const getUtilsTempDir = () => resolve(getTempDir(), 'utils');
 
 // Theme
 export const getThemeBuildDir = async (themeModuleName: string) => {
-    const themeDir = await getNodeModuleDir(themeModuleName);
+    const themeDir = isAbsolute(themeModuleName) ? themeModuleName : await getNodeModuleDir(themeModuleName);
     if (themeDir) {
         return resolve(themeDir, buildDirName);
     }

@@ -4,13 +4,11 @@ module.exports = {
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
         const { terser } = require('rollup-plugin-terser');
-        const typescript = require('rollup-plugin-ts');
-        const { resolve } = require('path');
-        const { tsCompilerPlugin } = require('@cromwell/utils');
+        const typescript = require('rollup-plugin-ts-compiler');
         return {
             main: {
                 plugins: [
-                    tsCompilerPlugin(),
+                    typescript(),
                     commonjs(),
                     // terser()
                 ]

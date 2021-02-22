@@ -12,6 +12,7 @@ import {
 } from '@cromwell/core';
 import {
     buildDirName,
+    getLogger,
     getMetaInfoPath,
     getPluginBackendPath,
     getThemeBuildDir,
@@ -30,7 +31,7 @@ import fs from 'fs-extra';
 import glob from 'glob';
 import isPromise from 'is-promise';
 import normalizePath from 'normalize-path';
-import { dirname, join, resolve } from 'path';
+import { dirname, isAbsolute, join, resolve } from 'path';
 import { OutputOptions, Plugin, RollupOptions } from 'rollup';
 import externalGlobals from 'rollup-plugin-external-globals';
 
@@ -63,6 +64,8 @@ const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): 
     return false;
 }
 
+const errorLogger = getLogger('errors-only').error;
+
 export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean): Promise<RollupOptions[]> => {
 
     if (!moduleInfo) throw new Error(`CromwellPlugin Error. Provide config as second argumet to the wrapper function`);
@@ -71,7 +74,10 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
     try {
         const pckg: TPackageJson = require(resolve(process.cwd(), 'package.json'));
         if (pckg?.name) moduleInfo.name = pckg.name;
-    } catch (e) { console.error(e) };
+    } catch (e) {
+        errorLogger('Failed to find package.json in project root');
+        console.error(e);
+    };
 
     if (!moduleInfo.name) throw new Error(`CromwellPlugin Error. Failed to find name of the package in working directory`);
 
@@ -90,13 +96,14 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
     const outOptions: RollupOptions[] = [];
 
     if (moduleInfo.type === 'plugin') {
-        const pluginConfig = moduleConfig as TPluginConfig;
+        const pluginConfig = moduleConfig as TPluginConfig | undefined;
 
         const handleInputFile = (inputFilePath: string, distChunk: string, cjsChunk: string) => {
 
             // Plugin frontend
             const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
-            const inputPath = normalizePath(resolve(process.cwd(), inputFilePath));
+            const inputPath = isAbsolute(inputFilePath) ? normalizePath(inputFilePath) :
+                normalizePath(resolve(process.cwd(), inputFilePath));
 
             const optionsInput = '$$' + moduleInfo.name + '/' + inputFilePath;
             options.input = optionsInput;
@@ -150,25 +157,53 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             outOptions.push(cjsOptions);
         }
 
-        if (pluginConfig.frontendInputFile) {
-            handleInputFile(pluginConfig.frontendInputFile, pluginFrontendBundlePath, pluginFrontendCjsPath);
+        const resolveFileExtension = (basePath: string): string | undefined => {
+            const globStr = `${normalizePath(resolve(process.cwd(), basePath))}.+(ts|tsx|js|jsx)`;
+            const files = glob.sync(globStr);
+            return files[0]
         }
-        if (pluginConfig.adminInputFile) {
-            handleInputFile(pluginConfig.adminInputFile, pluginAdminBundlePath, pluginAdminCjsPath);
+
+        let frontendInputFile = pluginConfig?.frontendInputFile;
+        if (!frontendInputFile) {
+            frontendInputFile = resolveFileExtension('src/frontend/index');
+        }
+        if (frontendInputFile) {
+            handleInputFile(frontendInputFile, pluginFrontendBundlePath, pluginFrontendCjsPath);
+        }
+
+        // Plugin admin panel
+        let adminInputFile = pluginConfig?.adminInputFile;
+        if (!adminInputFile) {
+            adminInputFile = resolveFileExtension('src/admin/index');
+        }
+        if (adminInputFile) {
+            handleInputFile(adminInputFile, pluginAdminBundlePath, pluginAdminCjsPath);
         }
 
         // Plugin backend
-        if (pluginConfig.backend) {
+        let entitiesdir = pluginConfig?.backend?.entitiesDir;
+        if (!entitiesdir) {
+            const entitiesDefDir = resolve(process.cwd(), 'src/backend/entities');
+            if (fs.pathExistsSync(entitiesDefDir)) entitiesdir = 'src/backend/entities';
+        }
+
+        let resolversDir = pluginConfig?.backend?.resolversDir;
+        if (!resolversDir) {
+            const resolversDefDir = resolve(process.cwd(), 'src/backend/resolvers');
+            if (fs.pathExistsSync(resolversDefDir)) resolversDir = 'src/backend/resolvers';
+        }
+
+        if (entitiesdir || resolversDir) {
             let resolverFiles: string[] = [];
             let entityFiles: string[] = [];
 
-            if (pluginConfig.backend.entitiesDir) {
-                const entitiesDir = resolve(process.cwd(), pluginConfig.backend.entitiesDir)
-                entityFiles = fs.readdirSync(entitiesDir).map(file => normalizePath(resolve(entitiesDir, file)));
+            if (entitiesdir) {
+                const entitiesFullDir = resolve(process.cwd(), entitiesdir)
+                entityFiles = fs.readdirSync(entitiesFullDir).map(file => normalizePath(resolve(entitiesFullDir, file)));
             }
-            if (pluginConfig.backend.resolversDir) {
-                const resolversDir = resolve(process.cwd(), pluginConfig.backend.resolversDir)
-                resolverFiles = fs.readdirSync(resolversDir).map(file => normalizePath(resolve(resolversDir, file)));
+            if (resolversDir) {
+                const resolversFullDir = resolve(process.cwd(), resolversDir);
+                resolverFiles = fs.readdirSync(resolversFullDir).map(file => normalizePath(resolve(resolversFullDir, file)));
             }
 
             if (entityFiles.length > 0 || resolverFiles.length > 0) {
@@ -219,8 +254,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
     }
 
     if (moduleInfo.type === 'theme') {
-        const buildDir = normalizePath((await getThemeRollupBuildDir(moduleInfo.name))!);
-        const rootBuildDir = normalizePath((await getThemeBuildDir(moduleInfo.name))!);
+        const buildDir = normalizePath((await getThemeRollupBuildDir(process.cwd()))!);
+        const rootBuildDir = normalizePath((await getThemeBuildDir(process.cwd()))!);
         if (!buildDir) throw new Error(`CromwellPlugin Error. Failed to find package directory of ` + moduleInfo.name);
 
         let srcDir = process.cwd();
@@ -278,7 +313,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                 preserveModules: true
             } as OutputOptions);
 
-            options.plugins.unshift(scssExternalPlugin());
+            options.plugins.push(scssExternalPlugin());
             options.plugins.push(rollupPluginCromwellFrontend({
                 pagesMetaInfo, buildDir, srcDir, moduleInfo,
                 moduleConfig, watch,

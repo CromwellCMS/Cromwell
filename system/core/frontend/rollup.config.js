@@ -1,5 +1,4 @@
-// import typescript from 'rollup-plugin-ts';
-import typescript from 'rollup-plugin-typescript2';
+import typescript from 'rollup-plugin-ts-compiler';
 import nodeResolve from "@rollup/plugin-node-resolve";
 import commonjs from '@rollup/plugin-commonjs';
 import autoprefixer from 'autoprefixer';
@@ -7,7 +6,6 @@ import { resolve, isAbsolute } from 'path';
 import autoExternal from 'rollup-plugin-auto-external';
 import postcss from 'rollup-plugin-postcss';
 import { terser } from 'rollup-plugin-terser';
-
 import pkg from './package.json';
 
 const external = id => {
@@ -25,22 +23,27 @@ const getOutput = (format = 'esm') => {
     }
     return { file: resolve(__dirname, pkg.main), format };
 };
+
+const sharedState = {};
+
 const getPlugins = (format = 'esm') => {
-    const typeScriptOptions = format === 'esm' ?
-        {
-            declaration: true,
-            declarationMap: true,
-            declarationDir: resolve(__dirname, pkg.module)
-        } : {};
     return [
+        typescript({
+            sharedState,
+            compilerOptions: {
+                declaration: true,
+                declarationMap: true,
+                declarationDir: resolve(__dirname, pkg.module)
+            }
+        }),
         nodeResolve(),
         commonjs(),
         // typescript({
         //     tsconfig: resolvedConfig => ({ ...resolvedConfig, ...typeScriptOptions })
         // }),
-        typescript({
-            tsconfigOverride: { compilerOptions: typeScriptOptions }
-        }),
+        // typescript({
+        //     tsconfigOverride: { compilerOptions: typeScriptOptions }
+        // }),
         postcss({
             extract: false,
             modules: true,

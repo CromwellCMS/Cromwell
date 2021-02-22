@@ -28,17 +28,16 @@ module.exports = {
         const json = require('@rollup/plugin-json');
         const postcss = require('rollup-plugin-postcss');
         const { terser } = require('rollup-plugin-terser');
-        const typescript = require('rollup-plugin-ts');
-        const { tsCompilerPlugin } = require('@cromwell/utils');
+        const typescript = require('rollup-plugin-ts-compiler');
 
         // All plugins below will be instantiated for every output options (pages, admin panel, etc)
-        // But tsCompilerPlugin with shared state object will have only one instance across all compilations.
+        // But rollup-plugin-ts-compiler with shared state object will have only one instance across all compilations.
         // We can do that only if we don't need to use different tsconfigs for outputs.
         // Shared state will decrease compile time in N times for every output.  
         const tsSharedState = {};
 
         const getDefaultPlugins = () => [
-            tsCompilerPlugin({
+            typescript({
                 sharedState: tsSharedState
             }),
             commonjs(),

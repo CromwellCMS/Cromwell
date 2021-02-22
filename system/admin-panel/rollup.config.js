@@ -1,11 +1,10 @@
-import commonjs from "@rollup/plugin-commonjs";
-import nodeResolve from "@rollup/plugin-node-resolve";
-import typescript from "rollup-plugin-ts";
-import packageJson from './package.json';
+import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
+import nodeResolve from '@rollup/plugin-node-resolve';
 import fs from 'fs-extra';
-import ts from 'typescript';
-const { resolve } = require('path');
+import { resolve } from 'path';
+import typescript from 'rollup-plugin-ts-compiler';
+import packageJson from './package.json';
 
 const external = id => {
     const exts = ['tslib', 'util', 'path'];
@@ -30,14 +29,10 @@ const external = id => {
 }
 
 const buildDir = 'build';
-const typeScriptOptions = {
-    module: ts.ModuleKind.ESNext,
-    rootDir: resolve(__dirname, 'src'),
-    allowJs: true,
-    outDir: resolve(__dirname, buildDir)
-};
 
 fs.ensureDirSync(resolve(__dirname, buildDir));
+
+const sharedState = {};
 
 export default [
     {
@@ -52,14 +47,14 @@ export default [
         ],
         external,
         plugins: [
+            typescript({
+                sharedState
+            }),
             json(),
             nodeResolve({
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({
-                tsconfig: resolvedConfig => ({ ...resolvedConfig, ...typeScriptOptions })
-            }),
         ]
     },
     {
@@ -74,14 +69,14 @@ export default [
         ],
         external,
         plugins: [
+            typescript({
+                sharedState
+            }),
             json(),
             nodeResolve({
                 preferBuiltins: false
             }),
             commonjs(),
-            typescript({
-                tsconfig: resolvedConfig => ({ ...resolvedConfig, ...typeScriptOptions })
-            }),
         ]
     },
 ];
