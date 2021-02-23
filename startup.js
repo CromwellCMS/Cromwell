@@ -20,11 +20,11 @@ const fs = require('fs');
     const coreDir = resolve(projectRootDir, 'system/core');
     const rootNodeModulesDir = resolve(projectRootDir, 'node_modules');
 
-    const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js')
-    const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js')
+    const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js');
+    const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js');
     const cliDir = resolve(projectRootDir, 'system/cli');
-    const backendNode_modules = resolve(coreDir, 'backend/node_modules')
-    const frontendNode_modules = resolve(coreDir, 'frontend/node_modules')
+    const backendNode_modules = resolve(coreDir, 'backend/node_modules');
+    const frontendNode_modules = resolve(coreDir, 'frontend/node_modules');
 
     const hasNodeModules = () => {
         return !(
@@ -40,6 +40,8 @@ const fs = require('fs');
         didInstall = true;
 
         if (scriptName === 'build') {
+            // Force yarn to re-resolve packages (run install). Otherwise some modules may be left unlinked
+            // For example, at circleci there won't be available cromwell cli if we don't run install
             if (fs.existsSync(backendNode_modules))
                 fs.rmdirSync(backendNode_modules, { recursive: true });
 

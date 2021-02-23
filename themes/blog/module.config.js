@@ -53,6 +53,7 @@ module.exports = {
             },
             adminPanel: {
                 plugins: [
+                    ...getDefaultPlugins(),
                     postcss({
                         extract: false,
                         modules: true,
@@ -60,7 +61,6 @@ module.exports = {
                         inject: true,
                         use: ['sass'],
                     }),
-                    ...getDefaultPlugins(),
                 ]
             }
         }
