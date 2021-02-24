@@ -40,9 +40,22 @@
         justify-content: space-between;
     }
 
+    .headerLeft {
+        display: flex;
+        align-items: center;
+    }
+
+    .title {
+        font-weight: 500;
+        font-size: 18px;
+        margin-left: 15px;
+        margin-right: 5px;
+    }
+
     .backIcon {
         display: flex;
         align-items: center;
         border-radius: 5px;
     }
 }
+

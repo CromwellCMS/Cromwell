@@ -6,19 +6,35 @@
     width: 100%;
     height: 100%;
     padding: 20px;
+
+    .filterItem {
+        margin-right: 20px;
+    }
+
+    .authorSearch {
+        input {
+            padding: 0 !important;
+        }
+    }
 }
 
 .listHeader {
     display: flex;
     background: #fff;
     margin-bottom: 13px;
-    padding: 0 23px;
     border-radius: 9px;
+    align-items: center;
+    justify-content: space-between;
+}
 
-    > div {
-        display: flex;
-        align-items: center;
-    }
+.filter {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+}
+
+.pageActions {
+    margin-right: 10px;
 }
 
 .listWrapper {

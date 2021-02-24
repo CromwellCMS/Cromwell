@@ -253,6 +253,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                 open={this.state.isActive}
                 blurSelector="#root"
                 onClose={this.handleClose}
+                disableEnforceFocus
             >
                 <div className={styles.header}>
                     <div className={styles.headerLeft}>
