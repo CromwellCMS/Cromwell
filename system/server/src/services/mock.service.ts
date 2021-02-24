@@ -305,20 +305,20 @@ export class MockService {
 
         const users: TUserInput[] = [
             {
-                fullName: 'Kevin',
-                email: 'Kevin@office.com',
+                fullName: 'Creed',
+                email: 'Creed@example.com',
                 password: '12345',
                 avatar: ''
             },
             {
-                fullName: 'Angela',
-                email: 'Angela@office.com',
-                password: '54321',
+                fullName: 'Pam',
+                email: 'Pam@example.com',
+                password: 'pampampam!',
                 avatar: ''
             },
             {
                 fullName: 'Michael',
-                email: 'Michael@office.com',
+                email: 'Michael@example.com',
                 password: 'qwerty',
                 avatar: ''
             }

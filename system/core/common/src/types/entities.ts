@@ -85,28 +85,53 @@ export type TProductInput = Omit<TProduct, TDBAuxiliaryColumns | 'categories' | 
     categoryIds?: string[];
 };
 
+export type TProductFilter = {
+    minPrice?: number;
+    maxPrice?: number;
+    attributes?: TProductFilterAttribute[];
+    nameSearch?: string;
+}
+export type TProductFilterAttribute = {
+    key: string;
+    values: string[];
+}
+
+export type TFilteredProductList = TPagedList<TProduct> & {
+    filterMeta: TProductFilterMeta;
+}
+
+export type TProductFilterMeta = {
+    minPrice?: number;
+    maxPrice?: number;
+}
+
 
 // POST
 
 export interface TPost extends TBasePageEntity {
     // Title of post (h1)
-    title?: string;
+    title?: string | null;
     // User-author
     author?: TUser;
     // Href of main image
-    mainImage?: string;
+    mainImage?: string | null;
     // Post content, HTML
-    content?: string;
+    content?: string | null;
     // Post content, stringified JSON from Quill.js
-    delta?: string;
+    delta?: string | null;
     // Is published?
-    isPublished?: boolean;
+    isPublished?: boolean | null;
 }
 
 export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author'> & {
     authorId: string;
 };
 
+export type TPostFilter = {
+    authorId?: string;
+    titleSearch?: string;
+    published?: boolean
+}
 
 // USER / AUTHOR
 

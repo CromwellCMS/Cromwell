@@ -9,6 +9,7 @@ const Modal = (props: {
     onClose?: () => void;
     blurSelector?: string;
     className?: string;
+    disableEnforceFocus?: boolean;
 }) => {
     useEffect(() => {
         if (props.blurSelector) {
@@ -25,6 +26,7 @@ const Modal = (props: {
 
     return (
         <MuiModal
+            disableEnforceFocus={props.disableEnforceFocus}
             open={props.open}
             onClose={props.onClose}
             className={styles.Modal}

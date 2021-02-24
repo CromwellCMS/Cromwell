@@ -1,5 +1,6 @@
 import { GraphQLPaths, TPagedList, TPost, TUser } from '@cromwell/core';
 import { CreatePost, PagedParamsInput, PagedPost, Post, PostRepository, UpdatePost, User, UserRepository } from '@cromwell/core-backend';
+import { PostFilterInput } from '@cromwell/core-backend';
 import { Arg, Mutation, Query, Resolver, FieldResolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
@@ -9,6 +10,7 @@ const getManyPath = GraphQLPaths.Post.getMany;
 const createPath = GraphQLPaths.Post.create;
 const updatePath = GraphQLPaths.Post.update;
 const deletePath = GraphQLPaths.Post.delete;
+const getFilteredPath = GraphQLPaths.Post.getFiltered;
 
 const authorKey: keyof TPost = 'author';
 
@@ -47,6 +49,14 @@ export class PostResolver {
   @Mutation(() => Boolean)
   async [deletePath](@Arg("id") id: string): Promise<boolean> {
     return this.repository.deletePost(id);
+  }
+
+  @Query(() => PagedPost)
+  async [getFilteredPath](
+    @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TPost>,
+    @Arg("filterParams", { nullable: true }) filterParams?: PostFilterInput,
+  ): Promise<TPagedList<TPost> | undefined> {
+    return this.repository.getFilteredPosts(pagedParams, filterParams);
   }
 
   @FieldResolver(() => User)

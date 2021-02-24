@@ -38,11 +38,6 @@ export default [
         watch: {
             clearScreen: false,
             buildDelay: 1000,
-            exclude: [
-                'node_modules/**',
-                'dist/**',
-                'es/**',
-            ]
         }
     },
     {
@@ -53,11 +48,6 @@ export default [
         watch: {
             clearScreen: false,
             buildDelay: 1000,
-            exclude: [
-                'node_modules/**',
-                'dist/**',
-                'es/**',
-            ]
         }
     },
 ];

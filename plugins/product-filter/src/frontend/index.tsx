@@ -1,4 +1,4 @@
-import { TAttributeValue, TFrontendPluginProps, TProduct } from '@cromwell/core';
+import { TAttributeValue, TFrontendPluginProps, TFilteredProductList } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import {
     Card,
@@ -21,7 +21,7 @@ import clsx from 'clsx';
 import { debounce } from 'debounce';
 import React, { Component, useEffect, useRef, useState } from 'react';
 
-import { TFilteredList, TProductFilterSettings } from '../types';
+import { TProductFilterSettings } from '../types';
 import { Slider } from './components/slider';
 import { filterCList, TProductFilterData } from './service';
 import { useStyles } from './styles';
@@ -57,7 +57,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         })
     }
 
-    const updateFilterMeta = (filteredList: TFilteredList<TProduct> | undefined) => {
+    const updateFilterMeta = (filteredList: TFilteredProductList | undefined) => {
         if (filteredList && filteredList.filterMeta) {
             if (filteredList.filterMeta.minPrice !== undefined) setMinPrice(filteredList.filterMeta.minPrice);
             if (filteredList.filterMeta.maxPrice !== undefined) setMaxPrice(filteredList.filterMeta.maxPrice);

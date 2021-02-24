@@ -1,0 +1,36 @@
+@import "../../styles/common.module.scss";
+
+div.popover {
+    @include paper;
+}
+
+.PostSettings {
+    padding: 20px;
+    width: 400px;
+    height: 600px;
+    max-height: 100vh;
+    max-width: 100vw;
+    overflow: auto;
+    display: inline-block;
+
+    .settingItem {
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .imageBox {
+        @extend .settingItem;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        border-bottom: 1px solid #999;
+    }
+
+    .mainImage {
+        width: 60px;
+        height: 40px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+}

@@ -26,6 +26,11 @@ import {
     TPost,
     TPostInput,
     TProductCategoryInput,
+    TProductFilter,
+    TFilteredProductList,
+    TPostFilter,
+    TUser,
+    TUserInput,
 } from '@cromwell/core';
 
 class CGraphQLClient {
@@ -315,6 +320,36 @@ class CGraphQLClient {
             variables: {
                 pagedParams: pagedParams ?? {},
                 categoryId
+            }
+        })
+        return this.returnData(res, path);
+    }
+
+    public getFilteredProducts = async (categoryId?: string, pagedParams?: TPagedParams<TProduct>, filterParams?: TProductFilter): Promise<TFilteredProductList> => {
+        const path = GraphQLPaths.Product.getFiltered;
+        const res = await this.apolloClient.query({
+            query: gql`
+                query getFilteredProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput, $categoryId: String) {
+                    ${path}(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        filterMeta {
+                            minPrice
+                            maxPrice
+                        }
+                        elements {
+                            ...ProductFragment
+                        }
+                    }
+                }
+                ${this.ProductFragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                pagedParams: pagedParams ?? {},
+                filterParams,
+                categoryId,
             }
         })
         return this.returnData(res, path);
@@ -830,7 +865,7 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public updatePost = async (id: string, post: TPostInput) => {
+    public updatePost = async (id: string, post: TPostInput): Promise<TPost> => {
         const path = GraphQLPaths.Post.update;
         const res = await this.apolloClient.mutate({
             mutation: gql`
@@ -849,12 +884,12 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public createPost = async (post: TPostInput) => {
+    public createPost = async (post: TPostInput): Promise<TPost> => {
         const path = GraphQLPaths.Post.create;
         const res = await this.apolloClient.mutate({
             mutation: gql`
               mutation coreCreatePost($data: CreatePost!) {
-                  ${path}(id: $id, data: $data) {
+                  ${path}(data: $data) {
                       ...PostFragment
                   }
               }
@@ -883,8 +918,186 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
+    public getFilteredPosts = async ({ pagedParams, filterParams, customFragment, customFragmentName }: {
+        pagedParams?: TPagedParams<TPost>;
+        filterParams?: TPostFilter;
+        customFragment?: DocumentNode;
+        customFragmentName?: string;
+    }): Promise<TPagedList<TPost>> => {
+        const path = GraphQLPaths.Post.getFiltered;
+
+        const postFragment = customFragment ?? this.PostFragment;
+        const postFragmentName = customFragmentName ?? 'PostFragment';
+
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetFilteredPosts($pagedParams: PagedParamsInput, $filterParams: PostFilterInput) {
+                    ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...${postFragmentName}
+                        }
+                    }
+                }
+                ${postFragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                pagedParams: pagedParams ?? {},
+                filterParams,
+            }
+        })
+        return this.returnData(res, path);
+    }
+
 
     // </Post>
+
+
+
+    // <User>
+
+    public UserFragment = gql`
+        fragment UserFragment on User {
+            id
+            slug
+            createDate
+            updateDate
+            isEnabled
+            pageTitle
+            fullName
+            email
+            avatar
+        }
+    `;
+
+    public getUsers = async (pagedParams?: TPagedParams<TUser>,
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TUser>> => {
+
+        const fragment = customFragment ?? this.UserFragment;
+        const fragmentName = customFragmentName ?? 'UserFragment';
+
+        const path = GraphQLPaths.User.getMany;
+
+        const variables: Record<string, any> = {
+            pagedParams: pagedParams ?? {},
+        };
+
+        const res = await this.apolloClient.query({
+            query: gql`
+            query coreGetUsers($pagedParams: PagedParamsInput) {
+                ${path}(pagedParams: $pagedParams) {
+                    pagedMeta {
+                        ...PagedMetaFragment
+                    }
+                    elements {
+                        ...${fragmentName}
+                    }
+                }
+            }
+            ${fragment}
+            ${this.PagedMetaFragment}
+        `,
+            variables
+        })
+        return this.returnData(res, path);
+    }
+
+    public getUserById = async (id: string)
+        : Promise<TUser | undefined> => {
+        const path = GraphQLPaths.User.getOneById;
+        const res = await this.apolloClient.query({
+            query: gql`
+            query coreGetUserById($id: String!) {
+                ${path}(id: $id) {
+                    ...UserFragment
+                }
+            }
+            ${this.UserFragment}
+        `,
+            variables: {
+                id,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public getUserBySlug = async (slug: string): Promise<TUser | undefined> => {
+        const path = GraphQLPaths.User.getOneBySlug;
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetUser($slug: String!) {
+                    ${path}(slug: $slug) {
+                    ...UserFragment
+                    }
+                }
+                ${this.UserFragment}
+            `,
+            variables: {
+                slug,
+            }
+        });
+
+        return this.returnData(res, path);
+    }
+
+    public updateUser = async (id: string, input: TUserInput) => {
+        const path = GraphQLPaths.User.update;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+            mutation coreUpdateUser($id: String!, $data: UpdateUser!) {
+                ${path}(id: $id, data: $data) {
+                    ...UserFragment
+                }
+            }
+            ${this.UserFragment}
+        `,
+            variables: {
+                id,
+                data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public createUser = async (input: TUserInput) => {
+        const path = GraphQLPaths.User.create;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+            mutation coreCreateUser($data: CreateUser!) {
+                ${path}(data: $data) {
+                    ...UserFragment
+                }
+            }
+            ${this.UserFragment}
+        `,
+            variables: {
+                data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public deleteUser = async (id: string) => {
+        const path = GraphQLPaths.User.delete;
+
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteUser($id: String!) {
+                    ${path}(id: $id)
+                }
+            `,
+            variables: {
+                id,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+
+    // </ProductCategory>
 
 
     // <Plugin>

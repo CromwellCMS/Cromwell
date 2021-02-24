@@ -2,7 +2,7 @@ import { TPagedList, TPagedParams, TProductReview, TProductReviewInput, logFor }
 import { EntityRepository, getCustomRepository } from 'typeorm';
 
 import { ProductReview } from '../entities/ProductReview';
-import { getPaged, handleBaseInput } from './BaseQueries';
+import { getPaged, handleBaseInput, checkEntitySlug } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 import { ProductRepository } from './ProductRepository';
 
@@ -43,10 +43,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         await this.handleProductReviewInput(productReview, createProductReview);
 
         productReview = await this.save(productReview);
-        if (!productReview.slug) {
-            productReview.slug = productReview.id;
-            await this.save(productReview);
-        }
+        await checkEntitySlug(productReview);
 
         return productReview;
     }
@@ -61,6 +58,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         await this.handleProductReviewInput(productReview, updateProductReview);
 
         productReview = await this.save(productReview);
+        await checkEntitySlug(productReview);
 
         return productReview;
     }

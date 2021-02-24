@@ -30,7 +30,8 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         getMany: "posts",
         create: "createPost",
         update: "updatePost",
-        delete: "deletePost"
+        delete: "deletePost",
+        getFiltered: "getFilteredPosts",
     },
     Product: {
         getOneBySlug: "product",
@@ -39,7 +40,8 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         create: "createProduct",
         update: "updateProduct",
         delete: "deleteProduct",
-        getFromCategory: "getProductsFromCategory"
+        getFromCategory: "getProductsFromCategory",
+        getFiltered: "getFilteredProducts"
     },
     User: {
         getOneBySlug: "user",

@@ -1,11 +1,10 @@
-import React, { useState } from 'react'
-import { TAdminPanelPluginProps, getStoreItem } from '@cromwell/core';
+import { getStoreItem, TAdminPanelPluginProps } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import {
-    TextField, Button, Checkbox, FormControlLabel
-} from '@material-ui/core';
-import { TFilteredList, TProductFilterSettings } from '../types';
+import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+import React, { useState } from 'react';
+
 import { defaultSettings } from '../constants';
+import { TProductFilterSettings } from '../types';
 import { useStyles } from './styles';
 
 export default function index(props: TAdminPanelPluginProps<TProductFilterSettings>) {

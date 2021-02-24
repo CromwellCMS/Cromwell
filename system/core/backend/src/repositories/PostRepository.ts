@@ -1,11 +1,13 @@
-import { logFor, TPagedList, TPagedParams, TPostInput } from '@cromwell/core';
+import { logFor, TPagedList, TPagedParams, TPostInput, TPost } from '@cromwell/core';
 import sanitizeHtml from 'sanitize-html';
 import { EntityRepository, getCustomRepository } from 'typeorm';
+import { PagedParamsInput } from './../inputs/PagedParamsInput';
 
 import { Post } from '../entities/Post';
-import { handleBaseInput } from './BaseQueries';
+import { handleBaseInput, checkEntitySlug, getPaged } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 import { UserRepository } from './UserRepository';
+import { PostFilterInput } from '../entities/filter/PostFilterInput';
 
 @EntityRepository(Post)
 export class PostRepository extends BaseRepository<Post> {
@@ -36,7 +38,7 @@ export class PostRepository extends BaseRepository<Post> {
         handleBaseInput(post, input);
 
         post.title = input.title;
-        post.mainImage = input.mainImage;
+        post.mainImage = input.mainImage ?? null;
         post.content = sanitizeHtml(input.content);
         post.delta = input.delta;
         post.isPublished = input.isPublished;
@@ -48,13 +50,8 @@ export class PostRepository extends BaseRepository<Post> {
         let post = new Post();
 
         await this.handleBasePostInput(post, createPost);
-
         post = await this.save(post);
-
-        if (!post.slug) {
-            post.slug = post.id;
-            await this.save(post);
-        }
+        await checkEntitySlug(post);
 
         return post;
     }
@@ -68,8 +65,9 @@ export class PostRepository extends BaseRepository<Post> {
         if (!post) throw new Error(`Post ${id} not found!`);
 
         await this.handleBasePostInput(post, updatePost);
-
         post = await this.save(post);
+        await checkEntitySlug(post);
+
         return post;
     }
 
@@ -83,7 +81,36 @@ export class PostRepository extends BaseRepository<Post> {
         }
         const res = await this.delete(id);
         return true;
+    }
 
+    async getFilteredPosts(pagedParams?: PagedParamsInput<Post>, filterParams?: PostFilterInput): Promise<TPagedList<TPost>> {
+
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+
+        let isFirstAttr = true;
+        const qbAddWhere: typeof qb.where = (where, params) => {
+            if (isFirstAttr) {
+                isFirstAttr = false;
+                return qb.where(where, params);
+            } else {
+                return qb.andWhere(where as any, params);
+            }
+        }
+
+        // Search by product name
+        if (filterParams?.titleSearch && filterParams.titleSearch !== '') {
+            const likeStr = `%${filterParams.titleSearch}%`;
+            const query = `${this.metadata.tablePath}.title LIKE :likeStr`;
+            qbAddWhere(query, { likeStr });
+        }
+
+        if (filterParams?.authorId) {
+            const authorId = filterParams.authorId;
+            const query = `${this.metadata.tablePath}.authorId = :authorId`;
+            qbAddWhere(query, { authorId });
+        }
+        return await getPaged(qb, this.metadata.tablePath, pagedParams);
     }
 
 }

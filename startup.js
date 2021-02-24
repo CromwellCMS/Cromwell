@@ -20,15 +20,17 @@ const fs = require('fs');
     const coreDir = resolve(projectRootDir, 'system/core');
     const rootNodeModulesDir = resolve(projectRootDir, 'node_modules');
 
-    const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js')
-    const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js')
-    const cliDir = resolve(projectRootDir, 'system/cli')
+    const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js');
+    const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js');
+    const cliDir = resolve(projectRootDir, 'system/cli');
+    const backendNode_modules = resolve(coreDir, 'backend/node_modules');
+    const frontendNode_modules = resolve(coreDir, 'frontend/node_modules');
 
     const hasNodeModules = () => {
         return !(
             !fs.existsSync(rootNodeModulesDir) ||
-            !fs.existsSync(resolve(coreDir, 'backend/node_modules')) ||
-            !fs.existsSync(resolve(coreDir, 'frontend/node_modules'))
+            !fs.existsSync(backendNode_modules) ||
+            !fs.existsSync(frontendNode_modules)
         )
     }
 
@@ -36,6 +38,17 @@ const fs = require('fs');
     let didInstall = false;
     if (!hasNodeModules() || scriptName === 'build') {
         didInstall = true;
+
+        if (scriptName === 'build') {
+            // Force yarn to re-resolve packages (run install). Otherwise some modules may be left unlinked
+            // For example, at circleci there won't be available cromwell cli if we don't run install
+            if (fs.existsSync(backendNode_modules))
+                fs.rmdirSync(backendNode_modules, { recursive: true });
+
+            if (fs.existsSync(frontendNode_modules))
+                fs.rmdirSync(frontendNode_modules, { recursive: true });
+        }
+
         spawnSync(`npm i yarn -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
         spawnSync(`yarn install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }

@@ -3,7 +3,7 @@ import { ProductCategory } from '../entities/ProductCategory'
 import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
 import { TProductCategory, TPagedParams, TProductCategoryInput, logFor, TPagedList } from '@cromwell/core';
-import { getPaged, applyGetPaged, applyGetManyFromOne, handleBaseInput } from './BaseQueries';
+import { getPaged, applyGetPaged, applyGetManyFromOne, handleBaseInput, checkEntitySlug } from './BaseQueries';
 import { ProductRepository } from "./ProductRepository";
 
 @EntityRepository(ProductCategory)
@@ -66,10 +66,8 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         this.handleProductCategoryInput(productCategory, createProductCategory);
 
         await this.save(productCategory);
-        if (!productCategory.slug) {
-            productCategory.slug = productCategory.id;
-            await this.save(productCategory);
-        }
+        await checkEntitySlug(productCategory);
+
         return productCategory;
     }
 
@@ -81,6 +79,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         this.handleProductCategoryInput(productCategory, updateProductCategory);
 
         await this.save(productCategory);
+        await checkEntitySlug(productCategory);
         return productCategory;
     }
 

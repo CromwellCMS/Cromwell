@@ -6,9 +6,11 @@ import { Link } from 'react-router-dom';
 
 import { postPageInfo } from '../../constants/PageInfos';
 import styles from './PostList.module.scss';
+import { ListItemProps } from './PostList';
 
 type TPostListItemProps = {
     data?: TPost;
+    listItemProps: ListItemProps;
 }
 
 export const PostListItem = (props: TPostListItemProps) => {
@@ -44,6 +46,7 @@ export const PostListItem = (props: TPostListItemProps) => {
                         </Link>
                         <IconButton
                             aria-label="delete"
+                            onClick={() => props.listItemProps.handleDeletePostBtnClick(props.data.id)}
                         >
                             <DeleteForeverIcon />
                         </IconButton>
