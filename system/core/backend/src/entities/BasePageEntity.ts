@@ -9,7 +9,7 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntity {
     @PrimaryGeneratedColumn()
     id: string;
 
-    @Field(() => String)
+    @Field(() => String, { nullable: true })
     @Column({ type: "varchar", unique: true, nullable: true })
     slug?: string;
 

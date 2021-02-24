@@ -12,7 +12,7 @@ export class UserRepository extends BaseRepository<User> {
         super(User)
     }
 
-    async getUsers(params: TPagedParams<User>): Promise<TPagedList<User>> {
+    async getUsers(params?: TPagedParams<User>): Promise<TPagedList<User>> {
         logFor('detailed', 'UserRepository::getUsers');
         return this.getPaged(params)
     }

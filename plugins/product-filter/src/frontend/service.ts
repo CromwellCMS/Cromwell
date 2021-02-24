@@ -1,21 +1,21 @@
 import { gql } from '@apollo/client';
 import {
     getBlockInstance, TAttribute, TGetStaticProps, TPagedParams,
-    TProduct, TProductCategory
+    TProduct, TProductCategory, TFilteredProductList, TProductFilterMeta, TProductFilter
 } from '@cromwell/core';
 import { getGraphQLClient, TCGraphQLClient, TCList } from '@cromwell/core-frontend';
 
-import { TFilteredList, TFilterMeta, TProductFilter } from '../types';
+import { } from '../types';
 
 export type TProductFilterData = {
     productCategory?: TProductCategory;
     slug?: string | string[] | null;
     attributes?: TAttribute[];
-    filterMeta?: TFilterMeta;
+    filterMeta?: TProductFilterMeta;
 }
 
 const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: string, pagedParams: TPagedParams<TProduct>,
-    filterParams: TProductFilter, cb?: (data: TFilteredList<TProduct> | undefined) => void): Promise<TFilteredList<TProduct> | undefined> => {
+    filterParams: TProductFilter, cb?: (data: TFilteredProductList | undefined) => void): Promise<TFilteredProductList | undefined> => {
     // console.log('getFiltered', filterParams);
     let data;
     try {
@@ -48,18 +48,18 @@ const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: stri
         console.error('ProductFilter::getFiltered error: ', e.message)
     }
 
-    const filteredList: TFilteredList<TProduct> | undefined = data?.data?.getFilteredProducts;
+    const filteredList: TFilteredProductList | undefined = data?.data?.getFilteredProducts;
     if (cb) cb(filteredList);
     return filteredList;
 }
 
 export const filterCList = (checkedAttrs: Record<string, string[]>, priceRange: number[], productListId: string,
-    productCategoryId: string, client: TCGraphQLClient | undefined, cb: (data: TFilteredList<TProduct> | undefined) => void) => {
+    productCategoryId: string, client: TCGraphQLClient | undefined, cb: (data: TFilteredProductList | undefined) => void) => {
     // console.log('filterCList', checkedAttrs, priceRange);
     const list: TCList | undefined = getBlockInstance(productListId)?.getContentInstance() as any;
     if (list) {
         const listProps = Object.assign({}, list.getProps());
-        listProps.loader = async (pagedParams: TPagedParams<TProduct>): Promise<TFilteredList<TProduct> | undefined> => {
+        listProps.loader = async (pagedParams: TPagedParams<TProduct>): Promise<TFilteredProductList | undefined> => {
             const filterOptions: TProductFilter = {
                 attributes: Object.keys(checkedAttrs).map(key => ({
                     key, values: checkedAttrs[key]
@@ -105,7 +105,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<TProduct
         console.error('ProductFilter::getStaticProps getAttributes', e.message)
     }
 
-    let filterMeta: TFilterMeta | undefined;
+    let filterMeta: TProductFilterMeta | undefined;
 
     if (productCategory && productCategory.id) {
         filterMeta = (await getFiltered(client, productCategory.id, { pageSize: 1 }, {}))?.filterMeta;

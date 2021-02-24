@@ -14,6 +14,11 @@ export * from './entities/paged/PagedMeta';
 export * from './entities/paged/PagedProductReview';
 export * from './entities/paged/PagedPost';
 export * from './entities/paged/PagedProductCategory';
+export * from './entities/paged/PagedUser';
+
+export * from './entities/filter/FilteredProduct';
+export * from './entities/filter/ProductFilterInput';
+export * from './entities/filter/PostFilterInput';
 
 export * from './inputs/CreateUser';
 export * from './inputs/CreatePost';

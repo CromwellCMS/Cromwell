@@ -1,10 +1,6 @@
 module.exports = {
     frontendInputFile: "src/frontend/index.tsx",
     adminInputFile: "src/admin/index.tsx",
-    backend: {
-        resolversDir: "src/backend/resolvers",
-        entitiesDir: "src/backend/entities"
-    },
     defaultSettings: {
         productListId: "Category_ProductList"
     },

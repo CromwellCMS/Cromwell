@@ -11,7 +11,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         super();
     }
 
-    async getPaged(params: TPagedParams<EntityType>): Promise<TPagedList<EntityType>> {
+    async getPaged(params?: TPagedParams<EntityType>): Promise<TPagedList<EntityType>> {
         logFor('all', 'BaseRepository::getPaged');
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         const paged = await getPaged(qb, this.metadata.tablePath, params);

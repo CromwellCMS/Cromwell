@@ -5,7 +5,7 @@ import { BasePageInput } from './BasePageInput';
 @InputType({ description: "New Post data" })
 export class CreatePost extends BasePageInput implements TPostInput {
 
-  @Field()
+  @Field(() => String, { nullable: true })
   title: string;
 
   @Field()
@@ -14,12 +14,12 @@ export class CreatePost extends BasePageInput implements TPostInput {
   @Field(() => String, { nullable: true })
   mainImage?: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   content: string;
 
-  @Field()
+  @Field(() => String, { nullable: true })
   delta: string;
 
-  @Field()
+  @Field(() => Boolean, { nullable: true })
   isPublished: boolean;
 }

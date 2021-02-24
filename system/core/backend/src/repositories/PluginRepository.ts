@@ -2,7 +2,7 @@ import { logFor, TPagedList, TPagedParams, TPluginEntityInput } from '@cromwell/
 import { EntityRepository } from 'typeorm';
 
 import { PluginEntity } from '../entities/Plugin';
-import { handleBaseInput } from './BaseQueries';
+import { handleBaseInput, checkEntitySlug } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 
 @EntityRepository(PluginEntity)
@@ -46,11 +46,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         await this.handleBasePluginInput(plugin, createPlugin);
 
         plugin = await this.save(plugin);
-
-        if (!plugin.slug) {
-            plugin.slug = plugin.id;
-            await this.save(plugin);
-        }
+        await checkEntitySlug(plugin);
 
         return plugin;
     }
@@ -64,8 +60,8 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         if (!plugin) throw new Error(`Plugin ${id} not found!`);
 
         await this.handleBasePluginInput(plugin, updatePlugin);
-
         plugin = await this.save(plugin);
+        await checkEntitySlug(plugin);
         return plugin;
     }
 

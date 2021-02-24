@@ -3,7 +3,7 @@ import { EntityRepository, Repository } from 'typeorm';
 
 import { Attribute } from '../entities/Attribute';
 import { BaseRepository } from './BaseRepository';
-import { handleBaseInput } from './BaseQueries';
+import { handleBaseInput, checkEntitySlug  } from './BaseQueries';
 
 @EntityRepository(Attribute)
 export class AttributeRepository extends BaseRepository<Attribute> {
@@ -34,10 +34,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         await this.handleAttributeInput(attribute, createAttribute);
 
         attribute = await this.save(attribute);
-        if (!attribute.slug) {
-            attribute.slug = attribute.id;
-            await this.save(attribute);
-        }
+        await checkEntitySlug(attribute);
 
         return attribute;
     }
@@ -52,7 +49,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         await this.handleAttributeInput(attribute, updateAttribute);
 
         attribute = await this.save(attribute);
-
+        await checkEntitySlug(attribute);
 
         return attribute;
     }

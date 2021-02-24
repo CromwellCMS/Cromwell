@@ -7,26 +7,26 @@ import { BasePageEntity } from './BasePageEntity';
 @Entity()
 @ObjectType()
 export class Post extends BasePageEntity implements TPost {
-  @Field()
-  @Column({ type: "varchar" })
-  title?: string;
+  @Field(type => String, { nullable: true })
+  @Column({ type: "varchar", nullable: true })
+  title?: string | null;
 
   @Column()
   authorId: string;
 
-  @Field()
-  @Column()
-  content?: string;
+  @Field(type => String, { nullable: true })
+  @Column({ type: "varchar", nullable: true })
+  content?: string | null;
 
-  @Field()
-  @Column()
-  delta?: string;
-  
-  @Field()
-  @Column()
-  mainImage?: string;
+  @Field(type => String, { nullable: true })
+  @Column({ type: "varchar", nullable: true })
+  delta?: string | null;
 
-  @Field()
-  @Column()
-  isPublished?: boolean;
+  @Field(type => String, { nullable: true })
+  @Column({ type: "varchar", nullable: true })
+  mainImage?: string | null;
+
+  @Field(type => Boolean, { nullable: true })
+  @Column({ type: "boolean", nullable: true })
+  isPublished?: boolean | null;
 }
