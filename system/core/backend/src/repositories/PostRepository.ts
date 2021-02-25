@@ -1,6 +1,6 @@
 import { logFor, TPagedList, TPagedParams, TPostInput, TPost } from '@cromwell/core';
 import sanitizeHtml from 'sanitize-html';
-import { EntityRepository, getCustomRepository } from 'typeorm';
+import { EntityRepository, getCustomRepository, Brackets } from 'typeorm';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 
 import { Post } from '../entities/Post';
@@ -43,6 +43,7 @@ export class PostRepository extends BaseRepository<Post> {
         post.delta = input.delta;
         post.isPublished = input.isPublished;
         post.authorId = input.authorId;
+        post.tags = input.tags;
     }
 
     async createPost(createPost: TPostInput): Promise<Post> {
@@ -100,9 +101,9 @@ export class PostRepository extends BaseRepository<Post> {
 
         // Search by product name
         if (filterParams?.titleSearch && filterParams.titleSearch !== '') {
-            const likeStr = `%${filterParams.titleSearch}%`;
-            const query = `${this.metadata.tablePath}.title LIKE :likeStr`;
-            qbAddWhere(query, { likeStr });
+            const titleSearch = `%${filterParams.titleSearch}%`;
+            const query = `${this.metadata.tablePath}.title LIKE :titleSearch`;
+            qbAddWhere(query, { titleSearch });
         }
 
         if (filterParams?.authorId) {
@@ -110,7 +111,40 @@ export class PostRepository extends BaseRepository<Post> {
             const query = `${this.metadata.tablePath}.authorId = :authorId`;
             qbAddWhere(query, { authorId });
         }
+
+        if (filterParams?.tags) {
+            const brackets = new Brackets(subQb => {
+                let isFirstVal = true;
+                filterParams!.tags!.forEach(tag => {
+                    const likeStr = `%${tag}%`;
+                    const tagKey = `tag_${tag}`;
+                    const query = `${this.metadata.tablePath}.tags LIKE :${tagKey}`;
+                    if (isFirstVal) {
+                        isFirstVal = false;
+                        subQb.where(query, { [tagKey]: likeStr });
+                    } else {
+                        subQb.orWhere(query, { [tagKey]: likeStr });
+                    }
+                })
+            });
+            qbAddWhere(brackets);
+        }
+
         return await getPaged(qb, this.metadata.tablePath, pagedParams);
+    }
+
+    async getAllPostTags(): Promise<string[]> {
+        const tags: string[] = [];
+        const postTags: { tags: string }[] = await this.createQueryBuilder().select('tags' as (keyof TPost)).getRawMany();
+        for (let post of postTags) {
+            if (post.tags && post.tags !== '') {
+                const tagsArr = post.tags.split(',');
+                for (let tag of tagsArr) {
+                    if (!tags.includes(tag)) tags.push(tag);
+                }
+            }
+        }
+        return tags;
     }
 
 }

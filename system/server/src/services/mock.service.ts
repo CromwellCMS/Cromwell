@@ -108,7 +108,7 @@ export class MockService {
 
     private randomHTMLText = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</p><ul><li><i class="porto-icon-ok"></i>Any Product types that You want - Simple, Configurable</li><li><i class="porto-icon-ok"></i>Downloadable/Digital Products, Virtual Products</li><li><i class="porto-icon-ok"></i>Inventory Management with Backordered items</li></ul><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, <br>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
 
-    public getRandomName = () => (nameGenerator().spaced).replace(/\b\w/g, l => l.toUpperCase());
+    public getRandomName = (): string => (nameGenerator().spaced).replace(/\b\w/g, l => l.toUpperCase());
 
     public async mockAll(): Promise<boolean> {
         await this.mockUsers();
@@ -132,7 +132,8 @@ export class MockService {
 
         const sizeVals = this.attributesMock[0].values;
 
-        const description = this.randomHTMLText
+        const description = `<div id="quill-editor" class="ql-container ql-snow ql-disabled" style="max-height: 400px;"><div class="ql-editor" data-gramm="false" contenteditable="false" data-placeholder="Let's write an awesome story!" spellcheck="true"><p><strong>Lorem ipsum dolor sit amet</strong>,<em> consectetur adipiscing elit,</em> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p><blockquote>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</blockquote><p><br></p><ul><li><span style="color: rgb(46, 46, 46);">Tempor orci eu lobortis elementum nibh tellus molestie nunc.</span></li><li><span style="color: rgb(46, 46, 46);">Mi proin sed libero enim.</span></li><li><span style="color: rgb(46, 46, 46);">Elit pellentesque habitant morbi tristique senectus et netus.</span></li></ul><p><br></p><p><u>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</u></p></div></div>`;
+        const decrDelta = `{"ops":[{"attributes":{"bold":true},"insert":"Lorem ipsum dolor sit amet"},{"insert":","},{"attributes":{"italic":true},"insert":" consectetur adipiscing elit,"},{"insert":" sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat."},{"attributes":{"blockquote":true},"insert":"\\n"},{"insert":"\\n"},{"attributes":{"color":"#2e2e2e"},"insert":"Tempor orci eu lobortis elementum nibh tellus molestie nunc."},{"attributes":{"list":"bullet"},"insert":"\\n"},{"attributes":{"color":"#2e2e2e"},"insert":"Mi proin sed libero enim."},{"attributes":{"list":"bullet"},"insert":"\\n"},{"attributes":{"color":"#2e2e2e"},"insert":"Elit pellentesque habitant morbi tristique senectus et netus."},{"attributes":{"list":"bullet"},"insert":"\\n"},{"insert":"\\n"},{"attributes":{"underline":true},"insert":"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},{"insert":"\\n"}]}`;
 
         // Clear
         const prodsOld = await this.productRepo.find();
@@ -177,6 +178,7 @@ export class MockService {
                     return imgs;
                 })(),
                 description: description,
+                descriptionDelta: decrDelta,
                 attributes: [
                     {
                         key: 'Color',
@@ -355,6 +357,12 @@ export class MockService {
 
         for (let i = 0; i < 20; i++) {
 
+            const tags: string[] = [];
+            const tagsNum = Math.floor(Math.random() * 4);
+            for (let i = 0; i < tagsNum; i++) {
+                tags.push(this.getRandomName().split(' ')[0]);
+            }
+
             promises.push(this.postRepo.createPost({
                 content: postContent,
                 delta: postQuillDelta,
@@ -362,7 +370,8 @@ export class MockService {
                 title: this.getRandomName(),
                 mainImage: getRandImg(),
                 isPublished: true,
-                isEnabled: true
+                isEnabled: true,
+                tags: tags,
             }));
         }
         await Promise.all([promises]);
@@ -370,6 +379,4 @@ export class MockService {
         return true;
     }
 }
-
-
 

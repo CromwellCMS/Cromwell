@@ -1,9 +1,9 @@
+import 'swiper/swiper-bundle.min.css';
+
+import { gql } from '@apollo/client';
 import { TAttribute, TAttributeInstanceValue, TAttributeProductVariant, TProduct, TProductInput } from '@cromwell/core';
 import { CGallery, getCStore, getGraphQLClient } from '@cromwell/core-frontend';
-import {
-    Button, Fade, IconButton, MenuItem, Paper, Popper, TextField,
-    Tooltip, Tabs, Tab, Box, AppBar
-} from '@material-ui/core';
+import { Button, Fade, IconButton, MenuItem, Paper, Popper, Tab, Tabs, TextField, Tooltip } from '@material-ui/core';
 import {
     DeleteForever as DeleteForeverIcon,
     Edit as EditIcon,
@@ -12,14 +12,16 @@ import {
     Star as StarIcon,
     StarBorder as StarBorderIcon,
 } from '@material-ui/icons';
-import React, { useEffect, useState, useRef } from 'react';
+import Quill from 'quill';
+import React, { useEffect, useRef, useState } from 'react';
 import NumberFormat from 'react-number-format';
 import { useParams } from 'react-router-dom';
+import { toast } from '../../components/toast/toast';
 
 import LoadBox from '../../components/loadBox/LoadBox';
 import TransferList from '../../components/transferList/TransferList';
+import { initEditor, getQuillHTML } from '../../helpers/quill';
 import styles from './Product.module.scss';
-import 'swiper/swiper-bundle.min.css';
 
 interface NumberFormatCustomProps {
     inputRef: (instance: NumberFormat | null) => void;
@@ -48,6 +50,7 @@ function NumberFormatCustom(props: NumberFormatCustomProps) {
         />
     );
 }
+const editorId = "quill-editor";
 
 const ProductPage = () => {
     const { id } = useParams<{ id: string }>();
@@ -58,31 +61,82 @@ const ProductPage = () => {
     const [popperAnchorEl, setPopperAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const [popperOpen, setPopperOpen] = React.useState(false);
     const [activeTabNum, setActiveTabNum] = React.useState(0);
+    const quillEditor = useRef<Quill | null>(null);
+    const [notFound, setNotFound] = useState(false);
 
     const [editingProductVariant, setEditingProductVariant] = React.useState<{
         prodAttrIdx: number; value: string;
     } | null>(null);
 
+    const getProduct = async () => {
+        setIsloading(loadingProgress.slice().splice(0, 1, true));
+        let prod: TProduct | undefined;
+        try {
+            prod = await client?.getProductById(id, gql`
+            fragment AdminPanelProductFragment on Product {
+                id
+                slug
+                createDate
+                updateDate
+                isEnabled
+                pageTitle
+                name
+                price
+                oldPrice
+                mainImage
+                images
+                description
+                descriptionDelta
+                views
+                attributes {
+                    key
+                    values {
+                        value
+                        productVariant {
+                            name
+                            price
+                            oldPrice
+                            mainImage
+                            images
+                            description
+                        }
+                    }
+                }
+            }
+        `, 'AdminPanelProductFragment');
+
+        } catch (e) { console.log(e) }
+
+        if (prod?.id) {
+            setProdData(prod);
+
+            let descriptionDelta: string | undefined;
+            if (prod.descriptionDelta) {
+                try {
+                    descriptionDelta = JSON.parse(prod.descriptionDelta);
+                } catch (e) { console.error(e) }
+            }
+            quillEditor.current = initEditor('#quill-editor', descriptionDelta);
+
+        }
+        else setNotFound(true);
+
+        setIsloading(loadingProgress.slice().splice(0, 1, false));
+    }
+
+    const getAttributes = async () => {
+        setIsloading(loadingProgress.slice().splice(1, 1, true));
+        try {
+            const attr = await client?.getAttributes();
+            if (attr) setAttributes(attr);
+        } catch (e) { console.log(e) }
+
+        setIsloading(loadingProgress.slice().splice(1, 1, false));
+    }
+
     useEffect(() => {
-        (async () => {
-            setIsloading(loadingProgress.slice().splice(0, 1, true));
-            try {
-                const prod = await client?.getProductById(id);
-                if (prod) setProdData(prod);
-            } catch (e) { console.log(e) }
-
-            setIsloading(loadingProgress.slice().splice(0, 1, false));
-        })();
-
-        (async () => {
-            setIsloading(loadingProgress.slice().splice(1, 1, true));
-            try {
-                const attr = await client?.getAttributes();
-                if (attr) setAttributes(attr);
-            } catch (e) { console.log(e) }
-
-            setIsloading(loadingProgress.slice().splice(1, 1, false));
-        })();
+        getProduct();
+        getAttributes();
     }, []);
 
 
@@ -96,9 +150,10 @@ const ProductPage = () => {
                 oldPrice: typeof product.oldPrice === 'string' ? parseFloat(product.oldPrice) : product.oldPrice,
                 mainImage: product.mainImage,
                 images: product.images,
-                description: product.description,
+                description: getQuillHTML(quillEditor.current, `#${editorId}`),
+                descriptionDelta: JSON.stringify(quillEditor.current?.getContents() ?? null),
                 slug: product.slug,
-                attributes: product.attributes ? product.attributes.map(attr => ({
+                attributes: product.attributes?.map(attr => ({
                     key: attr.key,
                     values: attr.values ? attr.values.map(val => ({
                         value: val.value,
@@ -111,7 +166,7 @@ const ProductPage = () => {
                             description: val.productVariant.description
                         } : undefined
                     })) : []
-                })) : undefined,
+                })),
                 pageTitle: product.pageTitle,
                 isEnabled: product.isEnabled
             }
@@ -119,10 +174,15 @@ const ProductPage = () => {
             try {
                 await client?.updateProduct(product.id, input);
                 const prod = await client?.getProductById(id);
+                toast.success('Saved!');
                 if (prod) setProdData(prod);
-            } catch (e) { console.log(e) }
+            } catch (e) {
+                toast.error('Falied to save');
+                console.log(e);
+            }
 
             setIsloading(loadingProgress.slice().splice(0, 1, false));
+
         }
     }
 
@@ -138,6 +198,16 @@ const ProductPage = () => {
             }
         }
     });
+
+    if (notFound) {
+        return (
+            <div className={styles.Product}>
+                <div className={styles.notFoundPage}>
+                    <p className={styles.notFoundText}>Product not found</p>
+                </div>
+            </div>
+        )
+    }
 
     return (
         <div className={styles.Product}>
@@ -484,13 +554,9 @@ const MainInfoCard = (props: {
                         }
                     }} />
             </div>
-            <TextField label="HTML Description" variant="outlined"
-                value={product.description || ''}
-                className={styles.textField}
-                multiline
-                // rows={4}
-                onChange={(e) => { handleChange('description', e.target.value) }}
-            />
+            <div className={styles.descriptionEditor}>
+                <div style={{ maxHeight: '400px' }} id={editorId}></div>
+            </div>
             {props.isProductVariant !== true && (
                 <TextField label="SEO URL" variant="outlined"
                     value={(product as TProduct).slug || ''}

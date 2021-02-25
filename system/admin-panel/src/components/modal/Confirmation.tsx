@@ -1,10 +1,11 @@
 import React from 'react';
 import {
-    Modal,
+    // Modal,
     Button
 } from '@material-ui/core';
 import styles from './Confirmation.module.scss'
 import commonStyles from '../../styles/common.module.scss';
+import Modal from './Modal';
 
 const ConfirmationModal = (props: {
     title: string;
@@ -18,6 +19,7 @@ const ConfirmationModal = (props: {
             open={props.open}
             onClose={props.onClose}
             className={commonStyles.center}
+            blurSelector="#root"
         >
             <div className={styles.ConfirmationModal}>
                 <p className={styles.text}>{props.title}</p>

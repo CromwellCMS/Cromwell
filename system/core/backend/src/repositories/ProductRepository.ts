@@ -83,6 +83,7 @@ export class ProductRepository extends BaseRepository<Product> {
         product.mainImage = input.mainImage;
         product.images = input.images;
         product.description = input.description;
+        product.descriptionDelta = input.descriptionDelta;
         product.attributes = input.attributes;
 
         if (input.categoryIds) {

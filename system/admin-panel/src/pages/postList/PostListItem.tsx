@@ -5,8 +5,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 import { postPageInfo } from '../../constants/PageInfos';
-import styles from './PostList.module.scss';
 import { ListItemProps } from './PostList';
+import styles from './PostList.module.scss';
 
 type TPostListItemProps = {
     data?: TPost;

@@ -26,6 +26,10 @@ export class Post extends BasePageEntity implements TPost {
   @Column({ type: "varchar", nullable: true })
   mainImage?: string | null;
 
+  @Field(type => [String], { nullable: true })
+  @Column({ type: "simple-array", nullable: true })
+  tags?: string[] | null;
+
   @Field(type => Boolean, { nullable: true })
   @Column({ type: "boolean", nullable: true })
   isPublished?: boolean | null;

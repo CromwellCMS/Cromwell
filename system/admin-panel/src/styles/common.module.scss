@@ -23,6 +23,12 @@
   border-radius: 5px;
 }
 
+@mixin paperElevated {
+  box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.05), 0 0 20px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 5px;
+}
+
 .paper {
   @include paper;
 }
@@ -38,7 +44,7 @@
   }
   &::-webkit-scrollbar-thumb {
     background-color: #7f7f7f;
-    outline: 1px solid slategrey;
+    outline: none;
     border-radius: 30px;
   }
 }

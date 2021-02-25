@@ -2,27 +2,25 @@ import 'quill/dist/quill.snow.css';
 
 import { getStoreItem, TPost, TPostInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, IconButton, MenuItem, Tooltip, Popover } from '@material-ui/core';
-import {
-    NavigateBefore as NavigateBeforeIcon,
-    Settings as SettingsIcon,
-    Edit as EditIcon
-} from '@material-ui/icons';
+import { Button, IconButton, MenuItem, Tooltip } from '@material-ui/core';
+import { Edit as EditIcon, NavigateBefore as NavigateBeforeIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory, useParams, RouteComponentProps } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
-import { getFileManager } from '../../components/fileManager/helpers';
 import { toast } from '../../components/toast/toast';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
+import { getQuillHTML, initEditor } from '../../helpers/quill';
 import styles from './Post.module.scss';
 import PostSettings from './PostSettings';
 
-const Post = (props: RouteComponentProps<{ id?: string }>) => {
+const Post = (props) => {
     const { id: postId } = useParams<{ id: string }>();
     const [postData, setPostData] = useState<Partial<TPost> | undefined>(undefined);
     const client = getGraphQLClient();
+    const [allTags, setAllTags] = useState<string[] | null>(null);
     const [isLoading, setIsloading] = useState(false);
+    const [notFound, setNotFound] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
     const mode = getStoreItem('environment')?.mode;
     const quillEditor = useRef<Quill | null>(null);
@@ -30,6 +28,7 @@ const Post = (props: RouteComponentProps<{ id?: string }>) => {
     const hasChanges = useRef<boolean>(false);
     const history = useHistory();
     const forceUpdate = useForceUpdate();
+    const editorId = 'quill-editor';
 
     const getPostData = async (): Promise<TPost | undefined> => {
         setIsloading(true);
@@ -42,44 +41,19 @@ const Post = (props: RouteComponentProps<{ id?: string }>) => {
         return post;
     }
 
-    const initEditor = (postContent?: any) => {
-        const quill = new Quill('#editor', {
-            theme: 'snow',
-            placeholder: "Let's write an awesome story!",
-            modules: {
-                toolbar: [
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                    [{ 'font': [] }],
-                    ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'align': [] }],
-                    ['link', 'blockquote', 'code-block'],
-                    [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                    [{ 'script': 'sub' }, { 'script': 'super' }],
-                    [{ 'indent': '-1' }, { 'indent': '+1' }],
-                    [{ 'color': [] }, { 'background': [] }],
-                    ['clean'],
-                    ['image']
-                ],
-                history: {
-                    maxStack: 500,
-                    userOnly: true
-                },
-            },
-        });
-
-
-        const toolbar = quill.getModule('toolbar');
-        toolbar.addHandler('image', async (prop) => {
-            const photoPath = await getFileManager()?.getPhoto();
-            if (photoPath) {
-                const selection = quill.getSelection();
-                quill.insertEmbed(selection.index, 'image', photoPath);
+    const getPostTags = async () => {
+        try {
+            const data = await client?.getPostTags();
+            if (data && Array.isArray(data)) {
+                setAllTags(data.sort());
             }
-        });
-
-        if (postContent) {
-            quill.setContents(postContent);
+        } catch (e) {
+            console.error(e)
         }
+    }
+
+    const _initEditor = (postContent?: any) => {
+        const quill = initEditor('#quill-editor', postContent);
 
         quill.on('text-change', (delta, oldDelta, source) => {
             if (!hasChanges.current) {
@@ -92,15 +66,25 @@ const Post = (props: RouteComponentProps<{ id?: string }>) => {
     }
 
     const init = async () => {
-        let postContent: any = null;
+
+        getPostTags();
 
         if (postId && postId !== 'new') {
-            const post = await getPostData();
-            if (post?.delta) {
-                try {
+            let postContent: any = null;
+            let post;
+            try {
+                post = await getPostData();
+                if (post?.delta) {
                     postContent = JSON.parse(post?.delta);
-                } catch (e) { console.error(e) }
+                }
+            } catch (e) {
+                console.error(e);
             }
+
+            if (post) {
+                _initEditor(postContent);
+            }
+            else setNotFound(true);
         }
 
         if (postId === 'new') {
@@ -108,8 +92,8 @@ const Post = (props: RouteComponentProps<{ id?: string }>) => {
                 title: 'Untitled',
                 isPublished: false,
             });
+            _initEditor();
         }
-        initEditor(postContent);
     }
 
     useEffect(() => {
@@ -124,14 +108,14 @@ const Post = (props: RouteComponentProps<{ id?: string }>) => {
         mainImage: postData.mainImage,
         isPublished: postData.isPublished,
         isEnabled: postData.isEnabled,
+        tags: postData.tags,
         authorId: postData?.author?.id,
         delta: JSON.stringify(quillEditor.current.getContents()),
     });
 
     const handleSave = async () => {
         // console.log(quillEditor.current.getContents());
-        quillEditor.current.disable();
-        const outerHTML = document.querySelector('#editor')?.outerHTML;
+        const outerHTML = getQuillHTML(quillEditor.current, `#${editorId}`);
 
         if (outerHTML) {
             const updatePost: TPostInput = getInput();
@@ -165,8 +149,6 @@ const Post = (props: RouteComponentProps<{ id?: string }>) => {
                     console.error(e)
                 }
             }
-
-            quillEditor.current.enable();
         }
     }
 
@@ -202,6 +184,16 @@ const Post = (props: RouteComponentProps<{ id?: string }>) => {
         setPostData(newData);
     }
 
+    if (notFound) {
+        return (
+            <div className={styles.Post}>
+                <div className={styles.notFoundPage}>
+                    <p className={styles.notFoundText}>Post not found</p>
+                </div>
+            </div>
+        )
+    }
+
     return (
         <div className={styles.Post}>
             <div className={styles.postHeader}>
@@ -223,12 +215,16 @@ const Post = (props: RouteComponentProps<{ id?: string }>) => {
                     ref={actionsRef}
                 >
                     <Tooltip title="Settings">
-                        <IconButton onClick={handleOpenSettings} style={{ marginRight: '10px' }}>
+                        <IconButton onClick={handleOpenSettings}
+                            style={{ marginRight: '10px' }}
+                            id="settings-button"
+                        >
                             <SettingsIcon />
                         </IconButton>
                     </Tooltip>
                     {isSettingsOpen && (
                         <PostSettings
+                            allTags={allTags}
                             postData={postData}
                             isSettingsOpen={isSettingsOpen}
                             onClose={handleCloseSettings}
@@ -251,7 +247,7 @@ const Post = (props: RouteComponentProps<{ id?: string }>) => {
                         )}
                 </div>
             </div>
-            <div className={styles.editor} id="editor"></div>
+            <div className={styles.editor} id={editorId}></div>
             <div></div>
         </div>
     );

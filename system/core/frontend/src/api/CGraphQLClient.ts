@@ -226,17 +226,21 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public getProductById = async (productId: string)
+    public getProductById = async (productId: string, customFragment?: DocumentNode, customFragmentName?: string)
         : Promise<TProduct | undefined> => {
         const path = GraphQLPaths.Product.getOneById;
+
+        const productFragment = customFragment ?? this.ProductFragment;
+        const productFragmentName = customFragmentName ?? 'ProductFragment';
+
         const res = await this.apolloClient.query({
             query: gql`
                 query coreGetProductById($productId: String!) {
                     ${path}(id: $productId) {
-                        ...ProductFragment
+                        ...${productFragmentName}
                     }
                 }
-                ${this.ProductFragment}
+                ${productFragment}
             `,
             variables: {
                 productId,
@@ -325,8 +329,19 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public getFilteredProducts = async (categoryId?: string, pagedParams?: TPagedParams<TProduct>, filterParams?: TProductFilter): Promise<TFilteredProductList> => {
+    public getFilteredProducts = async (
+        { categoryId, pagedParams, filterParams, customFragment, customFragmentName }: {
+            categoryId?: string
+            pagedParams?: TPagedParams<TProduct>;
+            filterParams?: TProductFilter;
+            customFragment?: DocumentNode;
+            customFragmentName?: string;
+        }): Promise<TFilteredProductList> => {
         const path = GraphQLPaths.Product.getFiltered;
+
+        const fragment = customFragment ?? this.ProductFragment;
+        const fragmentName = customFragmentName ?? 'ProductFragment';
+
         const res = await this.apolloClient.query({
             query: gql`
                 query getFilteredProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput, $categoryId: String) {
@@ -339,11 +354,11 @@ class CGraphQLClient {
                             maxPrice
                         }
                         elements {
-                            ...ProductFragment
+                            ...${fragmentName}
                         }
                     }
                 }
-                ${this.ProductFragment}
+                ${fragment}
                 ${this.PagedMetaFragment}
             `,
             variables: {
@@ -790,6 +805,7 @@ class CGraphQLClient {
                 avatar
             }
             mainImage
+            tags
             content
             delta
             isPublished
@@ -949,6 +965,18 @@ class CGraphQLClient {
                 filterParams,
             }
         })
+        return this.returnData(res, path);
+    }
+
+    public getPostTags = async (): Promise<string[] | undefined> => {
+        const path = GraphQLPaths.Post.getTags;
+        const res = await this.apolloClient.query({
+            query: gql`
+              query coreGetPostTags {
+                  ${path}
+              }
+          `,
+        });
         return this.returnData(res, path);
     }
 

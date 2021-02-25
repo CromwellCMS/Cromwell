@@ -1,48 +1,61 @@
 import { TProduct } from '@cromwell/core';
-import { IconButton } from '@material-ui/core';
+import { getCStore } from '@cromwell/core-frontend';
+import { Grid, IconButton } from '@material-ui/core';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@material-ui/icons';
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-import { productInfo } from '../../constants/PageInfos';
+import { productPageInfo } from '../../constants/PageInfos';
+import { ListItemProps } from './ProductList';
 import styles from './ProductList.module.scss';
-import commonStyles from '../../styles/common.module.scss';
 
 
 export type TProductItemProps = {
     data?: TProduct;
+    listItemProps: ListItemProps;
 }
 
 export const ProductListItem = (props: TProductItemProps) => {
     // console.log('ProductItem::props', props)
+    const cstore = getCStore();
+    const { data } = props;
     return (
-        <div className={styles.listItem}>
+        <Grid container className={styles.listItem}>
             {props.data && (
                 <>
-                    <div style={{ width: '10%' }}>
-                        <p>{props.data?.id}</p>
-                    </div>
-                    <div style={{ width: '100%' }}>
-                        <p>{props.data?.name}</p>
-                    </div>
-                    <div style={{ width: '10%' }}>
-                        <Link to={`${productInfo.baseRoute}/${props.data?.id}`}>
+                    <Grid item xs={5} className={styles.itemMain}>
+                        <div
+                            style={{ backgroundImage: `url(${props?.data?.mainImage})` }}
+                            className={styles.itemImage}
+                        ></div>
+                        <div className={styles.itemMainInfo}>
+                            <p className={styles.itemTitle}>{props.data?.name}</p>
+                            <div className={styles.priceBlock}>
+                                {(data?.oldPrice !== undefined && data?.oldPrice !== null) && (
+                                    <p className={styles.oldPrice}>{cstore.getPriceWithCurrency(data.oldPrice)}</p>
+                                )}
+                                <p className={styles.price}>{cstore.getPriceWithCurrency(data?.price)}</p>
+                            </div>
+                        </div>
+                    </Grid>
+                    <Grid item xs={3}></Grid>
+                    <Grid item xs={4} className={styles.listItemActions}>
+                        <Link to={`${productPageInfo.baseRoute}/${props.data?.id}`}>
                             <IconButton
                                 aria-label="edit"
                             >
                                 <EditIcon />
                             </IconButton>
                         </Link>
-                    </div>
-                    <div style={{ width: '10%' }}>
                         <IconButton
                             aria-label="delete"
+                            onClick={() => props.listItemProps.handleDeleteProductBtnClick(props.data)}
                         >
                             <DeleteForeverIcon />
                         </IconButton>
-                    </div>
+                    </Grid>
                 </>
             )}
-        </div>
+        </Grid>
     )
 }

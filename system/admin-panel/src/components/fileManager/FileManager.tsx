@@ -277,7 +277,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                                 </IconButton>
                             </span>
                         </Tooltip>
-                        <Tooltip title="Create new folder">
+                        <Tooltip title="Create folder">
                             <IconButton className={styles.action}
                                 onClick={this.handleCreateFolder}
                                 ref={this.createFolderBtn}

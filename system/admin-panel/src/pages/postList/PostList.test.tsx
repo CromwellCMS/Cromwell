@@ -1,6 +1,6 @@
 import React from 'react';
 import loadable from '@loadable/component';
-import { TPagedList, TPost } from '@cromwell/core';
+import { TPagedList, TPost, TUser } from '@cromwell/core';
 
 const postsData: TPagedList<TPost> = {
     pagedMeta: { totalElements: 2, pageNumber: 1, pageSize: 2, totalPages: 1 },
@@ -17,6 +17,15 @@ const postsData: TPagedList<TPost> = {
         }
     ]
 };
+const users: TPagedList<TUser> = {
+    elements: [
+        {
+            id: '1',
+            fullName: 'name1',
+            email: 'mail1',
+        }
+    ]
+}
 
 jest.mock('@cromwell/core-frontend', () => {
     return {
@@ -36,7 +45,9 @@ jest.mock('@cromwell/core-frontend', () => {
         },
         getGraphQLClient: () => {
             return {
-                getPosts: jest.fn().mockImplementation(() => postsData)
+                getFilteredPosts: jest.fn().mockImplementation(() => postsData),
+                getUsers: jest.fn().mockImplementation(() => users),
+                getPostTags: jest.fn().mockImplementation(() => []),
             }
         },
     }

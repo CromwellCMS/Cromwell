@@ -1,21 +1,18 @@
-import { getFileManager } from '../../components/fileManager/helpers';
-import React, { useEffect, useRef, useState } from 'react';
-import styles from './PostSettings.module.scss';
-import { Button, IconButton, MenuItem, Tooltip, TextField, Popover } from '@material-ui/core';
 import { TPost } from '@cromwell/core';
-import {
-    NavigateBefore as NavigateBeforeIcon,
-    Settings as SettingsIcon,
-    Edit as EditIcon,
-    Wallpaper as WallpaperIcon,
-    HighlightOffOutlined
-} from '@material-ui/icons';
+import { IconButton, MenuItem, Popover, TextField } from '@material-ui/core';
+import { Close as CloseIcon, HighlightOffOutlined, Wallpaper as WallpaperIcon } from '@material-ui/icons';
+import { Autocomplete } from '@material-ui/lab';
+import React, { useEffect, useRef, useState } from 'react';
+
+import { getFileManager } from '../../components/fileManager/helpers';
+import styles from './PostSettings.module.scss';
 
 
 const PostSettings = (props: {
     postData?: Partial<TPost>;
     isSettingsOpen: boolean;
     anchorEl: Element;
+    allTags?: string[] | null;
     onClose: (newData: Partial<TPost>) => void;
 }) => {
     const { postData } = props;
@@ -24,12 +21,17 @@ const PostSettings = (props: {
     const [pageDescription, setPageDescription] = useState<string | undefined>(postData?.pageDescription);
     const [pageTitle, setPageTitle] = useState<string | undefined>(postData?.pageTitle);
     const [slug, setSlug] = useState<string | undefined>(postData?.slug);
+    const [tags, setTags] = useState<string[] | undefined>(postData?.tags);
 
     const handleChangeImage = async () => {
         const photoPath = await getFileManager()?.getPhoto();
         if (photoPath) {
             setMainImage(photoPath);
         }
+    }
+
+    const handleChangeTags = (event: any, newValue: string[]) => {
+        setTags(newValue);
     }
 
     const handleClose = () => {
@@ -39,6 +41,7 @@ const PostSettings = (props: {
         newData.pageDescription = pageDescription;
         newData.pageTitle = pageTitle;
         newData.slug = slug;
+        newData.tags = tags;
         props.onClose(newData);
     }
 
@@ -59,6 +62,12 @@ const PostSettings = (props: {
             }}
         >
             <div className={styles.PostSettings}>
+                <p className={styles.headerText}>Page settings</p>
+                <IconButton className={styles.closeBtn}
+                    id="post-settings-close-btn"
+                    onClick={handleClose}>
+                    <CloseIcon />
+                </IconButton>
                 <TextField
                     label="Title"
                     value={title}
@@ -83,14 +92,33 @@ const PostSettings = (props: {
                                 className={styles.mainImage}></div>
                         ) : (
                                 <WallpaperIcon
+                                    style={{ opacity: '0.7' }}
                                 />
                             )}
                     </MenuItem>
-                    <p style={{ margin: '10px' }}>{mainImage ?? 'no image'}</p>
-                    <IconButton onClick={(e) => { e.stopPropagation(); setMainImage(undefined) }}>
-                        <HighlightOffOutlined />
-                    </IconButton>
+                    <p style={{ margin: '10px' }}>{mainImage ?? <span style={{ opacity: '0.7' }}>No image</span>}</p>
+                    {mainImage && (
+                        <IconButton onClick={(e) => { e.stopPropagation(); setMainImage(undefined) }}>
+                            <HighlightOffOutlined />
+                        </IconButton>
+                    )}
                 </div>
+                <Autocomplete
+                    multiple
+                    freeSolo
+                    className={styles.settingItem}
+                    options={props.allTags ?? []}
+                    defaultValue={tags ?? []}
+                    getOptionLabel={(option) => option}
+                    onChange={handleChangeTags}
+                    renderInput={(params) => (
+                        <TextField
+                            {...params}
+                            variant="standard"
+                            label="Tags"
+                        />
+                    )}
+                />
                 <TextField
                     label="Page meta title (SEO)"
                     className={styles.settingItem}

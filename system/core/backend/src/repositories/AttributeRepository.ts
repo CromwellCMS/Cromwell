@@ -3,7 +3,7 @@ import { EntityRepository, Repository } from 'typeorm';
 
 import { Attribute } from '../entities/Attribute';
 import { BaseRepository } from './BaseRepository';
-import { handleBaseInput, checkEntitySlug  } from './BaseQueries';
+import { handleBaseInput, checkEntitySlug } from './BaseQueries';
 
 @EntityRepository(Attribute)
 export class AttributeRepository extends BaseRepository<Attribute> {
@@ -22,7 +22,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         handleBaseInput(attribute, input);
         attribute.key = input.key;
         attribute.type = input.type;
-        attribute.values = input.values;
+        attribute.values = input.values.sort((a, b) => (a.value > b.value) ? 1 : -1);
         attribute.icon = input.icon;
         if (input.isEnabled === undefined) attribute.isEnabled = true;
     }

@@ -158,10 +158,12 @@ const AttributeItem = (props: { data: TAttribute }) => {
 
                     const handleChangeIcon = async () => {
                         const newIconSrc = await getFileManager()?.getPhoto();
-                        attribute.current.values.forEach((val, index) => {
-                            if (val === value) attribute.current.values[index].icon = newIconSrc;
-                        })
-                        forceUpdate();
+                        if (newIconSrc) {
+                            attribute.current.values.forEach((val, index) => {
+                                if (val === value) attribute.current.values[index].icon = newIconSrc;
+                            })
+                            forceUpdate();
+                        }
                     };
 
                     const handleDeleteValue = () => {
@@ -188,7 +190,8 @@ const AttributeItem = (props: { data: TAttribute }) => {
                                         <div style={{
                                             width: '30px',
                                             height: '30px',
-                                            background: `url(${value.icon}) center center no-repeat / cover`
+                                            background: `url("${value.icon}") center center no-repeat`,
+                                            backgroundSize: 'contain'
                                         }}></div>
                                     ) : (
                                             <ImageIcon />

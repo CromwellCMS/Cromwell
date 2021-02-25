@@ -4,15 +4,20 @@
     align-items: center;
     justify-content: center;
     outline: none;
+    background-color: rgba(0, 0, 0, 0.3);
     :focus {
         outline: none;
+    }
+
+    > div:first-child {
+        background-color: transparent !important;
     }
 }
 
 .modalContent {
     max-width: 100vw;
     max-height: 100vh;
-    background-color: #fff;
-    overflow: auto;
+    // background-color: #fff;
+    // overflow: auto;
     outline: none;
 }

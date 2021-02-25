@@ -432,7 +432,7 @@ class CStore {
         if (!currency) {
             let _currency: string | null | undefined = !isServer() ? window.localStorage.getItem(currencyKey) : null;
             if (!_currency || _currency === "") {
-                _currency = this.getDafaultCurrencyTag();;
+                _currency = this.getDafaultCurrencyTag();
             }
             if (_currency) {
                 setStoreItem('currency', _currency);

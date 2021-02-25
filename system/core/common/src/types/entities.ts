@@ -64,6 +64,8 @@ export interface TProduct extends TBasePageEntity {
     images?: string[];
     // Description (HTML allowed)
     description?: string;
+    // Description in Quill format
+    descriptionDelta?: string;
     // Rating data
     rating?: TProductRating;
     // Customer reviews 
@@ -115,6 +117,8 @@ export interface TPost extends TBasePageEntity {
     author?: TUser;
     // Href of main image
     mainImage?: string | null;
+    // Tags / categories to show post
+    tags?: string[] | null;
     // Post content, HTML
     content?: string | null;
     // Post content, stringified JSON from Quill.js
@@ -130,7 +134,8 @@ export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author'> & {
 export type TPostFilter = {
     authorId?: string;
     titleSearch?: string;
-    published?: boolean
+    tags?: string[];
+    published?: boolean;
 }
 
 // USER / AUTHOR

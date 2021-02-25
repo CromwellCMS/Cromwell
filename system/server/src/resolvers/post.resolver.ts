@@ -11,6 +11,7 @@ const createPath = GraphQLPaths.Post.create;
 const updatePath = GraphQLPaths.Post.update;
 const deletePath = GraphQLPaths.Post.delete;
 const getFilteredPath = GraphQLPaths.Post.getFiltered;
+const getTagsPath = GraphQLPaths.Post.getTags;
 
 const authorKey: keyof TPost = 'author';
 
@@ -57,6 +58,11 @@ export class PostResolver {
     @Arg("filterParams", { nullable: true }) filterParams?: PostFilterInput,
   ): Promise<TPagedList<TPost> | undefined> {
     return this.repository.getFilteredPosts(pagedParams, filterParams);
+  }
+
+  @Query(() => [String])
+  async [getTagsPath](): Promise<string[]> {
+    return this.repository.getAllPostTags();
   }
 
   @FieldResolver(() => User)

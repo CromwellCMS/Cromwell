@@ -14,6 +14,9 @@ export class UpdatePost extends BasePageInput implements TPostInput {
     @Field(() => String, { nullable: true })
     mainImage?: string;
 
+    @Field(type => [String], { nullable: true })
+    tags?: string[] | null;
+
     @Field(() => String, { nullable: true })
     content: string;
 

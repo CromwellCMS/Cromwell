@@ -8,6 +8,7 @@ import { join } from 'path';
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { CmsService } from '../services/cms.service';
+import { publicSystemDirs } from '../helpers/constants';
 
 @ApiBearerAuth()
 @ApiTags('CMS')
@@ -123,7 +124,7 @@ export class CmsController {
     async readPublicDir(@Query('path') path: string): Promise<string[] | null> {
         const fullPath = join(getPublicDir(), path ?? '');
         if (! await fs.pathExists(fullPath)) return null;
-        return fs.readdir(fullPath);
+        return (await fs.readdir(fullPath)).filter(dir => !publicSystemDirs.includes(dir));
     }
 
     @Get('create-public-dir')
@@ -138,6 +139,8 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async createDir(@Query('inPath') inPath: string, @Query('dirName') dirName: string): Promise<boolean> {
+        if (publicSystemDirs.includes(dirName)) return false;
+
         const fullPath = join(getPublicDir(), inPath ?? '', dirName);
         if (await fs.pathExists(fullPath)) return false;
         await fs.mkdir(fullPath);
@@ -156,6 +159,8 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async removeDir(@Query('inPath') inPath: string, @Query('dirName') dirName: string): Promise<boolean> {
+        if (publicSystemDirs.includes(dirName)) return false;
+
         const fullPath = join(getPublicDir(), inPath ?? '', dirName);
         if (! await fs.pathExists(fullPath)) return false;
         await fs.remove(fullPath);
