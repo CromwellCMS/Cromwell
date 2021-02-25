@@ -7,11 +7,10 @@ import { Edit as EditIcon, NavigateBefore as NavigateBeforeIcon, Settings as Set
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { initEditor, getQuillHTML } from '../../helpers/quill';
 
-import { getFileManager } from '../../components/fileManager/helpers';
 import { toast } from '../../components/toast/toast';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
+import { getQuillHTML, initEditor } from '../../helpers/quill';
 import styles from './Post.module.scss';
 import PostSettings from './PostSettings';
 

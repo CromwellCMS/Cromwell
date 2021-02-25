@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom';
 import { postPageInfo } from '../../constants/PageInfos';
 import { ListItemProps } from './PostList';
 import styles from './PostList.module.scss';
-import { ListItemProps } from './PostList';
 
 type TPostListItemProps = {
     data?: TPost;
