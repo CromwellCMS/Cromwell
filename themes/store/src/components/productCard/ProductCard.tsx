@@ -75,7 +75,6 @@ export const ProductCard = (props?: {
                             {data?.rating?.average ? data?.rating?.average.toFixed(2) : ''} based on {data?.rating?.reviewsNumber} reviews.</p>
                     )}
                 </div>
-
             </div>
         </div>
     )

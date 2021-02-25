@@ -60,7 +60,7 @@ export const productListInfo: PageInfo = {
     route: '/product-list',
     component: ProductListPage
 };
-export const productInfo: PageInfo = {
+export const productPageInfo: PageInfo = {
     name: 'ProductList',
     route: '/product/:id',
     baseRoute: '/product',
@@ -108,7 +108,7 @@ export const pageInfos: PageInfo[] = [
     themeListPageInfo,
     productListInfo,
     productListInfo,
-    productInfo,
+    productPageInfo,
     pluginListPageInfo,
     attributesInfo,
     pluginPageInfo,

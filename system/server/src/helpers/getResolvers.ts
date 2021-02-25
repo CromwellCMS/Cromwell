@@ -7,7 +7,6 @@ import { UserResolver } from '../resolvers/user.resolver';
 import { GenericPluginResolver, GenericThemeResolver } from '../helpers/genericEntities';
 import { collectPlugins } from '../helpers/collectPlugins';
 
-
 export const getResolvers = () => [
     AttributeResolver,
     PostResolver,

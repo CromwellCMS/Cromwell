@@ -37,6 +37,10 @@ export class Product extends BasePageEntity implements TProduct {
     @Column({ type: "varchar", nullable: true })
     description?: string;
 
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    descriptionDelta?: string;
+
     @OneToMany(type => ProductReview, review => review.product, {
         onDelete: "CASCADE"
     })

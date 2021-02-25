@@ -13,7 +13,7 @@
 
     .authorSearch {
         input {
-            padding: 0 !important;
+            // padding: 0 !important;
         }
     }
 }
@@ -31,6 +31,7 @@
     display: flex;
     align-items: center;
     padding: 10px 15px;
+    flex-wrap: wrap;
 }
 
 .pageActions {
@@ -116,3 +117,4 @@
 .itemCreate {
     font-size: 12px;
 }
+

@@ -57,5 +57,16 @@
         align-items: center;
         border-radius: 5px;
     }
-}
 
+    .notFoundPage {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .notFoundText {
+        font-size: 25px;
+        font-weight: 500;
+    }
+}

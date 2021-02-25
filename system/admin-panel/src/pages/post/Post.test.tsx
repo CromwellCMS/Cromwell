@@ -11,7 +11,8 @@ jest.mock('react-router-dom', () => {
 const testData: TPost = {
     id: '1',
     title: 'test1',
-    isPublished: false,
+    isPublished: true,
+    slug: 'test_slug',
     delta: '{ \"ops\": [{ \"insert\": \"Lorem ipsum dolor sit amet\" }, {\"attributes\":{\"header\":1},\"insert\":\"\\n\"}] }'
 }
 const updatePost = jest.fn().mockImplementation(async () => true);
@@ -22,13 +23,14 @@ jest.mock('@cromwell/core-frontend', () => {
             return {
                 getPostById: jest.fn().mockImplementation(async () => testData),
                 updatePost,
+                getPostTags: jest.fn().mockImplementation(() => []),
             }
         },
     }
 });
 
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, act } from '@testing-library/react';
 
 import PostPage from './Post';
 
@@ -45,13 +47,19 @@ describe('Post page', () => {
     });
 
     it('saves post', async () => {
-        const { container } = render(<PostPage />);
+        render(<PostPage />);
 
         await screen.findByText('Lorem ipsum dolor sit amet');
-        const saveBtn = await screen.findByText('Save');
-        fireEvent.click(saveBtn);
 
-        expect(updatePost.mock.calls.length === 1).toBeTruthy();
+        fireEvent.click(document.getElementById('settings-button'));
+        await screen.findByDisplayValue(testData.slug);
+        fireEvent.click(document.getElementById('post-settings-close-btn'));
+        const saveBtn = await screen.findByText('Save');
+
+        await act(async () => {
+            fireEvent.click(saveBtn);
+            expect(updatePost.mock.calls.length).toEqual(1);
+        })
     })
 
 })

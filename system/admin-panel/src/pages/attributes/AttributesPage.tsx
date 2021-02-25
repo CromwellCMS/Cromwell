@@ -44,7 +44,6 @@ export default function AttributesPage() {
 
     return (
         <div className={styles.Attributes}>
-            <p>{attributes.current?.[0]?.key}</p>
             {attributes.current && attributes.current.map(attribute => (
                 <div className={styles.listItem} key={attribute.id}>
                     <AttributeItem data={attribute} />

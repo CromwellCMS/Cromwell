@@ -1,19 +1,19 @@
 import { gql } from '@apollo/client';
 import { getBlockInstance, TPagedParams, TPost, TPostFilter, TUser } from '@cromwell/core';
-import { CList, getBlockElementById, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { IconButton, Select, TextField, Tooltip } from '@material-ui/core';
+import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { IconButton, TextField, Tooltip } from '@material-ui/core';
 import { AddCircle as AddCircleIcon } from '@material-ui/icons';
-import { Pagination } from '@material-ui/lab';
-import React, { useRef, useState, useEffect } from 'react';
-import { Autocomplete } from '@material-ui/lab';
-import { toast } from '../../components/toast/toast';
+import { Autocomplete, Pagination } from '@material-ui/lab';
+import React, { useEffect, useRef, useState } from 'react';
+import { useHistory } from 'react-router-dom';
+import { debounce } from 'throttle-debounce';
+
 import LoadBox from '../../components/loadBox/LoadBox';
+import ConfirmationModal from '../../components/modal/Confirmation';
+import { toast } from '../../components/toast/toast';
+import { postPageInfo } from '../../constants/PageInfos';
 import styles from './PostList.module.scss';
 import { PostListItem } from './PostListItem';
-import { debounce } from 'throttle-debounce';
-import ConfirmationModal from '../../components/modal/Confirmation';
-import { useHistory } from 'react-router-dom';
-import { postPageInfo } from '../../constants/PageInfos';
 
 export type ListItemProps = {
     handleDeletePostBtnClick: (postId: string) => void;
@@ -25,6 +25,7 @@ const PostList = () => {
     const titleSearchId = "post-filter-search";
     const listId = "Admin_PostList";
     const [users, setUsers] = useState<TUser[] | null>(null);
+    const [tags, setTags] = useState<string[] | null>(null);
     const [postToDelete, setPostToDelete] = useState<string | null>(null);
     const history = useHistory();
 
@@ -34,9 +35,16 @@ const PostList = () => {
         });
         if (data?.elements) setUsers(data.elements);
     }
+    const getPostTags = async () => {
+        const data = await client?.getPostTags();
+        if (data && Array.isArray(data)) {
+            setTags(data.sort());
+        }
+    }
 
     useEffect(() => {
         getUsers();
+        getPostTags();
     }, [])
 
 
@@ -103,6 +111,11 @@ const PostList = () => {
         history.push(`${postPageInfo.baseRoute}/new`);
     }
 
+    const handleChangeTags = (event, newValue: string[]) => {
+        filterInput.current.tags = newValue;
+        handleFilterInput();
+    }
+
 
     return (
         <div className={styles.PostList}>
@@ -119,17 +132,34 @@ const PostList = () => {
                         className={`${styles.filterItem} ${styles.authorSearch}`}
                         disabled={!users || users.length === 0}
                         id="combo-box-demo"
-                        options={users}
+                        options={users ?? []}
                         getOptionLabel={(option) => option.fullName}
                         style={{ width: 200 }}
                         onChange={handleAuthorSearch}
                         renderInput={(params) =>
                             <TextField {...params}
-                                placeholder="Search by author"
-                                variant="outlined"
+                                placeholder="Author"
+                                // variant="outlined"
                                 size="medium"
-                                style={{ padding: '0' }}
+                            // style={{ padding: '0' }}
                             />}
+                    />
+                    <Autocomplete
+                        multiple
+                        freeSolo
+                        className={styles.settingItem}
+                        options={tags ?? []}
+                        defaultValue={tags ?? []}
+                        getOptionLabel={(option) => option}
+                        style={{ width: 200 }}
+                        onChange={handleChangeTags}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                variant="standard"
+                                placeholder="Tags"
+                            />
+                        )}
                     />
                 </div>
                 <div className={styles.pageActions} >

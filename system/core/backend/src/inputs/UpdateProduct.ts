@@ -26,6 +26,9 @@ export class UpdateProduct extends BasePageInput implements TProductInput {
     @Field(() => String, { nullable: true })
     description: string;
 
+    @Field(type => String, { nullable: true })
+    descriptionDelta?: string;
+
     @Field(() => [AttributeInstance], { nullable: true })
     attributes?: AttributeInstance[];
 }

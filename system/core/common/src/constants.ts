@@ -32,6 +32,7 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         update: "updatePost",
         delete: "deletePost",
         getFiltered: "getFilteredPosts",
+        getTags: "getPostTags",
     },
     Product: {
         getOneBySlug: "product",

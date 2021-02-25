@@ -10,9 +10,10 @@
 
 .listHeader {
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     background: #fff;
     margin-bottom: 13px;
-    padding: 0 23px;
     border-radius: 9px;
 
     > div {
@@ -31,7 +32,6 @@
     @include paper;
 
     display: flex;
-    padding: 5px 20px;
     align-items: center;
     border-bottom: 1px solid #ddd;
     margin-bottom: 3px;
@@ -61,4 +61,58 @@
 .pagination {
     @include paper;
     padding: 5px 10px;
+}
+
+.itemMain {
+    display: flex;
+}
+
+.itemImage {
+    @include bckgrCover;
+    height: 60px;
+    width: 90px;
+}
+
+.itemMainInfo {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 10px;
+}
+
+.itemTitle {
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.listItemActions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.priceBlock {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 18px;
+}
+.price {
+    font-weight: 500;
+    font-size: 14px;
+}
+.oldPrice {
+    text-decoration: line-through;
+    opacity: 0.7;
+    margin-right: 10px;
+    font-size: 14px;
+}
+
+.filter {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    flex-wrap: wrap;
+}
+
+.pageActions {
+    margin-right: 10px;
 }

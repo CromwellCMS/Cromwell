@@ -5,6 +5,7 @@
     height: 600px;
     display: flex;
     flex-direction: column;
+    background-color: #fff;
 
     @mixin headerPart {
         display: flex;

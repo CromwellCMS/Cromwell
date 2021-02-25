@@ -24,7 +24,10 @@ export class CreateProduct extends BasePageInput implements TProductInput {
     images: string[];
 
     @Field(() => String, { nullable: true })
-    description: string;
+    description?: string;
+
+    @Field(type => String, { nullable: true })
+    descriptionDelta?: string;
 
     @Field(() => [AttributeInstance], { nullable: true })
     attributes?: AttributeInstance[];
