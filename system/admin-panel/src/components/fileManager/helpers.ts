@@ -1,4 +1,4 @@
-import { isServer } from "@cromwell/core"
+import { isServer } from '@cromwell/core';
 
 export const getFileManager = () => {
     if (!isServer()) return window.CromwellFileManager;

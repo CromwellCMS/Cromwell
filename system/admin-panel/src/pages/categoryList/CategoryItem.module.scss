@@ -1,0 +1,57 @@
+@import "../../styles/common.module.scss";
+
+.CategoryItem {
+    // @include paper;
+    margin: 5px 0;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-height: 50px;
+    background-color: transparent;
+    padding-left: 10px;
+    transition: 0.3s;
+}
+
+.header:hover {
+    background-color: rgba($color: #000000, $alpha: 0.05);
+
+    .itemActions {
+        opacity: 1;
+    }
+}
+
+.subList {
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+    position: relative;
+}
+
+.subList::before {
+    content: "";
+    position: absolute;
+    border-left: 1px solid #bbb;
+    height: 100%;
+    left: 13px;
+}
+
+.expandMoreIcon {
+    transition: 0.3s;
+}
+
+.headerLeft {
+    display: flex;
+    align-items: center;
+}
+
+button.expandBtn {
+    margin-right: 10px;
+}
+
+.itemActions {
+    opacity: 0;
+    transition: 0.3s;
+}

@@ -140,4 +140,11 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         const ancestorsTree = await this.findAncestorsTree(category);
         return ancestorsTree.parent;
     }
+
+    async getRootCategories(): Promise<ProductCategory[]> {
+        const parentColumn = this.metadata.treeParentRelation?.joinColumns[0].databaseName;
+        return this.createQueryBuilder().select().where(
+            `${parentColumn} IS NULL`
+        ).getMany();
+    }
 }

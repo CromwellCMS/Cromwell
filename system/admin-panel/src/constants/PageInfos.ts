@@ -21,7 +21,7 @@ import ThemeListPage from '../pages/themeList/ThemeList';
 import PostListPage from '../pages/postList/PostList';
 import CategoriesPage from '../pages/categories/CategoriesPage';
 import PostPage from '../pages/post/Post';
-
+import CategoryListPage from '../pages/categoryList/CategoryList';
 
 export type SidebarLinkType = {
     id: string;
@@ -66,6 +66,12 @@ export const productPageInfo: PageInfo = {
     baseRoute: '/product',
     component: ProductPage
 };
+export const categoryListPageInfo: PageInfo = {
+    name: 'CategoryList',
+    route: '/category-list',
+    component: CategoryListPage,
+};
+
 export const attributesInfo: PageInfo = {
     name: 'Attributes',
     route: '/product-attributes',
@@ -114,6 +120,7 @@ export const pageInfos: PageInfo[] = [
     pluginPageInfo,
     postListInfo,
     postPageInfo,
+    categoryListPageInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
@@ -144,7 +151,7 @@ export const sideBarLinks: SidebarLinkType[] = [
             {
                 id: '5_Categories',
                 title: 'Categories',
-                route: categoriesPageInfo.route,
+                route: categoryListPageInfo.route,
                 icon: React.createElement(CategoryIcon)
             },
         ]

@@ -10,7 +10,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
-import { getQuillHTML, initEditor } from '../../helpers/quill';
+import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
 import styles from './Post.module.scss';
 import PostSettings from './PostSettings';
 
@@ -53,7 +53,7 @@ const Post = (props) => {
     }
 
     const _initEditor = (postContent?: any) => {
-        const quill = initEditor('#quill-editor', postContent);
+        const quill = initQuillEditor('#quill-editor', postContent);
 
         quill.on('text-change', (delta, oldDelta, source) => {
             if (!hasChanges.current) {

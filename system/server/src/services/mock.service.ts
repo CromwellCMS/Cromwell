@@ -226,11 +226,11 @@ export class MockService {
         // Clear
         const categories = await this.productCategoryRepo.find();
         for (const cat of categories) {
-            this.productCategoryRepo.delete(cat.id)
+            await this.productCategoryRepo.delete(cat.id)
         }
 
         const categoriesMock: TProductCategoryInput[] = []
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < 6; i++) {
             const name = this.getRandomName();
             categoriesMock.push({
                 name,
@@ -238,18 +238,42 @@ export class MockService {
             })
         }
 
+        const maxSubcatNum = 5;
+
         for (const cat of categoriesMock) {
             const catEntity = await this.productCategoryRepo.createProductCategory(cat);
-            const subCatsNum = Math.floor(Math.random() * 5);
-            const subCats: TProductCategoryInput[] = [];
+
+            const subCatsNum = Math.floor(Math.random() * maxSubcatNum);
             for (let j = 0; j < subCatsNum; j++) {
-                const name = 'Subcategory ' + this.getRandomName();
-                const subcat = {
+                const name = this.getRandomName();
+                const subcatIput1 = {
                     name,
                     description: name + ' description',
                     parentId: catEntity.id
                 } as TProductCategoryInput;
-                await this.productCategoryRepo.createProductCategory(subcat);
+                const subcatLevel1 = await this.productCategoryRepo.createProductCategory(subcatIput1);
+
+                const subCatsNum2 = Math.floor(Math.random() * maxSubcatNum);
+                for (let k = 0; k < subCatsNum2; k++) {
+                    const name = this.getRandomName();
+                    const subcatIput2 = {
+                        name,
+                        description: name + ' description',
+                        parentId: subcatLevel1.id
+                    } as TProductCategoryInput;
+                    const subcatLevel2 = await this.productCategoryRepo.createProductCategory(subcatIput2);
+
+                    const subCatsNum3 = Math.floor(Math.random() * maxSubcatNum);
+                    for (let m = 0; m < subCatsNum3; m++) {
+                        const name = this.getRandomName();
+                        const subcatIput3 = {
+                            name,
+                            description: name + ' description',
+                            parentId: subcatLevel2.id
+                        } as TProductCategoryInput;
+                        const subcatLevel3 = await this.productCategoryRepo.createProductCategory(subcatIput3);
+                    }
+                }
             }
 
         }

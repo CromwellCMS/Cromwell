@@ -8,8 +8,7 @@ const getConfig = (buildMode = 'production') => {
     return {
         mode: buildMode,
         target: "web",
-        // devtool: isProduction ? false : "source-map",
-        devtool: false,
+        devtool: isProduction ? false : "source-map",
         entry: path.resolve(localProjectDir, 'src/index.ts'),
         output: {
             path: path.resolve(localProjectDir, 'build'),

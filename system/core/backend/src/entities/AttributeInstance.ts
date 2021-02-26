@@ -41,4 +41,7 @@ export class AttributeProductVariant implements TAttributeProductVariant {
 
     @Field(() => String, { nullable: true })
     description?: string;
+
+    @Field(() => String, { nullable: true })
+    descriptionDelta?: string;
 }
