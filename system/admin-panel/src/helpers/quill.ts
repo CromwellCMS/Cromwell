@@ -1,8 +1,14 @@
 import Quill from 'quill';
 import { getFileManager } from '../components/fileManager/helpers';
 
-export const initEditor = (id: string, postContent?: any) => {
-    const quill = new Quill(id, {
+export const initQuillEditor = (selector: string, postContent?: any): Quill | undefined => {
+    const container = document.querySelector(selector);
+    if (!container) {
+        console.error('initQuillEditor: Failed to find container by selector: ' + selector);
+        return;
+    }
+
+    const quill = new Quill(container, {
         theme: 'snow',
         placeholder: "Let's write an awesome story!",
         modules: {

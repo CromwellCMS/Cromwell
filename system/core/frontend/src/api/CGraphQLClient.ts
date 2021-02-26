@@ -445,17 +445,20 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public getProductCategoryById = async (id: string)
+    public getProductCategoryById = async (id: string, customFragment?: DocumentNode, customFragmentName?: string)
         : Promise<TProductCategory | undefined> => {
         const path = GraphQLPaths.ProductCategory.getOneById;
+        const fragment = customFragment ?? this.ProductCategoryFragment;
+        const fragmentName = customFragmentName ?? 'ProductCategoryFragment';
+
         const res = await this.apolloClient.query({
             query: gql`
             query coreGetProductCategoryById($id: String!) {
                 ${path}(id: $id) {
-                    ...ProductCategoryFragment
+                    ...${fragmentName}
                 }
             }
-            ${this.ProductCategoryFragment}
+            ${fragment}
         `,
             variables: {
                 id,
@@ -470,7 +473,7 @@ class CGraphQLClient {
             query: gql`
                 query coreGetProductCategory($slug: String!) {
                     ${path}(slug: $slug) {
-                    ...ProductCategoryFragment
+                        ...ProductCategoryFragment
                     }
                 }
                 ${this.ProductCategoryFragment}
@@ -532,6 +535,21 @@ class CGraphQLClient {
             variables: {
                 id,
             }
+        });
+        return this.returnData(res, path);
+    }
+
+    public getRootCategories = async (): Promise<TProductCategory[] | undefined> => {
+        const path = GraphQLPaths.ProductCategory.getRootCategories;
+        const res = await this.apolloClient.query({
+            query: gql`
+            query coreGetRootCategories {
+                ${path} {
+                    ...ProductCategoryFragment
+                }
+            }
+            ${this.ProductCategoryFragment}
+        `,
         });
         return this.returnData(res, path);
     }
@@ -1125,7 +1143,7 @@ class CGraphQLClient {
     }
 
 
-    // </ProductCategory>
+    // </User>
 
 
     // <Plugin>

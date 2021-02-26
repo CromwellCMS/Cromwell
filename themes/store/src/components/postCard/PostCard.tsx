@@ -26,7 +26,7 @@ export const PostCard = (props?: {
             // style={{ height: isMobile ? 'auto' : imageHeigth }}
             >
                 <Link href={postLink}>
-                    <a><img className={styles.image} src={data?.mainImage} /></a>
+                    <a><img className={styles.image} src={data?.mainImage ?? undefined} /></a>
                 </Link>
             </div>
             <div className={styles.caption}>

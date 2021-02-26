@@ -1,0 +1,25 @@
+@import "../../styles/common.module.scss";
+
+.CategoryList {
+    padding: 10px;
+    margin: 10px;
+    height: 100%;
+    z-index: 5;
+    position: relative;
+}
+
+.header {
+    @include paper;
+    display: flex;
+    margin-bottom: 15px;
+}
+
+.list {
+    @include paper;
+    display: flex;
+    flex-direction: column;
+}
+
+.actionBtn {
+    margin-right: 10px;
+}

@@ -2,67 +2,47 @@ import 'swiper/swiper-bundle.min.css';
 
 import { gql } from '@apollo/client';
 import { TAttribute, TAttributeInstanceValue, TAttributeProductVariant, TProduct, TProductInput } from '@cromwell/core';
-import { CGallery, getCStore, getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, Fade, IconButton, MenuItem, Paper, Popper, Tab, Tabs, TextField, Tooltip } from '@material-ui/core';
+import { getGraphQLClient } from '@cromwell/core-frontend';
+import { Button, Fade, IconButton, MenuItem, Paper, Popper, Tab, Tabs, Tooltip } from '@material-ui/core';
 import {
     DeleteForever as DeleteForeverIcon,
     Edit as EditIcon,
     HighlightOff as HighlightOffIcon,
     OpenInNew as OpenInNewIcon,
-    Star as StarIcon,
-    StarBorder as StarBorderIcon,
 } from '@material-ui/icons';
-import Quill from 'quill';
-import React, { useEffect, useRef, useState } from 'react';
-import NumberFormat from 'react-number-format';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { toast } from '../../components/toast/toast';
 
 import LoadBox from '../../components/loadBox/LoadBox';
+import { toast } from '../../components/toast/toast';
 import TransferList from '../../components/transferList/TransferList';
-import { initEditor, getQuillHTML } from '../../helpers/quill';
+import MainInfoCard from './MainInfoCard';
 import styles from './Product.module.scss';
 
-interface NumberFormatCustomProps {
-    inputRef: (instance: NumberFormat | null) => void;
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
+export const editorId = "quill-editor";
 
-function NumberFormatCustom(props: NumberFormatCustomProps) {
-    const { inputRef, onChange, ...other } = props;
-
-    return (
-        <NumberFormat
-            {...other}
-            getInputRef={inputRef}
-            onValueChange={(values) => {
-                onChange({
-                    target: {
-                        name: props.name,
-                        value: values.value,
-                    },
-                });
-            }}
-            thousandSeparator
-            isNumericString
-            prefix={getCStore().getActiveCurrencySymbol()}
-        />
-    );
-}
-const editorId = "quill-editor";
+export type TInfoCardRef = {
+    save: () => void;
+};
 
 const ProductPage = () => {
     const { id } = useParams<{ id: string }>();
     const client = getGraphQLClient();
     const [loadingProgress, setIsloading] = useState([false, false]);
-    const [product, setProdData] = useState<TProduct | null>(null);
+    // const [product, setProdData] = useState<TProduct | null>(null);
     const [attributes, setAttributes] = useState<TAttribute[]>([]);
     const [popperAnchorEl, setPopperAnchorEl] = React.useState<HTMLButtonElement | null>(null);
     const [popperOpen, setPopperOpen] = React.useState(false);
     const [activeTabNum, setActiveTabNum] = React.useState(0);
-    const quillEditor = useRef<Quill | null>(null);
+    const infoCardRef = React.useRef<TInfoCardRef | null>(null);
+    const productRef = React.useRef<TProduct | null>(null);
     const [notFound, setNotFound] = useState(false);
+
+    const product = productRef.current;
+
+    const setProdData = (data: TProduct) => {
+        productRef.current = data;
+    }
 
     const [editingProductVariant, setEditingProductVariant] = React.useState<{
         prodAttrIdx: number; value: string;
@@ -99,6 +79,7 @@ const ProductPage = () => {
                             mainImage
                             images
                             description
+                            descriptionDelta
                         }
                     }
                 }
@@ -109,14 +90,6 @@ const ProductPage = () => {
 
         if (prod?.id) {
             setProdData(prod);
-
-            let descriptionDelta: string | undefined;
-            if (prod.descriptionDelta) {
-                try {
-                    descriptionDelta = JSON.parse(prod.descriptionDelta);
-                } catch (e) { console.error(e) }
-            }
-            quillEditor.current = initEditor('#quill-editor', descriptionDelta);
 
         }
         else setNotFound(true);
@@ -141,7 +114,9 @@ const ProductPage = () => {
 
 
     const handleSave = async () => {
-        console.log('product', product)
+        infoCardRef?.current?.save();
+        const product = productRef.current;
+
         if (product) {
             const input: TProductInput = {
                 name: product.name,
@@ -150,8 +125,8 @@ const ProductPage = () => {
                 oldPrice: typeof product.oldPrice === 'string' ? parseFloat(product.oldPrice) : product.oldPrice,
                 mainImage: product.mainImage,
                 images: product.images,
-                description: getQuillHTML(quillEditor.current, `#${editorId}`),
-                descriptionDelta: JSON.stringify(quillEditor.current?.getContents() ?? null),
+                description: product.description,
+                descriptionDelta: product.descriptionDelta,
                 slug: product.slug,
                 attributes: product.attributes?.map(attr => ({
                     key: attr.key,
@@ -163,12 +138,14 @@ const ProductPage = () => {
                             oldPrice: typeof val.productVariant.oldPrice === 'string' ? parseFloat(val.productVariant.oldPrice) : val.productVariant.oldPrice,
                             mainImage: val.productVariant.mainImage,
                             images: val.productVariant.images,
-                            description: val.productVariant.description
+                            description: val.productVariant.description,
+                            descriptionDelta: val.productVariant.descriptionDelta,
                         } : undefined
                     })) : []
                 })),
                 pageTitle: product.pageTitle,
-                isEnabled: product.isEnabled
+                pageDescription: product.pageDescription,
+                isEnabled: product.isEnabled,
             }
             setIsloading(loadingProgress.slice().splice(0, 1, true));
             try {
@@ -184,6 +161,10 @@ const ProductPage = () => {
             setIsloading(loadingProgress.slice().splice(0, 1, false));
 
         }
+    }
+
+    const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+        setActiveTabNum(newValue);
     }
 
     const isLoading = loadingProgress.some(i => Boolean(i));
@@ -214,20 +195,18 @@ const ProductPage = () => {
             {/* <h2>Edit product</h2> */}
             <div className={styles.header}>
                 {/* <p>Product id: {id}</p> */}
-                <Paper>
+                <div className={styles.paper}>
                     <Tabs
                         value={activeTabNum}
                         indicatorColor="primary"
                         textColor="primary"
-                        onChange={(event: React.ChangeEvent<{}>, newValue: number) => {
-                            setActiveTabNum(newValue);
-                        }}
+                        onChange={handleTabChange}
                     >
                         <Tab label="Main" />
                         <Tab label="Attributes" />
                         <Tab label="Categories" />
                     </Tabs>
-                </Paper>
+                </div>
                 <div>
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
@@ -249,7 +228,11 @@ const ProductPage = () => {
             {!isLoading && product && (
                 <>
                     <TabPanel value={activeTabNum} index={0}>
-                        <MainInfoCard product={product} setProdData={setProdData} />
+                        <MainInfoCard
+                            product={product}
+                            setProdData={setProdData}
+                            infoCardRef={infoCardRef}
+                        />
                     </TabPanel>
                     <TabPanel value={activeTabNum} index={1}>
                         {product.attributes && attributes && (
@@ -282,8 +265,7 @@ const ProductPage = () => {
                                             </div>
                                             <TransferList
                                                 left={leftValues.map(v => v.value)}
-                                                setLeft={(val) => {
-                                                }}
+                                                setLeft={(val) => { }}
                                                 right={rightValues}
                                                 itemComp={(props) => (
                                                     <div className={styles.attributeInstanceValue}>
@@ -334,7 +316,9 @@ const ProductPage = () => {
                                             {editingProductVariant && editingProductVariant.prodAttrIdx === prodAttrIdx && (
                                                 <div className={styles.editingProductVariant}>
                                                     <div className={styles.attributeHeader}>
-                                                        <h3>Editing product variant for value: <span className={styles.tag}>{editingProductVariant.value}</span></h3>
+                                                        <p className={styles.editingProductVariantTitle}>Editing product variant for value:
+                                                            <span className={styles.tag}>{editingProductVariant.value}</span>
+                                                        </p>
                                                         <div>
                                                             <Tooltip title="Close">
                                                                 <IconButton
@@ -350,6 +334,7 @@ const ProductPage = () => {
                                                     </div>
                                                     <div className={styles.editingProductVariantCard}>
                                                         <MainInfoCard
+                                                            infoCardRef={infoCardRef}
                                                             productVariantVal={editingProductVariant.value}
                                                             product={prodAttr.values.find(a => a.value === editingProductVariant.value)?.productVariant || product}
                                                             setProdData={(data: TAttributeProductVariant) => {
@@ -422,159 +407,6 @@ const ProductPage = () => {
     )
 }
 
-const MainInfoCard = (props: {
-    product: TAttributeProductVariant | TProduct,
-    setProdData: (data: TProduct) => void;
-    isProductVariant?: boolean;
-    productVariantVal?: string;
-}) => {
-    const { product, setProdData } = props;
-    const [canUpdateGallery, setCanUpdateGallery] = useState(false);
-    const [galleryId] = useState('_' + Math.random().toString(36).substr(2, 9));
-    const productVariantVal = useRef(props.productVariantVal);
-    const isNewVariant = productVariantVal.current !== props.productVariantVal;
-    if (isNewVariant) {
-        productVariantVal.current = props.productVariantVal;
-    }
-    // console.log('MainInfoCard render', product)
-    const handleChange = (prop: keyof TProduct, val: any) => {
-        if (product) {
-            const prod = Object.assign({}, product);
-            (prod[prop] as any) = val;
-            setProdData(prod as TProduct);
-        }
-    }
-
-    const setMainImage = (idx: number) => {
-        if (product && product.images) {
-            const newMain = product.images[idx];
-            if (newMain && newMain !== product.mainImage) {
-                const prod = Object.assign({}, product);
-                // Sort images to move mainImage into first item in the array
-                const imgs = [newMain, ...product.images.filter((src, i) => i !== idx)];
-                prod.images = imgs;
-                prod.mainImage = newMain;
-                setProdData(prod as TProduct);
-                setCanUpdateGallery(true);
-                setTimeout(() => {
-                    setCanUpdateGallery(false);
-                }, 500);
-            }
-        }
-    }
-
-    const deleteImage = (idx: number) => {
-        if (product && product.images) {
-            const prod = Object.assign({}, product);
-            // Sort images to move mainImage into first item in the array
-            prod.images = product.images.filter((val, i) => i !== idx);
-            setProdData(prod as TProduct);
-            setCanUpdateGallery(true);
-            setTimeout(() => {
-                setCanUpdateGallery(false);
-            }, 500);
-            // product.mainImage = src;
-        }
-    }
-
-    if (!product) return null;
-
-    return (
-        <div>
-            <TextField label="Name" variant="outlined"
-                value={product.name || ''}
-                className={styles.textField}
-                onChange={(e) => { handleChange('name', e.target.value) }}
-            />
-            <TextField label="Price" variant="outlined"
-                value={product.price || ''}
-                className={styles.textField}
-                onChange={(e) => { handleChange('price', e.target.value) }}
-                InputProps={{
-                    inputComponent: NumberFormatCustom as any,
-                }}
-            />
-            <TextField label="Old price" variant="outlined"
-                value={product.oldPrice || ''}
-                className={styles.textField}
-                onChange={(e) => {
-                    const val = e.target.value;
-                    handleChange('oldPrice', (val && val !== '') ? val : null);
-                }}
-                InputProps={{
-                    inputComponent: NumberFormatCustom as any,
-                }}
-            />
-            <div className={styles.imageBlock}>
-                <CGallery id={"CGallery" + galleryId}
-                    shouldComponentUpdate={isNewVariant ? true : canUpdateGallery}
-                    gallery={{
-                        images: product.images ? product.images.map((src, id) => ({ src, id })) : [],
-                        maxHeight: '350px',
-                        slidesPerView: 4,
-                        showPagination: true,
-                        navigation: {},
-                        loop: false,
-                        backgroundSize: 'contain',
-                        components: {
-                            imgWrapper: (props) => {
-                                const isPrimary = props.image.src === product.mainImage;
-                                return (
-                                    <div className={styles.imageWrapper}>
-                                        <div className={styles.imageActions}>
-                                            <Tooltip title="Make primary">
-                                                <IconButton
-                                                    aria-label="make primary"
-                                                    onClick={() => { setMainImage(props.image.id as number) }}
-                                                >
-                                                    {isPrimary ? <StarIcon /> : <StarBorderIcon />}
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Change image">
-                                                <IconButton
-                                                    aria-label="Change image"
-                                                    onClick={() => { console.log('show more') }}
-                                                >
-                                                    <EditIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                            <Tooltip title="Delete image">
-                                                <IconButton
-                                                    aria-label="Delete"
-                                                    onClick={() => { deleteImage(props.image.id as number) }}
-                                                >
-                                                    <DeleteForeverIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </div>
-                                        {props.children}
-                                    </div>
-                                )
-                            }
-                        }
-                    }} />
-            </div>
-            <div className={styles.descriptionEditor}>
-                <div style={{ maxHeight: '400px' }} id={editorId}></div>
-            </div>
-            {props.isProductVariant !== true && (
-                <TextField label="SEO URL" variant="outlined"
-                    value={(product as TProduct).slug || ''}
-                    className={styles.textField}
-                    onChange={(e) => { handleChange('slug', e.target.value) }}
-                />
-            )}
-            {props.isProductVariant !== true && (
-                <TextField label="SEO Title" variant="outlined"
-                    value={(product as TProduct).pageTitle || ''}
-                    className={styles.textField}
-                    onChange={(e) => { handleChange('pageTitle', e.target.value) }}
-                />
-            )}
-        </div>
-    )
-}
-
 interface TabPanelProps {
     children?: React.ReactNode;
     index: any;
@@ -593,7 +425,7 @@ function TabPanel(props: TabPanelProps) {
             {...other}
         >
             {value === index && (
-                <Paper className={styles.tabContent}>{children}</Paper>
+                <div className={styles.tabContent}>{children}</div>
             )}
         </div>
     );

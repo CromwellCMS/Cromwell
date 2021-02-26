@@ -188,6 +188,7 @@ export type TAttributeProductVariant = {
     mainImage?: string;
     images?: string[];
     description?: string;
+    descriptionDelta?: string;
 }
 
 

@@ -1,18 +1,27 @@
+@import "../../styles/common.module.scss";
+
 .Product {
     position: relative;
     width: 100%;
     height: 100%;
     padding: 20px;
     padding-bottom: 150px;
+    overflow: auto;
+
+    .paper {
+        @include paper;
+    }
 
     .header {
         width: 100%;
         display: flex;
         justify-content: space-between;
         align-items: center;
+        flex-wrap: wrap;
     }
 
     .tabContent {
+        @include paper;
         padding: 15px;
         margin: 15px 0;
         background-color: #fff;
@@ -24,10 +33,11 @@
     }
 
     .imageBlock {
+        position: relative;
         border: 1px solid #bbb;
         border-radius: 5px;
         margin: 10px 0;
-        padding: 5px;
+        display: flex;
     }
 
     .imageWrapper {
@@ -94,6 +104,15 @@
         padding: 10px;
     }
 
+    .editingProductVariantTitle {
+        font-size: 18px;
+        font-weight: 500;
+
+        .tag {
+            margin-left: 15px;
+        }
+    }
+
     .notFoundPage {
         display: flex;
         justify-content: center;
@@ -105,6 +124,30 @@
         font-size: 25px;
         font-weight: 500;
     }
+
+    .galleryActions {
+        display: flex;
+        flex-direction: column;
+        border-left: 1px solid #ccc;
+    }
+
+    .galleryContainer {
+        width: calc(100% - 50px);
+    }
+
+    button.galleryActionBtn {
+        background-color: rgba($color: #fff, $alpha: 0.7);
+    }
+    button.galleryActionBtn:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+        svg {
+            color: #fff;
+        }
+    }
+
+    button.galleryAddImageBtn {
+        @extend .galleryActionBtn;
+    }
 }
 
 .newAttributesList {
@@ -112,4 +155,18 @@
 }
 .newAttributeOption {
     min-width: 130px;
+}
+
+.descriptionEditor {
+    margin: 20px 0;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+
+    div:global(.ql-toolbar) {
+        border: 0;
+        border-bottom: 1px solid #bbb;
+    }
+    div:global(.ql-container) {
+        border: 0;
+    }
 }

@@ -106,13 +106,13 @@ export class PostRepository extends BaseRepository<Post> {
             qbAddWhere(query, { titleSearch });
         }
 
-        if (filterParams?.authorId) {
+        if (filterParams?.authorId && filterParams.authorId !== '') {
             const authorId = filterParams.authorId;
             const query = `${this.metadata.tablePath}.authorId = :authorId`;
             qbAddWhere(query, { authorId });
         }
 
-        if (filterParams?.tags) {
+        if (filterParams?.tags && filterParams.tags.length > 0) {
             const brackets = new Brackets(subQb => {
                 let isFirstVal = true;
                 filterParams!.tags!.forEach(tag => {

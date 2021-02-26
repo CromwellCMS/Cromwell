@@ -177,6 +177,9 @@ export type TGallerySettings = {
     height?: number | string;
     maxHeight?: number | string;
     width?: number | string;
+    autoHeight?: boolean;
+    lazy?: boolean;
+    breakpoints?: any;
     /** ratio = width / height */
     ratio?: number;
     slidesPerView?: number;

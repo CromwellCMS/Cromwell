@@ -18,7 +18,7 @@ const getManyPath = GraphQLPaths.ProductCategory.getMany;
 const createPath = GraphQLPaths.ProductCategory.create;
 const updatePath = GraphQLPaths.ProductCategory.update;
 const deletePath = GraphQLPaths.ProductCategory.delete;
-
+const getRootCategoriesPath = GraphQLPaths.ProductCategory.getRootCategories;
 const productsKey: keyof TProductCategory = 'products';
 const parentKey: keyof TProductCategory = 'parent';
 const childrenKey: keyof TProductCategory = 'children';
@@ -59,6 +59,11 @@ export class ProductCategoryResolver {
         return await this.repository.deleteProductCategory(id);
     }
 
+    @Query(() => [ProductCategory])
+    async [getRootCategoriesPath](): Promise<ProductCategory[]> {
+        return this.repository.getRootCategories();
+    }
+
     @FieldResolver(() => PagedProduct)
     async [productsKey](@Root() productCategory: ProductCategory, @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {
         return await this.productRepository.getProductsFromCategory(productCategory.id, pagedParams);
@@ -79,3 +84,4 @@ export class ProductCategoryResolver {
         return Math.floor(Math.random() * 10);
     }
 }
+

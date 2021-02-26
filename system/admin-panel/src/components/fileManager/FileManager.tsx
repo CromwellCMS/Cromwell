@@ -62,7 +62,11 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
 
     private fetchCurrentItems = async () => {
         this.setState({ isLoading: true });
-        this.currentItems = await this.getFilesInPath(this.currentPath);
+        try {
+            this.currentItems = await this.getFilesInPath(this.currentPath);
+        } catch (e) {
+            console.error(e);
+        }
         this.setState({ isLoading: false });
     }
 
@@ -206,9 +210,14 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
 
         this.setState({ isLoading: true });
         if (input && input.value && input.value !== '') {
-            await this.createFolder(input.value);
-            this.fetchCurrentItems();
+            try {
+                await this.createFolder(input.value);
+                await this.fetchCurrentItems();
+            } catch (e) {
+                console.error(e);
+            }
         }
+        this.setState({ isLoading: false });
     }
 
     private handleDeleteItem = async () => {
@@ -238,12 +247,13 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
 
             try {
                 await getRestAPIClient()?.uploadPublicFiles(this.currentPath, files)
-                this.fetchCurrentItems();
+                await this.fetchCurrentItems();
             } catch (e) {
                 console.error(e)
             }
 
-        })
+            this.setState({ isLoading: false });
+        });
     }
 
     render() {

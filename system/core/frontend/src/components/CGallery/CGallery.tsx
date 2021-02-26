@@ -61,15 +61,16 @@ export class CGallery extends React.Component<TCGalleryProps> {
                     this.swiper.update();
                     if (this.galleryThumbs) this.galleryThumbs.update();
                     this.swiper.slideTo(0);
-                    this.swiper.lazy.load();
+
+                    if (gallerySettings.lazy) {
+                        this.swiper.lazy.load();
+                    }
                 } else {
                     // init
                     const options: SwiperOptions = {
                         loop: gallerySettings.loop === false ? false : true,
-                        lazy: {
-                            loadPrevNext: true
-                        },
                         direction: gallerySettings.direction ? gallerySettings.direction : 'horizontal',
+                        breakpoints: gallerySettings.breakpoints,
                     }
                     if (gallerySettings.slidesPerView) {
                         options.slidesPerView = gallerySettings.slidesPerView;
@@ -93,6 +94,16 @@ export class CGallery extends React.Component<TCGalleryProps> {
                         options.zoom = {
                             toggle: gallerySettings.zoom.zoomOnHover ? false : true
                         }
+                    }
+
+                    if (gallerySettings.lazy) {
+                        options.lazy = {
+                            loadPrevNext: true
+                        };
+                    }
+
+                    if (gallerySettings.autoHeight) {
+                        options.autoHeight = true;
                     }
 
                     if (gallerySettings.showThumbs) {
@@ -205,40 +216,45 @@ export class CGallery extends React.Component<TCGalleryProps> {
                                 >
                                     {gallerySettings.images && gallerySettings.images.map((i, index) => {
                                         let el = (
-                                            <>
-                                                <img
-                                                    data-src={i.src}
-                                                    className={`${styles.swiperImage} swiper-lazy ${gallerySettings.zoom ? 'swiper-zoom-target' : ''}`}
-                                                    onMouseEnter={() => {
-                                                        if (this.swiper && gallerySettings.zoom && gallerySettings.zoom.zoomOnHover) {
-                                                            this.swiper.zoom.enable();
-                                                            this.swiper.zoom.in();
-                                                            this.swiper.$el.addClass(styles.swiperZommedIn);
-                                                        }
-                                                    }}
-                                                    alt={i.alt}
-                                                    onMouseLeave={() => {
-                                                        if (this.swiper && gallerySettings.zoom && gallerySettings.zoom.zoomOnHover) {
-                                                            this.swiper.zoom.out();
-                                                            this.swiper.zoom.disable();
-                                                            this.swiper.$el.removeClass(styles.swiperZommedIn);
-                                                        }
-                                                    }}
-                                                    style={{
-                                                        // height: this.height ? this.height : _height
-                                                        maxHeight: typeof settings?.maxHeight === 'string' ? settings.maxHeight :
-                                                            typeof settings?.maxHeight === 'number' ? settings.maxHeight + 'px' : undefined,
-                                                        width: settings?.maxHeight ? 'auto' : '100%',
-                                                        maxWidth: '100%',
-                                                    }}
-                                                />
+                                            <img
+                                                src={gallerySettings?.lazy ? undefined : i.src}
+                                                data-src={gallerySettings?.lazy ? i.src : undefined}
+                                                className={`${styles.swiperImage} ${gallerySettings?.lazy ? 'swiper-lazy' : ''} ${gallerySettings.zoom ? 'swiper-zoom-target' : ''}`}
+                                                onMouseEnter={() => {
+                                                    if (this.swiper && gallerySettings.zoom && gallerySettings.zoom.zoomOnHover) {
+                                                        this.swiper.zoom.enable();
+                                                        this.swiper.zoom.in();
+                                                        this.swiper.$el.addClass(styles.swiperZommedIn);
+                                                    }
+                                                }}
+                                                alt={i.alt}
+                                                onMouseLeave={() => {
+                                                    if (this.swiper && gallerySettings.zoom && gallerySettings.zoom.zoomOnHover) {
+                                                        this.swiper.zoom.out();
+                                                        this.swiper.zoom.disable();
+                                                        this.swiper.$el.removeClass(styles.swiperZommedIn);
+                                                    }
+                                                }}
+                                                style={{
+                                                    // height: this.height ? this.height : _height
+                                                    maxHeight: typeof settings?.maxHeight === 'string' ? settings.maxHeight :
+                                                        typeof settings?.maxHeight === 'number' ? settings.maxHeight + 'px' : undefined,
+                                                    width: settings?.maxHeight ? 'auto' : '100%',
+                                                    maxWidth: '100%',
+                                                }}
+                                            />
+                                        );
+
+                                        if (gallerySettings?.lazy) {
+                                            el = <>{el}
                                                 <div className="swiper-lazy-preloader swiper-lazy-preloader-white"
                                                     style={{
                                                         border: `4px solid ${this.primaryColor ? this.primaryColor : '#fff'}`,
                                                         borderTopColor: 'transparent'
                                                     }}></div>
                                             </>
-                                        );
+                                        }
+
                                         if (gallerySettings.components && gallerySettings.components.imgWrapper) {
                                             const WrapComp = gallerySettings.components.imgWrapper;
                                             el = <WrapComp image={i}>{el}</WrapComp>
