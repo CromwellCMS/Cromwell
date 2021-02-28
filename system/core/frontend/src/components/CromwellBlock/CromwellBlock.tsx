@@ -69,7 +69,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private didUpdate = async () => {
         const childPromises = Object.values(this.childPromises).filter(p => Boolean(p?.then));
         if (childPromises.length > 0) {
-            await Promise.all([childPromises]);
+            await Promise.all(childPromises);
         }
 
         Object.values(this.didUpdateListeners).forEach(func => func());

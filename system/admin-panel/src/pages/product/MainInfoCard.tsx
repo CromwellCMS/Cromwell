@@ -65,7 +65,7 @@ const MainInfoCard = (props: {
     const product = productRef.current;
 
     const setProdData = (data: TProduct) => {
-        productRef.current = data;
+        Object.keys(data).forEach(key => { productRef.current[key] = data[key] })
         props.setProdData(data);
         forceUpdate();
     }

@@ -2,6 +2,7 @@ import 'quill/dist/quill.snow.css';
 
 import { getStoreItem, TPost, TPostInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
+import { gql } from '@apollo/client';
 import { Button, IconButton, MenuItem, Tooltip } from '@material-ui/core';
 import { Edit as EditIcon, NavigateBefore as NavigateBeforeIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import Quill from 'quill';
@@ -34,7 +35,28 @@ const Post = (props) => {
         setIsloading(true);
         let post;
         try {
-            post = await client?.getPostById(postId);
+            post = await client?.getPostById(postId, gql`
+                fragment AdminPanelPostFragment on Post {
+                    id
+                    slug
+                    pageTitle
+                    createDate
+                    updateDate
+                    isEnabled
+                    title
+                    author {
+                        id
+                        fullName
+                        email
+                        avatar
+                    }
+                    mainImage
+                    tags
+                    content
+                    delta
+                    isPublished 
+                }`, 'AdminPanelPostFragment'
+            );
             if (post) setPostData(post);
         } catch (e) { console.log(e) }
         setIsloading(false);

@@ -1,0 +1,61 @@
+@import "../../styles/common.module.scss";
+
+.CategoryPage {
+    @include paper;
+    position: relative;
+    padding: 20px;
+    margin: 10px;
+
+    .notFoundPage {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    .notFoundText {
+        font-size: 25px;
+        font-weight: 500;
+    }
+
+    .fields {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .item {
+        display: block;
+        margin-bottom: 20px;
+    }
+
+    .textField {
+        @extend .item;
+    }
+
+    .descriptionEditor {
+        @extend .item;
+    }
+
+    .imageBox {
+        @extend .item;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        border-bottom: 1px solid #999;
+    }
+
+    .mainImage {
+        width: 60px;
+        height: 40px;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+    .closeBtn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 3;
+    }
+}

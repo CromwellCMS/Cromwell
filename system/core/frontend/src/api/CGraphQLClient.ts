@@ -267,7 +267,7 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public updateProduct = async (id: string, product: TProductInput) => {
+    public updateProduct = async (id: string, product: TProductInput): Promise<TProduct> => {
         const path = GraphQLPaths.Product.update;
         const res = await this.apolloClient.mutate({
             mutation: gql`
@@ -286,7 +286,7 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public createProduct = async (product: TProductInput) => {
+    public createProduct = async (product: TProductInput): Promise<TProduct> => {
         const path = GraphQLPaths.Product.create;
         const res = await this.apolloClient.mutate({
             mutation: gql`
@@ -825,7 +825,6 @@ class CGraphQLClient {
             mainImage
             tags
             content
-            delta
             isPublished
       }
   `
@@ -862,17 +861,22 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public getPostById = async (postId: string)
+    public getPostById = async (postId: string,
+        customFragment?: DocumentNode, customFragmentName?: string)
         : Promise<TPost | undefined> => {
         const path = GraphQLPaths.Post.getOneById;
+
+        const fragment = customFragment ?? this.PostFragment;
+        const fragmentName = customFragmentName ?? 'PostFragment';
+
         const res = await this.apolloClient.query({
             query: gql`
               query coreGetPostById($postId: String!) {
                   ${path}(id: $postId) {
-                      ...PostFragment
+                      ...${fragmentName}
                   }
               }
-              ${this.PostFragment}
+              ${fragment}
           `,
             variables: {
                 postId,
@@ -881,16 +885,21 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public getPostBySlug = async (slug: string): Promise<TPost | undefined> => {
+    public getPostBySlug = async (slug: string,
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TPost | undefined> => {
         const path = GraphQLPaths.Post.getOneBySlug;
+
+        const fragment = customFragment ?? this.PostFragment;
+        const fragmentName = customFragmentName ?? 'PostFragment';
+
         const res = await this.apolloClient.query({
             query: gql`
               query coreGetPostBySlug($slug: String!) {
                   ${path}(slug: $slug) {
-                      ...PostFragment
+                      ...${fragmentName}
                   }
               }
-              ${this.PostFragment}
+              ${fragment}
           `,
             variables: {
                 slug,
@@ -960,8 +969,8 @@ class CGraphQLClient {
     }): Promise<TPagedList<TPost>> => {
         const path = GraphQLPaths.Post.getFiltered;
 
-        const postFragment = customFragment ?? this.PostFragment;
-        const postFragmentName = customFragmentName ?? 'PostFragment';
+        const fragment = customFragment ?? this.PostFragment;
+        const fragmentName = customFragmentName ?? 'PostFragment';
 
         const res = await this.apolloClient.query({
             query: gql`
@@ -971,11 +980,11 @@ class CGraphQLClient {
                             ...PagedMetaFragment
                         }
                         elements {
-                            ...${postFragmentName}
+                            ...${fragmentName}
                         }
                     }
                 }
-                ${postFragment}
+                ${fragment}
                 ${this.PagedMetaFragment}
             `,
             variables: {

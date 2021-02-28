@@ -13,6 +13,9 @@ export class UpdateProductCategory extends BasePageInput implements TProductCate
     @Field(() => String, { nullable: true })
     description?: string;
 
+    @Field(type => String, { nullable: true })
+    descriptionDelta?: string;
+
     @Field(() => String, { nullable: true })
     parentId?: string;
 

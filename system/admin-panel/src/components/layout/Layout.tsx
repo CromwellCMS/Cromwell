@@ -2,7 +2,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import React, { Suspense } from 'react';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch, RouteComponentProps } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
 import LoadBox from '../loadBox/LoadBox';
@@ -40,13 +40,19 @@ function Layout() {
             <Switch>
               {pageInfos.map(page => {
                 return (
-                  <Route exact={!page.baseRoute} path={page.route} key={page.name} >
-                    <PageErrorBoundary>
-                      <Suspense fallback={<LoadBox />}>
-                        <page.component />
-                      </Suspense>
-                    </PageErrorBoundary>
-                  </Route>
+                  <Route exact={!page.baseRoute}
+                    path={page.route}
+                    key={page.name}
+                    component={(props: RouteComponentProps) => {
+                      return (
+                        <PageErrorBoundary>
+                          <Suspense fallback={<LoadBox />}>
+                            <page.component />
+                          </Suspense>
+                        </PageErrorBoundary>
+                      )
+                    }}
+                  />
                 )
               })}
               <Route key={'404'} >
