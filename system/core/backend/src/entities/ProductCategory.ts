@@ -21,6 +21,10 @@ export class ProductCategory extends BasePageEntity implements TProductCategory 
     @Column({ type: "varchar", nullable: true })
     description?: string;
 
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    descriptionDelta?: string;
+
     @TreeChildren()
     children?: ProductCategory[];
 

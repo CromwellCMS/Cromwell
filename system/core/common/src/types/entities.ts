@@ -31,6 +31,8 @@ type TProductCategoryCore = {
     mainImage?: string;
     // Description (HTML allowed)
     description?: string;
+    // Description in Quill format
+    descriptionDelta?: string;
     // DB children
     children?: TProductCategory[];
     // DB parent

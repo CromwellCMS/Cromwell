@@ -2,6 +2,7 @@ import { gql } from '@apollo/client';
 import { TProductCategory } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Collapse, IconButton, Tooltip } from '@material-ui/core';
+import { Link } from 'react-router-dom';
 import { TransitionProps } from '@material-ui/core/transitions';
 import {
     Add as AddIcon,
@@ -14,15 +15,23 @@ import React, { useEffect, useRef, useState } from 'react';
 import { animated, useSpring } from 'react-spring/web.cjs.js';
 
 import styles from './CategoryItem.module.scss';
+import { categoryPageInfo } from '../../constants/PageInfos';
 
 
 const CategoryItem = (props: {
     category: TProductCategory;
     collapsedItemsRef: React.MutableRefObject<Record<string, boolean>>;
+    deletedItemsRef: React.MutableRefObject<Record<string, boolean>>;
+    handleDeleteBtnClick: (category: TProductCategory) => void;
 }) => {
     const { category } = props;
     const client = getGraphQLClient();
     let expanded = !!props.collapsedItemsRef.current[category.id];
+
+    if (props.deletedItemsRef.current[category.id]) {
+        return <></>;
+    }
+
     if (props.collapsedItemsRef.current['all'] === true && !expanded) {
         props.collapsedItemsRef.current[category.id] = true;
         expanded = true;
@@ -78,16 +87,9 @@ const CategoryItem = (props: {
         }
     }, [expanded]);
 
-    const handleAddSubcategory = () => {
-
-    }
-
-    const handleEdit = () => {
-
-    }
 
     const handleDelete = () => {
-
+        props.handleDeleteBtnClick(category);
     }
 
     const hasChildren = Boolean(category.children && category.children.length > 0);
@@ -110,24 +112,26 @@ const CategoryItem = (props: {
                     <p>{category.name}</p>
                 </div>
                 <div className={styles.itemActions}>
-                    <Tooltip title="Add subcategory">
-                        <IconButton
-                            className={styles.itemActionBtn}
-                            aria-label="Add subcategory"
-                            onClick={handleAddSubcategory}
-                        >
-                            <AddIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Edit">
-                        <IconButton
-                            className={styles.actionBtn}
-                            aria-label="Edit"
-                            onClick={handleEdit}
-                        >
-                            <EditIcon />
-                        </IconButton>
-                    </Tooltip>
+                    <Link to={`${categoryPageInfo.baseRoute}/new?subcategory=${category?.id}`}>
+                        <Tooltip title="Add subcategory">
+                            <IconButton
+                                className={styles.itemActionBtn}
+                                aria-label="Add subcategory"
+                            >
+                                <AddIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Link>
+                    <Link to={`${categoryPageInfo.baseRoute}/${category?.id}`}>
+                        <Tooltip title="Edit">
+                            <IconButton
+                                className={styles.actionBtn}
+                                aria-label="Edit"
+                            >
+                                <EditIcon />
+                            </IconButton>
+                        </Tooltip>
+                    </Link>
                     <Tooltip title="Delete">
                         <IconButton
                             className={styles.actionBtn}
@@ -150,6 +154,8 @@ const CategoryItem = (props: {
                                             key={childCat.id}
                                             category={childCat}
                                             collapsedItemsRef={props.collapsedItemsRef}
+                                            deletedItemsRef={props.deletedItemsRef}
+                                            handleDeleteBtnClick={props.handleDeleteBtnClick}
                                         />
                                     );
                                 })}

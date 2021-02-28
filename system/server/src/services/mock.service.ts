@@ -141,7 +141,7 @@ export class MockService {
         for (const oldProd of prodsOld) {
             deletePromises.push(this.productRepo.deleteProduct(oldProd.id));
         }
-        await Promise.all([deletePromises]);
+        await Promise.all(deletePromises);
 
         const cats = await this.productCategoryRepo.find();
 
@@ -215,7 +215,7 @@ export class MockService {
                 views: Math.floor(Math.random() * 1000)
             }));
         }
-        await Promise.all([promises]);
+        await Promise.all(promises);
 
         return true;
     }
@@ -317,7 +317,7 @@ export class MockService {
                 promises.push(this.productReviewRepo.createProductReview(review));
             }
         }
-        await Promise.all([promises]);
+        await Promise.all(promises);
 
         return true;
     }
@@ -398,9 +398,8 @@ export class MockService {
                 tags: tags,
             }));
         }
-        await Promise.all([promises]);
+        await Promise.all(promises);
 
         return true;
     }
 }
-

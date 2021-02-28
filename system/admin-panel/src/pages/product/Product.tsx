@@ -11,11 +11,12 @@ import {
     OpenInNew as OpenInNewIcon,
 } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import LoadBox from '../../components/loadBox/LoadBox';
 import { toast } from '../../components/toast/toast';
 import TransferList from '../../components/transferList/TransferList';
+import { productPageInfo } from '../../constants/PageInfos';
 import MainInfoCard from './MainInfoCard';
 import styles from './Product.module.scss';
 
@@ -26,7 +27,7 @@ export type TInfoCardRef = {
 };
 
 const ProductPage = () => {
-    const { id } = useParams<{ id: string }>();
+    const { id: productId } = useParams<{ id: string }>();
     const client = getGraphQLClient();
     const [loadingProgress, setIsloading] = useState([false, false]);
     // const [product, setProdData] = useState<TProduct | null>(null);
@@ -37,8 +38,10 @@ const ProductPage = () => {
     const infoCardRef = React.useRef<TInfoCardRef | null>(null);
     const productRef = React.useRef<TProduct | null>(null);
     const [notFound, setNotFound] = useState(false);
+    const forceUpdate = useForceUpdate();
+    const history = useHistory();
 
-    const product = productRef.current;
+    const product: TProduct | undefined = productRef.current;
 
     const setProdData = (data: TProduct) => {
         productRef.current = data;
@@ -49,52 +52,61 @@ const ProductPage = () => {
     } | null>(null);
 
     const getProduct = async () => {
-        setIsloading(loadingProgress.slice().splice(0, 1, true));
-        let prod: TProduct | undefined;
-        try {
-            prod = await client?.getProductById(id, gql`
-            fragment AdminPanelProductFragment on Product {
-                id
-                slug
-                createDate
-                updateDate
-                isEnabled
-                pageTitle
-                name
-                price
-                oldPrice
-                mainImage
-                images
-                description
-                descriptionDelta
-                views
-                attributes {
-                    key
-                    values {
-                        value
-                        productVariant {
-                            name
-                            price
-                            oldPrice
-                            mainImage
-                            images
-                            description
-                            descriptionDelta
+        if (productId && productId !== 'new') {
+
+            setIsloading(loadingProgress.slice().splice(0, 1, true));
+            let prod: TProduct | undefined;
+            try {
+                prod = await client?.getProductById(productId, gql`
+                    fragment AdminPanelProductFragment on Product {
+                        id
+                        slug
+                        createDate
+                        updateDate
+                        isEnabled
+                        pageTitle
+                        name
+                        price
+                        oldPrice
+                        mainImage
+                        images
+                        description
+                        descriptionDelta
+                        views
+                        attributes {
+                            key
+                            values {
+                                value
+                                productVariant {
+                                    name
+                                    price
+                                    oldPrice
+                                    mainImage
+                                    images
+                                    description
+                                    descriptionDelta
+                                }
+                            }
                         }
-                    }
-                }
+                    }`, 'AdminPanelProductFragment'
+                );
+
+            } catch (e) { console.log(e) }
+
+            if (prod?.id) {
+                setProdData(prod);
+
             }
-        `, 'AdminPanelProductFragment');
+            else setNotFound(true);
 
-        } catch (e) { console.log(e) }
+            setIsloading(loadingProgress.slice().splice(0, 1, false));
 
-        if (prod?.id) {
-            setProdData(prod);
 
+        } else if (productId === 'new') {
+            setProdData({} as any);
+            forceUpdate();
         }
-        else setNotFound(true);
 
-        setIsloading(loadingProgress.slice().splice(0, 1, false));
     }
 
     const getAttributes = async () => {
@@ -148,15 +160,36 @@ const ProductPage = () => {
                 isEnabled: product.isEnabled,
             }
             setIsloading(loadingProgress.slice().splice(0, 1, true));
-            try {
-                await client?.updateProduct(product.id, input);
-                const prod = await client?.getProductById(id);
-                toast.success('Saved!');
-                if (prod) setProdData(prod);
-            } catch (e) {
-                toast.error('Falied to save');
-                console.log(e);
+
+            if (productId === 'new') {
+                try {
+                    const prod = await client?.createProduct(input);
+                    if (prod?.id) {
+                        toast.success('Created product');
+                        history.push(`${productPageInfo.baseRoute}/${prod.slug}`)
+                        if (prod) setProdData(prod);
+                        forceUpdate();
+                    } else {
+                        throw new Error('!prod?.id')
+                    }
+                } catch (e) {
+                    toast.error('Failed to create');
+                    console.log(e);
+                }
+
+            } else {
+                try {
+                    await client?.updateProduct(product.id, input);
+                    const prod = await client?.getProductById(productId);
+                    toast.success('Updated product');
+                    if (prod) setProdData(prod);
+                } catch (e) {
+                    toast.error('Falied to update');
+                    console.log(e);
+                }
             }
+
+
 
             setIsloading(loadingProgress.slice().splice(0, 1, false));
 
@@ -256,10 +289,10 @@ const ProductPage = () => {
                                                             if (prod.attributes) {
                                                                 prod.attributes = prod.attributes.filter((a, i) => i !== prodAttrIdx);
                                                                 setProdData(prod);
+                                                                forceUpdate();
                                                             }
                                                         }}
-                                                    >
-                                                        <DeleteForeverIcon />
+                                                    ><DeleteForeverIcon />
                                                     </IconButton>
                                                 </Tooltip>
                                             </div>
@@ -290,27 +323,27 @@ const ProductPage = () => {
                                                 )}
                                                 setRight={(val) => {
                                                     const prod: TProduct = JSON.parse(JSON.stringify(product));
+                                                    if (!prod.attributes) prod.attributes = [];
+
                                                     const newVals: TAttributeInstanceValue[] = [];
                                                     val.forEach(newVal => {
-                                                        if (prod.attributes) {
-                                                            let hasVal = false;
-                                                            prod.attributes[prodAttrIdx].values.forEach(prodVal => {
-                                                                if (prodVal.value === newVal) {
-                                                                    newVals.push(prodVal);
-                                                                    hasVal = true;
-                                                                }
-                                                            })
-                                                            if (!hasVal) {
-                                                                newVals.push({
-                                                                    value: newVal
-                                                                });
+                                                        let hasVal = false;
+                                                        prod.attributes[prodAttrIdx].values.forEach(prodVal => {
+                                                            if (prodVal.value === newVal) {
+                                                                newVals.push(prodVal);
+                                                                hasVal = true;
                                                             }
+                                                        })
+                                                        if (!hasVal) {
+                                                            newVals.push({
+                                                                value: newVal
+                                                            });
                                                         }
                                                     });
-                                                    if (prod.attributes) {
-                                                        prod.attributes[prodAttrIdx].values = newVals;
-                                                        setProdData(prod);
-                                                    }
+
+                                                    prod.attributes[prodAttrIdx].values = newVals.sort((a, b) => a.value > b.value ? 1 : -1);
+                                                    setProdData(prod);
+                                                    forceUpdate();
                                                 }}
                                             />
                                             {editingProductVariant && editingProductVariant.prodAttrIdx === prodAttrIdx && (
@@ -429,6 +462,11 @@ function TabPanel(props: TabPanelProps) {
             )}
         </div>
     );
+}
+
+function useForceUpdate() {
+    const [value, setValue] = useState(0);
+    return () => setValue(value => ++value);
 }
 
 export default ProductPage;

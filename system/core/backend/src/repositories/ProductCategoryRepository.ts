@@ -50,6 +50,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         productCategory.name = input.name;
         productCategory.mainImage = input.mainImage;
         productCategory.description = input.description;
+        productCategory.descriptionDelta = input.descriptionDelta;
 
         if (input.parentId) {
             productCategory.parent = await this.getProductCategoryById(input.parentId);
