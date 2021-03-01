@@ -1,10 +1,13 @@
-import { EntityRepository, getCustomRepository, TreeRepository } from "typeorm";
-import { ProductCategory } from '../entities/ProductCategory'
-import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
+import { logFor, TPagedList, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
+import { PagedParamsInput } from 'src/inputs/PagedParamsInput';
+import { EntityRepository, getConnection, getCustomRepository, TreeRepository } from 'typeorm';
+
+import { ProductCategoryFilterInput } from '../entities/filter/ProductCategoryFilterInput';
+import { ProductCategory } from '../entities/ProductCategory';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
-import { TProductCategory, TPagedParams, TProductCategoryInput, logFor, TPagedList } from '@cromwell/core';
-import { getPaged, applyGetPaged, applyGetManyFromOne, handleBaseInput, checkEntitySlug } from './BaseQueries';
-import { ProductRepository } from "./ProductRepository";
+import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
+import { applyGetManyFromOne, applyGetPaged, checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
+import { ProductRepository } from './ProductRepository';
 
 @EntityRepository(ProductCategory)
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
@@ -18,12 +21,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async getProductCategoriesById(ids: string[]): Promise<ProductCategory[]> {
         logFor('detailed', 'ProductCategoryRepository::getProductCategoriesById ids: ' + ids.join(', '));
-        const categories: ProductCategory[] = [];
-        for (const id of ids) {
-            const category = await this.getProductCategoryById(id);
-            categories.push(category);
-        }
-        return categories;
+        return this.findByIds(ids);
     }
 
     async getProductCategoryById(id: string): Promise<ProductCategory> {
@@ -52,9 +50,62 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         productCategory.description = input.description;
         productCategory.descriptionDelta = input.descriptionDelta;
 
-        if (input.parentId) {
-            productCategory.parent = await this.getProductCategoryById(input.parentId);
+        const newParent = input.parentId ? await this.getProductCategoryById(input.parentId) : undefined;
+        const currentParent = await this.getParentCategory(productCategory)
+
+        const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
+        const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
+        const closureTableName = this.metadata.closureJunctionTable.tablePath;
+        const primaryColumn = this.metadata.primaryColumns[0].databasePath;
+
+        if (newParent?.id) {
+
+            await this.findDescendants(productCategory)
+
+
+            if (!productCategory[primaryColumn] || !currentParent) {
+                // create action
+                if (productCategory[primaryColumn]) {
+                    await getConnection().createQueryBuilder()
+                        .insert()
+                        .into(closureTableName, [ancestorColumn, descendantColumn])
+                        .values({
+                            [ancestorColumn]: { [primaryColumn]: parseInt(newParent[primaryColumn]) },
+                            [descendantColumn]: { [primaryColumn]: parseInt(productCategory[primaryColumn]) },
+                        })
+                        .execute();
+                }
+
+                productCategory.parent = newParent;
+            }
+
+            if (productCategory.id && currentParent && newParent.id !== productCategory.id && newParent.id !== currentParent.id) {
+                // update action
+                await this.createQueryBuilder()
+                    .update(closureTableName)
+                    .set({
+                        [ancestorColumn]: { [primaryColumn]: newParent[primaryColumn] },
+                    })
+                    .where(`${descendantColumn} = :descendant_id`, { descendant_id: productCategory[primaryColumn] })
+                    .andWhere(`${ancestorColumn} = :ancestor_id`, { ancestor_id: currentParent[primaryColumn] })
+                    .execute();
+
+                productCategory.parent = newParent;
+            }
         }
+
+        if (!newParent && currentParent) {
+            // delete action
+            await this.createQueryBuilder()
+                .delete()
+                .from(closureTableName)
+                .where(`${descendantColumn} = :descendant_id`, { descendant_id: productCategory[primaryColumn] })
+                .andWhere(`${ancestorColumn} = :ancestor_id`, { ancestor_id: currentParent[primaryColumn] })
+                .execute();
+
+            productCategory.parent = null;
+        }
+
         if (input.childIds && Array.isArray(input.childIds)) {
             productCategory.children = await this.getProductCategoriesById(input.childIds);
         }
@@ -64,7 +115,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         logFor('detailed', 'ProductCategoryRepository::createProductCategory');
         const productCategory = new ProductCategory();
 
-        this.handleProductCategoryInput(productCategory, createProductCategory);
+        await this.handleProductCategoryInput(productCategory, createProductCategory);
 
         await this.save(productCategory);
         await checkEntitySlug(productCategory);
@@ -77,7 +128,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         const productCategory = await this.getProductCategoryById(id);
         if (!productCategory) throw new Error(`ProductCategory ${id} not found!`);
 
-        this.handleProductCategoryInput(productCategory, updateProductCategory);
+        await this.handleProductCategoryInput(productCategory, updateProductCategory);
 
         await this.save(productCategory);
         await checkEntitySlug(productCategory);
@@ -94,6 +145,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         const parentPropertyName = this.metadata.treeParentRelation?.joinColumns[0].propertyName;
         const parentColumn = this.metadata.treeParentRelation?.joinColumns[0].databaseName;
         const primaryColumn = this.metadata.primaryColumns[0].databasePath;
+        const closureTableName = this.metadata.closureJunctionTable.tablePath;
 
         const children = await this.getChildrenCategories(productCategory);
 
@@ -101,7 +153,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         descendantNodeIds.push(id);
 
         // Delete all the nodes from the closure table
-        const closureTableName = this.metadata.closureJunctionTable.tablePath;
         await this.createQueryBuilder()
             .delete()
             .from(closureTableName)
@@ -138,6 +189,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async getParentCategory(category: ProductCategory): Promise<ProductCategory | undefined | null> {
         logFor('detailed', 'ProductCategoryRepository::getParentCategory id: ' + category.id);
+
         const ancestorsTree = await this.findAncestorsTree(category);
         return ancestorsTree.parent;
     }
@@ -148,4 +200,31 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
             `${parentColumn} IS NULL`
         ).getMany();
     }
+
+    async getFilteredCategories(pagedParams?: PagedParamsInput<ProductCategory>, filterParams?: ProductCategoryFilterInput):
+        Promise<TPagedList<TProductCategory>> {
+
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+
+        let isFirstAttr = true;
+        const qbAddWhere: typeof qb.where = (where, params) => {
+            if (isFirstAttr) {
+                isFirstAttr = false;
+                return qb.where(where, params);
+            } else {
+                return qb.andWhere(where as any, params);
+            }
+        }
+
+        // Search by product name
+        if (filterParams?.nameSearch && filterParams.nameSearch !== '') {
+            const nameSearch = `%${filterParams.nameSearch}%`;
+            const query = `${this.metadata.tablePath}.name LIKE :nameSearch`;
+            qbAddWhere(query, { nameSearch });
+        }
+
+        return await getPaged(qb, this.metadata.tablePath, pagedParams);
+    }
+
 }

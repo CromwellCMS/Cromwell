@@ -19,6 +19,7 @@ export * from './entities/paged/PagedUser';
 export * from './entities/filter/FilteredProduct';
 export * from './entities/filter/ProductFilterInput';
 export * from './entities/filter/PostFilterInput';
+export * from './entities/filter/ProductCategoryFilterInput';
 
 export * from './inputs/CreateUser';
 export * from './inputs/CreatePost';

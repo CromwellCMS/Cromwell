@@ -1,0 +1,42 @@
+@import "../../styles/common.module.scss";
+
+.searchContent {
+    @include paperElevated;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100vw;
+    max-height: calc(100vh - 15px);
+    width: 470px;
+    height: 300px;
+    min-height: 140px;
+    overflow: auto;
+    z-index: 10;
+}
+
+.notFoundText {
+    font-weight: 500;
+    font-size: 18px;
+    top: calc(50% - 14px);
+    position: absolute;
+}
+
+.itemText {
+    // font-weight: 500;
+}
+
+.itemWrapper {
+    width: 100%;
+}
+
+.list {
+    width: 100%;
+    height: 100%;
+}
+
+.listPreloader {
+    position: absolute;
+    background-color: #fff;
+    inset: 0;
+    z-index: 10;
+}

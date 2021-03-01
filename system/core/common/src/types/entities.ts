@@ -48,6 +48,10 @@ export type TProductCategoryInput = TBasePageEntityInput & Omit<TProductCategory
     childIds?: string[];
 };
 
+export type TProductCategoryFilter = {
+    nameSearch?: string;
+}
+
 
 // PRODUCT
 

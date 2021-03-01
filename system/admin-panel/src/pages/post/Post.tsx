@@ -126,6 +126,7 @@ const Post = (props) => {
     const getInput = (): TPostInput => ({
         slug: postData.slug,
         pageTitle: postData.pageTitle,
+        pageDescription: postData.pageDescription,
         title: postData.title,
         mainImage: postData.mainImage,
         isPublished: postData.isPublished,
@@ -150,16 +151,12 @@ const Post = (props) => {
                     const newPost = await client?.createPost(updatePost);
                     toast.success('Created post!');
                     hasChanges.current = false;
-                    history.push(`${postPageInfo.baseRoute}/${newPost.slug}`)
+                    history.push(`${postPageInfo.baseRoute}/${newPost.id}`)
                     await getPostData();
-
-                    // await getPostData();
                 } catch (e) {
                     toast.error('Falied to create post');
                     console.error(e)
                 }
-                console.log('postId', postId, props?.match?.params?.id)
-
             } else if (postData?.id) {
                 try {
                     await client?.updatePost(postData.id, updatePost);
