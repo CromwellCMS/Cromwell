@@ -104,7 +104,7 @@ export class HeaderSearch extends React.Component<{}, {
 
         return (
             <>
-                <TextField id="outlined-basic" label="Search..."
+                <TextField label="Search..."
                     variant="outlined" size="small"
                     ref={this.searchAnchorRef}
                     // onBlur={handleSearchClose}

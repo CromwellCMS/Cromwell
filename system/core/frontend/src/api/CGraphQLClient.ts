@@ -31,6 +31,7 @@ import {
     TPostFilter,
     TUser,
     TUserInput,
+    TProductCategoryFilter,
 } from '@cromwell/core';
 
 class CGraphQLClient {
@@ -553,6 +554,41 @@ class CGraphQLClient {
         });
         return this.returnData(res, path);
     }
+
+    public getFilteredProductCategories = async ({ pagedParams, filterParams, customFragment, customFragmentName }: {
+        pagedParams?: TPagedParams<TProductCategory>;
+        filterParams?: TProductCategoryFilter;
+        customFragment?: DocumentNode;
+        customFragmentName?: string;
+    }): Promise<TPagedList<TProductCategory>> => {
+        const path = GraphQLPaths.ProductCategory.getFiltered;
+
+        const fragment = customFragment ?? this.ProductCategoryFragment;
+        const fragmentName = customFragmentName ?? 'ProductCategoryFragment';
+
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetFilteredProductCategories($pagedParams: PagedParamsInput, $filterParams: ProductCategoryFilterInput) {
+                    ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...${fragmentName}
+                        }
+                    }
+                }
+                ${fragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                pagedParams: pagedParams ?? {},
+                filterParams,
+            }
+        })
+        return this.returnData(res, path);
+    }
+
 
 
     // </ProductCategory>

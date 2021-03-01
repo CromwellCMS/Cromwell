@@ -3,6 +3,7 @@ import debounce from 'debounce';
 import React from 'react';
 
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { LoadBox } from '../loadBox/Loadbox';
 import { throbber } from '../throbber';
 import styles from './CList.module.scss';
 import { Pagination } from './CListPagination';
@@ -142,7 +143,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         const props = this.getProps();
         if (props.loader) {
             this.isLoading = true;
-            this.setOverlay(true);
+            this.setOverlay(true, true);
             try {
                 const data = await props.loader(this.pagedParams);
                 if (data && !Array.isArray(data) && data.elements) {
@@ -156,7 +157,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                 console.log(e);
             }
             this.isLoading = false;
-            this.setOverlay(false);
+            this.setOverlay(false, true);
             this.forceUpdate();
         }
     }
@@ -353,10 +354,10 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         return hasLoaded;
     }
 
-    public setOverlay = (isLoading: boolean) => {
+    public setOverlay = (isLoading: boolean, force?: boolean) => {
         const props = this.getProps();
 
-        if (!props.usePagination || props.useAutoLoading) return;
+        if (!force && (!props.usePagination || props.useAutoLoading)) return;
 
         if (this.throbberRef.current) {
             if (isLoading) {
@@ -434,10 +435,12 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                     setContentInstance(this);
                     return (
                         <div className={styles.CList}>
-                            <div ref={this.throbberRef} className={styles.listOverlay}>
-                                {props.elements?.preloader ? props.elements?.preloader :
-                                    <div className={styles.throbber}
-                                        dangerouslySetInnerHTML={{ __html: throbber }}></div>}
+                            <div ref={this.throbberRef}>
+                                {props.elements?.preloader ??
+                                    <div className={styles.listOverlay}>
+                                        <LoadBox />
+                                    </div>
+                                }
                             </div>
                             {content}
                         </div>

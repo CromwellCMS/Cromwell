@@ -2,20 +2,20 @@ import { gql } from '@apollo/client';
 import { TProductCategory } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Collapse, IconButton, Tooltip } from '@material-ui/core';
-import { Link } from 'react-router-dom';
 import { TransitionProps } from '@material-ui/core/transitions';
 import {
-    Add as AddIcon,
     DeleteForever as DeleteForeverIcon,
     Edit as EditIcon,
     ExpandMore as ExpandMoreIcon,
+    SubdirectoryArrowRight as SubdirectoryArrowRightIcon,
 } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { animated, useSpring } from 'react-spring/web.cjs.js';
 
-import styles from './CategoryItem.module.scss';
 import { categoryPageInfo } from '../../constants/PageInfos';
+import styles from './CategoryItem.module.scss';
 
 
 const CategoryItem = (props: {
@@ -112,13 +112,13 @@ const CategoryItem = (props: {
                     <p>{category.name}</p>
                 </div>
                 <div className={styles.itemActions}>
-                    <Link to={`${categoryPageInfo.baseRoute}/new?subcategory=${category?.id}`}>
+                    <Link to={`${categoryPageInfo.baseRoute}/new?parentId=${category?.id}`}>
                         <Tooltip title="Add subcategory">
                             <IconButton
                                 className={styles.itemActionBtn}
                                 aria-label="Add subcategory"
                             >
-                                <AddIcon />
+                                <SubdirectoryArrowRightIcon />
                             </IconButton>
                         </Tooltip>
                     </Link>

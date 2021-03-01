@@ -1,9 +1,7 @@
 @import "../../styles/common.module.scss";
 
 .CategoryPage {
-    @include paper;
     position: relative;
-    padding: 20px;
     margin: 10px;
 
     .notFoundPage {
@@ -18,7 +16,18 @@
         font-weight: 500;
     }
 
+    .header {
+        @include paper;
+        padding: 10px 20px;
+        width: 100%;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+    }
+
     .fields {
+        @include paper;
+        padding: 20px;
         display: flex;
         flex-direction: column;
     }

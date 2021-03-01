@@ -60,6 +60,7 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         update: "updateProductCategory",
         delete: "deleteProductCategory",
         getRootCategories: 'getRootCategories',
+        getFiltered: "getFilteredProductCategories",
     },
     Attribute: {
         getOneBySlug: "",

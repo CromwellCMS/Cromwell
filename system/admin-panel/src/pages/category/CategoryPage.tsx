@@ -1,16 +1,18 @@
 import { gql } from '@apollo/client';
-import { TProductCategory } from '@cromwell/core';
+import { TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { IconButton, MenuItem, TextField } from '@material-ui/core';
+import { Button, IconButton, MenuItem, TextField } from '@material-ui/core';
 import { HighlightOffOutlined, Wallpaper as WallpaperIcon } from '@material-ui/icons';
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import Autocomplete from '../../components/autocomplete/Autocomplete';
 import { getFileManager } from '../../components/fileManager/helpers';
-import { initQuillEditor } from '../../helpers/quill';
+import { toast } from '../../components/toast/toast';
+import { categoryPageInfo } from '../../constants/PageInfos';
+import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
 import styles from './CategoryPage.module.scss';
-
 
 export default function CategoryPage() {
     const { id: categoryId } = useParams<{ id: string }>();
@@ -19,20 +21,26 @@ export default function CategoryPage() {
     const forceUpdate = useForceUpdate();
     const history = useHistory();
     const categoryRef = useRef<TProductCategory | null>(null);
-    const category: TProductCategory | undefined = categoryRef.current;
+    let category: TProductCategory | undefined = categoryRef.current;
     const editorId = 'category-description-editor';
     const quillEditor = useRef<Quill | null>(null);
+    const [parentCategory, setParentCategory] = useState<TProductCategory | null>(null);
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const parentIdParam = urlParams.get('parentId');
 
     const setCategoryData = (data: TProductCategory) => {
-        categoryRef.current = data;
+        if (!categoryRef.current) {
+            categoryRef.current = data;
+            category = data;
+        }
+        else Object.keys(data).forEach(key => { categoryRef.current[key] = data[key] });
     }
 
-    const getProductCategoryById = async () => {
-        if (categoryId && categoryId !== 'new') {
-
-            let category: TProductCategory | undefined;
-            try {
-                category = await client?.getProductCategoryById(categoryId, gql`
+    const getProductCategoryById = async (id: string) => {
+        let categoryData: TProductCategory | undefined;
+        try {
+            categoryData = await client?.getProductCategoryById(id, gql`
                     fragment AdminPanelProductCategoryFragment on ProductCategory {
                         id
                         slug
@@ -52,32 +60,52 @@ export default function CategoryPage() {
                             slug
                         }
                     }`, 'AdminPanelProductCategoryFragment'
-                );
+            );
 
-            } catch (e) { console.log(e) }
+        } catch (e) { console.log(e) }
 
-            if (category?.id) {
-                setCategoryData(category);
-                forceUpdate();
+        return categoryData;
+    }
+
+    const getParentCategory = async (parentId) => {
+        try {
+            const parent = await client.getProductCategoryById(parentId);
+            if (parent) {
+                setParentCategory(parent);
+                handleParentCategoryChange(parent);
             }
-            else setNotFound(true);
+        } catch (e) {
+            console.error(e)
+        }
+    }
 
+    const init = async () => {
+        if (categoryId && categoryId !== 'new') {
+            const categoryData = await getProductCategoryById(categoryId);
+            if (categoryData?.id) {
+                setCategoryData(categoryData);
+                forceUpdate();
+            } else setNotFound(true);
+
+            if (categoryData?.parent?.id) {
+                getParentCategory(categoryData?.parent?.id);
+            }
 
         } else if (categoryId === 'new') {
             setCategoryData({} as any);
             forceUpdate();
         }
 
+        if (parentIdParam) {
+            getParentCategory(parentIdParam);
+        }
+
+        quillEditor.current = initQuillEditor(`#${editorId}`, categoryRef.current.descriptionDelta);
     }
 
     useEffect(() => {
         init();
     }, []);
-
-    const init = async () => {
-        await getProductCategoryById();
-        quillEditor.current = initQuillEditor(`#${editorId}`, categoryRef.current.descriptionDelta);
-    }
 
     const handleInputChange = (prop: keyof TProductCategory, val: any) => {
         if (category) {
@@ -105,6 +133,71 @@ export default function CategoryPage() {
         forceUpdate();
     }
 
+    const handleSearchRequest = async (text: string, params: TPagedParams<TProductCategory>) => {
+        return client?.getFilteredProductCategories({
+            filterParams: {
+                nameSearch: text
+            },
+            pagedParams: params
+        });
+    }
+
+    const handleParentCategoryChange = (data: TProductCategory | null) => {
+        const cat = Object.assign({}, category);
+        cat.parent = data ?? undefined;
+        setCategoryData(cat);
+    }
+
+    const getInput = (): TProductCategoryInput => ({
+        slug: categoryRef.current.slug,
+        pageTitle: categoryRef.current.pageTitle,
+        pageDescription: categoryRef.current.pageDescription,
+        name: categoryRef.current.name,
+        mainImage: categoryRef.current.mainImage,
+        isEnabled: categoryRef.current.isEnabled,
+        description: getQuillHTML(quillEditor.current, `#${editorId}`),
+        descriptionDelta: JSON.stringify(quillEditor.current.getContents()),
+        parentId: categoryRef.current.parent?.id,
+        childIds: categoryRef.current.children?.map(child => child.id),
+    });
+
+    const handleSave = async () => {
+        const inputData: TProductCategoryInput = getInput();
+
+        if (categoryId === 'new') {
+            try {
+                const newData = await client?.createProductCategory(inputData);
+                toast.success('Created category!');
+                history.push(`${categoryPageInfo.baseRoute}/${newData.id}`)
+
+                const categoryData = await getProductCategoryById(newData.id);
+                if (categoryData?.id) {
+                    setCategoryData(categoryData);
+                    forceUpdate();
+                }
+
+            } catch (e) {
+                toast.error('Falied to create category');
+                console.error(e)
+            }
+
+        } else if (category?.id) {
+            try {
+                await client?.updateProductCategory(category.id, inputData);
+                const categoryData = await getProductCategoryById(category.id);
+                if (categoryData?.id) {
+                    setCategoryData(categoryData);
+                    forceUpdate();
+                }
+                toast.success('Saved!');
+            } catch (e) {
+                toast.error('Falied to save');
+                console.error(e)
+            }
+        }
+
+    }
+
     if (notFound) {
         return (
             <div className={styles.CategoryPage}>
@@ -117,12 +210,32 @@ export default function CategoryPage() {
 
     return (
         <div className={styles.CategoryPage}>
+            <div className={styles.header}>
+                <div></div>
+                <div className={styles.headerActions}>
+                    <Button variant="contained" color="primary"
+                        className={styles.saveBtn}
+                        size="small"
+                        onClick={handleSave}>
+                        Save</Button>
+                </div>
+            </div>
             <div className={styles.fields}>
                 <TextField label="Name"
                     value={category?.name || ''}
                     fullWidth
                     className={styles.textField}
                     onChange={(e) => { handleInputChange('name', e.target.value) }}
+                />
+                <Autocomplete<TProductCategory>
+                    loader={handleSearchRequest}
+                    onSelect={handleParentCategoryChange}
+                    getOptionLabel={(data) => `${data.name} (id: ${data.id}; slug: ${data.slug})`}
+                    getOptionValue={(data) => data.name}
+                    fullWidth
+                    className={styles.textField}
+                    defaultValue={parentCategory}
+                    label={"Parent category"}
                 />
                 <div className={styles.imageBox}
                     onClick={handleChangeImage}
