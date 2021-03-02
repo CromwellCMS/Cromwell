@@ -4,6 +4,9 @@ import { EntityRepository } from 'typeorm';
 import { User } from '../entities/User';
 import { handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
+import { getLogger } from '../helpers/constants';
+
+const logger = getLogger('detailed');
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
@@ -13,17 +16,17 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async getUsers(params?: TPagedParams<User>): Promise<TPagedList<User>> {
-        logFor('detailed', 'UserRepository::getUsers');
+        logger.log('UserRepository::getUsers');
         return this.getPaged(params)
     }
 
     async getUserById(id: string): Promise<User | undefined> {
-        logFor('detailed', 'UserRepository::getUserById id: ' + id);
+        logger.log('UserRepository::getUserById id: ' + id);
         return this.getById(id);
     }
 
     async getUserByEmail(email: string): Promise<User | undefined> {
-        logFor('detailed', 'UserRepository::getUserByEmail email: ' + email);
+        logger.log('UserRepository::getUserByEmail email: ' + email);
 
         const user = await this.findOne({
             where: { email }
@@ -33,12 +36,12 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async getUserBySlug(slug: string): Promise<User | undefined> {
-        logFor('detailed', 'UserRepository::getUserBySlug slug: ' + slug);
+        logger.log('UserRepository::getUserBySlug slug: ' + slug);
         return this.getBySlug(slug);
     }
 
     async createUser(createUser: TUserInput): Promise<User> {
-        logFor('detailed', 'UserRepository::createUser');
+        logger.log('UserRepository::createUser');
         let user = new User();
 
         handleBaseInput(user, createUser);
@@ -54,7 +57,7 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async updateUser(id: string, updateUser: TUserInput): Promise<User> {
-        logFor('detailed', 'UserRepository::updateUser id: ' + id);
+        logger.log('UserRepository::updateUser id: ' + id);
 
         let user = await this.findOne({
             where: { id }
@@ -74,7 +77,7 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async deleteUser(id: string): Promise<boolean> {
-        logFor('detailed', 'UserRepository::deleteUser; id: ' + id);
+        logger.log('UserRepository::deleteUser; id: ' + id);
 
         const user = await this.getUserById(id);
         if (!user) {

@@ -41,11 +41,14 @@ export const connectDatabase = async () => {
         ormconfig = require(getOrmConfigPath())
     } catch (e) { }
 
+    let isNewSQLiteDB = false;
+
     if (!ormconfig?.database) {
         const serverDir = getServerDir();
         if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {
             // Server probably was launched at the first time and has no DB created
             // Use mocked DB
+            isNewSQLiteDB = true;
             const dempDBPath = resolve(serverDir, 'db.sqlite3');
             if (await fs.pathExists(dempDBPath)) {
                 await fs.copy(dempDBPath, tempDBPath);
@@ -76,6 +79,17 @@ export const connectDatabase = async () => {
     const settings = await getCmsSettings();
     if (settings) {
         setStoreItem('cmsSettings', settings)
+    }
+
+    if (isNewSQLiteDB) {
+        // if new DB, delete old themes and plugins from tables to install them anew
+        const pluginRepo = getCustomRepository(GenericPlugin.repository);
+        const dbPlugins = await pluginRepo.getAll();
+        await Promise.all(dbPlugins.map(plugin => pluginRepo.remove(plugin)));
+
+        const themeRepo = getCustomRepository(GenericTheme.repository);
+        const dbThemes = await themeRepo.getAll();
+        await Promise.all(dbThemes.map(theme => themeRepo.remove(theme)));
     }
 
     // Check installed cms modules. All available themes and plugins should be registered in DB

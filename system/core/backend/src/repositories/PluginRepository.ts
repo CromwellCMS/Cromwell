@@ -1,9 +1,12 @@
-import { logFor, TPagedList, TPagedParams, TPluginEntityInput } from '@cromwell/core';
+import { TPagedList, TPagedParams, TPluginEntityInput } from '@cromwell/core';
 import { EntityRepository } from 'typeorm';
 
 import { PluginEntity } from '../entities/Plugin';
-import { handleBaseInput, checkEntitySlug } from './BaseQueries';
+import { getLogger } from '../helpers/constants';
+import { checkEntitySlug, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
+
+const logger = getLogger('detailed');
 
 @EntityRepository(PluginEntity)
 export class PluginRepository extends BaseRepository<PluginEntity> {
@@ -13,17 +16,17 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
     }
 
     async getPlugins(params: TPagedParams<PluginEntity>): Promise<TPagedList<PluginEntity>> {
-        logFor('detailed', 'PluginRepository::getPlugins');
+        logger.log('PluginRepository::getPlugins');
         return this.getPaged(params);
     }
 
     async getPluginById(id: string): Promise<PluginEntity | undefined> {
-        logFor('detailed', 'PluginRepository::getPluginById id: ' + id);
+        logger.log('PluginRepository::getPluginById id: ' + id);
         return this.getById(id);
     }
 
     async getPluginBySlug(slug: string): Promise<PluginEntity | undefined> {
-        logFor('detailed', 'PluginRepository::getPluginBySlug slug: ' + slug);
+        logger.log('PluginRepository::getPluginBySlug slug: ' + slug);
         return this.getBySlug(slug);
     }
 
@@ -40,7 +43,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
     }
 
     async createPlugin(createPlugin: TPluginEntityInput): Promise<PluginEntity> {
-        logFor('detailed', 'PluginRepository::createPlugin');
+        logger.log('PluginRepository::createPlugin');
         let plugin = new PluginEntity();
 
         await this.handleBasePluginInput(plugin, createPlugin);
@@ -52,7 +55,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
     }
 
     async updatePlugin(id: string, updatePlugin: TPluginEntityInput): Promise<PluginEntity> {
-        logFor('detailed', 'PluginRepository::updatePlugin id: ' + id);
+        logger.log('PluginRepository::updatePlugin id: ' + id);
 
         let plugin = await this.findOne({
             where: { id }
@@ -66,7 +69,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
     }
 
     async deletePlugin(id: string): Promise<boolean> {
-        logFor('detailed', 'PluginRepository::deletePlugin; id: ' + id);
+        logger.log('PluginRepository::deletePlugin; id: ' + id);
 
         const plugin = await this.getPluginById(id);
         if (!plugin) {

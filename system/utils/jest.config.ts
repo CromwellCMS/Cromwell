@@ -16,6 +16,7 @@ const config: Config.InitialOptions = {
     transform: {
         "^.+\\.tsx?$": "ts-jest"
     },
+    testTimeout: 10000,
     moduleFileExtensions: ["ts", "js", "json", "node"],
     // setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"]
 };

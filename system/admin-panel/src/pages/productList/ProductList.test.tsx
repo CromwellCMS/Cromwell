@@ -17,6 +17,12 @@ const productsData: TPagedList<TProduct> = {
     ]
 };
 
+jest.mock('../../constants/PageInfos', () => {
+    return {
+        productPageInfo: {},
+    }
+});
+
 jest.mock('@cromwell/core-frontend', () => {
     return {
         CList: (props: any) => {

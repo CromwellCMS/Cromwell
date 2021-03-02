@@ -1,4 +1,4 @@
-import { logFor, TFrontendBundle, TPluginEntity, TSciprtMetaInfo } from '@cromwell/core';
+import { TFrontendBundle, TPluginEntity, TSciprtMetaInfo } from '@cromwell/core';
 import { TPluginConfig, TPluginEntityInput } from '@cromwell/core';
 import {
     buildDirName,
@@ -9,6 +9,7 @@ import {
     getPluginFrontendCjsPath,
     serverLogFor,
     getCmsModuleInfo,
+    getLogger,
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
@@ -19,6 +20,8 @@ import { configFileName, getPublicPluginsDir, getNodeModuleDir } from '@cromwell
 import decache from 'decache';
 import symlinkDir from 'symlink-dir';
 import { GenericPlugin } from '../helpers/genericEntities';
+
+const logger = getLogger('detailed');
 
 
 @Injectable()
@@ -50,7 +53,7 @@ export class PluginService {
      * @param pathGetter 
      */
     public async getPluginBundle(pluginName: string, bundleType: 'admin' | 'frontend'): Promise<TFrontendBundle | undefined> {
-        logFor('detailed', 'PluginService::getPluginBundle');
+        logger.log('PluginService::getPluginBundle');
         let out: TFrontendBundle | undefined = undefined;
         let pathGetter: ((distDir: string) => string) | undefined = undefined;
         let cjsPathGetter: ((distDir: string) => string) | undefined = undefined;

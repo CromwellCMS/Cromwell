@@ -433,7 +433,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
                 usedExternals,
                 filteredUsedExternals,
                 configuredExternals,
-                moduleBuiltins,
+                moduleBuiltins: moduleBuiltins[moduleName],
                 moduleName,
                 moduleVer,
                 modulePackageJson,

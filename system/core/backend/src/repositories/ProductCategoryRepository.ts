@@ -1,31 +1,34 @@
-import { logFor, TPagedList, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
+import { TPagedList, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
 import { PagedParamsInput } from 'src/inputs/PagedParamsInput';
 import { EntityRepository, getConnection, getCustomRepository, TreeRepository } from 'typeorm';
 
 import { ProductCategoryFilterInput } from '../entities/filter/ProductCategoryFilterInput';
 import { ProductCategory } from '../entities/ProductCategory';
+import { getLogger } from '../helpers/constants';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
 import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
 import { applyGetManyFromOne, applyGetPaged, checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { ProductRepository } from './ProductRepository';
 
+const logger = getLogger('detailed');
+
 @EntityRepository(ProductCategory)
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async getProductCategories(params: TPagedParams<TProductCategory>): Promise<TPagedList<TProductCategory>> {
-        logFor('detailed', 'ProductCategoryRepository::getProductCategories');
+        logger.log('ProductCategoryRepository::getProductCategories');
         const qb = this.createQueryBuilder(this.metadata.tablePath);
 
         return getPaged(qb, this.metadata.tablePath, params);
     }
 
     async getProductCategoriesById(ids: string[]): Promise<ProductCategory[]> {
-        logFor('detailed', 'ProductCategoryRepository::getProductCategoriesById ids: ' + ids.join(', '));
+        logger.log('ProductCategoryRepository::getProductCategoriesById ids: ' + ids.join(', '));
         return this.findByIds(ids);
     }
 
     async getProductCategoryById(id: string): Promise<ProductCategory> {
-        logFor('detailed', 'ProductCategoryRepository::getProductCategoryById id: ' + id);
+        logger.log('ProductCategoryRepository::getProductCategoryById id: ' + id);
         const product = await this.findOne({
             where: { id }
         });
@@ -34,7 +37,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async getProductCategoryBySlug(slug: string): Promise<ProductCategory> {
-        logFor('detailed', 'ProductCategoryRepository::getProductCategoryBySlug slug: ' + slug);
+        logger.log('ProductCategoryRepository::getProductCategoryBySlug slug: ' + slug);
         const product = await this.findOne({
             where: { slug }
         });
@@ -50,28 +53,36 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         productCategory.description = input.description;
         productCategory.descriptionDelta = input.descriptionDelta;
 
-        const newParent = input.parentId ? await this.getProductCategoryById(input.parentId) : undefined;
+        let newParent: ProductCategory | undefined | null = input.parentId ? await this.getProductCategoryById(input.parentId) : undefined;
         const currentParent = await this.getParentCategory(productCategory)
 
         const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
         const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
         const closureTableName = this.metadata.closureJunctionTable.tablePath;
-        const primaryColumn = this.metadata.primaryColumns[0].databasePath;
+
+        const ancestorReferencedColumn = this.metadata.closureJunctionTable.ancestorColumns[0].referencedColumn?.databasePath as string;
+        const descendanReferencedColumn = this.metadata.closureJunctionTable.descendantColumns[0].referencedColumn?.databasePath;
+
+        if (newParent) {
+            const children = await this.findDescendants(productCategory);
+            if (children.some(child => child.id === newParent?.id)) {
+                // if new assigned parent also is a child, it'll make an infinite loop
+                // don't assign such parents
+                newParent = currentParent;
+            }
+        }
 
         if (newParent?.id) {
 
-            await this.findDescendants(productCategory)
-
-
-            if (!productCategory[primaryColumn] || !currentParent) {
+            if (!productCategory[ancestorReferencedColumn] || !currentParent) {
                 // create action
-                if (productCategory[primaryColumn]) {
+                if (productCategory[ancestorReferencedColumn]) {
                     await getConnection().createQueryBuilder()
                         .insert()
                         .into(closureTableName, [ancestorColumn, descendantColumn])
                         .values({
-                            [ancestorColumn]: { [primaryColumn]: parseInt(newParent[primaryColumn]) },
-                            [descendantColumn]: { [primaryColumn]: parseInt(productCategory[primaryColumn]) },
+                            [ancestorColumn]: { [ancestorReferencedColumn]: parseInt(newParent[ancestorReferencedColumn]) },
+                            [descendantColumn]: { [ancestorReferencedColumn]: parseInt(productCategory[ancestorReferencedColumn]) },
                         })
                         .execute();
                 }
@@ -84,10 +95,10 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
                 await this.createQueryBuilder()
                     .update(closureTableName)
                     .set({
-                        [ancestorColumn]: { [primaryColumn]: newParent[primaryColumn] },
+                        [ancestorColumn]: { [ancestorReferencedColumn]: newParent[ancestorReferencedColumn] },
                     })
-                    .where(`${descendantColumn} = :descendant_id`, { descendant_id: productCategory[primaryColumn] })
-                    .andWhere(`${ancestorColumn} = :ancestor_id`, { ancestor_id: currentParent[primaryColumn] })
+                    .where(`${descendantColumn} = :descendantId`, { descendantId: productCategory[ancestorReferencedColumn] })
+                    .andWhere(`${ancestorColumn} = :ancestorId`, { ancestorId: currentParent[ancestorReferencedColumn] })
                     .execute();
 
                 productCategory.parent = newParent;
@@ -99,8 +110,8 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
             await this.createQueryBuilder()
                 .delete()
                 .from(closureTableName)
-                .where(`${descendantColumn} = :descendant_id`, { descendant_id: productCategory[primaryColumn] })
-                .andWhere(`${ancestorColumn} = :ancestor_id`, { ancestor_id: currentParent[primaryColumn] })
+                .where(`${descendantColumn} = :descendantId`, { descendantId: productCategory[ancestorReferencedColumn] })
+                .andWhere(`${ancestorColumn} = :ancestorId`, { ancestorId: currentParent[ancestorReferencedColumn] })
                 .execute();
 
             productCategory.parent = null;
@@ -112,7 +123,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async createProductCategory(createProductCategory: CreateProductCategory): Promise<ProductCategory> {
-        logFor('detailed', 'ProductCategoryRepository::createProductCategory');
+        logger.log('ProductCategoryRepository::createProductCategory');
         const productCategory = new ProductCategory();
 
         await this.handleProductCategoryInput(productCategory, createProductCategory);
@@ -124,7 +135,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async updateProductCategory(id: string, updateProductCategory: UpdateProductCategory): Promise<ProductCategory> {
-        logFor('detailed', 'ProductCategoryRepository::updateProductCategory id: ' + id);
+        logger.log('ProductCategoryRepository::updateProductCategory id: ' + id);
         const productCategory = await this.getProductCategoryById(id);
         if (!productCategory) throw new Error(`ProductCategory ${id} not found!`);
 
@@ -136,7 +147,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async deleteProductCategory(id: string): Promise<boolean> {
-        logFor('detailed', 'ProductCategoryRepository::deleteProductCategory id: ' + id);
+        logger.log('ProductCategoryRepository::deleteProductCategory id: ' + id);
         const productCategory = await this.getProductCategoryById(id);
         if (!productCategory) return false;
 
@@ -144,7 +155,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         const tableName = this.metadata.tablePath;
         const parentPropertyName = this.metadata.treeParentRelation?.joinColumns[0].propertyName;
         const parentColumn = this.metadata.treeParentRelation?.joinColumns[0].databaseName;
-        const primaryColumn = this.metadata.primaryColumns[0].databasePath;
         const closureTableName = this.metadata.closureJunctionTable.tablePath;
 
         const children = await this.getChildrenCategories(productCategory);
@@ -160,7 +170,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
             .execute();
 
 
-        // Set parent FK to null in the main table
+        // Set parent to null in the main table
         if (parentPropertyName && parentColumn) {
             await this.createQueryBuilder()
                 .update(tableName, { [parentPropertyName]: null })
@@ -173,7 +183,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async getCategoriesOfProduct(productId: string, params?: TPagedParams<TProductCategory>): Promise<TProductCategory[]> {
-        logFor('detailed', 'ProductCategoryRepository::getCategoriesOfProduct id: ' + productId);
+        logger.log('ProductCategoryRepository::getCategoriesOfProduct id: ' + productId);
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         applyGetManyFromOne(qb, this.metadata.tablePath, 'products',
             getCustomRepository(ProductRepository).metadata.tablePath, productId);
@@ -183,12 +193,12 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async getChildrenCategories(category: ProductCategory): Promise<ProductCategory[]> {
-        logFor('detailed', 'ProductCategoryRepository::getChildrenCategories id: ' + category.id);
+        logger.log('ProductCategoryRepository::getChildrenCategories id: ' + category.id);
         return (await this.findDescendantsTree(category)).children ?? [];
     }
 
     async getParentCategory(category: ProductCategory): Promise<ProductCategory | undefined | null> {
-        logFor('detailed', 'ProductCategoryRepository::getParentCategory id: ' + category.id);
+        logger.log('ProductCategoryRepository::getParentCategory id: ' + category.id);
 
         const ancestorsTree = await this.findAncestorsTree(category);
         return ancestorsTree.parent;

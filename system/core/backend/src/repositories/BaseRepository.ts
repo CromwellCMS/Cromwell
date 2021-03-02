@@ -2,6 +2,9 @@ import { TPagedList, TPagedParams, logFor } from '@cromwell/core';
 import { Repository } from 'typeorm';
 
 import { getPaged } from './BaseQueries';
+import { getLogger } from '../helpers/constants';
+
+const logger = getLogger('detailed');
 
 export class BaseRepository<EntityType, EntityInputType = EntityType> extends Repository<EntityType> {
 
@@ -12,19 +15,19 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async getPaged(params?: TPagedParams<EntityType>): Promise<TPagedList<EntityType>> {
-        logFor('all', 'BaseRepository::getPaged');
+        logger.log('BaseRepository::getPaged');
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         const paged = await getPaged(qb, this.metadata.tablePath, params);
         return paged;
     }
 
     async getAll(): Promise<EntityType[]> {
-        logFor('all', 'BaseRepository::getAll');
+        logger.log('BaseRepository::getAll');
         return this.find()
     }
 
     async getById(id: string, relations?: string[]): Promise<EntityType | undefined> {
-        logFor('all', 'BaseRepository::getById');
+        logger.log('BaseRepository::getById');
         const entity = await this.findOne({
             where: { id },
             relations
@@ -34,7 +37,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async getBySlug(slug: string, relations?: string[]): Promise<EntityType | undefined> {
-        logFor('all', 'BaseRepository::getBySlug');
+        logger.log('BaseRepository::getBySlug');
         const entity = await this.findOne({
             where: { slug },
             relations
@@ -44,7 +47,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async createEntity(input: EntityInputType): Promise<EntityType> {
-        logFor('all', 'BaseRepository::createEntity');
+        logger.log('BaseRepository::createEntity');
         let entity = new this.EntityClass();
         for (const key of Object.keys(input)) {
             entity[key] = input[key];
@@ -54,7 +57,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async updateEntity(id: string, input: EntityInputType): Promise<EntityType> {
-        logFor('all', 'BaseRepository::updateEntity');
+        logger.log('BaseRepository::updateEntity');
         let entity = await this.findOne({
             where: { id }
         });
@@ -69,7 +72,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async deleteEntity(id: string): Promise<boolean> {
-        logFor('all', 'BaseRepository::deleteEntity');
+        logger.log('BaseRepository::deleteEntity');
         const entity = await this.getById(id);
         if (!entity) {
             console.log(`BaseRepository::deleteEntity failed to find ${this.metadata.tablePath} ${id} by id: ${id}`);

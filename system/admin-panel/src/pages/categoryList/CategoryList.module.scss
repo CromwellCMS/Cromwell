@@ -11,7 +11,9 @@
 .header {
     @include paper;
     display: flex;
+    justify-content: space-between;
     margin-bottom: 15px;
+    padding: 0 10px;
 }
 
 .list {

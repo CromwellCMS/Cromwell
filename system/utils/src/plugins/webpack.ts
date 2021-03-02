@@ -19,7 +19,7 @@ export class CromwellWebpackPlugin {
         usedExternals?: Record<string, string[]>;
         filteredUsedExternals?: Record<string, string[]>;
         configuredExternals?: TExternal[];
-        moduleBuiltins?: Record<string, string[]>;
+        moduleBuiltins?: string[];
         moduleName?: string;
         moduleVer?: string;
         modulePackageJson?: TPackageJson;
@@ -64,7 +64,7 @@ export class CromwellWebpackPlugin {
                 return;
             }
 
-            if (moduleName && moduleBuiltins && moduleBuiltins[moduleName] && moduleBuiltins[moduleName].includes(source)) return;
+            if (moduleName && moduleBuiltins && moduleBuiltins.includes(source)) return;
 
             const depVersion = getDepVersion(this.modulePackageJson, source);
 
@@ -115,8 +115,8 @@ export class CromwellWebpackPlugin {
                 undefined,
                 function ({ context, request }, callback) {
                     if (!isExternalForm(request)) return callback();
-                    if (moduleName && moduleBuiltins && moduleBuiltins[moduleName] &&
-                        moduleBuiltins[moduleName].includes(request)) return callback();
+                    if (moduleBuiltins &&
+                        moduleBuiltins.includes(request)) return callback();
 
                     let isExternal = false;
                     if (packageExternals && packageExternals.includes(request)) {
