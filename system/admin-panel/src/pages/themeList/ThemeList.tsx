@@ -4,8 +4,8 @@ import { Badge, Button, Card, CardActionArea, CardActions, CardContent, Typograp
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { Skeleton } from '@material-ui/lab';
 
-import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { ManagerLogger } from '../../components/managerLogger/ManagerLogger';
 import { themeEditPageInfo } from '../../constants/PageInfos';
 import styles from './ThemeList.module.scss';
@@ -101,6 +101,11 @@ export default function ThemeList() {
 
     return (
         <div className={styles.ThemeList}>
+            {isLoading && [1, 2].map(index => {
+                return (
+                    <Skeleton key={index} variant="rect" height="388px" width="300px" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
+                )
+            })}
             {!isLoading && infos.map(info => {
                 const isActive = Boolean(cmsConfig && cmsConfig.themeName === info.name);
                 const entity = themeList?.find(ent => ent.name === info.name);
@@ -171,7 +176,6 @@ export default function ThemeList() {
                 )
             })}
             <ManagerLogger isActive={isChangingTheme} />
-            <LoadingStatus isActive={isLoading} />
         </div>
     )
 }

@@ -8,12 +8,18 @@ import { Edit as EditIcon, NavigateBefore as NavigateBeforeIcon, Settings as Set
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
+import { Skeleton } from '@material-ui/lab';
 
 import { toast } from '../../components/toast/toast';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
 import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
 import styles from './Post.module.scss';
 import PostSettings from './PostSettings';
+
+const textPreloader = [];
+for (let i = 0; i < 30; i++) {
+    textPreloader.push(<Skeleton variant="text" height="10px" style={{ margin: '3px 0' }} key={i} />)
+}
 
 const Post = (props) => {
     const { id: postId } = useParams<{ id: string }>();
@@ -266,6 +272,14 @@ const Post = (props) => {
                         )}
                 </div>
             </div>
+            {isLoading && (
+                <>
+                    <Skeleton width="100%" height="100px" style={{
+                        margin: '0 0 20px 0'
+                    }} />
+                    {textPreloader}
+                </>
+            )}
             <div className={styles.editor} id={editorId}></div>
             <div></div>
         </div>

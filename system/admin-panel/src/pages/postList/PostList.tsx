@@ -8,12 +8,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
 
-import LoadBox from '../../components/loadBox/LoadBox';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import { toast } from '../../components/toast/toast';
 import { postPageInfo } from '../../constants/PageInfos';
 import styles from './PostList.module.scss';
 import { PostListItem } from './PostListItem';
+import { listPreloader } from '../../components/SkeletonPreloader';
 
 export type ListItemProps = {
     handleDeletePostBtnClick: (postId: string) => void;
@@ -197,7 +197,7 @@ const PostList = () => {
                             </div>
                         )
                     },
-                    preloader: <LoadBox />
+                    preloader: listPreloader
                 }}
             />
             <ConfirmationModal

@@ -7,6 +7,7 @@ import {
 } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { Skeleton } from '@material-ui/lab';
 
 import ConfirmationModal from '../../components/modal/Confirmation';
 import { toast } from '../../components/toast/toast';
@@ -18,6 +19,7 @@ import styles from './CategoryList.module.scss';
 const CategoryList = () => {
     const client = getGraphQLClient();
     const [rootCategories, setRootCategories] = useState<TProductCategory[] | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const collapsedItemsRef = useRef<Record<string, boolean>>({});
     const deletedItemsRef = useRef<Record<string, boolean>>({});
     const forceUpdate = useForceUpdate();
@@ -25,10 +27,16 @@ const CategoryList = () => {
     const history = useHistory();
 
     const getRootCategories = async () => {
-        const categories = await client.getRootCategories();
-        if (categories && Array.isArray(categories)) {
-            setRootCategories(categories);
+        setIsLoading(true);
+        try {
+            const categories = await client.getRootCategories();
+            if (categories && Array.isArray(categories)) {
+                setRootCategories(categories);
+            }
+        } catch (e) {
+            console.error(e);
         }
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -104,6 +112,9 @@ const CategoryList = () => {
                 </div>
             </div>
             <div className={styles.list}>
+                {isLoading && [1, 2, 3, 4, 5].map(index => {
+                    return <Skeleton key={index} variant="text" height="20px" style={{ margin: '20px 20px 0 20px' }} />
+                })}
                 {rootCategories?.map(category => {
                     return (
                         <CategoryItem
