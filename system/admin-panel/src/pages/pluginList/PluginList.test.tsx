@@ -38,6 +38,12 @@ jest.mock('@cromwell/core-frontend', () => {
     }
 });
 
+jest.mock('../../constants/PageInfos', () => {
+    return {
+        pluginPageInfo: {},
+    }
+});
+
 import { fireEvent, render, screen, act } from '@testing-library/react';
 
 import PluginListPage from './PluginList';

@@ -14,6 +14,7 @@ import { PageBuilderView } from './pageBuilder/PageBuilderView';
 import { PageListItem } from './pageListItem/PageListItem';
 import { PageSettings } from './pageSettings/PageSettings';
 import styles from './ThemeEdit.module.scss';
+import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 
 
 class ThemeEditState {
@@ -159,7 +160,10 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
             <div className={styles.ThemeEdit}>
                 <div>
                     {isPageListLoading && (
-                        <LoadBox />
+                        <SkeletonPreloader style={{
+                            maxWidth: '300px',
+                            maxHeight: '400px'
+                        }} />
                     )}
                     {!isPageListLoading && (
                         <div className={styles.mainContainer}>

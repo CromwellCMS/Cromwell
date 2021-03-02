@@ -10,10 +10,10 @@ import {
     HighlightOff as HighlightOffIcon,
     OpenInNew as OpenInNewIcon,
 } from '@material-ui/icons';
+import { Skeleton } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
-import LoadBox from '../../components/loadBox/LoadBox';
 import { toast } from '../../components/toast/toast';
 import TransferList from '../../components/transferList/TransferList';
 import { productPageInfo } from '../../constants/PageInfos';
@@ -29,7 +29,7 @@ export type TInfoCardRef = {
 const ProductPage = () => {
     const { id: productId } = useParams<{ id: string }>();
     const client = getGraphQLClient();
-    const [loadingProgress, setIsloading] = useState([false, false]);
+    const [isLoading, setIsloading] = useState(false);
     // const [product, setProdData] = useState<TProduct | null>(null);
     const [attributes, setAttributes] = useState<TAttribute[]>([]);
     const [popperAnchorEl, setPopperAnchorEl] = React.useState<HTMLButtonElement | null>(null);
@@ -54,7 +54,7 @@ const ProductPage = () => {
     const getProduct = async () => {
         if (productId && productId !== 'new') {
 
-            setIsloading(loadingProgress.slice().splice(0, 1, true));
+            setIsloading(true);
             let prod: TProduct | undefined;
             try {
                 prod = await client?.getProductById(productId, gql`
@@ -99,7 +99,7 @@ const ProductPage = () => {
             }
             else setNotFound(true);
 
-            setIsloading(loadingProgress.slice().splice(0, 1, false));
+            setIsloading(false);
 
 
         } else if (productId === 'new') {
@@ -110,13 +110,13 @@ const ProductPage = () => {
     }
 
     const getAttributes = async () => {
-        setIsloading(loadingProgress.slice().splice(1, 1, true));
+        setIsloading(true);
         try {
             const attr = await client?.getAttributes();
             if (attr) setAttributes(attr);
         } catch (e) { console.log(e) }
 
-        setIsloading(loadingProgress.slice().splice(1, 1, false));
+        setIsloading(false);
     }
 
     useEffect(() => {
@@ -159,7 +159,7 @@ const ProductPage = () => {
                 pageDescription: product.pageDescription,
                 isEnabled: product.isEnabled,
             }
-            setIsloading(loadingProgress.slice().splice(0, 1, true));
+            setIsloading(true);
 
             if (productId === 'new') {
                 try {
@@ -189,18 +189,13 @@ const ProductPage = () => {
                 }
             }
 
-
-
-            setIsloading(loadingProgress.slice().splice(0, 1, false));
-
+            setIsloading(false);
         }
     }
 
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setActiveTabNum(newValue);
     }
-
-    const isLoading = loadingProgress.some(i => Boolean(i));
 
     const leftAttributesToAdd: TAttribute[] = [];
 
@@ -257,7 +252,10 @@ const ProductPage = () => {
                     </Tooltip>
                 </div>
             </div>
-            {isLoading && <LoadBox />}
+            {isLoading && <Skeleton width="100%" height="100%" style={{
+                transform: 'none',
+                margin: '20px 0'
+            }} />}
             {!isLoading && product && (
                 <>
                     <TabPanel value={activeTabNum} index={0}>

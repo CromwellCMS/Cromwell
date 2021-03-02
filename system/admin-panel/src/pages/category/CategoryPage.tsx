@@ -37,10 +37,11 @@ export default function CategoryPage() {
         else Object.keys(data).forEach(key => { categoryRef.current[key] = data[key] });
     }
 
-    const getProductCategoryById = async (id: string) => {
+    const getProductCategory = async (id: string) => {
         let categoryData: TProductCategory | undefined;
         try {
-            categoryData = await client?.getProductCategoryById(id, gql`
+            categoryData = await client?.getProductCategoryById(id,
+                gql`
                     fragment AdminPanelProductCategoryFragment on ProductCategory {
                         id
                         slug
@@ -51,6 +52,7 @@ export default function CategoryPage() {
                         name
                         mainImage
                         description
+                        descriptionDelta
                         children {
                             id
                             slug
@@ -59,7 +61,8 @@ export default function CategoryPage() {
                             id
                             slug
                         }
-                    }`, 'AdminPanelProductCategoryFragment'
+                    }`,
+                'AdminPanelProductCategoryFragment'
             );
 
         } catch (e) { console.log(e) }
@@ -81,7 +84,7 @@ export default function CategoryPage() {
 
     const init = async () => {
         if (categoryId && categoryId !== 'new') {
-            const categoryData = await getProductCategoryById(categoryId);
+            const categoryData = await getProductCategory(categoryId);
             if (categoryData?.id) {
                 setCategoryData(categoryData);
                 forceUpdate();
@@ -100,7 +103,15 @@ export default function CategoryPage() {
             getParentCategory(parentIdParam);
         }
 
-        quillEditor.current = initQuillEditor(`#${editorId}`, categoryRef.current.descriptionDelta);
+        let postContent;
+        try {
+            if (categoryRef.current?.descriptionDelta)
+                postContent = JSON.parse(categoryRef.current.descriptionDelta);
+        } catch (e) {
+            console.error(e);
+        }
+
+        quillEditor.current = initQuillEditor(`#${editorId}`, postContent);
     }
 
     useEffect(() => {
@@ -170,7 +181,7 @@ export default function CategoryPage() {
                 toast.success('Created category!');
                 history.push(`${categoryPageInfo.baseRoute}/${newData.id}`)
 
-                const categoryData = await getProductCategoryById(newData.id);
+                const categoryData = await getProductCategory(newData.id);
                 if (categoryData?.id) {
                     setCategoryData(categoryData);
                     forceUpdate();
@@ -184,7 +195,7 @@ export default function CategoryPage() {
         } else if (category?.id) {
             try {
                 await client?.updateProductCategory(category.id, inputData);
-                const categoryData = await getProductCategoryById(category.id);
+                const categoryData = await getProductCategory(category.id);
                 if (categoryData?.id) {
                     setCategoryData(categoryData);
                     forceUpdate();
@@ -230,7 +241,7 @@ export default function CategoryPage() {
                 <Autocomplete<TProductCategory>
                     loader={handleSearchRequest}
                     onSelect={handleParentCategoryChange}
-                    getOptionLabel={(data) => `${data.name} (id: ${data.id}; slug: ${data.slug})`}
+                    getOptionLabel={(data) => `${data.name} (id: ${data.id};${data?.parent?.id ? ` parent id: ${data.parent.id};` : ''})`}
                     getOptionValue={(data) => data.name}
                     fullWidth
                     className={styles.textField}

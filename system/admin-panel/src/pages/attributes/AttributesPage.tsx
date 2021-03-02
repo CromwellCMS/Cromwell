@@ -4,9 +4,9 @@ import { Button } from '@material-ui/core';
 import { AddCircleOutline as AddCircleOutlineIcon } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import AttributeItem from './AttributeItem';
 import styles from './Attributes.module.scss';
+import { Skeleton } from '@material-ui/lab';
 
 function useForceUpdate() {
     const [value, setValue] = useState(0);
@@ -49,6 +49,11 @@ export default function AttributesPage() {
                     <AttributeItem data={attribute} />
                 </div>
             ))}
+            {isLoading && [1, 2, 3,].map(index => {
+                return (
+                    <Skeleton key={index} variant="rect" height="315px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
+                )
+            })}
             {!isLoading && (
                 <div style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '15px' }}>
                     <Button
@@ -60,7 +65,6 @@ export default function AttributesPage() {
                     >Add attribute</Button>
                 </div>
             )}
-            <LoadingStatus isActive={isLoading} />
         </div>
     )
 }

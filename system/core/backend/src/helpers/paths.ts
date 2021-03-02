@@ -2,8 +2,9 @@ import { TModuleConfig, TPackageCromwellConfig, TPackageJson } from '@cromwell/c
 import fs from 'fs-extra';
 import { dirname, isAbsolute, resolve } from 'path';
 
-import { serverLogFor } from './constants';
+import { getLogger } from '../helpers/constants';
 
+const errorLog = getLogger('errors-only').error;
 export const cmsName = 'cromwell';
 export const tempDirName = `.${cmsName}`;
 export const buildDirName = `build`;
@@ -16,7 +17,7 @@ const resolveModulePath = (moduleName: string): string | undefined => {
     try {
         return require.resolve(`${moduleName}/package.json`);
     } catch (e) {
-        serverLogFor('errors-only', 'Failed to resolve module path of: ' + moduleName + e, 'Error');
+        errorLog('Failed to resolve module path of: ' + moduleName + e, 'Error');
     }
 }
 export const getNodeModuleDirSync = (moduleName: string) => {
@@ -141,7 +142,7 @@ export const getCmsModuleConfig = async (moduleName?: string): Promise<TModuleCo
         try {
             return require(configPath);
         } catch (e) {
-            serverLogFor('errors-only', 'Failed to require module config at: ' + configPath, 'Error');
+            errorLog('Failed to require module config at: ' + configPath, 'Error');
         }
     }
 }
@@ -177,6 +178,6 @@ export const getModulePackage = (moduleName?: string): TPackageJson | undefined 
     try {
         return require(`${moduleName}/package.json`);
     } catch (e) {
-        serverLogFor('errors-only', 'Failed to resolve module path of: ' + moduleName + e, 'Error');
+        errorLog('Failed to resolve module path of: ' + moduleName + e, 'Error');
     }
 }

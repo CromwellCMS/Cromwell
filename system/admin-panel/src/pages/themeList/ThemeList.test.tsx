@@ -29,6 +29,12 @@ const cmsSettings: TCmsSettings = {
 
 const installTheme = jest.fn().mockImplementation(async () => true);
 
+jest.mock('../../constants/PageInfos', () => {
+    return {
+        themeEditPageInfo: {},
+    }
+});
+
 jest.mock('@cromwell/core-frontend', () => {
     return {
         getGraphQLClient: () => {

@@ -5,6 +5,9 @@ import { ProductReview } from '../entities/ProductReview';
 import { getPaged, handleBaseInput, checkEntitySlug } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 import { ProductRepository } from './ProductRepository';
+import { getLogger } from '../helpers/constants';
+
+const logger = getLogger('detailed');
 
 @EntityRepository(ProductReview)
 export class ProductReviewRepository extends BaseRepository<ProductReview> {
@@ -15,7 +18,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
     }
 
     async getProductReview(id: string): Promise<ProductReview> {
-        logFor('detailed', 'ProductReviewRepository::getProductReview id: ' + id);
+        logger.log('ProductReviewRepository::getProductReview id: ' + id);
         const productReview = await this.findOne({
             where: { id }
         });
@@ -37,7 +40,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
     }
 
     async createProductReview(createProductReview: TProductReviewInput): Promise<TProductReview> {
-        logFor('detailed', 'ProductReviewRepository::createProductReview');
+        logger.log('ProductReviewRepository::createProductReview');
         let productReview = new ProductReview();
 
         await this.handleProductReviewInput(productReview, createProductReview);
@@ -49,7 +52,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
     }
 
     async updateProductReview(id: string, updateProductReview: TProductReviewInput): Promise<ProductReview> {
-        logFor('detailed', 'ProductReviewRepository::updateProductReview; id: ' + id);
+        logger.log('ProductReviewRepository::updateProductReview; id: ' + id);
         let productReview = await this.findOne({
             where: { id }
         });
@@ -64,7 +67,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
     }
 
     async deleteProductReview(id: string): Promise<boolean> {
-        logFor('detailed', 'ProductReviewRepository::deleteProductReview; id: ' + id);
+        logger.log('ProductReviewRepository::deleteProductReview; id: ' + id);
 
         const productReview = await this.getProductReview(id);
         if (!productReview) {

@@ -8,7 +8,7 @@ import {
     TThemeEntity,
     TThemeEntityInput,
 } from '@cromwell/core';
-import { configFileName, getNodeModuleDir, getPublicThemesDir, serverLogFor, getCmsModuleInfo } from '@cromwell/core-backend';
+import { configFileName, getNodeModuleDir, getPublicThemesDir, serverLogFor, getCmsModuleInfo, getLogger } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import decache from 'decache';
 import fs from 'fs-extra';
@@ -18,6 +18,8 @@ import { getCustomRepository } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
 import { CmsService } from './cms.service';
+
+const logger = getLogger('detailed');
 
 @Injectable()
 export class ThemeService {
@@ -92,18 +94,18 @@ export class ThemeService {
             try {
                 if (theme?.defaultSettings) themeConfig = JSON.parse(theme.defaultSettings);
             } catch (e) {
-                logFor('detailed', e, console.error);
+                logger.log(e, console.error);
             }
             try {
                 if (theme?.settings) userConfig = JSON.parse(theme.settings);
             } catch (e) {
-                logFor('detailed', e, console.error);
+                logger.log(e, console.error);
             }
 
             try {
                 if (theme?.moduleInfo) themeInfo = JSON.parse(theme.moduleInfo);
             } catch (e) {
-                logFor('detailed', e, console.error);
+                logger.log(e, console.error);
             }
         }
 
@@ -298,7 +300,7 @@ export class ThemeService {
      * @param cb cb to return pages info
      */
     public async readAllPageConfigs(): Promise<TPageConfig[]> {
-        logFor('detailed', 'themeController::readAllPageConfigs');
+        logger.log('themeController::readAllPageConfigs');
 
         const { themeConfig, userConfig, cmsSettings } = await this.readConfigs();
 

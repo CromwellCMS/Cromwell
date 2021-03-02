@@ -63,7 +63,7 @@ class Autocomplete<TItemDataType> extends React.Component<{
         }
 
         for (let i = 0; i < 5; i++) {
-            this.listSkeleton.push(<Skeleton variant="text" height="20px" style={{ margin: '5px 20px' }} />)
+            this.listSkeleton.push(<Skeleton key={i} variant="text" height="20px" style={{ margin: '5px 20px' }} />)
         }
     }
 

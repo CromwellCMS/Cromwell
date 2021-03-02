@@ -1,28 +1,29 @@
 import {
     BasePagePaths,
     getStoreItem,
-    logFor,
     TFilteredProductList,
     TPagedList,
     TPagedParams,
     TProduct,
     TProductFilter,
+    TProductFilterMeta,
     TProductInput,
     TProductRating,
     TProductReview,
-    TProductFilterMeta
 } from '@cromwell/core';
 import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
 import { ProductFilterInput } from '../entities/filter/ProductFilterInput';
 import { Product } from '../entities/Product';
 import { ProductReview } from '../entities/ProductReview';
+import { getLogger } from '../helpers/constants';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { applyGetManyFromOne, checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { ProductReviewRepository } from './ProductReviewRepository';
 
+const logger = getLogger('detailed');
 const averageKey: keyof Product = 'averageRating';
 const reviewsCountKey: keyof Product = 'reviewsCount'
 const ratingKey: keyof TProductReview = 'rating';
@@ -53,14 +54,14 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async getProducts(params: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
-        logFor('detailed', 'ProductRepository::getProducts');
+        logger.log('ProductRepository::getProducts');
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         const prods = await this.applyAndGetPagedProducts(qb, params)
         return prods;
     }
 
     async getProductById(id: string): Promise<Product | undefined> {
-        logFor('detailed', 'ProductRepository::getProductById id: ' + id);
+        logger.log('ProductRepository::getProductById id: ' + id);
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         this.applyGetProductRating(qb);
         return qb.where(`${this.metadata.tablePath}.id = :id`, { id })
@@ -68,7 +69,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async getProductBySlug(slug: string): Promise<Product | undefined> {
-        logFor('detailed', 'ProductRepository::getProductBySlug slug: ' + slug);
+        logger.log('ProductRepository::getProductBySlug slug: ' + slug);
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         this.applyGetProductRating(qb);
         return qb.where(`${this.metadata.tablePath}.slug = :slug`, { slug })
@@ -107,7 +108,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async createProduct(createProduct: TProductInput): Promise<Product> {
-        logFor('detailed', 'ProductRepository::createProduct');
+        logger.log('ProductRepository::createProduct');
         let product = new Product();
 
         await this.handleProductInput(product, createProduct);
@@ -121,7 +122,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async updateProduct(id: string, updateProduct: TProductInput): Promise<Product> {
-        logFor('detailed', 'ProductRepository::updateProduct id: ' + id);
+        logger.log('ProductRepository::updateProduct id: ' + id);
         let product = await this.findOne({
             where: { id },
             relations: ["categories"]
@@ -139,7 +140,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async deleteProduct(id: string): Promise<boolean> {
-        logFor('detailed', 'ProductRepository::deleteProduct; id: ' + id);
+        logger.log('ProductRepository::deleteProduct; id: ' + id);
 
         const product = await this.getProductById(id);
         if (!product) {
@@ -152,7 +153,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
-        logFor('detailed', 'ProductRepository::getProductsFromCategory id: ' + categoryId);
+        logger.log('ProductRepository::getProductsFromCategory id: ' + categoryId);
         const categoryTable = getCustomRepository(ProductCategoryRepository).metadata.tablePath;
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         applyGetManyFromOne(qb, this.metadata.tablePath, 'categories', categoryTable, categoryId);
@@ -160,7 +161,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async getReviewsOfProduct(productId: string, params?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
-        logFor('detailed', 'ProductRepository::getReviewsOfProduct id: ' + productId);
+        logger.log('ProductRepository::getReviewsOfProduct id: ' + productId);
         const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
 
         const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable);
@@ -169,7 +170,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async getProductRating(productId: string): Promise<TProductRating> {
-        logFor('detailed', 'ProductRepository::getProductRating id: ' + productId);
+        logger.log('ProductRepository::getProductRating id: ' + productId);
         const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
         const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable);
         applyGetManyFromOne(qb, reviewTable, 'product', this.metadata.tablePath, productId);
@@ -185,7 +186,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async getFilteredProducts(pagedParams?: PagedParamsInput<TProduct>, filterParams?: ProductFilterInput, categoryId?: string): Promise<TFilteredProductList> {
-        logFor('detailed', 'ProductRepository::getFilteredProducts categoryId:' + categoryId + ' pagedParams:' + pagedParams);
+        logger.log('ProductRepository::getFilteredProducts categoryId:' + categoryId + ' pagedParams:' + pagedParams);
         const timestamp = Date.now();
 
         const applyProductFilter = (qb: SelectQueryBuilder<TProduct>, filterParams: TProductFilter, shouldApplyPriceFilter = true) => {
@@ -284,7 +285,7 @@ export class ProductRepository extends BaseRepository<Product> {
         const [filterMeta, paged] = await Promise.all([getFilterMeta(), getElements()]);
 
         const timestamp2 = Date.now();
-        logFor('detailed', 'ProductRepository::getFilteredProducts time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+        logger.log('ProductRepository::getFilteredProducts time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
         const filtered: TFilteredProductList = {
             ...paged,

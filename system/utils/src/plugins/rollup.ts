@@ -44,6 +44,7 @@ import {
     globPackages,
     interopDefaultContent,
     isExternalForm,
+    parseFrontendDeps,
 } from '../shared';
 
 const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): boolean => {
@@ -420,6 +421,8 @@ export const rollupPluginCromwellFrontend = (settings?: {
         internals: string[];
     }> = {};
 
+    if (settings?.frontendDeps) settings.frontendDeps = parseFrontendDeps(settings.frontendDeps);
+
     // Defer stylesheetsLoader until compile info available. Look for: stylesheetsLoaderStarter()
     let stylesheetsLoaderStarter;
     if (settings?.srcDir && settings?.buildDir) {
@@ -441,7 +444,6 @@ export const rollupPluginCromwellFrontend = (settings?: {
     const plugin: Plugin = {
         name: 'cromwell-frontend',
         options(options: RollupOptions) {
-
             if (!options.plugins) options.plugins = [];
             options.plugins.push(externalGlobals((id) => {
                 if (resolveExternal(id, settings?.frontendDeps)) return `${cromwellStoreModulesPath}["${id}"]`;

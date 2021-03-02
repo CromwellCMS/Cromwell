@@ -1,9 +1,10 @@
-import { logFor } from '@cromwell/core';
+import { getLogger } from '@cromwell/core-backend';
 import { Controller, Get } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { MockService } from '../services/mock.service';
 
+const logger = getLogger('detailed');
 
 @ApiBearerAuth()
 @ApiTags('Mock')
@@ -20,7 +21,7 @@ export class MockController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockAll(): Promise<boolean> {
-        logFor('detailed', 'MockController::mockAll');
+        logger.log('MockController::mockAll');
 
         return this.mockService.mockAll();
     }
@@ -34,7 +35,7 @@ export class MockController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockProducts(): Promise<boolean> {
 
-        logFor('detailed', 'MockController::mockProducts');
+        logger.log('MockController::mockProducts');
 
         return this.mockService.mockProducts();
     }
@@ -49,7 +50,7 @@ export class MockController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockCategories(): Promise<boolean> {
 
-        logFor('detailed', 'MockController::mockCategories');
+        logger.log('MockController::mockCategories');
 
         return this.mockService.mockCategories();
     }
@@ -64,7 +65,7 @@ export class MockController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockAttributes(): Promise<boolean> {
 
-        logFor('detailed', 'MockController::mockAttributes');
+        logger.log('MockController::mockAttributes');
 
         return this.mockService.mockAttributes();
     }
@@ -78,7 +79,7 @@ export class MockController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockReviews(): Promise<boolean> {
-        logFor('detailed', 'MockController::mockReviews');
+        logger.log('MockController::mockReviews');
 
         return this.mockService.mockReviews();
     }
@@ -92,7 +93,7 @@ export class MockController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockUsers(): Promise<boolean> {
-        logFor('detailed', 'MockController::mockUsers');
+        logger.log('MockController::mockUsers');
 
         return this.mockService.mockUsers();
     }
@@ -106,7 +107,7 @@ export class MockController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async mockPosts(): Promise<boolean> {
-        logFor('detailed', 'MockController::mockPosts');
+        logger.log('MockController::mockPosts');
 
         return this.mockService.mockPosts();
     }

@@ -1,11 +1,17 @@
 import { TProductCategory } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { IconButton, Tooltip } from '@material-ui/core';
-import { Add as AddIcon, Remove as RemoveIcon } from '@material-ui/icons';
-import { toast } from '../../components/toast/toast';
+import {
+    UnfoldLess as UnfoldLessIcon, UnfoldMore as UnfoldMoreIcon,
+    Add as AddIcon
+} from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
-import ConfirmationModal from '../../components/modal/Confirmation';
+import { useHistory } from 'react-router-dom';
+import { Skeleton } from '@material-ui/lab';
 
+import ConfirmationModal from '../../components/modal/Confirmation';
+import { toast } from '../../components/toast/toast';
+import { categoryPageInfo } from '../../constants/PageInfos';
 import CategoryItem from './CategoryItem';
 import styles from './CategoryList.module.scss';
 
@@ -13,16 +19,24 @@ import styles from './CategoryList.module.scss';
 const CategoryList = () => {
     const client = getGraphQLClient();
     const [rootCategories, setRootCategories] = useState<TProductCategory[] | null>(null);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const collapsedItemsRef = useRef<Record<string, boolean>>({});
     const deletedItemsRef = useRef<Record<string, boolean>>({});
     const forceUpdate = useForceUpdate();
     const [categoryToDelete, setCategoryToDelete] = useState<TProductCategory | null>(null);
+    const history = useHistory();
 
     const getRootCategories = async () => {
-        const categories = await client.getRootCategories();
-        if (categories && Array.isArray(categories)) {
-            setRootCategories(categories);
+        setIsLoading(true);
+        try {
+            const categories = await client.getRootCategories();
+            if (categories && Array.isArray(categories)) {
+                setRootCategories(categories);
+            }
+        } catch (e) {
+            console.error(e);
         }
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -58,29 +72,49 @@ const CategoryList = () => {
         forceUpdate();
     }
 
+    const handleCreate = () => {
+        history.push(`${categoryPageInfo.baseRoute}/new`)
+    }
+
     return (
         <div className={styles.CategoryList} >
             <div className={styles.header}>
-                <Tooltip title="Expand all">
-                    <IconButton
-                        className={styles.actionBtn}
-                        aria-label="Expand all"
-                        onClick={handleExpandAll}
-                    >
-                        <AddIcon />
-                    </IconButton>
-                </Tooltip>
-                <Tooltip title="Collapse all">
-                    <IconButton
-                        className={styles.actionBtn}
-                        aria-label="Collapse all"
-                        onClick={hanleCollapseAll}
-                    >
-                        <RemoveIcon />
-                    </IconButton>
-                </Tooltip>
+                <div>
+                    <Tooltip title="Expand all">
+                        <IconButton
+                            className={styles.actionBtn}
+                            aria-label="Expand all"
+                            onClick={handleExpandAll}
+                        >
+                            <UnfoldMoreIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Collapse all">
+                        <IconButton
+                            className={styles.actionBtn}
+                            aria-label="Collapse all"
+                            onClick={hanleCollapseAll}
+                        >
+                            <UnfoldLessIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+                <div>
+                    <Tooltip title="Create category">
+                        <IconButton
+                            className={styles.actionBtn}
+                            aria-label="Create category"
+                            onClick={handleCreate}
+                        >
+                            <AddIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
             </div>
             <div className={styles.list}>
+                {isLoading && [1, 2, 3, 4, 5].map(index => {
+                    return <Skeleton key={index} variant="text" height="20px" style={{ margin: '20px 20px 0 20px' }} />
+                })}
                 {rootCategories?.map(category => {
                     return (
                         <CategoryItem

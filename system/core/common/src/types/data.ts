@@ -173,7 +173,7 @@ export type TCromwellNodeModules = {
     importStatuses?: Record<string, 'failed' | 'ready' | 'default' | Promise<'failed' | 'ready' | 'default'>>;
     scriptStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
     imports?: Record<string, () => void>;
-    modules?: Record<string, Object>;
+    modules?: Record<string, Object & { didDefaultImport?: boolean }>;
     moduleExternals?: Record<string, string[]>;
     importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean> | boolean;
     importSciptExternals?: (metaInfo: TSciprtMetaInfo) => Promise<boolean>;

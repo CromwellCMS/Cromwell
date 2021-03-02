@@ -2,9 +2,18 @@ import React from 'react';
 import { TPost } from '@cromwell/core';
 
 jest.mock('react-router-dom', () => {
+    const originalModule = jest.requireActual('react-router-dom');
     return {
         useParams: () => ({ id: '1' }),
-        useHistory: () => { }
+        useHistory: () => { },
+        BrowserRouter: originalModule.BrowserRouter,
+    }
+});
+
+jest.mock('../../constants/PageInfos', () => {
+    return {
+        postListInfo: {},
+        postPageInfo: {},
     }
 });
 

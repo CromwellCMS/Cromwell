@@ -1,10 +1,12 @@
-import { logFor, TFrontendBundle, TPluginConfig } from '@cromwell/core';
+import { TFrontendBundle, TPluginConfig } from '@cromwell/core';
+import { getLogger } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { PluginService } from '../services/plugin.service';
 
+const logger = getLogger('detailed');
 
 @ApiBearerAuth()
 @ApiTags('Plugins')
@@ -23,7 +25,7 @@ export class PluginController {
         status: 200,
     })
     async getPluginConfig(@Query('pluginName') pluginName: string): Promise<TPluginConfig | undefined> {
-        logFor('detailed', 'PluginController::getPluginConfig ' + pluginName);
+        logger.log('PluginController::getPluginConfig ' + pluginName);
 
         if (pluginName && pluginName !== "") {
             const plugin = await this.pluginService.findOne(pluginName);
@@ -34,12 +36,12 @@ export class PluginController {
                 try {
                     if (plugin.defaultSettings) defaultSettings = JSON.parse(plugin.defaultSettings);
                 } catch (e) {
-                    logFor('detailed', e, console.error);
+                    logger.log(e, console.error);
                 }
                 try {
                     if (plugin.settings) settings = JSON.parse(plugin.settings);
                 } catch (e) {
-                    logFor('detailed', e, console.error);
+                    logger.log(e, console.error);
                 }
 
                 const out = Object.assign({}, defaultSettings, settings);
@@ -63,7 +65,7 @@ export class PluginController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async savePluginConfig(@Query('pluginName') pluginName: string, @Body() input): Promise<boolean> {
 
-        logFor('detailed', 'PluginController::savePluginConfig');
+        logger.log('PluginController::savePluginConfig');
         if (pluginName && pluginName !== "") {
             const plugin = await this.pluginService.findOne(pluginName);
             if (plugin) {
@@ -71,7 +73,7 @@ export class PluginController {
                 await this.pluginService.save(plugin);
                 return true;
             } else {
-                logFor('errors-only', `PluginController::savePluginConfig Error Plugin ${pluginName} was no found!`);
+                logger.error(`PluginController::savePluginConfig Error Plugin ${pluginName} was no found!`);
             }
         }
         return false;
@@ -88,7 +90,7 @@ export class PluginController {
         type: FrontendBundleDto
     })
     async getPluginFrontendBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
-        logFor('detailed', 'PluginController::getPluginFrontendBundle');
+        logger.log('PluginController::getPluginFrontendBundle');
 
         if (pluginName && pluginName !== "") {
             const bundle = await this.pluginService.getPluginBundle(pluginName, 'frontend');
@@ -112,7 +114,7 @@ export class PluginController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPluginAdminBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
-        logFor('detailed', 'PluginController::getPluginAdminBundle');
+        logger.log('PluginController::getPluginAdminBundle');
 
         if (pluginName && pluginName !== "") {
             const bundle = await this.pluginService.getPluginBundle(pluginName, 'admin');
@@ -135,7 +137,7 @@ export class PluginController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPluginList(): Promise<string[]> {
-        logFor('detailed', 'PluginController::getPluginList');
+        logger.log('PluginController::getPluginList');
         return (await this.pluginService.getAll()).map(ent => ent.name);
     }
 
@@ -152,7 +154,7 @@ export class PluginController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async installPlugin(@Query('pluginName') pluginName: string): Promise<boolean> {
-        logFor('detailed', 'PluginController::installPlugin');
+        logger.log('PluginController::installPlugin');
 
         if (pluginName && pluginName !== "") {
             return this.pluginService.installPlugin(pluginName);

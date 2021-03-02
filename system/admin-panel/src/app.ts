@@ -7,14 +7,18 @@ import ReactDOM from 'react-dom';
 
 import Layout from './components/layout/Layout';
 
+
 const importer = getModuleImporter();
 
 importer.modules['@cromwell/core-frontend'] = coreFrontend;
 importer.modules['@cromwell/core'] = core;
 
-
 (async () => {
-  await getRestAPIClient()?.getCmsSettingsAndSave();
+  try {
+    await getRestAPIClient()?.getCmsSettingsAndSave();
+  } catch (e) {
+    console.error(e);
+  }
 
   ReactDOM.render(
     React.createElement(Layout),

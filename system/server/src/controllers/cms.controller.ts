@@ -1,5 +1,5 @@
 import { logFor, TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
-import { getCmsModuleInfo, getPublicDir, readCmsModules } from '@cromwell/core-backend';
+import { getCmsModuleInfo, getPublicDir, readCmsModules, getLogger } from '@cromwell/core-backend';
 import { Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
@@ -9,6 +9,8 @@ import { CmsConfigDto } from '../dto/cms-config.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { CmsService } from '../services/cms.service';
 import { publicSystemDirs } from '../helpers/constants';
+
+const logger = getLogger('detailed');
 
 @ApiBearerAuth()
 @ApiTags('CMS')
@@ -27,7 +29,7 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getConfig(): Promise<TCmsSettings | undefined> {
-        logFor('detailed', 'CmsController::getConfig');
+        logger.log('CmsController::getConfig');
         const config = await this.cmsService.getSettings();
         if (!config) {
             throw new HttpException('CmsController::getConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -48,7 +50,7 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async setThemeName(@Query('themeName') themeName: string): Promise<boolean> {
-        logFor('detailed', 'CmsController::setThemeName');
+        logger.log('CmsController::setThemeName');
 
         if (themeName && themeName !== "") {
             return this.cmsService.setThemeName(themeName);
@@ -65,7 +67,7 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getThemes(): Promise<TPackageCromwellConfig[] | undefined> {
-        logFor('detailed', 'CmsController::getThemes');
+        logger.log('CmsController::getThemes');
         let out: TPackageCromwellConfig[] = [];
 
         const themeModuleNames = (await readCmsModules()).themes;
@@ -92,7 +94,7 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPlugins(): Promise<TPackageCromwellConfig[]> {
-        logFor('detailed', 'CmsController::getPlugins');
+        logger.log('CmsController::getPlugins');
         let out: TPackageCromwellConfig[] = [];
 
         const pluginModules = (await readCmsModules()).plugins;

@@ -8,9 +8,9 @@ import React, { useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
 
-import LoadBox from '../../components/loadBox/LoadBox';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import { toast } from '../../components/toast/toast';
+import { listPreloader } from '../../components/SkeletonPreloader';
 import { productPageInfo } from '../../constants/PageInfos';
 import styles from './ProductList.module.scss';
 import { ProductListItem } from './ProductListItem';
@@ -18,6 +18,8 @@ import { ProductListItem } from './ProductListItem';
 export type ListItemProps = {
     handleDeleteProductBtnClick: (product: TProduct) => void;
 }
+
+
 
 const ProductList = () => {
     const client = getGraphQLClient();
@@ -80,7 +82,7 @@ const ProductList = () => {
         history.push(`${productPageInfo.baseRoute}/new`);
     }
 
-  
+
 
 
 
@@ -130,7 +132,7 @@ const ProductList = () => {
                             </div>
                         )
                     },
-                    preloader: <LoadBox />
+                    preloader: listPreloader
                 }}
             />
             <ConfirmationModal

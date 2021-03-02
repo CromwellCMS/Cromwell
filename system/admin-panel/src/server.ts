@@ -125,7 +125,7 @@ const start = async () => {
     if (isDevelopment) {
 
         const buildProc = fork(resolve(serviceBuildDir, 'compiler.js'), watch ? ['--watch'] : [],
-            { stdio: 'inherit', cwd: getAdminPanelDir() });
+            { stdio: 'inherit', cwd: getAdminPanelDir(), env: { NODE_ENV: 'development' } });
 
         buildProc.on('message', (message) => {
             if (message === adminPanelMessages.onBuildEndMessage && bs) {

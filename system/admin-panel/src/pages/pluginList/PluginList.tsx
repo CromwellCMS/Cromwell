@@ -11,8 +11,8 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { pluginPageInfo } from '../../constants/PageInfos';
+import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 import styles from './PluginList.module.scss';
 
 export default function PluginList() {
@@ -84,6 +84,11 @@ export default function PluginList() {
                 size="large"
                 startIcon={<AddCircleOutlineIcon />}
             >Add plugins</Button>
+            {isLoading && (
+                <SkeletonPreloader style={{
+                    maxHeight: '400px'
+                }} />
+            )}
             {!isLoading && pluginInfoList && pluginInfoList.map(info => {
                 const pluginName = info.name;
                 const pluginIcon = info.icon;
@@ -123,7 +128,6 @@ export default function PluginList() {
                     </div>
                 </div>)
             })}
-            <LoadingStatus isActive={isLoading} />
         </div>
     )
 }

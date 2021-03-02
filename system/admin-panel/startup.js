@@ -38,7 +38,7 @@ const main = async () => {
         }
 
         spawn(`node ${resolve(buildDir, 'server.js')}`, ['development'],
-            { shell: true, stdio: 'inherit', cwd: process.cwd() });
+            { shell: true, stdio: 'inherit', cwd: process.cwd(), env: { NODE_ENV: 'development' } });
 
         return;
     }

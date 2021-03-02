@@ -8,7 +8,6 @@ const chalk = require('react-dev-utils/chalk');
 const run = async () => {
     const args = yargs(process.argv.slice(2));
 
-    webpackConfig.mode = 'development';
     const compiler = webpack(webpackConfig);
 
     compiler.hooks.watchRun.tap('adminPanelStart', (params) => {

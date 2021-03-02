@@ -1,15 +1,12 @@
 import { logFor, TPagedList, TProduct } from '@cromwell/core';
-import {
-    PagedProduct,
-    PluginRepository,
-    ProductCategory,
-    ProductCategoryRepository,
-    ProductRepository,
-} from '@cromwell/core-backend';
+import { getLogger, PagedProduct, PluginRepository, ProductCategory, ProductRepository } from '@cromwell/core-backend';
 import { Arg, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { TSettings } from '../../types';
+
+const logger = getLogger('detailed');
+
 
 @Resolver(ProductCategory)
 export default class ProductShowcaseResolver {
@@ -18,7 +15,7 @@ export default class ProductShowcaseResolver {
 
     @Query(() => PagedProduct)
     async productShowcase(@Arg("slug", { nullable: true }) slug?: string): Promise<TPagedList<TProduct>> {
-        logFor('detailed', 'ProductShowcaseResolver::productShowcase slug:' + slug);
+        logger.log('ProductShowcaseResolver::productShowcase slug:' + slug);
         const timestamp = Date.now();
 
         let products: TPagedList<TProduct> = {
@@ -60,7 +57,7 @@ export default class ProductShowcaseResolver {
         }
 
         const timestamp2 = Date.now();
-        logFor('detailed', 'ProductShowcaseResolver::productShowcase time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+        logger.log('ProductShowcaseResolver::productShowcase time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
         return products;
     }

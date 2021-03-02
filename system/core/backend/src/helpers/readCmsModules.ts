@@ -2,13 +2,15 @@ import { TPackageJson } from '@cromwell/core';
 import { resolve, dirname } from 'path';
 import { serverLogFor } from './constants';
 import { getNodeModuleDir, getNodeModuleDirSync, cmsName } from './paths';
+import { getLogger } from '../helpers/constants';
 
 const defaultThemes = ["@cromwell/theme-store"];
+const logger = getLogger('errors-warnings');
 
 const reqModule = (name: string) => {
     try {
         return require(name);
-    } catch (e) { serverLogFor('errors-warnings', 'readCmsModules: Failed to require ' + name, 'Warning') }
+    } catch (e) { logger.warn('readCmsModules: Failed to require ' + name) }
 }
 
 export const readCmsModules = async () => {

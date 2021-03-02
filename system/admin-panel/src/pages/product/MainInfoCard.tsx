@@ -3,20 +3,20 @@ import { CGallery, getCStore } from '@cromwell/core-frontend';
 import { IconButton, TextField, Tooltip } from '@material-ui/core';
 import {
     Add as AddIcon,
+    Delete as DeleteIcon,
     DeleteForever as DeleteForeverIcon,
     Edit as EditIcon,
     Star as StarIcon,
     StarBorder as StarBorderIcon,
-    Delete as DeleteIcon,
 } from '@material-ui/icons';
+import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import NumberFormat from 'react-number-format';
+
 import { getFileManager } from '../../components/fileManager/helpers';
-import { editorId } from './Product';
-import styles from './Product.module.scss';
-import Quill from 'quill';
 import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
-import { TInfoCardRef } from './Product';
+import { editorId, TInfoCardRef } from './Product';
+import styles from './Product.module.scss';
 
 interface NumberFormatCustomProps {
     inputRef: (instance: NumberFormat | null) => void;
@@ -92,7 +92,7 @@ const MainInfoCard = (props: {
     }
 
     useEffect(() => {
-        let descriptionDelta: string | undefined;
+        let descriptionDelta;
         if (product?.descriptionDelta) {
             try {
                 descriptionDelta = JSON.parse(product.descriptionDelta);

@@ -1,5 +1,5 @@
 import { logFor, TFrontendBundle, TPageConfig, TPageInfo, TThemeConfig, TPackageCromwellConfig } from '@cromwell/core';
-import { getThemeAdminPanelBundleDir, serverLogFor } from '@cromwell/core-backend';
+import { getThemeAdminPanelBundleDir, serverLogFor, getLogger } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
@@ -13,6 +13,8 @@ import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { CmsService } from '../services/cms.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
+
+const logger = getLogger('detailed');
 
 @ApiBearerAuth()
 @ApiTags('Themes')
@@ -36,8 +38,7 @@ export class ThemeController {
         type: PageConfigDto
     })
     async getPageConfig(@Query('pageRoute') pageRoute: string): Promise<TPageConfig | null> {
-
-        logFor('detailed', 'ThemeController::getPageConfig');
+        logger.log('ThemeController::getPageConfig');
 
         let out: TPageConfig | null = null;
         if (pageRoute && typeof pageRoute === 'string') {
@@ -57,8 +58,7 @@ export class ThemeController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async savePageConfig(@Body() input: PageConfigDto): Promise<boolean> {
-
-        logFor('detailed', 'ThemeController::savePageConfig');
+        logger.log('ThemeController::savePageConfig');
         if (typeof input === 'string') {
             try {
                 input = JSON.parse(input);
@@ -83,8 +83,7 @@ export class ThemeController {
         status: 200,
     })
     async getPluginsAtPage(@Query('pageRoute') pageRoute: string): Promise<Record<string, any>> {
-
-        logFor('detailed', 'ThemeController::getPluginsAtPage');
+        logger.log('ThemeController::getPluginsAtPage');
         const out: Record<string, any> = {};
 
         if (pageRoute && typeof pageRoute === 'string') {
@@ -121,7 +120,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getAllPluginNames(): Promise<string[]> {
 
-        logFor('detailed', 'ThemeController::getAllPluginNames');
+        logger.log('ThemeController::getAllPluginNames');
         const out: string[] = [];
 
         const pages = await this.themeService.readAllPageConfigs();
@@ -148,7 +147,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPagesInfo(): Promise<TPageInfo[]> {
 
-        logFor('detailed', 'ThemeController::getPagesInfo');
+        logger.log('ThemeController::getPagesInfo');
         const out: TPageInfo[] = [];
 
         const { themeConfig, userConfig, cmsSettings } = await this.themeService.readConfigs();
@@ -195,7 +194,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getAllPageConfigs(): Promise<TPageConfig[]> {
 
-        logFor('detailed', 'ThemeController::getAllPageConfigs');
+        logger.log('ThemeController::getAllPageConfigs');
         return this.themeService.readAllPageConfigs();
     }
 
@@ -210,7 +209,7 @@ export class ThemeController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getThemeConfig(): Promise<TThemeConfig | null> {
-        logFor('detailed', 'ThemeController::getThemeConfig');
+        logger.log('ThemeController::getThemeConfig');
         const { themeConfig } = await this.themeService.readConfigs();
 
         return themeConfig;
@@ -226,7 +225,7 @@ export class ThemeController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getThemeInfo(): Promise<TPackageCromwellConfig | null> {
-        logFor('detailed', 'ThemeController::getThemeInfo');
+        logger.log('ThemeController::getThemeInfo');
         const { themeInfo } = await this.themeService.readConfigs();
 
         return themeInfo;
@@ -241,7 +240,7 @@ export class ThemeController {
         status: 200,
     })
     async getCustomConfig(): Promise<Record<string, any>> {
-        logFor('detailed', 'ThemeController::getCustomConfig');
+        logger.log('ThemeController::getCustomConfig');
         let out: Record<string, any> = {};
         const { themeConfig, userConfig } = await this.themeService.readConfigs();
         out = Object.assign(out, themeConfig?.themeCustomConfig, userConfig?.themeCustomConfig);
@@ -260,7 +259,7 @@ export class ThemeController {
     })
     async getPageBundle(@Query('pageRoute') pageRoute: string): Promise<TFrontendBundle | null> {
 
-        logFor('detailed', 'ThemeController::getPageBundle');
+        logger.log('ThemeController::getPageBundle');
         let out: TFrontendBundle | null = null;
 
         if (!pageRoute || pageRoute === "") throw new HttpException('Invalid pageRoute or bundle not found', HttpStatus.NOT_ACCEPTABLE);
@@ -308,7 +307,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async installTheme(@Query('themeName') themeName: string): Promise<boolean> {
 
-        logFor('detailed', 'ThemeController::installTheme');
+        logger.log('ThemeController::installTheme');
 
         if (themeName && themeName !== "") {
             this.themeService.installTheme(themeName);
