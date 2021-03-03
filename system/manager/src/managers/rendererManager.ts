@@ -45,7 +45,9 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
         throw new Error(message);
     }
 
-    if (command !== 'build' && await isPortUsed(cmsConfig.frontendPort)) {
+    const isBuild = command === 'build' || command === 'buildService';
+
+    if (!isBuild && await isPortUsed(cmsConfig.frontendPort)) {
         const message = `Manager: Failed to start Renderer: frontendPort ${cmsConfig.frontendPort} is already in use. You may want to run close command: cromwell close --sv renderer`;
         errorLogger(message);
         throw new Error(message);
@@ -74,7 +76,7 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
             name: cacheKeys.renderer,
             args: [rendererEnv, `--theme-name=${themeName}`],
             sync: command === 'build' ? true : false,
-            watchName: command !== 'build' ? 'renderer' : undefined,
+            watchName: !isBuild ? 'renderer' : undefined,
             onVersionChange: async () => {
                 if (cmsConfig.useWatch) {
                     await closeRenderer();
