@@ -20,7 +20,7 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
         throw new Error(message);
     }
 
-    if (await isPortUsed(cmsConfig.apiPort)) {
+    if (command !== 'build' && await isPortUsed(cmsConfig.apiPort)) {
         const message = `Manager: Failed to start Server: apiPort ${cmsConfig.apiPort} is already in use. You may want to run close command: cromwell close --sv server`;
         logger.error(message);
         throw new Error(message);

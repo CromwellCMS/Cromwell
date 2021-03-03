@@ -45,7 +45,7 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
         throw new Error(message);
     }
 
-    if (await isPortUsed(cmsConfig.frontendPort)) {
+    if (command !== 'build' && await isPortUsed(cmsConfig.frontendPort)) {
         const message = `Manager: Failed to start Renderer: frontendPort ${cmsConfig.frontendPort} is already in use. You may want to run close command: cromwell close --sv renderer`;
         errorLogger(message);
         throw new Error(message);

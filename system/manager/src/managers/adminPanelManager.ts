@@ -22,7 +22,7 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
         throw new Error(message);
     }
 
-    if (await isPortUsed(cmsConfig.adminPanelPort)) {
+    if (command !== 'build' && await isPortUsed(cmsConfig.adminPanelPort)) {
         const message = `Manager: Failed to start Admin Panel: adminPanelPort ${cmsConfig.adminPanelPort} is already in use. You may want to run close command: cromwell close --sv adminPanel`;
         errorLogger.error(message);
         throw new Error(message);
