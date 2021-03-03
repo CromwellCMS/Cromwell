@@ -11,7 +11,8 @@ import {
     TPackageCromwellConfig,
     TPluginInfo,
     TCmsSettings,
-    TThemeConfig
+    TThemeConfig,
+    logFor
 } from '@cromwell/core';
 
 type TPluginsModifications = TPluginConfig & { [x: string]: any };
@@ -28,7 +29,7 @@ class CRestAPIClient {
     }
 
     private logError = (route: string, e?: any) => {
-        console.error(`CRestAPIClient route: ${route}`, e);
+        logFor('errors-warnings', `CRestAPIClient route: ${route}` + e, console.error)
     }
 
     public get = async <T>(route: string): Promise<T | undefined> => {

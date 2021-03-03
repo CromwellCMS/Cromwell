@@ -14,11 +14,12 @@ import axios from 'axios';
 import fs from 'fs-extra';
 import makeEmptyDir from 'make-empty-dir';
 import { resolve } from 'path';
+import tcpPortUsed from 'tcp-port-used';
 
 import managerConfig from '../config';
 import { TRendererCommands } from '../constants';
 import { ManagerState } from '../managerState';
-import { closeService, isServiceRunning, startService } from './baseManager';
+import { closeService, isPortUsed, isServiceRunning, startService } from './baseManager';
 
 const { cacheKeys, servicesEnv } = managerConfig;
 const logger = getLogger('detailed');
@@ -35,12 +36,25 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
         return false;
     }
 
-    const cmsSettings = await getRestAPIClient()?.getCmsSettings();
     const cmsConfig = await readCMSConfig();
+    const cmsSettings = await getRestAPIClient()?.getCmsSettings();
+
+    if (!cmsConfig?.frontendPort) {
+        const message = 'Manager: Failed to start Renderer: frontendPort in cmsconfig is not defined';
+        errorLogger(message);
+        throw new Error(message);
+    }
+
+    if (await isPortUsed(cmsConfig.frontendPort)) {
+        const message = `Manager: Failed to start Renderer: frontendPort ${cmsConfig.frontendPort} is already in use. You may want to run close command: cromwell close --sv renderer`;
+        errorLogger(message);
+        throw new Error(message);
+    }
 
     if (!cmsSettings) {
-        errorLogger(`Failed to get cmsSettings from API server`);
+        errorLogger(`Failed to get cmsSettings from API server. Renderer will be launched with default theme`);
     }
+
     const themeName = cmsSettings?.themeName ?? cmsSettings?.defaultSettings?.themeName ??
         cmsConfig?.defaultSettings?.themeName;
 
@@ -54,9 +68,23 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
     const rendererEnv = command ?? servicesEnv.renderer;
     if (rendererEnv && rendererStartupPath) {
         ManagerState.rendererStatus = 'busy';
-        const proc = await startService(rendererStartupPath, cacheKeys.renderer,
-            [rendererEnv, `--theme-name=${themeName}`], undefined,
-            command === 'build' ? true : false);
+
+        const rendererProc = await startService({
+            path: rendererStartupPath,
+            name: cacheKeys.renderer,
+            args: [rendererEnv, `--theme-name=${themeName}`],
+            sync: command === 'build' ? true : false,
+            watchName: command !== 'build' ? 'renderer' : undefined,
+            onVersionChange: async () => {
+                if (cmsConfig.useWatch) {
+                    await closeRenderer();
+                    try {
+                        await tcpPortUsed.waitUntilFree(cmsConfig.frontendPort, 500, 4000);
+                    } catch (e) { console.error(e) };
+                    await startRenderer();
+                }
+            }
+        });
 
         if (command === 'build') return true;
 
@@ -69,7 +97,7 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
                     done(true);
                 }
             };
-            proc?.on('message', onMessage);
+            rendererProc?.on('message', onMessage);
         });
 
         if (!onStartError) {
@@ -102,6 +130,7 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
     return false;
 }
 
+
 export const closeRenderer = async (): Promise<boolean> => {
     if (await isRendererRunning()) {
         const success = await closeService(cacheKeys.renderer);
@@ -130,8 +159,12 @@ export const rendererBuild = async (themeName: string): Promise<boolean> => {
     if (!rendererStartupPath) return false;
 
     const commad: TRendererCommands = 'build';
-    const proc = await startService(rendererStartupPath, cacheKeys.rendererBuilder,
-        [commad, `--theme-name=${themeName}`]);
+
+    const proc = await startService({
+        path: rendererStartupPath,
+        name: cacheKeys.rendererBuilder,
+        args: [commad, `--theme-name=${themeName}`],
+    });
 
     await new Promise(done => {
         proc.on('message', async (message: string) => {
@@ -208,8 +241,12 @@ export const rendererStartWatchDev = async (themeName: string) => {
     await makeEmptyDir(getRendererTempDir());
 
     const commad: TRendererCommands = 'dev';
-    const proc = await startService(rendererStartupPath, cacheKeys.renderer,
-        [commad, `--theme-name=${themeName}`])
+
+    const proc = await startService({
+        path: rendererStartupPath,
+        name: cacheKeys.renderer,
+        args: [commad, `--theme-name=${themeName}`],
+    });
 }
 
 const isThemeBuilt = async (dir: string): Promise<boolean> => {

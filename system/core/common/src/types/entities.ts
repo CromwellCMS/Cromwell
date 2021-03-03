@@ -248,14 +248,21 @@ export type TPluginEntityInput = TPluginEntityCore & TBasePageEntityInput;
 
 
 
-// CMS entity
+// DB CMS entity
 
 export type TCmsEntityCore = {
     protocol?: 'http' | 'https';
     themeName?: string;
     defaultPageSize?: number;
     currencies?: TCurrency[];
+    versions?: TServiceVersions | string;
 }
+
+export type TServiceVersions = {
+    renderer?: number;
+    server?: number;
+    adminPanel?: number;
+};
 
 export type TCurrency = {
     tag: string;

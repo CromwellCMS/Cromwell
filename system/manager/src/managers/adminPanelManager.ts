@@ -1,9 +1,10 @@
-import { adminPanelMessages, getAdminPanelStartupPath, getLogger } from '@cromwell/core-backend';
+import { adminPanelMessages, getAdminPanelStartupPath, getLogger, readCMSConfig } from '@cromwell/core-backend';
+import tcpPortUsed from 'tcp-port-used';
 
 import config from '../config';
 import { TAdminPanelCommands } from '../constants';
 import { ManagerState } from '../managerState';
-import { closeService, startService } from './baseManager';
+import { closeService, isPortUsed, startService } from './baseManager';
 
 const logger = getLogger('detailed');
 const errorLogger = getLogger('errors-only');
@@ -13,10 +14,38 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
     const { cacheKeys, servicesEnv } = config;
     const env = command ?? servicesEnv.adminPanel;
 
+    const cmsConfig = await readCMSConfig();
+
+    if (!cmsConfig?.adminPanelPort) {
+        const message = 'Manager: Failed to start Admin Panel: adminPanelPort in cmsconfig is not defined';
+        errorLogger.error(message);
+        throw new Error(message);
+    }
+
+    if (await isPortUsed(cmsConfig.adminPanelPort)) {
+        const message = `Manager: Failed to start Admin Panel: adminPanelPort ${cmsConfig.adminPanelPort} is already in use. You may want to run close command: cromwell close --sv adminPanel`;
+        errorLogger.error(message);
+        throw new Error(message);
+    }
+
     if (env && adminPanelStartupPath) {
         ManagerState.adminPanelStatus = 'busy';
-        const proc = await startService(adminPanelStartupPath, cacheKeys.adminPanel, [env],
-            undefined, command === 'build' ? true : false);
+        const proc = await startService({
+            path: adminPanelStartupPath,
+            name: cacheKeys.adminPanel,
+            args: [env],
+            sync: command === 'build' ? true : false,
+            watchName: 'adminPanel',
+            onVersionChange: async () => {
+                if (cmsConfig.useWatch) {
+                    await closeAdminPanel();
+                    try {
+                        await tcpPortUsed.waitUntilFree(cmsConfig.adminPanelPort, 500, 4000);
+                    } catch (e) { console.error(e) };
+                    await startAdminPanel();
+                }
+            }
+        })
 
         if (command === 'build') return true;
 
