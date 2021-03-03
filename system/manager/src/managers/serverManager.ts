@@ -33,7 +33,7 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
             name: cacheKeys.server,
             args: [env],
             sync: command === 'build' ? true : false,
-            watchName: 'server',
+            watchName: command !== 'build' ? 'server' : undefined,
             onVersionChange: async () => {
                 if (cmsConfig.useWatch) {
                     await closeServer();

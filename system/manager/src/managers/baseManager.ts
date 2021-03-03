@@ -205,6 +205,9 @@ export const closeSystem = async () => {
  */
 export const startWatchService = async (serviceName: keyof TServiceVersions, onVersionChange: () => Promise<void>) => {
     const currentSettings = getStoreItem('cmsSettings');
+    // currentVersion will be null, until request succeeds. If it does and version is not
+    // set at server it'll have undefined value. That allows to differ cases when 
+    // Server has not been launched or became unavalibele for some reason after launch
     let currentVersion: number | null | undefined = null;
 
     try {
@@ -252,8 +255,7 @@ const getInstanceVersion = (settings: TCmsSettings | undefined, serviceName: key
     if (settings?.versions) {
         try {
             const versions: TServiceVersions = typeof settings.versions === 'string' ? JSON.parse(settings.versions) : settings.versions;
-            const ver = typeof versions[serviceName] === 'number' ? versions[serviceName] : undefined;
-            return ver;
+            return typeof versions[serviceName] === 'number' ? versions[serviceName] : undefined;
         } catch (e) { }
     }
 }
