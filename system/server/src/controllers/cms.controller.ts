@@ -29,7 +29,7 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getConfig(): Promise<TCmsSettings | undefined> {
-        logger.log('CmsController::getConfig');
+        // logger.log('CmsController::getConfig');
         const config = await this.cmsService.getSettings();
         if (!config) {
             throw new HttpException('CmsController::getConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);

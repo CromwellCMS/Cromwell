@@ -17,4 +17,7 @@ export class InputCmsEntity extends BasePageInput implements TCmsEntityInput {
 
     @Field(type => [CurrencySettings])
     currencies: TCurrency[];
+
+    @Field(type => String, { nullable: true })
+    versions?: string;
 }

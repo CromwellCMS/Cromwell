@@ -4,7 +4,7 @@ import { readCMSConfigSync } from '@cromwell/core-backend';
 const cmsConfig = readCMSConfigSync();
 setStoreItem('cmsSettings', cmsConfig);
 
-export { startSystem, startServiceByName } from './managers/baseManager';
+export { startSystem, startServiceByName, closeServiceByName, closeSystem } from './managers/baseManager';
 export { buildTask } from './tasks/buildTask';
 export { checkModules } from './tasks/checkModules';
 export { serviceNames, TServiceNames } from './constants';

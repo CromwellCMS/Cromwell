@@ -6,7 +6,7 @@ const args = yargs(process.argv.slice(2))
     // START
     .command<{ service?: string; development?: boolean }>({
         command: 'start [options]',
-        describe: 'starts CMS or specified service',
+        describe: 'starts CMS or a specified service',
         aliases: ['start', 's'],
         builder: (yargs) => {
             return yargs
@@ -28,10 +28,35 @@ const args = yargs(process.argv.slice(2))
             const { checkModules, startServiceByName, startSystem } = require('@cromwell/cms');
 
             if (serviceToStart) {
-                startServiceByName(serviceToStart, development);
+                await startServiceByName(serviceToStart, development);
             } else {
                 await checkModules(development);
-                startSystem(development ? 'development' : 'production');
+                await startSystem(development ? 'development' : 'production');
+            }
+        }
+    })
+    // CLOSE SERVICE
+    .command<{ service?: string; development?: boolean }>({
+        command: 'close [options]',
+        describe: `closes CMS or a specified service by it's saved PID`,
+        aliases: ['close', 'cl'],
+        builder: (yargs) => {
+            return yargs
+                .option('service', {
+                    alias: 'sv',
+                    desc: 'Specify service to close: "server", "renderer", "adminPanel"',
+                    choices: ["server", "s", "renderer", "r", "adminPanel", "a"]
+                })
+        },
+        handler: async (argv) => {
+            const serviceToClose = argv.service as TServiceNames;
+
+            const { closeServiceByName, closeSystem } = require('@cromwell/cms');
+
+            if (serviceToClose) {
+                await closeServiceByName(serviceToClose);
+            } else {
+                await closeSystem();
             }
         }
     })

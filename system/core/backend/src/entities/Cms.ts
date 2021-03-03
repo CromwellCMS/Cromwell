@@ -49,5 +49,8 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     @Column({ type: "varchar", nullable: true })
     private _currencies: string;
 
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    versions?: string;
 }
 

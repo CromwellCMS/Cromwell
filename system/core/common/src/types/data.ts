@@ -97,6 +97,8 @@ export type TCmsConfig = {
     managerPort: number;
     defaultSettings?: TCmsEntityCore;
     pm?: 'yarn' | 'cromwella';
+    watchPoll?: number;
+    useWatch?: boolean;
 }
 
 // Info form cmsconfig.json and settings from DB

@@ -8,16 +8,16 @@ import { serverLogFor, defaultCmsConfig } from './constants';
  */
 export const readCMSConfigSync = (): TCmsConfig => {
     const configPath = getCMSConfigPath();
+    let customConfig;
     if (fs.pathExistsSync(configPath)) {
         try {
             const config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
-            if (config && typeof config === 'object') return config;
+            if (config && typeof config === 'object') customConfig = config;
         } catch (e) {
             serverLogFor('errors-only', 'Failed to read CMS config at: ' + configPath + e, 'Error');
         }
     }
-
-    return defaultCmsConfig;
+    return Object.assign({}, defaultCmsConfig, customConfig);
 }
 
 /**
@@ -25,13 +25,14 @@ export const readCMSConfigSync = (): TCmsConfig => {
  */
 export const readCMSConfig = async (): Promise<TCmsConfig> => {
     const configPath = getCMSConfigPath();
+    let customConfig;
     if (await fs.pathExists(configPath)) {
         try {
             const config: TCmsConfig | undefined = await fs.readJSON(configPath);
-            if (config && typeof config === 'object') return config
+            if (config && typeof config === 'object') customConfig = config;
         } catch (e) {
             console.error(e);
         }
     }
-    return defaultCmsConfig;
+    return Object.assign({}, defaultCmsConfig, customConfig);
 }

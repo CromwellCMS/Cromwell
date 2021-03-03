@@ -56,11 +56,12 @@ export const getLogger = (level: TLogLevel, func?: (...args) => any) => {
 }
 
 export const defaultCmsConfig: TCmsConfig = {
-    "managerPort": 4016,
-    "apiPort": 4032,
-    "adminPanelPort": 4064,
-    "frontendPort": 4128,
-    "defaultSettings": {
+    managerPort: 4016,
+    apiPort: 4032,
+    adminPanelPort: 4064,
+    frontendPort: 4128,
+    useWatch: true,
+    defaultSettings: {
         "themeName": "@cromwell/theme-store",
         "defaultPageSize": 15,
         "currencies": [

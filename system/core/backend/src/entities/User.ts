@@ -13,7 +13,7 @@ export class User extends BasePageEntity implements TUser {
     fullName: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", nullable: true, unique: true })
     email: string;
 
     @Column()
