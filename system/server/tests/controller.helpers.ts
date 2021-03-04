@@ -2,9 +2,12 @@ import { closeConnection, connectDatabase } from '@App/helpers/connectDataBase';
 import { AppModule } from '@App/modules/app.module';
 import { INestApplication } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { Test } from '@nestjs/testing';
+import { Test, } from '@nestjs/testing';
+import { JwtAuthGuard } from '@App/auth/jwt-auth.guard';
 
 import { mockWorkingDirectory } from './helpers';
+
+
 
 export const setupController = async (name: string) => {
     const testDir = await mockWorkingDirectory(name);
@@ -13,7 +16,15 @@ export const setupController = async (name: string) => {
 
     const moduleRef = await Test.createTestingModule({
         imports: [AppModule],
-    }).compile();
+    })
+        .overrideProvider(JwtAuthGuard)
+        .useValue({
+            canActivate: async () => {
+                console.log('useValue canActivate')
+                return true
+            }
+        })
+        .compile();
 
     const app = moduleRef.createNestApplication<NestFastifyApplication>(
         new FastifyAdapter(),
@@ -23,14 +34,13 @@ export const setupController = async (name: string) => {
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
 
-    return [
+    return {
         server,
         app,
         testDir,
-    ]
+        moduleRef,
+    }
 }
-
-
 
 export const tearDownController = async (app: INestApplication, testDir) => {
     await app?.close();

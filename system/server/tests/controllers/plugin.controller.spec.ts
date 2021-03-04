@@ -9,7 +9,10 @@ describe('Plugin Controller', () => {
     let testDir;
 
     beforeAll(async () => {
-        [server, app, testDir] = await setupController('plugin');
+        const state = await setupController('plugin');
+        server = state.server;
+        app = state.app;
+        testDir = state.testDir;
     });
 
     const defaultPlugin = '@cromwell/plugin-main-menu';

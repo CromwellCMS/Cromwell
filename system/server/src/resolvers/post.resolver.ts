@@ -1,5 +1,5 @@
 import { GraphQLPaths, TPagedList, TPost, TUser } from '@cromwell/core';
-import { CreatePost, PagedParamsInput, PagedPost, Post, PostRepository, UpdatePost, User, UserRepository } from '@cromwell/core-backend';
+import { CreatePost, getLogger, PagedParamsInput, PagedPost, Post, PostRepository, UpdatePost, User, UserRepository } from '@cromwell/core-backend';
 import { PostFilterInput } from '@cromwell/core-backend';
 import { Arg, Mutation, Query, Resolver, FieldResolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -14,6 +14,7 @@ const getFilteredPath = GraphQLPaths.Post.getFiltered;
 const getTagsPath = GraphQLPaths.Post.getTags;
 
 const authorKey: keyof TPost = 'author';
+const logger = getLogger('detailed');
 
 @Resolver(Post)
 export class PostResolver {
@@ -65,9 +66,12 @@ export class PostResolver {
     return this.repository.getAllPostTags();
   }
 
-  @FieldResolver(() => User)
+  @FieldResolver(() => User, { nullable: true })
   async [authorKey](@Root() post: Post): Promise<TUser | undefined> {
-    return this.userRepository.getUserById(post.authorId);
+    try {
+      return await this.userRepository.getUserById(post.authorId);
+    } catch (e) {
+      logger.error(e);
+    }
   }
-
 }

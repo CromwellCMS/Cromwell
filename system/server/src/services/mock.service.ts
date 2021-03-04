@@ -1,18 +1,32 @@
-import { TAttributeInput, TProduct, TPost, TProductCategoryInput, TProductReview, TProductReviewInput, TUserInput } from '@cromwell/core';
+import {
+    TAttributeInput,
+    TPost,
+    TProduct,
+    TProductCategoryInput,
+    TProductReview,
+    TProductReviewInput,
+    TUserInput,
+} from '@cromwell/core';
 import {
     AttributeRepository,
+    PostRepository,
     ProductCategoryRepository,
     ProductRepository,
     ProductReviewRepository,
-    PostRepository,
-    UserRepository
+    UserRepository,
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
-import { getCustomRepository } from 'typeorm';
 import nameGenerator from 'project-name-generator';
+import { getCustomRepository } from 'typeorm';
+
+import { AuthService } from './auth.service';
 
 @Injectable()
 export class MockService {
+
+    constructor(
+        private readonly authService: AuthService,
+    ) { }
 
     private productRepo = getCustomRepository(ProductRepository);
     private productCategoryRepo = getCustomRepository(ProductCategoryRepository);
@@ -351,6 +365,9 @@ export class MockService {
         ]
 
         for (let user of users) {
+            const hashedPass = await this.authService.hashPassword(user.password);
+            user.password = hashedPass;
+
             await this.userRepo.createUser(user);
         }
 

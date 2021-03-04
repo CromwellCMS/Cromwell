@@ -1,14 +1,15 @@
-import { logFor, TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
-import { getCmsModuleInfo, getPublicDir, readCmsModules, getLogger } from '@cromwell/core-backend';
-import { Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req } from '@nestjs/common';
+import { TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
+import { getCmsModuleInfo, getLogger, getPublicDir, readCmsModules } from '@cromwell/core-backend';
+import { Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
 import { join } from 'path';
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
-import { CmsService } from '../services/cms.service';
 import { publicSystemDirs } from '../helpers/constants';
+import { CmsService } from '../services/cms.service';
 
 const logger = getLogger('detailed');
 
@@ -39,6 +40,7 @@ export class CmsController {
 
 
     @Get('set-theme')
+    // @UseGuards(JwtAuthGuard)
     @ApiOperation({
         description: 'Update new theme name in DB',
         parameters: [{ name: 'themeName', in: 'query', required: true }]
@@ -115,6 +117,7 @@ export class CmsController {
 
 
     @Get('read-public-dir')
+    // @UseGuards(JwtAuthGuard)
     @ApiOperation({
         description: 'Read files and directories in specified subfolder of "public" files',
         parameters: [{ name: 'path', in: 'query' }]
@@ -130,6 +133,7 @@ export class CmsController {
     }
 
     @Get('create-public-dir')
+    // @UseGuards(JwtAuthGuard)
     @ApiOperation({
         description: 'Creates new directory in specified subfolder of "public" files',
         parameters: [
@@ -150,6 +154,7 @@ export class CmsController {
     }
 
     @Get('remove-public-dir')
+    // @UseGuards(JwtAuthGuard)
     @ApiOperation({
         description: 'Removes directory in specified subfolder of "public" files',
         parameters: [
@@ -170,6 +175,7 @@ export class CmsController {
     }
 
     @Post('upload-public-file')
+    // @UseGuards(JwtAuthGuard)
     @Header('content-type', 'multipart/form-data')
     @ApiOperation({
         description: 'Uploads a file to specified subfolder of "public" files',

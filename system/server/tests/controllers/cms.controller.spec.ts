@@ -1,7 +1,7 @@
 import { TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-
+import { AuthService } from '@App/services/auth.service';
 import { setupController, tearDownController } from '../controller.helpers';
 
 describe('CMS Controller', () => {
@@ -10,7 +10,10 @@ describe('CMS Controller', () => {
     let testDir;
 
     beforeAll(async () => {
-        [server, app, testDir] = await setupController('cms');
+        const state = await setupController('cms');
+        server = state.server;
+        app = state.app;
+        testDir = state.testDir;
     });
 
     it(`/GET config`, () => {
@@ -66,7 +69,7 @@ describe('CMS Controller', () => {
             });
     });
 
-    it(`/GET read-public-dir`, () => {
+    it(`/GET read-public-dir`, async () => {
         return request(server)
             .get('/cms/read-public-dir')
             .expect(200)
