@@ -11,6 +11,6 @@ export const fetch = (...args) => {
         if (!func) func = getStore()?.nodeModules?.modules?.['node-fetch'];
         if (!func) throw new Error('@cromwell/core-frontend: Failed to require node-fetch');
     } else func = fetchPolyfill;
-    
-    return func(args);
+
+    return func(...args);
 }

@@ -7,6 +7,10 @@
     padding: 10px 7px;
     background: linear-gradient(144deg, rgba(27, 0, 75, 1) 0%, rgba(52, 0, 46, 1) 100%);
 
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
     a {
         display: block;
         color: initial;
@@ -94,6 +98,40 @@
         .customIcon {
             opacity: 1;
         }
+    }
+
+    .sidebarBottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        * {
+            color: #fff;
+        }
+    }
+
+    .bottomBlock {
+        display: flex;
+        align-items: center;
+    }
+
+    .textBlock {
+        overflow: hidden;
+    }
+
+    .nameText {
+        margin-bottom: 5px;
+    }
+
+    .emailText {
+        font-size: 10px;
+    }
+
+    .avatar {
+        width: 40px;
+        height: 40px;
+        color: #fff;
+        margin-right: 5px;
     }
 }
 

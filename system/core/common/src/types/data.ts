@@ -1,6 +1,6 @@
 
 import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks'
-import { TCmsEntityCore } from './entities';
+import { TCmsEntityCore, TUser } from './entities';
 
 
 export type TCromwellStore = {
@@ -32,6 +32,8 @@ export type TCromwellStore = {
     fsRequire?: (path: string) => any;
     notifier?: TCromwellNotify;
     palette?: TPalette;
+    userInfo?: TUser;
+    storeChangeCallbacks?: Record<string, Function[]>;
 }
 
 declare global {

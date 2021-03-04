@@ -1,0 +1,41 @@
+.LoginPage {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    inset: 0;
+    z-index: 9990;
+    background-size: cover;
+    background-position: center;
+    background-color: #34002e;
+    color: #fff;
+
+    :global(.MuiSvgIcon-root) {
+        color: #fff;
+    }
+}
+
+.loginForm {
+    width: 300px;
+    max-width: 95vw;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+    div.textField {
+        margin-bottom: 15px;
+    }
+}
+
+svg.loginIcon {
+    width: 50px;
+    height: 50px;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+button.loginBtn {
+    margin-top: 20px;
+    color: #fff;
+}
