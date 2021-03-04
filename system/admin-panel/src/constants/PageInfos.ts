@@ -22,6 +22,7 @@ import PostListPage from '../pages/postList/PostList';
 import CategoryPage from '../pages/category/CategoryPage';
 import PostPage from '../pages/post/Post';
 import CategoryListPage from '../pages/categoryList/CategoryList';
+import LoginPage from '../pages/login/LoginPage';
 
 export type SidebarLinkType = {
     id: string;
@@ -108,6 +109,12 @@ export const postPageInfo: PageInfo = {
     baseRoute: '/post',
 };
 
+export const loginPageInfo: PageInfo = {
+    name: 'Login',
+    route: '/login',
+    component: LoginPage,
+    baseRoute: '/login',
+};
 
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
@@ -124,6 +131,7 @@ export const pageInfos: PageInfo[] = [
     postPageInfo,
     categoryListPageInfo,
     categoryPageInfo,
+    loginPageInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar

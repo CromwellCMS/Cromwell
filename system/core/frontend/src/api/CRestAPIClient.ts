@@ -12,7 +12,9 @@ import {
     TPluginInfo,
     TCmsSettings,
     TThemeConfig,
-    logFor
+    logFor,
+    isServer,
+    TUser
 } from '@cromwell/core';
 
 type TPluginsModifications = TPluginConfig & { [x: string]: any };
@@ -20,7 +22,15 @@ type TPluginsModifications = TPluginConfig & { [x: string]: any };
 class CRestAPIClient {
     constructor(private baseUrl: string) { }
 
+    private unauthorizedRedirect: string;
+
     private handleError = (responce: Response, data: any, route: string): any => {
+        if ((responce.status === 403 || responce.status === 401) && !isServer()) {
+            if (this.unauthorizedRedirect && !window.location.href.includes(this.unauthorizedRedirect)) {
+                window.location.href = this.unauthorizedRedirect;
+            }
+        }
+
         if (responce.status >= 400) {
             this.logError(route, `Request failed, status: ${responce.status}. ${data?.message}`)
             return undefined;
@@ -34,7 +44,13 @@ class CRestAPIClient {
 
     public get = async <T>(route: string): Promise<T | undefined> => {
         try {
-            const res = await fetch(`${this.baseUrl}/${route}`);
+            const res = await fetch(`${this.baseUrl}/${route}`, {
+                method: 'get',
+                credentials: 'include',
+                headers: new Headers({
+                    'Content-Type': 'application/json',
+                }),
+            });
             const data = await res.json();
             return this.handleError(res, data, route);
         } catch (e) {
@@ -42,11 +58,15 @@ class CRestAPIClient {
         }
     }
 
-    public post = async <T>(route: string, input: any): Promise<T | undefined> => {
+    public post = async <T>(route: string, input?: any): Promise<T | undefined> => {
         try {
-            const res = await window.fetch(`${this.baseUrl}/${route}`, {
+            const res = await fetch(`${this.baseUrl}/${route}`, {
                 method: 'post',
-                body: typeof input === 'string' ? input : JSON.stringify(input)
+                credentials: 'include',
+                body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
+                headers: new Headers({
+                    'Content-Type': 'application/json'
+                }),
             })
             const data = await res.json();
             return this.handleError(res, data, route);
@@ -55,6 +75,26 @@ class CRestAPIClient {
         }
     }
 
+    // < Auth >
+
+    public login = async (credentials: {
+        email: string;
+        password: string;
+    }) => {
+        return this.post('auth/login', credentials);
+    }
+
+    public logOut = async () => {
+        return this.post('auth/log-out');
+    }
+
+    public getUserInfo = async (): Promise<TUser | undefined> => {
+        return this.get('auth/user-info');
+    }
+
+    public setUnauthorizedRedirect = (url: string) => {
+        this.unauthorizedRedirect = url;
+    }
 
     // < CMS >
 

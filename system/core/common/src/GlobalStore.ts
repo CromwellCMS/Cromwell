@@ -28,6 +28,27 @@ export const getStoreItem = <K extends keyof TCromwellStore>(itemName: K): TCrom
 
 export const setStoreItem = <K extends keyof TCromwellStore>(itemName: K, item: TCromwellStore[K]): void => {
     getStore()[itemName] = item;
+
+    const storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
+    if (storeChangeCallbacks?.[itemName]) {
+        for (let callback of storeChangeCallbacks?.[itemName]) {
+            callback(item);
+        }
+    }
+}
+
+export const onStoreChange = <K extends keyof TCromwellStore>(itemName: K,
+    callback: (itemValue: TCromwellStore[K]) => any) => {
+
+    let storeChangeCallbacks = getStoreItem('storeChangeCallbacks')
+
+    if (!storeChangeCallbacks) {
+        storeChangeCallbacks = {};
+        setStoreItem('storeChangeCallbacks', storeChangeCallbacks);
+    }
+
+    if (!storeChangeCallbacks[itemName]) storeChangeCallbacks[itemName] = [];
+    storeChangeCallbacks[itemName].push(callback);
 }
 
 export const getPageCustomConfig = (): Record<string, any> | undefined => {

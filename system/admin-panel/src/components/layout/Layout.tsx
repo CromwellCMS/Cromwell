@@ -2,15 +2,16 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import React, { Suspense } from 'react';
-import { BrowserRouter, Route, Switch, RouteComponentProps } from 'react-router-dom';
+import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
-import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
-import LoadBox from '../loadBox/LoadBox';
-import { pageInfos } from '../../constants/PageInfos';
+
+import { pageInfos, loginPageInfo } from '../../constants/PageInfos';
 import Page404 from '../../pages/404page/404page';
+import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
+import FileManager from '../fileManager/FileManager';
+import LoadBox from '../loadBox/LoadBox';
 import Sidebar from '../sidebar/Sidebar';
 import classes from './Layout.module.scss';
-import FileManager from '../fileManager/FileManager';
 
 const theme = createMuiTheme({
   palette: {
@@ -26,7 +27,6 @@ const theme = createMuiTheme({
     }
   },
 });
-
 
 function Layout() {
   return (
