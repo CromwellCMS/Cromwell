@@ -13,7 +13,10 @@ describe('Theme Controller', () => {
     const defaultPage = 'product/[slug]';
 
     beforeAll(async () => {
-        [server, app, testDir] = await setupController('theme');
+        const state = await setupController('theme');
+        server = state.server;
+        app = state.app;
+        testDir = state.testDir;
     });
 
     it(`/GET page`, () => {
