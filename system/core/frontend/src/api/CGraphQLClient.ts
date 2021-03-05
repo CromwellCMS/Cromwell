@@ -32,6 +32,8 @@ import {
     TUser,
     TUserInput,
     TProductCategoryFilter,
+    TOrder,
+    TOrderInput,
 } from '@cromwell/core';
 
 class CGraphQLClient {
@@ -1189,6 +1191,156 @@ class CGraphQLClient {
 
 
     // </User>
+
+
+    // <Order>
+
+    public OrderFragment = gql`
+        fragment OrderFragment on Order {
+            id
+            slug
+            createDate
+            updateDate
+            isEnabled
+            status
+            cart
+            totalPrice
+            oldTotalPrice
+            totalQnt
+            userId
+            customerName
+            customerPhone
+            customerAddress
+            customerComment
+            shippingMethod
+        }
+    `;
+
+    public getOrders = async (pagedParams?: TPagedParams<TOrder>,
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TOrder>> => {
+
+        const fragment = customFragment ?? this.OrderFragment;
+        const fragmentName = customFragmentName ?? 'OrderFragment';
+
+        const path = GraphQLPaths.Order.getMany;
+
+        const variables: Record<string, any> = {
+            pagedParams: pagedParams ?? {},
+        };
+
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetOrders($pagedParams: PagedParamsInput) {
+                    ${path}(pagedParams: $pagedParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...${fragmentName}
+                        }
+                    }
+                }
+                ${fragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables
+        })
+        return this.returnData(res, path);
+    }
+
+    public getOrderById = async (id: string)
+        : Promise<TOrder | undefined> => {
+        const path = GraphQLPaths.Order.getOneById;
+        const res = await this.apolloClient.query({
+            query: gql`
+        query coreGetOrderById($id: String!) {
+            ${path}(id: $id) {
+                ...OrderFragment
+            }
+        }
+        ${this.OrderFragment}
+    `,
+            variables: {
+                id,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public getOrderBySlug = async (slug: string): Promise<TOrder | undefined> => {
+        const path = GraphQLPaths.Order.getOneBySlug;
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetOrder($slug: String!) {
+                    ${path}(slug: $slug) {
+                    ...OrderFragment
+                    }
+                }
+                ${this.OrderFragment}
+            `,
+            variables: {
+                slug,
+            }
+        });
+
+        return this.returnData(res, path);
+    }
+
+    public updateOrder = async (id: string, input: TOrderInput) => {
+        const path = GraphQLPaths.Order.update;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreUpdateOrder($id: String!, $data: InputOrder!) {
+                    ${path}(id: $id, data: $data) {
+                        ...OrderFragment
+                    }
+                }
+                ${this.OrderFragment}
+            `,
+            variables: {
+                id,
+                data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public createOrder = async (input: TOrderInput) => {
+        const path = GraphQLPaths.Order.create;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreCreateOrder($data: InputOrder!) {
+                    ${path}(data: $data) {
+                        ...OrderFragment
+                    }
+                }
+                ${this.OrderFragment}
+            `,
+            variables: {
+                data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public deletOrder = async (id: string) => {
+        const path = GraphQLPaths.Order.delete;
+
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteOrder($id: String!) {
+                    ${path}(id: $id)
+                }
+            `,
+            variables: {
+                id,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+
+    // </Order>
 
 
     // <Plugin>

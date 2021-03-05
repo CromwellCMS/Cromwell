@@ -8,6 +8,7 @@ query getProduct {
     views
     images
     description
+    descriptionDelta
     pageTitle
     rating {
       average
@@ -40,7 +41,7 @@ query getProduct {
   }
 }
 query getProducts {
-  products(pagedParams: {pageNumber: 1, pageSize: 1}) {
+  products(pagedParams: {}) {
     pagedMeta {
 			pageSize
       
@@ -130,7 +131,7 @@ mutation creatPrCat {
   }
 }
 query getProdCat {
-  getProductCategoryById(id: "1") {
+  getProductCategoryById(id: "11") {
     id
     name
     slug
@@ -154,7 +155,7 @@ query getProdCat {
 }
 
 query getProdCatBySlug {
-  productCategory(slug: "1") {
+  productCategory(slug: "74") {
           id
             slug
             createDate
@@ -224,8 +225,8 @@ query getFilteredProducts {
 				key: "Size",
         values: ["38"]
       }],
-      minPrice: 100,
-      maxPrice: 9999990
+      minPrice: 1,
+      maxPrice: 66
     }) {
       pagedMeta {
 				pageSize
@@ -245,6 +246,26 @@ query getFilteredProducts {
           name
         }
       }
+  }
+}
+
+query getFilteredPosts {
+ 	getFilteredPosts(pagedParams: {}, filterParams: {
+    tags: []
+  }) {
+		pagedMeta {
+			totalElements
+    }
+    elements {
+			id
+      slug
+      title
+      tags
+      author {
+				id
+        fullName
+      }
+    }
   }
 }
 
@@ -303,4 +324,65 @@ query getProductCategories {
 }
 mutation deleteCategory {
   	deleteProductCategory(id: "6")
+}
+
+
+ query productShowcase {
+    productShowcase(slug: null) {
+              pagedMeta {
+                pageSize
+            }
+            elements {
+                id
+                slug
+                name
+                price
+                oldPrice
+                mainImage
+                rating {
+                    average
+                    reviewsNumber
+                }
+            }
+    }
+}
+
+ query getRootCategories {
+    getRootCategories {
+    	id
+    	name
+  }
+}
+
+query getFilteredProductCategories {
+  getFilteredProductCategories(pagedParams: {pageSize: 10000}) {
+elements {
+id
+  name
+  parent {
+    id
+  }
+
+}
+  }
+}
+
+mutation createOrder{
+	createOrder(data: {
+    customerName: "test1",
+    totalPrice: 1111.11
+  }) {
+    id
+    customerName
+  }
+}
+
+query getOrderById {
+	getOrderById(id:"1") {
+		id
+    customerName
+    oldTotalPrice
+    totalPrice
+    totalQnt
+  }
 }

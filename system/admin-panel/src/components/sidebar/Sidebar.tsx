@@ -57,7 +57,7 @@ function Sidebar() {
                 />)}
             </div>
             <div className={styles.sidebarBottom}>
-                <div className={styles.bottomBlock}>
+                <div className={styles.bottomBlock} style={{ overflow: 'hidden' }}>
                     {(userInfo?.avatar && userInfo?.avatar !== '') ? (
                         <div className={styles.avatar}></div>
                     ) : <AccountCircleIcon className={styles.avatar} />}

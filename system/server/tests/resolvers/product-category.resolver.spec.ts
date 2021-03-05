@@ -246,8 +246,8 @@ describe('Product category resolver', () => {
 
         const data2 = await getProductCategoryById('3');
 
-        expect(!data2.id).toBeTruthy();
-        expect(!data2.slug).toBeTruthy();
+        expect(!data2?.id).toBeTruthy();
+        expect(!data2?.slug).toBeTruthy();
     });
 
 

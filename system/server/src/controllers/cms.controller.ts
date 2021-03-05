@@ -40,7 +40,7 @@ export class CmsController {
 
 
     @Get('set-theme')
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({
         description: 'Update new theme name in DB',
         parameters: [{ name: 'themeName', in: 'query', required: true }]
@@ -117,7 +117,7 @@ export class CmsController {
 
 
     @Get('read-public-dir')
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({
         description: 'Read files and directories in specified subfolder of "public" files',
         parameters: [{ name: 'path', in: 'query' }]
@@ -133,7 +133,7 @@ export class CmsController {
     }
 
     @Get('create-public-dir')
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({
         description: 'Creates new directory in specified subfolder of "public" files',
         parameters: [
@@ -154,7 +154,7 @@ export class CmsController {
     }
 
     @Get('remove-public-dir')
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @ApiOperation({
         description: 'Removes directory in specified subfolder of "public" files',
         parameters: [
@@ -175,7 +175,7 @@ export class CmsController {
     }
 
     @Post('upload-public-file')
-    // @UseGuards(JwtAuthGuard)
+    @UseGuards(JwtAuthGuard)
     @Header('content-type', 'multipart/form-data')
     @ApiOperation({
         description: 'Uploads a file to specified subfolder of "public" files',

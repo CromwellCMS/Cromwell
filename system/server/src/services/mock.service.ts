@@ -1,14 +1,17 @@
 import {
     TAttributeInput,
+    TOrderInput,
     TPost,
     TProduct,
     TProductCategoryInput,
     TProductReview,
     TProductReviewInput,
     TUserInput,
+    TStoreListItem,
 } from '@cromwell/core';
 import {
     AttributeRepository,
+    OrderRepository,
     PostRepository,
     ProductCategoryRepository,
     ProductRepository,
@@ -34,6 +37,7 @@ export class MockService {
     private productReviewRepo = getCustomRepository(ProductReviewRepository);
     private postRepo = getCustomRepository(PostRepository);
     private userRepo = getCustomRepository(UserRepository);
+    private orderRepo = getCustomRepository(OrderRepository);
 
     private shuffleArray = <T extends Array<any>>(array: T): T => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -120,8 +124,6 @@ export class MockService {
         },
     ];
 
-    private randomHTMLText = '<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</p><ul><li><i class="porto-icon-ok"></i>Any Product types that You want - Simple, Configurable</li><li><i class="porto-icon-ok"></i>Downloadable/Digital Products, Virtual Products</li><li><i class="porto-icon-ok"></i>Inventory Management with Backordered items</li></ul><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, <br>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>';
-
     public getRandomName = (): string => (nameGenerator().spaced).replace(/\b\w/g, l => l.toUpperCase());
 
     public async mockAll(): Promise<boolean> {
@@ -131,6 +133,8 @@ export class MockService {
         await this.mockCategories();
         await this.mockProducts();
         await this.mockReviews();
+        await this.mockOrders();
+
         return true;
     }
 
@@ -416,6 +420,81 @@ export class MockService {
             }));
         }
         await Promise.all(promises);
+
+        return true;
+    }
+
+    public async mockOrders() {
+        // Clear
+        const oldOrders = await this.orderRepo.find();
+        for (const item of oldOrders) {
+            await this.orderRepo.deleteOrder(item.id);
+        }
+
+        const mockedOrders: TOrderInput[] = [
+            {
+                customerName: 'Kevin',
+                customerAddress: '976 Sunburst Drive',
+                customerPhone: '786-603-4232',
+                totalPrice: 289,
+                totalQnt: 3,
+                cart: [{
+                    product: {
+                        id: '1',
+                    },
+                    amount: 2
+                }, {
+                    product: {
+                        id: '2',
+                    },
+                }]
+            },
+            {
+                customerName: 'Michael',
+                customerAddress: '4650 Watson Lane',
+                customerPhone: '704-408-1669',
+                totalPrice: 69,
+                totalQnt: 2,
+                cart: [{
+                    product: {
+                        id: '3',
+                    },
+                    amount: 1
+                }, {
+                    product: {
+                        id: '4',
+                    },
+                }]
+            },
+            {
+                customerName: 'Kelly',
+                customerAddress: '957 Whitman Court',
+                customerPhone: '206-610-2907',
+                totalPrice: 110,
+                totalQnt: 3,
+                cart: [{
+                    product: {
+                        id: '5',
+                    },
+                    amount: 3
+                }]
+            },
+            {
+                customerName: 'Pam',
+                customerAddress: '304 Norman Street',
+                customerPhone: '203-980-3109',
+                totalPrice: 10,
+                cart: [{
+                    product: {
+                        id: '6',
+                    },
+                }]
+            },
+        ];
+
+        for (const data of mockedOrders) {
+            await this.orderRepo.createOrder(data);
+        }
 
         return true;
     }

@@ -265,8 +265,8 @@ describe('Generic resolver', () => {
 
         const data2 = await getGenericById(id);
 
-        expect(!data2.id).toBeTruthy();
-        expect(!data2.slug).toBeTruthy();
+        expect(!data2?.id).toBeTruthy();
+        expect(!data2?.slug).toBeTruthy();
     });
 
 

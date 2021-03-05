@@ -171,8 +171,8 @@ describe('Attribute resolver', () => {
 
         const data2 = await getAttributeById('1');
 
-        expect(!data2.id).toBeTruthy();
-        expect(!data2.slug).toBeTruthy();
+        expect(!data2?.id).toBeTruthy();
+        expect(!data2?.slug).toBeTruthy();
     });
 
 

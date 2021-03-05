@@ -41,12 +41,12 @@ export class ProductResolver {
         return this.repository.getProducts(pagedParams);
     }
 
-    @Query(() => Product)
+    @Query(() => Product, { nullable: true })
     async [getOneBySlugPath](@Arg("slug") slug: string): Promise<Product | undefined> {
         return this.repository.getProductBySlug(slug);
     }
 
-    @Query(() => Product)
+    @Query(() => Product, { nullable: true })
     async [getOneByIdPath](@Arg("id") id: string): Promise<Product | undefined> {
         return this.repository.getProductById(id);
     }
@@ -80,7 +80,7 @@ export class ProductResolver {
         return this.repository.getFilteredProducts(pagedParams, filterParams, categoryId);
     }
 
-    @FieldResolver(() => [ProductCategory])
+    @FieldResolver(() => [ProductCategory], { nullable: true })
     async [categoriesKey](@Root() product: Product, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductCategory>): Promise<TProductCategory[]> {
         return getCustomRepository(ProductCategoryRepository).getCategoriesOfProduct(product.id, pagedParams);
     }

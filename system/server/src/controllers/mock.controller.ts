@@ -112,5 +112,20 @@ export class MockController {
         return this.mockService.mockPosts();
     }
 
+    
+    @Get('orders')
+    @ApiOperation({ description: 'Delete all store orders and mock new' })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async mockOrders(): Promise<boolean> {
+        logger.log('MockController::mockOrders');
+
+        return this.mockService.mockOrders();
+    }
+
+
 
 }

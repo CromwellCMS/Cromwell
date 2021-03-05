@@ -8,6 +8,7 @@ export * from './entities/ProductReview';
 export * from './entities/Plugin';
 export * from './entities/Theme';
 export * from './entities/Cms';
+export * from './entities/Order';
 
 export * from './entities/paged/PagedProduct';
 export * from './entities/paged/PagedMeta';
@@ -15,6 +16,7 @@ export * from './entities/paged/PagedProductReview';
 export * from './entities/paged/PagedPost';
 export * from './entities/paged/PagedProductCategory';
 export * from './entities/paged/PagedUser';
+export * from './entities/paged/PagedOrder';
 
 export * from './entities/filter/FilteredProduct';
 export * from './entities/filter/ProductFilterInput';
@@ -36,6 +38,7 @@ export * from './inputs/ProductReviewInput';
 export * from './inputs/InputThemeEntity';
 export * from './inputs/InputPluginEntity';
 export * from './inputs/InputCmsEntity';
+export * from './inputs/InputOrder';
 
 export * from './repositories/BaseQueries';
 export * from './repositories/ProductCategoryRepository';
@@ -46,6 +49,7 @@ export * from './repositories/BaseRepository';
 export * from './repositories/UserRepository';
 export * from './repositories/PluginRepository';
 export * from './repositories/PostRepository';
+export * from './repositories/OrderRepository';
 
 export * from './helpers/readThemeExports';
 export * from './helpers/cmsConfigHandler';

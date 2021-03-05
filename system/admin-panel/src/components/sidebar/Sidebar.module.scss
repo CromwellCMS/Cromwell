@@ -117,14 +117,20 @@
 
     .textBlock {
         overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .nameText {
+        font-size: 14px;
         margin-bottom: 5px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .emailText {
         font-size: 10px;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .avatar {

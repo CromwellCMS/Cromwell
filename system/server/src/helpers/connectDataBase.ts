@@ -6,6 +6,7 @@ import {
     PluginEntity,
     Post,
     Product,
+    Order,
     ProductCategory,
     ProductReview,
     ThemeEntity,
@@ -66,7 +67,7 @@ export const connectDatabase = async () => {
         ...ormconfig,
         entities: [
             Product, ProductCategory, Post, User,
-            Attribute, ProductReview,
+            Attribute, ProductReview, Order,
             ThemeEntity, PluginEntity, CmsEntity,
             ...pluginsExports.entities,
             ...(ormconfig.entities ?? [])

@@ -9,13 +9,13 @@ import { AttributeInstance } from './AttributeInstance';
 @Entity()
 @ObjectType()
 export class Product extends BasePageEntity implements TProduct {
-    @Field(type => String)
-    @Column({ type: "varchar" })
-    name: string;
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    name?: string;
 
     @ManyToMany(type => ProductCategory, category => category.products)
     @JoinTable()
-    categories: TProductCategory[];
+    categories?: TProductCategory[];
 
     @Field(type => Number, { nullable: true })
     @Column({ type: "float", nullable: true })

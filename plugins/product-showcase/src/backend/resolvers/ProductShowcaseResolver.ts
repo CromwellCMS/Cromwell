@@ -29,7 +29,7 @@ export default class ProductShowcaseResolver {
             if (!product?.id) throw new Error('Product with slug ' + slug + ' was not found!');
 
             // Gather products from all related categories until reach limit (maxSize)
-            for (const category of product.categories) {
+            for (const category of product.categories ?? []) {
                 if (category?.id) {
                     const categoryProducts = await this.productRepo.getProductsFromCategory(category.id, {
                         pageSize: maxSize
