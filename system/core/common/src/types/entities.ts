@@ -1,4 +1,4 @@
-import { TPackageCromwellConfig, TPagedList } from './data';
+import { TPackageCromwellConfig, TPagedList, TStoreListItem } from './data';
 
 export type TBasePageEntity = {
     // DB id
@@ -57,9 +57,9 @@ export type TProductCategoryFilter = {
 
 export interface TProduct extends TBasePageEntity {
     // Name of the product (h1)
-    name: string;
+    name?: string;
     // Categories of the prooduct
-    categories: TProductCategory[];
+    categories?: TProductCategory[];
     // Price. Will be discount price if oldPrice is specified
     price?: number;
     // Price before sale, optional
@@ -211,6 +211,27 @@ type TProductReviewCore = {
 export type TProductReview = TProductReviewCore & TBasePageEntity;
 
 export type TProductReviewInput = TProductReviewCore & TBasePageEntityInput;
+
+
+// Store order
+
+type TOrderCore = {
+    status?: string;
+    cart?: string | TStoreListItem[];
+    totalPrice?: number;
+    oldTotalPrice?: number;
+    totalQnt?: number;
+    userId?: string;
+    customerName?: string;
+    customerPhone?: string;
+    customerAddress?: string;
+    customerComment?: string;
+    shippingMethod?: string;
+}
+
+export type TOrder = TOrderCore & TBasePageEntity;
+
+export type TOrderInput = TOrderCore & TBasePageEntityInput;
 
 
 // Theme entity

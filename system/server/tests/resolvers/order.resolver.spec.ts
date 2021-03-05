@@ -1,43 +1,44 @@
-import { GraphQLPaths, TPagedParams, TProduct, TProductInput } from '@cromwell/core';
+import { GraphQLPaths, TPagedParams, TOrder, TOrderInput } from '@cromwell/core';
+import { OrderRepository } from '@cromwell/core-backend';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
 import { ApolloServerTestClient } from 'apollo-server-testing';
+import { getCustomRepository } from 'typeorm';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
 
-describe('Product resolver', () => {
+describe('Order resolver', () => {
     let server: ApolloServer;
     let client: ApolloServerTestClient;
     let crwClient: TCGraphQLClient | undefined;
 
 
     beforeAll(async () => {
-        [server, client] = await setupResolver('product');
+        [server, client] = await setupResolver('order');
         crwClient = getGraphQLClient();
     });
 
-    it(`getProducts`, async () => {
-        const path = GraphQLPaths.Product.getMany;
+    it(`getOrders`, async () => {
+        const path = GraphQLPaths.Order.getMany;
         const res = await client.query({
             query: gql`
-              query testGetProducts($pagedParams: PagedParamsInput!) {
+              query testGetOrders($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
                       pagedMeta {
                           ...PagedMetaFragment
                       }
                       elements {
-                          ...ProductFragment
+                          ...OrderFragment
                       }
                   }
               }
-              ${crwClient?.ProductFragment}
+              ${crwClient?.OrderFragment}
               ${crwClient?.PagedMetaFragment}
           `,
             variables: {
                 pagedParams: {
                     pageNumber: 1,
-                    pageSize: 10
-                } as TPagedParams<TProduct>
+                } as TPagedParams<TOrder>
             }
         });
         const data = crwClient?.returnData(res, path);
@@ -47,31 +48,31 @@ describe('Product resolver', () => {
         }
 
         expect(data).toBeTruthy();
-        expect(data.elements.length === 10).toBeTruthy();
-        expect(data.pagedMeta.pageSize === 10).toBeTruthy();
+        expect(data.elements.length).toBeTruthy();
+        expect(data.pagedMeta.pageSize).toBeTruthy();
     });
 
-    const getProductById = async (productId: string) => {
-        const path = GraphQLPaths.Product.getOneById;
+    const getOrder = async (orderId: string): Promise<TOrder> => {
+        const path = GraphQLPaths.Order.getOneById;
         const res = await client.query({
             query: gql`
-            query testGetProductById($productId: String!) {
-                ${path}(id: $productId) {
-                    ...ProductFragment
+            query testGetOrderById($id: String!) {
+                ${path}(id: $id) {
+                    ...OrderFragment
                 }
             }
-            ${crwClient?.ProductFragment}
+            ${crwClient?.OrderFragment}
             `,
             variables: {
-                productId
+                id: orderId
             }
         });
         const data = crwClient?.returnData(res, path);
         return data;
     }
 
-    it(`getProductById`, async () => {
-        const data = await getProductById('1');
+    it(`getOrder`, async () => {
+        const data = await getOrder('1');
         if (Array.isArray(data)) {
             console.error('data error', data)
             expect(!Array.isArray(data)).toBeTruthy();
@@ -79,71 +80,36 @@ describe('Product resolver', () => {
 
         expect(data).toBeTruthy();
         expect(data.id).toBeTruthy();
-        expect(data.slug).toBeTruthy();
     });
 
-    const getProductBySlug = async (slug: string) => {
-        const path = GraphQLPaths.Product.getOneBySlug;
-        const res = await client.query({
-            query: gql`
-            query testGetProductBySlug($slug: String!) {
-                ${path}(slug: $slug) {
-                    ...ProductFragment
-                }
-            }
-            ${crwClient?.ProductFragment}
-            `,
-            variables: {
-                slug
-            }
-        });
-        const data = crwClient?.returnData(res, path);
-        return data;
-    }
-
-    it(`getProductBySlug`, async () => {
-        const data = await getProductBySlug('1');
-        if (Array.isArray(data)) {
-            console.error('data error', data)
-            expect(!Array.isArray(data)).toBeTruthy();
-        }
-        expect(data).toBeTruthy();
-        expect(data.id).toBeTruthy();
-        expect(data.slug).toBeTruthy();
-    });
-
-    it(`updateProduct`, async () => {
-        const data1: TProduct = await getProductById('2');
+    it(`updateOrder`, async () => {
+        const data1 = await getOrder('1');
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
         }
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
-        expect(data1.slug).toBeTruthy();
 
-        const path = GraphQLPaths.Product.update;
+        const path = GraphQLPaths.Order.update;
 
-        const updateProduct: TProductInput = {
-            slug: '__test__',
-            name: data1.name,
-            pageTitle: data1.pageTitle,
-            mainImage: data1.mainImage,
-            isEnabled: data1.isEnabled,
+        const inputData: TOrderInput = {
+            customerName: '__test__',
+            totalPrice: 111.222,
         }
 
         const res = await client.mutate({
             mutation: gql`
-              mutation testUpdateProduct($id: String!, $data: UpdateProduct!) {
+              mutation testUpdateOrder($id: String!, $data: InputOrder!) {
                   ${path}(id: $id, data: $data) {
-                      ...ProductFragment
+                      ...OrderFragment
                   }
               }
-              ${crwClient?.ProductFragment}
+              ${crwClient?.OrderFragment}
           `,
             variables: {
-                id: '2',
-                data: updateProduct,
+                id: '1',
+                data: inputData,
             }
         });
         const success = crwClient?.returnData(res, path);
@@ -151,7 +117,7 @@ describe('Product resolver', () => {
             console.error('res error', success)
             expect(!Array.isArray(success)).toBeTruthy();
         }
-        const data2 = await getProductById('2');
+        const data2 = await getOrder('1');
         if (Array.isArray(data2)) {
             console.error('data error', data2)
             expect(!Array.isArray(data2)).toBeTruthy();
@@ -159,42 +125,37 @@ describe('Product resolver', () => {
 
         expect(data2).toBeTruthy();
         expect(data2.id).toBeTruthy();
-        expect(data2.slug).toBeTruthy();
-        expect(data2.slug === '__test__').toBeTruthy();
+        expect(data2.customerName).toEqual(inputData.customerName);
     });
 
 
-    it(`createProduct`, async () => {
-        const data1: TProduct = await getProductById('3');
+    it(`createOrder`, async () => {
+        const data1: TOrder = await getOrder('3');
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
         }
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
-        expect(data1.slug).toBeTruthy();
 
-        const path = GraphQLPaths.Product.create;
+        const path = GraphQLPaths.Order.create;
 
-        const createProduct: TProductInput = {
-            slug: '__test3__',
-            name: data1.name,
-            pageTitle: data1.pageTitle,
-            mainImage: data1.mainImage,
-            isEnabled: data1.isEnabled,
+        const inputData: TOrderInput = {
+            customerName: '__test2__',
+            totalPrice: 111.222,
         }
 
         const res = await client.mutate({
             mutation: gql`
-              mutation testCreatePost($data: CreateProduct!) {
+              mutation testCreateOrder($data: InputOrder!) {
                   ${path}(data: $data) {
-                      ...ProductFragment
+                      ...OrderFragment
                   }
               }
-              ${crwClient?.ProductFragment}
+              ${crwClient?.OrderFragment}
           `,
             variables: {
-                data: createProduct,
+                data: inputData,
             }
         });
         const success = crwClient?.returnData(res, path);
@@ -204,32 +165,34 @@ describe('Product resolver', () => {
             expect(!Array.isArray(success)).toBeTruthy();
         }
 
-        const data2 = await getProductBySlug('__test3__');
+        const data2 = await getCustomRepository(OrderRepository).findOne({
+            where: {
+                customerName: inputData.customerName
+            }
+        });
         if (Array.isArray(data2)) {
             console.error('data error', data2)
             expect(!Array.isArray(data2)).toBeTruthy();
         }
         expect(data2).toBeTruthy();
-        expect(data2.id).toBeTruthy();
-        expect(data2.slug).toBeTruthy();
-        expect(data2.slug === '__test3__').toBeTruthy();
+        expect(data2?.id).toBeTruthy();
+        expect(data2?.customerName).toEqual(inputData.customerName);
     });
 
 
-    it(`deleteProduct`, async () => {
-        const data1: TProduct = await getProductById('4');
+    it(`deleteOrder`, async () => {
+        const data1 = await getOrder('4');
         if (Array.isArray(data1)) {
             console.error('data error', data1)
             expect(!Array.isArray(data1)).toBeTruthy();
         }
         expect(data1).toBeTruthy();
         expect(data1.id).toBeTruthy();
-        expect(data1.slug).toBeTruthy();
-        const path = GraphQLPaths.Product.delete;
+        const path = GraphQLPaths.Order.delete;
 
         const res = await client.mutate({
             mutation: gql`
-                mutation testDeleteProduct($id: String!) {
+                mutation testDeleteOrder($id: String!) {
                     ${path}(id: $id)
                 }
           `,
@@ -244,10 +207,9 @@ describe('Product resolver', () => {
         }
         expect(success === true).toBeTruthy();
 
-        const data2 = await getProductById('4');
+        const data2 = await getOrder('4');
 
         expect(!data2?.id).toBeTruthy();
-        expect(!data2?.slug).toBeTruthy();
     });
 
 

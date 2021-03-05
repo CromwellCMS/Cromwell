@@ -71,14 +71,23 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         delete: "deleteAttribute"
     },
     ProductReview: {
-        getOneBySlug: "",
+        getOneBySlug: "getProductReviewBySlug",
         getOneById: "getProductReview",
         getMany: "getProductReviews",
         create: "createProductReview",
         update: "updateProductReview",
         delete: "deleteProductReview",
         getFromProduct: "getProductReviewsOfProduct"
-    }
+    },
+    Order: {
+        getOneBySlug: "getOrderBySlug",
+        getOneById: "getOrderById",
+        getMany: "getOrders",
+        create: "createOrder",
+        update: "updateOrder",
+        delete: "deleteOrder",
+        getFiltered: "getFilteredOrders",
+    },
 }
 
 export const isServer = (): boolean => (typeof window === 'undefined');

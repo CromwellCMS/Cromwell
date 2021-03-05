@@ -1,12 +1,21 @@
+jest.mock('@App/auth/jwt-auth.guard', () => {
+    class JwtAuthGuard {
+        async canActivate(context): Promise<boolean> {
+            return true;
+        }
+    }
+    return {
+        JwtAuthGuard
+    }
+});
+
 import { closeConnection, connectDatabase } from '@App/helpers/connectDataBase';
 import { AppModule } from '@App/modules/app.module';
 import { INestApplication } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test, } from '@nestjs/testing';
-import { JwtAuthGuard } from '@App/auth/jwt-auth.guard';
 
 import { mockWorkingDirectory } from './helpers';
-
 
 
 export const setupController = async (name: string) => {
@@ -16,15 +25,7 @@ export const setupController = async (name: string) => {
 
     const moduleRef = await Test.createTestingModule({
         imports: [AppModule],
-    })
-        .overrideProvider(JwtAuthGuard)
-        .useValue({
-            canActivate: async () => {
-                console.log('useValue canActivate')
-                return true
-            }
-        })
-        .compile();
+    }).compile();
 
     const app = moduleRef.createNestApplication<NestFastifyApplication>(
         new FastifyAdapter(),

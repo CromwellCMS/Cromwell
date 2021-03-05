@@ -1,6 +1,6 @@
 
 import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks'
-import { TCmsEntityCore, TUser } from './entities';
+import { TCmsEntityCore, TProduct, TUser } from './entities';
 
 
 export type TCromwellStore = {
@@ -54,6 +54,7 @@ export type TDBEntity = keyof {
     ProductCategory;
     ProductReview;
     Attribute;
+    Order;
     Generic;
 }
 
@@ -274,4 +275,10 @@ export type TAdditionalExports = {
     path?: string;
     importType?: 'default' | 'named';
     saveAsModules?: string[];
+}
+
+export type TStoreListItem = {
+    product?: TProduct;
+    pickedAttributes?: Record<string, string[]>;
+    amount?: number;
 }

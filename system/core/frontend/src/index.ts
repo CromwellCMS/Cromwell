@@ -32,7 +32,6 @@ export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore } from './CStore';
 export { loadFrontendBundle } from './helpers/loadFrontendBundle';
 export { fetch } from './helpers/isomorphicFetch';
-export * from './types';
 export { throbber } from './components/throbber';
 
 //@ts-ignore

@@ -53,28 +53,41 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         productCategory.description = input.description;
         productCategory.descriptionDelta = input.descriptionDelta;
 
-        let newParent: ProductCategory | undefined | null = input.parentId ? await this.getProductCategoryById(input.parentId) : undefined;
-        const currentParent = await this.getParentCategory(productCategory)
-
         const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
         const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
         const closureTableName = this.metadata.closureJunctionTable.tablePath;
-
         const ancestorReferencedColumn = this.metadata.closureJunctionTable.ancestorColumns[0].referencedColumn?.databasePath as string;
         const descendanReferencedColumn = this.metadata.closureJunctionTable.descendantColumns[0].referencedColumn?.databasePath;
+        const parentPropertyName = this.metadata.treeParentRelation?.propertyName as string;
+
+        let newParent: ProductCategory | undefined | null = input.parentId ? await this.getProductCategoryById(input.parentId) : undefined;
+
+        let currentParentId;
+        try {
+            const currentParent = await getConnection().createQueryBuilder()
+                .select([descendantColumn, ancestorColumn])
+                .from(closureTableName, closureTableName)
+                .where(`${descendantColumn} = :descendantId`, { descendantId: productCategory[ancestorReferencedColumn] })
+                .andWhere(`${ancestorColumn} <> :descendantId`)
+                .execute();
+            currentParentId = currentParent?.[0]?.[ancestorColumn];
+        } catch (e) {
+            logger.error(e);
+        }
 
         if (newParent) {
             const children = await this.findDescendants(productCategory);
             if (children.some(child => child.id === newParent?.id)) {
                 // if new assigned parent also is a child, it'll make an infinite loop
                 // don't assign such parents
-                newParent = currentParent;
+                newParent = undefined;
+                currentParentId = undefined;
             }
         }
 
         if (newParent?.id) {
 
-            if (!productCategory[ancestorReferencedColumn] || !currentParent) {
+            if (!productCategory[ancestorReferencedColumn] || !currentParentId) {
                 // create action
                 if (productCategory[ancestorReferencedColumn]) {
                     await getConnection().createQueryBuilder()
@@ -87,34 +100,36 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
                         .execute();
                 }
 
-                productCategory.parent = newParent;
+                productCategory[parentPropertyName] = newParent;
             }
 
-            if (productCategory.id && currentParent && newParent.id !== productCategory.id && newParent.id !== currentParent.id) {
+            if (productCategory.id && currentParentId && newParent.id !== productCategory.id) {
                 // update action
-                await this.createQueryBuilder()
-                    .update(closureTableName)
-                    .set({
-                        [ancestorColumn]: { [ancestorReferencedColumn]: newParent[ancestorReferencedColumn] },
-                    })
-                    .where(`${descendantColumn} = :descendantId`, { descendantId: productCategory[ancestorReferencedColumn] })
-                    .andWhere(`${ancestorColumn} = :ancestorId`, { ancestorId: currentParent[ancestorReferencedColumn] })
-                    .execute();
+                if (newParent.id !== currentParentId) {
+                    await this.createQueryBuilder()
+                        .update(closureTableName)
+                        .set({
+                            [ancestorColumn]: { [ancestorReferencedColumn]: newParent[ancestorReferencedColumn] },
+                        })
+                        .where(`${descendantColumn} = :descendantId`, { descendantId: productCategory[ancestorReferencedColumn] })
+                        .andWhere(`${ancestorColumn} = :ancestorId`, { ancestorId: currentParentId })
+                        .execute();
+                }
 
-                productCategory.parent = newParent;
+                productCategory[parentPropertyName] = newParent;
             }
         }
 
-        if (!newParent && currentParent) {
+        if (!newParent && currentParentId) {
             // delete action
             await this.createQueryBuilder()
                 .delete()
                 .from(closureTableName)
                 .where(`${descendantColumn} = :descendantId`, { descendantId: productCategory[ancestorReferencedColumn] })
-                .andWhere(`${ancestorColumn} = :ancestorId`, { ancestorId: currentParent[ancestorReferencedColumn] })
+                .andWhere(`${ancestorColumn} = :ancestorId`, { ancestorId: currentParentId })
                 .execute();
 
-            productCategory.parent = null;
+            productCategory[parentPropertyName] = null;
         }
 
         if (input.childIds && Array.isArray(input.childIds)) {

@@ -1,8 +1,7 @@
-import { TProduct, TAttributeInstance, TAttribute, isServer } from "@cromwell/core";
+import { getStoreItem, isServer, setStoreItem, TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
 import { toast } from 'react-toastify';
-import { TStoreListItem } from './types';
+
 import { getGraphQLClient } from './api/CGraphQLClient';
-import { getStoreItem, setStoreItem } from '@cromwell/core';
 
 const cartKey = 'CromwellShop_CartList';
 const wishlistKey = 'CromwellShop_WishList';

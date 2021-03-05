@@ -21,7 +21,6 @@ export class JwtAuthGuard implements CanActivate {
         try {
             // Validate access token
             const accessToken = request?.cookies?.[jwtConstants.accessTokenCookieName];
-            console.log('canActivatecanActivate', accessToken);
             const accessTokenPayload = accessToken ? await this.authService.validateAccessToken(accessToken) : undefined;
             if (accessTokenPayload) {
                 request.user = this.authService.payloadToUserInfo(accessTokenPayload)

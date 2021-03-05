@@ -220,8 +220,8 @@ describe('Post resolver', () => {
 
         const data2 = await getPostById('11');
 
-        expect(!data2.id).toBeTruthy();
-        expect(!data2.slug).toBeTruthy();
+        expect(!data2?.id).toBeTruthy();
+        expect(!data2?.slug).toBeTruthy();
     });
 
 
