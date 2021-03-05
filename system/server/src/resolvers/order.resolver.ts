@@ -28,7 +28,7 @@ export class OrderResolver {
     private productRepository = getCustomRepository(ProductRepository);
 
     @Query(() => PagedOrder)
-    async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<TOrder>):
+    async [getManyPath](@Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>):
         Promise<TPagedList<TOrder>> {
         return this.repository.getOrders(pagedParams);
     }

@@ -36,7 +36,7 @@ export class ProductResolver {
     private repository = getCustomRepository(ProductRepository)
 
     @Query(() => PagedProduct)
-    async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>):
+    async [getManyPath](@Arg("pagedParams", {nullable: true}) pagedParams?: PagedParamsInput<TProduct>):
         Promise<TPagedList<TProduct>> {
         return this.repository.getProducts(pagedParams);
     }

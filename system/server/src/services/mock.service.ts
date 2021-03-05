@@ -438,6 +438,7 @@ export class MockService {
                 customerPhone: '786-603-4232',
                 totalPrice: 289,
                 totalQnt: 3,
+                status: 'New',
                 cart: [{
                     product: {
                         id: '1',
@@ -453,6 +454,7 @@ export class MockService {
                 customerName: 'Michael',
                 customerAddress: '4650 Watson Lane',
                 customerPhone: '704-408-1669',
+                // status: 'In ',
                 totalPrice: 69,
                 totalQnt: 2,
                 cart: [{

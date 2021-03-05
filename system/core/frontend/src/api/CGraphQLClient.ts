@@ -1323,7 +1323,7 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public deletOrder = async (id: string) => {
+    public deleteOrder = async (id: string) => {
         const path = GraphQLPaths.Order.delete;
 
         const res = await this.apolloClient.mutate({

@@ -15,7 +15,7 @@ export class OrderRepository extends BaseRepository<Order> {
         super(Order)
     }
 
-    async getOrders(params: TPagedParams<TOrder>): Promise<TPagedList<Order>> {
+    async getOrders(params?: TPagedParams<TOrder>): Promise<TPagedList<Order>> {
         logger.log('OrderRepository::getOrders');
         return this.getPaged(params)
     }

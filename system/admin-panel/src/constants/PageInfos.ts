@@ -6,7 +6,8 @@ import {
     LocalMall as LocalMallIcon,
     Power as PowerIcon,
     Storage as StorageIcon,
-    LibraryBooks as LibraryBooksIcon
+    LibraryBooks as LibraryBooksIcon,
+    ShoppingBasket as ShoppingBasketIcon,
 } from '@material-ui/icons';
 import React from 'react';
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
@@ -23,6 +24,7 @@ import CategoryPage from '../pages/category/CategoryPage';
 import PostPage from '../pages/post/Post';
 import CategoryListPage from '../pages/categoryList/CategoryList';
 import LoginPage from '../pages/login/LoginPage';
+import OrderListPage from '../pages/orderList/OrderListPage';
 
 export type SidebarLinkType = {
     id: string;
@@ -116,6 +118,13 @@ export const loginPageInfo: PageInfo = {
     baseRoute: '/login',
 };
 
+export const orderListPagrInfo: PageInfo = {
+    name: 'Order List',
+    route: '/order-list',
+    component: OrderListPage,
+    baseRoute: '/order-list',
+};
+
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
     homePageInfo,
@@ -132,6 +141,7 @@ export const pageInfos: PageInfo[] = [
     categoryListPageInfo,
     categoryPageInfo,
     loginPageInfo,
+    orderListPagrInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
@@ -165,6 +175,12 @@ export const sideBarLinks: SidebarLinkType[] = [
                 route: categoryListPageInfo.route,
                 icon: React.createElement(CategoryIcon)
             },
+            {
+                id: '11_Order_list',
+                title: 'Orders',
+                route: orderListPagrInfo.route,
+                icon: React.createElement(ShoppingBasketIcon)
+            }
         ]
     },
     {

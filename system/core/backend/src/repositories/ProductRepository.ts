@@ -53,7 +53,7 @@ export class ProductRepository extends BaseRepository<Product> {
         return getPaged(qb, this.metadata.tablePath, params);
     }
 
-    async getProducts(params: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
+    async getProducts(params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         logger.log('ProductRepository::getProducts');
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         const prods = await this.applyAndGetPagedProducts(qb, params)
