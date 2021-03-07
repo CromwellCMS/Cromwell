@@ -1,5 +1,5 @@
-import { TProduct } from '@cromwell/core';
-import { getCStore, Link, TStoreListItem } from '@cromwell/core-frontend';
+import { TProduct, TStoreListItem } from '@cromwell/core';
+import { getCStore, Link } from '@cromwell/core-frontend';
 import { Collapse, IconButton, useMediaQuery, useTheme } from '@material-ui/core';
 import { DeleteForever as DeleteForeverIcon, ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import clsx from 'clsx';

@@ -272,11 +272,18 @@ export type TPluginEntityInput = TPluginEntityCore & TBasePageEntityInput;
 // DB CMS entity
 
 export type TCmsEntityCore = {
+    // Protocol for api client to use
     protocol?: 'http' | 'https';
+    // Package name of currently used theme
     themeName?: string;
+    // Page size to use in lists, eg. at Product Category page
     defaultPageSize?: number;
+    // Available currencies in the store and rates between them to convert
     currencies?: TCurrency[];
+    // Internal. https://github.com/CromwellCMS/Cromwell/blob/55046c48d9da0a44e4b11e7918c73876fcd1cfc1/system/manager/src/managers/baseManager.ts#L194:L206
     versions?: TServiceVersions | string;
+    // Internal. If false or not set, will launch installation at first Admin Panel visit.
+    installed?: boolean;
 }
 
 export type TServiceVersions = {

@@ -22,7 +22,7 @@ type TPluginsModifications = TPluginConfig & { [x: string]: any };
 class CRestAPIClient {
     constructor(private baseUrl: string) { }
 
-    private unauthorizedRedirect: string;
+    private unauthorizedRedirect: string | null = null;
 
     private handleError = (responce: Response, data: any, route: string): any => {
         if ((responce.status === 403 || responce.status === 401) && !isServer()) {
@@ -92,7 +92,7 @@ class CRestAPIClient {
         return this.get('auth/user-info');
     }
 
-    public setUnauthorizedRedirect = (url: string) => {
+    public setUnauthorizedRedirect = (url: string | null) => {
         this.unauthorizedRedirect = url;
     }
 
@@ -144,6 +144,10 @@ class CRestAPIClient {
 
     public getPluginList = async (): Promise<TPackageCromwellConfig[] | undefined> => {
         return this.get(`cms/plugins`);
+    }
+
+    public setUpCms = async (): Promise<boolean | undefined> => {
+        return this.post(`cms/set-up`);
     }
 
     // < / CMS >

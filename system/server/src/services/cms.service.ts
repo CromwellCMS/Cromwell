@@ -1,5 +1,5 @@
 import { getStoreItem, setStoreItem, TCmsConfig, TCmsEntity, TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
-import { getNodeModuleDir, readCMSConfig, serverLogFor } from '@cromwell/core-backend';
+import { getNodeModuleDir, readCMSConfig, serverLogFor, CmsEntity, getLogger } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
@@ -9,7 +9,9 @@ import * as util from 'util';
 
 import { GenericCms } from '../helpers/genericEntities';
 
-const getCmsEntity = async (): Promise<TCmsEntity | undefined> => {
+const logger = getLogger('detailed');
+
+const getCmsEntity = async (): Promise<CmsEntity> => {
     const cmsRepo = getCustomRepository(GenericCms.repository);
     const all = await cmsRepo.find();
     let entity = all?.[0];
@@ -18,13 +20,9 @@ const getCmsEntity = async (): Promise<TCmsEntity | undefined> => {
         // Probably CMS was launched for the first time and no settings persist in DB.
         // Create settings record
         const config = await readCMSConfig();
-        if (!config) {
-            serverLogFor('errors-only', 'getCmsEntity: Failed to read CMS config', 'Error');
-            return undefined;
-        }
-        entity = await cmsRepo.createEntity(Object.assign({}, config.defaultSettings))
+        const { versions, ...defaultSettings } = config?.defaultSettings ?? {};
+        entity = await cmsRepo.createEntity(Object.assign({}, defaultSettings))
     }
-
     return entity;
 }
 
@@ -127,6 +125,25 @@ export class CmsService {
                 }
             }
         }
+    }
+
+    public async installCms() {
+        const cmsEntity = await getCmsEntity();
+        if (cmsEntity.installed) {
+            logger.error('CMS already installed');
+            return false;
+        }
+
+        cmsEntity.installed = true;
+        const cmsRepo = getCustomRepository(GenericCms.repository);
+        await cmsRepo.save(cmsEntity);
+
+        const settings = await getCmsSettings();
+        if (settings) {
+            setStoreItem('cmsSettings', settings)
+        }
+
+        return true;
     }
 
 }

@@ -1,4 +1,5 @@
 import { getLogger } from '@cromwell/core-backend';
+import { getStoreItem } from '@cromwell/core';
 import { CanActivate, ExecutionContext, Injectable, UnauthorizedException } from '@nestjs/common';
 import { FastifyReply } from 'fastify';
 
@@ -15,6 +16,9 @@ export class JwtAuthGuard implements CanActivate {
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
+
+        if (getStoreItem('cmsSettings')?.installed === false) return true;
+
         const request = context.switchToHttp().getRequest();
         const response: FastifyReply = context.switchToHttp().getResponse();
 

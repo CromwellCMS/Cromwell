@@ -1,5 +1,6 @@
 import { logFor, TPagedList, TPagedParams, TUserInput } from '@cromwell/core';
 import { EntityRepository } from 'typeorm';
+import bcrypt from 'bcrypt';
 
 import { User } from '../entities/User';
 import { handleBaseInput } from './BaseQueries';
@@ -7,6 +8,7 @@ import { BaseRepository } from './BaseRepository';
 import { getLogger } from '../helpers/constants';
 
 const logger = getLogger('detailed');
+const bcryptSaltRounds = 10;
 
 @EntityRepository(User)
 export class UserRepository extends BaseRepository<User> {
@@ -40,19 +42,24 @@ export class UserRepository extends BaseRepository<User> {
         return this.getBySlug(slug);
     }
 
+    async handleUserInput(user: User, userInput: TUserInput) {
+        user.fullName = userInput.fullName;
+        user.email = userInput.email;
+        user.avatar = userInput.avatar;
+        if (userInput.password) {
+            const hashedPass = await bcrypt.hash(userInput.password, bcryptSaltRounds);
+            user.password = hashedPass;
+        }
+    }
+
     async createUser(createUser: TUserInput): Promise<User> {
         logger.log('UserRepository::createUser');
         let user = new User();
 
         handleBaseInput(user, createUser);
-
-        user.fullName = createUser.fullName;
-        user.email = createUser.email;
-        user.avatar = createUser.avatar;
-        user.password = createUser.password;
+        await this.handleUserInput(user, createUser);
 
         user = await this.save(user);
-
         return user;
     }
 
@@ -65,14 +72,9 @@ export class UserRepository extends BaseRepository<User> {
         if (!user) throw new Error(`User ${id} not found!`);
 
         handleBaseInput(user, updateUser);
-
-        user.fullName = updateUser.fullName;
-        user.email = updateUser.email;
-        user.avatar = updateUser.avatar;
-        user.password = updateUser.password;
+        await this.handleUserInput(user, updateUser);
 
         user = await this.save(user);
-
         return user;
     }
 

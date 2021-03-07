@@ -369,9 +369,6 @@ export class MockService {
         ]
 
         for (let user of users) {
-            const hashedPass = await this.authService.hashPassword(user.password);
-            user.password = hashedPass;
-
             await this.userRepo.createUser(user);
         }
 

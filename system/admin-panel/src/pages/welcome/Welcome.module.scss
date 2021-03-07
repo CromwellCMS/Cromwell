@@ -1,0 +1,78 @@
+.WelcomePage {
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+    background-size: cover;
+    background-position: center;
+    background-color: #fff;
+    // color: #fff;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .wrapper {
+        width: 600px;
+        max-width: 95vw;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    div.textField {
+        margin-bottom: 15px;
+    }
+
+    .inputForm {
+        width: 350px;
+        max-width: 95vw;
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px 0;
+    }
+
+    .title {
+        font-size: 30px;
+        font-weight: 500;
+        margin-bottom: 10px;
+    }
+    .subtitle {
+        font-size: 20px;
+        font-weight: 400;
+        margin-bottom: 30px;
+    }
+
+    .userMainInfo {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        margin-bottom: 15px;
+    }
+
+    .avatar {
+        height: 50px;
+        width: 50px;
+        min-width: 50px;
+        background-position: center;
+        background-size: cover;
+        margin-right: 15px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        cursor: pointer;
+
+        > svg {
+            width: 30px;
+            height: 30px;
+        }
+    }
+
+    .createBtn {
+        margin-top: 15px;
+    }
+}

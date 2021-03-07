@@ -220,10 +220,10 @@ export type TLogLevel = "none" | "errors-only" | "errors-warnings" | "minimal" |
 
 // react-toastify, for example
 export type TCromwellNotify = {
-    success?: (message: string) => void;
-    warning?: (message: string) => void;
-    error?: (message: string) => void;
-    info?: (message: string) => void;
+    success?: (message: string, options?) => void;
+    warning?: (message: string, options?) => void;
+    error?: (message: string, options?) => void;
+    info?: (message: string, options?) => void;
 }
 
 export type TPackageJson = {

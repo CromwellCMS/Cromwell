@@ -15,9 +15,12 @@ export class InputCmsEntity extends BasePageInput implements TCmsEntityInput {
     @Field(type => Number, { nullable: true })
     defaultPageSize?: number;
 
-    @Field(type => [CurrencySettings])
-    currencies: TCurrency[];
+    @Field(type => [CurrencySettings], { nullable: true })
+    currencies?: TCurrency[];
 
     @Field(type => String, { nullable: true })
     versions?: string;
+
+    @Field(type => Boolean, { nullable: true })
+    installed?: boolean;
 }

@@ -40,17 +40,21 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
 
 
     @Field(type => [CurrencySettings])
-    public get currencies(): TCurrency[] {
-        return JSON.parse(this._currencies);
+    public get currencies(): TCurrency[] | undefined {
+        return this._currencies ? JSON.parse(this._currencies) : undefined;
     }
-    public set currencies(data: TCurrency[]) {
-        this._currencies = JSON.stringify(data);
+    public set currencies(data: TCurrency[] | undefined) {
+        this._currencies = data ? JSON.stringify(data) : undefined;
     }
     @Column({ type: "varchar", nullable: true })
-    private _currencies: string;
+    private _currencies?: string;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     versions?: string;
+
+    @Field(type => Boolean, { nullable: true })
+    @Column({ type: "boolean", nullable: true })
+    installed?: boolean;
 }
 
