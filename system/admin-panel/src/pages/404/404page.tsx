@@ -8,5 +8,5 @@ export default function page404() {
         }}>
             <p>404. Page not found</p>
         </div>
-    )
+    );
 }

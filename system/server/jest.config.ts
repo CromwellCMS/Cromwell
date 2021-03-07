@@ -8,7 +8,9 @@ const config: Config.InitialOptions = {
   },
   silent: false,
   testRegex: "/tests/.*\\.(test|spec)\\.[jt]sx?$",
-  maxConcurrency: 2,
+  /** for circle ci free plan */
+  maxWorkers: 1,
+  maxConcurrency: 1,
   globals: {
     "ts-jest": {
     }

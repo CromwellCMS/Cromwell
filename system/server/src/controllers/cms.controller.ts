@@ -1,7 +1,7 @@
 import { TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
 import { getCmsModuleInfo, getLogger, getPublicDir, readCmsModules } from '@cromwell/core-backend';
-import { Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards, Body, UnauthorizedException } from '@nestjs/common';
+import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
 import fs from 'fs-extra';
 import { join } from 'path';
 
@@ -9,6 +9,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { publicSystemDirs } from '../helpers/constants';
+import { LoginDto } from '../dto/login.dto';
 import { CmsService } from '../services/cms.service';
 
 const logger = getLogger('detailed');
@@ -193,5 +194,23 @@ export class CmsController {
 
         await this.cmsService.uploadFile(req, fullPath)
         return true;
+    }
+
+
+    @Post('set-up')
+    @UseGuards(JwtAuthGuard)
+    @ApiOperation({
+        description: 'Configure CMS after first launch',
+    })
+    async setUp() {
+        const config = await this.cmsService.getSettings();
+        if (!config) {
+            throw new HttpException('CmsController::setUp Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (config.installed)
+            throw new HttpException('CmsController::setUp CMS already installed', HttpStatus.BAD_REQUEST);
+
+        return await this.cmsService.installCms();
     }
 }

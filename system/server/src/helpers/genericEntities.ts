@@ -7,7 +7,7 @@ import { createGenericEntity } from './createResolver';
 
 export const GenericTheme = createGenericEntity<TThemeEntity, TThemeEntityInput>('Theme', ThemeEntity, InputThemeEntity);
 export const GenericPlugin = createGenericEntity<TPluginEntity, TPluginEntityInput>('Plugin', PluginEntity, InputPluginEntity);
-export const GenericCms = createGenericEntity<TCmsEntity, TCmsEntityInput>('Cms', CmsEntity, InputCmsEntity);
+export const GenericCms = createGenericEntity<CmsEntity, InputCmsEntity>('Cms', CmsEntity, InputCmsEntity);
 
 
 @Resolver(ThemeEntity)

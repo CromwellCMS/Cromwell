@@ -13,4 +13,7 @@ export class UserDto implements TUser {
 
     @ApiProperty()
     avatar?: string;
+
+    @ApiProperty()
+    password?: string;
 }

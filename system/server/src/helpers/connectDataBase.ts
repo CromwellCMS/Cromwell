@@ -24,7 +24,7 @@ import { collectPlugins } from './collectPlugins';
 import { getCmsSettings, CmsService } from '../services/cms.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
-import { GenericPlugin, GenericTheme } from './genericEntities';
+import { GenericPlugin, GenericTheme, GenericCms } from './genericEntities';
 
 
 export const connectDatabase = async () => {
@@ -49,9 +49,9 @@ export const connectDatabase = async () => {
         if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {
             // Server probably was launched at the first time and has no DB created
             // Use mocked DB
-            isNewSQLiteDB = true;
             const dempDBPath = resolve(serverDir, 'db.sqlite3');
             if (await fs.pathExists(dempDBPath)) {
+                isNewSQLiteDB = true;
                 await fs.copy(dempDBPath, tempDBPath);
             }
         }
@@ -76,12 +76,6 @@ export const connectDatabase = async () => {
 
     if (connectionOptions) await createConnection(connectionOptions);
 
-    // Check CmsSettings
-    const settings = await getCmsSettings();
-    if (settings) {
-        setStoreItem('cmsSettings', settings)
-    }
-
     if (isNewSQLiteDB) {
         // if new DB, delete old themes and plugins from tables to install them anew
         const pluginRepo = getCustomRepository(GenericPlugin.repository);
@@ -91,6 +85,10 @@ export const connectDatabase = async () => {
         const themeRepo = getCustomRepository(GenericTheme.repository);
         const dbThemes = await themeRepo.getAll();
         await Promise.all(dbThemes.map(theme => themeRepo.remove(theme)));
+
+        const cmsRepo = getCustomRepository(GenericCms.repository);
+        const cmsConfigs = await cmsRepo.getAll();
+        await Promise.all(cmsConfigs.map(config => cmsRepo.remove(config)));
     }
 
     // Check installed cms modules. All available themes and plugins should be registered in DB
@@ -117,6 +115,11 @@ export const connectDatabase = async () => {
         }
     }
 
+    // Check CmsSettings
+    const settings = await getCmsSettings();
+    if (settings) {
+        setStoreItem('cmsSettings', settings)
+    }
 }
 
 export const closeConnection = async () => {

@@ -4,7 +4,7 @@ import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@material-
 import React, { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { orderListPagrInfo } from '../../constants/PageInfos';
+import { orderListPageInfo } from '../../constants/PageInfos';
 import styles from './OrderListItem.module.scss';
 import { ListItemProps } from './OrderListPage';
 
@@ -33,7 +33,7 @@ const OrderListItem = (props: TListItemProps) => {
                         <p className={styles.status}>{props.data?.status ?? 'New'}</p>
                     </Grid>
                     <Grid item xs={2} className={styles.listItemActions}>
-                        <Link to={`${orderListPagrInfo.baseRoute}/${props.data?.id}`}>
+                        <Link to={`${orderListPageInfo.baseRoute}/${props.data?.id}`}>
                             <IconButton
                                 aria-label="edit"
                             >

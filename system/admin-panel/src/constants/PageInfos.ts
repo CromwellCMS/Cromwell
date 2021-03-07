@@ -24,6 +24,7 @@ import CategoryPage from '../pages/category/CategoryPage';
 import PostPage from '../pages/post/Post';
 import CategoryListPage from '../pages/categoryList/CategoryList';
 import LoginPage from '../pages/login/LoginPage';
+import WelcomePage from '../pages/welcome/Welcome';
 import OrderListPage from '../pages/orderList/OrderListPage';
 
 export type SidebarLinkType = {
@@ -118,11 +119,17 @@ export const loginPageInfo: PageInfo = {
     baseRoute: '/login',
 };
 
-export const orderListPagrInfo: PageInfo = {
+export const orderListPageInfo: PageInfo = {
     name: 'Order List',
     route: '/order-list',
     component: OrderListPage,
     baseRoute: '/order-list',
+};
+
+export const welcomePageInfo: PageInfo = {
+    name: 'Welcome',
+    route: '/setup',
+    component: WelcomePage,
 };
 
 // Export all pages for react-router
@@ -141,7 +148,8 @@ export const pageInfos: PageInfo[] = [
     categoryListPageInfo,
     categoryPageInfo,
     loginPageInfo,
-    orderListPagrInfo,
+    orderListPageInfo,
+    welcomePageInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
@@ -178,7 +186,7 @@ export const sideBarLinks: SidebarLinkType[] = [
             {
                 id: '11_Order_list',
                 title: 'Orders',
-                route: orderListPagrInfo.route,
+                route: orderListPageInfo.route,
                 icon: React.createElement(ShoppingBasketIcon)
             }
         ]

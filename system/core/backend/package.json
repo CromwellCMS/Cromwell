@@ -16,6 +16,7 @@
   },
   "dependencies": {
     "@cromwell/core": "1.1.0",
+    "bcrypt": "^5.0.0",
     "class-validator": "^0.12.2",
     "decache": "^4.6.0",
     "graphql": "^15.3.0",
@@ -31,6 +32,7 @@
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.2",
     "@rollup/plugin-node-resolve": "^8.4.0",
+    "@types/bcrypt": "^3.0.0",
     "@types/fs-extra": "^9.0.1",
     "@types/node": "14.0.13",
     "@types/recursive-readdir": "2.2.0",

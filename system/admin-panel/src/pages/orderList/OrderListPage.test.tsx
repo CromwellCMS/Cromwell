@@ -1,5 +1,4 @@
-import { fireEvent, render, screen, act } from '@testing-library/react';
-import { getStoreItem, TUser } from '@cromwell/core';
+import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 import loadable from '@loadable/component';
 import { TPagedList, TOrder } from '@cromwell/core';
@@ -21,7 +20,7 @@ const testData: TPagedList<TOrder> = {
 
 jest.mock('../../constants/PageInfos', () => {
     return {
-        orderListPagrInfo: {},
+        orderListPageInfo: {},
     }
 });
 

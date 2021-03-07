@@ -62,9 +62,10 @@ export const defaultCmsConfig: TCmsConfig = {
     frontendPort: 4128,
     useWatch: true,
     defaultSettings: {
-        "themeName": "@cromwell/theme-store",
-        "defaultPageSize": 15,
-        "currencies": [
+        installed: false,
+        themeName: "@cromwell/theme-store",
+        defaultPageSize: 15,
+        currencies: [
             {
                 "tag": "USD",
                 "title": "US Dollar",

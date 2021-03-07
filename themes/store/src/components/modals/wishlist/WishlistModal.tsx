@@ -1,4 +1,5 @@
-import { getCStore, TStoreListItem } from '@cromwell/core-frontend';
+import { getCStore } from '@cromwell/core-frontend';
+import { TStoreListItem } from '@cromwell/core';
 import { Modal } from '@material-ui/core';
 import clsx from 'clsx';
 import { observer } from 'mobx-react';

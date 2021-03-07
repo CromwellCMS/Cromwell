@@ -1,5 +1,5 @@
-import { getRestAPIClient } from '@cromwell/core-frontend';
 import { setStoreItem } from '@cromwell/core';
+import { getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, IconButton, InputAdornment, TextField, withStyles } from '@material-ui/core';
 import {
     AccountCircle as AccountCircleIcon,
@@ -9,6 +9,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
+import { toast } from '../../components/toast/toast';
 import styles from './LoginPage.module.scss';
 
 const LoginPage = () => {
@@ -30,18 +31,21 @@ const LoginPage = () => {
                 email: emailInput,
                 password: passwordInput
             });
-            checkAuth();
+            checkAuth(true);
         } catch (e) {
             console.error(e);
         }
         setLoading(false);
     }
 
-    const checkAuth = async () => {
+    const checkAuth = async (showError?: boolean) => {
         const userInfo = await apiClient.getUserInfo();
         if (userInfo) {
             setStoreItem('userInfo', userInfo);
             loginSuccess();
+        } else {
+            if (showError)
+                toast.error('Incorrect email or password');
         }
     }
 
@@ -57,7 +61,7 @@ const LoginPage = () => {
         <div className={styles.LoginPage} style={{
             backgroundImage: 'url("/logo_bckgr_no_logo.png")'
         }}>
-            <div className={styles.loginForm}>
+            <form className={styles.loginForm} onSubmit={handleLoginClick}>
                 <AccountCircleIcon className={styles.loginIcon} />
                 <CssTextField
                     label="E-mail"
@@ -90,12 +94,13 @@ const LoginPage = () => {
                     }}
                 />
                 <Button
+                    type="submit"
                     onClick={handleLoginClick}
                     className={styles.loginBtn}
                     disabled={loading}
                     variant="outlined"
                     color="inherit">Login</Button>
-            </div>
+            </form>
         </div>
     )
 }
