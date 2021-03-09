@@ -34,6 +34,7 @@ import {
     TProductCategoryFilter,
     TOrder,
     TOrderInput,
+    TDeleteManyInput,
 } from '@cromwell/core';
 
 class CGraphQLClient {
@@ -389,6 +390,22 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
+    public deleteManyProducts = async (input: TDeleteManyInput) => {
+        const path = GraphQLPaths.Product.deleteMany;
+
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteManyProducts($data: DeleteManyInput!) {
+                    ${path}(data: $data)
+                }
+            `,
+            variables: {
+                data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
     // </Product>
 
 
@@ -419,8 +436,8 @@ class CGraphQLClient {
     public getProductCategories = async (pagedParams?: TPagedParams<TProductCategory>,
         customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TProductCategory>> => {
 
-        const productFragment = customFragment ?? this.ProductCategoryFragment;
-        const productFragmentName = customFragmentName ?? 'ProductCategoryFragment';
+        const fragment = customFragment ?? this.ProductCategoryFragment;
+        const fragmentName = customFragmentName ?? 'ProductCategoryFragment';
 
         const path = GraphQLPaths.ProductCategory.getMany;
 
@@ -436,11 +453,11 @@ class CGraphQLClient {
                         ...PagedMetaFragment
                     }
                     elements {
-                        ...${productFragmentName}
+                        ...${fragmentName}
                     }
                 }
             }
-            ${productFragment}
+            ${fragment}
             ${this.PagedMetaFragment}
         `,
             variables
@@ -528,7 +545,6 @@ class CGraphQLClient {
 
     public deleteProductCategory = async (id: string) => {
         const path = GraphQLPaths.ProductCategory.delete;
-
         const res = await this.apolloClient.mutate({
             mutation: gql`
                 mutation coreDeleteProductCategory($id: String!) {
@@ -542,16 +558,40 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public getRootCategories = async (): Promise<TProductCategory[] | undefined> => {
+    public deleteManyProductCategories = async (input: TDeleteManyInput) => {
+        const path = GraphQLPaths.ProductCategory.deleteMany;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteManyProductCategories($data: DeleteManyInput!) {
+                    ${path}(data: $data)
+                }
+            `,
+            variables: {
+                data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public getRootCategories = async (customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TProductCategory> | undefined> => {
         const path = GraphQLPaths.ProductCategory.getRootCategories;
+        const fragment = customFragment ?? this.ProductCategoryFragment;
+        const fragmentName = customFragmentName ?? 'ProductCategoryFragment';
+
         const res = await this.apolloClient.query({
             query: gql`
             query coreGetRootCategories {
                 ${path} {
-                    ...ProductCategoryFragment
+                    pagedMeta {
+                        ...PagedMetaFragment
+                    }
+                    elements {
+                        ...${fragmentName}
+                    }
                 }
             }
-            ${this.ProductCategoryFragment}
+            ${fragment}
+            ${this.PagedMetaFragment}
         `,
         });
         return this.returnData(res, path);
@@ -839,6 +879,21 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
+    public deleteManyProductReviews = async (input: TDeleteManyInput) => {
+        const path = GraphQLPaths.ProductReview.deleteMany;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteManyProductReviews($data: DeleteManyInput!) {
+                    ${path}(data: $data)
+                }
+            `,
+            variables: {
+                data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
 
     // </ProductReview>
 
@@ -994,6 +1049,21 @@ class CGraphQLClient {
             `,
             variables: {
                 id: postId,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public deleteManyPosts = async (input: TDeleteManyInput) => {
+        const path = GraphQLPaths.Post.deleteMany;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteManyPosts($data: DeleteManyInput!) {
+                    ${path}(data: $data)
+                }
+            `,
+            variables: {
+                data: input,
             }
         });
         return this.returnData(res, path);
@@ -1334,6 +1404,21 @@ class CGraphQLClient {
             `,
             variables: {
                 id,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public deleteManyOrders = async (input: TDeleteManyInput) => {
+        const path = GraphQLPaths.Order.deleteMany;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteManyOrders($data: DeleteManyInput!) {
+                    ${path}(data: $data)
+                }
+            `,
+            variables: {
+                data: input,
             }
         });
         return this.returnData(res, path);

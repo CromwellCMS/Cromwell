@@ -39,6 +39,7 @@ export * from './inputs/InputThemeEntity';
 export * from './inputs/InputPluginEntity';
 export * from './inputs/InputCmsEntity';
 export * from './inputs/InputOrder';
+export * from './inputs/DeleteManyInput';
 
 export * from './repositories/BaseQueries';
 export * from './repositories/ProductCategoryRepository';

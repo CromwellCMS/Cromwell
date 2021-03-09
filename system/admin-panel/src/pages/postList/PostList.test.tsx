@@ -60,15 +60,23 @@ jest.mock('../../constants/PageInfos', () => {
 });
 
 import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux-ts';
 import { BrowserRouter as Router } from 'react-router-dom';
 
+import { store } from '../../redux/store';
 import PostListPage from './PostList';
 
 
 describe('PostList page', () => {
 
     it("renders posts", async () => {
-        render(<Router><PostListPage /></Router>);
+        render(
+            <Provider store={store}>
+                <Router>
+                    <PostListPage />
+                </Router>
+            </Provider>
+        );
 
         await screen.findByText('_test1_');
         await screen.findByText('_test2_');

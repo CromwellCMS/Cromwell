@@ -16,13 +16,14 @@ export enum BasePagePaths {
 
 export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
     Generic: {
-        getOneBySlug: "getBySlug",
-        getOneById: "getById",
-        getMany: "getAll",
-        getManyPaged: "getPaged",
-        create: "create",
-        update: "update",
-        delete: "delete"
+        getOneBySlug: "getGenericBySlug",
+        getOneById: "getGenericById",
+        getMany: "getAllGenerics",
+        getManyPaged: "getPagedGeneric",
+        create: "createGeneric",
+        update: "updateGeneric",
+        delete: "deleteGeneric",
+        deleteMany: "deleteManyGenerics",
     },
     Post: {
         getOneBySlug: "post",
@@ -31,6 +32,7 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         create: "createPost",
         update: "updatePost",
         delete: "deletePost",
+        deleteMany: "deleteManyPosts",
         getFiltered: "getFilteredPosts",
         getTags: "getPostTags",
     },
@@ -41,6 +43,7 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         create: "createProduct",
         update: "updateProduct",
         delete: "deleteProduct",
+        deleteMany: "deleteManyProducts",
         getFromCategory: "getProductsFromCategory",
         getFiltered: "getFilteredProducts"
     },
@@ -50,7 +53,8 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         getMany: "users",
         create: "createUser",
         update: "updateUser",
-        delete: "deleteUser"
+        delete: "deleteUser",
+        deleteMany: "deleteManyUsers",
     },
     ProductCategory: {
         getOneBySlug: "productCategory",
@@ -59,6 +63,7 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         create: "createProductCategory",
         update: "updateProductCategory",
         delete: "deleteProductCategory",
+        deleteMany: "deleteManyProductCategories",
         getRootCategories: 'getRootCategories',
         getFiltered: "getFilteredProductCategories",
     },
@@ -68,7 +73,8 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         getMany: "getAttributes",
         create: "createAttribute",
         update: "updateAttribute",
-        delete: "deleteAttribute"
+        delete: "deleteAttribute",
+        deleteMany: "deleteManyAttributes",
     },
     ProductReview: {
         getOneBySlug: "getProductReviewBySlug",
@@ -77,7 +83,8 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         create: "createProductReview",
         update: "updateProductReview",
         delete: "deleteProductReview",
-        getFromProduct: "getProductReviewsOfProduct"
+        deleteMany: "deleteManyProductReviews",
+        getFromProduct: "getProductReviewsOfProduct",
     },
     Order: {
         getOneBySlug: "getOrderBySlug",
@@ -86,6 +93,7 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         create: "createOrder",
         update: "updateOrder",
         delete: "deleteOrder",
+        deleteMany: "deleteManyOrders",
         getFiltered: "getFilteredOrders",
     },
 }

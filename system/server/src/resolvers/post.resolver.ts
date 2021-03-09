@@ -1,7 +1,18 @@
 import { GraphQLPaths, TPagedList, TPost, TUser } from '@cromwell/core';
-import { CreatePost, getLogger, PagedParamsInput, PagedPost, Post, PostRepository, UpdatePost, User, UserRepository } from '@cromwell/core-backend';
-import { PostFilterInput } from '@cromwell/core-backend';
-import { Arg, Mutation, Query, Resolver, FieldResolver, Root } from 'type-graphql';
+import {
+  CreatePost,
+  getLogger,
+  PagedParamsInput,
+  PagedPost,
+  Post,
+  PostFilterInput,
+  PostRepository,
+  UpdatePost,
+  User,
+  UserRepository,
+  DeleteManyInput,
+} from '@cromwell/core-backend';
+import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 const getOneBySlugPath = GraphQLPaths.Post.getOneBySlug;
@@ -10,6 +21,7 @@ const getManyPath = GraphQLPaths.Post.getMany;
 const createPath = GraphQLPaths.Post.create;
 const updatePath = GraphQLPaths.Post.update;
 const deletePath = GraphQLPaths.Post.delete;
+const deleteManyPath = GraphQLPaths.Post.deleteMany;
 const getFilteredPath = GraphQLPaths.Post.getFiltered;
 const getTagsPath = GraphQLPaths.Post.getTags;
 
@@ -51,6 +63,11 @@ export class PostResolver {
   @Mutation(() => Boolean)
   async [deletePath](@Arg("id") id: string): Promise<boolean> {
     return this.repository.deletePost(id);
+  }
+
+  @Mutation(() => Boolean)
+  async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
+      return this.repository.deleteMany(data, 'id');
   }
 
   @Query(() => PagedPost)

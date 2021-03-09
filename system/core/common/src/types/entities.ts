@@ -304,3 +304,8 @@ export type TCurrency = {
 export type TCmsEntity = TCmsEntityCore & TBasePageEntity;
 
 export type TCmsEntityInput = TCmsEntityCore & TBasePageEntityInput;
+
+export type TDeleteManyInput = {
+    ids: string[];
+    all?: boolean;
+}

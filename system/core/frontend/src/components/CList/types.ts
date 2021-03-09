@@ -10,16 +10,19 @@ export type TCssClasses = {
     paginationActiveLink?: string;
     paginationDisabledLink?: string;
 }
+
+export type TPaginationProps = {
+    count: number;
+    page: number;
+    onChange: (page: number) => void;
+}
+
 export type TElements = {
     arrowLeft?: React.ReactNode;
     arrowRight?: React.ReactNode;
     arrowFirst?: React.ReactNode;
     arrowLast?: React.ReactNode;
-    pagination?: React.ComponentType<{
-        count: number;
-        page: number;
-        onChange: (page: number) => void;
-    }>;
+    pagination?: React.ComponentType<TPaginationProps>;
     showMore?: React.ComponentType<{
         onClick: () => void;
     }>;

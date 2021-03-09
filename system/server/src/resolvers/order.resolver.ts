@@ -8,6 +8,7 @@ import {
     PagedParamsInput,
     Product,
     ProductRepository,
+    DeleteManyInput,
 } from '@cromwell/core-backend';
 import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -18,6 +19,7 @@ const getManyPath = GraphQLPaths.Order.getMany;
 const createPath = GraphQLPaths.Order.create;
 const updatePath = GraphQLPaths.Order.update;
 const deletePath = GraphQLPaths.Order.delete;
+const deleteManyPath = GraphQLPaths.Order.deleteMany;
 
 const logger = getLogger('detailed');
 
@@ -58,5 +60,9 @@ export class OrderResolver {
         return this.repository.deleteOrder(id);
     }
 
-}
+    @Mutation(() => Boolean)
+    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
+        return this.repository.deleteMany(data, 'id');
+    }
 
+}

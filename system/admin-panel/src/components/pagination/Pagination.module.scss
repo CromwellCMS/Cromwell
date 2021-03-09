@@ -1,0 +1,13 @@
+@import "../../styles/common.module.scss";
+
+.paginationContainer {
+    margin-top: 15px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.pagination {
+    @include paper;
+    padding: 5px 10px;
+}

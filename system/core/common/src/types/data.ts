@@ -67,6 +67,7 @@ export type TGraphQLNode = {
     create: string;
     update: string;
     delete: string;
+    deleteMany: string;
     [x: string]: string;
 }
 

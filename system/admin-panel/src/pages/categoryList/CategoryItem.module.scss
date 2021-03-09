@@ -5,10 +5,20 @@
     margin: 5px 0;
 }
 
+.listItem {
+    @include paper;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 3px;
+    transition: 0.3s;
+}
+.listItem:hover {
+    background-color: #eee;
+}
+
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    // display: flex;
+    // justify-content: space-between;
+    // align-items: center;
     min-height: 50px;
     background-color: transparent;
     padding: 0 10px;
@@ -17,10 +27,6 @@
 
 .header:hover {
     background-color: rgba($color: #000000, $alpha: 0.05);
-
-    .itemActions {
-        opacity: 1;
-    }
 }
 
 .subList {
@@ -48,10 +54,19 @@
 }
 
 button.expandBtn {
-    margin-right: 10px;
+    // margin-right: 10px;
 }
 
 .itemActions {
-    opacity: 0;
-    transition: 0.3s;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.treeInfo {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    justify-content: center;
+    align-items: flex-end;
 }

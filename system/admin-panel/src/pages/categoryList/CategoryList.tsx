@@ -1,37 +1,76 @@
-import { TProductCategory } from '@cromwell/core';
-import { getGraphQLClient } from '@cromwell/core-frontend';
-import { IconButton, Tooltip } from '@material-ui/core';
+import { gql } from '@apollo/client';
+import { getBlockInstance, TPagedParams, TProductCategory, TProductCategoryFilter } from '@cromwell/core';
+import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { Checkbox, IconButton, Tooltip } from '@material-ui/core';
 import {
-    UnfoldLess as UnfoldLessIcon, UnfoldMore as UnfoldMoreIcon,
-    Add as AddIcon
+    AccountTreeOutlined as AccountTreeOutlinedIcon,
+    Add as AddIcon,
+    Delete as DeleteIcon,
+    List as ListIcon,
+    UnfoldLess as UnfoldLessIcon,
+    UnfoldMore as UnfoldMoreIcon,
 } from '@material-ui/icons';
-import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 import { Skeleton } from '@material-ui/lab';
+import React, { useEffect, useRef, useState } from 'react';
+import { connect, PropsType } from 'react-redux-ts';
+import { useHistory } from 'react-router-dom';
 
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
+import Pagination from '../../components/pagination/Pagination';
+import { listPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { categoryPageInfo } from '../../constants/PageInfos';
+import {
+    countSelectedItems,
+    getSelectedInput,
+    resetSelected,
+    toggleItemSelection,
+    toggleSelectAll,
+} from '../../redux/helpers';
+import { TAppState } from '../../redux/store';
+import commonStyles from '../../styles/common.module.scss';
 import CategoryItem from './CategoryItem';
 import styles from './CategoryList.module.scss';
 
+export type ListItemProps = {
+    handleDeleteBtnClick: (product: TProductCategory) => void;
+    toggleSelection?: (data: TProductCategory) => void;
+    displayType: 'tree' | 'list';
+}
 
-const CategoryList = () => {
+const mapStateToProps = (state: TAppState) => {
+    return {
+        allSelected: state.allSelected,
+    }
+}
+
+type TPropsType = PropsType<TAppState, {},
+    ReturnType<typeof mapStateToProps>>;
+
+
+const CategoryList = (props: TPropsType) => {
     const client = getGraphQLClient();
     const [rootCategories, setRootCategories] = useState<TProductCategory[] | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const [displayType, setDisplayType] = useState<'tree' | 'list'>('tree');
     const collapsedItemsRef = useRef<Record<string, boolean>>({});
     const deletedItemsRef = useRef<Record<string, boolean>>({});
     const forceUpdate = useForceUpdate();
     const [categoryToDelete, setCategoryToDelete] = useState<TProductCategory | null>(null);
     const history = useHistory();
+    const listId = "Admin_ProductCategoryList";
+    const filterInput = useRef<TProductCategoryFilter>({});
+    const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
+    const totalElements = useRef<number | null>(null);
 
     const getRootCategories = async () => {
         setIsLoading(true);
         try {
             const categories = await client.getRootCategories();
-            if (categories && Array.isArray(categories)) {
-                setRootCategories(categories);
+            if (categories?.elements && Array.isArray(categories?.elements)) {
+                setRootCategories(categories.elements);
+                totalElements.current = categories.pagedMeta?.totalElements;
             }
         } catch (e) {
             console.error(e);
@@ -41,6 +80,11 @@ const CategoryList = () => {
 
     useEffect(() => {
         getRootCategories();
+
+        resetSelected();
+        return () => {
+            resetSelected();
+        }
     }, []);
 
     const hanleCollapseAll = () => {
@@ -69,37 +113,139 @@ const CategoryList = () => {
         }
         setCategoryToDelete(null);
         deletedItemsRef.current[categoryToDelete.id] = true;
-        forceUpdate();
+        getRootCategories();
     }
 
     const handleCreate = () => {
         history.push(`${categoryPageInfo.baseRoute}/new`)
     }
 
+    const handleChangeDisplayView = () => {
+        if (displayType === 'list')
+            setDisplayType('tree')
+        else setDisplayType('list')
+    }
+
+    const handleGetProductCategories = async (params: TPagedParams<TProductCategory>) => {
+        const data = await client?.getFilteredProductCategories({
+            pagedParams: params,
+            customFragment: gql`
+                fragment ProductCategoryListFragment on ProductCategory {
+                    id
+                    slug
+                    isEnabled
+                    name
+                    mainImage
+                    children {
+                        id
+                        slug
+                    }
+                    parent {
+                        id
+                    }
+                }
+            `,
+            customFragmentName: 'ProductCategoryListFragment',
+            filterParams: filterInput.current,
+        });
+        if (data?.pagedMeta?.totalElements) {
+            totalElements.current = data.pagedMeta?.totalElements;
+        }
+        return data;
+    }
+
+    const handleToggleItemSelection = (data: TProductCategory) => {
+        toggleItemSelection(data.id);
+    }
+
+    const resetList = () => {
+        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        list?.clearState();
+        list?.init();
+    }
+
+    const handleToggleSelectAll = () => {
+        toggleSelectAll()
+    }
+
+    const handleDeleteSelectedBtnClick = () => {
+        if (countSelectedItems(totalElements.current) > 0)
+            setDeleteSelectedOpen(true);
+    }
+
+    const handleDeleteSelected = async () => {
+        setIsLoading(true);
+        setRootCategories([]);
+        totalElements.current = 0;
+        try {
+            const input = getSelectedInput();
+            await client?.deleteManyProductCategories(input);
+            toast.success('Categories deleted');
+        } catch (e) {
+            console.error(e);
+            toast.success('Failed to delete categories');
+        }
+        await getRootCategories();
+        resetSelected();
+        resetList();
+        setDeleteSelectedOpen(false);
+        setIsLoading(false);
+    }
+
     return (
         <div className={styles.CategoryList} >
             <div className={styles.header}>
-                <div>
-                    <Tooltip title="Expand all">
+                <div className={styles.filter}>
+                    <div className={commonStyles.center}>
+                        <Tooltip title="Select all">
+                            <Checkbox
+                                style={{ marginRight: '10px' }}
+                                checked={props.allSelected ?? false}
+                                onChange={handleToggleSelectAll}
+                            />
+                        </Tooltip>
+                    </div>
+                    <Tooltip title={displayType === 'list' ? 'Tree view' : 'List view'}>
                         <IconButton
                             className={styles.actionBtn}
                             aria-label="Expand all"
-                            onClick={handleExpandAll}
+                            onClick={handleChangeDisplayView}
                         >
-                            <UnfoldMoreIcon />
+                            {displayType === 'list' ? <AccountTreeOutlinedIcon /> : <ListIcon />}
                         </IconButton>
                     </Tooltip>
-                    <Tooltip title="Collapse all">
-                        <IconButton
-                            className={styles.actionBtn}
-                            aria-label="Collapse all"
-                            onClick={hanleCollapseAll}
-                        >
-                            <UnfoldLessIcon />
-                        </IconButton>
-                    </Tooltip>
+                    {displayType === 'tree' && (
+                        <>
+                            <Tooltip title="Expand all">
+                                <IconButton
+                                    className={styles.actionBtn}
+                                    aria-label="Expand all"
+                                    onClick={handleExpandAll}
+                                >
+                                    <UnfoldMoreIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Collapse all">
+                                <IconButton
+                                    className={styles.actionBtn}
+                                    aria-label="Collapse all"
+                                    onClick={hanleCollapseAll}
+                                >
+                                    <UnfoldLessIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </>
+                    )}
                 </div>
                 <div>
+                    <Tooltip title="Delete selected">
+                        <IconButton
+                            onClick={handleDeleteSelectedBtnClick}
+                            aria-label="Delete selected"
+                        >
+                            <DeleteIcon />
+                        </IconButton>
+                    </Tooltip>
                     <Tooltip title="Create category">
                         <IconButton
                             className={styles.actionBtn}
@@ -111,28 +257,63 @@ const CategoryList = () => {
                     </Tooltip>
                 </div>
             </div>
-            <div className={styles.list}>
-                {isLoading && [1, 2, 3, 4, 5].map(index => {
-                    return <Skeleton key={index} variant="text" height="20px" style={{ margin: '20px 20px 0 20px' }} />
-                })}
-                {rootCategories?.map(category => {
-                    return (
-                        <CategoryItem
-                            key={category.id}
-                            category={category}
-                            collapsedItemsRef={collapsedItemsRef}
-                            deletedItemsRef={deletedItemsRef}
-                            handleDeleteBtnClick={handleDeleteBtnClick}
-                        />
-                    )
-                })}
-            </div>
+            {displayType === 'tree' && (
+                <div className={styles.treeList}>
+                    {isLoading && [1, 2, 3, 4, 5].map(index => {
+                        return <Skeleton key={index} variant="text" height="20px" style={{ margin: '20px 20px 0 20px' }} />
+                    })}
+                    {rootCategories?.map(category => {
+                        return (
+                            <CategoryItem
+                                key={category.id}
+                                data={category}
+                                collapsedItemsRef={collapsedItemsRef}
+                                deletedItemsRef={deletedItemsRef}
+                                listItemProps={{
+                                    handleDeleteBtnClick,
+                                    toggleSelection: handleToggleItemSelection,
+                                    displayType
+                                }}
+                            />
+                        )
+                    })}
+                </div>
+            )}
+            {!isLoading && displayType === 'list' && (
+                <CList<TProductCategory, ListItemProps>
+                    className={styles.listWrapper}
+                    id={listId}
+                    ListItem={CategoryItem}
+                    useAutoLoading
+                    usePagination
+                    listItemProps={{
+                        handleDeleteBtnClick,
+                        toggleSelection: handleToggleItemSelection,
+                        displayType,
+                    }}
+                    useQueryPagination
+                    loader={handleGetProductCategories}
+                    cssClasses={{ scrollBox: styles.list }}
+                    elements={{
+                        pagination: Pagination,
+                        preloader: listPreloader
+                    }}
+                />
+            )}
             <ConfirmationModal
                 open={Boolean(categoryToDelete)}
                 onClose={() => setCategoryToDelete(null)}
                 onConfirm={handleDeleteCategory}
                 title={`Delete category ${categoryToDelete?.name ?? ''}?`}
             />
+            <ConfirmationModal
+                open={deleteSelectedOpen}
+                onClose={() => setDeleteSelectedOpen(false)}
+                onConfirm={handleDeleteSelected}
+                title={`Delete ${countSelectedItems(totalElements.current)} item(s)?`}
+                disabled={isLoading}
+            />
+            <LoadingStatus isActive={isLoading} />
         </div>
     )
 }
@@ -142,4 +323,4 @@ function useForceUpdate() {
     return () => setValue(value => ++value);
 }
 
-export default CategoryList;
+export default connect(mapStateToProps)(CategoryList);

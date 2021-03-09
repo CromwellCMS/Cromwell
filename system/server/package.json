@@ -46,7 +46,7 @@
     "rxjs": "^6.6.3",
     "sqlite3": "^4.2.0",
     "symlink-dir": "^4.1.0",
-    "tslib": "2.0.3",
+    "tslib": "2.1.0",
     "type-graphql": "^1.0.0",
     "typegraphql-nestjs": "^0.2.5",
     "typeorm": "^0.2.28",

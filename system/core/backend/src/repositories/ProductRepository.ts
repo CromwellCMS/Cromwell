@@ -292,7 +292,6 @@ export class ProductRepository extends BaseRepository<Product> {
             filterMeta
         }
         return filtered;
-
     }
 
     private buildProductPage(product: TProduct) {

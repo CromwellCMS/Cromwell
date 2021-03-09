@@ -6,6 +6,8 @@
     height: 100%;
     z-index: 5;
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .header {
@@ -17,11 +19,30 @@
 }
 
 .list {
+    @include styledScrollBar;
+    border-radius: 10px;
+}
+
+.treeList {
     @include paper;
+    @include styledScrollBar;
     display: flex;
     flex-direction: column;
+    height: 100%;
+    overflow: auto;
 }
 
 .actionBtn {
     margin-right: 10px;
+}
+
+.listWrapper {
+    min-height: 400px;
+    height: 100%;
+    width: 100%;
+}
+
+.filter {
+    display: flex;
+    flex-wrap: wrap;
 }

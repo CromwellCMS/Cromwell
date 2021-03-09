@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { TProductCategory } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Collapse, IconButton, Tooltip } from '@material-ui/core';
+import { Checkbox, Collapse, Grid, IconButton, Tooltip } from '@material-ui/core';
 import { TransitionProps } from '@material-ui/core/transitions';
 import {
     DeleteForever as DeleteForeverIcon,
@@ -11,32 +11,47 @@ import {
 } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
+import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 import { animated, useSpring } from 'react-spring/web.cjs.js';
 
 import { categoryPageInfo } from '../../constants/PageInfos';
+import { TAppState } from '../../redux/store';
+import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryItem.module.scss';
+import { ListItemProps } from './CategoryList';
 
+export type TCategoryItemProps = {
+    data: TProductCategory;
+    collapsedItemsRef?: React.MutableRefObject<Record<string, boolean>>;
+    deletedItemsRef?: React.MutableRefObject<Record<string, boolean>>;
+    listItemProps: ListItemProps;
+}
 
-const CategoryItem = (props: {
-    category: TProductCategory;
-    collapsedItemsRef: React.MutableRefObject<Record<string, boolean>>;
-    deletedItemsRef: React.MutableRefObject<Record<string, boolean>>;
-    handleDeleteBtnClick: (category: TProductCategory) => void;
-}) => {
-    const { category } = props;
+const mapStateToProps = (state: TAppState, ownProps: TCategoryItemProps) => {
+    return {
+        selectedItems: state.selectedItems,
+        allSelected: state.allSelected,
+    }
+}
+type TPropsType = PropsType<PropsType, TCategoryItemProps,
+    ReturnType<typeof mapStateToProps>>;
+
+const CategoryItem = (props: TPropsType) => {
+    const { data: category } = props;
+    const displayType = props.listItemProps.displayType;
     const client = getGraphQLClient();
-    let expanded = !!props.collapsedItemsRef.current[category.id];
+    let expanded = !!props.collapsedItemsRef?.current[category.id];
 
-    if (props.deletedItemsRef.current[category.id]) {
+    if (props.deletedItemsRef?.current[category.id]) {
         return <></>;
     }
 
-    if (props.collapsedItemsRef.current['all'] === true && !expanded) {
+    if (props.collapsedItemsRef?.current['all'] === true && !expanded) {
         props.collapsedItemsRef.current[category.id] = true;
         expanded = true;
     }
-    if (props.collapsedItemsRef.current['all'] === false && expanded) {
+    if (props.collapsedItemsRef?.current['all'] === false && expanded) {
         props.collapsedItemsRef.current[category.id] = false;
         expanded = false;
     }
@@ -89,29 +104,49 @@ const CategoryItem = (props: {
 
 
     const handleDelete = () => {
-        props.handleDeleteBtnClick(category);
+        props.listItemProps.handleDeleteBtnClick(category);
     }
 
-    const hasChildren = Boolean(category.children && category.children.length > 0);
+    let hasChildren = Boolean(category.children && category.children.length > 0);
+    let selected = false;
+    if (props.allSelected && !props.selectedItems[category.id]) selected = true;
+    if (!props.allSelected && props.selectedItems[category.id]) selected = true;
 
     return (
 
-        <div className={styles.CategoryItem}>
-            <div className={styles.header}>
-                <div className={styles.headerLeft}>
-                    {hasChildren ? (
-                        <IconButton onClick={handleToggleCollapse}
-                            className={styles.expandBtn}
-                        >
-                            <ExpandMoreIcon
-                                className={styles.expandMoreIcon}
-                                style={{ transform: expanded ? 'rotate(180deg)' : '' }}
-                            />
-                        </IconButton>
-                    ) : <div style={{ height: '48px', width: '58px' }}></div>}
+        <div className={`${styles.CategoryItem} ${displayType === 'list' ? styles.listItem : ''}`}>
+            <Grid container className={styles.header}>
+                <Grid item xs={displayType === 'list' ? 4 : 8} className={styles.headerLeft}>
+                    {displayType === 'tree' && (
+                        <>
+                            {hasChildren ? (
+                                <IconButton onClick={handleToggleCollapse}
+                                    className={styles.expandBtn}
+                                >
+                                    <ExpandMoreIcon
+                                        className={styles.expandMoreIcon}
+                                        style={{ transform: expanded ? 'rotate(180deg)' : '' }}
+                                    />
+                                </IconButton>
+                            ) : <div style={{ height: '48px', width: '48px' }}></div>}
+                        </>
+                    )}
+                    <div className={commonStyles.center}>
+                        <Checkbox
+                            checked={selected}
+                            onChange={() => props.listItemProps.toggleSelection(category)} />
+                    </div>
                     <p>{category.name}</p>
-                </div>
-                <div className={styles.itemActions}>
+                </Grid>
+                {displayType === 'list' && (
+                    <Grid item xs={4} className={styles.treeInfo}>
+                        <>
+                            <p>id: <b>{category.id}</b></p>
+                            {category.parent?.id ? <p>parent id: <b>{category.parent?.id}</b></p> : <b>root category</b>}
+                        </>
+                    </Grid>
+                )}
+                <Grid item xs={4} className={styles.itemActions}>
                     <Link to={`${categoryPageInfo.baseRoute}/new?parentId=${category?.id}`}>
                         <Tooltip title="Add subcategory">
                             <IconButton
@@ -141,21 +176,21 @@ const CategoryItem = (props: {
                             <DeleteForeverIcon />
                         </IconButton>
                     </Tooltip>
-                </div>
-            </div>
-            {hasChildren && (
+                </Grid>
+            </Grid>
+            {hasChildren && displayType === 'tree' && (
                 <div className={styles.subList}>
                     {isLoading ? category.children?.map(child => <Skeleton variant="text" height="30px" style={{ margin: '10px 0' }} />)
                         : (
                             <TransitionComponent in={expanded}>
                                 {childCategories?.map(childCat => {
                                     return (
-                                        <CategoryItem
+                                        <ConnectedComponent
                                             key={childCat.id}
-                                            category={childCat}
+                                            data={childCat}
                                             collapsedItemsRef={props.collapsedItemsRef}
                                             deletedItemsRef={props.deletedItemsRef}
-                                            handleDeleteBtnClick={props.handleDeleteBtnClick}
+                                            listItemProps={props.listItemProps}
                                         />
                                     );
                                 })}
@@ -185,4 +220,6 @@ function useForceUpdate() {
     return () => setValue(value => ++value);
 }
 
-export default CategoryItem;
+const ConnectedComponent = connect(mapStateToProps)(CategoryItem);
+
+export default ConnectedComponent;

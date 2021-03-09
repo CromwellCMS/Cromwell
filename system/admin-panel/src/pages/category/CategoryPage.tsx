@@ -241,7 +241,7 @@ export default function CategoryPage() {
                 <Autocomplete<TProductCategory>
                     loader={handleSearchRequest}
                     onSelect={handleParentCategoryChange}
-                    getOptionLabel={(data) => `${data.name} (id: ${data.id};${data?.parent?.id ? ` parent id: ${data.parent.id};` : ''})`}
+                    getOptionLabel={(data) => `${data.name} (id: ${data.id}${data?.parent?.id ? `; parent id: ${data.parent.id}` : ''})`}
                     getOptionValue={(data) => data.name}
                     fullWidth
                     className={styles.textField}
@@ -257,10 +257,10 @@ export default function CategoryPage() {
                                 style={{ backgroundImage: `url(${category?.mainImage})` }}
                                 className={styles.mainImage}></div>
                         ) : (
-                                <WallpaperIcon
-                                    style={{ opacity: '0.7' }}
-                                />
-                            )}
+                            <WallpaperIcon
+                                style={{ opacity: '0.7' }}
+                            />
+                        )}
                     </MenuItem>
                     <p style={{ margin: '10px' }}>{category?.mainImage ?? <span style={{ opacity: '0.7' }}>No image</span>}</p>
                     {category?.mainImage && (

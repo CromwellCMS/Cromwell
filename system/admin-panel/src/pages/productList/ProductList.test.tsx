@@ -55,13 +55,21 @@ jest.mock('@cromwell/core-frontend', () => {
 import { TPagedList, TProduct } from '@cromwell/core';
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { Provider } from 'react-redux-ts';
 
+import { store } from '../../redux/store';
 import ProductListPage from './ProductList';
 
 describe('ProductList page', () => {
 
     it("renders products", async () => {
-        render(<Router><ProductListPage /></Router>);
+        render(
+            <Provider store={store}>
+                <Router>
+                    <ProductListPage />
+                </Router>
+            </Provider>
+        );
 
         await screen.findByText('_test1_');
         await screen.findByText('_test2_');

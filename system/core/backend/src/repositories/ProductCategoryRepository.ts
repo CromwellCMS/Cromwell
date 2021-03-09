@@ -1,4 +1,4 @@
-import { TPagedList, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
+import { TPagedList, TPagedParams, TProductCategory, TProductCategoryInput, TDeleteManyInput } from '@cromwell/core';
 import { PagedParamsInput } from 'src/inputs/PagedParamsInput';
 import { EntityRepository, getConnection, getCustomRepository, TreeRepository } from 'typeorm';
 
@@ -167,33 +167,65 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         if (!productCategory) return false;
 
         const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
+        const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
         const tableName = this.metadata.tablePath;
         const parentPropertyName = this.metadata.treeParentRelation?.joinColumns[0].propertyName;
         const parentColumn = this.metadata.treeParentRelation?.joinColumns[0].databaseName;
         const closureTableName = this.metadata.closureJunctionTable.tablePath;
 
-        const children = await this.getChildrenCategories(productCategory);
-
-        const descendantNodeIds = children.map((c) => c.id);
-        descendantNodeIds.push(id);
-
-        // Delete all the nodes from the closure table
-        await this.createQueryBuilder()
-            .delete()
-            .from(closureTableName)
-            .where(`${descendantColumn} IN (:...ids)`, { ids: descendantNodeIds })
-            .execute();
-
-
-        // Set parent to null in the main table
-        if (parentPropertyName && parentColumn) {
-            await this.createQueryBuilder()
-                .update(tableName, { [parentPropertyName]: null })
-                .where(`${parentColumn} IN (:...ids)`, { ids: descendantNodeIds })
+        await getConnection().transaction(async transactionalEntityManager => {
+            // Delete all the nodes from the closure table
+            await transactionalEntityManager.createQueryBuilder(ProductCategory, tableName)
+                .delete()
+                .from(closureTableName)
+                .where(`${descendantColumn} = :id`, { id })
+                .orWhere(`${ancestorColumn} = :id`, { id })
                 .execute();
-        }
 
-        await this.delete(productCategory.id);
+            // Set parent to null in the main table
+            if (parentPropertyName && parentColumn) {
+                await transactionalEntityManager.createQueryBuilder(ProductCategory, tableName)
+                    .update(tableName, { [parentPropertyName]: null })
+                    .where(`${parentPropertyName} = :id`, { id })
+                    .execute();
+            }
+
+            // Delete entity
+            await transactionalEntityManager.createQueryBuilder(ProductCategory, tableName)
+                .delete()
+                .from(tableName)
+                .where(`id = :id`, { id })
+                .execute();
+
+        });
+
+        return true;
+    }
+
+
+    async deleteManyCategories(input: TDeleteManyInput) {
+        if (input.all) {
+            const allEntities = await this.find({
+                select: ['id']
+            });
+            for (const entity of allEntities) {
+                const entityId = entity.id + '';
+                if (input.ids.includes(entityId)) continue;
+                try {
+                    await this.deleteProductCategory(entity.id);
+                } catch (e) {
+                    logger.error(e);
+                }
+            }
+        } else {
+            for (const entityId of input.ids) {
+                try {
+                    await this.deleteProductCategory(entityId);
+                } catch (e) {
+                    logger.error(e);
+                }
+            }
+        }
         return true;
     }
 
@@ -219,11 +251,21 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return ancestorsTree.parent;
     }
 
-    async getRootCategories(): Promise<ProductCategory[]> {
+    async getRootCategories(): Promise<TPagedList<ProductCategory>> {
         const parentColumn = this.metadata.treeParentRelation?.joinColumns[0].databaseName;
-        return this.createQueryBuilder().select().where(
-            `${parentColumn} IS NULL`
-        ).getMany();
+        const [rootCategories, total] = await Promise.all([
+            this.createQueryBuilder().select().where(
+                `${parentColumn} IS NULL`
+            ).getMany(),
+            this.createQueryBuilder().getCount(),
+        ]);
+
+        return {
+            elements: rootCategories,
+            pagedMeta: {
+                totalElements: total,
+            }
+        }
     }
 
     async getFilteredCategories(pagedParams?: PagedParamsInput<ProductCategory>, filterParams?: ProductCategoryFilterInput):

@@ -51,18 +51,6 @@
     padding-top: 5px;
 }
 
-.paginationContainer {
-    margin-top: 15px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.pagination {
-    @include paper;
-    padding: 5px 10px;
-}
-
 .itemMain {
     display: flex;
 }
@@ -70,7 +58,8 @@
 .itemImage {
     @include bckgrCover;
     height: 60px;
-    width: 90px;
+    width: 80px;
+    min-width: 80px;
 }
 
 .itemMainInfo {
@@ -109,7 +98,7 @@
 .filter {
     display: flex;
     align-items: center;
-    padding: 10px 15px;
+    // padding: 10px 15px;
     flex-wrap: wrap;
 }
 

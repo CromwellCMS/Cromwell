@@ -50,7 +50,7 @@
     "rollup-plugin-terser": "^7.0.2",
     "style-loader": "^1.2.1",
     "symlink-dir": "^4.1.0",
-    "tslib": "2.0.3",
+    "tslib": "2.1.0",
     "webpack": "5.11.1",
     "yargs-parser": "^19.0.4"
   },
