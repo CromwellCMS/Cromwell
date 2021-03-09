@@ -9,6 +9,7 @@ import {
     UpdateProductCategory,
     PagedProductCategory,
     ProductCategoryFilterInput,
+    DeleteManyInput,
 } from '@cromwell/core-backend';
 import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -19,6 +20,7 @@ const getManyPath = GraphQLPaths.ProductCategory.getMany;
 const createPath = GraphQLPaths.ProductCategory.create;
 const updatePath = GraphQLPaths.ProductCategory.update;
 const deletePath = GraphQLPaths.ProductCategory.delete;
+const deleteManyPath = GraphQLPaths.ProductCategory.deleteMany;
 const getRootCategoriesPath = GraphQLPaths.ProductCategory.getRootCategories;
 const getFilteredPath = GraphQLPaths.ProductCategory.getFiltered;
 const productsKey: keyof TProductCategory = 'products';
@@ -61,8 +63,13 @@ export class ProductCategoryResolver {
         return await this.repository.deleteProductCategory(id);
     }
 
-    @Query(() => [ProductCategory])
-    async [getRootCategoriesPath](): Promise<ProductCategory[]> {
+    @Mutation(() => Boolean)
+    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
+        return this.repository.deleteManyCategories(data);
+    }
+
+    @Query(() => PagedProductCategory)
+    async [getRootCategoriesPath](): Promise<TPagedList<ProductCategory>> {
         return this.repository.getRootCategories();
     }
 
@@ -73,7 +80,6 @@ export class ProductCategoryResolver {
     ): Promise<TPagedList<TProductCategory>> {
         return this.repository.getFilteredCategories(pagedParams, filterParams);
     }
-
 
     @FieldResolver(() => PagedProduct)
     async [productsKey](@Root() productCategory: ProductCategory, @Arg("pagedParams") pagedParams: PagedParamsInput<TProduct>): Promise<TPagedList<TProduct>> {

@@ -1,4 +1,4 @@
-import { TPagedList, TPagedParams, logFor } from '@cromwell/core';
+import { TPagedList, TPagedParams, TDeleteManyInput } from '@cromwell/core';
 import { Repository } from 'typeorm';
 
 import { getPaged } from './BaseQueries';
@@ -72,7 +72,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     }
 
     async deleteEntity(id: string): Promise<boolean> {
-        logger.log('BaseRepository::deleteEntity');
+        logger.log('BaseRepository::deleteEntity ' + this.metadata.tablePath);
         const entity = await this.getById(id);
         if (!entity) {
             console.log(`BaseRepository::deleteEntity failed to find ${this.metadata.tablePath} ${id} by id: ${id}`);
@@ -81,5 +81,36 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         const res = await this.delete(id);
         return true;
     }
+
+    async deleteMany(input: TDeleteManyInput, idKey: keyof EntityType) {
+        logger.log('BaseRepository::deleteMany ' + this.metadata.tablePath, input);
+        if (input.all) {
+            const allEntities = await this.find({
+                select: [idKey]
+            });
+            await Promise.all(allEntities.map(async (entity) => {
+                const id = entity[idKey] + '';
+                if (input.ids.includes(id)) return;
+                try {
+                    return await this.delete(id);
+                } catch (e) {
+                    logger.error(e);
+                }
+            }));
+
+        } else {
+            await Promise.all(input.ids.map(async (id) => {
+                try {
+                    const entity = await this.getById(id);
+                    if (entity)
+                        return await this.delete(id);
+                } catch (e) {
+                    logger.error(e);
+                }
+            }));
+        }
+        return true;
+    }
+
 
 }

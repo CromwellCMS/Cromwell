@@ -4,11 +4,11 @@ import * as coreFrontend from '@cromwell/core-frontend';
 import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { pageInfos, loginPageInfo, welcomePageInfo } from './constants/PageInfos';
-
+import { Provider } from 'react-redux-ts';
+import { loginPageInfo, welcomePageInfo } from './constants/PageInfos';
 import Layout from './components/layout/Layout';
 import { setStoreItem } from '@cromwell/core';
-
+import { store } from './redux/store';
 
 const importer = getModuleImporter();
 
@@ -49,7 +49,9 @@ importer.modules['@cromwell/core'] = core;
 
 
     ReactDOM.render(
-        React.createElement(Layout),
+        <Provider store={store}>
+            <Layout />
+        </Provider>,
         document.getElementById('root')
     );
 })();

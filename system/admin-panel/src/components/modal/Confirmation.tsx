@@ -12,12 +12,13 @@ const ConfirmationModal = (props: {
     open: boolean;
     onClose?: () => void;
     onConfirm?: () => void;
+    disabled?: boolean;
 }) => {
 
     return (
         <Modal
             open={props.open}
-            onClose={props.onClose}
+            onClose={() => !props.disabled ? props.onClose() : ''}
             className={commonStyles.center}
             blurSelector="#root"
         >
@@ -30,6 +31,7 @@ const ConfirmationModal = (props: {
                         color="primary"
                         onClick={props.onClose}
                         className={styles.actionBtn}
+                        disabled={props.disabled}
                     >Cancel</Button>
                     <Button
                         role="button"
@@ -37,6 +39,7 @@ const ConfirmationModal = (props: {
                         color="primary"
                         onClick={props.onConfirm}
                         className={styles.actionBtn}
+                        disabled={props.disabled}
                     >Ok</Button>
                 </div>
             </div>

@@ -1,10 +1,13 @@
 import { TPost } from '@cromwell/core';
-import { Grid, IconButton } from '@material-ui/core';
+import { Checkbox, Grid, IconButton } from '@material-ui/core';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@material-ui/icons';
 import React from 'react';
+import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 
 import { postPageInfo } from '../../constants/PageInfos';
+import { TAppState } from '../../redux/store';
+import commonStyles from '../../styles/common.module.scss';
 import { ListItemProps } from './PostList';
 import styles from './PostList.module.scss';
 
@@ -13,13 +16,34 @@ type TPostListItemProps = {
     listItemProps: ListItemProps;
 }
 
-export const PostListItem = (props: TPostListItemProps) => {
+const mapStateToProps = (state: TAppState, ownProps: TPostListItemProps) => {
+    return {
+        selectedItems: state.selectedItems,
+        allSelected: state.allSelected,
+    }
+}
+
+type TPropsType = PropsType<PropsType, TPostListItemProps,
+    ReturnType<typeof mapStateToProps>>;
+
+const PostListItem = (props: TPropsType) => {
     // console.log('PostListItem::props', props)
+    const { data } = props;
+
+    let selected = false;
+    if (props.allSelected && !props.selectedItems[data.id]) selected = true;
+    if (!props.allSelected && props.selectedItems[data.id]) selected = true;
+
     return (
         <Grid container className={styles.listItem}>
             {props.data && (
                 <>
-                    <Grid item xs={5} className={styles.itemMain}>
+                    <Grid item xs={6} className={styles.itemMain}>
+                        <div className={commonStyles.center}>
+                            <Checkbox
+                                checked={selected}
+                                onChange={() => props.listItemProps.toggleSelection(data)} />
+                        </div>
                         <div
                             style={{ backgroundImage: `url(${props?.data?.mainImage})` }}
                             className={styles.itemImage}
@@ -28,9 +52,6 @@ export const PostListItem = (props: TPostListItemProps) => {
                             <p className={styles.itemTitle}>{props.data?.title}</p>
                             <p className={styles.itemAuthor}>by <span style={{ fontWeight: 500 }}>{props.data?.author?.fullName}</span></p>
                         </div>
-                    </Grid>
-                    <Grid item xs={1}>
-
                     </Grid>
                     <Grid item xs={2} className={styles.itemSubInfo}>
                         <p className={styles.itemPublished}>{props.data?.isPublished ? 'published' : 'draft'}</p>
@@ -46,7 +67,7 @@ export const PostListItem = (props: TPostListItemProps) => {
                         </Link>
                         <IconButton
                             aria-label="delete"
-                            onClick={() => props.listItemProps.handleDeletePostBtnClick(props.data.id)}
+                            onClick={() => props.listItemProps.handleDeletePostBtnClick(props.data)}
                         >
                             <DeleteForeverIcon />
                         </IconButton>
@@ -62,3 +83,5 @@ const toLocaleDateString = (date: Date | string | undefined) => {
     if (typeof date === 'string') date = new Date(date);
     return date.toLocaleDateString();
 }
+
+export default connect(mapStateToProps)(PostListItem);

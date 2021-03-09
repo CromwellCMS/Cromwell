@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { getFileManager } from '../../components/fileManager/helpers';
+import { toast } from '../../components/toast/toast';
 import styles from './Welcome.module.scss';
 
 
@@ -45,18 +46,27 @@ export default function welcomePage() {
                 password: passwordInput,
                 avatar: avatarInput,
             });
+        } catch (e) {
+            toast.error('Failed to create user with provided credentials');
+            console.error(e);
+            setLoading(false);
+            return;
+        }
 
+        try {
             await apiClient.setUpCms();
 
             await apiClient.login({
                 email: emailInput,
                 password: passwordInput
             });
-
-            checkAuth();
         } catch (e) {
             console.error(e);
+
         }
+
+        checkAuth();
+
         setLoading(false);
     }
 
@@ -76,6 +86,7 @@ export default function welcomePage() {
     return (
         <div className={styles.WelcomePage}>
             <div className={styles.wrapper}>
+                <img src="/logo_small.png" width="150px" className={styles.logo} />
                 <h1 className={styles.title}>Welcome to Cromwell CMS!</h1>
                 <h3 className={styles.subtitle}>Let's create your account</h3>
                 <div className={styles.inputForm}>

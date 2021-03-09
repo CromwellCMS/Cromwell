@@ -53,8 +53,8 @@ function Sidebar() {
         <div className={styles.Sidebar}>
             <div className={styles.sidebarTop}>
                 <div className={styles.sidebarHeader}>
-                    <img src="/logo_icon.png" alt="logo" className={styles.logo} />
-                    <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p>
+                    <img src="/logo_small_white.png" alt="logo" className={styles.logo} />
+                    {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                 </div>
                 {sideBarLinks.map(link => <SidebarLink data={link}
                     key={link.id}
@@ -68,7 +68,7 @@ function Sidebar() {
             <div className={styles.sidebarBottom}>
                 <div className={styles.bottomBlock} style={{ overflow: 'hidden' }}>
                     {(userInfo?.avatar && userInfo?.avatar !== '') ? (
-                        <div className={styles.avatar}></div>
+                        <div className={styles.avatar} style={{ backgroundImage: `url(${userInfo.avatar})` }}></div>
                     ) : <AccountCircleIcon className={styles.avatar} />}
                     <div className={styles.textBlock}>
                         <p className={styles.nameText}>{userInfo?.fullName ?? ''}</p>
@@ -98,13 +98,13 @@ function Sidebar() {
                         }}
                     >
                         <div>
-                            <MenuItem onClick={handleLogout} className={styles.optionsItem}>
-                                <ExitToAppIcon />
-                                <p>Log out</p>
-                            </MenuItem>
                             <MenuItem className={styles.optionsItem}>
                                 <SettingsIcon />
                                 <p>Account settings</p>
+                            </MenuItem>
+                            <MenuItem onClick={handleLogout} className={styles.optionsItem}>
+                                <ExitToAppIcon />
+                                <p>Log out</p>
                             </MenuItem>
                         </div>
                     </Popover>

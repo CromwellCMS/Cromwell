@@ -1,10 +1,13 @@
 import { TOrder } from '@cromwell/core';
-import { Grid, IconButton } from '@material-ui/core';
+import { Checkbox, Grid, IconButton } from '@material-ui/core';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
+import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 
 import { orderListPageInfo } from '../../constants/PageInfos';
+import { TAppState } from '../../redux/store';
+import commonStyles from '../../styles/common.module.scss';
 import styles from './OrderListItem.module.scss';
 import { ListItemProps } from './OrderListPage';
 
@@ -13,13 +16,35 @@ type TListItemProps = {
     listItemProps: ListItemProps;
 }
 
+const mapStateToProps = (state: TAppState, ownProps: TListItemProps) => {
+    return {
+        selectedItems: state.selectedItems,
+        allSelected: state.allSelected,
+    }
+}
 
-const OrderListItem = (props: TListItemProps) => {
+type TPropsType = PropsType<PropsType, TListItemProps,
+    ReturnType<typeof mapStateToProps>>;
+
+
+
+const OrderListItem = (props: TPropsType) => {
+    const { data } = props;
+
+    let selected = false;
+    if (props.allSelected && !props.selectedItems[data.id]) selected = true;
+    if (!props.allSelected && props.selectedItems[data.id]) selected = true;
+
     return (
         <Grid container className={styles.listItem}>
             {props.data && (
                 <>
                     <Grid item xs={3} className={styles.itemMain}>
+                        <div className={commonStyles.center}>
+                            <Checkbox
+                                checked={selected}
+                                onChange={() => props.listItemProps.toggleSelection(data)} />
+                        </div>
                         <div className={styles.itemMainInfo}>
                             <p className={styles.itemTitle}>{props.data?.customerName}</p>
                             <p className={styles.itemAuthor}>{props.data?.customerPhone}</p>
@@ -54,7 +79,7 @@ const OrderListItem = (props: TListItemProps) => {
 
 }
 
-export default OrderListItem;
+export default connect(mapStateToProps)(OrderListItem);
 
 const toLocaleDateString = (date: Date | string | undefined) => {
     if (!date) return '';

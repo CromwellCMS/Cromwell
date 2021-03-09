@@ -1,14 +1,22 @@
-import { Resolver, Query, Mutation, Arg, FieldResolver, Root } from "type-graphql";
-import { ProductReview, ProductReviewInput } from '@cromwell/core-backend';
-import { ProductReviewRepository, PagedProductReview, PagedParamsInput, ProductRepository } from '@cromwell/core-backend';
-import { getCustomRepository } from "typeorm";
-import { TProductReview, TPagedList, GraphQLPaths } from "@cromwell/core";
+import { GraphQLPaths, TPagedList, TProductReview } from '@cromwell/core';
+import {
+    PagedParamsInput,
+    PagedProductReview,
+    ProductRepository,
+    ProductReview,
+    ProductReviewInput,
+    ProductReviewRepository,
+    DeleteManyInput
+} from '@cromwell/core-backend';
+import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { getCustomRepository } from 'typeorm';
 
 const getOneByIdPath = GraphQLPaths.ProductReview.getOneById;
 const getManyPath = GraphQLPaths.ProductReview.getMany;
 const createPath = GraphQLPaths.ProductReview.create;
 const updatePath = GraphQLPaths.ProductReview.update;
 const deletePath = GraphQLPaths.ProductReview.delete;
+const deleteManyPath = GraphQLPaths.ProductReview.deleteMany;
 const getFromProductPath = GraphQLPaths.ProductReview.getFromProduct;
 
 @Resolver(ProductReview)
@@ -44,6 +52,11 @@ export class ProductReviewResolver {
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         return await this.repository.deleteProductReview(id);
+    }
+
+    @Mutation(() => Boolean)
+    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
+        return this.repository.deleteMany(data, 'id');
     }
 
 }

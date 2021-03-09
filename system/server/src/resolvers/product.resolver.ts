@@ -11,7 +11,8 @@ import {
     ProductRepository,
     UpdateProduct,
     ProductFilterInput,
-    FilteredProduct
+    FilteredProduct,
+    DeleteManyInput
 } from '@cromwell/core-backend';
 import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -26,6 +27,7 @@ const getManyPath = GraphQLPaths.Product.getMany;
 const createPath = GraphQLPaths.Product.create;
 const updatePath = GraphQLPaths.Product.update;
 const deletePath = GraphQLPaths.Product.delete;
+const deleteManyPath = GraphQLPaths.Product.deleteMany;
 const getFromCategoryPath = GraphQLPaths.Product.getFromCategory;
 const getFilteredPath = GraphQLPaths.Product.getFiltered;
 
@@ -36,7 +38,7 @@ export class ProductResolver {
     private repository = getCustomRepository(ProductRepository)
 
     @Query(() => PagedProduct)
-    async [getManyPath](@Arg("pagedParams", {nullable: true}) pagedParams?: PagedParamsInput<TProduct>):
+    async [getManyPath](@Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProduct>):
         Promise<TPagedList<TProduct>> {
         return this.repository.getProducts(pagedParams);
     }
@@ -64,6 +66,11 @@ export class ProductResolver {
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         return this.repository.deleteProduct(id);
+    }
+
+    @Mutation(() => Boolean)
+    async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
+        return this.repository.deleteMany(data, 'id');
     }
 
     @Query(() => PagedProduct)
@@ -98,3 +105,4 @@ export class ProductResolver {
         }
     }
 }
+

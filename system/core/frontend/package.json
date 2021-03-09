@@ -29,7 +29,7 @@
     "react-is": "17.0.1",
     "react-toastify": "6.0.8",
     "swiper": "6.3.2",
-    "tslib": "2.0.3",
+    "tslib": "2.1.0",
     "whatwg-fetch": "3.5.0"
   },
   "devDependencies": {

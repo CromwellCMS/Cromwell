@@ -49,13 +49,21 @@ jest.mock('@cromwell/core-frontend', () => {
     }
 });
 
+import { Provider } from 'react-redux-ts';
 import OrderListPage from './OrderListPage';
 import { BrowserRouter as Router } from 'react-router-dom';
+import { store } from '../../redux/store';
 
 describe('OrderList page', () => {
 
     it("renders orders", async () => {
-        render(<Router><OrderListPage /></Router>);
+        render(
+            <Provider store={store}>
+                <Router>
+                    <OrderListPage />
+                </Router>
+            </Provider>
+        );
 
         await screen.findByText('_test1_');
         await screen.findByText('_test2_');
