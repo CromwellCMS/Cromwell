@@ -10,6 +10,7 @@ import {
     ShoppingCart as ShoppingCartIcon,
 } from '@material-ui/icons';
 import React, { useState } from 'react';
+import { toast } from 'react-toastify';
 
 import { productListStore } from '../../../helpers/ProductListStore';
 import styles from './ProductActions.module.scss';
@@ -51,7 +52,16 @@ export const ProductActions = (props: {
                                 forceUpdate();
                             }
                         } else {
-                            cstore.addToCart(item);
+                            const hasBeenAdded = cstore.addToCart(item);
+                            if (hasBeenAdded) {
+                                toast.success("Added!", {
+                                    position: toast.POSITION.TOP_RIGHT
+                                });
+                            } else {
+                                toast.warn("Product is already in your cart!", {
+                                    position: toast.POSITION.TOP_RIGHT
+                                });
+                            }
                             forceUpdate();
                         }
                     }}
@@ -98,7 +108,16 @@ export const ProductActions = (props: {
                         if (inWishlist) {
                             productListStore.isWishlistOpen = true;
                         } else {
-                            cstore.addToWishlist(item);
+                            const hasBeenAdded = cstore.addToWishlist(item);
+                            if (hasBeenAdded) {
+                                toast.success("Added!", {
+                                    position: toast.POSITION.TOP_RIGHT
+                                });
+                            } else {
+                                toast.warn("Product is already in your wishlist!", {
+                                    position: toast.POSITION.TOP_RIGHT
+                                });
+                            }
                             forceUpdate();
                         }
                     }}
@@ -113,7 +132,16 @@ export const ProductActions = (props: {
                         if (inCompare) {
                             productListStore.isCompareOpen = true;
                         } else {
-                            cstore.addToCompare(item);
+                            const hasBeenAdded = cstore.addToCompare(item);
+                            if (hasBeenAdded) {
+                                toast.success("Added!", {
+                                    position: toast.POSITION.TOP_RIGHT
+                                });
+                            } else {
+                                toast.warn("Product is already in your list!", {
+                                    position: toast.POSITION.TOP_RIGHT
+                                });
+                            }
                             forceUpdate();
                         }
                     }}

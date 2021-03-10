@@ -1,5 +1,4 @@
 import { getStoreItem, isServer, setStoreItem, TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
-import { toast } from 'react-toastify';
 
 import { getGraphQLClient } from './api/CGraphQLClient';
 
@@ -140,17 +139,8 @@ class CStore {
         return false;
     }
 
-    public addToCart = (product: TStoreListItem) => {
-        const hasBeenAdded = this.addToList(cartKey, product);
-        if (hasBeenAdded) {
-            toast.success("Added!", {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        } else {
-            toast.warn("Product is already in your cart!", {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
+    public addToCart = (product: TStoreListItem): boolean => {
+        return this.addToList(cartKey, product);
     }
 
     public updateQntInCart = (item: TStoreListItem) => {
@@ -186,17 +176,8 @@ class CStore {
         return false;
     }
 
-    public addToWishlist = (product: TStoreListItem) => {
-        const hasBeenAdded = this.addToList(wishlistKey, product);
-        if (hasBeenAdded) {
-            toast.success("Added!", {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        } else {
-            toast.warn("Product is already in your wishlist!", {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
+    public addToWishlist = (product: TStoreListItem): boolean => {
+        return this.addToList(wishlistKey, product);
     }
 
     public removeFromWishlist = (product: TStoreListItem) => {
@@ -215,17 +196,8 @@ class CStore {
     }
 
 
-    public addToCompare = (product: TStoreListItem) => {
-        const hasBeenAdded = this.addToList(compareKey, product);
-        if (hasBeenAdded) {
-            toast.success("Added!", {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        } else {
-            toast.warn("Product is already in your list!", {
-                position: toast.POSITION.TOP_RIGHT
-            });
-        }
+    public addToCompare = (product: TStoreListItem): boolean => {
+        return this.addToList(compareKey, product);
     }
 
     public removeFromCompare = (product: TStoreListItem) => {

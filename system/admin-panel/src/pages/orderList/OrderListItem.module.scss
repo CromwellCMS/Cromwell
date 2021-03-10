@@ -26,6 +26,10 @@
         margin-left: 10px;
     }
 
+    .itemSubInfo {
+        padding: 5px;
+    }
+
     .itemTitle {
         margin-bottom: 4px;
         font-weight: 500;
@@ -62,6 +66,8 @@
     }
 
     .status {
+        font-size: 14px;
         font-weight: 500;
+        margin-bottom: 5px;
     }
 }

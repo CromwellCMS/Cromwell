@@ -1,11 +1,12 @@
 import { TOrder } from '@cromwell/core';
+import { getCStore } from '@cromwell/core-frontend';
 import { Checkbox, Grid, IconButton } from '@material-ui/core';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 
-import { orderListPageInfo } from '../../constants/PageInfos';
+import { orderPageInfo } from '../../constants/PageInfos';
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './OrderListItem.module.scss';
@@ -30,6 +31,7 @@ type TPropsType = PropsType<PropsType, TListItemProps,
 
 const OrderListItem = (props: TPropsType) => {
     const { data } = props;
+    const cstore = getCStore();
 
     let selected = false;
     if (props.allSelected && !props.selectedItems[data.id]) selected = true;
@@ -50,15 +52,16 @@ const OrderListItem = (props: TPropsType) => {
                             <p className={styles.itemAuthor}>{props.data?.customerPhone}</p>
                         </div>
                     </Grid>
+                    <Grid item xs={2} className={styles.itemSubInfo}>
+                        <p className={styles.status}>{props.data?.status ?? 'New'}</p>
+                        <p className={styles.address}>{cstore.getPriceWithCurrency(props.data?.totalPrice)}</p>
+                    </Grid>
                     <Grid item xs={5} className={styles.itemSubInfo}>
                         <p className={styles.orderCreate}>{toLocaleDateString(props.data?.createDate)}</p>
                         <p className={styles.address}>{props.data?.customerAddress}</p>
                     </Grid>
-                    <Grid item xs={2} className={styles.itemSubInfo}>
-                        <p className={styles.status}>{props.data?.status ?? 'New'}</p>
-                    </Grid>
                     <Grid item xs={2} className={styles.listItemActions}>
-                        <Link to={`${orderListPageInfo.baseRoute}/${props.data?.id}`}>
+                        <Link to={`${orderPageInfo.baseRoute}/${props.data?.id}`}>
                             <IconButton
                                 aria-label="edit"
                             >

@@ -12,6 +12,7 @@ import styles from './CartProductList.module.scss';
 export const CartProductList = (props: {
     onProductOpen?: (product: TProduct) => void;
     collapsedByDefault?: boolean;
+    productBaseRoute: string;
 }) => {
     const [cart, setCart] = useState<TStoreListItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -46,6 +47,7 @@ export const CartProductList = (props: {
         })();
     }, []);
 
+
     const handleCollapse = () => {
         if (isMobile) {
             isCollapsed.current = !isCollapsed.current;
@@ -62,8 +64,6 @@ export const CartProductList = (props: {
 
     const amount: number = cart.reduce<number>((prev, current) =>
         prev += (current.amount ?? 1), 0);
-
-
 
     const productList = (
         <div className={styles.productList}>

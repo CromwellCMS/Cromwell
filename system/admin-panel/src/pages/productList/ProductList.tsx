@@ -3,7 +3,6 @@ import { getBlockInstance, TPagedParams, TProduct, TProductFilter } from '@cromw
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import { Checkbox, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@material-ui/icons';
-import { Pagination } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
@@ -11,6 +10,7 @@ import { debounce } from 'throttle-debounce';
 
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
+import Pagination from '../../components/pagination/Pagination';
 import { listPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { productPageInfo } from '../../constants/PageInfos';
@@ -197,19 +197,7 @@ const ProductList = (props: TPropsType) => {
                 loader={handleGetProducts}
                 cssClasses={{ scrollBox: styles.list }}
                 elements={{
-                    pagination: (props) => {
-                        return (
-                            <div className={styles.paginationContainer}>
-                                <Pagination count={props.count} page={props.page}
-                                    onChange={(event: React.ChangeEvent<unknown>, value: number) => {
-                                        props.onChange(value)
-                                    }}
-                                    className={styles.pagination}
-                                    showFirstButton showLastButton
-                                />
-                            </div>
-                        )
-                    },
+                    pagination: Pagination,
                     preloader: listPreloader
                 }}
             />
