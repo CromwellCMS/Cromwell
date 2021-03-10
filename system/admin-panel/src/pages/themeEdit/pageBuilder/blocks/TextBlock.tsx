@@ -2,6 +2,7 @@ import { MenuItem, TextField, Tooltip } from '@material-ui/core';
 import { CheckCircleOutline as CheckCircleOutlineIcon, Edit as EditIcon, Subject as SubjectIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
 
+import styles from './BaseBlock.module.scss';
 import { BaseMenu, TBaseMenuProps } from './BaseMenu';
 
 
@@ -48,6 +49,7 @@ export const TextBlock = (props: TBaseMenuProps) => {
                     value={blockValue}
                     onChange={(e) => { setBlockValue(e.target.value) }}
                     multiline
+                    className={styles.textField}
                 />
             ) : props?.block?.getDefaultContent()}
 

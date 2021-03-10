@@ -40,4 +40,5 @@ export const CromwellBlockCSSclass = CromwellBlockStyles.CromwellBlock;
 
 export { default as Document, Html, Main, NextScript, DocumentContext } from 'next/document';
 import * as nextRouter from 'next/router';
+export { default as Head } from 'next/head';
 export const useRouter: typeof nextRouter.useRouter | undefined = nextRouter?.useRouter;

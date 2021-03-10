@@ -28,7 +28,7 @@
 }
 
 .DraggableBlock__frame_hovered {
-    background-color: rgba(255,255,255,0.7);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .DraggableBlock__frame_selected {
@@ -40,7 +40,7 @@
 }
 
 .DraggableBlock__dragging .DraggableBlock__frame {
-    background-color:rgb(170, 90, 255, 0.6)
+    background-color: rgb(170, 90, 255, 0.6);
 }
 
 .DraggableBlock__cursor {

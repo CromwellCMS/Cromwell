@@ -21,6 +21,7 @@ const testData: TPagedList<TOrder> = {
 jest.mock('../../constants/PageInfos', () => {
     return {
         orderListPageInfo: {},
+        orderPageInfo: {},
     }
 });
 
@@ -46,6 +47,9 @@ jest.mock('@cromwell/core-frontend', () => {
                 getOrders: jest.fn().mockImplementation(() => testData)
             }
         },
+        getCStore: () => ({
+            getPriceWithCurrency: () => '',
+        })
     }
 });
 

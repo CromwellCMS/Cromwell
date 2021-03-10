@@ -1,3 +1,5 @@
+@import "../../styles/common.module.scss";
+
 .ThemeEdit {
     position: relative;
     display: flex;
@@ -43,8 +45,8 @@
         justify-content: center;
     }
 
-
     .pageBarActions {
+        @include paper;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -53,7 +55,6 @@
         border-radius: 8px;
         overflow: hidden;
         padding-right: 10px;
-        border: 1px solid #e6e6e6;
     }
     .pageBarTitle {
         font-size: 18px;
@@ -72,20 +73,19 @@
 
     .tabContent {
         // padding: 15px;
+        @include paper;
         margin: 15px 0;
         background-color: #fff;
         border-radius: 8px;
-        border: 1px solid #e6e6e6;
-    } 
+    }
 
     .saveBtn {
         position: relative;
     }
-
 }
 
 .EditorWindow {
-    :global(.CromwellBlock)  {
+    :global(.CromwellBlock) {
         position: relative;
         // padding: 10px;
         // margin: 5px;
@@ -106,9 +106,7 @@
     //     align-items: center;
     // }
 
-    
     // :global(.CromwellBlock__adminPanelIcon) {
     //     margin: 10px
     // }
-
 }

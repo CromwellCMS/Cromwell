@@ -1,6 +1,6 @@
 import React from 'react';
 import { TCromwellPage } from '@cromwell/core';
-import { Link, Head } from '@cromwell/core-frontend';
+import { Link } from '@cromwell/core-frontend';
 import { CHTML, CText, CContainer } from '@cromwell/core-frontend';
 import Layout from '../../components/layout/Layout';
 

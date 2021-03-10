@@ -1,0 +1,24 @@
+@import "../../styles/common.module.scss";
+
+.OrderPage {
+    padding: 20px;
+
+    .header {
+        @include paper;
+        padding: 0 20px 0 0;
+        width: 100%;
+        margin-bottom: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .fields {
+        @include paper;
+        padding: 20px;
+    }
+
+    .textField {
+        margin-bottom: 15px;
+    }
+}

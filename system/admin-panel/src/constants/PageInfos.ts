@@ -26,6 +26,7 @@ import CategoryListPage from '../pages/categoryList/CategoryList';
 import LoginPage from '../pages/login/LoginPage';
 import WelcomePage from '../pages/welcome/Welcome';
 import OrderListPage from '../pages/orderList/OrderListPage';
+import OrderPage from '../pages/order/Order';
 
 export type SidebarLinkType = {
     id: string;
@@ -126,6 +127,13 @@ export const orderListPageInfo: PageInfo = {
     baseRoute: '/order-list',
 };
 
+export const orderPageInfo: PageInfo = {
+    name: 'Order',
+    route: '/order/:id',
+    component: OrderPage,
+    baseRoute: '/order',
+};
+
 export const welcomePageInfo: PageInfo = {
     name: 'Welcome',
     route: '/setup',
@@ -150,6 +158,7 @@ export const pageInfos: PageInfo[] = [
     loginPageInfo,
     orderListPageInfo,
     welcomePageInfo,
+    orderPageInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar

@@ -68,18 +68,6 @@
     padding-right: 10px;
 }
 
-.paginationContainer {
-    margin-top: 15px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-}
-
-.pagination {
-    @include paper;
-    padding: 5px 10px;
-}
-
 .listItemActions {
     display: flex;
     justify-content: flex-end;
