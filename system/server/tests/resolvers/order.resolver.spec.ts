@@ -95,7 +95,7 @@ describe('Order resolver', () => {
 
         const inputData: TOrderInput = {
             customerName: '__test__',
-            totalPrice: 111.222,
+            cartTotalPrice: 111.222,
         }
 
         const res = await client.mutate({
@@ -142,7 +142,7 @@ describe('Order resolver', () => {
 
         const inputData: TOrderInput = {
             customerName: '__test2__',
-            totalPrice: 111.222,
+            cartTotalPrice: 111.222,
         }
 
         const res = await client.mutate({
