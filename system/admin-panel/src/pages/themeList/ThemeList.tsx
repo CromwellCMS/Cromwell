@@ -101,7 +101,7 @@ export default function ThemeList() {
 
     return (
         <div className={styles.ThemeList}>
-            {isLoading && [1, 2].map(index => {
+            {isLoading && Array(2).fill(1).map((it, index) => {
                 return (
                     <Skeleton key={index} variant="rect" height="388px" width="300px" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
                 )

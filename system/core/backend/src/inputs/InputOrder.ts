@@ -15,10 +15,16 @@ export class InputOrder extends BasePageInput implements TOrderInput {
     cart?: string;
 
     @Field(() => Number, { nullable: true })
-    totalPrice: number;
+    orderTotalPrice?: number;
 
     @Field(() => Number, { nullable: true })
-    oldTotalPrice?: number;
+    cartTotalPrice?: number;
+
+    @Field(() => Number, { nullable: true })
+    cartOldTotalPrice?: number;
+
+    @Field(() => Number, { nullable: true })
+    deliveryPrice?: number;
 
     @Field(() => Number, { nullable: true })
     totalQnt: number;
@@ -28,6 +34,9 @@ export class InputOrder extends BasePageInput implements TOrderInput {
 
     @Field(() => String, { nullable: true })
     customerPhone?: string;
+
+    @Field(() => String, { nullable: true })
+    customerEmail?: string;
 
     @Field(() => String, { nullable: true })
     customerAddress?: string;

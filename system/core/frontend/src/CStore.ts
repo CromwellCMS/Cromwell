@@ -296,19 +296,54 @@ class CStore {
     }
 
     public updateCart = async () => {
-        await this.updateList(cartKey)
+        await this.updateList(cartKey);
     }
 
     public updateWishlist = async () => {
-        await this.updateList(wishlistKey)
+        await this.updateList(wishlistKey);
     }
 
     public updateComparisionList = async () => {
-        await this.updateList(compareKey)
+        await this.updateList(compareKey);
     }
 
     public updateWatchedItems = async () => {
         await this.updateList(watchedKey);
+    }
+
+
+    public clearCart = () => {
+        this.saveList(cartKey, []);
+    }
+
+    public clearWishlist = () => {
+        this.saveList(wishlistKey, []);
+    }
+
+    public clearComparisionList = () => {
+        this.saveList(compareKey, []);
+    }
+
+    public clearWatchedItems = () => {
+        this.saveList(watchedKey, []);
+    }
+
+
+    public getCartTotal = () => {
+        const cart = this.getCart();
+        const total: number = cart.reduce<number>((prev, current) =>
+            prev += (current.product?.price ?? 0) * (current.amount ?? 1), 0);
+
+        const totalOld: number = cart.reduce<number>(
+            (prev, current) => prev += (current.product?.oldPrice ?? current.product?.price ?? 0) * (current.amount ?? 1)
+            , 0);
+
+        const amount: number = cart.reduce<number>((prev, current) =>
+            prev += (current.amount ?? 1), 0);
+
+        return {
+            total, totalOld, amount
+        }
     }
 
 

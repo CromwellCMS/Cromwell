@@ -25,7 +25,7 @@ import PostPage from '../pages/post/Post';
 import CategoryListPage from '../pages/categoryList/CategoryList';
 import LoginPage from '../pages/login/LoginPage';
 import WelcomePage from '../pages/welcome/Welcome';
-import OrderListPage from '../pages/orderList/OrderListPage';
+import OrderListPage from '../pages/orderList/OrderList';
 import OrderPage from '../pages/order/Order';
 
 export type SidebarLinkType = {

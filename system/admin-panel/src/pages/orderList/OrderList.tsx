@@ -1,13 +1,16 @@
-import { getBlockInstance, TOrder, TPagedParams } from '@cromwell/core';
+import { getBlockInstance, TOrder, TOrderFilter, TPagedParams } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, Tooltip } from '@material-ui/core';
+import { Checkbox, IconButton, Tooltip, TextField } from '@material-ui/core';
 import { Delete as DeleteIcon } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
+import { Autocomplete } from '@material-ui/lab';
+import { debounce } from 'throttle-debounce';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
 
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
+import { orderStatuses } from '../../constants/order';
 import Pagination from '../../components/pagination/Pagination';
 import { listPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
@@ -21,7 +24,7 @@ import {
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import OrderListItem from './OrderListItem';
-import styles from './OrderListPage.module.scss';
+import styles from './OrderList.module.scss';
 
 export type ListItemProps = {
     handleDeleteBtnClick: (id: string) => void;
@@ -47,6 +50,7 @@ const OrderList = (props: TPropsType) => {
     const totalElements = useRef<number | null>(null);
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const filterInput = useRef<TOrderFilter>({});
 
     useEffect(() => {
         resetSelected();
@@ -65,7 +69,10 @@ const OrderList = (props: TPropsType) => {
         if (!params) params = {};
         params.orderBy = 'createDate';
         params.order = 'ASC';
-        const data = await client?.getOrders(params);
+        const data = await client?.getFilteredOrders({
+            pagedParams: params,
+            filterParams: filterInput.current,
+        });
 
         if (data.pagedMeta?.totalElements) totalElements.current = data.pagedMeta?.totalElements;
         return data;
@@ -91,7 +98,7 @@ const OrderList = (props: TPropsType) => {
     const handleDeleteSelected = async () => {
         setIsLoading(true);
         try {
-            await client?.deleteManyOrders(getSelectedInput());
+            await client?.deleteManyFilteredOrders(getSelectedInput(), filterInput.current);
             toast.success('Orders deleted');
         } catch (e) {
             console.error(e);
@@ -118,6 +125,11 @@ const OrderList = (props: TPropsType) => {
         resetList();
     }
 
+    const handleFilterInput = debounce(1000, () => {
+        resetList();
+    });
+
+
     return (
         <div className={styles.OrderList}>
             <div className={styles.listHeader}>
@@ -131,6 +143,42 @@ const OrderList = (props: TPropsType) => {
                             />
                         </Tooltip>
                     </div>
+                    <Autocomplete
+                        onChange={(event: any, newValue: string | null) => {
+                            filterInput.current.status = newValue;
+                            resetList();
+                        }}
+                        options={orderStatuses}
+                        getOptionLabel={(option) => option}
+                        className={styles.filterItem}
+                        renderInput={(params) => <TextField {...params}
+                            placeholder="Status"
+                        />}
+                    />
+                    <TextField
+                        className={styles.filterItem}
+                        placeholder="Customer name"
+                        onChange={(event) => {
+                            filterInput.current.customerName = event.target.value;
+                            handleFilterInput();
+                        }}
+                    />
+                    <TextField
+                        className={styles.filterItem}
+                        placeholder="Customer phone"
+                        onChange={(event) => {
+                            filterInput.current.customerPhone = event.target.value;
+                            handleFilterInput();
+                        }}
+                    />
+                    <TextField
+                        className={styles.filterItem}
+                        placeholder="Order id"
+                        onChange={(event) => {
+                            filterInput.current.orderId = event.target.value;
+                            handleFilterInput();
+                        }}
+                    />
                 </div>
                 <div className={styles.pageActions} >
                     <Tooltip title="Delete selected">

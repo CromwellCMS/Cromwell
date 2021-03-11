@@ -21,6 +21,7 @@ const createPath = GraphQLPaths.ProductCategory.create;
 const updatePath = GraphQLPaths.ProductCategory.update;
 const deletePath = GraphQLPaths.ProductCategory.delete;
 const deleteManyPath = GraphQLPaths.ProductCategory.deleteMany;
+const deleteManyFilteredPath = GraphQLPaths.ProductCategory.deleteManyFiltered;
 const getRootCategoriesPath = GraphQLPaths.ProductCategory.getRootCategories;
 const getFilteredPath = GraphQLPaths.ProductCategory.getFiltered;
 const productsKey: keyof TProductCategory = 'products';
@@ -66,6 +67,14 @@ export class ProductCategoryResolver {
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         return this.repository.deleteManyCategories(data);
+    }
+
+    @Mutation(() => Boolean)
+    async [deleteManyFilteredPath](
+        @Arg("input") input: DeleteManyInput,
+        @Arg("filterParams", { nullable: true }) filterParams?: ProductCategoryFilterInput,
+    ): Promise<boolean | undefined> {
+        return this.repository.deleteManyCategories(input, filterParams);
     }
 
     @Query(() => PagedProductCategory)

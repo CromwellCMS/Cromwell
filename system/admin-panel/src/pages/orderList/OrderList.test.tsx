@@ -54,7 +54,7 @@ jest.mock('@cromwell/core-frontend', () => {
 });
 
 import { Provider } from 'react-redux-ts';
-import OrderListPage from './OrderListPage';
+import OrderListPage from './OrderList';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { store } from '../../redux/store';
 

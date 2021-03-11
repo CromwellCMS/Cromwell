@@ -1,4 +1,5 @@
 import { TCromwellPage } from '@cromwell/core';
+import { getGraphQLClient, getCStore } from '@cromwell/core-frontend';
 import { Button, TextField, useMediaQuery, useTheme } from '@material-ui/core';
 import React, { useState } from 'react';
 
@@ -15,7 +16,10 @@ const CheckoutPage: TCromwellPage = (props) => {
         name?: string;
         phone?: string;
         address?: string;
+        comment?: string;
     }>({});
+
+    const [shippingMethod, setShippingMethod] = useState<string | null>(null);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -37,6 +41,24 @@ const CheckoutPage: TCromwellPage = (props) => {
     const handleSingUp = () => {
 
     }
+
+    const handlePlaceOrder = () => {
+        const cstore = getCStore()
+        const cartInfo = cstore.getCartTotal();
+
+        getGraphQLClient()?.createOrder({
+            customerName: form.name,
+            customerPhone: form.phone,
+            customerAddress: form.address,
+            customerEmail: form.email,
+            customerComment: form.comment,
+            cartTotalPrice: cartInfo.total,
+            totalQnt: cartInfo.amount,
+            cartOldTotalPrice: cartInfo.totalOld,
+            cart: JSON.stringify(cstore.getCart()),
+        })
+    }
+
 
     return (
         <Layout>
@@ -92,6 +114,14 @@ const CheckoutPage: TCromwellPage = (props) => {
                             className={styles.input}
                             value={form?.address}
                             onChange={handleInput} />
+                        <TextField label="Comment"
+                            variant="outlined"
+                            name="comment"
+                            size="small"
+                            fullWidth
+                            className={styles.input}
+                            value={form?.comment}
+                            onChange={handleInput} />
                         <h2 className={styles.subHeader}>Shipping Methods</h2>
                         <div className={styles.delimiter}></div>
                         <div className={styles.orderBtnWrapper}>
@@ -99,8 +129,8 @@ const CheckoutPage: TCromwellPage = (props) => {
                                 color="primary"
                                 className={styles.singinBtn}
                                 size="large"
-                                onClick={handleSingIn}>
-                                Order</Button>
+                                onClick={handlePlaceOrder}>
+                                Place order</Button>
                         </div>
 
                     </div>

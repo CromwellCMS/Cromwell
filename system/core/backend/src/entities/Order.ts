@@ -17,11 +17,19 @@ export class Order extends BasePageEntity implements TOrder {
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    totalPrice?: number;
+    orderTotalPrice?: number;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    oldTotalPrice?: number;
+    cartTotalPrice?: number;
+
+    @Field(() => Number, { nullable: true })
+    @Column({ type: "float", nullable: true })
+    cartOldTotalPrice?: number;
+
+    @Field(() => Number, { nullable: true })
+    @Column({ type: "float", nullable: true })
+    deliveryPrice?: number;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
@@ -39,6 +47,10 @@ export class Order extends BasePageEntity implements TOrder {
     @Column({ type: "varchar", nullable: true })
     customerPhone?: string;
 
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    customerEmail?: string;
+    
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     customerAddress?: string;

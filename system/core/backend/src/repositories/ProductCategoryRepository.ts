@@ -1,6 +1,6 @@
 import { TPagedList, TPagedParams, TProductCategory, TProductCategoryInput, TDeleteManyInput } from '@cromwell/core';
 import { PagedParamsInput } from 'src/inputs/PagedParamsInput';
-import { EntityRepository, getConnection, getCustomRepository, TreeRepository } from 'typeorm';
+import { EntityRepository, getConnection, getCustomRepository, TreeRepository, SelectQueryBuilder, DeleteQueryBuilder } from 'typeorm';
 
 import { ProductCategoryFilterInput } from '../entities/filter/ProductCategoryFilterInput';
 import { ProductCategory } from '../entities/ProductCategory';
@@ -202,25 +202,31 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return true;
     }
 
-
-    async deleteManyCategories(input: TDeleteManyInput) {
+    async deleteManyCategories(input: TDeleteManyInput, filterParams?: ProductCategoryFilterInput) {
         if (input.all) {
-            const allEntities = await this.find({
-                select: ['id']
-            });
-            for (const entity of allEntities) {
-                const entityId = entity.id + '';
-                if (input.ids.includes(entityId)) continue;
+            const qb = this.createQueryBuilder(this.metadata.tablePath);
+            qb.select(['id']);
+            if (filterParams) this.applyCategoryFilter(qb, filterParams);
+            qb.andWhere(`${this.metadata.tablePath}.id NOT IN (:...ids)`, { ids: input.ids ?? [] })
+
+            const categories = await qb.execute();
+            for (const category of categories) {
                 try {
-                    await this.deleteProductCategory(entity.id);
+                    await this.deleteProductCategory(category.id);
                 } catch (e) {
                     logger.error(e);
                 }
             }
         } else {
-            for (const entityId of input.ids) {
+            const qb = this.createQueryBuilder(this.metadata.tablePath);
+            qb.select(['id']);
+            if (filterParams) this.applyCategoryFilter(qb, filterParams);
+            qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
+
+            const categories = await qb.execute();
+            for (const category of categories) {
                 try {
-                    await this.deleteProductCategory(entityId);
+                    await this.deleteProductCategory(category?.id);
                 } catch (e) {
                     logger.error(e);
                 }
@@ -268,29 +274,20 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         }
     }
 
-    async getFilteredCategories(pagedParams?: PagedParamsInput<ProductCategory>, filterParams?: ProductCategoryFilterInput):
-        Promise<TPagedList<TProductCategory>> {
-
-        const qb = this.createQueryBuilder(this.metadata.tablePath);
-        qb.select();
-
-        let isFirstAttr = true;
-        const qbAddWhere: typeof qb.where = (where, params) => {
-            if (isFirstAttr) {
-                isFirstAttr = false;
-                return qb.where(where, params);
-            } else {
-                return qb.andWhere(where as any, params);
-            }
-        }
-
-        // Search by product name
+    applyCategoryFilter(qb: SelectQueryBuilder<ProductCategory> | DeleteQueryBuilder<ProductCategory>, filterParams?: ProductCategoryFilterInput) {
+        // Search by category name
         if (filterParams?.nameSearch && filterParams.nameSearch !== '') {
             const nameSearch = `%${filterParams.nameSearch}%`;
             const query = `${this.metadata.tablePath}.name LIKE :nameSearch`;
-            qbAddWhere(query, { nameSearch });
+            qb.andWhere(query, { nameSearch });
         }
+    }
 
+    async getFilteredCategories(pagedParams?: PagedParamsInput<ProductCategory>, filterParams?: ProductCategoryFilterInput):
+        Promise<TPagedList<TProductCategory>> {
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+        this.applyCategoryFilter(qb, filterParams);
         return await getPaged(qb, this.metadata.tablePath, pagedParams);
     }
 

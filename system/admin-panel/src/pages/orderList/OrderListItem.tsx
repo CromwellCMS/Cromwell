@@ -6,11 +6,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 
+import { orderStatuses } from '../../constants/order';
 import { orderPageInfo } from '../../constants/PageInfos';
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './OrderListItem.module.scss';
-import { ListItemProps } from './OrderListPage';
+import { ListItemProps } from './OrderList';
 
 type TListItemProps = {
     data?: TOrder;
@@ -53,8 +54,8 @@ const OrderListItem = (props: TPropsType) => {
                         </div>
                     </Grid>
                     <Grid item xs={2} className={styles.itemSubInfo}>
-                        <p className={styles.status}>{props.data?.status ?? 'New'}</p>
-                        <p className={styles.address}>{cstore.getPriceWithCurrency(props.data?.totalPrice)}</p>
+                        <p className={styles.status}>{props.data?.status ?? orderStatuses[0]}</p>
+                        <p className={styles.address}>{cstore.getPriceWithCurrency(props.data?.orderTotalPrice)}</p>
                     </Grid>
                     <Grid item xs={5} className={styles.itemSubInfo}>
                         <p className={styles.orderCreate}>{toLocaleDateString(props.data?.createDate)}</p>

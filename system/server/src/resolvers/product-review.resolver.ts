@@ -56,7 +56,7 @@ export class ProductReviewResolver {
 
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        return this.repository.deleteMany(data, 'id');
+        return this.repository.deleteMany(data);
     }
 
 }

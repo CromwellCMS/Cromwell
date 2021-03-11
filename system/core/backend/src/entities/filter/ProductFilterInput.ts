@@ -15,14 +15,14 @@ export class ProductFilterAttributes implements TProductFilterAttribute {
 export class ProductFilterInput implements TProductFilter {
 
     @Field(type => Float, { nullable: true })
-    minPrice: number;
+    minPrice?: number;
 
     @Field(type => Float, { nullable: true })
-    maxPrice: number;
+    maxPrice?: number;
 
     @Field(type => [ProductFilterAttributes], { nullable: true })
-    attributes: ProductFilterAttributes[];
+    attributes?: ProductFilterAttributes[];
 
     @Field(type => String, { nullable: true })
-    nameSearch: string;
+    nameSearch?: string;
 }

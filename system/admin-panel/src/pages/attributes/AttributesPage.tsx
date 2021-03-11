@@ -49,7 +49,7 @@ export default function AttributesPage() {
                     <AttributeItem data={attribute} />
                 </div>
             ))}
-            {isLoading && [1, 2, 3,].map(index => {
+            {isLoading && Array(3).fill(1).map((it, index) => {
                 return (
                     <Skeleton key={index} variant="rect" height="315px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
                 )

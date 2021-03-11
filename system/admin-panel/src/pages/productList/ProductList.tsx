@@ -85,6 +85,7 @@ const ProductList = (props: TPropsType) => {
 
     const resetList = () => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        totalElements.current = null;
         list.clearState();
         list.init();
     }
@@ -135,7 +136,7 @@ const ProductList = (props: TPropsType) => {
     const handleDeleteSelected = async () => {
         setIsLoading(true);
         try {
-            await client?.deleteManyProducts(getSelectedInput());
+            await client?.deleteManyFilteredProducts(getSelectedInput(), filterInput.current);
             toast.success('Products deleted');
         } catch (e) {
             console.error(e);

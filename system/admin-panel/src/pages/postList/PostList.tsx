@@ -171,7 +171,7 @@ const PostList = (props: TPropsType) => {
     const handleDeleteSelected = async () => {
         setIsLoading(true);
         try {
-            await client?.deleteManyPosts(getSelectedInput());
+            await client?.deleteManyFilteredPosts(getSelectedInput(), filterInput.current);
             toast.success('Posts deleted');
         } catch (e) {
             console.error(e);
@@ -217,13 +217,12 @@ const PostList = (props: TPropsType) => {
                                 placeholder="Author"
                                 // variant="outlined"
                                 size="medium"
-                            // style={{ padding: '0' }}
                             />}
                     />
                     <Autocomplete
                         multiple
                         freeSolo
-                        className={styles.settingItem}
+                        className={styles.filterItem}
                         options={tags ?? []}
                         defaultValue={tags ?? []}
                         getOptionLabel={(option) => option}

@@ -180,7 +180,7 @@ const CategoryItem = (props: TPropsType) => {
             </Grid>
             {hasChildren && displayType === 'tree' && (
                 <div className={styles.subList}>
-                    {isLoading ? category.children?.map(child => <Skeleton variant="text" height="30px" style={{ margin: '10px 0' }} />)
+                    {isLoading ? category.children?.map(child => <Skeleton variant="text" height="30px" style={{ margin: '10px 0' }} key={child.id} />)
                         : (
                             <TransitionComponent in={expanded}>
                                 {childCategories?.map(childCat => {
