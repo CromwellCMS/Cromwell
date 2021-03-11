@@ -218,12 +218,15 @@ export type TProductReviewInput = TProductReviewCore & TBasePageEntityInput;
 type TOrderCore = {
     status?: string;
     cart?: string | TStoreListItem[];
-    totalPrice?: number;
-    oldTotalPrice?: number;
+    orderTotalPrice?: number;
+    cartTotalPrice?: number;
+    cartOldTotalPrice?: number;
+    deliveryPrice?: number;
     totalQnt?: number;
     userId?: string;
     customerName?: string;
     customerPhone?: string;
+    customerEmail?: string;
     customerAddress?: string;
     customerComment?: string;
     shippingMethod?: string;
@@ -233,6 +236,15 @@ export type TOrder = TOrderCore & TBasePageEntity;
 
 export type TOrderInput = TOrderCore & TBasePageEntityInput;
 
+export type TOrderFilter = {
+    status?: string;
+    customerName?: string;
+    customerPhone?: string;
+    customerEmail?: string;
+    orderId?: string;
+    dateFrom?: string;
+    dateTo?: string;
+}
 
 // Theme entity
 

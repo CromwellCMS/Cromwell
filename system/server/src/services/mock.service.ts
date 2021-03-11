@@ -433,7 +433,9 @@ export class MockService {
                 customerName: 'Kevin',
                 customerAddress: '976 Sunburst Drive',
                 customerPhone: '786-603-4232',
-                totalPrice: 289,
+                cartTotalPrice: 279,
+                orderTotalPrice: 279,
+                deliveryPrice: 0,
                 totalQnt: 3,
                 status: 'New',
                 cart: [{
@@ -452,7 +454,9 @@ export class MockService {
                 customerAddress: '4650 Watson Lane',
                 customerPhone: '704-408-1669',
                 // status: 'In ',
-                totalPrice: 69,
+                cartTotalPrice: 59,
+                orderTotalPrice: 69,
+                deliveryPrice: 10,
                 totalQnt: 2,
                 cart: [{
                     product: {
@@ -469,7 +473,9 @@ export class MockService {
                 customerName: 'Kelly',
                 customerAddress: '957 Whitman Court',
                 customerPhone: '206-610-2907',
-                totalPrice: 110,
+                cartTotalPrice: 110,
+                orderTotalPrice: 120,
+                deliveryPrice: 10,
                 totalQnt: 3,
                 cart: [{
                     product: {
@@ -482,7 +488,9 @@ export class MockService {
                 customerName: 'Pam',
                 customerAddress: '304 Norman Street',
                 customerPhone: '203-980-3109',
-                totalPrice: 10,
+                cartTotalPrice: 10,
+                orderTotalPrice: 15,
+                deliveryPrice: 5,
                 cart: [{
                     product: {
                         id: '6',

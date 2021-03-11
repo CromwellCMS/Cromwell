@@ -1,7 +1,8 @@
 import { gql } from '@apollo/client';
 import { getBlockInstance, TPagedParams, TProductCategory, TProductCategoryFilter } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, Tooltip } from '@material-ui/core';
+import { Checkbox, IconButton, Tooltip, TextField } from '@material-ui/core';
+import { debounce } from 'throttle-debounce';
 import {
     AccountTreeOutlined as AccountTreeOutlinedIcon,
     Add as AddIcon,
@@ -126,6 +127,10 @@ const CategoryList = (props: TPropsType) => {
         else setDisplayType('list')
     }
 
+    const handleFilterInput = debounce(1000, () => {
+        resetList();
+    });
+
     const handleGetProductCategories = async (params: TPagedParams<TProductCategory>) => {
         const data = await client?.getFilteredProductCategories({
             pagedParams: params,
@@ -159,6 +164,7 @@ const CategoryList = (props: TPropsType) => {
     }
 
     const resetList = () => {
+        totalElements.current = null;
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
         list?.clearState();
         list?.init();
@@ -179,7 +185,7 @@ const CategoryList = (props: TPropsType) => {
         totalElements.current = 0;
         try {
             const input = getSelectedInput();
-            await client?.deleteManyProductCategories(input);
+            await client?.deleteManyFilteredProductCategories(input, filterInput.current);
             toast.success('Categories deleted');
         } catch (e) {
             console.error(e);
@@ -236,6 +242,16 @@ const CategoryList = (props: TPropsType) => {
                             </Tooltip>
                         </>
                     )}
+                    {displayType === 'list' && (
+                        <TextField
+                            className={styles.filterItem}
+                            placeholder="Category name"
+                            onChange={(event) => {
+                                filterInput.current.nameSearch = event.target.value;
+                                handleFilterInput();
+                            }}
+                        />
+                    )}
                 </div>
                 <div>
                     <Tooltip title="Delete selected">
@@ -259,7 +275,7 @@ const CategoryList = (props: TPropsType) => {
             </div>
             {displayType === 'tree' && (
                 <div className={styles.treeList}>
-                    {isLoading && [1, 2, 3, 4, 5].map(index => {
+                    {isLoading && Array(5).fill(1).map((it, index) => {
                         return <Skeleton key={index} variant="text" height="20px" style={{ margin: '20px 20px 0 20px' }} />
                     })}
                     {rootCategories?.map(category => {

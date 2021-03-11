@@ -35,6 +35,7 @@ import {
     TOrder,
     TOrderInput,
     TDeleteManyInput,
+    TOrderFilter,
 } from '@cromwell/core';
 
 class CGraphQLClient {
@@ -406,6 +407,22 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
+    public deleteManyFilteredProducts = async (input: TDeleteManyInput, filterParams?: TProductFilter) => {
+        const path = GraphQLPaths.Product.deleteManyFiltered;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteManyFilteredProducts($input: DeleteManyInput!, $filterParams: ProductFilterInput) {
+                    ${path}(input: $input, filterParams: $filterParams)
+                }
+            `,
+            variables: {
+                input,
+                filterParams
+            }
+        });
+        return this.returnData(res, path);
+    }
+
     // </Product>
 
 
@@ -568,6 +585,22 @@ class CGraphQLClient {
             `,
             variables: {
                 data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public deleteManyFilteredProductCategories = async (input: TDeleteManyInput, filterParams?: TProductCategoryFilter) => {
+        const path = GraphQLPaths.ProductCategory.deleteManyFiltered;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteManyFilteredProductCategories($input: DeleteManyInput!, $filterParams: ProductCategoryFilterInput) {
+                    ${path}(input: $input, filterParams: $filterParams)
+                }
+            `,
+            variables: {
+                input,
+                filterParams
             }
         });
         return this.returnData(res, path);
@@ -1069,6 +1102,22 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
+    public deleteManyFilteredPosts = async (input: TDeleteManyInput, filterParams?: TPostFilter) => {
+        const path = GraphQLPaths.Post.deleteManyFiltered;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteManyFilteredPosts($input: DeleteManyInput!, $filterParams: PostFilterInput) {
+                    ${path}(input: $input, filterParams: $filterParams)
+                }
+            `,
+            variables: {
+                input,
+                filterParams
+            }
+        });
+        return this.returnData(res, path);
+    }
+
     public getFilteredPosts = async ({ pagedParams, filterParams, customFragment, customFragmentName }: {
         pagedParams?: TPagedParams<TPost>;
         filterParams?: TPostFilter;
@@ -1274,8 +1323,10 @@ class CGraphQLClient {
             isEnabled
             status
             cart
-            totalPrice
-            oldTotalPrice
+            orderTotalPrice
+            cartTotalPrice
+            cartOldTotalPrice
+            deliveryPrice
             totalQnt
             userId
             customerName
@@ -1421,6 +1472,56 @@ class CGraphQLClient {
                 data: input,
             }
         });
+        return this.returnData(res, path);
+    }
+
+    public deleteManyFilteredOrders = async (input: TDeleteManyInput, filterParams?: TOrderFilter) => {
+        const path = GraphQLPaths.Order.deleteManyFiltered;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteManyFilteredOrders($input: DeleteManyInput!, $filterParams: OrderFilterInput) {
+                    ${path}(input: $input, filterParams: $filterParams)
+                }
+            `,
+            variables: {
+                input,
+                filterParams
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public getFilteredOrders = async ({ pagedParams, filterParams, customFragment, customFragmentName }: {
+        pagedParams?: TPagedParams<TOrder>;
+        filterParams?: TOrderFilter;
+        customFragment?: DocumentNode;
+        customFragmentName?: string;
+    }): Promise<TPagedList<TOrder>> => {
+        const path = GraphQLPaths.Order.getFiltered;
+
+        const fragment = customFragment ?? this.OrderFragment;
+        const fragmentName = customFragmentName ?? 'OrderFragment';
+
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetFilteredOrders($pagedParams: PagedParamsInput, $filterParams: OrderFilterInput) {
+                    ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...${fragmentName}
+                        }
+                    }
+                }
+                ${fragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                pagedParams: pagedParams ?? {},
+                filterParams,
+            }
+        })
         return this.returnData(res, path);
     }
 

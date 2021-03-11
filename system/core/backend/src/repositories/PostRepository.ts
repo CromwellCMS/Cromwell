@@ -1,6 +1,6 @@
-import { logFor, TPagedList, TPagedParams, TPostInput, TPost } from '@cromwell/core';
+import { logFor, TPagedList, TPagedParams, TPostInput, TPost, TDeleteManyInput } from '@cromwell/core';
 import sanitizeHtml from 'sanitize-html';
-import { EntityRepository, getCustomRepository, Brackets } from 'typeorm';
+import { EntityRepository, getCustomRepository, Brackets, SelectQueryBuilder, DeleteQueryBuilder } from 'typeorm';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 
 import { Post } from '../entities/Post';
@@ -87,32 +87,18 @@ export class PostRepository extends BaseRepository<Post> {
         return true;
     }
 
-    async getFilteredPosts(pagedParams?: PagedParamsInput<Post>, filterParams?: PostFilterInput): Promise<TPagedList<TPost>> {
-
-        const qb = this.createQueryBuilder(this.metadata.tablePath);
-        qb.select();
-
-        let isFirstAttr = true;
-        const qbAddWhere: typeof qb.where = (where, params) => {
-            if (isFirstAttr) {
-                isFirstAttr = false;
-                return qb.where(where, params);
-            } else {
-                return qb.andWhere(where as any, params);
-            }
-        }
-
+    applyPostFilter(qb: SelectQueryBuilder<TPost> | DeleteQueryBuilder<TPost>, filterParams?: PostFilterInput) {
         // Search by product name
         if (filterParams?.titleSearch && filterParams.titleSearch !== '') {
             const titleSearch = `%${filterParams.titleSearch}%`;
             const query = `${this.metadata.tablePath}.title LIKE :titleSearch`;
-            qbAddWhere(query, { titleSearch });
+            qb.andWhere(query, { titleSearch });
         }
 
         if (filterParams?.authorId && filterParams.authorId !== '') {
             const authorId = filterParams.authorId;
             const query = `${this.metadata.tablePath}.authorId = :authorId`;
-            qbAddWhere(query, { authorId });
+            qb.andWhere(query, { authorId });
         }
 
         if (filterParams?.tags && filterParams.tags.length > 0) {
@@ -130,10 +116,26 @@ export class PostRepository extends BaseRepository<Post> {
                     }
                 })
             });
-            qbAddWhere(brackets);
+            qb.andWhere(brackets);
         }
+        return qb;
+    }
 
+    async getFilteredPosts(pagedParams?: PagedParamsInput<Post>, filterParams?: PostFilterInput): Promise<TPagedList<TPost>> {
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+        this.applyPostFilter(qb, filterParams);
         return await getPaged(qb, this.metadata.tablePath, pagedParams);
+    }
+
+    async deleteManyFilteredPosts(input: TDeleteManyInput, filterParams?: PostFilterInput): Promise<boolean | undefined> {
+        const qb = this.createQueryBuilder()
+            .delete().from<Post>(this.metadata.tablePath);
+
+        this.applyPostFilter(qb, filterParams);
+        this.applyDeletMany(qb, input);
+        await qb.execute();
+        return true;
     }
 
     async getAllPostTags(): Promise<string[]> {

@@ -1,5 +1,5 @@
 import { TPagedList, TPagedParams, TDeleteManyInput } from '@cromwell/core';
-import { Repository } from 'typeorm';
+import { DeleteQueryBuilder, Repository } from 'typeorm';
 
 import { getPaged } from './BaseQueries';
 import { getLogger } from '../helpers/constants';
@@ -82,35 +82,22 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return true;
     }
 
-    async deleteMany(input: TDeleteManyInput, idKey: keyof EntityType) {
-        logger.log('BaseRepository::deleteMany ' + this.metadata.tablePath, input);
+    async applyDeletMany(qb: DeleteQueryBuilder<EntityType>, input: TDeleteManyInput) {
         if (input.all) {
-            const allEntities = await this.find({
-                select: [idKey]
-            });
-            await Promise.all(allEntities.map(async (entity) => {
-                const id = entity[idKey] + '';
-                if (input.ids.includes(id)) return;
-                try {
-                    return await this.delete(id);
-                } catch (e) {
-                    logger.error(e);
-                }
-            }));
-
+            if (input.ids && input.ids.length > 0) {
+                qb.andWhere(`"${this.metadata.tablePath}".id NOT IN (:...ids)`, { ids: input.ids ?? [] })
+            }
         } else {
-            await Promise.all(input.ids.map(async (id) => {
-                try {
-                    const entity = await this.getById(id);
-                    if (entity)
-                        return await this.delete(id);
-                } catch (e) {
-                    logger.error(e);
-                }
-            }));
+            qb.andWhere(`"${this.metadata.tablePath}".id IN (:...ids)`, { ids: input.ids ?? [] })
         }
-        return true;
     }
 
+    async deleteMany(input: TDeleteManyInput) {
+        logger.log('BaseRepository::deleteMany ' + this.metadata.tablePath, input);
+        const qb = this.createQueryBuilder().delete().from<EntityType>(this.metadata.tablePath);
+        this.applyDeletMany(qb, input);
+        await qb.execute();
+        return true;
+    }
 
 }

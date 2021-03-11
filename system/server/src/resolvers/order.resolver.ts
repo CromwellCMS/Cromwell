@@ -1,16 +1,16 @@
-import { GraphQLPaths, TOrder, TPagedList, TProduct, TStoreListItem } from '@cromwell/core';
+import { GraphQLPaths, TOrder, TPagedList } from '@cromwell/core';
 import {
+    DeleteManyInput,
     getLogger,
     InputOrder,
     Order,
+    OrderFilterInput,
     OrderRepository,
     PagedOrder,
     PagedParamsInput,
-    Product,
     ProductRepository,
-    DeleteManyInput,
 } from '@cromwell/core-backend';
-import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 const getOneBySlugPath = GraphQLPaths.Order.getOneBySlug;
@@ -20,6 +20,8 @@ const createPath = GraphQLPaths.Order.create;
 const updatePath = GraphQLPaths.Order.update;
 const deletePath = GraphQLPaths.Order.delete;
 const deleteManyPath = GraphQLPaths.Order.deleteMany;
+const deleteManyFilteredPath = GraphQLPaths.Order.deleteManyFiltered;
+const getFilteredPath = GraphQLPaths.Order.getFiltered;
 
 const logger = getLogger('detailed');
 
@@ -62,7 +64,22 @@ export class OrderResolver {
 
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
-        return this.repository.deleteMany(data, 'id');
+        return this.repository.deleteMany(data);
     }
 
+    @Mutation(() => Boolean)
+    async [deleteManyFilteredPath](
+        @Arg("input") input: DeleteManyInput,
+        @Arg("filterParams", { nullable: true }) filterParams?: OrderFilterInput,
+    ): Promise<boolean | undefined> {
+        return this.repository.deleteManyFilteredOrders(input, filterParams);
+    }
+
+    @Query(() => PagedOrder)
+    async [getFilteredPath](
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,
+        @Arg("filterParams", { nullable: true }) filterParams?: OrderFilterInput,
+    ): Promise<TPagedList<TOrder> | undefined> {
+        return this.repository.getFilteredOrders(pagedParams, filterParams);
+    }
 }

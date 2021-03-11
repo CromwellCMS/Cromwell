@@ -10,8 +10,9 @@ import {
     TProductInput,
     TProductRating,
     TProductReview,
+    TDeleteManyInput,
 } from '@cromwell/core';
-import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
+import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder, DeleteQueryBuilder, QueryBuilder } from 'typeorm';
 
 import { ProductFilterInput } from '../entities/filter/ProductFilterInput';
 import { Product } from '../entities/Product';
@@ -185,22 +186,14 @@ export class ProductRepository extends BaseRepository<Product> {
         return raw;
     }
 
-    async getFilteredProducts(pagedParams?: PagedParamsInput<TProduct>, filterParams?: ProductFilterInput, categoryId?: string): Promise<TFilteredProductList> {
-        logger.log('ProductRepository::getFilteredProducts categoryId:' + categoryId + ' pagedParams:' + pagedParams);
-        const timestamp = Date.now();
+    applyProductFilter(qb: SelectQueryBuilder<Product> | DeleteQueryBuilder<Product>, filterParams?: ProductFilterInput, categoryId?: string) {
+        if (categoryId) {
+            // Cannot apply category filter in Delete query
+            applyGetManyFromOne(qb as SelectQueryBuilder<Product>, this.metadata.tablePath, 'categories',
+                getCustomRepository(ProductCategoryRepository).metadata.tablePath, categoryId);
+        }
 
-        const applyProductFilter = (qb: SelectQueryBuilder<TProduct>, filterParams: TProductFilter, shouldApplyPriceFilter = true) => {
-            let isFirstAttr = true;
-
-            const qbAddWhere: typeof qb.where = (where, params) => {
-                if (isFirstAttr) {
-                    isFirstAttr = false;
-                    return qb.where(where, params);
-                } else {
-                    return qb.andWhere(where as any, params);
-                }
-            }
-
+        if (filterParams) {
             // Attribute filter
             // Improper filter via LIKE operator (won't work with attributes that have intersections in values)
             if (filterParams.attributes) {
@@ -220,7 +213,7 @@ export class ProductRepository extends BaseRepository<Product> {
                                 }
                             })
                         });
-                        qbAddWhere(brackets);
+                        qb.andWhere(brackets);
                     }
                 });
             }
@@ -229,36 +222,36 @@ export class ProductRepository extends BaseRepository<Product> {
             if (filterParams.nameSearch && filterParams.nameSearch !== '') {
                 const likeStr = `%${filterParams.nameSearch}%`;
                 const query = `${this.metadata.tablePath}.name LIKE :likeStr`;
-                qbAddWhere(query, { likeStr });
+                qb.andWhere(query, { likeStr });
             }
 
             // Price filter
-            if (shouldApplyPriceFilter) {
-                if (filterParams.maxPrice) {
-                    const query = `${this.metadata.tablePath}.price <= :maxPrice`;
-                    qbAddWhere(query, { maxPrice: filterParams.maxPrice })
-                }
-                if (filterParams.minPrice) {
-                    const query = `${this.metadata.tablePath}.price >= :minPrice`;
-                    qbAddWhere(query, { minPrice: filterParams.minPrice })
-                }
+            if (filterParams.maxPrice) {
+                const query = `${this.metadata.tablePath}.price <= :maxPrice`;
+                qb.andWhere(query, { maxPrice: filterParams.maxPrice })
             }
-
+            if (filterParams.minPrice) {
+                const query = `${this.metadata.tablePath}.price >= :minPrice`;
+                qb.andWhere(query, { minPrice: filterParams.minPrice })
+            }
         }
+    }
+
+    async getFilteredProducts(pagedParams?: PagedParamsInput<TProduct>, filterParams?: ProductFilterInput, categoryId?: string): Promise<TFilteredProductList> {
+        logger.log('ProductRepository::getFilteredProducts categoryId:' + categoryId + ' pagedParams:' + pagedParams);
+        const timestamp = Date.now();
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
             const qb = this.createQueryBuilder(this.metadata.tablePath);
 
-            if (categoryId) {
-                applyGetManyFromOne(qb, this.metadata.tablePath, 'categories',
-                    getCustomRepository(ProductCategoryRepository).metadata.tablePath, categoryId);
-            } else {
-                qb.select();
+            if (shouldApplyPriceFilter === false) {
+                filterParams = {
+                    ...filterParams,
+                    maxPrice: undefined,
+                    minPrice: undefined,
+                }
             }
-
-            if (filterParams) {
-                applyProductFilter(qb, filterParams, shouldApplyPriceFilter);
-            }
+            this.applyProductFilter(qb, filterParams, categoryId)
             return qb;
         }
 
@@ -292,6 +285,16 @@ export class ProductRepository extends BaseRepository<Product> {
             filterMeta
         }
         return filtered;
+    }
+
+    async deleteManyFilteredProducts(input: TDeleteManyInput, filterParams?: ProductFilterInput): Promise<boolean | undefined> {
+        const qb = this.createQueryBuilder()
+            .delete().from<Product>(this.metadata.tablePath);
+
+        this.applyProductFilter(qb, filterParams);
+        this.applyDeletMany(qb, input);
+        await qb.execute();
+        return true;
     }
 
     private buildProductPage(product: TProduct) {

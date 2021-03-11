@@ -1,9 +1,12 @@
-import { TOrder, TOrderInput, TPagedList, TPagedParams } from '@cromwell/core';
-import { EntityRepository } from 'typeorm';
+import { TOrder, TOrderInput, TPagedList, TPagedParams, TDeleteManyInput } from '@cromwell/core';
+import { EntityRepository, SelectQueryBuilder, DeleteQueryBuilder } from 'typeorm';
+import { DateUtils } from "typeorm/util/DateUtils";
+import { PagedParamsInput } from './../inputs/PagedParamsInput';
 
 import { Order } from '../entities/Order';
+import { OrderFilterInput } from '../entities/filter/OrderFilterInput';
 import { getLogger } from '../helpers/constants';
-import { checkEntitySlug, handleBaseInput } from './BaseQueries';
+import { checkEntitySlug, handleBaseInput, getPaged } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 
 const logger = getLogger('detailed');
@@ -35,12 +38,15 @@ export class OrderRepository extends BaseRepository<Order> {
 
         order.status = input.status;
         order.cart = Array.isArray(input.cart) ? JSON.stringify(input.cart) : input.cart;
-        order.totalPrice = input.totalPrice;
-        order.oldTotalPrice = input.oldTotalPrice;
+        order.orderTotalPrice = input.orderTotalPrice;
+        order.cartTotalPrice = input.cartTotalPrice;
+        order.cartOldTotalPrice = input.cartOldTotalPrice;
+        order.deliveryPrice = input.deliveryPrice;
         order.totalQnt = input.totalQnt;
         order.userId = input.userId;
         order.customerName = input.customerName;
-        order.customerPhone = input.customerPhone;
+        order.customerPhone = input.customerPhone?.replace(/\W/g, '');
+        order.customerEmail = input.customerEmail;
         order.customerAddress = input.customerAddress;
         order.customerComment = input.customerComment;
         order.shippingMethod = input.shippingMethod;
@@ -81,6 +87,76 @@ export class OrderRepository extends BaseRepository<Order> {
             return false;
         }
         const res = await this.delete(id);
+        return true;
+    }
+
+    applyOrderFilter(qb: SelectQueryBuilder<TOrder> | DeleteQueryBuilder<TOrder>, filterParams?: OrderFilterInput) {
+        // Search by status
+        if (filterParams?.status && filterParams.status !== '') {
+            const query = `"${this.metadata.tablePath}".status = :statusSearch`;
+            qb.andWhere(query, { statusSearch: filterParams.status });
+        }
+
+        // Search by orderId
+        if (filterParams?.orderId && filterParams.orderId !== '') {
+            const query = `"${this.metadata.tablePath}".id = :orderId`;
+            qb.andWhere(query, { orderId: filterParams.orderId });
+        }
+
+        // Search by customerName
+        if (filterParams?.customerName && filterParams.customerName !== '') {
+            const customerNameSearch = `%${filterParams.customerName}%`;
+            const query = `"${this.metadata.tablePath}".customerName LIKE :customerNameSearch`;
+            qb.andWhere(query, { customerNameSearch });
+        }
+
+        // Search by customerPhone
+        if (filterParams?.customerPhone && filterParams.customerPhone !== '') {
+            const customerPhone = filterParams.customerPhone.replace(/\W/g, '');
+            const customerPhoneSearch = `%${customerPhone}%`;
+            const query = `"${this.metadata.tablePath}".customerPhone LIKE :customerPhoneSearch`;
+            qb.andWhere(query, { customerPhoneSearch });
+        }
+
+        // Search by customerEmail
+        if (filterParams?.customerEmail && filterParams.customerEmail !== '') {
+            const customerEmailSearch = `%${filterParams.customerEmail}%`;
+            const query = `"${this.metadata.tablePath}".customerEmail LIKE :customerEmailSearch`;
+            qb.andWhere(query, { customerEmailSearch });
+        }
+
+        // Search by create date
+        if (filterParams?.dateFrom && filterParams.dateFrom !== '') {
+            const dateFrom = new Date(Date.parse(filterParams.dateFrom));
+            const dateTo = new Date(filterParams.dateTo ? Date.parse(filterParams.dateTo) : Date.now());
+
+            const query = `"${this.metadata.tablePath}".createDate BETWEEN :dateFrom AND :dateTo`;
+            qb.andWhere(query, {
+                dateFrom: DateUtils.mixedDateToDatetimeString(dateFrom),
+                dateTo: DateUtils.mixedDateToDatetimeString(dateTo),
+            });
+        }
+    }
+
+    async getFilteredOrders(pagedParams?: PagedParamsInput<TOrder>, filterParams?: OrderFilterInput): Promise<TPagedList<TOrder>> {
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+        this.applyOrderFilter(qb, filterParams);
+        return await getPaged(qb, this.metadata.tablePath, pagedParams);
+    }
+
+
+    async deleteManyFilteredOrders(input: TDeleteManyInput, filterParams?: OrderFilterInput): Promise<boolean | undefined> {
+        const qb = this.createQueryBuilder()
+            .delete().from<Order>(this.metadata.tablePath);
+
+        this.applyOrderFilter(qb, filterParams);
+        this.applyDeletMany(qb, input);
+        try {
+            await qb.execute();
+        } catch (e) {
+            console.error(e)
+        }
         return true;
     }
 

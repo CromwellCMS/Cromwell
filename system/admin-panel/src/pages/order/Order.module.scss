@@ -7,7 +7,7 @@
         @include paper;
         padding: 0 20px 0 0;
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 15px;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -16,9 +16,79 @@
     .fields {
         @include paper;
         padding: 20px;
+        margin-bottom: 15px;
     }
 
     .textField {
         margin-bottom: 15px;
+    }
+
+    .sums {
+        @include paper;
+        margin-bottom: 15px;
+        padding: 20px;
+        p {
+            margin-bottom: 5px;
+        }
+        b {
+            font-weight: 500;
+        }
+    }
+
+    .totalChangedBlock {
+        margin-top: 15px;
+        border: 1px solid #ff9100;
+        border-radius: 5px;
+        padding: 10px;
+    }
+
+    .totalChangedWarning {
+        display: flex;
+        align-items: center;
+        margin-bottom: 9px;
+
+        svg {
+            color: #ff9100;
+        }
+        p {
+            font-weight: 500;
+        }
+    }
+
+    .cart {
+        @include paper;
+    }
+
+    .cartItem {
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+    }
+
+    .itemBlock {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .productName {
+        font-weight: 500;
+    }
+
+    .mainImage {
+        height: 60px;
+    }
+
+    .priceBlock {
+        display: flex;
+        flex-wrap: wrap;
+        font-size: 18px;
+        margin: 6px 0;
+    }
+    .price {
+        font-weight: 400;
+    }
+    .oldPrice {
+        text-decoration: line-through;
+        opacity: 0.7;
+        margin-right: 10px;
     }
 }

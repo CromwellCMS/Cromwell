@@ -12,7 +12,6 @@ import styles from './CartProductList.module.scss';
 export const CartProductList = (props: {
     onProductOpen?: (product: TProduct) => void;
     collapsedByDefault?: boolean;
-    productBaseRoute: string;
 }) => {
     const [cart, setCart] = useState<TStoreListItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -55,15 +54,10 @@ export const CartProductList = (props: {
         }
     }
 
-    const cartTotal: number = cart.reduce<number>((prev, current) =>
-        prev += (current.product?.price ?? 0) * (current.amount ?? 1), 0);
-
-    const cartTotalOldPrice: number = cart.reduce<number>(
-        (prev, current) => prev += (current.product?.oldPrice ?? current.product?.price ?? 0) * (current.amount ?? 1)
-        , 0);
-
-    const amount: number = cart.reduce<number>((prev, current) =>
-        prev += (current.amount ?? 1), 0);
+    const cartInfo = cstore.getCartTotal();
+    const cartTotal = cartInfo.total
+    const cartTotalOldPrice = cartInfo.totalOld;
+    const amount = cartInfo.amount;
 
     const productList = (
         <div className={styles.productList}>

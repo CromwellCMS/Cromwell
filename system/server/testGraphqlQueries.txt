@@ -349,8 +349,9 @@ mutation deleteCategory {
 
  query getRootCategories {
     getRootCategories {
-    	id
-    	name
+    	elements {
+        name
+      }
   }
 }
 
@@ -367,22 +368,36 @@ id
   }
 }
 
-mutation createOrder{
-	createOrder(data: {
-    customerName: "test1",
-    totalPrice: 1111.11
-  }) {
-    id
-    customerName
-  }
-}
 
 query getOrderById {
 	getOrderById(id:"1") {
 		id
     customerName
-    oldTotalPrice
-    totalPrice
+    cartTotalPrice
+    orderTotalPrice
     totalQnt
   }
+}
+
+query getOrders {
+	getOrders(pagedParams: {}) {
+    elements {
+			customerName	
+    id
+    	}
+  }
+}
+
+query getFilteredOrders {
+  getFilteredOrders(filterParams: {
+    dateFrom: "2021-02-11T11:13:07.933Z"
+  }) {
+    elements {
+      status
+      customerName
+      orderTotalPrice
+      customerPhone
+      createDate
+    }
+	}
 }
