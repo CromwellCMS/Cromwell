@@ -14,7 +14,8 @@ import {
     TThemeConfig,
     logFor,
     isServer,
-    TUser
+    TUser,
+    TCmsEntityInput,
 } from '@cromwell/core';
 
 type TPluginsModifications = TPluginConfig & { [x: string]: any };
@@ -47,9 +48,7 @@ class CRestAPIClient {
             const res = await fetch(`${this.baseUrl}/${route}`, {
                 method: 'get',
                 credentials: 'include',
-                headers: new Headers({
-                    'Content-Type': 'application/json',
-                }),
+                headers: { 'Content-Type': 'application/json' },
             });
             const data = await res.json();
             return this.handleError(res, data, route);
@@ -64,9 +63,7 @@ class CRestAPIClient {
                 method: 'post',
                 credentials: 'include',
                 body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
-                headers: new Headers({
-                    'Content-Type': 'application/json'
-                }),
+                headers: { 'Content-Type': 'application/json' },
             })
             const data = await res.json();
             return this.handleError(res, data, route);
@@ -148,6 +145,10 @@ class CRestAPIClient {
 
     public setUpCms = async (): Promise<boolean | undefined> => {
         return this.post(`cms/set-up`);
+    }
+
+    public updateCmsConfig = async (input: TCmsEntityInput): Promise<TCmsSettings | undefined> => {
+        return this.post(`cms/update-config`, input);
     }
 
     // < / CMS >

@@ -30,7 +30,8 @@ import {
     TFilteredProductList,
     TPostFilter,
     TUser,
-    TUserInput,
+    TCreateUser,
+    TUpdateUser,
     TProductCategoryFilter,
     TOrder,
     TOrderInput,
@@ -1255,7 +1256,7 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public updateUser = async (id: string, input: TUserInput) => {
+    public updateUser = async (id: string, input: TUpdateUser) => {
         const path = GraphQLPaths.User.update;
         const res = await this.apolloClient.mutate({
             mutation: gql`
@@ -1274,7 +1275,7 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public createUser = async (input: TUserInput) => {
+    public createUser = async (input: TCreateUser) => {
         const path = GraphQLPaths.User.create;
         const res = await this.apolloClient.mutate({
             mutation: gql`

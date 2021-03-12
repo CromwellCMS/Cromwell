@@ -1,0 +1,27 @@
+@import "../../styles/common.module.scss";
+
+.SettingsPage {
+    padding: 15px;
+}
+
+.header {
+    @include paper;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
+}
+
+.list {
+    @include paper;
+    @include styledScrollBar;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: auto;
+    padding: 15px;
+}
+
+.field {
+    margin-bottom:  15px;
+}

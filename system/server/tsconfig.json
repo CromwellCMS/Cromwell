@@ -29,6 +29,6 @@
     "build"
   ],
   "include": [
-    "src/**/*.ts",
+    "src/**/*.ts", "src/dto",
   ],
 }

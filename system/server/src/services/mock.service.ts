@@ -6,7 +6,7 @@ import {
     TProductCategoryInput,
     TProductReview,
     TProductReviewInput,
-    TUserInput,
+    TCreateUser,
     TStoreListItem,
 } from '@cromwell/core';
 import {
@@ -347,7 +347,7 @@ export class MockService {
             await this.userRepo.deleteUser(item.id);
         }
 
-        const users: TUserInput[] = [
+        const users: TCreateUser[] = [
             {
                 fullName: 'Creed',
                 email: 'Creed@example.com',

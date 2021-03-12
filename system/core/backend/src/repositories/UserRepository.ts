@@ -1,9 +1,9 @@
-import { logFor, TPagedList, TPagedParams, TUserInput } from '@cromwell/core';
+import { logFor, TPagedList, TPagedParams, TUpdateUser, TCreateUser } from '@cromwell/core';
 import { EntityRepository } from 'typeorm';
 import bcrypt from 'bcrypt';
 
 import { User } from '../entities/User';
-import { handleBaseInput } from './BaseQueries';
+import { handleBaseInput, checkEntitySlug } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 import { getLogger } from '../helpers/constants';
 
@@ -42,28 +42,35 @@ export class UserRepository extends BaseRepository<User> {
         return this.getBySlug(slug);
     }
 
-    async handleUserInput(user: User, userInput: TUserInput) {
+    async handleUserInput(user: User, userInput: TUpdateUser) {
+        handleBaseInput(user, userInput);
         user.fullName = userInput.fullName;
         user.email = userInput.email;
         user.avatar = userInput.avatar;
-        if (userInput.password) {
-            const hashedPass = await bcrypt.hash(userInput.password, bcryptSaltRounds);
-            user.password = hashedPass;
-        }
     }
 
-    async createUser(createUser: TUserInput): Promise<User> {
+    async createUser(createUser: TCreateUser): Promise<User> {
         logger.log('UserRepository::createUser');
         let user = new User();
 
-        handleBaseInput(user, createUser);
         await this.handleUserInput(user, createUser);
 
+        if (createUser.password) {
+            const hashedPass = await bcrypt.hash(createUser.password, bcryptSaltRounds);
+            user.password = hashedPass;
+        }
+
+        if (createUser.role) {
+            user.role = createUser.role;
+        }
+
         user = await this.save(user);
+        await checkEntitySlug(user);
+
         return user;
     }
 
-    async updateUser(id: string, updateUser: TUserInput): Promise<User> {
+    async updateUser(id: string, updateUser: TUpdateUser): Promise<User> {
         logger.log('UserRepository::updateUser id: ' + id);
 
         let user = await this.findOne({
@@ -71,10 +78,11 @@ export class UserRepository extends BaseRepository<User> {
         });
         if (!user) throw new Error(`User ${id} not found!`);
 
-        handleBaseInput(user, updateUser);
         await this.handleUserInput(user, updateUser);
 
         user = await this.save(user);
+        await checkEntitySlug(user);
+
         return user;
     }
 

@@ -20,6 +20,18 @@ export class User extends BasePageEntity implements TUser {
     @Column({ type: "varchar", nullable: true })
     avatar?: string;
 
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    location?: string;
+
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    bio?: string;
+
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    role?: 'admin' | 'author' | 'customer';
+
     @Column()
     password: string;
 

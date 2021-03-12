@@ -1,10 +1,10 @@
-import { InputType, Field, Int } from "type-graphql";
-import { TUserInput } from '@cromwell/core';
+import { TCreateUser } from '@cromwell/core';
+import { Field, InputType } from 'type-graphql';
+
 import { BasePageInput } from './BasePageInput';
-import { AttributeInstance } from '../entities/AttributeInstance';
 
 @InputType()
-export class CreateUser extends BasePageInput implements TUserInput {
+export class CreateUser extends BasePageInput implements TCreateUser {
 
     @Field(() => String)
     fullName: string;
@@ -18,5 +18,13 @@ export class CreateUser extends BasePageInput implements TUserInput {
     @Field(() => String, { nullable: true })
     avatar?: string;
 
+    @Field(() => String, { nullable: true })
+    location?: string;
+
+    @Field(() => String, { nullable: true })
+    bio?: string;
+
+    @Field(() => String, { nullable: true })
+    role?: 'admin' | 'author' | 'customer';
 }
 

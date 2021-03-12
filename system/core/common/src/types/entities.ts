@@ -153,12 +153,16 @@ export interface TUser extends TBasePageEntity {
     email: string;
     // Avatar image
     avatar?: string;
+    location?: string;
+    bio?: string;
+    role?: 'admin' | 'author' | 'customer';
 }
 
-export type TUserInput = Omit<TUser, TDBAuxiliaryColumns> & {
-    password: string;
+export type TCreateUser = Omit<TUser, TDBAuxiliaryColumns> & {
+    password?: string;
 };
 
+export type TUpdateUser = Omit<TUser, TDBAuxiliaryColumns | 'role'>;
 
 
 // Attribute
@@ -292,10 +296,36 @@ export type TCmsEntityCore = {
     defaultPageSize?: number;
     // Available currencies in the store and rates between them to convert
     currencies?: TCurrency[];
+    // Default timezone in GMT, number +-
+    timezone?: number;
+    // Default language
+    language?: string;
+    // Website favicon
+    favicon?: string;
+    // Website logo
+    logo?: string;
+
+    // Custom HTML code injection
+    headerHtml?: string;
+    footerHtml?: string;
+
+    // INTERNAL
     // Internal. https://github.com/CromwellCMS/Cromwell/blob/55046c48d9da0a44e4b11e7918c73876fcd1cfc1/system/manager/src/managers/baseManager.ts#L194:L206
     versions?: TServiceVersions | string;
     // Internal. If false or not set, will launch installation at first Admin Panel visit.
     installed?: boolean;
+}
+
+export type TCmsEntityInput = {
+    protocol?: 'http' | 'https';
+    defaultPageSize?: number;
+    currencies?: TCurrency[];
+    timezone?: number;
+    language?: string;
+    favicon?: string;
+    logo?: string;
+    headerHtml?: string;
+    footerHtml?: string;
 }
 
 export type TServiceVersions = {
@@ -303,6 +333,9 @@ export type TServiceVersions = {
     server?: number;
     adminPanel?: number;
 };
+
+export type TCmsEntity = TCmsEntityCore & TBasePageEntity;
+
 
 export type TCurrency = {
     tag: string;
@@ -313,9 +346,6 @@ export type TCurrency = {
     ratio?: number;
 }
 
-export type TCmsEntity = TCmsEntityCore & TBasePageEntity;
-
-export type TCmsEntityInput = TCmsEntityCore & TBasePageEntityInput;
 
 export type TDeleteManyInput = {
     ids: string[];

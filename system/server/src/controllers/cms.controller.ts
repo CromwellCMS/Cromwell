@@ -1,15 +1,15 @@
 import { TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
 import { getCmsModuleInfo, getLogger, getPublicDir, readCmsModules } from '@cromwell/core-backend';
-import { Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards, Body, UnauthorizedException } from '@nestjs/common';
-import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags, ApiBody } from '@nestjs/swagger';
+import { Body, Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
 import { join } from 'path';
 
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { CmsConfigDto } from '../dto/cms-config.dto';
+import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { publicSystemDirs } from '../helpers/constants';
-import { LoginDto } from '../dto/login.dto';
 import { CmsService } from '../services/cms.service';
 
 const logger = getLogger('detailed');
@@ -212,5 +212,19 @@ export class CmsController {
             throw new HttpException('CmsController::setUp CMS already installed', HttpStatus.BAD_REQUEST);
 
         return await this.cmsService.installCms();
+    }
+
+    @Post('update-config')
+    @UseGuards(JwtAuthGuard)
+    @ApiOperation({
+        description: 'Updates CMS config',
+    })
+    @ApiBody({ type: CmsConfigUpdateDto })
+    @ApiResponse({
+        status: 200,
+        type: CmsConfigDto,
+    })
+    async updateCmsConfig(@Body() input: CmsConfigUpdateDto): Promise<CmsConfigDto | undefined> {
+        return this.cmsService.updateCmsConfig(input);
     }
 }
