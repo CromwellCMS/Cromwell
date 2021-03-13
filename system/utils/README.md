@@ -1,10 +1,34 @@
-# Cromwell CMS node modules manager (Cromwella) 
+# Cromwell CMS node modules manager
+
+
+## Node modules bundler & loader
+
+Bundles node modules into specific format for Cromwell module loader. Similar to RequireJS.
 
 ```sh
-npm i @cromwell/cromwella
-```
+npx cromwell bm
+``` 
+Will scan over packages for frontendDependencies array and bundle each module in ./.cromwell/bundled-modules
+Cromwell bundler plugins for Rollup and Webpack after building theme or plugin emit imports map which is supposed to be used with such bundled node modules via this cli command.
 
-## 1. Manages hoisting installation of node_modules in multi-package repositories.
+### Options:
+
+#### "--production" 
+```sh
+npx cromwell bm --production
+``` 
+Will enable production mode of webpack. Development by default.
+
+### Rebundle
+```sh
+npx cromwell bm -r
+``` 
+Will delete all bundled modules and bundle new. 
+By default "cromwella b" command bundles only newly found modules that aren't exist in ./.cromwell/bundled-modules (caching)
+
+
+## Hoisting installation of node_modules in multi-package repositories.
+### Deprecated. Use Yarn now.
 
 Simplified alternative of Lerna package manager.
 Overall depends on 18 packages in opposite of 750+ for Lerna.
@@ -25,9 +49,8 @@ Place cromwella.json file in the root of your multi-package repository. Works sa
 
 ### Usage
 
-Install all packages:
 ```sh
-npx cromwella
+npx cromwell install
 ```
 
 ### Options:
@@ -35,43 +58,17 @@ npx cromwella
 #### "--production" 
 Install only dependencies from packages, without devDependencies.
 ```sh
-npx cromwella --production
+npx cromwell install --production
 ```
 
 #### "--path=" 
 Optional. Absolute path to the project root directory with cromwella.json config.
 ```sh
-npx cromwella --path=/path/to/my/project
+npx cromwell install --path=/path/to/my/project
 ```
 
 #### "-f"
 ```sh
-npx cromwella -f
+npx cromwell install -f
 ```
 Will force to install different versions of modules in node_modules of local packages in development env. By default in "development" environment installation will be aborted with an error in such case.
-
-
-## Node modules bundler & loader
-
-Bundles node modules into specific format for Cromwell module loader. Similar to RequireJS.
-
-```sh
-npx cromwella b
-``` 
-Will scan over packages for frontendDependencies array and bundle each module in ./.cromwell/bundled-modules
-Cromwell bundler plugins for Rollup and Webpack after building theme or plugin emit imports map which is supposed to be used with such bundled node modules via this cli command.
-
-### Options:
-
-#### "--production" 
-```sh
-npx cromwella b --production
-``` 
-Will enable production mode of webpack. Development by default.
-
-### Rebundle
-```sh
-npx cromwella r
-``` 
-Will delete all bundled modules and bundle new. 
-By default "cromwella b" command bundles only newly found modules that aren't exist in ./.cromwell/bundled-modules (caching)
