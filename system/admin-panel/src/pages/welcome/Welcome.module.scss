@@ -56,21 +56,8 @@
     }
 
     .avatar {
-        height: 50px;
-        width: 50px;
-        min-width: 50px;
-        background-position: center;
-        background-size: cover;
         margin-right: 15px;
         display: flex;
-        justify-content: center;
-        align-items: center;
-        cursor: pointer;
-
-        > svg {
-            width: 30px;
-            height: 30px;
-        }
     }
 
     .createBtn {

@@ -1,7 +1,7 @@
 ## CMS Development & Installation
 
 ### Prerequisites
-- Node.js v12 or above
+- Node.js v12
 - yarn
 
 ### Install

@@ -1,15 +1,11 @@
 import { setStoreItem } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, IconButton, InputAdornment, TextField, Tooltip, withStyles } from '@material-ui/core';
-import {
-    AddPhotoAlternateOutlined as AddPhotoAlternateOutlinedIcon,
-    Visibility as VisibilityIcon,
-    VisibilityOff as VisibilityOffIcon,
-} from '@material-ui/icons';
+import { Button, IconButton, InputAdornment, TextField, withStyles } from '@material-ui/core';
+import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { getFileManager } from '../../components/fileManager/helpers';
+import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import styles from './Welcome.module.scss';
 
@@ -78,11 +74,6 @@ export default function welcomePage() {
         }
     }
 
-    const handleChangeAvatar = async () => {
-        const photoPath = await getFileManager()?.getPhoto();
-        if (photoPath) setAvatarInput(photoPath);
-    }
-
     return (
         <div className={styles.WelcomePage}>
             <div className={styles.wrapper}>
@@ -91,13 +82,12 @@ export default function welcomePage() {
                 <h3 className={styles.subtitle}>Let's create your account</h3>
                 <div className={styles.inputForm}>
                     <div className={styles.userMainInfo}>
-                        <Tooltip title="Pick avatar">
-                            <div className={styles.avatar}
-                                onClick={handleChangeAvatar}
-                                style={{ backgroundImage: `url(${avatarInput})` }}>
-                                {!avatarInput && <AddPhotoAlternateOutlinedIcon />}
-                            </div>
-                        </Tooltip>
+                        <ImagePicker
+                            toolTip="Pick avatar"
+                            onChange={setAvatarInput}
+                            value={avatarInput}
+                            className={styles.avatar}
+                        />
                         <CssTextField
                             label="Name"
                             value={nameInput}

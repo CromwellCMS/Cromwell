@@ -72,6 +72,8 @@ export class AuthController {
     })
     @Get('user-info')
     async getUserInfo(@Request() request: TRequestWithUser): Promise<UserDto | undefined> {
+        if (!request.user?.id)
+            throw new UnauthorizedException('user.id is not set for the request');
 
         const user = await this.authService.getUserById(request.user?.id);
         if (user) {

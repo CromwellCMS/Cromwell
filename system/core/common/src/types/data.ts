@@ -95,10 +95,10 @@ export type TPagedMeta = {
 export type TCmsConfig = {
     domain?: string;
     protocol?: 'http' | 'https';
-    apiPort: number;
-    adminPanelPort: number;
-    frontendPort: number;
-    managerPort: number;
+    apiPort?: number;
+    adminPanelPort?: number;
+    frontendPort?: number;
+    managerPort?: number;
     defaultSettings?: TCmsEntityCore;
     pm?: 'yarn' | 'cromwella';
     watchPoll?: number;

@@ -144,7 +144,7 @@ class CRestAPIClient {
     }
 
     public setUpCms = async (): Promise<boolean | undefined> => {
-        return this.post(`cms/set-up`);
+        return this.post(`cms/set-up`, {});
     }
 
     public updateCmsConfig = async (input: TCmsEntityInput): Promise<TCmsSettings | undefined> => {

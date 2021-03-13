@@ -1,21 +1,12 @@
-import { TCmsSettings, TOrder, TOrderInput, TCurrency, TCmsEntityInput } from '@cromwell/core';
-import { getCStore, getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, Grid, IconButton, TextField, Select, MenuItem } from '@material-ui/core';
-import {
-    ArrowBack as ArrowBackIcon,
-    DeleteForever as DeleteForeverIcon,
-    WarningRounded as WarningRoundedIcon,
-} from '@material-ui/icons';
-import { Autocomplete, Skeleton } from '@material-ui/lab';
+import { TCmsSettings } from '@cromwell/core';
+import { getRestAPIClient } from '@cromwell/core-frontend';
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
-import NumberFormat from 'react-number-format';
-import { Link, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
-import { orderStatuses } from '../../constants/order';
+import { launguages } from '../../constants/launguages';
+import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { timezones } from '../../constants/timezones';
-
-import { orderListPageInfo, productPageInfo } from '../../constants/PageInfos';
 import styles from './Settings.module.scss';
 
 const SettingsPage = () => {
@@ -80,32 +71,76 @@ const SettingsPage = () => {
                 <div></div>
                 <Button
                     color="primary"
+                    variant="contained"
                     onClick={saveConfig}
                 >Save</Button>
             </div>
             <div className={styles.list}>
                 {!isLoading && settings && (
                     <>
-                        <Select
-                            className={styles.field}
-                            value={settings.timezone ?? 0}
-                            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                                changeSettigns('timezone', parseInt(event.target.value as string));
-                            }}
-                        >
-                            {timezones.map(timezone => (
-                                <MenuItem value={timezone.value} key={timezone.value}>{timezone.text}</MenuItem>
-                            ))}
-                        </Select>
-                        <TextField
-                            value={settings.language ?? ''}
-                            onChange={handleTextFieldChange('language')}
+                        <FormControl className={styles.field}>
+                            <InputLabel>Timezone</InputLabel>
+                            <Select
+                                value={settings.timezone ?? 0}
+                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                                    changeSettigns('timezone', parseInt(event.target.value as string));
+                                }}
+                            >
+                                {timezones.map(timezone => (
+                                    <MenuItem value={timezone.value} key={timezone.value}>{timezone.text}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <FormControl className={styles.field}>
+                            <InputLabel>Language</InputLabel>
+                            <Select
+                                className={styles.field}
+                                value={settings.language ?? 'en'}
+                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                                    changeSettigns('language', event.target.value);
+                                }}
+                            >
+                                {launguages.map(lang => (
+                                    <MenuItem value={lang.code} key={lang.code}>{lang.name}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                        <ImagePicker
+                            label="Logo"
+                            onChange={(val) => changeSettigns('logo', val)}
+                            value={settings.logo}
+                            className={styles.imageField}
+                            backgroundSize='contain'
+                            width="110px"
+                            height="70px"
                         />
-                        <p>currencies</p>
-                        <p>favicon</p>
-                        <p>logo</p>
-                        <p>code injection</p>
-                        <p>defaultPageSize</p>
+                        <ImagePicker
+                            label="Favicon"
+                            onChange={(val) => changeSettigns('favicon', val)}
+                            value={settings.favicon}
+                            className={styles.imageField}
+                        />
+                        <h3 className={styles.field} >Code injection</h3>
+                        <TextField
+                            label="Header Html"
+                            multiline
+                            rows={4}
+                            value={settings.headerHtml ?? ''}
+                            onChange={handleTextFieldChange('headerHtml')}
+                            variant="outlined"
+                            className={styles.field}
+                        />
+                        <TextField
+                            label="Footer Html"
+                            multiline
+                            rows={4}
+                            value={settings.footerHtml ?? ''}
+                            onChange={handleTextFieldChange('footerHtml')}
+                            variant="outlined"
+                            className={styles.field}
+                        />
+                        {/* <p>currencies</p>
+                        <p>defaultPageSize</p> */}
                     </>
                 )}
             </div>

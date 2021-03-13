@@ -10,7 +10,7 @@ Includes:
 
 
 ## Prerequisites
-- Node.js v12 or above
+- Node.js v12
 
 ```sh
 $ npm i @cromwell/cms
