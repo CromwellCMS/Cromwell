@@ -59,14 +59,6 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async savePageConfig(@Body() input: PageConfigDto): Promise<boolean> {
         logger.log('ThemeController::savePageConfig');
-        if (typeof input === 'string') {
-            try {
-                input = JSON.parse(input);
-            } catch (e) {
-                serverLogFor('errors-only', 'ThemeController::savePageConfig: invalid PageConfig', 'Error');
-            }
-        }
-
         if (input && typeof input === 'object') {
             return await this.themeService.saveUserPageConfig(input);
         }

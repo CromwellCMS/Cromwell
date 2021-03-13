@@ -1,19 +1,19 @@
 import { getBlockInstance, TOrder, TOrderFilter, TPagedParams } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, Tooltip, TextField } from '@material-ui/core';
+import { Checkbox, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { Delete as DeleteIcon } from '@material-ui/icons';
-import React, { useEffect, useRef, useState } from 'react';
 import { Autocomplete } from '@material-ui/lab';
-import { debounce } from 'throttle-debounce';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
+import { debounce } from 'throttle-debounce';
 
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
-import { orderStatuses } from '../../constants/order';
 import Pagination from '../../components/pagination/Pagination';
 import { listPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
+import { orderStatuses } from '../../constants/order';
 import {
     countSelectedItems,
     getSelectedInput,
@@ -23,8 +23,8 @@ import {
 } from '../../redux/helpers';
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
-import OrderListItem from './OrderListItem';
 import styles from './OrderList.module.scss';
+import OrderListItem from './OrderListItem';
 
 export type ListItemProps = {
     handleDeleteBtnClick: (id: string) => void;

@@ -1,17 +1,20 @@
 import { TOrder, TOrderInput, TStoreListItem } from '@cromwell/core';
-import { getGraphQLClient, getCStore } from '@cromwell/core-frontend';
-import { Button, TextField, IconButton, Grid } from '@material-ui/core';
-import { Autocomplete } from '@material-ui/lab';
+import { getCStore, getGraphQLClient } from '@cromwell/core-frontend';
+import { Button, Grid, IconButton, TextField } from '@material-ui/core';
+import {
+    ArrowBack as ArrowBackIcon,
+    DeleteForever as DeleteForeverIcon,
+    WarningRounded as WarningRoundedIcon,
+} from '@material-ui/icons';
+import { Autocomplete, Skeleton } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { orderListPageInfo, productPageInfo } from '../../constants/PageInfos';
-import { DeleteForever as DeleteForeverIcon, ExpandMore as ExpandMoreIcon, WarningRounded as WarningRoundedIcon } from '@material-ui/icons';
-import { toast } from '../../components/toast/toast';
-import styles from './Order.module.scss';
-import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
-import { Skeleton } from '@material-ui/lab';
 import NumberFormat from 'react-number-format';
+import { Link, useParams } from 'react-router-dom';
+
+import { toast } from '../../components/toast/toast';
 import { orderStatuses } from '../../constants/order';
+import { orderListPageInfo, productPageInfo } from '../../constants/PageInfos';
+import styles from './Order.module.scss';
 
 const OrderPage = () => {
     const { id: orderId } = useParams<{ id: string }>();

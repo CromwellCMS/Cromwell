@@ -1,5 +1,5 @@
-import { getStoreItem, setStoreItem, TCmsConfig, TCmsEntity, TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
-import { getNodeModuleDir, readCMSConfig, serverLogFor, CmsEntity, getLogger } from '@cromwell/core-backend';
+import { getStoreItem, setStoreItem, TCmsConfig, TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
+import { CmsEntity, getLogger, getNodeModuleDir, readCMSConfig, serverLogFor } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
@@ -7,6 +7,8 @@ import stream from 'stream';
 import { getCustomRepository } from 'typeorm';
 import * as util from 'util';
 
+import { CmsConfigDto } from '../dto/cms-config.dto';
+import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { GenericCms } from '../helpers/genericEntities';
 
 const logger = getLogger('detailed');
@@ -144,6 +146,17 @@ export class CmsService {
         }
 
         return true;
+    }
+
+    public async updateCmsConfig(input: CmsConfigUpdateDto): Promise<CmsConfigDto | undefined> {
+        const entity = await getCmsEntity();
+        if (!entity) throw new Error('!entity');
+
+        for (const key of Object.keys(input)) {
+            entity[key] = input[key];
+        }
+        await entity.save();
+        return this.getSettings();
     }
 
 }

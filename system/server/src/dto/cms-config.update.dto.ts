@@ -1,28 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TCmsSettings, TCurrency } from '@cromwell/core';
+import { TCmsSettings, TCurrency, TCmsEntityInput } from '@cromwell/core';
 import { CurrencyDto } from './currency.dto';
 
-export class CmsConfigDto implements TCmsSettings {
-    @ApiProperty()
-    domain?: string;
-
+export class CmsConfigUpdateDto implements TCmsEntityInput {
     @ApiProperty()
     protocol?: 'http' | 'https';
-
-    @ApiProperty()
-    apiPort?: number;
-
-    @ApiProperty()
-    adminPanelPort?: number;
-
-    @ApiProperty()
-    frontendPort?: number;
-
-    @ApiProperty()
-    managerPort?: number;
-
-    @ApiProperty()
-    themeName?: string;
 
     @ApiProperty()
     defaultPageSize?: number;

@@ -1,8 +1,7 @@
 ## CMS Development & Installation
 
 ### Prerequisites
-- Node.js v12 or above
-- yarn
+- Node.js v12
 
 ### Install
 
@@ -15,7 +14,7 @@ You don't need to run npm install, all installation handled by startup.js script
 ## Services
 
 Cromwell CMS follows microservice architecture.  
-Below listed core services with default settings (ports at localhost address can be configured in system/cmsconfig.json):
+Below listed core services with default settings (ports at localhost address can be configured in cmsconfig.json):
 
 ### 1. Server
 - Path - system/server
@@ -46,7 +45,7 @@ Uses dedicated server to serve Admin Panel files and public media files.
 - Path - system/utils
 - NPM Module - @cromwell/utils
 
-Modules bundler / compiler / package manager with built-in cli
+Modules bundler / compiler / package manager
 > https://github.com/CromwellCMS/Cromwell/tree/master/system/utils#readme
 
 ### 5. Manager

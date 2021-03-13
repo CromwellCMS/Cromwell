@@ -3,13 +3,14 @@ import { getRestAPIClient } from '@cromwell/core-frontend';
 import { IconButton, MenuItem, Popover, Tooltip } from '@material-ui/core';
 import {
     AccountCircle as AccountCircleIcon,
+    AccountCircleOutlined as AccountCircleOutlinedIcon,
     ExitToApp as ExitToAppIcon,
     MoreVertOutlined as MoreVertOutlinedIcon,
     Settings as SettingsIcon,
+    HelpOutline as HelpOutlineIcon,
 } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-
 import { loginPageInfo, sideBarLinks } from '../../constants/PageInfos';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Sidebar.module.scss';
@@ -99,8 +100,12 @@ function Sidebar() {
                     >
                         <div>
                             <MenuItem className={styles.optionsItem}>
-                                <SettingsIcon />
-                                <p>Account settings</p>
+                                <AccountCircleOutlinedIcon />
+                                <p>Your profile</p>
+                            </MenuItem>
+                            <MenuItem className={styles.optionsItem}>
+                                <HelpOutlineIcon />
+                                <p>Support center</p>
                             </MenuItem>
                             <MenuItem onClick={handleLogout} className={styles.optionsItem}>
                                 <ExitToAppIcon />

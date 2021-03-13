@@ -17,7 +17,6 @@ export class CurrencySettings implements TCurrency {
 
     @Field(type => Number, { nullable: true })
     ratio?: number;
-
 }
 
 @Entity('cms')
@@ -35,9 +34,32 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     protocol?: "http" | "https";
 
     @Field(type => Number, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "integer", nullable: true })
     defaultPageSize?: number;
 
+    @Field(type => Number, { nullable: true })
+    @Column({ type: "integer", nullable: true })
+    timezone?: number;
+
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    language?: string;
+
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    favicon?: string;
+
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    logo?: string;
+
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    headerHtml?: string;
+
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    footerHtml?: string;
 
     @Field(type => [CurrencySettings])
     public get currencies(): TCurrency[] | undefined {

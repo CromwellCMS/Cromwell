@@ -6,7 +6,7 @@
     background: #333;
     padding: 10px 7px;
     background: linear-gradient(144deg, rgba(27, 0, 75, 1) 0%, rgba(52, 0, 46, 1) 100%);
-
+    overflow: auto;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -104,7 +104,7 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-
+        margin-top: 15px;
         * {
             color: #fff;
         }
