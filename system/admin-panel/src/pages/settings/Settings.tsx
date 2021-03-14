@@ -120,7 +120,7 @@ const SettingsPage = () => {
                             value={settings.favicon}
                             className={styles.imageField}
                         />
-                        <h3 className={styles.field} >Code injection</h3>
+                        <h3 className={styles.subheader} >Code injection</h3>
                         <TextField
                             label="Header Html"
                             multiline

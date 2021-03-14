@@ -130,6 +130,7 @@ const AttributeItem = (props: { data: TAttribute }) => {
             {attribute.current && <CheckList
                 title={<TextField
                     size="small"
+                    placeholder="Attribute title"
                     style={{ marginRight: '15px' }}
                     defaultValue={attribute.current.key}
                     onChange={handleAttributeNameChange}
@@ -141,7 +142,7 @@ const AttributeItem = (props: { data: TAttribute }) => {
                 checked={checkedValues}
                 setChecked={handleCheckedValuesChange}
                 fullWidthToggle={false}
-                actions={<div style={{ marginLeft: 'auto' }}>
+                actions={<div style={{ marginLeft: 'auto', display: 'flex' }}>
                     <Tooltip title="Add new value">
                         <IconButton onClick={handleAddValue}><AddCircleOutlineIcon /></IconButton>
                     </Tooltip>

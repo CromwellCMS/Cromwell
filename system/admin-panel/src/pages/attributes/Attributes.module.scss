@@ -5,7 +5,18 @@
     width: 100%;
 }
 
+.list {
+    width: 100%;
+}
+
 .listItem {
     @include paper;
-    margin-bottom: 20px;
+}
+
+.header {
+    @include paper;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+    padding: 10px;
 }
