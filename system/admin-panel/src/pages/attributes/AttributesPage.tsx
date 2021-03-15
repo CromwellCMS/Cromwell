@@ -1,6 +1,6 @@
 import { TAttribute } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button } from '@material-ui/core';
+import { Button, GridList, GridListTile } from '@material-ui/core';
 import { AddCircleOutline as AddCircleOutlineIcon } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -34,7 +34,7 @@ export default function AttributesPage() {
     }, []);
 
     const handleAddAttribute = () => {
-        attributes.current.push({
+        attributes.current.unshift({
             key: '',
             values: [],
             type: 'radio'
@@ -44,27 +44,36 @@ export default function AttributesPage() {
 
     return (
         <div className={styles.Attributes}>
-            {attributes.current && attributes.current.map(attribute => (
-                <div className={styles.listItem} key={attribute.id}>
-                    <AttributeItem data={attribute} />
-                </div>
-            ))}
-            {isLoading && Array(3).fill(1).map((it, index) => {
-                return (
-                    <Skeleton key={index} variant="rect" height="315px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
-                )
-            })}
-            {!isLoading && (
-                <div style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '15px' }}>
-                    <Button
-                        onClick={handleAddAttribute}
-                        variant="contained"
-                        color="primary"
-                        size="large"
-                        startIcon={<AddCircleOutlineIcon />}
-                    >Add attribute</Button>
-                </div>
-            )}
+            <div className={styles.header}>
+                <div></div>
+                <Button
+                    onClick={handleAddAttribute}
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    startIcon={<AddCircleOutlineIcon />}
+                >Create attribute</Button>
+            </div>
+            <GridList
+                className={styles.list}
+                cellHeight={315}
+                spacing={15}
+            >
+                {attributes.current && attributes.current.map(attribute => (
+                    <GridListTile key={attribute.id}>
+                        <div className={styles.listItem} >
+                            <AttributeItem data={attribute} />
+                        </div>
+                    </GridListTile>
+                ))}
+                {isLoading && Array(3).fill(1).map((it, index) => {
+                    return (
+                        <GridListTile className={styles.listItem} key={index}>
+                            <Skeleton key={index} variant="rect" height="315px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
+                        </GridListTile>
+                    )
+                })}
+            </GridList>
         </div>
     )
 }

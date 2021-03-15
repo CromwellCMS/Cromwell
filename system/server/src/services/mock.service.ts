@@ -352,20 +352,32 @@ export class MockService {
                 fullName: 'Creed',
                 email: 'Creed@example.com',
                 password: '12345',
-                avatar: ''
+                role: 'author',
             },
             {
                 fullName: 'Pam',
                 email: 'Pam@example.com',
                 password: 'pampampam!',
-                avatar: ''
+                role: 'author',
             },
             {
                 fullName: 'Michael',
                 email: 'Michael@example.com',
                 password: 'qwerty',
-                avatar: ''
-            }
+                role: 'author',
+            },
+            {
+                fullName: 'Kevin',
+                email: 'Kevin@example.com',
+                password: '123',
+                role: 'customer',
+            },
+            {
+                fullName: 'Dwight',
+                email: 'Dwight@example.com',
+                password: 'qwerty',
+                role: 'admin',
+            },
         ]
 
         for (let user of users) {
@@ -382,7 +394,11 @@ export class MockService {
             await this.postRepo.deletePost(item.id);
         }
 
-        const users = await this.userRepo.find();
+        const users = await this.userRepo.find({
+            where: {
+                role: 'author'
+            }
+        });
 
         const images = [
             '/themes/@cromwell/theme-store/product.jpg',

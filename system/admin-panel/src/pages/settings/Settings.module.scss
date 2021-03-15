@@ -2,7 +2,9 @@
 
 .SettingsPage {
     padding: 15px;
-
+    display: flex;
+    flex-direction: column;
+    
     .header {
         @include paper;
         display: flex;
@@ -28,5 +30,11 @@
     .imageField {
         @extend .field;
         border-bottom: 1px solid #999;
+    }
+
+    .subheader {
+        @extend .field;
+        margin: 15px 0;
+        font-weight: 500;
     }
 }

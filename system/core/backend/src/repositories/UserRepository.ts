@@ -1,11 +1,13 @@
-import { logFor, TPagedList, TPagedParams, TUpdateUser, TCreateUser } from '@cromwell/core';
-import { EntityRepository } from 'typeorm';
+import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, TUser } from '@cromwell/core';
 import bcrypt from 'bcrypt';
+import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
 
+import { UserFilterInput } from '../entities/filter/UserFilterInput';
 import { User } from '../entities/User';
-import { handleBaseInput, checkEntitySlug } from './BaseQueries';
-import { BaseRepository } from './BaseRepository';
 import { getLogger } from '../helpers/constants';
+import { PagedParamsInput } from './../inputs/PagedParamsInput';
+import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
+import { BaseRepository } from './BaseRepository';
 
 const logger = getLogger('detailed');
 const bcryptSaltRounds = 10;
@@ -47,6 +49,9 @@ export class UserRepository extends BaseRepository<User> {
         user.fullName = userInput.fullName;
         user.email = userInput.email;
         user.avatar = userInput.avatar;
+        user.bio = userInput.bio;
+        user.phone = userInput.phone;
+        user.address = userInput.address;
     }
 
     async createUser(createUser: TCreateUser): Promise<User> {
@@ -98,5 +103,63 @@ export class UserRepository extends BaseRepository<User> {
         return true;
 
     }
+
+    applyOrderFilter(qb: SelectQueryBuilder<TUser> | DeleteQueryBuilder<TUser>, filterParams?: UserFilterInput) {
+        // Search by role
+        if (filterParams?.role) {
+            const query = `"${this.metadata.tablePath}".role = :role`;
+            qb.andWhere(query, { role: filterParams.role });
+        }
+
+        // Search by fullName
+        if (filterParams?.fullName && filterParams.fullName !== '') {
+            const fullNameSearch = `%${filterParams.fullName}%`;
+            const query = `"${this.metadata.tablePath}".fullName LIKE :fullNameSearch`;
+            qb.andWhere(query, { fullNameSearch });
+        }
+
+        // Search by email
+        if (filterParams?.email && filterParams.email !== '') {
+            const emailSearch = `%${filterParams.email}%`;
+            const query = `"${this.metadata.tablePath}".email LIKE :emailSearch`;
+            qb.andWhere(query, { emailSearch });
+        }
+
+        // Search by phone
+        if (filterParams?.phone && filterParams.phone !== '') {
+            const phoneSearch = `%${filterParams.phone}%`;
+            const query = `"${this.metadata.tablePath}".phone LIKE :phoneSearch`;
+            qb.andWhere(query, { phoneSearch });
+        }
+
+        // Search by address
+        if (filterParams?.address && filterParams.address !== '') {
+            const addressSearch = `%${filterParams.address}%`;
+            const query = `"${this.metadata.tablePath}".address LIKE :addressSearch`;
+            qb.andWhere(query, { addressSearch });
+        }
+    }
+
+    async getFilteredUsers(pagedParams?: PagedParamsInput<TUser>, filterParams?: UserFilterInput): Promise<TPagedList<TUser>> {
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+        this.applyOrderFilter(qb, filterParams);
+        return await getPaged(qb, this.metadata.tablePath, pagedParams);
+    }
+
+    async deleteManyFilteredUsers(input: TDeleteManyInput, filterParams?: UserFilterInput): Promise<boolean | undefined> {
+        const qb = this.createQueryBuilder()
+            .delete().from<User>(this.metadata.tablePath);
+
+        this.applyOrderFilter(qb, filterParams);
+        this.applyDeletMany(qb, input);
+        try {
+            await qb.execute();
+        } catch (e) {
+            console.error(e)
+        }
+        return true;
+    }
+
 
 }

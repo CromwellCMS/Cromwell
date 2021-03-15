@@ -1,5 +1,5 @@
 import { TUser, GraphQLPaths, TPagedList } from '@cromwell/core';
-import { User, CreateUser, UpdateUser, UserRepository, PagedUser, PagedParamsInput } from '@cromwell/core-backend';
+import { User, CreateUser, UpdateUser, UserRepository, PagedUser, PagedParamsInput, UserFilterInput, DeleteManyInput } from '@cromwell/core-backend';
 import { Arg, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
@@ -8,6 +8,8 @@ const getManyPath = GraphQLPaths.User.getMany;
 const createPath = GraphQLPaths.User.create;
 const updatePath = GraphQLPaths.User.update;
 const deletePath = GraphQLPaths.User.delete;
+const getFilteredPath = GraphQLPaths.User.getFiltered;
+const deleteManyFilteredPath = GraphQLPaths.User.deleteManyFiltered;
 
 @Resolver(User)
 export class UserResolver {
@@ -38,6 +40,22 @@ export class UserResolver {
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         return await this.repository.deleteUser(id);
+    }
+
+    @Query(() => PagedUser)
+    async [getFilteredPath](
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TUser>,
+        @Arg("filterParams", { nullable: true }) filterParams?: UserFilterInput,
+    ): Promise<TPagedList<TUser> | undefined> {
+        return this.repository.getFilteredUsers(pagedParams, filterParams);
+    }
+
+    @Mutation(() => Boolean)
+    async [deleteManyFilteredPath](
+        @Arg("input") input: DeleteManyInput,
+        @Arg("filterParams", { nullable: true }) filterParams?: UserFilterInput,
+    ): Promise<boolean | undefined> {
+        return this.repository.deleteManyFilteredUsers(input, filterParams);
     }
 
 }

@@ -9,6 +9,7 @@ import {
     LibraryBooks as LibraryBooksIcon,
     ShoppingBasket as ShoppingBasketIcon,
     Settings as SettingsIcon,
+    PeopleAlt as PeopleAltIcon,
 } from '@material-ui/icons';
 import React from 'react';
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
@@ -29,6 +30,8 @@ import WelcomePage from '../pages/welcome/Welcome';
 import OrderListPage from '../pages/orderList/OrderList';
 import OrderPage from '../pages/order/Order';
 import SettingsPage from '../pages/settings/Settings';
+import UserList from '../pages/userList/UserList';
+
 
 export type SidebarLinkType = {
     id: string;
@@ -148,6 +151,12 @@ export const settingsPageInfo: PageInfo = {
     component: SettingsPage,
 };
 
+export const userListPageInfo: PageInfo = {
+    name: 'User List',
+    route: '/user-list',
+    component: UserList,
+};
+
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
     homePageInfo,
@@ -168,6 +177,7 @@ export const pageInfos: PageInfo[] = [
     welcomePageInfo,
     orderPageInfo,
     settingsPageInfo,
+    userListPageInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
@@ -236,6 +246,12 @@ export const sideBarLinks: SidebarLinkType[] = [
         title: 'Plugins',
         route: pluginListPageInfo.route,
         icon: React.createElement(PowerIcon)
+    },
+    {
+        id: 'users_page',
+        title: 'Users',
+        route: userListPageInfo.route,
+        icon: React.createElement(PeopleAltIcon)
     },
     {
         id: 'settings_page',
