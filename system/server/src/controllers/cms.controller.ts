@@ -133,6 +133,7 @@ export class CmsController {
         return (await fs.readdir(fullPath)).filter(dir => !publicSystemDirs.includes(dir));
     }
 
+
     @Get('create-public-dir')
     @UseGuards(JwtAuthGuard)
     @ApiOperation({
@@ -154,6 +155,7 @@ export class CmsController {
         return true;
     }
 
+    
     @Get('remove-public-dir')
     @UseGuards(JwtAuthGuard)
     @ApiOperation({
@@ -174,6 +176,7 @@ export class CmsController {
         await fs.remove(fullPath);
         return true;
     }
+
 
     @Post('upload-public-file')
     @UseGuards(JwtAuthGuard)
@@ -213,6 +216,7 @@ export class CmsController {
 
         return await this.cmsService.installCms();
     }
+
 
     @Post('update-config')
     @UseGuards(JwtAuthGuard)

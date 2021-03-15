@@ -19,7 +19,10 @@ export class CreateUser extends BasePageInput implements TCreateUser {
     avatar?: string;
 
     @Field(() => String, { nullable: true })
-    location?: string;
+    address?: string;
+
+    @Field(() => String, { nullable: true })
+    phone?: string;
 
     @Field(() => String, { nullable: true })
     bio?: string;

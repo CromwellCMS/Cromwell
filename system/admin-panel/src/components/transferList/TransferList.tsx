@@ -179,7 +179,7 @@ export const CheckList = (props: {
                 {props.actions}
             </div>
             <Divider />
-            <List className={classes.list} dense component="div" role="list">
+            <List className={classes.list} dense role="list">
                 {items.map((value: string, index: number) => {
                     const labelId = `transfer-list-all-item-${value}-label`;
 
@@ -205,8 +205,8 @@ export const CheckList = (props: {
                             {props.itemComp ? (
                                 <props.itemComp value={value} />
                             ) : (
-                                    <ListItemText id={labelId} primary={value} />
-                                )}
+                                <ListItemText id={labelId} primary={value} />
+                            )}
                         </ListItem>
                     );
                 })}

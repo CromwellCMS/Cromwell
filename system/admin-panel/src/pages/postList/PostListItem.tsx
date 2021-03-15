@@ -50,7 +50,9 @@ const PostListItem = (props: TPropsType) => {
                         ></div>
                         <div className={styles.itemMainInfo}>
                             <p className={styles.itemTitle}>{props.data?.title}</p>
-                            <p className={styles.itemAuthor}>by <span style={{ fontWeight: 500 }}>{props.data?.author?.fullName}</span></p>
+                            {props.data?.author?.fullName && (
+                                <p className={styles.itemAuthor}>by <span style={{ fontWeight: 500 }}>{props.data.author.fullName}</span></p>
+                            )}
                         </div>
                     </Grid>
                     <Grid item xs={2} className={styles.itemSubInfo}>

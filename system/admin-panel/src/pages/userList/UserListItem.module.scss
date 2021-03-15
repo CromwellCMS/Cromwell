@@ -1,0 +1,57 @@
+@import "../../styles/common.module.scss";
+
+.listItem {
+    @include paper;
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+    transition: 0.3s;
+    border: 1px solid transparent;
+    border-bottom: 1px solid #ddd;
+
+    .itemMain {
+        display: flex;
+    }
+
+    .avatar {
+        @include bckgrCover;
+        height: 60px;
+        width: 60px;
+        border-radius: 100%;
+        overflow: hidden;
+        margin-right: 10px;
+    }
+
+    .name {
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+
+    .email {
+        font-size: 12px;
+    }
+
+    .itemBlock {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: flex-start;
+    }
+
+    .role {
+        font-weight: 500;
+        border: 1px solid #666;
+        display: flex;
+        padding: 3px 6px;
+        border-radius: 5px;
+    }
+
+    .listItemActions {
+        display: flex;
+        justify-content: flex-end;
+    }
+}
+
+.listItem:hover {
+    background-color: #f4f4f4;
+}

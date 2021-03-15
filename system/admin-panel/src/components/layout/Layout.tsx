@@ -11,7 +11,7 @@ import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
 import FileManager from '../fileManager/FileManager';
 import LoadBox from '../loadBox/LoadBox';
 import Sidebar from '../sidebar/Sidebar';
-import classes from './Layout.module.scss';
+import styles from './Layout.module.scss';
 
 const theme = createMuiTheme({
   palette: {
@@ -31,12 +31,12 @@ const theme = createMuiTheme({
 function Layout() {
   return (
     <ThemeProvider theme={theme}>
-      <div className={classes.Layout}>
+      <div className={styles.Layout}>
         <BrowserRouter>
-          <div className={classes.sidebar}>
+          <div className={styles.sidebar}>
             <Sidebar />
           </div>
-          <div className={classes.main}>
+          <div className={styles.main}>
             <Switch>
               {pageInfos.map(page => {
                 return (
@@ -59,7 +59,7 @@ function Layout() {
                 <Page404 />
               </Route>
             </Switch>
-            <div style={{ fontSize: '8px' }}>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
+            <div className={styles.iconsCredits} >Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
           </div>
         </BrowserRouter>
         <ToastContainer />

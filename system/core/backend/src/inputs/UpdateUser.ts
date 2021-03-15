@@ -15,7 +15,10 @@ export class UpdateUser extends BasePageInput implements TUpdateUser {
     avatar?: string;
 
     @Field(() => String, { nullable: true })
-    location?: string;
+    address?: string;
+
+    @Field(() => String, { nullable: true })
+    phone?: string;
 
     @Field(() => String, { nullable: true })
     bio?: string;

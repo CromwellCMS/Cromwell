@@ -37,6 +37,7 @@ import {
     TOrderInput,
     TDeleteManyInput,
     TOrderFilter,
+    TUserFilter,
 } from '@cromwell/core';
 
 class CGraphQLClient {
@@ -1183,6 +1184,10 @@ class CGraphQLClient {
             fullName
             email
             avatar
+            bio
+            phone
+            address
+            role
         }
     `;
 
@@ -1304,6 +1309,57 @@ class CGraphQLClient {
             `,
             variables: {
                 id,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+
+    public getFilteredUsers = async ({ pagedParams, filterParams, customFragment, customFragmentName }: {
+        pagedParams?: TPagedParams<TUser>;
+        filterParams?: TUserFilter;
+        customFragment?: DocumentNode;
+        customFragmentName?: string;
+    }): Promise<TPagedList<TUser>> => {
+        const path = GraphQLPaths.User.getFiltered;
+
+        const fragment = customFragment ?? this.UserFragment;
+        const fragmentName = customFragmentName ?? 'UserFragment';
+
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetFilteredUsers($pagedParams: PagedParamsInput, $filterParams: UserFilterInput) {
+                    ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...${fragmentName}
+                        }
+                    }
+                }
+                ${fragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                pagedParams: pagedParams ?? {},
+                filterParams,
+            }
+        })
+        return this.returnData(res, path);
+    }
+
+    public deleteManyFilteredUsers = async (input: TDeleteManyInput, filterParams?: TUserFilter) => {
+        const path = GraphQLPaths.User.deleteManyFiltered;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+                mutation coreDeleteManyFilteredUsers($input: DeleteManyInput!, $filterParams: UserFilterInput) {
+                    ${path}(input: $input, filterParams: $filterParams)
+                }
+            `,
+            variables: {
+                input,
+                filterParams
             }
         });
         return this.returnData(res, path);

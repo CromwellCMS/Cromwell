@@ -1,4 +1,4 @@
-import { TUser } from '@cromwell/core';
+import { TUser, TUserRole } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
 
@@ -22,15 +22,20 @@ export class User extends BasePageEntity implements TUser {
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    location?: string;
-
-    @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
     bio?: string;
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    role?: 'admin' | 'author' | 'customer';
+    role?: TUserRole;
+
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    address?: string;
+
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    phone?: string;
+
 
     @Column()
     password: string;

@@ -207,7 +207,6 @@ const PostList = (props: TPropsType) => {
                         size="small"
                         className={`${styles.filterItem} ${styles.authorSearch}`}
                         disabled={!users || users.length === 0}
-                        id="combo-box-demo"
                         options={users ?? []}
                         getOptionLabel={(option) => option.fullName}
                         style={{ width: 200 }}
