@@ -102,7 +102,7 @@ const OrderPage = () => {
                 await getOrderData();
                 toast.success('Saved!');
             } catch (e) {
-                toast.error('Falied to save');
+                toast.error('Failed to save');
                 console.error(e)
             }
         }

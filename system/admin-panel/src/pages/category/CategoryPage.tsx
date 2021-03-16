@@ -7,6 +7,7 @@ import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
+import ImagePicker from '../../components/imagePicker/ImagePicker';
 import Autocomplete from '../../components/autocomplete/Autocomplete';
 import { getFileManager } from '../../components/fileManager/helpers';
 import { toast } from '../../components/toast/toast';
@@ -18,24 +19,14 @@ export default function CategoryPage() {
     const { id: categoryId } = useParams<{ id: string }>();
     const client = getGraphQLClient();
     const [notFound, setNotFound] = useState(false);
-    const forceUpdate = useForceUpdate();
     const history = useHistory();
-    const categoryRef = useRef<TProductCategory | null>(null);
-    let category: TProductCategory | undefined = categoryRef.current;
+    const [category, setCategoryData] = useState<TProductCategory | undefined | null>(null);
     const editorId = 'category-description-editor';
     const quillEditor = useRef<Quill | null>(null);
     const [parentCategory, setParentCategory] = useState<TProductCategory | null>(null);
 
     const urlParams = new URLSearchParams(window.location.search);
     const parentIdParam = urlParams.get('parentId');
-
-    const setCategoryData = (data: TProductCategory) => {
-        if (!categoryRef.current) {
-            categoryRef.current = data;
-            category = data;
-        }
-        else Object.keys(data).forEach(key => { categoryRef.current[key] = data[key] });
-    }
 
     const getProductCategory = async (id: string) => {
         let categoryData: TProductCategory | undefined;
@@ -83,11 +74,15 @@ export default function CategoryPage() {
     }
 
     const init = async () => {
+        let categoryData;
         if (categoryId && categoryId !== 'new') {
-            const categoryData = await getProductCategory(categoryId);
+            try {
+                categoryData = await getProductCategory(categoryId);
+            } catch (e) {
+                console.error(e);
+            }
             if (categoryData?.id) {
                 setCategoryData(categoryData);
-                forceUpdate();
             } else setNotFound(true);
 
             if (categoryData?.parent?.id) {
@@ -96,7 +91,6 @@ export default function CategoryPage() {
 
         } else if (categoryId === 'new') {
             setCategoryData({} as any);
-            forceUpdate();
         }
 
         if (parentIdParam) {
@@ -105,8 +99,8 @@ export default function CategoryPage() {
 
         let postContent;
         try {
-            if (categoryRef.current?.descriptionDelta)
-                postContent = JSON.parse(categoryRef.current.descriptionDelta);
+            if (categoryData?.descriptionDelta)
+                postContent = JSON.parse(categoryData.descriptionDelta);
         } catch (e) {
             console.error(e);
         }
@@ -123,25 +117,11 @@ export default function CategoryPage() {
             const cat = Object.assign({}, category);
             (cat[prop] as any) = val;
             setCategoryData(cat);
-            forceUpdate();
-        }
-    }
-
-    const handleChangeImage = async () => {
-        const photoPath = await getFileManager()?.getPhoto();
-        if (photoPath) {
-            const cat = Object.assign({}, category);
-            cat.mainImage = photoPath;
-            setCategoryData(cat);
-            forceUpdate();
         }
     }
 
     const handleClearImage = async () => {
-        const cat = Object.assign({}, category);
-        cat.mainImage = undefined;
-        setCategoryData(cat);
-        forceUpdate();
+        handleInputChange('mainImage', undefined)
     }
 
     const handleSearchRequest = async (text: string, params: TPagedParams<TProductCategory>) => {
@@ -154,22 +134,23 @@ export default function CategoryPage() {
     }
 
     const handleParentCategoryChange = (data: TProductCategory | null) => {
+        if (data && category && data.id === category.id) return;
         const cat = Object.assign({}, category);
         cat.parent = data ?? undefined;
         setCategoryData(cat);
     }
 
     const getInput = (): TProductCategoryInput => ({
-        slug: categoryRef.current.slug,
-        pageTitle: categoryRef.current.pageTitle,
-        pageDescription: categoryRef.current.pageDescription,
-        name: categoryRef.current.name,
-        mainImage: categoryRef.current.mainImage,
-        isEnabled: categoryRef.current.isEnabled,
+        slug: category.slug,
+        pageTitle: category.pageTitle,
+        pageDescription: category.pageDescription,
+        name: category.name,
+        mainImage: category.mainImage,
+        isEnabled: category.isEnabled,
         description: getQuillHTML(quillEditor.current, `#${editorId}`),
         descriptionDelta: JSON.stringify(quillEditor.current.getContents()),
-        parentId: categoryRef.current.parent?.id,
-        childIds: categoryRef.current.children?.map(child => child.id),
+        parentId: category.parent?.id,
+        childIds: category.children?.map(child => child.id),
     });
 
     const handleSave = async () => {
@@ -184,11 +165,10 @@ export default function CategoryPage() {
                 const categoryData = await getProductCategory(newData.id);
                 if (categoryData?.id) {
                     setCategoryData(categoryData);
-                    forceUpdate();
                 }
 
             } catch (e) {
-                toast.error('Falied to create category');
+                toast.error('Failed to create category');
                 console.error(e)
             }
 
@@ -198,11 +178,10 @@ export default function CategoryPage() {
                 const categoryData = await getProductCategory(category.id);
                 if (categoryData?.id) {
                     setCategoryData(categoryData);
-                    forceUpdate();
                 }
                 toast.success('Saved!');
             } catch (e) {
-                toast.error('Falied to save');
+                toast.error('Failed to save');
                 console.error(e)
             }
         }
@@ -248,27 +227,15 @@ export default function CategoryPage() {
                     defaultValue={parentCategory}
                     label={"Parent category"}
                 />
-                <div className={styles.imageBox}
-                    onClick={handleChangeImage}
-                >
-                    <MenuItem style={{ padding: '0', borderRadius: '7px' }}>
-                        {category?.mainImage ? (
-                            <div
-                                style={{ backgroundImage: `url(${category?.mainImage})` }}
-                                className={styles.mainImage}></div>
-                        ) : (
-                            <WallpaperIcon
-                                style={{ opacity: '0.7' }}
-                            />
-                        )}
-                    </MenuItem>
-                    <p style={{ margin: '10px' }}>{category?.mainImage ?? <span style={{ opacity: '0.7' }}>No image</span>}</p>
-                    {category?.mainImage && (
-                        <IconButton onClick={(e) => { e.stopPropagation(); handleClearImage(); }}>
-                            <HighlightOffOutlined />
-                        </IconButton>
-                    )}
-                </div>
+                <ImagePicker
+                    placeholder="No image"
+                    onChange={(val) => {
+                        handleInputChange('mainImage', val)
+                    }}
+                    value={category?.mainImage}
+                    className={styles.imageBox}
+                    showRemove
+                />
                 <div className={styles.descriptionEditor}>
                     <div style={{ height: '300px' }} id={editorId}></div>
                 </div>
@@ -293,9 +260,4 @@ export default function CategoryPage() {
             </div>
         </div>
     );
-}
-
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
 }

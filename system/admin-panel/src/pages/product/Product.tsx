@@ -184,7 +184,7 @@ const ProductPage = () => {
                     toast.success('Updated product');
                     if (prod) setProdData(prod);
                 } catch (e) {
-                    toast.error('Falied to update');
+                    toast.error('Failed to update');
                     console.log(e);
                 }
             }

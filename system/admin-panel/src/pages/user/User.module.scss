@@ -1,8 +1,13 @@
 @import "../../styles/common.module.scss";
 
-.CategoryPage {
+.UserPage {
     position: relative;
     margin: 10px;
+
+    .container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
 
     .notFoundPage {
         display: flex;
@@ -17,6 +22,7 @@
     }
 
     .header {
+        @extend .container;
         @include paper;
         padding: 10px 20px;
         width: 100%;
@@ -26,41 +32,24 @@
     }
 
     .fields {
+        @extend .container;
         @include paper;
         padding: 20px;
         display: flex;
         flex-direction: column;
     }
 
-    .item {
-        margin-bottom: 20px;
+    .field {
+        margin-bottom: 15px;
     }
 
-    .textField {
-        @extend .item;
-    }
-
-    .descriptionEditor {
-        @extend .item;
-    }
-
-    .imageBox {
-        @extend .item;
+    .imageField {
+        @extend .field;
         border-bottom: 1px solid #999;
+        padding-bottom: 4px;
     }
 
-    .mainImage {
-        width: 60px;
-        height: 40px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
-    }
-
-    .closeBtn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        z-index: 3;
+    .image {
+        border-radius: 100%;
     }
 }

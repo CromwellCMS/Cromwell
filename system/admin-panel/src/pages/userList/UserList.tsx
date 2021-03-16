@@ -1,6 +1,6 @@
 import { getBlockInstance, TPagedParams, TUser, TUserFilter, TUserRole } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, FormControl, IconButton, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
+import { Checkbox, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
@@ -12,8 +12,9 @@ import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
 import { listPreloader } from '../../components/SkeletonPreloader';
-import { productPageInfo } from '../../constants/PageInfos';
 import { toast } from '../../components/toast/toast';
+import { userPageInfo } from '../../constants/PageInfos';
+import { userRoles } from '../../constants/roles';
 import {
     countSelectedItems,
     getSelectedInput,
@@ -126,7 +127,7 @@ const UserList = (props: TPropsType) => {
     });
 
     const handleCreateUser = () => {
-
+        history.push(`${userPageInfo.baseRoute}/new`);
     }
 
 
@@ -162,7 +163,7 @@ const UserList = (props: TPropsType) => {
                     <Autocomplete
                         size="small"
                         className={styles.filterItem}
-                        options={['admin', 'author', 'customer'] as TUserRole[]}
+                        options={userRoles}
                         getOptionLabel={(option) => option}
                         style={{ width: 150 }}
                         onChange={(event, newValue: TUserRole | null) => {

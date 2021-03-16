@@ -1,5 +1,10 @@
 @import "../../styles/common.module.scss";
 
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
 .PostList {
     display: flex;
     flex-direction: column;
@@ -20,12 +25,14 @@
 }
 
 .listHeader {
+    @extend .container;
     display: flex;
     background: #fff;
     margin-bottom: 13px;
     border-radius: 9px;
     align-items: center;
     justify-content: space-between;
+    width: 100%;
 }
 
 .filter {
@@ -40,6 +47,7 @@
 }
 
 .listWrapper {
+    @extend .container;
     min-height: 400px;
     height: 100%;
     width: 100%;

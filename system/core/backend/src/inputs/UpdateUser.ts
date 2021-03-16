@@ -1,5 +1,5 @@
 import { InputType, Field, Int } from "type-graphql";
-import { TUpdateUser } from '@cromwell/core';
+import { TUpdateUser, TUserRole } from '@cromwell/core';
 import { BasePageInput } from './BasePageInput';
 
 @InputType()
@@ -22,5 +22,8 @@ export class UpdateUser extends BasePageInput implements TUpdateUser {
 
     @Field(() => String, { nullable: true })
     bio?: string;
+
+    @Field(() => String, { nullable: true })
+    role?: TUserRole;
 }
 

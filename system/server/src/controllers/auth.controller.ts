@@ -78,7 +78,7 @@ export class AuthController {
         const user = await this.authService.getUserById(request.user?.id);
         if (user) {
             const userDto: UserDto = {
-                id: user.id,
+                id: user.id + '',
                 email: user.email,
                 avatar: user.avatar,
                 fullName: user.fullName,
