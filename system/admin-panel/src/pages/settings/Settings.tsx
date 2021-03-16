@@ -106,23 +106,25 @@ const SettingsPage = () => {
                             </Select>
                         </FormControl>
                         <ImagePicker
-                            label="Logo"
+                            placeholder="Logo"
                             onChange={(val) => changeSettigns('logo', val)}
                             value={settings.logo}
                             className={styles.imageField}
                             backgroundSize='contain'
                             width="110px"
                             height="70px"
+                            showRemove
                         />
                         <ImagePicker
-                            label="Favicon"
+                            placeholder="Favicon"
                             onChange={(val) => changeSettigns('favicon', val)}
                             value={settings.favicon}
                             className={styles.imageField}
+                            showRemove
                         />
                         <h3 className={styles.subheader} >Code injection</h3>
                         <TextField
-                            label="Header Html"
+                            label="Header HTML"
                             multiline
                             rows={4}
                             value={settings.headerHtml ?? ''}
@@ -131,7 +133,7 @@ const SettingsPage = () => {
                             className={styles.field}
                         />
                         <TextField
-                            label="Footer Html"
+                            label="Footer HTML"
                             multiline
                             rows={4}
                             value={settings.footerHtml ?? ''}

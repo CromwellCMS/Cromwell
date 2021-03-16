@@ -21,6 +21,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import nameGenerator from 'project-name-generator';
 import { getCustomRepository } from 'typeorm';
+import cryptoRandomString from 'crypto-random-string';
 
 import { AuthService } from './auth.service';
 
@@ -351,32 +352,32 @@ export class MockService {
             {
                 fullName: 'Creed',
                 email: 'Creed@example.com',
-                password: '12345',
+                password: cryptoRandomString({ length: 12 }),
                 role: 'author',
             },
             {
                 fullName: 'Pam',
                 email: 'Pam@example.com',
-                password: 'pampampam!',
+                password: cryptoRandomString({ length: 12 }),
                 role: 'author',
             },
             {
                 fullName: 'Michael',
                 email: 'Michael@example.com',
-                password: 'qwerty',
+                password: cryptoRandomString({ length: 12 }),
                 role: 'author',
             },
             {
                 fullName: 'Kevin',
                 email: 'Kevin@example.com',
-                password: '123',
+                password: cryptoRandomString({ length: 12 }),
                 role: 'customer',
             },
             {
                 fullName: 'Dwight',
                 email: 'Dwight@example.com',
-                password: 'qwerty',
-                role: 'admin',
+                password: cryptoRandomString({ length: 12 }),
+                role: 'administrator',
             },
         ]
 

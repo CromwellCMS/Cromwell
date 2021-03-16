@@ -158,13 +158,13 @@ export interface TUser extends TBasePageEntity {
     address?: string;
     role?: TUserRole;
 }
-export type TUserRole = 'admin' | 'author' | 'customer';
+export type TUserRole = 'administrator' | 'author' | 'customer';
 
 export type TCreateUser = Omit<TUser, TDBAuxiliaryColumns> & {
     password?: string;
 };
 
-export type TUpdateUser = Omit<TUser, TDBAuxiliaryColumns | 'role'>;
+export type TUpdateUser = Omit<TUser, TDBAuxiliaryColumns>;
 
 export type TUserFilter = {
     fullName?: string;

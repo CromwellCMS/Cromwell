@@ -22,6 +22,7 @@ jest.mock('../../constants/PageInfos', () => {
             }
         ],
         homePageInfo,
+        userPageInfo: {}
     }
 });
 

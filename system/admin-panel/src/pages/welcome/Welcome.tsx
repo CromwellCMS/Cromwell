@@ -41,6 +41,7 @@ export default function welcomePage() {
                 email: emailInput,
                 password: passwordInput,
                 avatar: avatarInput,
+                role: 'administrator',
             });
         } catch (e) {
             toast.error('Failed to create user with provided credentials');
@@ -149,24 +150,5 @@ export default function welcomePage() {
 
 const CssTextField = withStyles({
     root: {
-        // borderColor: '#fff',
-        // color: "#fff",
-
-        // '& label': {
-        //     color: '#fff',
-        // },
-        // '& label.Mui-focused': {
-        //     color: '#fff',
-        // },
-        // '& .MuiInput-underline:before': {
-        //     borderBottomColor: '#ccc',
-        // },
-        // '& .MuiInput-underline:hover:before': {
-        //     borderBottomColor: '#fff',
-        // },
-        // '& .MuiInput-input': {
-        //     color: '#fff',
-        // },
-
     },
 })(TextField);

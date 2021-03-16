@@ -22,7 +22,7 @@ const testData: TPagedList<TUser> = {
 
 jest.mock('../../constants/PageInfos', () => {
     return {
-        productPageInfo: {},
+        userPageInfo: {},
     }
 });
 

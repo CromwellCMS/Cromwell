@@ -4,7 +4,10 @@
     padding: 15px;
     display: flex;
     flex-direction: column;
-    
+    max-width: 900;
+    margin: 0 auto;
+    width: 100%;
+
     .header {
         @include paper;
         display: flex;

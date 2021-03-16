@@ -30,7 +30,8 @@ import WelcomePage from '../pages/welcome/Welcome';
 import OrderListPage from '../pages/orderList/OrderList';
 import OrderPage from '../pages/order/Order';
 import SettingsPage from '../pages/settings/Settings';
-import UserList from '../pages/userList/UserList';
+import UserListPage from '../pages/userList/UserList';
+import UserPage from '../pages/user/User';
 
 
 export type SidebarLinkType = {
@@ -135,8 +136,8 @@ export const orderListPageInfo: PageInfo = {
 export const orderPageInfo: PageInfo = {
     name: 'Order',
     route: '/order/:id',
-    component: OrderPage,
     baseRoute: '/order',
+    component: OrderPage,
 };
 
 export const welcomePageInfo: PageInfo = {
@@ -154,8 +155,15 @@ export const settingsPageInfo: PageInfo = {
 export const userListPageInfo: PageInfo = {
     name: 'User List',
     route: '/user-list',
-    component: UserList,
+    component: UserListPage,
 };
+export const userPageInfo: PageInfo = {
+    name: 'User',
+    route: '/user/:id',
+    baseRoute: '/user',
+    component: UserPage,
+};
+
 
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
@@ -178,6 +186,7 @@ export const pageInfos: PageInfo[] = [
     orderPageInfo,
     settingsPageInfo,
     userListPageInfo,
+    userPageInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar

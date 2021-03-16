@@ -1,4 +1,4 @@
-import { TCreateUser } from '@cromwell/core';
+import { TCreateUser, TUserRole } from '@cromwell/core';
 import { Field, InputType } from 'type-graphql';
 
 import { BasePageInput } from './BasePageInput';
@@ -28,6 +28,6 @@ export class CreateUser extends BasePageInput implements TCreateUser {
     bio?: string;
 
     @Field(() => String, { nullable: true })
-    role?: 'admin' | 'author' | 'customer';
+    role?: TUserRole;
 }
 

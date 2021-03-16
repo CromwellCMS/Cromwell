@@ -52,10 +52,12 @@ export class UserRepository extends BaseRepository<User> {
         user.bio = userInput.bio;
         user.phone = userInput.phone;
         user.address = userInput.address;
+        user.role = userInput.role;
     }
 
     async createUser(createUser: TCreateUser): Promise<User> {
         logger.log('UserRepository::createUser');
+        if (!createUser.password || !createUser.email) throw new Error('No credentials provided')
         let user = new User();
 
         await this.handleUserInput(user, createUser);
@@ -64,10 +66,7 @@ export class UserRepository extends BaseRepository<User> {
             const hashedPass = await bcrypt.hash(createUser.password, bcryptSaltRounds);
             user.password = hashedPass;
         }
-
-        if (createUser.role) {
-            user.role = createUser.role;
-        }
+        if (!user.role) user.role = 'customer';
 
         user = await this.save(user);
         await checkEntitySlug(user);

@@ -9,7 +9,7 @@ import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 
-import { productPageInfo } from '../../constants/PageInfos';
+import { userPageInfo } from '../../constants/PageInfos';
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import { ListItemProps } from './UserList';
@@ -42,7 +42,7 @@ const UserListItem = (props: TPropsType) => {
         <Grid container className={styles.listItem}>
             {props.data && (
                 <>
-                    <Grid item xs={5} className={styles.itemMain}>
+                    <Grid item xs={6} className={styles.itemMain}>
                         <div className={commonStyles.center}>
                             <Checkbox
                                 checked={selected}
@@ -66,8 +66,8 @@ const UserListItem = (props: TPropsType) => {
                             <p className={styles.role}>{data.role}</p>
                         </div>
                     </Grid>
-                    <Grid item xs={4} className={styles.listItemActions}>
-                        <Link to={`${productPageInfo.baseRoute}/${props.data?.id}`}>
+                    <Grid item xs={3} className={styles.listItemActions}>
+                        <Link to={`${userPageInfo.baseRoute}/${props.data?.id}`}>
                             <IconButton
                                 aria-label="edit"
                             >

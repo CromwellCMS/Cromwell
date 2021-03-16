@@ -15,6 +15,8 @@ import { loginPageInfo, sideBarLinks } from '../../constants/PageInfos';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Sidebar.module.scss';
 import SidebarLink from './SidebarLink';
+import { Link } from 'react-router-dom';
+import { userPageInfo } from '../../constants/PageInfos';
 
 function useForceUpdate() {
     const [value, setValue] = useState(0);
@@ -99,10 +101,12 @@ function Sidebar() {
                         }}
                     >
                         <div>
-                            <MenuItem className={styles.optionsItem}>
-                                <AccountCircleOutlinedIcon />
-                                <p>Your profile</p>
-                            </MenuItem>
+                            <Link to={`${userPageInfo.baseRoute}/${userInfo?.id}`}>
+                                <MenuItem className={styles.optionsItem}>
+                                    <AccountCircleOutlinedIcon />
+                                    <p>Your profile</p>
+                                </MenuItem>
+                            </Link>
                             <MenuItem className={styles.optionsItem}>
                                 <HelpOutlineIcon />
                                 <p>Support center</p>

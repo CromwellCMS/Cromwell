@@ -82,7 +82,7 @@ class CRestAPIClient {
     }
 
     public logOut = async () => {
-        return this.post('auth/log-out');
+        return this.post('auth/log-out', {});
     }
 
     public getUserInfo = async (): Promise<TUser | undefined> => {

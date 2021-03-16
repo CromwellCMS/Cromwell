@@ -1,4 +1,4 @@
-import { apiV1BaseRoute, isServer, serviceLocator } from '@cromwell/core';
+import { isServer } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, TextField, Tooltip } from '@material-ui/core';
 import {
@@ -15,6 +15,7 @@ import {
 } from '@material-ui/icons';
 import React from 'react';
 import LazyLoad from 'react-lazy-load';
+
 import LoadBox from '../loadBox/LoadBox';
 import Modal from '../modal/Modal';
 import styles from './FileManager.module.scss';
@@ -56,6 +57,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
 
     private open = async () => {
         this.currentPath = '/';
+        this.currentItems = [];
         this.setState({ isActive: true });
         await this.fetchCurrentItems();
     }
@@ -192,7 +194,8 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
 
     private handleClose = () => {
         if (this.fileResolver) this.fileResolver(undefined);
-        this.setState({ isSelecting: false, isActive: false, isLoading: false })
+        this.setState({ isSelecting: false, isActive: false, isLoading: false });
+        this.currentItems = null;
     }
 
     private handleCreateFolder = () => {
@@ -373,6 +376,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                             <MenuItem className={styles.item}
                                 onClick={this.onItemClick(item)}
                                 id={'item__' + item}
+                                key={item}
                             >
                                 {itemType === 'image' && (
                                     <IconButton className={styles.zoomItemBtn}

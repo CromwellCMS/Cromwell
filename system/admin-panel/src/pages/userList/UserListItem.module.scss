@@ -15,8 +15,8 @@
 
     .avatar {
         @include bckgrCover;
-        height: 60px;
-        width: 60px;
+        height: 40px;
+        width: 40px;
         border-radius: 100%;
         overflow: hidden;
         margin-right: 10px;
@@ -24,7 +24,7 @@
 
     .name {
         font-weight: 500;
-        margin-bottom: 5px;
+        margin-bottom: 3px;
     }
 
     .email {

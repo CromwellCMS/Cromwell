@@ -160,7 +160,7 @@ const Post = (props) => {
                     history.push(`${postPageInfo.baseRoute}/${newPost.id}`)
                     await getPostData();
                 } catch (e) {
-                    toast.error('Falied to create post');
+                    toast.error('Failed to create post');
                     console.error(e)
                 }
             } else if (postData?.id) {
@@ -170,7 +170,7 @@ const Post = (props) => {
                     await getPostData();
                     toast.success('Saved!');
                 } catch (e) {
-                    toast.error('Falied to save');
+                    toast.error('Failed to save');
                     console.error(e)
                 }
             }
@@ -192,7 +192,7 @@ const Post = (props) => {
                 toast.success('Published');
                 hasChanges.current = false;
             } catch (e) {
-                toast.error('Falied to publish');
+                toast.error('Failed to publish');
                 console.error(e)
             }
         }
