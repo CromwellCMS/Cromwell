@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { TUser } from '@cromwell/core';
+import { TUser, TUserRole } from '@cromwell/core';
 
 export class UserDto implements TUser {
     @ApiProperty()
@@ -13,6 +13,18 @@ export class UserDto implements TUser {
 
     @ApiProperty()
     avatar?: string;
+
+    @ApiProperty()
+    bio?: string;
+
+    @ApiProperty()
+    phone?: string;
+
+    @ApiProperty()
+    address?: string;
+    
+    @ApiProperty()
+    role?: TUserRole;
 
     @ApiProperty()
     password?: string;

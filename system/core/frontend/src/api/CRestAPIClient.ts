@@ -77,7 +77,7 @@ class CRestAPIClient {
     public login = async (credentials: {
         email: string;
         password: string;
-    }) => {
+    }): Promise<TUser | undefined> => {
         return this.post('auth/login', credentials);
     }
 

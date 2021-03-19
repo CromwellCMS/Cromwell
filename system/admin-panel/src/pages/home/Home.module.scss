@@ -1,0 +1,14 @@
+@import "../../styles/common.module.scss";
+
+.HomePage {
+    width: 100%;
+    height: 100%;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.chart {
+    @include paper;
+    padding: 15px;
+}

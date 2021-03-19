@@ -14,7 +14,7 @@ import {
 import React from 'react';
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
 import AttributesPage from '../pages/attributes/AttributesPage';
-import HomePage from '../pages/home';
+import HomePage from '../pages/home/Home';
 import PluginPage from '../pages/plugin/PluginPage';
 import PluginListPage from '../pages/pluginList/PluginList';
 import ProductPage from '../pages/product/Product';

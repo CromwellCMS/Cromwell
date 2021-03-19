@@ -25,6 +25,7 @@
     "@material-ui/core": "4.11.2",
     "@material-ui/icons": "4.11.2",
     "@material-ui/lab": "4.0.0-alpha.57",
+    "apexcharts": "^3.26.0",
     "clsx": "1.1.1",
     "compression": "^1.7.4",
     "date-fns": "^2.16.1",

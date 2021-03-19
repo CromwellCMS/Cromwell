@@ -3,11 +3,19 @@ import { BasePageNames, TCromwellPage, TCromwellPageCoreProps } from "@cromwell/
 import { getStoreItem, setStoreItem } from "@cromwell/core";
 import { Head, CContainer, pageRootContainerId } from '@cromwell/core-frontend';
 import { isValidElementType } from 'react-is';
-import ReactHtmlParser from 'react-html-parser';
+import ReactHtmlParser, { Transform } from 'react-html-parser';
+import { DomElement } from "htmlparser2";
 
 function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state
     return () => setValue(value => ++value); // update the state to force render
+}
+
+const parserTransform: Transform = (node: DomElement, index: number) => {
+    if (node.type === 'script') {
+        if (node.children?.[0]?.data && node.children[0].data !== '')
+            return <script dangerouslySetInnerHTML={{ __html: node.children[0].data }} />
+    }
 }
 
 export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwellPage): TCromwellPage => {
@@ -18,10 +26,12 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
 
     if (!PageComponent) throw new Error('getPage !PageComponent');
     if (!isValidElementType(PageComponent)) throw new Error('getPage PageComponent !isValidElementType');
-    // const Page: any = importPage(pageName)?.default;
 
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
-        const { pluginsData, pluginsSettings, pageConfig, themeCustomConfig, childStaticProps, cmsSettings, headHtml, pagesInfo, palette, ...restProps } = props;
+        const { pluginsData, pluginsSettings, pageConfig, themeCustomConfig,
+            childStaticProps, cmsSettings, headHtml, pagesInfo,
+            palette, ...restProps } = props;
+
         const forcedChildStaticProps = useRef(null);
         if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
         if (pluginsData) setStoreItem('pluginsData', pluginsData);
@@ -50,11 +60,6 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
             }
         }
 
-        let parsedHeadHtml;
-        if (headHtml && headHtml !== "") {
-            parsedHeadHtml = headHtml;
-        }
-
         const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;
 
         // console.log('getPage: TCromwellPageCoreProps pageName', pageName, 'props', props);
@@ -65,9 +70,11 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
                 </Head>
                 <CContainer id={pageRootContainerId} isConstant={true}>
                     <PageComponent {...pageCompProps} {...props} />
+                    {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransform })}
                 </CContainer>
                 <Head>
-                    {parsedHeadHtml && ReactHtmlParser(parsedHeadHtml)}
+                    {headHtml && ReactHtmlParser(headHtml, { transform: parserTransform })}
+                    {cmsSettings?.headerHtml && ReactHtmlParser(cmsSettings.headerHtml, { transform: parserTransform })}
                     {title && <title>{title}</title>}
                     {description && <meta property="og:description" content={description} key="description" />}
                 </Head>
