@@ -61,8 +61,7 @@ const OrderList = (props: TPropsType) => {
 
     const resetList = () => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
-        list.clearState();
-        list.init();
+        list?.updateData();
     }
 
     const handleGetOrders = async (params?: TPagedParams<TOrder>) => {

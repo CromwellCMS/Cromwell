@@ -4,7 +4,6 @@
     min-height: 100px;
     display: flex;
     flex-direction: column;
-    
 
     :global(.ReactVirtualized__List:focus) {
         outline: none;
@@ -36,7 +35,6 @@
 
     .pagination {
         display: flex;
-        
     }
     .paginationContent {
         display: flex;
@@ -94,7 +92,9 @@
 
     .throbberBox {
         position: relative;
-
+    }
+    .none {
+        display: none;
     }
     .listOverlay {
         display: none;
@@ -104,7 +104,7 @@
         bottom: 0px;
         left: 0px;
         right: 0px;
-        background-color: rgba(0,0,0,0.4);
+        background-color: rgba(0, 0, 0, 0.4);
     }
 
     .throbber {
@@ -116,7 +116,6 @@
             width: 130px;
             height: 130px;
         }
-     
     }
 
     .throbberAutoloading {
@@ -127,7 +126,7 @@
         align-items: center;
 
         > svg {
-            background-color: rgba(0,0,0,0.4);
+            background-color: rgba(0, 0, 0, 0.4);
             border-radius: 100%;
         }
     }

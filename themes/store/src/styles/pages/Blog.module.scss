@@ -1,18 +1,15 @@
 @import "../variables.scss";
 
-
 .postList {
     display: flex;
     flex-wrap: wrap;
-    padding: 20px;
-    padding-right: 0;
 }
 
 .postWrapper {
-    width: 25%;
+    width: 33%;
     margin: 0;
     margin-bottom: 15px;
-    padding: 5px;
+    padding: 15px;
 }
 
 .sortContainer {
@@ -21,15 +18,29 @@
     margin: 20px 0 20px 20px;
 }
 
+.filter {
+    padding: 15px;
+    margin: 15px;
+    background-color: #fff;
+    border-radius: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+.filterItem {
+    margin-right: 15px;
+}
+
 @media (max-width: 985px) {
     .postWrapper {
-        width: 33%;
+        width: 50%;
     }
 }
 
 @media (max-width: 725px) {
     .postWrapper {
-        width: 50%;
+        width: 100%;
     }
 }
 

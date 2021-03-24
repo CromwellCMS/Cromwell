@@ -21,7 +21,8 @@ export default [
             typescript({
                 compilerOptions: {
                     module: 'ESNext'
-                }
+                },
+                monorepo: true,
             }),
             json(),
             commonjs(),

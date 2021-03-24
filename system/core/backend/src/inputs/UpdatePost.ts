@@ -15,7 +15,7 @@ export class UpdatePost extends BasePageInput implements TPostInput {
     mainImage?: string;
 
     @Field(type => [String], { nullable: true })
-    tags?: string[] | null;
+    tagIds?: string[] | null;
 
     @Field(() => String, { nullable: true })
     content: string;
@@ -23,6 +23,12 @@ export class UpdatePost extends BasePageInput implements TPostInput {
     @Field(() => String, { nullable: true })
     delta: string;
 
+    @Field(type => String, { nullable: true })
+    excerpt?: string | null;
+
     @Field(() => Boolean, { nullable: true })
     isPublished: boolean;
+
+    @Field(type => Date, { nullable: true })
+    publishDate?: Date | null;
 }

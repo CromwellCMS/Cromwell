@@ -45,7 +45,8 @@ export default [
                 compilerOptions: {
                     module: 'ESNext',
                 },
-                sharedState
+                sharedState,
+                monorepo: true,
             }),
             rollupPluginCromwellFrontend({ generateMeta: false }),
             nodeResolve({
@@ -70,7 +71,8 @@ export default [
                 compilerOptions: {
                     module: 'ESNext',
                 },
-                sharedState
+                sharedState,
+                monorepo: true,
             }),
             nodeResolve({
                 preferBuiltins: false

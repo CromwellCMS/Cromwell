@@ -12,7 +12,6 @@
     transition-property: box-shadow, z-index;
     transition-duration: 0.3s;
     background-color: #fff;
-    border: 1px solid #eee;
 
     &:hover {
         box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);

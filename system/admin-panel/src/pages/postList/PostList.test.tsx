@@ -47,7 +47,7 @@ jest.mock('@cromwell/core-frontend', () => {
             return {
                 getFilteredPosts: jest.fn().mockImplementation(() => postsData),
                 getUsers: jest.fn().mockImplementation(() => users),
-                getPostTags: jest.fn().mockImplementation(() => []),
+                getTags: jest.fn().mockImplementation(() => []),
             }
         },
     }

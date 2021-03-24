@@ -22,7 +22,8 @@ const getPlugins = () => {
                 declaration: true,
                 declarationMap: true,
                 declarationDir: resolve(__dirname, pkg.module)
-            }
+            },
+            monorepo: true,
         }),
         autoExternal(),
         // terser(),

@@ -110,6 +110,8 @@ export type TCList<DataType = any, ListItemProps = any> = {
     clearState: () => void;
     /** Re-init component, parse first batch with metainfo, create pagination info */
     init: () => void;
+    /** Clear state/data and request new from loader */
+    updateData: () => Promise<void>;
     /** Navigate to specified page */
     openPage: (pageNumber: number) => void;
     /** Get scrollbox wrapper DOM element */

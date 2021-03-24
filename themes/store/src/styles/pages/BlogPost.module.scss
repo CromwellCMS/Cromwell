@@ -1,7 +1,6 @@
 @import "../variables.scss";
 @import "../common.module.scss";
 
-
 .BlogPost {
     @include paper;
     padding: 20px;
@@ -15,7 +14,9 @@
 
 .mainImage {
     width: 100%;
-    height: auto;
+    object-fit: cover;
+    height: 400px;
+    margin-bottom: 20px;
 }
 
 .notFound {

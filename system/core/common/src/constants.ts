@@ -35,7 +35,6 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         deleteMany: "deleteManyPosts",
         deleteManyFiltered: "deleteManyFilteredPosts",
         getFiltered: "getFilteredPosts",
-        getTags: "getPostTags",
     },
     Product: {
         getOneBySlug: "product",
@@ -101,6 +100,15 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         deleteManyFiltered: "deleteManyFilteredOrders",
         deleteMany: "deleteManyOrders",
         getFiltered: "getFilteredOrders",
+    },
+    Tag: {
+        getOneBySlug: "getTagBySlug",
+        getOneById: "getTagById",
+        getMany: "getTags",
+        create: "createTag",
+        update: "updateTag",
+        delete: "deleteTag",
+        deleteMany: "deleteManyTags",
     },
 }
 

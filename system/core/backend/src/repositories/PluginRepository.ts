@@ -73,7 +73,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
 
         const plugin = await this.getPluginById(id);
         if (!plugin) {
-            console.log('PluginRepository::deletePlugin failed to find Plugin by id');
+            logger.error('PluginRepository::deletePlugin failed to find Plugin by id');
             return false;
         }
         const res = await this.delete(id);

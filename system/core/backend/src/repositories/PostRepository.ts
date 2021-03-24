@@ -4,9 +4,12 @@ import { EntityRepository, getCustomRepository, Brackets, SelectQueryBuilder, De
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 
 import { Post } from '../entities/Post';
+import { Tag } from '../entities/Tag';
+
 import { handleBaseInput, checkEntitySlug, getPaged } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 import { UserRepository } from './UserRepository';
+import { TagRepository } from './TagRepository';
 import { PostFilterInput } from '../entities/filter/PostFilterInput';
 import { getLogger } from '../helpers/constants';
 
@@ -40,13 +43,19 @@ export class PostRepository extends BaseRepository<Post> {
 
         handleBaseInput(post, input);
 
+        if (input.tagIds) {
+            const tags = await getCustomRepository(TagRepository).getTagsByIds(input.tagIds);
+            post.tags = tags;
+        }
+
         post.title = input.title;
         post.mainImage = input.mainImage ?? null;
         post.content = sanitizeHtml(input.content);
         post.delta = input.delta;
+        post.excerpt = input.excerpt;
         post.isPublished = input.isPublished;
         post.authorId = input.authorId;
-        post.tags = input.tags;
+        post.publishDate = input.publishDate;
     }
 
     async createPost(createPost: TPostInput): Promise<Post> {
@@ -80,14 +89,19 @@ export class PostRepository extends BaseRepository<Post> {
 
         const post = await this.getPostById(id);
         if (!post) {
-            console.log('PostRepository::deletePost failed to find post by id');
+            logger.error('PostRepository::deletePost failed to find post by id');
             return false;
         }
         const res = await this.delete(id);
         return true;
     }
 
-    applyPostFilter(qb: SelectQueryBuilder<TPost> | DeleteQueryBuilder<TPost>, filterParams?: PostFilterInput) {
+    applyPostFilter(qb: SelectQueryBuilder<TPost>, filterParams?: PostFilterInput) {
+
+        if (filterParams?.tagIds && filterParams.tagIds.length > 0) {
+            qb.leftJoin(`${this.metadata.tablePath}.tags`, getCustomRepository(TagRepository).metadata.tablePath)
+            qb.andWhere(`${getCustomRepository(TagRepository).metadata.tablePath}.id IN (:...ids)`, { ids: filterParams.tagIds });
+        }
         // Search by product name
         if (filterParams?.titleSearch && filterParams.titleSearch !== '') {
             const titleSearch = `%${filterParams.titleSearch}%`;
@@ -101,23 +115,6 @@ export class PostRepository extends BaseRepository<Post> {
             qb.andWhere(query, { authorId });
         }
 
-        if (filterParams?.tags && filterParams.tags.length > 0) {
-            const brackets = new Brackets(subQb => {
-                let isFirstVal = true;
-                filterParams!.tags!.forEach(tag => {
-                    const likeStr = `%${tag}%`;
-                    const tagKey = `tag_${tag}`;
-                    const query = `${this.metadata.tablePath}.tags LIKE :${tagKey}`;
-                    if (isFirstVal) {
-                        isFirstVal = false;
-                        subQb.where(query, { [tagKey]: likeStr });
-                    } else {
-                        subQb.orWhere(query, { [tagKey]: likeStr });
-                    }
-                })
-            });
-            qb.andWhere(brackets);
-        }
         return qb;
     }
 
@@ -129,27 +126,26 @@ export class PostRepository extends BaseRepository<Post> {
     }
 
     async deleteManyFilteredPosts(input: TDeleteManyInput, filterParams?: PostFilterInput): Promise<boolean | undefined> {
-        const qb = this.createQueryBuilder()
-            .delete().from<Post>(this.metadata.tablePath);
-
+        // Select first, because JOIN with DELETE is not supported by Typeorm (such a shame)
+        const qb = this.createQueryBuilder().select(['id']);
         this.applyPostFilter(qb, filterParams);
         this.applyDeletMany(qb, input);
-        await qb.execute();
+        const ids: { id: string | number }[] = await qb.execute();
+
+        const deleteQb = this.createQueryBuilder()
+            .delete().from<Post>(this.metadata.tablePath);
+
+        this.applyDeletMany(deleteQb, {
+            all: false,
+            ids: ids.map(id => id?.id + ''),
+        });
+        await deleteQb.execute();
         return true;
     }
 
-    async getAllPostTags(): Promise<string[]> {
-        const tags: string[] = [];
-        const postTags: { tags: string }[] = await this.createQueryBuilder().select('tags' as (keyof TPost)).getRawMany();
-        for (let post of postTags) {
-            if (post.tags && post.tags !== '') {
-                const tagsArr = post.tags.split(',');
-                for (let tag of tagsArr) {
-                    if (!tags.includes(tag)) tags.push(tag);
-                }
-            }
-        }
-        return tags;
+    async getTagsOfPost(postId: string): Promise<Tag[] | undefined | null> {
+        return (await this.findOne(postId, {
+            relations: ['tags']
+        }))?.tags;
     }
-
 }

@@ -32,7 +32,7 @@ jest.mock('@cromwell/core-frontend', () => {
             return {
                 getPostById: jest.fn().mockImplementation(async () => testData),
                 updatePost,
-                getPostTags: jest.fn().mockImplementation(() => []),
+                getTags: jest.fn().mockImplementation(() => []),
             }
         },
     }

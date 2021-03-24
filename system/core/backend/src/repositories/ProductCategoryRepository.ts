@@ -1,11 +1,18 @@
-import { TPagedList, TPagedParams, TProductCategory, TProductCategoryInput, TDeleteManyInput } from '@cromwell/core';
-import { PagedParamsInput } from 'src/inputs/PagedParamsInput';
-import { EntityRepository, getConnection, getCustomRepository, TreeRepository, SelectQueryBuilder, DeleteQueryBuilder } from 'typeorm';
+import { TDeleteManyInput, TPagedList, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
+import {
+    DeleteQueryBuilder,
+    EntityRepository,
+    getConnection,
+    getCustomRepository,
+    SelectQueryBuilder,
+    TreeRepository,
+} from 'typeorm';
 
 import { ProductCategoryFilterInput } from '../entities/filter/ProductCategoryFilterInput';
 import { ProductCategory } from '../entities/ProductCategory';
 import { getLogger } from '../helpers/constants';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
+import { PagedParamsInput } from '../inputs/PagedParamsInput';
 import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
 import { applyGetManyFromOne, applyGetPaged, checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { ProductRepository } from './ProductRepository';
@@ -203,33 +210,22 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     async deleteManyCategories(input: TDeleteManyInput, filterParams?: ProductCategoryFilterInput) {
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select(['id']);
+        if (filterParams) this.applyCategoryFilter(qb, filterParams);
+
         if (input.all) {
-            const qb = this.createQueryBuilder(this.metadata.tablePath);
-            qb.select(['id']);
-            if (filterParams) this.applyCategoryFilter(qb, filterParams);
             qb.andWhere(`${this.metadata.tablePath}.id NOT IN (:...ids)`, { ids: input.ids ?? [] })
-
-            const categories = await qb.execute();
-            for (const category of categories) {
-                try {
-                    await this.deleteProductCategory(category.id);
-                } catch (e) {
-                    logger.error(e);
-                }
-            }
         } else {
-            const qb = this.createQueryBuilder(this.metadata.tablePath);
-            qb.select(['id']);
-            if (filterParams) this.applyCategoryFilter(qb, filterParams);
             qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
+        }
 
-            const categories = await qb.execute();
-            for (const category of categories) {
-                try {
-                    await this.deleteProductCategory(category?.id);
-                } catch (e) {
-                    logger.error(e);
-                }
+        const categories = await qb.execute();
+        for (const category of categories) {
+            try {
+                await this.deleteProductCategory(category?.id);
+            } catch (e) {
+                logger.error(e);
             }
         }
         return true;
@@ -245,16 +241,14 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         return await qb.getMany();
     }
 
-    async getChildrenCategories(category: ProductCategory): Promise<ProductCategory[]> {
-        logger.log('ProductCategoryRepository::getChildrenCategories id: ' + category.id);
-        return (await this.findDescendantsTree(category)).children ?? [];
+    async getChildCategories(category: ProductCategory): Promise<ProductCategory[]> {
+        logger.log('ProductCategoryRepository::getChildCategories id: ' + category.id);
+        return (await this.findDescendantsTree(category))?.children ?? [];
     }
 
     async getParentCategory(category: ProductCategory): Promise<ProductCategory | undefined | null> {
         logger.log('ProductCategoryRepository::getParentCategory id: ' + category.id);
-
-        const ancestorsTree = await this.findAncestorsTree(category);
-        return ancestorsTree.parent;
+        return (await this.findAncestorsTree(category))?.parent;
     }
 
     async getRootCategories(): Promise<TPagedList<ProductCategory>> {

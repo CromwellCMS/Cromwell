@@ -145,7 +145,7 @@ export class ProductRepository extends BaseRepository<Product> {
 
         const product = await this.getProductById(id);
         if (!product) {
-            console.log('ProductRepository::deleteProduct failed to find product by id');
+            logger.error('ProductRepository::deleteProduct failed to find product by id');
             return false;
         }
         const res = await this.delete(id);

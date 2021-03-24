@@ -25,7 +25,8 @@ export default [
                     declaration: true,
                     declarationMap: true,
                     declarationDir: resolve(__dirname, buildDir)
-                }
+                },
+                monorepo: true,
             }),
             json(),
             commonjs(),

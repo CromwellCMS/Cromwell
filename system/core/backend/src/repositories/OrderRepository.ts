@@ -83,7 +83,7 @@ export class OrderRepository extends BaseRepository<Order> {
 
         const order = await this.getOrderById(id);
         if (!order) {
-            console.log('OrderRepository::deleteOrder failed to find Order by id');
+            logger.log('OrderRepository::deleteOrder failed to find Order by id');
             return false;
         }
         const res = await this.delete(id);
@@ -155,7 +155,7 @@ export class OrderRepository extends BaseRepository<Order> {
         try {
             await qb.execute();
         } catch (e) {
-            console.error(e)
+            logger.error(e)
         }
         return true;
     }

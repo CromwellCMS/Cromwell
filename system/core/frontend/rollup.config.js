@@ -34,16 +34,11 @@ const getPlugins = (format = 'esm') => {
                 declaration: true,
                 declarationMap: true,
                 declarationDir: resolve(__dirname, pkg.module)
-            }
+            },
+            monorepo: true,
         }),
         nodeResolve(),
         commonjs(),
-        // typescript({
-        //     tsconfig: resolvedConfig => ({ ...resolvedConfig, ...typeScriptOptions })
-        // }),
-        // typescript({
-        //     tsconfigOverride: { compilerOptions: typeScriptOptions }
-        // }),
         postcss({
             extract: false,
             modules: true,

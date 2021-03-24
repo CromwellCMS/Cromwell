@@ -8,6 +8,7 @@ import {
     TProductReviewInput,
     TCreateUser,
     TStoreListItem,
+    TTag,
 } from '@cromwell/core';
 import {
     AttributeRepository,
@@ -16,6 +17,7 @@ import {
     ProductCategoryRepository,
     ProductRepository,
     ProductReviewRepository,
+    TagRepository,
     UserRepository,
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
@@ -39,6 +41,7 @@ export class MockService {
     private postRepo = getCustomRepository(PostRepository);
     private userRepo = getCustomRepository(UserRepository);
     private orderRepo = getCustomRepository(OrderRepository);
+    private tagRepo = getCustomRepository(TagRepository);
 
     private shuffleArray = <T extends Array<any>>(array: T): T => {
         for (let i = array.length - 1; i > 0; i--) {
@@ -129,6 +132,7 @@ export class MockService {
 
     public async mockAll(): Promise<boolean> {
         await this.mockUsers();
+        await this.mockTags();
         await this.mockPosts();
         await this.mockAttributes();
         await this.mockCategories();
@@ -315,6 +319,16 @@ export class MockService {
         return true;
     }
 
+    public getRandomElementsFromArray<T>(array: Array<T>, maxNum: number) {
+        const actualNum = Math.round(Math.random() * maxNum);
+        const result: T[] = [];
+        for (let i = 0; i < actualNum; i++) {
+            const idx = Math.round(Math.random() * array.length);
+            result.push(array[idx]);
+        }
+        return result;
+    }
+
 
     public async mockReviews() {
         // Clear
@@ -416,11 +430,7 @@ export class MockService {
 
         for (let i = 0; i < 20; i++) {
 
-            const tags: string[] = [];
-            const tagsNum = Math.floor(Math.random() * 4);
-            for (let i = 0; i < tagsNum; i++) {
-                tags.push(this.getRandomName().split(' ')[0]);
-            }
+            const tagIds: string[] = (await this.tagRepo.getAll()).map(tag => tag.id);
 
             promises.push(this.postRepo.createPost({
                 content: postContent,
@@ -430,7 +440,9 @@ export class MockService {
                 mainImage: getRandImg(),
                 isPublished: true,
                 isEnabled: true,
-                tags: tags,
+                tagIds: this.getRandomElementsFromArray(tagIds, 3),
+                publishDate: new Date(Date.now()),
+                excerpt: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.',
             }));
         }
         await Promise.all(promises);
@@ -454,7 +466,7 @@ export class MockService {
                 orderTotalPrice: 279,
                 deliveryPrice: 0,
                 totalQnt: 3,
-                status: 'New',
+                status: 'Pending',
                 cart: [{
                     product: {
                         id: '1',
@@ -470,7 +482,7 @@ export class MockService {
                 customerName: 'Michael',
                 customerAddress: '4650 Watson Lane',
                 customerPhone: '704-408-1669',
-                // status: 'In ',
+                status: 'Cancelled',
                 cartTotalPrice: 59,
                 orderTotalPrice: 69,
                 deliveryPrice: 10,
@@ -490,6 +502,7 @@ export class MockService {
                 customerName: 'Kelly',
                 customerAddress: '957 Whitman Court',
                 customerPhone: '206-610-2907',
+                status: 'Shipped',
                 cartTotalPrice: 110,
                 orderTotalPrice: 120,
                 deliveryPrice: 10,
@@ -505,6 +518,7 @@ export class MockService {
                 customerName: 'Pam',
                 customerAddress: '304 Norman Street',
                 customerPhone: '203-980-3109',
+                status: 'Awaiting shipment',
                 cartTotalPrice: 10,
                 orderTotalPrice: 15,
                 deliveryPrice: 5,
@@ -520,6 +534,23 @@ export class MockService {
             await this.orderRepo.createOrder(data);
         }
 
+        return true;
+    }
+
+    public async mockTags() {
+        // Clear
+        const items = await this.tagRepo.find();
+        for (const item of items) {
+            await this.tagRepo.deleteTag(item.id);
+        }
+
+        const promises: Promise<TTag>[] = [];
+        for (let i = 0; i < 20; i++) {
+            promises.push(this.tagRepo.createTag({
+                name: this.getRandomName().split(' ')[0]
+            }));
+        }
+        await Promise.all(promises);
         return true;
     }
 }

@@ -11,7 +11,7 @@ export class PostFilterInput implements TPostFilter {
     titleSearch: string;
 
     @Field(type => [String], { nullable: true })
-    tags?: string[];
+    tagIds?: string[];
 
     @Field(type => Boolean, { nullable: true })
     published: boolean;

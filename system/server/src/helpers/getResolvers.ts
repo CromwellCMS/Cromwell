@@ -5,6 +5,7 @@ import { ProductResolver } from '../resolvers/product.resolver';
 import { ProductReviewResolver } from '../resolvers/product-review.resolver';
 import { UserResolver } from '../resolvers/user.resolver';
 import { OrderResolver } from '../resolvers/order.resolver';
+import { TagResolver } from '../resolvers/tag.resolver';
 import { GenericPluginResolver, GenericThemeResolver } from '../helpers/genericEntities';
 import { collectPlugins } from '../helpers/collectPlugins';
 
@@ -18,5 +19,6 @@ export const getResolvers = () => [
     UserResolver,
     GenericPluginResolver,
     GenericThemeResolver,
+    TagResolver,
     ...(collectPlugins().resolvers),
 ]

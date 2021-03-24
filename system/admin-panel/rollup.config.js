@@ -48,7 +48,8 @@ export default [
         external,
         plugins: [
             typescript({
-                sharedState
+                sharedState,
+                monorepo: true,
             }),
             json(),
             nodeResolve({
@@ -70,7 +71,8 @@ export default [
         external,
         plugins: [
             typescript({
-                sharedState
+                sharedState,
+                monorepo: true,
             }),
             json(),
             nodeResolve({
