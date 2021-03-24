@@ -15,15 +15,16 @@ export class AuthController {
 
     constructor(private authService: AuthService) { }
 
+    @Post('login')
     @ApiOperation({
         description: 'Authenticates user',
     })
     @ApiBody({ type: LoginDto })
-    @Post('login')
+    @ApiResponse({
+        status: 200,
+        type: UserDto
+    })
     async login(@Request() req: TRequestWithUser, @Response() response: FastifyReply, @Body() input: LoginDto) {
-        if (typeof input === 'string') {
-            input = JSON.parse(input);
-        }
 
         const user = await this.authService.validateUser(input.email, input.password);
         if (!user) {
@@ -46,14 +47,25 @@ export class AuthController {
             this.authService.setRefreshTokenCookie(response, req, refreshToken);
         }
 
-        response.code(200).send(true);
+        const userDto: UserDto = {
+            id: user.id + '',
+            email: user.email,
+            avatar: user.avatar,
+            fullName: user.fullName,
+            bio: user.bio,
+            phone: user.phone,
+            address: user.address,
+            role: user.role,
+        }
+
+        response.code(200).send(userDto);
     }
 
     @UseGuards(JwtAuthGuard)
+    @Post('log-out')
     @ApiOperation({
         description: 'Logs user out',
     })
-    @Post('log-out')
     async logOut(@Request() request: TRequestWithUser, @Response() response: FastifyReply) {
 
         await this.authService.removeRefreshTokens(request.user);
@@ -63,6 +75,7 @@ export class AuthController {
     }
 
     @UseGuards(JwtAuthGuard)
+    @Get('user-info')
     @ApiOperation({
         description: 'Get info about currently logged in user',
     })
@@ -70,7 +83,6 @@ export class AuthController {
         status: 200,
         type: UserDto
     })
-    @Get('user-info')
     async getUserInfo(@Request() request: TRequestWithUser): Promise<UserDto | undefined> {
         if (!request.user?.id)
             throw new UnauthorizedException('user.id is not set for the request');
@@ -82,6 +94,10 @@ export class AuthController {
                 email: user.email,
                 avatar: user.avatar,
                 fullName: user.fullName,
+                bio: user.bio,
+                phone: user.phone,
+                address: user.address,
+                role: user.role,
             }
             return userDto;
         }

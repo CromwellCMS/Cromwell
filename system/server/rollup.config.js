@@ -18,7 +18,7 @@ export default [
         ],
         external: external,
         plugins: [
-            typescript(),
+            typescript({ monorepo: true }),
             nodeResolve({
                 extensions: ['js', 'ts'],
                 preferBuiltins: false,

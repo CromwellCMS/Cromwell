@@ -40,7 +40,6 @@ export const getPaged = async <T>(qb: SelectQueryBuilder<T>, sortByTableName?: s
 
     const [count, elements] = await Promise.all([qb.getCount(), (() => {
         applyGetPaged(qb, sortByTableName, params);
-        // console.log('qb.getSql()', qb.getQueryAndParameters());
         return qb.getMany();
     })()]);
 

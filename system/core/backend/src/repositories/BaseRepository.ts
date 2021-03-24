@@ -1,5 +1,5 @@
 import { TPagedList, TPagedParams, TDeleteManyInput } from '@cromwell/core';
-import { DeleteQueryBuilder, Repository } from 'typeorm';
+import { DeleteQueryBuilder, Repository, SelectQueryBuilder } from 'typeorm';
 
 import { getPaged } from './BaseQueries';
 import { getLogger } from '../helpers/constants';
@@ -17,8 +17,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     async getPaged(params?: TPagedParams<EntityType>): Promise<TPagedList<EntityType>> {
         logger.log('BaseRepository::getPaged');
         const qb = this.createQueryBuilder(this.metadata.tablePath);
-        const paged = await getPaged(qb, this.metadata.tablePath, params);
-        return paged;
+        return await getPaged(qb, this.metadata.tablePath, params);
     }
 
     async getAll(): Promise<EntityType[]> {
@@ -75,14 +74,14 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         logger.log('BaseRepository::deleteEntity ' + this.metadata.tablePath);
         const entity = await this.getById(id);
         if (!entity) {
-            console.log(`BaseRepository::deleteEntity failed to find ${this.metadata.tablePath} ${id} by id: ${id}`);
+            logger.error(`BaseRepository::deleteEntity failed to find ${this.metadata.tablePath} ${id} by id: ${id}`);
             return false;
         }
         const res = await this.delete(id);
         return true;
     }
 
-    async applyDeletMany(qb: DeleteQueryBuilder<EntityType>, input: TDeleteManyInput) {
+    async applyDeletMany(qb: SelectQueryBuilder<EntityType> | DeleteQueryBuilder<EntityType>, input: TDeleteManyInput) {
         if (input.all) {
             if (input.ids && input.ids.length > 0) {
                 qb.andWhere(`"${this.metadata.tablePath}".id NOT IN (:...ids)`, { ids: input.ids ?? [] })

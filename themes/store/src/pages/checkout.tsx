@@ -1,4 +1,4 @@
-import { TCromwellPage } from '@cromwell/core';
+import { TCromwellPage, TUser } from '@cromwell/core';
 import { getGraphQLClient, getCStore } from '@cromwell/core-frontend';
 import { Button, TextField, useMediaQuery, useTheme } from '@material-ui/core';
 import React, { useState } from 'react';
@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { CartProductList } from '../components/checkoutPage/productList/CartProductList';
 import Layout from '../components/layout/Layout';
 import commonStyles from '../styles/common.module.scss';
+import SignInModal from '../components/modals/singIn/SingIn';
 import styles from '../styles/pages/Checkout.module.scss';
 
 
@@ -20,6 +21,8 @@ const CheckoutPage: TCromwellPage = (props) => {
     }>({});
 
     const [shippingMethod, setShippingMethod] = useState<string | null>(null);
+    const [userInfo, setUserInfo] = useState<TUser | null>(null);
+    const [signInModalOpen, setSignInModalOpen] = useState<'sign-in' | 'sign-up' | null>(null);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -32,6 +35,10 @@ const CheckoutPage: TCromwellPage = (props) => {
                 [name]: value
             }
         })
+    }
+
+    const handleSignIn = (user: TUser) => {
+        setUserInfo(user);
     }
 
     const handleSingIn = () => {
@@ -66,20 +73,23 @@ const CheckoutPage: TCromwellPage = (props) => {
                 <div className={styles.CheckoutPage}>
                     <div className={styles.inputZone}>
                         <h1 className={styles.pageTitle}>Checkout</h1>
-                        <div className={styles.signInBlock}>
-                            <Button variant="outlined"
-                                color="primary"
-                                size="small"
-                                className={styles.singinBtn}
-                                onClick={handleSingIn}>
-                                Sign in</Button>
-                            <Button variant="outlined"
-                                color="primary"
-                                size="small"
-                                className={styles.singinBtn}
-                                onClick={handleSingUp}>
-                                Sign up</Button>
-                        </div>
+                        {!userInfo && (
+                            <div className={styles.signInBlock}>
+                                <Button variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    className={styles.singinBtn}
+                                    onClick={handleSingIn}>
+                                    Sign in</Button>
+                                <Button variant="outlined"
+                                    color="primary"
+                                    size="small"
+                                    className={styles.singinBtn}
+                                    onClick={handleSingUp}>
+                                    Sign up</Button>
+                            </div>
+                        )}
+                        <p></p>
                         <div className={styles.delimiter}></div>
                         <TextField label="Name"
                             variant="outlined"
@@ -87,24 +97,30 @@ const CheckoutPage: TCromwellPage = (props) => {
                             size="small"
                             fullWidth
                             className={styles.input}
-                            value={form?.name}
-                            onChange={handleInput} />
+                            value={userInfo?.fullName ?? form?.name}
+                            onChange={handleInput}
+                            disabled={!!userInfo?.fullName}
+                        />
                         <TextField label="E-mail"
                             variant="outlined"
                             fullWidth
                             name="email"
                             size="small"
                             className={styles.input}
-                            value={form?.email}
-                            onChange={handleInput} />
+                            value={userInfo?.email ?? form?.email}
+                            onChange={handleInput}
+                            disabled={!!userInfo?.email}
+                        />
                         <TextField label="Phone number"
                             variant="outlined"
                             name="phone"
                             size="small"
                             fullWidth
                             className={styles.input}
-                            value={form?.phone}
-                            onChange={handleInput} />
+                            value={userInfo?.phone ?? form?.phone}
+                            onChange={handleInput}
+                            disabled={!!userInfo?.phone}
+                        />
                         {/* <br className={styles.delimiter} /> */}
                         <TextField label="Address"
                             variant="outlined"
@@ -112,8 +128,10 @@ const CheckoutPage: TCromwellPage = (props) => {
                             size="small"
                             fullWidth
                             className={styles.input}
-                            value={form?.address}
-                            onChange={handleInput} />
+                            value={userInfo?.address ?? form?.address}
+                            onChange={handleInput}
+                            disabled={!!userInfo?.address}
+                        />
                         <TextField label="Comment"
                             variant="outlined"
                             name="comment"
@@ -139,6 +157,12 @@ const CheckoutPage: TCromwellPage = (props) => {
                     </div>
                 </div>
             </div>
+            <SignInModal
+                open={!!signInModalOpen}
+                type={signInModalOpen!}
+                onClose={() => setSignInModalOpen(null)}
+                onSignIn={handleSignIn}
+            />
         </Layout>
     );
 }

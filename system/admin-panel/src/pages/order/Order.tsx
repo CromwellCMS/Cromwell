@@ -110,9 +110,11 @@ const OrderPage = () => {
 
     const handleInputChange = (prop: keyof TOrder, val: any) => {
         if (data) {
-            const newData = Object.assign({}, data);
-            (newData[prop] as any) = val;
-            setData(newData);
+            setData((prevData) => {
+                const newData = Object.assign({}, prevData);
+                (newData[prop] as any) = val;
+                return newData;
+            });
         }
     }
 

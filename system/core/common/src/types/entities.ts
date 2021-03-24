@@ -124,25 +124,39 @@ export interface TPost extends TBasePageEntity {
     // Href of main image
     mainImage?: string | null;
     // Tags / categories to show post
-    tags?: string[] | null;
+    tags?: TTag[] | null;
     // Post content, HTML
     content?: string | null;
     // Post content, stringified JSON from Quill.js
     delta?: string | null;
+    // Short description to display in blog list
+    excerpt?: string | null;
     // Is published?
     isPublished?: boolean | null;
+    // Publish date
+    publishDate?: Date | null;
 }
 
-export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author'> & {
+export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author' | 'tags'> & {
     authorId: string;
+    tagIds?: string[] | null;
 };
 
 export type TPostFilter = {
     authorId?: string;
     titleSearch?: string;
-    tags?: string[];
+    tagIds?: string[];
     published?: boolean;
 }
+
+export interface TTag extends TBasePageEntity {
+    name: string;
+    color?: string | null;
+    image?: string | null;
+    description?: string | null;
+}
+
+export type TTagInput = Omit<TTag, TDBAuxiliaryColumns>;
 
 // USER / AUTHOR
 

@@ -1,4 +1,4 @@
-import { TPost } from '@cromwell/core';
+import { TPost, TTag } from '@cromwell/core';
 import { IconButton, MenuItem, Popover, TextField } from '@material-ui/core';
 import { Close as CloseIcon, HighlightOffOutlined, Wallpaper as WallpaperIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
@@ -12,7 +12,7 @@ const PostSettings = (props: {
     postData?: Partial<TPost>;
     isSettingsOpen: boolean;
     anchorEl: Element;
-    allTags?: string[] | null;
+    allTags?: TTag[] | null;
     onClose: (newData: Partial<TPost>) => void;
 }) => {
     const { postData } = props;
@@ -21,7 +21,7 @@ const PostSettings = (props: {
     const [pageDescription, setPageDescription] = useState<string | undefined>(postData?.pageDescription);
     const [pageTitle, setPageTitle] = useState<string | undefined>(postData?.pageTitle);
     const [slug, setSlug] = useState<string | undefined>(postData?.slug);
-    const [tags, setTags] = useState<string[] | undefined>(postData?.tags);
+    const [tags, setTags] = useState<TTag[] | undefined>(postData?.tags);
 
     const handleChangeImage = async () => {
         const photoPath = await getFileManager()?.getPhoto();
@@ -30,7 +30,7 @@ const PostSettings = (props: {
         }
     }
 
-    const handleChangeTags = (event: any, newValue: string[]) => {
+    const handleChangeTags = (event: any, newValue: TTag[]) => {
         setTags(newValue);
     }
 
@@ -91,10 +91,10 @@ const PostSettings = (props: {
                                 style={{ backgroundImage: `url(${mainImage})` }}
                                 className={styles.mainImage}></div>
                         ) : (
-                                <WallpaperIcon
-                                    style={{ opacity: '0.7' }}
-                                />
-                            )}
+                            <WallpaperIcon
+                                style={{ opacity: '0.7' }}
+                            />
+                        )}
                     </MenuItem>
                     <p style={{ margin: '10px' }}>{mainImage ?? <span style={{ opacity: '0.7' }}>No image</span>}</p>
                     {mainImage && (
@@ -105,11 +105,10 @@ const PostSettings = (props: {
                 </div>
                 <Autocomplete
                     multiple
-                    freeSolo
                     className={styles.settingItem}
                     options={props.allTags ?? []}
-                    defaultValue={tags ?? []}
-                    getOptionLabel={(option) => option}
+                    defaultValue={tags?.map(tag => (props.allTags ?? []).find(allTag => allTag.name === tag.name)) ?? []}
+                    getOptionLabel={(option) => option.name}
                     onChange={handleChangeTags}
                     renderInput={(params) => (
                         <TextField

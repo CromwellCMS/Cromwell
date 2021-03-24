@@ -1,6 +1,6 @@
 import 'quill/dist/quill.snow.css';
 
-import { getStoreItem, TPost, TPostInput } from '@cromwell/core';
+import { getStoreItem, TPost, TPostInput, TTag } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { gql } from '@apollo/client';
 import { Button, IconButton, MenuItem, Tooltip } from '@material-ui/core';
@@ -25,7 +25,7 @@ const Post = (props) => {
     const { id: postId } = useParams<{ id: string }>();
     const [postData, setPostData] = useState<Partial<TPost> | undefined>(undefined);
     const client = getGraphQLClient();
-    const [allTags, setAllTags] = useState<string[] | null>(null);
+    const [allTags, setAllTags] = useState<TTag[] | null>(null);
     const [isLoading, setIsloading] = useState(false);
     const [notFound, setNotFound] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
@@ -57,7 +57,12 @@ const Post = (props) => {
                         avatar
                     }
                     mainImage
-                    tags
+                    tags {
+                        id
+                        slug
+                        name
+                        color
+                    }
                     content
                     delta
                     isPublished 
@@ -71,9 +76,9 @@ const Post = (props) => {
 
     const getPostTags = async () => {
         try {
-            const data = await client?.getPostTags();
+            const data = (await client?.getTags({ pageSize: 99999 }))?.elements;
             if (data && Array.isArray(data)) {
-                setAllTags(data.sort());
+                setAllTags(data.sort((a, b) => a.name < b.name ? -1 : 1));
             }
         } catch (e) {
             console.error(e)
@@ -137,7 +142,7 @@ const Post = (props) => {
         mainImage: postData.mainImage,
         isPublished: postData.isPublished,
         isEnabled: postData.isEnabled,
-        tags: postData.tags,
+        tagIds: postData.tags?.map(tag => tag.id),
         authorId: postData?.author?.id,
         delta: JSON.stringify(quillEditor.current.getContents()),
     });
@@ -263,13 +268,13 @@ const Post = (props) => {
                             onClick={handlePublish}>
                             Publish</Button>
                     ) : (
-                            <Button variant="contained" color="primary"
-                                className={styles.saveBtn}
-                                size="small"
-                                disabled={!hasChanges.current}
-                                onClick={handleSave}>
-                                Save</Button>
-                        )}
+                        <Button variant="contained" color="primary"
+                            className={styles.saveBtn}
+                            size="small"
+                            disabled={!hasChanges.current}
+                            onClick={handleSave}>
+                            Save</Button>
+                    )}
                 </div>
             </div>
             {isLoading && (

@@ -1,0 +1,25 @@
+@import "../../styles/common.module.scss";
+
+.TagPage {
+    padding: 20px;
+
+    .header {
+        @include paper;
+        padding: 0 20px 0 0;
+        width: 100%;
+        margin-bottom: 15px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .fields {
+        @include paper;
+        padding: 20px;
+        margin-bottom: 15px;
+    }
+
+    .textField {
+        margin-bottom: 15px;
+    }
+}

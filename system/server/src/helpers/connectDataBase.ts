@@ -7,6 +7,7 @@ import {
     Post,
     Product,
     Order,
+    Tag,
     ProductCategory,
     ProductReview,
     ThemeEntity,
@@ -69,6 +70,7 @@ export const connectDatabase = async () => {
             Product, ProductCategory, Post, User,
             Attribute, ProductReview, Order,
             ThemeEntity, PluginEntity, CmsEntity,
+            Tag,
             ...pluginsExports.entities,
             ...(ormconfig.entities ?? [])
         ],

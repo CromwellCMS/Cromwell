@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { getBlockInstance, TPagedParams, TPost, TPostFilter, TUser } from '@cromwell/core';
+import { getBlockInstance, TPagedParams, TPost, TPostFilter, TUser, TTag } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import { Checkbox, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@material-ui/icons';
@@ -47,7 +47,7 @@ const PostList = (props: TPropsType) => {
     const titleSearchId = "post-filter-search";
     const listId = "Admin_PostList";
     const [users, setUsers] = useState<TUser[] | null>(null);
-    const [tags, setTags] = useState<string[] | null>(null);
+    const [tags, setTags] = useState<TTag[] | null>(null);
     const [postToDelete, setPostToDelete] = useState<TPost | null>(null);
     const history = useHistory();
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
@@ -69,9 +69,9 @@ const PostList = (props: TPropsType) => {
         if (data?.elements) setUsers(data.elements);
     }
     const getPostTags = async () => {
-        const data = await client?.getPostTags();
+        const data = (await client?.getTags({ pageSize: 99999 }))?.elements;
         if (data && Array.isArray(data)) {
-            setTags(data.sort());
+            setTags(data.sort((a, b) => a.name < b.name ? -1 : 1));
         }
     }
 
@@ -150,8 +150,8 @@ const PostList = (props: TPropsType) => {
         history.push(`${postPageInfo.baseRoute}/new`);
     }
 
-    const handleChangeTags = (event, newValue: string[]) => {
-        filterInput.current.tags = newValue;
+    const handleChangeTags = (event, newValue: TTag[]) => {
+        filterInput.current.tagIds = newValue.map(tag => tag.id);
         handleFilterInput();
     }
 
@@ -220,11 +220,10 @@ const PostList = (props: TPropsType) => {
                     />
                     <Autocomplete
                         multiple
-                        freeSolo
                         className={styles.filterItem}
                         options={tags ?? []}
                         defaultValue={tags ?? []}
-                        getOptionLabel={(option) => option}
+                        getOptionLabel={(option) => option.name}
                         style={{ width: 200 }}
                         onChange={handleChangeTags}
                         renderInput={(params) => (

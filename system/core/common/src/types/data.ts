@@ -56,6 +56,7 @@ export type TDBEntity = keyof {
     Attribute;
     Order;
     Generic;
+    Tag;
 }
 
 export type GraphQLPathsType = { [K in TDBEntity]: TGraphQLNode };

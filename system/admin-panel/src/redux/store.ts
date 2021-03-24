@@ -5,7 +5,10 @@ export type TAppState = {
     allSelected: boolean;
 }
 
-export const store = createStore<TAppState>();
+export const store = createStore<TAppState>(undefined, {
+    selectedItems: {},
+    allSelected: false,
+});
 
 export type DispatchType = typeof store.dispatch;
 export type StoreAction = ReturnType<typeof store.dispatch>;

@@ -98,6 +98,19 @@ export class MockController {
         return this.mockService.mockUsers();
     }
 
+    @Get('tags')
+    @ApiOperation({ description: 'Delete all posts and mock new' })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async mockTags(): Promise<boolean> {
+        logger.log('MockController::mockTags');
+
+        return this.mockService.mockTags();
+    }
+
 
     @Get('posts')
     @ApiOperation({ description: 'Delete all posts and mock new' })
@@ -112,7 +125,7 @@ export class MockController {
         return this.mockService.mockPosts();
     }
 
-    
+
     @Get('orders')
     @ApiOperation({ description: 'Delete all store orders and mock new' })
     @ApiResponse({

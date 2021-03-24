@@ -38,6 +38,8 @@ import {
     TDeleteManyInput,
     TOrderFilter,
     TUserFilter,
+    TTag,
+    TTagInput,
 } from '@cromwell/core';
 
 class CGraphQLClient {
@@ -951,7 +953,12 @@ class CGraphQLClient {
                 avatar
             }
             mainImage
-            tags
+            tags {
+                id
+                slug
+                name
+                color
+            }
             content
             isPublished
       }
@@ -1153,19 +1160,6 @@ class CGraphQLClient {
         })
         return this.returnData(res, path);
     }
-
-    public getPostTags = async (): Promise<string[] | undefined> => {
-        const path = GraphQLPaths.Post.getTags;
-        const res = await this.apolloClient.query({
-            query: gql`
-              query coreGetPostTags {
-                  ${path}
-              }
-          `,
-        });
-        return this.returnData(res, path);
-    }
-
 
     // </Post>
 
@@ -1584,6 +1578,161 @@ class CGraphQLClient {
 
 
     // </Order>
+
+
+    // <Tag>
+
+    public TagFragment = gql`
+      fragment TagFragment on Tag {
+            id
+            slug
+            createDate
+            updateDate
+            isEnabled
+            name
+            color
+            image
+            description
+      }
+  `;
+
+    public getTags = async (pagedParams?: TPagedParams<TTag>,
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TTag>> => {
+
+        const fragment = customFragment ?? this.TagFragment;
+        const fragmentName = customFragmentName ?? 'TagFragment';
+
+        const path = GraphQLPaths.Tag.getMany;
+
+        const variables: Record<string, any> = {
+            pagedParams: pagedParams ?? {},
+        };
+
+        const res = await this.apolloClient.query({
+            query: gql`
+              query coreGetTags($pagedParams: PagedParamsInput) {
+                  ${path}(pagedParams: $pagedParams) {
+                      pagedMeta {
+                          ...PagedMetaFragment
+                      }
+                      elements {
+                          ...${fragmentName}
+                      }
+                  }
+              }
+              ${fragment}
+              ${this.PagedMetaFragment}
+          `,
+            variables
+        })
+        return this.returnData(res, path);
+    }
+
+    public getTagById = async (id: string)
+        : Promise<TTag | undefined> => {
+        const path = GraphQLPaths.Tag.getOneById;
+        const res = await this.apolloClient.query({
+            query: gql`
+                query coreGetTagById($id: String!) {
+                    ${path}(id: $id) {
+                        ...TagFragment
+                    }
+                }
+                    ${this.TagFragment}
+                `,
+            variables: {
+                id,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public getTagBySlug = async (slug: string): Promise<TTag | undefined> => {
+        const path = GraphQLPaths.Tag.getOneBySlug;
+        const res = await this.apolloClient.query({
+            query: gql`
+              query coreGetTag($slug: String!) {
+                  ${path}(slug: $slug) {
+                  ...TagFragment
+                  }
+              }
+              ${this.TagFragment}
+             `,
+            variables: {
+                slug,
+            }
+        });
+
+        return this.returnData(res, path);
+    }
+
+    public updateTag = async (id: string, input: TTagInput) => {
+        const path = GraphQLPaths.Tag.update;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+              mutation coreUpdateTag($id: String!, $data: InputTag!) {
+                  ${path}(id: $id, data: $data) {
+                      ...TagFragment
+                  }
+              }
+              ${this.TagFragment}
+          `,
+            variables: {
+                id,
+                data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public createTag = async (input: TTagInput) => {
+        const path = GraphQLPaths.Tag.create;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+              mutation coreCreateTag($data: InputTag!) {
+                  ${path}(data: $data) {
+                      ...TagFragment
+                  }
+              }
+              ${this.TagFragment}
+          `,
+            variables: {
+                data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public deleteTag = async (id: string) => {
+        const path = GraphQLPaths.Tag.delete;
+
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+              mutation coreDeleteTag($id: String!) {
+                  ${path}(id: $id)
+              }
+          `,
+            variables: {
+                id,
+            }
+        });
+        return this.returnData(res, path);
+    }
+
+    public deleteManyTags = async (input: TDeleteManyInput) => {
+        const path = GraphQLPaths.Tag.deleteMany;
+        const res = await this.apolloClient.mutate({
+            mutation: gql`
+              mutation coreDeleteManyTags($data: DeleteManyInput!) {
+                  ${path}(data: $data)
+              }
+          `,
+            variables: {
+                data: input,
+            }
+        });
+        return this.returnData(res, path);
+    }
 
 
     // <Plugin>

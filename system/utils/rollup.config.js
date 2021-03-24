@@ -36,7 +36,8 @@ export default [
                 compilerOptions: {
                     module: 'ESNext',
                     target: 'ES5'
-                }
+                },
+                monorepo: true,
             }),
             commonjs(),
             // terser()
@@ -59,7 +60,8 @@ export default [
                     declaration: true,
                     declarationMap: true,
                     declarationDir: resolve(__dirname, buildDir)
-                }
+                },
+                monorepo: true,
             }),
             json(),
             // terser(),

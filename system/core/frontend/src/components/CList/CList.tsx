@@ -52,8 +52,10 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
 
     constructor(props: TCListProps<DataType, ListItemProps>) {
         super(props);
-
         this.init();
+    }
+
+    componentDidMount() {
     }
 
     public getProps(): TCListProps<DataType, ListItemProps> {
@@ -110,7 +112,6 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         }
 
         if (!props.dataList && props.loader) {
-
             if (props.useQueryPagination && !isServer()) {
                 const urlParams = new URLSearchParams(window.location.search);
                 let pageNumber: any = urlParams.get('pageNumber');
@@ -134,6 +135,15 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             }
         }
 
+        if (props.usePagination && this.paginationInst) {
+            this.paginationInst.init();
+        }
+    }
+
+    public updateData = async () => {
+        this.clearState();
+        await this.fetchFirstBatch();
+        const props = this.getProps();
         if (props.usePagination && this.paginationInst) {
             this.paginationInst.init();
         }
@@ -435,7 +445,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                     setContentInstance(this);
                     return (
                         <div className={styles.CList}>
-                            <div ref={this.throbberRef}>
+                            <div className={(this.isLoading || props.isLoading) ? undefined : styles.none} ref={this.throbberRef}>
                                 {props.elements?.preloader ??
                                     <div className={styles.listOverlay}>
                                         <LoadBox />
@@ -522,11 +532,11 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                         {props.elements?.showMore ? (
                             <props.elements.showMore onClick={handleShowMoreClick} />
                         ) : (
-                                <div
-                                    className={styles.showMoreBtn}
-                                    onClick={handleShowMoreClick}
-                                >Show more</div>
-                            )}
+                            <div
+                                className={styles.showMoreBtn}
+                                onClick={handleShowMoreClick}
+                            >Show more</div>
+                        )}
 
                     </div>
                 )}

@@ -102,7 +102,7 @@ export class ProductCategoryResolver {
 
     @FieldResolver(() => [ProductCategory])
     async [childrenKey](@Root() productCategory: ProductCategory): Promise<TProductCategory[]> {
-        return await this.repository.getChildrenCategories(productCategory);
+        return await this.repository.getChildCategories(productCategory);
     }
 
     @FieldResolver()
@@ -110,4 +110,3 @@ export class ProductCategoryResolver {
         return Math.floor(Math.random() * 10);
     }
 }
-

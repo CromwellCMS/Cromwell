@@ -10,11 +10,12 @@ import {
     ShoppingBasket as ShoppingBasketIcon,
     Settings as SettingsIcon,
     PeopleAlt as PeopleAltIcon,
+    LocalOfferOutlined as LocalOfferOutlinedIcon,
 } from '@material-ui/icons';
 import React from 'react';
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
 import AttributesPage from '../pages/attributes/AttributesPage';
-import HomePage from '../pages/home';
+import HomePage from '../pages/home/Home';
 import PluginPage from '../pages/plugin/PluginPage';
 import PluginListPage from '../pages/pluginList/PluginList';
 import ProductPage from '../pages/product/Product';
@@ -32,7 +33,8 @@ import OrderPage from '../pages/order/Order';
 import SettingsPage from '../pages/settings/Settings';
 import UserListPage from '../pages/userList/UserList';
 import UserPage from '../pages/user/User';
-
+import TagListPage from '../pages/tagList/TagList';
+import TagPage from '../pages/tag/Tag';
 
 export type SidebarLinkType = {
     id: string;
@@ -164,6 +166,18 @@ export const userPageInfo: PageInfo = {
     component: UserPage,
 };
 
+export const tagPageInfo: PageInfo = {
+    name: 'Tag',
+    route: '/tag/:id',
+    baseRoute: '/tag',
+    component: TagPage,
+}
+export const tagListPageInfo: PageInfo = {
+    name: 'Tag List',
+    route: '/tag-list',
+    component: TagListPage,
+}
+
 
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
@@ -187,6 +201,8 @@ export const pageInfos: PageInfo[] = [
     settingsPageInfo,
     userListPageInfo,
     userPageInfo,
+    tagPageInfo,
+    tagListPageInfo
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
@@ -240,7 +256,13 @@ export const sideBarLinks: SidebarLinkType[] = [
                 id: '7_Posts',
                 title: 'Posts',
                 route: postListInfo.route,
-                icon: React.createElement(LibraryBooksIcon)
+                icon: React.createElement(LibraryBooksIcon),
+            },
+            {
+                id: 'tags_page',
+                title: 'Tags',
+                route: tagListPageInfo.route,
+                icon: React.createElement(LocalOfferOutlinedIcon),
             },
         ]
     },

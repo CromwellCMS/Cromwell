@@ -14,6 +14,7 @@ import { toast } from '../../components/toast/toast';
 import { categoryPageInfo } from '../../constants/PageInfos';
 import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
 import styles from './CategoryPage.module.scss';
+import { copySync } from 'fs-extra';
 
 export default function CategoryPage() {
     const { id: categoryId } = useParams<{ id: string }>();
@@ -56,7 +57,7 @@ export default function CategoryPage() {
                 'AdminPanelProductCategoryFragment'
             );
 
-        } catch (e) { console.log(e) }
+        } catch (e) { console.error(e) }
 
         return categoryData;
     }
@@ -114,9 +115,11 @@ export default function CategoryPage() {
 
     const handleInputChange = (prop: keyof TProductCategory, val: any) => {
         if (category) {
-            const cat = Object.assign({}, category);
-            (cat[prop] as any) = val;
-            setCategoryData(cat);
+            setCategoryData(prevCat => {
+                const cat = Object.assign({}, prevCat);
+                (cat[prop] as any) = val;
+                return cat;
+            });
         }
     }
 
@@ -135,9 +138,12 @@ export default function CategoryPage() {
 
     const handleParentCategoryChange = (data: TProductCategory | null) => {
         if (data && category && data.id === category.id) return;
-        const cat = Object.assign({}, category);
-        cat.parent = data ?? undefined;
-        setCategoryData(cat);
+
+        setCategoryData(prevCat => {
+            const cat = Object.assign({}, prevCat);
+            cat.parent = data ?? undefined;
+            return cat;
+        });
     }
 
     const getInput = (): TProductCategoryInput => ({

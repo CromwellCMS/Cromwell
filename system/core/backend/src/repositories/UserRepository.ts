@@ -95,7 +95,7 @@ export class UserRepository extends BaseRepository<User> {
 
         const user = await this.getUserById(id);
         if (!user) {
-            console.log('UserRepository::deleteUser failed to find user by id');
+            logger.error('UserRepository::deleteUser failed to find user by id');
             return false;
         }
         const res = await this.delete(id);
@@ -155,7 +155,7 @@ export class UserRepository extends BaseRepository<User> {
         try {
             await qb.execute();
         } catch (e) {
-            console.error(e)
+            logger.error(e)
         }
         return true;
     }

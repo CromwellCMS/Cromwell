@@ -1,4 +1,4 @@
-import { GraphQLPaths, TPagedList, TPost, TUser } from '@cromwell/core';
+import { GraphQLPaths, TPagedList, TPost, TUser, TTag } from '@cromwell/core';
 import {
     CreatePost,
     getLogger,
@@ -11,6 +11,7 @@ import {
     User,
     UserRepository,
     DeleteManyInput,
+    Tag,
 } from '@cromwell/core-backend';
 import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -24,9 +25,9 @@ const deletePath = GraphQLPaths.Post.delete;
 const deleteManyPath = GraphQLPaths.Post.deleteMany;
 const deleteManyFilteredPath = GraphQLPaths.Post.deleteManyFiltered;
 const getFilteredPath = GraphQLPaths.Post.getFiltered;
-const getTagsPath = GraphQLPaths.Post.getTags;
 
 const authorKey: keyof TPost = 'author';
+const tagsKey: keyof TPost = 'tags';
 const logger = getLogger('detailed');
 
 @Resolver(Post)
@@ -87,11 +88,6 @@ export class PostResolver {
         return this.repository.getFilteredPosts(pagedParams, filterParams);
     }
 
-    @Query(() => [String])
-    async [getTagsPath](): Promise<string[]> {
-        return this.repository.getAllPostTags();
-    }
-
     @FieldResolver(() => User, { nullable: true })
     async [authorKey](@Root() post: Post): Promise<TUser | undefined> {
         try {
@@ -100,4 +96,10 @@ export class PostResolver {
             logger.error(e);
         }
     }
+
+    @FieldResolver(() => [Tag], { nullable: true })
+    async [tagsKey](@Root() post: Post): Promise<TTag[] | undefined | null> {
+        return this.repository.getTagsOfPost(post.id);
+    }
 }
+
