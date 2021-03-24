@@ -1,0 +1,46 @@
+@import "../../styles/common.module.scss";
+
+.listItem {
+    @include paper;
+    display: flex;
+    align-items: center;
+    margin-bottom: 3px;
+    transition: 0.3s;
+    border: 1px solid transparent;
+    border-bottom: 1px solid #ddd;
+
+    .itemMain {
+        display: flex;
+    }
+
+    .itemImage {
+        @include bckgrCover;
+        height: 60px;
+        width: 90px;
+    }
+
+    .itemMainInfo {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin-left: 10px;
+    }
+
+    .itemSubInfo {
+        padding: 5px;
+    }
+
+    .itemTitle {
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    .listItemActions {
+        display: flex;
+        justify-content: flex-end;
+    }
+}
+
+.listItem:hover {
+    background-color: #f4f4f4;
+}

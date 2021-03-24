@@ -53,9 +53,11 @@ export default function UserPage() {
 
     const handleInputChange = (prop: keyof TUser, val: any) => {
         if (userData) {
-            const user = Object.assign({}, userData);
-            (user[prop] as any) = val;
-            setUserData(user);
+            setUserData((prevData) => {
+                const newData = Object.assign({}, prevData);
+                (newData[prop] as any) = val;
+                return newData;
+            });
         }
     }
 
