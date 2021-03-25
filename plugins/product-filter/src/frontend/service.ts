@@ -12,6 +12,7 @@ export type TProductFilterData = {
     slug?: string | string[] | null;
     attributes?: TAttribute[];
     filterMeta?: TProductFilterMeta;
+    onChange?: (params: TProductFilter) => void;
 }
 
 const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: string, pagedParams: TPagedParams<TProduct>,
@@ -53,20 +54,14 @@ const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: stri
     return filteredList;
 }
 
-export const filterCList = (checkedAttrs: Record<string, string[]>, priceRange: number[], productListId: string,
+export const filterCList = (filterOptions: TProductFilter, productListId: string,
     productCategoryId: string, client: TCGraphQLClient | undefined, cb: (data: TFilteredProductList | undefined) => void) => {
     // console.log('filterCList', checkedAttrs, priceRange);
+
     const list: TCList | undefined = getBlockInstance(productListId)?.getContentInstance() as any;
     if (list) {
         const listProps = Object.assign({}, list.getProps());
         listProps.loader = async (pagedParams: TPagedParams<TProduct>): Promise<TFilteredProductList | undefined> => {
-            const filterOptions: TProductFilter = {
-                attributes: Object.keys(checkedAttrs).map(key => ({
-                    key, values: checkedAttrs[key]
-                })),
-                minPrice: priceRange[0],
-                maxPrice: priceRange[1]
-            }
             // const timestamp = Date.now();
             const filtered = await getFiltered(client, productCategoryId, pagedParams, filterOptions, cb);
             // const timestamp2 = Date.now();

@@ -1,4 +1,4 @@
-import { TAttributeValue, TFrontendPluginProps, TFilteredProductList } from '@cromwell/core';
+import { TAttributeValue, TFrontendPluginProps, TFilteredProductList, TProductFilter } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import {
     Card,
@@ -14,7 +14,7 @@ import {
     SwipeableDrawer,
     Typography,
     useMediaQuery,
-    useTheme,
+    useTheme
 } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon, FilterList as FilterListIcon, Close as CloseIcon } from '@material-ui/icons';
 import clsx from 'clsx';
@@ -67,6 +67,17 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     const applyFilter = () => {
         const productListId = props?.settings?.productListId;
         const productCategoryId = productCategory?.id;
+
+        const filterParams: TProductFilter = {
+            attributes: Object.keys(checkedAttrs).map(key => ({
+                key, values: checkedAttrs[key]
+            })),
+            minPrice: priceRange[0],
+            maxPrice: priceRange[1]
+        }
+
+        props.data?.onChange?.(filterParams);
+
         if (!productListId) {
             console.error('ProductFilter:applyFilter: !productListId', props?.settings)
             return;
@@ -75,8 +86,8 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
             console.error('ProductFilter:applyFilter: !productCategoryId', productCategory)
             return;
         }
-        filterCList(checkedAttrs, priceRange.current, productListId,
-            productCategoryId, client, updateFilterMeta)
+
+        filterCList(filterParams, productListId, productCategoryId, client, updateFilterMeta)
     }
 
     useEffect(() => {

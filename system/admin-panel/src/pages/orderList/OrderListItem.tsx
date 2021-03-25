@@ -50,7 +50,6 @@ const OrderListItem = (props: TPropsType) => {
                         </div>
                         <div className={styles.itemMainInfo}>
                             <p className={styles.itemTitle}>{props.data?.customerName}</p>
-                            <p className={styles.itemAuthor}>{props.data?.customerPhone}</p>
                         </div>
                     </Grid>
                     <Grid item xs={2} className={styles.itemSubInfo}>

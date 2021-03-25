@@ -1,5 +1,5 @@
 import { Modal as MuiModal } from '@material-ui/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import styles from './Modal.module.scss';
 
@@ -11,18 +11,38 @@ const Modal = (props: {
     className?: string;
     disableEnforceFocus?: boolean;
 }) => {
-    useEffect(() => {
+    const blurred = useRef(false);
+
+    const setBlur = (blur: boolean) => {
         if (props.blurSelector) {
             const elem = document.querySelector(props.blurSelector) as HTMLElement;
             if (elem) {
-                if (props.open) {
+                if (blur) {
                     elem.style.filter = 'blur(4px)';
+                    blurred.current = true;
                 } else {
                     elem.style.filter = '';
+                    blurred.current = false;
                 }
             }
         }
+    }
+
+    useEffect(() => {
+        if (props.open) {
+            setBlur(true);
+        } else {
+            setBlur(false);
+        }
     }, [props.open]);
+
+    useEffect(() => {
+        return () => {
+            if (blurred.current) {
+                setBlur(false);
+            }
+        }
+    }, [])
 
     return (
         <MuiModal

@@ -7,6 +7,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Link, useParams, useHistory } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
+import ColorPicker from '../../components/colorPicker/ColorPicker';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
 import styles from './Tag.module.scss';
 
@@ -137,6 +138,33 @@ const TagPage = () => {
                             fullWidth
                             className={styles.textField}
                             onChange={(e) => { handleInputChange('name', e.target.value) }}
+                        />
+                        <ColorPicker
+                            className={styles.textField}
+                            label="Color"
+                            value={data?.color ?? '#fff'}
+                            onChange={color => handleInputChange('color', color)}
+                        />
+                        <TextField
+                            label="Page slug"
+                            className={styles.textField}
+                            fullWidth
+                            value={data?.slug || ''}
+                            onChange={(e) => { handleInputChange('slug', e.target.value) }}
+                        />
+                        <TextField
+                            label="Page meta title (SEO)"
+                            className={styles.textField}
+                            fullWidth
+                            value={data?.pageTitle || ''}
+                            onChange={(e) => { handleInputChange('pageTitle', e.target.value) }}
+                        />
+                        <TextField
+                            label="Page meta description (SEO)"
+                            className={styles.textField}
+                            fullWidth
+                            value={data?.pageDescription || ''}
+                            onChange={(e) => { handleInputChange('pageDescription', e.target.value) }}
                         />
                     </>
                 )}
