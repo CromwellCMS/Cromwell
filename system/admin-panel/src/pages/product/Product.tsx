@@ -95,7 +95,7 @@ const ProductPage = () => {
 
             if (prod?.id) {
                 setProdData(prod);
-
+                forceUpdate();
             }
             else setNotFound(true);
 

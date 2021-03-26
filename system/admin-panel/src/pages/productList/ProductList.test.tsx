@@ -39,9 +39,11 @@ jest.mock('@cromwell/core-frontend', () => {
             });
             return <Comp />;
         },
+        CPlugin: () => <></>,
         getGraphQLClient: () => {
             return {
-                getFilteredProducts: jest.fn().mockImplementation(() => productsData)
+                getFilteredProducts: jest.fn().mockImplementation(() => productsData),
+                getAttributes: jest.fn().mockImplementation(async () => []),
             }
         },
         getCStore: () => {

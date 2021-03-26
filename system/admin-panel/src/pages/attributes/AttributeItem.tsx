@@ -27,7 +27,7 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-const AttributeItem = (props: { data: TAttribute }) => {
+const AttributeItem = (props: { data: TAttribute; handleRemove: (data: TAttribute) => void }) => {
     const attribute = useRef(props.data);
     const [checkedValues, setCheckedValues] = useState<string[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -112,6 +112,7 @@ const AttributeItem = (props: { data: TAttribute }) => {
         let success = false;
         try {
             if (attribute.current?.id) await graphClient.deleteAttribute(attribute.current?.id);
+            props.handleRemove(props.data);
             attribute.current = undefined;
             forceUpdate();
             success = true;
@@ -195,8 +196,8 @@ const AttributeItem = (props: { data: TAttribute }) => {
                                             backgroundSize: 'contain'
                                         }}></div>
                                     ) : (
-                                            <ImageIcon />
-                                        )}
+                                        <ImageIcon />
+                                    )}
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title="Delete value">

@@ -1,8 +1,8 @@
 import {
     getStoreItem, setStoreItem, TCromwellBlockData,
-    TCromwellBlockProps, TCromwellBlock, TBlockContentGetter
+    TCromwellBlockProps, TCromwellBlock, TBlockContentProvider
 } from '@cromwell/core';
-import React, { Component } from 'react';
+import React, { Component, useEffect } from 'react';
 import { CContainer } from '../CContainer/CContainer';
 import { CText } from '../CText/CText';
 import { CHTML } from '../CHTML/CHTML';
@@ -11,7 +11,7 @@ import { CPlugin } from '../CPlugin/CPlugin';
 import { CGallery } from '../CGallery/CGallery';
 import {
     blockTypeToClassname, cromwellIdToHTML,
-    cromwellBlockPluginNameToClassname, BlockGetContentConsumer, dynamicLoader
+    cromwellBlockPluginNameToClassname, BlockContentConsumer, dynamicLoader
 } from '../../constants';
 import styles from './CromwellBlock.module.scss';
 
@@ -60,11 +60,15 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
     componentDidMount() {
         this.didUpdate();
+        this.contextComponentDidUpdate?.();
     }
 
     componentDidUpdate() {
         this.didUpdate();
+        this.contextComponentDidUpdate?.();
     }
+
+    private contextComponentDidUpdate: undefined | (() => void) = undefined;
 
     private didUpdate = async () => {
         const childPromises = Object.values(this.childPromises).filter(p => Boolean(p?.then));
@@ -236,6 +240,9 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                 const DynamicComp = dynamicLoader(async (): Promise<React.ComponentType> => {
                     const child = await childPromise;
                     return () => {
+                        useEffect(() => {
+                            this.componentDidUpdate();
+                        }, [])
                         return <>{child.consumerRender(data?.id)}</>
                     }
                 });
@@ -264,7 +271,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
     }
 
-    public contentRender(getContent?: TBlockContentGetter | null): React.ReactNode | null {
+    public contentRender(getContent?: TBlockContentProvider['getter'] | null, className?: string): React.ReactNode | null {
         this.readConfig();
 
         if (this.data?.isDeleted) {
@@ -276,7 +283,8 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
             + (this.data && this.data.type ? ' ' + blockTypeToClassname(this.data.type) : '')
             + (this.props.className ? ` ${this.props.className}` : '')
             + (this.data && this.data.type && this.data.type === 'plugin' && this.data.plugin && this.data.plugin.pluginName
-                ? ` ${cromwellBlockPluginNameToClassname(this.data.plugin.pluginName)}` : '');
+                ? ` ${cromwellBlockPluginNameToClassname(this.data.plugin.pluginName)}` : '')
+            + (className ? ' ' + className : '');
 
 
         const blockContent = getContent ? getContent(this) : this.getDefaultContent();
@@ -287,9 +295,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                 // style={this.data ? this.data.styles as any : undefined}
                 className={elementClassName}
                 ref={this.blockRef}
-            >
-                {blockContent}
-            </div>
+            >{blockContent}</div>
         );
     }
 
@@ -300,11 +306,12 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
             return <></>;
         }
 
-        return <BlockGetContentConsumer>
-            {(getContent) => {
-                return this.contentRender(getContent)
+        return <BlockContentConsumer>
+            {(content) => {
+                this.contextComponentDidUpdate = content?.componentDidUpdate;
+                return this.contentRender(content?.getter, content?.blockClass)
             }}
-        </BlockGetContentConsumer>
+        </BlockContentConsumer>
     }
 
     render(): React.ReactNode | null {

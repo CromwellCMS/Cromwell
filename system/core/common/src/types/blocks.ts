@@ -46,7 +46,7 @@ export type TCromwellBlock = React.Component<TCromwellBlockProps> & {
     setContentInstance: (contentInstance: React.Component) => void;
     getData: () => TCromwellBlockData | undefined;
     getBlockRef: () => React.RefObject<HTMLDivElement>;
-    contentRender: (getContent?: TBlockContentGetter | null) => React.ReactNode | null;
+    contentRender: (getContent?: TBlockContentProvider['getter'] | null) => React.ReactNode | null;
     consumerRender: (jsxParentId?: string) => React.ReactNode | null;
     getDefaultContent: () => React.ReactNode | null;
     notifyChildRegistered: (inst: TCromwellBlock) => void;
@@ -203,4 +203,8 @@ export type TGallerySettings = {
     };
 }
 
-export type TBlockContentGetter = (block: TCromwellBlock) => React.ReactNode | null;
+export type TBlockContentProvider = {
+    getter: (block: TCromwellBlock) => React.ReactNode | null;
+    blockClass?: string;
+    componentDidUpdate?: () => void;
+}

@@ -7,6 +7,8 @@
     padding: 20px;
     padding-bottom: 150px;
     overflow: auto;
+    max-width: 1200px;
+    margin: 0 auto;
 
     .paper {
         @include paper;

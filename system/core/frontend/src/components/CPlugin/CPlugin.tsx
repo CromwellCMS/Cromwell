@@ -13,6 +13,7 @@ type CPluginProps = {
     id: string;
     pluginName?: string;
     component?: React.ComponentType<TFrontendPluginProps>;
+    adminPanel?: boolean;
 } & TCromwellBlockProps;
 
 /**
@@ -32,16 +33,16 @@ export const CPlugin = (props: CPluginProps) => {
                 if (name && !component) {
 
                     const restAPIClient = getRestAPIClient();
-                    const loader = getStoreItem('environment')?.isAdminPanel ?
+                    const loader = (getStoreItem('environment')?.isAdminPanel && props.adminPanel !== false) ?
                         restAPIClient?.getPluginAdminBundle : restAPIClient?.getPluginFrontendBundle;
 
                     PluginComponent = loadFrontendBundle(
                         name,
                         async () => loader?.(name),
-                        dynamicLoader,
+                        dynamicLoader as (func: (() => Promise<typeof component>)) => typeof component,
                         fallbackComponent,
                         { loading: () => <p>loading plugin...</p> }
-                    )
+                    );
                 }
 
                 const pluginsData = getStoreItem('pluginsData');

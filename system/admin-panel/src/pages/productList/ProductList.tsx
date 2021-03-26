@@ -1,13 +1,15 @@
 import { gql } from '@apollo/client';
-import { getBlockInstance, TPagedParams, TProduct, TProductFilter } from '@cromwell/core';
-import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, TextField, Tooltip } from '@material-ui/core';
-import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@material-ui/icons';
+import { getBlockInstance, TPagedParams, TProduct, TProductFilter, setStoreItem, getStoreItem } from '@cromwell/core';
+import { CList, getGraphQLClient, TCList, CPlugin } from '@cromwell/core-frontend';
+import { Checkbox, IconButton, TextField, Tooltip, Drawer } from '@material-ui/core';
+import {
+    AddCircle as AddCircleIcon, Delete as DeleteIcon,
+    FilterList as FilterListIcon
+} from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
-
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
@@ -51,14 +53,34 @@ const ProductList = (props: TPropsType) => {
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const totalElements = useRef<number | null>(null);
+    const filterPluginName = '@cromwell/plugin-product-filter';
+    const [showFilter, setShowFilter] = useState(false);
+    const headerRef = useRef<HTMLDivElement | null>(null);
 
     useEffect(() => {
         resetSelected();
+        init();
 
         return () => {
             resetSelected();
         }
     }, []);
+
+    const init = async () => {
+        const attributes = await client?.getAttributes();
+        const pluginsData = getStoreItem('pluginsData') ?? {};
+        pluginsData[filterPluginName] = {
+            ...(pluginsData[filterPluginName] ?? {}),
+            attributes: attributes,
+            onChange: (params: TProductFilter) => {
+                Object.keys(params).forEach(key => {
+                    filterInput.current[key] = params[key];
+                });
+                handleFilterInput();
+            },
+        }
+        setStoreItem('pluginsData', pluginsData);
+    }
 
     const handleGetProducts = async (params: TPagedParams<TProduct>) => {
         const products = await client?.getFilteredProducts({
@@ -80,6 +102,14 @@ const ProductList = (props: TPropsType) => {
         if (products?.pagedMeta?.totalElements) {
             totalElements.current = products.pagedMeta?.totalElements;
         }
+
+        const pluginsData = getStoreItem('pluginsData') ?? {};
+        pluginsData[filterPluginName] = {
+            ...(pluginsData[filterPluginName] ?? {}),
+            filterMeta: products.filterMeta,
+        }
+        setStoreItem('pluginsData', pluginsData);
+
         return products;
     }
 
@@ -148,9 +178,13 @@ const ProductList = (props: TPropsType) => {
         resetSelected();
     }
 
+    const handleToggleFilter = () => {
+        setShowFilter(prev => !prev)
+    }
+
     return (
         <div className={styles.ProductList}>
-            <div className={styles.listHeader}>
+            <div className={styles.listHeader} ref={headerRef}>
                 <div className={styles.filter}>
                     <div className={commonStyles.center}>
                         <Tooltip title="Select all">
@@ -167,6 +201,22 @@ const ProductList = (props: TPropsType) => {
                         placeholder="Search by title"
                         onChange={handleFilterInput}
                     />
+                    <Tooltip title="Show filter">
+                        <IconButton
+                            onClick={handleToggleFilter}
+                            aria-label="show filter"
+                        >
+                            <FilterListIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Drawer anchor={'left'} open={showFilter} onClose={() => setShowFilter(false)}>
+                        <CPlugin
+                            adminPanel={false}
+                            pluginName={filterPluginName}
+                            id="product-filter-plugin"
+                        />
+                    </Drawer>
+
                 </div>
                 <div className={styles.pageActions} >
                     <Tooltip title="Delete selected">

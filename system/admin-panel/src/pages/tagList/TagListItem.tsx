@@ -49,7 +49,7 @@ const TagListItem = (props: TPropsType) => {
                         </div>
                     </Grid>
                     <Grid item xs={2} className={styles.itemSubInfo}>
-                        <p className={styles.status}>{props.data?.color}</p>
+                        <div style={{ backgroundColor: props.data?.color, width: '20px', height: '20px', borderRadius: '100%' }}></div>
                     </Grid>
                     <Grid item xs={4} className={styles.itemSubInfo}>
                     </Grid>

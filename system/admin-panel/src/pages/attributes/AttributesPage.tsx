@@ -42,6 +42,11 @@ export default function AttributesPage() {
         forceUpdate();
     }
 
+    const handleRemove = (attribute: TAttribute) => {
+        attributes.current = attributes.current.filter(attr => attr !== attribute);
+        forceUpdate();
+    }
+
     return (
         <div className={styles.Attributes}>
             <div className={styles.header}>
@@ -59,10 +64,10 @@ export default function AttributesPage() {
                 cellHeight={315}
                 spacing={15}
             >
-                {attributes.current && attributes.current.map(attribute => (
-                    <GridListTile key={attribute.id}>
-                        <div className={styles.listItem} >
-                            <AttributeItem data={attribute} />
+                {attributes.current && attributes.current.map((attribute, index) => (
+                    <GridListTile key={attribute.id ?? index}>
+                        <div className={styles.listItem} key={attribute.id ?? index} >
+                            <AttributeItem data={attribute} handleRemove={handleRemove} />
                         </div>
                     </GridListTile>
                 ))}
