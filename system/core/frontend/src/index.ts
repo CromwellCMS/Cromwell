@@ -18,7 +18,7 @@ export {
     cromwellBlockPluginNameToClassname,
     getBlockDataById,
     isAdminPanel,
-    BlockGetContentProvider,
+    BlockContentProvider,
     getBlockData,
     getBlockById,
     getBlockElementById,

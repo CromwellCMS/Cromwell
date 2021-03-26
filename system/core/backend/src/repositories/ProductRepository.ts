@@ -228,17 +228,17 @@ export class ProductRepository extends BaseRepository<Product> {
             // Price filter
             if (filterParams.maxPrice) {
                 const query = `${this.metadata.tablePath}.price <= :maxPrice`;
-                qb.andWhere(query, { maxPrice: filterParams.maxPrice })
+                qb.andWhere(query, { maxPrice: filterParams.maxPrice });
             }
             if (filterParams.minPrice) {
                 const query = `${this.metadata.tablePath}.price >= :minPrice`;
-                qb.andWhere(query, { minPrice: filterParams.minPrice })
+                qb.andWhere(query, { minPrice: filterParams.minPrice });
             }
         }
     }
 
     async getFilteredProducts(pagedParams?: PagedParamsInput<TProduct>, filterParams?: ProductFilterInput, categoryId?: string): Promise<TFilteredProductList> {
-        logger.log('ProductRepository::getFilteredProducts categoryId:' + categoryId + ' pagedParams:' + pagedParams);
+        logger.log('ProductRepository::getFilteredProducts categoryId:' + categoryId);
         const timestamp = Date.now();
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {

@@ -1,4 +1,4 @@
-import { TCromwellBlockData, TCromwellBlockType, getStoreItem, TBlockContentGetter, TCromwellBlock } from '@cromwell/core';
+import { TCromwellBlockData, TCromwellBlockType, getStoreItem, TBlockContentProvider, TCromwellBlock } from '@cromwell/core';
 import React from 'react';
 import loadable from '@loadable/component';
 import dynamic from 'next/dynamic';
@@ -44,7 +44,7 @@ export const getBlockElementById = (id?: string): HTMLElement | undefined | null
 export const isAdminPanel = (): boolean => getStoreItem('environment')?.isAdminPanel ?? false;
 
 
-export const { Consumer: BlockGetContentConsumer, Provider: BlockGetContentProvider } = React.createContext<TBlockContentGetter | null>(null);
+export const { Consumer: BlockContentConsumer, Provider: BlockContentProvider } = React.createContext<TBlockContentProvider | null>(null);
 
 // In Next.js environment there will be available "dynamic" function, in any other env Next.js module
 // will be excluded and @loadable/component used instead

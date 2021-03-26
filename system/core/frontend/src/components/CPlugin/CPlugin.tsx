@@ -39,10 +39,10 @@ export const CPlugin = (props: CPluginProps) => {
                     PluginComponent = loadFrontendBundle(
                         name,
                         async () => loader?.(name),
-                        dynamicLoader,
+                        dynamicLoader as (func: (() => Promise<typeof component>)) => typeof component,
                         fallbackComponent,
                         { loading: () => <p>loading plugin...</p> }
-                    )
+                    );
                 }
 
                 const pluginsData = getStoreItem('pluginsData');

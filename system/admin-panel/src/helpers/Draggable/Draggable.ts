@@ -1,8 +1,6 @@
 import { throttle } from 'throttle-debounce';
-import { container } from 'webpack';
 
-
-type TDraggableOptions = {
+export type TDraggableOptions = {
     /**
      * CSS selector of blocks that can be dragged
      */
@@ -91,12 +89,12 @@ export class Draggable {
         afterElement: HTMLElement;
     } | null = null;
 
-    private draggableFrameClass: string = 'DraggableBlock__frame';
-    private draggableBlockClass: string = 'DraggableBlock';
-    private draggableFrameHoveredCSSclass: string = 'DraggableBlock__frame_hovered';
-    private draggableFrameSelectedCSSclass: string = 'DraggableBlock__frame_selected';
-    private draggingClass: string = 'DraggableBlock__dragging';
-    public cursorClass: string = 'DraggableBlock__cursor';
+    public static draggableFrameClass: string = 'DraggableBlock__frame';
+    public static draggableBlockClass: string = 'DraggableBlock';
+    public static draggableFrameHoveredCSSclass: string = 'DraggableBlock__frame_hovered';
+    public static draggableFrameSelectedCSSclass: string = 'DraggableBlock__frame_selected';
+    public static draggingClass: string = 'DraggableBlock__dragging';
+    public static cursorClass: string = 'DraggableBlock__cursor';
 
     private canInsertBlock?: TDraggableOptions['canInsertBlock'];
     private onBlockInserted?: TDraggableOptions['onBlockInserted'];
@@ -136,10 +134,10 @@ export class Draggable {
         if (!block || !this.options) return;
 
         const draggableFrame: HTMLElement = document.createElement('div');
-        draggableFrame.classList.add(this.draggableFrameClass);
+        draggableFrame.classList.add(Draggable.draggableFrameClass);
 
         block.appendChild(draggableFrame);
-        block.classList.add(this.draggableBlockClass);
+        block.classList.add(Draggable.draggableBlockClass);
 
         this.draggableFrames.push(draggableFrame);
 
@@ -168,9 +166,9 @@ export class Draggable {
     }
 
     private clearBlock = (block: HTMLElement) => {
-        const frames = block.querySelectorAll(`.${this.draggableFrameClass}`);
+        const frames = block.querySelectorAll(`.${Draggable.draggableFrameClass}`);
         frames.forEach(frame => frame.remove());
-        block.classList.remove(this.draggableBlockClass);
+        block.classList.remove(Draggable.draggableBlockClass);
     }
 
     public updateBlocks = () => {
@@ -230,7 +228,7 @@ export class Draggable {
         }
 
         this.draggingCursor = block.cloneNode(true) as HTMLElement;
-        this.draggingCursor.classList.add(this.cursorClass);
+        this.draggingCursor.classList.add(Draggable.cursorClass);
         this.draggingCursor.style.height = this.draggingBlock.offsetHeight + 'px';
         this.draggingCursor.style.width = this.draggingBlock.offsetWidth + 'px';
 
@@ -241,7 +239,7 @@ export class Draggable {
             this.bodyElem.appendChild(this.draggingCursor);
         }
 
-        this.draggingBlock.classList.add(this.draggingClass);
+        this.draggingBlock.classList.add(Draggable.draggingClass);
 
         if (this.options.disableInsert) {
             this.lastInsertionData = null;
@@ -324,8 +322,8 @@ export class Draggable {
 
     private getDragAfterElement(container: HTMLElement, clientY: number): Element | null {
         const draggableElements = Array.from(container.children).filter(child =>
-            child.classList.contains(this.draggableBlockClass) &&
-            !child.classList.contains(this.draggingClass))
+            child.classList.contains(Draggable.draggableBlockClass) &&
+            !child.classList.contains(Draggable.draggingClass))
 
         let closestElement: Element | null = null;
         let closestOffset: number = Number.NEGATIVE_INFINITY;
@@ -347,7 +345,7 @@ export class Draggable {
         this.isDragging = false;
 
         if (this.draggingBlock) {
-            this.draggingBlock.classList.remove(this.draggingClass);
+            this.draggingBlock.classList.remove(Draggable.draggingClass);
         }
 
         if (this.options.disableInsert) {
@@ -455,7 +453,7 @@ export class Draggable {
 
         if (frame) {
             const color = this.options?.primaryColor ?? '#9900CC';
-            frame.classList.add(this.draggableFrameHoveredCSSclass);
+            frame.classList.add(Draggable.draggableFrameHoveredCSSclass);
             frame.style.border = `1px solid ${color}`;
         }
     }
@@ -464,7 +462,7 @@ export class Draggable {
         block.style.zIndex = '6';
 
         const color = this.options?.primaryColor ?? '#9900CC';
-        frame.classList.add(this.draggableFrameHoveredCSSclass);
+        frame.classList.add(Draggable.draggableFrameHoveredCSSclass);
         frame.style.border = `2px solid ${color}`;
     }
 
@@ -472,7 +470,7 @@ export class Draggable {
         if (block) block.style.zIndex = '2';
 
         if (frame) {
-            frame.classList.remove(this.draggableFrameHoveredCSSclass);
+            frame.classList.remove(Draggable.draggableFrameHoveredCSSclass);
             frame.style.border = '0';
         }
     }

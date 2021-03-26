@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
-import { PageBuilderView } from './pageBuilder/PageBuilderView';
+import { PageBuilderView } from './pageBuilder/PageBuilder';
 import { PageListItem } from './pageListItem/PageListItem';
 import { PageSettings } from './pageSettings/PageSettings';
 import styles from './ThemeEdit.module.scss';
@@ -56,16 +56,19 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
         // const themeInfo = await getRestAPIClient()?.getThemeInfo();
         const themeConfig = await getRestAPIClient()?.getThemeConfig();
         const themeCustomConfig = await getRestAPIClient()?.getThemeCustomConfig();
-        // console.log('pageModifications', pageModifications);
         setStoreItem('pageConfig', pageCofig);
         setStoreItem('themeCustomConfig', themeCustomConfig);
         setStoreItem('palette', themeConfig?.palette);
 
-
         this.changedPageInfo = null;
         this.changedModifications = null;
 
-        let pageComp = loadFrontendBundle(pageInfo.route, () => getRestAPIClient()?.getThemePageBundle(pageInfo.route));
+        let pageComp = await loadFrontendBundle(pageInfo.route,
+            () => getRestAPIClient()?.getThemePageBundle(pageInfo.route),
+            (func: (() => Promise<React.ComponentType>)) => {
+                return func();
+            }
+        );
 
         this.setState({
             EditingPage: pageComp,

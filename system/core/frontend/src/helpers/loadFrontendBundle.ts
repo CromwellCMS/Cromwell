@@ -1,12 +1,12 @@
 import { getStoreItem, setStoreItem, TFrontendBundle, isServer, getStore, logFor } from '@cromwell/core';
 import loadableComponent from '@loadable/component';
 
-export const loadFrontendBundle = (bundleName: string,
+export const loadFrontendBundle = <TLoadable extends (...args: any) => any = (func: (() => Promise<React.ComponentType>)) => React.ComponentType>(bundleName: string,
     loader: () => Promise<TFrontendBundle | null | undefined>,
-    loadable?: (func: (() => Promise<React.ComponentType>)) => React.ComponentType,
+    loadable?: TLoadable,
     fallbackComponent?: React.ComponentType,
     dynamicLoaderProps?: Record<string, any>
-): React.ComponentType<any> => {
+): ReturnType<TLoadable> => {
 
     let components = getStoreItem('components');
     if (!components) {

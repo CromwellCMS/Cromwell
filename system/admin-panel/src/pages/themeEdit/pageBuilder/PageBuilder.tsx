@@ -8,33 +8,54 @@ import {
 } from '@cromwell/core';
 import {
     awaitBlocksRender,
+    BlockContentProvider,
     blockTypeToClassname,
+    CContainer,
     CromwellBlockCSSclass,
+    getBlockById,
     getBlockData,
     getBlockElementById,
+    pageRootContainerId,
 } from '@cromwell/core-frontend';
+import React from 'react';
 
+import PageErrorBoundary from '../../../components/errorBoundaries/PageErrorBoundary';
 import { Draggable } from '../../../helpers/Draggable/Draggable';
+import { IBaseMenu } from './blocks/BaseMenu';
+import { ContainerBlock } from './blocks/ContainerBlock';
+import { HTMLBlock } from './blocks/HTMLBlock';
+import { PluginBlock } from './blocks/PluginBlock';
+import { TextBlock } from './blocks/TextBlock';
 
 const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
 
-export class PageBuilderController {
+export class PageBuilderView extends React.Component<{
+    EditingPage: React.ComponentType<any>;
+    editingPageInfo: TPageInfo;
+    onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void;
+}>  {
 
+    private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef();
+    private blockInstances: Record<string, IBaseMenu> = {};
+    private ignoreDraggableClass: string = pageRootContainerId;
     private draggable: Draggable;
 
-    constructor(
-        private onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void,
-        private editorWindow: HTMLElement | null = null,
-        private onBlockSelected: (data: TCromwellBlockData) => void,
-        private onBlockDeSelected: (data: TCromwellBlockData) => void,
-        private ignoreDraggableClass: string | null = null,
-        private canDeselectBlock: (data: TCromwellBlockData) => boolean,
-        private editingPageInfo: TPageInfo
-    ) {
+    componentDidMount() {
+
+        const rootBlock = getBlockById(pageRootContainerId);
+
+        if (rootBlock) rootBlock.addDidUpdateListener('PageBuilder', () => {
+            this.updateDraggable();
+        });
+
+        this.init();
+    }
+
+    private async init() {
         this.draggable = new Draggable({
             draggableSelector: `.${CromwellBlockCSSclass}`,
             containerSelector: `.${blockTypeToClassname('container')}`,
-            editorWindowElem: this.editorWindow,
+            editorWindowElem: this.editorWindowRef.current,
             disableInsert: true,
             canInsertBlock: this.canInsertBlock,
             onBlockInserted: this.onBlockInserted,
@@ -54,7 +75,7 @@ export class PageBuilderController {
     }
     private set changedModifications(data) {
         if (data) {
-            this.onPageModificationsChange(data);
+            this.props.onPageModificationsChange(data);
         };
         this._changedModifications = data;
     }
@@ -161,14 +182,12 @@ export class PageBuilderController {
      * @param data 
      */
     private modifyBlockGlobally = (data: TCromwellBlockData) => {
-        // data.text = { content: '23234' };
         // Add to Store
         const pageConfig = getStoreItem('pageConfig');
         if (pageConfig) {
             pageConfig.modifications = this.addToModifications(data, pageConfig.modifications);
         };
         setStoreItem('pageConfig', pageConfig);
-
 
     }
 
@@ -221,7 +240,7 @@ export class PageBuilderController {
 
     public addNewBlockAfter = async (afterBlockData: TCromwellBlockData, newBlockType: TCromwellBlockType) => {
         const newBlock: TCromwellBlockData = {
-            id: `Editor_${this.editingPageInfo.route}_${getRandStr()}`,
+            id: `Editor_${this.props.editingPageInfo.route}_${getRandStr()}`,
             type: newBlockType,
             isVirtual: true,
         }
@@ -265,7 +284,7 @@ export class PageBuilderController {
         Array.from(parent.children).forEach((child) => {
             const childData = Object.assign({}, getBlockData(child));
             if (!childData.id) return;
-            if (child.classList.contains(this.draggable.cursorClass)) return;
+            if (child.classList.contains(Draggable.cursorClass)) return;
             if (childData.id === blockData.id) return;
 
             if (childData.id === targetBlockData?.id && position === 'before') {
@@ -302,5 +321,97 @@ export class PageBuilderController {
         return childrenData;
     }
 
-}
+    public onBlockSelected = (data: TCromwellBlockData) => {
+        this.blockInstances[data.id]?.setMenuVisibility(true);
+    }
+    public onBlockDeSelected = (data: TCromwellBlockData) => {
+        this.blockInstances[data.id]?.setMenuVisibility(false);
+    }
 
+    public handleSaveInst = (bId: string) => (inst: IBaseMenu) => {
+        this.blockInstances[bId] = inst;
+    }
+
+
+    public canDeselectBlock = (data?: TCromwellBlockData) => {
+        return this.blockInstances[data.id]?.canDeselectBlock?.() ?? true;
+    }
+
+    render() {
+        // console.log('PageBuilder render')
+        const adminPanelProps = getStoreItem('pageConfig')?.adminPanelProps ?? {};
+
+        const { EditingPage } = this.props;
+        return (
+            <div ref={this.editorWindowRef}>
+                <BlockContentProvider
+                    value={{
+                        getter: (block) => {
+                            // Will replace content inside any CromwellBlock by JSX this function returns
+
+                            const data = block?.getData();
+                            const bId = data?.id;
+                            const bType = data?.type;
+                            const deleteBlock = () => this.deleteBlock(data);
+
+                            const handleAddNewBlockAfter = (newBType: TCromwellBlockType) =>
+                                this.addNewBlockAfter(data, newBType);
+
+                            const blockProps = {
+                                saveMenuInst: this.handleSaveInst(bId),
+                                block: block,
+                                modifyData: this.modifyBlock,
+                                deleteBlock: deleteBlock,
+                                addNewBlockAfter: handleAddNewBlockAfter,
+                            }
+
+                            let content;
+
+                            if (bType === 'text') {
+                                content = <TextBlock
+                                    {...blockProps}
+                                />
+                            }
+                            if (bType === 'plugin') {
+                                content = <PluginBlock
+                                    {...blockProps}
+                                />
+                            }
+                            if (bType === 'container') {
+                                content = <ContainerBlock
+                                    {...blockProps}
+                                />
+                            }
+                            if (bType === 'HTML') {
+                                content = <HTMLBlock
+                                    {...blockProps}
+                                />
+                            }
+
+                            if (content) {
+
+                            } else {
+                                content = block.getDefaultContent();
+                            }
+
+                            return content;
+                        },
+                        componentDidUpdate: () => {
+                            this.draggable?.updateBlocks();
+                        }
+                    }}
+                >
+                    <PageErrorBoundary>
+                        <CContainer id={pageRootContainerId}
+                            className={this.ignoreDraggableClass}
+                            isConstant={true}
+                        >
+                            <EditingPage {...adminPanelProps} />
+                        </CContainer>
+                    </PageErrorBoundary>
+                </BlockContentProvider>
+            </div>
+        )
+    }
+
+}
