@@ -73,6 +73,7 @@ const SettingsPage = () => {
                     color="primary"
                     variant="contained"
                     onClick={saveConfig}
+                    size="small"
                 >Save</Button>
             </div>
             <div className={styles.list}>

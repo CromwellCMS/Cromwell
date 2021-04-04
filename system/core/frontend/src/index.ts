@@ -23,7 +23,6 @@ export {
     getBlockById,
     getBlockElementById,
     pageRootContainerId,
-    awaitBlocksRender,
     awaitImporter
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient } from './api/CGraphQLClient';

@@ -30,7 +30,7 @@ export const TextBlock = (props: TBaseMenuProps) => {
             <BaseMenu
                 {...props}
                 icon={(
-                    <Tooltip title="Plugin block">
+                    <Tooltip title="Text block">
                         <SubjectIcon />
                     </Tooltip>
                 )}

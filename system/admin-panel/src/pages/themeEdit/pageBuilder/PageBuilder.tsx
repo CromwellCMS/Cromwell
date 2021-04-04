@@ -5,9 +5,9 @@ import {
     TCromwellBlockData,
     TCromwellBlockType,
     TPageInfo,
+    getRandStr,
 } from '@cromwell/core';
 import {
-    awaitBlocksRender,
     BlockContentProvider,
     blockTypeToClassname,
     CContainer,
@@ -27,7 +27,6 @@ import { HTMLBlock } from './blocks/HTMLBlock';
 import { PluginBlock } from './blocks/PluginBlock';
 import { TextBlock } from './blocks/TextBlock';
 
-const getRandStr = () => Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8);
 
 export class PageBuilderView extends React.Component<{
     EditingPage: React.ComponentType<any>;
@@ -62,13 +61,14 @@ export class PageBuilderView extends React.Component<{
             onBlockSelected: this.onDraggableBlockSelected,
             onBlockDeSelected: this.onDraggableBlockDeSelected,
             ignoreDraggableClass: this.ignoreDraggableClass,
-            canDeselectBlock: this.canDeselectDraggableBlock
+            canDeselectBlock: this.canDeselectDraggableBlock,
+            createFrame: true,
         });
     }
 
 
-    // Keeps track of modifications that user made (added) curently. Does not store all mods from actual pageCofig!
-    // We need to send to the server only newly added modifications! 
+    // Keeps track of modifications that user made (added) curently. Does not store all mods from actual pageCofig.
+    // We need to send to the server only newly added modifications.
     private _changedModifications: TCromwellBlockData[] | null | undefined = null;
     private get changedModifications(): TCromwellBlockData[] | null | undefined {
         return this._changedModifications;
@@ -86,7 +86,6 @@ export class PageBuilderView extends React.Component<{
         if (!parentData?.id) {
             return false;
         }
-
         return true;
     }
 
@@ -116,16 +115,12 @@ export class PageBuilderView extends React.Component<{
         });
 
         // const blockPromise = this.rerenderBlock(blockData.id);
-
         // const newParentPromise = this.rerenderBlock(newParentData.id);
-
         // let oldParentPromise;
         // if (oldParentData?.id) oldParentPromise = this.rerenderBlock(oldParentData.id);
-
         // await Promise.all([blockPromise, newParentPromise, oldParentPromise]);
 
         await this.rerenderBlocks();
-        await awaitBlocksRender();
 
         this.draggable?.updateBlocks();
     }
@@ -142,7 +137,6 @@ export class PageBuilderView extends React.Component<{
 
         // Save to global modifcations in pageConfig.
         this.modifyBlockGlobally(blockData);
-
     }
 
     public deleteBlock = async (blockData: TCromwellBlockData) => {
@@ -152,7 +146,6 @@ export class PageBuilderView extends React.Component<{
         }
 
         await this.rerenderBlocks();
-        await awaitBlocksRender();
 
         this.draggable?.updateBlocks();
     }
@@ -188,7 +181,6 @@ export class PageBuilderView extends React.Component<{
             pageConfig.modifications = this.addToModifications(data, pageConfig.modifications);
         };
         setStoreItem('pageConfig', pageConfig);
-
     }
 
     public async rerenderBlock(id: string) {
@@ -247,11 +239,10 @@ export class PageBuilderView extends React.Component<{
         this.addBlock({
             blockData: newBlock,
             targetBlockData: afterBlockData,
-            position: 'after'
+            position: 'after',
         });
 
         await this.rerenderBlocks();
-        await awaitBlocksRender();
 
         this.draggable?.updateBlocks();
 
@@ -268,9 +259,7 @@ export class PageBuilderView extends React.Component<{
         parentEl?: HTMLElement;
         position: 'before' | 'after';
     }): TCromwellBlockData[] => {
-
         const { targetBlockData, parentEl, position, blockData } = config;
-
         const parent = getBlockElementById(targetBlockData?.id)?.parentNode ?? parentEl;
 
         const parentData = getBlockData(parent);
@@ -334,7 +323,7 @@ export class PageBuilderView extends React.Component<{
 
 
     public canDeselectBlock = (data?: TCromwellBlockData) => {
-        return this.blockInstances[data.id]?.canDeselectBlock?.() ?? true;
+        return this.blockInstances[data?.id]?.canDeselectBlock?.() ?? true;
     }
 
     render() {
@@ -394,10 +383,16 @@ export class PageBuilderView extends React.Component<{
                                 content = block.getDefaultContent();
                             }
 
-                            return content;
+                            return <>
+                                {content}
+                            </>;
                         },
                         componentDidUpdate: () => {
                             this.draggable?.updateBlocks();
+
+                            // Disable all links
+                            const links = Array.from(this.editorWindowRef?.current?.getElementsByTagName('a') ?? []);
+                            links.forEach(link => { link.onclick = (e) => { e.preventDefault() } })
                         }
                     }}
                 >
