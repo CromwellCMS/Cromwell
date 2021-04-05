@@ -52,7 +52,6 @@ export type TCromwellBlock = React.Component<TCromwellBlockProps> & {
     notifyChildRegistered: (inst: TCromwellBlock) => void;
     rerender: () => Promise<void>;
     addDidUpdateListener: (id: string, func: () => void) => void;
-    getRenderPromise: () => Promise<void> | null;
 }
 
 export type TDataComponentProps<Data> = {
@@ -204,7 +203,12 @@ export type TGallerySettings = {
 }
 
 export type TBlockContentProvider = {
+    // Will replace content inside any CromwellBlock by JSX this function returns
     getter: (block: TCromwellBlock) => React.ReactNode | null;
+
+    // Additional CSS class to apply for block wrapper
     blockClass?: string;
+
+    // Additional function to run in internal componentDidUpdate of any block
     componentDidUpdate?: () => void;
 }

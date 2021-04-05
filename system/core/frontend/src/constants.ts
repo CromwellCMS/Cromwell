@@ -52,18 +52,7 @@ export const dynamicLoader = dynamic ?? loadable;
 
 export const pageRootContainerId = 'page-root-container';
 
-
-export const awaitBlocksRender = async () => {
-    const instances = getStoreItem('blockInstances');
-    if (instances) {
-        const promises: Promise<void>[] = [];
-        Object.values(instances).forEach(inst => {
-            const p = inst?.getRenderPromise();
-            if (p?.then) promises.push(p);
-        });
-        if (promises.length > 0) await Promise.all(promises);
-    }
-}
+export const htmlBlockContentClass = 'CromwellBlock_HTML_content';
 
 export const awaitImporter = async () => {
     const importer = getStoreItem('nodeModules');

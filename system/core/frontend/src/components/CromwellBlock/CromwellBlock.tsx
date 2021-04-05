@@ -27,18 +27,18 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
     private childPromises: Record<string, (Promise<TCromwellBlock>) | undefined> = {};
 
-    private rerenderResolver: (() => void) | null = null;
-    private rerenderPromise: Promise<void> | null = null;
-
     private didUpdateListeners: Record<string, (() => void)> = {};
 
-    public getData = () => Object.assign({}, this.props, this.data);
+    public getData = () => {
+        this.readConfig();
+        const { content, children, jsxParentId, ...restProps } = this.props;
+        return Object.assign({}, restProps, this.data);
+    }
 
     public getBlockRef = () => this.blockRef;
     public getContentInstance = () => this.contentInstance;
     public setContentInstance = (contentInstance: React.Component) => this.contentInstance = contentInstance;
     public getBlockInstance = (id: string): TCromwellBlock | undefined => getStoreItem('blockInstances')?.[id];
-    public getRenderPromise = () => this.rerenderPromise;
 
     constructor(props: TCromwellBlockProps) {
         super(props);
@@ -77,13 +77,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         }
 
         Object.values(this.didUpdateListeners).forEach(func => func());
-
-        const res = this.rerenderResolver;
-
-        this.rerenderPromise = null;
-        this.rerenderResolver = null;
-
-        res?.();
     }
 
 
@@ -92,33 +85,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     }
 
     public rerender = async () => {
-        if (this.rerenderPromise) {
-            await this.rerenderPromise;
-            return;
-        }
-
-        this.rerenderPromise = new Promise<void>(async done => {
-            this.rerenderResolver = done;
-        });
-
         this.forceUpdate();
-
-        if (this.rerenderPromise) await this.rerenderPromise;
-    }
-
-    componentWillUnmount() {
-        // Remove this instance from the store
-        const instances = getStoreItem('blockInstances');
-        if (instances) {
-            const inst = instances[this.props.id];
-            // Check if a new instance with the same has been rendered and overwrited current one. 
-            // We don't need to remove a new instance from the store.
-            if (inst && inst.getBlockRef && inst.getBlockRef().current === this.blockRef.current) {
-                // Remove only if refs the same
-                delete instances[this.props.id];
-                setStoreItem('blockInstances', instances);
-            }
-        }
     }
 
     private readConfig() {
@@ -213,7 +180,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
     public getChildBlocks(): React.ReactNode[] {
         const data = this.getData();
-
         this.childBlocks = this.childBlocks.sort((a, b) => {
             const ai = a?.index ?? 0;
             const bi = b?.index ?? 0;
@@ -300,12 +266,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     }
 
     public consumerRender(jsxParentId?: string): React.ReactNode | null {
-        const data = this.getData();
-
-        if (data?.parentId && jsxParentId && jsxParentId !== data.parentId) {
-            return <></>;
-        }
-
         return <BlockContentConsumer>
             {(content) => {
                 this.contextComponentDidUpdate = content?.componentDidUpdate;
@@ -317,12 +277,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     render(): React.ReactNode | null {
         // console.log('CromwellBlock::render id: ' + this.props.id);
         this.readConfig();
-
-        if (!this.rerenderPromise && !this.rerenderResolver) {
-            this.rerenderPromise = new Promise<void>(async done => {
-                this.rerenderResolver = done;
-            });
-        }
 
         if (this.hasBeenMoved) {
             return <></>;

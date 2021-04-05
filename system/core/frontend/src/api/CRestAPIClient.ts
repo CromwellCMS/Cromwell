@@ -40,7 +40,7 @@ class CRestAPIClient {
     }
 
     private logError = (route: string, e?: any) => {
-        logFor('errors-warnings', `CRestAPIClient route: ${route}` + e, console.error)
+        logFor('errors-only', `CRestAPIClient route: ${route}` + e, console.error)
     }
 
     public get = async <T>(route: string): Promise<T | undefined> => {

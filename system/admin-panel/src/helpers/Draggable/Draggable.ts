@@ -27,6 +27,8 @@ export type TDraggableOptions = {
 
     canDeselectBlock?: (draggedBlock: HTMLElement) => boolean;
 
+    canDragBlock?: (draggedBlock: HTMLElement) => boolean;
+
     ignoreDraggableClass?: string;
 
     /**
@@ -44,6 +46,8 @@ export type TDraggableOptions = {
      */
     primaryColor?: string;
 
+    /** Create a new draggable frame or find inside a block */
+    createFrame?: boolean;
 }
 
 export class Draggable {
@@ -120,7 +124,7 @@ export class Draggable {
         this.options = options;
         const { draggableSelector, containerSelector, editorWindowElem } = options;
 
-        this.canInsertBlock = options.canInsertBlock
+        this.canInsertBlock = options.canInsertBlock;
         this.onBlockInserted = options.onBlockInserted;
 
         this.draggableBlocks = Array.from(document.querySelectorAll(draggableSelector)) as HTMLElement[];
@@ -133,10 +137,10 @@ export class Draggable {
     private setupBlock = (block: HTMLElement) => {
         if (!block || !this.options) return;
 
-        const draggableFrame: HTMLElement = document.createElement('div');
+        const draggableFrame: HTMLElement = this.options?.createFrame ? document.createElement('div') : block.querySelector(`.${Draggable.draggableFrameClass}`);
         draggableFrame.classList.add(Draggable.draggableFrameClass);
 
-        block.appendChild(draggableFrame);
+        if (this.options?.createFrame) block.appendChild(draggableFrame);
         block.classList.add(Draggable.draggableBlockClass);
 
         this.draggableFrames.push(draggableFrame);
@@ -260,8 +264,16 @@ export class Draggable {
         // console.log('canDragBlock', canDragBlock, 'draggingBlock', draggingBlock);
         if (this.canDragBlock && this.draggingBlock) {
             if (!this.isDragging) {
-                this.isDragging = true;
-                this.onDragStart(this.draggingBlock, event);
+
+                let canDrag = true;
+                if (this.options.canDragBlock) {
+                    canDrag = this.options.canDragBlock(this.draggingBlock)
+                }
+
+                if (canDrag !== false) {
+                    this.isDragging = true;
+                    this.onDragStart(this.draggingBlock, event);
+                }
             }
 
             if (this.draggingCursor) {

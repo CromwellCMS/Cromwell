@@ -23,8 +23,8 @@ export {
     getBlockById,
     getBlockElementById,
     pageRootContainerId,
-    awaitBlocksRender,
-    awaitImporter
+    awaitImporter,
+    htmlBlockContentClass,
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient } from './api/CGraphQLClient';
 export { getRestAPIClient } from './api/CRestAPIClient';

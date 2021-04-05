@@ -1,7 +1,7 @@
 import '../../helpers/Draggable/Draggable.css';
 
-import { setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo } from '@cromwell/core';
-import { getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
+import { setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity } from '@cromwell/core';
+import { getRestAPIClient, loadFrontendBundle, getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import clsx from 'clsx';
@@ -10,19 +10,22 @@ import { toast } from 'react-toastify';
 
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
-import { PageBuilderView } from './pageBuilder/PageBuilder';
+import { PageBuilder } from './pageBuilder/PageBuilder';
 import { PageListItem } from './pageListItem/PageListItem';
 import { PageSettings } from './pageSettings/PageSettings';
 import styles from './ThemeEdit.module.scss';
 import { SkeletonPreloader } from '../../components/SkeletonPreloader';
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 
 
 class ThemeEditState {
     pageInfos: TPageInfo[] | null = null;
+    plugins: TPluginEntity[] | null = null;
     editingPageInfo: TPageInfo | null = null;
     EditingPage: React.ComponentType<any> | null | undefined = null;
     isPageLoading: boolean = false;
     isPageListLoading: boolean = true;
+    loadingStatus: boolean = false;
     isSidebarOpen: boolean = true;
     activeTabNum: number = 0;
 }
@@ -44,6 +47,18 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
     componentDidMount() {
         (async () => {
             const infos = await getRestAPIClient()?.getPagesInfo();
+
+            // Get info from DB
+            const graphQLClient = getGraphQLClient();
+            if (graphQLClient) {
+                try {
+                    const pluginEntities: TPluginEntity[] = await graphQLClient.getAllEntities('Plugin',
+                        graphQLClient.PluginFragment, 'PluginFragment');
+                    if (pluginEntities && Array.isArray(pluginEntities)) {
+                        this.setState({ plugins: pluginEntities });
+                    }
+                } catch (e) { console.error(e); }
+            }
             if (infos) this.setState({ pageInfos: infos });
             this.setState({ isPageListLoading: false });
         })();
@@ -109,7 +124,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
             };
 
             const client = getRestAPIClient();
-            this.setState({ isPageLoading: true });
+            this.setState({ loadingStatus: true });
             const success = await client?.savePageConfig(pageConfig);
 
             if (success) {
@@ -118,8 +133,8 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                 toast.error('Failed to save changes');
             }
 
-            this.setState({ isPageLoading: false });
-            this.handleOpenPageBuilder(pageInfo);
+            this.setState({ loadingStatus: false });
+            // this.handleOpenPageBuilder(pageInfo);
 
         }
 
@@ -277,7 +292,8 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                 </TabPanel>
                                 <TabPanel value={activeTabNum} index={1}>
                                     {!isPageLoading && EditingPage && (
-                                        <PageBuilderView
+                                        <PageBuilder
+                                            plugins={this.state.plugins}
                                             editingPageInfo={editingPageInfo}
                                             onPageModificationsChange={this.handlePageModificationsChange}
                                             EditingPage={EditingPage}
@@ -297,8 +313,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                     />
                 </div>
             )} */}
-
-
+                <LoadingStatus isActive={this.state.loadingStatus} />
             </div>
         )
     }
