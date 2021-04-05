@@ -30,6 +30,11 @@ jest.mock('@cromwell/core-frontend', () => {
                 getThemeCustomConfig: jest.fn().mockImplementation(async () => ({})),
             }
         },
+        getGraphQLClient: () => {
+            return {
+                getAllEntities: jest.fn().mockImplementation(async () => []),
+            }
+        },
         loadFrontendBundle: jest.fn().mockImplementation(async () => () => <div></div>),
     }
 });

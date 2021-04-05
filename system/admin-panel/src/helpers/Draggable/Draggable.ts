@@ -27,6 +27,8 @@ export type TDraggableOptions = {
 
     canDeselectBlock?: (draggedBlock: HTMLElement) => boolean;
 
+    canDragBlock?: (draggedBlock: HTMLElement) => boolean;
+
     ignoreDraggableClass?: string;
 
     /**
@@ -262,8 +264,16 @@ export class Draggable {
         // console.log('canDragBlock', canDragBlock, 'draggingBlock', draggingBlock);
         if (this.canDragBlock && this.draggingBlock) {
             if (!this.isDragging) {
-                this.isDragging = true;
-                this.onDragStart(this.draggingBlock, event);
+
+                let canDrag = true;
+                if (this.options.canDragBlock) {
+                    canDrag = this.options.canDragBlock(this.draggingBlock)
+                }
+
+                if (canDrag !== false) {
+                    this.isDragging = true;
+                    this.onDragStart(this.draggingBlock, event);
+                }
             }
 
             if (this.draggingCursor) {

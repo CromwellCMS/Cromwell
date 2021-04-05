@@ -1,6 +1,6 @@
 import { MenuItem, TextField, Tooltip } from '@material-ui/core';
 import { CheckCircleOutline as CheckCircleOutlineIcon, Edit as EditIcon, Subject as SubjectIcon } from '@material-ui/icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styles from './BaseBlock.module.scss';
 import { BaseMenu, TBaseMenuProps } from './BaseMenu';
@@ -13,8 +13,12 @@ export const TextBlock = (props: TBaseMenuProps) => {
     const [isEditing, setIsEditing] = useState<boolean>(false);
 
     const handleSetIsEditing = (isEditing: boolean) => {
-        if (isEditing) setIsEditing(true);
+        if (isEditing) {
+            setIsEditing(true);
+            props.setCanDrag(false);
+        }
         else {
+            props.setCanDrag(true);
             setIsEditing(false);
             const data = props.block?.getData();
             if (data) {
@@ -24,6 +28,12 @@ export const TextBlock = (props: TBaseMenuProps) => {
             }
         }
     }
+
+    useEffect(() => {
+        return () => {
+            props.setCanDrag(true);
+        }
+    }, []);
 
     return (
         <div>
@@ -46,6 +56,7 @@ export const TextBlock = (props: TBaseMenuProps) => {
             />
             {isEditing ? (
                 <TextField
+                    fullWidth
                     value={blockValue}
                     onChange={(e) => { setBlockValue(e.target.value) }}
                     multiline

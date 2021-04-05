@@ -1,4 +1,4 @@
-import { TCromwellBlock, TCromwellBlockData, TCromwellBlockType } from '@cromwell/core';
+import { TCromwellBlock, TCromwellBlockData, TCromwellBlockType, TPluginEntity } from '@cromwell/core';
 import { Grid, IconButton, MenuItem, Popover, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
@@ -7,6 +7,7 @@ import {
     Image as ImageIcon,
     PhotoLibrary as PhotoLibraryIcon,
     Power as PowerIcon,
+    Settings as SettingsIcon,
     Subject as SubjectIcon,
     Widgets as WidgetsIcon,
 } from '@material-ui/icons';
@@ -22,6 +23,10 @@ export type TBaseMenuProps = {
     addNewBlockAfter?: (bType: TCromwellBlockType) => void;
     icon?: JSX.Element;
     menuItems?: JSX.Element | JSX.Element[];
+    settingsContent?: React.ReactNode;
+    plugins: TPluginEntity[] | null;
+    setCanDrag: (canDrag: boolean) => void;
+    setCanDeselect: (canDeselect: boolean) => void;
 }
 
 export interface IBaseMenu {
@@ -34,7 +39,7 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
     menuVisible: boolean;
     isDeleted: boolean;
     addNewOpen: boolean;
-
+    settingsOpen: boolean;
 }> implements IBaseMenu {
 
     public addNewBtnEl: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
@@ -45,7 +50,8 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
         this.state = {
             menuVisible: false,
             isDeleted: false,
-            addNewOpen: false
+            addNewOpen: false,
+            settingsOpen: false,
         }
 
         this.props.saveMenuInst(this);
@@ -53,11 +59,11 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
 
     public addNewBlock = (bType: TCromwellBlockType) => () => {
         this.props?.addNewBlockAfter?.(bType);
-        this.setState({ menuVisible: false, addNewOpen: false });
+        this.setState({ menuVisible: false, addNewOpen: false, settingsOpen: false });
     }
 
     public setMenuVisibility = (menuVisible: boolean) => {
-        this.setState({ menuVisible, addNewOpen: false });
+        this.setState({ menuVisible, addNewOpen: false, settingsOpen: false });
     }
 
     public deleteBlock = () => {
@@ -73,7 +79,15 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
     }
 
     public canDeselectBlock = () => {
-        return !this.state.addNewOpen;
+        return !this.state.addNewOpen && !this.state.settingsOpen;
+    }
+
+    public handleOpenSettings = () => {
+        this.setState({ settingsOpen: true });
+    }
+
+    public handleCloseSettings = () => {
+        this.setState({ settingsOpen: false });
     }
 
     render() {
@@ -84,6 +98,13 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
                 <div className={styles.actions}>
                     {this.props.icon}
                     {this.props.menuItems}
+                    {this.props.settingsContent && (
+                        <Tooltip title="Settings">
+                            <MenuItem onClick={this.handleOpenSettings}>
+                                <SettingsIcon />
+                            </MenuItem>
+                        </Tooltip>
+                    )}
                     <Tooltip title="Delete block">
                         <MenuItem onClick={this.deleteBlock}>
                             <DeleteForeverIcon />
@@ -96,6 +117,24 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
                             <AddCircleOutlineIcon className={styles.addIcon} />
                         </IconButton>
                     </Tooltip>
+                    <Popover
+                        open={this.state.settingsOpen}
+                        elevation={6}
+                        anchorEl={this.addNewBtnEl.current}
+                        onClose={this.handleCloseSettings}
+                        anchorOrigin={{
+                            vertical: 'bottom',
+                            horizontal: 'center',
+                        }}
+                        transformOrigin={{
+                            vertical: 'top',
+                            horizontal: 'center',
+                        }}
+                    >
+                        <div className={styles.settingsContent}>
+                            {this.props.settingsContent}
+                        </div>
+                    </Popover>
                     <Popover
                         open={this.state.addNewOpen}
                         elevation={6}

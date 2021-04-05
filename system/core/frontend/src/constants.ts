@@ -52,6 +52,8 @@ export const dynamicLoader = dynamic ?? loadable;
 
 export const pageRootContainerId = 'page-root-container';
 
+export const htmlBlockContentClass = 'CromwellBlock_HTML_content';
+
 export const awaitImporter = async () => {
     const importer = getStoreItem('nodeModules');
     if (importer?.scriptStatuses) {

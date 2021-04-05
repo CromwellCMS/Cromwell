@@ -29,7 +29,11 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
     private didUpdateListeners: Record<string, (() => void)> = {};
 
-    public getData = () => Object.assign({}, this.props, this.data);
+    public getData = () => {
+        this.readConfig();
+        const { content, children, jsxParentId, ...restProps } = this.props;
+        return Object.assign({}, restProps, this.data);
+    }
 
     public getBlockRef = () => this.blockRef;
     public getContentInstance = () => this.contentInstance;

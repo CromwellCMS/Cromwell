@@ -1,11 +1,12 @@
 import {
+    getRandStr,
     getStoreItem,
     setStoreItem,
     TCromwellBlock,
     TCromwellBlockData,
     TCromwellBlockType,
     TPageInfo,
-    getRandStr,
+    TPluginEntity,
 } from '@cromwell/core';
 import {
     BlockContentProvider,
@@ -17,6 +18,9 @@ import {
     getBlockElementById,
     pageRootContainerId,
 } from '@cromwell/core-frontend';
+import { IconButton, Tooltip } from '@material-ui/core';
+import { Redo as RedoIcon, Undo as UndoIcon } from '@material-ui/icons';
+import deepEqual from 'fast-deep-equal';
 import React from 'react';
 
 import PageErrorBoundary from '../../../components/errorBoundaries/PageErrorBoundary';
@@ -26,18 +30,35 @@ import { ContainerBlock } from './blocks/ContainerBlock';
 import { HTMLBlock } from './blocks/HTMLBlock';
 import { PluginBlock } from './blocks/PluginBlock';
 import { TextBlock } from './blocks/TextBlock';
+import styles from './PageBuilder.module.scss';
 
+type THistoryItem = {
+    local: TCromwellBlockData[];
+    global: TCromwellBlockData[];
+}
 
-export class PageBuilderView extends React.Component<{
+export class PageBuilder extends React.Component<{
     EditingPage: React.ComponentType<any>;
+    plugins: TPluginEntity[] | null;
     editingPageInfo: TPageInfo;
     onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void;
 }>  {
 
     private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef();
     private blockInstances: Record<string, IBaseMenu> = {};
+    private blockInfos: Record<string, {
+        canDrag?: boolean;
+        canDeselect?: boolean;
+    }> = {};
     private ignoreDraggableClass: string = pageRootContainerId;
     private draggable: Draggable;
+
+
+    private history: THistoryItem[] = [];
+    private undoneHistory: THistoryItem[] = [];
+
+    private undoBtnRef = React.createRef<HTMLButtonElement>();
+    private redoBtnRef = React.createRef<HTMLButtonElement>();
 
     componentDidMount() {
 
@@ -48,6 +69,7 @@ export class PageBuilderView extends React.Component<{
         });
 
         this.init();
+        this.checkHitoryButtons();
     }
 
     private async init() {
@@ -62,6 +84,7 @@ export class PageBuilderView extends React.Component<{
             onBlockDeSelected: this.onDraggableBlockDeSelected,
             ignoreDraggableClass: this.ignoreDraggableClass,
             canDeselectBlock: this.canDeselectDraggableBlock,
+            canDragBlock: this.canDragDraggableBlock,
             createFrame: true,
         });
     }
@@ -132,14 +155,97 @@ export class PageBuilderView extends React.Component<{
     public modifyBlock = (blockData: TCromwellBlockData) => {
         if (!this.changedModifications) this.changedModifications = [];
 
+        // Save to global modifcations in pageConfig.
+        const pageConfig = getStoreItem('pageConfig');
+        if (pageConfig) {
+            pageConfig.modifications = this.addToModifications(blockData, pageConfig.modifications);
+        };
+        setStoreItem('pageConfig', pageConfig);
+
         // Add to local changedModifications (contains only newly added changes);
         this.changedModifications = this.addToModifications(blockData, this.changedModifications);
+    }
 
-        // Save to global modifcations in pageConfig.
-        this.modifyBlockGlobally(blockData);
+    private getCurrentModificationsState = (): THistoryItem => {
+        const pageConfig = getStoreItem('pageConfig');
+        return {
+            global: JSON.parse(JSON.stringify(pageConfig?.modifications ?? [])),
+            local: JSON.parse(JSON.stringify(this.changedModifications)),
+        }
+    }
+
+    private saveCurrentState = () => {
+        const current = this.getCurrentModificationsState();
+
+        if (!deepEqual(this.history[this.history.length - 1], current)) {
+            this.history.push(current);
+        }
+
+        this.undoneHistory = [];
+
+        if (this.history.length > 10) {
+            this.history.shift();
+        }
+        this.checkHitoryButtons();
+    }
+
+    private checkHitoryButtons = () => {
+        const disableButton = (button: HTMLButtonElement) => {
+            button.style.opacity = '0.4';
+            const ripple = button.querySelector<HTMLSpanElement>('.MuiTouchRipple-root');
+            if (ripple) {
+                ripple.style.opacity = '0';
+                ripple.style.transition = '0.4s';
+            }
+        }
+        const enableButton = (button: HTMLButtonElement) => {
+            button.style.opacity = '1';
+            const ripple = button.querySelector<HTMLSpanElement>('.MuiTouchRipple-root');
+            if (ripple) {
+                ripple.style.transition = '0.4s';
+                ripple.style.opacity = '1';
+            }
+        }
+
+        if (this.undoBtnRef.current) {
+            if (this.history.length > 0) enableButton(this.undoBtnRef.current)
+            else disableButton(this.undoBtnRef.current);
+        }
+
+        if (this.redoBtnRef.current) {
+            if (this.undoneHistory.length > 0) enableButton(this.redoBtnRef.current)
+            else disableButton(this.redoBtnRef.current);
+        }
+    }
+
+    public undoModification = () => {
+        const last = this.history.pop();
+        if (last) {
+            this.undoneHistory.push(this.getCurrentModificationsState());
+            this.applyHistory(last);
+        }
+    }
+
+    public redoModification = () => {
+        if (this.undoneHistory.length > 0) {
+            const last = this.undoneHistory.pop();
+            this.applyHistory(last);
+        }
+    }
+
+    private applyHistory = (history: THistoryItem) => {
+        const pageConfig = getStoreItem('pageConfig');
+        pageConfig.modifications = history.global;
+        setStoreItem('pageConfig', pageConfig);
+        this.changedModifications = history.local;
+        this.rerenderBlocks();
+        this.checkHitoryButtons();
     }
 
     public deleteBlock = async (blockData: TCromwellBlockData) => {
+        // Save histroy
+        this.saveCurrentState();
+
         if (blockData) {
             blockData.isDeleted = true;
             this.modifyBlock(blockData);
@@ -168,19 +274,6 @@ export class PageBuilderView extends React.Component<{
             mods.push(data);
         }
         return mods;
-    }
-
-    /**
-     * Save to global modifications in pageConfig
-     * @param data 
-     */
-    private modifyBlockGlobally = (data: TCromwellBlockData) => {
-        // Add to Store
-        const pageConfig = getStoreItem('pageConfig');
-        if (pageConfig) {
-            pageConfig.modifications = this.addToModifications(data, pageConfig.modifications);
-        };
-        setStoreItem('pageConfig', pageConfig);
     }
 
     public async rerenderBlock(id: string) {
@@ -230,6 +323,14 @@ export class PageBuilderView extends React.Component<{
         return true;
     }
 
+    private canDragDraggableBlock = (draggedBlock: HTMLElement): boolean => {
+        const blockData = Object.assign({}, getBlockData(draggedBlock));
+        if (blockData?.id) {
+            return this.canDragBlock(blockData);
+        }
+        return true;
+    }
+
     public addNewBlockAfter = async (afterBlockData: TCromwellBlockData, newBlockType: TCromwellBlockType) => {
         const newBlock: TCromwellBlockData = {
             id: `Editor_${this.props.editingPageInfo.route}_${getRandStr()}`,
@@ -264,6 +365,9 @@ export class PageBuilderView extends React.Component<{
 
         const parentData = getBlockData(parent);
         if (!parentData) return;
+
+        // Save histroy
+        this.saveCurrentState();
 
         const childrenData: TCromwellBlockData[] = [];
 
@@ -321,9 +425,15 @@ export class PageBuilderView extends React.Component<{
         this.blockInstances[bId] = inst;
     }
 
-
     public canDeselectBlock = (data?: TCromwellBlockData) => {
-        return this.blockInstances[data?.id]?.canDeselectBlock?.() ?? true;
+        const canInstance = this.blockInstances[data?.id]?.canDeselectBlock?.();
+        const canInfo = this.blockInfos[data?.id]?.canDeselect;
+        if (canInstance !== undefined && canInfo !== undefined) return canInstance && canInfo;
+        return canInstance ?? canInfo ?? true;
+    }
+
+    public canDragBlock = (data?: TCromwellBlockData) => {
+        return this.blockInfos[data?.id]?.canDrag ?? true;
     }
 
     render() {
@@ -332,7 +442,25 @@ export class PageBuilderView extends React.Component<{
 
         const { EditingPage } = this.props;
         return (
-            <div ref={this.editorWindowRef}>
+            <div ref={this.editorWindowRef} className={styles.PageBuilder}>
+                <div className={styles.actions}>
+                    <Tooltip title="Undo">
+                        <IconButton
+                            ref={this.undoBtnRef}
+                            onClick={this.undoModification}
+                        >
+                            <UndoIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Redo">
+                        <IconButton
+                            ref={this.redoBtnRef}
+                            onClick={this.redoModification}
+                        >
+                            <RedoIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
                 <BlockContentProvider
                     value={{
                         getter: (block) => {
@@ -349,9 +477,22 @@ export class PageBuilderView extends React.Component<{
                             const blockProps = {
                                 saveMenuInst: this.handleSaveInst(bId),
                                 block: block,
-                                modifyData: this.modifyBlock,
+                                modifyData: (blockData: TCromwellBlockData) => {
+                                    // Save histroy
+                                    this.saveCurrentState();
+                                    this.modifyBlock(blockData);
+                                },
                                 deleteBlock: deleteBlock,
                                 addNewBlockAfter: handleAddNewBlockAfter,
+                                plugins: this.props.plugins,
+                                setCanDrag: (canDrag: boolean) => {
+                                    if (!this.blockInfos[bId]) this.blockInfos[bId] = {};
+                                    this.blockInfos[bId].canDrag = canDrag;
+                                },
+                                setCanDeselect: (canDeselect: boolean) => {
+                                    if (!this.blockInfos[bId]) this.blockInfos[bId] = {};
+                                    this.blockInfos[bId].canDeselect = canDeselect;
+                                },
                             }
 
                             let content;
