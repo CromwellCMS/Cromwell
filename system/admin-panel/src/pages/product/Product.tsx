@@ -1,22 +1,19 @@
 import 'swiper/swiper-bundle.min.css';
 
 import { gql } from '@apollo/client';
-import { TAttribute, TAttributeInstanceValue, TAttributeProductVariant, TProduct, TProductInput } from '@cromwell/core';
+import { TAttribute, TProduct, TProductInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, Fade, IconButton, MenuItem, Paper, Popper, Tab, Tabs, Tooltip } from '@material-ui/core';
-import {
-    DeleteForever as DeleteForeverIcon,
-    Edit as EditIcon,
-    HighlightOff as HighlightOffIcon,
-    OpenInNew as OpenInNewIcon,
-} from '@material-ui/icons';
+import { Button, Tab, Tabs } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
-import TransferList from '../../components/transferList/TransferList';
 import { productPageInfo } from '../../constants/PageInfos';
+import { resetSelected } from '../../redux/helpers';
+import { store } from '../../redux/store';
+import AttributesTab from './AttributesTab';
+import CategoriesTab from './CategoriesTab';
 import MainInfoCard from './MainInfoCard';
 import styles from './Product.module.scss';
 
@@ -32,8 +29,7 @@ const ProductPage = () => {
     const [isLoading, setIsloading] = useState(false);
     // const [product, setProdData] = useState<TProduct | null>(null);
     const [attributes, setAttributes] = useState<TAttribute[]>([]);
-    const [popperAnchorEl, setPopperAnchorEl] = React.useState<HTMLButtonElement | null>(null);
-    const [popperOpen, setPopperOpen] = React.useState(false);
+
     const [activeTabNum, setActiveTabNum] = React.useState(0);
     const infoCardRef = React.useRef<TInfoCardRef | null>(null);
     const productRef = React.useRef<TProduct | null>(null);
@@ -44,16 +40,20 @@ const ProductPage = () => {
     const product: TProduct | undefined = productRef.current;
 
     const setProdData = (data: TProduct) => {
-        productRef.current = data;
+        if (!productRef.current) productRef.current = data;
+        else Object.keys(data).forEach(key => {
+            productRef.current[key] = data[key];
+        });
     }
 
-    const [editingProductVariant, setEditingProductVariant] = React.useState<{
-        prodAttrIdx: number; value: string;
-    } | null>(null);
+    useEffect(() => {
+        return () => {
+            resetSelected();
+        }
+    }, []);
 
     const getProduct = async () => {
         if (productId && productId !== 'new') {
-
             setIsloading(true);
             let prod: TProduct | undefined;
             try {
@@ -73,6 +73,9 @@ const ProductPage = () => {
                         description
                         descriptionDelta
                         views
+                        categories(pagedParams: {pageSize: 9999}) {
+                            id
+                        }
                         attributes {
                             key
                             values {
@@ -91,10 +94,15 @@ const ProductPage = () => {
                     }`, 'AdminPanelProductFragment'
                 );
 
-            } catch (e) { console.log(e) }
+            } catch (e) { console.error(e) }
 
             if (prod?.id) {
                 setProdData(prod);
+                store.setStateProp({
+                    prop: 'selectedItems',
+                    payload: Object.assign({}, ...(prod.categories ?? []).map(cat => ({ [cat.id]: true }))),
+                });
+
                 forceUpdate();
             }
             else setNotFound(true);
@@ -114,7 +122,7 @@ const ProductPage = () => {
         try {
             const attr = await client?.getAttributes();
             if (attr) setAttributes(attr);
-        } catch (e) { console.log(e) }
+        } catch (e) { console.error(e) }
 
         setIsloading(false);
     }
@@ -129,10 +137,28 @@ const ProductPage = () => {
         infoCardRef?.current?.save();
         const product = productRef.current;
 
+        const productAttributes = product.attributes?.map(attr => ({
+            key: attr.key,
+            values: attr.values ? attr.values.map(val => ({
+                value: val.value,
+                productVariant: val.productVariant ? {
+                    name: val.productVariant.name,
+                    price: typeof val.productVariant.price === 'string' ? parseFloat(val.productVariant.price) : val.productVariant.price,
+                    oldPrice: typeof val.productVariant.oldPrice === 'string' ? parseFloat(val.productVariant.oldPrice) : val.productVariant.oldPrice,
+                    mainImage: val.productVariant.mainImage,
+                    images: val.productVariant.images,
+                    description: val.productVariant.description,
+                    descriptionDelta: val.productVariant.descriptionDelta,
+                } : undefined
+            })) : []
+        }));
+
+        const selectedItems = store.getState().selectedItems;
+
         if (product) {
             const input: TProductInput = {
                 name: product.name,
-                categoryIds: product.categories ? product.categories.map(c => c.id) : [],
+                categoryIds: Object.keys(selectedItems).filter(id => selectedItems[id]),
                 price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
                 oldPrice: typeof product.oldPrice === 'string' ? parseFloat(product.oldPrice) : product.oldPrice,
                 mainImage: product.mainImage,
@@ -140,21 +166,7 @@ const ProductPage = () => {
                 description: product.description,
                 descriptionDelta: product.descriptionDelta,
                 slug: product.slug,
-                attributes: product.attributes?.map(attr => ({
-                    key: attr.key,
-                    values: attr.values ? attr.values.map(val => ({
-                        value: val.value,
-                        productVariant: val.productVariant ? {
-                            name: val.productVariant.name,
-                            price: typeof val.productVariant.price === 'string' ? parseFloat(val.productVariant.price) : val.productVariant.price,
-                            oldPrice: typeof val.productVariant.oldPrice === 'string' ? parseFloat(val.productVariant.oldPrice) : val.productVariant.oldPrice,
-                            mainImage: val.productVariant.mainImage,
-                            images: val.productVariant.images,
-                            description: val.productVariant.description,
-                            descriptionDelta: val.productVariant.descriptionDelta,
-                        } : undefined
-                    })) : []
-                })),
+                attributes: productAttributes,
                 pageTitle: product.pageTitle,
                 pageDescription: product.pageDescription,
                 isEnabled: product.isEnabled,
@@ -174,18 +186,17 @@ const ProductPage = () => {
                     }
                 } catch (e) {
                     toast.error('Failed to create');
-                    console.log(e);
+                    console.error(e);
                 }
 
             } else {
                 try {
                     await client?.updateProduct(product.id, input);
-                    const prod = await client?.getProductById(productId);
+                    await getProduct();
                     toast.success('Updated product');
-                    if (prod) setProdData(prod);
                 } catch (e) {
                     toast.error('Failed to update');
-                    console.log(e);
+                    console.error(e);
                 }
             }
 
@@ -197,16 +208,6 @@ const ProductPage = () => {
         setActiveTabNum(newValue);
     }
 
-    const leftAttributesToAdd: TAttribute[] = [];
-
-    attributes.forEach(attr => {
-        if (product) {
-            let hasAttr = product.attributes ? product.attributes.some(a => a.key === attr.key) : false;
-            if (!hasAttr) {
-                leftAttributesToAdd.push(attr);
-            }
-        }
-    });
 
     if (notFound) {
         return (
@@ -238,18 +239,18 @@ const ProductPage = () => {
                 <div>
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
-                        size="large"
+                        size="small"
                         onClick={handleSave}>
                         Save
                         </Button>
-                    <Tooltip title="Open product page in new tab">
+                    {/* <Tooltip title="Open product page in new tab">
                         <IconButton
                             aria-label="open"
                             onClick={() => { if (product) window.open(`http://localhost:4128/product/${product.id}`, '_blank'); }}
                         >
                             <OpenInNewIcon />
                         </IconButton>
-                    </Tooltip>
+                    </Tooltip> */}
                 </div>
             </div>
             {isLoading && <Skeleton width="100%" height="100%" style={{
@@ -259,176 +260,25 @@ const ProductPage = () => {
             {!isLoading && product && (
                 <>
                     <TabPanel value={activeTabNum} index={0}>
-                        <MainInfoCard
+                        <div className={styles.mainTab}>
+                            <MainInfoCard
+                                product={product}
+                                setProdData={setProdData}
+                                infoCardRef={infoCardRef}
+                            />
+                        </div>
+                    </TabPanel>
+                    <TabPanel value={activeTabNum} index={1}>
+                        <AttributesTab
+                            forceUpdate={forceUpdate}
                             product={product}
+                            attributes={attributes}
                             setProdData={setProdData}
                             infoCardRef={infoCardRef}
                         />
                     </TabPanel>
-                    <TabPanel value={activeTabNum} index={1}>
-                        {product.attributes && attributes && (
-                            product.attributes.map((prodAttr, prodAttrIdx) => {
-                                let origAttr: TAttribute | undefined = undefined;
-                                for (const attr of attributes) {
-                                    if (attr.key === prodAttr.key) origAttr = attr;
-                                }
-                                if (origAttr) {
-                                    const leftValues = origAttr.values.filter(v => !prodAttr.values.some(pv => pv.value === v.value))
-                                    const rightValues = prodAttr.values.map(v => v.value);
-                                    return (
-                                        <div className={styles.attributeBlock}>
-                                            <div className={styles.attributeHeader}>
-                                                <p className={styles.tag}>{prodAttr.key}</p>
-                                                <Tooltip title="Delete attribute">
-                                                    <IconButton
-                                                        aria-label="delete attribute"
-                                                        onClick={() => {
-                                                            const prod: TProduct = JSON.parse(JSON.stringify(product));
-                                                            if (prod.attributes) {
-                                                                prod.attributes = prod.attributes.filter((a, i) => i !== prodAttrIdx);
-                                                                setProdData(prod);
-                                                                forceUpdate();
-                                                            }
-                                                        }}
-                                                    ><DeleteForeverIcon />
-                                                    </IconButton>
-                                                </Tooltip>
-                                            </div>
-                                            <TransferList
-                                                left={leftValues.map(v => v.value)}
-                                                setLeft={(val) => { }}
-                                                right={rightValues}
-                                                itemComp={(props) => (
-                                                    <div className={styles.attributeInstanceValue}>
-                                                        <p>{props.value}</p>
-                                                        {rightValues.includes(props.value) && (
-                                                            <Tooltip title="Edit product variant">
-                                                                <IconButton
-                                                                    aria-label="edit product variant"
-                                                                    onClick={(e) => {
-                                                                        e.stopPropagation();
-                                                                        setEditingProductVariant({
-                                                                            prodAttrIdx,
-                                                                            value: props.value
-                                                                        })
-                                                                    }}
-                                                                >
-                                                                    <EditIcon />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        )}
-                                                    </div>
-                                                )}
-                                                setRight={(val) => {
-                                                    const prod: TProduct = JSON.parse(JSON.stringify(product));
-                                                    if (!prod.attributes) prod.attributes = [];
-
-                                                    const newVals: TAttributeInstanceValue[] = [];
-                                                    val.forEach(newVal => {
-                                                        let hasVal = false;
-                                                        prod.attributes[prodAttrIdx].values.forEach(prodVal => {
-                                                            if (prodVal.value === newVal) {
-                                                                newVals.push(prodVal);
-                                                                hasVal = true;
-                                                            }
-                                                        })
-                                                        if (!hasVal) {
-                                                            newVals.push({
-                                                                value: newVal
-                                                            });
-                                                        }
-                                                    });
-
-                                                    prod.attributes[prodAttrIdx].values = newVals.sort((a, b) => a.value > b.value ? 1 : -1);
-                                                    setProdData(prod);
-                                                    forceUpdate();
-                                                }}
-                                            />
-                                            {editingProductVariant && editingProductVariant.prodAttrIdx === prodAttrIdx && (
-                                                <div className={styles.editingProductVariant}>
-                                                    <div className={styles.attributeHeader}>
-                                                        <p className={styles.editingProductVariantTitle}>Editing product variant for value:
-                                                            <span className={styles.tag}>{editingProductVariant.value}</span>
-                                                        </p>
-                                                        <div>
-                                                            <Tooltip title="Close">
-                                                                <IconButton
-                                                                    aria-label="close editingProductVariant"
-                                                                    onClick={() => {
-                                                                        setEditingProductVariant(null)
-                                                                    }}
-                                                                >
-                                                                    <HighlightOffIcon />
-                                                                </IconButton>
-                                                            </Tooltip>
-                                                        </div>
-                                                    </div>
-                                                    <div className={styles.editingProductVariantCard}>
-                                                        <MainInfoCard
-                                                            infoCardRef={infoCardRef}
-                                                            productVariantVal={editingProductVariant.value}
-                                                            product={prodAttr.values.find(a => a.value === editingProductVariant.value)?.productVariant || product}
-                                                            setProdData={(data: TAttributeProductVariant) => {
-                                                                const prod: TProduct = JSON.parse(JSON.stringify(product));
-                                                                if (prod.attributes) {
-                                                                    prod.attributes[prodAttrIdx].values = prod.attributes[prodAttrIdx].values.map(val => {
-                                                                        if (val.value === editingProductVariant.value) {
-                                                                            return {
-                                                                                value: val.value,
-                                                                                productVariant: data
-                                                                            }
-                                                                        } else return val;
-                                                                    });
-                                                                    setProdData(prod);
-                                                                }
-                                                            }}
-                                                            isProductVariant
-                                                        />
-                                                    </div>
-
-                                                </div>
-                                            )}
-                                        </div>
-                                    )
-                                }
-
-                            })
-                        )}
-                        <Button variant="outlined" color="primary"
-                            onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
-                                setPopperAnchorEl(event.currentTarget);
-                                setPopperOpen((prev) => !prev);
-                            }}
-                            disabled={!Boolean(leftAttributesToAdd.length)}
-                        >Add attribute</Button>
-                        <Popper open={popperOpen} anchorEl={popperAnchorEl} placement={'bottom-start'} transition>
-                            {({ TransitionProps }) => (
-                                <Fade {...TransitionProps} timeout={350}>
-                                    <Paper className={styles.newAttributesList}>
-                                        {leftAttributesToAdd.map(attr => {
-                                            return (
-                                                <MenuItem
-                                                    onClick={() => {
-                                                        const prod: TProduct = JSON.parse(JSON.stringify(product));
-                                                        if (!prod.attributes) prod.attributes = [];
-                                                        prod.attributes.push({
-                                                            key: attr.key,
-                                                            values: []
-                                                        })
-                                                        setPopperOpen(false);
-                                                        setProdData(prod);
-                                                    }}
-                                                    className={styles.newAttributeOption}
-                                                >{attr.key}</MenuItem>
-                                            )
-                                        })}
-                                    </Paper>
-                                </Fade>
-                            )}
-                        </Popper>
-                    </TabPanel>
                     <TabPanel value={activeTabNum} index={2}>
-                        Categories
+                        <CategoriesTab />
                     </TabPanel>
                 </>
             )

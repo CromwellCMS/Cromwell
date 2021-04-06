@@ -362,7 +362,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                         }
                         if (itemType === 'image') {
                             ItemIcon = (<div className={styles.itemImageContainer}>
-                                <LazyLoad height={60} offsetVertical={60}>
+                                <LazyLoad height={60} offsetVertical={60} className={styles.itemImageContainer}>
                                     <img className={styles.itemImage}
                                         src={this.normalize(`/${this.currentPath}/${item}`)} />
                                 </LazyLoad>

@@ -107,7 +107,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                 if (this.props.id == d.parentId && d.id) {
                     // Save blocks that targeted at this component.
                     // This component will draw them
-                    this.childBlocks.push(d)
+                    this.childBlocks.push(d);
                 }
             })
         }
@@ -115,7 +115,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         if (this.data?.parentId && !this.data?.isVirtual) {
             this.hasBeenMoved = true;
         }
-
     }
 
     private getVirtualBlock = (b: TCromwellBlockData): JSX.Element => {
@@ -180,11 +179,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
     public getChildBlocks(): React.ReactNode[] {
         const data = this.getData();
-        this.childBlocks = this.childBlocks.sort((a, b) => {
-            const ai = a?.index ?? 0;
-            const bi = b?.index ?? 0;
-            return ai - bi;
-        });
+        this.childBlocks = this.childBlocks.sort((a, b) => (a?.index ?? 0) - (b?.index ?? 0));
 
         return this.childBlocks.map(block => {
             if (block.isVirtual) {
@@ -196,7 +191,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                 return blockInst.consumerRender(data?.id);
 
             } else {
-                // Child wasnt wan't initialized yet. Wait until it registers in the store 
+                // Child wasn't initialized yet. Wait until it registers in the store 
                 // and notifies this parent component
                 const childPromise = new Promise<TCromwellBlock>(done => {
                     this.childResolvers[block.id] = done;
@@ -208,7 +203,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                     return () => {
                         useEffect(() => {
                             this.componentDidUpdate();
-                        }, [])
+                        }, []);
                         return <>{child.consumerRender(data?.id)}</>
                     }
                 });
@@ -230,7 +225,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
         if (this.props.content) {
             return this.props.content(this.data, this.blockRef,
-                inst => this.contentInstance = inst)
+                inst => this.contentInstance = inst);
         }
 
         return this.props.children;

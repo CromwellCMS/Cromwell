@@ -146,7 +146,7 @@ const CategoryItem = (props: TPropsType) => {
                         </>
                     </Grid>
                 )}
-                <Grid item xs={4} className={styles.itemActions}>
+                <Grid item xs={4} className={`${styles.itemActions} ${props.listItemProps?.canModify === false ? styles.none : ''}`}>
                     <Link to={`${categoryPageInfo.baseRoute}/new?parentId=${category?.id}`}>
                         <Tooltip title="Add subcategory">
                             <IconButton

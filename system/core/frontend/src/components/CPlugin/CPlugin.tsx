@@ -53,7 +53,12 @@ export const CPlugin = (props: CPluginProps) => {
                 // console.log('CPlugin name', name, 'PluginComponent', PluginComponent);
                 if (PluginComponent && isValidElementType(PluginComponent)) return (
                     <ErrorBoundary>
-                        <PluginComponent data={pluginData} settings={settings} pluginName={name} />
+                        <PluginComponent
+                            data={pluginData}
+                            pluginName={name}
+                            globalSettings={settings}
+                            instanceSettings={data?.plugin?.settings ?? props.plugin?.settings}
+                        />
                     </ErrorBoundary>
                 );
                 else return <></>

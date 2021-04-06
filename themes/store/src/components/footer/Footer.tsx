@@ -14,10 +14,10 @@ export const Footer = () => {
                         <CText className={styles.subscribeTitle} id="footer_06">Subscribe newsletter</CText>
                         <CText id="footer_07">Don't miss our special offers and sales!</CText>
                     </CContainer>
-                    <CHTML className={styles.subscribeInputContainer} id="footer_05">
+                    <CContainer className={styles.subscribeInputContainer} id="footer_05">
                         <InputBase className={styles.subscribeInput} />
-                        <Button variant="contained" color="primary" style={{ borderRadius: '0' }}>Subscribe!</Button>
-                    </CHTML>
+                        <Button variant="contained" color="primary" className={styles.subscribeBtn}>Subscribe!</Button>
+                    </CContainer>
                 </CContainer>
                 <CContainer className={styles.linksSection} id="footer_08">
                     <CContainer className={styles.linksBlock} id="footer_09">

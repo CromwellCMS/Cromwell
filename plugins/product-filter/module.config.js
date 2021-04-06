@@ -2,7 +2,7 @@ module.exports = {
     frontendInputFile: "src/frontend/index.tsx",
     adminInputFile: "src/admin/index.tsx",
     defaultSettings: {
-        productListId: "Category_ProductList"
+        listId: "Category_ProductList"
     },
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
@@ -21,7 +21,8 @@ module.exports = {
                     typescript({
                         compilerOptions: {
                             target: 'ES2019'
-                        }
+                        },
+                        monorepo: true,
                     }),
                     commonjs(),
                 ]
