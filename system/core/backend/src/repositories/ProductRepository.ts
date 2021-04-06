@@ -244,14 +244,11 @@ export class ProductRepository extends BaseRepository<Product> {
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
             const qb = this.createQueryBuilder(this.metadata.tablePath);
 
-            if (shouldApplyPriceFilter === false) {
-                filterParams = {
-                    ...filterParams,
-                    maxPrice: undefined,
-                    minPrice: undefined,
-                }
-            }
-            this.applyProductFilter(qb, filterParams, categoryId)
+            this.applyProductFilter(qb, shouldApplyPriceFilter ? filterParams : {
+                ...filterParams,
+                maxPrice: undefined,
+                minPrice: undefined,
+            }, categoryId)
             return qb;
         }
 

@@ -5,6 +5,10 @@
     // margin: 5px 0;
 }
 
+.none {
+    display: none !important;
+}
+
 .listItem {
     @include paper;
     border-bottom: 1px solid #ddd;

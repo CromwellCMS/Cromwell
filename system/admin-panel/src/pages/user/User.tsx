@@ -187,7 +187,6 @@ export default function UserPage() {
                 <FormControl className={styles.field}>
                     <InputLabel>Role</InputLabel>
                     <Select
-                        className={styles.field}
                         value={(userData?.role ?? 'customer') as TUserRole}
                         onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
                             handleInputChange('role', event.target.value)
@@ -203,7 +202,6 @@ export default function UserPage() {
                     value={userData?.bio || ''}
                     fullWidth
                     multiline
-                    rows={2}
                     className={styles.field}
                     onChange={(e) => { handleInputChange('bio', e.target.value) }}
                 />

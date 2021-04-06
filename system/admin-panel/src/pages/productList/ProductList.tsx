@@ -4,7 +4,8 @@ import { CList, getGraphQLClient, TCList, CPlugin } from '@cromwell/core-fronten
 import { Checkbox, IconButton, TextField, Tooltip, Drawer } from '@material-ui/core';
 import {
     AddCircle as AddCircleIcon, Delete as DeleteIcon,
-    FilterList as FilterListIcon
+    FilterList as FilterListIcon,
+    Close as CloseIcon,
 } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
@@ -72,14 +73,15 @@ const ProductList = (props: TPropsType) => {
         pluginsData[filterPluginName] = {
             ...(pluginsData[filterPluginName] ?? {}),
             attributes: attributes,
-            onChange: (params: TProductFilter) => {
-                Object.keys(params).forEach(key => {
-                    filterInput.current[key] = params[key];
-                });
-                handleFilterInput();
-            },
         }
         setStoreItem('pluginsData', pluginsData);
+    }
+
+    const onFilterChange = (params: TProductFilter) => {
+        Object.keys(params).forEach(key => {
+            filterInput.current[key] = params[key];
+        });
+        handleFilterInput();
     }
 
     const handleGetProducts = async (params: TPagedParams<TProduct>) => {
@@ -209,8 +211,30 @@ const ProductList = (props: TPropsType) => {
                             <FilterListIcon />
                         </IconButton>
                     </Tooltip>
-                    <Drawer anchor={'left'} open={showFilter} onClose={() => setShowFilter(false)}>
+                    <Drawer
+                        classes={{ paper: styles.filterDrawer }}
+                        variant="persistent"
+                        anchor={'left'}
+                        open={showFilter}
+                        onClose={() => setShowFilter(false)}>
+                        <div className={styles.filterHeader}>
+                            <div></div>
+                            <Tooltip title="Close">
+                                <IconButton
+                                    onClick={handleToggleFilter}
+                                    aria-label="close filter"
+                                >
+                                    <CloseIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </div>
                         <CPlugin
+                            plugin={{
+                                settings: {
+                                    disableMobile: true,
+                                    onChange: onFilterChange,
+                                }
+                            }}
                             adminPanel={false}
                             pluginName={filterPluginName}
                             id="product-filter-plugin"

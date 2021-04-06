@@ -12,7 +12,6 @@ export type TProductFilterData = {
     slug?: string | string[] | null;
     attributes?: TAttribute[];
     filterMeta?: TProductFilterMeta;
-    onChange?: (params: TProductFilter) => void;
 }
 
 const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: string, pagedParams: TPagedParams<TProduct>,

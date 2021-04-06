@@ -68,7 +68,7 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
 
     public deleteBlock = () => {
         this.props?.deleteBlock();
-        this.setState({ isDeleted: true })
+        this.setState({ isDeleted: true });
     }
 
     public handleCloseAddNew = () => {

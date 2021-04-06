@@ -5,7 +5,7 @@ type Required<T> = {
 };
 
 export const defaultSettings: Required<TProductFilterSettings> = {
-    productListId: "Category_ProductList",
+    listId: "Category_ProductList",
     mobileIconPosition: {
         top: 100,
         left: 10

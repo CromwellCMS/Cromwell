@@ -1,12 +1,10 @@
 .PageBuilder {
     display: inline-block;
+    width: 100%;
 }
 
 .actions {
     display: flex;
-    // position: fixed;
-    top: 30px;
-    right: 10px;
     padding: 5px 10px;
     border-bottom: 1px solid #ccc;
 }

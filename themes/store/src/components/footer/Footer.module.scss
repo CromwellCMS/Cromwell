@@ -24,12 +24,14 @@
 .subscribeInputContainer {
     margin-left: 40px;
     display: flex;
-    border-radius: 8px;
-    overflow: hidden;
 }
 .subscribeInput {
     background-color: #fff;
     padding: 5px 10px;
+    border-radius: 8px 0 0 8px;
+}
+button.subscribeBtn {
+    border-radius: 0 8px 8px 0;
 }
 
 .linksSection {

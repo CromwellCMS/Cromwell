@@ -38,6 +38,7 @@ export type ListItemProps = {
     handleDeleteBtnClick: (product: TProductCategory) => void;
     toggleSelection?: (data: TProductCategory) => void;
     displayType: 'tree' | 'list';
+    canModify?: boolean;
 }
 
 const mapStateToProps = (state: TAppState) => {
@@ -46,8 +47,9 @@ const mapStateToProps = (state: TAppState) => {
     }
 }
 
-type TPropsType = PropsType<TAppState, {},
-    ReturnType<typeof mapStateToProps>>;
+type TPropsType = PropsType<TAppState, {
+    canModify?: boolean;
+}, ReturnType<typeof mapStateToProps>>;
 
 
 const CategoryList = (props: TPropsType) => {
@@ -82,9 +84,11 @@ const CategoryList = (props: TPropsType) => {
     useEffect(() => {
         getRootCategories();
 
-        resetSelected();
-        return () => {
+        if (props.canModify !== false)
             resetSelected();
+        return () => {
+            if (props.canModify !== false)
+                resetSelected();
         }
     }, []);
 
@@ -203,13 +207,15 @@ const CategoryList = (props: TPropsType) => {
             <div className={styles.header}>
                 <div className={styles.filter}>
                     <div className={commonStyles.center}>
-                        <Tooltip title="Select all">
-                            <Checkbox
-                                style={{ marginRight: '10px' }}
-                                checked={props.allSelected ?? false}
-                                onChange={handleToggleSelectAll}
-                            />
-                        </Tooltip>
+                        {props.canModify !== false && (
+                            <Tooltip title="Select all">
+                                <Checkbox
+                                    style={{ marginRight: '10px' }}
+                                    checked={props.allSelected ?? false}
+                                    onChange={handleToggleSelectAll}
+                                />
+                            </Tooltip>
+                        )}
                     </div>
                     <Tooltip title={displayType === 'list' ? 'Tree view' : 'List view'}>
                         <IconButton
@@ -254,23 +260,27 @@ const CategoryList = (props: TPropsType) => {
                     )}
                 </div>
                 <div>
-                    <Tooltip title="Delete selected">
-                        <IconButton
-                            onClick={handleDeleteSelectedBtnClick}
-                            aria-label="Delete selected"
-                        >
-                            <DeleteIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Create category">
-                        <IconButton
-                            className={styles.actionBtn}
-                            aria-label="Create category"
-                            onClick={handleCreate}
-                        >
-                            <AddIcon />
-                        </IconButton>
-                    </Tooltip>
+                    {props.canModify !== false && (
+                        <>
+                            <Tooltip title="Delete selected">
+                                <IconButton
+                                    onClick={handleDeleteSelectedBtnClick}
+                                    aria-label="Delete selected"
+                                >
+                                    <DeleteIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Create category">
+                                <IconButton
+                                    className={styles.actionBtn}
+                                    aria-label="Create category"
+                                    onClick={handleCreate}
+                                >
+                                    <AddIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </>
+                    )}
                 </div>
             </div>
             {displayType === 'tree' && (
@@ -288,7 +298,8 @@ const CategoryList = (props: TPropsType) => {
                                 listItemProps={{
                                     handleDeleteBtnClick,
                                     toggleSelection: handleToggleItemSelection,
-                                    displayType
+                                    displayType,
+                                    canModify: props.canModify,
                                 }}
                             />
                         )
@@ -306,6 +317,7 @@ const CategoryList = (props: TPropsType) => {
                         handleDeleteBtnClick,
                         toggleSelection: handleToggleItemSelection,
                         displayType,
+                        canModify: props.canModify,
                     }}
                     useQueryPagination
                     loader={handleGetProductCategories}

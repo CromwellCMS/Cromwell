@@ -23,10 +23,12 @@
     }
 
     .tabContent {
+        margin: 15px 0;
+    }
+
+    .mainTab {
         @include paper;
         padding: 15px;
-        margin: 15px 0;
-        background-color: #fff;
     }
 
     .textField {
@@ -70,9 +72,10 @@
     }
 
     .attributeBlock {
-        border: 1px solid #bbb;
+        @include paper;
+        // border: 1px solid #bbb;
         border-radius: 5px;
-        margin: 10px 0;
+        margin: 20px 0;
     }
 
     .attributeHeader {
@@ -80,7 +83,7 @@
         justify-content: space-between;
         align-items: center;
         padding-left: 10px;
-        border-bottom: 1px solid #bbb;
+        border-bottom: 1px solid #ccc;
     }
 
     .tag {
@@ -171,4 +174,8 @@
     div:global(.ql-container) {
         border: 0;
     }
+}
+
+.CategoriesTab {
+    margin: 0 -10px;
 }

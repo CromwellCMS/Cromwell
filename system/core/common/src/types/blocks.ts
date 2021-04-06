@@ -30,10 +30,11 @@ export type TCromwellPageCoreProps = {
     palette?: TPalette | null;
 }
 
-export type TFrontendPluginProps<TData = any, TSettings = any> = {
+export type TFrontendPluginProps<TData = any, TGlobalSettings = any, TInstanceSettings = any> = {
     data?: TData;
-    settings?: TSettings;
     pluginName: string;
+    globalSettings?: TGlobalSettings;
+    instanceSettings?: TInstanceSettings;
 }
 
 export type TAdminPanelPluginProps<TSettings = any> = {

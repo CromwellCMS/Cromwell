@@ -1,9 +1,16 @@
+import { TAttributeValue, TFrontendPluginProps, TFilteredProductList, TProductFilter } from '@cromwell/core';
 export type TProductFilterSettings = {
-    productListId?: string;
+    listId?: string;
     mobileIconPosition?: {
         top: number;
         left: number;
     },
     collapsedByDefault?: boolean;
     mobileCollapsedByDefault?: boolean;
+}
+
+export type TInstanceSettings = {
+    onChange?: (params: TProductFilter) => void;
+    disableMobile?: boolean;
+    listId?: string;
 }

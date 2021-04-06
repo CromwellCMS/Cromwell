@@ -21,13 +21,13 @@ import clsx from 'clsx';
 import { debounce } from 'debounce';
 import React, { Component, useEffect, useRef, useState } from 'react';
 
-import { TProductFilterSettings } from '../types';
+import { TProductFilterSettings, TInstanceSettings } from '../types';
 import { Slider } from './components/slider';
 import { filterCList, TProductFilterData } from './service';
 import { useStyles } from './styles';
 import { defaultSettings } from '../constants';
 
-const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductFilterSettings>): JSX.Element => {
+const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductFilterSettings, TInstanceSettings>): JSX.Element => {
     const { attributes, productCategory, filterMeta } = props.data ?? {};
     const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
     const [collapsedItems, setCollapsedItems] = useState<Record<string, boolean>>({});
@@ -39,10 +39,10 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     const classes = useStyles();
     const client = getGraphQLClient();
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+    const isMobile = !props.instanceSettings?.disableMobile && useMediaQuery(theme.breakpoints.down('xs'));
 
-    const pcCollapsedByDefault = props.settings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
-    const mobileCollapsedByDefault = props.settings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
+    const pcCollapsedByDefault = props.globalSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
+    const mobileCollapsedByDefault = props.globalSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
     const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
     if (collapsedByDefault.current !== _collapsedByDefault) {
         collapsedByDefault.current = _collapsedByDefault;
@@ -65,25 +65,25 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     }
 
     const applyFilter = () => {
-        const productListId = props?.settings?.productListId;
+        const productListId = props.instanceSettings?.listId ?? props?.globalSettings?.listId;
         const productCategoryId = productCategory?.id;
 
         const filterParams: TProductFilter = {
             attributes: Object.keys(checkedAttrs).map(key => ({
                 key, values: checkedAttrs[key]
             })),
-            minPrice: priceRange[0],
-            maxPrice: priceRange[1]
+            minPrice: priceRange.current[0],
+            maxPrice: priceRange.current[1]
         }
 
-        props.data?.onChange?.(filterParams);
+        props.instanceSettings?.onChange?.(filterParams);
 
         if (!productListId) {
-            console.error('ProductFilter:applyFilter: !productListId', props?.settings)
+            // console.error('ProductFilter:applyFilter: !productListId', props?.settings)
             return;
         }
         if (!productCategoryId) {
-            console.error('ProductFilter:applyFilter: !productCategoryId', productCategory)
+            // console.error('ProductFilter:applyFilter: !productCategoryId', productCategory)
             return;
         }
 
@@ -257,7 +257,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         const onOpen = () => {
 
         }
-        const mobileIconPosition = props.settings?.mobileIconPosition ?? defaultSettings.mobileIconPosition;
+        const mobileIconPosition = props.globalSettings?.mobileIconPosition ?? defaultSettings.mobileIconPosition;
 
         return (
             <div>

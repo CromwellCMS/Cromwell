@@ -114,3 +114,13 @@
 .pageActions {
     margin-right: 10px;
 }
+
+div.filterDrawer {
+    @include paperElevated;
+    width: 280px;
+}
+
+.filterHeader {
+    display: flex;
+    justify-content: space-between;
+}
