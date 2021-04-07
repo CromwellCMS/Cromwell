@@ -1,4 +1,4 @@
-import { CContainer, CHTML, CText } from '@cromwell/core-frontend';
+import { CContainer, CHTML, CText, CPlugin } from '@cromwell/core-frontend';
 import { Button, InputBase } from '@material-ui/core';
 import React from 'react';
 
@@ -15,8 +15,7 @@ export const Footer = () => {
                         <CText id="footer_07">Don't miss our special offers and sales!</CText>
                     </CContainer>
                     <CContainer className={styles.subscribeInputContainer} id="footer_05">
-                        <InputBase className={styles.subscribeInput} />
-                        <Button variant="contained" color="primary" className={styles.subscribeBtn}>Subscribe!</Button>
+                        <CPlugin id="footer_06_Newsletter" pluginName={"@cromwell/plugin-newsletter"} />
                     </CContainer>
                 </CContainer>
                 <CContainer className={styles.linksSection} id="footer_08">

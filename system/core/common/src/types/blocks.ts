@@ -38,7 +38,7 @@ export type TFrontendPluginProps<TData = any, TGlobalSettings = any, TInstanceSe
 }
 
 export type TAdminPanelPluginProps<TSettings = any> = {
-    settings?: TSettings;
+    globalSettings?: TSettings;
     pluginName: string;
 }
 

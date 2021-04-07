@@ -26,14 +26,14 @@ export default function index(props: TAdminPanelPluginProps<TMainMenuSettings>) 
     const classes = useStyles();
     const [isLoading, setIsloading] = useState(false);
     const forceUpdate = useForceUpdate();
-    const { pluginName, settings } = props;
-    const items = useRef<TMainMenuItem[]>(settings?.items ?? []);
+    const { pluginName, globalSettings } = props;
+    const items = useRef<TMainMenuItem[]>(globalSettings?.items ?? []);
 
     const handleSave = async () => {
         setIsloading(true);
-        if (settings) {
-            settings.items = items.current;
-            await apiClient?.savePluginSettings(pluginName, settings);
+        if (globalSettings) {
+            globalSettings.items = items.current;
+            await apiClient?.savePluginSettings(pluginName, globalSettings);
         }
         setIsloading(false);
     }
@@ -44,28 +44,28 @@ export default function index(props: TAdminPanelPluginProps<TMainMenuSettings>) 
             {isLoading ? (
                 <LoadBox />
             ) : (
-                    <>
-                        <h2>Main menu settings</h2>
-                        <div className={classes.itemList}>
-                            {items.current.map((data, i) => {
-                                return <Item i={i} updateList={forceUpdate} items={items.current} />
-                            })}
-                        </div>
-                        <div className={`${classes.card} ${classes.paper}`}>
-                            <MenuItem
-                                className={classes.addBtn}
-                                onClick={() => { items.current.push({ title: '' }); forceUpdate(); }}>
-                                <AddIcon />
-                            </MenuItem>
-                        </div>
-                        <Button variant="contained" color="primary"
-                            className={classes.saveBtn}
-                            size="large"
-                            onClick={handleSave}>
-                            Save
+                <>
+                    <h2>Main menu settings</h2>
+                    <div className={classes.itemList}>
+                        {items.current.map((data, i) => {
+                            return <Item i={i} updateList={forceUpdate} items={items.current} />
+                        })}
+                    </div>
+                    <div className={`${classes.card} ${classes.paper}`}>
+                        <MenuItem
+                            className={classes.addBtn}
+                            onClick={() => { items.current.push({ title: '' }); forceUpdate(); }}>
+                            <AddIcon />
+                        </MenuItem>
+                    </div>
+                    <Button variant="contained" color="primary"
+                        className={classes.saveBtn}
+                        size="large"
+                        onClick={handleSave}>
+                        Save
                         </Button>
-                    </>
-                )}
+                </>
+            )}
         </div>
     )
 }

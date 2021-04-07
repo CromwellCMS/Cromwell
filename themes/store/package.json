@@ -18,7 +18,6 @@
     "@cromwell/core": "1.1.0",
     "@cromwell/core-frontend": "1.0.0",
     "@cromwell/utils": "1.0.0",
-    "@cromwell/plugin-customer-reviews": "^1.0.0",
     "@cromwell/plugin-product-filter": "^1.0.0",
     "@cromwell/plugin-main-menu": "^1.0.0",
     "@cromwell/plugin-product-showcase": "^1.0.0",
@@ -64,10 +63,10 @@
     "previewImage": "static/shopping-cart.png",
     "description": "Online store theme",
     "plugins": [
-      "@cromwell/plugin-customer-reviews",
       "@cromwell/plugin-product-filter",
       "@cromwell/plugin-main-menu",
-      "@cromwell/plugin-product-showcase"
+      "@cromwell/plugin-product-showcase",
+      "@cromwell/plugin-newsletter"
     ],
     "themes": [
       "@cromwell/theme-store"

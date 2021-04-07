@@ -53,7 +53,6 @@
     "previewImage": "static/blog.png",
     "description": "Simple blog website",
     "plugins": [
-      "@cromwell/plugin-customer-reviews",
       "@cromwell/plugin-product-filter",
       "@cromwell/plugin-main-menu",
       "@cromwell/plugin-product-showcase"
