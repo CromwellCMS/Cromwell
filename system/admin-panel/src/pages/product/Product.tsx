@@ -3,11 +3,13 @@ import 'swiper/swiper-bundle.min.css';
 import { gql } from '@apollo/client';
 import { TAttribute, TProduct, TProductInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, Tab, Tabs } from '@material-ui/core';
+import { Button, Tab, Tabs, IconButton } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useHistory, useParams, Link } from 'react-router-dom';
+import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
 
+import { productListInfo } from '../../constants/PageInfos';
 import { toast } from '../../components/toast/toast';
 import { productPageInfo } from '../../constants/PageInfos';
 import { resetSelected } from '../../redux/helpers';
@@ -16,6 +18,7 @@ import AttributesTab from './AttributesTab';
 import CategoriesTab from './CategoriesTab';
 import MainInfoCard from './MainInfoCard';
 import styles from './Product.module.scss';
+import commonStyles from '../../styles/common.module.scss';
 
 export const editorId = "quill-editor";
 
@@ -224,7 +227,16 @@ const ProductPage = () => {
             {/* <h2>Edit product</h2> */}
             <div className={styles.header}>
                 {/* <p>Product id: {id}</p> */}
-                <div className={styles.paper}>
+                <div className={styles.headerLeft}>
+                    <Link to={productListInfo.route}>
+                        <IconButton
+                        >
+                            <ArrowBackIcon />
+                        </IconButton>
+                    </Link>
+                    <p className={commonStyles.pageTitle}>product</p>
+                </div>
+                <div >
                     <Tabs
                         value={activeTabNum}
                         indicatorColor="primary"
@@ -236,10 +248,9 @@ const ProductPage = () => {
                         <Tab label="Categories" />
                     </Tabs>
                 </div>
-                <div>
+                <div className={styles.headerActions}>
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
-                        size="small"
                         onClick={handleSave}>
                         Save
                         </Button>

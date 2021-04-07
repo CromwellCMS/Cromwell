@@ -17,6 +17,7 @@
         "strictPropertyInitialization": false,
         "resolveJsonModule": true,
         "moduleResolution": "node",
+        "noImplicitAny": false,
         "skipLibCheck": true,
     },
     "include": [

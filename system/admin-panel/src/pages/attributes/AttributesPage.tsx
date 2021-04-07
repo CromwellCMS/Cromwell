@@ -1,12 +1,13 @@
 import { TAttribute } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, GridList, GridListTile } from '@material-ui/core';
+import { Button, Grid } from '@material-ui/core';
 import { AddCircleOutline as AddCircleOutlineIcon } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 
 import AttributeItem from './AttributeItem';
 import styles from './Attributes.module.scss';
 import { Skeleton } from '@material-ui/lab';
+import commonStyles from '../../styles/common.module.scss';
 
 function useForceUpdate() {
     const [value, setValue] = useState(0);
@@ -50,7 +51,9 @@ export default function AttributesPage() {
     return (
         <div className={styles.Attributes}>
             <div className={styles.header}>
-                <div></div>
+                <div>
+                    <p className={commonStyles.pageTitle}>attributes</p>
+                </div>
                 <Button
                     onClick={handleAddAttribute}
                     variant="contained"
@@ -59,26 +62,26 @@ export default function AttributesPage() {
                     startIcon={<AddCircleOutlineIcon />}
                 >Create attribute</Button>
             </div>
-            <GridList
+            <Grid
+                spacing={3}
+                container
                 className={styles.list}
-                cellHeight={315}
-                spacing={15}
             >
                 {attributes.current && attributes.current.map((attribute, index) => (
-                    <GridListTile key={attribute.id ?? index}>
+                    <Grid item xs={12} sm={6} key={attribute.id ?? 'temp_' + index}>
                         <div className={styles.listItem} key={attribute.id ?? index} >
                             <AttributeItem data={attribute} handleRemove={handleRemove} />
                         </div>
-                    </GridListTile>
+                    </Grid>
                 ))}
                 {isLoading && Array(3).fill(1).map((it, index) => {
                     return (
-                        <GridListTile className={styles.listItem} key={index}>
+                        <Grid item xs={12} sm={6} className={styles.listItem} key={index}>
                             <Skeleton key={index} variant="rect" height="315px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
-                        </GridListTile>
+                        </Grid>
                     )
                 })}
-            </GridList>
+            </Grid>
         </div>
     )
 }

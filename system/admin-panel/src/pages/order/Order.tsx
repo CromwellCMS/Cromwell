@@ -15,6 +15,7 @@ import { toast } from '../../components/toast/toast';
 import { orderStatuses } from '../../constants/order';
 import { orderListPageInfo, productPageInfo } from '../../constants/PageInfos';
 import styles from './Order.module.scss';
+import commonStyles from '../../styles/common.module.scss';
 
 const OrderPage = () => {
     const { id: orderId } = useParams<{ id: string }>();
@@ -137,13 +138,14 @@ const OrderPage = () => {
     return (
         <div className={styles.OrderPage}>
             <div className={styles.header}>
-                <div>
+                <div className={styles.headerLeft}>
                     <Link to={orderListPageInfo.route}>
                         <IconButton
                         >
                             <ArrowBackIcon />
                         </IconButton>
                     </Link>
+                    <p className={commonStyles.pageTitle}>order</p>
                 </div>
                 <div className={styles.headerActions}>
                     <Button variant="contained" color="primary"

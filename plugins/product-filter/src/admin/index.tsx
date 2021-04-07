@@ -8,7 +8,7 @@ import { TProductFilterSettings } from '../types';
 import { useStyles } from './styles';
 
 export default function index(props: TAdminPanelPluginProps<TProductFilterSettings>) {
-    const { pluginName, settings } = props;
+    const { pluginName, globalSettings: settings } = props;
     const classes = useStyles();
     const [isLoading, setIsloading] = useState(false);
     const apiClient = getRestAPIClient();

@@ -157,7 +157,7 @@ const ProductList = (props: TPropsType) => {
     }
 
     const handleToggleSelectAll = () => {
-        toggleSelectAll()
+        toggleSelectAll();
     }
 
     const handleDeleteSelectedBtnClick = () => {

@@ -9,6 +9,7 @@ import styles from './ImagePicker.module.scss';
 const ImagePicker = (props: {
     toolTip?: string;
     placeholder?: string;
+    label?: string;
     width?: string;
     height?: string;
     onChange?: (value: string | undefined) => void;
@@ -38,8 +39,7 @@ const ImagePicker = (props: {
     const value = (props.value !== undefined && props.value !== '') ? props.value : internalValue;
 
     let element = (
-        <div className={`${styles.wrapper} ${props.className}`}>
-
+        <div className={`${styles.wrapper} ${props.className}`} style={{ paddingTop: props.label ? '12px' : '' }}>
             <Tooltip title={props.toolTip ?? ''}>
                 <div className={`${styles.image} ${props.classes?.image}`}
                     onClick={pickImage}
@@ -52,15 +52,16 @@ const ImagePicker = (props: {
                     {!value && <AddPhotoAlternateOutlinedIcon />}
                 </div>
             </Tooltip>
-            {props.placeholder && (
-                <Tooltip title={props.toolTip ?? ''}>
-                    <p
-                        onClick={pickImage}
-                        className={styles.label}
-                        style={{ color: !value ? 'rgba(0, 0, 0, 0.54)' : '#000', marginLeft: '10px' }}
-                    >{value ?? props.placeholder}</p>
-                </Tooltip>
+            {props.label && value && (
+                <p className={styles.floatingLabel}>{props.label}</p>
             )}
+            <Tooltip title={props.toolTip ?? ''}>
+                <p
+                    onClick={pickImage}
+                    className={styles.placeholder}
+                    style={{ color: !value ? 'rgba(0, 0, 0, 0.54)' : '#000', marginLeft: '10px' }}
+                >{value ?? props.placeholder ?? props.label ?? ''}</p>
+            </Tooltip>
             {value && props.showRemove && (
                 <IconButton
                     className={styles.removeBtn}

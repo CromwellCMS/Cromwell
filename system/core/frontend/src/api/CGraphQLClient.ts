@@ -74,7 +74,12 @@ class CGraphQLClient {
 
     public returnData = (res: any, path: string) => {
         const data = res?.data?.[path];
-        if (data) return data;
+        if (data) {
+            // Data may be cached, and if it is modified somewhere in the app, 
+            // next request can possibly return modified data instead of original.
+            // Just to make sure all object references inside are new:
+            return JSON.parse(JSON.stringify(data));
+        };
         const errors = res?.errors;
         return errors ?? null;
     }

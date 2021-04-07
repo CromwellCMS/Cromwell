@@ -38,7 +38,7 @@ export type TFrontendPluginProps<TData = any, TGlobalSettings = any, TInstanceSe
 }
 
 export type TAdminPanelPluginProps<TSettings = any> = {
-    settings?: TSettings;
+    globalSettings?: TSettings;
     pluginName: string;
 }
 
@@ -119,6 +119,9 @@ export type TCromwellBlockData = {
      * but user can set isDeleted flag that will tell Blocks to render null instead
      */
     isDeleted?: boolean;
+
+    /** Persist on all pages, all inner modifications will be saved as global */
+    global?: boolean;
 
     /** For plugin block */
     plugin?: {

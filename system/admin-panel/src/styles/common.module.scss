@@ -16,6 +16,19 @@
   justify-content: center;
 }
 
+h1 {
+  font-size: 24px;
+  font-weight: 500;
+}
+h2 {
+  font-size: 20px;
+  font-weight: 500;
+}
+h3 {
+  font-size: 18px;
+  font-weight: 500;
+}
+
 @mixin paper {
   // box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.03), 0 0 6px 0 rgba(0, 0, 0, 0.03);
   box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.05), 0 0 11px 5px rgba(0, 0, 0, 0.05);
@@ -85,4 +98,20 @@
   display: inline-block;
   height: 100%;
   overflow: auto;
+}
+
+.pageTitle {
+  display: flex;
+  align-items: center;
+  font-weight: 500;
+}
+
+.pageTitle::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  background-color: #333;
+  margin-right: 8px;
+  display: block;
+  border-radius: 100%;
 }

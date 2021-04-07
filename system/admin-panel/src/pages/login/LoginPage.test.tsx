@@ -23,6 +23,7 @@ jest.mock('react-router-dom', () => {
     return {
         useHistory: () => { },
         BrowserRouter: originalModule.BrowserRouter,
+        Link: () => <></>,
     }
 });
 

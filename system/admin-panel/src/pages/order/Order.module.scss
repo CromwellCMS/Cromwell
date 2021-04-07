@@ -15,6 +15,10 @@
         justify-content: space-between;
         align-items: center;
     }
+    .headerLeft {
+        display: flex;
+        align-items: center;
+    }
 
     .fields {
         @include paper;

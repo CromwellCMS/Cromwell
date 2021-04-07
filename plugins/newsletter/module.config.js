@@ -22,12 +22,12 @@ module.exports = {
                     typescript({
                         compilerOptions: {
                             target: 'ES2019'
-                        }
+                        },
+                        monorepo: true,
                     }),
                     commonjs(),
                 ]
-
-            }
+            },
         }
     }
 }
