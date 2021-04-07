@@ -9,15 +9,14 @@ import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
 import { connectDatabase } from './helpers/connectDataBase';
-import { setEnv } from './helpers/setEnv';
+import { loadEnv } from './helpers/loadEnv';
 import { AppModule } from './modules/app.module';
 
 
 async function bootstrap(): Promise<void> {
-    const envMode = setEnv();
-
+    const envMode = loadEnv();
     const config = readCMSConfigSync();
-    if (!config || !config.apiPort) throw new Error('Failed to read CMS config ' + JSON.stringify(config));
+    if (!config) throw new Error('Failed to read CMS config ' + JSON.stringify(config));
 
     // Connect to DB via TypeOrm
     await connectDatabase();
@@ -33,6 +32,7 @@ async function bootstrap(): Promise<void> {
     })
     app.register(require('fastify-cors'), {
         origin: function (origin, callback) {
+            console.log('originoriginorigin', origin)
             if (typeof origin === 'undefined') {
                 // Requests from other services via node-fetch produce undefined value in origin
                 // Let it pass for now. @TODO: fix undefined 
@@ -40,7 +40,7 @@ async function bootstrap(): Promise<void> {
             }
 
             if (/localhost/.test(origin))
-                return callback(null, true);
+                return callback(null, [origin]);
 
             callback(new Error("Not allowed"));
         },
@@ -60,8 +60,8 @@ async function bootstrap(): Promise<void> {
     const document = SwaggerModule.createDocument(app, options);
     SwaggerModule.setup(`/${apiV1BaseRoute}/api-docs`, app, document);
 
-
-    await app.listen(config.apiPort ?? 4032, '::');
+    const port = envMode.serverType === 'main' ? (config.mainApiPort ?? 4016) : (config.pluginApiPort ?? 4032)
+    await app.listen(port, '::');
     console.log(`Application is running on: ${await app.getUrl()}`);
 
     if (process.send) process.send(serverMessages.onStartMessage);

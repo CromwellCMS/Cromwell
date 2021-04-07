@@ -18,7 +18,7 @@ jest.mock('@material-ui/icons', () => {
 
 
 setStoreItem('cmsSettings', {
-    apiPort: 1,
+    mainApiPort: 1,
     adminPanelPort: 2,
     frontendPort: 3,
     managerPort: 4,

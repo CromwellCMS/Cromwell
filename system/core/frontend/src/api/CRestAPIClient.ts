@@ -247,14 +247,19 @@ class CRestAPIClient {
     // < / Manager >
 }
 
-export const getRestAPIClient = (): CRestAPIClient | undefined => {
-    let client = getStoreItem('restAPIClient');
-    if (client) return client;
+export const getRestAPIClient = (serverType: 'main' | 'plugin' = 'main'): CRestAPIClient | undefined => {
+    let clients = getStoreItem('apiClients');
+    if (serverType === 'main' && clients?.mainRestAPIClient) return clients.mainRestAPIClient;
+    if (serverType === 'plugin' && clients?.pluginRestAPIClient) return clients.pluginRestAPIClient;
 
-    const baseUrl = `${serviceLocator.getApiUrl()}/${apiV1BaseRoute}`;
+    const typeUrl = serverType === 'plugin' ? serviceLocator.getPluginApiUrl() : serviceLocator.getMainApiUrl();
+    const baseUrl = `${typeUrl}/${apiV1BaseRoute}/graphql`;
 
-    client = new CRestAPIClient(baseUrl);
+    const newClient = new CRestAPIClient(baseUrl);
+    if (!clients) clients = {};
+    if (serverType === 'main') clients.mainRestAPIClient = newClient;
+    if (serverType === 'plugin') clients.pluginRestAPIClient = newClient;
 
-    setStoreItem('restAPIClient', client);
-    return client;
+    setStoreItem('apiClients', clients);
+    return newClient;
 }

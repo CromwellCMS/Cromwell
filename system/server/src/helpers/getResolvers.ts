@@ -1,15 +1,15 @@
+import { collectPlugins } from '../helpers/collectPlugins';
+import { GenericPluginResolver, GenericThemeResolver } from '../helpers/genericEntities';
 import { AttributeResolver } from '../resolvers/attribute.resolver';
+import { OrderResolver } from '../resolvers/order.resolver';
 import { PostResolver } from '../resolvers/post.resolver';
 import { ProductCategoryResolver } from '../resolvers/product-category.resolver';
-import { ProductResolver } from '../resolvers/product.resolver';
 import { ProductReviewResolver } from '../resolvers/product-review.resolver';
-import { UserResolver } from '../resolvers/user.resolver';
-import { OrderResolver } from '../resolvers/order.resolver';
+import { ProductResolver } from '../resolvers/product.resolver';
 import { TagResolver } from '../resolvers/tag.resolver';
-import { GenericPluginResolver, GenericThemeResolver } from '../helpers/genericEntities';
-import { collectPlugins } from '../helpers/collectPlugins';
+import { UserResolver } from '../resolvers/user.resolver';
 
-export const getResolvers = () => [
+export const getResolvers = (sType: 'main' | 'plugin') => sType === 'main' ? [
     AttributeResolver,
     PostResolver,
     ProductCategoryResolver,
@@ -20,5 +20,6 @@ export const getResolvers = () => [
     GenericPluginResolver,
     GenericThemeResolver,
     TagResolver,
-    ...(collectPlugins().resolvers),
-]
+] : [
+        ...(collectPlugins().resolvers),
+    ]

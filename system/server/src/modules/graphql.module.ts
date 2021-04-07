@@ -2,18 +2,18 @@ import { apiV1BaseRoute } from '@cromwell/core';
 import { Module } from '@nestjs/common';
 import { TypeGraphQLModule } from 'typegraphql-nestjs';
 
-import { setEnv } from '../helpers/setEnv';
+import { loadEnv } from '../helpers/loadEnv';
 import { getResolvers } from '../helpers/getResolvers';
 
-const envMode = setEnv();
+const env = loadEnv();
 
 @Module({
-    providers: getResolvers(),
+    providers: getResolvers(env.serverType),
     imports: [
         TypeGraphQLModule.forRoot({
             cors: true,
-            debug: envMode === 'dev',
-            playground: envMode === 'dev',
+            debug: env.envMode === 'dev',
+            playground: env.envMode === 'dev',
             validate: false,
             dateScalarMode: "isoDate",
             path: `/${apiV1BaseRoute}/graphql`,

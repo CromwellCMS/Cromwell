@@ -68,7 +68,6 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
     watchName?: keyof TServiceVersions;
     onVersionChange?: () => Promise<void>;
 }): Promise<ChildProcess> => {
-
     const proc = fork(path, args, { stdio: sync ? 'inherit' : 'pipe', cwd: dir ?? process.cwd() });
     await saveProcessPid(name, proc.pid);
     serviceProcesses[name] = proc;
@@ -131,7 +130,8 @@ export const startSystem = async (scriptName: TScriptName) => {
 
     await saveProcessPid(cacheKeys.manager, process.pid)
 
-    await startServer();
+    await startServer(isDevelopment ? 'devMain' : 'prodMain');
+    await startServer(isDevelopment ? 'devPlugin' : 'prodPlugin');
     await startAdminPanel();
     await startRenderer();
 }
@@ -160,7 +160,8 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
     }
 
     if (serviceName === 'server' || serviceName === 's') {
-        await startServer(isDevelopment ? 'dev' : 'prod');
+        await startServer(isDevelopment ? 'devMain' : 'prodMain');
+        await startServer(isDevelopment ? 'devPlugin' : 'prodPlugin');
     }
 
 }
@@ -179,7 +180,8 @@ export const closeServiceByName = async (serviceName: TServiceNames, isDevelopme
     }
 
     if (serviceName === 'server' || serviceName === 's') {
-        await closeServer();
+        await closeServer('main');
+        await closeServer('plugin');
     }
 }
 
@@ -187,7 +189,8 @@ export const closeServiceByName = async (serviceName: TServiceNames, isDevelopme
 export const closeSystem = async () => {
     await closeAdminPanel();
     await closeRenderer();
-    await closeServer();
+    await closeServer('main');
+    await closeServer('plugin');
     await closeService(cacheKeys.manager);
 }
 

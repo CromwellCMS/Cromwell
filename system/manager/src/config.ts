@@ -10,23 +10,30 @@ const userConfigPath = resolve('/usr/share/cromwell/devconfig.json');
 const config = {
     /** Default startup mode */
     "mode": "prod", // 'dev' | 'prod'
+    "scriptName": "production",
     /** Config for root "dev" script */
     "servicesDev": {
         "adminPanel": "dev", // 'dev' | 'prod' | 'build' | null
-        "server": "dev", // 'dev' | 'prod' | 'build' | null
+        "server": "devMain", // 'dev' | 'prod' | 'build' | null
         "renderer": "dev", // 'dev' | 'prod' | 'build' | null
     },
     /** Config for root "start" script */
     "servicesProd": {
         "adminPanel": "prod", // 'dev' | 'prod' | 'build' | null
-        "server": "prod", // 'dev' | 'prod' | 'build' | null
+        "server": "prodMain", // 'dev' | 'prod' | 'build' | null
         "renderer": "prod", // 'dev' | 'prod' | 'build' | null
+    },
+    "servicesEnv": {
+        "adminPanel": "prod",
+        "server": "prodMain",
+        "renderer": "prod",
     },
     "cacheKeys": {
         "coreCommon": "core_common",
         "coreBackend": "core_backend",
         "coreFrontend": "core_frontend",
-        "server": "server",
+        "serverMain": "server_main",
+        "serverPlugin": "server_plugin",
         "renderer": "renderer",
         "rendererBuilder": "renderer_builder",
         "adminPanel": "admin_panel",
@@ -81,7 +88,7 @@ if (fs.existsSync(userConfigPath)) {
     }
 }
 
-const mergedConfig = Object.assign({}, config, userConfig);
+const mergedConfig: typeof config = Object.assign({}, config, userConfig);
 
 /**
   * @scriptName
@@ -95,5 +102,4 @@ const servicesEnv = scriptName === 'development' ? mergedConfig.servicesDev : me
 mergedConfig.servicesEnv = servicesEnv;
 mergedConfig.scriptName = scriptName;
 
-
-module.exports = mergedConfig;
+export default mergedConfig;

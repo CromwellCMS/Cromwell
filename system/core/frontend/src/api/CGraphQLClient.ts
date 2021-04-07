@@ -1785,13 +1785,19 @@ class CGraphQLClient {
 
 export type TCGraphQLClient = CGraphQLClient;
 
-export const getGraphQLClient = (fetch?: any): CGraphQLClient | undefined => {
-    let client = getStoreItem('graphQLClient');
-    if (client) return client;
+export const getGraphQLClient = (serverType: 'main' | 'plugin' = 'main', fetch?: any): CGraphQLClient | undefined => {
+    let clients = getStoreItem('apiClients');
+    if (serverType === 'main' && clients?.mainGraphQLClient) return clients.mainGraphQLClient;
+    if (serverType === 'plugin' && clients?.pluginGraphQLClient) return clients.pluginGraphQLClient;
 
-    const baseUrl = `${serviceLocator.getApiUrl()}/${apiV1BaseRoute}/graphql`;
+    const typeUrl = serverType === 'plugin' ? serviceLocator.getPluginApiUrl() : serviceLocator.getMainApiUrl();
+    const baseUrl = `${typeUrl}/${apiV1BaseRoute}/graphql`;
 
-    client = new CGraphQLClient(baseUrl, fetch);
-    setStoreItem('graphQLClient', client);
-    return client;
+    const newClient = new CGraphQLClient(baseUrl, fetch);
+    if (!clients) clients = {};
+    if (serverType === 'main') clients.mainGraphQLClient = newClient;
+    if (serverType === 'plugin') clients.pluginGraphQLClient = newClient;
+
+    setStoreItem('apiClients', clients);
+    return newClient;
 }

@@ -56,8 +56,8 @@ export const getLogger = (level: TLogLevel, func?: (...args) => any) => {
 }
 
 export const defaultCmsConfig: TCmsConfig = {
-    managerPort: 4016,
-    apiPort: 4032,
+    mainApiPort: 4016,
+    pluginApiPort: 4032,
     adminPanelPort: 4064,
     frontendPort: 4128,
     useWatch: true,
