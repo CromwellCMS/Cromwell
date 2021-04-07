@@ -26,6 +26,8 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private blockRef = React.createRef<HTMLDivElement>();
     private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
     private childPromises: Record<string, (Promise<TCromwellBlock>) | undefined> = {};
+    private rerenderResolver: (() => void | undefined);
+    private rerenderPromise: Promise<void> | undefined;
 
     private didUpdateListeners: Record<string, (() => void)> = {};
 
@@ -71,6 +73,10 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private contextComponentDidUpdate: undefined | (() => void) = undefined;
 
     private didUpdate = async () => {
+        if (this.rerenderResolver) {
+            this.rerenderResolver();
+        }
+
         const childPromises = Object.values(this.childPromises).filter(p => Boolean(p?.then));
         if (childPromises.length > 0) {
             await Promise.all(childPromises);
@@ -86,6 +92,11 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
     public rerender = async () => {
         this.forceUpdate();
+        if (!this.rerenderPromise) this.rerenderPromise = new Promise(done => {
+            this.rerenderResolver = done;
+        });
+
+        return this.rerenderPromise;
     }
 
     private readConfig() {

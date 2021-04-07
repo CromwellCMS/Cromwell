@@ -3,7 +3,9 @@ import React from 'react';
 
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 
-type CContainerProps = { children?: React.ReactNode } & TCromwellBlockProps;
+type CContainerProps = {
+    children?: React.ReactNode;
+} & TCromwellBlockProps;
 
 export const CContainer = (props: CContainerProps) => {
     const { children, ...rest } = props;

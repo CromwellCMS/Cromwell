@@ -26,7 +26,7 @@ describe('Settings page', () => {
     it("renders settings", async () => {
         render(<SettingsPage />);
 
-        await screen.findByText(launguages[0].name);
+        await screen.findByText((text) => text.includes(launguages[0].name));
     });
 
 })

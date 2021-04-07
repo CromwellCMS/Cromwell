@@ -120,6 +120,9 @@ export type TCromwellBlockData = {
      */
     isDeleted?: boolean;
 
+    /** Persist on all pages, all inner modifications will be saved as global */
+    global?: boolean;
+
     /** For plugin block */
     plugin?: {
         /** Plugin's name to render inside component. Same name must be in module.config.js */

@@ -1,12 +1,13 @@
 import { TCmsSettings } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Grid } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { toast } from '../../components/toast/toast';
 import { launguages } from '../../constants/launguages';
 import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { timezones } from '../../constants/timezones';
+import commonStyles from '../../styles/common.module.scss';
 import styles from './Settings.module.scss';
 
 const SettingsPage = () => {
@@ -68,7 +69,7 @@ const SettingsPage = () => {
     return (
         <div className={styles.SettingsPage}>
             <div className={styles.header}>
-                <div></div>
+                <p className={commonStyles.pageTitle}>settings</p>
                 <Button
                     color="primary"
                     variant="contained"
@@ -78,73 +79,92 @@ const SettingsPage = () => {
             </div>
             <div className={styles.list}>
                 {!isLoading && settings && (
-                    <>
-                        <FormControl className={styles.field}>
-                            <InputLabel>Timezone</InputLabel>
-                            <Select
-                                value={settings.timezone ?? 0}
-                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                                    changeSettigns('timezone', parseInt(event.target.value as string));
-                                }}
-                            >
-                                {timezones.map(timezone => (
-                                    <MenuItem value={timezone.value} key={timezone.value}>{timezone.text}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <FormControl className={styles.field}>
-                            <InputLabel>Language</InputLabel>
-                            <Select
+                    <Grid container spacing={3}>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl className={styles.field} fullWidth>
+                                <InputLabel>Timezone</InputLabel>
+                                <Select
+                                    fullWidth
+                                    value={settings.timezone ?? 0}
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                                        changeSettigns('timezone', parseInt(event.target.value as string));
+                                    }}
+                                >
+                                    {timezones.map(timezone => (
+                                        <MenuItem value={timezone.value} key={timezone.value}>{timezone.text}</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <FormControl className={styles.field} fullWidth>
+                                <InputLabel>Language</InputLabel>
+                                <Select
+                                    fullWidth
+                                    className={styles.field}
+                                    value={settings.language ?? 'en'}
+                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                                        changeSettigns('language', event.target.value);
+                                    }}
+                                >
+                                    {launguages.map(lang => (
+                                        <MenuItem value={lang.code} key={lang.code}>{lang.name} ({lang.nativeName})</MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <ImagePicker
+                                label="Logo"
+                                onChange={(val) => changeSettigns('logo', val)}
+                                value={settings.logo}
+                                className={styles.imageField}
+                                backgroundSize='contain'
+                                width="110px"
+                                height="70px"
+                                showRemove
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <ImagePicker
+                                label="Favicon"
+                                onChange={(val) => changeSettigns('favicon', val)}
+                                value={settings.favicon}
+                                className={styles.imageField}
+                                showRemove
+                            />
+                        </Grid>
+                        <Grid item xs={12} className={styles.subheader}  >
+                            <h3>Code injection</h3>
+                        </Grid>
+                        <Grid item xs={12} >
+                            <TextField
+                                fullWidth
+                                label="Header HTML"
+                                multiline
+                                rows={4}
+                                rowsMax={20}
+                                value={settings.headerHtml ?? ''}
+                                onChange={handleTextFieldChange('headerHtml')}
+                                variant="outlined"
                                 className={styles.field}
-                                value={settings.language ?? 'en'}
-                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                                    changeSettigns('language', event.target.value);
-                                }}
-                            >
-                                {launguages.map(lang => (
-                                    <MenuItem value={lang.code} key={lang.code}>{lang.name}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                        <ImagePicker
-                            placeholder="Logo"
-                            onChange={(val) => changeSettigns('logo', val)}
-                            value={settings.logo}
-                            className={styles.imageField}
-                            backgroundSize='contain'
-                            width="110px"
-                            height="70px"
-                            showRemove
-                        />
-                        <ImagePicker
-                            placeholder="Favicon"
-                            onChange={(val) => changeSettigns('favicon', val)}
-                            value={settings.favicon}
-                            className={styles.imageField}
-                            showRemove
-                        />
-                        <h3 className={styles.subheader} >Code injection</h3>
-                        <TextField
-                            label="Header HTML"
-                            multiline
-                            rows={4}
-                            value={settings.headerHtml ?? ''}
-                            onChange={handleTextFieldChange('headerHtml')}
-                            variant="outlined"
-                            className={styles.field}
-                        />
-                        <TextField
-                            label="Footer HTML"
-                            multiline
-                            rows={4}
-                            value={settings.footerHtml ?? ''}
-                            onChange={handleTextFieldChange('footerHtml')}
-                            variant="outlined"
-                            className={styles.field}
-                        />
-                        {/* <p>currencies</p>
+                            />
+                        </Grid>
+                        <Grid item xs={12} >
+                            <TextField
+                                fullWidth
+                                label="Footer HTML"
+                                multiline
+                                rows={4}
+                                value={settings.footerHtml ?? ''}
+                                onChange={handleTextFieldChange('footerHtml')}
+                                variant="outlined"
+                                className={styles.field}
+                            />
+                            {/* <p>currencies</p>
                         <p>defaultPageSize</p> */}
-                    </>
+                        </Grid>
+                    </Grid>
                 )}
             </div>
         </div>

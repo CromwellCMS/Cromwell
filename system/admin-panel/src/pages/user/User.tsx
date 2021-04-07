@@ -1,6 +1,6 @@
 import { getStoreItem, setStoreItem, TCreateUser, TUpdateUser, TUser, TUserRole } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import { Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, TextField, Grid } from '@material-ui/core';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
@@ -9,6 +9,7 @@ import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { userPageInfo } from '../../constants/PageInfos';
 import { userRoles } from '../../constants/roles';
+import commonStyles from '../../styles/common.module.scss';
 import styles from './User.module.scss';
 
 export default function UserPage() {
@@ -125,7 +126,7 @@ export default function UserPage() {
     return (
         <div className={styles.UserPage}>
             <div className={styles.header}>
-                <div></div>
+                <p className={commonStyles.pageTitle}>account</p>
                 <div className={styles.headerActions}>
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
@@ -135,90 +136,109 @@ export default function UserPage() {
                 </div>
             </div>
             <div className={styles.fields}>
-                <TextField
-                    label="Name"
-                    value={userData?.fullName || ''}
-                    fullWidth
-                    className={styles.field}
-                    onChange={(e) => { handleInputChange('fullName', e.target.value) }}
-                />
-                <ImagePicker
-                    placeholder="Avatar"
-                    onChange={(val) => { handleInputChange('avatar', val) }}
-                    value={userData?.avatar ?? null}
-                    className={styles.imageField}
-                    classes={{ image: styles.image }}
-                    backgroundSize='cover'
-                    width="50px"
-                    height="50px"
-                    toolTip="Change avatar"
-                    showRemove
-                />
-                <TextField
-                    label="E-mail"
-                    value={userData?.email || ''}
-                    fullWidth
-                    className={styles.field}
-                    onChange={(e) => { handleInputChange('email', e.target.value) }}
-                />
-                {isNew && (
-                    <TextField
-                        label="Password"
-                        value={passwordInput || ''}
-                        type={showPassword ? 'text' : 'password'}
-                        fullWidth
-                        className={styles.field}
-                        onChange={(e) => { setPasswordInput(e.target.value) }}
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                )}
-                <FormControl className={styles.field}>
-                    <InputLabel>Role</InputLabel>
-                    <Select
-                        value={(userData?.role ?? 'customer') as TUserRole}
-                        onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                            handleInputChange('role', event.target.value)
-                        }}
-                    >
-                        {userRoles.map(role => (
-                            <MenuItem value={role} key={role}>{role}</MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <TextField
-                    label="Bio"
-                    value={userData?.bio || ''}
-                    fullWidth
-                    multiline
-                    className={styles.field}
-                    onChange={(e) => { handleInputChange('bio', e.target.value) }}
-                />
-                <TextField
-                    label="Address"
-                    value={userData?.address || ''}
-                    fullWidth
-                    className={styles.field}
-                    onChange={(e) => { handleInputChange('address', e.target.value) }}
-                />
-                <TextField
-                    label="Phone"
-                    value={userData?.phone || ''}
-                    fullWidth
-                    className={styles.field}
-                    onChange={(e) => { handleInputChange('phone', e.target.value) }}
-                />
+                <Grid container spacing={3}>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Name"
+                            value={userData?.fullName || ''}
+                            fullWidth
+                            className={styles.field}
+                            onChange={(e) => { handleInputChange('fullName', e.target.value) }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <ImagePicker
+                            placeholder="Avatar"
+                            onChange={(val) => { handleInputChange('avatar', val) }}
+                            value={userData?.avatar ?? null}
+                            className={styles.imageField}
+                            classes={{ image: styles.image }}
+                            backgroundSize='cover'
+                            width="50px"
+                            height="50px"
+                            toolTip="Change avatar"
+                            showRemove
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="E-mail"
+                            value={userData?.email || ''}
+                            fullWidth
+                            className={styles.field}
+                            onChange={(e) => { handleInputChange('email', e.target.value) }}
+                        />
+                    </Grid>
+                    {isNew && (
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                label="Password"
+                                value={passwordInput || ''}
+                                type={showPassword ? 'text' : 'password'}
+                                fullWidth
+                                className={styles.field}
+                                onChange={(e) => { setPasswordInput(e.target.value) }}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    ),
+                                }}
+                            />
+                        </Grid>
+                    )}
+                    <Grid item xs={12} sm={6}>
+                        <FormControl className={styles.field} fullWidth>
+                            <InputLabel>Role</InputLabel>
+                            <Select
+                                fullWidth
+                                value={(userData?.role ?? 'customer') as TUserRole}
+                                onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                                    handleInputChange('role', event.target.value)
+                                }}
+                            >
+                                {userRoles.map(role => (
+                                    <MenuItem value={role} key={role}>{role}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Bio"
+                            value={userData?.bio || ''}
+                            fullWidth
+                            multiline
+                            className={styles.field}
+                            onChange={(e) => { handleInputChange('bio', e.target.value) }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Address"
+                            value={userData?.address || ''}
+                            fullWidth
+                            className={styles.field}
+                            onChange={(e) => { handleInputChange('address', e.target.value) }}
+                        />
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                        <TextField
+                            label="Phone"
+                            value={userData?.phone || ''}
+                            fullWidth
+                            className={styles.field}
+                            onChange={(e) => { handleInputChange('phone', e.target.value) }}
+                        />
+                    </Grid>
+                </Grid>
             </div>
         </div>
     );

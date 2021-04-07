@@ -128,7 +128,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
             const success = await client?.savePageConfig(pageConfig);
 
             if (success) {
-                toast.success('Changes have been saved');
+                toast.success('Saved');
             } else {
                 toast.error('Failed to save changes');
             }

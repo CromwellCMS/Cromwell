@@ -11,7 +11,7 @@ jest.mock('react-router-dom', () => {
     return {
         useParams: () => ({ id: '1' }),
         BrowserRouter: originalModule.BrowserRouter,
-        Link: () => <></>
+        Link: () => <></>,
     }
 });
 

@@ -6,6 +6,7 @@
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
+    padding: 20px;
 
     .notFoundPage {
         display: flex;
@@ -21,11 +22,16 @@
 
     .header {
         @include paper;
-        padding: 10px 20px;
+        padding: 0 20px 0 0;
         width: 100%;
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         display: flex;
         justify-content: space-between;
+        align-items: center;
+    }
+    .headerLeft {
+        display: flex;
+        align-items: center;
     }
 
     .fields {

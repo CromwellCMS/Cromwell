@@ -229,16 +229,17 @@ export class PageBuilder extends React.Component<{
     public redoModification = () => {
         if (this.undoneHistory.length > 0) {
             const last = this.undoneHistory.pop();
+            this.saveCurrentState();
             this.applyHistory(last);
         }
     }
 
-    private applyHistory = (history: THistoryItem) => {
+    private applyHistory = async (history: THistoryItem) => {
         const pageConfig = getStoreItem('pageConfig');
         pageConfig.modifications = history.global;
         setStoreItem('pageConfig', pageConfig);
         this.changedModifications = history.local;
-        this.rerenderBlocks();
+        await this.rerenderBlocks();
         this.checkHitoryButtons();
     }
 

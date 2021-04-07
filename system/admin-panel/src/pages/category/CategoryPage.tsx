@@ -1,20 +1,19 @@
 import { gql } from '@apollo/client';
 import { TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, IconButton, MenuItem, TextField } from '@material-ui/core';
-import { HighlightOffOutlined, Wallpaper as WallpaperIcon } from '@material-ui/icons';
+import { Button, IconButton, TextField } from '@material-ui/core';
+import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 
-import ImagePicker from '../../components/imagePicker/ImagePicker';
 import Autocomplete from '../../components/autocomplete/Autocomplete';
-import { getFileManager } from '../../components/fileManager/helpers';
+import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
-import { categoryPageInfo } from '../../constants/PageInfos';
+import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
 import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
+import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
-import { copySync } from 'fs-extra';
 
 export default function CategoryPage() {
     const { id: categoryId } = useParams<{ id: string }>();
@@ -207,7 +206,15 @@ export default function CategoryPage() {
     return (
         <div className={styles.CategoryPage}>
             <div className={styles.header}>
-                <div></div>
+                <div className={styles.headerLeft}>
+                    <Link to={categoryListPageInfo.route}>
+                        <IconButton
+                        >
+                            <ArrowBackIcon />
+                        </IconButton>
+                    </Link>
+                    <p className={commonStyles.pageTitle}>category</p>
+                </div>
                 <div className={styles.headerActions}>
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}

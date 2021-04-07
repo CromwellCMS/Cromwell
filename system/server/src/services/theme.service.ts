@@ -162,7 +162,7 @@ export class ThemeService {
 
         const config = Object.assign({}, themeConfig, userConfig);
         config.modifications = mods;
-        return config
+        return config;
     }
 
     public getPageConfigFromThemeConfig(pageRoute: string, themeConfig: TThemeConfig | undefined | null): TPageConfig | undefined {
@@ -197,7 +197,7 @@ export class ThemeService {
      * Saves userPageConfig into user's theme config. TPageInfo is just overwrited,
      * but modifications (TCromwellBlockData) are applied by an algorithm. New mods
      * overwrite current ones in user's config by blockId and are being added if user
-     * config has no same blockId. If user has deleted some block, then should send mod
+     * config has no same blockId. If user has deleted some block, then should send a mod
      * with "isDeleted": true flag. If this mod is virtual and contains only in user's
      * config, then mod will be deleted. If mod contains in original config, then it will
      * be saved in user's config with this flag 
@@ -234,8 +234,31 @@ export class ThemeService {
         }
         if (!userConfig?.pages) userConfig.pages = [];
 
+
         const oldUserPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userPageConfig.route, userConfig);
         const oldOriginalPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userPageConfig.route, themeConfig);
+
+        // Remove global mods that were changed to local
+        for (const mod of userPageConfig.modifications) {
+            if (!mod.global && userConfig.globalModifications) {
+                for (const globalMod of userConfig.globalModifications) {
+                    if (mod.id === globalMod.id) {
+                        userConfig.globalModifications = userConfig.globalModifications?.filter(fmod => fmod.id !== mod.id);
+                    }
+                }
+            }
+        }
+
+        // Merge global mods
+        const globalMods: TCromwellBlockData[] = [];
+        userPageConfig.modifications = userPageConfig.modifications.filter(mod => {
+            if (mod.global) {
+                globalMods.push(mod);
+                return false;
+            }
+            return true;
+        });
+        userConfig.globalModifications = this.mergeMods(userConfig?.globalModifications, globalMods);
 
         // Remove recently deleted user's blocks from oldUserPageConfig if they aren't in theme's;
         let filteredUserPageConfig: TPageConfig = {
@@ -261,7 +284,7 @@ export class ThemeService {
                         userMode => userMode.id !== mod.id
                     )
                 } else {
-                    // optimize space for mode to leave only flag and id
+                    // compress info to leave only flag and id
                     filteredUserPageConfig.modifications = filteredUserPageConfig.modifications.map(userMode =>
                         userMode.id === mod.id ? {
                             id: mod.id,
