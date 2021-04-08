@@ -21,6 +21,6 @@
     "src/**/*.ts",
     "src/utils/cacheManager.js",
     "src/utils/windowsDev.js",
-    "src/config.js"
+    "src/config.ts"
   ],
 }

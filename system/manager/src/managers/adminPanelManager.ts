@@ -42,7 +42,7 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
                     try {
                         await tcpPortUsed.waitUntilFree(cmsConfig.adminPanelPort, 500, 4000);
                     } catch (e) { console.error(e) };
-                    await startAdminPanel();
+                    await startAdminPanel(command);
                 }
             }
         })

@@ -46,7 +46,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         await this.handleProductReviewInput(productReview, createProductReview);
 
         productReview = await this.save(productReview);
-        await checkEntitySlug(productReview);
+        await checkEntitySlug(productReview, ProductReview);
 
         return productReview;
     }
@@ -61,7 +61,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         await this.handleProductReviewInput(productReview, updateProductReview);
 
         productReview = await this.save(productReview);
-        await checkEntitySlug(productReview);
+        await checkEntitySlug(productReview, ProductReview);
 
         return productReview;
     }

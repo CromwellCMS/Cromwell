@@ -286,6 +286,27 @@ export class ThemeController {
 
     }
 
+    @Get('set-active')
+    @ApiOperation({
+        description: `Makes an installed theme active and restarts Renderer`,
+        parameters: [{ name: 'themeName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async setActiveTheme(@Query('themeName') themeName: string): Promise<boolean> {
+        logger.log('ThemeController::setActiveTheme');
+
+        if (themeName && themeName !== "") {
+            return this.themeService.setActive(themeName);
+        } else {
+            throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);
+        }
+
+    }
+
 
     @Get('install')
     @ApiOperation({
@@ -302,10 +323,10 @@ export class ThemeController {
         logger.log('ThemeController::installTheme');
 
         if (themeName && themeName !== "") {
-            this.themeService.installTheme(themeName);
-        };
-
-        throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);
+            return this.themeService.installTheme(themeName);
+        } else {
+            throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
 

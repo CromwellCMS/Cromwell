@@ -10,7 +10,10 @@ export class CmsConfigDto implements TCmsSettings {
     protocol?: 'http' | 'https';
 
     @ApiProperty()
-    apiPort?: number;
+    mainApiPort?: number;
+
+    @ApiProperty()
+    pluginApiPort?: number;
 
     @ApiProperty()
     adminPanelPort?: number;

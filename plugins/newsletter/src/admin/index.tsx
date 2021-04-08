@@ -32,7 +32,7 @@ export default function index(props: TAdminPanelPluginProps<TSettings>) {
         if (isLoading) return;
 
         setIsloading(true);
-        const client = getGraphQLClient();
+        const client = getGraphQLClient('plugin');
         try {
             const data = await client?.query({
                 query: gql`

@@ -2,7 +2,7 @@ export type TServiceNames = 'renderer' | 'r' | 'server' | 's' | 'adminPanel' | '
 
 export type TRendererCommands = 'buildService' | 'dev' | 'build' | 'buildStart' | 'prod';
 
-export type TServerCommands = | 'dev' | 'build' | 'prod';
+export type TServerCommands = 'build' | 'devMain' | 'prodMain' | 'devPlugin' | 'prodPlugin';
 
 export type TAdminPanelCommands = 'buildService' | 'build' | 'dev' | 'prod';
 

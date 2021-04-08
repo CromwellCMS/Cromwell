@@ -24,8 +24,12 @@ export type TCromwellStore = {
         isAdminPanel?: boolean;
         logLevel?: TLogLevel;
     },
-    graphQLClient?: any;
-    restAPIClient?: any;
+    apiClients?: {
+        mainGraphQLClient?: any;
+        pluginGraphQLClient?: any;
+        mainRestAPIClient?: any;
+        pluginRestAPIClient?: any;
+    }
     webSocketClient?: any;
     cstore?: any;
     nodeModules?: TCromwellNodeModules;
@@ -96,7 +100,8 @@ export type TPagedMeta = {
 export type TCmsConfig = {
     domain?: string;
     protocol?: 'http' | 'https';
-    apiPort?: number;
+    mainApiPort?: number;
+    pluginApiPort?: number;
     adminPanelPort?: number;
     frontendPort?: number;
     managerPort?: number;

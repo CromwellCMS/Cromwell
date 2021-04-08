@@ -83,7 +83,7 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
                     try {
                         await tcpPortUsed.waitUntilFree(cmsConfig.frontendPort, 500, 4000);
                     } catch (e) { console.error(e) };
-                    await startRenderer();
+                    await startRenderer(command);
                 }
             }
         });

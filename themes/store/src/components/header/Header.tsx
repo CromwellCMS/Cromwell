@@ -74,7 +74,7 @@ export const Header = () => {
             <div className={styles.topPanel}>
                 <div className={`${commonStyles.content} ${styles.topPanelContent}`}>
                     <CContainer className={styles.leftBlock} id="header_11">
-                        <CHTML id="header_01" className={styles.currencyOption}>
+                        <div id="header_01" className={styles.currencyOption}>
                             <FormControl className={styles.formControl}>
                                 <Select
                                     className={styles.select}
@@ -86,7 +86,7 @@ export const Header = () => {
                                     ))}
                                 </Select>
                             </FormControl>
-                        </CHTML>
+                        </div>
                         <CHTML id="header_02">
                             <div className={styles.languageOption}>
                             </div>
@@ -142,7 +142,7 @@ export const Header = () => {
                 </CContainer>
             </div>
             <div className={styles.mobileHeader}>
-            <MobileHeader />
+                <MobileHeader />
             </div>
         </div>
     )

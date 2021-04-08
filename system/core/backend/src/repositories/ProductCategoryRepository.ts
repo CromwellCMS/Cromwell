@@ -151,7 +151,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         await this.handleProductCategoryInput(productCategory, createProductCategory);
 
         await this.save(productCategory);
-        await checkEntitySlug(productCategory);
+        await checkEntitySlug(productCategory, ProductCategory);
 
         return productCategory;
     }
@@ -164,7 +164,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         await this.handleProductCategoryInput(productCategory, updateProductCategory);
 
         await this.save(productCategory);
-        await checkEntitySlug(productCategory);
+        await checkEntitySlug(productCategory, ProductCategory);
         return productCategory;
     }
 

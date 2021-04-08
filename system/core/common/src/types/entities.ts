@@ -353,7 +353,8 @@ export type TCmsEntityInput = {
 
 export type TServiceVersions = {
     renderer?: number;
-    server?: number;
+    serverMain?: number;
+    serverPlugin?: number;
     adminPanel?: number;
 };
 

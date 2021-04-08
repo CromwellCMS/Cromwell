@@ -1,6 +1,7 @@
 import { fetch } from '../helpers/isomorphicFetch';
 import {
-    apiV1BaseRoute,
+    apiMainRoute,
+    apiExtensionRoute,
     getStoreItem,
     serviceLocator,
     setStoreItem,
@@ -202,6 +203,11 @@ class CRestAPIClient {
         return data ?? false;
     }
 
+    public changeTheme = async (themeName: string): Promise<boolean> => {
+        const data = await this.get<boolean>(`theme/set-active?themeName=${themeName}`);
+        return data ?? false;
+    }
+
     // < / Theme >
 
 
@@ -234,10 +240,6 @@ class CRestAPIClient {
 
     // < Manager >
 
-    public changeTheme = async (themeName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`manager/services/change-theme/${themeName}`);
-        return data ?? false;
-    }
 
     public rebuildTheme = async (): Promise<boolean> => {
         const data = await this.get<boolean>(`manager/services/rebuild-theme`);
@@ -247,14 +249,19 @@ class CRestAPIClient {
     // < / Manager >
 }
 
-export const getRestAPIClient = (): CRestAPIClient | undefined => {
-    let client = getStoreItem('restAPIClient');
-    if (client) return client;
+export const getRestAPIClient = (serverType: 'main' | 'plugin' = 'main'): CRestAPIClient | undefined => {
+    let clients = getStoreItem('apiClients');
+    if (serverType === 'main' && clients?.mainRestAPIClient) return clients.mainRestAPIClient;
+    if (serverType === 'plugin' && clients?.pluginRestAPIClient) return clients.pluginRestAPIClient;
 
-    const baseUrl = `${serviceLocator.getApiUrl()}/${apiV1BaseRoute}`;
+    const typeUrl = serverType === 'plugin' ? serviceLocator.getPluginApiUrl() : serviceLocator.getMainApiUrl();
+    const baseUrl = `${typeUrl}/${serverType === 'main' ? apiMainRoute : apiExtensionRoute}`;
 
-    client = new CRestAPIClient(baseUrl);
+    const newClient = new CRestAPIClient(baseUrl);
+    if (!clients) clients = {};
+    if (serverType === 'main') clients.mainRestAPIClient = newClient;
+    if (serverType === 'plugin') clients.pluginRestAPIClient = newClient;
 
-    setStoreItem('restAPIClient', client);
-    return client;
+    setStoreItem('apiClients', clients);
+    return newClient;
 }

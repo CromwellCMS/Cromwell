@@ -69,7 +69,7 @@ export class UserRepository extends BaseRepository<User> {
         if (!user.role) user.role = 'customer';
 
         user = await this.save(user);
-        await checkEntitySlug(user);
+        await checkEntitySlug(user, User);
 
         return user;
     }
@@ -85,7 +85,7 @@ export class UserRepository extends BaseRepository<User> {
         await this.handleUserInput(user, updateUser);
 
         user = await this.save(user);
-        await checkEntitySlug(user);
+        await checkEntitySlug(user, User);
 
         return user;
     }

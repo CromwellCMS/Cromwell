@@ -1,22 +1,25 @@
+import { getStoreItem, setStoreItem } from '@cromwell/core';
 import {
-    readCMSConfig, readThemeExports, serverLogFor, getCmsModuleConfig,
-    getNodeModuleDir, getPublicDir, getRendererTempDir, getRendererBuildDir, getThemeBuildDir,
-    getModulePackage
+    getCmsModuleConfig,
+    getModulePackage,
+    getNodeModuleDir,
+    getPublicDir,
+    getRendererBuildDir,
+    getRendererTempDir,
+    getThemeBuildDir,
+    readCMSConfig,
+    readThemeExports,
+    serverLogFor,
 } from '@cromwell/core-backend';
-import { setStoreItem } from '@cromwell/core';
-import { getBundledModulesDir, bundledModulesDirName } from '@cromwell/utils';
+import { bundledModulesDirName, downloader, getBundledModulesDir } from '@cromwell/utils';
 import fs from 'fs-extra';
-import gracefulfs from 'graceful-fs';
 import makeEmptyDir from 'make-empty-dir';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
-import { promisify } from 'util';
 import yargs from 'yargs-parser';
-import { downloader, TPackage } from '@cromwell/utils';
 
-const mkdir = promisify(gracefulfs.mkdir);
-
+const localThemeBuildDurChunk = 'theme';
 const disableSSR = false;
 
 const main = async () => {
@@ -38,17 +41,47 @@ const main = async () => {
         return;
     }
 
+    const tempDir = getRendererTempDir();
+    const tempDirPublic = resolve(tempDir, 'public');
+
+    await fs.ensureDir(tempDir);
+
     const pckg = getModulePackage(themeName);
     if (pckg) await downloader({
         rootDir: process.cwd(),
         packages: [pckg],
     });
 
-    const themeConfig = await getCmsModuleConfig(themeName);
+    if (scriptName === 'dev' || scriptName === 'build' || scriptName === 'buildStart') {
+        await devGenerate(themeName);
+    } else {
+        await prodGenerate(themeName);
+    }
 
+    // Link public dir in root to renderer's public dir for Next.js server
+    if (!fs.existsSync(tempDirPublic)) {
+        try {
+            await symlinkDir(getPublicDir(), tempDirPublic)
+        } catch (e) { console.error(e) }
+    }
+
+    // Link bundled modules
+    const bundledDir = getBundledModulesDir();
+    const bundledPublicDir = resolve(getPublicDir(), bundledModulesDirName);
+    if (!fs.existsSync(bundledPublicDir) && fs.existsSync(bundledDir)) {
+        try {
+            await symlinkDir(bundledDir, bundledPublicDir)
+        } catch (e) { console.error(e) }
+    }
+};
+
+const devGenerate = async (themeName: string) => {
     const tempDir = getRendererTempDir();
+    const tempDirBuild = resolve(tempDir, 'build');
+    const rendererBuildDir = getRendererBuildDir();
+    const themeConfig = await getCmsModuleConfig(themeName);
+    const config = getStoreItem('cmsSettings');
     const pagesLocalDir = resolve(tempDir, 'pages');
-    const localThemeBuildDurChunk = 'theme';
 
     // Read pages
     const themeExports = await readThemeExports(themeName);
@@ -57,6 +90,8 @@ const main = async () => {
 
     // console.log('pagesLocalDir', pagesLocalDir)
     await makeEmptyDir(tempDir, { recursive: true });
+    await new Promise(done => setTimeout(done, 200));
+    await fs.ensureDir(pagesLocalDir);
 
     for (const pageInfo of themeExports.pagesInfo) {
 
@@ -84,103 +119,103 @@ const main = async () => {
         const cromwellStoreModulesPath = `CromwellStore.nodeModules.modules`;
 
         const pageImports = `
-        import React from 'react';
-        import ReactDOM from 'react-dom';
-        import dynamic from 'next/dynamic';
-        import NextLink from 'next/link';
-        import NextHead from 'next/head';
-        import * as cromwellCore from '@cromwell/core';
-        import * as cromwellCoreFrontend from '@cromwell/core-frontend';
-        import * as reactIs from 'react-is';
-        import * as NextRouter from 'next/router';
-        import ReactHtmlParser from 'react-html-parser';
-        import Document, { Html, Main, NextScript } from 'next/document';
-        import { getModuleImporter } from '@cromwell/utils/build/importer.js';
-        import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
-        import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, 
-            fsRequire } from 'build/renderer';
-
-
-        const cmsSettings = ${JSON.stringify(config)};
-        checkCMSConfig(cmsSettings, getStoreItem, setStoreItem);
-        
-        const importer = getModuleImporter();
-        ${cromwellStoreModulesPath}['react'] = React;
-        ${cromwellStoreModulesPath}['react'].didDefaultImport = true;
-        ${cromwellStoreModulesPath}['react-dom'] = ReactDOM;
-        ${cromwellStoreModulesPath}['react-dom'].didDefaultImport = true;
-        ${cromwellStoreModulesPath}['next/link'] = NextLink;
-        ${cromwellStoreModulesPath}['next/router'] = NextRouter;
-        ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
-        ${cromwellStoreModulesPath}['next/head'] = NextHead;
-        ${cromwellStoreModulesPath}['@cromwell/core'] = cromwellCore;
-        ${cromwellStoreModulesPath}['@cromwell/core'].didDefaultImport = true;
-        ${cromwellStoreModulesPath}['@cromwell/core-frontend'] = cromwellCoreFrontend;
-        ${cromwellStoreModulesPath}['@cromwell/core-frontend'].didDefaultImport = true;
-        ${cromwellStoreModulesPath}['react-is'] = reactIs;
-        ${cromwellStoreModulesPath}['react-is'].didDefaultImport = true;
-        ${cromwellStoreModulesPath}['react-html-parser'] = ReactHtmlParser;
-        ${cromwellStoreModulesPath}['react-html-parser'].didDefaultImport = true;
-
-        ${pageInfo.metaInfoPath ? `
-        if (isServer()) {
-            const metaInfo = fsRequire("${pageInfo.metaInfoPath}", true);
-            importer.importSciptExternals(metaInfo);
-        }
-        ` : ''}
-        `
+         import React from 'react';
+         import ReactDOM from 'react-dom';
+         import dynamic from 'next/dynamic';
+         import NextLink from 'next/link';
+         import NextHead from 'next/head';
+         import * as cromwellCore from '@cromwell/core';
+         import * as cromwellCoreFrontend from '@cromwell/core-frontend';
+         import * as reactIs from 'react-is';
+         import * as NextRouter from 'next/router';
+         import ReactHtmlParser from 'react-html-parser';
+         import Document, { Html, Main, NextScript } from 'next/document';
+         import { getModuleImporter } from '@cromwell/utils/build/importer.js';
+         import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
+         import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, 
+             fsRequire } from 'build/renderer';
+ 
+ 
+         const cmsSettings = ${JSON.stringify(config)};
+         checkCMSConfig(cmsSettings, getStoreItem, setStoreItem);
+         
+         const importer = getModuleImporter();
+         ${cromwellStoreModulesPath}['react'] = React;
+         ${cromwellStoreModulesPath}['react'].didDefaultImport = true;
+         ${cromwellStoreModulesPath}['react-dom'] = ReactDOM;
+         ${cromwellStoreModulesPath}['react-dom'].didDefaultImport = true;
+         ${cromwellStoreModulesPath}['next/link'] = NextLink;
+         ${cromwellStoreModulesPath}['next/router'] = NextRouter;
+         ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
+         ${cromwellStoreModulesPath}['next/head'] = NextHead;
+         ${cromwellStoreModulesPath}['@cromwell/core'] = cromwellCore;
+         ${cromwellStoreModulesPath}['@cromwell/core'].didDefaultImport = true;
+         ${cromwellStoreModulesPath}['@cromwell/core-frontend'] = cromwellCoreFrontend;
+         ${cromwellStoreModulesPath}['@cromwell/core-frontend'].didDefaultImport = true;
+         ${cromwellStoreModulesPath}['react-is'] = reactIs;
+         ${cromwellStoreModulesPath}['react-is'].didDefaultImport = true;
+         ${cromwellStoreModulesPath}['react-html-parser'] = ReactHtmlParser;
+         ${cromwellStoreModulesPath}['react-html-parser'].didDefaultImport = true;
+ 
+         ${pageInfo.metaInfoPath ? `
+         if (isServer()) {
+             const metaInfo = fsRequire("${pageInfo.metaInfoPath}", true);
+             importer.importSciptExternals(metaInfo);
+         }
+         ` : ''}
+         `
         let pageContent = `
-        ${globalCssImports}
-        ${pageImports}
-
-        const ${pageDynamicImportName} = dynamic(async () => {
-
-            ${pageInfo.depsBundlePath ? `
-            if (!importer.hasBeenExecuted) {
-                await import('${pageInfo.depsBundlePath}');
-            }
-            ` : ''}
-
-            ${pageInfo.metaInfoPath ? `
-            const meta = await import('${metaInfoRelativePath}');
-            await importer.importSciptExternals(meta);
-            ` : ''} 
-            const pagePromise = import('${pageRelativePath}');
-            const pageComp = await pagePromise;
-            
-
-            ${disableSSR ? `
-            const browserGetStaticProps = createGetStaticProps('${pageInfo.name}', pageComp ? pageComp.getStaticProps : null);
-            setTimeout(async () => {
-                if (isServer()) return;
-                try {
-                    const props = await browserGetStaticProps();
-                    console.log('browserGetStaticProps', props);
-                    const forceUpdatePage = getStoreItem('forceUpdatePage');
-                    forceUpdatePage(props.childStaticProps);
-                    // forceUpdatePage();
-                } catch (e) {
-                    console.log('browserGetStaticProps', e)
-                }
-            }, 3000)
-            ` : ''}
-
-            return getPage('${pageInfo.name}', pageComp.default);
-        });;
-
-
-        ${!disableSSR ? `
-        const pageServerModule = require('${pageRelativePath}');
-
-        export const getStaticProps = createGetStaticProps('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticProps : null);
-        
-        export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticPaths : null);
-        `: ''}
-
-        
-
-        export default ${pageDynamicImportName};
-        `;
+         ${globalCssImports}
+         ${pageImports}
+ 
+         const ${pageDynamicImportName} = dynamic(async () => {
+ 
+             ${pageInfo.depsBundlePath ? `
+             if (!importer.hasBeenExecuted) {
+                 await import('${pageInfo.depsBundlePath}');
+             }
+             ` : ''}
+ 
+             ${pageInfo.metaInfoPath ? `
+             const meta = await import('${metaInfoRelativePath}');
+             await importer.importSciptExternals(meta);
+             ` : ''} 
+             const pagePromise = import('${pageRelativePath}');
+             const pageComp = await pagePromise;
+             
+ 
+             ${disableSSR ? `
+             const browserGetStaticProps = createGetStaticProps('${pageInfo.name}', pageComp ? pageComp.getStaticProps : null);
+             setTimeout(async () => {
+                 if (isServer()) return;
+                 try {
+                     const props = await browserGetStaticProps();
+                     console.log('browserGetStaticProps', props);
+                     const forceUpdatePage = getStoreItem('forceUpdatePage');
+                     forceUpdatePage(props.childStaticProps);
+                     // forceUpdatePage();
+                 } catch (e) {
+                     console.log('browserGetStaticProps', e)
+                 }
+             }, 3000)
+             ` : ''}
+ 
+             return getPage('${pageInfo.name}', pageComp.default);
+         });;
+ 
+ 
+         ${!disableSSR ? `
+         const pageServerModule = require('${pageRelativePath}');
+ 
+         export const getStaticProps = createGetStaticProps('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticProps : null);
+         
+         export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticPaths : null);
+         `: ''}
+ 
+         
+ 
+         export default ${pageDynamicImportName};
+         `;
 
         if (!pageInfo.path && pageInfo.fileContent) {
             pageContent = pageInfo.fileContent + '';
@@ -188,16 +223,15 @@ const main = async () => {
 
         if (pageInfo.name === '_document') {
             pageContent = `
-            ${pageImports}
-
-            ${pageInfo.fileContent}
-            `
+             ${pageImports}
+ 
+             ${pageInfo.fileContent}
+             `
         }
 
         const pagePath = resolve(pagesLocalDir, pageInfo.name + '.js');
 
-        await mkdir(dirname(pagePath), { recursive: true })
-
+        await fs.ensureDir(dirname(pagePath));
         await fs.outputFile(pagePath, pageContent);
     };
 
@@ -205,12 +239,12 @@ const main = async () => {
     const jsconfigPath = resolve(tempDir, 'jsconfig.json')
     if (!fs.existsSync(jsconfigPath)) {
         await fs.outputFile(jsconfigPath, `
-        {
-            "compilerOptions": {
-            "baseUrl": "."
-            }
-        }
-        `);
+         {
+             "compilerOptions": {
+             "baseUrl": "."
+             }
+         }
+         `);
     }
 
 
@@ -220,67 +254,51 @@ const main = async () => {
     const nextConfigPath = resolve(tempDir, 'next.config.js');
     if (!fs.existsSync(nextConfigPath)) {
         await fs.outputFile(nextConfigPath, `
-            module.exports = {
-                webpack: (config, { isServer }) => {
-                    config.resolve.symlinks = false
-                    // Fixes npm packages that depend on 'fs' module
-                    if (!isServer) {
-                        config.node = {
-                            fs: 'empty',
-                            module: 'empty',
-                            path: 'empty'
-                        }
-                    }
-                    return config
-                }
-            };`
+             module.exports = {
+                 webpack: (config, { isServer }) => {
+                     config.resolve.symlinks = false
+                     // Fixes npm packages that depend on 'fs' module
+                     if (!isServer) {
+                         config.node = {
+                             fs: 'empty',
+                             module: 'empty',
+                             path: 'empty'
+                         }
+                     }
+                     return config
+                 }
+             };`
         );
-    }
-
-    const tempDirPublic = resolve(tempDir, 'public');
-    const tempDirBuild = resolve(tempDir, 'build')
-    const rendererBuildDir = getRendererBuildDir();
-
-    // if prod, recreate .next dir from theme's build dir
-    const themeBuildDir = await getThemeBuildDir(themeName);
-    if (scriptName === 'prod' && themeBuildDir) {
-        const rendererTempNextDir = resolve(getRendererTempDir(), '.next');
-        const themeNextBuildDir = resolve(themeBuildDir, '.next');
-        if (fs.existsSync(themeNextBuildDir)) {
-            await fs.remove(rendererTempNextDir);
-            await fs.copy(themeNextBuildDir, rendererTempNextDir);
-        }
-    }
-
-    // Link public dir in root to renderer's public dir for Next.js server
-    if (!fs.existsSync(tempDirPublic)) {
-        try {
-            await symlinkDir(getPublicDir(), tempDirPublic)
-        } catch (e) { console.log(e) }
     }
 
     // Link renderer's build dir into next dir
     if (!fs.existsSync(tempDirBuild) && rendererBuildDir) {
         try {
             await symlinkDir(rendererBuildDir, tempDirBuild)
-        } catch (e) { console.log(e) }
+        } catch (e) { console.error(e) }
     }
 
     // Link theme's build dir
     const localThemeBuildDir = resolve(tempDir, localThemeBuildDurChunk);
     try {
         await symlinkDir(themeExports.themeBuildDir, localThemeBuildDir)
-    } catch (e) { console.log(e) }
+    } catch (e) { console.error(e) }
 
-    // Link bundled modules
-    const bundledDir = getBundledModulesDir();
-    const bundledPublicDir = resolve(getPublicDir(), bundledModulesDirName);
-    if (!fs.existsSync(bundledPublicDir) && fs.existsSync(bundledDir)) {
-        try {
-            await symlinkDir(bundledDir, bundledPublicDir)
-        } catch (e) { console.log(e) }
+}
+
+const prodGenerate = async (themeName: string) => {
+    // if prod, recreate .next dir from theme's build dir
+    const themeBuildDir = await getThemeBuildDir(themeName);
+    const rendererTempNextDir = resolve(getRendererTempDir(), '.next');
+
+    if (themeBuildDir) {
+        const themeNextBuildDir = resolve(themeBuildDir, '.next');
+        if (fs.existsSync(themeNextBuildDir)) {
+            await fs.remove(rendererTempNextDir);
+            await fs.copy(themeNextBuildDir, rendererTempNextDir);
+        }
     }
-};
+}
 
 main();
 

@@ -3,13 +3,20 @@
 
 .BlogPost {
     @include paper;
-    padding: 20px;
+    box-shadow: none;
+    padding: 30px;
     margin: 30px auto;
 }
 
 .postContent {
     max-width: 700px;
     margin: 0 auto;
+}
+
+.postTitle {
+    font-weight: 500;
+    font-size: 30px;
+    margin: 10px 0;
 }
 
 .mainImage {

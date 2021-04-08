@@ -123,7 +123,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     let data;
     const limit = 20;
     try {
-        data = await getGraphQLClient()?.query({
+        data = await getGraphQLClient('plugin')?.query({
             query: gql`
                 query productShowcase($slug: String) {
                     productShowcase(slug: $slug) {

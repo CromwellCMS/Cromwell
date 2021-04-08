@@ -1,15 +1,14 @@
-@import '../variables.scss';
+@import "../variables.scss";
 
 .IndexPage {
     // display: flex;
     // flex-wrap: wrap;
     position: relative;
-
 }
 
 .advantagesBlockWrapper {
-    background-color: #eee;
-    box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 6px;
 }
 .advantagesBlock {
     display: flex;
@@ -22,19 +21,18 @@
     flex-wrap: nowrap;
     padding: 20px 15px;
     width: 32%;
-    border: 3px dashed $primary;
     border-radius: 15px;
 }
 .advantageItemHeader {
     font-weight: 600;
 }
 .advantageItemText {
-     margin-left: 20px;
-     flex-direction: column;
+    margin-left: 20px;
+    flex-direction: column;
 }
 
 .mainBannerGallery {
-   padding: 20px 0; 
+    padding: 20px 0;
 }
 
 .mainBlock {
@@ -76,7 +74,6 @@
 }
 
 .sidebarBanner {
-    box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
     border-radius: 20px;
     overflow: hidden;
 }
@@ -84,6 +81,5 @@
 .mainShowcaseWrapper {
     margin: 20px 0;
     padding: 15px 0;
-    // box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
     border-radius: 15px;
 }

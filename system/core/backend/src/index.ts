@@ -65,3 +65,5 @@ export * from './helpers/paths';
 export * from './helpers/constants';
 export * from './helpers/readPluginsExports';
 export * from './helpers/readCmsModules';
+export * from './helpers/cmsEntity';
+export * from './helpers/serviceVersions';

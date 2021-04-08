@@ -1,9 +1,10 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, spawnSync, fork } = require('child_process');
-const { getServerDir } = require('@cromwell/core-backend');
+const { getServerDir, serverMessages } = require('@cromwell/core-backend');
 const normalizePath = require('normalize-path');
 
+// 'build' | 'devMain' | 'prodMain' | 'devPlugin' | 'prodPlugin'
 const scriptName = process.argv[2];
 const serverRootDir = getServerDir();
 const buildDir = normalizePath(resolve(serverRootDir, 'build'));
@@ -20,7 +21,7 @@ const main = async () => {
     }
 
 
-    if (scriptName === 'dev') {
+    if (scriptName === 'devMain' || scriptName === 'devPlugin') {
         if (!isServiceBuild()) {
             buildServer();
         }
@@ -28,23 +29,29 @@ const main = async () => {
         spawn(`npx --no-install nodemon --watch ${buildDir} ${buildDir}/server.js ${process.argv.slice(2).join(' ')}`, [],
             { shell: true, stdio: 'inherit', cwd: process.cwd() });
 
-        const rollupProc = spawn(`npx --no-install rollup -cw`, [],
-            { shell: true, stdio: 'pipe', cwd: serverRootDir });
+        if (scriptName === 'devMain') {
+            const rollupProc = spawn(`npx --no-install rollup -cw`, [],
+                { shell: true, stdio: 'pipe', cwd: serverRootDir });
 
-        rollupProc.stdout.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
-        rollupProc.stderr.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
+            rollupProc.stdout.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
+            rollupProc.stderr.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
+        }
+
+        setTimeout(() => {
+            process.send(serverMessages.onStartMessage);
+        }, 3000)
     }
 
     if (scriptName === 'build') {
         buildServer();
     }
 
-    if (scriptName === 'prod') {
+    if (scriptName === 'prodMain' || scriptName === 'prodPlugin') {
         if (!isServiceBuild()) {
             buildServer();
         }
 
-        const serverProc = fork(resolve(buildDir, `server.js`));
+        const serverProc = fork(resolve(buildDir, `server.js`), process.argv.slice(2));
 
         serverProc.on('message', (message) => {
             if (process.send) process.send(message);

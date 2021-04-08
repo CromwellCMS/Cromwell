@@ -115,7 +115,7 @@ export class ProductRepository extends BaseRepository<Product> {
         await this.handleProductInput(product, createProduct);
 
         product = await this.save(product);
-        await checkEntitySlug(product);
+        await checkEntitySlug(product, Product);
 
         // this.buildProductPage(product);
 
@@ -133,7 +133,7 @@ export class ProductRepository extends BaseRepository<Product> {
         await this.handleProductInput(product, updateProduct);
 
         product = await this.save(product);
-        await checkEntitySlug(product);
+        await checkEntitySlug(product, Product);
 
         // this.buildProductPage(product);
 

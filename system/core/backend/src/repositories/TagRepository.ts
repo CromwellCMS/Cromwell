@@ -50,7 +50,7 @@ export class TagRepository extends BaseRepository<Tag> {
 
         await this.handleBaseTagInput(tag, inputData);
         tag = await this.save(tag);
-        await checkEntitySlug(tag);
+        await checkEntitySlug(tag, Tag);
 
         return tag;
     }
@@ -65,7 +65,7 @@ export class TagRepository extends BaseRepository<Tag> {
 
         await this.handleBaseTagInput(tag, inputData);
         tag = await this.save(tag);
-        await checkEntitySlug(tag);
+        await checkEntitySlug(tag, Tag);
 
         return tag;
     }
