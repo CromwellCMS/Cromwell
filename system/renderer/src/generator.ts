@@ -1,21 +1,24 @@
-import {
-    readCMSConfig, readThemeExports, serverLogFor, getCmsModuleConfig,
-    getNodeModuleDir, getPublicDir, getRendererTempDir, getRendererBuildDir, getThemeBuildDir,
-    getModulePackage
-} from '@cromwell/core-backend';
 import { getStoreItem, setStoreItem } from '@cromwell/core';
-import { getBundledModulesDir, bundledModulesDirName } from '@cromwell/utils';
+import {
+    getCmsModuleConfig,
+    getModulePackage,
+    getNodeModuleDir,
+    getPublicDir,
+    getRendererBuildDir,
+    getRendererTempDir,
+    getThemeBuildDir,
+    readCMSConfig,
+    readThemeExports,
+    serverLogFor,
+} from '@cromwell/core-backend';
+import { bundledModulesDirName, downloader, getBundledModulesDir } from '@cromwell/utils';
 import fs from 'fs-extra';
-import gracefulfs from 'graceful-fs';
 import makeEmptyDir from 'make-empty-dir';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
-import { promisify } from 'util';
 import yargs from 'yargs-parser';
-import { downloader, TPackage } from '@cromwell/utils';
 
-const mkdir = promisify(gracefulfs.mkdir);
 const localThemeBuildDurChunk = 'theme';
 const disableSSR = false;
 
@@ -49,7 +52,7 @@ const main = async () => {
         packages: [pckg],
     });
 
-    if (scriptName === 'dev') {
+    if (scriptName === 'dev' || scriptName === 'build' || scriptName === 'buildStart') {
         await devGenerate(themeName);
     } else {
         await prodGenerate(themeName);
@@ -87,6 +90,8 @@ const devGenerate = async (themeName: string) => {
 
     // console.log('pagesLocalDir', pagesLocalDir)
     await makeEmptyDir(tempDir, { recursive: true });
+    await new Promise(done => setTimeout(done, 200));
+    await fs.ensureDir(pagesLocalDir);
 
     for (const pageInfo of themeExports.pagesInfo) {
 
@@ -226,8 +231,7 @@ const devGenerate = async (themeName: string) => {
 
         const pagePath = resolve(pagesLocalDir, pageInfo.name + '.js');
 
-        await mkdir(dirname(pagePath), { recursive: true })
-
+        await fs.ensureDir(dirname(pagePath));
         await fs.outputFile(pagePath, pageContent);
     };
 

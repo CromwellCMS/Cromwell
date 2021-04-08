@@ -26,14 +26,16 @@ const main = async () => {
             buildServer();
         }
 
-        const serverProc = spawn(`npx --no-install nodemon --watch ${buildDir} ${buildDir}/server.js ${process.argv.slice(2).join(' ')}`, [],
+        spawn(`npx --no-install nodemon --watch ${buildDir} ${buildDir}/server.js ${process.argv.slice(2).join(' ')}`, [],
             { shell: true, stdio: 'inherit', cwd: process.cwd() });
 
-        const rollupProc = spawn(`npx --no-install rollup -cw`, [],
-            { shell: true, stdio: 'pipe', cwd: serverRootDir });
+        if (scriptName === 'devMain') {
+            const rollupProc = spawn(`npx --no-install rollup -cw`, [],
+                { shell: true, stdio: 'pipe', cwd: serverRootDir });
 
-        rollupProc.stdout.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
-        rollupProc.stderr.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
+            rollupProc.stdout.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
+            rollupProc.stderr.on('data', buff => console.log((buff && buff.toString) ? buff.toString() : buff));
+        }
 
         setTimeout(() => {
             process.send(serverMessages.onStartMessage);

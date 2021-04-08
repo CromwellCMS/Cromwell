@@ -49,7 +49,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
         await this.handleBasePluginInput(plugin, createPlugin);
 
         plugin = await this.save(plugin);
-        await checkEntitySlug(plugin);
+        await checkEntitySlug(plugin, PluginEntity);
 
         return plugin;
     }
@@ -64,7 +64,7 @@ export class PluginRepository extends BaseRepository<PluginEntity> {
 
         await this.handleBasePluginInput(plugin, updatePlugin);
         plugin = await this.save(plugin);
-        await checkEntitySlug(plugin);
+        await checkEntitySlug(plugin, PluginEntity);
         return plugin;
     }
 

@@ -1,4 +1,4 @@
-import { htmlBlockContentClass } from '@cromwell/core-frontend';
+import { Draggable } from '../../../../helpers/Draggable/Draggable';
 import { MenuItem, TextField, Tooltip } from '@material-ui/core';
 import { CheckCircleOutline as CheckCircleOutlineIcon, Code as CodeIcon, Edit as EditIcon } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
@@ -17,7 +17,19 @@ export function HTMLBlock(props: TBaseMenuProps) {
         if (isEditing) {
             setIsEditing(true);
             if (!blockValue) {
-                setBlockValue(props.block?.getBlockRef()?.current?.querySelector(`.${htmlBlockContentClass}`)?.innerHTML);
+                // Get block's inner HTML and filter editor's parts like DraggableFrame
+                const filteredChildren: Element[] = [];
+
+                const blockElem = props.block?.getBlockRef()?.current;
+                if (blockElem?.children) {
+                    Array.from(blockElem.children).forEach(child => {
+                        if (!child.classList.contains(styles.menu) &&
+                            !child.classList.contains(Draggable.draggableFrameClass)) {
+                            filteredChildren.push(child);
+                        }
+                    })
+                }
+                setBlockValue(filteredChildren.map(child => child.outerHTML).join());
             }
             props.setCanDrag(false);
         }

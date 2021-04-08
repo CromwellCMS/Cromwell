@@ -1,17 +1,16 @@
-import { logFor, TPagedList, TPagedParams, TPostInput, TPost, TDeleteManyInput } from '@cromwell/core';
+import { TDeleteManyInput, TPagedList, TPagedParams, TPost, TPostInput } from '@cromwell/core';
 import sanitizeHtml from 'sanitize-html';
-import { EntityRepository, getCustomRepository, Brackets, SelectQueryBuilder, DeleteQueryBuilder } from 'typeorm';
-import { PagedParamsInput } from './../inputs/PagedParamsInput';
+import { EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
+import { PostFilterInput } from '../entities/filter/PostFilterInput';
 import { Post } from '../entities/Post';
 import { Tag } from '../entities/Tag';
-
-import { handleBaseInput, checkEntitySlug, getPaged } from './BaseQueries';
-import { BaseRepository } from './BaseRepository';
-import { UserRepository } from './UserRepository';
-import { TagRepository } from './TagRepository';
-import { PostFilterInput } from '../entities/filter/PostFilterInput';
 import { getLogger } from '../helpers/constants';
+import { PagedParamsInput } from './../inputs/PagedParamsInput';
+import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
+import { BaseRepository } from './BaseRepository';
+import { TagRepository } from './TagRepository';
+import { UserRepository } from './UserRepository';
 
 const logger = getLogger('detailed');
 
@@ -50,7 +49,13 @@ export class PostRepository extends BaseRepository<Post> {
 
         post.title = input.title;
         post.mainImage = input.mainImage ?? null;
-        post.content = sanitizeHtml(input.content);
+        post.content = sanitizeHtml(input.content, {
+            allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'iframe']),
+            allowedAttributes: {
+                a: ['href', 'name', 'target'],
+                '*': ['href', 'class', 'src', 'align', 'alt', 'center', 'bgcolor', 'title', 'width', 'height', 'style']
+            },
+        });
         post.delta = input.delta;
         post.excerpt = input.excerpt;
         post.isPublished = input.isPublished;
@@ -64,7 +69,7 @@ export class PostRepository extends BaseRepository<Post> {
 
         await this.handleBasePostInput(post, createPost);
         post = await this.save(post);
-        await checkEntitySlug(post);
+        await checkEntitySlug(post, Post);
 
         return post;
     }
@@ -79,7 +84,7 @@ export class PostRepository extends BaseRepository<Post> {
 
         await this.handleBasePostInput(post, updatePost);
         post = await this.save(post);
-        await checkEntitySlug(post);
+        await checkEntitySlug(post, Post);
 
         return post;
     }

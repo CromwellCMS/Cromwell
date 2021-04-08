@@ -37,7 +37,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         await this.handleAttributeInput(attribute, createAttribute);
 
         attribute = await this.save(attribute);
-        await checkEntitySlug(attribute);
+        await checkEntitySlug(attribute, Attribute);
 
         return attribute;
     }
@@ -52,7 +52,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         await this.handleAttributeInput(attribute, updateAttribute);
 
         attribute = await this.save(attribute);
-        await checkEntitySlug(attribute);
+        await checkEntitySlug(attribute, Attribute);
 
         return attribute;
     }

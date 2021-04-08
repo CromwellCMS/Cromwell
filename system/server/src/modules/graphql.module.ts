@@ -1,4 +1,4 @@
-import { apiV1BaseRoute } from '@cromwell/core';
+import { apiMainRoute, apiExtensionRoute } from '@cromwell/core';
 import { Module } from '@nestjs/common';
 import { TypeGraphQLModule } from 'typegraphql-nestjs';
 
@@ -6,6 +6,7 @@ import { loadEnv } from '../helpers/loadEnv';
 import { getResolvers } from '../helpers/getResolvers';
 
 const env = loadEnv();
+const apiPrefix = env.serverType === 'main' ? apiMainRoute : apiExtensionRoute;
 
 @Module({
     providers: getResolvers(env.serverType),
@@ -16,7 +17,7 @@ const env = loadEnv();
             playground: env.envMode === 'dev',
             validate: false,
             dateScalarMode: "isoDate",
-            path: `/${apiV1BaseRoute}/graphql`,
+            path: `/${apiPrefix}/graphql`,
         })
     ]
 })

@@ -1,7 +1,6 @@
-require('dotenv').config();
 import 'reflect-metadata';
 
-import { apiV1BaseRoute, currentApiVersion } from '@cromwell/core';
+import { apiExtensionRoute, apiMainRoute, currentApiVersion } from '@cromwell/core';
 import { readCMSConfigSync, serverMessages } from '@cromwell/core-backend';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -12,6 +11,7 @@ import { connectDatabase } from './helpers/connectDataBase';
 import { loadEnv } from './helpers/loadEnv';
 import { AppModule } from './modules/app.module';
 
+require('dotenv').config();
 
 async function bootstrap(): Promise<void> {
     const envMode = loadEnv();
@@ -23,9 +23,10 @@ async function bootstrap(): Promise<void> {
 
 
     // Launch REST API server via Nest.js
+    const apiPrefix = envMode.serverType === 'main' ? apiMainRoute : apiExtensionRoute;
 
     const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
-    app.setGlobalPrefix(apiV1BaseRoute);
+    app.setGlobalPrefix(apiPrefix);
 
     app.register(require('fastify-cookie'), {
         // secret: "my-secret",
@@ -57,7 +58,7 @@ async function bootstrap(): Promise<void> {
         .addBearerAuth()
         .build();
     const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup(`/${apiV1BaseRoute}/api-docs`, app, document);
+    SwaggerModule.setup(`/${apiPrefix}/api-docs`, app, document);
 
     const port = envMode.serverType === 'main' ? (config.mainApiPort ?? 4016) : (config.pluginApiPort ?? 4032)
     await app.listen(port, '::');

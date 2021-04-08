@@ -102,4 +102,3 @@ export class PostResolver {
         return this.repository.getTagsOfPost(post.id);
     }
 }
-

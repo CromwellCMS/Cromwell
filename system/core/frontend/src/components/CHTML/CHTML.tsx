@@ -2,7 +2,6 @@ import { TCromwellBlockProps } from '@cromwell/core';
 import React from 'react';
 import ReactHtmlParser from 'react-html-parser';
 
-import { htmlBlockContentClass } from '../../constants';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 
 type CHTMLProps = { children?: React.ReactNode } & TCromwellBlockProps;
@@ -16,10 +15,7 @@ export const CHTML = (props: CHTMLProps) => {
                 if (data?.html?.innerHTML) {
                     content = ReactHtmlParser(data.html.innerHTML);
                 }
-
-                return (
-                    <div className={htmlBlockContentClass}>{content}</div>
-                )
+                return content;
             }}
         />
     )

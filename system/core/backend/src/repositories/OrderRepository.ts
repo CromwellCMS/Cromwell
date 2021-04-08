@@ -58,7 +58,7 @@ export class OrderRepository extends BaseRepository<Order> {
 
         await this.handleBaseOrderInput(order, inputData);
         order = await this.save(order);
-        await checkEntitySlug(order);
+        await checkEntitySlug(order, Order);
 
         return order;
     }
@@ -73,7 +73,7 @@ export class OrderRepository extends BaseRepository<Order> {
 
         await this.handleBaseOrderInput(order, inputData);
         order = await this.save(order);
-        await checkEntitySlug(order);
+        await checkEntitySlug(order, Order);
 
         return order;
     }

@@ -1,7 +1,7 @@
-import { SelectQueryBuilder } from "typeorm";
+import { getManager, SelectQueryBuilder } from "typeorm";
 import { TPagedParams, TPagedList, TBasePageEntity, TBasePageEntityInput } from '@cromwell/core';
-import { getStoreItem } from '@cromwell/core';
-import { BasePageEntity } from "src/entities/BasePageEntity";
+import { getStoreItem, getRandStr } from '@cromwell/core';
+import { BasePageEntity } from "../entities/BasePageEntity";
 
 export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, sortByTableName?: string, params?: TPagedParams<T>): SelectQueryBuilder<T> => {
     const cmsSettings = getStoreItem('cmsSettings');
@@ -54,15 +54,44 @@ export const getPaged = async <T>(qb: SelectQueryBuilder<T>, sortByTableName?: s
 }
 
 export const handleBaseInput = (entity: TBasePageEntity, input: TBasePageEntityInput) => {
-    entity.slug = input.slug;
+    entity.slug = input.slug
+    if (entity.slug) {
+        entity.slug = entity.slug.replace(/\W/g, '-').toLowerCase();
+    }
     entity.pageTitle = input.pageTitle;
     entity.isEnabled = input.isEnabled;
 }
 
-export const checkEntitySlug = async (entity: BasePageEntity): Promise<BasePageEntity> => {
+export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, EntityClass: new (...args: any[]) => T): Promise<T> => {
+    // check for absence and set id instead
+    let hasModified = false;
     if (!entity.slug || entity.slug === '') {
         entity.slug = entity.id;
-        await entity.save();
+        hasModified = true;
     }
+
+    // check for unique and reset if not
+    if (entity.slug) {
+        const matches = await getManager().find(EntityClass, {
+            where: {
+                slug: entity.slug
+            }
+        });
+        for (const match of matches) {
+            if (match.id !== entity.id) {
+                entity.slug = entity.id;
+                hasModified = true;
+            }
+            if (match.slug === entity.id) {
+                entity.slug = entity.id + '_' + getRandStr(4);
+                hasModified = true;
+                break;
+            }
+        };
+    }
+
+    if (hasModified)
+        await entity.save();
+
     return entity;
 }

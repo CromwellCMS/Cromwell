@@ -9,7 +9,8 @@ import {
     DocumentNode
 } from '@apollo/client';
 import {
-    apiV1BaseRoute,
+    apiMainRoute,
+    apiExtensionRoute,
     getStoreItem,
     GraphQLPaths,
     serviceLocator,
@@ -1791,7 +1792,7 @@ export const getGraphQLClient = (serverType: 'main' | 'plugin' = 'main', fetch?:
     if (serverType === 'plugin' && clients?.pluginGraphQLClient) return clients.pluginGraphQLClient;
 
     const typeUrl = serverType === 'plugin' ? serviceLocator.getPluginApiUrl() : serviceLocator.getMainApiUrl();
-    const baseUrl = `${typeUrl}/${apiV1BaseRoute}/graphql`;
+    const baseUrl = `${typeUrl}/${serverType === 'main' ? apiMainRoute : apiExtensionRoute}/graphql`;
 
     const newClient = new CGraphQLClient(baseUrl, fetch);
     if (!clients) clients = {};

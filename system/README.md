@@ -19,12 +19,13 @@ Below listed core services with default settings (ports at localhost address can
 ### 1. Server
 - Path - system/server
 - NPM Module - @cromwell/server
-- Url - http://localhost:4032
+- Url main - http://localhost:4016
+- Url extension - http://localhost:4032
 
-API server. Implements REST API for internal usage and GraphQL API for data flow.
+API server. Implements REST API for internal usage and GraphQL API for data flow. Runs one Main instance with default CMS API and one Extension instance for custom backend of Plugins.
 
-- Swagger - http://localhost:4032/api/v1/api-docs/
-- GraphQL Playground / Schema: http://localhost:4032/api/v1/graphql
+- Swagger - http://localhost:4016/api/v1/main/api-docs/, http://localhost:4032/api/ext/v1/api-docs/
+- GraphQL Playground / Schema: http://localhost:4016/api/v1/main/graphql, ttp://localhost:4032/api/v1/ext/graphql
 
 ### 2. Renderer 
 - Path - system/renderer
@@ -32,7 +33,6 @@ API server. Implements REST API for internal usage and GraphQL API for data flow
 - Url - http://localhost:4128
 
 Next.js service, compiles and serves files of an active Theme and Plugins to end-users.
-Supposed to be started after Server service up and running.
 
 ### 3. Admin Panel
 - Path - system/admin-panel

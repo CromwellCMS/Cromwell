@@ -1,6 +1,7 @@
 import { fetch } from '../helpers/isomorphicFetch';
 import {
-    apiV1BaseRoute,
+    apiMainRoute,
+    apiExtensionRoute,
     getStoreItem,
     serviceLocator,
     setStoreItem,
@@ -254,7 +255,7 @@ export const getRestAPIClient = (serverType: 'main' | 'plugin' = 'main'): CRestA
     if (serverType === 'plugin' && clients?.pluginRestAPIClient) return clients.pluginRestAPIClient;
 
     const typeUrl = serverType === 'plugin' ? serviceLocator.getPluginApiUrl() : serviceLocator.getMainApiUrl();
-    const baseUrl = `${typeUrl}/${apiV1BaseRoute}`;
+    const baseUrl = `${typeUrl}/${serverType === 'main' ? apiMainRoute : apiExtensionRoute}`;
 
     const newClient = new CRestAPIClient(baseUrl);
     if (!clients) clients = {};

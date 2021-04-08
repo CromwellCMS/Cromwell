@@ -66,7 +66,6 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
     if (serverProc) {
         return new Promise(done => {
             const onMessage = async (message: string) => {
-                console.log('onMessage')
                 if (message === serverMessages.onStartMessage) {
                     logger.log(`Server has successfully started`);
                     done(true);

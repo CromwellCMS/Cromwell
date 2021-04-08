@@ -94,7 +94,7 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
         if (this.props?.block?.getData()?.isConstant) return <></>;
 
         if (this.state.menuVisible && !this.state.isDeleted) return (
-            <>
+            <div className={styles.menu}>
                 <div className={styles.actions}>
                     {this.props.icon}
                     {this.props.menuItems}
@@ -203,7 +203,7 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
                         </div>
                     </Popover>
                 </div>
-            </>
+            </div>
         );
         return <></>
     }
