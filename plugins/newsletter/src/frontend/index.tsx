@@ -29,7 +29,7 @@ export default function NewsletterPlugin(props: TFrontendPluginProps): JSX.Eleme
     const submit = async () => {
         if (!validateEmail(email)) return;
 
-        const client = getGraphQLClient();
+        const client = getGraphQLClient('plugin');
         try {
             const response = await client?.query({
                 query: gql`

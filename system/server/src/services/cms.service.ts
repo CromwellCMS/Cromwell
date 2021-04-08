@@ -1,5 +1,5 @@
 import { getStoreItem, setStoreItem, TCmsConfig, TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
-import { CmsEntity, getLogger, getNodeModuleDir, readCMSConfig, serverLogFor } from '@cromwell/core-backend';
+import { getCmsEntity, getLogger, getNodeModuleDir, readCMSConfig, serverLogFor } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
@@ -13,20 +13,6 @@ import { GenericCms } from '../helpers/genericEntities';
 
 const logger = getLogger('detailed');
 
-const getCmsEntity = async (): Promise<CmsEntity> => {
-    const cmsRepo = getCustomRepository(GenericCms.repository);
-    const all = await cmsRepo.find();
-    let entity = all?.[0];
-
-    if (!entity) {
-        // Probably CMS was launched for the first time and no settings persist in DB.
-        // Create settings record
-        const config = await readCMSConfig();
-        const { versions, ...defaultSettings } = config?.defaultSettings ?? {};
-        entity = await cmsRepo.createEntity(Object.assign({}, defaultSettings))
-    }
-    return entity;
-}
 
 // Don't re-read cmsconfig.json but update info from DB
 export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
@@ -152,9 +138,16 @@ export class CmsService {
         const entity = await getCmsEntity();
         if (!entity) throw new Error('!entity');
 
-        for (const key of Object.keys(input)) {
-            entity[key] = input[key];
-        }
+        entity.protocol = input.protocol;
+        entity.defaultPageSize = input.defaultPageSize;
+        entity.currencies = input.currencies;
+        entity.timezone = input.timezone;
+        entity.language = input.language;
+        entity.favicon = input.favicon;
+        entity.logo = input.logo;
+        entity.headerHtml = input.headerHtml;
+        entity.footerHtml = input.footerHtml;
+
         await entity.save();
         return this.getSettings();
     }

@@ -202,6 +202,11 @@ class CRestAPIClient {
         return data ?? false;
     }
 
+    public changeTheme = async (themeName: string): Promise<boolean> => {
+        const data = await this.get<boolean>(`theme/set-active?themeName=${themeName}`);
+        return data ?? false;
+    }
+
     // < / Theme >
 
 
@@ -234,10 +239,6 @@ class CRestAPIClient {
 
     // < Manager >
 
-    public changeTheme = async (themeName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`manager/services/change-theme/${themeName}`);
-        return data ?? false;
-    }
 
     public rebuildTheme = async (): Promise<boolean> => {
         const data = await this.get<boolean>(`manager/services/rebuild-theme`);
@@ -253,7 +254,7 @@ export const getRestAPIClient = (serverType: 'main' | 'plugin' = 'main'): CRestA
     if (serverType === 'plugin' && clients?.pluginRestAPIClient) return clients.pluginRestAPIClient;
 
     const typeUrl = serverType === 'plugin' ? serviceLocator.getPluginApiUrl() : serviceLocator.getMainApiUrl();
-    const baseUrl = `${typeUrl}/${apiV1BaseRoute}/graphql`;
+    const baseUrl = `${typeUrl}/${apiV1BaseRoute}`;
 
     const newClient = new CRestAPIClient(baseUrl);
     if (!clients) clients = {};

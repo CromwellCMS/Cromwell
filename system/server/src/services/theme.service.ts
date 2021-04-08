@@ -1,4 +1,5 @@
 import {
+    getStoreItem,
     logFor,
     TCmsSettings,
     TCromwellBlockData,
@@ -8,8 +9,8 @@ import {
     TThemeEntity,
     TThemeEntityInput,
 } from '@cromwell/core';
-import { configFileName, getNodeModuleDir, getPublicThemesDir, serverLogFor, getCmsModuleInfo, getLogger } from '@cromwell/core-backend';
-import { Injectable } from '@nestjs/common';
+import { configFileName, getNodeModuleDir, getPublicThemesDir, serverLogFor, getCmsModuleInfo, getLogger, getCmsEntity, incrementServiceVersion } from '@cromwell/core-backend';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import decache from 'decache';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -351,6 +352,20 @@ export class ThemeService {
         pages.forEach(p => p.modifications = this.mergeMods(globalModificators, p.modifications));
 
         return pages;
+    }
+
+    public async setActive(themeName: string): Promise<boolean> {
+        const cms = await getCmsEntity();
+        if (!cms) throw new HttpException('!cms entity', HttpStatus.INTERNAL_SERVER_ERROR);
+
+        cms.themeName = themeName;
+        await cms.save();
+        await incrementServiceVersion('renderer');
+
+        const cmsSettings = getStoreItem('cmsSettings');
+        const timeout = (cmsSettings?.watchPoll ?? 2000) + 1000;
+        await new Promise(done => setTimeout(done, timeout));
+        return true;
     }
 
 

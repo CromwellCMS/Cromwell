@@ -151,7 +151,7 @@ export const getCmsModuleInfo = (moduleName?: string): TPackageCromwellConfig | 
     const pckg = getModulePackage(moduleName);
     if (pckg?.cromwell) {
         if (!pckg.cromwell.name) pckg.cromwell.name = pckg.name;
-        return pckg.cromwell;
+        return JSON.parse(JSON.stringify(pckg.cromwell));
     }
 }
 

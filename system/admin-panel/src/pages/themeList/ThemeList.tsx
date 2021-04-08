@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { Skeleton } from '@material-ui/lab';
 
 import { ManagerLogger } from '../../components/managerLogger/ManagerLogger';
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { themeEditPageInfo } from '../../constants/PageInfos';
 import styles from './ThemeList.module.scss';
 import commonStyles from '../../styles/common.module.scss';
@@ -22,6 +23,7 @@ export default function ThemeList() {
     const client = getRestAPIClient();
 
     const getThemeList = async () => {
+        setIsLoading(true);
         const updatedConfig = await client?.getCmsSettingsAndSave();
         setCmsConfig(updatedConfig);
 
@@ -29,7 +31,6 @@ export default function ThemeList() {
         const infos = await client?.getThemesInfo();
         infos?.sort((a, b) => (updatedConfig && a.name === updatedConfig.themeName) ? -1 : 1)
         if (infos) setInfos(infos);
-        setIsListLoading(false);
 
         // Get info from DB
         const graphQLClient = getGraphQLClient();
@@ -51,25 +52,23 @@ export default function ThemeList() {
     const handleSetActiveTheme = async (info: TPackageCromwellConfig) => {
         if (client) {
             setIsChangingTheme(true);
-            setIsLoading(true);
             const success = await client.changeTheme(info.name);
             if (success) {
-                toast.success('Applied a new theme');
+                toast.success('Applied new theme');
             } else {
-                toast.error('Failed to set a new theme');
+                toast.error('Failed to set new theme');
             }
+            setIsChangingTheme(false);
+
             const updatedConfig = await client.getCmsSettings();
             infos?.sort((a, b) => (updatedConfig && a.name === updatedConfig.themeName) ? -1 : 1)
             setCmsConfig(updatedConfig);
-            setIsChangingTheme(false);
-            setIsLoading(false);
         }
     }
 
     const handleRebuildTheme = async () => {
         if (client) {
             setIsChangingTheme(true);
-            setIsLoading(true);
             const success = await client.rebuildTheme();
             if (success) {
                 toast.success('Rebuilded');
@@ -77,7 +76,6 @@ export default function ThemeList() {
                 toast.error('Failed to rebuild theme');
             }
             setIsChangingTheme(false);
-            setIsLoading(false);
         }
     }
 
@@ -175,7 +173,8 @@ export default function ThemeList() {
                     </div>
                 )
             })}
-            <ManagerLogger isActive={isChangingTheme} />
+            <LoadingStatus isActive={isChangingTheme} />
+            {/* <ManagerLogger isActive={isChangingTheme} /> */}
         </div>
     )
 }

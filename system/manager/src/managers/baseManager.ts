@@ -5,6 +5,7 @@ import {
     getCoreFrontendDir,
     getLogger,
     getModulePackage,
+    extractServiceVersion,
 } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { ChildProcess, fork, spawn } from 'child_process';
@@ -209,14 +210,14 @@ export const closeSystem = async () => {
 export const startWatchService = async (serviceName: keyof TServiceVersions, onVersionChange: () => Promise<void>) => {
     const currentSettings = getStoreItem('cmsSettings');
     // currentVersion will be null, until request succeeds. If it does and version is not
-    // set at server it'll have undefined value. That allows to differ cases when 
+    // set at server, it'll have undefined value. That allows to differ cases when 
     // Server has not been launched or became unavalibele for some reason after launch
     let currentVersion: number | null | undefined = null;
 
     try {
         const remoteSettings = await getRestAPIClient()?.getCmsSettings();
         if (remoteSettings) {
-            const remoteVersion = getInstanceVersion(remoteSettings, serviceName);
+            const remoteVersion = extractServiceVersion(remoteSettings, serviceName);
             currentVersion = remoteVersion;
         } else {
             currentVersion = null
@@ -230,7 +231,7 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
 
         try {
             const remoteSettings = await getRestAPIClient()?.getCmsSettings();
-            const remoteVersion = getInstanceVersion(remoteSettings, serviceName);
+            const remoteVersion = extractServiceVersion(remoteSettings, serviceName);
 
             if (currentVersion !== null && remoteVersion && remoteVersion !== currentVersion) {
                 // new version is set in DB, save it and restart service
@@ -252,15 +253,6 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
     setTimeout(() => {
         watchService(serviceName);
     }, currentSettings?.watchPoll ?? 2000);
-}
-
-const getInstanceVersion = (settings: TCmsSettings | undefined, serviceName: keyof TServiceVersions): number | undefined => {
-    if (settings?.versions) {
-        try {
-            const versions: TServiceVersions = typeof settings.versions === 'string' ? JSON.parse(settings.versions) : settings.versions;
-            return typeof versions[serviceName] === 'number' ? versions[serviceName] : undefined;
-        } catch (e) { }
-    }
 }
 
 export const killByPid = async (pid: number) => {

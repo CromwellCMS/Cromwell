@@ -9,7 +9,7 @@ import { ProductResolver } from '../resolvers/product.resolver';
 import { TagResolver } from '../resolvers/tag.resolver';
 import { UserResolver } from '../resolvers/user.resolver';
 
-export const getResolvers = (sType: 'main' | 'plugin') => sType === 'main' ? [
+const nativeResolvers = [
     AttributeResolver,
     PostResolver,
     ProductCategoryResolver,
@@ -20,6 +20,11 @@ export const getResolvers = (sType: 'main' | 'plugin') => sType === 'main' ? [
     GenericPluginResolver,
     GenericThemeResolver,
     TagResolver,
+];
+
+export const getResolvers = (sType: 'main' | 'plugin') => sType === 'main' ? [
+    ...nativeResolvers,
 ] : [
-        ...(collectPlugins().resolvers),
-    ]
+    ...nativeResolvers,
+    ...(collectPlugins().resolvers),
+]

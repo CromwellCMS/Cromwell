@@ -17,6 +17,7 @@ const logger = getLogger('detailed');
 @ApiBearerAuth()
 @ApiTags('CMS')
 @Controller('cms')
+
 export class CmsController {
 
     constructor(
@@ -155,7 +156,7 @@ export class CmsController {
         return true;
     }
 
-    
+
     @Get('remove-public-dir')
     @UseGuards(JwtAuthGuard)
     @ApiOperation({

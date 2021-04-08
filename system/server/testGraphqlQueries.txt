@@ -251,7 +251,7 @@ query getFilteredProducts {
 
 query getFilteredPosts {
  	getFilteredPosts(pagedParams: {}, filterParams: {
-    tags: []
+    tagIds: []
   }) {
 		pagedMeta {
 			totalElements
@@ -260,7 +260,9 @@ query getFilteredPosts {
 			id
       slug
       title
-      tags
+      tags {
+				name
+      }
       author {
 				id
         fullName
@@ -326,26 +328,6 @@ mutation deleteCategory {
   	deleteProductCategory(id: "6")
 }
 
-
- query productShowcase {
-    productShowcase(slug: null) {
-              pagedMeta {
-                pageSize
-            }
-            elements {
-                id
-                slug
-                name
-                price
-                oldPrice
-                mainImage
-                rating {
-                    average
-                    reviewsNumber
-                }
-            }
-    }
-}
 
  query getRootCategories {
     getRootCategories {

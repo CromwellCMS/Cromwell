@@ -32,7 +32,6 @@ async function bootstrap(): Promise<void> {
     })
     app.register(require('fastify-cors'), {
         origin: function (origin, callback) {
-            console.log('originoriginorigin', origin)
             if (typeof origin === 'undefined') {
                 // Requests from other services via node-fetch produce undefined value in origin
                 // Let it pass for now. @TODO: fix undefined 
@@ -40,7 +39,7 @@ async function bootstrap(): Promise<void> {
             }
 
             if (/localhost/.test(origin))
-                return callback(null, [origin]);
+                return callback(null, true);
 
             callback(new Error("Not allowed"));
         },

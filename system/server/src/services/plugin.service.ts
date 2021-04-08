@@ -10,6 +10,7 @@ import {
     serverLogFor,
     getCmsModuleInfo,
     getLogger,
+    incrementServiceVersion,
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
@@ -172,14 +173,17 @@ export class PluginService {
             }
 
             const pluginRepo = getCustomRepository(GenericPlugin.repository);
+            let entity;
             try {
-                const entity = await pluginRepo.createEntity(input);
-
-                if (entity) {
-                    return true;
-                }
+                entity = await pluginRepo.createEntity(input);
             } catch (e) {
                 console.error(e)
+            }
+
+            await incrementServiceVersion('serverPlugin');
+
+            if (entity) {
+                return true;
             }
         }
 
