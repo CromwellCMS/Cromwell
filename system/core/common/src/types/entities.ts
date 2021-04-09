@@ -123,6 +123,8 @@ export interface TPost extends TBasePageEntity {
     author?: TUser;
     // Href of main image
     mainImage?: string | null;
+    // Estimated time in minutes to read the post
+    readTime?: string | null;
     // Tags / categories to show post
     tags?: TTag[] | null;
     // Post content, HTML

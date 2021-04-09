@@ -15,6 +15,15 @@ module.exports = {
             "modifications": []
         }
     ],
+    globalModifications: [
+        {
+            "type": "plugin",
+            "id": "header_main_menu",
+            "plugin": {
+                "pluginName": "@cromwell/plugin-main-menu"
+            }
+        }
+    ],
     plugins: {
         "ProductShowcase": {
             "options": {}
@@ -38,7 +47,8 @@ module.exports = {
 
         const getDefaultPlugins = () => [
             typescript({
-                sharedState: tsSharedState
+                sharedState: tsSharedState,
+                monorepo: true,
             }),
             commonjs(),
             json(),

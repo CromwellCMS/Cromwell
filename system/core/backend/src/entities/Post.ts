@@ -31,6 +31,10 @@ export class Post extends BasePageEntity implements TPost {
   @Column({ type: "varchar", nullable: true })
   mainImage?: string | null;
 
+  @Field(type => String, { nullable: true })
+  @Column({ type: "varchar", nullable: true })
+  readTime?: string | null;
+
   @Field(type => [Tag], { nullable: true })
   @JoinTable()
   @ManyToMany(type => Tag)

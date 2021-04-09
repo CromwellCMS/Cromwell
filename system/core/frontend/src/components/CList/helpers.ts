@@ -21,12 +21,25 @@ export const getPageNumsAround = (currentPage: number, quantity: number, maxPage
 export const getPagedUrl = (pageNum: number, pathname?: string): string | undefined => {
     if (!isServer()) {
         const urlParams = new URLSearchParams(window.location.search);
-        if (pageNum) urlParams.set('pageNumber', pageNum + '');
-        else urlParams.delete('pageNumber');
+        if (pageNum) urlParams.set('page', pageNum + '');
+        else urlParams.delete('page');
         return window.location.pathname + '?' + urlParams.toString();
     }
     else {
-        return pathname ? pathname + `?pageNumber=${pageNum}` : undefined;
+        return pathname ? pathname + `?page=${pageNum}` : undefined;
     }
+}
 
+export const getPageNumberFromUrl = (): number => {
+    if (!isServer()) {
+        const urlParams = new URLSearchParams(window.location.search);
+        let pageNumber: any = urlParams.get('page');
+        if (pageNumber) {
+            pageNumber = parseInt(pageNumber);
+            if (pageNumber && !isNaN(pageNumber)) {
+                return pageNumber;
+            }
+        }
+    }
+    return 1;
 }

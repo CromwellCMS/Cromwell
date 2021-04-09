@@ -2,6 +2,7 @@
 
 body .pageItem {
     @include paper;
+    min-width: 200px;
     background-color: #fff;
     margin-bottom: 10px;
     border-radius: 6px;

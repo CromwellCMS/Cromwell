@@ -959,6 +959,7 @@ class CGraphQLClient {
                 avatar
             }
             mainImage
+            readTime
             tags {
                 id
                 slug
@@ -966,6 +967,7 @@ class CGraphQLClient {
                 color
             }
             content
+            publishDate
             isPublished
       }
   `

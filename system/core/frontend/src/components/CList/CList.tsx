@@ -7,7 +7,7 @@ import { LoadBox } from '../loadBox/Loadbox';
 import { throbber } from '../throbber';
 import styles from './CList.module.scss';
 import { Pagination } from './CListPagination';
-import { getPagedUrl, getPageId, getPageNumsAround } from './helpers';
+import { getPagedUrl, getPageId, getPageNumsAround, getPageNumberFromUrl } from './helpers';
 import { TCList, TCListProps, TListenerType } from './types';
 
 
@@ -113,16 +113,10 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
 
         if (!props.dataList && props.loader) {
             if (props.useQueryPagination && !isServer()) {
-                const urlParams = new URLSearchParams(window.location.search);
-                let pageNumber: any = urlParams.get('pageNumber');
-                if (pageNumber) {
-                    pageNumber = parseInt(pageNumber);
-                    if (pageNumber && !isNaN(pageNumber)) {
-                        this.currentPageNum = pageNumber;
-                        this.minPageBound = pageNumber;
-                        this.maxPageBound = pageNumber;
-                    }
-                }
+                const pageNumber = getPageNumberFromUrl();
+                this.currentPageNum = pageNumber;
+                this.minPageBound = pageNumber;
+                this.maxPageBound = pageNumber;
             }
 
             if (props.firstBatch) {
@@ -246,7 +240,9 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         this.minPageBound = 1;
         this.maxPageBound = 1;
         if (props.useQueryPagination) {
-            window.history.pushState({}, '', getPagedUrl(1));
+            const currentPageNumber = getPageNumberFromUrl();
+            if (currentPageNumber !== 1)
+                window.history.pushState({}, '', getPagedUrl(1));
         }
         this.dataList = [];
         this.list = [];
@@ -257,7 +253,9 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         const props = this.getProps();
         this.currentPageNum = pageNumber;
         if (props.useQueryPagination) {
-            window.history.pushState({}, '', getPagedUrl(pageNumber));
+            const currentPageNumber = getPageNumberFromUrl();
+            if (currentPageNumber !== pageNumber)
+                window.history.pushState({}, '', getPagedUrl(pageNumber));
         }
     }
 

@@ -3,7 +3,6 @@ import { createStyles, makeStyles, Theme, withStyles } from '@material-ui/core';
 export const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         subscribeInputContainer: {
-            marginLeft: '40px',
             display: 'flex',
         },
         subscribeInput: {

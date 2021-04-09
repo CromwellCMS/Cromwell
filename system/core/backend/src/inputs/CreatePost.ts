@@ -14,6 +14,9 @@ export class CreatePost extends BasePageInput implements TPostInput {
   @Field(() => String, { nullable: true })
   mainImage?: string;
 
+  @Field(type => String, { nullable: true })
+  readTime?: string | null;
+
   @Field(type => [String], { nullable: true })
   tagIds?: string[] | null;
 

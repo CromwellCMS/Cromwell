@@ -9,6 +9,9 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
         content: {
             padding: '15px',
+            width: '100%',
+            maxWidth: '900px',
+            margin: '0 auto',
         },
         saveBtn: {
             margin: '20px 0 0 auto'

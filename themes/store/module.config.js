@@ -25,7 +25,8 @@ module.exports = {
 
         const getDefaultPlugins = () => [
             typescript({
-                sharedState: tsSharedState
+                sharedState: tsSharedState,
+                monorepo: true,
             }),
             commonjs(),
             json(),

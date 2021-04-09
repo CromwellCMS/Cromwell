@@ -1,0 +1,73 @@
+@import "../variables.scss";
+
+.postList {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.postWrapper {
+    width: 33%;
+    margin: 0;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+.sortContainer {
+    display: flex;
+    justify-content: flex-end;
+    margin: 20px 0 20px 20px;
+}
+
+.filter {
+    padding: 15px;
+    margin: 15px;
+    background-color: #fff;
+    border-radius: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+.filterItem {
+    margin-right: 15px;
+}
+
+.title {
+    font-size: 32px;
+    font-weight: 500;
+}
+
+@media (max-width: 985px) {
+    .postWrapper {
+        width: 50%;
+    }
+}
+
+@media (max-width: 725px) {
+    .postWrapper {
+        width: 100%;
+    }
+}
+
+@media (max-width: 498px) {
+    .product {
+        min-width: 70px;
+    }
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .sidebar {
+        height: 0;
+        width: 0;
+        overflow: hidden;
+    }
+
+    .main {
+        width: 100%;
+    }
+
+    .productList {
+        padding: 20px;
+        padding-right: 20px;
+    }
+}

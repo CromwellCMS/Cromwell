@@ -454,19 +454,26 @@ export const rollupPluginCromwellFrontend = (settings?: {
             return options;
         },
         resolveId(source, importer) {
-
-
             if (settings?.moduleInfo?.type === 'theme' && settings?.pagesMetaInfo?.paths) {
                 if (/\.s?css$/.test(source)) {
                     return { id: source, external: true };
                 }
             }
-            if (resolveExternal(source, settings?.frontendDeps)) {
-                return { id: source, external: true };
-            }
 
-            if (isExternalForm(source)) {
-                return { id: require.resolve(source), external: false };
+            if (settings?.moduleInfo?.type === 'theme') {
+                // left external for themes, so Next.js will bundle node modules
+                if (resolveExternal(source)) {
+                    return { id: source, external: true };
+                }
+            } else {
+                // bundle node modules with plugins that aren't specified in frontendDeps
+                if (resolveExternal(source, settings?.frontendDeps)) {
+                    return { id: source, external: true };
+                }
+
+                if (isExternalForm(source)) {
+                    return { id: require.resolve(source), external: false };
+                }
             }
 
             return null;

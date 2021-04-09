@@ -20,13 +20,18 @@ export const useStyles = makeStyles((theme: Theme) =>
             transform: 'rotate(180deg)',
         },
         mainMenu: {
-            width: '100%'
+            width: '100%',
+            maxWidth: '900px',
+            margin: '0 auto',
         },
         itemList: {
-            width: '100%'
+            width: '100%',
         },
         card: {
             margin: '15px 0'
+        },
+        cardActions: {
+            padding: '0 8px'
         },
         cardHeader: {
             display: 'flex',
@@ -56,7 +61,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
         sublinkItem: {
             margin: '15px 0',
-            padding: '10px',
+            padding: '15px 10px',
             display: 'flex',
             justifyContent: 'space-between'
         },
@@ -65,7 +70,7 @@ export const useStyles = makeStyles((theme: Theme) =>
             margin: '0 10px'
         },
         addBtn: {
-            padding: '15px',
+            padding: '10px',
             display: 'flex',
             justifyContent: 'center'
         },

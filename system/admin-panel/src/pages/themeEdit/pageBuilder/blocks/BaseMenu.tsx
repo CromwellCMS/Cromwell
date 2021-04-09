@@ -96,7 +96,7 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
         if (this.state.menuVisible && !this.state.isDeleted) return (
             <div className={styles.menu}>
                 <div className={styles.actions}>
-                    {this.props.icon}
+                    <div className={styles.typeIcon}>{this.props.icon}</div>
                     {this.props.menuItems}
                     {this.props.settingsContent && (
                         <Tooltip title="Settings">
