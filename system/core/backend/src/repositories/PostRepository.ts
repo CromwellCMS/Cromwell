@@ -1,4 +1,5 @@
 import { TDeleteManyInput, TPagedList, TPagedParams, TPost, TPostInput } from '@cromwell/core';
+import readingTime from 'reading-time';
 import sanitizeHtml from 'sanitize-html';
 import { EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
@@ -47,13 +48,22 @@ export class PostRepository extends BaseRepository<Post> {
             post.tags = tags;
         }
 
+        if (input.readTime) {
+            post.readTime = input.readTime;
+        } else if (input.content) {
+            const text = sanitizeHtml(input.content, {
+                allowedTags: []
+            });
+            post.readTime = readingTime(text).minutes + '';
+        }
+
         post.title = input.title;
         post.mainImage = input.mainImage ?? null;
         post.content = sanitizeHtml(input.content, {
             allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'iframe']),
             allowedAttributes: {
                 a: ['href', 'name', 'target'],
-                '*': ['href', 'class', 'src', 'align', 'alt', 'center', 'bgcolor', 'title', 'width', 'height', 'style']
+                '*': ['href', 'class', 'src', 'align', 'alt', 'title', 'width', 'height', 'style']
             },
         });
         post.delta = input.delta;

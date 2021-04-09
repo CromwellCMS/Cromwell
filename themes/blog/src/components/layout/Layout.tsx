@@ -2,6 +2,7 @@ import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import React from 'react';
 
 import Header from '../header/Header';
+import Footer from '../footer/Footer';
 import styles from './Layout.module.scss';
 
 type TProps = {
@@ -25,6 +26,7 @@ export default function Layout(props: TProps) {
             <div className={styles.Layout}>
                 <Header />
                 {props.children}
+                <Footer />
             </div>
         </ThemeProvider>
 

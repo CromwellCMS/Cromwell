@@ -45,7 +45,8 @@ export default function index(props: TAdminPanelPluginProps<TMainMenuSettings>) 
                 <LoadBox />
             ) : (
                 <>
-                    <h2>Main menu settings</h2>
+                    <h1 style={{ marginBottom: '20px' }}>Main menu plugin</h1>
+                    <h2>Menu items</h2>
                     <div className={classes.itemList}>
                         {items.current.map((data, i) => {
                             return <Item i={i} updateList={forceUpdate} items={items.current} />
@@ -100,7 +101,7 @@ const Item = (props: {
                 onClick={handleExpandClick}
             >
                 <p className={classes.cardTitle}>{item.title}</p>
-                <CardActions disableSpacing>
+                <CardActions disableSpacing className={classes.cardActions}>
                     <IconButton
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: expanded,
@@ -154,7 +155,7 @@ const Item = (props: {
                         <h3>Sublinks</h3>
                         {item.sublinks && item.sublinks.map((sl, slIndex) => {
                             return (
-                                <Card className={classes.sublinkItem}>
+                                <div className={`${classes.sublinkItem} ${classes.paper}`} >
                                     <TextField label="Sublink title" variant="outlined"
                                         value={sl.title}
                                         className={classes.subField}
@@ -172,10 +173,10 @@ const Item = (props: {
                                     }}>
                                         <HighlightOffIcon />
                                     </IconButton>
-                                </Card>
+                                </div>
                             )
                         })}
-                        <Card className={classes.card}>
+                        <div className={`${classes.paper} ${classes.card}`}>
                             <MenuItem
                                 className={classes.addBtn}
                                 onClick={() => {
@@ -185,7 +186,7 @@ const Item = (props: {
                                 }}>
                                 <AddIcon />
                             </MenuItem>
-                        </Card>
+                        </div>
                     </div>
                 </div>
             </Collapse>

@@ -1,4 +1,5 @@
-@import '../../styles/variables.scss';
+@import "../../styles/variables.scss";
+@import "../../styles/common.module.scss";
 
 .Header {
     display: flex;
@@ -52,11 +53,8 @@
         margin: 0 40px 0 20px;
     }
 
-
-
     .mainPanel {
         display: flex;
-        
     }
     .mainPanelContent {
         display: flex;
@@ -65,17 +63,24 @@
         padding: 10px 0;
     }
 
+    .logoWrapper {
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+        margin-right: 15px;
+    }
     .logo {
-        height: 70px;
+        height: 50px;
         cursor: pointer;
     }
 
     .search {
         display: flex;
         width: 35%;
-        min-width: 200px;
+        max-width: 300px;
+        margin-left: auto;
     }
-     
+
     .phone {
         display: flex;
         flex-direction: column;
@@ -97,7 +102,7 @@
         width: 40px;
         height: 40px;
         cursor: pointer;
-        background: url('/themes/cromwell-blog/bag.png') no-repeat center / contain;
+        background: url("/themes/cromwell-blog/bag.png") no-repeat center / contain;
     }
     .cartExpandBlock {
         display: flex;
@@ -119,9 +124,10 @@
     .mainMenu {
         display: flex;
         width: 100%;
-        box-shadow: 0 3px 7px 0 rgba(0, 0, 0, 0.1), 0 0px 24px 0 rgba(0, 0, 0, 0.1);
+        @include paper;
     }
     .mainMenuContent {
-        padding: 0;
+        display: flex;
+        align-items: center;
     }
 }

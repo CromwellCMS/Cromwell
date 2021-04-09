@@ -1,16 +1,16 @@
-@import './variables.scss';
+@import "./variables.scss";
 
 .content {
     max-width: 1200px;
     width: 100%;
     margin: 0 auto;
+    padding: 0 15px;
 }
 
 .text {
-    font-family: 'Roboto', 'sans-serif';
+    font-family: "Roboto", "sans-serif";
 }
 
-  
 .link {
     text-decoration: none;
     border-bottom: 2px solid $primary;
@@ -18,7 +18,7 @@
     position: relative;
     color: $text;
 }
-  
+
 .link:before {
     content: "";
     display: block;
@@ -28,12 +28,12 @@
     position: absolute;
     left: 0;
     bottom: -2px; /* this is to match where the border is */
-    transform-origin: left; 
+    transform-origin: left;
     transform: scale(0);
     transition: 0.25s linear;
     /*   will-change: transform; */
 }
-  
+
 .link:hover:before {
     transform: scale(1);
 }
@@ -46,7 +46,6 @@
     align-items: center;
     justify-content: center;
 }
-
 
 .onHoverLink {
     display: inline;
@@ -67,11 +66,11 @@
     position: absolute;
     left: 0;
     bottom: -2px;
-    transform-origin: left; 
+    transform-origin: left;
     transform: scale(0);
     transition: 0.25s linear;
 }
-  
+
 .onHoverLinkContainer:hover .onHoverLink:before {
     transform: scale(1);
 }
@@ -79,19 +78,52 @@
     color: $primary;
 }
 
-
 @mixin styledScrollBar {
     &::-webkit-scrollbar {
-      width: 0.5em;
-      height: 0.5em;
+        width: 0.5em;
+        height: 0.5em;
     }
     &::-webkit-scrollbar-track {
         box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.2);
         border-radius: 30px;
     }
     &::-webkit-scrollbar-thumb {
-        background-color: #7F7F7F;
-        outline: 1px solid slategrey;
+        background-color: #7f7f7f;
+        outline: none;
         border-radius: 30px;
     }
-  }
+}
+
+@mixin paper {
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.04), 0 0 10px 3px rgba(0, 0, 0, 0.05);
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+.paper {
+    @include paper;
+}
+
+@mixin paperElevated {
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.05), 0 0 20px 4px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border-radius: 5px;
+}
+
+@mixin bckgrCover {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+@mixin bckgrContain {
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+@mixin icon {
+    @include bckgrContain;
+    width: 24px;
+    height: 24px;
+}

@@ -1,3 +1,27 @@
 .IndexPage {
     display: flex;
+    padding: 20px 0;
+}
+
+.postGrid {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.mainPostsWrapper {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.postBigWrapper {
+    width: 50%;
+    margin: 0;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+
+@media (max-width: 900px) {
+    .postBigWrapper {
+        width: 100%;
+    }
 }

@@ -215,7 +215,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                         useEffect(() => {
                             this.componentDidUpdate();
                         }, []);
-                        return <>{child.consumerRender(data?.id)}</>
+                        return child.consumerRender(data?.id) ?? <></>;
                     }
                 });
                 return <DynamicComp />;
@@ -271,7 +271,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         );
     }
 
-    public consumerRender(jsxParentId?: string): React.ReactNode | null {
+    public consumerRender(jsxParentId?: string): JSX.Element | null {
         return <BlockContentConsumer>
             {(content) => {
                 this.contextComponentDidUpdate = content?.componentDidUpdate;

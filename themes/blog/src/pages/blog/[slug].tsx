@@ -1,25 +1,22 @@
 import 'quill/dist/quill.snow.css';
 
 import { TCromwellPage, TGetStaticProps, TPost, TTag } from '@cromwell/core';
-import { getGraphQLClient, LoadBox, useRouter } from '@cromwell/core-frontend';
+import { getGraphQLClient, LoadBox, useRouter, Link } from '@cromwell/core-frontend';
 import React, { useEffect, useRef, useState } from 'react';
 
 import Layout from '../../components/layout/Layout';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/BlogPost.module.scss';
 import postStyles from '../../components/postCard/PostCard.module.scss';
+import { PostInfo } from '../../components/postCard/PostCard';
 
 interface BlogPostProps {
     post?: TPost | undefined;
 }
 
-const BlogPost: TCromwellPage<BlogPostProps> = (props) => {
+const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
     const { post } = props;
     const router = useRouter?.();
-
-    const handleTagClick = (tag: TTag) => {
-
-    }
 
     return (
         <Layout>
@@ -40,11 +37,16 @@ const BlogPost: TCromwellPage<BlogPostProps> = (props) => {
                         <div className={postStyles.tagsBlock}>
                             {post?.tags?.map(tag => {
                                 return (
-                                    <div onClick={() => handleTagClick(tag)} className={postStyles.tag}>{tag?.name}</div>
+                                    <Link href={`/tag/${tag.slug}`}>
+                                        <a className={postStyles.tag}>{tag?.name}</a>
+                                    </Link>
                                 )
                             })}
                         </div>
                     )}
+                    <div className={styles.postInfo}>
+                        <PostInfo data={post} />
+                    </div>
                     {post?.title && (
                         <h1 className={styles.postTitle}>{post?.title}</h1>
                     )}
@@ -59,11 +61,10 @@ const BlogPost: TCromwellPage<BlogPostProps> = (props) => {
     );
 }
 
-export default BlogPost;
+export default BlogPostPage;
 
 
 export const getStaticProps: TGetStaticProps = async (context): Promise<BlogPostProps> => {
-    // console.log('context', context)
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
     let post: TPost | undefined = undefined;
@@ -72,10 +73,10 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogPost
         try {
             post = await client?.getPostBySlug(slug);
         } catch (e) {
-            console.error('BlogPost::getStaticProps', e)
+            console.error('BlogPostPage::getStaticProps', e)
         }
     } else {
-        console.error('BlogPost::getStaticProps: !pid')
+        console.error('BlogPostPage::getStaticProps: !pid')
     }
 
     return {

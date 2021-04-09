@@ -42,28 +42,21 @@ const TextField = withStyles({
 
 
 const Header = observer(() => {
-    const topLinks: TTopLink[] | undefined = getThemeCustomConfigProp('header/topLinks');
     const cmsConfig = getCmsSettings();
-    let logoHref: string | undefined = getThemeCustomConfigProp('header/logo');
-    logoHref = '/themes/cromwell-blog/blog.png';
 
     return (
         <div className={`${styles.Header} ${commonStyles.text}`}>
-            <div className={styles.mainPanel}>
-                <div className={`${commonStyles.content} ${styles.mainPanelContent}`}>
-                    <div className={styles.logo}>
+            <div className={styles.mainMenu}>
+                <div className={`${commonStyles.content} ${styles.mainMenuContent}`}>
+                    <div className={styles.logoWrapper}>
                         <Link href="/">
-                            <img className={styles.logo} src={logoHref} alt="logo" />
+                            <img className={styles.logo} src={cmsConfig?.logo} alt="logo" />
                         </Link>
                     </div>
+                    <CPlugin id="header_main_menu" pluginName={"@cromwell/plugin-main-menu"} />
                     <div className={styles.search}>
                         <TextField id="outlined-basic" label="Search..." variant="outlined" size="small" />
                     </div>
-                </div>
-            </div>
-            <div className={styles.mainMenu}>
-                <div className={`${commonStyles.content} ${styles.mainMenuContent}`}>
-                    <CPlugin id="header_main_menu" />
                 </div>
             </div>
         </div>

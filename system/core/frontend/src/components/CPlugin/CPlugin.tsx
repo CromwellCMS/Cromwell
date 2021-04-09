@@ -25,8 +25,10 @@ export const CPlugin = (props: CPluginProps) => {
 
     return (
         <CromwellBlock {...rest} type='plugin'
+            plugin={{ pluginName: pluginName }}
             content={(data) => {
                 const name = data?.plugin?.pluginName ?? pluginName;
+
                 if (!name) return <></>;
 
                 let PluginComponent = component;

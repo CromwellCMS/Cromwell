@@ -6,10 +6,10 @@ import {
     TFrontendPluginProps,
     TPagedList,
     TProduct,
-    TProductCategory,
+    getRandStr,
 } from '@cromwell/core';
 import { getGraphQLClient, Link } from '@cromwell/core-frontend';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { Navigation, Pagination, Swiper, SwiperOptions, Virtual } from 'swiper';
 import { VirtualData } from 'swiper/types/components/virtual';
 
@@ -23,6 +23,7 @@ type ProductShowcaseProps = {
 }
 
 const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX.Element => {
+    const swiperId = useRef(`swiper-container_ProductShowcase_${getRandStr(5)}`);
     const classes = useStyles();
     const [virtualData, setVirtualData] = useState<VirtualData>({ slides: [] } as any);
     const productShowcaseData = props.data?.productShowcase;
@@ -42,7 +43,6 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
             else return <></>
         }
     }
-    const swiperId = `swiper-container_ProductShowcase`;
     // console.log('ProductShowcase props', props)
     useEffect(() => {
         const options: SwiperOptions = {
@@ -88,7 +88,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
             prevEl: '.swiper-button-prev',
         }
 
-        const swiper = new Swiper(`#${swiperId}`, options);
+        const swiper = new Swiper(`#${swiperId.current}`, options);
 
         setTimeout(() => swiper.update(), 100);
     }, []);
@@ -98,7 +98,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
         <div className={classes.wrapper}>
             <h3 className={classes.title}>Featured items</h3>
             <div className={classes.list}>
-                <div className={`swiper-container ${classes.swiperContainer}`} id={swiperId}>
+                <div className={`swiper-container ${classes.swiperContainer}`} id={swiperId.current}>
                     <div className="swiper-wrapper">
                         {/* It is important to set "left" style prop on every slide */}
                         {virtualData.slides.map((slide, index) => (

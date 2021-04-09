@@ -53,7 +53,7 @@ export default function index(props: TAdminPanelPluginProps<TSettings>) {
 
     return (
         <div className={`${classes.paper} ${classes.content}`}>
-            <h1 style={{ marginBottom: '10px' }}>Newsletter</h1>
+            <h1 style={{ marginBottom: '10px' }}>Newsletter plugin</h1>
 
             <Button variant="contained" color="primary"
                 className={classes.saveBtn}
