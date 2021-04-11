@@ -10,6 +10,7 @@ type CImageProps = {
     imgLink?: string;
     alt?: string;
     withEffect?: boolean;
+    objectFit?: 'contain' | 'cover';
 }
 
 export const CImage = (props: CImageProps & TCromwellBlockProps) => {
@@ -21,6 +22,7 @@ export const CImage = (props: CImageProps & TCromwellBlockProps) => {
                 const _link = data?.image?.link ?? image?.link ?? props.imgLink;
                 const _alt = data?.image?.alt ?? image?.alt ?? props.alt;
                 const _withEffect = data?.image?.withEffect ?? image?.withEffect ?? props.withEffect;
+                const _objectFit = data?.image?.objectFit ?? image?.objectFit ?? props.objectFit;
 
                 const classes = _withEffect ? styles.CImageHoverEffect : undefined;
                 const imgEl = (
@@ -28,13 +30,14 @@ export const CImage = (props: CImageProps & TCromwellBlockProps) => {
                         alt={_alt}
                         style={{
                             width: '100%',
-                            objectFit: 'contain'
+                            objectFit: _objectFit ?? 'contain'
                         }}
                     />
                 )
                 const wrapperStyle = {
                     display: 'flex',
-                    width: '100%'
+                    width: '100%',
+                    height: '100%',
                 };
 
                 return _link ? (

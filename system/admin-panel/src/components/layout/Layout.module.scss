@@ -1,3 +1,6 @@
+@import "../../styles/common.module.scss";
+@import "../../styles/variables.scss";
+
 * {
     font-family: "Roboto", sans-serif;
     margin: 0;
@@ -48,4 +51,28 @@ a {
     position: fixed;
     bottom: 0;
     right: 10px;
+    display: flex;
+}
+
+.dummyToolbar {
+    height: 56px;
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    // mobile
+    .sidebar {
+        min-width: 0;
+        width: 0;
+    }
+
+    .main {
+        // overflow: visible;
+    }
+}
+
+@media screen and (min-width: $mobileBreakpoint) {
+    // desktop
+    div.dummyToolbar {
+        display: none;
+    }
 }

@@ -19,14 +19,14 @@ export const PostCard = (props?: {
     const data = props?.data;
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-    const postLink = `/blog/${data?.slug ?? data?.id}`;
+    const postLink = `/post/${data?.slug ?? data?.id}`;
     const avatar = data?.author?.avatar;
 
     return (
         <div className={clsx(styles.PostCard, styles._onHoverLinkContainer, props?.coverImage && styles.coverImage)}>
             <div className={styles.imageBlock} >
                 <Link href={postLink}>
-                    <a><img className={styles.image}
+                    <a style={{ display: 'flex' }}><img className={styles.image}
                         style={{ height: props?.imageHeight }}
                         src={data?.mainImage ?? undefined} /></a>
                 </Link>
@@ -39,11 +39,14 @@ export const PostCard = (props?: {
                     {data?.tags?.map(tag => {
                         if (props?.onTagClick) {
                             return (
-                                <div onClick={() => props?.onTagClick?.(tag)} className={styles.tag}>{tag?.name}</div>
+                                <div key={tag?.id}
+                                    onClick={() => props?.onTagClick?.(tag)}
+                                    className={styles.tag}
+                                >{tag?.name}</div>
                             )
                         }
                         return (
-                            <Link href={`/tag/${tag.slug}`}>
+                            <Link key={tag?.id} href={`/tag/${tag.slug}`}>
                                 <a className={styles.tag}>{tag?.name}</a>
                             </Link>
                         )

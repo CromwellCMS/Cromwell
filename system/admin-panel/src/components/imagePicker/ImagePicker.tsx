@@ -17,6 +17,7 @@ const ImagePicker = (props: {
     className?: string;
     backgroundSize?: 'contain' | 'cover';
     showRemove?: boolean;
+    hideSrc?: boolean;
     classes?: {
         image?: string;
     };
@@ -55,13 +56,15 @@ const ImagePicker = (props: {
             {props.label && value && (
                 <p className={styles.floatingLabel}>{props.label}</p>
             )}
-            <Tooltip title={props.toolTip ?? ''}>
-                <p
-                    onClick={pickImage}
-                    className={styles.placeholder}
-                    style={{ color: !value ? 'rgba(0, 0, 0, 0.54)' : '#000', marginLeft: '10px' }}
-                >{value ?? props.placeholder ?? props.label ?? ''}</p>
-            </Tooltip>
+            {!props.hideSrc && (
+                <Tooltip title={props.toolTip ?? ''}>
+                    <p
+                        onClick={pickImage}
+                        className={styles.placeholder}
+                        style={{ color: !value ? 'rgba(0, 0, 0, 0.54)' : '#000', marginLeft: '10px' }}
+                    >{value ?? props.placeholder ?? props.label ?? ''}</p>
+                </Tooltip>
+            )}
             {value && props.showRemove && (
                 <IconButton
                     className={styles.removeBtn}

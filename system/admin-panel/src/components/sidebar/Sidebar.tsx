@@ -1,22 +1,31 @@
 import { getStoreItem, onStoreChange, TUser } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import { IconButton, MenuItem, Popover, Tooltip } from '@material-ui/core';
+import {
+    AppBar,
+    IconButton,
+    MenuItem,
+    Popover,
+    Slide,
+    SwipeableDrawer,
+    Toolbar,
+    Tooltip,
+    useScrollTrigger,
+} from '@material-ui/core';
 import {
     AccountCircle as AccountCircleIcon,
     AccountCircleOutlined as AccountCircleOutlinedIcon,
+    Close as CloseIcon,
     ExitToApp as ExitToAppIcon,
-    MoreVertOutlined as MoreVertOutlinedIcon,
-    Settings as SettingsIcon,
     HelpOutline as HelpOutlineIcon,
+    Menu as MenuIcon,
+    MoreVertOutlined as MoreVertOutlinedIcon,
 } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
-import { useHistory } from 'react-router-dom';
-import { loginPageInfo, sideBarLinks } from '../../constants/PageInfos';
-import commonStyles from '../../styles/common.module.scss';
+import { Link, useHistory } from 'react-router-dom';
+
+import { loginPageInfo, sideBarLinks, userPageInfo } from '../../constants/PageInfos';
 import styles from './Sidebar.module.scss';
 import SidebarLink from './SidebarLink';
-import { Link } from 'react-router-dom';
-import { userPageInfo } from '../../constants/PageInfos';
 
 function useForceUpdate() {
     const [value, setValue] = useState(0);
@@ -34,6 +43,13 @@ function Sidebar() {
     const userInfo: TUser | undefined = getStoreItem('userInfo');
     const history = useHistory?.();
     const popperAnchorEl = useRef<HTMLDivElement | null>(null);
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const handleCloseMenu = () => {
+        setMobileOpen(false);
+    }
+    const handleOpenMenu = () => {
+        setMobileOpen(true);
+    }
 
     useEffect(() => {
         onStoreChange('userInfo', (value) => {
@@ -52,12 +68,17 @@ function Sidebar() {
         setOptionsOpen(!optionsOpen);
     }
 
-    return (
-        <div className={styles.Sidebar}>
+    const sidebarContent = (
+        <div className={styles.sidebarContent}>
             <div className={styles.sidebarTop}>
                 <div className={styles.sidebarHeader}>
                     <img src="/logo_small_white.png" alt="logo" className={styles.logo} />
                     {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
+                    <div className={styles.sidebarMobileActions}>
+                        <IconButton onClick={handleCloseMenu} >
+                            <CloseIcon htmlColor="#999" />
+                        </IconButton>
+                    </div>
                 </div>
                 {sideBarLinks.map(link => <SidebarLink data={link}
                     key={link.id}
@@ -121,6 +142,51 @@ function Sidebar() {
             </div>
         </div>
     )
+
+    return (
+        <div className={styles.Sidebar}>
+            <div className={styles.mobileContent}>
+                <HideOnScroll>
+                    <AppBar
+                        className={styles.appBar}
+                        color="transparent"
+                    >
+                        <Toolbar
+                            className={styles.toolbar}
+                        >
+                            <div className={styles.sidebarMobileHeader}>
+                                <img src="/logo_small_white.png" alt="logo" className={styles.logo} />
+                                {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
+                                <div className={styles.mobileActions}>
+                                    <IconButton onClick={handleOpenMenu}>
+                                        <MenuIcon />
+                                    </IconButton>
+                                </div>
+                            </div>
+                        </Toolbar>
+                    </AppBar>
+                </HideOnScroll>
+                <SwipeableDrawer
+                    open={mobileOpen}
+                    onClose={handleCloseMenu}
+                    onOpen={handleOpenMenu}
+                >
+                    <div className={styles.drawer}>{sidebarContent}</div>
+                </SwipeableDrawer>
+            </div>
+            <div className={styles.desktopContent}>{sidebarContent}</div>
+        </div>
+    )
 }
 
 export default Sidebar;
+
+function HideOnScroll(props: { children: React.ReactElement }) {
+    const trigger = useScrollTrigger();
+
+    return (
+        <Slide appear={false} direction="down" in={!trigger}>
+            {props.children}
+        </Slide>
+    );
+}

@@ -21,7 +21,7 @@ export const loadFrontendBundle = <TLoadable extends (...args: any) => any = (fu
 
     const loadableFunc = loadable ?? loadableComponent;
 
-    return loadableFunc(async () => {
+    const loadableComp = loadableFunc(async () => {
 
         let bundle;
         try {
@@ -90,5 +90,9 @@ export const loadFrontendBundle = <TLoadable extends (...args: any) => any = (fu
         }
 
         return fallbackComponent ?? (() => null);
-    }, dynamicLoaderProps);
+    }, dynamicLoaderProps) ?? fallbackComponent ?? (() => null);
+
+    components[bundleName] = loadableComp;
+
+    return loadableComp;
 }

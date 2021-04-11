@@ -1,6 +1,9 @@
 import 'react-toastify/dist/ReactToastify.css';
 
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import {
+  createMuiTheme, ThemeProvider
+  , Toolbar
+} from '@material-ui/core';
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
@@ -12,6 +15,7 @@ import FileManager from '../fileManager/FileManager';
 import LoadBox from '../loadBox/LoadBox';
 import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
+import '../../styles/global.scss';
 
 const theme = createMuiTheme({
   palette: {
@@ -29,6 +33,7 @@ const theme = createMuiTheme({
 });
 
 function Layout() {
+
   return (
     <ThemeProvider theme={theme}>
       <div className={styles.Layout}>
@@ -37,6 +42,7 @@ function Layout() {
             <Sidebar />
           </div>
           <div className={styles.main}>
+            <Toolbar className={styles.dummyToolbar} />
             <Switch>
               {pageInfos.map(page => {
                 return (

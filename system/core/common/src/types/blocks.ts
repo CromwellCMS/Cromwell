@@ -138,6 +138,7 @@ export type TCromwellBlockData = {
         link?: string;
         withEffect?: boolean;
         alt?: string;
+        objectFit?: 'contain' | 'cover';
     };
 
     /** For "HTML" block */

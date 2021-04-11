@@ -416,9 +416,9 @@ export class MockService {
         });
 
         const images = [
-            '/themes/@cromwell/theme-store/product.jpg',
-            '/themes/@cromwell/theme-store/product_2.jpg',
-            '/themes/@cromwell/theme-store/product_3.jpg'
+            '/themes/@cromwell/theme-blog/post1.jpg',
+            '/themes/@cromwell/theme-blog/post2.jpg',
+            '/themes/@cromwell/theme-blog/post3.jpg'
         ];
 
         const getRandImg = () => images[Math.floor(Math.random() * (images.length))];

@@ -59,7 +59,6 @@ export default function welcomePage() {
             });
         } catch (e) {
             console.error(e);
-
         }
 
         checkAuth();
@@ -88,6 +87,7 @@ export default function welcomePage() {
                             onChange={setAvatarInput}
                             value={avatarInput}
                             className={styles.avatar}
+                            hideSrc
                         />
                         <CssTextField
                             label="Name"

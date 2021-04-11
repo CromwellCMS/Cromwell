@@ -2,31 +2,10 @@
   font-family: "Roboto", "sans-serif";
 }
 
-* {
-  box-sizing: border-box;
-  &::before,
-  &::after {
-    box-sizing: border-box;
-  }
-}
-
 .center {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-h1 {
-  font-size: 24px;
-  font-weight: 500;
-}
-h2 {
-  font-size: 20px;
-  font-weight: 500;
-}
-h3 {
-  font-size: 18px;
-  font-weight: 500;
 }
 
 @mixin paper {
@@ -78,10 +57,6 @@ h3 {
   @include bckgrContain;
   width: 24px;
   height: 24px;
-}
-
-:global(.MuiButtonBase-root.MuiIconButton-root) {
-  color: #333;
 }
 
 .page {
