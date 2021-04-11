@@ -58,7 +58,7 @@ const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
                                     }}
                                     key={subIndex}
                                 ><Link href={sub.href + ''}>
-                                        <p className={classes.sublinkTitle}>{sub.title}</p>
+                                        <p className={classes.sublinkTitle}>{sub?.title ?? ''}</p>
                                     </Link>
                                 </MenuItem>
                             )

@@ -1,5 +1,8 @@
+@import "../../styles/variables.scss";
+@import "../../styles/common.module.scss";
+
 .Footer {
-    background: linear-gradient(144deg, #1b004b 0%, #34002e 100%);
+    background: #111;
     width: 100%;
     color: #fff;
 }
@@ -60,4 +63,14 @@ button.subscribeBtn {
     font-size: 14px;
     color: #ccc;
     margin-bottom: 10px;
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .aboutSection {
+        flex-direction: column-reverse;
+    }
+
+    .linksBlock {
+        margin-bottom: 20px;
+    }
 }

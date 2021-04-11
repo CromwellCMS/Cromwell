@@ -61,8 +61,6 @@
       "@cromwell/theme-blog"
     ],
     "frontendDependencies": [
-      "mobx",
-      "mobx-react",
       "react-swipeable-views"
     ]
   },

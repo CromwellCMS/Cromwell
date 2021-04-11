@@ -34,7 +34,6 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
         expandMoreIcon: {
             transition: '0.3s',
-            marginLeft: '10px'
         },
         menuSubitems: {
             display: 'grid',

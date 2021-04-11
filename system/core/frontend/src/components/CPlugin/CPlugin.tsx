@@ -22,7 +22,6 @@ type CPluginProps = {
  */
 export const CPlugin = (props: CPluginProps) => {
     const { pluginName, component, ...rest } = props;
-
     return (
         <CromwellBlock {...rest} type='plugin'
             plugin={{ pluginName: pluginName }}

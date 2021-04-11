@@ -1,14 +1,14 @@
 import 'quill/dist/quill.snow.css';
 
-import { TCromwellPage, TGetStaticProps, TPost, TTag } from '@cromwell/core';
-import { getGraphQLClient, LoadBox, useRouter, Link } from '@cromwell/core-frontend';
+import { TCromwellPage, TGetStaticProps, TPost } from '@cromwell/core';
+import { getGraphQLClient, Link, LoadBox, useRouter } from '@cromwell/core-frontend';
 import React, { useEffect, useRef, useState } from 'react';
 
 import Layout from '../../components/layout/Layout';
+import { PostInfo } from '../../components/postCard/PostCard';
+import postStyles from '../../components/postCard/PostCard.module.scss';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/BlogPost.module.scss';
-import postStyles from '../../components/postCard/PostCard.module.scss';
-import { PostInfo } from '../../components/postCard/PostCard';
 
 interface BlogPostProps {
     post?: TPost | undefined;
@@ -20,7 +20,12 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
 
     return (
         <Layout>
-            <div className={`${commonStyles.content} ${styles.BlogPost}`}>
+            <div className={styles.BlogPost}>
+                <div className={commonStyles.content}>
+                    {post?.mainImage && (
+                        <img className={styles.mainImage} src={post.mainImage} />
+                    )}
+                </div>
                 <div className={styles.postContent}>
                     {(!post && router && router.isFallback) && (
                         <LoadBox />
@@ -30,8 +35,8 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
                             <h3>Post not found</h3>
                         </div>
                     )}
-                    {post?.mainImage && (
-                        <img className={styles.mainImage} src={post.mainImage} />
+                    {post?.title && (
+                        <h1 className={styles.postTitle}>{post?.title}</h1>
                     )}
                     {post?.tags && (
                         <div className={postStyles.tagsBlock}>
@@ -44,11 +49,10 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
                             })}
                         </div>
                     )}
-                    <div className={styles.postInfo}>
-                        <PostInfo data={post} />
-                    </div>
-                    {post?.title && (
-                        <h1 className={styles.postTitle}>{post?.title}</h1>
+                    {post && (
+                        <div className={styles.postInfo}>
+                            <PostInfo data={post} />
+                        </div>
                     )}
                     {post?.content && (
                         <div id="quill" dangerouslySetInnerHTML={{
@@ -57,6 +61,7 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
                     )}
                 </div>
             </div>
+
         </Layout>
     );
 }

@@ -127,3 +127,12 @@
     width: 24px;
     height: 24px;
 }
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .onHoverLink:before {
+        transform: scale(1);
+    }
+    .onHoverLink {
+        color: $primary;
+    }
+}

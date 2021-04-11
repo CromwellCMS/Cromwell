@@ -1,4 +1,5 @@
 @import "../../styles/common.module.scss";
+@import "../../styles/variables.scss";
 
 .SettingsPage {
     padding: 15px;
@@ -40,4 +41,16 @@
         margin-top: 15px;
         font-weight: 500;
     }
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    // mobile
+    .SettingsPage .list {
+        overflow: visible;
+        height: auto;
+    }
+}
+
+@media screen and (min-width: $mobileBreakpoint) {
+    // desktop
 }
