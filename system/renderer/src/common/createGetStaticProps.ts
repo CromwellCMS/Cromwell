@@ -1,4 +1,4 @@
-import { BasePageNames, TCromwellPageCoreProps, StaticPageContext, TThemeConfig } from '@cromwell/core';
+import { BasePageNames, TCromwellPageCoreProps, StaticPageContext, TThemeConfig, TPageConfig } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { getThemeStaticProps } from './getThemeStaticProps';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
@@ -14,7 +14,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         const timestamp = Date.now();
         const childStaticProps = await getThemeStaticProps(pageName, pageGetStaticProps, context);
         const { pluginsData, pluginsSettings } = await pluginsDataFetcher(pageName, context);
-        const pageConfig = serialize(await apiClient?.getPageConfig(pageName));
+        const pageConfig: TPageConfig | null = serialize(await apiClient?.getPageConfig(pageName));
         const themeConfig: TThemeConfig | null = serialize(await apiClient?.getThemeConfig());
         const cmsSettings = serialize(await apiClient?.getCmsSettings());
         const themeCustomConfig = serialize(await apiClient?.getThemeCustomConfig());

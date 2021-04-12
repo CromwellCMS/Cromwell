@@ -13,6 +13,32 @@ module.exports = {
             "name": "index",
             "title": "Home page",
             "modifications": []
+        },
+        {
+            "route": "pages/some_page",
+            isVirtual: true,
+            "name": "Custom page",
+            "title": "Some custom page",
+            "modifications": [
+                {
+                    "type": "plugin",
+                    "id": "5",
+                    "plugin": {
+                        "pluginName": "@cromwell/plugin-product-showcase"
+                    }
+                },
+                {
+                    "type": "HTML",
+                    "id": "1",
+                    "parentId": "somep_1",
+                },
+                {
+                    "type": "text",
+                    "id": "3",
+                    "parentId": "somep_1",
+                    "index": "0"
+                },
+            ]
         }
     ],
     globalModifications: [

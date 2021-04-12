@@ -8,9 +8,8 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CList, getGraphQLClient, LoadBox, TCList } from '@cromwell/core-frontend';
+import { CList, getGraphQLClient, LoadBox, TCList, useRouter } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
-import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 
 import Layout from '../../components/layout/Layout';

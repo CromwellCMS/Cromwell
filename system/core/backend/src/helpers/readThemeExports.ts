@@ -13,7 +13,7 @@ export type TThemeExportsInfo = {
 }
 export type TPagePathInfo = {
     name: string;
-    path: string;
+    path?: string;
     compName?: string;
     fileContent?: string;
     metaInfoPath?: string;

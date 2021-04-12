@@ -318,7 +318,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             options.plugins.push(rollupPluginCromwellFrontend({
                 pagesMetaInfo, buildDir, srcDir, moduleInfo,
                 moduleConfig, watch,
-                frontendDeps, dependecyOptions
+                frontendDeps, dependecyOptions,
+                type: 'themePages'
             }));
 
             outOptions.push(options);
@@ -336,7 +337,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                     adminOptions.input = optionsInput;
                     adminOptions.plugins.push(rollupPluginCromwellFrontend({
                         buildDir, moduleInfo,
-                        moduleConfig, frontendDeps
+                        moduleConfig, frontendDeps,
+                        type: 'themeAdminPanel'
                     }));
 
                     const pageStrippedName = pagePath?.pageName?.replace(/\W/g, '_') ?? strippedName;
@@ -413,6 +415,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
     moduleConfig?: TModuleConfig;
     frontendDeps?: TFrontendDependency[];
     dependecyOptions?: RollupOptions[];
+    type?: 'themePages' | 'themeAdminPanel';
 }): Plugin => {
 
     const scriptsInfo: Record<string, TSciprtMetaInfo> = {};
@@ -446,7 +449,8 @@ export const rollupPluginCromwellFrontend = (settings?: {
         options(options: RollupOptions) {
             if (!options.plugins) options.plugins = [];
             options.plugins.push(externalGlobals((id) => {
-                if (resolveExternal(id, settings?.frontendDeps)) return `${cromwellStoreModulesPath}["${id}"]`;
+                const isExt = resolveExternal(id, settings?.frontendDeps);
+                if (isExt) return `${cromwellStoreModulesPath}["${id}"]`;
             }, {
                 include: '**/*.+(ts|tsx|js|jsx)'
             }));
@@ -460,7 +464,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                 }
             }
 
-            if (settings?.moduleInfo?.type === 'theme') {
+            if (settings?.moduleInfo?.type === 'theme' && settings?.type === 'themePages') {
                 // left external for themes, so Next.js will bundle node modules
                 if (resolveExternal(source)) {
                     return { id: source, external: true };

@@ -210,3 +210,6 @@ export const logFor = (level: TLogLevel, msg: string, func?: (msg: string) => an
 export const getRandStr = (lenght: number = 12) =>
     Math.random().toString(36).substring(2, Math.floor(lenght / 2) + 2) +
     Math.random().toString(36).substring(2, Math.ceil(lenght / 2) + 2);
+
+
+export const genericPageName = 'pages/[slug]';

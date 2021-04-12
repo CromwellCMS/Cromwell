@@ -1,4 +1,4 @@
-import { getStoreItem, setStoreItem } from '@cromwell/core';
+import { getStoreItem, setStoreItem, genericPageName } from '@cromwell/core';
 import {
     getCmsModuleConfig,
     getModulePackage,
@@ -93,17 +93,27 @@ const devGenerate = async (themeName: string) => {
     await new Promise(done => setTimeout(done, 200));
     await fs.ensureDir(pagesLocalDir);
 
+    // Add pages/[slug] page for dynamic pages creation in Admin Panel
+    // if it was not created by theme
+    const hasGenericPage = themeExports.pagesInfo.some(page => page.name === genericPageName)
+    if (!hasGenericPage) {
+        themeExports.pagesInfo.push({
+            name: genericPageName,
+            compName: 'pages__slug_',
+        });
+    }
+
     for (const pageInfo of themeExports.pagesInfo) {
 
-        const pageRelativePath = normalizePath(pageInfo.path).replace(
-            normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
+        const pageRelativePath: string | undefined = pageInfo.path ? normalizePath(pageInfo.path).replace(
+            normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk) : undefined;
 
         let metaInfoRelativePath;
         if (pageInfo.metaInfoPath) metaInfoRelativePath = normalizePath(
             pageInfo.metaInfoPath).replace(normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
 
         let globalCssImports = '';
-        if (pageInfo.name === '_app' && themeConfig?.globalCss &&
+        if (pageInfo.name === '_app' && themeConfig?.globalCss && pageRelativePath &&
             themeConfig.globalCss?.length > 0) {
             themeConfig.globalCss.forEach(css => {
                 if (css.startsWith('.')) {
@@ -163,7 +173,7 @@ const devGenerate = async (themeName: string) => {
              importer.importSciptExternals(metaInfo);
          }
          ` : ''}
-         `
+         `;
         let pageContent = `
          ${globalCssImports}
          ${pageImports}
@@ -179,10 +189,11 @@ const devGenerate = async (themeName: string) => {
              ${pageInfo.metaInfoPath ? `
              const meta = await import('${metaInfoRelativePath}');
              await importer.importSciptExternals(meta);
-             ` : ''} 
+             ` : ''}
+
+             ${pageRelativePath ? `
              const pagePromise = import('${pageRelativePath}');
              const pageComp = await pagePromise;
-             
  
              ${disableSSR ? `
              const browserGetStaticProps = createGetStaticProps('${pageInfo.name}', pageComp ? pageComp.getStaticProps : null);
@@ -201,18 +212,33 @@ const devGenerate = async (themeName: string) => {
              ` : ''}
  
              return getPage('${pageInfo.name}', pageComp.default);
+             
+             ` :
+
+                `
+            return (() => null);
+            `}
          });;
  
  
-         ${!disableSSR ? `
+         ${!disableSSR && pageRelativePath ? `
          const pageServerModule = require('${pageRelativePath}');
  
          export const getStaticProps = createGetStaticProps('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticProps : null);
          
          export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticPaths : null);
          `: ''}
- 
-         
+
+         ${(pageInfo.name === genericPageName && !hasGenericPage) ? `
+         export const getStaticProps = createGetStaticProps('${pageInfo.name}', null);
+
+         export const getStaticPaths = function () {
+            return {
+                paths: [],
+                fallback: true
+            };
+        };
+         ` : ''}
  
          export default ${pageDynamicImportName};
          `;

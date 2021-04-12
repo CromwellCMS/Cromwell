@@ -19,13 +19,13 @@ export type TGetStaticProps<
 export type TCromwellPage<Props = {} | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
 export type TCromwellPageCoreProps = {
-    pluginsData?: Record<string, any>;
-    pluginsSettings?: Record<string, any>;
-    childStaticProps?: Record<string, any>;
-    pageConfig?: TPageConfig;
-    cmsSettings?: TCmsSettings;
-    themeCustomConfig?: Record<string, any>;
-    pagesInfo?: TPageInfo[];
+    pluginsData?: Record<string, any> | null;
+    pluginsSettings?: Record<string, any> | null;
+    childStaticProps?: Record<string, any> | null;
+    pageConfig?: TPageConfig | null;
+    cmsSettings?: TCmsSettings | null;
+    themeCustomConfig?: Record<string, any> | null;
+    pagesInfo?: TPageInfo[] | null;
     headHtml?: string | null;
     palette?: TPalette | null;
 }

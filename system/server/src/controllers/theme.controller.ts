@@ -166,7 +166,8 @@ export class ThemeController {
                 route: p.route,
                 name: p.name,
                 title: p.title,
-                isDynamic: p.isDynamic
+                isDynamic: p.isDynamic,
+                isVirtual: p.isVirtual,
             }
             out.push(info);
         });

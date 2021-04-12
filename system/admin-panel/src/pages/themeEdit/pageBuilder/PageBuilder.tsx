@@ -42,6 +42,7 @@ export class PageBuilder extends React.Component<{
     plugins: TPluginEntity[] | null;
     editingPageInfo: TPageInfo;
     onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void;
+    builderFrame?: HTMLIFrameElement;
 }>  {
 
     private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef();
@@ -86,6 +87,7 @@ export class PageBuilder extends React.Component<{
             canDeselectBlock: this.canDeselectDraggableBlock,
             canDragBlock: this.canDragDraggableBlock,
             createFrame: true,
+            iframeSelector: '#builderFrame',
         });
     }
 

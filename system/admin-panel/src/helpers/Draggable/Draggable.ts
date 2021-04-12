@@ -48,6 +48,11 @@ export type TDraggableOptions = {
 
     /** Create a new draggable frame or find inside a block */
     createFrame?: boolean;
+
+    /** Custom document to work on (e.g. in iframe) */
+    document?: typeof document;
+
+    iframeSelector?: string;
 }
 
 export class Draggable {
@@ -76,6 +81,7 @@ export class Draggable {
     private isDragging: boolean = false;
 
     private options: TDraggableOptions;
+    private document = document;
 
     private onMouseDownInfo: {
         clientY: number;
@@ -106,7 +112,15 @@ export class Draggable {
 
     constructor(options: TDraggableOptions) {
         // check for underlying blocks to move to
-        const bodyElem = document.querySelector('body');
+        if (options.document) this.document = options.document;
+        if (options.iframeSelector) {
+            const iframe: HTMLIFrameElement = document.querySelector(options.iframeSelector)
+            if (iframe) {
+                this.document = iframe.contentDocument;
+            }
+        }
+
+        const bodyElem = this.document.querySelector('body');
 
         if (bodyElem) {
             this.bodyElem = bodyElem;
@@ -127,8 +141,8 @@ export class Draggable {
         this.canInsertBlock = options.canInsertBlock;
         this.onBlockInserted = options.onBlockInserted;
 
-        this.draggableBlocks = Array.from(document.querySelectorAll(draggableSelector)) as HTMLElement[];
-        this.containers = Array.from(document.querySelectorAll(containerSelector)) as HTMLElement[];
+        this.draggableBlocks = Array.from(this.document.querySelectorAll(draggableSelector)) as HTMLElement[];
+        this.containers = Array.from(this.document.querySelectorAll(containerSelector)) as HTMLElement[];
         this.draggableBlocks.forEach(b => {
             if (b) this.setupBlock(b);
         });
@@ -137,7 +151,7 @@ export class Draggable {
     private setupBlock = (block: HTMLElement) => {
         if (!block || !this.options) return;
 
-        const draggableFrame: HTMLElement = this.options?.createFrame ? document.createElement('div') : block.querySelector(`.${Draggable.draggableFrameClass}`);
+        const draggableFrame: HTMLElement = this.options?.createFrame ? this.document.createElement('div') : block.querySelector(`.${Draggable.draggableFrameClass}`);
         draggableFrame.classList.add(Draggable.draggableFrameClass);
 
         if (this.options?.createFrame) block.appendChild(draggableFrame);
@@ -181,7 +195,7 @@ export class Draggable {
             return;
         }
         const { draggableSelector, containerSelector } = this.options;
-        const updatedBlocks = Array.from(document.querySelectorAll(draggableSelector)) as HTMLElement[];
+        const updatedBlocks = Array.from(this.document.querySelectorAll(draggableSelector)) as HTMLElement[];
         // Clear old blocks that weren't found now
         if (this.draggableBlocks) {
             this.draggableBlocks.forEach(block => {
@@ -200,7 +214,7 @@ export class Draggable {
 
         this.draggableBlocks = updatedBlocks;
 
-        this.containers = Array.from(document.querySelectorAll(containerSelector)) as HTMLElement[];
+        this.containers = Array.from(this.document.querySelectorAll(containerSelector)) as HTMLElement[];
     }
 
     private onBlockMouseDown = (event: MouseEvent, block: HTMLElement) => {
