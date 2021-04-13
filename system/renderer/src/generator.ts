@@ -1,4 +1,4 @@
-import { getStoreItem, setStoreItem } from '@cromwell/core';
+import { getStoreItem, setStoreItem, genericPageName } from '@cromwell/core';
 import {
     getCmsModuleConfig,
     getModulePackage,
@@ -93,17 +93,27 @@ const devGenerate = async (themeName: string) => {
     await new Promise(done => setTimeout(done, 200));
     await fs.ensureDir(pagesLocalDir);
 
+    // Add pages/[slug] page for dynamic pages creation in Admin Panel
+    // if it was not created by theme
+    const hasGenericPage = themeExports.pagesInfo.some(page => page.name === genericPageName)
+    if (!hasGenericPage) {
+        themeExports.pagesInfo.push({
+            name: genericPageName,
+            compName: 'pages__slug_',
+        });
+    }
+
     for (const pageInfo of themeExports.pagesInfo) {
 
-        const pageRelativePath = normalizePath(pageInfo.path).replace(
-            normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
+        const pageRelativePath: string | undefined = pageInfo.path ? normalizePath(pageInfo.path).replace(
+            normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk) : undefined;
 
         let metaInfoRelativePath;
         if (pageInfo.metaInfoPath) metaInfoRelativePath = normalizePath(
             pageInfo.metaInfoPath).replace(normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
 
         let globalCssImports = '';
-        if (pageInfo.name === '_app' && themeConfig?.globalCss &&
+        if (pageInfo.name === '_app' && themeConfig?.globalCss && pageRelativePath &&
             themeConfig.globalCss?.length > 0) {
             themeConfig.globalCss.forEach(css => {
                 if (css.startsWith('.')) {
@@ -117,6 +127,7 @@ const devGenerate = async (themeName: string) => {
         const pageDynamicImportName = pageInfo.compName + '_DynamicPage';
 
         const cromwellStoreModulesPath = `CromwellStore.nodeModules.modules`;
+        const cromwellStoreStatusesPath = `CromwellStore.nodeModules.importStatuses`;
 
         const pageImports = `
          import React from 'react';
@@ -141,21 +152,21 @@ const devGenerate = async (themeName: string) => {
          
          const importer = getModuleImporter();
          ${cromwellStoreModulesPath}['react'] = React;
-         ${cromwellStoreModulesPath}['react'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['react'] = 'default';
          ${cromwellStoreModulesPath}['react-dom'] = ReactDOM;
-         ${cromwellStoreModulesPath}['react-dom'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['react-dom'] = 'default';
          ${cromwellStoreModulesPath}['next/link'] = NextLink;
          ${cromwellStoreModulesPath}['next/router'] = NextRouter;
          ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
          ${cromwellStoreModulesPath}['next/head'] = NextHead;
          ${cromwellStoreModulesPath}['@cromwell/core'] = cromwellCore;
-         ${cromwellStoreModulesPath}['@cromwell/core'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['@cromwell/core'] = 'default';
          ${cromwellStoreModulesPath}['@cromwell/core-frontend'] = cromwellCoreFrontend;
-         ${cromwellStoreModulesPath}['@cromwell/core-frontend'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['@cromwell/core-frontend'] = 'default';
          ${cromwellStoreModulesPath}['react-is'] = reactIs;
-         ${cromwellStoreModulesPath}['react-is'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['react-is'] = 'default';
          ${cromwellStoreModulesPath}['react-html-parser'] = ReactHtmlParser;
-         ${cromwellStoreModulesPath}['react-html-parser'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['react-html-parser'] = 'default';
  
          ${pageInfo.metaInfoPath ? `
          if (isServer()) {
@@ -163,7 +174,7 @@ const devGenerate = async (themeName: string) => {
              importer.importSciptExternals(metaInfo);
          }
          ` : ''}
-         `
+         `;
         let pageContent = `
          ${globalCssImports}
          ${pageImports}
@@ -179,10 +190,11 @@ const devGenerate = async (themeName: string) => {
              ${pageInfo.metaInfoPath ? `
              const meta = await import('${metaInfoRelativePath}');
              await importer.importSciptExternals(meta);
-             ` : ''} 
+             ` : ''}
+
+             ${pageRelativePath ? `
              const pagePromise = import('${pageRelativePath}');
              const pageComp = await pagePromise;
-             
  
              ${disableSSR ? `
              const browserGetStaticProps = createGetStaticProps('${pageInfo.name}', pageComp ? pageComp.getStaticProps : null);
@@ -201,18 +213,33 @@ const devGenerate = async (themeName: string) => {
              ` : ''}
  
              return getPage('${pageInfo.name}', pageComp.default);
+             
+             ` :
+
+                `
+            return (() => null);
+            `}
          });;
  
  
-         ${!disableSSR ? `
+         ${!disableSSR && pageRelativePath ? `
          const pageServerModule = require('${pageRelativePath}');
  
          export const getStaticProps = createGetStaticProps('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticProps : null);
          
          export const getStaticPaths = createGetStaticPaths('${pageInfo.name}', pageServerModule ? pageServerModule.getStaticPaths : null);
          `: ''}
- 
-         
+
+         ${(pageInfo.name === genericPageName && !hasGenericPage) ? `
+         export const getStaticProps = createGetStaticProps('${pageInfo.name}', null);
+
+         export const getStaticPaths = function () {
+            return {
+                paths: [],
+                fallback: true
+            };
+        };
+         ` : ''}
  
          export default ${pageDynamicImportName};
          `;
@@ -255,18 +282,13 @@ const devGenerate = async (themeName: string) => {
     if (!fs.existsSync(nextConfigPath)) {
         await fs.outputFile(nextConfigPath, `
              module.exports = {
-                 webpack: (config, { isServer }) => {
-                     config.resolve.symlinks = false
-                     // Fixes npm packages that depend on 'fs' module
-                     if (!isServer) {
-                         config.node = {
-                             fs: 'empty',
-                             module: 'empty',
-                             path: 'empty'
-                         }
-                     }
-                     return config
-                 }
+                future: {
+                    webpack5: true
+                },
+                webpack: (config, { isServer }) => {
+                    config.resolve.symlinks = false
+                    return config
+                }
              };`
         );
     }

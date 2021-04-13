@@ -10,7 +10,7 @@ export const importRendererDeps = () => {
     //@ts-ignore
     importer.modules['react'] = React;
     //@ts-ignore
-    importer.modules['react'].didDefaultImport = true;
+    importer.importStatuses['react'] = 'default';
     //@ts-ignore
     importer.modules['next/head'] = NextHead;
 

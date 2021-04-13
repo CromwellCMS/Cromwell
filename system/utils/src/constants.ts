@@ -22,8 +22,10 @@ export const jsOperators = ['let', 'var', 'const', 'function', 'class', 'new', '
     'continue', 'do', 'while'];
 
 export const cromwellStoreModulesPath = 'CromwellStore.nodeModules.modules';
+export const cromwellStoreStatusesPath = 'CromwellStore.nodeModules.importStatuses';
 export const cromwellStoreImportsPath = 'CromwellStore.nodeModules.imports';
 export const getGlobalModuleStr = (moduleName: string) => `${cromwellStoreModulesPath}['${moduleName}']`;
+export const getGlobalModuleStatusStr = (moduleName: string) => `${cromwellStoreStatusesPath}['${moduleName}']`;
 
 export const moduleChunksBuildDirChunk = 'chunks';
 

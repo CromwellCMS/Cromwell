@@ -35,7 +35,7 @@ import { dirname, isAbsolute, join, resolve } from 'path';
 import { OutputOptions, Plugin, RollupOptions } from 'rollup';
 import externalGlobals from 'rollup-plugin-external-globals';
 
-import { cromwellStoreModulesPath, getGlobalModuleStr } from '../constants';
+import { cromwellStoreModulesPath, getGlobalModuleStr, getGlobalModuleStatusStr } from '../constants';
 import {
     collectFrontendDependencies,
     collectPackagesInfo,
@@ -318,7 +318,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             options.plugins.push(rollupPluginCromwellFrontend({
                 pagesMetaInfo, buildDir, srcDir, moduleInfo,
                 moduleConfig, watch,
-                frontendDeps, dependecyOptions
+                frontendDeps, dependecyOptions,
+                type: 'themePages'
             }));
 
             outOptions.push(options);
@@ -336,7 +337,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                     adminOptions.input = optionsInput;
                     adminOptions.plugins.push(rollupPluginCromwellFrontend({
                         buildDir, moduleInfo,
-                        moduleConfig, frontendDeps
+                        moduleConfig, frontendDeps,
+                        type: 'themeAdminPanel'
                     }));
 
                     const pageStrippedName = pagePath?.pageName?.replace(/\W/g, '_') ?? strippedName;
@@ -413,6 +415,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
     moduleConfig?: TModuleConfig;
     frontendDeps?: TFrontendDependency[];
     dependecyOptions?: RollupOptions[];
+    type?: 'themePages' | 'themeAdminPanel';
 }): Plugin => {
 
     const scriptsInfo: Record<string, TSciprtMetaInfo> = {};
@@ -446,7 +449,8 @@ export const rollupPluginCromwellFrontend = (settings?: {
         options(options: RollupOptions) {
             if (!options.plugins) options.plugins = [];
             options.plugins.push(externalGlobals((id) => {
-                if (resolveExternal(id, settings?.frontendDeps)) return `${cromwellStoreModulesPath}["${id}"]`;
+                const isExt = resolveExternal(id, settings?.frontendDeps);
+                if (isExt) return `${cromwellStoreModulesPath}["${id}"]`;
             }, {
                 include: '**/*.+(ts|tsx|js|jsx)'
             }));
@@ -460,7 +464,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                 }
             }
 
-            if (settings?.moduleInfo?.type === 'theme') {
+            if (settings?.moduleInfo?.type === 'theme' && settings?.type === 'themePages') {
                 // left external for themes, so Next.js will bundle node modules
                 if (resolveExternal(source)) {
                     return { id: source, external: true };
@@ -650,10 +654,14 @@ export const rollupPluginCromwellFrontend = (settings?: {
 
             if (settings?.pagesMetaInfo?.paths && settings.srcDir && settings.buildDir) {
 
-                // Generate JS lists of node_modules that are going to be bundled in one chunk by Next.js to load
-                // on first page open when a customer has no cached modules. It cuts hundreds of requests
-                // for each separate node module on first load. List loaded from package.json - cromwell.bundledDependencies
-                // Beware that modules are going to be bundled entirely without tree-shaking
+                // Generate lists of frontend modules (node_modules marked as frontend in package.json) 
+                // that are going to be bundled in one chunk by Next.js to load
+                // on first page open when a client has no cached modules. 
+                // By default frontend modules are requsted by separate requests from client
+                // So this optimization basically cuts hundreds of requests on first load. 
+                // List mapped from package.json's cromwell.bundledDependencies
+                // Beware! For now this feature works in a way that 
+                // modules are going to be bundled entirely without any tree-shaking
                 // We definetely don't want @material-ui/icons in this list!
                 for (const pagePath of settings.pagesMetaInfo.paths) {
                     if (pagePath?.localPath && packageJson.cromwell?.bundledDependencies) {
@@ -667,7 +675,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                             importsStr += `
                                 import * as ${strippedDepName} from '${depName}';
                                 ${getGlobalModuleStr(depName)} = interopDefault(${strippedDepName}, 'default');
-                                ${getGlobalModuleStr(depName)}.didDefaultImport = true;
+                                ${getGlobalModuleStatusStr(depName)} = 'default';
                                 `
                         }
 

@@ -9,9 +9,9 @@ const importer = getModuleImporter();
         import('react-dom'),
     ]);
     importer.modules['react'] = React;
-    importer.modules['react'].didDefaultImport = true;
+    importer.importStatuses['react'] = 'default';
     importer.modules['react-dom'] = ReactDOM;
-    importer.modules['react-dom'].didDefaultImport = true;
+    importer.importStatuses['react-dom'] = 'default';
 
     try {
         const meta = await (await fetch('/build/meta.json')).json();

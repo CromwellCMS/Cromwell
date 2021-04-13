@@ -41,8 +41,7 @@ export const CPlugin = (props: CPluginProps) => {
                         name,
                         async () => loader?.(name),
                         dynamicLoader as (func: (() => Promise<typeof component>)) => typeof component,
-                        fallbackComponent,
-                        { loading: () => <p>loading plugin...</p> }
+                        fallbackComponent
                     );
                 }
 

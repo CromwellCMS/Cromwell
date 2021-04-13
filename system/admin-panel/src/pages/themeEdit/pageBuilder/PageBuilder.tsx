@@ -70,6 +70,9 @@ export class PageBuilder extends React.Component<{
 
         this.init();
         this.checkHitoryButtons();
+        setTimeout(() => {
+            this.updateDraggable();
+        }, 500)
     }
 
     private async init() {
@@ -86,6 +89,7 @@ export class PageBuilder extends React.Component<{
             canDeselectBlock: this.canDeselectDraggableBlock,
             canDragBlock: this.canDragDraggableBlock,
             createFrame: true,
+            iframeSelector: '#builderFrame',
         });
     }
 
@@ -540,7 +544,7 @@ export class PageBuilder extends React.Component<{
                 >
                     <PageErrorBoundary>
                         <CContainer id={pageRootContainerId}
-                            className={this.ignoreDraggableClass}
+                            className={`${this.ignoreDraggableClass} ${styles.rootBlock}`}
                             isConstant={true}
                         >
                             <EditingPage {...adminPanelProps} />

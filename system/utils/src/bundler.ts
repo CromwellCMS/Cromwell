@@ -17,6 +17,7 @@ import {
     bundledModulesDirName,
     cromwellStoreImportsPath,
     cromwellStoreModulesPath,
+    cromwellStoreStatusesPath,
     getGlobalModuleStr,
     jsOperators,
     moduleArchiveFileName,
@@ -339,10 +340,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
                 return didDefaultImport;
             }
             const checkDidGloballyDefaultImport = () => {
-                const storedLib = ${cromwellStoreModulesPath}[moduleName];
-                if (typeof storedLib === 'object' || storedLib === 'function') {
-                    if (storedLib.didDefaultImport) return true;
-                }
+                return ${cromwellStoreStatusesPath}[moduleName] === 'default';
             }
 
             const startImport = (cb) => {
@@ -535,8 +533,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
                     }
                 };
                 return {};
-            })
-            );
+            }));
 
             return webpackConfig;
         }
@@ -717,7 +714,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         await fs.writeFile(bundleInfoPath, JSON.stringify(bundleInfo, null, 4));
 
 
-        // Cleanup generated
+        // // Cleanup generated
         if (isProduction) {
             if (await fs.pathExists(nodeLibEntry)) await fs.remove(nodeLibEntry);
             if (await fs.pathExists(libEntry)) await fs.remove(libEntry);

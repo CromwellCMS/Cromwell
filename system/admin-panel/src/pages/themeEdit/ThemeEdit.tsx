@@ -1,7 +1,7 @@
 import '../../helpers/Draggable/Draggable.css';
 
-import { setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity } from '@cromwell/core';
-import { getRestAPIClient, loadFrontendBundle, getGraphQLClient } from '@cromwell/core-frontend';
+import { genericPageName, setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity } from '@cromwell/core';
+import { getGraphQLClient, getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import clsx from 'clsx';
@@ -9,13 +9,14 @@ import React, { Suspense } from 'react';
 import { toast } from 'react-toastify';
 
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
+import FramePortal from '../../components/framePortal/FramePortal';
 import LoadBox from '../../components/loadBox/LoadBox';
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
+import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 import { PageBuilder } from './pageBuilder/PageBuilder';
 import { PageListItem } from './pageListItem/PageListItem';
 import { PageSettings } from './pageSettings/PageSettings';
 import styles from './ThemeEdit.module.scss';
-import { SkeletonPreloader } from '../../components/SkeletonPreloader';
-import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 
 
 class ThemeEditState {
@@ -66,6 +67,8 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
 
     private handleOpenPageBuilder = async (pageInfo: TPageInfo) => {
         this.setState({ isPageLoading: true });
+
+
         const pageCofig: TPageConfig | undefined =
             await getRestAPIClient()?.getPageConfig(pageInfo.route);
         // const themeInfo = await getRestAPIClient()?.getThemeInfo();
@@ -77,9 +80,9 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
 
         this.changedPageInfo = null;
         this.changedModifications = null;
-
-        let pageComp = await loadFrontendBundle(pageInfo.route,
-            () => getRestAPIClient()?.getThemePageBundle(pageInfo.route),
+        const pageCompPath = pageInfo?.isVirtual ? genericPageName : pageInfo.route;
+        let pageComp = await loadFrontendBundle(pageCompPath,
+            () => getRestAPIClient()?.getThemePageBundle(pageCompPath),
             (func: (() => Promise<React.ComponentType>)) => {
                 return func();
             }
@@ -90,7 +93,6 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
             editingPageInfo: pageInfo,
             isPageLoading: false
         });
-
     }
 
     private handleCloseEditingPage = () => {
@@ -291,14 +293,19 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                     )}
                                 </TabPanel>
                                 <TabPanel value={activeTabNum} index={1}>
-                                    {!isPageLoading && EditingPage && (
-                                        <PageBuilder
-                                            plugins={this.state.plugins}
-                                            editingPageInfo={editingPageInfo}
-                                            onPageModificationsChange={this.handlePageModificationsChange}
-                                            EditingPage={EditingPage}
-                                        />
-                                    )}
+                                    <FramePortal
+                                        className={styles.builderFrame}
+                                        id="builderFrame"
+                                    >
+                                        {!isPageLoading && EditingPage && (
+                                            <PageBuilder
+                                                plugins={this.state.plugins}
+                                                editingPageInfo={editingPageInfo}
+                                                onPageModificationsChange={this.handlePageModificationsChange}
+                                                EditingPage={EditingPage}
+                                            />
+                                        )}
+                                    </FramePortal>
                                 </TabPanel>
                                 {isPageLoading && (<LoadBox />)}
                             </div>
@@ -343,3 +350,4 @@ function TabPanel(props: TabPanelProps) {
         </div>
     );
 }
+
