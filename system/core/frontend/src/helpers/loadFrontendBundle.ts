@@ -22,8 +22,8 @@ export const loadFrontendBundle = <TLoadable extends (...args: any) => any = (fu
     const loadableFunc = loadable ?? loadableComponent;
 
     const loadableComp = loadableFunc(async () => {
-
         let bundle;
+        let comp: any;
         try {
             bundle = await loader();
         } catch (e) {
@@ -35,8 +35,6 @@ export const loadFrontendBundle = <TLoadable extends (...args: any) => any = (fu
                 const nodeModules = getStoreItem('nodeModules');
                 await nodeModules?.importSciptExternals?.(bundle.meta);
             }
-
-            let comp: any;
 
             if (isServer()) {
                 // Server-side
@@ -85,11 +83,10 @@ export const loadFrontendBundle = <TLoadable extends (...args: any) => any = (fu
             const components = getStoreItem('components');
             if (comp) {
                 components![bundleName] = comp;
-                return comp;
             }
         }
 
-        return fallbackComponent ?? (() => null);
+        return comp ?? fallbackComponent ?? (() => null);
     }, dynamicLoaderProps) ?? fallbackComponent ?? (() => null);
 
     components[bundleName] = loadableComp;

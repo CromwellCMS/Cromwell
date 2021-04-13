@@ -42,7 +42,6 @@ export class PageBuilder extends React.Component<{
     plugins: TPluginEntity[] | null;
     editingPageInfo: TPageInfo;
     onPageModificationsChange: (modifications: TCromwellBlockData[] | null | undefined) => void;
-    builderFrame?: HTMLIFrameElement;
 }>  {
 
     private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef();
@@ -71,6 +70,9 @@ export class PageBuilder extends React.Component<{
 
         this.init();
         this.checkHitoryButtons();
+        setTimeout(() => {
+            this.updateDraggable();
+        }, 500)
     }
 
     private async init() {
@@ -542,7 +544,7 @@ export class PageBuilder extends React.Component<{
                 >
                     <PageErrorBoundary>
                         <CContainer id={pageRootContainerId}
-                            className={this.ignoreDraggableClass}
+                            className={`${this.ignoreDraggableClass} ${styles.rootBlock}`}
                             isConstant={true}
                         >
                             <EditingPage {...adminPanelProps} />

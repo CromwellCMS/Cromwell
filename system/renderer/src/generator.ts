@@ -127,6 +127,7 @@ const devGenerate = async (themeName: string) => {
         const pageDynamicImportName = pageInfo.compName + '_DynamicPage';
 
         const cromwellStoreModulesPath = `CromwellStore.nodeModules.modules`;
+        const cromwellStoreStatusesPath = `CromwellStore.nodeModules.importStatuses`;
 
         const pageImports = `
          import React from 'react';
@@ -151,21 +152,21 @@ const devGenerate = async (themeName: string) => {
          
          const importer = getModuleImporter();
          ${cromwellStoreModulesPath}['react'] = React;
-         ${cromwellStoreModulesPath}['react'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['react'] = 'default';
          ${cromwellStoreModulesPath}['react-dom'] = ReactDOM;
-         ${cromwellStoreModulesPath}['react-dom'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['react-dom'] = 'default';
          ${cromwellStoreModulesPath}['next/link'] = NextLink;
          ${cromwellStoreModulesPath}['next/router'] = NextRouter;
          ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
          ${cromwellStoreModulesPath}['next/head'] = NextHead;
          ${cromwellStoreModulesPath}['@cromwell/core'] = cromwellCore;
-         ${cromwellStoreModulesPath}['@cromwell/core'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['@cromwell/core'] = 'default';
          ${cromwellStoreModulesPath}['@cromwell/core-frontend'] = cromwellCoreFrontend;
-         ${cromwellStoreModulesPath}['@cromwell/core-frontend'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['@cromwell/core-frontend'] = 'default';
          ${cromwellStoreModulesPath}['react-is'] = reactIs;
-         ${cromwellStoreModulesPath}['react-is'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['react-is'] = 'default';
          ${cromwellStoreModulesPath}['react-html-parser'] = ReactHtmlParser;
-         ${cromwellStoreModulesPath}['react-html-parser'].didDefaultImport = true;
+         ${cromwellStoreStatusesPath}['react-html-parser'] = 'default';
  
          ${pageInfo.metaInfoPath ? `
          if (isServer()) {
@@ -281,18 +282,13 @@ const devGenerate = async (themeName: string) => {
     if (!fs.existsSync(nextConfigPath)) {
         await fs.outputFile(nextConfigPath, `
              module.exports = {
-                 webpack: (config, { isServer }) => {
-                     config.resolve.symlinks = false
-                     // Fixes npm packages that depend on 'fs' module
-                     if (!isServer) {
-                         config.node = {
-                             fs: 'empty',
-                             module: 'empty',
-                             path: 'empty'
-                         }
-                     }
-                     return config
-                 }
+                future: {
+                    webpack5: true
+                },
+                webpack: (config, { isServer }) => {
+                    config.resolve.symlinks = false
+                    return config
+                }
              };`
         );
     }

@@ -35,7 +35,7 @@ import { dirname, isAbsolute, join, resolve } from 'path';
 import { OutputOptions, Plugin, RollupOptions } from 'rollup';
 import externalGlobals from 'rollup-plugin-external-globals';
 
-import { cromwellStoreModulesPath, getGlobalModuleStr } from '../constants';
+import { cromwellStoreModulesPath, getGlobalModuleStr, getGlobalModuleStatusStr } from '../constants';
 import {
     collectFrontendDependencies,
     collectPackagesInfo,
@@ -654,10 +654,14 @@ export const rollupPluginCromwellFrontend = (settings?: {
 
             if (settings?.pagesMetaInfo?.paths && settings.srcDir && settings.buildDir) {
 
-                // Generate JS lists of node_modules that are going to be bundled in one chunk by Next.js to load
-                // on first page open when a customer has no cached modules. It cuts hundreds of requests
-                // for each separate node module on first load. List loaded from package.json - cromwell.bundledDependencies
-                // Beware that modules are going to be bundled entirely without tree-shaking
+                // Generate lists of frontend modules (node_modules marked as frontend in package.json) 
+                // that are going to be bundled in one chunk by Next.js to load
+                // on first page open when a client has no cached modules. 
+                // By default frontend modules are requsted by separate requests from client
+                // So this optimization basically cuts hundreds of requests on first load. 
+                // List mapped from package.json's cromwell.bundledDependencies
+                // Beware! For now this feature works in a way that 
+                // modules are going to be bundled entirely without any tree-shaking
                 // We definetely don't want @material-ui/icons in this list!
                 for (const pagePath of settings.pagesMetaInfo.paths) {
                     if (pagePath?.localPath && packageJson.cromwell?.bundledDependencies) {
@@ -671,7 +675,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
                             importsStr += `
                                 import * as ${strippedDepName} from '${depName}';
                                 ${getGlobalModuleStr(depName)} = interopDefault(${strippedDepName}, 'default');
-                                ${getGlobalModuleStr(depName)}.didDefaultImport = true;
+                                ${getGlobalModuleStatusStr(depName)} = 'default';
                                 `
                         }
 

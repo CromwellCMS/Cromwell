@@ -61,7 +61,6 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
                     )}
                 </div>
             </div>
-
         </Layout>
     );
 }

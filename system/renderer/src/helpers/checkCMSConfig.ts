@@ -15,8 +15,10 @@ export const checkCMSConfig = (newSettings: TCmsSettings,
 
 export const fsRequire = (path: string, json?: boolean) => {
     if (!isServer()) return undefined;
-    const fs = require('fs');
-    const requireFromString = require('require-from-string');
+    const normalizePath = eval(`require('normalize-path');`);
+    const nodeRequire = (name: string) => eval(`require('${normalizePath(name)}');`);
+    const fs = nodeRequire('fs');
+    const requireFromString = nodeRequire('require-from-string');
     if (fs.existsSync(path)) {
         const str = fs.readFileSync(path).toString();
         if (json) return JSON.parse(str);

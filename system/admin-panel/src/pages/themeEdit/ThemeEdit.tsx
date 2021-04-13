@@ -1,22 +1,22 @@
 import '../../helpers/Draggable/Draggable.css';
 
-import { setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity, genericPageName } from '@cromwell/core';
-import { getRestAPIClient, loadFrontendBundle, getGraphQLClient } from '@cromwell/core-frontend';
+import { genericPageName, setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity } from '@cromwell/core';
+import { getGraphQLClient, getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { Suspense } from 'react';
 import { toast } from 'react-toastify';
-import ReactDOM from 'react-dom';
 
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
+import FramePortal from '../../components/framePortal/FramePortal';
 import LoadBox from '../../components/loadBox/LoadBox';
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
+import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 import { PageBuilder } from './pageBuilder/PageBuilder';
 import { PageListItem } from './pageListItem/PageListItem';
 import { PageSettings } from './pageSettings/PageSettings';
 import styles from './ThemeEdit.module.scss';
-import { SkeletonPreloader } from '../../components/SkeletonPreloader';
-import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 
 
 class ThemeEditState {
@@ -39,8 +39,6 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
     // Keeps track of modifications that user made (added) curently. Does not store all mods from actual pageCofig!
     // We need to send to the server only newly added modifications! 
     private changedModifications: TCromwellBlockData[] | null | undefined = null;
-
-    private builderFrame: HTMLIFrameElement;
 
     constructor(props: any) {
         super(props);
@@ -295,13 +293,12 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                     )}
                                 </TabPanel>
                                 <TabPanel value={activeTabNum} index={1}>
-                                    <FramePortal setIframe={(iframe) => {
-                                        this.builderFrame = iframe;
-                                        this.forceUpdate();
-                                    }}  >
+                                    <FramePortal
+                                        className={styles.builderFrame}
+                                        id="builderFrame"
+                                    >
                                         {!isPageLoading && EditingPage && (
                                             <PageBuilder
-                                                builderFrame={this.builderFrame}
                                                 plugins={this.state.plugins}
                                                 editingPageInfo={editingPageInfo}
                                                 onPageModificationsChange={this.handlePageModificationsChange}
@@ -354,70 +351,3 @@ function TabPanel(props: TabPanelProps) {
     );
 }
 
-
-class FramePortal extends React.Component<{ setIframe: (iframe: HTMLIFrameElement) => void }> {
-    private containerEl: Element;
-    private iframe: HTMLIFrameElement;
-
-    constructor(props) {
-        super(props);
-        this.containerEl = document.createElement("div");
-    }
-
-    render() {
-        return (
-            <iframe id="builderFrame" title="builderFrame"
-                ref={el => (this.iframe = el)} className={styles.builderFrame}>
-                {ReactDOM.createPortal(this.props.children, this.containerEl)}
-            </iframe>
-        );
-    }
-
-    componentDidMount() {
-        this.props.setIframe(this.iframe);
-        this.iframe.contentWindow.CromwellStore = window.CromwellStore;
-
-        const headMap = new Map();
-        const updateHead = () => {
-            Array.from(document.head.children).forEach(child => {
-                if (!headMap.has(child)) {
-                    const childCopy = child.cloneNode(true);
-                    headMap.set(child, childCopy);
-                    this.iframe.contentDocument.head.appendChild(childCopy);
-                }
-            })
-        }
-        updateHead();
-
-        observeDOM(document.head, () => {
-            updateHead();
-        })
-
-        this.iframe.contentDocument.body.appendChild(this.containerEl);
-    }
-}
-
-
-const observeDOM = (function () {
-    //@ts-ignore
-    var MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
-
-    return function (obj, callback) {
-        if (!obj || obj.nodeType !== 1) return;
-
-        if (MutationObserver) {
-            // define a new observer
-            var mutationObserver = new MutationObserver(callback)
-
-            // have the observer observe foo for changes in children
-            mutationObserver.observe(obj, { childList: true, subtree: true })
-            return mutationObserver
-        }
-
-        // browser support fallback
-        else if (window.addEventListener) {
-            obj.addEventListener('DOMNodeInserted', callback, false)
-            obj.addEventListener('DOMNodeRemoved', callback, false)
-        }
-    }
-})()
