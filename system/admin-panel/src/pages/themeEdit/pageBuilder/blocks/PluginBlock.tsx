@@ -4,6 +4,7 @@ import { Power as PowerIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useState } from 'react';
 
+import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
 import { BaseMenu, TBaseMenuProps } from './BaseMenu';
 
@@ -58,7 +59,3 @@ export function PluginBlock(props: TBaseMenuProps) {
     );
 }
 
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
-}

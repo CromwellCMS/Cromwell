@@ -22,6 +22,12 @@ export const PageSettings = (props: {
 
     const handlePageSettingsChange = (prop: keyof TPageInfo, val: any) => {
         setEditingPageConfig(prev => {
+            if (initialPageConfig.current?.isVirtual && prop === 'route') {
+                if (!val) val = '';
+                val = val.replace('pages/', '');
+                val = val.replace(/\W/g, '-');
+                val = 'pages/' + val;
+            }
             const next = Object.assign({}, prev, { [prop]: val });
             props.handlePageInfoChange(next);
             return next;

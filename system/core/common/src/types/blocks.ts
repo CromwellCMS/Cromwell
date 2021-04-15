@@ -111,6 +111,16 @@ export type TCromwellBlockData = {
      */
     index?: number;
 
+    /** Styles applied from PageBuilder's UI */
+    editorStyles?: {
+        maxWidth?: number;
+        offsetTop?: number;
+        offsetBottom?: number;
+        offsetLeft?: number;
+        offsetRight?: number;
+        align?: 'left' | 'right' | 'center';
+    }
+
     /** CSS styles to apply to this block's wrapper*/
     styles?: string;
 

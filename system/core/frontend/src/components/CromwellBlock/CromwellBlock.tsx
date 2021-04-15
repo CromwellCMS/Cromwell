@@ -244,7 +244,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     }
 
     public contentRender(getContent?: TBlockContentProvider['getter'] | null, className?: string): React.ReactNode | null {
-        this.readConfig();
+        const data = this.getData();
 
         if (this.data?.isDeleted) {
             return <></>;
@@ -261,10 +261,59 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
         const blockContent = getContent ? getContent(this) : this.getDefaultContent();
 
+        let blockStyles: React.CSSProperties = {};
+
+        // Interpretaion of PageBuilder's UI styles
+        const eSt = data?.editorStyles;
+        if (eSt) {
+            if (eSt.align) {
+                if (eSt.align === 'center') {
+                    blockStyles.marginLeft = 'auto';
+                    blockStyles.marginRight = 'auto';
+                }
+                if (eSt.align === 'left') {
+                    blockStyles.marginRight = 'auto';
+                    blockStyles.marginLeft = '0';
+                }
+                if (eSt.align === 'right') {
+                    blockStyles.marginLeft = 'auto';
+                    blockStyles.marginRight = '0';
+                }
+            }
+            if (eSt.offsetBottom !== undefined) {
+                blockStyles.marginBottom = eSt.offsetBottom + 'px';
+            }
+            if (eSt.offsetTop !== undefined) {
+                blockStyles.marginTop = eSt.offsetTop + 'px';
+            }
+            if (eSt.offsetLeft !== undefined) {
+                blockStyles.marginLeft = eSt.offsetLeft + 'px';
+            }
+            if (eSt.offsetRight !== undefined) {
+                blockStyles.marginRight = eSt.offsetRight + 'px';
+            }
+            if (eSt.maxWidth !== undefined) {
+                blockStyles.maxWidth = eSt.maxWidth + 'px';
+            }
+        }
+
+        // Merge with custom css from config
+        if (data.styles) {
+            try {
+                const stylesParsed = JSON.parse(data.styles);
+                blockStyles = {
+                    ...blockStyles,
+                    ...stylesParsed,
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
         return (
             <div id={this.htmlId} key={this.htmlId}
                 // @TODO resolve styles type to store in config. Normal CSS or React.CSSProperties
-                // style={this.data ? this.data.styles as any : undefined}
+                style={blockStyles}
                 className={elementClassName}
                 ref={this.blockRef}
             >{blockContent}</div>
