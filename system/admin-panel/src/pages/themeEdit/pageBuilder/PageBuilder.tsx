@@ -22,6 +22,7 @@ import { IconButton, Tooltip } from '@material-ui/core';
 import { Redo as RedoIcon, Undo as UndoIcon } from '@material-ui/icons';
 import deepEqual from 'fast-deep-equal';
 import React from 'react';
+import { debounce } from 'throttle-debounce';
 
 import PageErrorBoundary from '../../../components/errorBoundaries/PageErrorBoundary';
 import { Draggable } from '../../../helpers/Draggable/Draggable';
@@ -441,6 +442,37 @@ export class PageBuilder extends React.Component<{
         return this.blockInfos[data?.id]?.canDrag ?? true;
     }
 
+    public debouncedDidUpdate = debounce(100, () => {
+        this.contentDidUpdate();
+    });
+
+    public contentDidUpdate = () => {
+        this.draggable?.updateBlocks();
+
+        const allElements = Array.from(this.editorWindowRef?.current?.getElementsByTagName('*') ?? []);
+        allElements.forEach((el: HTMLElement) => {
+            const elStyles = window.getComputedStyle(el);
+            // Disable fixed elements
+            if (elStyles.position === 'fixed') {
+                el.style.position = 'absolute';
+            }
+
+            // Clamp z-index to ensure editor's elements aren't covered
+            if (elStyles.zIndex) {
+                const zIndex = parseInt(elStyles.zIndex);
+                if (!isNaN(zIndex) && zIndex > 1000) {
+                    el.style.zIndex = '999';
+                }
+            }
+
+            // Disable all links
+            if (el.tagName === 'A') {
+                el.onclick = (e) => { e.preventDefault() }
+            }
+
+        })
+    }
+
     render() {
         // console.log('PageBuilder render')
         const adminPanelProps = getStoreItem('pageConfig')?.adminPanelProps ?? {};
@@ -534,11 +566,7 @@ export class PageBuilder extends React.Component<{
                             </>;
                         },
                         componentDidUpdate: () => {
-                            this.draggable?.updateBlocks();
-
-                            // Disable all links
-                            const links = Array.from(this.editorWindowRef?.current?.getElementsByTagName('a') ?? []);
-                            links.forEach(link => { link.onclick = (e) => { e.preventDefault() } })
+                            this.debouncedDidUpdate();
                         }
                     }}
                 >

@@ -2,8 +2,6 @@
     position: relative;
     user-select: none;
     cursor: grab;
-    margin: 10px;
-    padding: 5px;
     min-height: 20px;
 }
 
@@ -15,10 +13,10 @@
     display: block;
     position: absolute;
     z-index: -1;
-    top: -10px;
-    bottom: -10px;
-    left: -10px;
-    right: -10px;
+    top: -5px;
+    bottom: -5px;
+    left: -5px;
+    right: -5px;
     border: 1px dashed transparent;
     /* border-radius: 5px; */
     background-color: transparent;
