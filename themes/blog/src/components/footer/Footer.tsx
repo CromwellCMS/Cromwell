@@ -15,8 +15,8 @@ export default function Footer() {
                     <CContainer className={styles.linksBlock} id="footer_22">
                         <CText className={styles.blockHeader} id="footer_23">About us</CText>
                         <CText className={styles.blockLink} id="footer_26">News</CText>
-                        <CText className={styles.blockLink} id="footer_26">Contacts</CText>
-                        <CText className={styles.blockLink} id="footer_26">CromwellCMS</CText>
+                        <CText className={styles.blockLink} id="footer_27">Contacts</CText>
+                        <CText className={styles.blockLink} id="footer_28">CromwellCMS</CText>
                     </CContainer>
                     <CContainer className={styles.linksBlock} id="footer_17">
                         <CText className={styles.blockHeader} id="footer_07">Join our newsletter!</CText>

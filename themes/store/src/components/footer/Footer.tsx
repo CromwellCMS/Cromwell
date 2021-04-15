@@ -1,5 +1,4 @@
-import { CContainer, CHTML, CText, CPlugin } from '@cromwell/core-frontend';
-import { Button, InputBase } from '@material-ui/core';
+import { CContainer, CPlugin, CText } from '@cromwell/core-frontend';
 import React from 'react';
 
 import commonStyles from '../../styles/common.module.scss';

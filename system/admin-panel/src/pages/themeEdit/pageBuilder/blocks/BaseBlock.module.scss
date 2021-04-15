@@ -83,3 +83,13 @@ div.textField {
         color: inherit;
     }
 }
+
+div.settingsInput {
+    margin: 10px 0;
+    min-width: 100px;
+}
+
+.containerSettings {
+    display: flex;
+    flex-direction: column;
+}

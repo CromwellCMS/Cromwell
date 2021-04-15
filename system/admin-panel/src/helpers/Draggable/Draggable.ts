@@ -475,7 +475,7 @@ export class Draggable {
     }
 
     private styleHoveredBlock = (block: HTMLElement, frame: HTMLElement) => {
-        if (block) block.style.zIndex = '5';
+        if (block) block.style.zIndex = '1005';
 
         if (frame) {
             const color = this.options?.primaryColor ?? '#9900CC';
@@ -485,7 +485,7 @@ export class Draggable {
     }
 
     private styleSelectedBlock = (block: HTMLElement, frame: HTMLElement) => {
-        block.style.zIndex = '6';
+        block.style.zIndex = '1006';
 
         const color = this.options?.primaryColor ?? '#9900CC';
         frame.classList.add(Draggable.draggableFrameHoveredCSSclass);
@@ -493,7 +493,7 @@ export class Draggable {
     }
 
     private styleDeselectedBlock = (block: HTMLElement, frame?: HTMLElement) => {
-        if (block) block.style.zIndex = '2';
+        if (block) block.style.zIndex = '1002';
 
         if (frame) {
             frame.classList.remove(Draggable.draggableFrameHoveredCSSclass);

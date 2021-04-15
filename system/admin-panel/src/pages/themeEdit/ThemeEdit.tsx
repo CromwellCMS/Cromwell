@@ -293,7 +293,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                     )}
                                 </TabPanel>
                                 <TabPanel value={activeTabNum} index={1}>
-                                    <FramePortal
+                                    {/* <FramePortal
                                         className={styles.builderFrame}
                                         id="builderFrame"
                                     >
@@ -305,7 +305,15 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                                 EditingPage={EditingPage}
                                             />
                                         )}
-                                    </FramePortal>
+                                    </FramePortal> */}
+                                    {!isPageLoading && EditingPage && (
+                                        <PageBuilder
+                                            plugins={this.state.plugins}
+                                            editingPageInfo={editingPageInfo}
+                                            onPageModificationsChange={this.handlePageModificationsChange}
+                                            EditingPage={EditingPage}
+                                        />
+                                    )}
                                 </TabPanel>
                                 {isPageLoading && (<LoadBox />)}
                             </div>

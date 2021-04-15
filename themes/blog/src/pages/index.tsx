@@ -23,7 +23,7 @@ const IndexPage: TCromwellPage<BlogProps> = (props) => {
                     <CContainer id="main_3" className={commonStyles.content}>
                         <CContainer id="main_10" className={styles.titleWrapper}>
                             <CText id="main_11" className={styles.title}>My New Blog</CText>
-                            <CText id="main_11" className={styles.desciption}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</CText>
+                            <CText id="main_12" className={styles.desciption}>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</CText>
                         </CContainer>
                         <CContainer id="main_4" className={styles.mainPostsWrapper}>
                             <CContainer id="main_5" className={styles.postBigWrapper}>
