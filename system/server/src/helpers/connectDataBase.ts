@@ -109,7 +109,7 @@ export const connectDatabase = async () => {
 
     const themeRepo = getCustomRepository(GenericTheme.repository);
     const dbThemes = await themeRepo.getAll();
-    const themeService = new ThemeService(new CmsService());
+    const themeService = new ThemeService(new CmsService(), pluginService);
 
     for (const themeName of cmsModules.themes) {
         if (!dbThemes.find(theme => theme.name === themeName)) {

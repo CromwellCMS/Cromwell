@@ -1,6 +1,10 @@
 .PageBuilder {
     display: inline-block;
     width: 100%;
+
+    :global(.CromwellBlock_Type_container) {
+        padding: 10px;
+    }
 }
 
 .actions {
@@ -10,5 +14,4 @@
 }
 
 .rootBlock {
-    padding: 10px;
 }

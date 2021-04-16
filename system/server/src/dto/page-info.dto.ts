@@ -3,6 +3,9 @@ import { TPageInfo } from '@cromwell/core';
 
 export class PageInfoDto implements TPageInfo {
     @ApiProperty()
+    id: string;
+    
+    @ApiProperty()
     route: string;
 
     @ApiProperty()

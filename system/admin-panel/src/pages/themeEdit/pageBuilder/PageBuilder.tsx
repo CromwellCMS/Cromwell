@@ -138,7 +138,7 @@ export class PageBuilder extends React.Component<{
         const childrenData: TCromwellBlockData[] = this.addBlock({
             blockData,
             targetBlockData: nextData,
-            parentEl: container,
+            parentData: getBlockData(container),
             position: 'before'
         });
 
@@ -337,40 +337,44 @@ export class PageBuilder extends React.Component<{
         return true;
     }
 
-    public addNewBlockAfter = async (afterBlockData: TCromwellBlockData, newBlockType: TCromwellBlockType) => {
+    public createNewBlock = async (newBlockType: TCromwellBlockType, afterBlockData: TCromwellBlockData, containerData?: TCromwellBlockData) => {
         const newBlock: TCromwellBlockData = {
-            id: `Editor_${this.props.editingPageInfo.route}_${getRandStr()}`,
+            id: `_${getRandStr()}`,
             type: newBlockType,
             isVirtual: true,
         }
+        if (containerData && containerData.type !== 'container') containerData = undefined;
+
         this.addBlock({
             blockData: newBlock,
-            targetBlockData: afterBlockData,
+            targetBlockData: containerData ? undefined : afterBlockData,
+            parentData: containerData,
             position: 'after',
         });
 
         await this.rerenderBlocks();
 
-        this.draggable?.updateBlocks();
-
-        const el = getBlockElementById(newBlock.id);
-        if (el) {
-            // Select new block
-            el.click();
-        }
+        // Select new block
+        setTimeout(() => {
+            const el = getBlockElementById(newBlock.id);
+            el?.click();
+        }, 200);
     }
 
     public addBlock = (config: {
         blockData: TCromwellBlockData;
         targetBlockData?: TCromwellBlockData;
-        parentEl?: HTMLElement;
+        parentData?: TCromwellBlockData;
         position: 'before' | 'after';
     }): TCromwellBlockData[] => {
-        const { targetBlockData, parentEl, position, blockData } = config;
-        const parent = getBlockElementById(targetBlockData?.id)?.parentNode ?? parentEl;
+        const { targetBlockData, position, blockData } = config;
 
-        const parentData = getBlockData(parent);
-        if (!parentData) return;
+        const parentData = getBlockData(getBlockElementById(targetBlockData?.id)?.parentNode) ?? config?.parentData;
+        const parent = getBlockElementById(parentData.id);
+        if (!parentData || !parent) {
+            console.warn('Failed to add new block, parent was not found: ', parentData, parent, ' block data: ', blockData)
+            return;
+        }
 
         // Save histroy
         this.saveCurrentState();
@@ -508,8 +512,8 @@ export class PageBuilder extends React.Component<{
                             const bType = data?.type;
                             const deleteBlock = () => this.deleteBlock(data);
 
-                            const handleAddNewBlockAfter = (newBType: TCromwellBlockType) =>
-                                this.addNewBlockAfter(data, newBType);
+                            const handleCreateNewBlock = (newBType: TCromwellBlockType) =>
+                                this.createNewBlock(newBType, data, bType === 'container' ? data : undefined);
 
                             const blockProps = {
                                 saveMenuInst: this.handleSaveInst(bId),
@@ -520,7 +524,7 @@ export class PageBuilder extends React.Component<{
                                     this.modifyBlock(blockData);
                                 },
                                 deleteBlock: deleteBlock,
-                                addNewBlockAfter: handleAddNewBlockAfter,
+                                addNewBlockAfter: handleCreateNewBlock,
                                 plugins: this.props.plugins,
                                 setCanDrag: (canDrag: boolean) => {
                                     if (!this.blockInfos[bId]) this.blockInfos[bId] = {};

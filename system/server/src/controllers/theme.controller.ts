@@ -43,6 +43,8 @@ export class ThemeController {
         let out: TPageConfig | null = null;
         if (pageRoute && typeof pageRoute === 'string') {
             out = await this.themeService.getPageConfig(pageRoute)
+        } else {
+            throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
         }
         return out;
     }
@@ -76,28 +78,12 @@ export class ThemeController {
     })
     async getPluginsAtPage(@Query('pageRoute') pageRoute: string): Promise<Record<string, any>> {
         logger.log('ThemeController::getPluginsAtPage');
-        const out: Record<string, any> = {};
 
         if (pageRoute && typeof pageRoute === 'string') {
-            const pageConfig = await this.themeService.getPageConfig(pageRoute);
-
-            if (pageConfig && pageConfig.modifications && Array.isArray(pageConfig.modifications)) {
-                for (const mod of pageConfig.modifications) {
-                    const pluginName = mod?.plugin?.pluginName;
-                    if (pluginName) {
-                        const pluginEntity = await this.pluginService.findOne(pluginName);
-                        try {
-                            const pluginConfig = Object.assign({}, mod?.plugin?.settings,
-                                JSON.parse(pluginEntity?.settings ?? '{}'));
-                            out[pluginName] = pluginConfig;
-                        } catch (e) {
-                            serverLogFor('errors-only', 'Failed to parse plugin settings of ' + pluginName + e, 'Error')
-                        }
-                    }
-                };
-            }
+            return this.themeService.getPluginsAtPage(pageRoute)
+        } else {
+            throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
         }
-        return out;
     }
 
 
@@ -111,7 +97,6 @@ export class ThemeController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getAllPluginNames(): Promise<string[]> {
-
         logger.log('ThemeController::getAllPluginNames');
         const out: string[] = [];
 
@@ -138,41 +123,8 @@ export class ThemeController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPagesInfo(): Promise<TPageInfo[]> {
-
         logger.log('ThemeController::getPagesInfo');
-        const out: TPageInfo[] = [];
-
-        const { themeConfig, userConfig, cmsSettings } = await this.themeService.readConfigs();
-        let pages: TPageConfig[] = [];
-        if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
-            pages = themeConfig.pages;
-        }
-        const pageRoutes: string[] = [];
-        pages.forEach(p => pageRoutes.push(p.route));
-
-        if (userConfig && userConfig.pages && Array.isArray(userConfig.pages)) {
-            userConfig.pages.forEach(p => {
-                if (pageRoutes.includes(p.route)) {
-                    const i = pageRoutes.indexOf(p.route);
-                    pages[i] = Object.assign({}, pages[i], p);
-                }
-                else {
-                    pages.push(p);
-                }
-            })
-        }
-        pages.forEach(p => {
-            const info: TPageInfo = {
-                route: p.route,
-                name: p.name,
-                title: p.title,
-                isDynamic: p.isDynamic,
-                isVirtual: p.isVirtual,
-            }
-            out.push(info);
-        });
-
-        return out;
+        return this.themeService.getPagesInfo();
     }
 
 

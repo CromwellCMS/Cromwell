@@ -55,10 +55,11 @@ module.exports = {
     },
     pages: [
         {
-            "route": "index",
-            "name": "Home page",
-            "title": "Home page",
-            "modifications": [
+            id: "index",
+            route: "index",
+            name: "Home page",
+            title: "Home page",
+            modifications: [
                 {
                     "type": "gallery",
                     "id": "main_gallery_01",
@@ -96,11 +97,12 @@ module.exports = {
             ]
         },
         {
-            "route": "category/[slug]",
-            "name": "Product category page",
-            "title": "Product category page",
-            "isDynamic": true,
-            "modifications": [
+            id: "category/[slug]",
+            route: "category/[slug]",
+            name: "Product category page",
+            title: "Product category page",
+            isDynamic: true,
+            modifications: [
                 {
                     "type": "plugin",
                     "id": "Category_ProductFilter_Plugin",
@@ -113,11 +115,12 @@ module.exports = {
             ]
         },
         {
-            "route": "product/[slug]",
-            "name": "Product page",
-            "title": "Product page",
-            "isDynamic": true,
-            "modifications": [
+            id: "product/[slug]",
+            route: "product/[slug]",
+            name: "Product page",
+            title: "Product page",
+            isDynamic: true,
+            modifications: [
                 {
                     "type": "plugin",
                     "id": "Product_ProductShowcase_Plugin",
@@ -202,10 +205,11 @@ module.exports = {
             }
         },
         {
-            "route": "pages/some_page",
-            "name": "Custom page",
-            "title": "Some custom page",
-            "modifications": [
+            id: "pages/some_page",
+            route: "pages/some_page",
+            name: "Custom page",
+            title: "Some custom page",
+            modifications: [
                 {
                     "type": "plugin",
                     "id": "5",

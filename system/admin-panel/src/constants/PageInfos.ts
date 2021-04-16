@@ -50,6 +50,7 @@ export type PageInfo = {
     route: string;
     baseRoute?: string;
     component: React.ComponentType;
+    disableSidebar?: boolean;
 }
 
 export const homePageInfo: PageInfo = {
@@ -126,6 +127,7 @@ export const loginPageInfo: PageInfo = {
     route: '/login',
     component: LoginPage,
     baseRoute: '/login',
+    disableSidebar: true,
 };
 
 export const orderListPageInfo: PageInfo = {
@@ -146,6 +148,7 @@ export const welcomePageInfo: PageInfo = {
     name: 'Welcome',
     route: '/setup',
     component: WelcomePage,
+    disableSidebar: true,
 };
 
 export const settingsPageInfo: PageInfo = {

@@ -91,26 +91,28 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
     }
 
     render() {
-        if (this.props?.block?.getData()?.isConstant) return <></>;
+        const isConstant = this.props?.block?.getData()?.isConstant;
 
         if (this.state.menuVisible && !this.state.isDeleted) return (
             <div className={styles.menu}>
-                <div className={styles.actions}>
-                    <div className={styles.typeIcon}>{this.props.icon}</div>
-                    {this.props.menuItems}
-                    {this.props.settingsContent && (
-                        <Tooltip title="Settings">
-                            <MenuItem onClick={this.handleOpenSettings}>
-                                <SettingsIcon />
+                {!isConstant && (
+                    <div className={styles.actions}>
+                        <div className={styles.typeIcon}>{this.props.icon}</div>
+                        {this.props.menuItems}
+                        {this.props.settingsContent && (
+                            <Tooltip title="Settings">
+                                <MenuItem onClick={this.handleOpenSettings}>
+                                    <SettingsIcon />
+                                </MenuItem>
+                            </Tooltip>
+                        )}
+                        <Tooltip title="Delete block">
+                            <MenuItem onClick={this.deleteBlock}>
+                                <DeleteForeverIcon />
                             </MenuItem>
                         </Tooltip>
-                    )}
-                    <Tooltip title="Delete block">
-                        <MenuItem onClick={this.deleteBlock}>
-                            <DeleteForeverIcon />
-                        </MenuItem>
-                    </Tooltip>
-                </div>
+                    </div>
+                )}
                 <div className={styles.bottomActions} ref={this.addNewBtnEl}>
                     <Tooltip title="Add block">
                         <IconButton onClick={this.handleOpenAddNew}>

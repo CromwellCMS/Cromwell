@@ -146,8 +146,18 @@ export type TPalette = {
 };
 
 export type TPageInfo = {
-    /** Path of page's react component */
+    /** Unique ID of a page */
+    id: string;
+
+    /** 
+     * Page's url/slug. Can be:
+     * 1. Filesystem relative path of page's react component without extension. If file name is "./post/[slug].tsx"
+     * then route must be "post/[slug]"
+     * 2. Route of a virtual page (generic page). Responsible component is "pages/[slug].js" ,
+     * route must in format: "pages/any-slug"
+     * */
     route: string;
+
     /** Name */
     name: string;
     /** Meta title (SEO) */
@@ -156,7 +166,7 @@ export type TPageInfo = {
     description?: string;
     /** Is using next.js dynamic routes? */
     isDynamic?: boolean;
-    /** Is created in page builder and so does not has a .js file in theme's dir */
+    /** Created in Pagebuilder or manually in config and does not have a corresponding .js file with React component */
     isVirtual?: boolean;
 }
 

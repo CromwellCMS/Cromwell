@@ -11,14 +11,14 @@ import styles from './PageListItem.module.scss';
 export const PageListItem = (props: {
     page: TPageInfo;
     // handleOpenPageSettings: (page: TPageInfo) => void;
-    handleOpenPageBuilder: (page: TPageInfo) => void;
+    handleOpenPage: (page: TPageInfo) => void;
     handleDeletePage: (page: TPageInfo) => void;
 }) => {
-    const { page, handleOpenPageBuilder, handleDeletePage } = props;
+    const { page, handleOpenPage, handleDeletePage } = props;
     return (
         <MenuItem
             className={styles.pageItem}
-            onClick={() => handleOpenPageBuilder(page)}
+            onClick={() => handleOpenPage(page)}
         >
             <p>{page.name}</p>
             <div className={styles.pageItemActions}>

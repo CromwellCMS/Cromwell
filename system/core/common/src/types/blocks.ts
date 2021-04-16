@@ -138,7 +138,7 @@ export type TCromwellBlockData = {
         /** Plugin's name to render inside component. Same name must be in module.config.js */
         pluginName?: string;
 
-        /** Custom editable plugin's settings */
+        /** Plugin's local settings */
         settings?: Record<string, any>;
     };
 
@@ -163,6 +163,7 @@ export type TCromwellBlockData = {
     text?: {
         content?: string;
         textElementType?: keyof React.ReactHTML;
+        href?: string;
     };
 
     /** If true, user can't delete or modify this block in the editor */

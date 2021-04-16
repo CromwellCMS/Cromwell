@@ -121,9 +121,9 @@ export class HeaderSearch extends React.Component<{}, {
                                     )}
                                     {!isLoading && searchItems.map(post => {
                                         return (
-                                            <Link href={`/post/${post.slug}`}>
-                                                <Grid container className={styles.listItem}>
-                                                    <Grid xs={12} className={styles.itemMain}>
+                                            <Grid container className={styles.listItem}>
+                                                <Link href={`/post/${post.slug}`} >
+                                                    <Grid item xs={12} className={styles.itemMain}>
                                                         <div
                                                             style={{ backgroundImage: `url(${post?.mainImage})` }}
                                                             className={styles.itemImage}
@@ -132,8 +132,8 @@ export class HeaderSearch extends React.Component<{}, {
                                                             <p className={styles.itemTitle}>{post.title ?? ''}</p>
                                                         </div>
                                                     </Grid>
-                                                </Grid>
-                                            </Link>
+                                                </Link>
+                                            </Grid>
                                         )
                                     })}
                                 </div>
