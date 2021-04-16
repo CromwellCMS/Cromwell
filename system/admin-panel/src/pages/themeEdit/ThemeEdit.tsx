@@ -1,6 +1,6 @@
 import '../../helpers/Draggable/Draggable.css';
 
-import { genericPageName, setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity } from '@cromwell/core';
+import { genericPageName, setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity, getRandStr } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-ui/icons';
@@ -40,6 +40,8 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
     // We need to send to the server only newly added modifications! 
     private changedModifications: TCromwellBlockData[] | null | undefined = null;
 
+    private tabsContent = React.createRef<HTMLDivElement>();
+
     constructor(props: any) {
         super(props);
         this.state = new ThemeEditState();
@@ -65,7 +67,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
         })();
     }
 
-    private handleOpenPageBuilder = async (pageInfo: TPageInfo) => {
+    private handleOpenPage = async (pageInfo: TPageInfo) => {
         this.setState({ isPageLoading: true });
 
 
@@ -122,7 +124,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
         if (pageInfo) {
             const pageConfig: TPageConfig = {
                 ...pageInfo,
-                modifications
+                modifications,
             };
 
             const client = getRestAPIClient();
@@ -135,8 +137,10 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                 toast.error('Failed to save changes');
             }
 
+            const infos = await getRestAPIClient()?.getPagesInfo();
+            if (infos) this.setState({ pageInfos: infos });
+
             this.setState({ loadingStatus: false });
-            // this.handleOpenPageBuilder(pageInfo);
 
         }
 
@@ -149,6 +153,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
     private handleAddCustomPage = () => {
         this.setState(prev => {
             const newPage: TPageInfo = {
+                id: `generic_${getRandStr(8)}`,
                 route: '',
                 name: '',
                 isVirtual: true
@@ -160,6 +165,31 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
         });
     }
 
+    public handleTabChange = (nextTabNum: number) => {
+        const activeTabNum = this.state.activeTabNum;
+        if (activeTabNum === nextTabNum) return;
+
+        const isPageBuilder = nextTabNum === 1;
+        const isGeneral = nextTabNum === 0;
+
+        if (isPageBuilder && this.tabsContent.current) {
+            this.tabsContent.current.style.opacity = '0';
+            this.tabsContent.current.style.transitionDuration = '0s'
+            setTimeout(() => {
+                this.tabsContent.current.style.transitionDuration = '0.3s';
+                setTimeout(() => {
+                    this.tabsContent.current.style.opacity = '1';
+                }, 100);
+            }, 400);
+        }
+
+        setTimeout(() => {
+            this.setState({
+                activeTabNum: nextTabNum,
+                isSidebarOpen: isGeneral
+            });
+        }, 50);
+    }
 
     render() {
 
@@ -207,7 +237,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                             <PageListItem
                                                 key={p.route}
                                                 page={p}
-                                                handleOpenPageBuilder={this.handleOpenPageBuilder}
+                                                handleOpenPage={this.handleOpenPage}
                                                 handleDeletePage={this.handleDeletePage}
                                             />
                                         ))}
@@ -220,7 +250,7 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                             <PageListItem
                                                 key={p.route}
                                                 page={p}
-                                                handleOpenPageBuilder={this.handleOpenPageBuilder}
+                                                handleOpenPage={this.handleOpenPage}
                                                 handleDeletePage={this.handleDeletePage}
                                             />
 
@@ -259,21 +289,17 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                             indicatorColor="primary"
                                             textColor="primary"
                                             onChange={(event: React.ChangeEvent<{}>, newValue: number) => {
-                                                if (activeTabNum === newValue) return;
-                                                this.setState({
-                                                    activeTabNum: newValue,
-                                                    isSidebarOpen: newValue === 0
-                                                });
+                                                this.handleTabChange(newValue);
                                             }}
                                         >
-                                            <Tab label="Page settings" />
+                                            <Tab label="General settings" />
                                             <Tab label="Page builder" />
                                         </Tabs>
                                         <div>
                                             <Button variant="contained" color="primary"
                                                 className={styles.saveBtn}
                                                 size="small"
-                                                onClick={() => this.handleSaveEditingPage()}>
+                                                onClick={this.handleSaveEditingPage}>
                                                 Save
                                         </Button>
                                             {/* <IconButton
@@ -285,15 +311,17 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                         </div>
                                     </div>
                                 )}
-                                <TabPanel value={activeTabNum} index={0}>
-                                    {!isPageLoading && editingPageInfo && (
-                                        <PageSettings initialPageConfig={editingPageInfo}
-                                            handlePageInfoChange={this.handlePageInfoChange}
-                                        />
-                                    )}
-                                </TabPanel>
-                                <TabPanel value={activeTabNum} index={1}>
-                                    {/* <FramePortal
+                                <div className={styles.tabs}>
+                                    <div className={styles.tabsContent} ref={this.tabsContent}>
+                                        <TabPanel value={activeTabNum} index={0}>
+                                            {!isPageLoading && editingPageInfo && (
+                                                <PageSettings initialPageConfig={editingPageInfo}
+                                                    handlePageInfoChange={this.handlePageInfoChange}
+                                                />
+                                            )}
+                                        </TabPanel>
+                                        <TabPanel value={activeTabNum} index={1}>
+                                            {/* <FramePortal
                                         className={styles.builderFrame}
                                         id="builderFrame"
                                     >
@@ -306,15 +334,17 @@ export default class ThemeEdit extends React.Component<any, ThemeEditState> {
                                             />
                                         )}
                                     </FramePortal> */}
-                                    {!isPageLoading && EditingPage && (
-                                        <PageBuilder
-                                            plugins={this.state.plugins}
-                                            editingPageInfo={editingPageInfo}
-                                            onPageModificationsChange={this.handlePageModificationsChange}
-                                            EditingPage={EditingPage}
-                                        />
-                                    )}
-                                </TabPanel>
+                                            {!isPageLoading && EditingPage && (
+                                                <PageBuilder
+                                                    plugins={this.state.plugins}
+                                                    editingPageInfo={editingPageInfo}
+                                                    onPageModificationsChange={this.handlePageModificationsChange}
+                                                    EditingPage={EditingPage}
+                                                />
+                                            )}
+                                        </TabPanel>
+                                    </div>
+                                </div>
                                 {isPageLoading && (<LoadBox />)}
                             </div>
                         </div>
@@ -344,18 +374,7 @@ interface TabPanelProps {
 function TabPanel(props: TabPanelProps) {
     const { children, value, index, ...other } = props;
 
-    return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`simple-tabpanel-${index}`}
-            aria-labelledby={`simple-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <div className={styles.tabContent}>{children}</div>
-            )}
-        </div>
-    );
+    if (value === index) return <>{children}</>;
+    return <></>;
 }
 

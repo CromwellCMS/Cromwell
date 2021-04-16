@@ -3,17 +3,20 @@ import React from 'react';
 
 const pagesInfo: TPageInfo[] = [
     {
+        id: '1',
         route: '1',
         name: '_test1_name_',
         title: '_test1_title_',
     },
     {
+        id: '2',
         route: '2',
         name: '_test2_name_',
         title: '_test2_title_',
     }
 ]
 const testPageConfig: TPageConfig = {
+    id: '1',
     route: '1',
     name: '_test1_name_',
     title: '_test1_title_',

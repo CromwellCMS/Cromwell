@@ -8,6 +8,7 @@ import {
     TThemeConfig,
     TThemeEntity,
     TThemeEntityInput,
+    TPageInfo,
 } from '@cromwell/core';
 import { configFileName, getNodeModuleDir, getPublicThemesDir, serverLogFor, getCmsModuleInfo, getLogger, getCmsEntity, incrementServiceVersion } from '@cromwell/core-backend';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -19,6 +20,7 @@ import { getCustomRepository } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
 import { CmsService } from './cms.service';
+import { PluginService } from './plugin.service';
 
 const logger = getLogger('detailed');
 
@@ -27,6 +29,7 @@ export class ThemeService {
 
     constructor(
         private readonly cmsService: CmsService,
+        private readonly pluginService: PluginService,
     ) { }
 
     async findOne(themeName: string): Promise<TThemeEntity | undefined> {
@@ -166,9 +169,10 @@ export class ThemeService {
         return config;
     }
 
-    public getPageConfigFromThemeConfig(pageRoute: string, themeConfig: TThemeConfig | undefined | null): TPageConfig | undefined {
-        if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
+    public getPageConfigFromThemeConfig(themeConfig: TThemeConfig | undefined | null, pageRoute: string, pageId?: string): TPageConfig | undefined {
+        if (themeConfig?.pages && Array.isArray(themeConfig.pages)) {
             for (const p of themeConfig.pages) {
+                if (p.id === pageId) return p;
                 if (p.route === pageRoute) return p;
             }
         }
@@ -182,12 +186,15 @@ export class ThemeService {
      */
     public async getPageConfig(pageRoute: string): Promise<TPageConfig> {
         const { themeConfig, userConfig } = await this.readConfigs();
+        // Read user's page config 
+        const userPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userConfig, pageRoute);
+        
+        // User could possibly modify page's slug (pageRoute), so we'll use ID from user config
+        // (if it's set) to locate original page config
+        const themePageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(themeConfig, pageRoute, userPageConfig?.id);
 
         // let themeMods: TCromwellBlockData[] | undefined = undefined, userMods: TCromwellBlockData[] | undefined = undefined;
-        // Read theme's original modificators 
-        const themePageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(pageRoute, themeConfig);
-        // Read user's custom modificators 
-        const userPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(pageRoute, userConfig);
+
         // Merge users's with theme's mods
         const pageConfig = this.mergePages(themePageConfig, userPageConfig, themeConfig?.globalModifications, userConfig?.globalModifications);
 
@@ -233,11 +240,10 @@ export class ThemeService {
                 pages: []
             }
         }
-        if (!userConfig?.pages) userConfig.pages = [];
+        if (!userConfig.pages) userConfig.pages = [];
 
 
-        const oldUserPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userPageConfig.route, userConfig);
-        const oldOriginalPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userPageConfig.route, themeConfig);
+        const oldUserPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userConfig, userPageConfig.route, userPageConfig.id);
 
         // Remove global mods that were changed to local
         for (const mod of userPageConfig.modifications) {
@@ -302,8 +308,11 @@ export class ThemeService {
 
         let pageIndex: number | undefined;
         userConfig.pages.forEach((page, i) => {
+            if (pageIndex !== undefined) return;
+            if (page.id === pageConfig.id) pageIndex = i;
             if (page.route === pageConfig.route) pageIndex = i;
         });
+
         if (pageIndex !== undefined) {
             userConfig.pages[pageIndex] = pageConfig;
         } else {
@@ -329,20 +338,22 @@ export class ThemeService {
         const { themeConfig, userConfig, cmsSettings } = await this.readConfigs();
 
         let pages: TPageConfig[] = [];
-        if (themeConfig && themeConfig.pages && Array.isArray(themeConfig.pages)) {
-            pages = themeConfig.pages;
+        if (themeConfig?.pages && Array.isArray(themeConfig.pages)) {
+            pages = themeConfig.pages.filter(p => p.id);
         }
-        const pageRoutes: string[] = [];
-        pages.forEach(p => pageRoutes.push(p.route));
+        const pageIds: string[] = [];
+        pages.forEach(p => pageIds.push(p.id));
 
         if (userConfig && userConfig.pages && Array.isArray(userConfig.pages)) {
             userConfig.pages.forEach(p => {
-                if (pageRoutes.includes(p.route)) {
-                    const i = pageRoutes.indexOf(p.route);
-                    pages[i] = this.mergePages(pages[i], p);
-                }
-                else {
-                    pages.push(p);
+                if (p.id) {
+                    if (pageIds.includes(p.id)) {
+                        const i = pageIds.indexOf(p.id);
+                        pages[i] = this.mergePages(pages[i], p);
+                    }
+                    else {
+                        pages.push(p);
+                    }
                 }
             })
         }
@@ -352,6 +363,49 @@ export class ThemeService {
         pages.forEach(p => p.modifications = this.mergeMods(globalModificators, p.modifications));
 
         return pages;
+    }
+
+    public async getPagesInfo(): Promise<TPageInfo[]> {
+        const out: TPageInfo[] = [];
+
+        const pages = await this.readAllPageConfigs();
+
+        pages.forEach(p => {
+            const info: TPageInfo = {
+                id: p.id,
+                route: p.route,
+                name: p.name,
+                title: p.title,
+                isDynamic: p.isDynamic,
+                isVirtual: p.isVirtual,
+            }
+            out.push(info);
+        });
+
+        return out;
+    }
+
+    public async getPluginsAtPage(pageRoute: string): Promise<Record<string, any>> {
+        const out: Record<string, any> = {};
+
+        const pageConfig = await this.getPageConfig(pageRoute);
+
+        if (pageConfig && pageConfig.modifications && Array.isArray(pageConfig.modifications)) {
+            for (const mod of pageConfig.modifications) {
+                const pluginName = mod?.plugin?.pluginName;
+                if (pluginName) {
+                    const pluginEntity = await this.pluginService.findOne(pluginName);
+                    try {
+                        const pluginConfig = Object.assign({}, mod?.plugin?.settings,
+                            JSON.parse(pluginEntity?.settings ?? '{}'));
+                        out[pluginName] = pluginConfig;
+                    } catch (e) {
+                        serverLogFor('errors-only', 'Failed to parse plugin settings of ' + pluginName + e, 'Error')
+                    }
+                }
+            };
+        }
+        return out;
     }
 
     public async setActive(themeName: string): Promise<boolean> {

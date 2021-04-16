@@ -74,12 +74,17 @@
         padding: 15px;
     }
 
-    .tabContent {
+    .tabs {
         // padding: 15px;
         @include paper;
         margin: 15px 0;
         background-color: #fff;
         border-radius: 8px;
+    }
+
+    .tabsContent {
+        transition-duration: 0.3s;
+        transition-property: opacity;
     }
 
     .saveBtn {

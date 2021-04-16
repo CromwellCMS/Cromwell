@@ -23,7 +23,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import { loginPageInfo, sideBarLinks, userPageInfo } from '../../constants/PageInfos';
+import { loginPageInfo, sideBarLinks, userPageInfo, pageInfos } from '../../constants/PageInfos';
 import styles from './Sidebar.module.scss';
 import SidebarLink from './SidebarLink';
 
@@ -54,7 +54,10 @@ function Sidebar() {
     useEffect(() => {
         onStoreChange('userInfo', (value) => {
             forceUpdate();
-        })
+        });
+        history?.listen((location, action) => {
+            forceUpdate();
+        });
     }, []);
 
     const handleLogout = async () => {
@@ -67,6 +70,10 @@ function Sidebar() {
     const handleOptionsToggle = () => {
         setOptionsOpen(!optionsOpen);
     }
+
+    // check for diabled sidebar
+    const currentInfo = pageInfos.find(i => i.route === window.location.pathname);
+    if (currentInfo?.disableSidebar) return <></>;
 
     const sidebarContent = (
         <div className={styles.sidebarContent}>

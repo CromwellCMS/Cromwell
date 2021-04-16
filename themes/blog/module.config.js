@@ -9,35 +9,61 @@ module.exports = {
     headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700;900&display=swap\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />",
     pages: [
         {
-            "route": "index",
-            "name": "index",
-            "title": "Home page",
-            "modifications": []
+            id: "index",
+            route: "index",
+            name: "Home",
+            title: "Home page",
+            modifications: []
         },
         {
-            "route": "pages/some_page",
+            id: "post/[slug]",
+            route: "post/[slug]",
+            name: "Post",
+            title: "Post page",
+            modifications: []
+        },
+        {
+            id: "tag/[slug]",
+            route: "tag/[slug]",
+            name: "Tag",
+            title: "Tag page",
+            modifications: []
+        },
+        {
+            id: "search",
+            route: "search",
+            name: "Search",
+            title: "Search page",
+            modifications: []
+        },
+        {
+            id: "pages/contacts",
+            route: "pages/contacts",
+            name: "Contacts",
+            title: "Contacts",
             isVirtual: true,
-            "name": "Custom page",
-            "title": "Some custom page",
-            "modifications": [
+            modifications: [
                 {
-                    "type": "plugin",
-                    "id": "5",
-                    "plugin": {
-                        "pluginName": "@cromwell/plugin-product-showcase"
+                    "id": "_c7ibjr09hrpi",
+                    "type": "HTML",
+                    "isVirtual": true,
+                    "parentId": "PagesGenericPage",
+                    "index": 0,
+                    "html": {
+                        "innerHTML": "<h1>Contact Information</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>Email:</strong> contact@example.com</p></li>\n<li><p><strong>Phone:</strong> +1 (234) 567-89-00</p></li>\n<li><p><strong>Address:</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
                     }
                 },
                 {
-                    "type": "HTML",
-                    "id": "1",
-                    "parentId": "somep_1",
-                },
-                {
-                    "type": "text",
-                    "id": "3",
-                    "parentId": "somep_1",
-                    "index": "0"
-                },
+                    "id": "PagesGenericPage",
+                    "className": "common-module_content__1ZF7i",
+                    "type": "container",
+                    "editorStyles": {
+                        "maxWidth": 700,
+                        "align": "center",
+                        "offsetTop": 20,
+                        "offsetBottom": 20
+                    }
+                }
             ]
         }
     ],

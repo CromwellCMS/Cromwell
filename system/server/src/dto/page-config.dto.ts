@@ -3,6 +3,9 @@ import { TPageConfig, TCromwellBlockData } from '@cromwell/core';
 
 export class PageConfigDto implements TPageConfig {
     @ApiProperty()
+    id: string;
+
+    @ApiProperty()
     route: string;
 
     @ApiProperty()

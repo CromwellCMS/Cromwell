@@ -2,10 +2,12 @@ import { TCromwellBlockProps } from '@cromwell/core';
 import React from 'react';
 
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
+import { Link } from '../Link/Link';
 
 type CTextProps = {
     children?: string;
-    element?: keyof React.ReactHTML
+    element?: keyof React.ReactHTML;
+    href?: string;
 } & TCromwellBlockProps;
 
 export const CText = (props: CTextProps) => {
@@ -30,6 +32,11 @@ export const CText = (props: CTextProps) => {
                         content: _text,
                         textElementType: _type
                     }
+                }
+
+                const href = data?.text?.href ?? props?.href;
+                if (href) {
+                    return <Link href={href}>{_text}</Link>
                 }
 
                 return React.createElement(_type, {}, _text);
