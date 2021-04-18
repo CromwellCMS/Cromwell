@@ -160,7 +160,7 @@ class CStore {
         this.removeFromList(cartKey, product);
     }
 
-    public addOnCartUpdatedCallback = (cb: (cart: TStoreListItem[]) => void, id?: string): string => {
+    public onCartUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
         const key = id ? id : Object.keys(this.onCartUpdatedCallbacks).length + '';
         this.onCartUpdatedCallbacks[key] = cb;
         return key;

@@ -27,6 +27,8 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
     if (!PageComponent) throw new Error('getPage !PageComponent');
     if (!isValidElementType(PageComponent)) throw new Error('getPage PageComponent !isValidElementType');
 
+    if (pageName === '_app') return PageComponent;
+
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
         const { pluginsData, pluginsSettings, pageConfig, themeCustomConfig,
             childStaticProps, cmsSettings, headHtml, pagesInfo,

@@ -6,7 +6,7 @@ import styles from './Footer.module.scss';
 
 export const Footer = () => {
     return (
-        <CContainer className={`${styles.Footer} ${commonStyles.text}`} id="footer_01">
+        <CContainer global className={`${styles.Footer} ${commonStyles.text}`} id="footer_01">
             <CContainer className={commonStyles.content} id="footer_02">
                 <CContainer className={styles.subscribe} id="footer_03">
                     <CContainer className={styles.subscribeText} id="footer_04">
@@ -21,7 +21,7 @@ export const Footer = () => {
                     <CContainer className={styles.linksBlock} id="footer_09">
                         <CText className={styles.blockHeader} id="footer_10">Contact infromation</CText>
                         <CText className={styles.blockSubHeader} id="footer_11">Address</CText>
-                        <CText className={styles.blockLink} id="footer_12">123 Street, City, Canada</CText>
+                        <CText className={styles.blockLink} id="footer_12">123 Street, City, Country</CText>
                         <CText className={styles.blockSubHeader} id="footer_13">Phone</CText>
                         <CText className={styles.blockLink} id="footer_14">+1 (234) 567-89-00</CText>
                         <CText className={styles.blockSubHeader} id="footer_15">Email</CText>

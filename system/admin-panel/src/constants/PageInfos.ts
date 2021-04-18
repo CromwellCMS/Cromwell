@@ -1,40 +1,43 @@
+import SidebarLink from '@App/components/sidebar/SidebarLink';
+import { TPageConfig } from '@cromwell/core/es';
 import {
     Category as CategoryIcon,
     Dashboard as DashboardIcon,
     FilterList as FilterListIcon,
     FormatPaint as FormatPaintIcon,
-    LocalMall as LocalMallIcon,
-    Power as PowerIcon,
-    Storage as StorageIcon,
     LibraryBooks as LibraryBooksIcon,
-    ShoppingBasket as ShoppingBasketIcon,
-    Settings as SettingsIcon,
-    PeopleAlt as PeopleAltIcon,
+    LocalMall as LocalMallIcon,
     LocalOfferOutlined as LocalOfferOutlinedIcon,
+    PeopleAlt as PeopleAltIcon,
+    Power as PowerIcon,
+    Settings as SettingsIcon,
+    ShoppingBasket as ShoppingBasketIcon,
+    Storage as StorageIcon,
 } from '@material-ui/icons';
 import React from 'react';
+
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
 import AttributesPage from '../pages/attributes/AttributesPage';
+import CategoryPage from '../pages/category/CategoryPage';
+import CategoryListPage from '../pages/categoryList/CategoryList';
 import HomePage from '../pages/home/Home';
+import LoginPage from '../pages/login/LoginPage';
+import OrderPage from '../pages/order/Order';
+import OrderListPage from '../pages/orderList/OrderList';
 import PluginPage from '../pages/plugin/PluginPage';
 import PluginListPage from '../pages/pluginList/PluginList';
+import PostPage from '../pages/post/Post';
+import PostListPage from '../pages/postList/PostList';
 import ProductPage from '../pages/product/Product';
 import ProductListPage from '../pages/productList/ProductList';
+import SettingsPage from '../pages/settings/Settings';
+import TagPage from '../pages/tag/Tag';
+import TagListPage from '../pages/tagList/TagList';
 import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
 import ThemeListPage from '../pages/themeList/ThemeList';
-import PostListPage from '../pages/postList/PostList';
-import CategoryPage from '../pages/category/CategoryPage';
-import PostPage from '../pages/post/Post';
-import CategoryListPage from '../pages/categoryList/CategoryList';
-import LoginPage from '../pages/login/LoginPage';
-import WelcomePage from '../pages/welcome/Welcome';
-import OrderListPage from '../pages/orderList/OrderList';
-import OrderPage from '../pages/order/Order';
-import SettingsPage from '../pages/settings/Settings';
-import UserListPage from '../pages/userList/UserList';
 import UserPage from '../pages/user/User';
-import TagListPage from '../pages/tagList/TagList';
-import TagPage from '../pages/tag/Tag';
+import UserListPage from '../pages/userList/UserList';
+import WelcomePage from '../pages/welcome/Welcome';
 
 export type SidebarLinkType = {
     id: string;
@@ -294,3 +297,20 @@ export const sideBarLinks: SidebarLinkType[] = [
         icon: React.createElement(SettingsIcon)
     }
 ]
+
+export const getLinkByInfo = (pageInfo: PageInfo) => {
+    if (!pageInfo) return;
+    const getFromLinks = (links: SidebarLinkType[]): (SidebarLinkType & { parentId?: string }) | undefined => {
+        for (const link of links) {
+            if (link.route === pageInfo.route) return link;
+            if (link.sublinks) {
+                const sub = getFromLinks(link.sublinks);
+                if (sub) {
+                    sub.parentId = link.id;
+                    return sub;
+                }
+            }
+        }
+    }
+    return getFromLinks(sideBarLinks);
+}

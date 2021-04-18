@@ -65,6 +65,7 @@ export type TCromwellBlockProps = {
     id: string;
     type?: TCromwellBlockType;
     className?: string;
+    onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => any;
     jsxParentId?: string;
     content?: (data: TCromwellBlockData | undefined,
         blockRef: React.RefObject<HTMLDivElement>,

@@ -1,20 +1,29 @@
+import './CromwellBlock.module.scss';
+
 import {
-    getStoreItem, setStoreItem, TCromwellBlockData,
-    TCromwellBlockProps, TCromwellBlock, TBlockContentProvider
+    getStoreItem,
+    setStoreItem,
+    TBlockContentProvider,
+    TCromwellBlock,
+    TCromwellBlockData,
+    TCromwellBlockProps,
 } from '@cromwell/core';
 import React, { Component, useEffect } from 'react';
+
+import {
+    BlockContentConsumer,
+    blockTypeToClassname,
+    CromwellBlockCSSclass,
+    cromwellBlockPluginNameToClassname,
+    cromwellIdToHTML,
+    dynamicLoader,
+} from '../../constants';
 import { CContainer } from '../CContainer/CContainer';
-import { CText } from '../CText/CText';
+import { CGallery } from '../CGallery/CGallery';
 import { CHTML } from '../CHTML/CHTML';
 import { CImage } from '../CImage/CImage';
 import { CPlugin } from '../CPlugin/CPlugin';
-import { CGallery } from '../CGallery/CGallery';
-import {
-    blockTypeToClassname, cromwellIdToHTML,
-    cromwellBlockPluginNameToClassname, BlockContentConsumer, dynamicLoader
-} from '../../constants';
-import styles from './CromwellBlock.module.scss';
-
+import { CText } from '../CText/CText';
 
 export class CromwellBlock extends Component<TCromwellBlockProps> implements TCromwellBlock {
 
@@ -240,7 +249,6 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         }
 
         return this.props.children;
-
     }
 
     public contentRender(getContent?: TBlockContentProvider['getter'] | null, className?: string): React.ReactNode | null {
@@ -250,8 +258,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
             return <></>;
         }
 
-        const elementClassName = styles.CromwellBlock
-            // + (this.shouldBeMoved && isServer() ? ' CromwellBlockInnerServer' : '')
+        const elementClassName = CromwellBlockCSSclass
             + (this.data && this.data.type ? ' ' + blockTypeToClassname(this.data.type) : '')
             + (this.props.className ? ` ${this.props.className}` : '')
             + (this.data && this.data.type && this.data.type === 'plugin' && this.data.plugin && this.data.plugin.pluginName
@@ -312,7 +319,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
         return (
             <div id={this.htmlId} key={this.htmlId}
-                // @TODO resolve styles type to store in config. Normal CSS or React.CSSProperties
+                onClick={this.props.onClick}
                 style={blockStyles}
                 className={elementClassName}
                 ref={this.blockRef}

@@ -1,6 +1,6 @@
 import { TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
-import { Collapse, IconButton, useMediaQuery, useTheme } from '@material-ui/core';
+import { Collapse, IconButton, useMediaQuery, useTheme, Grid } from '@material-ui/core';
 import { DeleteForever as DeleteForeverIcon, ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
@@ -70,15 +70,15 @@ export const CartProductList = (props: {
                 if (product) {
                     const productLink = `/product/${product.slug}`;
                     return (
-                        <div key={i} className={clsx(styles.listItem, commonStyles.onHoverLinkContainer)}>
-                            <div className={styles.itemBlock}>
+                        <Grid key={i} className={clsx(styles.listItem, commonStyles.onHoverLinkContainer)} container>
+                            <Grid item xs={3} className={styles.itemBlock}>
                                 <Link href={productLink}>
                                     <a onClick={() => props?.onProductOpen?.(product)}>
                                         <img src={product.mainImage} className={styles.mainImage} />
                                     </a>
                                 </Link>
-                            </div>
-                            <div className={styles.itemBlock}>
+                            </Grid>
+                            <Grid item xs={4} className={clsx(styles.itemBlock, styles.caption)}>
                                 <Link href={productLink}>
                                     <a onClick={() => props?.onProductOpen?.(product)}
                                         className={clsx(commonStyles.onHoverLink, styles.productName)}>{product.name}</a>
@@ -89,26 +89,26 @@ export const CartProductList = (props: {
                                     )}
                                     <p className={styles.price}>{cstore.getPriceWithCurrency(product?.price)}</p>
                                 </div>
-                            </div>
-                            <div className={styles.itemBlock}>
+                            </Grid>
+                            <Grid item xs={3} className={styles.itemBlock}>
                                 {checkedAttrKeys.map(key => {
                                     const vals = it.pickedAttributes ? it.pickedAttributes[key] : [];
                                     const valsStr = vals.join(', ');
                                     return <p key={key}>{key}: {valsStr}</p>
                                 })}
-                            </div>
-                            <div className={styles.itemBlock}>
                                 <p>Qty: {it.amount}</p>
-                            </div>
-                            <div className={styles.itemBlock} style={{ marginLeft: 'auto', paddingRight: '0px' }}>
-                                <IconButton
-                                    aria-label="Delete"
-                                    onClick={() => { handleDeleteItem(it); }}
-                                >
-                                    <DeleteForeverIcon />
-                                </IconButton>
-                            </div>
-                        </div>
+                            </Grid>
+                            <Grid item xs={2} className={styles.itemBlock} style={{ marginLeft: 'auto', paddingRight: '0px' }}>
+                                <div className={styles.actions} >
+                                    <IconButton
+                                        aria-label="Delete"
+                                        onClick={() => { handleDeleteItem(it); }}
+                                    >
+                                        <DeleteForeverIcon />
+                                    </IconButton>
+                                </div>
+                            </Grid>
+                        </Grid>
                     )
                 }
             })}

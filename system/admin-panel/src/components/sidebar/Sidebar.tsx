@@ -23,7 +23,7 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import { loginPageInfo, sideBarLinks, userPageInfo, pageInfos } from '../../constants/PageInfos';
+import { loginPageInfo, sideBarLinks, userPageInfo, pageInfos, getLinkByInfo } from '../../constants/PageInfos';
 import styles from './Sidebar.module.scss';
 import SidebarLink from './SidebarLink';
 
@@ -32,18 +32,22 @@ function useForceUpdate() {
     return () => setValue(value => ++value);
 }
 
-function Sidebar() {
-    const [expanded, setExpanded] = useState<string | false>(false);
+export default function Sidebar() {
+    const currentInfo = pageInfos.find(i => i.route === window.location.pathname);
+    const currentLink = getLinkByInfo(currentInfo);
+
+    const [expanded, setExpanded] = useState<string | false>(currentLink?.parentId ?? false);
     const [optionsOpen, setOptionsOpen] = useState<boolean>(false);
-    const [activeId, setActiveId] = useState<string | null>(null);
-    const forceUpdate = useForceUpdate()
+    const [activeId, setActiveId] = useState<string | null>(currentLink?.id ?? null);
+    const [mobileOpen, setMobileOpen] = useState(false);
+    const popperAnchorEl = useRef<HTMLDivElement | null>(null);
+    const history = useHistory?.();
+    const forceUpdate = useForceUpdate();
+
+    const userInfo: TUser | undefined = getStoreItem('userInfo');
     const toggleSubmenu = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
     };
-    const userInfo: TUser | undefined = getStoreItem('userInfo');
-    const history = useHistory?.();
-    const popperAnchorEl = useRef<HTMLDivElement | null>(null);
-    const [mobileOpen, setMobileOpen] = useState(false);
     const handleCloseMenu = () => {
         setMobileOpen(false);
     }
@@ -72,14 +76,13 @@ function Sidebar() {
     }
 
     // check for diabled sidebar
-    const currentInfo = pageInfos.find(i => i.route === window.location.pathname);
     if (currentInfo?.disableSidebar) return <></>;
 
     const sidebarContent = (
         <div className={styles.sidebarContent}>
             <div className={styles.sidebarTop}>
                 <div className={styles.sidebarHeader}>
-                    <img src="/logo_small_white.png" alt="logo" className={styles.logo} />
+                    <img src="/logo_icon_white.png" alt="logo" className={styles.logo} />
                     {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                     <div className={styles.sidebarMobileActions}>
                         <IconButton onClick={handleCloseMenu} >
@@ -162,7 +165,7 @@ function Sidebar() {
                             className={styles.toolbar}
                         >
                             <div className={styles.sidebarMobileHeader}>
-                                <img src="/logo_small_white.png" alt="logo" className={styles.logo} />
+                                <img src="/logo_icon.png" alt="logo" className={styles.logoMobile} />
                                 {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                                 <div className={styles.mobileActions}>
                                     <IconButton onClick={handleOpenMenu}>
@@ -185,8 +188,6 @@ function Sidebar() {
         </div>
     )
 }
-
-export default Sidebar;
 
 function HideOnScroll(props: { children: React.ReactElement }) {
     const trigger = useScrollTrigger();

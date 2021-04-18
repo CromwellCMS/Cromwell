@@ -232,26 +232,6 @@ module.exports = {
         }
     ],
     themeCustomConfig: {
-        "store": {},
-        "header": {
-            "logo": "/themes/@cromwell/theme-store/shopping-cart.png",
-            "contactPhone": "+123 (456) 78-90",
-            "welcomeMessage": "Welcome message",
-            "topLinks": [
-                {
-                    "title": "Contact us",
-                    "href": "/contact-us"
-                },
-                {
-                    "title": "Blog",
-                    "href": "/blog"
-                },
-                {
-                    "title": "Sign in",
-                    "href": "/sign-in"
-                }
-            ]
-        },
         "product": {
             "customTabs": [
                 {

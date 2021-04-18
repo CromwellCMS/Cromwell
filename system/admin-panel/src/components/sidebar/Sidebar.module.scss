@@ -38,14 +38,19 @@ a {
 .logo {
     width: 24px;
     margin-right: 10px;
-    margin-left: 5px;
+    margin-left: 9px;
     opacity: 0.6;
+}
+.logoMobile {
+    width: 24px;
+    margin-right: 10px;
+    margin-left: 5px;
 }
 
 div.SidebarLink {
     width: 100%;
     background: rgba(0, 0, 0, 0.1);
-    margin-bottom: 7px;
+    margin-bottom: 7px !important;
     border-radius: 6px;
     overflow: hidden;
     transition: 0.3s;
@@ -202,6 +207,10 @@ header.appBar {
     }
 
     .desktopContent {
+        display: none;
+    }
+
+    .logo {
         display: none;
     }
 }

@@ -15,7 +15,6 @@
 
 .listItem {
     display: flex;
-    padding: 10px;
     border-bottom: 1px solid #ddd;
 }
 .listItem:last-child {
@@ -26,11 +25,16 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding-right: 20px;
 }
 
 .mainImage {
     height: 100px;
+    width: 100%;
+    object-fit: contain;
+}
+
+.caption {
+    padding-left: 10px;
 }
 
 .priceBlock {
@@ -78,6 +82,13 @@
 }
 
 .itemsText {
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    padding-right: 10px;
 }
 
 @media screen and (max-width: $mobileBreakpoint) {

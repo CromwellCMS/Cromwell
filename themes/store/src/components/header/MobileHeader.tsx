@@ -11,7 +11,7 @@ import {
     Close as CloseIcon
 } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { productListStore } from '../../helpers/ProductListStore';
+import { appState } from '../../helpers/AppState';
 import { HeaderSearch } from './HeaderSearch';
 import styles from './MobileHeader.module.scss';
 
@@ -26,7 +26,7 @@ export const MobileHeader = () => {
     }
 
     const handleOpenCart = () => {
-        productListStore.isCartOpen = true;
+        appState.isCartOpen = true;
     }
     const logoHref: string | undefined = getThemeCustomConfigProp('header/logo');
 
