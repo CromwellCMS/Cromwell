@@ -1,7 +1,7 @@
 jobs:
   build:
     docker:
-      - image: circleci/node:12.21.1
+      - image: cimg/node:12.21.1
         auth:
           username: elrix
           password: $DOCKERHUB_PASSWORD
