@@ -42,8 +42,7 @@ export default class ProductShowcaseResolver {
 
                             products.elements.push(prod);
 
-                            if (products.elements?.length &&
-                                products.elements?.length >= maxSize) break;
+                            if (products.elements.length >= maxSize) break;
                         }
 
                     }
@@ -52,8 +51,16 @@ export default class ProductShowcaseResolver {
                 if (products.elements?.length &&
                     products.elements?.length >= maxSize) break;
             }
+
+            if (products.elements!.length < maxSize) {
+                (await this.productRepo.getProducts({ pageSize: maxSize }))?.elements?.forEach(prod => {
+                    if (products.elements!.length < maxSize) {
+                        products.elements?.push(prod);
+                    }
+                })
+            }
         } else {
-            products = await this.productRepo.getPaged({ pageSize: maxSize });
+            products = await this.productRepo.getProducts({ pageSize: maxSize });
         }
 
         const timestamp2 = Date.now();

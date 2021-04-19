@@ -127,36 +127,6 @@ header.appBar {
     font-size: 0.7em;
 }
 
-div.cart {
-    display: flex;
-    width: 110px;
-    border-radius: 15px;
-    justify-content: space-between;
-}
-
-.cartIcon {
-    width: 40px;
-    height: 40px;
-    cursor: pointer;
-    background: url("/themes/@cromwell/theme-store/bag.png") no-repeat center / contain;
-}
-.cartExpandBlock {
-    display: flex;
-    flex-direction: column;
-    margin-left: 10px;
-}
-.cartExpandIcon {
-    display: flex;
-}
-.itemsInCart {
-    font-weight: 500;
-    font-size: 0.7em;
-    color: $primaryTextOver;
-    background: $primary;
-    text-align: center;
-    border-radius: 20px;
-}
-
 .mainMenu {
     position: relative;
 }

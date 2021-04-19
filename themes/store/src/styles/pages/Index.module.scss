@@ -1,4 +1,5 @@
 @import "../variables.scss";
+@import "../common.module.scss";
 
 .IndexPage {
     // display: flex;
@@ -32,7 +33,7 @@
 }
 
 .mainBannerGallery {
-    padding: 20px 0;
+    padding: 0;
 }
 
 .mainBlock {
@@ -82,4 +83,23 @@
     margin: 20px 0;
     padding: 15px 0;
     border-radius: 15px;
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .mainSidebar {
+        display: none;
+    }
+
+    .mainContent {
+        width: 100%;
+    }
+
+    .advantagesBlock {
+        flex-direction: column;
+    }
+
+    .advantageItem {
+        width: 100%;
+        justify-content: center;
+    }
 }

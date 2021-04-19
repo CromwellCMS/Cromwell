@@ -29,7 +29,7 @@
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    padding: 5px 0;
+    padding: 5px 10px;
     font-size: 0.7em;
 }
 
@@ -83,7 +83,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 0;
+    padding: 10px;
 }
 
 .logo {
@@ -118,7 +118,7 @@ div.cart {
     width: 40px;
     height: 40px;
     cursor: pointer;
-    background: url("/themes/@cromwell/theme-store/bag.png") no-repeat center / contain;
+    background: url("/themes/@cromwell/theme-store/shopping-bag.png") no-repeat center / contain;
 }
 .cartExpandBlock {
     display: flex;

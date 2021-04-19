@@ -1,17 +1,16 @@
-import { getCmsSettings, getThemeCustomConfigProp, TCurrency, TUser } from '@cromwell/core';
+import { getCmsSettings, TCurrency, TUser } from '@cromwell/core';
 import { CContainer, CHTML, CPlugin, CText, getCStore, Link } from '@cromwell/core-frontend';
 import { FormControl, ListItem, MenuItem, Select as MuiSelect, withStyles } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { appState } from '../../helpers/AppState';
 import commonStyles from '../../styles/common.module.scss';
-import { TTopLink } from '../../types';
+import SingInModal from '../modals/singIn/SingIn';
 import styles from './Header.module.scss';
 import { HeaderSearch } from './HeaderSearch';
 import { MobileHeader } from './MobileHeader';
-import SingInModal from '../modals/singIn/SingIn';
-import clsx from 'clsx';
 
 const Select = withStyles({
     root: {

@@ -9,7 +9,7 @@ module.exports = {
         "react-toastify/dist/ReactToastify.css",
         '../styles/global.scss'
     ],
-    headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />",
+    headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;900&display=swap\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />",
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
         const json = require('@rollup/plugin-json');
@@ -141,11 +141,11 @@ module.exports = {
                     "oldPrice": 869,
                     "views": 0,
                     "images": [
-                        "/themes/@cromwell/theme-store/product_3.jpg",
-                        "/themes/@cromwell/theme-store/product_2.jpg",
-                        "/themes/@cromwell/theme-store/product.jpg",
-                        "/themes/@cromwell/theme-store/product.jpg",
-                        "/themes/@cromwell/theme-store/product_3.jpg"
+                        "/themes/@cromwell/theme-store/product3.png",
+                        "/themes/@cromwell/theme-store/product2.png",
+                        "/themes/@cromwell/theme-store/product1.png",
+                        "/themes/@cromwell/theme-store/product1.png",
+                        "/themes/@cromwell/theme-store/product3.png"
                     ],
                     "description": "<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</p><ul><li><i class=\"porto-icon-ok\"></i>Any Product types that You want - Simple, Configurable</li><li><i class=\"porto-icon-ok\"></i>Downloadable/Digital Products, Virtual Products</li><li><i class=\"porto-icon-ok\"></i>Inventory Management with Backordered items</li></ul><p>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, <br>quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>",
                     "pageTitle": null,

@@ -62,6 +62,10 @@ export class Product extends BasePageEntity implements TProduct {
     @Column({ type: "bigint", nullable: true })
     views?: number;
 
+    /** 
+     * Not real columns (not used at least), workaround to make SELECT count reviews:
+     * https://github.com/CromwellCMS/Cromwell/blob/9eb541b1be060f792abbf4f7133071099a8633f2/system/core/backend/src/repositories/ProductRepository.ts#L39-L45
+     */
     @Column({ type: "decimal", nullable: true, select: false, insert: false, readonly: true })
     averageRating?: number;
 

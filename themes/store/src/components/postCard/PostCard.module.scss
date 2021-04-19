@@ -1,4 +1,12 @@
 @import "../../styles/variables.scss";
+@import "../../styles/common.module.scss";
+
+._onHoverLink {
+    @extend .onHoverLink;
+}
+._onHoverLinkContainer {
+    @extend .onHoverLinkContainer;
+}
 
 .PostCard {
     display: flex;
@@ -6,7 +14,7 @@
     position: relative;
     z-index: 3;
     width: 100%;
-    max-width: 700px;
+    max-width: 900px;
     min-width: 170px;
     border-radius: 8px;
     transition-property: box-shadow, z-index;
@@ -53,7 +61,7 @@
     font-weight: 500;
 }
 
-.avatar {
+svg.avatar {
     width: 40px;
     height: 40px;
     margin-right: 10px;
@@ -68,13 +76,32 @@
 
 .excerpt {
     margin-bottom: 15px;
-    height: 70px;
+    max-height: 70px;
     overflow: hidden;
     text-overflow: ellipsis;
 }
 
+.dateAndReadInfo {
+    display: flex;
+    flex-wrap: wrap;
+}
 .publishDate {
     font-size: 14px;
+    margin-right: 8px;
+}
+.readTime {
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+}
+.readTime::before {
+    content: "";
+    width: 4px;
+    height: 4px;
+    background-color: #333;
+    margin-right: 8px;
+    display: block;
+    border-radius: 100%;
 }
 
 .tagsBlock {
@@ -91,8 +118,56 @@
     border-radius: 10px;
     cursor: pointer;
     transition: 0.3s;
+    color: #333;
 }
 .tag:hover {
     background-color: #333;
     color: #fff;
+}
+
+.coverImage {
+    border-radius: 8px;
+    .caption {
+        position: absolute;
+        bottom: 0;
+        z-index: 2;
+        color: #fff;
+    }
+    .tag {
+        color: #fff;
+        border: 1px solid #fff;
+    }
+    .tag:hover {
+        background-color: #fff;
+        color: #222;
+    }
+
+    .title {
+        color: #fff;
+    }
+
+    &._onHoverLinkContainer:hover ._onHoverLink {
+        color: #fff;
+    }
+    .onHoverLink:before {
+        color: #fff;
+    }
+
+    .readTime::before {
+        content: "";
+        background-color: #fff;
+    }
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    // background-color: rgba($color: #000000, $alpha: 0.2);
+    background: linear-gradient(0deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%);
+    border-radius: 8px;
 }

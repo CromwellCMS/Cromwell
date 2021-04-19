@@ -1,3 +1,6 @@
+@import "../../styles/variables.scss";
+@import "../../styles/common.module.scss";
+
 .Footer {
     background: linear-gradient(144deg, #1b004b 0%, #34002e 100%);
     width: 100%;
@@ -59,4 +62,30 @@ button.subscribeBtn {
     font-size: 14px;
     color: #ccc;
     margin-bottom: 10px;
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .subscribe {
+        flex-direction: column;
+    }
+
+    .subscribeText {
+        margin-bottom: 15px;
+    }
+
+    .subscribeTitle {
+        font-size: 24px;
+    }
+    .subscribeInputContainer {
+        margin-left: 0;
+    }
+
+    .linksSection {
+        flex-direction: column;
+    }
+
+    .linksBlock {
+        align-items: center;
+        margin-bottom: 15px;
+    }
 }
