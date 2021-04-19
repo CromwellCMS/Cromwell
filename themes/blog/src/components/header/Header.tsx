@@ -23,32 +23,6 @@ import commonStyles from '../../styles/common.module.scss';
 import styles from './Header.module.scss';
 import { HeaderSearch } from './HeaderSearch';
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        formControl: {
-            margin: 0,
-        }
-    }),
-);
-
-const Select = withStyles({
-    root: {
-        width: '300px',
-        fontSize: '1em',
-        padding: '4px'
-    }
-})(MuiSelect);
-
-const TextField = withStyles({
-    root: {
-        paddingTop: '0',
-        paddingBottom: '0',
-        fontWeight: 300,
-        width: "100%"
-    },
-})(MuiTextField);
-
-
 const Header = () => {
     const cmsConfig = getCmsSettings();
     const [menuOpen, setMenuOpen] = useState(false);

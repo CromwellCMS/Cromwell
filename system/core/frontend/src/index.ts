@@ -24,6 +24,7 @@ export {
     getBlockElementById,
     pageRootContainerId,
     awaitImporter,
+    CromwellBlockCSSclass,
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient } from './api/CGraphQLClient';
 export { getRestAPIClient } from './api/CRestAPIClient';
@@ -32,11 +33,6 @@ export { getCStore } from './CStore';
 export { loadFrontendBundle } from './helpers/loadFrontendBundle';
 export { fetch } from './helpers/isomorphicFetch';
 export { throbber } from './components/throbber';
-
-//@ts-ignore
-import CromwellBlockStyles from './components/CromwellBlock/CromwellBlock.module.scss';
-export const CromwellBlockCSSclass = CromwellBlockStyles.CromwellBlock;
-
 export { default as Document, Html, Main, NextScript, DocumentContext } from 'next/document';
 import * as nextRouter from 'next/router';
 export { default as Head } from 'next/head';

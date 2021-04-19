@@ -1,22 +1,23 @@
-import { Link } from '@cromwell/core-frontend';
-import { CContainer, CHTML, CPlugin, getCStore } from '@cromwell/core-frontend';
-import { getCmsSettings, getThemeCustomConfigProp, TCurrency } from '@cromwell/core';
-import { IconButton, SwipeableDrawer, AppBar, Toolbar, Slide, useScrollTrigger } from '@material-ui/core';
+import { getCmsSettings } from '@cromwell/core';
+import { CContainer, CPlugin, Link } from '@cromwell/core-frontend';
+import { AppBar, IconButton, Slide, SwipeableDrawer, Toolbar, useScrollTrigger } from '@material-ui/core';
 import {
+    Close as CloseIcon,
     Equalizer as EqualizerIcon,
     Favorite as FavoriteIcon,
     Menu as MenuIcon,
     ShoppingCart as ShoppingCartIcon,
     Visibility as VisibilityIcon,
-    Close as CloseIcon
 } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { productListStore } from '../../helpers/ProductListStore';
+
+import { appState } from '../../helpers/AppState';
 import { HeaderSearch } from './HeaderSearch';
 import styles from './MobileHeader.module.scss';
 
 export const MobileHeader = () => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const cmsConfig = getCmsSettings();
 
     const handleCloseMenu = () => {
         setMenuOpen(false);
@@ -26,9 +27,8 @@ export const MobileHeader = () => {
     }
 
     const handleOpenCart = () => {
-        productListStore.isCartOpen = true;
+        appState.isCartOpen = true;
     }
-    const logoHref: string | undefined = getThemeCustomConfigProp('header/logo');
 
     return (
         <>
@@ -43,7 +43,7 @@ export const MobileHeader = () => {
                             <div className={styles.leftActions}>
                                 <div className={styles.logo}>
                                     <Link href="/">
-                                        <img className={styles.logo} src={logoHref} alt="logo" />
+                                        <img className={styles.logo} src={cmsConfig?.logo} alt="logo" />
                                     </Link>
                                 </div>
 

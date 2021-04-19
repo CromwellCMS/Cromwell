@@ -1,4 +1,7 @@
+@import "../../../styles/common.module.scss";
+
 .cartModal {
+    @include paper;
     width: 600px;
     height: 500px;
     max-height: 100vh;

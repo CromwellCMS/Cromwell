@@ -12,7 +12,7 @@ import {
 import React, { useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { productListStore } from '../../../helpers/ProductListStore';
+import { appState } from '../../../helpers/AppState';
 import styles from './ProductActions.module.scss';
 
 
@@ -46,7 +46,7 @@ export const ProductActions = (props: {
                     onClick={() => {
                         if (inCart) {
                             if (sameQntInCart) {
-                                productListStore.isCartOpen = true;
+                                appState.isCartOpen = true;
                             } else {
                                 cstore.updateQntInCart(item);
                                 forceUpdate();
@@ -106,7 +106,7 @@ export const ProductActions = (props: {
                 <Button
                     onClick={() => {
                         if (inWishlist) {
-                            productListStore.isWishlistOpen = true;
+                            appState.isWishlistOpen = true;
                         } else {
                             const hasBeenAdded = cstore.addToWishlist(item);
                             if (hasBeenAdded) {
@@ -130,7 +130,7 @@ export const ProductActions = (props: {
                 <Button
                     onClick={() => {
                         if (inCompare) {
-                            productListStore.isCompareOpen = true;
+                            appState.isCompareOpen = true;
                         } else {
                             const hasBeenAdded = cstore.addToCompare(item);
                             if (hasBeenAdded) {

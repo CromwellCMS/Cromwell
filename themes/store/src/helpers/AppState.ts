@@ -1,6 +1,9 @@
 import { observable } from "mobx";
 
-class ProductListStore {
+class State {
+    @observable
+    isSigninOpen: boolean = false;
+
     @observable
     isCartOpen: boolean = false;
 
@@ -11,4 +14,4 @@ class ProductListStore {
     isCompareOpen: boolean = false;
 }
 
-export const productListStore = new ProductListStore();
+export const appState = new State();

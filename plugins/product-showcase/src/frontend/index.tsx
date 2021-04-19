@@ -43,7 +43,8 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
             else return <></>
         }
     }
-    // console.log('ProductShowcase props', props)
+    // console.log('ProductShowcase render props', props)
+    
     useEffect(() => {
         const options: SwiperOptions = {
             slidesPerView: 2,
@@ -67,13 +68,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
             // Optional parameters
             direction: 'horizontal',
             virtual: {
-                slides: (function () {
-                    if (productShowcaseData?.elements &&
-                        Array.isArray(productShowcaseData.elements)) {
-                        return productShowcaseData.elements;
-                    }
-                    else return [];
-                }()),
+                slides: productShowcaseData?.elements ?? [],
                 renderExternal: (data) => {
                     setVirtualData(data)
                 }

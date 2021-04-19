@@ -1,32 +1,16 @@
-import { getCmsSettings, getThemeCustomConfigProp, TCurrency } from '@cromwell/core';
-import { CContainer, CHTML, CPlugin, getCStore, Link } from '@cromwell/core-frontend';
-import {
-    createStyles,
-    FormControl,
-    ListItem,
-    makeStyles,
-    MenuItem,
-    Select as MuiSelect,
-    Theme,
-    withStyles,
-} from '@material-ui/core';
+import { getCmsSettings, TCurrency, TUser } from '@cromwell/core';
+import { CContainer, CHTML, CPlugin, CText, getCStore, Link } from '@cromwell/core-frontend';
+import { FormControl, ListItem, MenuItem, Select as MuiSelect, withStyles } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { productListStore } from '../../helpers/ProductListStore';
+import { appState } from '../../helpers/AppState';
 import commonStyles from '../../styles/common.module.scss';
-import { TTopLink } from '../../types';
+import SingInModal from '../modals/singIn/SingIn';
 import styles from './Header.module.scss';
 import { HeaderSearch } from './HeaderSearch';
 import { MobileHeader } from './MobileHeader';
-
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        formControl: {
-            margin: 0,
-        }
-    }),
-);
 
 const Select = withStyles({
     root: {
@@ -36,20 +20,14 @@ const Select = withStyles({
     }
 })(MuiSelect);
 
-
-
 export const Header = () => {
-    const topLinks: TTopLink[] | undefined = getThemeCustomConfigProp('header/topLinks');
     const cmsConfig = getCmsSettings();
     const currencies: TCurrency[] = cmsConfig?.currencies ?? [];
-    const logoHref: string | undefined = getThemeCustomConfigProp('header/logo');
-    const contactPhone: string | undefined = getThemeCustomConfigProp('header/contactPhone');
-    const classes = useStyles();
     const cstore = getCStore();
     const [itemsInCart, setItemsInCart] = useState(cstore.getCart().length);
+    const [singInOpen, setSingInOpen] = useState(false);
 
     const [currency, setCurrency] = React.useState<string | null | undefined>(cstore.getActiveCurrencyTag());
-
 
     const handleCurrencyChange = (event: React.ChangeEvent<{ value: unknown }>) => {
         const val = event.target.value as string;
@@ -58,23 +36,26 @@ export const Header = () => {
     };
 
     const handleCartClick = () => {
-        productListStore.isCartOpen = true;
+        appState.isCartOpen = true;
     }
 
     useEffect(() => {
-        cstore.addOnCartUpdatedCallback((cart) => {
+        cstore.onCartUpdate((cart) => {
             if (itemsInCart !== cart.length)
                 setItemsInCart(cart.length);
         }, 'headerCart');
     }, []);
 
+    const handleSignIn = (user: TUser) => {
+        setSingInOpen(false);
+    }
 
     return (
-        <div className={`${styles.Header} ${commonStyles.text}`}>
-            <div className={styles.topPanel}>
-                <div className={`${commonStyles.content} ${styles.topPanelContent}`}>
+        <CContainer global id="header_1" className={`${styles.Header} ${commonStyles.text}`}>
+            <CContainer id="header_21" className={styles.topPanel}>
+                <CContainer id="header_22" className={`${commonStyles.content} ${styles.topPanelContent}`}>
                     <CContainer className={styles.leftBlock} id="header_11">
-                        <div id="header_01" className={styles.currencyOption}>
+                        <CContainer id="header_01" className={styles.currencyOption}>
                             <FormControl className={styles.formControl}>
                                 <Select
                                     className={styles.select}
@@ -86,7 +67,7 @@ export const Header = () => {
                                     ))}
                                 </Select>
                             </FormControl>
-                        </div>
+                        </CContainer>
                         <CHTML id="header_02">
                             <div className={styles.languageOption}>
                             </div>
@@ -94,56 +75,56 @@ export const Header = () => {
                     </CContainer>
 
                     <CContainer className={styles.rightBlock} id="header_12">
-                        <CHTML id="header_03" className={styles.welcomeMessage}>
-                            <p>{getThemeCustomConfigProp('header/welcomeMessage')}</p>
-                        </CHTML>
-                        <CHTML id="header_04" className={styles.topPanelLinks}>
-                            <>
-                                {topLinks && topLinks.map(l => (
-                                    <div className={styles.topPanelLink} key={l.href}>
-                                        <Link href={l.href} key={l.href}>
-                                            <a className={commonStyles.link}>{l.title}</a>
-                                        </Link>
-                                    </div>
-                                ))}
-                            </>
-                        </CHTML>
+                        <CContainer id="header_03" className={styles.welcomeMessage}>
+                            <CText id="header_35">Welcome message</CText>
+                        </CContainer>
+                        <CContainer id="header_04" className={styles.topPanelLinks}>
+                            <CText id="header_31" href="/contact-us" className={clsx(commonStyles.link, styles.topPanelLink)}>Contact us</CText>
+                            <CText id="header_32" onClick={() => setSingInOpen(true)} className={clsx(commonStyles.link, styles.topPanelLink)}>Sign in</CText>
+                        </CContainer>
                     </CContainer>
-                </div>
-            </div>
+                </CContainer>
+                <SingInModal
+                    type="sign-in"
+                    open={singInOpen}
+                    onClose={() => setSingInOpen(false)}
+                    onSignIn={handleSignIn}
+                />
+            </CContainer>
 
-            <div className={styles.mainPanel}>
-                <div className={`${commonStyles.content} ${styles.mainPanelContent}`}>
-                    <div className={styles.logo}>
+            <CContainer id="header_23" className={styles.mainPanel}>
+                <CContainer id="header_41" className={`${commonStyles.content} ${styles.mainPanelContent}`}>
+                    <CContainer id="header_36" className={styles.logo}>
                         <Link href="/">
-                            <img className={styles.logo} src={logoHref} alt="logo" />
+                            <img className={styles.logo} src={cmsConfig?.logo} alt="logo" />
                         </Link>
-                    </div>
-                    <div className={styles.search}>
+                    </CContainer>
+                    <CContainer id="header_37" className={styles.search}>
                         <HeaderSearch />
-
-                    </div>
-                    <div className={styles.phone}>
-                        <p className={styles.phoneActionTip}>Call us now!</p>
-                        <a href={`tel:${contactPhone}`} className={commonStyles.link}>{contactPhone}</a>
-                    </div>
-                    <ListItem button className={styles.cart} onClick={handleCartClick} >
-                        <div className={styles.cartIcon}></div>
-                        <div className={styles.cartExpandBlock}>
-                            <p className={styles.itemsInCart}>{itemsInCart}</p>
-                            <ExpandMoreIcon className={styles.cartExpandIcon} />
-                        </div>
-                    </ListItem>
-                </div>
-            </div>
-            <div className={styles.mainMenu}>
+                    </CContainer>
+                    <CContainer id="header_38" className={styles.phone}>
+                        <CText id="header_39" className={styles.phoneActionTip}>Call us now!</CText>
+                        <CText id="header_33" href={`tel:+123 (456) 78-90`} className={commonStyles.link}>+123 (456) 78-90</CText>
+                    </CContainer>
+                    <CContainer id="header_40">
+                        <ListItem button className={styles.cart} onClick={handleCartClick} >
+                            <div className={styles.cartIcon}></div>
+                            <div className={styles.cartExpandBlock}>
+                                <p className={styles.itemsInCart}>{itemsInCart}</p>
+                                <ExpandMoreIcon className={styles.cartExpandIcon} />
+                            </div>
+                        </ListItem>
+                    </CContainer>
+                </CContainer>
+            </CContainer>
+            <CContainer id="header_24" className={styles.mainMenu}>
                 <CContainer className={`${commonStyles.content} ${styles.mainMenuContent}`} id="header_13">
                     <CPlugin id="header_main_menu" />
                 </CContainer>
-            </div>
+            </CContainer>
             <div className={styles.mobileHeader}>
                 <MobileHeader />
             </div>
-        </div>
+        </CContainer>
     )
 }

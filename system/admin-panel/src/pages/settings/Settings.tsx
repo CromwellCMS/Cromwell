@@ -100,6 +100,7 @@ const SettingsPage = () => {
                             <FormControl className={styles.field} fullWidth>
                                 <InputLabel>Language</InputLabel>
                                 <Select
+                                    disabled
                                     fullWidth
                                     className={styles.field}
                                     value={settings.language ?? 'en'}

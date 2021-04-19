@@ -12,7 +12,7 @@ const Index: TCromwellPage = (props) => {
     return (
         <Layout>
             <div className={styles.IndexPage}>
-                <CContainer className={commonStyles.content} id="main_00">
+                <CContainer  id="main_00">
                     <CGallery id="main_gallery_01" className={styles.mainBannerGallery} />
                 </CContainer>
                 <CContainer id="main_01" className={styles.advantagesBlockWrapper}>

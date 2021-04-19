@@ -1,12 +1,9 @@
 jobs:
   build:
     docker:
-      - image: circleci/node:12.21.1
+      - image: circleci/node:12.22.1
 
     working_directory: ~/repo
-
-    requires:
-      - shellcheck
 
     steps:
 

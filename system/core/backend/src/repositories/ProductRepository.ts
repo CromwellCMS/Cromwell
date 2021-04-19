@@ -26,7 +26,7 @@ import { ProductReviewRepository } from './ProductReviewRepository';
 
 const logger = getLogger('detailed');
 const averageKey: keyof Product = 'averageRating';
-const reviewsCountKey: keyof Product = 'reviewsCount'
+const reviewsCountKey: keyof Product = 'reviewsCount';
 const ratingKey: keyof TProductReview = 'rating';
 
 @EntityRepository(Product)

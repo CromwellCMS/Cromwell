@@ -63,7 +63,7 @@ describe('ThemeEdit page', () => {
         const pageBtn = await screen.findByText('_test1_name_');
         fireEvent.click(pageBtn);
 
-        const settingsBtn = await screen.findByText('Page settings');
+        const settingsBtn = await screen.findByText('General settings');
         await screen.findByDisplayValue('_test1_title_')
     });
 })

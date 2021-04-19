@@ -1,14 +1,23 @@
-import { gql } from '@apollo/client';
-import { TCromwellPage, TGetStaticProps, TPagedList, TPagedParams, TPost, TPostFilter, getBlockInstance, TTag } from '@cromwell/core';
+import {
+    getBlockInstance,
+    TCromwellPage,
+    TGetStaticProps,
+    TPagedList,
+    TPagedParams,
+    TPost,
+    TPostFilter,
+    TTag,
+} from '@cromwell/core';
 import { CContainer, CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import React, { useState, useRef } from 'react';
+import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import { Checkbox, IconButton, TextField, Tooltip, FormControl, InputLabel, Select, MenuItem } from '@material-ui/core';
+import React, { useRef, useState } from 'react';
 
 import Layout from '../components/layout/Layout';
 import layoutStyles from '../components/layout/Layout.module.scss';
 import { Pagination } from '../components/pagination/Pagination';
 import { PostCard } from '../components/postCard/PostCard';
+import { handleGetFilteredPosts } from '../helpers/getPosts';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Blog.module.scss';
 
@@ -17,7 +26,8 @@ interface BlogProps {
     posts?: TPagedList<TPost>;
     tags?: TTag[];
 }
-const Blog: TCromwellPage<BlogProps> = (props) => {
+
+const BlogPage: TCromwellPage<BlogProps> = (props) => {
     const filterInput = useRef<TPostFilter>({});
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
@@ -28,7 +38,7 @@ const Blog: TCromwellPage<BlogProps> = (props) => {
         list?.updateData();
     }
 
-    const handleChangeTags = (event, newValue?: (TTag | undefined | string)[]) => {
+    const handleChangeTags = (event: any, newValue?: (TTag | undefined | string)[]) => {
         filterInput.current.tagIds = newValue?.map(tag => (tag as TTag)?.id);
         forceUpdate();
         updateList();
@@ -88,72 +98,39 @@ const Blog: TCromwellPage<BlogProps> = (props) => {
                         </Select>
                     </FormControl>
                 </div>
-                <CList<TPost>
-                    id={listId}
-                    ListItem={(props) => (
-                        <div className={styles.postWrapper}>
-                            <PostCard onTagClick={handleTagClick} data={props.data} key={props.data?.id} />
-                        </div>
-                    )}
-                    usePagination
-                    useShowMoreButton
-                    useQueryPagination
-                    disableCaching
-                    pageSize={20}
-                    maxDomPages={2}
-                    scrollContainerSelector={`.${layoutStyles.Layout}`}
-                    firstBatch={props.posts}
-                    loader={handleGetPosts}
-                    cssClasses={{
-                        page: styles.postList
-                    }}
-                    elements={{
-                        pagination: Pagination
-                    }}
-                />
-                <CContainer id="Product_ProductShowcase" />
+                <div style={{ marginBottom: '20px' }}>
+                    <CList<TPost>
+                        id={listId}
+                        ListItem={(props) => (
+                            <div className={styles.postWrapper}>
+                                <PostCard onTagClick={handleTagClick} data={props.data} key={props.data?.id} />
+                            </div>
+                        )}
+                        usePagination
+                        useShowMoreButton
+                        useQueryPagination
+                        disableCaching
+                        pageSize={20}
+                        maxDomPages={2}
+                        scrollContainerSelector={`.${layoutStyles.Layout}`}
+                        firstBatch={props.posts}
+                        loader={handleGetPosts}
+                        cssClasses={{
+                            page: styles.postList
+                        }}
+                        elements={{
+                            pagination: Pagination
+                        }}
+                    />
+                </div>
             </div>
         </Layout>
     );
 }
 
-export default Blog;
-
-
-const handleGetFilteredPosts = async (params: TPagedParams<TPost>, filter?: TPostFilter) => {
-    const client = getGraphQLClient();
-    return client?.getFilteredPosts({
-        pagedParams: params,
-        customFragment: gql`
-        fragment PostListFragment on Post {
-            id
-            slug
-            title
-            createDate
-            excerpt
-            author {
-                id
-                fullName
-                avatar
-            }
-            mainImage
-            tags {
-                name
-                id
-                slug
-                color
-                image
-            }
-            publishDate
-        }
-    `,
-        customFragmentName: 'PostListFragment',
-        filterParams: filter,
-    });
-}
+export default BlogPage;
 
 export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProps> => {
-    // console.log('CategoryThemePage::getStaticProps: slug', slug, 'context.params', context.params);
     const client = getGraphQLClient();
 
     let posts: TPagedList<TPost> | undefined;

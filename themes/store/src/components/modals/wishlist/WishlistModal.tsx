@@ -5,14 +5,14 @@ import clsx from 'clsx';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 
-import { productListStore } from '../../../helpers/ProductListStore';
+import { appState } from '../../../helpers/AppState';
 import commonStyles from '../../../styles/common.module.scss';
 import { ProductCard } from '../../productCard/ProductCard';
 import styles from './WishlistModal.module.scss';
 
 export const WishlistModal = observer(() => {
     const handleCartClose = () => {
-        productListStore.isWishlistOpen = false;
+        appState.isWishlistOpen = false;
     }
 
     const [wishlist, setWishlist] = useState<TStoreListItem[]>([]);
@@ -29,7 +29,7 @@ export const WishlistModal = observer(() => {
          * Since getCart method wll retrieve products from local storage and 
          * after a while products can be modified at the server, we need to refresh cart first  
          */
-        if (productListStore.isWishlistOpen) {
+        if (appState.isWishlistOpen) {
             (async () => {
                 setIsLoading(true);
                 await cstore.updateWishlist();
@@ -38,12 +38,12 @@ export const WishlistModal = observer(() => {
                 setIsLoading(false);
             })();
         }
-    }, [productListStore.isWishlistOpen]);
+    }, [appState.isWishlistOpen]);
 
     return (
         <Modal
             className={clsx(commonStyles.center)}
-            open={productListStore.isWishlistOpen}
+            open={appState.isWishlistOpen}
             onClose={handleCartClose}
         >
             <div className={clsx(commonStyles.content, styles.wishlistModal)}>
