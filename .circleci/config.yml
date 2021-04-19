@@ -1,10 +1,11 @@
+version: '2.1'
+orbs:
+  node: circleci/node@x.y
+
 jobs:
   build:
     docker:
-      - image: cimg/node:12.21.1
-        auth:
-          username: elrix
-          password: $DOCKERHUB_PASSWORD
+      - image: cimg/base:stable
 
     working_directory: ~/repo
 
@@ -26,6 +27,10 @@ jobs:
             git reset --hard HEAD
 
       - checkout
+
+      - node/install:
+          install-yarn: true
+          node-version: 12.21.1
 
       - run: 
           name: build
