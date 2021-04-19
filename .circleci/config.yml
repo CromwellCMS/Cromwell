@@ -9,6 +9,10 @@ jobs:
 
     working_directory: ~/repo
 
+    executor:
+      name: node/default
+      tag: '12.21.1'
+
     steps:
 
       - checkout
@@ -24,10 +28,6 @@ jobs:
             git reset --hard HEAD
 
       - checkout
-
-      - node/install:
-          install-yarn: true
-          node-version: 12.21.1
 
       - run: 
           name: build
