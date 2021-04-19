@@ -208,7 +208,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                             </div>
                             <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                                 <Divider />
-                                <List className={classes.list} dense component="div" role="list">
+                                <List className={clsx(classes.list, classes.styledScrollBar)} dense component="div" role="list">
                                     {attr.values.map((attrValue: TAttributeValue) => {
                                         const value = attrValue.value
                                         const labelId = `attribute-list-${attr.key}-${value}-label`;
