@@ -22,7 +22,9 @@ jest.mock('../../constants/PageInfos', () => {
             }
         ],
         homePageInfo,
-        userPageInfo: {}
+        userPageInfo: {},
+        pageInfos: [],
+        getLinkByInfo: () => undefined,
     }
 });
 
