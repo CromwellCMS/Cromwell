@@ -9,9 +9,6 @@ jobs:
 
     working_directory: ~/repo
 
-    requires:
-      - shellcheck
-
     steps:
 
       - checkout
