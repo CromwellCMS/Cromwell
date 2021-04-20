@@ -4,7 +4,8 @@ export const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         card: {
             margin: '15px 0',
-            boxShadow: '0 3px 6px 0 rgba(0, 0, 0, 0.04), 0 0 4px 0px rgba(0, 0, 0, 0.05)',
+            // boxShadow: '0 3px 6px 0 rgba(0, 0, 0, 0.04), 0 0 4px 0px rgba(0, 0, 0, 0.05)',
+            boxShadow: 'none',
             backgroundColor: '#fff',
             borderRadius: '5px'
         },
@@ -75,7 +76,22 @@ export const useStyles = makeStyles((theme: Theme) =>
             fontWeight: 500,
             paddingLeft: '10px',
             fontSize: '18px',
-        }
+        },
+        styledScrollBar: {
+            '&::-webkit-scrollbar': {
+                width: '0.5em',
+                height: '0.5em',
+            },
+            '&::-webkit-scrollbar-track': {
+                boxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.2)',
+                borderRadius: '30px',
+            },
+            '&::-webkit-scrollbar-thumb': {
+                backgroundColor: '#7f7f7f',
+                outline: 'none',
+                borderRadius: '30px',
+            },
+        },
     }),
 );
 

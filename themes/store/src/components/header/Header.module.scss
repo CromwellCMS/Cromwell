@@ -227,6 +227,36 @@ div.cart {
     width: 100%;
 }
 
+.userBox {
+    display: flex;
+    align-items: center;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+.userName {
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.avatar {
+    width: 30px;
+    height: 30px;
+    color: #111;
+    margin-right: 5px;
+    border-radius: 100%;
+    background-size: cover;
+    background-position: center;
+}
+
+li.optionsItem {
+    padding: 10px 15px;
+
+    svg {
+        margin-right: 10px;
+    }
+}
+
 @media screen and (max-width: $mobileBreakpoint) {
     .topPanel,
     .mainPanel,

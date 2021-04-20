@@ -1,4 +1,4 @@
-jest.mock('@App/auth/jwt-auth.guard', () => {
+jest.mock('@App/auth/auth.guard', () => {
     class JwtAuthGuard {
         async canActivate(context): Promise<boolean> {
             return true;

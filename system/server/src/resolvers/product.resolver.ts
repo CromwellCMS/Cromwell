@@ -1,20 +1,28 @@
-import { GraphQLPaths, TFilteredProductList, TPagedList, TProduct, TProductCategory, TProductRating, TProductReview } from '@cromwell/core';
+import {
+    GraphQLPaths,
+    TFilteredProductList,
+    TPagedList,
+    TProduct,
+    TProductCategory,
+    TProductRating,
+    TProductReview,
+} from '@cromwell/core';
 import {
     CreateProduct,
+    DeleteManyInput,
+    FilteredProduct,
     PagedParamsInput,
     PagedProduct,
     PagedProductReview,
     Product,
     ProductCategory,
     ProductCategoryRepository,
+    ProductFilterInput,
     ProductRating,
     ProductRepository,
     UpdateProduct,
-    ProductFilterInput,
-    FilteredProduct,
-    DeleteManyInput
 } from '@cromwell/core-backend';
-import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 const categoriesKey: keyof TProduct = 'categories';
@@ -54,26 +62,31 @@ export class ProductResolver {
         return this.repository.getProductById(id);
     }
 
+    @Authorized("administrator")
     @Mutation(() => Product)
     async [createPath](@Arg("data") data: CreateProduct): Promise<Product> {
         return this.repository.createProduct(data);
     }
 
+    @Authorized("administrator")
     @Mutation(() => Product)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProduct): Promise<Product> {
         return this.repository.updateProduct(id, data);
     }
 
+    @Authorized("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         return this.repository.deleteProduct(id);
     }
 
+    @Authorized("administrator")
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         return this.repository.deleteMany(data);
     }
-
+    
+    @Authorized("administrator")
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,

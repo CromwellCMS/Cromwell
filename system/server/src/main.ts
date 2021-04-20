@@ -6,10 +6,17 @@ import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { ApolloServer } from 'apollo-server-fastify';
+import fastify from 'fastify';
+import { buildSchema } from 'type-graphql';
 
+import { graphQlAuthChecker } from './auth/auth.guard';
 import { connectDatabase } from './helpers/connectDataBase';
+import { corsHandler } from './helpers/corsHandler';
+import { getResolvers } from './helpers/getResolvers';
 import { loadEnv } from './helpers/loadEnv';
 import { AppModule } from './modules/app.module';
+import { authServiceInst } from './services/auth.service';
 
 require('dotenv').config();
 
@@ -22,43 +29,65 @@ async function bootstrap(): Promise<void> {
     await connectDatabase();
 
 
-    // Launch REST API server via Nest.js
+    // Launch Nest.js with Fastify
     const apiPrefix = envMode.serverType === 'main' ? apiMainRoute : apiExtensionRoute;
+    const fastifyInstance = fastify();
 
-    const app = await NestFactory.create<NestFastifyApplication>(AppModule, new FastifyAdapter());
+    // GraphQL
+    const schema = await buildSchema({
+        resolvers: getResolvers(envMode.serverType),
+        validate: false,
+        dateScalarMode: "isoDate",
+        authChecker: graphQlAuthChecker,
+    })
+
+    const apolloServer = new ApolloServer({
+        debug: envMode.envMode === 'dev',
+        playground: envMode.envMode === 'dev',
+        schema,
+        context: (context) => {
+            return { user: context?.request?.user }
+        }
+    });
+
+    fastifyInstance.register(apolloServer.createHandler({
+        path: `/${apiPrefix}/graphql`,
+        cors: corsHandler,
+    }));
+
+
+    // JWT Auth
+    fastifyInstance.addHook('preHandler', async (request: any, reply) => {
+        await authServiceInst?.processRequest(request, reply);
+    });
+
+    // REST API
+    const app = await NestFactory.create<NestFastifyApplication>(AppModule,
+        new FastifyAdapter(fastifyInstance as any));
+
     app.setGlobalPrefix(apiPrefix);
 
-    app.register(require('fastify-cookie'), {
+
+    // Plugins, extensions, etc.
+    fastifyInstance.register(require('fastify-cookie'), {
         // secret: "my-secret",
     })
-    app.register(require('fastify-cors'), {
-        origin: function (origin, callback) {
-            if (typeof origin === 'undefined') {
-                // Requests from other services via node-fetch produce undefined value in origin
-                // Let it pass for now. @TODO: fix undefined 
-                return callback(null, true);
-            }
 
-            if (/localhost/.test(origin))
-                return callback(null, true);
-
-            callback(new Error("Not allowed"));
-        },
-        credentials: true,
-    })
-
+    app.register(require('fastify-cors'), corsHandler);
     app.register(require('fastify-multipart'));
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
 
     // Setup SwaggerUI
-    const options = new DocumentBuilder()
-        .setTitle('Cromwell Server API')
-        .setVersion(currentApiVersion)
-        .addBearerAuth()
-        .build();
-    const document = SwaggerModule.createDocument(app, options);
-    SwaggerModule.setup(`/${apiPrefix}/api-docs`, app, document);
+    if (envMode.envMode === 'dev') {
+        const options = new DocumentBuilder()
+            .setTitle('Cromwell Server API')
+            .setVersion(currentApiVersion)
+            .addBearerAuth()
+            .build();
+        const document = SwaggerModule.createDocument(app, options);
+        SwaggerModule.setup(`/${apiPrefix}/api-docs`, app, document);
+    }
 
     const port = envMode.serverType === 'main' ? (config.mainApiPort ?? 4016) : (config.pluginApiPort ?? 4032)
     await app.listen(port, '::');

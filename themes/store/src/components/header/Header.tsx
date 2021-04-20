@@ -1,7 +1,12 @@
-import { getCmsSettings, TCurrency, TUser } from '@cromwell/core';
-import { CContainer, CHTML, CPlugin, CText, getCStore, Link } from '@cromwell/core-frontend';
-import { FormControl, ListItem, MenuItem, Select as MuiSelect, withStyles } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import { getCmsSettings, TCurrency, TUser, setStoreItem, onStoreChange, removeOnStoreChange, getStoreItem } from '@cromwell/core';
+import { CContainer, CHTML, CPlugin, CText, getCStore, Link, getRestAPIClient } from '@cromwell/core-frontend';
+import { FormControl, ListItem, MenuItem, Select as MuiSelect, withStyles, Popover } from '@material-ui/core';
+import {
+    ExpandMore as ExpandMoreIcon,
+    AccountCircle as AccountCircleIcon,
+    AccountCircleOutlined as AccountCircleOutlinedIcon,
+    ExitToApp as ExitToAppIcon,
+} from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -26,6 +31,10 @@ export const Header = () => {
     const cstore = getCStore();
     const [itemsInCart, setItemsInCart] = useState(cstore.getCart().length);
     const [singInOpen, setSingInOpen] = useState(false);
+    const forceUpdate = useForceUpdate();
+    const userInfo = getStoreItem('userInfo');
+    const [userOptionsOpen, setUserOptionsOpen] = useState<boolean>(false);
+    const popperAnchorEl = useRef<HTMLDivElement | null>(null);
 
     const [currency, setCurrency] = React.useState<string | null | undefined>(cstore.getActiveCurrencyTag());
 
@@ -44,10 +53,27 @@ export const Header = () => {
             if (itemsInCart !== cart.length)
                 setItemsInCart(cart.length);
         }, 'headerCart');
+
+        const onUserChange = (value) => {
+            forceUpdate();
+        }
+
+        onStoreChange('userInfo', onUserChange);
+
+        return () => {
+            removeOnStoreChange('userInfo', onUserChange);
+        }
     }, []);
 
     const handleSignIn = (user: TUser) => {
         setSingInOpen(false);
+        setStoreItem('userInfo', user);
+    }
+
+    const handleLogout = async () => {
+        setUserOptionsOpen(false);
+        await getRestAPIClient()!.logOut();
+        setStoreItem('userInfo', undefined);
     }
 
     return (
@@ -80,7 +106,46 @@ export const Header = () => {
                         </CContainer>
                         <CContainer id="header_04" className={styles.topPanelLinks}>
                             <CText id="header_31" href="/contact-us" className={clsx(commonStyles.link, styles.topPanelLink)}>Contact us</CText>
-                            <CText id="header_32" onClick={() => setSingInOpen(true)} className={clsx(commonStyles.link, styles.topPanelLink)}>Sign in</CText>
+                            {!userInfo && (
+                                <CText id="header_32" onClick={() => setSingInOpen(true)} className={clsx(commonStyles.link, styles.topPanelLink)}>Sign in</CText>
+                            )}
+                            {userInfo && (
+                                <>
+                                    <div className={styles.userBox} ref={popperAnchorEl}
+                                        onClick={() => setUserOptionsOpen(true)}
+                                    >
+                                        {(userInfo?.avatar && userInfo?.avatar !== '') ? (
+                                            <div className={styles.avatar} style={{ backgroundImage: `url(${userInfo.avatar})` }}></div>
+                                        ) : <AccountCircleIcon className={styles.avatar} />}
+                                        <p className={clsx(styles.userName)}>{userInfo.fullName ?? ''}</p>
+
+                                        {/* <p className={clsx(commonStyles.link, styles.topPanelLink)}>Sign out</p> */}
+                                    </div>
+                                    <Popover open={userOptionsOpen} anchorEl={popperAnchorEl.current}
+                                        style={{ zIndex: 9999 }}
+                                        onClose={() => setUserOptionsOpen(false)}
+                                        anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        transformOrigin={{
+                                            vertical: 'bottom',
+                                            horizontal: 'right',
+                                        }}
+                                    >
+                                        <div>
+                                            <MenuItem className={styles.optionsItem}>
+                                                <AccountCircleOutlinedIcon />
+                                                <p>Your profile</p>
+                                            </MenuItem>
+                                            <MenuItem onClick={handleLogout} className={styles.optionsItem}>
+                                                <ExitToAppIcon />
+                                                <p>Log out</p>
+                                            </MenuItem>
+                                        </div>
+                                    </Popover>
+                                </>
+                            )}
                         </CContainer>
                     </CContainer>
                 </CContainer>
@@ -127,4 +192,9 @@ export const Header = () => {
             </div>
         </CContainer>
     )
+}
+
+function useForceUpdate() {
+    const [value, setValue] = useState(0);
+    return () => setValue(value => ++value);
 }

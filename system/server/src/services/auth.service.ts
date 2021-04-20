@@ -1,8 +1,10 @@
-import { TUser } from '@cromwell/core';
+import { TCreateUser, TUser } from '@cromwell/core';
 import { getLogger, User, UserRepository } from '@cromwell/core-backend';
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
+import { FastifyReply } from 'fastify';
 import { getCustomRepository } from 'typeorm';
 
 import {
@@ -16,12 +18,17 @@ import {
 
 const logger = getLogger('detailed');
 
+export let authServiceInst: AuthService | undefined;
+
 @Injectable()
 export class AuthService {
 
     constructor(
-        private jwtService: JwtService
-    ) { }
+        private jwtService: JwtService,
+        private moduleRef: ModuleRef,
+    ) {
+        authServiceInst = this;
+    }
 
     async validateUser(email: string, pass: string): Promise<TUser | null> {
 
@@ -45,6 +52,19 @@ export class AuthService {
 
     getUserById = (id: string) => getCustomRepository(UserRepository).getUserById(id);
 
+    async createUser(data: TCreateUser, initiator?: TAuthUserInfo) {
+        const userRepo = getCustomRepository(UserRepository);
+        if (data.role && data.role !== 'customer') {
+            if (!initiator?.id) throw new UnauthorizedException('');
+
+            const initiatorData = await userRepo.getUserById(initiator.id);
+            if (!initiatorData || initiatorData.role !== 'administrator') {
+                throw new UnauthorizedException('');
+            }
+        }
+        return userRepo.createUser(data);
+    }
+
     async hashPassword(plain: string): Promise<string> {
         return bcrypt.hash(plain, bcryptSaltRounds);
     }
@@ -54,11 +74,19 @@ export class AuthService {
     }
 
     payloadToUserInfo(payload: TTokenPayload): TAuthUserInfo {
-        return { id: payload.sub, email: payload.username };
+        return {
+            id: payload.sub,
+            email: payload.username,
+            role: payload.role,
+        };
     }
 
     async generateAccessToken(user: TAuthUserInfo) {
-        const payload: TTokenPayload = { username: user.email, sub: user.id };
+        const payload: TTokenPayload = {
+            username: user.email,
+            sub: user.id,
+            role: user.role,
+        };
 
         const token = await this.jwtService.signAsync(payload, {
             secret: jwtConstants.accessSecret,
@@ -73,7 +101,11 @@ export class AuthService {
     }
 
     async generateRefreshToken(userInfo: TAuthUserInfo): Promise<TTokenInfo> {
-        const payload: TTokenPayload = { username: userInfo.email, sub: userInfo.id };
+        const payload: TTokenPayload = {
+            username: userInfo.email,
+            sub: userInfo.id,
+            role: userInfo.role,
+        };
 
         // Generate new token and save to DB
         const token = await this.jwtService.signAsync(payload, {
@@ -228,6 +260,57 @@ export class AuthService {
             httpOnly: true,
             domain: this.getDomainFromRequest(request),
         });
+    }
+
+    async processRequest(request: TRequestWithUser, response: FastifyReply): Promise<TAuthUserInfo | null> {
+        try {
+            const accessToken = request?.cookies?.[jwtConstants.accessTokenCookieName];
+            const refreshToken = request?.cookies?.[jwtConstants.refreshTokenCookieName];
+            if (!accessToken && !refreshToken) return null;
+
+            // Validate access token
+            const accessTokenPayload = accessToken ? await this.validateAccessToken(accessToken) : undefined;
+            if (accessTokenPayload) {
+                request.user = this.payloadToUserInfo(accessTokenPayload)
+                return request.user;
+            }
+
+            // If access token is expired, validate refresh token
+            if (!refreshToken || refreshToken === '' || refreshToken === 'null')
+                throw new UnauthorizedException('Refresh token is not set');
+
+            const refreshTokenPayload = await this.validateRefreshToken(refreshToken);
+            if (!refreshTokenPayload)
+                throw new UnauthorizedException('Refresh token is not valid');
+
+            const authUserInfo = this.payloadToUserInfo(refreshTokenPayload);
+
+            // Check if token is in DB and was not blacklisted
+            const isValid = await this.dbCheckRefreshToken(refreshToken, authUserInfo);
+            if (!isValid)
+                throw new UnauthorizedException('Refresh token is not valid');
+
+            request.user = authUserInfo;
+
+            // Create new access token
+            const newAccessToken = await this.generateAccessToken(authUserInfo);
+
+            // Update refresh token
+            const newRefreshToken = await this.updateRefreshToken(authUserInfo, refreshToken);
+
+            if (!newRefreshToken)
+                throw new UnauthorizedException('Failed to update refresh token');
+
+            this.setAccessTokenCookie(response, request, newAccessToken);
+            this.setRefreshTokenCookie(response, request, newRefreshToken);
+
+            return authUserInfo;
+
+        } catch (err) {
+            logger.log('JwtAuthGuard: ', err.message);
+            this.clearTokenCookies(response, request);
+        }
+        return null;
     }
 
 

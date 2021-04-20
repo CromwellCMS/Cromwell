@@ -3,9 +3,10 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
 
 import { TRequestWithUser } from '../auth/constants';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/auth.guard';
 import { LoginDto } from '../dto/login.dto';
 import { UserDto } from '../dto/user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
 import { AuthService } from '../services/auth.service';
 
 
@@ -25,6 +26,7 @@ export class AuthController {
         type: UserDto
     })
     async login(@Request() req: TRequestWithUser, @Response() response: FastifyReply, @Body() input: LoginDto) {
+        if (req.user?.id) return;
 
         const user = await this.authService.validateUser(input.email, input.password);
         if (!user) {
@@ -32,7 +34,8 @@ export class AuthController {
         }
         req.user = {
             id: user.id,
-            email: user.email
+            email: user.email,
+            role: user.role ?? 'customer',
         }
 
         const [accessToken, refreshToken] = await Promise.all([
@@ -47,16 +50,8 @@ export class AuthController {
             this.authService.setRefreshTokenCookie(response, req, refreshToken);
         }
 
-        const userDto: UserDto = {
-            id: user.id + '',
-            email: user.email,
-            avatar: user.avatar,
-            fullName: user.fullName,
-            bio: user.bio,
-            phone: user.phone,
-            address: user.address,
-            role: user.role,
-        }
+        const userDto = new UserDto();
+        userDto.parseUser(user);
 
         response.code(200).send(userDto);
     }
@@ -74,6 +69,24 @@ export class AuthController {
         response.code(200).send(true);
     }
 
+
+    @Post('sign-up')
+    @ApiOperation({
+        description: 'Register new user',
+    })
+    @ApiBody({ type: CreateUserDto })
+    @ApiResponse({
+        status: 201,
+        type: UserDto
+    })
+    async signUp(@Request() request: TRequestWithUser, @Response() response: FastifyReply, @Body() input: CreateUserDto) {
+        const user = await this.authService.createUser(input, request.user);
+        const userDto = new UserDto();
+        userDto.parseUser(user);
+        response.code(201).send(userDto);
+    }
+
+
     @UseGuards(JwtAuthGuard)
     @Get('user-info')
     @ApiOperation({
@@ -89,16 +102,8 @@ export class AuthController {
 
         const user = await this.authService.getUserById(request.user?.id);
         if (user) {
-            const userDto: UserDto = {
-                id: user.id + '',
-                email: user.email,
-                avatar: user.avatar,
-                fullName: user.fullName,
-                bio: user.bio,
-                phone: user.phone,
-                address: user.address,
-                role: user.role,
-            }
+            const userDto = new UserDto();
+            userDto.parseUser(user);
             return userDto;
         }
 
