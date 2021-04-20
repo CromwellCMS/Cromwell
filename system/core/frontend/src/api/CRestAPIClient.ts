@@ -17,6 +17,7 @@ import {
     isServer,
     TUser,
     TCmsEntityInput,
+    TCreateUser,
 } from '@cromwell/core';
 
 type TPluginsModifications = TPluginConfig & { [x: string]: any };
@@ -88,6 +89,10 @@ class CRestAPIClient {
 
     public getUserInfo = async (): Promise<TUser | undefined> => {
         return this.get('auth/user-info');
+    }
+
+    public signUp = async (credentials: TCreateUser): Promise<TUser | undefined> => {
+        return this.post('auth/sign-up', credentials);
     }
 
     public setUnauthorizedRedirect = (url: string | null) => {

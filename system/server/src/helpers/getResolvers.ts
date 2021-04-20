@@ -22,7 +22,7 @@ const nativeResolvers = [
     TagResolver,
 ];
 
-export const getResolvers = (sType: 'main' | 'plugin') => sType === 'main' ? [
+export const getResolvers = (sType: 'main' | 'plugin'): any => sType === 'main' ? [
     ...nativeResolvers,
 ] : [
     ...nativeResolvers,

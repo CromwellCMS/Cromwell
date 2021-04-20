@@ -62,6 +62,14 @@ a {
   text-decoration: none;
 }
 
-:global(.MuiButtonBase-root.MuiIconButton-root) {
+.MuiButtonBase-root.MuiIconButton-root {
   color: #333;
+}
+
+.global-toast {
+  z-index: 99999;
+  
+  .Toastify {
+    font-size: 16px;
+  }
 }

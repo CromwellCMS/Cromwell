@@ -22,10 +22,19 @@ export class UserDto implements TUser {
 
     @ApiProperty()
     address?: string;
-    
+
     @ApiProperty()
     role?: TUserRole;
 
-    @ApiProperty()
-    password?: string;
+    parseUser(user: TUser) {
+        this.id = user.id + '';
+        this.email = user.email;
+        this.avatar = user.avatar;
+        this.fullName = user.fullName;
+        this.bio = user.bio;
+        this.phone = user.phone;
+        this.address = user.address;
+        this.role = user.role;
+    }
+
 }

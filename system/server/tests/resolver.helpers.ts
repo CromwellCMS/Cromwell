@@ -3,6 +3,7 @@ import { getResolvers } from '@App/helpers/getResolvers';
 import { ApolloServer } from 'apollo-server';
 import { ApolloServerTestClient, createTestClient } from 'apollo-server-testing';
 import { buildSchema } from 'type-graphql';
+import { graphQlAuthChecker } from '@App/auth/auth.guard';
 
 import { mockWorkingDirectory } from './helpers';
 
@@ -11,9 +12,9 @@ export const setupResolver = async (name: string): Promise<[ApolloServer, Apollo
     await connectDatabase();
 
     const schema = await buildSchema({
-        //@ts-ignore
-        resolvers: [...getResolvers()],
+        resolvers: [...getResolvers('main')] as any,
         validate: false,
+        authChecker: graphQlAuthChecker,
     });
 
     const server = new ApolloServer({

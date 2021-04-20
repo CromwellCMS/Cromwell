@@ -1,3 +1,4 @@
+import { TUserRole } from '@cromwell/core';
 import cryptoRandomString from 'crypto-random-string';
 import { FastifyRequest } from 'fastify';
 
@@ -20,15 +21,18 @@ export const bcryptSaltRounds = 10;
 export type TAuthUserInfo = {
     id: string;
     email: string;
+    role: TUserRole;
 }
 
 export type TTokenPayload = {
     sub: string;
     username: string;
+    role: TUserRole;
 }
 
 export type TRequestWithUser = FastifyRequest & {
     user: TAuthUserInfo;
+    cookies: any;
 }
 
 export type TTokenInfo = {

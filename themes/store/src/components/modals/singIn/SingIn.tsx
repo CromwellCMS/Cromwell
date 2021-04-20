@@ -13,7 +13,7 @@ import commonStyles from '../../../styles/common.module.scss';
 import styles from './SignIn.module.scss';
 import Modal from '../baseModal/Modal'
 
-type TFromType = 'sign-in' | 'sign-up';
+export type TFromType = 'sign-in' | 'sign-up';
 
 export default function SingIn(props: {
     open: boolean;
@@ -28,7 +28,7 @@ export default function SingIn(props: {
     const [passwordInput, setPasswordInput] = useState('');
     const [nameInput, setNameInput] = useState('');
     const [submitPressed, setSubmitPressed] = useState(false);
-    const [activeTab, setActiveTab] = useState(0);
+    const [activeTab, setActiveTab] = useState(props.type === 'sign-up' ? 1 : 0);
     const [formType, setFormType] = useState<TFromType>(props.type);
 
     const handleClickShowPassword = () => {

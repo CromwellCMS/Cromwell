@@ -51,6 +51,14 @@ export const onStoreChange = <K extends keyof TCromwellStore>(itemName: K,
     storeChangeCallbacks[itemName].push(callback);
 }
 
+export const removeOnStoreChange = <K extends keyof TCromwellStore>(itemName: K,
+    callback: (itemValue: TCromwellStore[K]) => any) => {
+    let storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
+    if (storeChangeCallbacks?.[itemName]) {
+        storeChangeCallbacks[itemName] = storeChangeCallbacks[itemName].filter(item => item !== callback);
+    }
+}
+
 export const getPageCustomConfig = (): Record<string, any> | undefined => {
     return getStore().pageConfig?.pageCustomConfig;
 }

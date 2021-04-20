@@ -52,6 +52,7 @@ class CGraphQLClient {
         const cache = new InMemoryCache();
         const link = createHttpLink({
             uri: this.baseUrl,
+            credentials: 'include',
             fetch
         });
         this.apolloClient = new ApolloClient({
@@ -1466,7 +1467,7 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public updateOrder = async (id: string, input: TOrderInput) => {
+    public updateOrder = async (id: string, input: TOrderInput): Promise<TOrder> => {
         const path = GraphQLPaths.Order.update;
         const res = await this.apolloClient.mutate({
             mutation: gql`
@@ -1485,7 +1486,7 @@ class CGraphQLClient {
         return this.returnData(res, path);
     }
 
-    public createOrder = async (input: TOrderInput) => {
+    public createOrder = async (input: TOrderInput): Promise<TOrder> => {
         const path = GraphQLPaths.Order.create;
         const res = await this.apolloClient.mutate({
             mutation: gql`
