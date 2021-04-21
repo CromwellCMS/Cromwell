@@ -2,9 +2,10 @@ import { TUserRole } from '@cromwell/core';
 import cryptoRandomString from 'crypto-random-string';
 import { FastifyRequest } from 'fastify';
 
-export const jwtConstants = {
+export const authSettings = {
     accessSecret: process.env.JWT_ACCESS_TOKEN_SECRET ?? cryptoRandomString({ length: 8 }),
     refreshSecret: process.env.JWT_REFRESH_TOKEN_SECRET ?? cryptoRandomString({ length: 8 }),
+    cookieSecret: process.env.COOKIE_SECRET ?? cryptoRandomString({ length: 8 }),
 
     /** 10 min by default */
     expirationAccessTime: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME ?? '600',
@@ -39,4 +40,8 @@ export type TTokenInfo = {
     token: string;
     maxAge: string;
     cookie: string;
+}
+
+export type TGraphQLContext = {
+    user?: TAuthUserInfo;
 }

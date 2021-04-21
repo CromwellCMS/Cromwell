@@ -1,7 +1,18 @@
-import { TUser, GraphQLPaths, TPagedList } from '@cromwell/core';
-import { User, CreateUser, UpdateUser, UserRepository, PagedUser, PagedParamsInput, UserFilterInput, DeleteManyInput } from '@cromwell/core-backend';
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { GraphQLPaths, TAuthRole, TPagedList, TUser } from '@cromwell/core';
+import {
+    CreateUser,
+    DeleteManyInput,
+    PagedParamsInput,
+    PagedUser,
+    UpdateUser,
+    User,
+    UserFilterInput,
+    UserRepository,
+} from '@cromwell/core-backend';
+import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
+
+import { TGraphQLContext } from '../auth/constants';
 
 const getOneByIdPath = GraphQLPaths.User.getOneById;
 const getManyPath = GraphQLPaths.User.getMany;
@@ -16,32 +27,42 @@ export class UserResolver {
 
     private repository = getCustomRepository(UserRepository)
 
+    @Authorized<TAuthRole>("administrator", 'author')
     @Query(() => PagedUser)
     async [getManyPath](@Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<User>):
         Promise<TPagedList<TUser>> {
         return this.repository.getUsers(pagedParams);
     }
 
+    @Authorized<TAuthRole>('all')
     @Query(() => User)
     async [getOneByIdPath](@Arg("id") id: string): Promise<User | undefined> {
         return this.repository.getUserById(id);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => User)
     async [createPath](@Arg("data") data: CreateUser): Promise<TUser> {
         return await this.repository.createUser(data);
     }
 
+    @Authorized<TAuthRole>("administrator", "self")
     @Mutation(() => User)
-    async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateUser): Promise<User> {
+    async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateUser, @Ctx() ctx: TGraphQLContext): Promise<User> {
+        const message = "Access denied! You don't have permission for this action!";
+        if (!ctx?.user?.role) throw new Error(message);
+        if (data.role && data.role !== ctx.user.role && ctx.user.role !== 'administrator') throw new Error(message);
+
         return await this.repository.updateUser(id, data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         return await this.repository.deleteUser(id);
     }
 
+    @Authorized<TAuthRole>("administrator", 'author')
     @Query(() => PagedUser)
     async [getFilteredPath](
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TUser>,
@@ -50,6 +71,7 @@ export class UserResolver {
         return this.repository.getFilteredUsers(pagedParams, filterParams);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,

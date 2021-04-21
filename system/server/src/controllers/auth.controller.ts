@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Request, Response, UnauthorizedException, UseGuards } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
-
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { TRequestWithUser } from '../auth/constants';
 import { JwtAuthGuard } from '../auth/auth.guard';
 import { LoginDto } from '../dto/login.dto';
@@ -17,6 +17,8 @@ export class AuthController {
     constructor(private authService: AuthService) { }
 
     @Post('login')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(10, 20)
     @ApiOperation({
         description: 'Authenticates user',
     })
@@ -49,11 +51,7 @@ export class AuthController {
             this.authService.setAccessTokenCookie(response, req, accessToken);
             this.authService.setRefreshTokenCookie(response, req, refreshToken);
         }
-
-        const userDto = new UserDto();
-        userDto.parseUser(user);
-
-        response.code(200).send(userDto);
+        response.code(200).send(new UserDto().parseUser(user));
     }
 
     @UseGuards(JwtAuthGuard)
@@ -71,6 +69,8 @@ export class AuthController {
 
 
     @Post('sign-up')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(5, 30)
     @ApiOperation({
         description: 'Register new user',
     })
@@ -80,10 +80,8 @@ export class AuthController {
         type: UserDto
     })
     async signUp(@Request() request: TRequestWithUser, @Response() response: FastifyReply, @Body() input: CreateUserDto) {
-        const user = await this.authService.createUser(input, request.user);
-        const userDto = new UserDto();
-        userDto.parseUser(user);
-        response.code(201).send(userDto);
+        const user = await this.authService.signUpUser(input, request.user);
+        response.code(201).send(new UserDto().parseUser(user));
     }
 
 
@@ -102,11 +100,8 @@ export class AuthController {
 
         const user = await this.authService.getUserById(request.user?.id);
         if (user) {
-            const userDto = new UserDto();
-            userDto.parseUser(user);
-            return userDto;
+            return new UserDto().parseUser(user);
         }
-
     }
 
 }

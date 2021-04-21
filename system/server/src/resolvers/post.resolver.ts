@@ -1,19 +1,19 @@
-import { GraphQLPaths, TPagedList, TPost, TUser, TTag } from '@cromwell/core';
+import { GraphQLPaths, TAuthRole, TPagedList, TPost, TTag, TUser } from '@cromwell/core';
 import {
     CreatePost,
+    DeleteManyInput,
     getLogger,
     PagedParamsInput,
     PagedPost,
     Post,
     PostFilterInput,
     PostRepository,
+    Tag,
     UpdatePost,
     User,
     UserRepository,
-    DeleteManyInput,
-    Tag,
 } from '@cromwell/core-backend';
-import { Arg, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
+import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 const getOneBySlugPath = GraphQLPaths.Post.getOneBySlug;
@@ -52,26 +52,31 @@ export class PostResolver {
         return this.repository.getPostById(id);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Post)
     async [createPath](@Arg("data") data: CreatePost): Promise<Post> {
         return this.repository.createPost(data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Post)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdatePost): Promise<Post> {
         return this.repository.updatePost(id, data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         return this.repository.deletePost(id);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         return this.repository.deleteMany(data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,
@@ -102,3 +107,4 @@ export class PostResolver {
         return this.repository.getTagsOfPost(post.id);
     }
 }
+

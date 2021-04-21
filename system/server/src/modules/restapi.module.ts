@@ -6,7 +6,7 @@ import { loadEnv } from '../helpers/loadEnv';
 const env = loadEnv();
 
 @Module({
-    controllers: getControllers(env.serverType),
-    providers: getServices(env.serverType),
+    controllers: getControllers(env.serverType, env.envMode === 'dev'),
+    providers: getServices(env.serverType, env.envMode === 'dev'),
 })
 export class RestApiModule { }

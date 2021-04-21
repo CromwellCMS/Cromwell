@@ -1,14 +1,14 @@
-import { GraphQLPaths, TPagedList, TProductReview } from '@cromwell/core';
+import { GraphQLPaths, TAuthRole, TPagedList, TProductReview } from '@cromwell/core';
 import {
+    DeleteManyInput,
     PagedParamsInput,
     PagedProductReview,
     ProductRepository,
     ProductReview,
     ProductReviewInput,
     ProductReviewRepository,
-    DeleteManyInput
 } from '@cromwell/core-backend';
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 const getOneByIdPath = GraphQLPaths.ProductReview.getOneById;
@@ -44,16 +44,19 @@ export class ProductReviewResolver {
         return await this.repository.createProductReview(data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => ProductReview)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: ProductReviewInput): Promise<ProductReview> {
         return await this.repository.updateProductReview(id, data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         return await this.repository.deleteProductReview(id);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         return this.repository.deleteMany(data);

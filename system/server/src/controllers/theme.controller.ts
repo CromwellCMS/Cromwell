@@ -1,17 +1,17 @@
-import { logFor, TFrontendBundle, TPageConfig, TPageInfo, TThemeConfig, TPackageCromwellConfig } from '@cromwell/core';
-import { getThemeAdminPanelBundleDir, serverLogFor, getLogger } from '@cromwell/core-backend';
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
+import { TFrontendBundle, TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
+import { getLogger, getThemeAdminPanelBundleDir, serverLogFor } from '@cromwell/core-backend';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 
+import { JwtAuthGuard, Roles } from '../auth/auth.guard';
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
+import { ModuleInfoDto } from '../dto/module-info.dto';
 import { PageConfigDto } from '../dto/page-config.dto';
 import { PageInfoDto } from '../dto/page-info.dto';
-import { ModuleInfoDto } from '../dto/module-info.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { CmsService } from '../services/cms.service';
-import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 
 const logger = getLogger('detailed');
@@ -23,7 +23,6 @@ export class ThemeController {
 
     constructor(
         private readonly themeService: ThemeService,
-        private readonly pluginService: PluginService,
         private readonly cmsService: CmsService,
     ) { }
 
@@ -51,6 +50,8 @@ export class ThemeController {
 
 
     @Post('page')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: `Saves page config for specified Page by pageRoute in query param. Modificators (TCromwellBlockData) must contain only newly added mods or an empty array. It is not allowed to send all mods from /theme/page route because they contain mods from theme's config and we don't need to copy them into user's config that way.`,
     })
@@ -238,49 +239,5 @@ export class ThemeController {
         throw new HttpException("Page bundle doesn't exist", HttpStatus.NOT_ACCEPTABLE);
 
     }
-
-    @Get('set-active')
-    @ApiOperation({
-        description: `Makes an installed theme active and restarts Renderer`,
-        parameters: [{ name: 'themeName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: Boolean
-    })
-    @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async setActiveTheme(@Query('themeName') themeName: string): Promise<boolean> {
-        logger.log('ThemeController::setActiveTheme');
-
-        if (themeName && themeName !== "") {
-            return this.themeService.setActive(themeName);
-        } else {
-            throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);
-        }
-
-    }
-
-
-    @Get('install')
-    @ApiOperation({
-        description: `Installs downloaded theme`,
-        parameters: [{ name: 'themeName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: Boolean
-    })
-    @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async installTheme(@Query('themeName') themeName: string): Promise<boolean> {
-
-        logger.log('ThemeController::installTheme');
-
-        if (themeName && themeName !== "") {
-            return this.themeService.installTheme(themeName);
-        } else {
-            throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);
-        }
-    }
-
 
 }

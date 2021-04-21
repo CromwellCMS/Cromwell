@@ -138,7 +138,7 @@ const PostList = (props: TPropsType) => {
                 toast.success('Post deleted');
             } catch (e) {
                 console.error(e);
-                toast.success('Failed to delete post');
+                toast.error('Failed to delete post');
             }
         }
         setIsLoading(false);
@@ -175,7 +175,7 @@ const PostList = (props: TPropsType) => {
             toast.success('Posts deleted');
         } catch (e) {
             console.error(e);
-            toast.success('Failed to delete posts');
+            toast.error('Failed to delete posts');
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);

@@ -1,8 +1,9 @@
 import { TFrontendBundle, TPluginConfig } from '@cromwell/core';
 import { getLogger } from '@cromwell/core-backend';
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Query } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { JwtAuthGuard, Roles } from '../auth/auth.guard';
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { PluginService } from '../services/plugin.service';
 
@@ -47,6 +48,8 @@ export class PluginController {
                 const out = Object.assign({}, defaultSettings, settings);
 
                 return out;
+            } else {
+                throw new HttpException('pluginName not found', HttpStatus.NOT_FOUND);
             }
         }
 
@@ -54,6 +57,8 @@ export class PluginController {
     }
 
     @Post('settings')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: 'Saves JSON settings of a plugin by pluginName.',
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
@@ -127,23 +132,9 @@ export class PluginController {
     }
 
 
-    @Get('list')
-    @ApiOperation({
-        description: 'Returns list of all installed plugins.'
-    })
-    @ApiResponse({
-        status: 200,
-        type: [String]
-    })
-    @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getPluginList(): Promise<string[]> {
-        logger.log('PluginController::getPluginList');
-        return (await this.pluginService.getAll()).map(ent => ent.name);
-    }
-
-
-
     @Get('install')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: 'Installs downloaded plugin.',
         parameters: [{ name: 'pluginName', in: 'query', required: true }]

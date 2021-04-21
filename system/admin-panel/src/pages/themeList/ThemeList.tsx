@@ -24,13 +24,17 @@ export default function ThemeList() {
 
     const getThemeList = async () => {
         setIsLoading(true);
-        const updatedConfig = await client?.getCmsSettingsAndSave();
-        setCmsConfig(updatedConfig);
+        try {
+            const updatedConfig = await client?.getCmsSettingsAndSave();
+            setCmsConfig(updatedConfig);
 
-        // Get info by parsing directory 
-        const infos = await client?.getThemesInfo();
-        infos?.sort((a, b) => (updatedConfig && a.name === updatedConfig.themeName) ? -1 : 1)
-        if (infos) setInfos(infos);
+            // Get info by parsing directory 
+            const infos = await client?.getThemesInfo();
+            infos?.sort((a, b) => (updatedConfig && a.name === updatedConfig.themeName) ? -1 : 1)
+            if (infos) setInfos(infos);
+        } catch (e) {
+            console.error(e);
+        }
 
         // Get info from DB
         const graphQLClient = getGraphQLClient();
@@ -68,14 +72,14 @@ export default function ThemeList() {
 
     const handleRebuildTheme = async () => {
         if (client) {
-            setIsChangingTheme(true);
-            const success = await client.rebuildTheme();
-            if (success) {
-                toast.success('Rebuilded');
-            } else {
-                toast.error('Failed to rebuild theme');
-            }
-            setIsChangingTheme(false);
+            // setIsChangingTheme(true);
+            // const success = await client.rebuildTheme();
+            // if (success) {
+            //     toast.success('Rebuilded');
+            // } else {
+            //     toast.error('Failed to rebuild theme');
+            // }
+            // setIsChangingTheme(false);
         }
     }
 

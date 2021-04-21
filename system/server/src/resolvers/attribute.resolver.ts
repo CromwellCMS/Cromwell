@@ -1,6 +1,6 @@
-import { TAttribute, GraphQLPaths } from '@cromwell/core';
+import { GraphQLPaths, TAttribute, TAuthRole } from '@cromwell/core';
 import { Attribute, AttributeInput, AttributeRepository } from '@cromwell/core-backend';
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 const getOneByIdPath = GraphQLPaths.Attribute.getOneById;
@@ -24,16 +24,19 @@ export class AttributeResolver {
         return await this.repository.getAttribute(id);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Attribute)
     async [createPath](@Arg("data") data: AttributeInput): Promise<TAttribute> {
         return await this.repository.createAttribute(data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Attribute)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: AttributeInput): Promise<Attribute> {
         return await this.repository.updateAttribute(id, data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         return await this.repository.deleteAttribute(id);

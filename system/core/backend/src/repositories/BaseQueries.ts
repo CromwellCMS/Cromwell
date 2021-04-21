@@ -3,14 +3,17 @@ import { TPagedParams, TPagedList, TBasePageEntity, TBasePageEntityInput } from 
 import { getStoreItem, getRandStr } from '@cromwell/core';
 import { BasePageEntity } from "../entities/BasePageEntity";
 
+const MAX_PAGE_SIZE = 300;
+
 export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, sortByTableName?: string, params?: TPagedParams<T>): SelectQueryBuilder<T> => {
     const cmsSettings = getStoreItem('cmsSettings');
     const p = params ? params : {};
     if (!p.pageNumber) p.pageNumber = 1;
     if (!p.pageSize) {
         const def = cmsSettings?.defaultPageSize
-        p.pageSize = def && typeof def === 'number' ? def : 15;
+        p.pageSize = (def && typeof def === 'number' && def > 0) ? def : 15;
     }
+    if (p.pageSize > MAX_PAGE_SIZE) p.pageSize = MAX_PAGE_SIZE;
 
     if (p.orderBy) {
         if (!p.order) p.order = 'DESC';

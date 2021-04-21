@@ -9,7 +9,7 @@ import { getCustomRepository } from 'typeorm';
 
 import {
     bcryptSaltRounds,
-    jwtConstants,
+    authSettings,
     TAuthUserInfo,
     TRequestWithUser,
     TTokenInfo,
@@ -52,15 +52,11 @@ export class AuthService {
 
     getUserById = (id: string) => getCustomRepository(UserRepository).getUserById(id);
 
-    async createUser(data: TCreateUser, initiator?: TAuthUserInfo) {
+    async signUpUser(data: TCreateUser, initiator?: TAuthUserInfo) {
         const userRepo = getCustomRepository(UserRepository);
-        if (data.role && data.role !== 'customer') {
-            if (!initiator?.id) throw new UnauthorizedException('');
-
-            const initiatorData = await userRepo.getUserById(initiator.id);
-            if (!initiatorData || initiatorData.role !== 'administrator') {
-                throw new UnauthorizedException('');
-            }
+        if (data?.role && data.role !== 'customer') {
+            if (!initiator?.id || initiator.role !== 'administrator')
+                throw new UnauthorizedException('No permissons to create this user');
         }
         return userRepo.createUser(data);
     }
@@ -89,14 +85,14 @@ export class AuthService {
         };
 
         const token = await this.jwtService.signAsync(payload, {
-            secret: jwtConstants.accessSecret,
-            expiresIn: jwtConstants.expirationAccessTime + 's'
+            secret: authSettings.accessSecret,
+            expiresIn: authSettings.expirationAccessTime + 's'
         });
 
         return {
             token,
-            maxAge: jwtConstants.expirationAccessTime + '',
-            cookie: `${jwtConstants.accessTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${jwtConstants.expirationAccessTime}`
+            maxAge: authSettings.expirationAccessTime + '',
+            cookie: `${authSettings.accessTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${authSettings.expirationAccessTime}`
         }
     }
 
@@ -109,14 +105,14 @@ export class AuthService {
 
         // Generate new token and save to DB
         const token = await this.jwtService.signAsync(payload, {
-            secret: jwtConstants.refreshSecret,
-            expiresIn: jwtConstants.expirationRefreshTime + 's'
+            secret: authSettings.refreshSecret,
+            expiresIn: authSettings.expirationRefreshTime + 's'
         });
 
         return {
             token,
-            maxAge: jwtConstants.expirationRefreshTime + '',
-            cookie: `${jwtConstants.refreshTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${jwtConstants.expirationRefreshTime}`
+            maxAge: authSettings.expirationRefreshTime + '',
+            cookie: `${authSettings.refreshTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${authSettings.expirationRefreshTime}`
         }
     }
 
@@ -130,7 +126,7 @@ export class AuthService {
                 if (isValid) return token;
             }))).filter(Boolean) as string[];
 
-            const maxTokensPerUser = jwtConstants.maxTokensPerUser;
+            const maxTokensPerUser = authSettings.maxTokensPerUser;
             if (validatedTokens.length > maxTokensPerUser) {
                 validatedTokens = validatedTokens.slice(validatedTokens.length - maxTokensPerUser, validatedTokens.length)
             }
@@ -183,7 +179,7 @@ export class AuthService {
     async validateAccessToken(accessToken: string): Promise<TTokenPayload | undefined> {
         try {
             return await this.jwtService.verifyAsync<TTokenPayload>(accessToken, {
-                secret: jwtConstants.accessSecret,
+                secret: authSettings.accessSecret,
             });
         } catch (e) {
             // logger.error(e);
@@ -193,7 +189,7 @@ export class AuthService {
     async validateRefreshToken(refreshToken: string): Promise<TTokenPayload | undefined> {
         try {
             return await this.jwtService.verifyAsync<TTokenPayload>(refreshToken, {
-                secret: jwtConstants.refreshSecret,
+                secret: authSettings.refreshSecret,
             });
         } catch (e) {
             // logger.error(e);
@@ -220,8 +216,8 @@ export class AuthService {
 
     getCookiesForLogOut() {
         return [
-            `${jwtConstants.accessTokenCookieName}=; HttpOnly; Path=/; Max-Age=0`,
-            `${jwtConstants.refreshTokenCookieName}=; HttpOnly; Path=/; Max-Age=0`,
+            `${authSettings.accessTokenCookieName}=; HttpOnly; Path=/; Max-Age=0`,
+            `${authSettings.refreshTokenCookieName}=; HttpOnly; Path=/; Max-Age=0`,
         ];
     }
 
@@ -234,7 +230,7 @@ export class AuthService {
     }
 
     setAccessTokenCookie(response, request: TRequestWithUser, token: TTokenInfo) {
-        response.setCookie(jwtConstants.accessTokenCookieName, token.token, {
+        response.setCookie(authSettings.accessTokenCookieName, token.token, {
             path: '/',
             maxAge: token.maxAge,
             httpOnly: true,
@@ -242,7 +238,7 @@ export class AuthService {
     }
 
     setRefreshTokenCookie(response, request: TRequestWithUser, token: TTokenInfo) {
-        response.setCookie(jwtConstants.refreshTokenCookieName, token.token, {
+        response.setCookie(authSettings.refreshTokenCookieName, token.token, {
             path: '/',
             maxAge: token.maxAge,
             httpOnly: true,
@@ -250,12 +246,12 @@ export class AuthService {
     }
 
     clearTokenCookies(response, request: TRequestWithUser) {
-        response.clearCookie?.(jwtConstants.accessTokenCookieName, {
+        response.clearCookie?.(authSettings.accessTokenCookieName, {
             path: '/',
             httpOnly: true,
             domain: this.getDomainFromRequest(request),
         });
-        response.clearCookie?.(jwtConstants.refreshTokenCookieName, {
+        response.clearCookie?.(authSettings.refreshTokenCookieName, {
             path: '/',
             httpOnly: true,
             domain: this.getDomainFromRequest(request),
@@ -264,8 +260,8 @@ export class AuthService {
 
     async processRequest(request: TRequestWithUser, response: FastifyReply): Promise<TAuthUserInfo | null> {
         try {
-            const accessToken = request?.cookies?.[jwtConstants.accessTokenCookieName];
-            const refreshToken = request?.cookies?.[jwtConstants.refreshTokenCookieName];
+            const accessToken = request?.cookies?.[authSettings.accessTokenCookieName];
+            const refreshToken = request?.cookies?.[authSettings.refreshTokenCookieName];
             if (!accessToken && !refreshToken) return null;
 
             // Validate access token

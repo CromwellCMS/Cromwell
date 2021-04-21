@@ -51,7 +51,16 @@ export default function SingIn(props: {
             }
         } catch (e) {
             console.error(e);
-            toast.error('Incorrect email or password');
+            let info = e?.message;
+            try {
+                info = JSON.parse(e.message)
+            } catch (e) { }
+
+            if (info?.statusCode === 429) {
+                toast.error('Too Many Requests. Try again later');
+            } else {
+                toast.error('Incorrect email or password');
+            }
         }
         setLoading(false);
     }

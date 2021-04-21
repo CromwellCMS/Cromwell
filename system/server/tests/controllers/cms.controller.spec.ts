@@ -27,26 +27,6 @@ describe('CMS Controller', () => {
             })
     });
 
-    it(`/GET set-theme`, async () => {
-        const newName = 'new_test_name';
-
-        await request(server)
-            .get(`/cms/set-theme?themeName=${newName}`)
-            .expect(200)
-            .then(response => {
-                expect(response.body).toBe(true);
-            })
-
-        await request(server)
-            .get('/cms/config')
-            .expect(200)
-            .then(response => {
-                const { themeName } = response.body as TCmsSettings;
-                expect(themeName).toBe(newName);
-            });
-    });
-
-
     it(`/GET themes`, () => {
         return request(server)
             .get('/cms/themes')

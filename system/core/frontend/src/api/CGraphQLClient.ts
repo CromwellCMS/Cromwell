@@ -6,6 +6,7 @@ import {
     InMemoryCache,
     NormalizedCacheObject,
     QueryOptions,
+    MutationOptions,
     DocumentNode
 } from '@apollo/client';
 import {
@@ -41,11 +42,18 @@ import {
     TUserFilter,
     TTag,
     TTagInput,
+    isServer,
 } from '@cromwell/core';
 
 class CGraphQLClient {
 
-    public readonly apolloClient: ApolloClient<NormalizedCacheObject>;
+    private readonly apolloClient: ApolloClient<NormalizedCacheObject>;
+    private unauthorizedRedirect: string | null = null;
+    private onUnauthorized: (() => any) | null = null;
+    private onErrorCallbacks: ((info: {
+        statusCode: number;
+        message: string;
+    }) => any)[] = [];
 
     constructor(private baseUrl: string, fetch?: any) {
 
@@ -71,10 +79,41 @@ class CGraphQLClient {
         });
     }
 
-    public query = <T = any>(options: QueryOptions): Promise<ApolloQueryResult<T>> =>
-        this.apolloClient.query(options);
+    public async query<T = any>(options: QueryOptions, path: string): Promise<T>;
+    public async query<T = any>(options: QueryOptions): Promise<ApolloQueryResult<T>>;
 
-    public returnData = (res: any, path: string) => {
+    public async query(options: QueryOptions, path?: string) {
+        const res = await this.handleError(() => this.apolloClient.query(options))
+        if (path) return this.returnData(res, path);
+        return res;
+    }
+
+
+    public async mutate<T = any>(options: MutationOptions, path: string): Promise<T>;
+    public async mutate<T = any>(options: MutationOptions): Promise<ReturnType<ApolloClient<T>['mutate']>>;
+
+    public async mutate(options: MutationOptions, path?: string) {
+        const res = await this.handleError(() => this.apolloClient.mutate(options))
+        if (path) return this.returnData(res, path);
+        return res;
+    }
+
+    private async handleError<T>(func: () => Promise<T>): Promise<T> {
+        try {
+            return await func();
+        } catch (e) {
+            if (e?.message?.includes?.('Access denied') && !isServer()) {
+                if (this.onUnauthorized) this.onUnauthorized();
+
+                if (this.unauthorizedRedirect && !window.location.href.includes(this.unauthorizedRedirect)) {
+                    window.location.href = this.unauthorizedRedirect;
+                }
+            }
+            throw new Error(e);
+        }
+    }
+
+    private returnData = (res: any, path: string) => {
         const data = res?.data?.[path];
         if (data) {
             // Data may be cached, and if it is modified somewhere in the app, 
@@ -84,6 +123,18 @@ class CGraphQLClient {
         };
         const errors = res?.errors;
         return errors ?? null;
+    }
+
+    public setUnauthorizedRedirect(url: string | null) {
+        this.unauthorizedRedirect = url;
+    }
+
+    public setOnUnauthorized(func: (() => any) | null) {
+        this.onUnauthorized = func;
+    }
+
+    public onError(cb: () => any) {
+        this.onErrorCallbacks.push(cb);
     }
 
     public PagedMetaFragment = gql`
@@ -98,7 +149,7 @@ class CGraphQLClient {
     // <Generic>
     public getAllEntities = async <EntityType>(entityName: string, fragment: DocumentNode, fragmentName: string): Promise<EntityType[]> => {
         const path = GraphQLPaths.Generic.getMany + entityName;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGenericGetEntities {
                     ${path} {
@@ -107,14 +158,13 @@ class CGraphQLClient {
                 }
                 ${fragment}
             `
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getEntityById = async <EntityType>(entityName: string, fragment: DocumentNode, fragmentName: string, entityId: string)
         : Promise<EntityType | undefined> => {
         const path = GraphQLPaths.Generic.getOneById + entityName;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGenericGetEntityById($entityId: String!) {
                     ${path}(id: $entityId) {
@@ -126,14 +176,13 @@ class CGraphQLClient {
             variables: {
                 entityId,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public updateEntity = async <EntityType, EntityInputType>(entityName: string, entityInputName: string, fragment: DocumentNode,
         fragmentName: string, entityId: string, data: EntityInputType): Promise<EntityType | undefined> => {
         const path = GraphQLPaths.Generic.update + entityName;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreGenericUpdateEntity($entityId: String!, $data: ${entityInputName}!) {
                     ${path}(id: $entityId, data: $data) {
@@ -146,14 +195,13 @@ class CGraphQLClient {
                 entityId,
                 data,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public createEntity = async <EntityType, EntityInputType>(entityName: string, entityInputName: string, fragment: DocumentNode,
         fragmentName: string, data: EntityInputType): Promise<EntityType | undefined> => {
         const path = GraphQLPaths.Generic.create + entityName;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreGenericCreateEntity($data: ${entityInputName}!) {
                     ${path}(data: $data) {
@@ -165,8 +213,7 @@ class CGraphQLClient {
             variables: {
                 data,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     // </Generic>
@@ -222,7 +269,7 @@ class CGraphQLClient {
             pagedParams: pagedParams ?? {},
         };
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetProducts($pagedParams: PagedParamsInput!) {
                     ${path}(pagedParams: $pagedParams) {
@@ -238,8 +285,7 @@ class CGraphQLClient {
                 ${this.PagedMetaFragment}
             `,
             variables
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getProductById = async (productId: string, customFragment?: DocumentNode, customFragmentName?: string)
@@ -249,7 +295,7 @@ class CGraphQLClient {
         const productFragment = customFragment ?? this.ProductFragment;
         const productFragmentName = customFragmentName ?? 'ProductFragment';
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetProductById($productId: String!) {
                     ${path}(id: $productId) {
@@ -261,13 +307,12 @@ class CGraphQLClient {
             variables: {
                 productId,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getProductBySlug = async (slug: string): Promise<TProduct | undefined> => {
         const path = GraphQLPaths.Product.getOneBySlug;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetProductBySlug($slug: String!) {
                     ${path}(slug: $slug) {
@@ -279,13 +324,12 @@ class CGraphQLClient {
             variables: {
                 slug,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public updateProduct = async (id: string, product: TProductInput): Promise<TProduct> => {
         const path = GraphQLPaths.Product.update;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreUpdateProduct($id: String!, $data: UpdateProduct!) {
                     ${path}(id: $id, data: $data) {
@@ -298,13 +342,12 @@ class CGraphQLClient {
                 id,
                 data: product,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public createProduct = async (product: TProductInput): Promise<TProduct> => {
         const path = GraphQLPaths.Product.create;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreCreateProduct($data: CreateProduct!) {
                     ${path}(data: $data) {
@@ -316,13 +359,12 @@ class CGraphQLClient {
             variables: {
                 data: product,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getProductsFromCategory = async (categoryId: string, pagedParams?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> => {
         const path = GraphQLPaths.Product.getFromCategory;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetProductsFromCategory($categoryId: String!, $pagedParams: PagedParamsInput!) {
                     ${path}(categoryId: $categoryId, pagedParams: $pagedParams) {
@@ -341,8 +383,7 @@ class CGraphQLClient {
                 pagedParams: pagedParams ?? {},
                 categoryId
             }
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getFilteredProducts = async (
@@ -358,7 +399,7 @@ class CGraphQLClient {
         const fragment = customFragment ?? this.ProductFragment;
         const fragmentName = customFragmentName ?? 'ProductFragment';
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query getFilteredProducts($pagedParams: PagedParamsInput, $filterParams: ProductFilterInput, $categoryId: String) {
                     ${path}(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
@@ -382,14 +423,13 @@ class CGraphQLClient {
                 filterParams,
                 categoryId,
             }
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteProduct = async (productId: string) => {
         const path = GraphQLPaths.Product.delete;
 
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteProduct($id: String!) {
                     ${path}(id: $id)
@@ -398,14 +438,13 @@ class CGraphQLClient {
             variables: {
                 id: productId,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyProducts = async (input: TDeleteManyInput) => {
         const path = GraphQLPaths.Product.deleteMany;
 
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteManyProducts($data: DeleteManyInput!) {
                     ${path}(data: $data)
@@ -414,13 +453,12 @@ class CGraphQLClient {
             variables: {
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyFilteredProducts = async (input: TDeleteManyInput, filterParams?: TProductFilter) => {
         const path = GraphQLPaths.Product.deleteManyFiltered;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteManyFilteredProducts($input: DeleteManyInput!, $filterParams: ProductFilterInput) {
                     ${path}(input: $input, filterParams: $filterParams)
@@ -430,8 +468,7 @@ class CGraphQLClient {
                 input,
                 filterParams
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     // </Product>
@@ -473,7 +510,7 @@ class CGraphQLClient {
             pagedParams: pagedParams ?? {},
         };
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
             query coreGetProductCategories($pagedParams: PagedParamsInput!) {
                 ${path}(pagedParams: $pagedParams) {
@@ -489,8 +526,7 @@ class CGraphQLClient {
             ${this.PagedMetaFragment}
         `,
             variables
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getProductCategoryById = async (id: string, customFragment?: DocumentNode, customFragmentName?: string)
@@ -499,7 +535,7 @@ class CGraphQLClient {
         const fragment = customFragment ?? this.ProductCategoryFragment;
         const fragmentName = customFragmentName ?? 'ProductCategoryFragment';
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
             query coreGetProductCategoryById($id: String!) {
                 ${path}(id: $id) {
@@ -511,13 +547,12 @@ class CGraphQLClient {
             variables: {
                 id,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getProductCategoryBySlug = async (slug: string): Promise<TProductCategory | undefined> => {
         const path = GraphQLPaths.ProductCategory.getOneBySlug;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetProductCategory($slug: String!) {
                     ${path}(slug: $slug) {
@@ -529,14 +564,12 @@ class CGraphQLClient {
             variables: {
                 slug,
             }
-        });
-
-        return this.returnData(res, path);
+        }, path);
     }
 
-    public updateProductCategory = async (id: string, productCategory: TProductCategoryInput) => {
+    public updateProductCategory = async (id: string, productCategory: TProductCategoryInput): Promise<TProductCategory> => {
         const path = GraphQLPaths.ProductCategory.update;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
             mutation coreUpdateProductCategory($id: String!, $data: UpdateProductCategory!) {
                 ${path}(id: $id, data: $data) {
@@ -549,13 +582,12 @@ class CGraphQLClient {
                 id,
                 data: productCategory,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
-    public createProductCategory = async (productCategory: TProductCategoryInput) => {
+    public createProductCategory = async (productCategory: TProductCategoryInput): Promise<TProductCategory> => {
         const path = GraphQLPaths.ProductCategory.create;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
             mutation coreCreateProductCategory($data: CreateProductCategory!) {
                 ${path}(data: $data) {
@@ -567,13 +599,12 @@ class CGraphQLClient {
             variables: {
                 data: productCategory,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteProductCategory = async (id: string) => {
         const path = GraphQLPaths.ProductCategory.delete;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteProductCategory($id: String!) {
                     ${path}(id: $id)
@@ -582,13 +613,12 @@ class CGraphQLClient {
             variables: {
                 id,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyProductCategories = async (input: TDeleteManyInput) => {
         const path = GraphQLPaths.ProductCategory.deleteMany;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteManyProductCategories($data: DeleteManyInput!) {
                     ${path}(data: $data)
@@ -597,13 +627,12 @@ class CGraphQLClient {
             variables: {
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyFilteredProductCategories = async (input: TDeleteManyInput, filterParams?: TProductCategoryFilter) => {
         const path = GraphQLPaths.ProductCategory.deleteManyFiltered;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteManyFilteredProductCategories($input: DeleteManyInput!, $filterParams: ProductCategoryFilterInput) {
                     ${path}(input: $input, filterParams: $filterParams)
@@ -613,8 +642,7 @@ class CGraphQLClient {
                 input,
                 filterParams
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getRootCategories = async (customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TProductCategory> | undefined> => {
@@ -622,7 +650,7 @@ class CGraphQLClient {
         const fragment = customFragment ?? this.ProductCategoryFragment;
         const fragmentName = customFragmentName ?? 'ProductCategoryFragment';
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
             query coreGetRootCategories {
                 ${path} {
@@ -637,8 +665,7 @@ class CGraphQLClient {
             ${fragment}
             ${this.PagedMetaFragment}
         `,
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getFilteredProductCategories = async ({ pagedParams, filterParams, customFragment, customFragmentName }: {
@@ -652,7 +679,7 @@ class CGraphQLClient {
         const fragment = customFragment ?? this.ProductCategoryFragment;
         const fragmentName = customFragmentName ?? 'ProductCategoryFragment';
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetFilteredProductCategories($pagedParams: PagedParamsInput, $filterParams: ProductCategoryFilterInput) {
                     ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
@@ -671,8 +698,7 @@ class CGraphQLClient {
                 pagedParams: pagedParams ?? {},
                 filterParams,
             }
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
 
@@ -701,7 +727,7 @@ class CGraphQLClient {
 
     public getAttributes = async (): Promise<TAttribute[] | undefined> => {
         const path = GraphQLPaths.Attribute.getMany;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetAttributes {
                     ${path} {
@@ -710,13 +736,12 @@ class CGraphQLClient {
                 }
                 ${this.AttributeFragment}
            `
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getAttributeById = async (attributeId: string): Promise<TAttribute | undefined> => {
         const path = GraphQLPaths.Attribute.getOneById;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                query coreGetAttributeById($attributeId: String!) {
                 ${path}(id: $attributeId) {
@@ -728,13 +753,12 @@ class CGraphQLClient {
             variables: {
                 attributeId
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
-    public updateAttribute = async (id: string, attribute: TAttributeInput) => {
+    public updateAttribute = async (id: string, attribute: TAttributeInput): Promise<TAttribute> => {
         const path = GraphQLPaths.Attribute.update;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                mutation coreUpdateAttribute($id: String!, $data: AttributeInput!) {
                 ${path}(id: $id, data: $data) {
@@ -747,13 +771,12 @@ class CGraphQLClient {
                 id,
                 data: attribute,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
-    public createAttribute = async (attribute: TAttributeInput) => {
+    public createAttribute = async (attribute: TAttributeInput): Promise<TAttribute> => {
         const path = GraphQLPaths.Attribute.create;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                mutation coreCreateAttribute($data: AttributeInput!) {
                 ${path}(data: $data) {
@@ -765,13 +788,12 @@ class CGraphQLClient {
             variables: {
                 data: attribute,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteAttribute = async (id: string) => {
         const path = GraphQLPaths.Attribute.delete;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                mutation coreDeleteAttribute($id: String!) {
                 ${path}(id: $id)
@@ -780,8 +802,7 @@ class CGraphQLClient {
             variables: {
                 id
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
 
@@ -804,7 +825,7 @@ class CGraphQLClient {
 
     public getProductReview = async (productReviewId: string): Promise<TProductReview | undefined> => {
         const path = GraphQLPaths.ProductReview.getOneById;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
               query coreGetProductReviewById($id: String!) {
                 ${path}(id: $id) {
@@ -816,13 +837,12 @@ class CGraphQLClient {
             variables: {
                 id: productReviewId
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getProductReviews = async (pagedParams?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> => {
         const path = GraphQLPaths.ProductReview.getMany;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetProductReviews($pagedParams: PagedParamsInput!) {
                     ${path}(pagedParams: $pagedParams) {
@@ -840,13 +860,12 @@ class CGraphQLClient {
             variables: {
                 pagedParams: pagedParams ?? {},
             }
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getProductReviewsOfProduct = async (productId: string, pagedParams?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> => {
         const path = GraphQLPaths.ProductReview.getFromProduct;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetProductReviewsOfProduct($productId: String!, $pagedParams: PagedParamsInput!) {
                     ${path}(productId: $productId, pagedParams: $pagedParams) {
@@ -865,14 +884,13 @@ class CGraphQLClient {
                 productId,
                 pagedParams: pagedParams ?? {},
             }
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
 
     public updateProductReview = async (id: string, productReview: TProductReviewInput): Promise<TProductReview | undefined> => {
         const path = GraphQLPaths.ProductReview.update;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
               mutation coreUpdateAttribute($id: String!, $data: ProductReviewInput!) {
                 ${path}(id: $id, data: $data) {
@@ -885,13 +903,12 @@ class CGraphQLClient {
                 id,
                 data: productReview,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public createProductReview = async (productReview: TProductReviewInput): Promise<TProductReview | undefined> => {
         const path = GraphQLPaths.ProductReview.create;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
               mutation coreCreateProductReview($data: ProductReviewInput!) {
                 ${path}(data: $data) {
@@ -903,14 +920,13 @@ class CGraphQLClient {
             variables: {
                 data: productReview,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteProductReview = async (productId: string) => {
         const path = GraphQLPaths.ProductReview.delete;
 
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteProductReview($id: String!) {
                     ${path}(id: $id)
@@ -919,13 +935,12 @@ class CGraphQLClient {
             variables: {
                 id: productId,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyProductReviews = async (input: TDeleteManyInput) => {
         const path = GraphQLPaths.ProductReview.deleteMany;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteManyProductReviews($data: DeleteManyInput!) {
                     ${path}(data: $data)
@@ -934,8 +949,7 @@ class CGraphQLClient {
             variables: {
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
 
@@ -985,7 +999,7 @@ class CGraphQLClient {
             pagedParams: pagedParams ?? {},
         };
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
               query coreGetPosts($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -1001,8 +1015,7 @@ class CGraphQLClient {
               ${this.PagedMetaFragment}
           `,
             variables
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getPostById = async (postId: string,
@@ -1013,7 +1026,7 @@ class CGraphQLClient {
         const fragment = customFragment ?? this.PostFragment;
         const fragmentName = customFragmentName ?? 'PostFragment';
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
               query coreGetPostById($postId: String!) {
                   ${path}(id: $postId) {
@@ -1025,8 +1038,7 @@ class CGraphQLClient {
             variables: {
                 postId,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getPostBySlug = async (slug: string,
@@ -1036,7 +1048,7 @@ class CGraphQLClient {
         const fragment = customFragment ?? this.PostFragment;
         const fragmentName = customFragmentName ?? 'PostFragment';
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
               query coreGetPostBySlug($slug: String!) {
                   ${path}(slug: $slug) {
@@ -1048,13 +1060,12 @@ class CGraphQLClient {
             variables: {
                 slug,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public updatePost = async (id: string, post: TPostInput): Promise<TPost> => {
         const path = GraphQLPaths.Post.update;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
               mutation coreUpdatePost($id: String!, $data: UpdatePost!) {
                   ${path}(id: $id, data: $data) {
@@ -1067,13 +1078,12 @@ class CGraphQLClient {
                 id,
                 data: post,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public createPost = async (post: TPostInput): Promise<TPost> => {
         const path = GraphQLPaths.Post.create;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
               mutation coreCreatePost($data: CreatePost!) {
                   ${path}(data: $data) {
@@ -1085,14 +1095,13 @@ class CGraphQLClient {
             variables: {
                 data: post,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deletePost = async (postId: string) => {
         const path = GraphQLPaths.Post.delete;
 
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeletePost($id: String!) {
                     ${path}(id: $id)
@@ -1101,13 +1110,12 @@ class CGraphQLClient {
             variables: {
                 id: postId,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyPosts = async (input: TDeleteManyInput) => {
         const path = GraphQLPaths.Post.deleteMany;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteManyPosts($data: DeleteManyInput!) {
                     ${path}(data: $data)
@@ -1116,13 +1124,12 @@ class CGraphQLClient {
             variables: {
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyFilteredPosts = async (input: TDeleteManyInput, filterParams?: TPostFilter) => {
         const path = GraphQLPaths.Post.deleteManyFiltered;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteManyFilteredPosts($input: DeleteManyInput!, $filterParams: PostFilterInput) {
                     ${path}(input: $input, filterParams: $filterParams)
@@ -1132,8 +1139,7 @@ class CGraphQLClient {
                 input,
                 filterParams
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getFilteredPosts = async ({ pagedParams, filterParams, customFragment, customFragmentName }: {
@@ -1147,7 +1153,7 @@ class CGraphQLClient {
         const fragment = customFragment ?? this.PostFragment;
         const fragmentName = customFragmentName ?? 'PostFragment';
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetFilteredPosts($pagedParams: PagedParamsInput, $filterParams: PostFilterInput) {
                     ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
@@ -1166,8 +1172,7 @@ class CGraphQLClient {
                 pagedParams: pagedParams ?? {},
                 filterParams,
             }
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     // </Post>
@@ -1206,7 +1211,7 @@ class CGraphQLClient {
             pagedParams: pagedParams ?? {},
         };
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
             query coreGetUsers($pagedParams: PagedParamsInput) {
                 ${path}(pagedParams: $pagedParams) {
@@ -1222,14 +1227,13 @@ class CGraphQLClient {
             ${this.PagedMetaFragment}
         `,
             variables
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getUserById = async (id: string)
         : Promise<TUser | undefined> => {
         const path = GraphQLPaths.User.getOneById;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
             query coreGetUserById($id: String!) {
                 ${path}(id: $id) {
@@ -1241,13 +1245,12 @@ class CGraphQLClient {
             variables: {
                 id,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getUserBySlug = async (slug: string): Promise<TUser | undefined> => {
         const path = GraphQLPaths.User.getOneBySlug;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetUser($slug: String!) {
                     ${path}(slug: $slug) {
@@ -1259,14 +1262,12 @@ class CGraphQLClient {
             variables: {
                 slug,
             }
-        });
-
-        return this.returnData(res, path);
+        }, path);
     }
 
-    public updateUser = async (id: string, input: TUpdateUser) => {
+    public updateUser = async (id: string, input: TUpdateUser): Promise<TUser> => {
         const path = GraphQLPaths.User.update;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
             mutation coreUpdateUser($id: String!, $data: UpdateUser!) {
                 ${path}(id: $id, data: $data) {
@@ -1279,13 +1280,12 @@ class CGraphQLClient {
                 id,
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
-    public createUser = async (input: TCreateUser) => {
+    public createUser = async (input: TCreateUser): Promise<TUser> => {
         const path = GraphQLPaths.User.create;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
             mutation coreCreateUser($data: CreateUser!) {
                 ${path}(data: $data) {
@@ -1297,14 +1297,13 @@ class CGraphQLClient {
             variables: {
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteUser = async (id: string) => {
         const path = GraphQLPaths.User.delete;
 
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteUser($id: String!) {
                     ${path}(id: $id)
@@ -1313,8 +1312,7 @@ class CGraphQLClient {
             variables: {
                 id,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
 
@@ -1329,7 +1327,7 @@ class CGraphQLClient {
         const fragment = customFragment ?? this.UserFragment;
         const fragmentName = customFragmentName ?? 'UserFragment';
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetFilteredUsers($pagedParams: PagedParamsInput, $filterParams: UserFilterInput) {
                     ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
@@ -1348,13 +1346,12 @@ class CGraphQLClient {
                 pagedParams: pagedParams ?? {},
                 filterParams,
             }
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyFilteredUsers = async (input: TDeleteManyInput, filterParams?: TUserFilter) => {
         const path = GraphQLPaths.User.deleteManyFiltered;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteManyFilteredUsers($input: DeleteManyInput!, $filterParams: UserFilterInput) {
                     ${path}(input: $input, filterParams: $filterParams)
@@ -1364,8 +1361,7 @@ class CGraphQLClient {
                 input,
                 filterParams
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
 
@@ -1409,7 +1405,7 @@ class CGraphQLClient {
             pagedParams: pagedParams ?? {},
         };
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetOrders($pagedParams: PagedParamsInput) {
                     ${path}(pagedParams: $pagedParams) {
@@ -1425,32 +1421,29 @@ class CGraphQLClient {
                 ${this.PagedMetaFragment}
             `,
             variables
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
-    public getOrderById = async (id: string)
-        : Promise<TOrder | undefined> => {
+    public getOrderById = async (id: string): Promise<TOrder | undefined> => {
         const path = GraphQLPaths.Order.getOneById;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
-        query coreGetOrderById($id: String!) {
-            ${path}(id: $id) {
-                ...OrderFragment
-            }
-        }
-        ${this.OrderFragment}
-    `,
+                query coreGetOrderById($id: String!) {
+                    ${path}(id: $id) {
+                        ...OrderFragment
+                    }
+                }
+                ${this.OrderFragment}
+            `,
             variables: {
                 id,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getOrderBySlug = async (slug: string): Promise<TOrder | undefined> => {
         const path = GraphQLPaths.Order.getOneBySlug;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetOrder($slug: String!) {
                     ${path}(slug: $slug) {
@@ -1462,14 +1455,12 @@ class CGraphQLClient {
             variables: {
                 slug,
             }
-        });
-
-        return this.returnData(res, path);
+        }, path);
     }
 
     public updateOrder = async (id: string, input: TOrderInput): Promise<TOrder> => {
         const path = GraphQLPaths.Order.update;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreUpdateOrder($id: String!, $data: InputOrder!) {
                     ${path}(id: $id, data: $data) {
@@ -1482,13 +1473,12 @@ class CGraphQLClient {
                 id,
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public createOrder = async (input: TOrderInput): Promise<TOrder> => {
         const path = GraphQLPaths.Order.create;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreCreateOrder($data: InputOrder!) {
                     ${path}(data: $data) {
@@ -1500,14 +1490,12 @@ class CGraphQLClient {
             variables: {
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteOrder = async (id: string) => {
         const path = GraphQLPaths.Order.delete;
-
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteOrder($id: String!) {
                     ${path}(id: $id)
@@ -1516,13 +1504,12 @@ class CGraphQLClient {
             variables: {
                 id,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyOrders = async (input: TDeleteManyInput) => {
         const path = GraphQLPaths.Order.deleteMany;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteManyOrders($data: DeleteManyInput!) {
                     ${path}(data: $data)
@@ -1531,13 +1518,12 @@ class CGraphQLClient {
             variables: {
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyFilteredOrders = async (input: TDeleteManyInput, filterParams?: TOrderFilter) => {
         const path = GraphQLPaths.Order.deleteManyFiltered;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
                 mutation coreDeleteManyFilteredOrders($input: DeleteManyInput!, $filterParams: OrderFilterInput) {
                     ${path}(input: $input, filterParams: $filterParams)
@@ -1547,8 +1533,7 @@ class CGraphQLClient {
                 input,
                 filterParams
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getFilteredOrders = async ({ pagedParams, filterParams, customFragment, customFragmentName }: {
@@ -1562,7 +1547,7 @@ class CGraphQLClient {
         const fragment = customFragment ?? this.OrderFragment;
         const fragmentName = customFragmentName ?? 'OrderFragment';
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetFilteredOrders($pagedParams: PagedParamsInput, $filterParams: OrderFilterInput) {
                     ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
@@ -1581,8 +1566,7 @@ class CGraphQLClient {
                 pagedParams: pagedParams ?? {},
                 filterParams,
             }
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
 
@@ -1617,7 +1601,7 @@ class CGraphQLClient {
             pagedParams: pagedParams ?? {},
         };
 
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
               query coreGetTags($pagedParams: PagedParamsInput) {
                   ${path}(pagedParams: $pagedParams) {
@@ -1633,14 +1617,12 @@ class CGraphQLClient {
               ${this.PagedMetaFragment}
           `,
             variables
-        })
-        return this.returnData(res, path);
+        }, path);
     }
 
-    public getTagById = async (id: string)
-        : Promise<TTag | undefined> => {
+    public getTagById = async (id: string): Promise<TTag | undefined> => {
         const path = GraphQLPaths.Tag.getOneById;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
                 query coreGetTagById($id: String!) {
                     ${path}(id: $id) {
@@ -1652,13 +1634,12 @@ class CGraphQLClient {
             variables: {
                 id,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public getTagBySlug = async (slug: string): Promise<TTag | undefined> => {
         const path = GraphQLPaths.Tag.getOneBySlug;
-        const res = await this.apolloClient.query({
+        return this.query({
             query: gql`
               query coreGetTag($slug: String!) {
                   ${path}(slug: $slug) {
@@ -1670,14 +1651,12 @@ class CGraphQLClient {
             variables: {
                 slug,
             }
-        });
-
-        return this.returnData(res, path);
+        }, path);
     }
 
-    public updateTag = async (id: string, input: TTagInput) => {
+    public updateTag = async (id: string, input: TTagInput): Promise<TTag> => {
         const path = GraphQLPaths.Tag.update;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
               mutation coreUpdateTag($id: String!, $data: InputTag!) {
                   ${path}(id: $id, data: $data) {
@@ -1690,13 +1669,12 @@ class CGraphQLClient {
                 id,
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
-    public createTag = async (input: TTagInput) => {
+    public createTag = async (input: TTagInput): Promise<TTag> => {
         const path = GraphQLPaths.Tag.create;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
               mutation coreCreateTag($data: InputTag!) {
                   ${path}(data: $data) {
@@ -1708,14 +1686,13 @@ class CGraphQLClient {
             variables: {
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteTag = async (id: string) => {
         const path = GraphQLPaths.Tag.delete;
 
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
               mutation coreDeleteTag($id: String!) {
                   ${path}(id: $id)
@@ -1724,13 +1701,12 @@ class CGraphQLClient {
             variables: {
                 id,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
     public deleteManyTags = async (input: TDeleteManyInput) => {
         const path = GraphQLPaths.Tag.deleteMany;
-        const res = await this.apolloClient.mutate({
+        return this.mutate({
             mutation: gql`
               mutation coreDeleteManyTags($data: DeleteManyInput!) {
                   ${path}(data: $data)
@@ -1739,8 +1715,7 @@ class CGraphQLClient {
             variables: {
                 data: input,
             }
-        });
-        return this.returnData(res, path);
+        }, path);
     }
 
 
@@ -1783,7 +1758,6 @@ class CGraphQLClient {
         }
     `;
     // </Theme>
-
 
 }
 

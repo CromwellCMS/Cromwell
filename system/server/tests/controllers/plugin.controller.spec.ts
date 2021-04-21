@@ -63,17 +63,6 @@ describe('Plugin Controller', () => {
             })
     });
 
-    it(`/GET list`, () => {
-        return request(server)
-            .get(`/plugin/list`)
-            .expect(200)
-            .then(response => {
-                expect(response.body).toBeTruthy();
-                expect(response.body.length).toBeTruthy();
-            })
-    });
-
-
     afterAll(async () => {
         await tearDownController(app, testDir);
     });

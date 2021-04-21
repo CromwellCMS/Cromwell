@@ -23,7 +23,12 @@ export default function PluginList() {
 
     const getPluginList = async () => {
         // Get info by parsing directory 
-        const pluginInfos = await getRestAPIClient()?.getPluginList();
+        try {
+            const pluginInfos = await getRestAPIClient()?.getPluginList();
+            if (pluginInfos && Array.isArray(pluginInfos)) setPluginInfoList(pluginInfos);
+        } catch (e) {
+            console.error(e);
+        }
 
         // Get info from DB
         const graphQLClient = getGraphQLClient();
@@ -35,7 +40,6 @@ export default function PluginList() {
             } catch (e) { console.error(e); }
         }
 
-        if (pluginInfos && Array.isArray(pluginInfos)) setPluginInfoList(pluginInfos);
         setIsLoading(false);
     }
 
@@ -111,15 +115,15 @@ export default function PluginList() {
                                     </IconButton>
                                 </Tooltip>
                             ) : (
-                                    <div style={{ opacity: 0.3, padding: '12px' }}><SettingsIcon /></div>
-                                )
+                                <div style={{ opacity: 0.3, padding: '12px' }}><SettingsIcon /></div>
+                            )
                         ) : (
-                                <Tooltip title="Install plugin">
-                                    <IconButton onClick={handleInstallPlugin(pluginName)}>
-                                        <LibraryAddIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            )}
+                            <Tooltip title="Install plugin">
+                                <IconButton onClick={handleInstallPlugin(pluginName)}>
+                                    <LibraryAddIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
                         <Tooltip title="Delete plugin">
                             <IconButton onClick={handleDeletePlugin(pluginName)}>
                                 <DeleteIcon />

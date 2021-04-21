@@ -57,7 +57,7 @@ const SettingsPage = () => {
             setSettings(newConfig);
         } catch (e) {
             console.error(e);
-            toast.success?.('Failed to save settings');
+            toast.error('Failed to save settings');
         }
         setIsLoading(false);
     }
