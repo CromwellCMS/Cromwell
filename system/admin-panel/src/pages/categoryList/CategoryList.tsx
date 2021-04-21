@@ -113,7 +113,7 @@ const CategoryList = (props: TPropsType) => {
                 toast.success('Category deleted');
             } catch (e) {
                 console.error(e);
-                toast.success('Failed to delete category');
+                toast.error('Failed to delete category');
             }
         }
         setCategoryToDelete(null);
@@ -193,7 +193,7 @@ const CategoryList = (props: TPropsType) => {
             toast.success('Categories deleted');
         } catch (e) {
             console.error(e);
-            toast.success('Failed to delete categories');
+            toast.error('Failed to delete categories');
         }
         await getRootCategories();
         resetSelected();

@@ -1,5 +1,6 @@
 import {
     GraphQLPaths,
+    TAuthRole,
     TFilteredProductList,
     TPagedList,
     TProduct,
@@ -62,31 +63,31 @@ export class ProductResolver {
         return this.repository.getProductById(id);
     }
 
-    @Authorized("administrator")
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Product)
     async [createPath](@Arg("data") data: CreateProduct): Promise<Product> {
         return this.repository.createProduct(data);
     }
 
-    @Authorized("administrator")
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Product)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProduct): Promise<Product> {
         return this.repository.updateProduct(id, data);
     }
 
-    @Authorized("administrator")
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         return this.repository.deleteProduct(id);
     }
 
-    @Authorized("administrator")
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         return this.repository.deleteMany(data);
     }
-    
-    @Authorized("administrator")
+
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,

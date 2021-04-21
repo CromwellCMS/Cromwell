@@ -1,5 +1,5 @@
 import { TCromwellPage, TUser, onStoreChange, removeOnStoreChange, getStoreItem, setStoreItem, TOrder } from '@cromwell/core';
-import { getGraphQLClient, getCStore } from '@cromwell/core-frontend';
+import { getGraphQLClient, getCStore, getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, TextField, useMediaQuery, useTheme, Tooltip } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
@@ -94,7 +94,7 @@ const CheckoutPage: TCromwellPage = (props) => {
         let order;
         setIsLoading(true);
         try {
-            order = await getGraphQLClient()?.createOrder({
+            order = await getRestAPIClient()?.placeOrder({
                 customerName: form.name,
                 customerPhone: form.phone,
                 customerAddress: form.address,

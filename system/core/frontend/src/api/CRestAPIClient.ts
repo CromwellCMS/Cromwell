@@ -18,6 +18,8 @@ import {
     TUser,
     TCmsEntityInput,
     TCreateUser,
+    TOrderInput,
+    TOrder,
 } from '@cromwell/core';
 
 type TPluginsModifications = TPluginConfig & { [x: string]: any };
@@ -26,17 +28,33 @@ class CRestAPIClient {
     constructor(private baseUrl: string) { }
 
     private unauthorizedRedirect: string | null = null;
+    private onUnauthorized: (() => any) | null = null;
+    private onErrorCallbacks: ((info: {
+        statusCode: number;
+        message: string;
+    }) => any)[] = [];
 
-    private handleError = (responce: Response, data: any, route: string): any => {
+    private handleError = async (responce: Response, data: any, route: string): Promise<any> => {
         if ((responce.status === 403 || responce.status === 401) && !isServer()) {
+            this.onUnauthorized?.();
             if (this.unauthorizedRedirect && !window.location.href.includes(this.unauthorizedRedirect)) {
                 window.location.href = this.unauthorizedRedirect;
             }
         }
 
         if (responce.status >= 400) {
-            this.logError(route, `Request failed, status: ${responce.status}. ${data?.message}`)
-            return undefined;
+            this.logError(route, `Request failed, status: ${responce.status}. ${data?.message}`);
+            let body;
+            try {
+                body = await responce?.json?.();
+            } catch (e) { };
+
+            const errorInfo = {
+                statusCode: responce.status,
+                message: body?.message,
+            };
+            this.onErrorCallbacks.forEach(cb => cb(errorInfo))
+            throw new Error(JSON.stringify(errorInfo));
         }
         return data;
     }
@@ -56,6 +74,7 @@ class CRestAPIClient {
             return this.handleError(res, data, route);
         } catch (e) {
             this.logError(route, e);
+            throw new Error(e);
         }
     }
 
@@ -71,6 +90,7 @@ class CRestAPIClient {
             return this.handleError(res, data, route);
         } catch (e) {
             this.logError(route, e);
+            throw new Error(e);
         }
     }
 
@@ -99,14 +119,23 @@ class CRestAPIClient {
         this.unauthorizedRedirect = url;
     }
 
+    public setOnUnauthorized(func: (() => any) | null) {
+        this.onUnauthorized = func;
+    }
+
+    public onError(cb: ((info: {
+        statusCode: number;
+        message: string;
+    }) => any)) {
+        this.onErrorCallbacks.push(cb);
+    }
+
+
+
     // < CMS >
 
     public getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
         return this.get(`cms/config`);
-    }
-
-    public saveThemeName = async (themeName?: string): Promise<boolean | undefined> => {
-        return this.get(`cms/set-theme?themeName=${themeName ?? ''}`);
     }
 
     public getCmsSettingsAndSave = async (): Promise<TCmsSettings | undefined> => {
@@ -157,6 +186,21 @@ class CRestAPIClient {
         return this.post(`cms/update-config`, input);
     }
 
+    public installTheme = async (themeName: string): Promise<boolean> => {
+        const data = await this.get<boolean>(`cms/install-theme?themeName=${themeName}`);
+        return data ?? false;
+    }
+
+    public changeTheme = async (themeName: string): Promise<boolean> => {
+        const data = await this.get<boolean>(`cms/change-theme?themeName=${themeName}`);
+        return data ?? false;
+    }
+
+    public placeOrder = async (input: TOrderInput): Promise<TOrder | undefined> => {
+        return this.post(`cms/place-order`, input);
+    }
+
+
     // < / CMS >
 
 
@@ -203,16 +247,6 @@ class CRestAPIClient {
         return this.get(`theme/page-bundle?pageRoute=${pageRoute}`);
     }
 
-    public installTheme = async (themeName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`theme/install?themeName=${themeName}`);
-        return data ?? false;
-    }
-
-    public changeTheme = async (themeName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`theme/set-active?themeName=${themeName}`);
-        return data ?? false;
-    }
-
     // < / Theme >
 
 
@@ -242,16 +276,6 @@ class CRestAPIClient {
 
     // < / Plugin >
 
-
-    // < Manager >
-
-
-    public rebuildTheme = async (): Promise<boolean> => {
-        const data = await this.get<boolean>(`manager/services/rebuild-theme`);
-        return data ?? false;
-    }
-
-    // < / Manager >
 }
 
 export const getRestAPIClient = (serverType: 'main' | 'plugin' = 'main'): CRestAPIClient | undefined => {

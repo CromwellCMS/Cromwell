@@ -93,7 +93,7 @@ const TagList = (props: TPropsType) => {
             toast.success('Tags deleted');
         } catch (e) {
             console.error(e);
-            toast.success('Failed to delete tags');
+            toast.error('Failed to delete tags');
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);
@@ -109,7 +109,7 @@ const TagList = (props: TPropsType) => {
                 toast.success('Tag deleted');
             } catch (e) {
                 console.error(e);
-                toast.success('Failed to delete tag');
+                toast.error('Failed to delete tag');
             }
         }
         setItemToDelete(null);

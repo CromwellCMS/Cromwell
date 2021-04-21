@@ -140,7 +140,7 @@ const ProductList = (props: TPropsType) => {
                 toast.success('Product deleted');
             } catch (e) {
                 console.error(e);
-                toast.success('Failed to delete product');
+                toast.error('Failed to delete product');
             }
         }
         setIsLoading(false);
@@ -172,7 +172,7 @@ const ProductList = (props: TPropsType) => {
             toast.success('Products deleted');
         } catch (e) {
             console.error(e);
-            toast.success('Failed to delete products');
+            toast.error('Failed to delete products');
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);

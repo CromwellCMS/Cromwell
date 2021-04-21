@@ -28,10 +28,12 @@ function App(props: AppProps) {
     const getUser = async () => {
         const userInfo = getStoreItem('userInfo');
         if (!userInfo) {
-            const user = await getRestAPIClient()?.getUserInfo();
-            if (user) {
-                setStoreItem('userInfo', user);
-            }
+            try {
+                const user = await getRestAPIClient()?.getUserInfo();
+                if (user) {
+                    setStoreItem('userInfo', user);
+                }
+            } catch (e) { }
         }
     }
 

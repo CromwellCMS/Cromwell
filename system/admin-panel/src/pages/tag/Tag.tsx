@@ -72,7 +72,7 @@ const TagPage = () => {
                     history.push(`${tagPageInfo.baseRoute}/${newData.id}`)
                     await getTagData(newData.id);
                 } catch (e) {
-                    toast.error('Failed to create post');
+                    toast.error('Failed to create tag');
                     console.error(e);
                 }
             } else {

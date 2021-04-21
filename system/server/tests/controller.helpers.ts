@@ -1,3 +1,6 @@
+import { SetMetadata } from '@nestjs/common';
+import { TAuthRole } from '@cromwell/core';
+
 jest.mock('@App/auth/auth.guard', () => {
     class JwtAuthGuard {
         async canActivate(context): Promise<boolean> {
@@ -5,7 +8,8 @@ jest.mock('@App/auth/auth.guard', () => {
         }
     }
     return {
-        JwtAuthGuard
+        JwtAuthGuard,
+        Roles: (...roles: TAuthRole[]) => SetMetadata('roles', roles)
     }
 });
 

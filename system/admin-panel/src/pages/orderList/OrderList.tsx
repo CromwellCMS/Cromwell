@@ -101,7 +101,7 @@ const OrderList = (props: TPropsType) => {
             toast.success('Orders deleted');
         } catch (e) {
             console.error(e);
-            toast.success('Failed to delete orders');
+            toast.error('Failed to delete orders');
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);
@@ -117,7 +117,7 @@ const OrderList = (props: TPropsType) => {
                 toast.success('Order deleted');
             } catch (e) {
                 console.error(e);
-                toast.success('Failed to delete order');
+                toast.error('Failed to delete order');
             }
         }
         setItemToDelete(null);

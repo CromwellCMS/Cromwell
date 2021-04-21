@@ -1,31 +1,50 @@
-import { getStoreItem, TUserRole } from '@cromwell/core';
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import { getStoreItem, TAuthRole } from '@cromwell/core';
+import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
+import { Reflector } from '@nestjs/core';
+import { TAuthUserInfo, TRequestWithUser, TGraphQLContext } from './constants';
 
-import { TAuthUserInfo, TRequestWithUser } from './constants';
+export const Roles = (...roles: TAuthRole[]) => SetMetadata('roles', roles);
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
+    constructor(private reflector: Reflector) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
         if (getStoreItem('cmsSettings')?.installed === false) return true;
 
         const request: TRequestWithUser = context.switchToHttp().getRequest();
-        if (request.user?.id) return true;
-        return false;
+        if (!request.user?.id) return false;
+
+        const roles = this.reflector.get<TAuthRole[]>('roles', context.getHandler());
+        return mathRoles(request.user, roles);
     }
 }
 
 export const graphQlAuthChecker = (
     { root, args, context, info },
-    roles: TUserRole[],
+    roles: TAuthRole[],
 ) => {
     if (getStoreItem('cmsSettings')?.installed === false) return true;
 
-    const userInfo: TAuthUserInfo | undefined = context?.user;
-    if (roles && roles.length > 0) {
-        if (roles.includes('administrator')) {
-            if (userInfo?.role !== 'administrator') return false;
-        }
-    }
-    return true;
+    const userInfo: TAuthUserInfo | undefined = (context as TGraphQLContext)?.user;
+    return mathRoles(userInfo, roles, args?.id);
 };
+
+const mathRoles = (user?: TAuthUserInfo, roles?: TAuthRole[], entityId?: string): boolean => {
+    if (!roles || roles.length === 0) return true;
+    if (!user?.id) return false;
+    if (user.role === 'administrator') return true;
+
+    if (roles.includes('all')) return true;
+
+    if (roles.includes('author')) {
+        if (user.role === 'author') return true;
+    }
+    if (roles.includes('customer')) {
+        if (user.role === 'customer') return true;
+    }
+    if (roles.includes('self') && entityId) {
+        if (user.id + '' === entityId + '') return true;
+    }
+    return false;
+}

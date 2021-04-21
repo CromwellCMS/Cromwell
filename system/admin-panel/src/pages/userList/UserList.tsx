@@ -99,7 +99,7 @@ const UserList = (props: TPropsType) => {
             toast.success('Users deleted');
         } catch (e) {
             console.error(e);
-            toast.success('Failed to delete users');
+            toast.error('Failed to delete users');
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);
@@ -115,7 +115,7 @@ const UserList = (props: TPropsType) => {
                 toast.success('User deleted');
             } catch (e) {
                 console.error(e);
-                toast.success('Failed to delete user');
+                toast.error('Failed to delete user');
             }
         }
         setItemToDelete(null);

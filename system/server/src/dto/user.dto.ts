@@ -35,6 +35,7 @@ export class UserDto implements TUser {
         this.phone = user.phone;
         this.address = user.address;
         this.role = user.role;
+        return this;
     }
 
 }

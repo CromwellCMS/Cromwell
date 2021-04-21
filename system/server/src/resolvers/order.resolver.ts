@@ -1,4 +1,4 @@
-import { GraphQLPaths, TOrder, TPagedList } from '@cromwell/core';
+import { GraphQLPaths, TAuthRole, TOrder, TPagedList } from '@cromwell/core';
 import {
     DeleteManyInput,
     getLogger,
@@ -8,9 +8,8 @@ import {
     OrderRepository,
     PagedOrder,
     PagedParamsInput,
-    ProductRepository,
 } from '@cromwell/core-backend';
-import { Arg, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 const getOneBySlugPath = GraphQLPaths.Order.getOneBySlug;
@@ -29,44 +28,51 @@ const logger = getLogger('detailed');
 export class OrderResolver {
 
     private repository = getCustomRepository(OrderRepository);
-    private productRepository = getCustomRepository(ProductRepository);
 
+    @Authorized<TAuthRole>("administrator")
     @Query(() => PagedOrder)
     async [getManyPath](@Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>):
         Promise<TPagedList<TOrder>> {
         return this.repository.getOrders(pagedParams);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Query(() => Order)
     async [getOneBySlugPath](@Arg("slug") slug: string): Promise<TOrder | undefined> {
         return this.repository.getOrderBySlug(slug);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Query(() => Order)
     async [getOneByIdPath](@Arg("id") id: string): Promise<Order | undefined> {
         return this.repository.getOrderById(id);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Order)
     async [createPath](@Arg("data") data: InputOrder): Promise<Order> {
         return this.repository.createOrder(data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Order)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: InputOrder): Promise<Order | undefined> {
         return this.repository.updateOrder(id, data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         return this.repository.deleteOrder(id);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         return this.repository.deleteMany(data);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deleteManyFilteredPath](
         @Arg("input") input: DeleteManyInput,
@@ -75,6 +81,7 @@ export class OrderResolver {
         return this.repository.deleteManyFilteredOrders(input, filterParams);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Query(() => PagedOrder)
     async [getFilteredPath](
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,

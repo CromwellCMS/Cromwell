@@ -1,16 +1,26 @@
-import { TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
-import { getCmsModuleInfo, getLogger, getPublicDir, readCmsModules } from '@cromwell/core-backend';
+import { TCmsSettings, TOrder, TPackageCromwellConfig } from '@cromwell/core';
+import {
+    getCmsModuleInfo,
+    getLogger,
+    getPublicDir,
+    InputOrder,
+    OrderRepository,
+    readCmsModules,
+} from '@cromwell/core-backend';
 import { Body, Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
 import { join } from 'path';
+import { getCustomRepository } from 'typeorm';
 
-import { JwtAuthGuard } from '../auth/auth.guard';
+import { JwtAuthGuard, Roles } from '../auth/auth.guard';
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { CmsService } from '../services/cms.service';
+import { ThemeService } from '../services/theme.service';
 
 const logger = getLogger('detailed');
 
@@ -21,7 +31,8 @@ const logger = getLogger('detailed');
 export class CmsController {
 
     constructor(
-        private readonly cmsService: CmsService
+        private readonly cmsService: CmsService,
+        private readonly themeService: ThemeService,
     ) { }
 
     @Get('config')
@@ -41,29 +52,9 @@ export class CmsController {
     }
 
 
-    @Get('set-theme')
-    @UseGuards(JwtAuthGuard)
-    @ApiOperation({
-        description: 'Update new theme name in DB',
-        parameters: [{ name: 'themeName', in: 'query', required: true }]
-
-    })
-    @ApiResponse({
-        status: 200,
-        type: Boolean,
-    })
-    @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async setThemeName(@Query('themeName') themeName: string): Promise<boolean> {
-        logger.log('CmsController::setThemeName');
-
-        if (themeName && themeName !== "") {
-            return this.cmsService.setThemeName(themeName);
-        }
-        return false;
-    }
-
-
     @Get('themes')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({ description: 'Returns info from configs of all themes present in "themes" directory' })
     @ApiResponse({
         status: 200,
@@ -91,6 +82,8 @@ export class CmsController {
 
 
     @Get('plugins')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({ description: 'Returns info for all plugins present in "plugins" directory' })
     @ApiResponse({
         status: 200,
@@ -120,6 +113,7 @@ export class CmsController {
 
     @Get('read-public-dir')
     @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: 'Read files and directories in specified subfolder of "public" files',
         parameters: [{ name: 'path', in: 'query' }]
@@ -137,6 +131,7 @@ export class CmsController {
 
     @Get('create-public-dir')
     @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: 'Creates new directory in specified subfolder of "public" files',
         parameters: [
@@ -159,6 +154,7 @@ export class CmsController {
 
     @Get('remove-public-dir')
     @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: 'Removes directory in specified subfolder of "public" files',
         parameters: [
@@ -181,6 +177,7 @@ export class CmsController {
 
     @Post('upload-public-file')
     @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @Header('content-type', 'multipart/form-data')
     @ApiOperation({
         description: 'Uploads a file to specified subfolder of "public" files',
@@ -203,6 +200,7 @@ export class CmsController {
 
     @Post('set-up')
     @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: 'Configure CMS after first launch',
     })
@@ -221,6 +219,7 @@ export class CmsController {
 
     @Post('update-config')
     @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: 'Updates CMS config',
     })
@@ -231,5 +230,69 @@ export class CmsController {
     })
     async updateCmsConfig(@Body() input: CmsConfigUpdateDto): Promise<CmsConfigDto | undefined> {
         return this.cmsService.updateCmsConfig(input);
+    }
+
+
+    @Get('change-theme')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Makes specified theme as active one and restarts Renderer`,
+        parameters: [{ name: 'themeName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async setActiveTheme(@Query('themeName') themeName: string): Promise<boolean> {
+        logger.log('CmsController::setActiveTheme');
+
+        if (themeName && themeName !== "") {
+            return this.themeService.setActive(themeName);
+        } else {
+            throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+
+    @Get('install-theme')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Installs downloaded theme`,
+        parameters: [{ name: 'themeName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async installTheme(@Query('themeName') themeName: string): Promise<boolean> {
+
+        logger.log('CmsController::installTheme');
+
+        if (themeName && themeName !== "") {
+            return this.themeService.installTheme(themeName);
+        } else {
+            throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+
+    @Post('place-order')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(2, 30)
+    @ApiOperation({
+        description: 'Creates new Order in the shop',
+    })
+    @ApiResponse({
+        status: 200,
+    })
+    async placeOrder(@Body() input: InputOrder): Promise<TOrder> {
+        if (!input || !input.customerAddress || !input.customerEmail
+            || !input.customerPhone) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
+
+        return getCustomRepository(OrderRepository).createOrder(input);
     }
 }
