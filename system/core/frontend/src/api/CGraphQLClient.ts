@@ -113,7 +113,7 @@ class CGraphQLClient {
         }
     }
 
-    private returnData = (res: any, path: string) => {
+     public returnData = (res: any, path: string) => {
         const data = res?.data?.[path];
         if (data) {
             // Data may be cached, and if it is modified somewhere in the app, 
