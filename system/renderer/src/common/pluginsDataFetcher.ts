@@ -18,8 +18,13 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
         throw new Error('pluginsDataFetcher !cmsSettings ' + cmsSettings);
     }
     const restAPIClient = getRestAPIClient();
-    const pluginsModifications = await restAPIClient?.getPluginsModifications(pageName);
 
+    let pluginsModifications;
+    try {
+        pluginsModifications = await restAPIClient?.getPluginsModifications(pageName);
+    } catch (e) {
+        console.error(e)
+    }
     const pluginConfigs = pluginsModifications ? Object.entries(pluginsModifications) : undefined;
     // console.log('pageName', pageName, 'pluginConfigs', JSON.stringify(pluginConfigs))
     const pluginsData: Record<string, any> = {};
@@ -35,11 +40,22 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
             const pluginContext = Object.assign({}, context);
             pluginContext.pluginsConfig = pluginConfig;
 
-            const settings = await restAPIClient?.getPluginSettings(pluginName);
+            let settings;
+            try {
+                settings = await restAPIClient?.getPluginSettings(pluginName);
+            } catch (e) {
+                console.error(e)
+            }
             if (settings) pluginsSettings[pluginName] = settings;
             // console.log('settings', settings);
 
-            const bundleInfo = await restAPIClient?.getPluginFrontendBundle(pluginName);
+            let bundleInfo;
+            try {
+                bundleInfo = await restAPIClient?.getPluginFrontendBundle(pluginName);
+            } catch (e) {
+                console.error(e)
+            }
+
             // Require module
             // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
             if (bundleInfo?.cjsPath && isServer()) {

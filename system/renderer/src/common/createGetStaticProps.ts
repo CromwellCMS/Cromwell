@@ -11,17 +11,25 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         const pageConfigName = (pageName === 'pages/[slug]' && context?.params?.slug) ?
             `pages/${context.params.slug}` : pageName;
 
-        const serialize = (data: any) => JSON.parse(JSON.stringify(data ?? null));
+        const handleRequset = async (req?: Promise<any>) => {
+            try {
+                const data = await req;
+                return JSON.parse(JSON.stringify(data ?? null));
+            } catch (e) {
+                console.error(e);
+            }
+            return null;
+        }
 
         const apiClient = getRestAPIClient();
         const timestamp = Date.now();
         const childStaticProps = await getThemeStaticProps(pageName, pageGetStaticProps, context);
         const { pluginsData, pluginsSettings } = await pluginsDataFetcher(pageConfigName, context);
-        const pageConfig: TPageConfig | null = serialize(await apiClient?.getPageConfig(pageConfigName));
-        const themeConfig: TThemeConfig | null = serialize(await apiClient?.getThemeConfig());
-        const cmsSettings = serialize(await apiClient?.getCmsSettings());
-        const themeCustomConfig = serialize(await apiClient?.getThemeCustomConfig());
-        const pagesInfo = serialize(await apiClient?.getPagesInfo());
+        const pageConfig: TPageConfig | null = await handleRequset(apiClient?.getPageConfig(pageConfigName));
+        const themeConfig: TThemeConfig | null = await handleRequset(apiClient?.getThemeConfig());
+        const cmsSettings = await handleRequset(apiClient?.getCmsSettings());
+        const themeCustomConfig = await handleRequset(apiClient?.getThemeCustomConfig());
+        const pagesInfo = await handleRequset(apiClient?.getPagesInfo());
 
         const timestamp2 = Date.now();
 

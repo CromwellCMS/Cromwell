@@ -14,7 +14,6 @@ class Toast implements TCromwellNotify {
             ...(options ?? {}),
         })
     }
-
     warning(text: string, options?: ToastOptions) {
         toastify.info(<div className={styles.success} >
             <Alert severity="warning" className={styles.alert}>{text}</Alert>
@@ -23,7 +22,6 @@ class Toast implements TCromwellNotify {
             ...(options ?? {}),
         })
     }
-
     error(text: string, options?: ToastOptions) {
         toastify.info(<div className={styles.success}>
             <Alert severity="error" className={styles.alert}>{text}</Alert>
@@ -32,7 +30,6 @@ class Toast implements TCromwellNotify {
             ...(options ?? {}),
         })
     }
-    
     info(text: string, options?: ToastOptions) {
         toastify.info(<div className={styles.success}>
             <Alert severity="info" className={styles.alert}>{text}</Alert>
@@ -42,7 +39,7 @@ class Toast implements TCromwellNotify {
         })
     }
 
-    POSITION = toastify.POSITION;
+    POSITION = toastify.POSITION
     warn = this.warning;
 }
 

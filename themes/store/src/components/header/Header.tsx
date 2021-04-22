@@ -72,7 +72,11 @@ export const Header = () => {
 
     const handleLogout = async () => {
         setUserOptionsOpen(false);
-        await getRestAPIClient()!.logOut();
+        try {
+            await getRestAPIClient()!.logOut();
+        } catch (e) {
+            console.error(e);
+        }
         setStoreItem('userInfo', undefined);
     }
 

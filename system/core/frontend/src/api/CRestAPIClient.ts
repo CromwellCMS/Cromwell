@@ -23,37 +23,33 @@ import {
 } from '@cromwell/core';
 
 type TPluginsModifications = TPluginConfig & { [x: string]: any };
+type TErrorInfo = {
+    statusCode: number;
+    message: string;
+    route: string;
+}
 
 class CRestAPIClient {
     constructor(private baseUrl: string) { }
 
-    private unauthorizedRedirect: string | null = null;
     private onUnauthorized: (() => any) | null = null;
-    private onErrorCallbacks: ((info: {
-        statusCode: number;
-        message: string;
-    }) => any)[] = [];
+    private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
 
     private handleError = async (responce: Response, data: any, route: string): Promise<any> => {
         if ((responce.status === 403 || responce.status === 401) && !isServer()) {
             this.onUnauthorized?.();
-            if (this.unauthorizedRedirect && !window.location.href.includes(this.unauthorizedRedirect)) {
-                window.location.href = this.unauthorizedRedirect;
-            }
         }
 
         if (responce.status >= 400) {
             this.logError(route, `Request failed, status: ${responce.status}. ${data?.message}`);
-            let body;
-            try {
-                body = await responce?.json?.();
-            } catch (e) { };
 
-            const errorInfo = {
+            const errorInfo: TErrorInfo = {
                 statusCode: responce.status,
-                message: body?.message,
+                message: data?.message,
+                route,
             };
-            this.onErrorCallbacks.forEach(cb => cb(errorInfo))
+            Object.values(this.onErrorCallbacks).forEach(cb => cb(errorInfo));
+
             throw new Error(JSON.stringify(errorInfo));
         }
         return data;
@@ -115,21 +111,14 @@ class CRestAPIClient {
         return this.post('auth/sign-up', credentials);
     }
 
-    public setUnauthorizedRedirect = (url: string | null) => {
-        this.unauthorizedRedirect = url;
-    }
-
     public setOnUnauthorized(func: (() => any) | null) {
         this.onUnauthorized = func;
     }
 
-    public onError(cb: ((info: {
-        statusCode: number;
-        message: string;
-    }) => any)) {
-        this.onErrorCallbacks.push(cb);
+    public onError(cb: ((info: TErrorInfo) => any), id?: string) {
+        if (!id) id = Object.keys(this.onErrorCallbacks).length + '';
+        this.onErrorCallbacks[id] = cb;
     }
-
 
 
     // < CMS >

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { setStoreItem, TUser } from '@cromwell/core';
 import { observer } from 'mobx-react';
-import { toast } from 'react-toastify';
 import {
     AccountCircle as AccountCircleIcon,
     Visibility as VisibilityIcon,
@@ -12,6 +11,8 @@ import { Button, TextField, InputAdornment, IconButton, Tabs, Tab } from '@mater
 import commonStyles from '../../../styles/common.module.scss';
 import styles from './SignIn.module.scss';
 import Modal from '../baseModal/Modal'
+import { toast } from '../../toast/toast';
+
 
 export type TFromType = 'sign-in' | 'sign-up';
 
@@ -35,8 +36,11 @@ export default function SingIn(props: {
         setShowPassword(!showPassword);
     }
 
-    const handleLoginClick = async () => {
+    const handleLoginClick = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
         setSubmitPressed(true);
+
+        if (!emailInput || emailInput == '' || !passwordInput || passwordInput === '') return;
 
         setLoading(true);
         try {
@@ -57,9 +61,45 @@ export default function SingIn(props: {
             } catch (e) { }
 
             if (info?.statusCode === 429) {
-                toast.error('Too Many Requests. Try again later');
+
             } else {
-                toast.error('Incorrect email or password');
+                toast.error?.('Incorrect email or password');
+            }
+        }
+        setLoading(false);
+    }
+
+    const handleSignUp = async (e: React.FormEvent<HTMLFormElement> | React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+        e.preventDefault();
+        setSubmitPressed(true);
+
+        if (!emailInput || emailInput == '' || !passwordInput
+            || passwordInput === '' || !nameInput || nameInput === '') return;
+
+        setLoading(true);
+        try {
+            const user = await apiClient?.signUp({
+                email: emailInput,
+                password: passwordInput,
+                fullName: nameInput,
+            });
+            if (user?.id) {
+                props.onSignIn(user);
+                toast.success('Created new account!');
+            } else {
+                throw new Error('!user');
+            }
+        } catch (e) {
+            console.error(e);
+            let info = e?.message;
+            try {
+                info = JSON.parse(e.message)
+            } catch (e) { }
+
+            if (info?.statusCode === 429) {
+
+            } else {
+                toast.error?.('Incorrect e-mail or password or e-mail already has been taken');
             }
         }
         setLoading(false);
@@ -93,13 +133,15 @@ export default function SingIn(props: {
                         className={styles.tab}
                         label="Sign up" />
                 </Tabs>
-                <form className={styles.loginForm} onSubmit={handleLoginClick}>
+                <form className={styles.loginForm} onSubmit={formType === 'sign-in' ? handleLoginClick : handleSignUp} >
                     <TextField
                         label="E-mail"
                         value={emailInput}
                         className={styles.textField}
                         onChange={e => setEmailInput(e.target.value)}
                         fullWidth
+                        error={emailInput === '' && submitPressed}
+                        helperText={emailInput === '' && submitPressed ? "This field is required" : undefined}
                         id="email-input"
                     />
                     {formType === 'sign-up' && (
@@ -121,6 +163,8 @@ export default function SingIn(props: {
                         onChange={e => setPasswordInput(e.target.value)}
                         className={styles.textField}
                         fullWidth
+                        error={passwordInput === '' && submitPressed}
+                        helperText={passwordInput === '' && submitPressed ? "This field is required" : undefined}
                         id="password-input"
                         InputProps={{
                             endAdornment: (
@@ -136,13 +180,24 @@ export default function SingIn(props: {
                             ),
                         }}
                     />
-                    <Button
-                        type="submit"
-                        onClick={handleLoginClick}
-                        className={styles.loginBtn}
-                        disabled={loading}
-                        variant="outlined"
-                        color="inherit">Login</Button>
+                    {formType === 'sign-in' ? (
+                        <Button
+                            type="submit"
+                            onClick={handleLoginClick}
+                            className={styles.loginBtn}
+                            disabled={loading}
+                            variant="outlined"
+                            color="inherit">Login</Button>
+                    ) : (
+                        <Button
+                            type="submit"
+                            onClick={handleSignUp}
+                            className={styles.loginBtn}
+                            disabled={loading}
+                            variant="outlined"
+                            color="inherit">Sign up</Button>
+                    )}
+
                 </form>
             </div>
         </Modal >
