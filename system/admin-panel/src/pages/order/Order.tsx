@@ -94,6 +94,7 @@ const OrderPage = () => {
                 userId: data.userId,
                 customerName: data.customerName,
                 customerPhone: data.customerPhone,
+                customerEmail: data.customerEmail,
                 customerAddress: data.customerAddress,
                 customerComment: data.customerComment,
                 shippingMethod: data.shippingMethod,
@@ -188,6 +189,12 @@ const OrderPage = () => {
                             fullWidth
                             className={styles.textField}
                             onChange={(e) => { handleInputChange('customerPhone', e.target.value) }}
+                        />
+                        <TextField label="Email"
+                            value={data?.customerEmail || ''}
+                            fullWidth
+                            className={styles.textField}
+                            onChange={(e) => { handleInputChange('customerEmail', e.target.value) }}
                         />
                         <TextField label="Address"
                             value={data?.customerAddress || ''}

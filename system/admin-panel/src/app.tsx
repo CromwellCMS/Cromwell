@@ -18,9 +18,11 @@ importer.modules['@cromwell/core'] = core;
 
 (async () => {
     let isInstalled = true;
+    const restClient = getRestAPIClient();
+    const graphClient = getGraphQLClient();
 
     try {
-        const config = await getRestAPIClient()?.getCmsSettingsAndSave();
+        const config = await restClient?.getCmsSettingsAndSave();
 
         // Redirect to /setup page if not installed
         if (config && !config.installed) {
@@ -34,19 +36,17 @@ importer.modules['@cromwell/core'] = core;
         console.error(e);
     }
 
-    // getRestAPIClient()?.setUnauthorizedRedirect(loginPageInfo.route);
-    // getGraphQLClient()?.setUnauthorizedRedirect(loginPageInfo.route);
     const onUnauthorized = async () => {
         let userInfo;
-        getRestAPIClient()?.setOnUnauthorized(null);
-        getGraphQLClient()?.setOnUnauthorized(null);
+        restClient?.setOnUnauthorized(null);
+        graphClient?.setOnUnauthorized(null);
         try {
-            userInfo = await getRestAPIClient()?.getUserInfo();
+            userInfo = await restClient?.getUserInfo();
         } catch (e) {
             console.error(e);
         }
-        getRestAPIClient()?.setOnUnauthorized(onUnauthorized);
-        getGraphQLClient()?.setOnUnauthorized(onUnauthorized);
+        restClient?.setOnUnauthorized(onUnauthorized);
+        graphClient?.setOnUnauthorized(onUnauthorized);
         if (!userInfo?.id) {
             if (window.location.pathname != loginPageInfo.route) {
                 window.location.href = loginPageInfo.route;
@@ -54,19 +54,29 @@ importer.modules['@cromwell/core'] = core;
         }
     }
 
-    getRestAPIClient()?.setOnUnauthorized(onUnauthorized);
-    getGraphQLClient()?.setOnUnauthorized(onUnauthorized);
+    restClient?.setOnUnauthorized(onUnauthorized);
+    graphClient?.setOnUnauthorized(onUnauthorized);
 
-    getRestAPIClient()?.onError((info) => {
-        if (info.statusCode === 429) {
-            toast.error('Too many requests');
+    restClient?.onError((info) => {
+        if (info.route !== 'auth/user-info') {
+            if (info?.statusCode === 429) {
+                toast.error('Too many requests. Try again later');
+            } else {
+                if (info?.message)
+                    toast.error(info.message);
+            }
         }
-    });
+    }, 'app');
+
+    graphClient?.onError((message) => {
+        if (message)
+            toast.error(message);
+    }, 'app');
 
     if (isInstalled) {
         // Redirect to /login page if not authorized
         try {
-            const userInfo = await getRestAPIClient()?.getUserInfo();
+            const userInfo = await restClient?.getUserInfo();
             if (!userInfo) {
                 if (window.location.pathname !== loginPageInfo.route) {
                     window.location.href = loginPageInfo.route;

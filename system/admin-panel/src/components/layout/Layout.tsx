@@ -7,6 +7,7 @@ import {
 import React, { Suspense } from 'react';
 import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
+import ReactDOM from 'react-dom';
 
 import { pageInfos } from '../../constants/PageInfos';
 import Page404 from '../../pages/404/404page';
@@ -68,7 +69,8 @@ function Layout() {
             <div className={styles.iconsCredits} >Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
           </div>
         </BrowserRouter>
-        <ToastContainer />
+        {document?.body && ReactDOM.createPortal(
+          <div className={styles.toastContainer} ><ToastContainer /></div>, document.body)}
         <FileManager />
       </div>
     </ThemeProvider>

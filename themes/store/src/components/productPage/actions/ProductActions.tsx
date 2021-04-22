@@ -10,7 +10,7 @@ import {
     ShoppingCart as ShoppingCartIcon,
 } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { toast } from 'react-toastify';
+import { toast } from '../../toast/toast';
 
 import { appState } from '../../../helpers/AppState';
 import styles from './ProductActions.module.scss';

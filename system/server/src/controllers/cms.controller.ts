@@ -282,7 +282,7 @@ export class CmsController {
 
     @Post('place-order')
     @UseGuards(ThrottlerGuard)
-    @Throttle(2, 30)
+    @Throttle(2, 20)
     @ApiOperation({
         description: 'Creates new Order in the shop',
     })

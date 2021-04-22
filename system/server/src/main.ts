@@ -12,14 +12,13 @@ import { buildSchema } from 'type-graphql';
 
 import { graphQlAuthChecker } from './auth/auth.guard';
 import { authSettings, TGraphQLContext } from './auth/constants';
+import { ExceptionFilter } from './filters/exception.filter';
 import { connectDatabase } from './helpers/connectDataBase';
 import { corsHandler } from './helpers/corsHandler';
 import { getResolvers } from './helpers/getResolvers';
 import { loadEnv } from './helpers/loadEnv';
 import { AppModule } from './modules/app.module';
 import { authServiceInst } from './services/auth.service';
-import rateLimit from 'fastify-rate-limit';
-import { ExceptionFilter } from './filters/exception.filter';
 
 require('dotenv').config();
 
@@ -85,21 +84,6 @@ async function bootstrap(): Promise<void> {
     app.register(require('fastify-multipart'));
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-    await fastifyInstance.register(rateLimit, { global: false })
-    // Preventing guessing of URLS through 404s
-    fastifyInstance.register(function (instance, options, done) {
-        instance.setNotFoundHandler({
-            preHandler: fastifyInstance.rateLimit({
-                max: 4,
-                timeWindow: 1000
-            })
-        }, function (request, reply) {
-            reply.code(404).send('404')
-        })
-        done()
-    }, { prefix: '/' + apiPrefix })
-
-
 
     // Setup SwaggerUI
     if (envMode.envMode === 'dev') {
@@ -127,3 +111,4 @@ async function bootstrap(): Promise<void> {
         if (process.send) process.send(serverMessages.onStartErrorMessage);
     }
 })();
+

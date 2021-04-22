@@ -1,11 +1,13 @@
-import * as React from 'react';
-import { AppProps } from 'next/app';
-import { ToastContainer } from 'react-toastify';
-import { ProductCard } from '../components/productCard/ProductCard';
-import { PostCard } from '../components/postCard/PostCard';
-import { ECommonComponentNames, saveCommonComponent, isServer, getStoreItem, setStoreItem } from '@cromwell/core';
+import { ECommonComponentNames, getStoreItem, isServer, saveCommonComponent, setStoreItem } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
+import { AppProps } from 'next/app';
+import * as React from 'react';
 import ReactDOM from 'react-dom';
+import { ToastContainer } from 'react-toastify';
+import { toast } from '../components/toast/toast';
+
+import { PostCard } from '../components/postCard/PostCard';
+import { ProductCard } from '../components/productCard/ProductCard';
 
 if (isServer()) {
     // useLayoutEffect warnings ssr disable
@@ -23,6 +25,14 @@ function App(props: AppProps) {
         jssStyles?.parentElement?.removeChild(jssStyles);
 
         getUser();
+
+        if (!isServer()) {
+            getRestAPIClient()?.onError((info) => {
+                if (info.statusCode === 429) {
+                    toast.error('Too many requests. Try again later');
+                }
+            }, '_app');
+        }
     }, []);
 
     const getUser = async () => {
@@ -42,8 +52,6 @@ function App(props: AppProps) {
             {props.Component && <props.Component {...(props.pageProps ?? {})} />}
             {!isServer() && document?.body && ReactDOM.createPortal(
                 <div className={"global-toast"} ><ToastContainer /></div>, document.body)}
-            <div style={{ fontSize: '12px' }}>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a>, <a href="https://www.flaticon.com/authors/kiranshastry" title="Kiranshastry">Kiranshastry</a>, <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a>, <a href="https://www.flaticon.com/authors/monkik" title="monkik">monkik</a>, <a href="https://www.flaticon.com/authors/itim2101" title="itim2101">itim2101</a>, <a href="https://creativemarket.com/eucalyp" title="Eucalyp">Eucalyp</a>  from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>; <a href="https://www.vecteezy.com/free-vector/banner-cdr">Banner Cdr Vectors by Vecteezy</a>; <a href="https://www.vecteezy.com/free-vector/banner">Banner Vectors by Vecteezy</a>
-            </div>
         </>
     )
 }

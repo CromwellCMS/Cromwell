@@ -48,12 +48,8 @@ import {
 class CGraphQLClient {
 
     private readonly apolloClient: ApolloClient<NormalizedCacheObject>;
-    private unauthorizedRedirect: string | null = null;
     private onUnauthorized: (() => any) | null = null;
-    private onErrorCallbacks: ((info: {
-        statusCode: number;
-        message: string;
-    }) => any)[] = [];
+    private onErrorCallbacks: Record<string, ((message: string) => any)> = {};
 
     constructor(private baseUrl: string, fetch?: any) {
 
@@ -102,13 +98,12 @@ class CGraphQLClient {
         try {
             return await func();
         } catch (e) {
+            Object.values(this.onErrorCallbacks).forEach(cb => cb(e?.message));
+
             if (e?.message?.includes?.('Access denied') && !isServer()) {
                 if (this.onUnauthorized) this.onUnauthorized();
-
-                if (this.unauthorizedRedirect && !window.location.href.includes(this.unauthorizedRedirect)) {
-                    window.location.href = this.unauthorizedRedirect;
-                }
             }
+
             throw new Error(e);
         }
     }
@@ -125,16 +120,13 @@ class CGraphQLClient {
         return errors ?? null;
     }
 
-    public setUnauthorizedRedirect(url: string | null) {
-        this.unauthorizedRedirect = url;
-    }
-
     public setOnUnauthorized(func: (() => any) | null) {
         this.onUnauthorized = func;
     }
 
-    public onError(cb: () => any) {
-        this.onErrorCallbacks.push(cb);
+    public onError(cb: ((message: string) => any), id?: string) {
+        if (!id) id = Object.keys(this.onErrorCallbacks).length + '';
+        this.onErrorCallbacks[id] = cb;
     }
 
     public PagedMetaFragment = gql`

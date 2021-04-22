@@ -5,6 +5,7 @@ import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeor
 import { UserFilterInput } from '../entities/filter/UserFilterInput';
 import { User } from '../entities/User';
 import { getLogger } from '../helpers/constants';
+import { validateEmail } from '../helpers/validation';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
@@ -45,6 +46,9 @@ export class UserRepository extends BaseRepository<User> {
     }
 
     async handleUserInput(user: User, userInput: TUpdateUser) {
+        if (userInput.email && !validateEmail(userInput.email))
+            throw new Error('Provided e-mail is not valid');
+
         handleBaseInput(user, userInput);
         user.fullName = userInput.fullName;
         user.email = userInput.email;

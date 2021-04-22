@@ -70,7 +70,7 @@ export class AuthController {
 
     @Post('sign-up')
     @UseGuards(ThrottlerGuard)
-    @Throttle(5, 30)
+    @Throttle(4, 30)
     @ApiOperation({
         description: 'Register new user',
     })

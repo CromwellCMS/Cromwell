@@ -58,6 +58,14 @@ a {
     height: 56px;
 }
 
+.toastContainer {
+    z-index: 99999;
+    
+    .Toastify {
+      font-size: 16px;
+    }
+  }
+
 @media screen and (max-width: $mobileBreakpoint) {
     // mobile
     .sidebar {

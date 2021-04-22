@@ -1,15 +1,23 @@
-import { TCromwellPage, TUser, onStoreChange, removeOnStoreChange, getStoreItem, setStoreItem, TOrder } from '@cromwell/core';
-import { getGraphQLClient, getCStore, getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, TextField, useMediaQuery, useTheme, Tooltip } from '@material-ui/core';
-import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
+import {
+    getStoreItem,
+    onStoreChange,
+    removeOnStoreChange,
+    setStoreItem,
+    TCromwellPage,
+    TOrder,
+    TUser,
+} from '@cromwell/core';
+import { getCStore, getRestAPIClient } from '@cromwell/core-frontend';
+import { Button, TextField, Tooltip, useMediaQuery, useTheme } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
+import React, { useEffect, useState } from 'react';
+
 import { CartProductList } from '../components/checkoutPage/productList/CartProductList';
 import Layout from '../components/layout/Layout';
+import SignInModal, { TFromType } from '../components/modals/singIn/SingIn';
+import { toast } from '../components/toast/toast';
 import commonStyles from '../styles/common.module.scss';
-import SignInModal from '../components/modals/singIn/SingIn';
 import styles from '../styles/pages/Checkout.module.scss';
-import SingInModal, { TFromType } from '../components/modals/singIn/SingIn';
 
 
 const CheckoutPage: TCromwellPage = (props) => {
@@ -86,8 +94,9 @@ const CheckoutPage: TCromwellPage = (props) => {
 
         if (!form?.name || form.name == '' ||
             !form?.phone || form.phone == '' ||
-            !form?.address || form.address == '' ||
-            !validateEmail(form.email)) {
+            !form?.address || form.address == ''
+            // || !validateEmail(form.email)
+        ) {
             return;
         }
 
@@ -146,7 +155,7 @@ const CheckoutPage: TCromwellPage = (props) => {
                             onClick={handleSignUpOpen}>
                             Sign up</Button>
                         {singInOpen && (
-                            <SingInModal
+                            <SignInModal
                                 type={singInType}
                                 open={singInOpen}
                                 onClose={() => setSingInOpen(false)}

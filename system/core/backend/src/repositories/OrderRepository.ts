@@ -6,6 +6,7 @@ import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { Order } from '../entities/Order';
 import { OrderFilterInput } from '../entities/filter/OrderFilterInput';
 import { getLogger } from '../helpers/constants';
+import { validateEmail } from '../helpers/validation';
 import { checkEntitySlug, handleBaseInput, getPaged } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 
@@ -34,6 +35,9 @@ export class OrderRepository extends BaseRepository<Order> {
     }
 
     private async handleBaseOrderInput(order: Order, input: TOrderInput) {
+        if (input.customerEmail && !validateEmail(input.customerEmail))
+            throw new Error('Provided e-mail is not valid');
+
         handleBaseInput(order, input);
 
         order.status = input.status;

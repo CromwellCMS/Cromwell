@@ -7,11 +7,10 @@
     align-items: center;
 }
 
-div.toast {
+.toast {
     background-color: transparent;
     padding: 0;
     min-height: 30px;
-    border-radius: 6px;
 
     :global(.Toastify__toast-body) {
         margin: 0;
@@ -39,4 +38,9 @@ div.alert {
     :global(.MuiAlert-message) {
         padding: 0;
     }
+}
+
+.Toastify__toast--warning {
+}
+.Toastify__toast--error {
 }
