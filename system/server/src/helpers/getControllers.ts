@@ -24,6 +24,7 @@ export const getControllers = (sType: 'main' | 'plugin', dev?: boolean) => {
 
 export const getServices = (sType: 'main' | 'plugin', dev?: boolean) => {
     if (sType !== 'main') return [
+        CmsService,
         // @TODO: ...(collectPlugins().Controllers),
     ];
     const def: any[] = [
@@ -34,6 +35,5 @@ export const getServices = (sType: 'main' | 'plugin', dev?: boolean) => {
 }
 
 export const getExports = (sType: 'main' | 'plugin') => {
-    if (sType !== 'main') return [];
     return [CmsService];
 }
