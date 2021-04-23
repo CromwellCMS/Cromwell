@@ -290,7 +290,7 @@ export class CmsController {
         status: 200,
     })
     async placeOrder(@Body() input: InputOrder): Promise<TOrder> {
-        if (!input || !input.customerAddress || !input.customerEmail
+        if (!input || !input.customerEmail
             || !input.customerPhone) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
         return getCustomRepository(OrderRepository).createOrder(input);

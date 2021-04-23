@@ -6,7 +6,7 @@ import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { FastifyReply } from 'fastify';
 import { getCustomRepository } from 'typeorm';
-
+import cryptoRandomString from 'crypto-random-string';
 import {
     bcryptSaltRounds,
     authSettings,
@@ -15,6 +15,7 @@ import {
     TTokenInfo,
     TTokenPayload,
 } from '../auth/constants';
+import { CmsService } from './cms.service';
 
 const logger = getLogger('detailed');
 
@@ -26,6 +27,7 @@ export class AuthService {
     constructor(
         private jwtService: JwtService,
         private moduleRef: ModuleRef,
+        private cmsService: CmsService,
     ) {
         authServiceInst = this;
     }
@@ -59,6 +61,20 @@ export class AuthService {
                 throw new UnauthorizedException('No permissons to create this user');
         }
         return userRepo.createUser(data);
+    }
+
+    async resetUserPassword(email: string) {
+        // const userRepo = getCustomRepository(UserRepository);
+        // const user = await userRepo.getUserByEmail(email);
+        // if (!user?.id) return false;
+
+        // const newRandPass = await userRepo.hashPassword(cryptoRandomString({ length: 9 }));
+        // user.password = newRandPass;
+        // await user.save();
+
+        await this.cmsService.sendEmail('<p>Hello!</p>', [email]);
+
+        return true;
     }
 
     async hashPassword(plain: string): Promise<string> {

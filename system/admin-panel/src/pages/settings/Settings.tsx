@@ -1,12 +1,13 @@
 import { TCmsSettings } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, FormControl, InputLabel, MenuItem, Select, TextField, Grid } from '@material-ui/core';
+import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import React, { useEffect, useRef, useState } from 'react';
 
+import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { launguages } from '../../constants/launguages';
-import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { timezones } from '../../constants/timezones';
+import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Settings.module.scss';
 
@@ -52,6 +53,7 @@ const SettingsPage = () => {
                 logo: settings.logo,
                 headerHtml: settings.headerHtml,
                 footerHtml: settings.footerHtml,
+                defaultShippingPrice: settings.defaultShippingPrice,
             });
             toast.success?.('Settings saved');
             setSettings(newConfig);
@@ -133,6 +135,17 @@ const SettingsPage = () => {
                                 value={settings.favicon}
                                 className={styles.imageField}
                                 showRemove
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField label="Standard shipping price"
+                                value={settings.defaultShippingPrice ?? 0}
+                                className={styles.textField}
+                                fullWidth
+                                onChange={handleTextFieldChange('defaultShippingPrice')}
+                                InputProps={{
+                                    inputComponent: NumberFormatCustom as any,
+                                }}
                             />
                         </Grid>
                         <Grid item xs={12} className={styles.subheader}  >

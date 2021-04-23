@@ -330,6 +330,8 @@ export type TCmsEntityCore = {
     favicon?: string;
     // Website logo
     logo?: string;
+    // Standard shipping price if no shipment methods specified
+    defaultShippingPrice?: number;
 
     // Custom HTML code injection
     headerHtml?: string;
@@ -352,6 +354,7 @@ export type TCmsEntityInput = {
     logo?: string;
     headerHtml?: string;
     footerHtml?: string;
+    defaultShippingPrice?: number;
 }
 
 export type TServiceVersions = {

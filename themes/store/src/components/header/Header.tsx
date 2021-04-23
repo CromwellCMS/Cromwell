@@ -12,7 +12,7 @@ import React, { useEffect, useRef, useState } from 'react';
 
 import { appState } from '../../helpers/AppState';
 import commonStyles from '../../styles/common.module.scss';
-import SingInModal from '../modals/singIn/SingIn';
+import SingInModal from '../modals/signIn/SignIn';
 import styles from './Header.module.scss';
 import { HeaderSearch } from './HeaderSearch';
 import { MobileHeader } from './MobileHeader';

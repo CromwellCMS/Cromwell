@@ -8,13 +8,13 @@ import {
     TUser,
 } from '@cromwell/core';
 import { getCStore, getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, TextField, Tooltip, useMediaQuery, useTheme } from '@material-ui/core';
+import { Button, TextField, Tooltip, useMediaQuery, useTheme, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 
 import { CartProductList } from '../components/checkoutPage/productList/CartProductList';
 import Layout from '../components/layout/Layout';
-import SignInModal, { TFromType } from '../components/modals/singIn/SingIn';
+import SignInModal, { TFromType } from '../components/modals/signIn/SignIn';
 import { toast } from '../components/toast/toast';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Checkout.module.scss';
@@ -28,12 +28,10 @@ const CheckoutPage: TCromwellPage = (props) => {
         phone?: string;
         address?: string;
         comment?: string;
+        shippingMethod?: number;
     }>({});
-
     const userInfo = getStoreItem('userInfo');
     const cstore = getCStore();
-    const [shippingMethod, setShippingMethod] = useState<string | null>(null);
-    const [signInModalOpen, setSignInModalOpen] = useState<'sign-in' | 'sign-up' | null>(null);
     const forceUpdate = useForceUpdate();
     const [singInOpen, setSingInOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -62,14 +60,18 @@ const CheckoutPage: TCromwellPage = (props) => {
         }
     }, []);
 
-    const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        const { name, value } = event.target;
+    const changeForm = (key: keyof typeof form, value: any) => {
         setForm(prevState => {
             return {
                 ...prevState,
-                [name]: value
+                [key]: value
             }
         })
+    }
+
+    const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        const { name, value } = event.target;
+        changeForm(name as any, value);
     }
 
     const handleSignIn = (user: TUser) => {
@@ -134,6 +136,8 @@ const CheckoutPage: TCromwellPage = (props) => {
             return false;
         }
     }
+
+    const shippingPrice = getStoreItem('cmsSettings')?.defaultShippingPrice ?? 0;
 
 
     const checkoutContent = (
@@ -220,8 +224,25 @@ const CheckoutPage: TCromwellPage = (props) => {
                     className={styles.input}
                     value={form?.comment ?? ''}
                     onChange={handleInput} />
-                <h2 className={styles.subHeader}>Shipping Methods</h2>
                 <div className={styles.delimiter}></div>
+
+                <h2 className={styles.subHeader}>Shipping Methods</h2>
+                <FormControl component="fieldset" className={styles.shippingMethods}>
+                    <RadioGroup
+                        value={form.shippingMethod ?? 0}
+                        onChange={(event, value: string) => changeForm('shippingMethod', parseInt(value))}>
+                        <FormControlLabel value={0} control={<Radio color="primary" />}
+                            label={`Standard shipping: ${cstore.getPriceWithCurrency(shippingPrice)}`} />
+                    </RadioGroup>
+                </FormControl>
+                <div className={styles.delimiter}></div>
+
+                <h2 className={styles.subHeader}>Total</h2>
+                <p>Cart total: <b>{cstore.getPriceWithCurrency(cstore.getCartTotal().total)}</b></p>
+                <p>Delivery: <b>{cstore.getPriceWithCurrency(shippingPrice)}</b></p>
+                <p>Order total: <b>{cstore.getPriceWithCurrency(shippingPrice + cstore.getCartTotal().total)}</b></p>
+                <div className={styles.delimiter}></div>
+
                 <div className={styles.orderBtnWrapper}>
                     <Button variant="contained"
                         color="primary"

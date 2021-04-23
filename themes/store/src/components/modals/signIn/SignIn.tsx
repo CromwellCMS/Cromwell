@@ -14,7 +14,7 @@ import Modal from '../baseModal/Modal'
 import { toast } from '../../toast/toast';
 
 
-export type TFromType = 'sign-in' | 'sign-up';
+export type TFromType = 'sign-in' | 'sign-up' | 'reset-pass';
 
 export default function SingIn(props: {
     open: boolean;
@@ -105,6 +105,36 @@ export default function SingIn(props: {
         setLoading(false);
     }
 
+    const handleResetPass = async (e) => {
+        e.preventDefault();
+        setSubmitPressed(true);
+
+        if (!emailInput || emailInput == '') return;
+
+        setLoading(true);
+        try {
+            const success = await apiClient?.resetPassword({ email: emailInput });
+            if (success) {
+                toast.success('Password has been reset. Check your e-mail');
+            } else {
+                throw new Error('!success');
+            }
+        } catch (e) {
+            console.error(e);
+            let info = e?.message;
+            try {
+                info = JSON.parse(e.message)
+            } catch (e) { }
+
+            if (info?.statusCode === 429) {
+
+            } else {
+                toast.error?.('Incorrect e-mail or user was not found');
+            }
+        }
+        setLoading(false);
+    }
+
     const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
         setActiveTab(newValue);
         if (newValue === 1) setFormType('sign-up');
@@ -156,31 +186,39 @@ export default function SingIn(props: {
                             id="name-input"
                         />
                     )}
-                    <TextField
-                        label="Password"
-                        type={showPassword ? 'text' : 'password'}
-                        value={passwordInput}
-                        onChange={e => setPasswordInput(e.target.value)}
-                        className={styles.textField}
-                        fullWidth
-                        error={passwordInput === '' && submitPressed}
-                        helperText={passwordInput === '' && submitPressed ? "This field is required" : undefined}
-                        id="password-input"
-                        InputProps={{
-                            endAdornment: (
-                                <InputAdornment position="end">
-                                    <IconButton
-                                        aria-label="toggle password visibility"
-                                        onClick={handleClickShowPassword}
-                                        edge="end"
-                                    >
-                                        {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
-                                    </IconButton>
-                                </InputAdornment>
-                            ),
-                        }}
-                    />
-                    {formType === 'sign-in' ? (
+                    {(formType === 'sign-up' || formType == 'sign-in') && (
+                        <TextField
+                            label="Password"
+                            type={showPassword ? 'text' : 'password'}
+                            value={passwordInput}
+                            onChange={e => setPasswordInput(e.target.value)}
+                            className={styles.textField}
+                            fullWidth
+                            error={passwordInput === '' && submitPressed}
+                            helperText={passwordInput === '' && submitPressed ? "This field is required" : undefined}
+                            id="password-input"
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityIcon /> : <VisibilityOffIcon />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
+                        />
+                    )}
+                    {formType === 'sign-in' && (
+                        <p className={styles.forgotPassText} onClick={() => {
+                            setActiveTab(3)
+                            setFormType('reset-pass')
+                        }}>Forgot your password?</p>
+                    )}
+                    {formType === 'sign-in' && (
                         <Button
                             type="submit"
                             onClick={handleLoginClick}
@@ -188,7 +226,8 @@ export default function SingIn(props: {
                             disabled={loading}
                             variant="outlined"
                             color="inherit">Login</Button>
-                    ) : (
+                    )}
+                    {formType === 'sign-up' && (
                         <Button
                             type="submit"
                             onClick={handleSignUp}
@@ -197,7 +236,15 @@ export default function SingIn(props: {
                             variant="outlined"
                             color="inherit">Sign up</Button>
                     )}
-
+                    {formType === 'reset-pass' && (
+                        <Button
+                            type="submit"
+                            onClick={handleResetPass}
+                            className={styles.loginBtn}
+                            disabled={loading}
+                            variant="outlined"
+                            color="inherit">Reset password</Button>
+                    )}
                 </form>
             </div>
         </Modal >

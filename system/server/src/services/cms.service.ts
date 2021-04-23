@@ -13,6 +13,18 @@ import { GenericCms } from '../helpers/genericEntities';
 
 const logger = getLogger('detailed');
 
+const sendmail = require('sendmail')({
+    logger: {
+        debug: console.log,
+        info: console.info,
+        warn: console.warn,
+        error: console.error
+    },
+    silent: false,
+    smtpPort: 1525, // Default: 25
+    smtpHost: 'localhost',
+})
+
 
 // Don't re-read cmsconfig.json but update info from DB
 export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
@@ -147,9 +159,26 @@ export class CmsService {
         entity.logo = input.logo;
         entity.headerHtml = input.headerHtml;
         entity.footerHtml = input.footerHtml;
+        entity.defaultShippingPrice = input.defaultShippingPrice;
 
         await entity.save();
         return this.getSettings();
+    }
+
+    async sendEmail(content: string, addresses: string[]) {
+        return new Promise(done => {
+            sendmail({
+                from: 'no-reply@test121212121212.com',
+                to: addresses.join(', '),
+                subject: 'test sendmail',
+                html: content,
+            }, function (err, reply) {
+                console.log(err && err.stack);
+                console.dir(reply);
+                err ? done(false) : done(true);
+            });
+        })
+
     }
 
 }

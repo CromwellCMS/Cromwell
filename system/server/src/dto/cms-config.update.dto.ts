@@ -29,5 +29,8 @@ export class CmsConfigUpdateDto implements TCmsEntityInput {
 
     @ApiProperty()
     footerHtml?: string;
+
+    @ApiProperty()
+    defaultShippingPrice?: number;
 }
 

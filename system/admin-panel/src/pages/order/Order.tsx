@@ -8,14 +8,14 @@ import {
 } from '@material-ui/icons';
 import { Autocomplete, Skeleton } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
-import NumberFormat from 'react-number-format';
 import { Link, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
 import { orderStatuses } from '../../constants/order';
 import { orderListPageInfo, productPageInfo } from '../../constants/PageInfos';
-import styles from './Order.module.scss';
+import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import commonStyles from '../../styles/common.module.scss';
+import styles from './Order.module.scss';
 
 const OrderPage = () => {
     const { id: orderId } = useParams<{ id: string }>();
@@ -324,33 +324,4 @@ const toLocaleDateString = (date: Date | string | undefined) => {
     if (!date) return '';
     if (typeof date === 'string') date = new Date(date);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-}
-
-
-interface NumberFormatCustomProps {
-    inputRef: (instance: NumberFormat | null) => void;
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
-
-function NumberFormatCustom(props: NumberFormatCustomProps) {
-    const { inputRef, onChange, ...other } = props;
-
-    return (
-        <NumberFormat
-            {...other}
-            getInputRef={inputRef}
-            onValueChange={(values) => {
-                onChange({
-                    target: {
-                        name: props.name,
-                        value: values.value,
-                    },
-                });
-            }}
-            thousandSeparator
-            isNumericString
-            prefix={getCStore().getActiveCurrencySymbol()}
-        />
-    );
 }

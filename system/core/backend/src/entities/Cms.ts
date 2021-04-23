@@ -1,5 +1,5 @@
 import { TCmsEntity, TCurrency } from '@cromwell/core';
-import { Field, ObjectType } from 'type-graphql';
+import { Field, ObjectType, Float } from 'type-graphql';
 import { Column, Entity } from 'typeorm';
 import { BasePageEntity } from './BasePageEntity';
 
@@ -60,6 +60,10 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     footerHtml?: string;
+
+    @Field(type => Float, { nullable: true })
+    @Column({ type: "float", nullable: true })
+    defaultShippingPrice?: number;
 
     @Field(type => [CurrencySettings])
     public get currencies(): TCurrency[] | undefined {

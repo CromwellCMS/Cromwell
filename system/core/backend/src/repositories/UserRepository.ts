@@ -67,8 +67,7 @@ export class UserRepository extends BaseRepository<User> {
         await this.handleUserInput(user, createUser);
 
         if (createUser.password) {
-            const hashedPass = await bcrypt.hash(createUser.password, bcryptSaltRounds);
-            user.password = hashedPass;
+            user.password = await this.hashPassword(createUser.password);
         }
         if (!user.role) user.role = 'customer';
 
@@ -76,6 +75,10 @@ export class UserRepository extends BaseRepository<User> {
         await checkEntitySlug(user, User);
 
         return user;
+    }
+
+    async hashPassword(password: string) {
+        return bcrypt.hash(password, bcryptSaltRounds);
     }
 
     async updateUser(id: string, updateUser: TUpdateUser): Promise<User> {
