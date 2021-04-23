@@ -5,7 +5,7 @@ import {
   , Toolbar
 } from '@material-ui/core';
 import React, { Suspense } from 'react';
-import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, RouteComponentProps, Switch, HashRouter } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import ReactDOM from 'react-dom';
 
@@ -38,7 +38,7 @@ function Layout() {
   return (
     <ThemeProvider theme={theme}>
       <div className={styles.Layout}>
-        <BrowserRouter>
+        <HashRouter>
           <div className={styles.sidebar}>
             <Sidebar />
           </div>
@@ -68,7 +68,7 @@ function Layout() {
             </Switch>
             <div className={styles.iconsCredits} >Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
           </div>
-        </BrowserRouter>
+        </HashRouter>
         {document?.body && ReactDOM.createPortal(
           <div className={styles.toastContainer} ><ToastContainer /></div>, document.body)}
         <FileManager />

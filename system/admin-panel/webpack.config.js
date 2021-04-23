@@ -18,6 +18,7 @@ module.exports = {
         //     ? 'webapp.[contenthash:8].js'
         //     : 'webapp.js',
         filename: 'webapp.js',
+        publicPath: '/admin/',
         chunkFilename: 'chunks' + '/[id].js'
     },
     resolve: {

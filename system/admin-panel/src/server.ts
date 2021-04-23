@@ -73,7 +73,7 @@ const start = async () => {
     app.use("/", express.static(publicDir));
     app.use("/", express.static(getAdminPanelStaticDir()));
 
-    app.get(`*`, function (req, res) {
+    app.get(`/admin/*`, function (req, res) {
         if (/.+\.\w+$/.test(req.path)) {
             // file requested, 404
             res.status(404).send("File not found.");
