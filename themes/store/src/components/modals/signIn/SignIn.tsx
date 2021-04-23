@@ -63,7 +63,7 @@ export default function SingIn(props: {
             if (info?.statusCode === 429) {
 
             } else {
-                toast.error?.('Incorrect email or password');
+                toast.error('Incorrect email or password');
             }
         }
         setLoading(false);

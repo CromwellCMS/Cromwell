@@ -16,6 +16,9 @@ jest.mock('@cromwell/core-frontend', () => {
                 updateCmsConfig: jest.fn().mockImplementation(() => true),
             }
         },
+        getCStore: () => ({
+            getActiveCurrencySymbol: () => '',
+        })
     }
 });
 
