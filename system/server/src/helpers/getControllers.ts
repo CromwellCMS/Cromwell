@@ -32,3 +32,8 @@ export const getServices = (sType: 'main' | 'plugin', dev?: boolean) => {
     if (dev) def.push(MockService);
     return def;
 }
+
+export const getExports = (sType: 'main' | 'plugin') => {
+    if (sType !== 'main') return [];
+    return [CmsService];
+}

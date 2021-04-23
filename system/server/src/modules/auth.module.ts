@@ -3,6 +3,7 @@ import { JwtModule } from '@nestjs/jwt';
 
 import { JwtAuthGuard } from '../auth/auth.guard';
 import { AuthService } from '../services/auth.service';
+import { RestApiModule } from './restapi.module';
 
 @Global()
 @Module({
@@ -12,6 +13,7 @@ import { AuthService } from '../services/auth.service';
                 algorithm: 'HS256'
             },
         }),
+        RestApiModule,
     ],
     providers: [AuthService, JwtAuthGuard],
     exports: [AuthService],
