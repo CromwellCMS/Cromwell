@@ -72,7 +72,7 @@ export class AuthService {
         // user.password = newRandPass;
         // await user.save();
 
-        await this.cmsService.sendEmail('<p>Hello!</p>', [email]);
+        // await this.cmsService.sendEmail('<p>Hello!</p>', [email]);
 
         return true;
     }
