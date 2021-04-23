@@ -97,9 +97,11 @@ const fs = require('fs');
         for (let i = 0; i < themes.length; i++) {
             const theme = themes[i];
             const themeDir = resolve(themesDir, theme);
-            if (!fs.existsSync(resolve(themeDir, 'build')) || scriptName === 'build') {
-                console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
-                spawnSync(`cd ${themeDir.replace(/\/\//g, '/')} && npm run build`, { shell: true, stdio: 'inherit' });
+            if (fs.existsSync(resolve(themesDir, 'package.json'))) {
+                if (!fs.existsSync(resolve(themeDir, 'build')) || scriptName === 'build') {
+                    console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
+                    spawnSync(`cd ${themeDir.replace(/\/\//g, '/')} && npm run build`, { shell: true, stdio: 'inherit' });
+                }
             }
         }
     }
@@ -111,9 +113,11 @@ const fs = require('fs');
         for (let i = 0; i < plugins.length; i++) {
             const plugin = plugins[i];
             const pluginDir = resolve(pluginsDir, plugin);
-            if (!fs.existsSync(resolve(pluginDir, 'build')) || scriptName === 'build') {
-                console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
-                spawnSync(`cd ${pluginDir.replace(/\/\//g, '/')} && npm run build`, { shell: true, stdio: 'inherit' });
+            if (fs.existsSync(resolve(pluginDir, 'package.json'))) {
+                if (!fs.existsSync(resolve(pluginDir, 'build')) || scriptName === 'build') {
+                    console.log('\x1b[36m%s\x1b[0m', `Building ${plugin} plugin...`);
+                    spawnSync(`cd ${pluginDir.replace(/\/\//g, '/')} && npm run build`, { shell: true, stdio: 'inherit' });
+                }
             }
         }
     }
