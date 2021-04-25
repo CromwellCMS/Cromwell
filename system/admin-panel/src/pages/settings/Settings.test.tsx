@@ -13,6 +13,7 @@ jest.mock('@cromwell/core-frontend', () => {
         getRestAPIClient: () => {
             return {
                 getCmsSettings: jest.fn().mockImplementation(() => testData),
+                getAdvancedCmsSettings: jest.fn().mockImplementation(() => testData),
                 updateCmsConfig: jest.fn().mockImplementation(() => true),
             }
         },
