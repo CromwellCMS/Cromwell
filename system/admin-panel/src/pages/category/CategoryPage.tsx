@@ -25,7 +25,7 @@ export default function CategoryPage(props) {
     const quillEditor = useRef<Quill | null>(null);
     const [parentCategory, setParentCategory] = useState<TProductCategory | null>(null);
 
-    const urlParams = new URLSearchParams(props.location.search);
+    const urlParams = new URLSearchParams(props?.location?.search);
     const parentIdParam = urlParams.get('parentId');
 
     const getProductCategory = async (id: string) => {
