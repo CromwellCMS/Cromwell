@@ -8,14 +8,14 @@ import {
 } from '@material-ui/icons';
 import { Autocomplete, Skeleton } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
-import NumberFormat from 'react-number-format';
 import { Link, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
 import { orderStatuses } from '../../constants/order';
 import { orderListPageInfo, productPageInfo } from '../../constants/PageInfos';
-import styles from './Order.module.scss';
+import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import commonStyles from '../../styles/common.module.scss';
+import styles from './Order.module.scss';
 
 const OrderPage = () => {
     const { id: orderId } = useParams<{ id: string }>();
@@ -89,7 +89,7 @@ const OrderPage = () => {
                 orderTotalPrice: data.orderTotalPrice,
                 cartTotalPrice: data.cartTotalPrice,
                 cartOldTotalPrice: data.cartOldTotalPrice,
-                deliveryPrice: data.deliveryPrice,
+                shippingPrice: data.shippingPrice,
                 totalQnt: data.totalQnt,
                 userId: data.userId,
                 customerName: data.customerName,
@@ -134,7 +134,7 @@ const OrderPage = () => {
     const cartNewTotal = cartInfo.total;
     const cartNewTotalOldPrice = cartInfo.totalOld;
     const cartAmount = cartInfo.amount
-    const orderTotalPriceRecalc = (data?.cartTotalPrice ?? 0) + (data?.deliveryPrice ?? 0);
+    const orderTotalPriceRecalc = (data?.cartTotalPrice ?? 0) + (data?.shippingPrice ?? 0);
 
     return (
         <div className={styles.OrderPage}>
@@ -209,12 +209,12 @@ const OrderPage = () => {
                             onChange={(e) => { handleInputChange('customerComment', e.target.value) }}
                         />
                         <TextField label="Delivery price"
-                            value={data?.deliveryPrice ?? 0}
+                            value={data?.shippingPrice ?? 0}
                             className={styles.textField}
                             onChange={(e) => {
                                 let newPrice = parseInt(e.target.value);
                                 if (isNaN(newPrice)) newPrice = 0;
-                                handleInputChange('deliveryPrice', newPrice);
+                                handleInputChange('shippingPrice', newPrice);
                             }}
                             fullWidth
                             InputProps={{
@@ -238,9 +238,9 @@ const OrderPage = () => {
                 {!cartLoading && data && (
                     <>
                         <p>Cart total: <b>{cstore.getPriceWithCurrency(data.cartTotalPrice)}</b></p>
-                        <p>Delivery: <b>{cstore.getPriceWithCurrency(data.deliveryPrice)}</b></p>
-                        <p>{data.orderTotalPrice !== orderTotalPriceRecalc ? 'Initial ' : ''}Order total: <b>{cstore.getPriceWithCurrency(data.orderTotalPrice)}</b></p>
-                        {data.orderTotalPrice !== orderTotalPriceRecalc && (
+                        <p>Delivery: <b>{cstore.getPriceWithCurrency(data.shippingPrice ?? 0)}</b></p>
+                        <p>{data.orderTotalPrice != orderTotalPriceRecalc ? 'Initial ' : ''}Order total: <b>{cstore.getPriceWithCurrency(data.orderTotalPrice ?? 0)}</b></p>
+                        {data.orderTotalPrice != orderTotalPriceRecalc && (
                             <p>Order total: <b>{cstore.getPriceWithCurrency(orderTotalPriceRecalc)}</b></p>
                         )}
                         {(cartNewTotal !== data.cartTotalPrice) && (
@@ -250,7 +250,7 @@ const OrderPage = () => {
                                     <p style={{ margin: '0 0 0 5px' }}>Price has changed for some products since this order was created!</p>
                                 </div>
                                 <p>Updated cart total: <b>{cstore.getPriceWithCurrency(cartNewTotal)}</b></p>
-                                <p>Updated order total: <b>{cstore.getPriceWithCurrency(cartNewTotal + (data.deliveryPrice ?? 0))}</b></p>
+                                <p>Updated order total: <b>{cstore.getPriceWithCurrency(cartNewTotal + (data.shippingPrice ?? 0))}</b></p>
                             </div>
                         )}
                     </>
@@ -324,33 +324,4 @@ const toLocaleDateString = (date: Date | string | undefined) => {
     if (!date) return '';
     if (typeof date === 'string') date = new Date(date);
     return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
-}
-
-
-interface NumberFormatCustomProps {
-    inputRef: (instance: NumberFormat | null) => void;
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
-
-function NumberFormatCustom(props: NumberFormatCustomProps) {
-    const { inputRef, onChange, ...other } = props;
-
-    return (
-        <NumberFormat
-            {...other}
-            getInputRef={inputRef}
-            onValueChange={(values) => {
-                onChange({
-                    target: {
-                        name: props.name,
-                        value: values.value,
-                    },
-                });
-            }}
-            thousandSeparator
-            isNumericString
-            prefix={getCStore().getActiveCurrencySymbol()}
-        />
-    );
 }

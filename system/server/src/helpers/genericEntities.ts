@@ -2,7 +2,6 @@ import { TPluginEntity, TPluginEntityInput, TThemeEntity, TThemeEntityInput } fr
 import {
     CmsEntity,
     createGenericEntity,
-    InputCmsEntity,
     InputPluginEntity,
     InputThemeEntity,
     PluginEntity,
@@ -12,7 +11,7 @@ import { Resolver } from 'type-graphql';
 
 export const GenericTheme = createGenericEntity<TThemeEntity, TThemeEntityInput>('Theme', ThemeEntity, InputThemeEntity);
 export const GenericPlugin = createGenericEntity<TPluginEntity, TPluginEntityInput>('Plugin', PluginEntity, InputPluginEntity);
-export const GenericCms = createGenericEntity<CmsEntity, InputCmsEntity>('Cms', CmsEntity, InputCmsEntity);
+export const GenericCms = createGenericEntity<CmsEntity>('Cms', CmsEntity);
 
 
 @Resolver(ThemeEntity)
@@ -20,7 +19,3 @@ export class GenericThemeResolver extends GenericTheme.abstractResolver { }
 
 @Resolver(PluginEntity)
 export class GenericPluginResolver extends GenericPlugin.abstractResolver { }
-
-@Resolver(CmsEntity)
-export class GenericCmsResolver extends GenericCms.abstractResolver { }
-

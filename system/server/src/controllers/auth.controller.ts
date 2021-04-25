@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Request, Response, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Request, Response, UnauthorizedException, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { FastifyReply } from 'fastify';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
@@ -8,7 +8,7 @@ import { LoginDto } from '../dto/login.dto';
 import { UserDto } from '../dto/user.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { AuthService } from '../services/auth.service';
-
+import { validateEmail } from '@cromwell/core-backend';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -82,6 +82,25 @@ export class AuthController {
     async signUp(@Request() request: TRequestWithUser, @Response() response: FastifyReply, @Body() input: CreateUserDto) {
         const user = await this.authService.signUpUser(input, request.user);
         response.code(201).send(new UserDto().parseUser(user));
+    }
+
+
+    @Post('reset-password')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(3, 10)
+    @ApiOperation({
+        description: 'Reset password for a user account',
+    })
+    @ApiBody({ type: CreateUserDto })
+    @ApiResponse({
+        status: 201,
+        type: Boolean,
+    })
+    async resetPassword(@Body() input: CreateUserDto) {
+        if (!input?.email || !validateEmail(input.email))
+            throw new HttpException('Email is not valid', HttpStatus.NOT_ACCEPTABLE);
+
+        return this.authService.resetUserPassword(input.email);
     }
 
 

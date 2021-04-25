@@ -29,7 +29,7 @@ export class Order extends BasePageEntity implements TOrder {
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })
-    deliveryPrice?: number;
+    shippingPrice?: number;
 
     @Field(() => Number, { nullable: true })
     @Column({ type: "float", nullable: true })

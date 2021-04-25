@@ -13,10 +13,14 @@ import {
 import { bundledModulesDirName, getBundledModulesDir, downloader } from '@cromwell/utils';
 import { fork } from 'child_process';
 import compress from 'compression';
-import express from 'express';
+import fastify from 'fastify';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
+import middie from 'middie'
+import normalizePath from 'normalize-path';
+import fastifyStatic from 'fastify-static';
+
 
 const start = async () => {
     const watch = true;
@@ -32,9 +36,10 @@ const start = async () => {
 
     await downloader();
 
-    const projectPublicDir = getPublicDir();
-    const publicDir = getAdminPanelWebPublicDir();
-    const webTempDir = getAdminPanelTempDir();
+    const projectPublicDir = normalizePath(getPublicDir());
+    const publicDir = normalizePath(getAdminPanelWebPublicDir());
+    const webTempDir = normalizePath(getAdminPanelTempDir());
+    const adminPanelStaticDir = normalizePath(getAdminPanelStaticDir())
     if (!fs.existsSync(webTempDir)) await fs.ensureDir(webTempDir);
 
     // Link public dir in project root to admin panel temp public dir for Express.js server
@@ -58,10 +63,12 @@ const start = async () => {
 
     const port = process.env.PORT ?? cmsConfig.adminPanelPort;
 
-    const app = express();
+    const app = fastify();
 
     let bs;
     if (isDevelopment) {
+        await app.register(middie);
+
         bs = require('browser-sync').create();
         bs.init({ watch: false });
         app.use(require('connect-browser-sync')(bs));
@@ -69,57 +76,68 @@ const start = async () => {
 
     app.use(compress());
 
-    app.use("/", express.static(webTempDir));
-    app.use("/", express.static(publicDir));
-    app.use("/", express.static(getAdminPanelStaticDir()));
+    app.register(fastifyStatic, {
+        root: publicDir,
+    });
+    app.register(fastifyStatic, {
+        root: webTempDir + '/bundled-modules',
+        prefix: '/bundled-modules/',
+        decorateReply: false,
+    });
+    app.register(fastifyStatic, {
+        root: adminPanelStaticDir,
+        prefix: '/admin/static/',
+        decorateReply: false,
+    });
+    app.register(fastifyStatic, {
+        root: webTempDir + '/build',
+        prefix: '/admin/build/',
+        decorateReply: false,
+    });
 
-    app.get(`*`, function (req, res) {
-        if (/.+\.\w+$/.test(req.path)) {
-            // file requested, 404
-            res.status(404).send("File not found.");
-        } else {
-            // route requested, send index.html 
-            res.send(`
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cromwell CMS Admin Panel</title>
-    <script>
-    CromwellStore = {
-        cmsSettings: ${JSON.stringify(cmsConfig)},
-        environment: {
-            isAdminPanel: true,
-            mode: '${isDevelopment ? 'dev' : 'prod'}'
-        }
+    console.log('adminPanelStaticDir', adminPanelStaticDir, 'publicDir', publicDir, 'webTempDir', webTempDir)
+
+    const indexPageHandle = (req, res) => {
+        // route requested, send index.html 
+        res.type('text/html').send(`
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Cromwell CMS Admin Panel</title>
+            <script>
+            CromwellStore = {
+                cmsSettings: ${JSON.stringify(cmsConfig)},
+                environment: {
+                    isAdminPanel: true,
+                    mode: '${isDevelopment ? 'dev' : 'prod'}'
+                }
+            }
+            </script>
+            <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;900&display=swap" rel="stylesheet">
+        </head>
+
+        <body>
+            <noscript>You need to enable JavaScript to run this app.</noscript>
+            <div id="root"></div>
+            <script src="/admin/build/webapp.js"></script>
+        </body>
+        `);
     }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;900&display=swap" rel="stylesheet">
-</head>
 
-<body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <script src="/build/webapp.js"></script>
-</body>
-            `)
-            // const filePath = resolve(serviceBuildDir, 'index.html');
-            // fs.access(filePath, fs.constants.R_OK, (err) => {
-            //     if (!err) {
-            //         res.sendFile(filePath);
-            //     } else {
-            //         res.status(404).send("index.html not found. Run build command");
-            //     }
-            // })
+    app.get(`/admin`, indexPageHandle);
+    app.get(`/admin/`, indexPageHandle);
+    app.get(`/admin/#`, indexPageHandle);
+    app.get(`/admin/#/`, indexPageHandle);
+    app.get(`/admin/#/*`, indexPageHandle);
+
+    await app.listen(port, (err, address) => {
+        if (err) {
+            console.error(err);
+            if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
+        } else {
+            console.log(`Admin Panel server has started at ${serviceLocator.getAdminPanelUrl()}`);
+            if (process.send) process.send(adminPanelMessages.onStartMessage);
         }
-
-    })
-
-    app.listen(port, () => {
-        console.log(`Admin Panel server has started at ${serviceLocator.getAdminPanelUrl()}`);
-        if (process.send) process.send(adminPanelMessages.onStartMessage);
-    }).on('error', (err) => {
-        console.error(err);
-        if (process.send) process.send(adminPanelMessages.onStartErrorMessage);
     });
 
     if (isDevelopment) {

@@ -86,6 +86,10 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         this.onScroll();
     }
 
+    componentWillUnmount() {
+        this.clearState();
+    }
+
     public addListener(type: TListenerType, cb: () => void, id?: string) {
         let hasListener = false;
         if (id) {
@@ -240,9 +244,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
         this.minPageBound = 1;
         this.maxPageBound = 1;
         if (props.useQueryPagination) {
-            const currentPageNumber = getPageNumberFromUrl();
-            if (currentPageNumber !== 1)
-                window.history.pushState({}, '', getPagedUrl(1));
+            window.history.pushState({}, '', getPagedUrl(0));
         }
         this.dataList = [];
         this.list = [];
@@ -530,11 +532,11 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
                         {props.elements?.showMore ? (
                             <props.elements.showMore onClick={handleShowMoreClick} />
                         ) : (
-                            <div
-                                className={styles.showMoreBtn}
-                                onClick={handleShowMoreClick}
-                            >Show more</div>
-                        )}
+                                <div
+                                    className={styles.showMoreBtn}
+                                    onClick={handleShowMoreClick}
+                                >Show more</div>
+                            )}
 
                     </div>
                 )}

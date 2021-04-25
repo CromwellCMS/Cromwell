@@ -77,7 +77,7 @@ export default function welcomePage() {
     return (
         <div className={styles.WelcomePage}>
             <div className={styles.wrapper}>
-                <img src="/logo_small.png" width="150px" className={styles.logo} />
+                <img src="/admin/static/logo_small.png" width="150px" className={styles.logo} />
                 <h1 className={styles.title}>Welcome to Cromwell CMS!</h1>
                 <h3 className={styles.subtitle}>Let's create your account</h3>
                 <div className={styles.inputForm}>

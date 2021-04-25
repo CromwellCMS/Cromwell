@@ -27,8 +27,9 @@ importer.modules['@cromwell/core'] = core;
         // Redirect to /setup page if not installed
         if (config && !config.installed) {
             isInstalled = false;
-            if (window.location.pathname !== welcomePageInfo.route) {
-                window.location.href = welcomePageInfo.route;
+            if (!window.location.hash.includes(welcomePageInfo.route)) {
+                window.location.href = '/admin/#' + welcomePageInfo.route;
+                // window.location.reload();
                 return;
             }
         }
@@ -48,8 +49,9 @@ importer.modules['@cromwell/core'] = core;
         restClient?.setOnUnauthorized(onUnauthorized);
         graphClient?.setOnUnauthorized(onUnauthorized);
         if (!userInfo?.id) {
-            if (window.location.pathname != loginPageInfo.route) {
-                window.location.href = loginPageInfo.route;
+            if (!window.location.hash.includes(loginPageInfo.route)) {
+                window.location.href = '/admin/#' + loginPageInfo.route;
+                // window.location.reload();
             }
         }
     }
@@ -78,8 +80,9 @@ importer.modules['@cromwell/core'] = core;
         try {
             const userInfo = await restClient?.getUserInfo();
             if (!userInfo) {
-                if (window.location.pathname !== loginPageInfo.route) {
-                    window.location.href = loginPageInfo.route;
+                if (!window.location.hash.includes(loginPageInfo.route)) {
+                    window.location.href = '/admin/#' + loginPageInfo.route;
+                    // window.location.reload();
                     return;
                 }
             }

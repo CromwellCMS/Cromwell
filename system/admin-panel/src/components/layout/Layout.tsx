@@ -1,13 +1,11 @@
+import '../../styles/global.scss';
 import 'react-toastify/dist/ReactToastify.css';
 
-import {
-  createMuiTheme, ThemeProvider
-  , Toolbar
-} from '@material-ui/core';
+import { createMuiTheme, ThemeProvider, Toolbar } from '@material-ui/core';
 import React, { Suspense } from 'react';
-import { BrowserRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
 import ReactDOM from 'react-dom';
+import { HashRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
 
 import { pageInfos } from '../../constants/PageInfos';
 import Page404 from '../../pages/404/404page';
@@ -16,7 +14,6 @@ import FileManager from '../fileManager/FileManager';
 import LoadBox from '../loadBox/LoadBox';
 import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
-import '../../styles/global.scss';
 
 const theme = createMuiTheme({
   palette: {
@@ -38,7 +35,7 @@ function Layout() {
   return (
     <ThemeProvider theme={theme}>
       <div className={styles.Layout}>
-        <BrowserRouter>
+        <HashRouter>
           <div className={styles.sidebar}>
             <Sidebar />
           </div>
@@ -54,7 +51,7 @@ function Layout() {
                       return (
                         <PageErrorBoundary>
                           <Suspense fallback={<LoadBox />}>
-                            <page.component />
+                            <page.component {...props} />
                           </Suspense>
                         </PageErrorBoundary>
                       )
@@ -68,7 +65,7 @@ function Layout() {
             </Switch>
             <div className={styles.iconsCredits} >Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
           </div>
-        </BrowserRouter>
+        </HashRouter>
         {document?.body && ReactDOM.createPortal(
           <div className={styles.toastContainer} ><ToastContainer /></div>, document.body)}
         <FileManager />

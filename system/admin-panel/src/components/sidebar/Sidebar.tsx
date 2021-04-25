@@ -33,7 +33,7 @@ function useForceUpdate() {
 }
 
 export default function Sidebar() {
-    const currentInfo = pageInfos.find(i => i.route === window.location.pathname);
+    const currentInfo = pageInfos.find(i => '#' + i.route === window.location.hash);
     const currentLink = getLinkByInfo(currentInfo);
 
     const [expanded, setExpanded] = useState<string | false>(currentLink?.parentId ?? false);
@@ -82,7 +82,7 @@ export default function Sidebar() {
         <div className={styles.sidebarContent}>
             <div className={styles.sidebarTop}>
                 <div className={styles.sidebarHeader}>
-                    <img src="/logo_icon_white.png" alt="logo" className={styles.logo} />
+                    <img src="/admin/static/logo_icon_white.png" alt="logo" className={styles.logo} />
                     {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                     <div className={styles.sidebarMobileActions}>
                         <IconButton onClick={handleCloseMenu} >
@@ -165,7 +165,7 @@ export default function Sidebar() {
                             className={styles.toolbar}
                         >
                             <div className={styles.sidebarMobileHeader}>
-                                <img src="/logo_icon.png" alt="logo" className={styles.logoMobile} />
+                                <img src="/admin/static/logo_icon.png" alt="logo" className={styles.logoMobile} />
                                 {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                                 <div className={styles.mobileActions}>
                                     <IconButton onClick={handleOpenMenu}>

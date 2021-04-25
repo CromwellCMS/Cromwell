@@ -464,7 +464,7 @@ export class MockService {
                 customerPhone: '786-603-4232',
                 cartTotalPrice: 279,
                 orderTotalPrice: 279,
-                deliveryPrice: 0,
+                shippingPrice: 0,
                 totalQnt: 3,
                 status: 'Pending',
                 cart: [{
@@ -485,7 +485,7 @@ export class MockService {
                 status: 'Cancelled',
                 cartTotalPrice: 59,
                 orderTotalPrice: 69,
-                deliveryPrice: 10,
+                shippingPrice: 10,
                 totalQnt: 2,
                 cart: [{
                     product: {
@@ -505,7 +505,7 @@ export class MockService {
                 status: 'Shipped',
                 cartTotalPrice: 110,
                 orderTotalPrice: 120,
-                deliveryPrice: 10,
+                shippingPrice: 10,
                 totalQnt: 3,
                 cart: [{
                     product: {
@@ -521,7 +521,7 @@ export class MockService {
                 status: 'Awaiting shipment',
                 cartTotalPrice: 10,
                 orderTotalPrice: 15,
-                deliveryPrice: 5,
+                shippingPrice: 5,
                 cart: [{
                     product: {
                         id: '6',

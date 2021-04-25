@@ -1,15 +1,23 @@
 import '../../helpers/Draggable/Draggable.css';
 
-import { genericPageName, setStoreItem, TCromwellBlockData, TPageConfig, TPageInfo, TPluginEntity, getRandStr } from '@cromwell/core';
+import {
+    genericPageName,
+    getRandStr,
+    setStoreItem,
+    TCromwellBlockData,
+    TPageConfig,
+    TPageInfo,
+    TPluginEntity,
+} from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { Suspense } from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
-import FramePortal from '../../components/framePortal/FramePortal';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { SkeletonPreloader } from '../../components/SkeletonPreloader';
@@ -32,7 +40,7 @@ class ThemeEditState {
 }
 
 
-export default class ThemeEdit extends React.Component<any, ThemeEditState> {
+export default class ThemeEdit extends React.Component<Partial<RouteComponentProps>, ThemeEditState> {
 
     private changedPageInfo: TPageInfo | null = null;
 

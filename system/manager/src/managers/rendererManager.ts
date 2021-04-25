@@ -215,8 +215,15 @@ export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promis
         const buildSuccess = await rendererBuild(themeModuleName);
         if (buildSuccess) {
             const themeBuildNextDir = resolve(themeDir, buildDirName, '.next');
-            if (await fs.pathExists(themeBuildNextDir)) await fs.remove(themeBuildNextDir);
+            await new Promise(done => setTimeout(done, 200));
+            try {
+                if (await fs.pathExists(themeBuildNextDir)) await fs.remove(themeBuildNextDir);
+            } catch (e) {
+                logger.error(e);
+            }
+            await new Promise(done => setTimeout(done, 200));
             await fs.move(tempNextDir, themeBuildNextDir);
+            await new Promise(done => setTimeout(done, 200));
             await fs.remove(tempDir);
             logger.log('RendererManager:: successfully saved theme');
             return true;

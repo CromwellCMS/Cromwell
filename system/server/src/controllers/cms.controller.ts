@@ -16,6 +16,7 @@ import { getCustomRepository } from 'typeorm';
 
 import { JwtAuthGuard, Roles } from '../auth/auth.guard';
 import { CmsConfigDto } from '../dto/cms-config.dto';
+import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { publicSystemDirs } from '../helpers/constants';
@@ -36,19 +37,37 @@ export class CmsController {
     ) { }
 
     @Get('config')
-    @ApiOperation({ description: 'Returns CMS settings from DB and cmsconfig.json' })
+    @ApiOperation({ description: 'Returns public CMS settings from DB and cmsconfig.json' })
     @ApiResponse({
         status: 200,
         type: CmsConfigDto,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getConfig(): Promise<TCmsSettings | undefined> {
+    async getConfig(): Promise<CmsConfigDto | undefined> {
         // logger.log('CmsController::getConfig');
         const config = await this.cmsService.getSettings();
         if (!config) {
             throw new HttpException('CmsController::getConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return config;
+        return new CmsConfigDto().parseConfig(config);
+    }
+
+    @Get('advanced-config')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({ description: 'Returns advanced/private CMS settings from DB and cmsconfig.json' })
+    @ApiResponse({
+        status: 200,
+        type: AdvancedCmsConfigDto,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async getPrivateConfig(): Promise<AdvancedCmsConfigDto | undefined> {
+        // logger.log('CmsController::getPrivateConfig');
+        const config = await this.cmsService.getSettings();
+        if (!config) {
+            throw new HttpException('CmsController::getPrivateConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new AdvancedCmsConfigDto().parseConfig(config);
     }
 
 
@@ -226,9 +245,9 @@ export class CmsController {
     @ApiBody({ type: CmsConfigUpdateDto })
     @ApiResponse({
         status: 200,
-        type: CmsConfigDto,
+        type: AdvancedCmsConfigDto,
     })
-    async updateCmsConfig(@Body() input: CmsConfigUpdateDto): Promise<CmsConfigDto | undefined> {
+    async updateCmsConfig(@Body() input: CmsConfigUpdateDto): Promise<AdvancedCmsConfigDto | undefined> {
         return this.cmsService.updateCmsConfig(input);
     }
 
@@ -290,7 +309,7 @@ export class CmsController {
         status: 200,
     })
     async placeOrder(@Body() input: InputOrder): Promise<TOrder> {
-        if (!input || !input.customerAddress || !input.customerEmail
+        if (!input || !input.customerEmail
             || !input.customerPhone) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
         return getCustomRepository(OrderRepository).createOrder(input);

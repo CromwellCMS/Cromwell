@@ -200,6 +200,8 @@ export type TCromwellNodeModules = {
     importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean> | boolean;
     importSciptExternals?: (metaInfo: TSciprtMetaInfo) => Promise<boolean>;
     hasBeenExecuted?: boolean;
+    prefix?: string;
+    setPrefix?: (prefix: string) => void;
 };
 
 export type TSciprtMetaInfo = {

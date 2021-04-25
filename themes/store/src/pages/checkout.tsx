@@ -8,13 +8,13 @@ import {
     TUser,
 } from '@cromwell/core';
 import { getCStore, getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, TextField, Tooltip, useMediaQuery, useTheme } from '@material-ui/core';
+import { Button, TextField, Tooltip, useMediaQuery, useTheme, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 
 import { CartProductList } from '../components/checkoutPage/productList/CartProductList';
 import Layout from '../components/layout/Layout';
-import SignInModal, { TFromType } from '../components/modals/singIn/SingIn';
+import SignInModal, { TFromType } from '../components/modals/signIn/SignIn';
 import { toast } from '../components/toast/toast';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Checkout.module.scss';
@@ -22,18 +22,21 @@ import styles from '../styles/pages/Checkout.module.scss';
 
 const CheckoutPage: TCromwellPage = (props) => {
 
+    const userInfo = getStoreItem('userInfo');
     const [form, setForm] = useState<{
         email?: string;
         name?: string;
         phone?: string;
         address?: string;
         comment?: string;
-    }>({});
-
-    const userInfo = getStoreItem('userInfo');
+        shippingMethod?: number;
+    }>({
+        email: userInfo?.email,
+        name: userInfo?.fullName,
+        phone: userInfo?.phone,
+        address: userInfo?.address,
+    });
     const cstore = getCStore();
-    const [shippingMethod, setShippingMethod] = useState<string | null>(null);
-    const [signInModalOpen, setSignInModalOpen] = useState<'sign-in' | 'sign-up' | null>(null);
     const forceUpdate = useForceUpdate();
     const [singInOpen, setSingInOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -43,6 +46,8 @@ const CheckoutPage: TCromwellPage = (props) => {
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+    const shippingPrice = getStoreItem('cmsSettings')?.defaultShippingPrice ?? 0;
+    const totalPrice = shippingPrice + cstore.getCartTotal().total;
 
     useEffect(() => {
         const onUserChange = (value: TUser | undefined) => {
@@ -62,14 +67,18 @@ const CheckoutPage: TCromwellPage = (props) => {
         }
     }, []);
 
-    const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-        const { name, value } = event.target;
+    const changeForm = (key: keyof typeof form, value: any) => {
         setForm(prevState => {
             return {
                 ...prevState,
-                [name]: value
+                [key]: value
             }
         })
+    }
+
+    const handleInput = (event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
+        const { name, value } = event.target;
+        changeForm(name as any, value);
     }
 
     const handleSignIn = (user: TUser) => {
@@ -114,6 +123,8 @@ const CheckoutPage: TCromwellPage = (props) => {
                 totalQnt: cartInfo.amount,
                 cartOldTotalPrice: cartInfo.totalOld,
                 cart: JSON.stringify(cstore.getCart()),
+                orderTotalPrice: totalPrice,
+                shippingPrice: shippingPrice,
             });
         } catch (e) {
             console.error(e);
@@ -134,6 +145,7 @@ const CheckoutPage: TCromwellPage = (props) => {
             return false;
         }
     }
+
 
 
     const checkoutContent = (
@@ -166,6 +178,7 @@ const CheckoutPage: TCromwellPage = (props) => {
                 )}
                 <p></p>
                 <div className={styles.delimiter}></div>
+                <h2 className={styles.subHeader}>Shipping Address</h2>
                 <Tooltip open={canValidate && (!form?.name || form.name == '')} title="This field is required" arrow>
                     <TextField label="Name"
                         variant="outlined"
@@ -217,11 +230,37 @@ const CheckoutPage: TCromwellPage = (props) => {
                     name="comment"
                     size="small"
                     fullWidth
+                    multiline
                     className={styles.input}
                     value={form?.comment ?? ''}
                     onChange={handleInput} />
-                <h2 className={styles.subHeader}>Shipping Methods</h2>
                 <div className={styles.delimiter}></div>
+
+                <h2 className={styles.subHeader}>Shipping Methods</h2>
+                <FormControl component="fieldset" className={styles.shippingMethods}>
+                    <RadioGroup
+                        value={form.shippingMethod ?? 0}
+                        onChange={(event, value: string) => changeForm('shippingMethod', parseInt(value))}>
+                        <FormControlLabel value={0} control={<Radio color="primary" />}
+                            label={`Standard shipping: ${cstore.getPriceWithCurrency(shippingPrice)}`} />
+                    </RadioGroup>
+                </FormControl>
+                <div className={styles.delimiter}></div>
+
+                <h2 className={styles.subHeader}>Order details</h2>
+                <div className={styles.detailsRow}>
+                    <p>Cart total: </p>
+                    <b>{cstore.getPriceWithCurrency(cstore.getCartTotal().total)}</b>
+                </div>
+                <div className={styles.detailsRow}>
+                    <p>Delivery:</p>
+                    <b>{cstore.getPriceWithCurrency(shippingPrice)}</b>
+                </div>
+                <div className={styles.detailsRow}>
+                    <p className={styles.totalText}>Total:</p>
+                    <b className={styles.totalText}>{cstore.getPriceWithCurrency(totalPrice)}</b>
+                </div>
+
                 <div className={styles.orderBtnWrapper}>
                     <Button variant="contained"
                         color="primary"

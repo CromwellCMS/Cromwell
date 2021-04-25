@@ -111,6 +111,11 @@ class CRestAPIClient {
         return this.post('auth/sign-up', credentials);
     }
 
+    public resetPassword = async (credentials: { email: string }): Promise<boolean | undefined> => {
+        return this.post('auth/reset-password', credentials);
+    }
+
+
     public setOnUnauthorized(func: (() => any) | null) {
         this.onUnauthorized = func;
     }
@@ -125,6 +130,10 @@ class CRestAPIClient {
 
     public getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
         return this.get(`cms/config`);
+    }
+
+    public getAdvancedCmsSettings = async (): Promise<TCmsSettings | undefined> => {
+        return this.get(`cms/advanced-config`);
     }
 
     public getCmsSettingsAndSave = async (): Promise<TCmsSettings | undefined> => {

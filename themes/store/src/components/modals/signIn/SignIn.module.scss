@@ -17,7 +17,7 @@
 }
 
 .loginForm {
-    padding: 15px 20px;
+    padding: 20px;
     display: flex;
     flex-direction: column;
 }
@@ -28,4 +28,10 @@ div.textField {
 
 button.loginBtn {
     margin: 20px auto 0 auto;
+}
+
+.forgotPassText {
+    text-decoration: underline;
+    font-size: 14px;
+    cursor: pointer;
 }

@@ -1,5 +1,5 @@
 import { isServer, TPagedList, TPagedParams } from '@cromwell/core';
-
+import queryString from 'query-string';
 export const getPageId = (pageNum: number) => "infinity-page_" + pageNum;
 
 export const getPageNumsAround = (currentPage: number, quantity: number, maxPageNum: number): number[] => {
@@ -20,10 +20,10 @@ export const getPageNumsAround = (currentPage: number, quantity: number, maxPage
 
 export const getPagedUrl = (pageNum: number, pathname?: string): string | undefined => {
     if (!isServer()) {
-        const urlParams = new URLSearchParams(window.location.search);
-        if (pageNum) urlParams.set('page', pageNum + '');
-        else urlParams.delete('page');
-        return window.location.pathname + '?' + urlParams.toString();
+        const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
+        if (pageNum) parsedUrl.query.page = pageNum + '';
+        else delete parsedUrl.query.page;
+        return queryString.stringifyUrl(parsedUrl, { encode: false });
     }
     else {
         return pathname ? pathname + `?page=${pageNum}` : undefined;
@@ -32,8 +32,8 @@ export const getPagedUrl = (pageNum: number, pathname?: string): string | undefi
 
 export const getPageNumberFromUrl = (): number => {
     if (!isServer()) {
-        const urlParams = new URLSearchParams(window.location.search);
-        let pageNumber: any = urlParams.get('page');
+        const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
+        let pageNumber: any = parsedUrl.query?.page;
         if (pageNumber) {
             pageNumber = parseInt(pageNumber);
             if (pageNumber && !isNaN(pageNumber)) {

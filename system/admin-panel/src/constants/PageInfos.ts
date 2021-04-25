@@ -1,5 +1,3 @@
-import SidebarLink from '@App/components/sidebar/SidebarLink';
-import { TPageConfig } from '@cromwell/core/es';
 import {
     Category as CategoryIcon,
     Dashboard as DashboardIcon,
@@ -15,6 +13,7 @@ import {
     Storage as StorageIcon,
 } from '@material-ui/icons';
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
 import AttributesPage from '../pages/attributes/AttributesPage';
@@ -52,7 +51,7 @@ export type PageInfo = {
     name: string;
     route: string;
     baseRoute?: string;
-    component: React.ComponentType;
+    component: React.ComponentType<Partial<RouteComponentProps>>;
     disableSidebar?: boolean;
 }
 
@@ -255,7 +254,7 @@ export const sideBarLinks: SidebarLinkType[] = [
         title: 'Blog',
         icon: React.createElement('div', {
             className: sidebarStyles.customIcon,
-            style: { backgroundImage: 'url(/icon_blogging.png)' }
+            style: { backgroundImage: 'url(/admin/static/icon_blogging.png)' }
         }),
         sublinks: [
             {

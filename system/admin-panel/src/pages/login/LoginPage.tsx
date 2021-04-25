@@ -59,7 +59,7 @@ const LoginPage = () => {
 
     return (
         <div className={styles.LoginPage} style={{
-            backgroundImage: 'url("/logo_bckgr_no_logo.png")'
+            backgroundImage: 'url("/admin/static/logo_bckgr_no_logo.png")'
         }}>
             <form className={styles.loginForm} onSubmit={handleLoginClick}>
                 <AccountCircleIcon className={styles.loginIcon} />

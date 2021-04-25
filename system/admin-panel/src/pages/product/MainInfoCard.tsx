@@ -1,5 +1,5 @@
 import { TAttributeProductVariant, TProduct } from '@cromwell/core';
-import { CGallery, getCStore } from '@cromwell/core-frontend';
+import { CGallery } from '@cromwell/core-frontend';
 import { IconButton, TextField, Tooltip } from '@material-ui/core';
 import {
     Add as AddIcon,
@@ -11,40 +11,13 @@ import {
 } from '@material-ui/icons';
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
-import NumberFormat from 'react-number-format';
 
 import { getFileManager } from '../../components/fileManager/helpers';
+import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
 import { editorId, TInfoCardRef } from './Product';
 import styles from './Product.module.scss';
 
-interface NumberFormatCustomProps {
-    inputRef: (instance: NumberFormat | null) => void;
-    onChange: (event: { target: { name: string; value: string } }) => void;
-    name: string;
-}
-
-function NumberFormatCustom(props: NumberFormatCustomProps) {
-    const { inputRef, onChange, ...other } = props;
-
-    return (
-        <NumberFormat
-            {...other}
-            getInputRef={inputRef}
-            onValueChange={(values) => {
-                onChange({
-                    target: {
-                        name: props.name,
-                        value: values.value,
-                    },
-                });
-            }}
-            thousandSeparator
-            isNumericString
-            prefix={getCStore().getActiveCurrencySymbol()}
-        />
-    );
-}
 
 const MainInfoCard = (props: {
     product: TAttributeProductVariant | TProduct,
