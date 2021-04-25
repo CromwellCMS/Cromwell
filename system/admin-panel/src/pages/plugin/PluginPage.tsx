@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 
 import styles from './PluginPage.module.scss';
 
-const PluginPage = () => {
-    const urlParams = new URLSearchParams(window.location.search);
+const PluginPage = (props) => {
+    const urlParams = new URLSearchParams(props.location.search);
     const pluginName = urlParams.get('pluginName');
     const apiClient = getRestAPIClient();
     const [canShow, setCanShow] = useState(false);

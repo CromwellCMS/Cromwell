@@ -15,7 +15,7 @@ import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
 
-export default function CategoryPage() {
+export default function CategoryPage(props) {
     const { id: categoryId } = useParams<{ id: string }>();
     const client = getGraphQLClient();
     const [notFound, setNotFound] = useState(false);
@@ -25,7 +25,7 @@ export default function CategoryPage() {
     const quillEditor = useRef<Quill | null>(null);
     const [parentCategory, setParentCategory] = useState<TProductCategory | null>(null);
 
-    const urlParams = new URLSearchParams(window.location.search);
+    const urlParams = new URLSearchParams(props.location.search);
     const parentIdParam = urlParams.get('parentId');
 
     const getProductCategory = async (id: string) => {
