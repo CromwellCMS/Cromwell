@@ -132,6 +132,10 @@ class CRestAPIClient {
         return this.get(`cms/config`);
     }
 
+    public getAdvancedCmsSettings = async (): Promise<TCmsSettings | undefined> => {
+        return this.get(`cms/advanced-config`);
+    }
+
     public getCmsSettingsAndSave = async (): Promise<TCmsSettings | undefined> => {
         const config = await this.getCmsSettings();
         if (config) {

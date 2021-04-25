@@ -41,7 +41,6 @@ export * from './inputs/AttributeInput';
 export * from './inputs/ProductReviewInput';
 export * from './inputs/InputThemeEntity';
 export * from './inputs/InputPluginEntity';
-export * from './inputs/InputCmsEntity';
 export * from './inputs/InputOrder';
 export * from './inputs/InputTag';
 export * from './inputs/DeleteManyInput';

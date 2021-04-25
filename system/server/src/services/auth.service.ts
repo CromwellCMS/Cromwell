@@ -72,9 +72,9 @@ export class AuthService {
         // user.password = newRandPass;
         // await user.save();
 
-        // await this.cmsService.sendEmail('<p>Hello!</p>', [email]);
+        const success = await this.cmsService.sendEmail([email], 'Reset password', '<p>Hello!</p>');
 
-        return true;
+        return success;
     }
 
     async hashPassword(plain: string): Promise<string> {

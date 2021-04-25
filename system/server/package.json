@@ -44,6 +44,7 @@
     "fs-extra": "^9.0.1",
     "graphql": "^15.3.0",
     "graphql-tools": "^7.0.2",
+    "nodemailer": "^6.5.0",
     "normalize-path": "^3.0.0",
     "path": "^0.12.7",
     "reflect-metadata": "^0.1.13",

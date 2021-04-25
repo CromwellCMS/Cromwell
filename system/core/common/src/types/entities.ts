@@ -251,7 +251,7 @@ type TOrderCore = {
     orderTotalPrice?: number;
     cartTotalPrice?: number;
     cartOldTotalPrice?: number;
-    deliveryPrice?: number;
+    shippingPrice?: number;
     totalQnt?: number;
     userId?: string;
     customerName?: string;
@@ -314,6 +314,7 @@ export type TPluginEntityInput = TPluginEntityCore & TBasePageEntityInput;
 // DB CMS entity
 
 export type TCmsEntityCore = {
+    // < Public config >
     // Protocol for api client to use
     protocol?: 'http' | 'https';
     // Package name of currently used theme
@@ -336,12 +337,22 @@ export type TCmsEntityCore = {
     // Custom HTML code injection
     headerHtml?: string;
     footerHtml?: string;
+    // < / >
 
-    // INTERNAL
+
+    // < Advanced / private config >
+    // SMTP connection string to e-mail service provider
+    smtpConnectionString?: string;
+    // E-mail to send mails from
+    sendFromEmail?: string;
+    // < / >
+
+    // < INTERNAL >
     // Internal. https://github.com/CromwellCMS/Cromwell/blob/55046c48d9da0a44e4b11e7918c73876fcd1cfc1/system/manager/src/managers/baseManager.ts#L194:L206
     versions?: TServiceVersions | string;
     // Internal. If false or not set, will launch installation at first Admin Panel visit.
     installed?: boolean;
+    // < / >
 }
 
 export type TCmsEntityInput = {
@@ -355,6 +366,8 @@ export type TCmsEntityInput = {
     headerHtml?: string;
     footerHtml?: string;
     defaultShippingPrice?: number;
+    smtpConnectionString?: string;
+    sendFromEmail?: string;
 }
 
 export type TServiceVersions = {

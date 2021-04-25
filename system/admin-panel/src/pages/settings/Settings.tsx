@@ -32,7 +32,7 @@ const SettingsPage = () => {
     const getConfig = async () => {
         setIsLoading(true);
         try {
-            const settings = await client.getCmsSettings();
+            const settings = await client.getAdvancedCmsSettings();
             if (settings) setSettings(settings);
         } catch (e) {
             console.error(e);
@@ -54,6 +54,8 @@ const SettingsPage = () => {
                 headerHtml: settings.headerHtml,
                 footerHtml: settings.footerHtml,
                 defaultShippingPrice: settings.defaultShippingPrice,
+                smtpConnectionString: settings.smtpConnectionString,
+                sendFromEmail: settings.sendFromEmail,
             });
             toast.success?.('Settings saved');
             setSettings(newConfig);
@@ -175,9 +177,30 @@ const SettingsPage = () => {
                                 variant="outlined"
                                 className={styles.field}
                             />
-                            {/* <p>currencies</p>
-                        <p>defaultPageSize</p> */}
                         </Grid>
+                        <Grid item xs={12} className={styles.subheader}  >
+                            <h3>E-mailing settings</h3>
+                        </Grid>
+                        <Grid item xs={6} >
+                            <TextField
+                                fullWidth
+                                label="Send e-mails from"
+                                value={settings.sendFromEmail ?? ''}
+                                onChange={handleTextFieldChange('sendFromEmail')}
+                                className={styles.field}
+                            />
+                        </Grid>
+                        <Grid item xs={12} >
+                            <TextField
+                                fullWidth
+                                label="SMTP Connection String"
+                                value={settings.smtpConnectionString ?? ''}
+                                onChange={handleTextFieldChange('smtpConnectionString')}
+                                className={styles.field}
+                            />
+                        </Grid>
+                        {/* <p>currencies</p>
+                        <p>defaultPageSize</p> */}
                     </Grid>
                 )}
             </div>

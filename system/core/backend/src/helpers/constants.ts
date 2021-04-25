@@ -44,13 +44,16 @@ export const getLogger = (level: TLogLevel, func?: (...args) => any) => {
         log: (...args) => {
             if (logLevelMoreThan(level)) func ? func(...args) : console.log(...args);
         },
+        info: (...args) => {
+            if (logLevelMoreThan(level)) func ? func(...args) : console.log(...args);
+        },
         warn: (...args) => {
             const msg = colors.brightYellow('Warning: ') + args.join(' ');
-            if (logLevelMoreThan(level)) func ? func(msg) : console.log(msg);
+            if (logLevelMoreThan(level)) func ? func(msg) : console.warn(msg);
         },
         error: (...args) => {
             const msg = colors.brightRed('Error: ') + args.join(' ');
-            if (logLevelMoreThan(level)) func ? func(msg) : console.log(msg);
+            if (logLevelMoreThan(level)) func ? func(msg) : console.error(msg);
         }
     }
 }

@@ -29,6 +29,8 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
     if (!Cromwell.modules) Cromwell.modules = {};
     if (!Cromwell.moduleExternals) Cromwell.moduleExternals = {};
 
+    Cromwell.setPrefix = (prefix) => Cromwell.prefix = prefix;
+
     const canShowInfo = false;
 
     if (!Cromwell.importModule) Cromwell.importModule = (moduleName, namedExports = ['default']): Promise<boolean> | boolean => {
@@ -46,9 +48,9 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
         if (!Cromwell.modules) Cromwell.modules = {};
         if (!Cromwell.moduleExternals) Cromwell.moduleExternals = {};
 
-        const metaFilepath = `${bundledModulesDirName}/${moduleName}/${moduleMetaInfoFileName}`;
-        const importerFilepath = `/${bundledModulesDirName}/${moduleName}/${moduleMainBuidFileName}`;
-        const importerEntireLibFilepath = `/${bundledModulesDirName}/${moduleName}/${moduleLibBuidFileName}`;
+        const metaFilepath = `${Cromwell.prefix ? `${Cromwell.prefix}/` : ''}${bundledModulesDirName}/${moduleName}/${moduleMetaInfoFileName}`;
+        const importerFilepath = `${Cromwell.prefix ? `/${Cromwell.prefix}` : ''}/${bundledModulesDirName}/${moduleName}/${moduleMainBuidFileName}`;
+        const importerEntireLibFilepath = `${Cromwell.prefix ? `/${Cromwell.prefix}` : ''}/${bundledModulesDirName}/${moduleName}/${moduleLibBuidFileName}`;
         const importerNodeFilepath = `${bundledModulesDirName}/${moduleName}/${moduleNodeBuidFileName}`;
 
         let moduleVer: string | undefined;

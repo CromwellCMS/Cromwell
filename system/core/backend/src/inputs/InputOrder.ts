@@ -24,7 +24,7 @@ export class InputOrder extends BasePageInput implements TOrderInput {
     cartOldTotalPrice?: number;
 
     @Field(() => Number, { nullable: true })
-    deliveryPrice?: number;
+    shippingPrice?: number;
 
     @Field(() => Number, { nullable: true })
     totalQnt: number;

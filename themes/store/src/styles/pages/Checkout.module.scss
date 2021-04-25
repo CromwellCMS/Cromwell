@@ -4,12 +4,14 @@
 .CheckoutPage {
     @include paper;
     display: flex;
+    justify-content: center;
     padding: 15px;
     margin: 15px 0;
 
     .inputZone {
         width: 60%;
         padding-right: 20px;
+        max-width: 440px;
     }
 
     .cartZone {
@@ -46,16 +48,30 @@
     }
 
     .subHeader {
-        font-size: 23px;
+        font-size: 20px;
         font-weight: 400;
-        margin: 8px 0px;
+        margin: 20px 0px;
+        text-transform: uppercase;
+        color: #888;
     }
 
     .orderBtnWrapper {
+        margin-top: 30px;
         padding: 10px;
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .detailsRow {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px dashed #bbb;
+        margin: 12px 0;
+    }
+    .totalText {
+        font-size: 24px;
+        font-weight: 500;
     }
 }
 

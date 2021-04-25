@@ -45,7 +45,7 @@ export class OrderRepository extends BaseRepository<Order> {
         order.orderTotalPrice = input.orderTotalPrice;
         order.cartTotalPrice = input.cartTotalPrice;
         order.cartOldTotalPrice = input.cartOldTotalPrice;
-        order.deliveryPrice = input.deliveryPrice;
+        order.shippingPrice = input.shippingPrice;
         order.totalQnt = input.totalQnt;
         order.userId = input.userId;
         order.customerName = input.customerName;

@@ -22,6 +22,7 @@ import styles from '../styles/pages/Checkout.module.scss';
 
 const CheckoutPage: TCromwellPage = (props) => {
 
+    const userInfo = getStoreItem('userInfo');
     const [form, setForm] = useState<{
         email?: string;
         name?: string;
@@ -29,8 +30,12 @@ const CheckoutPage: TCromwellPage = (props) => {
         address?: string;
         comment?: string;
         shippingMethod?: number;
-    }>({});
-    const userInfo = getStoreItem('userInfo');
+    }>({
+        email: userInfo?.email,
+        name: userInfo?.fullName,
+        phone: userInfo?.phone,
+        address: userInfo?.address,
+    });
     const cstore = getCStore();
     const forceUpdate = useForceUpdate();
     const [singInOpen, setSingInOpen] = useState(false);
@@ -41,6 +46,8 @@ const CheckoutPage: TCromwellPage = (props) => {
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+    const shippingPrice = getStoreItem('cmsSettings')?.defaultShippingPrice ?? 0;
+    const totalPrice = shippingPrice + cstore.getCartTotal().total;
 
     useEffect(() => {
         const onUserChange = (value: TUser | undefined) => {
@@ -116,6 +123,8 @@ const CheckoutPage: TCromwellPage = (props) => {
                 totalQnt: cartInfo.amount,
                 cartOldTotalPrice: cartInfo.totalOld,
                 cart: JSON.stringify(cstore.getCart()),
+                orderTotalPrice: totalPrice,
+                shippingPrice: shippingPrice,
             });
         } catch (e) {
             console.error(e);
@@ -137,7 +146,6 @@ const CheckoutPage: TCromwellPage = (props) => {
         }
     }
 
-    const shippingPrice = getStoreItem('cmsSettings')?.defaultShippingPrice ?? 0;
 
 
     const checkoutContent = (
@@ -170,6 +178,7 @@ const CheckoutPage: TCromwellPage = (props) => {
                 )}
                 <p></p>
                 <div className={styles.delimiter}></div>
+                <h2 className={styles.subHeader}>Shipping Address</h2>
                 <Tooltip open={canValidate && (!form?.name || form.name == '')} title="This field is required" arrow>
                     <TextField label="Name"
                         variant="outlined"
@@ -221,6 +230,7 @@ const CheckoutPage: TCromwellPage = (props) => {
                     name="comment"
                     size="small"
                     fullWidth
+                    multiline
                     className={styles.input}
                     value={form?.comment ?? ''}
                     onChange={handleInput} />
@@ -237,11 +247,19 @@ const CheckoutPage: TCromwellPage = (props) => {
                 </FormControl>
                 <div className={styles.delimiter}></div>
 
-                <h2 className={styles.subHeader}>Total</h2>
-                <p>Cart total: <b>{cstore.getPriceWithCurrency(cstore.getCartTotal().total)}</b></p>
-                <p>Delivery: <b>{cstore.getPriceWithCurrency(shippingPrice)}</b></p>
-                <p>Order total: <b>{cstore.getPriceWithCurrency(shippingPrice + cstore.getCartTotal().total)}</b></p>
-                <div className={styles.delimiter}></div>
+                <h2 className={styles.subHeader}>Order details</h2>
+                <div className={styles.detailsRow}>
+                    <p>Cart total: </p>
+                    <b>{cstore.getPriceWithCurrency(cstore.getCartTotal().total)}</b>
+                </div>
+                <div className={styles.detailsRow}>
+                    <p>Delivery:</p>
+                    <b>{cstore.getPriceWithCurrency(shippingPrice)}</b>
+                </div>
+                <div className={styles.detailsRow}>
+                    <p className={styles.totalText}>Total:</p>
+                    <b className={styles.totalText}>{cstore.getPriceWithCurrency(totalPrice)}</b>
+                </div>
 
                 <div className={styles.orderBtnWrapper}>
                     <Button variant="contained"

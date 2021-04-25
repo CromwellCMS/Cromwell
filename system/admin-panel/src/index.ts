@@ -14,7 +14,7 @@ const importer = getModuleImporter();
     importer.importStatuses['react-dom'] = 'default';
 
     try {
-        const meta = await (await fetch('/build/meta.json')).json();
+        const meta = await (await fetch('/admin/build/meta.json')).json();
         await importer.importSciptExternals(meta);
     } catch (e) {
         console.error(e);

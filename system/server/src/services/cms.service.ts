@@ -6,25 +6,15 @@ import { join, resolve } from 'path';
 import stream from 'stream';
 import { getCustomRepository } from 'typeorm';
 import * as util from 'util';
-
+import nodemailer from 'nodemailer';
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { GenericCms } from '../helpers/genericEntities';
+import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
 
 const logger = getLogger('detailed');
-
-const sendmail = require('sendmail')({
-    logger: {
-        debug: console.log,
-        info: console.info,
-        warn: console.warn,
-        error: console.error
-    },
-    silent: false,
-    smtpPort: 1525, // Default: 25
-    smtpHost: 'localhost',
-})
-
+let nodemailerTransporter;
+let sendmailTransporter;
 
 // Don't re-read cmsconfig.json but update info from DB
 export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
@@ -87,7 +77,7 @@ export class CmsService {
             try {
                 await pipeline(file, writeStream);
             } catch (err) {
-                console.error('Pipeline failed', err);
+                logger.error('Pipeline failed', err);
             }
         }
 
@@ -96,7 +86,7 @@ export class CmsService {
         });
         // for key value pairs in request
         mp.on('field', function (key: any, value: any) {
-            console.log('form-data', key, value);
+            logger.log('form-data', key, value);
         });
     }
 
@@ -146,7 +136,7 @@ export class CmsService {
         return true;
     }
 
-    public async updateCmsConfig(input: CmsConfigUpdateDto): Promise<CmsConfigDto | undefined> {
+    public async updateCmsConfig(input: CmsConfigUpdateDto): Promise<AdvancedCmsConfigDto | undefined> {
         const entity = await getCmsEntity();
         if (!entity) throw new Error('!entity');
 
@@ -160,25 +150,66 @@ export class CmsService {
         entity.headerHtml = input.headerHtml;
         entity.footerHtml = input.footerHtml;
         entity.defaultShippingPrice = input.defaultShippingPrice;
+        entity.smtpConnectionString = input.smtpConnectionString;
+        entity.sendFromEmail = input.sendFromEmail;
 
         await entity.save();
-        return this.getSettings();
+        const config = await this.getSettings();
+        if (config)
+            return new AdvancedCmsConfigDto().parseConfig(config);
     }
 
-    async sendEmail(content: string, addresses: string[]) {
-        return new Promise(done => {
-            sendmail({
-                from: 'no-reply@test121212121212.com',
-                to: addresses.join(', '),
-                subject: 'test sendmail',
-                html: content,
-            }, function (err, reply) {
-                console.log(err && err.stack);
-                console.dir(reply);
-                err ? done(false) : done(true);
-            });
-        })
+    async sendEmail(addresses: string[], subject: string, htmlContent: string,): Promise<boolean> {
+        const cmsSettings = getStoreItem('cmsSettings');
+
+        const sendFrom = (cmsSettings?.sendFromEmail && cmsSettings.sendFromEmail !== '') ? cmsSettings.sendFromEmail : 'Service@CromwellCMS.com';
+        const messageContent = {
+            from: sendFrom,
+            to: addresses.join(', '),
+            subject: subject,
+            html: htmlContent,
+        };
+
+        // Define sender service.
+        // If SMTP connection string provided, use nodemailer
+        if (cmsSettings?.smtpConnectionString && cmsSettings.smtpConnectionString !== '') {
+            if (!nodemailerTransporter) {
+                nodemailerTransporter = nodemailer.createTransport(cmsSettings.smtpConnectionString);
+            }
+            try {
+                await nodemailerTransporter.sendMail(messageContent);
+                return true;
+            } catch (e) {
+                logger.error(e);
+                return false;
+            }
+
+        } else {
+            // Otherwise use local SMTP client via sendmail
+
+            if (!sendmailTransporter) {
+                sendmailTransporter = require('sendmail')({
+                    logger: {
+                        debug: logger.log,
+                        info: logger.info,
+                        warn: logger.warn,
+                        error: logger.error
+                    },
+                    silent: false,
+                })
+            }
+            return new Promise(done => {
+                sendmailTransporter(messageContent, (err, reply) => {
+                    logger.log(reply);
+                    if (err)
+                        logger.error(err && err.stack);
+                    err ? done(false) : done(true);
+                });
+            })
+
+        }
 
     }
 
 }
+

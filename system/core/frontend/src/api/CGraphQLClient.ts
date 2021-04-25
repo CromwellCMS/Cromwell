@@ -1374,9 +1374,10 @@ class CGraphQLClient {
             orderTotalPrice
             cartTotalPrice
             cartOldTotalPrice
-            deliveryPrice
+            shippingPrice
             totalQnt
             userId
+            customerEmail
             customerName
             customerPhone
             customerAddress

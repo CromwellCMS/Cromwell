@@ -50,5 +50,33 @@ export class CmsConfigDto implements TCmsSettings {
 
     @ApiProperty()
     footerHtml?: string;
+
+    @ApiProperty()
+    installed?: boolean;
+
+    @ApiProperty()
+    defaultShippingPrice?: number;
+
+    parseConfig(config: TCmsSettings) {
+        this.domain = config.domain;
+        this.protocol = config.protocol;
+        this.mainApiPort = config.mainApiPort;
+        this.pluginApiPort = config.pluginApiPort;
+        this.adminPanelPort = config.adminPanelPort;
+        this.frontendPort = config.frontendPort;
+        this.managerPort = config.managerPort;
+        this.themeName = config.themeName;
+        this.defaultPageSize = config.defaultPageSize;
+        this.currencies = config.currencies;
+        this.timezone = config.timezone;
+        this.language = config.language;
+        this.favicon = config.favicon;
+        this.logo = config.logo;
+        this.headerHtml = config.headerHtml;
+        this.footerHtml = config.footerHtml;
+        this.installed = config.installed;
+        this.defaultShippingPrice = config.defaultShippingPrice;
+        return this;
+    }
 }
 
