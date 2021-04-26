@@ -97,7 +97,7 @@ const fs = require('fs');
         for (let i = 0; i < themes.length; i++) {
             const theme = themes[i];
             const themeDir = resolve(themesDir, theme);
-            if (fs.existsSync(resolve(themesDir, 'package.json'))) {
+            if (fs.existsSync(resolve(themeDir, 'package.json'))) {
                 if (!fs.existsSync(resolve(themeDir, 'build')) || scriptName === 'build') {
                     console.log('\x1b[36m%s\x1b[0m', `Building ${theme} theme...`);
                     spawnSync('npm run build', { shell: true, cwd: themeDir, stdio: 'inherit' });
