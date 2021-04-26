@@ -56,6 +56,7 @@ class CRestAPIClient {
     }
 
     private logError = (route: string, e?: any) => {
+        if (route === 'cms/config') return;
         logFor('errors-only', `CRestAPIClient route: ${route}` + e, console.error)
     }
 

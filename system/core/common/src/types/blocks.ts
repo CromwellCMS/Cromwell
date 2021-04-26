@@ -150,6 +150,8 @@ export type TCromwellBlockData = {
         withEffect?: boolean;
         alt?: string;
         objectFit?: 'contain' | 'cover';
+        width?: number;
+        height?: number;
     };
 
     /** For "HTML" block */

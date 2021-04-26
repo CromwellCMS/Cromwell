@@ -11,6 +11,8 @@ type CImageProps = {
     alt?: string;
     withEffect?: boolean;
     objectFit?: 'contain' | 'cover';
+    width?: number;
+    height?: number;
 }
 
 export const CImage = (props: CImageProps & TCromwellBlockProps) => {
@@ -23,13 +25,16 @@ export const CImage = (props: CImageProps & TCromwellBlockProps) => {
                 const _alt = data?.image?.alt ?? image?.alt ?? props.alt;
                 const _withEffect = data?.image?.withEffect ?? image?.withEffect ?? props.withEffect;
                 const _objectFit = data?.image?.objectFit ?? image?.objectFit ?? props.objectFit;
+                const _width = data?.image?.width ?? image?.width ?? props.width;
+                const _height = data?.image?.height ?? image?.height ?? props.height;
 
                 const classes = _withEffect ? styles.CImageHoverEffect : undefined;
                 const imgEl = (
                     <img src={_src}
                         alt={_alt}
                         style={{
-                            width: '100%',
+                            width: _width ? _width + 'px' : '100%',
+                            height: _height ? _height + 'px' : undefined,
                             objectFit: _objectFit ?? 'contain'
                         }}
                     />

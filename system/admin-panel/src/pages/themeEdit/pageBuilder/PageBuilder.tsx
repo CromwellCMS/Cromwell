@@ -31,6 +31,8 @@ import { ContainerBlock } from './blocks/ContainerBlock';
 import { HTMLBlock } from './blocks/HTMLBlock';
 import { PluginBlock } from './blocks/PluginBlock';
 import { TextBlock } from './blocks/TextBlock';
+import { ImageBlock } from './blocks/ImageBlock';
+import { GalleryBlock } from './blocks/GalleryBlock';
 import styles from './PageBuilder.module.scss';
 
 type THistoryItem = {
@@ -91,6 +93,7 @@ export class PageBuilder extends React.Component<{
             canDragBlock: this.canDragDraggableBlock,
             createFrame: true,
             iframeSelector: '#builderFrame',
+            dragPlacement: 'underline',
         });
     }
 
@@ -151,6 +154,11 @@ export class PageBuilder extends React.Component<{
         await this.rerenderBlocks();
 
         this.draggable?.updateBlocks();
+
+        setTimeout(() => {
+            const el = getBlockElementById(blockData.id);
+            el?.click();
+        }, 100);
     }
 
     public updateDraggable = () => {
@@ -555,6 +563,16 @@ export class PageBuilder extends React.Component<{
                             }
                             if (bType === 'HTML') {
                                 content = <HTMLBlock
+                                    {...blockProps}
+                                />
+                            }
+                            if (bType === 'image') {
+                                content = <ImageBlock
+                                    {...blockProps}
+                                />
+                            }
+                            if (bType === 'gallery') {
+                                content = <GalleryBlock
                                     {...blockProps}
                                 />
                             }
