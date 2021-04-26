@@ -240,12 +240,11 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
             currentVersion = null
         }
     } catch (e) {
-
+        console.error(e)
     }
 
     const watchService = async (serviceName: keyof TServiceVersions) => {
         const currentSettings = getStoreItem('cmsSettings');
-
         try {
             const remoteSettings = await getRestAPIClient()?.getCmsSettings();
             const remoteVersion = extractServiceVersion(remoteSettings, serviceName);
