@@ -130,7 +130,7 @@ const start = async () => {
     app.get(`/admin/#/`, indexPageHandle);
     app.get(`/admin/#/*`, indexPageHandle);
 
-    await app.listen(port, (err, address) => {
+    await app.listen(port, '::', 1, (err, address) => {
         if (err) {
             console.error(err);
             if (process.send) process.send(adminPanelMessages.onStartErrorMessage);

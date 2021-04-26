@@ -1,6 +1,10 @@
+version: "3"
 services:
-  nginx:
+  crw_nginx:
     image: nginx
+    network_mode: host
+    extra_hosts:
+      host.docker.internal: host-gateway
     ports:
       - "80:80"
     volumes:
