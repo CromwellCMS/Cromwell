@@ -64,10 +64,10 @@ const start = async () => {
     const port = process.env.PORT ?? cmsConfig.adminPanelPort;
 
     const app = fastify();
+    await app.register(middie);
 
     let bs;
     if (isDevelopment) {
-        await app.register(middie);
 
         bs = require('browser-sync').create();
         bs.init({ watch: false });
