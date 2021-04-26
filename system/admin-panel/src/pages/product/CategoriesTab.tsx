@@ -7,7 +7,7 @@ export default function CategoriesTab() {
     return (
         <div className={styles.CategoriesTab}>
             <CategoriesPage
-                canModify={false}
+                embeddedView={true}
             />
         </div>
     )

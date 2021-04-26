@@ -1,8 +1,8 @@
 import { setStoreItem } from '@cromwell/core';
 import yargs from 'yargs-parser';
 
-import { rebuildPage } from './PageBuilder';
 import { TServerCommands } from './constants';
+import { rebuildPage } from './PageBuilder';
 
 let sEnv: TEnv | undefined = undefined;
 

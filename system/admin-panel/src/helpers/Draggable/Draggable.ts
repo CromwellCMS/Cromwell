@@ -17,6 +17,14 @@ export type TDraggableOptions = {
      */
     editorWindowElem?: HTMLElement;
 
+
+    /**
+     * How to display element at the new place during dragging. Create a preview element
+     * cloning dragging one (will have impact on a layout which may lead to twitching) 
+     * or just show an underline at the new place.
+     */
+    dragPlacement?: 'element' | 'underline';
+
     onBlockInserted?: (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: Element | null) => void;
 
     canInsertBlock?: (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: Element | null) => boolean;
@@ -129,17 +137,21 @@ export class Draggable {
             bodyElem.addEventListener('click', this.onPageBodyClick);
         }
 
-        this.options = options;
+        this.setOptions(options);
 
         this.setupDraggableBlocks(options);
     }
 
-    public setupDraggableBlocks = (options: TDraggableOptions) => {
+    private setOptions(options: TDraggableOptions) {
         this.options = options;
-        const { draggableSelector, containerSelector, editorWindowElem } = options;
-
+        if (!this.options.dragPlacement) this.options.dragPlacement = 'element';
         this.canInsertBlock = options.canInsertBlock;
         this.onBlockInserted = options.onBlockInserted;
+    }
+
+    public setupDraggableBlocks = (options: TDraggableOptions) => {
+        const { draggableSelector, containerSelector, editorWindowElem } = options;
+        this.setOptions(options);
 
         this.draggableBlocks = Array.from(this.document.querySelectorAll(draggableSelector)) as HTMLElement[];
         this.containers = Array.from(this.document.querySelectorAll(containerSelector)) as HTMLElement[];
@@ -263,7 +275,18 @@ export class Draggable {
             this.lastInsertionData = null;
 
             if (this.draggingBlockShadow) this.draggingBlockShadow.remove();
-            this.draggingBlockShadow = this.draggingBlock.cloneNode(true) as HTMLElement;
+
+            if (this.options.dragPlacement === 'element') {
+                this.draggingBlockShadow = this.draggingBlock.cloneNode(true) as HTMLElement;
+            } else {
+                // underline
+                this.draggingBlockShadow = document.createElement('div');
+                this.draggingBlockShadow.classList.add('DraggableBlock__underline_container');
+                const underline = document.createElement('div');
+                underline.classList.add('DraggableBlock__underline');
+                underline.style.width = this.draggingBlock.clientWidth + 'px';
+                this.draggingBlockShadow.appendChild(underline);
+            }
 
             if (editorWindowElem) {
                 editorWindowElem.appendChild(this.draggingBlockShadow);
@@ -318,8 +341,11 @@ export class Draggable {
                 if (this.options.disableInsert) {
                     blockToInsert = this.draggingBlockShadow;
 
-                    this.draggingBlock.style.display = 'none';
-                    this.draggingBlockShadow.style.display = '';
+                    if (this.options.dragPlacement === 'element') {
+                        this.draggingBlock.style.display = 'none';
+                    }
+
+                    if (this.draggingBlockShadow) this.draggingBlockShadow.style.display = '';
                     this.lastInsertionData = {
                         draggingBlock: this.draggingBlock,
                         container: this.hoveredBlock,
@@ -330,10 +356,12 @@ export class Draggable {
                 }
 
                 try {
-                    if (afterElement) {
-                        this.hoveredBlock.insertBefore(blockToInsert, afterElement)
-                    } else {
-                        this.hoveredBlock.appendChild(blockToInsert);
+                    if (blockToInsert) {
+                        if (afterElement) {
+                            this.hoveredBlock.insertBefore(blockToInsert, afterElement)
+                        } else {
+                            this.hoveredBlock.appendChild(blockToInsert);
+                        }
                     }
 
                     if (!this.options.disableInsert)

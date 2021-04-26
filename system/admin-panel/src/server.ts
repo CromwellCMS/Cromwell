@@ -64,10 +64,10 @@ const start = async () => {
     const port = process.env.PORT ?? cmsConfig.adminPanelPort;
 
     const app = fastify();
+    await app.register(middie);
 
     let bs;
     if (isDevelopment) {
-        await app.register(middie);
 
         bs = require('browser-sync').create();
         bs.init({ watch: false });
@@ -130,7 +130,7 @@ const start = async () => {
     app.get(`/admin/#/`, indexPageHandle);
     app.get(`/admin/#/*`, indexPageHandle);
 
-    await app.listen(port, (err, address) => {
+    await app.listen(port, '::', 1, (err, address) => {
         if (err) {
             console.error(err);
             if (process.send) process.send(adminPanelMessages.onStartErrorMessage);

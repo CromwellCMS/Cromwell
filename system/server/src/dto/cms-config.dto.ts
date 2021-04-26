@@ -57,6 +57,9 @@ export class CmsConfigDto implements TCmsSettings {
     @ApiProperty()
     defaultShippingPrice?: number;
 
+    @ApiProperty()
+    versions?: string;
+
     parseConfig(config: TCmsSettings) {
         this.domain = config.domain;
         this.protocol = config.protocol;
@@ -76,6 +79,7 @@ export class CmsConfigDto implements TCmsSettings {
         this.footerHtml = config.footerHtml;
         this.installed = config.installed;
         this.defaultShippingPrice = config.defaultShippingPrice;
+        this.versions = config.versions as string;
         return this;
     }
 }

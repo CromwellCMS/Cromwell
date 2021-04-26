@@ -50,7 +50,7 @@
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.6.3",
     "sendmail": "^1.6.1",
-    "sqlite3": "^4.2.0",
+    "sqlite3": "^5.0.2",
     "symlink-dir": "^4.1.0",
     "tslib": "2.1.0",
     "type-graphql": "^1.0.0",

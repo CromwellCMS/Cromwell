@@ -30,7 +30,6 @@ importer.modules['@cromwell/core'] = core;
             if (!window.location.hash.includes(welcomePageInfo.route)) {
                 window.location.href = '/admin/#' + welcomePageInfo.route;
                 // window.location.reload();
-                return;
             }
         }
     } catch (e) {
@@ -76,6 +75,10 @@ importer.modules['@cromwell/core'] = core;
     }, 'app');
 
     if (isInstalled) {
+        if (window.location.hash.includes(welcomePageInfo.route)) {
+            window.location.href = '/admin/#' + loginPageInfo.route;
+        }
+
         // Redirect to /login page if not authorized
         try {
             const userInfo = await restClient?.getUserInfo();
@@ -83,7 +86,6 @@ importer.modules['@cromwell/core'] = core;
                 if (!window.location.hash.includes(loginPageInfo.route)) {
                     window.location.href = '/admin/#' + loginPageInfo.route;
                     // window.location.reload();
-                    return;
                 }
             }
             setStoreItem('userInfo', userInfo);

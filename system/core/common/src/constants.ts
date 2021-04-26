@@ -1,4 +1,4 @@
-import { TDBEntity, TGraphQLNode, TLogLevel } from './types/data';
+import { TDBEntity, TGraphQLNode, TLogLevel, TCmsConfig } from './types/data';
 import { getCmsSettings, getStoreItem } from './GlobalStore';
 
 export enum BasePageNames {
@@ -120,70 +120,37 @@ export const apiMainRoute = `${apiV1BaseRoute}/main`;
 export const apiExtensionRoute = `${apiV1BaseRoute}/ext`;
 // export const isServer = (): boolean => true;
 
+const getBaseUrl = (key: keyof TCmsConfig) => {
+    const cmsConfig = getCmsSettings();
+    if (!cmsConfig) throw new Error('core:serviceLocator: !cmsConfig');
+    const port = cmsConfig[key] as string;
+    if (!port) throw new Error('core:serviceLocator: !port for ' + key);
+
+    if (isServer()) {
+        return `http://localhost:${port}`;
+    }
+    if (window.location.hostname === 'localhost')
+        return window.location.protocol + '//localhost:' + port;
+    else
+        return window.location.protocol + '//' + window.location.host;
+}
 
 export const serviceLocator = {
     getMainApiUrl: () => {
-        const cmsConfig = getCmsSettings();
-        if (!cmsConfig) throw new Error('core:serviceLocator:getApiUrl !cmsConfig');
-        const protocol = cmsConfig.protocol ?? 'http';
-
-        if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
-            return `${protocol}://${cmsConfig.domain}`
-        } else {
-            if (!cmsConfig.mainApiPort) throw new Error('core:serviceLocator:getApiUrl !mainApiPort');
-            return `${protocol}://localhost:${cmsConfig.mainApiPort}`
-        }
+        return getBaseUrl('mainApiPort');
     },
     getPluginApiUrl: () => {
-        const cmsConfig = getCmsSettings();
-        if (!cmsConfig) throw new Error('core:serviceLocator:getApiUrl !cmsConfig');
-        const protocol = cmsConfig.protocol ?? 'http';
-
-        if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
-            return `${protocol}://${cmsConfig.domain}`
-        } else {
-            if (!cmsConfig.pluginApiPort) throw new Error('core:serviceLocator:getApiUrl !pluginApiPort');
-            return `${protocol}://localhost:${cmsConfig.pluginApiPort}`
-        }
+        return getBaseUrl('pluginApiPort');
     },
-    // Websocket API URL
     getApiWsUrl: () => {
-        const cmsConfig = getCmsSettings();
-        if (!cmsConfig) throw new Error('core:serviceLocator:getApiUrl !cmsConfig');
-        const protocol = 'ws';
-
-        if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
-            return `${protocol}://${cmsConfig.domain}`
-        } else {
-            if (!cmsConfig.mainApiPort) throw new Error('core:serviceLocator:getApiWsUrl !mainApiPort');
-            return `${protocol}://localhost:${cmsConfig.mainApiPort}`
-        }
+        return getBaseUrl('mainApiPort');
     },
     getFrontendUrl: () => {
-        const cmsConfig = getCmsSettings();
-        if (!cmsConfig) throw new Error('core:serviceLocator:getFrontendUrl !cmsConfig');
-        const protocol = cmsConfig.protocol ?? 'http';
-
-        if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
-            return `${protocol}://${cmsConfig.domain}`
-        } else {
-            if (!cmsConfig.frontendPort) throw new Error('core:serviceLocator:getFrontendUrl !frontendPort');
-            return `${protocol}://localhost:${cmsConfig.frontendPort}`
-        }
+        return getBaseUrl('frontendPort');
     },
     getAdminPanelUrl: () => {
-        const cmsConfig = getCmsSettings();
-        if (!cmsConfig) throw new Error('core:serviceLocator:getAdminPanelUrl !cmsConfig');
-        const protocol = cmsConfig.protocol ?? 'http';
-
-        if (cmsConfig.domain && cmsConfig.domain !== 'localhost') {
-            return `${protocol}://${cmsConfig.domain}/admin`
-        } else {
-            if (!cmsConfig.adminPanelPort) throw new Error('core:serviceLocator:getAdminPanelUrl !adminPanelPort');
-            return `${protocol}://localhost:${cmsConfig.adminPanelPort}`
-        }
+        return getBaseUrl('adminPanelPort');
     }
-
 };
 
 export enum ECommonComponentNames {

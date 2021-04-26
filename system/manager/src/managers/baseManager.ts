@@ -1,11 +1,11 @@
-import { getStoreItem, setStoreItem, TCmsSettings, TServiceVersions } from '@cromwell/core';
+import { getStoreItem, setStoreItem, TServiceVersions } from '@cromwell/core';
 import {
+    extractServiceVersion,
     getCoreBackendDir,
     getCoreCommonDir,
     getCoreFrontendDir,
     getLogger,
     getModulePackage,
-    extractServiceVersion,
 } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { ChildProcess, fork, spawn } from 'child_process';
@@ -16,9 +16,10 @@ import treeKill from 'tree-kill';
 
 import config from '../config';
 import { serviceNames, TScriptName, TServiceNames } from '../constants';
-import { checkModules } from '../tasks/checkModules';
+import { checkConfigs, checkModules } from '../tasks/checkModules';
 import { getProcessPid, loadCache, saveProcessPid } from '../utils/cacheManager';
 import { closeAdminPanel, startAdminPanel } from './adminPanelManager';
+import { closeNginx, startNginx } from './dockerManager';
 import { closeRenderer, startRenderer } from './rendererManager';
 import { closeServer, startServer } from './serverManager';
 
@@ -104,6 +105,8 @@ export const startSystem = async (scriptName: TScriptName) => {
 
     await new Promise(resolve => loadCache(resolve));
 
+    await checkConfigs();
+
     if (scriptName === 'build') {
         await startServer('build');
         await startAdminPanel('build');
@@ -135,6 +138,10 @@ export const startSystem = async (scriptName: TScriptName) => {
     await startServer(isDevelopment ? 'devPlugin' : 'prodPlugin');
     await startAdminPanel();
     await startRenderer();
+
+    if (!isDevelopment) {
+        await startNginx(isDevelopment);
+    }
 }
 
 
@@ -147,7 +154,9 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
     setStoreItem('environment', {
         mode: isDevelopment ? 'dev' : 'prod',
         logLevel: isDevelopment ? 'detailed' : 'errors-only'
-    })
+    });
+
+    await checkConfigs();
 
     if (serviceName === 'adminPanel' || serviceName === 'a') {
         const pckg = getModulePackage('@cromwell/admin-panel')
@@ -163,6 +172,10 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
     if (serviceName === 'server' || serviceName === 's') {
         await startServer(isDevelopment ? 'devMain' : 'prodMain');
         await startServer(isDevelopment ? 'devPlugin' : 'prodPlugin');
+    }
+
+    if (serviceName === 'nginx' || serviceName === 'n') {
+        await startNginx(isDevelopment);
     }
 
 }
@@ -183,6 +196,10 @@ export const closeServiceByName = async (serviceName: TServiceNames, isDevelopme
     if (serviceName === 'server' || serviceName === 's') {
         await closeServer('main');
         await closeServer('plugin');
+    }
+
+    if (serviceName === 'nginx' || serviceName === 'n') {
+        await closeNginx();
     }
 }
 
@@ -223,12 +240,11 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
             currentVersion = null
         }
     } catch (e) {
-
+        console.error(e)
     }
 
     const watchService = async (serviceName: keyof TServiceVersions) => {
         const currentSettings = getStoreItem('cmsSettings');
-
         try {
             const remoteSettings = await getRestAPIClient()?.getCmsSettings();
             const remoteVersion = extractServiceVersion(remoteSettings, serviceName);
