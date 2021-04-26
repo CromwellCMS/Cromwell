@@ -38,7 +38,7 @@ export const getCoreBackendDir = () => getNodeModuleDirSync('@cromwell/core-fron
 
 
 // Manager
-export const getManagerDir = () => getNodeModuleDirSync('@cromwell/manager');
+export const getManagerDir = () => getNodeModuleDirSync('@cromwell/cms');
 export const getManagerTempDir = () => resolve(getTempDir(), 'manager');
 
 

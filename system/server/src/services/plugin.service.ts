@@ -130,13 +130,13 @@ export class PluginService {
             }
             const defaultSettings = pluginConfig?.defaultSettings;
 
-            // Make symlink for public static content
+            // Copy static content into public 
             const pluginPublicDir = resolve(pluginPath, 'static');
             if (await fs.pathExists(pluginPublicDir)) {
                 try {
                     const publicPluginsDir = getPublicPluginsDir();
                     await fs.ensureDir(publicPluginsDir);
-                    await symlinkDir(pluginPublicDir, resolve(publicPluginsDir, pluginName))
+                    await fs.copy(pluginPublicDir, resolve(publicPluginsDir, pluginName));
                 } catch (e) { console.log(e) }
             }
 

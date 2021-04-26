@@ -188,7 +188,7 @@ export class ThemeService {
         const { themeConfig, userConfig } = await this.readConfigs();
         // Read user's page config 
         const userPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userConfig, pageRoute);
-        
+
         // User could possibly modify page's slug (pageRoute), so we'll use ID from user config
         // (if it's set) to locate original page config
         const themePageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(themeConfig, pageRoute, userPageConfig?.id);
@@ -454,7 +454,7 @@ export class ThemeService {
                 try {
                     const publicThemesDir = getPublicThemesDir();
                     await fs.ensureDir(publicThemesDir);
-                    await symlinkDir(themePublicDir, resolve(publicThemesDir, themeName))
+                await fs.copy(themePublicDir, resolve(publicThemesDir, themeName));
                 } catch (e) { console.log(e) }
             }
 

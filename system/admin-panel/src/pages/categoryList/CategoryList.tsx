@@ -38,7 +38,7 @@ export type ListItemProps = {
     handleDeleteBtnClick: (product: TProductCategory) => void;
     toggleSelection?: (data: TProductCategory) => void;
     displayType: 'tree' | 'list';
-    canModify?: boolean;
+    embeddedView?: boolean;
 }
 
 const mapStateToProps = (state: TAppState) => {
@@ -48,7 +48,7 @@ const mapStateToProps = (state: TAppState) => {
 }
 
 type TPropsType = PropsType<TAppState, {
-    canModify?: boolean;
+    embeddedView?: boolean;
 }, ReturnType<typeof mapStateToProps>>;
 
 
@@ -84,10 +84,10 @@ const CategoryList = (props: TPropsType) => {
     useEffect(() => {
         getRootCategories();
 
-        if (props.canModify !== false)
+        if (!props.embeddedView)
             resetSelected();
         return () => {
-            if (props.canModify !== false)
+            if (!props.embeddedView)
                 resetSelected();
         }
     }, []);
@@ -207,7 +207,7 @@ const CategoryList = (props: TPropsType) => {
             <div className={styles.header}>
                 <div className={styles.filter}>
                     <div className={commonStyles.center}>
-                        {props.canModify !== false && (
+                        {!props.embeddedView && (
                             <Tooltip title="Select all">
                                 <Checkbox
                                     style={{ marginRight: '10px' }}
@@ -260,7 +260,7 @@ const CategoryList = (props: TPropsType) => {
                     )}
                 </div>
                 <div>
-                    {props.canModify !== false && (
+                    {!props.embeddedView && (
                         <>
                             <Tooltip title="Delete selected">
                                 <IconButton
@@ -299,7 +299,7 @@ const CategoryList = (props: TPropsType) => {
                                     handleDeleteBtnClick,
                                     toggleSelection: handleToggleItemSelection,
                                     displayType,
-                                    canModify: props.canModify,
+                                    embeddedView: props.embeddedView,
                                 }}
                             />
                         )
@@ -317,9 +317,9 @@ const CategoryList = (props: TPropsType) => {
                         handleDeleteBtnClick,
                         toggleSelection: handleToggleItemSelection,
                         displayType,
-                        canModify: props.canModify,
+                        embeddedView: props.embeddedView,
                     }}
-                    useQueryPagination
+                    useQueryPagination={!props.embeddedView}
                     loader={handleGetProductCategories}
                     cssClasses={{ scrollBox: styles.list }}
                     elements={{

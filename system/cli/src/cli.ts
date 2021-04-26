@@ -12,8 +12,8 @@ const args = yargs(process.argv.slice(2))
             return yargs
                 .option('service', {
                     alias: 'sv',
-                    desc: 'Specify service to start: "server", "renderer", "adminPanel"',
-                    choices: ["server", "s", "renderer", "r", "adminPanel", "a"]
+                    desc: 'Specify service to start: "server", "renderer", "adminPanel", "nginx',
+                    choices: ["server", "s", "renderer", "r", "adminPanel", "a", "nginx", "n"]
                 })
                 .option('development', {
                     alias: 'dev',
@@ -44,8 +44,8 @@ const args = yargs(process.argv.slice(2))
             return yargs
                 .option('service', {
                     alias: 'sv',
-                    desc: 'Specify service to close: "server", "renderer", "adminPanel"',
-                    choices: ["server", "s", "renderer", "r", "adminPanel", "a"]
+                    desc: 'Specify service to close: "server", "renderer", "adminPanel", "nginx',
+                    choices: ["server", "s", "renderer", "r", "adminPanel", "a", "nginx", "n"]
                 })
         },
         handler: async (argv) => {

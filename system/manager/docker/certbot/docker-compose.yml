@@ -1,0 +1,8 @@
+version: "3.9"
+services:
+  nginx:
+    image: certbot/certbot
+    command: "certonly"
+    volumes:
+      - ./.cromwell/letsencrypt:/etc/letsencrypt
+      - ./.cromwell/letsencrypt/lib:/var/lib/letsencrypt
