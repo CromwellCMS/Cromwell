@@ -26,6 +26,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
     private galleryContainer?: HTMLElement | null;
     private swiper?: Swiper;
     private galleryThumbs?: Swiper;
+    
     private containerRef = React.createRef<HTMLDivElement>();
     private primaryColor?: string = getStoreItem('palette')?.primaryColor;
 

@@ -18,6 +18,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         elements: JSX.Element[];
         pageNum: number;
     }[] = [];
+    
     private pagedParams: TPagedParams<DataType> = {
         pageNumber: 1
     };
@@ -41,6 +42,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
     private pageStatuses: ('deffered' | 'loading' | 'fetched' | 'failed')[] = [];
     private isPageLoading: boolean = false;
     private isLoading: boolean = false;
+
     private scrollBoxRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private wrapperRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private throbberRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
@@ -69,6 +71,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         this.triggerListener('componentDidUpdate');
         if (props.useAutoLoading && this.scrollBoxRef.current && this.wrapperRef.current) {
             this.wrapperRef.current.style.minHeight = this.scrollBoxRef.current.clientHeight - 20 + 'px';
+
             const lastPage = this.wrapperRef.current.querySelector(`#${getPageId(this.maxPage)}`);
             if (lastPage) {
                 const pad = this.scrollBoxRef.current.clientHeight - lastPage.clientHeight + 10;
