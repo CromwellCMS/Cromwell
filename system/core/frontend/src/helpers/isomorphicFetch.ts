@@ -5,7 +5,6 @@ export const fetch = (...args) => {
     let func: any;
     if (isServer()) {
         try {
-            //@ts-ignore
             func = Function('require', "return require('node-fetch')")(require);
         } catch (e) { }
         if (!func) func = getStore()?.nodeModules?.modules?.['node-fetch'];

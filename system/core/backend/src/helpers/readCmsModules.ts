@@ -63,7 +63,7 @@ export const readCmsModulesSync = () => {
     if (!mainPackage.cromwell.themes) mainPackage.cromwell.themes = [];
     mainPackage.cromwell.themes = [...defaultThemes, ...mainPackage.cromwell.themes];
 
-    const getPackageModules = (packageName?: string, pckgObj?: object) => {
+    const getPackageModules = (packageName?: string, pckgObj?: any) => {
         const packagePath = packageName && getNodeModuleDirSync(packageName);
         if (packagePath || pckgObj) {
             const pckg = packagePath ? reqModule(resolve(packagePath, 'package.json')) : pckgObj;

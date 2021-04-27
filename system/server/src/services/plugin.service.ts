@@ -18,8 +18,6 @@ import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import { getCustomRepository } from 'typeorm';
 import { configFileName, getPublicPluginsDir, getNodeModuleDir } from '@cromwell/core-backend';
-import decache from 'decache';
-import symlinkDir from 'symlink-dir';
 import { GenericPlugin } from '../helpers/genericEntities';
 
 const logger = getLogger('detailed');

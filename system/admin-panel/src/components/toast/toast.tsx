@@ -44,6 +44,7 @@ class Toast implements TCromwellNotify {
 
     POSITION = toastify.POSITION;
     warn = this.warning;
+    dismiss = toastify.dismiss;
 }
 
 export const toast = new Toast();

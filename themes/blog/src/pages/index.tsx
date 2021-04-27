@@ -51,7 +51,7 @@ const IndexPage: TCromwellPage<BlogProps> = (props) => {
                     <CText id="main_21" className={styles.latestText}>Latest posts</CText>
                     <div className={styles.postGrid}>
                         {props.posts?.elements?.slice(2, 8)?.map(postData => (
-                            <div className={blogStyles.postWrapper}>
+                            <div key={postData.id} className={blogStyles.postWrapper}>
                                 <PostCard data={postData} key={postData?.id} />
                             </div>
                         ))}

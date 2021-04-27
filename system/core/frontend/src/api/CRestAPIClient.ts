@@ -1,26 +1,26 @@
-import { fetch } from '../helpers/isomorphicFetch';
 import {
-    apiMainRoute,
     apiExtensionRoute,
+    apiMainRoute,
     getStoreItem,
+    isServer,
+    logFor,
     serviceLocator,
     setStoreItem,
+    TCmsEntityInput,
+    TCmsSettings,
+    TCreateUser,
+    TFrontendBundle,
+    TOrder,
+    TOrderInput,
+    TPackageCromwellConfig,
     TPageConfig,
     TPageInfo,
     TPluginConfig,
-    TFrontendBundle,
-    TPackageCromwellConfig,
-    TPluginInfo,
-    TCmsSettings,
     TThemeConfig,
-    logFor,
-    isServer,
     TUser,
-    TCmsEntityInput,
-    TCreateUser,
-    TOrderInput,
-    TOrder,
 } from '@cromwell/core';
+
+import { fetch } from '../helpers/isomorphicFetch';
 
 type TPluginsModifications = TPluginConfig & { [x: string]: any };
 type TErrorInfo = {

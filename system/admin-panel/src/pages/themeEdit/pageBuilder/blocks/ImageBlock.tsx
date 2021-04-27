@@ -45,6 +45,8 @@ export function ImageBlock(props: TBaseMenuProps) {
                     <div>
                         <h3 className={styles.settingsTitle}>Image settings</h3>
                         <ImagePicker
+                            value={data?.image?.src}
+                            style={{ borderBottom: '1px solid #999' }}
                             placeholder={"Pick an image"}
                             onChange={(val) => handleChange('src', val)}
                             className={styles.settingsInput}
@@ -75,7 +77,9 @@ export function ImageBlock(props: TBaseMenuProps) {
                             value={data?.image?.alt}
                             className={styles.settingsInput}
                             label="Alt" />
-                        <FormControl className={styles.settingsInput} >
+                        <FormControl
+                            fullWidth
+                            className={styles.settingsInput} >
                             <InputLabel >Object fit</InputLabel>
                             <Select
                                 fullWidth

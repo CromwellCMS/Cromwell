@@ -29,8 +29,8 @@ const start = async () => {
 
     const env = process.argv[2];
 
-    let isProduction = env === 'production';
-    let isDevelopment = env === 'development';
+    const isProduction = env === 'production';
+    const isDevelopment = env === 'development';
     if (!isDevelopment && !isProduction)
         throw (`devServer::startDevServer: process.argv[2] is invalid - ${env} valid values - "development" and "production"`);
 

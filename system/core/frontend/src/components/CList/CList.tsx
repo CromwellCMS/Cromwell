@@ -11,7 +11,7 @@ import { getPagedUrl, getPageId, getPageNumsAround, getPageNumberFromUrl } from 
 import { TCList, TCListProps, TListenerType } from './types';
 
 
-export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCListProps<DataType, ListItemProps> & TCromwellBlockProps> implements TCList<DataType, ListItemProps> {
+export class CList<DataType, ListItemProps = any> extends React.PureComponent<TCListProps<DataType, ListItemProps> & TCromwellBlockProps> implements TCList<DataType, ListItemProps> {
 
     private dataList: DataType[][] = [];
     private list: {
@@ -53,9 +53,6 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
     constructor(props: TCListProps<DataType, ListItemProps>) {
         super(props);
         this.init();
-    }
-
-    componentDidMount() {
     }
 
     public getProps(): TCListProps<DataType, ListItemProps> {
@@ -421,8 +418,7 @@ export class CList<DataType, ListItemProps = {}> extends React.PureComponent<TCL
             const throbber = this.throbberAutoloadingBefore.current;
             if (throbber) throbber.style.display = 'block';
             await this.loadPage(prevNum);
-            this.forceUpdate(() => {
-            });
+            this.forceUpdate();
         }
         if (this.minPageBound <= 1) {
             const throbber = this.throbberAutoloadingBefore.current;

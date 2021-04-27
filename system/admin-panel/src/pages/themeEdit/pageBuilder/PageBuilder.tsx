@@ -82,7 +82,7 @@ export class PageBuilder extends React.Component<{
         this.draggable = new Draggable({
             draggableSelector: `.${CromwellBlockCSSclass}`,
             containerSelector: `.${blockTypeToClassname('container')}`,
-            editorWindowElem: this.editorWindowRef.current,
+            rootElement: this.editorWindowRef.current,
             disableInsert: true,
             canInsertBlock: this.canInsertBlock,
             onBlockInserted: this.onBlockInserted,
@@ -107,12 +107,12 @@ export class PageBuilder extends React.Component<{
     private set changedModifications(data) {
         if (data) {
             this.props.onPageModificationsChange(data);
-        };
+        }
         this._changedModifications = data;
     }
 
 
-    private canInsertBlock = (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: HTMLElement | null): boolean => {
+    private canInsertBlock = (container: HTMLElement): boolean => {
         const parentData = getBlockData(container);
         if (!parentData?.id) {
             return false;
@@ -124,7 +124,7 @@ export class PageBuilder extends React.Component<{
 
         const blockData = Object.assign({}, getBlockData(draggedBlock));
         const newParentData = Object.assign({}, getBlockData(container));
-        const oldParentData = Object.assign({}, getBlockData(draggedBlock?.parentNode));
+        // const oldParentData = Object.assign({}, getBlockData(draggedBlock?.parentNode));
         const nextData = getBlockData(nextElement);
 
         // Ivalid block - no id, or instance was not found in the global store.
@@ -138,7 +138,7 @@ export class PageBuilder extends React.Component<{
         }
         // console.log('onBlockInserted newParentData.id', newParentData.id, 'blockData.id', blockData.id, 'before', nextElement)
 
-        const childrenData: TCromwellBlockData[] = this.addBlock({
+        this.addBlock({
             blockData,
             targetBlockData: nextData,
             parentData: getBlockData(container),
@@ -172,7 +172,7 @@ export class PageBuilder extends React.Component<{
         const pageConfig = getStoreItem('pageConfig');
         if (pageConfig) {
             pageConfig.modifications = this.addToModifications(blockData, pageConfig.modifications);
-        };
+        }
         setStoreItem('pageConfig', pageConfig);
 
         // Add to local changedModifications (contains only newly added changes);
@@ -577,9 +577,7 @@ export class PageBuilder extends React.Component<{
                                 />
                             }
 
-                            if (content) {
-
-                            } else {
+                            if (!content) {
                                 content = block.getDefaultContent();
                             }
 

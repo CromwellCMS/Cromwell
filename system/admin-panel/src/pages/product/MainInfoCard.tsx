@@ -187,12 +187,12 @@ const MainInfoCard = (props: {
                         shouldComponentUpdate={isNewVariant ? true : canUpdateGallery}
                         gallery={{
                             images: product.images ? product.images.map((src, id) => ({ src, id })) : [],
-                            maxHeight: '300px',
+                            height: 300,
                             slidesPerView: 1,
                             showPagination: true,
                             navigation: {},
                             loop: false,
-                            backgroundSize: 'contain',
+                            objectFit: 'contain',
                             breakpoints: {
                                 640: {
                                     slidesPerView: 2,

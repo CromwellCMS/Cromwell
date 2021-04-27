@@ -50,7 +50,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         let entity = new this.EntityClass();
         for (const key of Object.keys(input)) {
             entity[key] = input[key];
-        };
+        }
         entity = await this.save<EntityType>(entity);
         return entity;
     }
@@ -64,7 +64,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
 
         for (const key of Object.keys(input)) {
             entity[key] = input[key];
-        };
+        }
         entity = await this.save(entity);
 
         return entity;

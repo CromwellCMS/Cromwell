@@ -14,8 +14,7 @@ export function ContainerBlock(props: TBaseMenuProps) {
     const handleStyleChange = (name: keyof TCromwellBlockData['editorStyles'], value: any) => {
         const data = props.block?.getData();
         if (!data.editorStyles) data.editorStyles = {};
-        //@ts-ignore
-        data.editorStyles[name] = value;
+        (data.editorStyles[name] as any) = value;
         props.modifyData?.(data);
         forceUpdate();
         props.block!.rerender();

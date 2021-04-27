@@ -24,7 +24,7 @@ class CStore {
                 if (listJSON && Array.isArray(listJSON)) {
                     list = listJSON;
                 }
-            } catch (e) { };
+            } catch (e) { }
         }
         return list;
     }
@@ -107,7 +107,7 @@ class CStore {
 
     private removeFromList = (key: string, product: TStoreListItem): boolean => {
         const list = this.getList(key);
-        let index = this.getIndexInList(key, product);
+        const index = this.getIndexInList(key, product);
         if (index > -1) {
             list.splice(index, 1);
         } else return false;

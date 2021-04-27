@@ -9,15 +9,9 @@ jest.mock('next/link', () => {
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 
-import { Link, CLink } from './Link';
+import { Link } from './Link';
 
-describe('CText', () => {
-
-    it("renders CLink", async () => {
-        render(<CLink id="1" href="#">_test1_</CLink>);
-
-        await screen.findByText('_test1_');
-    });
+describe('Link', () => {
 
     it("renders Link", async () => {
         render(<Link href="#">_test2_</Link>);

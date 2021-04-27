@@ -15,7 +15,8 @@ export type TDraggableOptions = {
      * DOM element inside of which Draggable works. Used to insert draggable elements. 
      * Will use "body" tag by default if no elem specified.
      */
-    editorWindowElem?: HTMLElement;
+    rootElement?: HTMLElement;
+    rootElementSelector?: string;
 
 
     /**
@@ -84,9 +85,9 @@ export class Draggable {
 
     private bodyElem: HTMLBodyElement | null = null;
 
-    private canDragBlock: boolean = false;
+    private canDragBlock = false;
 
-    private isDragging: boolean = false;
+    private isDragging = false;
 
     private options: TDraggableOptions;
     private document = document;
@@ -119,15 +120,6 @@ export class Draggable {
 
 
     constructor(options: TDraggableOptions) {
-        // check for underlying blocks to move to
-        if (options.document) this.document = options.document;
-        if (options.iframeSelector) {
-            const iframe: HTMLIFrameElement = document.querySelector(options.iframeSelector)
-            if (iframe) {
-                this.document = iframe.contentDocument;
-            }
-        }
-
         const bodyElem = this.document.querySelector('body');
 
         if (bodyElem) {
@@ -137,20 +129,29 @@ export class Draggable {
             bodyElem.addEventListener('click', this.onPageBodyClick);
         }
 
-        this.setOptions(options);
-
         this.setupDraggableBlocks(options);
     }
 
-    private setOptions(options: TDraggableOptions) {
+    public setOptions(options: TDraggableOptions) {
         this.options = options;
         if (!this.options.dragPlacement) this.options.dragPlacement = 'element';
         this.canInsertBlock = options.canInsertBlock;
         this.onBlockInserted = options.onBlockInserted;
+        if (options.document) this.document = options.document;
+        if (options.iframeSelector) {
+            const iframe: HTMLIFrameElement = document.querySelector(options.iframeSelector)
+            if (iframe) {
+                this.document = iframe.contentDocument;
+            }
+        }
+
+        if (!options.rootElement && options.rootElementSelector) {
+            options.rootElement = document.querySelector(options.rootElementSelector);
+        }
     }
 
     public setupDraggableBlocks = (options: TDraggableOptions) => {
-        const { draggableSelector, containerSelector, editorWindowElem } = options;
+        const { draggableSelector, containerSelector } = options;
         this.setOptions(options);
 
         this.draggableBlocks = Array.from(this.document.querySelectorAll(draggableSelector)) as HTMLElement[];
@@ -163,17 +164,18 @@ export class Draggable {
     private setupBlock = (block: HTMLElement) => {
         if (!block || !this.options) return;
 
-        const draggableFrame: HTMLElement = this.options?.createFrame ? this.document.createElement('div') : block.querySelector(`.${Draggable.draggableFrameClass}`);
-        draggableFrame.classList.add(Draggable.draggableFrameClass);
-
-        if (this.options?.createFrame) block.appendChild(draggableFrame);
         block.classList.add(Draggable.draggableBlockClass);
 
-        this.draggableFrames.push(draggableFrame);
+        const draggableFrame: HTMLElement | null = this.options?.createFrame ? this.document.createElement('div') : block.querySelector(`.${Draggable.draggableFrameClass}`);
+        if (draggableFrame) {
+            draggableFrame.classList.add(Draggable.draggableFrameClass);
+            if (this.options?.createFrame) block.appendChild(draggableFrame);
+            this.draggableFrames.push(draggableFrame);
 
-        draggableFrame.addEventListener('click', (e) => {
-            this.onBlockClick(block, draggableFrame, e);
-        })
+            draggableFrame.addEventListener('click', (e) => {
+                this.onBlockClick(block, draggableFrame, e);
+            })
+        }
 
         block.addEventListener('click', (e) => {
             this.onBlockClick(block, draggableFrame, e);
@@ -247,7 +249,7 @@ export class Draggable {
         }, 100);
     }
 
-    private onDragStart = (block: HTMLElement, event: MouseEvent) => {
+    private onDragStart = (block: HTMLElement) => {
         const rect = this.draggingBlock.getBoundingClientRect();
 
         this.deselectCurrentBlock();
@@ -262,9 +264,9 @@ export class Draggable {
         this.draggingCursor.style.height = this.draggingBlock.offsetHeight + 'px';
         this.draggingCursor.style.width = this.draggingBlock.offsetWidth + 'px';
 
-        const { editorWindowElem } = this.options;
-        if (editorWindowElem) {
-            editorWindowElem.appendChild(this.draggingCursor);
+        const { rootElement } = this.options;
+        if (rootElement) {
+            rootElement.appendChild(this.draggingCursor);
         } else if (this.bodyElem) {
             this.bodyElem.appendChild(this.draggingCursor);
         }
@@ -278,6 +280,7 @@ export class Draggable {
 
             if (this.options.dragPlacement === 'element') {
                 this.draggingBlockShadow = this.draggingBlock.cloneNode(true) as HTMLElement;
+                this.draggingBlockShadow.style.display = 'none';
             } else {
                 // underline
                 this.draggingBlockShadow = document.createElement('div');
@@ -288,8 +291,8 @@ export class Draggable {
                 this.draggingBlockShadow.appendChild(underline);
             }
 
-            if (editorWindowElem) {
-                editorWindowElem.appendChild(this.draggingBlockShadow);
+            if (rootElement) {
+                rootElement.appendChild(this.draggingBlockShadow);
             } else if (this.bodyElem) {
                 this.bodyElem.appendChild(this.draggingBlockShadow);
             }
@@ -309,7 +312,7 @@ export class Draggable {
 
                 if (canDrag !== false) {
                     this.isDragging = true;
-                    this.onDragStart(this.draggingBlock, event);
+                    this.onDragStart(this.draggingBlock);
                 }
             }
 
@@ -464,7 +467,7 @@ export class Draggable {
         this.hoveredFrame = null;
     }
 
-    private onBlockClick = (block: HTMLElement, frame: HTMLElement, event: MouseEvent) => {
+    private onBlockClick = (block: HTMLElement, frame: HTMLElement | null, event: MouseEvent) => {
         if ((event as any).hitBlock) return;
         (event as any).hitBlock = true;
 
@@ -502,8 +505,20 @@ export class Draggable {
         return true;
     }
 
-    private styleHoveredBlock = (block: HTMLElement, frame: HTMLElement) => {
-        if (block) block.style.zIndex = '1005';
+    private styleHoveredBlock = (block: HTMLElement, frame?: HTMLElement) => {
+        if (block) {
+            block.style.zIndex = '1005';
+
+            const styleParent = (block: HTMLElement) => {
+                const parent = block.parentElement;
+                if (parent) {
+                    if (parent === this.options.rootElement) return;
+                    if (this.draggableBlocks.includes(parent)) parent.style.zIndex = '1005';
+                    styleParent(parent);
+                }
+            }
+            styleParent(block);
+        }
 
         if (frame) {
             const color = this.options?.primaryColor ?? '#9900CC';
@@ -512,12 +527,26 @@ export class Draggable {
         }
     }
 
-    private styleSelectedBlock = (block: HTMLElement, frame: HTMLElement) => {
-        block.style.zIndex = '1006';
+    private styleSelectedBlock = (block: HTMLElement, frame?: HTMLElement) => {
+        if (block) {
+            block.style.zIndex = '1006';
 
-        const color = this.options?.primaryColor ?? '#9900CC';
-        frame.classList.add(Draggable.draggableFrameHoveredCSSclass);
-        frame.style.border = `2px solid ${color}`;
+            const styleParent = (block: HTMLElement) => {
+                const parent = block.parentElement;
+                if (parent) {
+                    if (parent === this.options.rootElement) return;
+                    if (this.draggableBlocks.includes(parent)) parent.style.zIndex = '1006';
+                    styleParent(parent);
+                }
+            }
+            styleParent(block);
+        }
+
+        if (frame) {
+            const color = this.options?.primaryColor ?? '#9900CC';
+            frame.classList.add(Draggable.draggableFrameHoveredCSSclass);
+            frame.style.border = `2px solid ${color}`;
+        }
     }
 
     private styleDeselectedBlock = (block: HTMLElement, frame?: HTMLElement) => {

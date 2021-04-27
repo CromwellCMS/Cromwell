@@ -1,4 +1,4 @@
-import { TPackageCromwellConfig, TPagedList, TStoreListItem } from './data';
+import { TPagedList, TStoreListItem } from './data';
 
 export type TBasePageEntity = {
     // DB id

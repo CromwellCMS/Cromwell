@@ -1,5 +1,6 @@
-import { isServer, TPagedList, TPagedParams } from '@cromwell/core';
+import { isServer } from '@cromwell/core';
 import queryString from 'query-string';
+
 export const getPageId = (pageNum: number) => "infinity-page_" + pageNum;
 
 export const getPageNumsAround = (currentPage: number, quantity: number, maxPageNum: number): number[] => {
