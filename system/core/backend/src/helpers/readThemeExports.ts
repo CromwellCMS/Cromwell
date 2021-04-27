@@ -81,7 +81,7 @@ export const readThemeExports = async (themeModuleName: string | undefined): Pro
                 metaInfoPath,
                 depsBundlePath
             })
-        };
+        }
     } else {
         throw new Error('Could not find or read pages meta info file at: ' + metainfoPath);
     }

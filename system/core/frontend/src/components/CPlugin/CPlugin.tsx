@@ -67,7 +67,7 @@ export const CPlugin = (props: CPluginProps) => {
     )
 }
 
-class ErrorBoundary extends React.Component<{}, { hasError: boolean, errorMessage: string }> {
+class ErrorBoundary extends React.Component<any, { hasError: boolean, errorMessage: string }> {
     constructor(props) {
         super(props);
         this.state = { hasError: false, errorMessage: '' };
@@ -93,4 +93,4 @@ class ErrorBoundary extends React.Component<{}, { hasError: boolean, errorMessag
 
         return this.props.children;
     }
-};
+}

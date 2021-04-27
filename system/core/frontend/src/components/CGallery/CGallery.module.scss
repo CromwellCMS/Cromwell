@@ -1,7 +1,9 @@
 div.swiperWrapper {
     height: auto;
+    max-height: 100%;
     display: flex;
     align-items: center;
+    box-sizing: border-box;
 }
 
 .swiperContainer {
@@ -31,15 +33,20 @@ div.swiperWrapper {
     display: flex;
     justify-content: center;
     align-items: center;
+
+    > a {
+        height: 100%;
+    }
 }
 
 .swiperImage {
     width: 100%;
-    height: auto;
+    height: 100%;
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
     background-color: transparent;
+    object-fit: cover;
 }
 
 .swiperThumb {

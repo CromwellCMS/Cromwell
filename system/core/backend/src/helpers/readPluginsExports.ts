@@ -51,7 +51,7 @@ export const readPluginsExportsSync = (): TPluginInfo[] => {
             }
         }
 
-    };
+    }
 
     return infos;
 

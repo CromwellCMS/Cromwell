@@ -90,7 +90,7 @@ export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, Entit
                 hasModified = true;
                 break;
             }
-        };
+        }
     }
 
     if (hasModified)

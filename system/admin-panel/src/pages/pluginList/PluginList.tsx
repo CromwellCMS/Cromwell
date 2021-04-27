@@ -9,10 +9,10 @@ import {
 } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 import { pluginPageInfo } from '../../constants/PageInfos';
 import { SkeletonPreloader } from '../../components/SkeletonPreloader';
+import { toast } from '../../components/toast/toast';
 import styles from './PluginList.module.scss';
 
 export default function PluginList() {

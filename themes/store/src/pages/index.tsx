@@ -12,7 +12,7 @@ const Index: TCromwellPage = (props) => {
     return (
         <Layout>
             <div className={styles.IndexPage}>
-                <CContainer  id="main_00">
+                <CContainer id="main_00">
                     <CGallery id="main_gallery_01" className={styles.mainBannerGallery} />
                 </CContainer>
                 <CContainer id="main_01" className={styles.advantagesBlockWrapper}>
@@ -25,17 +25,17 @@ const Index: TCromwellPage = (props) => {
                             </CContainer>
                         </CContainer>
                         <CContainer id="main_03" className={styles.advantageItem}>
-                            <CImage id="main_09" src="/themes/@cromwell/theme-store/wallet.png" />
+                            <CImage id="main_33" src="/themes/@cromwell/theme-store/wallet.png" />
                             <CContainer id="main_13" className={styles.advantageItemText}>
                                 <CText id="main_07" className={styles.advantageItemHeader}>MONEY BACK GUARANTEE</CText>
                                 <CText id="main_014">100% money back guarantee</CText>
                             </CContainer>
                         </CContainer>
                         <CContainer id="main_04" className={styles.advantageItem}>
-                            <CImage id="main_09" src="/themes/@cromwell/theme-store/technical-support.png" />
+                            <CImage id="main_34" src="/themes/@cromwell/theme-store/technical-support.png" />
                             <CContainer id="main_10" className={styles.advantageItemText}>
                                 <CText id="main_08" className={styles.advantageItemHeader} >ONLINE SUPPORT 24/7</CText>
-                                <CText id="main_08" >100% 24/7 online support</CText>
+                                <CText id="main_35" >100% 24/7 online support</CText>
                             </CContainer>
                         </CContainer>
                     </CContainer>

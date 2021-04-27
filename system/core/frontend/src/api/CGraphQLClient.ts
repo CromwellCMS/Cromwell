@@ -115,7 +115,7 @@ class CGraphQLClient {
             // next request can possibly return modified data instead of original.
             // Just to make sure all object references inside are new:
             return JSON.parse(JSON.stringify(data));
-        };
+        }
         const errors = res?.errors;
         return errors ?? null;
     }

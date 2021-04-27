@@ -15,12 +15,12 @@ import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-
 import clsx from 'clsx';
 import React, { Suspense } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
-import { toast } from 'react-toastify';
 
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { SkeletonPreloader } from '../../components/SkeletonPreloader';
+import { toast } from '../../components/toast/toast';
 import { PageBuilder } from './pageBuilder/PageBuilder';
 import { PageListItem } from './pageListItem/PageListItem';
 import { PageSettings } from './pageSettings/PageSettings';
@@ -91,7 +91,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
         this.changedPageInfo = null;
         this.changedModifications = null;
         const pageCompPath = pageInfo?.isVirtual ? genericPageName : pageInfo.route;
-        let pageComp = await loadFrontendBundle(pageCompPath,
+        const pageComp = await loadFrontendBundle(pageCompPath,
             () => getRestAPIClient()?.getThemePageBundle(pageCompPath),
             (func: (() => Promise<React.ComponentType>)) => {
                 return func();
@@ -154,9 +154,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
 
     }
 
-    private handleDeletePage = (page: TPageInfo) => {
-
-    }
+    private handleDeletePage = (page: TPageInfo) => ''
 
     private handleAddCustomPage = () => {
         this.setState(prev => {
@@ -296,7 +294,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                                             value={activeTabNum}
                                             indicatorColor="primary"
                                             textColor="primary"
-                                            onChange={(event: React.ChangeEvent<{}>, newValue: number) => {
+                                            onChange={(event: React.ChangeEvent<any>, newValue: number) => {
                                                 this.handleTabChange(newValue);
                                             }}
                                         >
@@ -380,7 +378,7 @@ interface TabPanelProps {
 }
 
 function TabPanel(props: TabPanelProps) {
-    const { children, value, index, ...other } = props;
+    const { children, value, index } = props;
 
     if (value === index) return <>{children}</>;
     return <></>;

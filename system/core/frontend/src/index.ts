@@ -7,7 +7,7 @@ export { CPlugin } from './components/CPlugin/CPlugin';
 export { CGallery } from './components/CGallery/CGallery';
 export { CList } from './components/CList/CList';
 export { TCList, TCListProps, TItemComponentProps, TPaginationProps } from './components/CList/types';
-export { CLink, Link } from './components/Link/Link';
+export { Link } from './components/Link/Link';
 export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
 export { LoadBox } from './components/loadBox/Loadbox';
 export {

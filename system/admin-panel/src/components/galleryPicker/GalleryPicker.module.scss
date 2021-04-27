@@ -1,0 +1,22 @@
+.GalleryPicker {
+    position: relative;
+
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    button.galleryActionBtn {
+        background-color: rgba($color: #fff, $alpha: 0.7);
+    }
+    button.galleryActionBtn:hover {
+        background-color: rgba(0, 0, 0, 0.3);
+        svg {
+            color: #fff;
+        }
+    }
+
+    button.galleryAddImageBtn {
+        @extend .galleryActionBtn;
+    }
+}

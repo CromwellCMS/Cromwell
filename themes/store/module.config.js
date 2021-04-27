@@ -83,6 +83,7 @@ module.exports = {
                             }
                         ],
                         "width": "100%",
+                        "height": 300,
                         "ratio": 3.75,
                         "showPagination": true
                     }

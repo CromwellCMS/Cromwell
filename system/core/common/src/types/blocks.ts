@@ -1,5 +1,5 @@
 import { NextPage } from 'next';
-import { ReactNode } from 'react';
+import React from 'react';
 
 import { TCmsSettings, TPageConfig, TPageInfo, TPalette } from './data';
 import { TPost, TProduct } from './entities';
@@ -16,7 +16,7 @@ export type TGetStaticProps<
     Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: StaticPageContext) => Promise<P>;
 
 
-export type TCromwellPage<Props = {} | undefined> = NextPage<Props & TCromwellPageCoreProps>;
+export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
 export type TCromwellPageCoreProps = {
     pluginsData?: Record<string, any> | null;
@@ -179,7 +179,7 @@ export type TCromwellBlockData = {
     }
 }
 
-type TImageSettings = {
+export type TImageSettings = {
     src: string;
     id?: string | number;
     href?: string;
@@ -192,16 +192,15 @@ export type TGallerySettings = {
     slides?: React.ReactNode[];
     direction?: "horizontal" | "vertical";
     loop?: boolean;
-    height?: number | string;
-    maxHeight?: number | string;
-    width?: number | string;
+    height?: number;
+    width?: number;
     autoHeight?: boolean;
     lazy?: boolean;
     breakpoints?: any;
     /** ratio = width / height */
     ratio?: number;
     slidesPerView?: number;
-    backgroundSize?: 'cover' | 'contain';
+    objectFit?: 'contain' | 'cover';
     navigation?: {
         showOnHover?: boolean;
     };

@@ -1,6 +1,5 @@
 node_modules
-.cromwell
 dist
-build
 coverage
-public
+.cromwell
+build

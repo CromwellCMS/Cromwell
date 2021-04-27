@@ -73,9 +73,8 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         if (!productReview) {
             return false;
         }
-        const res = await this.delete(id);
+        await this.delete(id);
         return true;
     }
-
 
 }

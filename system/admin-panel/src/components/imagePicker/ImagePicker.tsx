@@ -21,6 +21,7 @@ const ImagePicker = (props: {
     classes?: {
         image?: string;
     };
+    style?: React.CSSProperties;
 }) => {
     const [internalValue, setInternalValue] = useState<string | undefined>();
     const pickImage = async () => {
@@ -39,8 +40,9 @@ const ImagePicker = (props: {
 
     const value = (props.value !== undefined && props.value !== '') ? props.value : internalValue;
 
-    let element = (
-        <div className={`${styles.wrapper} ${props.className}`} style={{ paddingTop: props.label ? '12px' : '' }}>
+    const element = (
+        <div className={`${styles.wrapper} ${props.className}`}
+            style={{ paddingTop: props.label ? '12px' : '', ...(props.style ?? {}) }}>
             <Tooltip title={props.toolTip ?? ''}>
                 <div className={`${styles.image} ${props.classes?.image}`}
                     onClick={pickImage}

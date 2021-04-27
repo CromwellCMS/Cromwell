@@ -8,13 +8,13 @@ import {
     Save as SaveIcon,
 } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
-import { toast } from 'react-toastify';
 
+import { getFileManager } from '../../components/fileManager/helpers';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
+import { toast } from '../../components/toast/toast';
 import { CheckList } from '../../components/transferList/TransferList';
 import styles from './Attributes.module.scss';
-import { getFileManager } from '../../components/fileManager/helpers';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({

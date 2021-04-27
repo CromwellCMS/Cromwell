@@ -37,7 +37,7 @@ export type TCromwellStore = {
     notifier?: TCromwellNotify;
     palette?: TPalette;
     userInfo?: TUser;
-    storeChangeCallbacks?: Record<string, Function[]>;
+    storeChangeCallbacks?: Record<string, ((prop) => any)[]>;
 }
 
 declare global {
@@ -195,7 +195,7 @@ export type TCromwellNodeModules = {
     importStatuses?: Record<string, 'failed' | 'ready' | 'default' | Promise<'failed' | 'ready' | 'default'>>;
     scriptStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
     imports?: Record<string, () => void>;
-    modules?: Record<string, Object & { didDefaultImport?: boolean }>;
+    modules?: Record<string, any>;
     moduleExternals?: Record<string, string[]>;
     importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean> | boolean;
     importSciptExternals?: (metaInfo: TSciprtMetaInfo) => Promise<boolean>;

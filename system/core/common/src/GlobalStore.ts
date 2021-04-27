@@ -31,7 +31,7 @@ export const setStoreItem = <K extends keyof TCromwellStore>(itemName: K, item: 
 
     const storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
     if (storeChangeCallbacks?.[itemName]) {
-        for (let callback of storeChangeCallbacks?.[itemName]) {
+        for (const callback of storeChangeCallbacks?.[itemName]) {
             callback(item);
         }
     }
@@ -53,7 +53,7 @@ export const onStoreChange = <K extends keyof TCromwellStore>(itemName: K,
 
 export const removeOnStoreChange = <K extends keyof TCromwellStore>(itemName: K,
     callback: (itemValue: TCromwellStore[K]) => any) => {
-    let storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
+    const storeChangeCallbacks = getStoreItem('storeChangeCallbacks');
     if (storeChangeCallbacks?.[itemName]) {
         storeChangeCallbacks[itemName] = storeChangeCallbacks[itemName].filter(item => item !== callback);
     }

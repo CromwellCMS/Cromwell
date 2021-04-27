@@ -1,16 +1,15 @@
-import { getCmsSettings, TCmsSettings, TThemeEntity, TPackageCromwellConfig } from '@cromwell/core';
+import { getCmsSettings, TCmsSettings, TPackageCromwellConfig, TThemeEntity } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
-import { Badge, Button, Card, CardActionArea, CardActions, CardContent, Typography } from '@material-ui/core';
+import { Badge, Button, CardActionArea, CardActions, CardContent, Typography } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { Skeleton } from '@material-ui/lab';
 
-import { ManagerLogger } from '../../components/managerLogger/ManagerLogger';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
+import { toast } from '../../components/toast/toast';
 import { themeEditPageInfo } from '../../constants/PageInfos';
-import styles from './ThemeList.module.scss';
 import commonStyles from '../../styles/common.module.scss';
+import styles from './ThemeList.module.scss';
 
 export default function ThemeList() {
     const [infos, setInfos] = useState<TPackageCromwellConfig[]>([]);
