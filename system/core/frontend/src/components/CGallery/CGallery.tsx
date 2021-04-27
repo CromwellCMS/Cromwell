@@ -199,9 +199,10 @@ export class CGallery extends React.Component<TCGalleryProps> {
                             id={this.swiperId}
                             onMouseEnter={this.onMouseEnter}
                             onMouseLeave={this.onMouseLeave}
-                            ref={this.containerRef}
                         >
-                            <div className={`swiper-wrapper ${styles.swiperWrapper}`} >
+                            <div className={`swiper-wrapper ${styles.swiperWrapper}`}
+                                ref={this.containerRef}
+                            >
                                 {gallerySettings.images && gallerySettings.images.map((i, index) => {
                                     let imgItem = (
                                         <img

@@ -75,7 +75,7 @@ export const ProductDetails = (props: {
                                 zoom: {
                                     zoomOnHover: true
                                 },
-                                backgroundSize: 'contain'
+                                objectFit: 'contain'
                             }} />
                         </CContainer>
                         <CContainer id="product_3" className={styles.captionBlock}>
