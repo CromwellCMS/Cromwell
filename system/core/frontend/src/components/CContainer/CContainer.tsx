@@ -7,11 +7,16 @@ type CContainerProps = {
     children?: React.ReactNode;
 } & TCromwellBlockProps;
 
-export const CContainer = (props: CContainerProps) => {
-    const { children, ...rest } = props;
-    return (
-        <CromwellBlock {...rest} type='container' >
-            {children}
-        </CromwellBlock>
-    )
+export class CContainer extends React.Component<CContainerProps> {
+    render() {
+        const { children, ...rest } = this.props;
+        return (
+            <CromwellBlock {...rest} type='container'
+                content={(data, blockRef, setContentInstance) => {
+                    setContentInstance(this);
+                    return children;
+                }}
+            />
+        )
+    }
 }

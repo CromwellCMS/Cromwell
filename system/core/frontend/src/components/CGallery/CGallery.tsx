@@ -1,14 +1,27 @@
-import { getStoreItem, TCromwellBlockProps, TGallerySettings } from '@cromwell/core';
-import React from 'react';
-import Swiper, { Lazy, Navigation, Pagination, SwiperOptions, Thumbs, Zoom } from 'swiper';
 import 'swiper/swiper-bundle.min.css';
+
+import { getStoreItem, isServer, TCromwellBlockProps, TGallerySettings } from '@cromwell/core';
+import React from 'react';
+import Swiper, {
+    Autoplay,
+    EffectCoverflow,
+    EffectCube,
+    EffectFade,
+    EffectFlip,
+    Lazy,
+    Navigation,
+    Pagination,
+    SwiperOptions,
+    Thumbs,
+    Zoom,
+} from 'swiper';
 
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { Link } from '../Link/Link';
 import styles from './CGallery.module.scss';
 
 
-Swiper.use([Navigation, Pagination, Lazy, Thumbs, Zoom]);
+Swiper.use([Navigation, Pagination, Lazy, Thumbs, Zoom, EffectCoverflow, EffectCube, EffectFade, EffectFlip, Autoplay]);
 
 
 type TCGalleryProps = {
@@ -26,7 +39,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
     private galleryContainer?: HTMLElement | null;
     private swiper?: Swiper;
     private galleryThumbs?: Swiper;
-    
+
     private containerRef = React.createRef<HTMLDivElement>();
     private primaryColor?: string = getStoreItem('palette')?.primaryColor;
 
@@ -88,11 +101,20 @@ export class CGallery extends React.Component<TCGalleryProps> {
         const gallerySettings = this.gallerySettings;
         this.prevGallerySettings = gallerySettings;
 
+        if (this.swiper) this.swiper.destroy();
+
         let options: SwiperOptions = {
             loop: gallerySettings.loop ?? false,
             direction: gallerySettings.direction ?? 'horizontal',
             breakpoints: gallerySettings.breakpoints,
             slidesPerView: gallerySettings.slidesPerView,
+            speed: gallerySettings.speed,
+            effect: gallerySettings.effect,
+            autoplay: gallerySettings.delay ? {
+                delay: gallerySettings.delay
+            } : undefined,
+            spaceBetween: gallerySettings.spaceBetween,
+            watchSlidesProgress: gallerySettings.watchSlidesProgress,
             scrollbar: gallerySettings.showScrollbar && {
                 el: '.swiper-scrollbar',
             },
@@ -135,28 +157,27 @@ export class CGallery extends React.Component<TCGalleryProps> {
 
         this.swiper = new Swiper(`#${this.swiperId}`, options);
 
-        if (gallerySettings.navigation?.showOnHover) {
+        if (typeof gallerySettings?.navigation === 'object' && gallerySettings.navigation?.showOnHover) {
             this.swiper?.navigation.nextEl?.style.setProperty('display', 'none');
             this.swiper?.navigation.prevEl?.style.setProperty('display', 'none');
         }
     }
 
-    // update or init
     private updateGallery = () => {
-        if (!this.gallerySettings || !this.swiperId || !this.swiper) return;
+        if (!this.gallerySettings || !this.swiperId || !this.swiper || !this.swiper.$el) return;
 
-        this.swiper.update();
-        this.galleryThumbs?.update();
-        this.swiper.slideTo(0);
+        this.swiper.update?.();
+        this.galleryThumbs?.update?.();
+        this.swiper.slideTo?.(0);
 
         if (this.gallerySettings.lazy) {
-            this.swiper.lazy?.load();
+            this.swiper.lazy?.load?.();
         }
 
     }
 
     private onMouseEnter = () => {
-        if (this.gallerySettings?.navigation?.showOnHover) {
+        if (typeof this.gallerySettings?.navigation === 'object' && this.gallerySettings?.navigation?.showOnHover) {
             this.swiper?.navigation.nextEl?.style.setProperty('display', 'block');
             this.swiper?.navigation.prevEl?.style.setProperty('display', 'block');
         }
@@ -169,7 +190,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
     }
 
     private onMouseLeave = () => {
-        if (this.gallerySettings?.navigation?.showOnHover) {
+        if (typeof this.gallerySettings?.navigation === 'object' && this.gallerySettings?.navigation?.showOnHover) {
             this.swiper?.navigation.nextEl?.style.setProperty('display', 'none');
             this.swiper?.navigation.prevEl?.style.setProperty('display', 'none');
         }
@@ -185,7 +206,8 @@ export class CGallery extends React.Component<TCGalleryProps> {
         const { gallery: propsSettings, ...rest } = this.props;
 
         return (
-            <CromwellBlock {...rest} type='image'
+            <CromwellBlock {...rest} type='gallery'
+                key={this.props.id + '_crw'}
                 content={(data, blockRef, setContentInstance) => {
                     setContentInstance(this);
                     this.gallerySettings = data?.gallery ?? propsSettings;
@@ -204,7 +226,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                             <div className={`swiper-wrapper ${styles.swiperWrapper}`}
                                 ref={this.containerRef}
                             >
-                                {gallerySettings.images && gallerySettings.images.map((i, index) => {
+                                {gallerySettings.images && gallerySettings.images.map((i) => {
                                     let imgItem = (
                                         <img
                                             src={gallerySettings?.lazy ? undefined : i.src}

@@ -16,55 +16,56 @@ type CPluginProps = {
     adminPanel?: boolean;
 } & TCromwellBlockProps;
 
-/**
- * Used internally to import and render plugin at frontend
- * @param props 
- */
-export const CPlugin = (props: CPluginProps) => {
-    const { pluginName, component, ...rest } = props;
-    return (
-        <CromwellBlock {...rest} type='plugin'
-            plugin={{ pluginName: pluginName }}
-            content={(data) => {
-                const name = data?.plugin?.pluginName ?? pluginName;
 
-                if (!name) return <></>;
+export class CPlugin extends React.Component<CPluginProps> {
+    render() {
+        const props = this.props;
+        const { pluginName, component, ...rest } = props;
+        return (
+            <CromwellBlock {...rest} type='plugin'
+                plugin={{ pluginName: pluginName }}
+                content={(data, blockRef, setContentInstance) => {
+                    setContentInstance(this);
+                    const name = data?.plugin?.pluginName ?? pluginName;
 
-                let PluginComponent = component;
-                if (name && !component) {
+                    if (!name) return <></>;
 
-                    const restAPIClient = getRestAPIClient();
-                    const loader = (getStoreItem('environment')?.isAdminPanel && props.adminPanel !== false) ?
-                        restAPIClient?.getPluginAdminBundle : restAPIClient?.getPluginFrontendBundle;
+                    let PluginComponent = component;
+                    if (name && !component) {
 
-                    PluginComponent = loadFrontendBundle(
-                        name,
-                        async () => loader?.(name),
-                        dynamicLoader as (func: (() => Promise<typeof component>)) => typeof component,
-                        fallbackComponent
+                        const restAPIClient = getRestAPIClient();
+                        const loader = (getStoreItem('environment')?.isAdminPanel && props.adminPanel !== false) ?
+                            restAPIClient?.getPluginAdminBundle : restAPIClient?.getPluginFrontendBundle;
+
+                        PluginComponent = loadFrontendBundle(
+                            name,
+                            async () => loader?.(name),
+                            dynamicLoader as (func: (() => Promise<typeof component>)) => typeof component,
+                            fallbackComponent
+                        );
+                    }
+
+                    const pluginsData = getStoreItem('pluginsData');
+                    const pluginsSettings = getStoreItem('pluginsSettings');
+                    const pluginData = pluginsData?.[name] ?? {};
+                    const settings = pluginsSettings?.[name] ?? {};
+
+                    // console.log('CPlugin name', name, 'PluginComponent', PluginComponent);
+                    if (PluginComponent && isValidElementType(PluginComponent)) return (
+                        <ErrorBoundary>
+                            <PluginComponent
+                                data={pluginData}
+                                pluginName={name}
+                                globalSettings={settings}
+                                instanceSettings={data?.plugin?.settings ?? props.plugin?.settings}
+                            />
+                        </ErrorBoundary>
                     );
-                }
-
-                const pluginsData = getStoreItem('pluginsData');
-                const pluginsSettings = getStoreItem('pluginsSettings');
-                const pluginData = pluginsData?.[name] ?? {};
-                const settings = pluginsSettings?.[name] ?? {};
-
-                // console.log('CPlugin name', name, 'PluginComponent', PluginComponent);
-                if (PluginComponent && isValidElementType(PluginComponent)) return (
-                    <ErrorBoundary>
-                        <PluginComponent
-                            data={pluginData}
-                            pluginName={name}
-                            globalSettings={settings}
-                            instanceSettings={data?.plugin?.settings ?? props.plugin?.settings}
-                        />
-                    </ErrorBoundary>
-                );
-                else return <></>
-            }}
-        />
-    )
+                    else return <></>
+                }}
+            />
+        )
+    }
 }
 
 class ErrorBoundary extends React.Component<any, { hasError: boolean, errorMessage: string }> {

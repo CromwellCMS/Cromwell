@@ -1,4 +1,7 @@
+@import "../../../styles/common.module.scss";
+
 .pageSettings {
+    @include paper;
     position: relative;
     padding: 15px;
 
@@ -12,6 +15,4 @@
         position: relative;
         margin-top: 15px;
     }
-
 }
-

@@ -8,7 +8,7 @@ import {
     TCromwellBlockData,
     TCromwellBlockProps,
 } from '@cromwell/core';
-import React, { Component, useEffect } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 
 import {
     BlockContentConsumer,
@@ -35,8 +35,10 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private blockRef = React.createRef<HTMLDivElement>();
     private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
     private childPromises: Record<string, (Promise<TCromwellBlock>) | undefined> = {};
-    private rerenderResolver: (() => void | undefined);
+    private rerenderResolver?: (() => void | undefined);
     private rerenderPromise: Promise<void> | undefined;
+    private unmounted: boolean = false;
+    public movedCompForceUpdate?: () => void;
 
     private didUpdateListeners: Record<string, (() => void)> = {};
 
@@ -79,11 +81,18 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         this.contextComponentDidUpdate?.();
     }
 
+    componentWillUnmount() {
+        this.didUpdate();
+        this.unmounted = true;
+    }
+
     private contextComponentDidUpdate: undefined | (() => void) = undefined;
 
     private didUpdate = async () => {
         if (this.rerenderResolver) {
             this.rerenderResolver();
+            this.rerenderResolver = undefined;
+            this.rerenderPromise = undefined;
         }
 
         const childPromises = Object.values(this.childPromises).filter(p => Boolean(p?.then));
@@ -99,11 +108,15 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         this.didUpdateListeners[id] = func;
     }
 
-    public rerender = async () => {
-        this.forceUpdate();
+    public rerender = () => {
+        if (this.unmounted) return;
         if (!this.rerenderPromise) this.rerenderPromise = new Promise(done => {
             this.rerenderResolver = done;
         });
+
+        this.contentInstance?.forceUpdate?.();
+        this.movedCompForceUpdate?.();
+        this.forceUpdate();
 
         return this.rerenderPromise;
     }
@@ -142,7 +155,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
         const defProps = {
             id: b.id,
-            key: b.id,
+            key: b.id + '_virtual',
             jsxParentId: data?.id,
         }
 
@@ -208,7 +221,14 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
             const blockInst = this.getBlockInstance(block.id);
             if (blockInst) {
-                return blockInst.consumerRender(data?.id);
+                const MovedComp = () => {
+                    blockInst.movedCompForceUpdate = useForceUpdate();
+                    useEffect(() => {
+                        this.componentDidUpdate();
+                    }, []);
+                    return blockInst.consumerRender(data?.id);
+                }
+                return <MovedComp key={block.id + 'movedComp'} />
 
             } else {
                 // Child wasn't initialized yet. Wait until it registers in the store 
@@ -221,15 +241,16 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                 const DynamicComp = dynamicLoader(async (): Promise<React.ComponentType> => {
                     const child = await childPromise;
                     return () => {
+                        child.movedCompForceUpdate = useForceUpdate();
                         useEffect(() => {
                             this.componentDidUpdate();
                         }, []);
                         return child.consumerRender(data?.id) ?? <></>;
                     }
                 });
-                return <DynamicComp />;
+                return <DynamicComp key={block.id + 'dynamicComp'} />;
             }
-        })
+        }).filter(Boolean);
     }
 
     public getDefaultContent(): React.ReactNode | null {
@@ -318,7 +339,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         }
 
         return (
-            <div id={this.htmlId} key={this.htmlId}
+            <div id={this.htmlId} key={this.hasBeenMoved ? this.htmlId + '_moved' : this.htmlId + '_orig'}
                 onClick={this.props.onClick}
                 style={blockStyles}
                 className={elementClassName}
@@ -327,8 +348,8 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         );
     }
 
-    public consumerRender(jsxParentId?: string): JSX.Element | null {
-        return <BlockContentConsumer>
+    public consumerRender(): JSX.Element | null {
+        return <BlockContentConsumer key={this.htmlId + '_cons'}>
             {(content) => {
                 this.contextComponentDidUpdate = content?.componentDidUpdate;
                 return this.contentRender(content?.getter, content?.blockClass)
@@ -347,4 +368,9 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         }
 
     }
+}
+
+function useForceUpdate() {
+    const [value, setValue] = useState(0);
+    return () => setValue(value => ++value);
 }

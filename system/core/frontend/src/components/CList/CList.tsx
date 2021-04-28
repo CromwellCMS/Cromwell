@@ -18,7 +18,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         elements: JSX.Element[];
         pageNum: number;
     }[] = [];
-    
+
     private pagedParams: TPagedParams<DataType> = {
         pageNumber: 1
     };
@@ -42,7 +42,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
     private pageStatuses: ('deffered' | 'loading' | 'fetched' | 'failed')[] = [];
     private isPageLoading: boolean = false;
     private isLoading: boolean = false;
-
+    private prevFirstBatch: DataType[];
     private scrollBoxRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private wrapperRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
     private throbberRef: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
@@ -57,6 +57,9 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         this.init();
     }
 
+    // componentDidMount() {
+    // }
+
     public getProps(): TCListProps<DataType, ListItemProps> {
         if (this.forcedProps) return this.forcedProps;
         return this.props;
@@ -66,7 +69,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         this.forcedProps = props;
     }
 
-    componentDidUpdate(prevProps: TCListProps<DataType, ListItemProps>) {
+    componentDidUpdate() {
         const props = this.getProps();
         this.triggerListener('componentDidUpdate');
         if (props.useAutoLoading && this.scrollBoxRef.current && this.wrapperRef.current) {
@@ -111,9 +114,6 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
 
         if (props.pageSize) this.pageSize = props.pageSize;
         if (props.maxDomPages) this.maxDomPages = props.maxDomPages;
-        if (props.dataList) {
-            this.parseFirstBatchArray(props.dataList);
-        }
 
         if (!props.dataList && props.loader) {
             if (props.useQueryPagination && !isServer()) {
@@ -162,7 +162,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
                 }
 
             } catch (e) {
-                console.log(e);
+                console.error(e);
             }
             this.isLoading = false;
             this.setOverlay(false, true);
@@ -192,9 +192,43 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
 
     private parseFirstBatchArray = (data: DataType[]) => {
         this.remoteRowCount = data.length;
-        this.addElementsToList(data, this.currentPageNum);
-    }
+        if (this.prevFirstBatch !== data) {
+            this.prevFirstBatch = data;
+            this.currentPageNum = 1;
+        }
 
+        const props = this.getProps();
+        if (props.usePagination) {
+            const pageSize = this.pageSize ?? 15;
+            this.minPageBound = this.currentPageNum;
+            this.maxPageBound = this.currentPageNum;
+            this.maxPage = Math.ceil(data.length / pageSize);
+
+            let hasItems = true;
+            let idx = 0;
+            let pageNum = 1;
+            while (hasItems) {
+                const page: DataType[] = [];
+                for (let i = 0; i < pageSize; i++) {
+                    if (!data[idx]) {
+                        hasItems = false;
+                        break;
+                    }
+                    page.push(data[idx])
+                    idx++;
+                }
+                this.addElementsToList(page, pageNum);
+                pageNum++;
+            }
+        } else {
+            this.currentPageNum = 1;
+            this.minPageBound = 1;
+            this.maxPageBound = 1;
+            this.maxPage = 1;
+            this.addElementsToList(data, this.currentPageNum);
+        }
+
+    }
 
     private addElementsToList(data: DataType[], pageNum: number) {
         this.dataList[pageNum] = data;
@@ -205,7 +239,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
     private onScroll = debounce(() => {
         const props = this.getProps();
         if (props.useAutoLoading) {
-            const minRangeToLoad = props.minRangeToLoad ? props.minRangeToLoad : 200;
+            const minRangeToLoad = props.minRangeToLoad ?? 200;
             if (this.scrollBoxRef.current && this.wrapperRef.current) {
                 const scrollTop = this.scrollBoxRef.current.scrollTop;
                 const scrollBottom = this.wrapperRef.current.clientHeight - this.scrollBoxRef.current.clientHeight - scrollTop;
@@ -249,6 +283,9 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         this.dataList = [];
         this.list = [];
         this.pageStatuses = [];
+        if (this.scrollBoxRef.current) {
+            this.scrollBoxRef.current.scrollTop = 0;
+        }
     }
 
     public onPageScrolled = (pageNumber: number) => {
@@ -337,7 +374,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
                     this.isPageLoading = false;
                 }
             } catch (e) {
-                console.log(e);
+                console.error(e);
                 this.pageStatuses[pageNum] = 'failed';
             }
             this.isPageLoading = false;
@@ -399,8 +436,6 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
     }
 
     private loadNextPage = async () => {
-        const props = this.getProps();
-
         if (this.maxPageBound < this.maxPage && this.maxPageBound + 1 < this.currentPageNum + this.maxDomPages) {
             this.maxPageBound++;
             const nextNum = this.maxPageBound;
@@ -409,8 +444,6 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
             await this.loadPage(nextNum);
             this.forceUpdate();
         }
-
-
     }
 
     private loadPreviousPage = async () => {
@@ -437,7 +470,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         const props = this.getProps();
         const { id, ...rest } = props;
         return (
-            <CromwellBlock id={props.id} type='list'
+            <CromwellBlock id={id} type='list'
                 className={props.className}
                 {...rest}
                 content={(data, blockRef, setContentInstance) => {
@@ -470,19 +503,14 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         }
 
         if (props.dataList) {
-            this.currentPageNum = 1;
-            this.minPageBound = 1;
-            this.maxPageBound = 1;
-            this.maxPage = 1;
-            this.dataList = [];
-            this.addElementsToList(props.dataList, 1);
+            this.parseFirstBatchArray(props.dataList);
         }
         // console.log('BaseInfiniteLoader::render', this.minPageBound, this.maxPageBound, this.list)
 
         if (this.list.length === 0) {
-            content = (
-                <h3>{props.noDataLabel ? props.noDataLabel : 'No data'}</h3>
-            );
+            content = props.noDataLabel ? (
+                <h3>{props.noDataLabel}</h3>
+            ) : <></>;
             return this.wrapContent(content);
         }
         const handleShowMoreClick = () => {

@@ -2,13 +2,34 @@ import { TPluginEntity } from '@cromwell/core';
 import { TextField, Tooltip } from '@material-ui/core';
 import { Power as PowerIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import React, { useState } from 'react';
+import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
 import { BaseMenu, TBaseMenuProps } from './BaseMenu';
 
-export function PluginBlock(props: TBaseMenuProps) {
+export function PluginBlockReplacer(props: TBaseMenuProps) {
+    const pluginInfo = props.plugins?.find(p => p.name === props.block?.getData()?.plugin?.pluginName);
+    return (
+        <>
+            <BaseMenu
+                {...props}
+                icon={(
+                    <Tooltip title="Plugin block">
+                        <PowerIcon />
+                    </Tooltip>
+                )}
+            />
+            <div className={styles.pluginText}>{pluginInfo?.name ? (
+                <p><b>{pluginInfo?.title}</b> plugin [{pluginInfo?.name}]</p>
+            ) : (
+                    <p>plugin block</p>
+                )}</div>
+        </>
+    );
+}
+
+export function PluginBlockSidebar(props: TBaseMenuProps) {
     const pluginInfo = props.plugins?.find(p => p.name === props.block?.getData()?.plugin?.pluginName);
     const forceUpdate = useForceUpdate();
 
@@ -27,35 +48,21 @@ export function PluginBlock(props: TBaseMenuProps) {
     }
 
     return (
-        <>
-            <BaseMenu
-                {...props}
-                icon={(
-                    <Tooltip title="Plugin block">
-                        <PowerIcon />
-                    </Tooltip>
-                )}
-                settingsContent={(
-                    <div>
-                        <h3 className={styles.settingsTitle}>Plugin settings</h3>
-                        <Autocomplete
-                            onChange={handleChange}
-                            options={props.plugins ?? []}
-                            value={(props.plugins ?? []).find(p => p.name === pluginInfo?.name)}
-                            getOptionLabel={(option) => getPluginLabel(option)}
-                            renderInput={(params) => <TextField {...params}
-                                placeholder="Plugin"
-                            />}
-                        />
-                    </div>
-                )}
+        <div>
+            <div className={styles.settingsHeader}>
+                <PowerIcon />
+                <h3 className={styles.settingsTitle}>Plugin settings</h3>
+            </div>
+            <Autocomplete
+                onChange={handleChange}
+                options={props.plugins ?? []}
+                value={(props.plugins ?? []).find(p => p.name === pluginInfo?.name)}
+                getOptionLabel={(option) => getPluginLabel(option)}
+                renderInput={(params) => <TextField {...params}
+                    placeholder="Plugin"
+                />}
             />
-            {pluginInfo?.name ? (
-                <p><b>{pluginInfo?.title}</b> plugin [{pluginInfo?.name}]</p>
-            ) : (
-                <p>plugin block</p>
-            )}
-        </>
+        </div>
     );
 }
 

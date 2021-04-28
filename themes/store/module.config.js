@@ -85,7 +85,11 @@ module.exports = {
                         "width": "100%",
                         "height": 300,
                         "ratio": 3.75,
-                        "showPagination": true
+                        "showPagination": true,
+                        "effect": "coverflow",
+                        "loop": true,
+                        "delay": 2222,
+                        "speed": 800
                     }
                 },
                 {

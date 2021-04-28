@@ -1,5 +1,5 @@
 import { isServer } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestAPIClient, CList } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, TextField, Tooltip } from '@material-ui/core';
 import {
     ArrowBack as ArrowBackIcon,
@@ -17,6 +17,7 @@ import React from 'react';
 import LazyLoad from 'react-lazy-load';
 
 import LoadBox from '../loadBox/LoadBox';
+import Pagination from '../pagination/Pagination';
 import Modal from '../modal/Modal';
 import styles from './FileManager.module.scss';
 import { IFileManager, TItemType, TState } from './types';
@@ -139,7 +140,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
         if (this.deleteItemBtn.current) this.deleteItemBtn.current.style.opacity = '0.5';
     }
 
-    private onItemClick = (itemName: string) => (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
+    private onItemClick = (itemName: string) => () => {
         const target = document.getElementById('item__' + itemName) as HTMLLIElement;
         if (!target) return;
 
@@ -240,10 +241,9 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
 
         input.click();
 
-        input.addEventListener("change", async (e) => {
+        input.addEventListener("change", async (e: any) => {
             // Get the selected file from the input element
-            //@ts-ignore
-            var files = e.target?.files;
+            const files = e.target?.files;
             if (!files) return;
 
             this.setState({ isLoading: true });
@@ -352,47 +352,28 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                         </Tooltip>
                     </div>
                 </div>
-                <div className={styles.content}>
-                    {this.currentItems?.map(item => {
-                        const itemType: TItemType = this.getItemType(item);
-                        let ItemIcon;
-
-                        if (itemType === 'file') {
-                            ItemIcon = <DescriptionIcon className={styles.itemIcon} />;
-                        }
-                        if (itemType === 'image') {
-                            ItemIcon = (<div className={styles.itemImageContainer}>
-                                <LazyLoad height={60} offsetVertical={60} className={styles.itemImageContainer}>
-                                    <img className={styles.itemImage}
-                                        src={this.normalize(`/${this.currentPath}/${item}`)} />
-                                </LazyLoad>
-                            </div>);
-                        }
-                        if (itemType === 'folder') {
-                            ItemIcon = <FolderOpenIcon className={styles.itemIcon} />;
-                        }
-
-                        return (
-                            <MenuItem className={styles.item}
-                                onClick={this.onItemClick(item)}
-                                id={'item__' + item}
-                                key={item}
-                            >
-                                {itemType === 'image' && (
-                                    <IconButton className={styles.zoomItemBtn}
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            this.openPreview(item);
-                                        }}
-                                    >
-                                        <ZoomInIcon />
-                                    </IconButton>
-                                )}
-                                {ItemIcon}
-                                <p>{item}</p>
-                            </MenuItem>
-                        )
-                    })}
+                <div className={styles.listContainer} >
+                    {this.currentItems && (
+                        <CList
+                            className={styles.list}
+                            cssClasses={{ page: styles.content }}
+                            id="filemanager_list"
+                            dataList={this.currentItems}
+                            ListItem={FileItem}
+                            pageSize={21}
+                            usePagination
+                            listItemProps={{
+                                currentPath: this.currentPath,
+                                getItemType: this.getItemType,
+                                normalize: this.normalize,
+                                onItemClick: this.onItemClick,
+                                openPreview: this.openPreview,
+                            }}
+                            elements={{
+                                pagination: Pagination,
+                            }}
+                        />
+                    )}
                     {this.state.isLoading && (
                         <LoadBox absolute />
                     )}
@@ -421,3 +402,67 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
 }
 
 export default FileManager;
+
+
+export type TFileItemProps = {
+    data: string;
+    listItemProps: ListItemProps;
+}
+
+export type ListItemProps = {
+    currentPath?: string;
+    getItemType: (fileName: string) => TItemType;
+    normalize: (fileName: string) => string;
+    onItemClick: (itemName: string) => (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
+    openPreview: (fileName: string) => void;
+}
+
+
+const FileItem = (props: TFileItemProps) => {
+    const item = props.data;
+    const {
+        currentPath,
+        getItemType,
+        normalize,
+        onItemClick,
+        openPreview,
+    } = props.listItemProps;
+    const itemType: TItemType = getItemType(item);
+    let ItemIcon;
+
+    if (itemType === 'file') {
+        ItemIcon = <DescriptionIcon className={styles.itemIcon} />;
+    }
+    if (itemType === 'image') {
+        ItemIcon = (<div className={styles.itemImageContainer}>
+            <LazyLoad height={60} offsetVertical={60} className={styles.itemImageContainer}>
+                <img className={styles.itemImage}
+                    src={normalize(`/${currentPath}/${item}`)} />
+            </LazyLoad>
+        </div>);
+    }
+    if (itemType === 'folder') {
+        ItemIcon = <FolderOpenIcon className={styles.itemIcon} />;
+    }
+
+    return (
+        <MenuItem className={styles.item}
+            onClick={onItemClick(item)}
+            id={'item__' + item}
+            key={item}
+        >
+            {itemType === 'image' && (
+                <IconButton className={styles.zoomItemBtn}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        openPreview(item);
+                    }}
+                >
+                    <ZoomInIcon />
+                </IconButton>
+            )}
+            {ItemIcon}
+            <p>{item}</p>
+        </MenuItem>
+    )
+}

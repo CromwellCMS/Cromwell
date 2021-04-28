@@ -1,0 +1,32 @@
+@import "../../../styles/common.module.scss";
+
+.sidebar {
+    @include paperElevated;
+    position: fixed !important;
+    z-index: 1008 !important;
+}
+.sidebarPaper {
+    @include paperElevated;
+    @include styledScrollBar;
+    max-width: 300px;
+    position: fixed !important;
+    min-width: 300px;
+    top: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+.actions {
+    display: flex;
+    padding: 5px 10px;
+    border-bottom: 1px solid #ccc;
+    justify-content: space-between;
+
+    > div {
+        display: flex;
+    }
+}
+
+.settings {
+    padding: 15px;
+}

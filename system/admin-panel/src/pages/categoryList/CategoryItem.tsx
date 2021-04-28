@@ -10,12 +10,13 @@ import {
     SubdirectoryArrowRight as SubdirectoryArrowRightIcon,
 } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 import { animated, useSpring } from 'react-spring/web.cjs.js';
 
 import { categoryPageInfo } from '../../constants/PageInfos';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import { TAppState } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryItem.module.scss';
@@ -28,7 +29,7 @@ export type TCategoryItemProps = {
     listItemProps: ListItemProps;
 }
 
-const mapStateToProps = (state: TAppState, ownProps: TCategoryItemProps) => {
+const mapStateToProps = (state: TAppState) => {
     return {
         selectedItems: state.selectedItems,
         allSelected: state.allSelected,
@@ -107,7 +108,7 @@ const CategoryItem = (props: TPropsType) => {
         props.listItemProps.handleDeleteBtnClick(category);
     }
 
-    let hasChildren = Boolean(category.children && category.children.length > 0);
+    const hasChildren = Boolean(category.children && category.children.length > 0);
     let selected = false;
     if (props.allSelected && !props.selectedItems[category.id]) selected = true;
     if (!props.allSelected && props.selectedItems[category.id]) selected = true;
@@ -146,7 +147,7 @@ const CategoryItem = (props: TPropsType) => {
                         </>
                     </Grid>
                 )}
-                <Grid item xs={4} className={`${styles.itemActions} ${!!props.listItemProps?.embeddedView ? styles.none : ''}`}>
+                <Grid item xs={4} className={`${styles.itemActions} ${props.listItemProps?.embeddedView ? styles.none : ''}`}>
                     <Link to={`${categoryPageInfo.baseRoute}/new?parentId=${category?.id}`}>
                         <Tooltip title="Add subcategory">
                             <IconButton
@@ -213,11 +214,6 @@ function TransitionComponent(props: TransitionProps & { children: React.ReactNod
             <Collapse {...props} />
         </animated.div>
     );
-}
-
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
 }
 
 const ConnectedComponent = connect(mapStateToProps)(CategoryItem);
