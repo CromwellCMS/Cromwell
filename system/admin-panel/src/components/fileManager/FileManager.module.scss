@@ -31,12 +31,25 @@
         margin-right: 5px;
     }
 
+    .listContainer,
+    .list {
+        width: 100%;
+        height: 100%;
+        min-height: 100px;
+    }
+
+    .listContainer {
+        padding-bottom: 12px;
+        padding: 20px;
+    }
+
     .content {
         display: flex;
         flex-wrap: wrap;
         align-items: flex-start;
-        padding: 20px;
         height: 100%;
+        overflow: auto;
+        @include styledScrollBar;
     }
 
     .item {

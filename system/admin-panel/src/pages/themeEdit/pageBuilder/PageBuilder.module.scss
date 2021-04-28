@@ -1,5 +1,7 @@
+@import "../../../styles/common.module.scss";
+
 .PageBuilder {
-    display: inline-block;
+    display: flex;
     width: 100%;
 
     :global(.CromwellBlock_Type_container) {
@@ -7,10 +9,10 @@
     }
 }
 
-.actions {
-    display: flex;
-    padding: 5px 10px;
-    border-bottom: 1px solid #ccc;
+.editingPage {
+    @include paper;
+    display: block;
+    width: 100%;
 }
 
 .rootBlock {

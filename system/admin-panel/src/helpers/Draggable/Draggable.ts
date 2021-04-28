@@ -62,6 +62,8 @@ export type TDraggableOptions = {
     document?: typeof document;
 
     iframeSelector?: string;
+
+    disableClickAwayDeselect?: boolean;
 }
 
 export class Draggable {
@@ -252,7 +254,7 @@ export class Draggable {
     private onDragStart = (block: HTMLElement) => {
         const rect = this.draggingBlock.getBoundingClientRect();
 
-        this.deselectCurrentBlock();
+        // this.deselectCurrentBlock();
 
         this.onDragStartInfo = {
             mousePosYinsideBlock: (this.onMouseDownInfo?.clientY ?? 0) - rect.top + 10,
@@ -484,10 +486,11 @@ export class Draggable {
 
     private onPageBodyClick = (event: MouseEvent) => {
         if ((event as any).hitBlock) return;
-        this.deselectCurrentBlock();
+        if (!this.options.disableClickAwayDeselect)
+            this.deselectCurrentBlock();
     }
 
-    private deselectCurrentBlock = (): boolean => {
+    public deselectCurrentBlock = (): boolean => {
         if (this.options.canDeselectBlock) {
             const canDeselectBlock = this.options.canDeselectBlock(this.selectedBlock);
             if (canDeselectBlock === false) return false;

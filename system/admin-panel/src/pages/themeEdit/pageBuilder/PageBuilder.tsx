@@ -18,22 +18,21 @@ import {
     getBlockElementById,
     pageRootContainerId,
 } from '@cromwell/core-frontend';
-import { IconButton, Tooltip } from '@material-ui/core';
-import { Redo as RedoIcon, Undo as UndoIcon } from '@material-ui/icons';
 import deepEqual from 'fast-deep-equal';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 
 import PageErrorBoundary from '../../../components/errorBoundaries/PageErrorBoundary';
 import { Draggable } from '../../../helpers/Draggable/Draggable';
-import { IBaseMenu } from './blocks/BaseMenu';
-import { ContainerBlock } from './blocks/ContainerBlock';
-import { HTMLBlock } from './blocks/HTMLBlock';
-import { PluginBlock } from './blocks/PluginBlock';
-import { TextBlock } from './blocks/TextBlock';
-import { ImageBlock } from './blocks/ImageBlock';
-import { GalleryBlock } from './blocks/GalleryBlock';
+import { store } from '../../../redux/store';
+import { ContainerBlockReplacer } from './blocks/ContainerBlock';
+import { GalleryBlockReplacer } from './blocks/GalleryBlock';
+import { HTMLBlockReplacer } from './blocks/HTMLBlock';
+import { ImageBlockReplacer } from './blocks/ImageBlock';
+import { PluginBlockReplacer } from './blocks/PluginBlock';
+import { TextBlockReplacer } from './blocks/TextBlock';
 import styles from './PageBuilder.module.scss';
+import PageBuilderSidebar from '../pageBuilderSidebar/PageBuilderSidebar';
 
 type THistoryItem = {
     local: TCromwellBlockData[];
@@ -48,8 +47,7 @@ export class PageBuilder extends React.Component<{
 }>  {
 
     private editorWindowRef: React.RefObject<HTMLDivElement> = React.createRef();
-    private blockInstances: Record<string, IBaseMenu> = {};
-    private blockInfos: Record<string, {
+    public blockInfos: Record<string, {
         canDrag?: boolean;
         canDeselect?: boolean;
     }> = {};
@@ -94,7 +92,12 @@ export class PageBuilder extends React.Component<{
             createFrame: true,
             iframeSelector: '#builderFrame',
             dragPlacement: 'underline',
+            disableClickAwayDeselect: true,
         });
+        store.setStateProp({
+            prop: 'draggable',
+            payload: this.draggable,
+        })
     }
 
 
@@ -110,7 +113,6 @@ export class PageBuilder extends React.Component<{
         }
         this._changedModifications = data;
     }
-
 
     private canInsertBlock = (container: HTMLElement): boolean => {
         const parentData = getBlockData(container);
@@ -156,8 +158,11 @@ export class PageBuilder extends React.Component<{
         this.draggable?.updateBlocks();
 
         setTimeout(() => {
-            const el = getBlockElementById(blockData.id);
-            el?.click();
+            getBlockElementById(blockData.id)?.click();
+            store.setStateProp({
+                prop: 'selectedBlock',
+                payload: getStoreItem('blockInstances')?.[blockData.id],
+            });
         }, 100);
     }
 
@@ -187,7 +192,7 @@ export class PageBuilder extends React.Component<{
         }
     }
 
-    private saveCurrentState = () => {
+    public saveCurrentState = () => {
         const current = this.getCurrentModificationsState();
 
         if (!deepEqual(this.history[this.history.length - 1], current)) {
@@ -265,6 +270,11 @@ export class PageBuilder extends React.Component<{
             this.modifyBlock(blockData);
         }
 
+        store.setStateProp({
+            prop: 'selectedBlock',
+            payload: undefined,
+        });
+
         await this.rerenderBlocks();
 
         this.draggable?.updateBlocks();
@@ -308,7 +318,10 @@ export class PageBuilder extends React.Component<{
         const promises: Promise<any>[] = [];
         if (instances) {
             Object.values(instances).forEach(inst => {
-                if (inst?.rerender) promises.push(inst.rerender());
+                if (inst?.rerender) {
+                    const p = inst.rerender();
+                    if (p) promises.push(p);
+                }
             })
         }
         await Promise.all(promises);
@@ -364,8 +377,11 @@ export class PageBuilder extends React.Component<{
 
         // Select new block
         setTimeout(() => {
-            const el = getBlockElementById(newBlock.id);
-            el?.click();
+            getBlockElementById(newBlock.id)?.click();
+            store.setStateProp({
+                prop: 'selectedBlock',
+                payload: getStoreItem('blockInstances')?.[newBlock?.id],
+            });
         }, 200);
     }
 
@@ -433,21 +449,20 @@ export class PageBuilder extends React.Component<{
     }
 
     public onBlockSelected = (data: TCromwellBlockData) => {
-        this.blockInstances[data.id]?.setMenuVisibility(true);
+        store.setStateProp({
+            prop: 'selectedBlock',
+            payload: getStoreItem('blockInstances')?.[data.id],
+        })
     }
     public onBlockDeSelected = (data: TCromwellBlockData) => {
-        this.blockInstances[data.id]?.setMenuVisibility(false);
-    }
-
-    public handleSaveInst = (bId: string) => (inst: IBaseMenu) => {
-        this.blockInstances[bId] = inst;
+        store.setStateProp({
+            prop: 'selectedBlock',
+            payload: undefined,
+        })
     }
 
     public canDeselectBlock = (data?: TCromwellBlockData) => {
-        const canInstance = this.blockInstances[data?.id]?.canDeselectBlock?.();
-        const canInfo = this.blockInfos[data?.id]?.canDeselect;
-        if (canInstance !== undefined && canInfo !== undefined) return canInstance && canInfo;
-        return canInstance ?? canInfo ?? true;
+        return this.blockInfos[data?.id]?.canDeselect ?? true;
     }
 
     public canDragBlock = (data?: TCromwellBlockData) => {
@@ -492,115 +507,114 @@ export class PageBuilder extends React.Component<{
         const { EditingPage } = this.props;
         return (
             <div ref={this.editorWindowRef} className={styles.PageBuilder}>
-                <div className={styles.actions}>
-                    <Tooltip title="Undo">
-                        <IconButton
-                            ref={this.undoBtnRef}
-                            onClick={this.undoModification}
-                        >
-                            <UndoIcon />
-                        </IconButton>
-                    </Tooltip>
-                    <Tooltip title="Redo">
-                        <IconButton
-                            ref={this.redoBtnRef}
-                            onClick={this.redoModification}
-                        >
-                            <RedoIcon />
-                        </IconButton>
-                    </Tooltip>
+                <div className={styles.editingPage} >
+                    <BlockContentProvider
+                        value={{
+                            getter: (block) => {
+                                // Will replace content inside any CromwellBlock by JSX this function returns
+                                const data = block?.getData();
+                                const bType = data?.type;
+                                const blockProps = createBlockProps(this)(block);
+
+                                let content;
+
+                                if (bType === 'text') {
+                                    content = <TextBlockReplacer
+                                        {...blockProps}
+                                    />
+                                }
+                                if (bType === 'plugin') {
+                                    content = <PluginBlockReplacer
+                                        {...blockProps}
+                                    />
+                                }
+                                if (bType === 'container') {
+                                    content = <ContainerBlockReplacer
+                                        {...blockProps}
+                                    />
+                                }
+                                if (bType === 'HTML') {
+                                    content = <HTMLBlockReplacer
+                                        {...blockProps}
+                                    />
+                                }
+                                if (bType === 'image') {
+                                    content = <ImageBlockReplacer
+                                        {...blockProps}
+                                    />
+                                }
+                                if (bType === 'gallery') {
+                                    content = <GalleryBlockReplacer
+                                        {...blockProps}
+                                    />
+                                }
+
+                                if (!content) {
+                                    content = block.getDefaultContent();
+                                }
+
+                                return <>
+                                    {content}
+                                </>;
+                            },
+                            componentDidUpdate: () => {
+                                this.debouncedDidUpdate();
+                            }
+                        }}
+                    >
+                        <PageErrorBoundary>
+                            <CContainer id={pageRootContainerId}
+                                className={`${this.ignoreDraggableClass} ${styles.rootBlock}`}
+                                isConstant={true}
+                            >
+                                <EditingPage {...adminPanelProps} />
+                            </CContainer>
+                        </PageErrorBoundary>
+                    </BlockContentProvider>
                 </div>
-                <BlockContentProvider
-                    value={{
-                        getter: (block) => {
-                            // Will replace content inside any CromwellBlock by JSX this function returns
-
-                            const data = block?.getData();
-                            const bId = data?.id;
-                            const bType = data?.type;
-                            const deleteBlock = () => this.deleteBlock(data);
-
-                            const handleCreateNewBlock = (newBType: TCromwellBlockType) =>
-                                this.createNewBlock(newBType, data, bType === 'container' ? data : undefined);
-
-                            const blockProps = {
-                                saveMenuInst: this.handleSaveInst(bId),
-                                block: block,
-                                modifyData: (blockData: TCromwellBlockData) => {
-                                    // Save histroy
-                                    this.saveCurrentState();
-                                    this.modifyBlock(blockData);
-                                },
-                                deleteBlock: deleteBlock,
-                                addNewBlockAfter: handleCreateNewBlock,
-                                plugins: this.props.plugins,
-                                setCanDrag: (canDrag: boolean) => {
-                                    if (!this.blockInfos[bId]) this.blockInfos[bId] = {};
-                                    this.blockInfos[bId].canDrag = canDrag;
-                                },
-                                setCanDeselect: (canDeselect: boolean) => {
-                                    if (!this.blockInfos[bId]) this.blockInfos[bId] = {};
-                                    this.blockInfos[bId].canDeselect = canDeselect;
-                                },
-                            }
-
-                            let content;
-
-                            if (bType === 'text') {
-                                content = <TextBlock
-                                    {...blockProps}
-                                />
-                            }
-                            if (bType === 'plugin') {
-                                content = <PluginBlock
-                                    {...blockProps}
-                                />
-                            }
-                            if (bType === 'container') {
-                                content = <ContainerBlock
-                                    {...blockProps}
-                                />
-                            }
-                            if (bType === 'HTML') {
-                                content = <HTMLBlock
-                                    {...blockProps}
-                                />
-                            }
-                            if (bType === 'image') {
-                                content = <ImageBlock
-                                    {...blockProps}
-                                />
-                            }
-                            if (bType === 'gallery') {
-                                content = <GalleryBlock
-                                    {...blockProps}
-                                />
-                            }
-
-                            if (!content) {
-                                content = block.getDefaultContent();
-                            }
-
-                            return <>
-                                {content}
-                            </>;
-                        },
-                        componentDidUpdate: () => {
-                            this.debouncedDidUpdate();
-                        }
-                    }}
-                >
-                    <PageErrorBoundary>
-                        <CContainer id={pageRootContainerId}
-                            className={`${this.ignoreDraggableClass} ${styles.rootBlock}`}
-                            isConstant={true}
-                        >
-                            <EditingPage {...adminPanelProps} />
-                        </CContainer>
-                    </PageErrorBoundary>
-                </BlockContentProvider>
+                <PageBuilderSidebar
+                    undoBtnRef={this.undoBtnRef}
+                    undoModification={this.undoModification}
+                    redoBtnRef={this.redoBtnRef}
+                    redoModification={this.redoModification}
+                    createBlockProps={createBlockProps(this)}
+                />
             </div>
         )
     }
 
 }
+
+const createBlockProps = (pbInst: PageBuilder) => (block?: TCromwellBlock) => {
+    const data = block?.getData();
+    const bId = data?.id;
+    const bType = data?.type;
+    const deleteBlock = () => pbInst.deleteBlock(data);
+
+    const handleCreateNewBlock = (newBType: TCromwellBlockType) =>
+        pbInst.createNewBlock(newBType, data, bType === 'container' ? data : undefined);
+
+    const blockProps = {
+        block: block,
+        modifyData: (blockData: TCromwellBlockData) => {
+            // Save histroy
+            pbInst.saveCurrentState();
+            pbInst.modifyBlock(blockData);
+            block?.rerender();
+        },
+        deleteBlock: deleteBlock,
+        addNewBlockAfter: handleCreateNewBlock,
+        plugins: pbInst.props.plugins,
+        setCanDrag: (canDrag: boolean) => {
+            if (!pbInst.blockInfos[bId]) pbInst.blockInfos[bId] = {};
+            pbInst.blockInfos[bId].canDrag = canDrag;
+        },
+        setCanDeselect: (canDeselect: boolean) => {
+            if (!pbInst.blockInfos[bId]) pbInst.blockInfos[bId] = {};
+            pbInst.blockInfos[bId].canDeselect = canDeselect;
+        },
+    }
+    return blockProps;
+}
+
+export type TCreateBlockProps = ReturnType<typeof createBlockProps>;

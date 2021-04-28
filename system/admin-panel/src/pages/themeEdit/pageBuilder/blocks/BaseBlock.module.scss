@@ -58,10 +58,16 @@
     width: 400px;
     padding: 10px;
 }
+.settingsHeader {
+    display: flex;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
 .settingsTitle {
     font-size: 20px;
     font-weight: 500;
-    margin: 5px 0 15px 0;
+    margin-left: 6px;
 }
 
 .widgetsContainer .widgetItem {
@@ -85,11 +91,15 @@ div.textField {
 }
 
 div.settingsInput {
-    margin: 10px 0;
+    margin-bottom: 15px;
     min-width: 100px;
 }
 
 .containerSettings {
     display: flex;
     flex-direction: column;
+}
+
+.pluginText {
+    padding: 10px 20px;
 }

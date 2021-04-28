@@ -7,16 +7,16 @@ import {
     Image as ImageIcon,
     PhotoLibrary as PhotoLibraryIcon,
     Power as PowerIcon,
-    Settings as SettingsIcon,
     Subject as SubjectIcon,
     Widgets as WidgetsIcon,
 } from '@material-ui/icons';
 import React from 'react';
+import { connect, PropsType } from 'react-redux-ts';
 
+import { TAppState } from '../../../../redux/store';
 import styles from './BaseBlock.module.scss';
 
 export type TBaseMenuProps = {
-    saveMenuInst: (inst: IBaseMenu) => void;
     block?: TCromwellBlock;
     modifyData?: (data: TCromwellBlockData) => void;
     deleteBlock?: () => void;
@@ -29,18 +29,17 @@ export type TBaseMenuProps = {
     setCanDeselect: (canDeselect: boolean) => void;
 }
 
-export interface IBaseMenu {
-    setMenuVisibility: (menuVisible: boolean) => void
-    deleteBlock?: () => void;
-    canDeselectBlock?: () => boolean;
+const mapStateToProps = (state: TAppState) => {
+    return {
+        selectedBlock: state.selectedBlock,
+    }
 }
+type TPropsType = PropsType<PropsType, TBaseMenuProps,
+    ReturnType<typeof mapStateToProps>>;
 
-export class BaseMenu extends React.Component<TBaseMenuProps, {
-    menuVisible: boolean;
-    isDeleted: boolean;
+class BaseMenuComp extends React.Component<TPropsType, {
     addNewOpen: boolean;
-    settingsOpen: boolean;
-}> implements IBaseMenu {
+}>  {
 
     public addNewBtnEl: React.RefObject<HTMLDivElement> = React.createRef<HTMLDivElement>();
 
@@ -48,27 +47,17 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
         super(props);
 
         this.state = {
-            menuVisible: false,
-            isDeleted: false,
             addNewOpen: false,
-            settingsOpen: false,
         }
-
-        this.props.saveMenuInst(this);
     }
 
     public addNewBlock = (bType: TCromwellBlockType) => () => {
         this.props?.addNewBlockAfter?.(bType);
-        this.setState({ menuVisible: false, addNewOpen: false, settingsOpen: false });
-    }
-
-    public setMenuVisibility = (menuVisible: boolean) => {
-        this.setState({ menuVisible, addNewOpen: false, settingsOpen: false });
+        this.setState({ addNewOpen: false });
     }
 
     public deleteBlock = () => {
         this.props?.deleteBlock();
-        this.setState({ isDeleted: true });
     }
 
     public handleCloseAddNew = () => {
@@ -78,34 +67,17 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
         this.setState({ addNewOpen: true });
     }
 
-    public canDeselectBlock = () => {
-        return !this.state.addNewOpen && !this.state.settingsOpen;
-    }
-
-    public handleOpenSettings = () => {
-        this.setState({ settingsOpen: true });
-    }
-
-    public handleCloseSettings = () => {
-        this.setState({ settingsOpen: false });
-    }
-
     render() {
         const isConstant = this.props?.block?.getData()?.isConstant;
+        const menuVisible = this.props.selectedBlock?.getData()?.id === this.props?.block?.getData()?.id;
+        if (!menuVisible) return <></>
 
-        if (this.state.menuVisible && !this.state.isDeleted) return (
+        return (
             <div className={styles.menu}>
                 {!isConstant && (
                     <div className={styles.actions}>
                         <div className={styles.typeIcon}>{this.props.icon}</div>
                         {this.props.menuItems}
-                        {this.props.settingsContent && (
-                            <Tooltip title="Settings">
-                                <MenuItem onClick={this.handleOpenSettings}>
-                                    <SettingsIcon />
-                                </MenuItem>
-                            </Tooltip>
-                        )}
                         <Tooltip title="Delete block">
                             <MenuItem onClick={this.deleteBlock}>
                                 <DeleteForeverIcon />
@@ -119,24 +91,6 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
                             <AddCircleOutlineIcon className={styles.addIcon} />
                         </IconButton>
                     </Tooltip>
-                    <Popover
-                        open={this.state.settingsOpen}
-                        elevation={6}
-                        anchorEl={this.addNewBtnEl.current}
-                        onClose={this.handleCloseSettings}
-                        anchorOrigin={{
-                            vertical: 'bottom',
-                            horizontal: 'center',
-                        }}
-                        transformOrigin={{
-                            vertical: 'top',
-                            horizontal: 'center',
-                        }}
-                    >
-                        <div className={styles.settingsContent}>
-                            {this.props.settingsContent}
-                        </div>
-                    </Popover>
                     <Popover
                         open={this.state.addNewOpen}
                         elevation={6}
@@ -207,6 +161,7 @@ export class BaseMenu extends React.Component<TBaseMenuProps, {
                 </div>
             </div>
         );
-        return <></>
     }
 }
+
+export const BaseMenu = connect(mapStateToProps)(BaseMenuComp);

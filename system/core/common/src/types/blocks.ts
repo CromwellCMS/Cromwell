@@ -51,8 +51,9 @@ export type TCromwellBlock = React.Component<TCromwellBlockProps> & {
     consumerRender: (jsxParentId?: string) => JSX.Element | null;
     getDefaultContent: () => React.ReactNode | null;
     notifyChildRegistered: (inst: TCromwellBlock) => void;
-    rerender: () => Promise<void>;
+    rerender: () => Promise<void> | void;
     addDidUpdateListener: (id: string, func: () => void) => void;
+    movedCompForceUpdate?: () => void;
 }
 
 export type TDataComponentProps<Data> = {
@@ -200,10 +201,15 @@ export type TGallerySettings = {
     /** ratio = width / height */
     ratio?: number;
     slidesPerView?: number;
+    speed?: number;
+    delay?: number;
+    effect?: 'slide' | 'fade' | 'cube' | 'coverflow' | 'flip';
+    spaceBetween?: number;
+    watchSlidesProgress?: boolean;
     objectFit?: 'contain' | 'cover';
     navigation?: {
         showOnHover?: boolean;
-    };
+    } | boolean;
     showPagination?: boolean;
     showScrollbar?: boolean;
     showThumbs?: boolean | {

@@ -12,7 +12,9 @@ export const listPreloader = (
         bottom: '0vh',
         top: 0,
         left: 0,
-        right: 0
+        right: 0,
+        zIndex: 99,
+        backgroundColor: '#fff'
     }}>{listSkeleton}</div>
 );
 

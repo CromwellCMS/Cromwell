@@ -38,7 +38,7 @@ const mapStateToProps = (state: TAppState) => {
     }
 }
 
-type TPropsType = PropsType<TAppState, {},
+type TPropsType = PropsType<TAppState, Record<string, unknown>,
     ReturnType<typeof mapStateToProps>>;
 
 const PostList = (props: TPropsType) => {

@@ -40,7 +40,7 @@ const mapStateToProps = (state: TAppState) => {
     }
 }
 
-type TPropsType = PropsType<TAppState, {},
+type TPropsType = PropsType<TAppState, Record<string, unknown>,
     ReturnType<typeof mapStateToProps>>;
 
 
@@ -81,7 +81,7 @@ const ProductList = (props: TPropsType) => {
         Object.keys(params).forEach(key => {
             filterInput.current[key] = params[key];
         });
-        handleFilterInput();
+        resetList();
     }
 
     const handleGetProducts = async (params: TPagedParams<TProduct>) => {
@@ -118,8 +118,7 @@ const ProductList = (props: TPropsType) => {
     const resetList = () => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
         totalElements.current = null;
-        list.clearState();
-        list.init();
+        list.updateData();
     }
 
     const handleFilterInput = debounce(1000, () => {

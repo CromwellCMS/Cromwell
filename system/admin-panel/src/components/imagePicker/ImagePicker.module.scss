@@ -11,6 +11,8 @@
 .placeholder {
     color: rgba(0, 0, 0, 0.54);
     cursor: pointer;
+    min-width: 10px;
+    word-break: break-all;
 }
 
 .floatingLabel {
