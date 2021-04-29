@@ -1,6 +1,6 @@
-import { Tooltip, IconButton } from '@material-ui/core';
+import { IconButton, Tooltip } from '@material-ui/core';
 import { AddPhotoAlternateOutlined as AddPhotoAlternateOutlinedIcon, HighlightOffOutlined } from '@material-ui/icons';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { getFileManager } from '../../components/fileManager/helpers';
 import styles from './ImagePicker.module.scss';
@@ -50,6 +50,7 @@ const ImagePicker = (props: {
                         backgroundImage: `url(${value})`,
                         backgroundSize: props.backgroundSize ?? 'cover',
                         width: value && props.width,
+                        minWidth: value && props.width,
                         height: value && props.height,
                     }}>
                     {!value && <AddPhotoAlternateOutlinedIcon />}
@@ -76,13 +77,6 @@ const ImagePicker = (props: {
             )}
         </div>
     );
-    // if (props.toolTip) {
-    //     element = (
-    //         <Tooltip title={props.toolTip}>
-    //             {element}
-    //         </Tooltip>
-    //     )
-    // }
     return element;
 }
 

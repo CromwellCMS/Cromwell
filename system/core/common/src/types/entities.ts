@@ -174,7 +174,7 @@ export interface TUser extends TBasePageEntity {
     address?: string;
     role?: TUserRole;
 }
-export type TUserRole = 'administrator' | 'author' | 'customer';
+export type TUserRole = 'administrator' | 'author' | 'customer' | 'guest';
 export type TAuthRole = TUserRole | 'self' | 'all';
 
 export type TCreateUser = Omit<TUser, TDBAuxiliaryColumns> & {

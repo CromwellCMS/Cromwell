@@ -2,7 +2,7 @@ import { TPageInfo } from '@cromwell/core';
 import { IconButton, MenuItem, Tooltip } from '@material-ui/core';
 import {
     Settings as SettingsIcon, FormatPaint as FormatPaintIcon,
-    DeleteForever as DeleteForeverIcon,
+    DeleteForever as DeleteForeverIcon, KeyboardArrowRight as KeyboardArrowRightIcon
 } from '@material-ui/icons';
 import React from 'react';
 
@@ -10,18 +10,21 @@ import styles from './PageListItem.module.scss';
 
 export const PageListItem = (props: {
     page: TPageInfo;
+    activePage?: TPageInfo;
     // handleOpenPageSettings: (page: TPageInfo) => void;
     handleOpenPage: (page: TPageInfo) => void;
     handleDeletePage: (page: TPageInfo) => void;
 }) => {
-    const { page, handleOpenPage, handleDeletePage } = props;
+    const { page, handleOpenPage, handleDeletePage, activePage } = props;
+    const active = activePage && page && activePage.route === page.route && activePage.id === page.id;
     return (
         <MenuItem
-            className={styles.pageItem}
+            className={`${styles.pageItem} ${active ? styles.activeItem : ''}`}
             onClick={() => handleOpenPage(page)}
         >
             <p>{page.name}</p>
             <div className={styles.pageItemActions}>
+                <KeyboardArrowRightIcon className={styles.activeIcon} htmlColor="#fff" />
                 {/* <Tooltip title="Edit page settings">
                     <IconButton
                         aria-label="Edit page settings"

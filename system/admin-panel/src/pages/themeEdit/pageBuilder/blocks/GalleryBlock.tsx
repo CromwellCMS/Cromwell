@@ -1,6 +1,16 @@
 import { TCromwellBlockData } from '@cromwell/core';
-import { FormControl, InputLabel, MenuItem, Select, TextField, Tooltip, FormControlLabel, Checkbox } from '@material-ui/core';
-import { PhotoLibrary as PhotoLibraryIcon } from '@material-ui/icons';
+import { getBlockElementById } from '@cromwell/core-frontend';
+import {
+    Checkbox,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+    Tooltip,
+} from '@material-ui/core';
+import { PhotoLibrary as PhotoLibraryIcon, Public as PublicIcon } from '@material-ui/icons';
 import React from 'react';
 
 import GalleryPicker from '../../../../components/galleryPicker/GalleryPicker';
@@ -60,6 +70,13 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
         <div>
             <div className={styles.settingsHeader}>
                 <PhotoLibraryIcon />
+                {props.isGlobalElem(getBlockElementById(data?.id)) && (
+                    <div className={styles.headerIcon}>
+                        <Tooltip title="Global block">
+                            <PublicIcon />
+                        </Tooltip>
+                    </div>
+                )}
                 <h3 className={styles.settingsTitle}>Gallery settings</h3>
             </div>
             <GalleryPicker

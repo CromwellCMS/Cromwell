@@ -61,6 +61,10 @@ export class CGallery extends React.Component<TCGalleryProps> {
     componentDidMount() {
         this.didUpdate();
         window.addEventListener('resize', this.updateDimensions);
+
+        setTimeout(() => {
+            this.didUpdate();
+        }, 600)
     }
     componentDidUpdate() {
         this.didUpdate();
@@ -173,7 +177,6 @@ export class CGallery extends React.Component<TCGalleryProps> {
         if (this.gallerySettings.lazy) {
             this.swiper.lazy?.load?.();
         }
-
     }
 
     private onMouseEnter = () => {

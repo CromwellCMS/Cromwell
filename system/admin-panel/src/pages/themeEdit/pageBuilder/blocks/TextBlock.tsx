@@ -1,5 +1,6 @@
+import { getBlockElementById } from '@cromwell/core-frontend';
 import { TextField, Tooltip } from '@material-ui/core';
-import { Subject as SubjectIcon } from '@material-ui/icons';
+import { Public as PublicIcon, Subject as SubjectIcon } from '@material-ui/icons';
 import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
@@ -53,6 +54,13 @@ export const TextBlockSidebar = (props: TBaseMenuProps) => {
         <div>
             <div className={styles.settingsHeader}>
                 <SubjectIcon />
+                {props.isGlobalElem(getBlockElementById(data?.id)) && (
+                    <div className={styles.headerIcon}>
+                        <Tooltip title="Global block">
+                            <PublicIcon />
+                        </Tooltip>
+                    </div>
+                )}
                 <h3 className={styles.settingsTitle}>Text settings</h3>
             </div>
             <TextField

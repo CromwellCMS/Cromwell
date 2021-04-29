@@ -38,6 +38,8 @@ export type TDraggableOptions = {
 
     canDragBlock?: (draggedBlock: HTMLElement) => boolean;
 
+    getFrameColor?: (block: HTMLElement) => string;
+
     ignoreDraggableClass?: string;
 
     /**
@@ -524,7 +526,7 @@ export class Draggable {
         }
 
         if (frame) {
-            const color = this.options?.primaryColor ?? '#9900CC';
+            const color = this.options?.getFrameColor?.(block) ?? this.options?.primaryColor ?? '#9900CC';
             frame.classList.add(Draggable.draggableFrameHoveredCSSclass);
             frame.style.border = `1px solid ${color}`;
         }
@@ -546,7 +548,7 @@ export class Draggable {
         }
 
         if (frame) {
-            const color = this.options?.primaryColor ?? '#9900CC';
+            const color = this.options?.getFrameColor?.(block) ?? this.options?.primaryColor ?? '#9900CC';
             frame.classList.add(Draggable.draggableFrameHoveredCSSclass);
             frame.style.border = `2px solid ${color}`;
         }

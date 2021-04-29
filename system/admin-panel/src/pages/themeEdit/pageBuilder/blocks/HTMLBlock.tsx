@@ -1,5 +1,6 @@
+import { getBlockElementById } from '@cromwell/core-frontend';
 import { TextField, Tooltip } from '@material-ui/core';
-import { Code as CodeIcon } from '@material-ui/icons';
+import { Code as CodeIcon, Public as PublicIcon } from '@material-ui/icons';
 import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
@@ -26,6 +27,7 @@ export function HTMLBlockReplacer(props: TBaseMenuProps) {
 export function HTMLBlockSidebar(props: TBaseMenuProps) {
     const blockValue = props.block?.getData()?.html?.innerHTML as string;
     const forceUpdate = useForceUpdate();
+    const data = props.block?.getData();
 
     const setBlockValue = (value: string) => {
         const data = props.block?.getData();
@@ -41,6 +43,13 @@ export function HTMLBlockSidebar(props: TBaseMenuProps) {
         <div>
             <div className={styles.settingsHeader}>
                 <CodeIcon />
+                {props.isGlobalElem(getBlockElementById(data?.id)) && (
+                    <div className={styles.headerIcon}>
+                        <Tooltip title="Global block">
+                            <PublicIcon />
+                        </Tooltip>
+                    </div>
+                )}
                 <h3 className={styles.settingsTitle}>HTML settings</h3>
             </div>
             <TextField

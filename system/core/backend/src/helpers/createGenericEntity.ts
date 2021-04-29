@@ -54,26 +54,26 @@ export const createGenericEntity = <EntityType, EntityInputType = EntityType>(en
 
         private repository = getCustomRepository(GenericRepository)
 
-        @Authorized<TAuthRole>("administrator")
+        @Authorized<TAuthRole>("administrator", "guest")
         @Query(() => PagedEntity)
         async [getPagedPath](@Arg("pagedParams") pagedParams: PagedParamsInput<EntityType>):
             Promise<TPagedList<EntityType>> {
             return this.repository.getPaged(pagedParams);
         }
 
-        @Authorized<TAuthRole>("administrator")
+        @Authorized<TAuthRole>("administrator", "guest")
         @Query(() => [EntityClass])
         async [getAllPath](): Promise<EntityType[]> {
             return this.repository.getAll();
         }
 
-        @Authorized<TAuthRole>("administrator")
+        @Authorized<TAuthRole>("administrator", "guest")
         @Query(() => EntityClass)
         async [getBySlugPath](@Arg("slug") slug: string): Promise<EntityType | undefined> {
             return this.repository.getBySlug(slug);
         }
 
-        @Authorized<TAuthRole>("administrator")
+        @Authorized<TAuthRole>("administrator", "guest")
         @Query(() => EntityClass)
         async [getByIdPath](@Arg("id") id: string): Promise<EntityType | undefined> {
             return this.repository.getById(id);

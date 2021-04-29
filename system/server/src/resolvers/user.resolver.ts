@@ -27,14 +27,14 @@ export class UserResolver {
 
     private repository = getCustomRepository(UserRepository)
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TAuthRole>("administrator", "author", "guest")
     @Query(() => PagedUser)
     async [getManyPath](@Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<User>):
         Promise<TPagedList<TUser>> {
         return this.repository.getUsers(pagedParams);
     }
 
-    @Authorized<TAuthRole>('all')
+    @Authorized<TAuthRole>("administrator", "author", "guest", "self")
     @Query(() => User)
     async [getOneByIdPath](@Arg("id") id: string): Promise<User | undefined> {
         return this.repository.getUserById(id);
@@ -52,6 +52,7 @@ export class UserResolver {
         const message = "Access denied! You don't have permission for this action!";
         if (!ctx?.user?.role) throw new Error(message);
         if (data.role && data.role !== ctx.user.role && ctx.user.role !== 'administrator') throw new Error(message);
+        if (ctx.user.role === 'guest') throw new Error(message);
 
         return await this.repository.updateUser(id, data);
     }
@@ -62,7 +63,7 @@ export class UserResolver {
         return await this.repository.deleteUser(id);
     }
 
-    @Authorized<TAuthRole>("administrator", 'author')
+    @Authorized<TAuthRole>("administrator", 'author', "guest")
     @Query(() => PagedUser)
     async [getFilteredPath](
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TUser>,

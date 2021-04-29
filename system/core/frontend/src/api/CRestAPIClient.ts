@@ -60,11 +60,16 @@ class CRestAPIClient {
         logFor('errors-only', `CRestAPIClient route: ${route}` + e, console.error)
     }
 
-    public get = async <T>(route: string): Promise<T | undefined> => {
+    public fetch = async <T>(route: string, options?: {
+        method?: string;
+        input?: any;
+    }): Promise<T | undefined> => {
+        const input = options?.input;
         try {
             const res = await fetch(`${this.baseUrl}/${route}`, {
-                method: 'get',
+                method: options?.method ?? 'get',
                 credentials: 'include',
+                body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
                 headers: { 'Content-Type': 'application/json' },
             });
             const data = await res.json();
@@ -75,20 +80,28 @@ class CRestAPIClient {
         }
     }
 
+    public get = async <T>(route: string): Promise<T | undefined> => {
+        return this.fetch(route);
+    }
+
     public post = async <T>(route: string, input?: any): Promise<T | undefined> => {
-        try {
-            const res = await fetch(`${this.baseUrl}/${route}`, {
-                method: 'post',
-                credentials: 'include',
-                body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
-                headers: { 'Content-Type': 'application/json' },
-            })
-            const data = await res.json();
-            return this.handleError(res, data, route);
-        } catch (e) {
-            this.logError(route, e);
-            throw new Error(e);
-        }
+        return this.fetch(route, {
+            method: 'post',
+            input,
+        });
+    }
+
+    public delete = async <T>(route: string): Promise<T | undefined> => {
+        return this.fetch(route, {
+            method: 'delete',
+        });
+    }
+
+    public put = async <T>(route: string, input?: any): Promise<T | undefined> => {
+        return this.fetch(route, {
+            method: 'put',
+            input,
+        });
     }
 
     // < Auth >
@@ -212,6 +225,14 @@ class CRestAPIClient {
     public savePageConfig = async (config: TPageConfig): Promise<boolean> => {
         const data = await this.post<boolean>(`theme/page`, config);
         return data ?? false;
+    }
+
+    public deletePage = async (pageRoute: string): Promise<boolean | undefined> => {
+        return this.delete(`theme/page?pageRoute=${pageRoute}`);
+    }
+
+    public resetPage = async (pageRoute: string): Promise<boolean | undefined> => {
+        return this.get(`theme/page/reset?pageRoute=${pageRoute}`);
     }
 
     public getPluginsModifications = async (pageRoute: string): Promise<Record<string, TPluginsModifications> | undefined> => {

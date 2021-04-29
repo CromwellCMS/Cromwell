@@ -13,7 +13,7 @@ import { HTMLBlockSidebar } from '../pageBuilder/blocks/HTMLBlock';
 import { ImageBlockSidebar } from '../pageBuilder/blocks/ImageBlock';
 import { PluginBlockSidebar } from '../pageBuilder/blocks/PluginBlock';
 import { TextBlockSidebar } from '../pageBuilder/blocks/TextBlock';
-import { TCreateBlockProps } from '../pageBuilder/PageBuilder';
+import { TBaseMenuProps } from '../pageBuilder/blocks/BaseMenu';
 import styles from './PageBuilderSidebar.module.scss';
 
 type PageBuilderSidebarProps = {
@@ -21,7 +21,7 @@ type PageBuilderSidebarProps = {
     undoModification: () => void;
     redoBtnRef: React.RefObject<HTMLButtonElement>
     redoModification: () => void;
-    createBlockProps: TCreateBlockProps;
+    createBlockProps: (block: TCromwellBlock) => TBaseMenuProps;
     draggable?: Draggable;
 }
 
@@ -122,7 +122,7 @@ const PageBuilderSidebar = (props: TPropsType) => {
                     </Tooltip>
                 </div>
                 <div>
-                    <Tooltip title="Close">
+                    <Tooltip title="Close settings">
                         <IconButton
                             onClick={handleClose}
                         >

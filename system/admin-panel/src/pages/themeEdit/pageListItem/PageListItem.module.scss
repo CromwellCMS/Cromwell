@@ -10,8 +10,27 @@ body .pageItem {
     display: flex;
     justify-content: space-between;
     min-height: 45px;
+    transition: 0.3s;
 }
 .pageItemActions {
     display: flex;
     margin-left: 20px;
+}
+
+body .activeIcon {
+    display: none;
+}
+
+body .activeItem {
+    background-color: #333;
+    color: #fff;
+
+    .activeIcon {
+        display: block;
+        margin-right: 5px;
+    }
+}
+
+body .activeItem:hover {
+    background-color: #666;
 }

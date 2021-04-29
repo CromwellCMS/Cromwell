@@ -28,6 +28,9 @@
 .typeIcon {
     padding: 6px 16px;
 }
+.headerIcon {
+    margin-left: 5px;
+}
 
 .bottomActions {
     display: flex;
@@ -102,4 +105,6 @@ div.settingsInput {
 
 .pluginText {
     padding: 10px 20px;
+    background-color: #fff;
+    border-radius: 6px;
 }

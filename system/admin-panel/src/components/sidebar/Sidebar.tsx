@@ -23,14 +23,10 @@ import {
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 
-import { loginPageInfo, sideBarLinks, userPageInfo, pageInfos, getLinkByInfo } from '../../constants/PageInfos';
+import { getLinkByInfo, loginPageInfo, pageInfos, sideBarLinks, userPageInfo } from '../../constants/PageInfos';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import styles from './Sidebar.module.scss';
 import SidebarLink from './SidebarLink';
-
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
-}
 
 export default function Sidebar() {
     const currentInfo = pageInfos.find(i => '#' + i.route === window.location.hash);
@@ -45,7 +41,7 @@ export default function Sidebar() {
     const forceUpdate = useForceUpdate();
 
     const userInfo: TUser | undefined = getStoreItem('userInfo');
-    const toggleSubmenu = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
+    const toggleSubmenu = (panel: string) => (event: React.ChangeEvent<any>, isExpanded: boolean) => {
         setExpanded(isExpanded ? panel : false);
     };
     const handleCloseMenu = () => {
@@ -56,10 +52,10 @@ export default function Sidebar() {
     }
 
     useEffect(() => {
-        onStoreChange('userInfo', (value) => {
+        onStoreChange('userInfo', () => {
             forceUpdate();
         });
-        history?.listen((location, action) => {
+        history?.listen(() => {
             forceUpdate();
         });
     }, []);
