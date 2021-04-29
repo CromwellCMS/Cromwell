@@ -1,6 +1,7 @@
 import { TPluginEntity } from '@cromwell/core';
+import { getBlockElementById } from '@cromwell/core-frontend';
 import { TextField, Tooltip } from '@material-ui/core';
-import { Power as PowerIcon } from '@material-ui/icons';
+import { Power as PowerIcon, Public as PublicIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import React from 'react';
 
@@ -30,7 +31,8 @@ export function PluginBlockReplacer(props: TBaseMenuProps) {
 }
 
 export function PluginBlockSidebar(props: TBaseMenuProps) {
-    const pluginInfo = props.plugins?.find(p => p.name === props.block?.getData()?.plugin?.pluginName);
+    const data = props.block?.getData();
+    const pluginInfo = props.plugins?.find(p => p.name === data?.plugin?.pluginName);
     const forceUpdate = useForceUpdate();
 
     const handleChange = (event: any, newValue: TPluginEntity | null) => {
@@ -51,6 +53,13 @@ export function PluginBlockSidebar(props: TBaseMenuProps) {
         <div>
             <div className={styles.settingsHeader}>
                 <PowerIcon />
+                {props.isGlobalElem(getBlockElementById(data?.id)) && (
+                    <div className={styles.headerIcon}>
+                        <Tooltip title="Global block">
+                            <PublicIcon />
+                        </Tooltip>
+                    </div>
+                )}
                 <h3 className={styles.settingsTitle}>Plugin settings</h3>
             </div>
             <Autocomplete

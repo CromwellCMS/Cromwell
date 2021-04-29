@@ -1,4 +1,5 @@
 import { TCromwellBlock, TCromwellBlockData, TCromwellBlockType, TPluginEntity } from '@cromwell/core';
+import { getBlockElementById } from '@cromwell/core-frontend';
 import { Grid, IconButton, MenuItem, Popover, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
@@ -7,6 +8,7 @@ import {
     Image as ImageIcon,
     PhotoLibrary as PhotoLibraryIcon,
     Power as PowerIcon,
+    Public as PublicIcon,
     Subject as SubjectIcon,
     Widgets as WidgetsIcon,
 } from '@material-ui/icons';
@@ -18,6 +20,8 @@ import styles from './BaseBlock.module.scss';
 
 export type TBaseMenuProps = {
     block?: TCromwellBlock;
+    global?: boolean,
+    isGlobalElem: (block: HTMLElement) => boolean;
     modifyData?: (data: TCromwellBlockData) => void;
     deleteBlock?: () => void;
     addNewBlockAfter?: (bType: TCromwellBlockType) => void;
@@ -68,8 +72,9 @@ class BaseMenuComp extends React.Component<TPropsType, {
     }
 
     render() {
-        const isConstant = this.props?.block?.getData()?.isConstant;
-        const menuVisible = this.props.selectedBlock?.getData()?.id === this.props?.block?.getData()?.id;
+        const data = this.props?.block?.getData();
+        const isConstant = data?.isConstant;
+        const menuVisible = this.props.selectedBlock?.getData()?.id === data?.id;
         if (!menuVisible) return <></>
 
         return (

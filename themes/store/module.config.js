@@ -1,7 +1,6 @@
 const constants = require('./src/constants');
 
 module.exports = {
-    adminPanelDir: "dist/adminPanel",
     palette: {
         primaryColor: constants.primaryColor
     },
@@ -53,11 +52,17 @@ module.exports = {
             },
         }
     },
+    defaultPages: {
+        index: 'index',
+        category: 'category/[slug]',
+        product: 'product/[slug]',
+        pages: 'pages/[slug]',
+    },
     pages: [
         {
             id: "index",
             route: "index",
-            name: "Home page",
+            name: "Home",
             title: "Home page",
             modifications: [
                 {
@@ -104,7 +109,7 @@ module.exports = {
         {
             id: "category/[slug]",
             route: "category/[slug]",
-            name: "Product category page",
+            name: "Product category",
             title: "Product category page",
             isDynamic: true,
             modifications: [
@@ -122,7 +127,7 @@ module.exports = {
         {
             id: "product/[slug]",
             route: "product/[slug]",
-            name: "Product page",
+            name: "Product",
             title: "Product page",
             isDynamic: true,
             modifications: [

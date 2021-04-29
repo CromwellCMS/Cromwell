@@ -1,14 +1,14 @@
 import 'quill/dist/quill.snow.css';
 
-import { getStoreItem, TPost, TPostInput, TTag } from '@cromwell/core';
-import { getGraphQLClient } from '@cromwell/core-frontend';
 import { gql } from '@apollo/client';
+import { TPost, TPostInput, TTag } from '@cromwell/core';
+import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, Tooltip } from '@material-ui/core';
 import { Edit as EditIcon, NavigateBefore as NavigateBeforeIcon, Settings as SettingsIcon } from '@material-ui/icons';
+import { Skeleton } from '@material-ui/lab';
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
-import { Skeleton } from '@material-ui/lab';
 
 import { toast } from '../../components/toast/toast';
 import { postListInfo, postPageInfo } from '../../constants/PageInfos';
@@ -29,13 +29,14 @@ const Post = (props) => {
     const [isLoading, setIsloading] = useState(false);
     const [notFound, setNotFound] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const mode = getStoreItem('environment')?.mode;
     const quillEditor = useRef<Quill | null>(null);
     const actionsRef = useRef<HTMLDivElement | null>(null);
     const hasChanges = useRef<boolean>(false);
     const history = useHistory();
     const forceUpdate = useForceUpdate();
     const editorId = 'quill-editor';
+
+    const unregisterBlock = useRef<(() => void) | null>(null);
 
     const getPostData = async (): Promise<TPost | undefined> => {
         setIsloading(true);
@@ -57,6 +58,7 @@ const Post = (props) => {
                         avatar
                     }
                     mainImage
+                    publishDate
                     tags {
                         id
                         slug
@@ -100,6 +102,10 @@ const Post = (props) => {
 
     const init = async () => {
 
+        unregisterBlock.current = props.history?.block(() => {
+            if (hasChanges.current) return 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
+        });
+
         getPostTags();
 
         if (postId && postId !== 'new') {
@@ -131,6 +137,10 @@ const Post = (props) => {
 
     useEffect(() => {
         init();
+
+        return () => {
+            unregisterBlock.current?.();
+        }
     }, []);
 
 
@@ -140,6 +150,7 @@ const Post = (props) => {
         pageDescription: postData.pageDescription,
         title: postData.title,
         mainImage: postData.mainImage,
+        publishDate: postData.publishDate,
         isPublished: postData.isPublished,
         isEnabled: postData.isEnabled,
         tagIds: postData.tags?.map(tag => tag.id),
@@ -268,13 +279,13 @@ const Post = (props) => {
                             onClick={handlePublish}>
                             Publish</Button>
                     ) : (
-                        <Button variant="contained" color="primary"
-                            className={styles.saveBtn}
-                            size="small"
-                            disabled={!hasChanges.current}
-                            onClick={handleSave}>
-                            Save</Button>
-                    )}
+                            <Button variant="contained" color="primary"
+                                className={styles.saveBtn}
+                                size="small"
+                                disabled={!hasChanges.current}
+                                onClick={handleSave}>
+                                Save</Button>
+                        )}
                 </div>
             </div>
             {isLoading && (

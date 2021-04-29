@@ -33,6 +33,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private childBlocks: TCromwellBlockData[] = [];
     private hasBeenMoved?: boolean = false;
     private blockRef = React.createRef<HTMLDivElement>();
+    private movedblockRef = React.createRef<HTMLDivElement>();
     private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
     private childPromises: Record<string, (Promise<TCromwellBlock>) | undefined> = {};
     private rerenderResolver?: (() => void | undefined);
@@ -89,6 +90,12 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     private contextComponentDidUpdate: undefined | (() => void) = undefined;
 
     private didUpdate = async () => {
+        if (this.movedblockRef.current) {
+            this.movedblockRef.current.removeAttribute('class');
+            this.movedblockRef.current.removeAttribute('id');
+            this.movedblockRef.current.style.display = 'none';
+        }
+
         if (this.rerenderResolver) {
             this.rerenderResolver();
             this.rerenderResolver = undefined;
@@ -142,12 +149,15 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
                     // This component will draw them
                     this.childBlocks.push(d);
                 }
-            })
+            });
         }
 
+        this.hasBeenMoved = false;
         if (this.data?.parentId && !this.data?.isVirtual) {
             this.hasBeenMoved = true;
         }
+
+        return this;
     }
 
     private getVirtualBlock = (b: TCromwellBlockData): JSX.Element => {
@@ -255,10 +265,12 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
     public getDefaultContent(): React.ReactNode | null {
         const data = this.getData();
+
         if (data?.type === 'container') {
             return (
                 <>
-                    {this.props.children}
+                    {this.props.content?.(this.data, this.blockRef,
+                        inst => this.contentInstance = inst)}
                     {this.getChildBlocks()}
                 </>
             )
@@ -358,15 +370,16 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     }
 
     render(): React.ReactNode | null {
-        // console.log('CromwellBlock::render id: ' + this.props.id);
         this.readConfig();
+        // console.log('CromwellBlock::render id: ' + this.props.id, this.hasBeenMoved, this.getData());
 
         if (this.hasBeenMoved) {
-            return <></>;
-        } else {
-            return this.consumerRender();
+            // For some reason React copies properties of this block to next one if we return <></> or null here
+            // Test case: jsx container with 2 jsx elements and 4 virtual. First 2 virtual blocks will have 
+            // id and className copied from 2 jsx, content might be messed up from both blocks
+            return <div ref={this.movedblockRef} key={this.htmlId + '_stub'} style={{ display: 'none' }}></div>;
         }
-
+        return <React.Fragment key={this.htmlId + '_render'}>{this.consumerRender()}</React.Fragment>
     }
 }
 

@@ -1,21 +1,27 @@
 import {
     getStoreItem,
-    logFor,
     TCmsSettings,
     TCromwellBlockData,
     TPackageCromwellConfig,
     TPageConfig,
+    TPageInfo,
     TThemeConfig,
     TThemeEntity,
     TThemeEntityInput,
-    TPageInfo,
 } from '@cromwell/core';
-import { configFileName, getNodeModuleDir, getPublicThemesDir, serverLogFor, getCmsModuleInfo, getLogger, getCmsEntity, incrementServiceVersion } from '@cromwell/core-backend';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import decache from 'decache';
+import {
+    configFileName,
+    getCmsEntity,
+    getCmsModuleInfo,
+    getLogger,
+    getNodeModuleDir,
+    getPublicThemesDir,
+    incrementServiceVersion,
+    serverLogFor,
+} from '@cromwell/core-backend';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import symlinkDir from 'symlink-dir';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
@@ -60,10 +66,28 @@ export class ThemeService {
     public async saveThemeUserConfig(themeConfig: TThemeConfig): Promise<boolean> {
         const cmsSettings = await this.cmsService.getSettings();
         if (cmsSettings?.themeName) {
-            let theme = await this.findOne(cmsSettings.themeName)
+            const theme = await this.findOne(cmsSettings.themeName)
             if (theme) {
                 theme.settings = JSON.stringify(themeConfig, null, 4);
-                this.saveEntity(theme);
+                await this.saveEntity(theme);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+    * Asynchronously saves user's theme config by theme name from cmsConfig
+    * @param cmsConfig 
+    * @param cb 
+    */
+    public async saveThemeOriginalConfig(themeConfig: TThemeConfig): Promise<boolean> {
+        const cmsSettings = await this.cmsService.getSettings();
+        if (cmsSettings?.themeName) {
+            const theme = await this.findOne(cmsSettings.themeName)
+            if (theme) {
+                theme.defaultSettings = JSON.stringify(themeConfig, null, 4);
+                await this.saveEntity(theme);
                 return true;
             }
         }
@@ -223,16 +247,22 @@ export class ThemeService {
             console.error('Server::saveUserPageConfig: Invalid userPageConfig')
             return false;
         }
-        if (!userPageConfig.route) {
+        if (!userPageConfig.route || userPageConfig.route === '') {
             console.error('Server::saveUserPageConfig: Invalid userPageConfig, no route', JSON.stringify(userPageConfig));
-            return false;
+            throw new HttpException("Invalid page config, no route", HttpStatus.NOT_ACCEPTABLE);
+        }
+        if (!userPageConfig.name || userPageConfig.name === '') {
+            console.error('Server::saveUserPageConfig: Invalid userPageConfig, no name', JSON.stringify(userPageConfig));
+            throw new HttpException("Invalid page config, no name", HttpStatus.NOT_ACCEPTABLE);
         }
         if (!userPageConfig.modifications) {
             console.error('Server::saveUserPageConfig: Invalid userPageConfig, no modifications', JSON.stringify(userPageConfig));
             return false;
         }
 
-        let { themeConfig, userConfig, cmsSettings } = await this.readConfigs();
+        const config = await this.readConfigs();
+        let userConfig = config.userConfig;
+        const cmsSettings = config.cmsSettings;
 
         // If userConfig is null, then theme is probably new and user has never saved mods. Create a new userConfig
         if (!userConfig) {
@@ -268,7 +298,7 @@ export class ThemeService {
         userConfig.globalModifications = this.mergeMods(userConfig?.globalModifications, globalMods);
 
         // Remove recently deleted user's blocks from oldUserPageConfig if they aren't in theme's;
-        let filteredUserPageConfig: TPageConfig = {
+        const filteredUserPageConfig: TPageConfig = {
             ...userPageConfig,
             modifications: [...userPageConfig.modifications]
         };
@@ -335,7 +365,7 @@ export class ThemeService {
     public async readAllPageConfigs(): Promise<TPageConfig[]> {
         logger.log('themeController::readAllPageConfigs');
 
-        const { themeConfig, userConfig, cmsSettings } = await this.readConfigs();
+        const { themeConfig, userConfig } = await this.readConfigs();
 
         let pages: TPageConfig[] = [];
         if (themeConfig?.pages && Array.isArray(themeConfig.pages)) {
@@ -385,6 +415,52 @@ export class ThemeService {
         return out;
     }
 
+    public async deletePage(pageRoute: string): Promise<boolean> {
+        let page: TPageConfig | null = null;
+        page = await this.getPageConfig(pageRoute);
+
+        if (!page)
+            throw new HttpException("Page was not found by pageRoute", HttpStatus.NOT_ACCEPTABLE);
+
+        if (!page.isVirtual)
+            throw new HttpException("Page cannot be deleted", HttpStatus.NOT_ACCEPTABLE);
+
+        const configs = await this.readConfigs();
+
+        if (configs.themeConfig?.pages) {
+            configs.themeConfig.pages = configs.themeConfig.pages.filter(p => !p.isVirtual && !(p.route === page?.route && p.id === page?.id))
+            await this.saveThemeOriginalConfig(configs.themeConfig);
+        }
+
+        if (configs.userConfig?.pages) {
+            configs.userConfig.pages = configs.userConfig.pages.filter(p => !(p.route === page?.route && p.id === page?.id))
+            await this.saveThemeUserConfig(configs.userConfig);
+        }
+        return true;
+    }
+
+    public async resetPage(pageRoute: string): Promise<boolean> {
+        let page: TPageConfig | null = null;
+        page = await this.getPageConfig(pageRoute);
+
+        if (!page)
+            throw new HttpException("Page was not found by pageRoute", HttpStatus.NOT_ACCEPTABLE);
+
+        const configs = await this.readConfigs();
+
+        if (configs.userConfig?.pages) {
+            configs.userConfig.pages = configs.userConfig.pages.map(userPage => {
+                if (page && userPage.route === page.route && userPage.id === page.id) {
+                    userPage.modifications = [];
+                }
+                return userPage;
+            })
+            await this.saveThemeUserConfig(configs.userConfig);
+        }
+
+        return true;
+    }
+
     public async getPluginsAtPage(pageRoute: string): Promise<Record<string, any>> {
         const out: Record<string, any> = {};
 
@@ -403,7 +479,7 @@ export class ThemeService {
                         serverLogFor('errors-only', 'Failed to parse plugin settings of ' + pluginName + e, 'Error')
                     }
                 }
-            };
+            }
         }
         return out;
     }
@@ -454,7 +530,7 @@ export class ThemeService {
                 try {
                     const publicThemesDir = getPublicThemesDir();
                     await fs.ensureDir(publicThemesDir);
-                await fs.copy(themePublicDir, resolve(publicThemesDir, themeName));
+                    await fs.copy(themePublicDir, resolve(publicThemesDir, themeName));
                 } catch (e) { console.log(e) }
             }
 

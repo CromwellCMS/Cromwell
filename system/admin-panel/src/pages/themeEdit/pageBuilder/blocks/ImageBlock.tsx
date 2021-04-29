@@ -1,6 +1,7 @@
 import { TCromwellBlockData } from '@cromwell/core';
+import { getBlockElementById } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
-import { Image as ImageIcon } from '@material-ui/icons';
+import { Image as ImageIcon, Public as PublicIcon } from '@material-ui/icons';
 import React from 'react';
 
 import ImagePicker from '../../../../components/imagePicker/ImagePicker';
@@ -52,6 +53,13 @@ export function ImageBlockSidebar(props: TBaseMenuProps) {
         <div>
             <div className={styles.settingsHeader}>
                 <ImageIcon />
+                {props.isGlobalElem(getBlockElementById(data?.id)) && (
+                    <div className={styles.headerIcon}>
+                        <Tooltip title="Global block">
+                            <PublicIcon />
+                        </Tooltip>
+                    </div>
+                )}
                 <h3 className={styles.settingsTitle}>Image settings</h3>
             </div>
             <ImagePicker

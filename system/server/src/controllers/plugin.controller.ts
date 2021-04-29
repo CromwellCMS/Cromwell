@@ -102,7 +102,7 @@ export class PluginController {
             if (bundle) {
                 return bundle;
             }
-        };
+        }
 
         throw new HttpException('Invalid pluginName or frontend bundle not found', HttpStatus.NOT_ACCEPTABLE);
     }
@@ -126,7 +126,7 @@ export class PluginController {
             if (bundle) {
                 return bundle;
             }
-        };
+        }
 
         throw new HttpException('Invalid pluginName or admin panel bundle not found', HttpStatus.NOT_ACCEPTABLE);
     }
@@ -149,7 +149,7 @@ export class PluginController {
 
         if (pluginName && pluginName !== "") {
             return this.pluginService.installPlugin(pluginName);
-        };
+        }
         throw new HttpException('Invalid pluginName', HttpStatus.NOT_ACCEPTABLE);
     }
 }

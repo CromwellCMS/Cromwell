@@ -1,7 +1,8 @@
 import { TCromwellBlockData } from '@cromwell/core';
+import { getBlockElementById } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from '@material-ui/core';
-import { Widgets as WidgetsIcon } from '@material-ui/icons';
-import React, { useState } from 'react';
+import { Public as PublicIcon, Widgets as WidgetsIcon } from '@material-ui/icons';
+import React from 'react';
 
 import { useForceUpdate } from '../../../../helpers/forceUpdate';
 import styles from './BaseBlock.module.scss';
@@ -33,7 +34,7 @@ export function ContainerBlockSidebar(props: TBaseMenuProps) {
         (data.editorStyles[name] as any) = value;
         props.modifyData?.(data);
         forceUpdate();
-        props.block!.rerender();
+        props.block.rerender();
     }
 
     const handleNumberInput = (name: keyof TCromwellBlockData['editorStyles']) => (e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
@@ -46,6 +47,13 @@ export function ContainerBlockSidebar(props: TBaseMenuProps) {
         <div className={styles.containerSettings}>
             <div className={styles.settingsHeader}>
                 <WidgetsIcon />
+                {props.isGlobalElem(getBlockElementById(data?.id)) && (
+                    <div className={styles.headerIcon}>
+                        <Tooltip title="Global block">
+                            <PublicIcon />
+                        </Tooltip>
+                    </div>
+                )}
                 <h3 className={styles.settingsTitle}>Container settings</h3>
             </div>
             <TextField

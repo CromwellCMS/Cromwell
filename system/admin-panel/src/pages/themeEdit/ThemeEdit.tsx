@@ -8,10 +8,17 @@ import {
     TPageConfig,
     TPageInfo,
     TPluginEntity,
+    TThemeConfig,
 } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
-import { Button, IconButton, MenuItem, Tab, Tabs, Tooltip } from '@material-ui/core';
-import { AddCircle as AddCircleIcon, Settings as SettingsIcon } from '@material-ui/icons';
+import { Button, IconButton, MenuItem, Popover, Tab, Tabs, Tooltip } from '@material-ui/core';
+import {
+    AddCircle as AddCircleIcon,
+    MoreVertOutlined as MoreVertOutlinedIcon,
+    Settings as SettingsIcon,
+    SettingsBackupRestore as SettingsBackupRestoreIcon,
+    DeleteForever as DeleteForeverIcon,
+} from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { Suspense } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -21,6 +28,7 @@ import LoadBox from '../../components/loadBox/LoadBox';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
+import { store } from '../../redux/store';
 import { PageBuilder } from './pageBuilder/PageBuilder';
 import { PageListItem } from './pageListItem/PageListItem';
 import { PageSettings } from './pageSettings/PageSettings';
@@ -28,6 +36,7 @@ import styles from './ThemeEdit.module.scss';
 
 
 class ThemeEditState {
+    themeConfig: TThemeConfig | null = null;
     pageInfos: TPageInfo[] | null = null;
     plugins: TPluginEntity[] | null = null;
     editingPageInfo: TPageInfo | null = null;
@@ -36,6 +45,7 @@ class ThemeEditState {
     isPageListLoading: boolean = true;
     loadingStatus: boolean = false;
     isSidebarOpen: boolean = true;
+    pageOptionsOpen: boolean = false;
     activeTabNum: number = 0;
 }
 
@@ -49,6 +59,9 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
     private changedModifications: TCromwellBlockData[] | null | undefined = null;
 
     private tabsContent = React.createRef<HTMLDivElement>();
+    private optionsAnchorEl = React.createRef<HTMLDivElement>();
+    private unregisterBlock;
+    private unsavedPrompt = 'Your unsaved changes will be lost. Do you want to discard and leave this page?';
 
     constructor(props: any) {
         super(props);
@@ -56,51 +69,84 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
     }
 
     componentDidMount() {
-        (async () => {
-            const infos = await getRestAPIClient()?.getPagesInfo();
+        this.loadInitialInfo();
 
-            // Get info from DB
-            const graphQLClient = getGraphQLClient();
-            if (graphQLClient) {
-                try {
-                    const pluginEntities: TPluginEntity[] = await graphQLClient.getAllEntities('Plugin',
-                        graphQLClient.PluginFragment, 'PluginFragment');
-                    if (pluginEntities && Array.isArray(pluginEntities)) {
-                        this.setState({ plugins: pluginEntities });
-                    }
-                } catch (e) { console.error(e); }
-            }
-            if (infos) this.setState({ pageInfos: infos });
-            this.setState({ isPageListLoading: false });
-        })();
+        this.unregisterBlock = this.props.history?.block(() => {
+            if (this.hasUnsavedModifications()) return this.unsavedPrompt;
+        });
+    }
+
+    componentWillUnmount() {
+        this.unregisterBlock?.();
+    }
+
+    private loadInitialInfo = async () => {
+        const infos = await getRestAPIClient()?.getPagesInfo();
+
+        // Get info from DB
+        const graphQLClient = getGraphQLClient();
+        if (graphQLClient) {
+            try {
+                const pluginEntities: TPluginEntity[] = await graphQLClient.getAllEntities('Plugin',
+                    graphQLClient.PluginFragment, 'PluginFragment');
+                if (pluginEntities && Array.isArray(pluginEntities)) {
+                    this.setState({ plugins: pluginEntities });
+                }
+            } catch (e) { console.error(e); }
+        }
+        if (infos) this.setState({ pageInfos: infos });
+
+        try {
+            // const themeInfo = await getRestAPIClient()?.getThemeInfo();
+            const themeConfig = await getRestAPIClient()?.getThemeConfig();
+            setStoreItem('palette', themeConfig?.palette);
+            this.setState({ themeConfig });
+
+            const themeCustomConfig = await getRestAPIClient()?.getThemeCustomConfig();
+            setStoreItem('themeCustomConfig', themeCustomConfig);
+        } catch (e) {
+            console.error(e)
+        }
+
+        this.setState({ isPageListLoading: false });
     }
 
     private handleOpenPage = async (pageInfo: TPageInfo) => {
+        if (this.hasUnsavedModifications() && !window.confirm(this.unsavedPrompt)) return;
+
         this.setState({ isPageLoading: true });
-
-
-        const pageCofig: TPageConfig | undefined =
-            await getRestAPIClient()?.getPageConfig(pageInfo.route);
-        // const themeInfo = await getRestAPIClient()?.getThemeInfo();
-        const themeConfig = await getRestAPIClient()?.getThemeConfig();
-        const themeCustomConfig = await getRestAPIClient()?.getThemeCustomConfig();
-        setStoreItem('pageConfig', pageCofig);
-        setStoreItem('themeCustomConfig', themeCustomConfig);
-        setStoreItem('palette', themeConfig?.palette);
-
-        this.changedPageInfo = null;
-        this.changedModifications = null;
-        const pageCompPath = pageInfo?.isVirtual ? genericPageName : pageInfo.route;
-        const pageComp = await loadFrontendBundle(pageCompPath,
-            () => getRestAPIClient()?.getThemePageBundle(pageCompPath),
-            (func: (() => Promise<React.ComponentType>)) => {
-                return func();
+        setStoreItem('pageConfig', undefined);
+        try {
+            if (pageInfo.route && pageInfo.route !== '') {
+                const pageCofig: TPageConfig | undefined =
+                    await getRestAPIClient()?.getPageConfig(pageInfo.route);
+                setStoreItem('pageConfig', pageCofig);
             }
-        );
+        } catch (e) {
+            console.error(e)
+        }
+
+        try {
+            this.changedPageInfo = null;
+            this.changedModifications = null;
+            const pageCompPath = pageInfo?.isVirtual ?
+                (this.state.themeConfig?.defaultPages?.pages ?? genericPageName) : pageInfo.route;
+            const pageComp = await loadFrontendBundle(pageCompPath,
+                () => getRestAPIClient()?.getThemePageBundle(pageCompPath),
+                (func: (() => Promise<React.ComponentType>)) => {
+                    return func();
+                }
+            );
+
+            this.setState({
+                EditingPage: pageComp,
+                editingPageInfo: pageInfo,
+            });
+        } catch (e) {
+            console.error(e)
+        }
 
         this.setState({
-            EditingPage: pageComp,
-            editingPageInfo: pageInfo,
             isPageLoading: false
         });
     }
@@ -119,9 +165,10 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
         this.changedModifications = modifications;
     }
 
+    private hasUnsavedModifications = () => !!(this.changedPageInfo || this.changedModifications?.length > 0);
+
     private handleSaveEditingPage = async () => {
-        if (!this.changedPageInfo &&
-            (!this.changedModifications || this.changedModifications.length === 0)) {
+        if (!this.hasUnsavedModifications()) {
             toast.warning('No changes to save');
             return;
         }
@@ -137,24 +184,97 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
 
             const client = getRestAPIClient();
             this.setState({ loadingStatus: true });
-            const success = await client?.savePageConfig(pageConfig);
+
+            let success;
+            try {
+                success = await client?.savePageConfig(pageConfig);
+            } catch (error) {
+                console.error(error);
+            }
+
+            try {
+                const infos = await getRestAPIClient()?.getPagesInfo();
+                if (infos) this.setState({ pageInfos: infos });
+            } catch (error) {
+                console.error(error);
+            }
 
             if (success) {
                 toast.success('Saved');
+
+                this.changedPageInfo = null;
+                this.changedModifications = null;
+                await this.handleOpenPage(pageInfo);
             } else {
                 toast.error('Failed to save changes');
             }
 
-            const infos = await getRestAPIClient()?.getPagesInfo();
-            if (infos) this.setState({ pageInfos: infos });
-
             this.setState({ loadingStatus: false });
-
         }
+    }
+
+    private handleDeletePage = (page) => {
 
     }
 
-    private handleDeletePage = (page: TPageInfo) => ''
+    private handleDeleteCurrentPage = async () => {
+        if (this.state.editingPageInfo?.route) {
+            let success;
+            try {
+                success = await getRestAPIClient()?.deletePage(this.state.editingPageInfo.route);
+            } catch (error) {
+                console.error(error);
+            }
+
+            if (success) {
+                toast.success('Page deleted');
+            } else {
+                toast.error('Failed to delete page');
+            }
+        }
+
+        this.setState({
+            editingPageInfo: undefined,
+            EditingPage: undefined,
+            activeTabNum: 0,
+            isSidebarOpen: true,
+            pageOptionsOpen: false,
+        })
+        await this.loadInitialInfo();
+    }
+
+    private handleResetCurrentPage = async () => {
+        if (this.state.editingPageInfo?.route) {
+            let success;
+            try {
+                success = await getRestAPIClient()?.resetPage(this.state.editingPageInfo.route);
+            } catch (error) {
+                console.error(error);
+            }
+
+            if (success) {
+                toast.success('Page has been reset');
+            } else {
+                toast.error('Failed to reset page');
+            }
+        }
+
+        this.setState({
+            editingPageInfo: undefined,
+            EditingPage: undefined,
+            activeTabNum: 0,
+            isSidebarOpen: true,
+            pageOptionsOpen: false,
+        });
+
+        await this.loadInitialInfo();
+    }
+
+    private handleOptionsToggle = () => {
+        this.setState(prev => ({
+            pageOptionsOpen: !prev.pageOptionsOpen,
+        }))
+    }
 
     private handleAddCustomPage = () => {
         this.setState(prev => {
@@ -164,9 +284,9 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                 name: '',
                 isVirtual: true
             };
-            const prevPage = prev.pageInfos;
+            const prevPages = prev.pageInfos;
             return {
-                pageInfos: prevPage ? [...prevPage, newPage] : [newPage]
+                pageInfos: prevPages ? [...prevPages, newPage] : [newPage]
             }
         });
     }
@@ -177,6 +297,13 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
 
         const isPageBuilder = nextTabNum === 1;
         const isGeneral = nextTabNum === 0;
+
+        if (isGeneral) {
+            store.setStateProp({
+                prop: 'selectedBlock',
+                payload: undefined,
+            });
+        }
 
         if (isPageBuilder && this.tabsContent.current) {
             this.tabsContent.current.style.opacity = '0';
@@ -238,9 +365,10 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                                 )}
                                 {defaultPages && defaultPages.length > 0 && (
                                     <div className={styles.pageList} key="_2_">
-                                        <p className={styles.pageListHeader}>Default pages</p>
+                                        <p className={styles.pageListHeader}>Theme pages</p>
                                         {defaultPages.filter(p => !p.isVirtual).map(p => (
                                             <PageListItem
+                                                activePage={this.state.editingPageInfo}
                                                 key={p.route}
                                                 page={p}
                                                 handleOpenPage={this.handleOpenPage}
@@ -254,6 +382,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                                         <p className={styles.pageListHeader}>Custom pages</p>
                                         {customPages.filter(p => p.isVirtual).map(p => (
                                             <PageListItem
+                                                activePage={this.state.editingPageInfo}
                                                 key={p.route}
                                                 page={p}
                                                 handleOpenPage={this.handleOpenPage}
@@ -298,22 +427,51 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                                                 this.handleTabChange(newValue);
                                             }}
                                         >
-                                            <Tab label="General settings" />
+                                            <Tab label="Settings" />
                                             <Tab label="Page builder" />
                                         </Tabs>
-                                        <div>
+                                        <div className={styles.bottomBlock} ref={this.optionsAnchorEl}>
+                                            <Tooltip title="Options">
+                                                <IconButton
+                                                    onClick={this.handleOptionsToggle}
+                                                    className={styles.actionBtn}
+                                                    aria-label="Options"
+                                                >
+                                                    <MoreVertOutlinedIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            <Popover open={this.state.pageOptionsOpen}
+                                                anchorEl={this.optionsAnchorEl.current}
+                                                style={{ zIndex: 9999 }}
+                                                onClose={this.handleOptionsToggle}
+                                                anchorOrigin={{
+                                                    vertical: 'bottom',
+                                                    horizontal: 'left',
+                                                }}
+                                                transformOrigin={{
+                                                    vertical: 'top',
+                                                    horizontal: 'left',
+                                                }}
+                                            >
+                                                <div>
+                                                    <MenuItem
+                                                        onClick={this.handleResetCurrentPage} className={styles.optionsItem}>
+                                                        <SettingsBackupRestoreIcon />
+                                                        <p>Reset to default</p>
+                                                    </MenuItem>
+                                                    <MenuItem
+                                                        disabled={!this.state.editingPageInfo?.isVirtual}
+                                                        onClick={this.handleDeleteCurrentPage} className={styles.optionsItem}>
+                                                        <DeleteForeverIcon />
+                                                        <p>Delete page</p>
+                                                    </MenuItem>
+                                                </div>
+                                            </Popover>
                                             <Button variant="contained" color="primary"
                                                 className={styles.saveBtn}
                                                 size="small"
-                                                onClick={this.handleSaveEditingPage}>
-                                                Save
-                                        </Button>
-                                            {/* <IconButton
-                                                aria-label="close"
-                                                onClick={this.handleCloseEditingPage}
-                                            >
-                                                <HighlightOffIcon />
-                                            </IconButton> */}
+                                                onClick={this.handleSaveEditingPage}
+                                            >Save</Button>
                                         </div>
                                     </div>
                                 )}

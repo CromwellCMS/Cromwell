@@ -1,6 +1,6 @@
 import { TFrontendBundle, TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
 import { getLogger, getThemeAdminPanelBundleDir, serverLogFor } from '@cromwell/core-backend';
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
@@ -40,7 +40,7 @@ export class ThemeController {
         logger.log('ThemeController::getPageConfig');
 
         let out: TPageConfig | null = null;
-        if (pageRoute && typeof pageRoute === 'string') {
+        if (pageRoute && typeof pageRoute === 'string' && pageRoute !== '') {
             out = await this.themeService.getPageConfig(pageRoute)
         } else {
             throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
@@ -69,6 +69,43 @@ export class ThemeController {
     }
 
 
+    @Delete('page')
+    @ApiOperation({
+        description: `Deletes virtual page in boths configs`,
+        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: PageConfigDto
+    })
+    async deletePage(@Query('pageRoute') pageRoute: string): Promise<boolean | null> {
+        logger.log('ThemeController::deletePage');
+
+        if (pageRoute && typeof pageRoute === 'string' && pageRoute !== '') {
+            return await this.themeService.deletePage(pageRoute);
+        }
+        throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
+    }
+
+    @Get('page/reset')
+    @ApiOperation({
+        description: `Deletes user config of a page`,
+        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: PageConfigDto
+    })
+    async resetPage(@Query('pageRoute') pageRoute: string): Promise<boolean | null> {
+        logger.log('ThemeController::deletePage');
+
+        if (pageRoute && typeof pageRoute === 'string' && pageRoute !== '') {
+            return await this.themeService.resetPage(pageRoute);
+        }
+        throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
+    }
+
+
     @Get('plugins')
     @ApiOperation({
         description: `Returns plugins' configs at specified Page by pageRoute in query param. Output contains theme's original modificators overwritten by user's modificators.`,
@@ -80,7 +117,7 @@ export class ThemeController {
     async getPluginsAtPage(@Query('pageRoute') pageRoute: string): Promise<Record<string, any>> {
         logger.log('ThemeController::getPluginsAtPage');
 
-        if (pageRoute && typeof pageRoute === 'string') {
+        if (pageRoute && typeof pageRoute === 'string' && pageRoute !== '') {
             return this.themeService.getPluginsAtPage(pageRoute)
         } else {
             throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);

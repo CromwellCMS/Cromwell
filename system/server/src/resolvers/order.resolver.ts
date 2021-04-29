@@ -29,20 +29,20 @@ export class OrderResolver {
 
     private repository = getCustomRepository(OrderRepository);
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", "guest")
     @Query(() => PagedOrder)
     async [getManyPath](@Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>):
         Promise<TPagedList<TOrder>> {
         return this.repository.getOrders(pagedParams);
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", "guest")
     @Query(() => Order)
     async [getOneBySlugPath](@Arg("slug") slug: string): Promise<TOrder | undefined> {
         return this.repository.getOrderBySlug(slug);
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", "guest")
     @Query(() => Order)
     async [getOneByIdPath](@Arg("id") id: string): Promise<Order | undefined> {
         return this.repository.getOrderById(id);
@@ -81,7 +81,7 @@ export class OrderResolver {
         return this.repository.deleteManyFilteredOrders(input, filterParams);
     }
 
-    @Authorized<TAuthRole>("administrator")
+    @Authorized<TAuthRole>("administrator", "guest")
     @Query(() => PagedOrder)
     async [getFilteredPath](
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>,

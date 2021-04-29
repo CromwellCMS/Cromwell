@@ -54,7 +54,7 @@ export class CmsController {
 
     @Get('advanced-config')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @Roles('administrator', 'guest')
     @ApiOperation({ description: 'Returns advanced/private CMS settings from DB and cmsconfig.json' })
     @ApiResponse({
         status: 200,
@@ -73,7 +73,7 @@ export class CmsController {
 
     @Get('themes')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @Roles('administrator', 'guest')
     @ApiOperation({ description: 'Returns info from configs of all themes present in "themes" directory' })
     @ApiResponse({
         status: 200,
@@ -82,7 +82,7 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getThemes(): Promise<TPackageCromwellConfig[] | undefined> {
         logger.log('CmsController::getThemes');
-        let out: TPackageCromwellConfig[] = [];
+        const out: TPackageCromwellConfig[] = [];
 
         const themeModuleNames = (await readCmsModules()).themes;
 
@@ -102,7 +102,7 @@ export class CmsController {
 
     @Get('plugins')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @Roles('administrator', 'guest')
     @ApiOperation({ description: 'Returns info for all plugins present in "plugins" directory' })
     @ApiResponse({
         status: 200,
@@ -111,7 +111,7 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPlugins(): Promise<TPackageCromwellConfig[]> {
         logger.log('CmsController::getPlugins');
-        let out: TPackageCromwellConfig[] = [];
+        const out: TPackageCromwellConfig[] = [];
 
         const pluginModules = (await readCmsModules()).plugins;
 
@@ -132,7 +132,7 @@ export class CmsController {
 
     @Get('read-public-dir')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @Roles('administrator', 'guest')
     @ApiOperation({
         description: 'Read files and directories in specified subfolder of "public" files',
         parameters: [{ name: 'path', in: 'query' }]

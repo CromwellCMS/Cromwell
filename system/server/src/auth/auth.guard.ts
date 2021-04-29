@@ -16,7 +16,7 @@ export class JwtAuthGuard implements CanActivate {
         if (!request.user?.id) return false;
 
         const roles = this.reflector.get<TAuthRole[]>('roles', context.getHandler());
-        return mathRoles(request.user, roles);
+        return matchRoles(request.user, roles);
     }
 }
 
@@ -27,16 +27,19 @@ export const graphQlAuthChecker = (
     if (getStoreItem('cmsSettings')?.installed === false) return true;
 
     const userInfo: TAuthUserInfo | undefined = (context as TGraphQLContext)?.user;
-    return mathRoles(userInfo, roles, args?.id);
+    return matchRoles(userInfo, roles, args?.id);
 };
 
-const mathRoles = (user?: TAuthUserInfo, roles?: TAuthRole[], entityId?: string): boolean => {
+const matchRoles = (user?: TAuthUserInfo, roles?: TAuthRole[], entityId?: string): boolean => {
     if (!roles || roles.length === 0) return true;
     if (!user?.id) return false;
     if (user.role === 'administrator') return true;
 
     if (roles.includes('all')) return true;
 
+    if (roles.includes('guest')) {
+        if (user.role === 'guest') return true;
+    }
     if (roles.includes('author')) {
         if (user.role === 'author') return true;
     }

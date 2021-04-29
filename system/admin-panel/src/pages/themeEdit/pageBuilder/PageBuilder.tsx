@@ -5,6 +5,7 @@ import {
     TCromwellBlock,
     TCromwellBlockData,
     TCromwellBlockType,
+    TPageConfig,
     TPageInfo,
     TPluginEntity,
 } from '@cromwell/core';
@@ -18,13 +19,14 @@ import {
     getBlockElementById,
     pageRootContainerId,
 } from '@cromwell/core-frontend';
-import deepEqual from 'fast-deep-equal';
 import React from 'react';
 import { debounce } from 'throttle-debounce';
 
 import PageErrorBoundary from '../../../components/errorBoundaries/PageErrorBoundary';
 import { Draggable } from '../../../helpers/Draggable/Draggable';
 import { store } from '../../../redux/store';
+import PageBuilderSidebar from '../pageBuilderSidebar/PageBuilderSidebar';
+import { TBaseMenuProps } from './blocks/BaseMenu';
 import { ContainerBlockReplacer } from './blocks/ContainerBlock';
 import { GalleryBlockReplacer } from './blocks/GalleryBlock';
 import { HTMLBlockReplacer } from './blocks/HTMLBlock';
@@ -32,11 +34,10 @@ import { ImageBlockReplacer } from './blocks/ImageBlock';
 import { PluginBlockReplacer } from './blocks/PluginBlock';
 import { TextBlockReplacer } from './blocks/TextBlock';
 import styles from './PageBuilder.module.scss';
-import PageBuilderSidebar from '../pageBuilderSidebar/PageBuilderSidebar';
 
 type THistoryItem = {
-    local: TCromwellBlockData[];
-    global: TCromwellBlockData[];
+    local: string;
+    global: string;
 }
 
 export class PageBuilder extends React.Component<{
@@ -53,7 +54,6 @@ export class PageBuilder extends React.Component<{
     }> = {};
     private ignoreDraggableClass: string = pageRootContainerId;
     private draggable: Draggable;
-
 
     private history: THistoryItem[] = [];
     private undoneHistory: THistoryItem[] = [];
@@ -89,6 +89,7 @@ export class PageBuilder extends React.Component<{
             ignoreDraggableClass: this.ignoreDraggableClass,
             canDeselectBlock: this.canDeselectDraggableBlock,
             canDragBlock: this.canDragDraggableBlock,
+            getFrameColor: this.getFrameColor,
             createFrame: true,
             iframeSelector: '#builderFrame',
             dragPlacement: 'underline',
@@ -98,6 +99,13 @@ export class PageBuilder extends React.Component<{
             prop: 'draggable',
             payload: this.draggable,
         })
+    }
+
+    componentWillUnmount() {
+        store.setStateProp({
+            prop: 'selectedBlock',
+            payload: undefined,
+        });
     }
 
 
@@ -170,14 +178,15 @@ export class PageBuilder extends React.Component<{
         this.draggable?.updateBlocks();
     }
 
-    public modifyBlock = (blockData: TCromwellBlockData) => {
+    public modifyBlock = (blockData: TCromwellBlockData, saveHist?: boolean) => {
         if (!this.changedModifications) this.changedModifications = [];
+        // Save histroy
+        if (saveHist !== false) this.saveCurrentState();
 
-        // Save to global modifcations in pageConfig.
-        const pageConfig = getStoreItem('pageConfig');
-        if (pageConfig) {
-            pageConfig.modifications = this.addToModifications(blockData, pageConfig.modifications);
-        }
+        // Save to global modifications in pageConfig.
+        const pageConfig: TPageConfig = getStoreItem('pageConfig') ?? {} as TPageConfig;
+        if (!pageConfig.modifications) pageConfig.modifications = [];
+        pageConfig.modifications = this.addToModifications(blockData, pageConfig.modifications);
         setStoreItem('pageConfig', pageConfig);
 
         // Add to local changedModifications (contains only newly added changes);
@@ -187,25 +196,29 @@ export class PageBuilder extends React.Component<{
     private getCurrentModificationsState = (): THistoryItem => {
         const pageConfig = getStoreItem('pageConfig');
         return {
-            global: JSON.parse(JSON.stringify(pageConfig?.modifications ?? [])),
-            local: JSON.parse(JSON.stringify(this.changedModifications)),
+            global: JSON.stringify(pageConfig?.modifications ?? []),
+            local: JSON.stringify(this.changedModifications),
         }
     }
 
     public saveCurrentState = () => {
         const current = this.getCurrentModificationsState();
 
-        if (!deepEqual(this.history[this.history.length - 1], current)) {
+        if (this.history[this.history.length - 1]?.local !== current.local) {
             this.history.push(current);
         }
 
         this.undoneHistory = [];
 
-        if (this.history.length > 10) {
+        if (this.history.length > 20) {
             this.history.shift();
         }
         this.checkHitoryButtons();
     }
+
+    public saveCurrentStateDebounced = debounce(200, false, () => {
+        this.saveCurrentState();
+    });
 
     private checkHitoryButtons = () => {
         const disableButton = (button: HTMLButtonElement) => {
@@ -254,16 +267,23 @@ export class PageBuilder extends React.Component<{
 
     private applyHistory = async (history: THistoryItem) => {
         const pageConfig = getStoreItem('pageConfig');
-        pageConfig.modifications = history.global;
+        pageConfig.modifications = JSON.parse(history.global);
         setStoreItem('pageConfig', pageConfig);
-        this.changedModifications = history.local;
+        this.changedModifications = JSON.parse(history.local);
+        await new Promise(done => setTimeout(done, 100));
         await this.rerenderBlocks();
+
+        if (store.getState().selectedBlock) {
+            store.setStateProp({
+                prop: 'selectedBlock',
+                payload: Object.assign({}, store.getState().selectedBlock),
+            });
+        }
+
         this.checkHitoryButtons();
     }
 
     public deleteBlock = async (blockData: TCromwellBlockData) => {
-        // Save histroy
-        this.saveCurrentState();
 
         if (blockData) {
             blockData.isDeleted = true;
@@ -327,6 +347,10 @@ export class PageBuilder extends React.Component<{
         await Promise.all(promises);
     }
 
+    private getFrameColor = (elem: HTMLElement) => {
+        if (this.isGlobalElem(elem)) return '#ff9100';
+        return '#9900CC';
+    }
 
     private onDraggableBlockSelected = (draggedBlock: HTMLElement) => {
         const blockData = Object.assign({}, getBlockData(draggedBlock));
@@ -338,7 +362,7 @@ export class PageBuilder extends React.Component<{
     private onDraggableBlockDeSelected = (draggedBlock: HTMLElement) => {
         const blockData = Object.assign({}, getBlockData(draggedBlock));
         if (blockData?.id) {
-            this.onBlockDeSelected(blockData)
+            this.onBlockDeSelected()
         }
     }
 
@@ -391,7 +415,8 @@ export class PageBuilder extends React.Component<{
         parentData?: TCromwellBlockData;
         position: 'before' | 'after';
     }): TCromwellBlockData[] => {
-        const { targetBlockData, position, blockData } = config;
+        const { targetBlockData, position } = config;
+        const blockData = Object.assign({}, config.blockData);
 
         const parentData = getBlockData(getBlockElementById(targetBlockData?.id)?.parentNode) ?? config?.parentData;
         const parent = getBlockElementById(parentData.id);
@@ -400,14 +425,12 @@ export class PageBuilder extends React.Component<{
             return;
         }
 
-        // Save histroy
-        this.saveCurrentState();
-
         const childrenData: TCromwellBlockData[] = [];
 
         let iteration = 0;
         let newBlockIndex = -1;
 
+        // Sort parent's children
         Array.from(parent.children).forEach((child) => {
             const childData = Object.assign({}, getBlockData(child));
             if (!childData.id) return;
@@ -432,7 +455,7 @@ export class PageBuilder extends React.Component<{
                 childrenData.push(blockData);
             }
 
-            this.modifyBlock(childData);
+            this.modifyBlock(childData, false);
         });
 
         if (newBlockIndex === -1) {
@@ -442,10 +465,23 @@ export class PageBuilder extends React.Component<{
 
         blockData.parentId = parentData.id;
         blockData.index = newBlockIndex;
+        blockData.global = this.isGlobalElem(parent);
 
         this.modifyBlock(blockData);
 
         return childrenData;
+    }
+
+    public isGlobalElem = (elem?: HTMLElement): boolean => {
+        if (!elem) return false;
+        const data = getBlockData(elem);
+        if (data?.global) return true;
+        if (data?.id === 'root') return false;
+        const parent = elem?.parentElement;
+        if (parent) {
+            return this.isGlobalElem(parent);
+        }
+        return false;
     }
 
     public onBlockSelected = (data: TCromwellBlockData) => {
@@ -454,7 +490,7 @@ export class PageBuilder extends React.Component<{
             payload: getStoreItem('blockInstances')?.[data.id],
         })
     }
-    public onBlockDeSelected = (data: TCromwellBlockData) => {
+    public onBlockDeSelected = () => {
         store.setStateProp({
             prop: 'selectedBlock',
             payload: undefined,
@@ -582,23 +618,28 @@ export class PageBuilder extends React.Component<{
             </div>
         )
     }
-
 }
 
-const createBlockProps = (pbInst: PageBuilder) => (block?: TCromwellBlock) => {
+const createBlockProps = (pbInst: PageBuilder) => (block?: TCromwellBlock): TBaseMenuProps => {
     const data = block?.getData();
     const bId = data?.id;
     const bType = data?.type;
-    const deleteBlock = () => pbInst.deleteBlock(data);
-
+    const deleteBlock = () => {
+        if (!data.global && pbInst.isGlobalElem(getBlockElementById(data?.id))) {
+            data.global = true;
+        }
+        pbInst.deleteBlock(data);
+    }
     const handleCreateNewBlock = (newBType: TCromwellBlockType) =>
         pbInst.createNewBlock(newBType, data, bType === 'container' ? data : undefined);
 
-    const blockProps = {
+    const blockProps: TBaseMenuProps = {
         block: block,
+        isGlobalElem: pbInst.isGlobalElem,
         modifyData: (blockData: TCromwellBlockData) => {
-            // Save histroy
-            pbInst.saveCurrentState();
+            if (!blockData.global && pbInst.isGlobalElem(getBlockElementById(blockData?.id))) {
+                blockData.global = true;
+            }
             pbInst.modifyBlock(blockData);
             block?.rerender();
         },
@@ -616,5 +657,3 @@ const createBlockProps = (pbInst: PageBuilder) => (block?: TCromwellBlock) => {
     }
     return blockProps;
 }
-
-export type TCreateBlockProps = ReturnType<typeof createBlockProps>;

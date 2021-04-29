@@ -132,6 +132,8 @@ export type TThemeConfig = {
     headHtml?: string;
     /** Global CSS files to import from node_modules */
     globalCss?: string[];
+    /** Mapping of default CMS pages to theme's components. Such as { category: "category/[slug]" } */
+    defaultPages?: Record<TDefaultPageName, string>;
     /** Pages' description and modifications */
     pages?: TPageConfig[];
     /** Custom config that will be available at every page in the Store inside pageConfig props */
@@ -139,6 +141,8 @@ export type TThemeConfig = {
     /** Modifications to apply on all pages */
     globalModifications?: TCromwellBlockData[];
 }
+
+export type TDefaultPageName = 'index' | 'category' | 'product' | 'pages';
 
 export type TPalette = {
     primaryColor?: string;

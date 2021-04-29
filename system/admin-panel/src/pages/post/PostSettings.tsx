@@ -1,8 +1,12 @@
+import 'date-fns';
+
 import { TPost, TTag } from '@cromwell/core';
+import DateFnsUtils from '@date-io/date-fns';
 import { IconButton, MenuItem, Popover, TextField } from '@material-ui/core';
 import { Close as CloseIcon, HighlightOffOutlined, Wallpaper as WallpaperIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
-import React, { useEffect, useRef, useState } from 'react';
+import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
+import React, { useState } from 'react';
 
 import { getFileManager } from '../../components/fileManager/helpers';
 import styles from './PostSettings.module.scss';
@@ -16,12 +20,13 @@ const PostSettings = (props: {
     onClose: (newData: Partial<TPost>) => void;
 }) => {
     const { postData } = props;
-    const [title, setTitle] = useState<string | undefined>(postData?.title);
-    const [mainImage, setMainImage] = useState<string | undefined>(postData?.mainImage);
-    const [pageDescription, setPageDescription] = useState<string | undefined>(postData?.pageDescription);
-    const [pageTitle, setPageTitle] = useState<string | undefined>(postData?.pageTitle);
-    const [slug, setSlug] = useState<string | undefined>(postData?.slug);
-    const [tags, setTags] = useState<TTag[] | undefined>(postData?.tags);
+    const [title, setTitle] = useState<string | undefined>(postData?.title ?? null);
+    const [mainImage, setMainImage] = useState<string | undefined>(postData?.mainImage ?? null);
+    const [pageDescription, setPageDescription] = useState<string | undefined>(postData?.pageDescription ?? null);
+    const [pageTitle, setPageTitle] = useState<string | undefined>(postData?.pageTitle ?? null);
+    const [slug, setSlug] = useState<string | undefined>(postData?.slug ?? null);
+    const [tags, setTags] = useState<TTag[] | undefined>(postData?.tags ?? []);
+    const [publishDate, setPublishDate] = useState<Date | undefined | null>(postData?.publishDate ?? new Date(Date.now()));
 
     const handleChangeImage = async () => {
         const photoPath = await getFileManager()?.getPhoto();
@@ -42,11 +47,13 @@ const PostSettings = (props: {
         newData.pageTitle = pageTitle;
         newData.slug = slug;
         newData.tags = tags;
+        newData.publishDate = publishDate;
         props.onClose(newData);
     }
 
     return (
         <Popover
+            disableEnforceFocus
             open={props.isSettingsOpen}
             elevation={0}
             anchorEl={props.anchorEl}
@@ -91,10 +98,10 @@ const PostSettings = (props: {
                                 style={{ backgroundImage: `url(${mainImage})` }}
                                 className={styles.mainImage}></div>
                         ) : (
-                            <WallpaperIcon
-                                style={{ opacity: '0.7' }}
-                            />
-                        )}
+                                <WallpaperIcon
+                                    style={{ opacity: '0.7' }}
+                                />
+                            )}
                     </MenuItem>
                     <p style={{ margin: '10px' }}>{mainImage ?? <span style={{ opacity: '0.7' }}>No image</span>}</p>
                     {mainImage && (
@@ -118,6 +125,22 @@ const PostSettings = (props: {
                         />
                     )}
                 />
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <KeyboardDatePicker
+                        fullWidth
+                        disableToolbar
+                        variant="inline"
+                        format="MM/dd/yyyy"
+                        margin="normal"
+                        label="Publish date"
+                        value={publishDate}
+                        onChange={setPublishDate}
+                        KeyboardButtonProps={{
+                            'aria-label': 'change date',
+                        }}
+                    />
+                </MuiPickersUtilsProvider>
+
                 <TextField
                     label="Page meta title (SEO)"
                     className={styles.settingItem}
