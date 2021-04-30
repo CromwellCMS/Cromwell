@@ -1,4 +1,4 @@
-import { TOrder, TOrderInput, TPagedList, TPagedParams, TDeleteManyInput } from '@cromwell/core';
+import { TOrder, TOrderInput, TPagedList, TPagedParams, TDeleteManyInput, TProductReviewInput, TProductReview } from '@cromwell/core';
 import { EntityRepository, SelectQueryBuilder, DeleteQueryBuilder } from 'typeorm';
 import { DateUtils } from "typeorm/util/DateUtils";
 import { PagedParamsInput } from './../inputs/PagedParamsInput';

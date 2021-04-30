@@ -28,7 +28,7 @@ async function bootstrap(): Promise<void> {
     if (!config) throw new Error('Failed to read CMS config ' + JSON.stringify(config));
 
     // Connect to DB via TypeOrm
-    await connectDatabase();
+    await connectDatabase(envMode.serverType);
 
 
     // Launch Nest.js with Fastify

@@ -25,7 +25,7 @@ import { mockWorkingDirectory } from './helpers';
 export const setupController = async (name: string) => {
     const testDir = await mockWorkingDirectory(name);
 
-    await connectDatabase();
+    await connectDatabase('plugin');
 
     const moduleRef = await Test.createTestingModule({
         imports: [AppModule],

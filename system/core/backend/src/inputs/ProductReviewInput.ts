@@ -19,4 +19,9 @@ export class ProductReviewInput implements TProductReviewInput {
     @Field(type => String, { nullable: true })
     userName?: string;
 
+    @Field(type => String, { nullable: true })
+    userId?: string;
+
+    @Field(type => Boolean, { nullable: true })
+    approved?: boolean;
 }

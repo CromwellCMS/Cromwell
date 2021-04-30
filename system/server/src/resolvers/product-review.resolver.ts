@@ -39,6 +39,7 @@ export class ProductReviewResolver {
         return await this.repository.getProductReview(id);
     }
 
+    @Authorized<TAuthRole>("administrator")
     @Mutation(() => ProductReview)
     async [createPath](@Arg("data") data: ProductReviewInput): Promise<TProductReview> {
         return await this.repository.createProductReview(data);

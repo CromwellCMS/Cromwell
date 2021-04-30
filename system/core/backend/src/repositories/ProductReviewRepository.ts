@@ -37,6 +37,8 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         productReview.description = input.description;
         productReview.rating = input.rating;
         productReview.userName = input.userName;
+        productReview.approved = input.approved;
+        productReview.userId = input.userId;
     }
 
     async createProductReview(createProductReview: TProductReviewInput): Promise<TProductReview> {

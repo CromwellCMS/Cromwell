@@ -34,4 +34,12 @@ export class ProductReview extends BasePageEntity implements TProductReview {
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     userName?: string;
+
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    userId?: string;
+
+    @Field(type => Boolean, { nullable: true })
+    @Column({ type: "boolean", nullable: true })
+    approved?: boolean;
 }

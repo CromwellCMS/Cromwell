@@ -1,4 +1,4 @@
-import { TCmsSettings, TOrder, TPackageCromwellConfig } from '@cromwell/core';
+import { TCmsSettings, TOrder, TPackageCromwellConfig, TProductReview } from '@cromwell/core';
 import {
     getCmsModuleInfo,
     getLogger,
@@ -6,6 +6,8 @@ import {
     InputOrder,
     OrderRepository,
     readCmsModules,
+    ProductReviewInput,
+    ProductReviewRepository,
 } from '@cromwell/core-backend';
 import { Body, Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
@@ -22,6 +24,7 @@ import { ModuleInfoDto } from '../dto/module-info.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { CmsService } from '../services/cms.service';
 import { ThemeService } from '../services/theme.service';
+import { CmsStatsDto } from '../dto/cms-stats.dto';
 
 const logger = getLogger('detailed');
 
@@ -313,5 +316,56 @@ export class CmsController {
             || !input.customerPhone) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
         return getCustomRepository(OrderRepository).createOrder(input);
+    }
+
+
+    @Post('place-product-review')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(2, 20)
+    @ApiOperation({
+        description: 'Creates new Review for a product in the shop',
+    })
+    @ApiResponse({
+        status: 200,
+    })
+    async placeProductReview(@Body() input: ProductReviewInput): Promise<TProductReview> {
+        if (!input || !input.productId
+            || !(input.description || input.rating) || input.approved) throw new HttpException('Review form is incomplete', HttpStatus.NOT_ACCEPTABLE);
+
+        return getCustomRepository(ProductReviewRepository).createProductReview(input);
+    }
+
+
+    @Get('view-page')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(5, 1)
+    @ApiOperation({
+        description: `Increments views number for a page in page_stats table`,
+        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200
+    })
+    async viewPage(@Query('pageRoute') pageRoute: string): Promise<void> {
+        if (pageRoute && typeof pageRoute === 'string' && pageRoute !== '') {
+            return this.cmsService.viewPage(pageRoute);
+        } else {
+            throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+
+    @Get('stats')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator', 'guest')
+    @ApiOperation({
+        description: `Returns CMS stats for AdminPanel dashboard`,
+    })
+    @ApiResponse({
+        status: 200,
+        type: CmsStatsDto,
+    })
+    async getStats(): Promise<CmsStatsDto> {
+        return this.cmsService.getCmsStats();
     }
 }
