@@ -1,16 +1,43 @@
-import { getStoreItem, setStoreItem, TCmsConfig, TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
-import { getCmsEntity, getLogger, getNodeModuleDir, readCMSConfig, serverLogFor } from '@cromwell/core-backend';
+import {
+    getStoreItem,
+    setStoreItem,
+    TCmsConfig,
+    TCmsSettings,
+    TPackageCromwellConfig,
+    TProductReview,
+    TOrder,
+    TUserRole,
+    TUser,
+} from '@cromwell/core';
+import {
+    getCmsEntity,
+    getLogger,
+    getNodeModuleDir,
+    PageStats,
+    Product,
+    ProductReview,
+    Order,
+    User,
+    UserRepository,
+    OrderRepository,
+    ProductReviewRepository,
+    readCMSConfig,
+    serverLogFor,
+    applyGetPaged,
+} from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
+import nodemailer from 'nodemailer';
 import { join, resolve } from 'path';
 import stream from 'stream';
-import { getCustomRepository } from 'typeorm';
+import { DateUtils } from "typeorm/util/DateUtils";
+import { getCustomRepository, getManager } from 'typeorm';
 import * as util from 'util';
-import nodemailer from 'nodemailer';
-import { CmsConfigDto } from '../dto/cms-config.dto';
-import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
-import { GenericCms } from '../helpers/genericEntities';
+
 import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
+import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
+import { CmsStatsDto, SalePerDayDto } from '../dto/cms-stats.dto';
+import { GenericCms } from '../helpers/genericEntities';
 
 const logger = getLogger('detailed');
 let nodemailerTransporter;
@@ -26,21 +53,13 @@ export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
         serverLogFor('errors-only', 'getCmsSettings: Failed to read CMS config', 'Error');
         return;
     }
-
     const entity = await getCmsEntity();
 
-    const settings: TCmsSettings = Object.assign({}, cmsSettings, config, entity);
-    delete settings.defaultSettings;
+    const settings: TCmsSettings = Object.assign({}, cmsSettings,
+        config, JSON.parse(JSON.stringify(entity)), { currencies: entity.currencies });
 
-    //@ts-ignore
-    if (settings._currencies) {
-        try {
-            //@ts-ignore
-            settings.currencies = JSON.parse(settings._currencies)
-        } catch (e) { serverLogFor('errors-only', 'getCmsSettings: Failed parse currencies', 'Error'); }
-        //@ts-ignore
-        delete settings._currencies;
-    }
+    delete settings.defaultSettings;
+    delete (settings as any)._currencies;
 
     setStoreItem('cmsSettings', settings);
     return settings;
@@ -68,7 +87,7 @@ export class CmsService {
             return
         }
 
-        const handler = async (field: string, file: any, filename: string, encoding: string, mimetype: string): Promise<void> => {
+        const handler = async (field: string, file: any, filename: string): Promise<void> => {
             const fullPath = join(`${dirName}/${filename}`);
             if (await fs.pathExists(fullPath)) return;
 
@@ -82,7 +101,7 @@ export class CmsService {
         }
 
         const mp = await req.multipart(handler, (err) => {
-
+            logger.error(err);
         });
         // for key value pairs in request
         mp.on('field', function (key: any, value: any) {
@@ -208,7 +227,151 @@ export class CmsService {
             })
 
         }
+    }
 
+    async viewPage(pageRoute: string) {
+        const page = await getManager().findOne(PageStats, {
+            where: {
+                pageRoute
+            }
+        });
+        if (page) {
+            if (!page.views) page.views = 0;
+            page.views++;
+            await page.save();
+        } else {
+            const newPage = new PageStats();
+            newPage.pageRoute = pageRoute;
+            newPage.views = 1;
+            await newPage.save();
+        }
+    }
+
+    async getCmsStats(): Promise<CmsStatsDto> {
+        const stats = new CmsStatsDto();
+
+        // Reviews
+        const reviewsCountKey: keyof Product = 'reviewsCount';
+        const averageKey: keyof Product = 'averageRating';
+        const ratingKey: keyof TProductReview = 'rating';
+        const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
+
+        // Orders
+        const orderTable = getCustomRepository(OrderRepository).metadata.tablePath;
+        const totalPriceKey: keyof TOrder = 'orderTotalPrice';
+        const orderCountKey = 'orderCount';
+        const days = 7;
+
+        // Page stats
+        const pageStatsTable = 'page_stats';
+        const viewsPagesCountKey = 'viewsPagesCount';
+        const viewsSumKey: keyof PageStats = 'views';
+
+        // Customers
+        const userCountKey = 'userCount';
+        const userRoleKey: keyof TUser = 'role';
+        const userTable = getCustomRepository(UserRepository).metadata.tablePath;
+
+
+        const getReviews = async () => {
+            const reviewsStats = await getManager().createQueryBuilder(ProductReview, reviewTable)
+                .select([])
+                .addSelect(`AVG(${reviewTable}.${ratingKey})`, averageKey)
+                .addSelect(`COUNT(${reviewTable}.id)`, reviewsCountKey).execute();
+
+            stats.averageRating = reviewsStats?.[0]?.[averageKey];
+            stats.reviews = reviewsStats?.[0]?.[reviewsCountKey];
+        }
+
+        const getOrders = async () => {
+            const ordersStats = await getManager().createQueryBuilder(Order, orderTable)
+                .select([])
+                .addSelect(`SUM(${orderTable}.${totalPriceKey})`, totalPriceKey)
+                .addSelect(`COUNT(${orderTable}.id)`, orderCountKey).execute();
+
+            stats.orders = ordersStats?.[0]?.[orderCountKey];
+            stats.salesValue = ordersStats?.[0]?.[totalPriceKey];
+        }
+
+        const getSalesPerDay = async () => {
+            stats.salesPerDay = [];
+
+            for (let i = 0; i < days; i++) {
+                const dateFrom = new Date(Date.now());
+                dateFrom.setUTCDate(dateFrom.getUTCDate() - i);
+                dateFrom.setUTCHours(0);
+                dateFrom.setUTCMinutes(0);
+
+                const dateTo = new Date(dateFrom);
+                dateTo.setDate(dateTo.getDate() + 1);
+
+                const ordersStats = await getManager().createQueryBuilder(Order, orderTable)
+                    .select([])
+                    .addSelect(`SUM(${orderTable}.${totalPriceKey})`, totalPriceKey)
+                    .addSelect(`COUNT(${orderTable}.id)`, orderCountKey)
+                    .where(`${orderTable}.createDate BETWEEN :dateFrom AND :dateTo`, {
+                        dateFrom: DateUtils.mixedDateToDatetimeString(dateFrom),
+                        dateTo: DateUtils.mixedDateToDatetimeString(dateTo),
+                    })
+                    .execute();
+
+                const sales = new SalePerDayDto();
+                sales.orders = ordersStats?.[0]?.[orderCountKey] ?? 0;
+                sales.salesValue = ordersStats?.[0]?.[totalPriceKey] ?? 0;
+                sales.date = dateFrom;
+
+                stats.salesPerDay.push(sales);
+            }
+        }
+
+        const getPageViews = async () => {
+            const viewsStats = await getManager().createQueryBuilder(PageStats, pageStatsTable)
+                .select([])
+                .addSelect(`SUM(${pageStatsTable}.${viewsSumKey})`, viewsSumKey)
+                .addSelect(`COUNT(${pageStatsTable}.id)`, viewsPagesCountKey).execute();
+
+            stats.pages = viewsStats?.[0]?.[viewsPagesCountKey];
+            stats.pageViews = viewsStats?.[0]?.[viewsSumKey];
+        }
+
+        const getTopPageViews = async () => {
+            const viewsStats = await applyGetPaged(
+                getManager().createQueryBuilder(PageStats, pageStatsTable).select(), pageStatsTable, {
+                order: 'DESC',
+                orderBy: 'views',
+                pageSize: 15
+            }).getMany();
+
+            stats.topPageViews = viewsStats.map(stat => {
+                if (stat.pageRoute === 'index') stat.pageRoute = '/';
+                if (!stat.pageRoute.startsWith('/')) stat.pageRoute = '/' + stat.pageRoute;
+                return {
+                    pageRoute: stat.pageRoute,
+                    views: stat.views,
+                }
+            })
+        }
+
+        const getCustomers = async () => {
+            const customersStats = await getManager().createQueryBuilder(User, userTable)
+                .select([])
+                .addSelect(`COUNT(${userTable}.id)`, userCountKey)
+                .where(`${userTable}.${userRoleKey} = :role`, { role: 'customer' as TUserRole })
+                .execute();
+
+            stats.customers = customersStats?.[0]?.[userCountKey];
+        }
+
+        await Promise.all([
+            getReviews(),
+            getOrders(),
+            getPageViews(),
+            getCustomers(),
+            getSalesPerDay(),
+            getTopPageViews(),
+        ]);
+
+        return stats;
     }
 
 }

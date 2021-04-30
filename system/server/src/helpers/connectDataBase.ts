@@ -8,6 +8,7 @@ import {
     Product,
     Order,
     Tag,
+    PageStats,
     ProductCategory,
     ProductReview,
     ThemeEntity,
@@ -28,7 +29,7 @@ import { ThemeService } from '../services/theme.service';
 import { GenericPlugin, GenericTheme, GenericCms } from './genericEntities';
 
 
-export const connectDatabase = async () => {
+export const connectDatabase = async (sType: 'main' | 'plugin') => {
 
     const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
 
@@ -70,8 +71,8 @@ export const connectDatabase = async () => {
             Product, ProductCategory, Post, User,
             Attribute, ProductReview, Order,
             ThemeEntity, PluginEntity, CmsEntity,
-            Tag,
-            ...pluginsExports.entities,
+            Tag, PageStats,
+            ...(sType === 'plugin' ? pluginsExports.entities : []),
             ...(ormconfig.entities ?? [])
         ],
     };

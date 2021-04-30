@@ -16,9 +16,12 @@ import {
     TPageConfig,
     TPageInfo,
     TPluginConfig,
+    TProductReview,
+    TProductReviewInput,
     TThemeConfig,
     TUser,
 } from '@cromwell/core';
+import { TCmsStats } from '@cromwell/core/src/types/data';
 
 import { fetch } from '../helpers/isomorphicFetch';
 
@@ -210,6 +213,14 @@ class CRestAPIClient {
 
     public placeOrder = async (input: TOrderInput): Promise<TOrder | undefined> => {
         return this.post(`cms/place-order`, input);
+    }
+
+    public placeProductReview = async (input: TProductReviewInput): Promise<TProductReview | undefined> => {
+        return this.post(`cms/place-product-review`, input);
+    }
+
+    public getCmsStats = async (): Promise<TCmsStats | undefined> => {
+        return this.get(`cms/stats`);
     }
 
 

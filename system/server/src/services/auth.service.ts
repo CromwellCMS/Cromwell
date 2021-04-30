@@ -6,10 +6,10 @@ import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
 import { FastifyReply } from 'fastify';
 import { getCustomRepository } from 'typeorm';
-import cryptoRandomString from 'crypto-random-string';
+
 import {
-    bcryptSaltRounds,
     authSettings,
+    bcryptSaltRounds,
     TAuthUserInfo,
     TRequestWithUser,
     TTokenInfo,
@@ -147,7 +147,7 @@ export class AuthService {
                 validatedTokens = validatedTokens.slice(validatedTokens.length - maxTokensPerUser, validatedTokens.length)
             }
             return validatedTokens;
-        };
+        }
     }
 
     async saveRefreshToken(userInfo: TAuthUserInfo, newToken: string) {

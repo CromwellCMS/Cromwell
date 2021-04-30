@@ -61,9 +61,7 @@ export const ProductCard = (props?: {
                 <div>
                     <IconButton
                         aria-label="Add to cart"
-                        onClick={() => {
-
-                        }}
+                        onClick={() => { }}
                     >
                         <AddShoppingCartIcon />
                     </IconButton>

@@ -305,3 +305,26 @@ export type TStoreListItem = {
     pickedAttributes?: Record<string, string[]>;
     amount?: number;
 }
+
+export type TCmsStats = {
+    reviews: number;
+    averageRating: number;
+    pages: number;
+    pageViews: number;
+    topPageViews: TPageStats[];
+    orders: number;
+    salesValue: number;
+    salesPerDay: TSalePerDay[];
+    customers: number;
+}
+
+export type TPageStats = {
+    pageRoute: string;
+    views: number;
+}
+
+export type TSalePerDay = {
+    date: Date;
+    orders: number;
+    salesValue: number;
+}

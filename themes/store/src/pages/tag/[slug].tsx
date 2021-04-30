@@ -51,7 +51,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
 
     const handleChangeSort = (event: React.ChangeEvent<{ value: unknown }>) => {
         if (event.target.value === 'Newest') publishSort.current = 'DESC';
-        if (event.target.value === 'Older') publishSort.current = 'ASC';
+        if (event.target.value === 'Oldest') publishSort.current = 'ASC';
         updateList();
     }
 
@@ -69,7 +69,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
                             onChange={handleChangeSort}
                             defaultValue='Newest'
                         >
-                            {['Newest', 'Older'].map(sort => (
+                            {['Newest', 'Oldest'].map(sort => (
                                 <MenuItem value={sort} key={sort}>{sort}</MenuItem>
                             ))}
                         </Select>
@@ -79,30 +79,30 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
                     {(router?.isFallback) ? (
                         <LoadBox />
                     ) : (
-                        <CList<TPost>
-                            id={listId}
-                            ListItem={(props) => (
-                                <div className={styles.postWrapper}>
-                                    <PostCard data={props.data} key={props.data?.id} />
-                                </div>
-                            )}
-                            usePagination
-                            useShowMoreButton
-                            useQueryPagination
-                            disableCaching
-                            pageSize={20}
-                            maxDomPages={2}
-                            scrollContainerSelector={`.${layoutStyles.Layout}`}
-                            firstBatch={props.posts}
-                            loader={handleGetPosts}
-                            cssClasses={{
-                                page: styles.postList
-                            }}
-                            elements={{
-                                pagination: Pagination
-                            }}
-                        />
-                    )}
+                            <CList<TPost>
+                                id={listId}
+                                ListItem={(props) => (
+                                    <div className={styles.postWrapper}>
+                                        <PostCard data={props.data} key={props.data?.id} />
+                                    </div>
+                                )}
+                                usePagination
+                                useShowMoreButton
+                                useQueryPagination
+                                disableCaching
+                                pageSize={20}
+                                maxDomPages={2}
+                                scrollContainerSelector={`.${layoutStyles.Layout}`}
+                                firstBatch={props.posts}
+                                loader={handleGetPosts}
+                                cssClasses={{
+                                    page: styles.postList
+                                }}
+                                elements={{
+                                    pagination: Pagination
+                                }}
+                            />
+                        )}
                 </div>
             </div>
         </Layout>

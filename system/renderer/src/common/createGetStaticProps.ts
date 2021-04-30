@@ -11,7 +11,9 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         const pageConfigName = (pageName === 'pages/[slug]' && context?.params?.slug) ?
             `pages/${context.params.slug}` : pageName;
 
-        const handleRequset = async (req?: Promise<any>) => {
+        const pageRoute = context?.params?.slug ? pageName.replace('[slug]', context.params.slug + '') : pageName;
+
+        const handleRequset = async <T>(req?: Promise<T>): Promise<T | null> => {
             try {
                 const data = await req;
                 return JSON.parse(JSON.stringify(data ?? null));
@@ -23,13 +25,31 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
 
         const apiClient = getRestAPIClient();
         const timestamp = Date.now();
-        const childStaticProps = await getThemeStaticProps(pageName, pageGetStaticProps, context);
-        const { pluginsData, pluginsSettings } = await pluginsDataFetcher(pageConfigName, context);
-        const pageConfig: TPageConfig | null = await handleRequset(apiClient?.getPageConfig(pageConfigName));
-        const themeConfig: TThemeConfig | null = await handleRequset(apiClient?.getThemeConfig());
-        const cmsSettings = await handleRequset(apiClient?.getCmsSettings());
-        const themeCustomConfig = await handleRequset(apiClient?.getThemeCustomConfig());
-        const pagesInfo = await handleRequset(apiClient?.getPagesInfo());
+
+        handleRequset(apiClient?.get(`cms/view-page?pageRoute=${pageRoute}`));
+
+        const [
+            childStaticProps,
+            pluginsReq,
+            pageConfig,
+            themeConfig,
+            cmsSettings,
+            themeCustomConfig,
+            pagesInfo,
+        ] = await Promise.all([
+            getThemeStaticProps(pageName, pageGetStaticProps, context),
+            pluginsDataFetcher(pageConfigName, context),
+            handleRequset(apiClient?.getPageConfig(pageConfigName)),
+            handleRequset(apiClient?.getThemeConfig()),
+            handleRequset(apiClient?.getCmsSettings()),
+            handleRequset(apiClient?.getThemeCustomConfig()),
+            handleRequset(apiClient?.getPagesInfo()),
+        ]);
+
+        const {
+            pluginsData,
+            pluginsSettings,
+        } = pluginsReq;
 
         const timestamp2 = Date.now();
 

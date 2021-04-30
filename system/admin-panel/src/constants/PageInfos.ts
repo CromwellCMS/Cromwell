@@ -19,7 +19,7 @@ import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
 import AttributesPage from '../pages/attributes/AttributesPage';
 import CategoryPage from '../pages/category/CategoryPage';
 import CategoryListPage from '../pages/categoryList/CategoryList';
-import HomePage from '../pages/home/Home';
+import DashboardPage from '../pages/dashboard/Dashboard';
 import LoginPage from '../pages/login/LoginPage';
 import OrderPage from '../pages/order/Order';
 import OrderListPage from '../pages/orderList/OrderList';
@@ -58,7 +58,7 @@ export type PageInfo = {
 export const homePageInfo: PageInfo = {
     name: 'Dashboard',
     route: '/',
-    component: HomePage
+    component: DashboardPage
 };
 export const themeListPageInfo: PageInfo = {
     name: 'ThemeList',

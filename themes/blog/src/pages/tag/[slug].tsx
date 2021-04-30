@@ -51,7 +51,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
 
     const handleChangeSort = (event: React.ChangeEvent<{ value: unknown }>) => {
         if (event.target.value === 'Newest') publishSort.current = 'DESC';
-        if (event.target.value === 'Older') publishSort.current = 'ASC';
+        if (event.target.value === 'Oldest') publishSort.current = 'ASC';
         updateList();
     }
 
@@ -69,7 +69,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
                             onChange={handleChangeSort}
                             defaultValue='Newest'
                         >
-                            {['Newest', 'Older'].map(sort => (
+                            {['Newest', 'Oldest'].map(sort => (
                                 <MenuItem value={sort} key={sort}>{sort}</MenuItem>
                             ))}
                         </Select>

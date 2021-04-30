@@ -10,6 +10,7 @@ export * from './entities/Theme';
 export * from './entities/Cms';
 export * from './entities/Order';
 export * from './entities/Tag';
+export * from './entities/PageStats';
 
 export * from './entities/paged/PagedProduct';
 export * from './entities/paged/PagedMeta';

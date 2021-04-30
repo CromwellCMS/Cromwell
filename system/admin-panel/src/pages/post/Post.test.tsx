@@ -24,7 +24,7 @@ const testData: TPost = {
     title: 'test1',
     isPublished: true,
     slug: 'test_slug',
-    delta: '{ \"ops\": [{ \"insert\": \"Lorem ipsum dolor sit amet\" }, {\"attributes\":{\"header\":1},\"insert\":\"\\n\"}] }'
+    delta: '{ \"ops\": [{ \"insert\": \"Lorem ipsum dolor sit amet\" }, {\"attributes\":{\"header\":1},\"insert\":\"\\n\"}] }',  // eslint-disable-line
 }
 const updatePost = jest.fn().mockImplementation(async () => true);
 

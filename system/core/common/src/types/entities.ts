@@ -236,6 +236,8 @@ type TProductReviewCore = {
     description?: string;
     rating?: number;
     userName?: string;
+    userId?: string;
+    approved?: boolean;
 }
 
 export type TProductReview = TProductReviewCore & TBasePageEntity;
