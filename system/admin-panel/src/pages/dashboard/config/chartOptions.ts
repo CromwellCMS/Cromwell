@@ -30,7 +30,6 @@ export const getOrdersPerDayOption = (sales: TSalePerDay[]) => {
         yAxis: [
             {
                 minInterval: 1,
-                min: 1,
                 type: 'value',
             }
         ],
@@ -43,9 +42,8 @@ export const getOrdersPerDayOption = (sales: TSalePerDay[]) => {
                     color: new echarts.graphic.LinearGradient(
                         0, 0, 0, 1,
                         [
-                            { offset: 0, color: '#83bff6' },
-                            { offset: 0.5, color: '#188df0' },
-                            { offset: 1, color: '#188df0' }
+                            { offset: 0, color: '#13e0fe' },
+                            { offset: 1, color: '#4a7bbf' }
                         ]
                     )
                 },

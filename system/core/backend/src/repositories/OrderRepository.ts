@@ -1,13 +1,14 @@
-import { TOrder, TOrderInput, TPagedList, TPagedParams, TDeleteManyInput, TProductReviewInput, TProductReview } from '@cromwell/core';
-import { EntityRepository, SelectQueryBuilder, DeleteQueryBuilder } from 'typeorm';
-import { DateUtils } from "typeorm/util/DateUtils";
-import { PagedParamsInput } from './../inputs/PagedParamsInput';
+import { TDeleteManyInput, TOrder, TOrderInput, TPagedList, TPagedParams } from '@cromwell/core';
+import sanitizeHtml from 'sanitize-html';
+import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
+import { DateUtils } from 'typeorm/util/DateUtils';
 
-import { Order } from '../entities/Order';
 import { OrderFilterInput } from '../entities/filter/OrderFilterInput';
+import { Order } from '../entities/Order';
 import { getLogger } from '../helpers/constants';
 import { validateEmail } from '../helpers/validation';
-import { checkEntitySlug, handleBaseInput, getPaged } from './BaseQueries';
+import { PagedParamsInput } from './../inputs/PagedParamsInput';
+import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 
 const logger = getLogger('detailed');
@@ -52,7 +53,9 @@ export class OrderRepository extends BaseRepository<Order> {
         order.customerPhone = input.customerPhone?.replace(/\W/g, '');
         order.customerEmail = input.customerEmail;
         order.customerAddress = input.customerAddress;
-        order.customerComment = input.customerComment;
+        order.customerComment = sanitizeHtml(input.customerComment, {
+            allowedTags: []
+        });
         order.shippingMethod = input.shippingMethod;
     }
 

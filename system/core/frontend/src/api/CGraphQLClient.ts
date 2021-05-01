@@ -41,6 +41,7 @@ import {
     TOrderFilter,
     TUserFilter,
     TTag,
+    TProductReviewFilter,
     TTagInput,
     isServer,
 } from '@cromwell/core';
@@ -108,7 +109,7 @@ class CGraphQLClient {
         }
     }
 
-     public returnData = (res: any, path: string) => {
+    public returnData = (res: any, path: string) => {
         const data = res?.data?.[path];
         if (data) {
             // Data may be cached, and if it is modified somewhere in the app, 
@@ -811,6 +812,8 @@ class CGraphQLClient {
             description
             rating
             userName
+            userId
+            approved
             isEnabled
         }
   `
@@ -854,31 +857,6 @@ class CGraphQLClient {
             }
         }, path);
     }
-
-    public getProductReviewsOfProduct = async (productId: string, pagedParams?: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> => {
-        const path = GraphQLPaths.ProductReview.getFromProduct;
-        return this.query({
-            query: gql`
-                query coreGetProductReviewsOfProduct($productId: String!, $pagedParams: PagedParamsInput!) {
-                    ${path}(productId: $productId, pagedParams: $pagedParams) {
-                        pagedMeta {
-                            ...PagedMetaFragment
-                        }
-                        elements {
-                            ...ProductReviewFragment
-                        }
-                    }
-                }
-                ${this.ProductReviewFragment}
-                ${this.PagedMetaFragment}
-            `,
-            variables: {
-                productId,
-                pagedParams: pagedParams ?? {},
-            }
-        }, path);
-    }
-
 
     public updateProductReview = async (id: string, productReview: TProductReviewInput): Promise<TProductReview | undefined> => {
         const path = GraphQLPaths.ProductReview.update;
@@ -944,6 +922,53 @@ class CGraphQLClient {
         }, path);
     }
 
+    public deleteManyFilteredProductReviews = async (input: TDeleteManyInput, filterParams?: TProductReviewFilter) => {
+        const path = GraphQLPaths.ProductReview.deleteManyFiltered;
+        return this.mutate({
+            mutation: gql`
+                mutation coreDeleteManyFilteredProductReviews($input: DeleteManyInput!, $filterParams: ProductReviewFilter) {
+                    ${path}(input: $input, filterParams: $filterParams)
+                }
+            `,
+            variables: {
+                input,
+                filterParams
+            }
+        }, path);
+    }
+
+    public getFilteredProductReviews = async ({ pagedParams, filterParams, customFragment, customFragmentName }: {
+        pagedParams?: TPagedParams<TProductReview>;
+        filterParams?: TProductReviewFilter;
+        customFragment?: DocumentNode;
+        customFragmentName?: string;
+    }): Promise<TPagedList<TProductReview>> => {
+        const path = GraphQLPaths.ProductReview.getFiltered;
+
+        const fragment = customFragment ?? this.ProductReviewFragment;
+        const fragmentName = customFragmentName ?? 'ProductReviewFragment';
+
+        return this.query({
+            query: gql`
+                query coreGetFilteredProductReviews($pagedParams: PagedParamsInput, $filterParams: ProductReviewFilter) {
+                    ${path}(pagedParams: $pagedParams, filterParams: $filterParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...${fragmentName}
+                        }
+                    }
+                }
+                ${fragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                pagedParams: pagedParams ?? {},
+                filterParams,
+            }
+        }, path);
+    }
 
     // </ProductReview>
 

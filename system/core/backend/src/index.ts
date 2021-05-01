@@ -27,6 +27,7 @@ export * from './entities/filter/PostFilterInput';
 export * from './entities/filter/ProductCategoryFilterInput';
 export * from './entities/filter/OrderFilterInput';
 export * from './entities/filter/UserFilterInput';
+export * from './entities/filter/ProductReviewFilter';
 
 export * from './inputs/CreateUser';
 export * from './inputs/CreatePost';

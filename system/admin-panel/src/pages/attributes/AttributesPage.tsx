@@ -76,8 +76,8 @@ export default function AttributesPage() {
                 ))}
                 {isLoading && Array(3).fill(1).map((it, index) => {
                     return (
-                        <Grid item xs={12} sm={6} className={styles.listItem} key={index}>
-                            <Skeleton key={index} variant="rect" height="315px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
+                        <Grid item xs={12} sm={6} key={index}>
+                            <Skeleton key={index} className={styles.listItem} variant="rect" height="315px" width="100%" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
                         </Grid>
                     )
                 })}

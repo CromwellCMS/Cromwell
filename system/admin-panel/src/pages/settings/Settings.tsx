@@ -130,7 +130,9 @@ const SettingsPage = () => {
                                 showRemove
                             />
                         </Grid>
-                        <Grid item xs={12} sm={6}>
+                        <Grid item xs={12} sm={6}
+                            style={{ display: 'flex', alignItems: 'flex-end' }}
+                        >
                             <ImagePicker
                                 label="Favicon"
                                 onChange={(val) => changeSettigns('favicon', val)}

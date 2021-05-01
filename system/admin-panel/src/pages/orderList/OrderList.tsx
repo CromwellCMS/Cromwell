@@ -5,7 +5,6 @@ import { Delete as DeleteIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
-import { useHistory } from 'react-router-dom';
 import { debounce } from 'throttle-debounce';
 
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
@@ -38,7 +37,7 @@ const mapStateToProps = (state: TAppState) => {
     }
 }
 
-type TPropsType = PropsType<TAppState, {},
+type TPropsType = PropsType<TAppState, unknown,
     ReturnType<typeof mapStateToProps>>;
 
 
@@ -46,12 +45,11 @@ const OrderList = (props: TPropsType) => {
     const client = getGraphQLClient();
     const listId = "Admin_OrderList";
     const [itemToDelete, setItemToDelete] = useState<string | null>(null);
-    const history = useHistory();
     const totalElements = useRef<number | null>(null);
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const filterInput = useRef<TOrderFilter>({});
-
+    
     useEffect(() => {
         resetSelected();
         return () => {
@@ -67,7 +65,7 @@ const OrderList = (props: TPropsType) => {
     const handleGetOrders = async (params?: TPagedParams<TOrder>) => {
         if (!params) params = {};
         params.orderBy = 'createDate';
-        params.order = 'ASC';
+        params.order = 'DESC';
         const data = await client?.getFilteredOrders({
             pagedParams: params,
             filterParams: filterInput.current,

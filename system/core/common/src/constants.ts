@@ -88,7 +88,8 @@ export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
         update: "updateProductReview",
         delete: "deleteProductReview",
         deleteMany: "deleteManyProductReviews",
-        getFromProduct: "getProductReviewsOfProduct",
+        deleteManyFiltered: "deleteManyFilteredProductReviews",
+        getFiltered: "getFilteredProductReviews",
     },
     Order: {
         getOneBySlug: "getOrderBySlug",

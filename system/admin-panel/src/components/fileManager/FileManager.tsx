@@ -1,6 +1,6 @@
 import { isServer } from '@cromwell/core';
 import { getRestAPIClient, CList } from '@cromwell/core-frontend';
-import { Button, IconButton, MenuItem, TextField, Tooltip } from '@material-ui/core';
+import { Button, IconButton, MenuItem, TextField, Tooltip, Breadcrumbs } from '@material-ui/core';
 import {
     ArrowBack as ArrowBackIcon,
     ArrowForward as ArrowForwardIcon,
@@ -12,6 +12,7 @@ import {
     FolderOpen as FolderOpenIcon,
     Publish as PublishIcon,
     ZoomIn as ZoomInIcon,
+    NavigateNext as NavigateNextIcon,
 } from '@material-ui/icons';
 import React from 'react';
 import LazyLoad from 'react-lazy-load';
@@ -73,15 +74,20 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
         this.setState({ isLoading: false });
     }
 
-    public getPhoto = async (settings?: {
-        initialPath?: string;
-    }) => {
-        this.currentPath = settings?.initialPath ?? '/';
+    public getPhoto: IFileManager['getPhoto'] = async (settings) => {
         this.filePromise = new Promise(resolver => {
             this.fileResolver = resolver;
         });
         this.open();
-        this.setState({ isSelecting: true })
+        this.setState({ isSelecting: true });
+
+        if (settings?.initialPath && settings.initialPath !== '') {
+            this.openPath(settings.initialPath);
+        }
+        if (settings?.initialFileLocation && settings.initialFileLocation !== '') {
+            this.openFileLocation(settings.initialFileLocation);
+        }
+
         return this.filePromise;
     }
 
@@ -124,11 +130,28 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
         this.applyNavigate();
     }
 
-    private openDir = (dirName: string) => {
+    private openFolder = (folderName: string) => {
         this.previousPaths.push(this.currentPath);
         this.nextPaths = [];
-        this.currentPath = this.normalize(this.currentPath + '/' + dirName);
+        this.currentPath = this.normalize(this.currentPath + '/' + folderName);
         this.applyNavigate();
+    }
+
+    private openPath = (fullPath: string) => {
+        fullPath = this.normalize(fullPath);
+        if (fullPath === this.currentPath) return;
+        this.previousPaths.push(this.currentPath);
+        this.nextPaths = [];
+        this.currentPath = this.normalize('/' + fullPath);
+        this.applyNavigate();
+    }
+
+    private openFileLocation = (fullPath: string, isSelecting?: boolean) => {
+        fullPath = this.normalize(fullPath);
+        const paths = fullPath.split('/');
+        paths.pop();
+        this.openPath(paths.join('/'));
+        if (isSelecting) this.selectItem(fullPath);
     }
 
     private applyNavigate = () => {
@@ -148,26 +171,33 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
         const itemType = this.getItemType(itemName);
 
         if (!isDoubleClick) {
-            if (this.selectedItem) this.selectedItem.classList.remove(styles.selectedItem);
-            this.selectedItem = target;
-            this.selectedFileName = itemName;
-            this.selectedItem.classList.add(styles.selectedItem);
-
-            if (this.state.isSelecting && this.selectButton.current && itemType !== 'folder')
-                this.selectButton.current.style.opacity = '1';
-
-            if (this.deleteItemBtn.current) this.deleteItemBtn.current.style.opacity = '1';
+            this.selectItem(itemName);
         }
-
 
         if (itemType === 'folder') {
             if (isDoubleClick) {
-                this.openDir(itemName);
+                this.openFolder(itemName);
             }
         }
         if (itemType === 'image') {
             // this.openPreview(itemName);
         }
+    }
+
+    private selectItem = (itemName: string) => {
+        if (this.selectedItem) this.selectedItem.classList.remove(styles.selectedItem);
+
+        const target = document.getElementById('item__' + itemName) as HTMLLIElement;
+        const itemType = this.getItemType(itemName);
+
+        this.selectedItem = target;
+        this.selectedFileName = itemName;
+        this.selectedItem.classList.add(styles.selectedItem);
+
+        if (this.state.isSelecting && this.selectButton.current && itemType !== 'folder')
+            this.selectButton.current.style.opacity = '1';
+
+        if (this.deleteItemBtn.current) this.deleteItemBtn.current.style.opacity = '1';
     }
 
     private normalize = (path: string) => {
@@ -260,6 +290,8 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
     }
 
     render() {
+        const breadcrumbsPath = this.currentPath.split('/').filter(pathChunk => pathChunk !== '').join('/');
+
         return (
             <Modal
                 className={styles.FileManager}
@@ -352,6 +384,21 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                         </Tooltip>
                     </div>
                 </div>
+                <div className={styles.breadcrumbs}>
+                    <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
+                        <p className={styles.pathChunk}
+                            onClick={() => this.openPath('/')}
+                            key={'/'}>/</p>
+                        {breadcrumbsPath.split('/').map((pathChunk, index) => {
+                            const fullPath = breadcrumbsPath.split('/').slice(0, index + 1).join('/');
+                            return (
+                                <p className={styles.pathChunk}
+                                    onClick={() => this.openPath(fullPath)}
+                                    key={index}>{pathChunk}</p>
+                            )
+                        })}
+                    </Breadcrumbs>
+                </div>
                 <div className={styles.listContainer} >
                     {this.currentItems && (
                         <CList
@@ -368,6 +415,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                                 normalize: this.normalize,
                                 onItemClick: this.onItemClick,
                                 openPreview: this.openPreview,
+                                selectedFileName: this.selectedFileName,
                             }}
                             elements={{
                                 pagination: Pagination,
@@ -410,6 +458,7 @@ export type TFileItemProps = {
 }
 
 export type ListItemProps = {
+    selectedFileName?: string;
     currentPath?: string;
     getItemType: (fileName: string) => TItemType;
     normalize: (fileName: string) => string;
@@ -426,9 +475,11 @@ const FileItem = (props: TFileItemProps) => {
         normalize,
         onItemClick,
         openPreview,
+        selectedFileName,
     } = props.listItemProps;
     const itemType: TItemType = getItemType(item);
     let ItemIcon;
+    const isSelected = selectedFileName === item;
 
     if (itemType === 'file') {
         ItemIcon = <DescriptionIcon className={styles.itemIcon} />;
@@ -446,7 +497,7 @@ const FileItem = (props: TFileItemProps) => {
     }
 
     return (
-        <MenuItem className={styles.item}
+        <MenuItem className={`${styles.item} ${isSelected ? styles.selectedItem : ''}`}
             onClick={onItemClick(item)}
             id={'item__' + item}
             key={item}
