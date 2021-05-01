@@ -31,7 +31,6 @@ import SidebarLink from './SidebarLink';
 export default function Sidebar() {
     const currentInfo = pageInfos.find(i => '#' + i.route === window.location.hash);
     const currentLink = getLinkByInfo(currentInfo);
-
     const [expanded, setExpanded] = useState<string | false>(currentLink?.parentId ?? false);
     const [optionsOpen, setOptionsOpen] = useState<boolean>(false);
     const [activeId, setActiveId] = useState<string | null>(currentLink?.id ?? null);
@@ -56,7 +55,12 @@ export default function Sidebar() {
             forceUpdate();
         });
         history?.listen(() => {
-            forceUpdate();
+            const currentInfo = pageInfos.find(i => '#' + i.route === window.location.hash);
+            const newcurrentLink = getLinkByInfo(currentInfo);
+            if (currentLink && newcurrentLink !== currentLink) {
+                setActiveId(newcurrentLink.id);
+                if (newcurrentLink.parentId) setExpanded(newcurrentLink.parentId)
+            }
         });
     }, []);
 

@@ -1,8 +1,8 @@
 import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
-import { TCmsStats } from '@cromwell/core';
-import { getCStore, getRestAPIClient } from '@cromwell/core-frontend';
+import { TCmsStats, TProductReview } from '@cromwell/core';
+import { getCStore, getRestAPIClient, getGraphQLClient } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import { CountUp } from 'countup.js';
 import * as echarts from 'echarts';
@@ -12,12 +12,14 @@ import ReactResizeDetector from 'react-resize-detector';
 
 import { getOrdersPerDayOption, getSalesValuePerDayOption } from './config/chartOptions';
 import { getDefaultLayout } from './config/defaultLayout';
+import ReviewListItem from '../reviewList/ReviewListItem';
 import styles from './Dashboard.module.scss';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 export default class Dashboard extends React.Component<any, {
     stats: TCmsStats;
+    reviews: TProductReview[];
 }> {
 
     private contentRef: React.RefObject<HTMLDivElement> = React.createRef();
@@ -25,11 +27,11 @@ export default class Dashboard extends React.Component<any, {
     private salesValueChart;
 
     componentDidMount() {
-        this.init();
-
+        this.getCmsStats();
+        this.getReviews();
     }
 
-    private async init() {
+    private async getCmsStats() {
         const cstore = getCStore();
         try {
             const stats = await getRestAPIClient()?.getCmsStats();
@@ -78,6 +80,17 @@ export default class Dashboard extends React.Component<any, {
         }
     }
 
+    private async getReviews() {
+        try {
+            const reviews = await getGraphQLClient()?.getProductReviews({
+                pageSize: 10
+            });
+            if (reviews.elements) this.setState({ reviews: reviews.elements })
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     private getGridLayout = () => {
         return getDefaultLayout();
     }
@@ -90,7 +103,7 @@ export default class Dashboard extends React.Component<any, {
         return (
             <div className={styles.Dashboard} ref={this.contentRef}>
                 <ResponsiveGridLayout
-
+                    margin={[15, 15]}
                     layouts={this.getGridLayout()}
                     breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
                     rowHeight={30}
@@ -128,7 +141,7 @@ export default class Dashboard extends React.Component<any, {
                             <div className={styles.topStatCaption + ' draggableCancel'}>
                                 <h3 className={styles.topStatTitle}>Page views</h3>
                                 <p className={styles.statBig} id="pageViews">0</p>
-                                <p className={styles.statTip}>From {this.state?.stats?.pages ?? 0} pages</p>
+                                <p className={styles.statTip}>For {this.state?.stats?.pages ?? 0} pages</p>
                             </div>
                         </div>
                     </div>
@@ -171,6 +184,28 @@ export default class Dashboard extends React.Component<any, {
                                         <p className={styles.pageViewText + ' draggableCancel'}>{stats.pageRoute}</p>
                                         <p className={styles.pageViewText + ' draggableCancel'}>{stats.views ?? 0}</p>
                                     </div>
+                                )
+                            })}
+                        </div>
+                    </div>
+                    <div key="productReviews" className={styles.chartBox}>
+                        <div className={styles.chartCaption}>
+                            <p className={styles.chartTitle + ' draggableCancel'}>Recent product reviews</p>
+                        </div>
+                        <div className={styles.productReviewsList}>
+                            {this.state?.reviews?.map(review => {
+                                return (
+                                    <ReviewListItem
+                                        embedded={true}
+                                        key={review.id}
+                                        data={review}
+                                        lislistItemProps={{
+                                            handleDeleteBtnClick: () => null,
+                                            toggleSelection: () => null,
+                                            handleOpenReview: () => null,
+                                            handleApproveReview: () => null,
+                                        }}
+                                    />
                                 )
                             })}
                         </div>

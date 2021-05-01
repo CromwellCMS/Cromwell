@@ -162,8 +162,8 @@ export class CGallery extends React.Component<TCGalleryProps> {
         this.swiper = new Swiper(`#${this.swiperId}`, options);
 
         if (typeof gallerySettings?.navigation === 'object' && gallerySettings.navigation?.showOnHover) {
-            this.swiper?.navigation.nextEl?.style.setProperty('display', 'none');
-            this.swiper?.navigation.prevEl?.style.setProperty('display', 'none');
+            this.swiper?.navigation?.nextEl?.style.setProperty('display', 'none');
+            this.swiper?.navigation?.prevEl?.style.setProperty('display', 'none');
         }
     }
 
@@ -181,8 +181,8 @@ export class CGallery extends React.Component<TCGalleryProps> {
 
     private onMouseEnter = () => {
         if (typeof this.gallerySettings?.navigation === 'object' && this.gallerySettings?.navigation?.showOnHover) {
-            this.swiper?.navigation.nextEl?.style.setProperty('display', 'block');
-            this.swiper?.navigation.prevEl?.style.setProperty('display', 'block');
+            this.swiper?.navigation?.nextEl?.style.setProperty('display', 'block');
+            this.swiper?.navigation?.prevEl?.style.setProperty('display', 'block');
         }
 
         if (this.swiper && this.gallerySettings?.zoom?.zoomOnHover) {
@@ -194,8 +194,8 @@ export class CGallery extends React.Component<TCGalleryProps> {
 
     private onMouseLeave = () => {
         if (typeof this.gallerySettings?.navigation === 'object' && this.gallerySettings?.navigation?.showOnHover) {
-            this.swiper?.navigation.nextEl?.style.setProperty('display', 'none');
-            this.swiper?.navigation.prevEl?.style.setProperty('display', 'none');
+            this.swiper?.navigation?.nextEl?.style.setProperty('display', 'none');
+            this.swiper?.navigation?.prevEl?.style.setProperty('display', 'none');
         }
 
         if (this.swiper && this.gallerySettings?.zoom?.zoomOnHover) {

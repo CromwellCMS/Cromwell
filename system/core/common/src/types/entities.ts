@@ -244,6 +244,12 @@ export type TProductReview = TProductReviewCore & TBasePageEntity;
 
 export type TProductReviewInput = TProductReviewCore & TBasePageEntityInput;
 
+export type TProductReviewFilter = {
+    productId?: string;
+    userName?: string;
+    userId?: string;
+    approved?: boolean;
+}
 
 // Store order
 

@@ -271,20 +271,6 @@ query getFilteredPosts {
   }
 }
 
-query getProductReviewsOfProduct {
-	getProductReviewsOfProduct(productId: "2398", pagedParams: {}) {
-			elements {
-        id
-				productId
-        title
-        description
-        rating
-        userName
-        isEnabled
-      }
-  }
-}
-
 
 query getPosts {
   posts(pagedParams: {pageNumber: 1, pageSize: 10}) {

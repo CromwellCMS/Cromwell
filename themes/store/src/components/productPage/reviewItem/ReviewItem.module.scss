@@ -2,8 +2,9 @@
 
 div.ReviewItem {
     @include paper;
-    margin: 20px 0;
+    margin: 20px auto;
     padding: 15px;
+    max-width: 600px;
 
     .header {
         display: flex;

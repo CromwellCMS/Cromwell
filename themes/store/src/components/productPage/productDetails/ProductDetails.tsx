@@ -1,4 +1,4 @@
-import { getThemeCustomConfigProp, TAttribute, TProduct, TProductReview } from '@cromwell/core';
+import { getThemeCustomConfigProp, TAttribute, TProduct, TProductReview, onStoreChange, removeOnStoreChange, getStoreItem } from '@cromwell/core';
 import {
     CContainer,
     CGallery,
@@ -10,7 +10,7 @@ import {
     ProductAttributes,
     useRouter,
 } from '@cromwell/core-frontend';
-import { Button } from '@material-ui/core';
+import { Button, TextField } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
 
@@ -19,6 +19,7 @@ import { Pagination } from '../../pagination/Pagination';
 import { ProductActions } from '../../productPage/actions/ProductActions';
 import { ReviewItem } from '../../productPage/reviewItem/ReviewItem';
 import { SwipeableTabs } from '../../tabs/Tabs';
+import ReviewForm from '../reviewForm/ReviewForm';
 import styles from './ProductDetails.module.scss';
 
 export const ProductDetails = (props: {
@@ -158,12 +159,19 @@ export const ProductDetails = (props: {
                                             maxDomPages={2}
                                             // scrollContainerSelector={`.${layoutStyles.Layout}`}
                                             loader={async (params) => {
-                                                return client?.getProductReviewsOfProduct(product.id, params);
+                                                return client?.getFilteredProductReviews({
+                                                    pagedParams: params,
+                                                    filterParams: {
+                                                        productId: product.id + '',
+                                                        approved: true,
+                                                    }
+                                                });
                                             }}
                                             elements={{
                                                 pagination: Pagination
                                             }}
                                         />
+                                        <ReviewForm productId={product.id} />
                                     </div>
                                 )
                             },
@@ -209,3 +217,4 @@ export const ProductDetails = (props: {
 
     )
 }
+

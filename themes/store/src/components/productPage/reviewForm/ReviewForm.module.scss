@@ -1,0 +1,24 @@
+@import "../../../styles/common.module.scss";
+
+.reviewBox {
+    @include paper;
+    margin: 20px auto;
+    padding: 15px;
+    max-width: 600px;
+
+    .reviewInput {
+        margin-bottom: 20px;
+    }
+}
+
+.reviewBoxTitle {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.btnWrapper {
+    margin-top: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

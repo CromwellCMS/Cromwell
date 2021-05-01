@@ -10,6 +10,7 @@ import {
     Power as PowerIcon,
     Settings as SettingsIcon,
     ShoppingBasket as ShoppingBasketIcon,
+    Stars as StarsIcon,
     Storage as StorageIcon,
 } from '@material-ui/icons';
 import React from 'react';
@@ -29,6 +30,7 @@ import PostPage from '../pages/post/Post';
 import PostListPage from '../pages/postList/PostList';
 import ProductPage from '../pages/product/Product';
 import ProductListPage from '../pages/productList/ProductList';
+import ReviewListPage from '../pages/reviewList/ReviewList';
 import SettingsPage from '../pages/settings/Settings';
 import TagPage from '../pages/tag/Tag';
 import TagListPage from '../pages/tagList/TagList';
@@ -182,6 +184,11 @@ export const tagListPageInfo: PageInfo = {
     route: '/tag-list',
     component: TagListPage,
 }
+export const reviewListPageInfo: PageInfo = {
+    name: 'Reviews',
+    route: '/review-list',
+    component: ReviewListPage,
+}
 
 
 // Export all pages for react-router
@@ -207,7 +214,8 @@ export const pageInfos: PageInfo[] = [
     userListPageInfo,
     userPageInfo,
     tagPageInfo,
-    tagListPageInfo
+    tagListPageInfo,
+    reviewListPageInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar
@@ -246,6 +254,12 @@ export const sideBarLinks: SidebarLinkType[] = [
                 title: 'Orders',
                 route: orderListPageInfo.route,
                 icon: React.createElement(ShoppingBasketIcon)
+            },
+            {
+                id: 'Review_list',
+                title: 'Reviews',
+                route: reviewListPageInfo.route,
+                icon: React.createElement(StarsIcon)
             }
         ]
     },

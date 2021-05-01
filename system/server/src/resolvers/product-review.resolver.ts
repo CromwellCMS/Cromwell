@@ -5,6 +5,7 @@ import {
     PagedProductReview,
     ProductRepository,
     ProductReview,
+    ProductReviewFilter,
     ProductReviewInput,
     ProductReviewRepository,
 } from '@cromwell/core-backend';
@@ -17,7 +18,8 @@ const createPath = GraphQLPaths.ProductReview.create;
 const updatePath = GraphQLPaths.ProductReview.update;
 const deletePath = GraphQLPaths.ProductReview.delete;
 const deleteManyPath = GraphQLPaths.ProductReview.deleteMany;
-const getFromProductPath = GraphQLPaths.ProductReview.getFromProduct;
+const deleteManyFilteredPath = GraphQLPaths.ProductReview.deleteManyFiltered;
+const getFilteredPath = GraphQLPaths.ProductReview.getFiltered;
 
 @Resolver(ProductReview)
 export class ProductReviewResolver {
@@ -27,11 +29,6 @@ export class ProductReviewResolver {
     @Query(() => PagedProductReview)
     async [getManyPath](@Arg("pagedParams") pagedParams: PagedParamsInput<TProductReview>): Promise<TPagedList<TProductReview>> {
         return await this.repository.getProductReviews(pagedParams);
-    }
-
-    @Query(() => PagedProductReview)
-    async [getFromProductPath](@Arg("productId") productId: string, @Arg("pagedParams") pagedParams: PagedParamsInput<TProductReview>): Promise<TPagedList<TProductReview>> {
-        return getCustomRepository(ProductRepository).getReviewsOfProduct(productId, pagedParams);
     }
 
     @Query(() => ProductReview)
@@ -61,6 +58,24 @@ export class ProductReviewResolver {
     @Mutation(() => Boolean)
     async [deleteManyPath](@Arg("data") data: DeleteManyInput): Promise<boolean | undefined> {
         return this.repository.deleteMany(data);
+    }
+
+    @Authorized<TAuthRole>("administrator")
+    @Mutation(() => Boolean)
+    async [deleteManyFilteredPath](
+        @Arg("input") input: DeleteManyInput,
+        @Arg("filterParams", { nullable: true }) filterParams?: ProductReviewFilter,
+    ): Promise<boolean | undefined> {
+        return this.repository.deleteManyFilteredProductReviews(input, filterParams);
+    }
+
+    @Authorized<TAuthRole>("administrator", "guest")
+    @Query(() => PagedProductReview)
+    async [getFilteredPath](
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProductReview>,
+        @Arg("filterParams", { nullable: true }) filterParams?: ProductReviewFilter,
+    ): Promise<TPagedList<TProductReview> | undefined> {
+        return this.repository.getFilteredProductReviews(pagedParams, filterParams);
     }
 
 }

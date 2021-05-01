@@ -1,11 +1,14 @@
-import { TPagedList, TPagedParams, TProductReview, TProductReviewInput, logFor } from '@cromwell/core';
-import { EntityRepository, getCustomRepository } from 'typeorm';
+import { TDeleteManyInput, TPagedList, TPagedParams, TProductReview, TProductReviewInput } from '@cromwell/core';
+import sanitizeHtml from 'sanitize-html';
+import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
+import { ProductReviewFilter } from '../entities/filter/ProductReviewFilter';
 import { ProductReview } from '../entities/ProductReview';
-import { getPaged, handleBaseInput, checkEntitySlug } from './BaseQueries';
+import { getLogger } from '../helpers/constants';
+import { PagedParamsInput } from './../inputs/PagedParamsInput';
+import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 import { ProductRepository } from './ProductRepository';
-import { getLogger } from '../helpers/constants';
 
 const logger = getLogger('detailed');
 
@@ -33,10 +36,17 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         if (!product) throw new Error(`ProductReviewRepository:handleProductReviewInput productId ${input.productId} not found!`);
         productReview.product = product;
 
-        productReview.title = input.title;
-        productReview.description = input.description;
+
+        productReview.title = sanitizeHtml(input.title, {
+            allowedTags: []
+        });
+        productReview.description = sanitizeHtml(input.description, {
+            allowedTags: []
+        });
         productReview.rating = input.rating;
-        productReview.userName = input.userName;
+        productReview.userName = sanitizeHtml(input.userName, {
+            allowedTags: []
+        });
         productReview.approved = input.approved;
         productReview.userId = input.userId;
     }
@@ -76,6 +86,69 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
             return false;
         }
         await this.delete(id);
+        return true;
+    }
+
+    applyProductReviewFilter(qb: SelectQueryBuilder<TProductReview> | DeleteQueryBuilder<TProductReview>, filterParams?: ProductReviewFilter) {
+        // Search by approved
+        if (filterParams?.approved !== undefined && filterParams?.approved !== null) {
+
+            if (filterParams.approved) {
+                const query = `"${this.metadata.tablePath}".approved = :approvedSearch`;
+                qb.andWhere(query, { approvedSearch: filterParams.approved });
+            }
+
+            if (filterParams?.approved === false) {
+                const brackets = new Brackets(subQb => {
+                    const query = `"${this.metadata.tablePath}".approved = :approvedSearch`;
+                    subQb.where(query, { approvedSearch: filterParams.approved });
+
+                    const query2 = `"${this.metadata.tablePath}".approved IS NULL`;
+                    subQb.orWhere(query2);
+                });
+                qb.andWhere(brackets);
+            }
+        }
+
+        // Search by productId
+        if (filterParams?.productId && filterParams.productId !== '') {
+            const query = `"${this.metadata.tablePath}".productId = :productId`;
+            qb.andWhere(query, { productId: filterParams.productId });
+        }
+
+        // Search by userId
+        if (filterParams?.userId && filterParams.userId !== '') {
+            const query = `"${this.metadata.tablePath}".userId = :userId`;
+            qb.andWhere(query, { userId: filterParams.userId });
+        }
+
+        // Search by userName
+        if (filterParams?.userName && filterParams.userName !== '') {
+            const userNameSearch = `%${filterParams.userName}%`;
+            const query = `"${this.metadata.tablePath}".userName LIKE :userNameSearch`;
+            qb.andWhere(query, { userNameSearch });
+        }
+    }
+
+    async getFilteredProductReviews(pagedParams?: PagedParamsInput<TProductReview>, filterParams?: ProductReviewFilter): Promise<TPagedList<TProductReview>> {
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+        this.applyProductReviewFilter(qb, filterParams);
+        return await getPaged(qb, this.metadata.tablePath, pagedParams);
+    }
+
+
+    async deleteManyFilteredProductReviews(input: TDeleteManyInput, filterParams?: ProductReviewFilter): Promise<boolean | undefined> {
+        const qb = this.createQueryBuilder()
+            .delete().from<ProductReview>(this.metadata.tablePath);
+
+        this.applyProductReviewFilter(qb, filterParams);
+        this.applyDeletMany(qb, input);
+        try {
+            await qb.execute();
+        } catch (e) {
+            logger.error(e)
+        }
         return true;
     }
 

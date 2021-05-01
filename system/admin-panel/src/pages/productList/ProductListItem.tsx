@@ -15,6 +15,7 @@ import styles from './ProductList.module.scss';
 export type TProductItemProps = {
     data?: TProduct;
     listItemProps: ListItemProps;
+    embedded?: boolean;
 }
 
 const mapStateToProps = (state: TAppState, ownProps: TProductItemProps) => {
@@ -40,11 +41,13 @@ const ProductListItem = (props: TPropsType) => {
             {props.data && (
                 <>
                     <Grid item xs={6} className={styles.itemMain}>
-                        <div className={commonStyles.center}>
-                            <Checkbox
-                                checked={selected}
-                                onChange={() => props.listItemProps.toggleSelection(data)} />
-                        </div>
+                        {!props.embedded && (
+                            <div className={commonStyles.center}>
+                                <Checkbox
+                                    checked={selected}
+                                    onChange={() => props.listItemProps.toggleSelection(data)} />
+                            </div>
+                        )}
                         <div
                             style={{ backgroundImage: `url(${props?.data?.mainImage})` }}
                             className={styles.itemImage}
@@ -68,12 +71,14 @@ const ProductListItem = (props: TPropsType) => {
                                 <EditIcon />
                             </IconButton>
                         </Link>
-                        <IconButton
-                            aria-label="delete"
-                            onClick={() => props.listItemProps.handleDeleteProductBtnClick(props.data)}
-                        >
-                            <DeleteForeverIcon />
-                        </IconButton>
+                        {!props.embedded && (
+                            <IconButton
+                                aria-label="delete"
+                                onClick={() => props.listItemProps.handleDeleteProductBtnClick(props.data)}
+                            >
+                                <DeleteForeverIcon />
+                            </IconButton>
+                        )}
                     </Grid>
                 </>
             )}

@@ -7,7 +7,7 @@ import styles from './toast.module.scss';
 
 class Toast implements TCromwellNotify {
     success(text: string, options?: ToastOptions) {
-        toastify.info(<div className={styles.container}>
+        return toastify.info(<div className={styles.container}>
             <Alert severity="success" className={styles.alert}>{text}</Alert>
         </div>, {
             className: styles.toast,
@@ -16,7 +16,7 @@ class Toast implements TCromwellNotify {
     }
 
     warning(text: string, options?: ToastOptions) {
-        toastify.info(<div className={styles.success} >
+        return toastify.info(<div className={styles.success} >
             <Alert severity="warning" className={styles.alert}>{text}</Alert>
         </div>, {
             className: styles.toast,
@@ -25,16 +25,16 @@ class Toast implements TCromwellNotify {
     }
 
     error(text: string, options?: ToastOptions) {
-        toastify.info(<div className={styles.success}>
+        return toastify.info(<div className={styles.success}>
             <Alert severity="error" className={styles.alert}>{text}</Alert>
         </div>, {
             className: styles.toast,
             ...(options ?? {}),
         })
     }
-    
+
     info(text: string, options?: ToastOptions) {
-        toastify.info(<div className={styles.success}>
+        return toastify.info(<div className={styles.success}>
             <Alert severity="info" className={styles.alert}>{text}</Alert>
         </div>, {
             className: styles.toast,
