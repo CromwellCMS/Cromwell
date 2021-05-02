@@ -56,6 +56,8 @@ module.exports = {
         index: 'index',
         category: 'category/[slug]',
         product: 'product/[slug]',
+        post: 'blog/[slug]',
+        tag: 'tag/[slug]',
         pages: 'pages/[slug]',
     },
     pages: [

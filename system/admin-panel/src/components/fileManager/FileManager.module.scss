@@ -1,8 +1,8 @@
 @import "../../styles/common.module.scss";
 
 .FileManager {
-    width: 850px;
-    height: 600px;
+    width: 900px;
+    height: 660px;
     display: flex;
     flex-direction: column;
     background-color: #fff;
@@ -170,7 +170,7 @@
 }
 
 .breadcrumbs {
-    padding: 5px 15px 0 15px;
+    padding: 10px 15px 0 15px;
 }
 
 .pathChunk {

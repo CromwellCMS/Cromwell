@@ -1,10 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { BasePageNames, TCromwellPage, TCromwellPageCoreProps } from "@cromwell/core";
-import { getStoreItem, setStoreItem } from "@cromwell/core";
-import { Head, CContainer, pageRootContainerId } from '@cromwell/core-frontend';
-import { isValidElementType } from 'react-is';
+import { BasePageNames, getStoreItem, setStoreItem, TCromwellPage, TCromwellPageCoreProps } from '@cromwell/core';
+import { CContainer, Head, pageRootContainerId } from '@cromwell/core-frontend';
+import { DomElement } from 'htmlparser2';
+import React, { useRef, useState } from 'react';
 import ReactHtmlParser, { Transform } from 'react-html-parser';
-import { DomElement } from "htmlparser2";
+import { isValidElementType } from 'react-is';
 
 function useForceUpdate() {
     const [value, setValue] = useState(0); // integer state
@@ -50,7 +49,6 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
         }
         setStoreItem('forceUpdatePage', forceUpdatePage);
 
-        // Head SEO/meta/etc props:
         let title;
         let description;
         if (pageConfig) {

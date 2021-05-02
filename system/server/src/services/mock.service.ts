@@ -1,13 +1,12 @@
 import {
     TAttributeInput,
+    TCreateUser,
     TOrderInput,
     TPost,
     TProduct,
     TProductCategoryInput,
     TProductReview,
     TProductReviewInput,
-    TCreateUser,
-    TStoreListItem,
     TTag,
 } from '@cromwell/core';
 import {
@@ -21,9 +20,9 @@ import {
     UserRepository,
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
+import cryptoRandomString from 'crypto-random-string';
 import nameGenerator from 'project-name-generator';
 import { getCustomRepository } from 'typeorm';
-import cryptoRandomString from 'crypto-random-string';
 
 import { AuthService } from './auth.service';
 
@@ -197,7 +196,7 @@ export class MockService {
                     const imgs: string[] = [mainImage];
                     for (let i = 0; i < imagesNum; i++) {
                         imgs.push(getRandImg())
-                    };;
+                    }
                     return imgs;
                 })(),
                 description: description,
@@ -294,7 +293,7 @@ export class MockService {
                             description: name + ' description',
                             parentId: subcatLevel2.id
                         } as TProductCategoryInput;
-                        const subcatLevel3 = await this.productCategoryRepo.createProductCategory(subcatIput3);
+                        await this.productCategoryRepo.createProductCategory(subcatIput3);
                     }
                 }
             }
@@ -321,6 +320,7 @@ export class MockService {
 
     public getRandomElementsFromArray<T>(array: Array<T>, maxNum: number) {
         const actualNum = Math.round(Math.random() * maxNum);
+        array = this.shuffleArray([...array]);
         const result: T[] = [];
         for (let i = 0; i < actualNum; i++) {
             const idx = Math.round(Math.random() * array.length);
@@ -395,10 +395,9 @@ export class MockService {
             },
         ]
 
-        for (let user of users) {
+        for (const user of users) {
             await this.userRepo.createUser(user);
         }
-
         return true;
     }
 
@@ -476,7 +475,7 @@ export class MockService {
                     product: {
                         id: '2',
                     },
-                }]
+                }],
             },
             {
                 customerName: 'Michael',
@@ -530,12 +529,29 @@ export class MockService {
             },
         ];
 
-        for (const data of mockedOrders) {
-            await this.orderRepo.createOrder(data);
+        const promises: Promise<any>[] = [];
+        // 14 days
+        for (let i = 0; i < 14; i++) {
+            const dateFrom = new Date(Date.now());
+            dateFrom.setUTCDate(dateFrom.getUTCDate() - i);
+
+            // 15 - 50 orders a day
+            for (let j = 0; j < Math.ceil(Math.random() * 45) + 15; j++) {
+                const createOrder = async () => {
+                    const order = await this.orderRepo.createOrder({
+                        ...(this.shuffleArray([...mockedOrders])[0])
+                    });
+                    order.createDate = dateFrom;
+                    await order.save();
+                }
+                promises.push(createOrder());
+            }
         }
 
+        await Promise.all(promises);
         return true;
     }
+
 
     public async mockTags() {
         // Clear

@@ -3,40 +3,41 @@ import {
     setStoreItem,
     TCmsConfig,
     TCmsSettings,
+    TOrder,
     TPackageCromwellConfig,
     TProductReview,
-    TOrder,
-    TUserRole,
     TUser,
+    TUserRole,
 } from '@cromwell/core';
 import {
+    applyGetPaged,
     getCmsEntity,
     getLogger,
     getNodeModuleDir,
+    Order,
+    OrderRepository,
     PageStats,
     Product,
     ProductReview,
-    Order,
-    User,
-    UserRepository,
-    OrderRepository,
     ProductReviewRepository,
     readCMSConfig,
     serverLogFor,
-    applyGetPaged,
+    User,
+    UserRepository,
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import nodemailer from 'nodemailer';
 import { join, resolve } from 'path';
 import stream from 'stream';
-import { DateUtils } from "typeorm/util/DateUtils";
 import { getCustomRepository, getManager } from 'typeorm';
+import { DateUtils } from 'typeorm/util/DateUtils';
 import * as util from 'util';
 
 import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { CmsStatsDto, SalePerDayDto } from '../dto/cms-stats.dto';
+import { PageStatsDto } from '../dto/page-stats.dto';
 import { GenericCms } from '../helpers/genericEntities';
 
 const logger = getLogger('detailed');
@@ -229,10 +230,12 @@ export class CmsService {
         }
     }
 
-    async viewPage(pageRoute: string) {
+    async viewPage(input: PageStatsDto) {
+        if (!input?.pageRoute || input.pageRoute === '') return;
+
         const page = await getManager().findOne(PageStats, {
             where: {
-                pageRoute
+                pageRoute: input.pageRoute
             }
         });
         if (page) {
@@ -241,7 +244,13 @@ export class CmsService {
             await page.save();
         } else {
             const newPage = new PageStats();
-            newPage.pageRoute = pageRoute;
+            newPage.pageRoute = input.pageRoute;
+
+            newPage.productSlug = input.productSlug;
+            newPage.categorySlug = input.categorySlug;
+            newPage.postSlug = input.postSlug;
+            newPage.tagSlug = input.tagSlug;
+
             newPage.views = 1;
             await newPage.save();
         }
@@ -373,6 +382,5 @@ export class CmsService {
 
         return stats;
     }
-
 }
 

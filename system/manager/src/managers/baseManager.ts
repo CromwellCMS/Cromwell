@@ -240,7 +240,7 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
             currentVersion = null
         }
     } catch (e) {
-        console.error(e)
+        // console.error(e)
     }
 
     const watchService = async (serviceName: keyof TServiceVersions) => {
@@ -259,7 +259,7 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
             if (currentVersion === null && remoteSettings) {
                 currentVersion = remoteVersion;
             }
-        } catch (e) { };
+        } catch (e) { }
 
         setTimeout(() => {
             watchService(serviceName);

@@ -146,7 +146,6 @@ export class ThemeController {
                 }
             })
         });
-
         return out;
     }
 
@@ -194,9 +193,9 @@ export class ThemeController {
     async getThemeConfig(): Promise<TThemeConfig | null> {
         logger.log('ThemeController::getThemeConfig');
         const { themeConfig } = await this.themeService.readConfigs();
-
-        return themeConfig;
+        return new ThemeConfigDto().parse(themeConfig);
     }
+
 
     @Get('info')
     @ApiOperation({

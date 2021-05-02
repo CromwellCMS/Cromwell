@@ -49,7 +49,7 @@ const OrderList = (props: TPropsType) => {
     const [deleteSelectedOpen, setDeleteSelectedOpen] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const filterInput = useRef<TOrderFilter>({});
-    
+
     useEffect(() => {
         resetSelected();
         return () => {
@@ -59,7 +59,8 @@ const OrderList = (props: TPropsType) => {
 
     const resetList = () => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
-        list?.updateData();
+        list?.clearState();
+        list?.init();
     }
 
     const handleGetOrders = async (params?: TPagedParams<TOrder>) => {

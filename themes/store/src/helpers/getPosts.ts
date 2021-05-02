@@ -3,6 +3,9 @@ import { TPagedParams, TPost, TPostFilter } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 
 export const handleGetFilteredPosts = async (params: TPagedParams<TPost>, filter?: TPostFilter) => {
+    if (!filter) filter = {};
+    filter.published = true;
+
     const client = getGraphQLClient();
     return client?.getFilteredPosts({
         pagedParams: params,
@@ -27,6 +30,7 @@ export const handleGetFilteredPosts = async (params: TPagedParams<TPost>, filter
                     color
                     image
                 }
+                isPublished 
                 publishDate
                 readTime
         }

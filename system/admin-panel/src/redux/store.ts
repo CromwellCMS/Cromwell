@@ -1,5 +1,5 @@
 import { createStore } from 'react-redux-ts';
-import { TCromwellBlock } from '@cromwell/core';
+import { TCromwellBlock, TThemeConfig } from '@cromwell/core';
 import { Draggable } from '../helpers/Draggable/Draggable';
 
 export type TAppState = {
@@ -7,6 +7,7 @@ export type TAppState = {
     allSelected: boolean;
     selectedBlock?: TCromwellBlock;
     draggable?: Draggable;
+    activeTheme?: TThemeConfig;
 }
 
 export const store = createStore<TAppState>(undefined, {

@@ -1,26 +1,27 @@
 import {
     BasePagePaths,
     getStoreItem,
+    TDeleteManyInput,
     TFilteredProductList,
     TPagedList,
     TPagedParams,
     TProduct,
-    TProductFilter,
     TProductFilterMeta,
     TProductInput,
     TProductRating,
     TProductReview,
-    TDeleteManyInput,
 } from '@cromwell/core';
-import { Brackets, EntityRepository, getCustomRepository, SelectQueryBuilder, DeleteQueryBuilder, QueryBuilder } from 'typeorm';
+import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
 import { ProductFilterInput } from '../entities/filter/ProductFilterInput';
+import { PageStats } from '../entities/PageStats';
 import { Product } from '../entities/Product';
 import { ProductReview } from '../entities/ProductReview';
 import { getLogger } from '../helpers/constants';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { applyGetManyFromOne, checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
+import { PageStatsRepository } from './PageStatsRepository';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { ProductReviewRepository } from './ProductReviewRepository';
 
@@ -29,14 +30,15 @@ const averageKey: keyof Product = 'averageRating';
 const reviewsCountKey: keyof Product = 'reviewsCount';
 const ratingKey: keyof TProductReview = 'rating';
 
+
 @EntityRepository(Product)
 export class ProductRepository extends BaseRepository<Product> {
 
     constructor() {
-        super(Product)
+        super(Product);
     }
 
-    async applyGetProductRating(qb: SelectQueryBuilder<TProduct>) {
+    applyGetProductRating(qb: SelectQueryBuilder<TProduct>) {
         const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
         qb.addSelect(`AVG(${reviewTable}.${String(ratingKey)})`, 'product_' + averageKey)
             .addSelect(`COUNT(${reviewTable}.id)`, 'product_' + reviewsCountKey)
@@ -44,11 +46,22 @@ export class ProductRepository extends BaseRepository<Product> {
             .groupBy(`${this.metadata.tablePath}.id`);
     }
 
+    applyGetProductViews(qb: SelectQueryBuilder<TProduct>) {
+        const statsTable = getCustomRepository(PageStatsRepository).metadata.tablePath;
+        qb.addSelect(`${statsTable}.views`, 'product_views')
+            .leftJoin(PageStats, statsTable, `${statsTable}.productSlug = ${this.metadata.tablePath}.slug`)
+    }
+
     async applyAndGetPagedProducts(qb: SelectQueryBuilder<TProduct>, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         this.applyGetProductRating(qb);
 
         if (params?.orderBy === "rating") {
             params.orderBy = 'product_' + averageKey as any;
+            return getPaged(qb, undefined, params);
+        }
+        if (params?.orderBy === 'views') {
+            this.applyGetProductViews(qb);
+            params.orderBy = 'product_views' as any;
             return getPaged(qb, undefined, params);
         }
         return getPaged(qb, this.metadata.tablePath, params);

@@ -79,10 +79,9 @@ export const PostInfo = (props: { data?: TPost }) => {
                 <p className={styles.authorName} >{data?.author?.fullName}</p>
                 <div className={styles.dateAndReadInfo}>
                     <p className={styles.publishDate}>{data?.publishDate ? format(Date.parse(String(data.publishDate)), 'd MMMM yyyy') : ''}</p>
-                    {data?.readTime && (
+                    {(data?.readTime && parseInt(data.readTime) !== 0) && (
                         <p className={styles.readTime}>{Math.round(parseFloat(data.readTime))} min read</p>
                     )}
-
                 </div>
             </div>
         </div>

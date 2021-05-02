@@ -1,5 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
 import { TCmsStats } from '@cromwell/core';
+import { ApiProperty } from '@nestjs/swagger';
+
+import { PageStatsDto } from './page-stats.dto';
 
 export class SalePerDayDto {
     @ApiProperty()
@@ -10,14 +12,6 @@ export class SalePerDayDto {
 
     @ApiProperty()
     salesValue: number;
-}
-
-export class PageViewDto {
-    @ApiProperty()
-    pageRoute: string;
-
-    @ApiProperty()
-    views: number;
 }
 
 export class CmsStatsDto implements TCmsStats {
@@ -42,8 +36,8 @@ export class CmsStatsDto implements TCmsStats {
     @ApiProperty()
     pageViews: number;
 
-    @ApiProperty({ type: [PageViewDto] })
-    topPageViews: PageViewDto[];
+    @ApiProperty({ type: [PageStatsDto] })
+    topPageViews: PageStatsDto[];
 
     @ApiProperty()
     customers: number;

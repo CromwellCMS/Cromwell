@@ -118,7 +118,8 @@ const ProductList = (props: TPropsType) => {
     const resetList = () => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
         totalElements.current = null;
-        list.updateData();
+        list?.clearState();
+        list?.init();
     }
 
     const handleFilterInput = debounce(1000, () => {

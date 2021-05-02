@@ -1,5 +1,5 @@
 import { BasePageNames, getStoreItem, isServer, StaticPageContext } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestAPIClient, TPluginsModifications } from '@cromwell/core-frontend';
 
 import { fsRequire } from '../helpers/checkCMSConfig';
 
@@ -19,7 +19,7 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
     }
     const restAPIClient = getRestAPIClient();
 
-    let pluginsModifications;
+    let pluginsModifications: Record<string, TPluginsModifications> | undefined;
     try {
         pluginsModifications = await restAPIClient?.getPluginsModifications(pageName);
     } catch (e) {

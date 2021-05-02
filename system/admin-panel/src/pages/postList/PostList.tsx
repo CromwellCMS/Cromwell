@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { getBlockInstance, TPagedParams, TPost, TPostFilter, TUser, TTag } from '@cromwell/core';
 import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, TextField, Tooltip } from '@material-ui/core';
+import { Checkbox, IconButton, TextField, Tooltip, Select, MenuItem } from '@material-ui/core';
 import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
@@ -82,6 +82,9 @@ const PostList = (props: TPropsType) => {
 
 
     const handleGetPosts = async (params: TPagedParams<TPost>) => {
+        if (!params) params = {};
+        params.orderBy = 'createDate';
+        params.order = 'DESC';
         const data = await client?.getFilteredPosts({
             customFragment: gql`
                 fragment PostListFragment on Post {
@@ -97,6 +100,7 @@ const PostList = (props: TPropsType) => {
                         avatar
                     }
                     mainImage
+                    publishDate
                     isPublished
                 }
             `,
@@ -183,6 +187,20 @@ const PostList = (props: TPropsType) => {
         resetSelected();
     }
 
+    const handleChangePublished = (event: any) => {
+        switch (event.target.value) {
+            case 'all':
+                filterInput.current.published = undefined;
+                break;
+            case 'published':
+                filterInput.current.published = true;
+                break;
+            case 'draft':
+                filterInput.current.published = false;
+                break;
+        }
+        resetList();
+    }
 
     return (
         <div className={styles.PostList}>
@@ -234,6 +252,15 @@ const PostList = (props: TPropsType) => {
                             />
                         )}
                     />
+                    <Select
+                        className={styles.filterItem}
+                        defaultValue="all"
+                        onChange={handleChangePublished}
+                    >
+                        <MenuItem value={'all'}>All</MenuItem>
+                        <MenuItem value={'published'}>Published</MenuItem>
+                        <MenuItem value={'draft'}>Draft</MenuItem>
+                    </Select>
                 </div>
                 <div className={styles.pageActions} >
                     <Tooltip title="Delete selected">

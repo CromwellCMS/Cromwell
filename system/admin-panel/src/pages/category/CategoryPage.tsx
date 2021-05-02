@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
-import { TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
+import { serviceLocator, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, IconButton, TextField } from '@material-ui/core';
-import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
+import { Button, IconButton, TextField, Tooltip } from '@material-ui/core';
+import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
@@ -12,6 +12,7 @@ import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
 import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
+import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
 
@@ -122,10 +123,6 @@ export default function CategoryPage(props) {
         }
     }
 
-    const handleClearImage = async () => {
-        handleInputChange('mainImage', undefined)
-    }
-
     const handleSearchRequest = async (text: string, params: TPagedParams<TProductCategory>) => {
         return client?.getFilteredProductCategories({
             filterParams: {
@@ -203,6 +200,12 @@ export default function CategoryPage(props) {
         )
     }
 
+    const themeCategoryPage = store.getState()?.activeTheme?.defaultPages?.category;
+    let pageFullUrl;
+    if (themeCategoryPage && category) {
+        pageFullUrl = serviceLocator.getFrontendUrl() + '/' + themeCategoryPage.replace('[slug]', category.slug ?? category.id ?? '');
+    }
+
     return (
         <div className={styles.CategoryPage}>
             <div className={styles.header}>
@@ -216,6 +219,18 @@ export default function CategoryPage(props) {
                     <p className={commonStyles.pageTitle}>category</p>
                 </div>
                 <div className={styles.headerActions}>
+                    {pageFullUrl && (
+                        <Tooltip title="Open category page in new tab">
+                            <IconButton
+                                style={{ marginRight: '10px' }}
+                                className={styles.openPageBtn}
+                                aria-label="open"
+                                onClick={() => { window.open(pageFullUrl, '_blank'); }}
+                            >
+                                <OpenInNewIcon />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
                         size="small"
@@ -252,19 +267,20 @@ export default function CategoryPage(props) {
                 <div className={styles.descriptionEditor}>
                     <div style={{ height: '300px' }} id={editorId}></div>
                 </div>
-                <TextField label="Page slug (SEO URL)"
+                <TextField label="Page URL"
                     value={category?.slug || ''}
                     fullWidth
                     className={styles.textField}
+                    helperText={pageFullUrl}
                     onChange={(e) => { handleInputChange('slug', e.target.value) }}
                 />
-                <TextField label="Meta title (SEO)"
+                <TextField label="Meta title"
                     value={category?.pageTitle || ''}
                     fullWidth
                     className={styles.textField}
                     onChange={(e) => { handleInputChange('pageTitle', e.target.value) }}
                 />
-                <TextField label="Meta description (SEO)"
+                <TextField label="Meta description"
                     value={category?.pageDescription || ''}
                     fullWidth
                     className={styles.textField}

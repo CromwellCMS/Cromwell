@@ -26,9 +26,10 @@
   "exclude": [
     "node_modules",
     ".cromwell",
-    "build"
+    "build",
+    "migration"
   ],
   "include": [
-    "src/**/*.ts", "src/dto",
+    "src/**/*.ts",
   ],
 }

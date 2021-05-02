@@ -139,12 +139,10 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
     }
 
     public updateData = async () => {
-        this.clearState();
+        this.dataList = [];
+        this.list = [];
+        this.pageStatuses = [];
         await this.fetchFirstBatch();
-        const props = this.getProps();
-        if (props.usePagination && this.paginationInst) {
-            this.paginationInst.init();
-        }
     }
 
     private fetchFirstBatch = async () => {

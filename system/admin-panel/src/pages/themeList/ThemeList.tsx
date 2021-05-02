@@ -8,13 +8,13 @@ import { useHistory } from 'react-router-dom';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { toast } from '../../components/toast/toast';
 import { themeEditPageInfo } from '../../constants/PageInfos';
+import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './ThemeList.module.scss';
 
 export default function ThemeList() {
     const [infos, setInfos] = useState<TPackageCromwellConfig[]>([]);
     const [themeList, setThemeList] = useState<TThemeEntity[] | null>(null);
-    const [isListLoading, setIsListLoading] = useState<boolean>(true);
     const [isChangingTheme, setIsChangingTheme] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [cmsConfig, setCmsConfig] = useState<TCmsSettings | undefined>(getCmsSettings());
@@ -29,7 +29,7 @@ export default function ThemeList() {
 
             // Get info by parsing directory 
             const infos = await client?.getThemesInfo();
-            infos?.sort((a, b) => (updatedConfig && a.name === updatedConfig.themeName) ? -1 : 1)
+            infos?.sort((a) => (updatedConfig && a.name === updatedConfig.themeName) ? -1 : 1)
             if (infos) setInfos(infos);
         } catch (e) {
             console.error(e);
@@ -55,17 +55,39 @@ export default function ThemeList() {
     const handleSetActiveTheme = async (info: TPackageCromwellConfig) => {
         if (client) {
             setIsChangingTheme(true);
-            const success = await client.changeTheme(info.name);
+            let success;
+            try {
+                success = await client.changeTheme(info.name);
+            } catch (error) {
+                console.error(error);
+            }
+
+            try {
+                const updatedConfig = await client.getCmsSettings();
+                infos?.sort((a) => (updatedConfig && a.name === updatedConfig.themeName) ? -1 : 1)
+                setCmsConfig(updatedConfig);
+            } catch (error) {
+                console.error(error);
+            }
+
+            try {
+                const themeConfig = await client.getThemeConfig();
+                if (themeConfig) {
+                    store.setStateProp({
+                        prop: 'activeTheme',
+                        payload: themeConfig,
+                    });
+                }
+            } catch (error) {
+                console.error(error);
+            }
+
             if (success) {
                 toast.success('Applied new theme');
             } else {
                 toast.error('Failed to set new theme');
             }
             setIsChangingTheme(false);
-
-            const updatedConfig = await client.getCmsSettings();
-            infos?.sort((a, b) => (updatedConfig && a.name === updatedConfig.themeName) ? -1 : 1)
-            setCmsConfig(updatedConfig);
         }
     }
 

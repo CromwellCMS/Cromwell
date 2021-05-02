@@ -8,10 +8,10 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CContainer, CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import Layout from '../components/layout/Layout';
 import layoutStyles from '../components/layout/Layout.module.scss';
@@ -33,15 +33,25 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
     const publishSort = useRef<"ASC" | "DESC">('DESC');
     const forceUpdate = useForceUpdate();
 
+    const resetList = () => {
+        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        list?.clearState();
+        list?.init();
+    }
+
     const updateList = () => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
         list?.updateData();
     }
 
+    useEffect(() => {
+        updateList();
+    }, []);
+
     const handleChangeTags = (event: any, newValue?: (TTag | undefined | string)[]) => {
         filterInput.current.tagIds = newValue?.map(tag => (tag as TTag)?.id);
         forceUpdate();
-        updateList();
+        resetList();
     }
 
     const handleGetPosts = (params: TPagedParams<TPost>) => {
@@ -53,7 +63,7 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
     const handleChangeSort = (event: React.ChangeEvent<{ value: unknown }>) => {
         if (event.target.value === 'Newest') publishSort.current = 'DESC';
         if (event.target.value === 'Oldest') publishSort.current = 'ASC';
-        updateList();
+        resetList();
     }
 
     const handleTagClick = (tag?: TTag) => {
@@ -130,7 +140,7 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
 
 export default BlogPage;
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProps> => {
+export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
     const client = getGraphQLClient();
 
     let posts: TPagedList<TPost> | undefined;

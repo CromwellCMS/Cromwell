@@ -58,6 +58,7 @@ export * from './repositories/PluginRepository';
 export * from './repositories/PostRepository';
 export * from './repositories/OrderRepository';
 export * from './repositories/TagRepository';
+export * from './repositories/PageStatsRepository';
 
 
 export * from './helpers/readThemeExports';

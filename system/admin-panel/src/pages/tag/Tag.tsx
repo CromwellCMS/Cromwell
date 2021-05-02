@@ -1,14 +1,15 @@
-import { TStoreListItem, TTag, TTagInput } from '@cromwell/core';
+import { serviceLocator, TTag, TTagInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, IconButton, TextField, Grid } from '@material-ui/core';
-import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
+import { Button, Grid, IconButton, TextField, Tooltip } from '@material-ui/core';
+import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
-import React, { useEffect, useRef, useState } from 'react';
-import { Link, useParams, useHistory } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Link, useHistory, useParams } from 'react-router-dom';
 
-import { toast } from '../../components/toast/toast';
 import ColorPicker from '../../components/colorPicker/ColorPicker';
+import { toast } from '../../components/toast/toast';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
+import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Tag.module.scss';
 
@@ -108,6 +109,12 @@ const TagPage = () => {
         )
     }
 
+    const themeTagPage = store.getState()?.activeTheme?.defaultPages?.tag;
+    let pageFullUrl;
+    if (themeTagPage && data) {
+        pageFullUrl = serviceLocator.getFrontendUrl() + '/' + themeTagPage.replace('[slug]', data.slug ?? data.id ?? '');
+    }
+
     return (
         <div className={styles.TagPage}>
             <div className={styles.header}>
@@ -121,6 +128,18 @@ const TagPage = () => {
                     <p className={commonStyles.pageTitle}>tag</p>
                 </div>
                 <div className={styles.headerActions}>
+                    {pageFullUrl && (
+                        <Tooltip title="Open tag page in new tab">
+                            <IconButton
+                                style={{ marginRight: '10px' }}
+                                className={styles.openPageBtn}
+                                aria-label="open"
+                                onClick={() => { window.open(pageFullUrl, '_blank'); }}
+                            >
+                                <OpenInNewIcon />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
                         size="small"
@@ -153,16 +172,17 @@ const TagPage = () => {
                         </Grid>
                         <Grid item xs={12} sm={6}>
                             <TextField
-                                label="Page slug"
+                                label="Page URL"
                                 className={styles.textField}
                                 fullWidth
                                 value={data?.slug || ''}
+                                helperText={pageFullUrl}
                                 onChange={(e) => { handleInputChange('slug', e.target.value) }}
                             />
                         </Grid>
                         <Grid item xs={12}>
                             <TextField
-                                label="Page meta title (SEO)"
+                                label="Meta title"
                                 className={styles.textField}
                                 fullWidth
                                 value={data?.pageTitle || ''}
@@ -171,7 +191,7 @@ const TagPage = () => {
                         </Grid>
                         <Grid item xs={12} >
                             <TextField
-                                label="Page meta description (SEO)"
+                                label="Meta description"
                                 className={styles.textField}
                                 fullWidth
                                 value={data?.pageDescription || ''}

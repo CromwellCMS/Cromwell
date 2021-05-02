@@ -50,21 +50,17 @@
         border-radius: 5px;
         margin: 10px 0;
         display: flex;
+        padding: 10px;
     }
 
-    .imageWrapper {
-        width: 100%;
-        height: 100%;
+    .imageItem {
+        position: relative;
         transition: 0.3s;
-        border: 2px solid transparent;
     }
 
-    .imageWrapper:hover {
-        // border: 2px solid #ccc;
-
-        .imageActions {
-            opacity: 1;
-        }
+    .imageItem:hover {
+        background-color: #eee;
+        border-radius: 8px;
     }
 
     .imageActions {
@@ -160,6 +156,10 @@
 
     button.galleryAddImageBtn {
         @extend .galleryActionBtn;
+    }
+
+    .openPageBtn {
+        margin-right: 10px;
     }
 }
 

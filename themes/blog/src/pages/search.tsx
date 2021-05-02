@@ -35,7 +35,8 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
 
     const updateList = () => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
-        list?.updateData();
+        list?.clearState();
+        list?.init();
     }
 
     const handleChangeTags = (event: any, newValue?: (TTag | undefined | string)[]) => {

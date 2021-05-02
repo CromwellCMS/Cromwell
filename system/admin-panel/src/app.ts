@@ -1,18 +1,18 @@
+import { setStoreItem } from '@cromwell/core';
 import * as core from '@cromwell/core';
-import { getRestAPIClient, getGraphQLClient } from '@cromwell/core-frontend';
+import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
 import * as coreFrontend from '@cromwell/core-frontend';
 import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux-ts';
-import { loginPageInfo, welcomePageInfo } from './constants/PageInfos';
+
 import Layout from './components/layout/Layout';
-import { setStoreItem } from '@cromwell/core';
-import { store } from './redux/store';
 import { toast } from './components/toast/toast';
+import { loginPageInfo, welcomePageInfo } from './constants/PageInfos';
+import { store } from './redux/store';
 
 const importer = getModuleImporter();
-
 importer.modules['@cromwell/core-frontend'] = coreFrontend;
 importer.modules['@cromwell/core'] = core;
 
@@ -21,19 +21,31 @@ importer.modules['@cromwell/core'] = core;
     const restClient = getRestAPIClient();
     const graphClient = getGraphQLClient();
 
-    try {
-        const config = await restClient?.getCmsSettingsAndSave();
 
-        // Redirect to /setup page if not installed
-        if (config && !config.installed) {
-            isInstalled = false;
-            if (!window.location.hash.includes(welcomePageInfo.route)) {
-                window.location.href = '/admin/#' + welcomePageInfo.route;
-                // window.location.reload();
-            }
+    const request = async <T>(req: Promise<T>): Promise<T> => {
+        try {
+            return await req;
+        } catch (e) {
+            console.error(e);
         }
-    } catch (e) {
-        console.error(e);
+    }
+    const [
+        settings,
+        userInfo,
+        themeConfig
+    ] = await Promise.all([
+        request(restClient?.getCmsSettingsAndSave()),
+        request(restClient?.getUserInfo()),
+        request(restClient?.getThemeConfig()),
+    ]);
+
+    // Redirect to /setup page if not installed
+    if (settings && !settings.installed) {
+        isInstalled = false;
+        if (!window.location.hash.includes(welcomePageInfo.route)) {
+            window.location.href = '/admin/#' + welcomePageInfo.route;
+            // window.location.reload();
+        }
     }
 
     const onUnauthorized = async () => {
@@ -80,25 +92,26 @@ importer.modules['@cromwell/core'] = core;
         }
 
         // Redirect to /login page if not authorized
-        try {
-            const userInfo = await restClient?.getUserInfo();
-            if (!userInfo) {
-                if (!window.location.hash.includes(loginPageInfo.route)) {
-                    window.location.href = '/admin/#' + loginPageInfo.route;
-                    // window.location.reload();
-                }
+        if (!userInfo) {
+            if (!window.location.hash.includes(loginPageInfo.route)) {
+                window.location.href = '/admin/#' + loginPageInfo.route;
+                // window.location.reload();
             }
-            setStoreItem('userInfo', userInfo);
-        } catch (e) {
-            console.error(e);
         }
+        setStoreItem('userInfo', userInfo);
     }
 
+    if (themeConfig) {
+        store.setStateProp({
+            prop: 'activeTheme',
+            payload: themeConfig,
+        })
+    }
 
     ReactDOM.render(
-        <Provider store={store}>
-            <Layout />
-        </Provider>,
+        React.createElement(Provider, {
+            store,
+        }, React.createElement(Layout)),
         document.getElementById('root')
     );
 })();

@@ -27,7 +27,7 @@ export {
     CromwellBlockCSSclass,
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient } from './api/CGraphQLClient';
-export { getRestAPIClient } from './api/CRestAPIClient';
+export { getRestAPIClient, TCRestAPIClient, TPluginsModifications } from './api/CRestAPIClient';
 export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore } from './CStore';
 export { loadFrontendBundle } from './helpers/loadFrontendBundle';

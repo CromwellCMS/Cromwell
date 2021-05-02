@@ -1,0 +1,117 @@
+const { MigrationInterface, QueryRunner } = require("typeorm");
+
+module.exports = class init1619900923537 {
+    name = 'init1619900923537'
+
+    async up(queryRunner) {
+        await queryRunner.query(`CREATE TABLE "crw_product_category" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar NOT NULL, "mainImage" varchar, "description" varchar, "descriptionDelta" varchar, "parentId" integer, CONSTRAINT "UQ_273d34ee465b63376bead18bbf2" UNIQUE ("slug"))`);
+        await queryRunner.query(`CREATE TABLE "crw_product_review" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "productId" integer NOT NULL, "title" varchar, "description" varchar, "rating" float, "userName" varchar, "userId" varchar, "approved" boolean, CONSTRAINT "UQ_2fa3845bbaf6607041282074f3a" UNIQUE ("slug"))`);
+        await queryRunner.query(`CREATE TABLE "crw_product" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar, "price" float, "oldPrice" float, "mainImage" varchar, "images" text, "description" varchar, "descriptionDelta" varchar, "attributesJSON" varchar, "averageRating" decimal, "reviewsCount" integer, CONSTRAINT "UQ_404785f00e4d88df4fa5783830b" UNIQUE ("slug"))`);
+        await queryRunner.query(`CREATE TABLE "crw_tag" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar NOT NULL, "color" varchar, "image" varchar, "description" varchar, CONSTRAINT "UQ_3ad1ae94ac65ac5cf6ef4a97fd4" UNIQUE ("slug"), CONSTRAINT "UQ_ecaa69a0357666eebdd48c8c755" UNIQUE ("name"))`);
+        await queryRunner.query(`CREATE TABLE "crw_post" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "title" varchar, "authorId" varchar NOT NULL, "content" varchar, "delta" varchar, "excerpt" varchar, "mainImage" varchar, "readTime" varchar, "isPublished" boolean, "publishDate" datetime, CONSTRAINT "UQ_29f14d08659ef8a3230e244708e" UNIQUE ("slug"))`);
+        await queryRunner.query(`CREATE TABLE "crw_user" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "fullName" varchar, "email" varchar, "avatar" varchar, "bio" varchar, "role" varchar, "address" varchar, "phone" varchar, "password" varchar NOT NULL, "refreshTokens" varchar, CONSTRAINT "UQ_86fcd952549ae797ab020043b23" UNIQUE ("slug"), CONSTRAINT "UQ_4544ef20d7756aad6b7a49d8133" UNIQUE ("email"))`);
+        await queryRunner.query(`CREATE TABLE "crw_attribute" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "key" varchar NOT NULL, "valuesJSON" varchar, "type" varchar NOT NULL, "icon" varchar, CONSTRAINT "UQ_21d04deefef2e9d62ed19ba759a" UNIQUE ("slug"))`);
+        await queryRunner.query(`CREATE TABLE "crw_plugin" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar NOT NULL, "title" varchar, "isInstalled" boolean NOT NULL, "hasAdminBundle" boolean, "settings" varchar, "defaultSettings" varchar, "moduleInfo" varchar, CONSTRAINT "UQ_067de3d2c7d9e0e6fc733c7ba59" UNIQUE ("slug"))`);
+        await queryRunner.query(`CREATE TABLE "crw_theme" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar NOT NULL, "isInstalled" boolean NOT NULL, "hasAdminBundle" boolean, "settings" varchar, "defaultSettings" varchar, "moduleInfo" varchar, CONSTRAINT "UQ_05d0c5a03358df4a5fc355eb7fc" UNIQUE ("slug"))`);
+        await queryRunner.query(`CREATE TABLE "crw_cms" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "themeName" varchar NOT NULL, "protocol" varchar, "defaultPageSize" integer, "timezone" integer, "language" varchar, "favicon" varchar, "logo" varchar, "headerHtml" varchar, "footerHtml" varchar, "defaultShippingPrice" float, "_currencies" varchar, "versions" varchar, "installed" boolean, "smtpConnectionString" varchar, "sendFromEmail" varchar, CONSTRAINT "UQ_45a249e9f534b6af909ffedf0d2" UNIQUE ("slug"))`);
+        await queryRunner.query(`CREATE TABLE "crw_order" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "status" varchar, "cart" varchar, "orderTotalPrice" float, "cartTotalPrice" float, "cartOldTotalPrice" float, "shippingPrice" float, "totalQnt" float, "userId" varchar, "customerName" varchar, "customerPhone" varchar, "customerEmail" varchar, "customerAddress" varchar, "shippingMethod" varchar, "customerComment" varchar, CONSTRAINT "UQ_7a2428bdc18f7abd37585706687" UNIQUE ("slug"))`);
+        await queryRunner.query(`CREATE TABLE "crw_page_stats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "pageRoute" varchar NOT NULL, "views" integer, "productSlug" varchar, "categorySlug" varchar, "postSlug" varchar, "tagSlug" varchar)`);
+        await queryRunner.query(`CREATE TABLE "crw_product_categories_product_category" ("productId" integer NOT NULL, "productCategoryId" integer NOT NULL, PRIMARY KEY ("productId", "productCategoryId"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_8056740044bde85c6535e4cc6c" ON "crw_product_categories_product_category" ("productId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_f4f41beb6142f70af17b37ff50" ON "crw_product_categories_product_category" ("productCategoryId") `);
+        await queryRunner.query(`CREATE TABLE "crw_post_tags_tag" ("postId" integer NOT NULL, "tagId" integer NOT NULL, PRIMARY KEY ("postId", "tagId"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_f24f47df26e67c493b68bfc75b" ON "crw_post_tags_tag" ("postId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_6c786f2afb686050d8233fdc6e" ON "crw_post_tags_tag" ("tagId") `);
+        await queryRunner.query(`CREATE TABLE "crw_product_category_closure" ("id_ancestor" integer NOT NULL, "id_descendant" integer NOT NULL, PRIMARY KEY ("id_ancestor", "id_descendant"))`);
+        await queryRunner.query(`CREATE INDEX "IDX_9463c9a5893b1efb969e9a21c5" ON "crw_product_category_closure" ("id_ancestor") `);
+        await queryRunner.query(`CREATE INDEX "IDX_bc8936d152e18bc99150472594" ON "crw_product_category_closure" ("id_descendant") `);
+        await queryRunner.query(`CREATE TABLE "temporary_crw_product_category" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar NOT NULL, "mainImage" varchar, "description" varchar, "descriptionDelta" varchar, "parentId" integer, CONSTRAINT "UQ_273d34ee465b63376bead18bbf2" UNIQUE ("slug"), CONSTRAINT "FK_e7959ee49453ac5342ed33c2f0f" FOREIGN KEY ("parentId") REFERENCES "crw_product_category" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION)`);
+        await queryRunner.query(`INSERT INTO "temporary_crw_product_category"("id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "name", "mainImage", "description", "descriptionDelta", "parentId") SELECT "id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "name", "mainImage", "description", "descriptionDelta", "parentId" FROM "crw_product_category"`);
+        await queryRunner.query(`DROP TABLE "crw_product_category"`);
+        await queryRunner.query(`ALTER TABLE "temporary_crw_product_category" RENAME TO "crw_product_category"`);
+        await queryRunner.query(`CREATE TABLE "temporary_crw_product_review" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "productId" integer NOT NULL, "title" varchar, "description" varchar, "rating" float, "userName" varchar, "userId" varchar, "approved" boolean, CONSTRAINT "UQ_2fa3845bbaf6607041282074f3a" UNIQUE ("slug"), CONSTRAINT "FK_487be848a7b34339aec3524e221" FOREIGN KEY ("productId") REFERENCES "crw_product" ("id") ON DELETE CASCADE ON UPDATE NO ACTION)`);
+        await queryRunner.query(`INSERT INTO "temporary_crw_product_review"("id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "productId", "title", "description", "rating", "userName", "userId", "approved") SELECT "id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "productId", "title", "description", "rating", "userName", "userId", "approved" FROM "crw_product_review"`);
+        await queryRunner.query(`DROP TABLE "crw_product_review"`);
+        await queryRunner.query(`ALTER TABLE "temporary_crw_product_review" RENAME TO "crw_product_review"`);
+        await queryRunner.query(`DROP INDEX "IDX_8056740044bde85c6535e4cc6c"`);
+        await queryRunner.query(`DROP INDEX "IDX_f4f41beb6142f70af17b37ff50"`);
+        await queryRunner.query(`CREATE TABLE "temporary_crw_product_categories_product_category" ("productId" integer NOT NULL, "productCategoryId" integer NOT NULL, CONSTRAINT "FK_8056740044bde85c6535e4cc6c9" FOREIGN KEY ("productId") REFERENCES "crw_product" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_f4f41beb6142f70af17b37ff50f" FOREIGN KEY ("productCategoryId") REFERENCES "crw_product_category" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, PRIMARY KEY ("productId", "productCategoryId"))`);
+        await queryRunner.query(`INSERT INTO "temporary_crw_product_categories_product_category"("productId", "productCategoryId") SELECT "productId", "productCategoryId" FROM "crw_product_categories_product_category"`);
+        await queryRunner.query(`DROP TABLE "crw_product_categories_product_category"`);
+        await queryRunner.query(`ALTER TABLE "temporary_crw_product_categories_product_category" RENAME TO "crw_product_categories_product_category"`);
+        await queryRunner.query(`CREATE INDEX "IDX_8056740044bde85c6535e4cc6c" ON "crw_product_categories_product_category" ("productId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_f4f41beb6142f70af17b37ff50" ON "crw_product_categories_product_category" ("productCategoryId") `);
+        await queryRunner.query(`DROP INDEX "IDX_f24f47df26e67c493b68bfc75b"`);
+        await queryRunner.query(`DROP INDEX "IDX_6c786f2afb686050d8233fdc6e"`);
+        await queryRunner.query(`CREATE TABLE "temporary_crw_post_tags_tag" ("postId" integer NOT NULL, "tagId" integer NOT NULL, CONSTRAINT "FK_f24f47df26e67c493b68bfc75bb" FOREIGN KEY ("postId") REFERENCES "crw_post" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, CONSTRAINT "FK_6c786f2afb686050d8233fdc6e7" FOREIGN KEY ("tagId") REFERENCES "crw_tag" ("id") ON DELETE CASCADE ON UPDATE NO ACTION, PRIMARY KEY ("postId", "tagId"))`);
+        await queryRunner.query(`INSERT INTO "temporary_crw_post_tags_tag"("postId", "tagId") SELECT "postId", "tagId" FROM "crw_post_tags_tag"`);
+        await queryRunner.query(`DROP TABLE "crw_post_tags_tag"`);
+        await queryRunner.query(`ALTER TABLE "temporary_crw_post_tags_tag" RENAME TO "crw_post_tags_tag"`);
+        await queryRunner.query(`CREATE INDEX "IDX_f24f47df26e67c493b68bfc75b" ON "crw_post_tags_tag" ("postId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_6c786f2afb686050d8233fdc6e" ON "crw_post_tags_tag" ("tagId") `);
+        await queryRunner.query(`DROP INDEX "IDX_9463c9a5893b1efb969e9a21c5"`);
+        await queryRunner.query(`DROP INDEX "IDX_bc8936d152e18bc99150472594"`);
+        await queryRunner.query(`CREATE TABLE "temporary_crw_product_category_closure" ("id_ancestor" integer NOT NULL, "id_descendant" integer NOT NULL, CONSTRAINT "FK_9463c9a5893b1efb969e9a21c59" FOREIGN KEY ("id_ancestor") REFERENCES "crw_product_category" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION, CONSTRAINT "FK_bc8936d152e18bc991504725944" FOREIGN KEY ("id_descendant") REFERENCES "crw_product_category" ("id") ON DELETE NO ACTION ON UPDATE NO ACTION, PRIMARY KEY ("id_ancestor", "id_descendant"))`);
+        await queryRunner.query(`INSERT INTO "temporary_crw_product_category_closure"("id_ancestor", "id_descendant") SELECT "id_ancestor", "id_descendant" FROM "crw_product_category_closure"`);
+        await queryRunner.query(`DROP TABLE "crw_product_category_closure"`);
+        await queryRunner.query(`ALTER TABLE "temporary_crw_product_category_closure" RENAME TO "crw_product_category_closure"`);
+        await queryRunner.query(`CREATE INDEX "IDX_9463c9a5893b1efb969e9a21c5" ON "crw_product_category_closure" ("id_ancestor") `);
+        await queryRunner.query(`CREATE INDEX "IDX_bc8936d152e18bc99150472594" ON "crw_product_category_closure" ("id_descendant") `);
+    }
+
+    async down(queryRunner) {
+        await queryRunner.query(`DROP INDEX "IDX_bc8936d152e18bc99150472594"`);
+        await queryRunner.query(`DROP INDEX "IDX_9463c9a5893b1efb969e9a21c5"`);
+        await queryRunner.query(`ALTER TABLE "crw_product_category_closure" RENAME TO "temporary_crw_product_category_closure"`);
+        await queryRunner.query(`CREATE TABLE "crw_product_category_closure" ("id_ancestor" integer NOT NULL, "id_descendant" integer NOT NULL, PRIMARY KEY ("id_ancestor", "id_descendant"))`);
+        await queryRunner.query(`INSERT INTO "crw_product_category_closure"("id_ancestor", "id_descendant") SELECT "id_ancestor", "id_descendant" FROM "temporary_crw_product_category_closure"`);
+        await queryRunner.query(`DROP TABLE "temporary_crw_product_category_closure"`);
+        await queryRunner.query(`CREATE INDEX "IDX_bc8936d152e18bc99150472594" ON "crw_product_category_closure" ("id_descendant") `);
+        await queryRunner.query(`CREATE INDEX "IDX_9463c9a5893b1efb969e9a21c5" ON "crw_product_category_closure" ("id_ancestor") `);
+        await queryRunner.query(`DROP INDEX "IDX_6c786f2afb686050d8233fdc6e"`);
+        await queryRunner.query(`DROP INDEX "IDX_f24f47df26e67c493b68bfc75b"`);
+        await queryRunner.query(`ALTER TABLE "crw_post_tags_tag" RENAME TO "temporary_crw_post_tags_tag"`);
+        await queryRunner.query(`CREATE TABLE "crw_post_tags_tag" ("postId" integer NOT NULL, "tagId" integer NOT NULL, PRIMARY KEY ("postId", "tagId"))`);
+        await queryRunner.query(`INSERT INTO "crw_post_tags_tag"("postId", "tagId") SELECT "postId", "tagId" FROM "temporary_crw_post_tags_tag"`);
+        await queryRunner.query(`DROP TABLE "temporary_crw_post_tags_tag"`);
+        await queryRunner.query(`CREATE INDEX "IDX_6c786f2afb686050d8233fdc6e" ON "crw_post_tags_tag" ("tagId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_f24f47df26e67c493b68bfc75b" ON "crw_post_tags_tag" ("postId") `);
+        await queryRunner.query(`DROP INDEX "IDX_f4f41beb6142f70af17b37ff50"`);
+        await queryRunner.query(`DROP INDEX "IDX_8056740044bde85c6535e4cc6c"`);
+        await queryRunner.query(`ALTER TABLE "crw_product_categories_product_category" RENAME TO "temporary_crw_product_categories_product_category"`);
+        await queryRunner.query(`CREATE TABLE "crw_product_categories_product_category" ("productId" integer NOT NULL, "productCategoryId" integer NOT NULL, PRIMARY KEY ("productId", "productCategoryId"))`);
+        await queryRunner.query(`INSERT INTO "crw_product_categories_product_category"("productId", "productCategoryId") SELECT "productId", "productCategoryId" FROM "temporary_crw_product_categories_product_category"`);
+        await queryRunner.query(`DROP TABLE "temporary_crw_product_categories_product_category"`);
+        await queryRunner.query(`CREATE INDEX "IDX_f4f41beb6142f70af17b37ff50" ON "crw_product_categories_product_category" ("productCategoryId") `);
+        await queryRunner.query(`CREATE INDEX "IDX_8056740044bde85c6535e4cc6c" ON "crw_product_categories_product_category" ("productId") `);
+        await queryRunner.query(`ALTER TABLE "crw_product_review" RENAME TO "temporary_crw_product_review"`);
+        await queryRunner.query(`CREATE TABLE "crw_product_review" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "productId" integer NOT NULL, "title" varchar, "description" varchar, "rating" float, "userName" varchar, "userId" varchar, "approved" boolean, CONSTRAINT "UQ_2fa3845bbaf6607041282074f3a" UNIQUE ("slug"))`);
+        await queryRunner.query(`INSERT INTO "crw_product_review"("id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "productId", "title", "description", "rating", "userName", "userId", "approved") SELECT "id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "productId", "title", "description", "rating", "userName", "userId", "approved" FROM "temporary_crw_product_review"`);
+        await queryRunner.query(`DROP TABLE "temporary_crw_product_review"`);
+        await queryRunner.query(`ALTER TABLE "crw_product_category" RENAME TO "temporary_crw_product_category"`);
+        await queryRunner.query(`CREATE TABLE "crw_product_category" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar NOT NULL, "mainImage" varchar, "description" varchar, "descriptionDelta" varchar, "parentId" integer, CONSTRAINT "UQ_273d34ee465b63376bead18bbf2" UNIQUE ("slug"))`);
+        await queryRunner.query(`INSERT INTO "crw_product_category"("id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "name", "mainImage", "description", "descriptionDelta", "parentId") SELECT "id", "slug", "pageTitle", "pageDescription", "createDate", "updateDate", "isEnabled", "name", "mainImage", "description", "descriptionDelta", "parentId" FROM "temporary_crw_product_category"`);
+        await queryRunner.query(`DROP TABLE "temporary_crw_product_category"`);
+        await queryRunner.query(`DROP INDEX "IDX_bc8936d152e18bc99150472594"`);
+        await queryRunner.query(`DROP INDEX "IDX_9463c9a5893b1efb969e9a21c5"`);
+        await queryRunner.query(`DROP TABLE "crw_product_category_closure"`);
+        await queryRunner.query(`DROP INDEX "IDX_6c786f2afb686050d8233fdc6e"`);
+        await queryRunner.query(`DROP INDEX "IDX_f24f47df26e67c493b68bfc75b"`);
+        await queryRunner.query(`DROP TABLE "crw_post_tags_tag"`);
+        await queryRunner.query(`DROP INDEX "IDX_f4f41beb6142f70af17b37ff50"`);
+        await queryRunner.query(`DROP INDEX "IDX_8056740044bde85c6535e4cc6c"`);
+        await queryRunner.query(`DROP TABLE "crw_product_categories_product_category"`);
+        await queryRunner.query(`DROP TABLE "crw_page_stats"`);
+        await queryRunner.query(`DROP TABLE "crw_order"`);
+        await queryRunner.query(`DROP TABLE "crw_cms"`);
+        await queryRunner.query(`DROP TABLE "crw_theme"`);
+        await queryRunner.query(`DROP TABLE "crw_plugin"`);
+        await queryRunner.query(`DROP TABLE "crw_attribute"`);
+        await queryRunner.query(`DROP TABLE "crw_user"`);
+        await queryRunner.query(`DROP TABLE "crw_post"`);
+        await queryRunner.query(`DROP TABLE "crw_tag"`);
+        await queryRunner.query(`DROP TABLE "crw_product"`);
+        await queryRunner.query(`DROP TABLE "crw_product_review"`);
+        await queryRunner.query(`DROP TABLE "crw_product_category"`);
+    }
+}

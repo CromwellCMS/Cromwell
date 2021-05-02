@@ -5,9 +5,9 @@ export type TBasePageEntity = {
     id: string;
     // Slug for page route
     slug?: string;
-    // Page SEO title
+    // Page meta title (SEO)
     pageTitle?: string;
-    // Page SEO description
+    // Page meta description (SEO)
     pageDescription?: string;
     // DB createDate
     createDate?: Date;

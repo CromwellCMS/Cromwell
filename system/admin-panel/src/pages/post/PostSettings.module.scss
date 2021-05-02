@@ -47,3 +47,7 @@ div.popover {
         font-weight: 500;
     }
 }
+
+:global(.MuiPickersDay-daySelected) p {
+    color: #fff;
+}

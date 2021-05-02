@@ -18,7 +18,7 @@ export type TProductItemProps = {
     embedded?: boolean;
 }
 
-const mapStateToProps = (state: TAppState, ownProps: TProductItemProps) => {
+const mapStateToProps = (state: TAppState) => {
     return {
         selectedItems: state.selectedItems,
         allSelected: state.allSelected,

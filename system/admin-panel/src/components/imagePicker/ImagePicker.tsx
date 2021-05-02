@@ -5,8 +5,7 @@ import React, { useState } from 'react';
 import { getFileManager } from '../../components/fileManager/helpers';
 import styles from './ImagePicker.module.scss';
 
-
-const ImagePicker = (props: {
+export type ImagePickerProps = {
     toolTip?: string;
     placeholder?: string;
     label?: string;
@@ -20,9 +19,12 @@ const ImagePicker = (props: {
     hideSrc?: boolean;
     classes?: {
         image?: string;
+        root?: string;
     };
     style?: React.CSSProperties;
-}) => {
+}
+
+const ImagePicker = (props: ImagePickerProps) => {
     const [internalValue, setInternalValue] = useState<string | undefined>();
     const value = (props.value !== undefined && props.value !== '') ? props.value : internalValue;
 
@@ -42,7 +44,7 @@ const ImagePicker = (props: {
 
 
     const element = (
-        <div className={`${styles.wrapper} ${props.className}`}
+        <div className={`${styles.wrapper} ${props.className} ${props.classes?.root}`}
             style={{ paddingTop: props.label ? '18px' : '', ...(props.style ?? {}) }}>
             <Tooltip title={props.toolTip ?? ''}>
                 <div className={`${styles.image} ${props.classes?.image}`}

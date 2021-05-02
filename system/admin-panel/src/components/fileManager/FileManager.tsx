@@ -78,14 +78,14 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
         this.filePromise = new Promise(resolver => {
             this.fileResolver = resolver;
         });
-        this.open();
         this.setState({ isSelecting: true });
 
         if (settings?.initialPath && settings.initialPath !== '') {
             this.openPath(settings.initialPath);
-        }
-        if (settings?.initialFileLocation && settings.initialFileLocation !== '') {
-            this.openFileLocation(settings.initialFileLocation);
+        } else if (settings?.initialFileLocation && settings.initialFileLocation !== '') {
+            this.openFileLocation(settings.initialFileLocation, true);
+        } else {
+            this.open();
         }
 
         return this.filePromise;
@@ -138,12 +138,12 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
     }
 
     private openPath = (fullPath: string) => {
+        this.setState({ isActive: true });
         fullPath = this.normalize(fullPath);
-        if (fullPath === this.currentPath) return;
         this.previousPaths.push(this.currentPath);
         this.nextPaths = [];
         this.currentPath = this.normalize('/' + fullPath);
-        this.applyNavigate();
+        this.fetchCurrentItems();
     }
 
     private openFileLocation = (fullPath: string, isSelecting?: boolean) => {
@@ -151,7 +151,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
         const paths = fullPath.split('/');
         paths.pop();
         this.openPath(paths.join('/'));
-        if (isSelecting) this.selectItem(fullPath);
+        if (isSelecting) this.selectItem(fullPath.split('/').pop());
     }
 
     private applyNavigate = () => {
@@ -186,13 +186,16 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
 
     private selectItem = (itemName: string) => {
         if (this.selectedItem) this.selectedItem.classList.remove(styles.selectedItem);
+        document.querySelectorAll('.' + styles.selectedItem).forEach(item => {
+            item.classList.remove(styles.selectedItem);
+        });
 
-        const target = document.getElementById('item__' + itemName) as HTMLLIElement;
+        const target = document.getElementById('item__' + itemName) as HTMLLIElement | undefined;
         const itemType = this.getItemType(itemName);
 
         this.selectedItem = target;
         this.selectedFileName = itemName;
-        this.selectedItem.classList.add(styles.selectedItem);
+        this.selectedItem?.classList.add(styles.selectedItem);
 
         if (this.state.isSelecting && this.selectButton.current && itemType !== 'folder')
             this.selectButton.current.style.opacity = '1';
