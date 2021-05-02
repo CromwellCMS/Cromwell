@@ -1,15 +1,10 @@
 import 'quill/dist/quill.snow.css';
 
 import { gql } from '@apollo/client';
-import { serviceLocator, TPost, TPostInput, TTag, onStoreChange, getStoreItem, TUser } from '@cromwell/core';
+import { getStoreItem, onStoreChange, serviceLocator, TPost, TPostInput, TTag, TUser } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, Tooltip } from '@material-ui/core';
-import {
-    ArrowBack as ArrowBackIcon,
-    Edit as EditIcon,
-    OpenInNew as OpenInNewIcon,
-    Settings as SettingsIcon,
-} from '@material-ui/icons';
+import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
@@ -75,7 +70,7 @@ const Post = (props) => {
                     }
                     content
                     delta
-                    isPublished 
+                    published 
                 }`, 'AdminPanelPostFragment'
             );
             if (post) setPostData(post);
@@ -137,7 +132,7 @@ const Post = (props) => {
         if (postId === 'new') {
             setPostData({
                 title: 'Untitled',
-                isPublished: false,
+                published: false,
             });
             _initEditor();
         }
@@ -163,7 +158,7 @@ const Post = (props) => {
         title: postData.title,
         mainImage: postData.mainImage,
         publishDate: postData.publishDate,
-        isPublished: postData.isPublished,
+        published: postData.published,
         isEnabled: postData.isEnabled,
         tagIds: postData.tags?.map(tag => tag.id),
         authorId: postData?.author?.id ?? userInfo?.id,
@@ -208,7 +203,7 @@ const Post = (props) => {
 
     const handlePublish = async () => {
         const input = getInput();
-        input.isPublished = true;
+        input.published = true;
         if (!input.publishDate) input.publishDate = new Date(Date.now());
         handleSave(input);
     }
@@ -249,11 +244,8 @@ const Post = (props) => {
                             <ArrowBackIcon />
                         </IconButton>
                     </Link>
-                    <p className={styles.title}>{postData?.title ?? ''}</p>
-                    <Tooltip title="Edit title">
-                        <IconButton onClick={handleOpenSettings}  >
-                            <EditIcon style={{ fontSize: '22px' }} />
-                        </IconButton>
+                    <Tooltip title="Edit title in settings">
+                        <p className={styles.title} onClick={handleOpenSettings}>{postData?.title ?? ''}</p>
                     </Tooltip>
                 </div>
                 <div
@@ -288,7 +280,7 @@ const Post = (props) => {
                             </IconButton>
                         </Tooltip>
                     )}
-                    {!postData?.isPublished && (
+                    {!postData?.published && (
                         <Button variant="contained" color="primary"
                             className={styles.publishBtn}
                             size="small"

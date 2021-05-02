@@ -5,7 +5,6 @@ import { AddCircle as AddCircleIcon, Delete as DeleteIcon } from '@material-ui/i
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
-import { debounce } from 'throttle-debounce';
 
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
@@ -37,7 +36,7 @@ const mapStateToProps = (state: TAppState) => {
     }
 }
 
-type TPropsType = PropsType<TAppState, {},
+type TPropsType = PropsType<TAppState, unknown,
     ReturnType<typeof mapStateToProps>>;
 
 
@@ -57,10 +56,9 @@ const TagList = (props: TPropsType) => {
         }
     }, []);
 
-    const resetList = () => {
+    const updateList = () => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
-        list?.clearState();
-        list?.init();
+        list?.updateData();
     }
 
     const handleGetTags = async (params?: TPagedParams<TTag>) => {
@@ -98,7 +96,7 @@ const TagList = (props: TPropsType) => {
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);
-        resetList();
+        updateList();
         resetSelected();
     }
 
@@ -114,17 +112,12 @@ const TagList = (props: TPropsType) => {
             }
         }
         setItemToDelete(null);
-        resetList();
+        updateList();
     }
-
-    const handleFilterInput = debounce(1000, () => {
-        resetList();
-    });
 
     const handleCreate = () => {
         history.push(`${tagPageInfo.baseRoute}/new`);
     }
-
 
     return (
         <div className={styles.TagList}>

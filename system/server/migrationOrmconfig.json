@@ -9,9 +9,9 @@
     ],
     "migrationsTableName": "crw_migrations",
     "migrations": [
-        "migration/*.js"
+        "migrations/*.js"
     ],
     "cli": {
-        "migrationsDir": "migration"
+        "migrationsDir": "migrations"
     }
 }

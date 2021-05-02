@@ -119,6 +119,7 @@ const CategoryList = (props: TPropsType) => {
         setCategoryToDelete(null);
         deletedItemsRef.current[categoryToDelete.id] = true;
         getRootCategories();
+        updateList();
     }
 
     const handleCreate = () => {
@@ -174,6 +175,12 @@ const CategoryList = (props: TPropsType) => {
         list?.init();
     }
 
+    const updateList = () => {
+        totalElements.current = null;
+        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        list?.updateData();
+    }
+
     const handleToggleSelectAll = () => {
         toggleSelectAll()
     }
@@ -197,7 +204,7 @@ const CategoryList = (props: TPropsType) => {
         }
         await getRootCategories();
         resetSelected();
-        resetList();
+        updateList();
         setDeleteSelectedOpen(false);
         setIsLoading(false);
     }
@@ -306,7 +313,7 @@ const CategoryList = (props: TPropsType) => {
                     })}
                 </div>
             )}
-            {!isLoading && displayType === 'list' && (
+            {displayType === 'list' && (
                 <CList<TProductCategory, ListItemProps>
                     className={styles.listWrapper}
                     id={listId}

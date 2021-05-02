@@ -63,6 +63,11 @@ const OrderList = (props: TPropsType) => {
         list?.init();
     }
 
+    const updateList = () => {
+        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        list?.updateData();
+    }
+
     const handleGetOrders = async (params?: TPagedParams<TOrder>) => {
         if (!params) params = {};
         params.orderBy = 'createDate';
@@ -104,7 +109,7 @@ const OrderList = (props: TPropsType) => {
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);
-        resetList();
+        updateList();
         resetSelected();
     }
 
@@ -120,7 +125,7 @@ const OrderList = (props: TPropsType) => {
             }
         }
         setItemToDelete(null);
-        resetList();
+        updateList();
     }
 
     const handleFilterInput = debounce(1000, () => {

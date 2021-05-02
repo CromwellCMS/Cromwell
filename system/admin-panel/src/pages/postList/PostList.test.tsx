@@ -8,12 +8,12 @@ const postsData: TPagedList<TPost> = {
         {
             id: '1',
             title: '_test1_',
-            isPublished: false,
+            published: false,
         },
         {
             id: '2',
             title: '_test2_',
-            isPublished: true,
+            published: true,
         }
     ]
 };

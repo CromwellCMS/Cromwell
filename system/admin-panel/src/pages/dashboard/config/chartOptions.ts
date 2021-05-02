@@ -39,7 +39,7 @@ export const getOrdersPerDayOption = (sales: TSalePerDay[]) => {
                 type: 'bar',
                 barWidth: '60%',
                 itemStyle: {
-                    color: new echarts.graphic.LinearGradient(
+                    color: echarts.graphic && new echarts.graphic.LinearGradient(
                         0, 0, 0, 1,
                         [
                             { offset: 0, color: '#13e0fe' },
@@ -96,7 +96,7 @@ export const getSalesValuePerDayOption = (sales: TSalePerDay[]) => {
                 showSymbol: false,
                 areaStyle: {
                     opacity: 0.8,
-                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                    color: echarts.graphic && new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                         offset: 0,
                         color: 'rgba(128, 255, 165)'
                     }, {

@@ -122,6 +122,12 @@ const ProductList = (props: TPropsType) => {
         list?.init();
     }
 
+    const updateList = () => {
+        totalElements.current = null;
+        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        list?.updateData();
+    }
+
     const handleFilterInput = debounce(1000, () => {
         filterInput.current.nameSearch = (document.getElementById(titleSearchId) as HTMLInputElement)?.value ?? undefined;
         resetList();
@@ -145,7 +151,7 @@ const ProductList = (props: TPropsType) => {
         }
         setIsLoading(false);
         setProductToDelete(null);
-        resetList();
+        updateList();
     }
 
     const handleCreateProduct = () => {
@@ -176,7 +182,7 @@ const ProductList = (props: TPropsType) => {
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);
-        resetList();
+        updateList();
         resetSelected();
     }
 

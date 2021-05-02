@@ -7,7 +7,7 @@ const idObj = new Proxy({}, {
         if (key === '__esModule') {
             return true;
         }
-        return (props) => React.createElement('div', null, props.children);
+        return (props) => React.createElement('span', null, props.children);
     }
 });
 

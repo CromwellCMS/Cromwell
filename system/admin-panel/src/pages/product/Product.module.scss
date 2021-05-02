@@ -63,6 +63,12 @@
         border-radius: 8px;
     }
 
+    :global(.DraggableBlock__dragging) {
+        .imageItem {
+            background-color: transparent;
+        }
+    }
+
     .imageActions {
         opacity: 0;
         transition: 0.3s;
@@ -186,4 +192,10 @@
 
 .CategoriesTab {
     margin: 0 -10px;
+}
+
+@media screen and (max-width: 1069px) {
+    .Product .header {
+        justify-content: space-around;
+    }
 }

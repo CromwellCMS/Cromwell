@@ -29,6 +29,8 @@ import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 import { GenericPlugin, GenericTheme, GenericCms } from './genericEntities';
 
+type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+
 export const connectDatabase = async (sType: 'main' | 'plugin') => {
 
     const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
@@ -36,12 +38,10 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
     const defaultOrmConfig: ConnectionOptions = {
         type: "sqlite",
         database: tempDBPath,
-        synchronize: false,
         entityPrefix: 'crw_',
-        migrationsRun: true,
         migrationsTableName: "crw_migrations",
         cli: {
-            migrationsDir: "migration"
+            migrationsDir: "migrations"
         }
     }
 
@@ -50,27 +50,40 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
         ormconfig = require(getOrmConfigPath())
     } catch (e) { }
 
-    let isNewSQLiteDB = false;
+    let hasDatabasePath = false;
     const serverDir = getServerDir();
-
-    if (!ormconfig?.database) {
-        if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {
-            // Server probably was launched at the first time and has no DB created
-            // Use mocked DB
-            const dempDBPath = resolve(serverDir, 'db.sqlite3');
-            if (await fs.pathExists(dempDBPath)) {
-                isNewSQLiteDB = true;
-                await fs.copy(dempDBPath, tempDBPath);
-            }
-        }
-    }
+    if (ormconfig?.database) hasDatabasePath = true;
 
     ormconfig = Object.assign({}, defaultOrmConfig, ormconfig)
 
     if (!ormconfig || !ormconfig.type) throw new Error('Invalid ormconfig');
     setStoreItem('dbType', ormconfig.type);
 
-    console.log(normalizePath(resolve(serverDir!, ormconfig!.cli!.migrationsDir!)) + '/*.js')
+    // Adjust unset options for different DBs
+    const adjustedOptions: Partial<Writeable<ConnectionOptions>> = {};
+
+    let isNewSQLiteDB = false;
+    if (ormconfig.type === 'sqlite') {
+        if (ormconfig.synchronize === undefined) adjustedOptions.synchronize = true;
+
+        if (!hasDatabasePath) {
+            if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {
+                // Server probably was launched at the first time and has no DB created
+                // Use mocked DB
+                const dempDBPath = resolve(serverDir, 'db.sqlite3');
+                if (await fs.pathExists(dempDBPath)) {
+                    isNewSQLiteDB = true;
+                    await fs.copy(dempDBPath, tempDBPath);
+                }
+            }
+        }
+    }
+
+    if (ormconfig.type === 'mysql' || ormconfig.type === 'postgres') {
+        if (ormconfig.migrationsRun === undefined) adjustedOptions.migrationsRun = true;
+        if (ormconfig.synchronize === undefined) adjustedOptions.synchronize = false;
+    }
+    ormconfig = Object.assign(adjustedOptions as any, ormconfig) as ConnectionOptions;
 
     const pluginsExports = await collectPlugins();
     const connectionOptions: ConnectionOptions = {
@@ -81,7 +94,7 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
             ThemeEntity, PluginEntity, CmsEntity,
             Tag, PageStats,
             ...(sType === 'plugin' ? pluginsExports.entities : []),
-            ...(ormconfig.entities ?? [])
+            ...(ormconfig?.entities ?? [])
         ],
         migrations: [
             (serverDir && ormconfig?.cli?.migrationsDir) ?

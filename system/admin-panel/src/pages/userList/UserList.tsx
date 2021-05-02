@@ -38,7 +38,7 @@ const mapStateToProps = (state: TAppState) => {
     }
 }
 
-type TPropsType = PropsType<TAppState, {},
+type TPropsType = PropsType<TAppState, unknown,
     ReturnType<typeof mapStateToProps>>;
 
 
@@ -63,6 +63,11 @@ const UserList = (props: TPropsType) => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
         list.clearState();
         list.init();
+    }
+
+    const updateList = () => {
+        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        list?.updateData();
     }
 
     const handleGetUsers = async (params?: TPagedParams<TUser>) => {
@@ -103,7 +108,7 @@ const UserList = (props: TPropsType) => {
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);
-        resetList();
+        updateList();
         resetSelected();
     }
 
@@ -119,7 +124,7 @@ const UserList = (props: TPropsType) => {
             }
         }
         setItemToDelete(null);
-        resetList();
+        updateList();
     }
 
     const handleFilterInput = debounce(1000, () => {

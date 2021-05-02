@@ -69,6 +69,11 @@ const ReviewList = (props: TPropsType) => {
         list?.init();
     }
 
+    const updateList = () => {
+        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        list?.updateData();
+    }
+
     const handleGetReview = async (params?: TPagedParams<TProductReview>) => {
         if (!params) params = {};
         params.orderBy = 'createDate';
@@ -110,7 +115,7 @@ const ReviewList = (props: TPropsType) => {
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);
-        resetList();
+        updateList();
         resetSelected();
     }
 
@@ -126,7 +131,7 @@ const ReviewList = (props: TPropsType) => {
             }
         }
         setItemToDelete(null);
-        resetList();
+        updateList();
     }
 
     const handleFilterInput = debounce(1000, () => {
@@ -286,7 +291,7 @@ const ReviewList = (props: TPropsType) => {
                                     if (success) {
                                         itemToView.approved = true;
                                         setItemToView({ ...itemToView });
-                                        resetList();
+                                        updateList();
                                     }
                                 }}
                             >

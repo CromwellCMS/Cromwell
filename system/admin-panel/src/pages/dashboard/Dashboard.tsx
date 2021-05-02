@@ -86,18 +86,30 @@ export default class Dashboard extends React.Component<any, {
             const reviews = await getGraphQLClient()?.getProductReviews({
                 pageSize: 10
             });
-            if (reviews.elements) this.setState({ reviews: reviews.elements })
+            if (reviews?.elements) this.setState({ reviews: reviews.elements })
         } catch (error) {
             console.error(error);
         }
     }
 
     private getGridLayout = () => {
+        let saved: any = window.localStorage.getItem('crw_dashboard_layout');
+        if (saved) {
+            try {
+                saved = JSON.parse(saved);
+                if (saved) return saved;
+            } catch (error) {
+                console.error(error);
+            }
+        }
         return getDefaultLayout();
     }
 
-    render() {
+    private onLayoutChange = (currentLayout, allLayouts) => {
+        window.localStorage.setItem('crw_dashboard_layout', JSON.stringify(allLayouts));
+    }
 
+    render() {
         const averageRating = this.state?.stats?.averageRating ?? 0;
         const reviewsNumber = this.state?.stats?.reviews ?? 0;
 
@@ -106,6 +118,7 @@ export default class Dashboard extends React.Component<any, {
                 <ResponsiveGridLayout
                     margin={[15, 15]}
                     layouts={this.getGridLayout()}
+                    onLayoutChange={this.onLayoutChange}
                     breakpoints={{ lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 }}
                     rowHeight={30}
                     cols={{ lg: 12, md: 9, sm: 6, xs: 4, xxs: 2 }}
@@ -131,7 +144,7 @@ export default class Dashboard extends React.Component<any, {
                             <div className={styles.topStatIcon} style={{ backgroundImage: 'url(/admin/static/dashboard-sales.png)' }}></div>
                             <div className={styles.topStatCaption + ' draggableCancel'}>
                                 <h3 className={styles.topStatTitle}>Sales value</h3>
-                                <p className={styles.statBig} id="salesValue">0</p>
+                                <p className={styles.statBig} id="salesValue">{this.state?.stats?.salesValue ?? 0}</p>
                                 <p className={styles.statTip}>From {this.state?.stats?.orders ?? 0} orders</p>
                             </div>
                         </div>
@@ -141,7 +154,7 @@ export default class Dashboard extends React.Component<any, {
                             <div className={styles.topStatIcon} style={{ backgroundImage: 'url(/admin/static/dashboard-views.png)' }}></div>
                             <div className={styles.topStatCaption + ' draggableCancel'}>
                                 <h3 className={styles.topStatTitle}>Page views</h3>
-                                <p className={styles.statBig} id="pageViews">0</p>
+                                <p className={styles.statBig} id="pageViews">{this.state?.stats?.pageViews ?? 0}</p>
                                 <p className={styles.statTip}>For {this.state?.stats?.pages ?? 0} pages</p>
                             </div>
                         </div>
@@ -149,7 +162,7 @@ export default class Dashboard extends React.Component<any, {
                     <div key="ordersLastWeek" className={styles.chartBox}>
                         <div className={styles.chartCaption}>
                             <p className={styles.chartTitle + ' draggableCancel'}>Orders last week</p>
-                            <p className={styles.statBig + ' draggableCancel'} id="ordersTotalLastWeek">0</p>
+                            <p className={styles.statBig + ' draggableCancel'} id="ordersTotalLastWeek">{this.state?.stats?.salesPerDay?.reduce<number>((prev, curr) => curr.orders + prev, 0) ?? 0}</p>
                         </div>
                         <ReactResizeDetector handleWidth handleHeight>
                             {({ targetRef }) => {
@@ -163,7 +176,7 @@ export default class Dashboard extends React.Component<any, {
                     <div key="salesValueLastWeek" className={styles.chartBox}>
                         <div className={styles.chartCaption}>
                             <p className={styles.chartTitle + ' draggableCancel'}>Sales value last week</p>
-                            <p className={styles.chartTotal + ' draggableCancel'} id="salesValueTotalLastWeek">0</p>
+                            <p className={styles.chartTotal + ' draggableCancel'} id="salesValueTotalLastWeek">{this.state?.stats?.salesPerDay?.reduce<number>((prev, curr) => curr.salesValue + prev, 0) ?? 0}</p>
                         </div>
                         <ReactResizeDetector handleWidth handleHeight>
                             {({ targetRef }) => {

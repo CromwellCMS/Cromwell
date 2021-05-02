@@ -1000,7 +1000,7 @@ class CGraphQLClient {
             }
             content
             publishDate
-            isPublished
+            published
       }
   `
 
