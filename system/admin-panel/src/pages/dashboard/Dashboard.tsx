@@ -17,6 +17,7 @@ import styles from './Dashboard.module.scss';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
+
 export default class Dashboard extends React.Component<any, {
     stats: TCmsStats;
     reviews: TProductReview[];

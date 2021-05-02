@@ -1,12 +1,13 @@
 import 'date-fns';
 
-import { TPost, TTag } from '@cromwell/core';
+import { TPost, TTag, serviceLocator } from '@cromwell/core';
 import DateFnsUtils from '@date-io/date-fns';
 import { IconButton, MenuItem, Popover, TextField } from '@material-ui/core';
 import { Close as CloseIcon, HighlightOffOutlined, Wallpaper as WallpaperIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { useState } from 'react';
+import { store } from '../../redux/store';
 
 import { getFileManager } from '../../components/fileManager/helpers';
 import styles from './PostSettings.module.scss';
@@ -26,10 +27,12 @@ const PostSettings = (props: {
     const [pageTitle, setPageTitle] = useState<string | undefined>(postData?.pageTitle ?? null);
     const [slug, setSlug] = useState<string | undefined>(postData?.slug ?? null);
     const [tags, setTags] = useState<TTag[] | undefined>(postData?.tags ?? []);
-    const [publishDate, setPublishDate] = useState<Date | undefined | null>(postData?.publishDate ?? new Date(Date.now()));
+    const [publishDate, setPublishDate] = useState<Date | undefined | null>(postData?.publishDate ?? null);
 
     const handleChangeImage = async () => {
-        const photoPath = await getFileManager()?.getPhoto();
+        const photoPath = await getFileManager()?.getPhoto({
+            initialFileLocation: mainImage
+        });
         if (photoPath) {
             setMainImage(photoPath);
         }
@@ -49,6 +52,12 @@ const PostSettings = (props: {
         newData.tags = tags;
         newData.publishDate = publishDate;
         props.onClose(newData);
+    }
+
+    const themePostPage = store.getState()?.activeTheme?.defaultPages?.post;
+    let pageFullUrl;
+    if (themePostPage && slug) {
+        pageFullUrl = serviceLocator.getFrontendUrl() + '/' + themePostPage.replace('[slug]', slug ?? postData?.id ?? '');
     }
 
     return (
@@ -83,11 +92,12 @@ const PostSettings = (props: {
                     onChange={e => setTitle(e.target.value)}
                 />
                 <TextField
-                    label="Page slug"
+                    label="Page URL"
                     className={styles.settingItem}
                     fullWidth
                     value={slug}
                     onChange={e => setSlug(e.target.value)}
+                    helperText={pageFullUrl}
                 />
                 <div className={styles.imageBox}
                     onClick={handleChangeImage}
@@ -140,16 +150,15 @@ const PostSettings = (props: {
                         }}
                     />
                 </MuiPickersUtilsProvider>
-
                 <TextField
-                    label="Page meta title (SEO)"
+                    label="Meta title"
                     className={styles.settingItem}
                     fullWidth
                     value={pageTitle}
                     onChange={e => setPageTitle(e.target.value)}
                 />
                 <TextField
-                    label="Page meta description (SEO)"
+                    label="Meta description"
                     className={styles.settingItem}
                     fullWidth
                     value={pageDescription}

@@ -1,7 +1,7 @@
 import { TCmsSettings } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
@@ -125,8 +125,8 @@ const SettingsPage = () => {
                                 value={settings.logo}
                                 className={styles.imageField}
                                 backgroundSize='contain'
-                                width="110px"
-                                height="70px"
+                                width="70px"
+                                height="60px"
                                 showRemove
                             />
                         </Grid>

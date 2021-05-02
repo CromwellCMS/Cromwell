@@ -25,7 +25,8 @@ import { TCmsStats } from '@cromwell/core/src/types/data';
 
 import { fetch } from '../helpers/isomorphicFetch';
 
-type TPluginsModifications = TPluginConfig & { [x: string]: any };
+export type TPluginsModifications = TPluginConfig & { [x: string]: any };
+
 type TErrorInfo = {
     statusCode: number;
     message: string;
@@ -38,13 +39,14 @@ class CRestAPIClient {
     private onUnauthorized: (() => any) | null = null;
     private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
 
-    private handleError = async (responce: Response, data: any, route: string): Promise<any> => {
+    private handleError = async (responce: Response, data: any, route: string, disableLog?: boolean): Promise<any> => {
         if ((responce.status === 403 || responce.status === 401) && !isServer()) {
             this.onUnauthorized?.();
         }
 
         if (responce.status >= 400) {
-            this.logError(route, `Request failed, status: ${responce.status}. ${data?.message}`);
+            if (!disableLog)
+                this.logError(route, `Request failed, status: ${responce.status}. ${data?.message}`);
 
             const errorInfo: TErrorInfo = {
                 statusCode: responce.status,
@@ -59,13 +61,13 @@ class CRestAPIClient {
     }
 
     private logError = (route: string, e?: any) => {
-        if (route === 'cms/config') return;
         logFor('errors-only', `CRestAPIClient route: ${route}` + e, console.error)
     }
 
     public fetch = async <T>(route: string, options?: {
         method?: string;
         input?: any;
+        disableLog?: boolean;
     }): Promise<T | undefined> => {
         const input = options?.input;
         try {
@@ -76,15 +78,19 @@ class CRestAPIClient {
                 headers: { 'Content-Type': 'application/json' },
             });
             const data = await res.json();
-            return this.handleError(res, data, route);
+            return this.handleError(res, data, route, options?.disableLog);
         } catch (e) {
-            this.logError(route, e);
+            if (!options?.disableLog)
+                this.logError(route, e);
+
             throw new Error(e);
         }
     }
 
-    public get = async <T>(route: string): Promise<T | undefined> => {
-        return this.fetch(route);
+    public get = async <T>(route: string, disableLog?: boolean): Promise<T | undefined> => {
+        return this.fetch(route, {
+            disableLog,
+        });
     }
 
     public post = async <T>(route: string, input?: any): Promise<T | undefined> => {
@@ -132,7 +138,6 @@ class CRestAPIClient {
         return this.post('auth/reset-password', credentials);
     }
 
-
     public setOnUnauthorized(func: (() => any) | null) {
         this.onUnauthorized = func;
     }
@@ -146,7 +151,7 @@ class CRestAPIClient {
     // < CMS >
 
     public getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
-        return this.get(`cms/config`);
+        return this.get(`cms/config`, true);
     }
 
     public getAdvancedCmsSettings = async (): Promise<TCmsSettings | undefined> => {
@@ -180,6 +185,7 @@ class CRestAPIClient {
         }
         const response = await fetch(`${this.baseUrl}/cms/upload-public-file?inPath=${inPath ?? '/'}`, {
             method: 'POST',
+            credentials: 'include',
             body: formData
         });
         return response.body;
@@ -325,3 +331,5 @@ export const getRestAPIClient = (serverType: 'main' | 'plugin' = 'main'): CRestA
     setStoreItem('apiClients', clients);
     return newClient;
 }
+
+export type TCRestAPIClient = typeof CRestAPIClient;

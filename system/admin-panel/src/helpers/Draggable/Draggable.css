@@ -20,7 +20,7 @@
     border: 1px dashed transparent;
     /* border-radius: 5px; */
     background-color: transparent;
-    transition-property: border, height, margin, padding, background-color, box-shadow;
+    transition-property: height, margin, padding, background-color, box-shadow;
     transition-duration: 0.3s;
     box-shadow: 1px 1px 3px rgba(0, 0, 0, 0);
     border: 1px solid transparent;

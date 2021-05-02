@@ -20,6 +20,7 @@ import {
 import { resolve } from 'path';
 import { ConnectionOptions, createConnection, getConnection } from 'typeorm';
 import { getCustomRepository } from 'typeorm';
+import normalizePath from 'normalize-path';
 import fs from 'fs-extra';
 
 import { collectPlugins } from './collectPlugins';
@@ -28,15 +29,20 @@ import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 import { GenericPlugin, GenericTheme, GenericCms } from './genericEntities';
 
-
 export const connectDatabase = async (sType: 'main' | 'plugin') => {
 
     const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
 
     const defaultOrmConfig: ConnectionOptions = {
-        "type": "sqlite",
-        "database": tempDBPath,
-        "synchronize": true
+        type: "sqlite",
+        database: tempDBPath,
+        synchronize: false,
+        entityPrefix: 'crw_',
+        migrationsRun: true,
+        migrationsTableName: "crw_migrations",
+        cli: {
+            migrationsDir: "migration"
+        }
     }
 
     let ormconfig: ConnectionOptions | undefined;
@@ -45,9 +51,9 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
     } catch (e) { }
 
     let isNewSQLiteDB = false;
+    const serverDir = getServerDir();
 
     if (!ormconfig?.database) {
-        const serverDir = getServerDir();
         if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {
             // Server probably was launched at the first time and has no DB created
             // Use mocked DB
@@ -64,6 +70,8 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
     if (!ormconfig || !ormconfig.type) throw new Error('Invalid ormconfig');
     setStoreItem('dbType', ormconfig.type);
 
+    console.log(normalizePath(resolve(serverDir!, ormconfig!.cli!.migrationsDir!)) + '/*.js')
+
     const pluginsExports = await collectPlugins();
     const connectionOptions: ConnectionOptions = {
         ...ormconfig,
@@ -75,6 +83,10 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
             ...(sType === 'plugin' ? pluginsExports.entities : []),
             ...(ormconfig.entities ?? [])
         ],
+        migrations: [
+            (serverDir && ormconfig?.cli?.migrationsDir) ?
+                normalizePath(resolve(serverDir, ormconfig.cli.migrationsDir)) + '/*.js' : '',
+        ].filter(it => it && it !== ''),
     };
 
     if (connectionOptions) await createConnection(connectionOptions);

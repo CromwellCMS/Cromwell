@@ -42,7 +42,7 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
                         <div className={postStyles.tagsBlock}>
                             {post?.tags?.map(tag => {
                                 return (
-                                    <Link href={`/tag/${tag.slug}`}>
+                                    <Link href={`/tag/${tag.slug}`} key={tag.id}>
                                         <a className={postStyles.tag}>{tag?.name}</a>
                                     </Link>
                                 )
@@ -61,7 +61,6 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
                     )}
                 </div>
             </div>
-
         </Layout>
     );
 }
@@ -77,6 +76,9 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogPost
     if (slug && typeof slug === 'string') {
         try {
             post = await client?.getPostBySlug(slug);
+
+            // Don't allow unpublished posts to be seen by customers
+            if (!post?.isPublished) post = undefined;
         } catch (e) {
             console.error('BlogPostPage::getStaticProps', e)
         }

@@ -36,6 +36,12 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
         list?.updateData();
     }
 
+    const resetList = () => {
+        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        list?.clearState();
+        list?.init();
+    }
+
     useEffect(() => {
         updateList();
     });
@@ -52,7 +58,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
     const handleChangeSort = (event: React.ChangeEvent<{ value: unknown }>) => {
         if (event.target.value === 'Newest') publishSort.current = 'DESC';
         if (event.target.value === 'Oldest') publishSort.current = 'ASC';
-        updateList();
+        resetList();
     }
 
     return (

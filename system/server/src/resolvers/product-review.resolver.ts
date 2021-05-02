@@ -3,7 +3,6 @@ import {
     DeleteManyInput,
     PagedParamsInput,
     PagedProductReview,
-    ProductRepository,
     ProductReview,
     ProductReviewFilter,
     ProductReviewInput,

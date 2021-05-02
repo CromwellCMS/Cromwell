@@ -57,7 +57,11 @@ const PostListItem = (props: TPropsType) => {
                     </Grid>
                     <Grid item xs={2} className={styles.itemSubInfo}>
                         <p className={styles.itemPublished}>{props.data?.isPublished ? 'published' : 'draft'}</p>
-                        <p className={styles.itemCreate} >{toLocaleDateString(props.data?.createDate)}</p>
+                        {(props.data?.isPublished && props.data?.publishDate) ? (
+                            <p className={styles.itemCreate} >at: {toLocaleDateString(props.data?.publishDate)}</p>
+                        ) : (
+                                <p className={styles.itemCreate} >created at: {toLocaleDateString(props.data?.createDate)}</p>
+                            )}
                     </Grid>
                     <Grid item xs={4} className={styles.listItemActions}>
                         <Link to={`${postPageInfo.baseRoute}/${props.data?.id}`}>
@@ -75,8 +79,9 @@ const PostListItem = (props: TPropsType) => {
                         </IconButton>
                     </Grid>
                 </>
-            )}
-        </Grid>
+            )
+            }
+        </Grid >
     )
 }
 

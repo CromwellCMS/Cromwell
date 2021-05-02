@@ -1,6 +1,5 @@
 // import { TDBEntity, GraphQLPaths } from "@cromwell/core";
 // import { getGraphQLClient } from '@cromwell/core-frontend';
-//@ts-ignore
 
 export const createGetStaticPaths = (pageName: string, getStaticPaths: any) => {
     return getStaticPaths;

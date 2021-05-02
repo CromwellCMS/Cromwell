@@ -65,7 +65,8 @@ const ReviewList = (props: TPropsType) => {
 
     const resetList = () => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
-        list?.updateData();
+        list?.clearState();
+        list?.init();
     }
 
     const handleGetReview = async (params?: TPagedParams<TProductReview>) => {

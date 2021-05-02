@@ -1,4 +1,4 @@
-import { getThemeCustomConfigProp, TAttribute, TProduct, TProductReview, onStoreChange, removeOnStoreChange, getStoreItem } from '@cromwell/core';
+import { getThemeCustomConfigProp, TAttribute, TProduct, TProductReview } from '@cromwell/core';
 import {
     CContainer,
     CGallery,
@@ -10,7 +10,7 @@ import {
     ProductAttributes,
     useRouter,
 } from '@cromwell/core-frontend';
-import { Button, TextField } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
 

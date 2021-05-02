@@ -1,7 +1,9 @@
-import { BasePageNames, TCromwellPageCoreProps, StaticPageContext, TThemeConfig, TPageConfig } from '@cromwell/core';
+import { BasePageNames, StaticPageContext, TCromwellPageCoreProps, TPageStats } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
+
 import { getThemeStaticProps } from './getThemeStaticProps';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
+
 
 export const createGetStaticProps = (pageName: BasePageNames | string,
     pageGetStaticProps: ((context: StaticPageContext) => any) | undefined | null) => {
@@ -25,8 +27,6 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
 
         const apiClient = getRestAPIClient();
         const timestamp = Date.now();
-
-        handleRequset(apiClient?.get(`cms/view-page?pageRoute=${pageRoute}`));
 
         const [
             childStaticProps,
@@ -52,6 +52,26 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         } = pluginsReq;
 
         const timestamp2 = Date.now();
+
+        const pageStats: TPageStats = {
+            pageRoute
+        }
+        if (context?.params?.slug && themeConfig?.defaultPages) {
+            if (pageName === themeConfig.defaultPages.product) {
+                pageStats.productSlug = String(context.params.slug);
+            }
+            if (pageName === themeConfig.defaultPages.category) {
+                pageStats.categorySlug = String(context.params.slug);
+            }
+            if (pageName === themeConfig.defaultPages.tag) {
+                pageStats.tagSlug = String(context.params.slug);
+            }
+            if (pageName === themeConfig.defaultPages.post) {
+                pageStats.postSlug = String(context.params.slug);
+            }
+        }
+
+        handleRequset(apiClient?.post(`cms/view-page`, pageStats));
 
         const headHtml = themeConfig?.headHtml ?? null;
         const palette = themeConfig?.palette ?? null;

@@ -1,7 +1,7 @@
 import { TDeleteManyInput, TPagedList, TPagedParams, TPost, TPostInput } from '@cromwell/core';
 import readingTime from 'reading-time';
 import sanitizeHtml from 'sanitize-html';
-import { EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
+import { EntityRepository, getCustomRepository, SelectQueryBuilder, Brackets } from 'typeorm';
 
 import { PostFilterInput } from '../entities/filter/PostFilterInput';
 import { Post } from '../entities/Post';
@@ -117,7 +117,7 @@ export class PostRepository extends BaseRepository<Post> {
             qb.leftJoin(`${this.metadata.tablePath}.tags`, getCustomRepository(TagRepository).metadata.tablePath)
             qb.andWhere(`${getCustomRepository(TagRepository).metadata.tablePath}.id IN (:...ids)`, { ids: filterParams.tagIds });
         }
-        // Search by product name
+        // Search by title
         if (filterParams?.titleSearch && filterParams.titleSearch !== '') {
             const titleSearch = `%${filterParams.titleSearch}%`;
             const query = `${this.metadata.tablePath}.title LIKE :titleSearch`;
@@ -128,6 +128,26 @@ export class PostRepository extends BaseRepository<Post> {
             const authorId = filterParams.authorId;
             const query = `${this.metadata.tablePath}.authorId = :authorId`;
             qb.andWhere(query, { authorId });
+        }
+
+        // Filter by published
+        if (filterParams?.published !== undefined && filterParams?.published !== null) {
+
+            if (filterParams.published) {
+                const query = `"${this.metadata.tablePath}".isPublished = :isPublished`;
+                qb.andWhere(query, { isPublished: filterParams.published });
+            }
+
+            if (filterParams.published === false) {
+                const brackets = new Brackets(subQb => {
+                    const query = `"${this.metadata.tablePath}".isPublished = :isPublished`;
+                    subQb.where(query, { isPublished: filterParams.published });
+
+                    const query2 = `"${this.metadata.tablePath}".isPublished IS NULL`;
+                    subQb.orWhere(query2);
+                });
+                qb.andWhere(brackets);
+            }
         }
 
         return qb;

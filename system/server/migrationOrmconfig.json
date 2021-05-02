@@ -1,0 +1,17 @@
+{
+    "type": "sqlite",
+    "database": "./db.sqlite3",
+    "synchronize": false,
+    "entityPrefix": "crw_",
+    "migrationsRun": true,
+    "entities": [
+        "../core/backend/dist/index.js"
+    ],
+    "migrationsTableName": "crw_migrations",
+    "migrations": [
+        "migration/*.js"
+    ],
+    "cli": {
+        "migrationsDir": "migration"
+    }
+}

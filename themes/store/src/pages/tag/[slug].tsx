@@ -10,7 +10,7 @@ import {
 } from '@cromwell/core';
 import { CList, getGraphQLClient, LoadBox, TCList, useRouter } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
@@ -30,6 +30,12 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
     const router = useRouter?.();
+
+    const resetList = () => {
+        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        list?.clearState();
+        list?.init();
+    }
 
     const updateList = () => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
@@ -52,7 +58,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
     const handleChangeSort = (event: React.ChangeEvent<{ value: unknown }>) => {
         if (event.target.value === 'Newest') publishSort.current = 'DESC';
         if (event.target.value === 'Oldest') publishSort.current = 'ASC';
-        updateList();
+        resetList();
     }
 
     return (

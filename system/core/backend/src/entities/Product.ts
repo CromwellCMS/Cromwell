@@ -59,7 +59,6 @@ export class Product extends BasePageEntity implements TProduct {
     private attributesJSON?: string;
 
     @Field(type => Number, { nullable: true })
-    @Column({ type: "bigint", nullable: true })
     views?: number;
 
     /** 

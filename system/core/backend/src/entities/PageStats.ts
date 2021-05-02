@@ -1,7 +1,8 @@
 import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { TPageStats } from '@cromwell/core';
 
 @Entity()
-export class PageStats extends BaseEntity {
+export class PageStats extends BaseEntity implements TPageStats {
 
     @PrimaryGeneratedColumn()
     id: string;
@@ -11,4 +12,19 @@ export class PageStats extends BaseEntity {
 
     @Column({ type: "integer", nullable: true })
     views: number;
+
+    @Column({ type: "varchar", nullable: true })
+    productSlug?: string;
+
+    @Column({ type: "varchar", nullable: true })
+    categorySlug?: string;
+
+    @Column({ type: "varchar", nullable: true })
+    postSlug?: string;
+
+    @Column({ type: "varchar", nullable: true })
+    tagSlug?: string;
 }
+
+
+

@@ -69,7 +69,8 @@ export const filterCList = (filterOptions: TProductFilter, productListId: string
         };
         listProps.firstBatch = undefined;
         list.setProps(listProps);
-        list.updateData();
+        list.clearState();
+        list.init();
     }
 }
 

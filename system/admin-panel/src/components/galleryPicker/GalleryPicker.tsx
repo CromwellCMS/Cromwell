@@ -1,21 +1,18 @@
+import { getRandStr, TImageSettings } from '@cromwell/core';
+import { IconButton, Tooltip } from '@material-ui/core';
+import { Add as AddIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import React, { Component } from 'react';
+
 import { Draggable } from '../../helpers/Draggable/Draggable';
-import { getRandStr, TGallerySettings, TImageSettings } from '@cromwell/core';
-import { IconButton, TextField, Tooltip } from '@material-ui/core';
+import ImagePicker, { ImagePickerProps } from '../imagePicker/ImagePicker';
 import styles from './GalleryPicker.module.scss';
-import {
-    Add as AddIcon,
-    Delete as DeleteIcon,
-    DeleteForever as DeleteForeverIcon,
-    Edit as EditIcon,
-    Star as StarIcon,
-    StarBorder as StarBorderIcon,
-} from '@material-ui/icons';
-import ImagePicker from '../imagePicker/ImagePicker';
 
 class GalleryPicker extends Component<{
     images?: TImageSettings[];
     onChange?: (images: TImageSettings[]) => void;
+    classes?: {
+        imagePicker?: ImagePickerProps['classes'];
+    }
 }> {
     private draggable: Draggable;
     private uncontrolledInput: TImageSettings[] = [];
@@ -23,7 +20,11 @@ class GalleryPicker extends Component<{
     private randId = getRandStr(6);
     private galleryItemClass = 'galleryItem_' + this.randId;
     private galleryContainerClass = 'galleryContainer_' + this.randId;
-    private getImgHtmlId = (src: string) => `img_${this.randId}_${src}`;
+    private getImgHtmlId = (index: number) => `img_${this.randId}_${index}`;
+    private getIndexFromElem = (elem?: HTMLElement) => {
+        const idx = parseInt(elem?.id?.replace(`img_${this.randId}_`, ''));
+        if (!isNaN(idx)) return idx;
+    };
 
     componentDidMount() {
         this.draggable = new Draggable({
@@ -42,18 +43,11 @@ class GalleryPicker extends Component<{
         this.draggable?.updateBlocks();
     }
 
-    private onBlockInserted = (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: Element) => {
+    private onBlockInserted = (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: HTMLElement) => {
         let images = [...this.props.images ?? this.uncontrolledInput];
-        let index;
-        let nextIndex = -1;
-        images.forEach((img, i) => {
-            if (draggedBlock.id === this.getImgHtmlId(img.src)) {
-                index = i;
-            }
-            if (nextElement && nextElement.id === this.getImgHtmlId(img.src)) {
-                nextIndex = i;
-            }
-        });
+        const index = this.getIndexFromElem(draggedBlock);
+        const nextIndex = this.getIndexFromElem(nextElement) ?? -1;
+
         if (index !== undefined) {
             const img = images[index];
 
@@ -110,11 +104,12 @@ class GalleryPicker extends Component<{
                             this.onImageChange(index, src ? Object.assign({}, image, { src }) : undefined)
                         }
                         return (
-                            <div className={this.galleryItemClass} key={image.src} id={this.getImgHtmlId(image.src)}>
+                            <div className={this.galleryItemClass} key={image.src + index} id={this.getImgHtmlId(index)}>
                                 <ImagePicker
+                                    classes={this.props.classes?.imagePicker}
                                     showRemove
                                     value={image.src}
-                                    label="Pick an image"
+                                    placeholder="Pick an image"
                                     onChange={onSrcChange}
                                 />
                             </div>

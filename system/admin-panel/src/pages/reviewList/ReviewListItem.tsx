@@ -8,7 +8,7 @@ import {
     Visibility as VisibilityIcon,
 } from '@material-ui/icons';
 import { Rating } from '@material-ui/lab';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 
 import { useForceUpdate } from '../../helpers/forceUpdate';

@@ -1,7 +1,7 @@
 import { TProductReview } from '@cromwell/core';
 import { Card } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import styles from './ReviewItem.module.scss';
 

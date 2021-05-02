@@ -142,7 +142,7 @@ export type TThemeConfig = {
     globalModifications?: TCromwellBlockData[];
 }
 
-export type TDefaultPageName = 'index' | 'category' | 'product' | 'pages';
+export type TDefaultPageName = 'index' | 'category' | 'product' | 'post' | 'tag' | 'pages';
 
 export type TPalette = {
     primaryColor?: string;
@@ -319,8 +319,12 @@ export type TCmsStats = {
 }
 
 export type TPageStats = {
-    pageRoute: string;
-    views: number;
+    pageRoute?: string;
+    views?: number;
+    productSlug?: string;
+    categorySlug?: string;
+    postSlug?: string;
+    tagSlug?: string;
 }
 
 export type TSalePerDay = {

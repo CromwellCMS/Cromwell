@@ -1,24 +1,24 @@
 import 'swiper/swiper-bundle.min.css';
 
 import { gql } from '@apollo/client';
-import { TAttribute, TProduct, TProductInput } from '@cromwell/core';
+import { serviceLocator, TAttribute, TProduct, TProductInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, Tab, Tabs, IconButton } from '@material-ui/core';
+import { Button, IconButton, Tab, Tabs, Tooltip } from '@material-ui/core';
+import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams, Link } from 'react-router-dom';
-import { ArrowBack as ArrowBackIcon } from '@material-ui/icons';
+import { Link, useHistory, useParams } from 'react-router-dom';
 
-import { productListInfo } from '../../constants/PageInfos';
 import { toast } from '../../components/toast/toast';
-import { productPageInfo } from '../../constants/PageInfos';
+import { productListInfo, productPageInfo } from '../../constants/PageInfos';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import { resetSelected } from '../../redux/helpers';
 import { store } from '../../redux/store';
+import commonStyles from '../../styles/common.module.scss';
 import AttributesTab from './AttributesTab';
 import CategoriesTab from './CategoriesTab';
 import MainInfoCard from './MainInfoCard';
 import styles from './Product.module.scss';
-import commonStyles from '../../styles/common.module.scss';
 
 export const editorId = "quill-editor";
 
@@ -207,7 +207,7 @@ const ProductPage = () => {
         }
     }
 
-    const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    const handleTabChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
         setActiveTabNum(newValue);
     }
 
@@ -221,6 +221,13 @@ const ProductPage = () => {
             </div>
         )
     }
+
+    const themeProductPage = store.getState()?.activeTheme?.defaultPages?.product;
+    let pageFullUrl;
+    if (themeProductPage && product?.slug) {
+        pageFullUrl = serviceLocator.getFrontendUrl() + '/' + themeProductPage.replace('[slug]', product.slug);
+    }
+
 
     return (
         <div className={styles.Product}>
@@ -249,19 +256,23 @@ const ProductPage = () => {
                     </Tabs>
                 </div>
                 <div className={styles.headerActions}>
+                    {pageFullUrl && (
+                        <Tooltip title="Open product page in new tab">
+                            <IconButton
+                                className={styles.openPageBtn}
+                                aria-label="open"
+                                onClick={() => { window.open(pageFullUrl, '_blank'); }}
+                            >
+                                <OpenInNewIcon />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                     <Button variant="contained" color="primary"
                         className={styles.saveBtn}
                         onClick={handleSave}>
                         Save
                         </Button>
-                    {/* <Tooltip title="Open product page in new tab">
-                        <IconButton
-                            aria-label="open"
-                            onClick={() => { if (product) window.open(`http://localhost:4128/product/${product.id}`, '_blank'); }}
-                        >
-                            <OpenInNewIcon />
-                        </IconButton>
-                    </Tooltip> */}
+
                 </div>
             </div>
             {isLoading && <Skeleton width="100%" height="100%" style={{
@@ -321,11 +332,6 @@ function TabPanel(props: TabPanelProps) {
             )}
         </div>
     );
-}
-
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
 }
 
 export default ProductPage;

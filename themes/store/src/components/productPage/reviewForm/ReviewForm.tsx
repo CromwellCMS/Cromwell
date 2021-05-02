@@ -2,7 +2,7 @@ import { getStoreItem, onStoreChange, removeOnStoreChange, TProductReview, TUser
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, TextField, Tooltip } from '@material-ui/core';
 import { Alert, Rating } from '@material-ui/lab';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { toast } from '../../toast/toast';
 import styles from './ReviewForm.module.scss';

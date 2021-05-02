@@ -11,7 +11,11 @@ import {
 import { TProduct, getBlockInstance, TPagedParams } from '@cromwell/core';
 import { getGraphQLClient, TCGraphQLClient, TCList } from '@cromwell/core-frontend';
 
-type TSortOption = { key?: keyof TProduct; title: string; direction?: 'ASC' | 'DESC' };
+type TSortOption = {
+    key?: keyof TProduct;
+    title: string;
+    direction?: 'ASC' | 'DESC'
+};
 
 export const CategorySort = (props: {
     listId: string;

@@ -1,30 +1,31 @@
-import { TCmsSettings, TOrder, TPackageCromwellConfig, TProductReview } from '@cromwell/core';
+import { TOrder, TPackageCromwellConfig, TProductReview } from '@cromwell/core';
 import {
     getCmsModuleInfo,
     getLogger,
     getPublicDir,
     InputOrder,
     OrderRepository,
-    readCmsModules,
     ProductReviewInput,
     ProductReviewRepository,
+    readCmsModules,
 } from '@cromwell/core-backend';
 import { Body, Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import fs from 'fs-extra';
 import { join } from 'path';
 import { getCustomRepository } from 'typeorm';
 
 import { JwtAuthGuard, Roles } from '../auth/auth.guard';
-import { CmsConfigDto } from '../dto/cms-config.dto';
 import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
+import { CmsConfigDto } from '../dto/cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
+import { CmsStatsDto } from '../dto/cms-stats.dto';
+import { PageStatsDto } from '../dto/page-stats.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { CmsService } from '../services/cms.service';
 import { ThemeService } from '../services/theme.service';
-import { CmsStatsDto } from '../dto/cms-stats.dto';
 
 const logger = getLogger('detailed');
 
@@ -165,6 +166,7 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async createDir(@Query('inPath') inPath: string, @Query('dirName') dirName: string): Promise<boolean> {
+        logger.log('CmsController::createDir');
         if (publicSystemDirs.includes(dirName)) return false;
 
         const fullPath = join(getPublicDir(), inPath ?? '', dirName);
@@ -188,6 +190,7 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async removeDir(@Query('inPath') inPath: string, @Query('dirName') dirName: string): Promise<boolean> {
+        logger.log('CmsController::removeDir');
         if (publicSystemDirs.includes(dirName)) return false;
 
         const fullPath = join(getPublicDir(), inPath ?? '', dirName);
@@ -212,11 +215,12 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async uploadFile(@Query('inPath') inPath: string, @Query('fileName') fileName: string,
-        @Req() req: any): Promise<boolean> {
+        @Req() req: any): Promise<string> {
+        logger.log('CmsController::uploadFile');
         const fullPath = join(getPublicDir(), inPath ?? '');
 
         await this.cmsService.uploadFile(req, fullPath)
-        return true;
+        return 'true';
     }
 
 
@@ -336,19 +340,20 @@ export class CmsController {
     }
 
 
-    @Get('view-page')
+    @Post('view-page')
     @UseGuards(ThrottlerGuard)
     @Throttle(5, 1)
     @ApiOperation({
         description: `Increments views number for a page in page_stats table`,
         parameters: [{ name: 'pageRoute', in: 'query', required: true }]
     })
+    @ApiBody({ type: PageStatsDto })
     @ApiResponse({
         status: 200
     })
-    async viewPage(@Query('pageRoute') pageRoute: string): Promise<void> {
-        if (pageRoute && typeof pageRoute === 'string' && pageRoute !== '') {
-            return this.cmsService.viewPage(pageRoute);
+    async viewPage(@Body() input: PageStatsDto): Promise<void> {
+        if (input?.pageRoute && input.pageRoute !== '') {
+            return this.cmsService.viewPage(input);
         } else {
             throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
         }

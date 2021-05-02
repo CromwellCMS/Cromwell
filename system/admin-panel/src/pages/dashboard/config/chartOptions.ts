@@ -1,4 +1,4 @@
-import { TCmsStats, TSalePerDay, TPageStats } from '@cromwell/core';
+import { TSalePerDay } from '@cromwell/core';
 import { format } from 'date-fns';
 import * as echarts from 'echarts';
 
@@ -82,8 +82,6 @@ export const getSalesValuePerDayOption = (sales: TSalePerDay[]) => {
         ],
         yAxis: [
             {
-                minInterval: 1,
-                min: 1,
                 type: 'value',
             }
         ],

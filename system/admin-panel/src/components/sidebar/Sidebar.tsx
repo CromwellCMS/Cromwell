@@ -57,7 +57,7 @@ export default function Sidebar() {
         history?.listen(() => {
             const currentInfo = pageInfos.find(i => '#' + i.route === window.location.hash);
             const newcurrentLink = getLinkByInfo(currentInfo);
-            if (currentLink && newcurrentLink !== currentLink) {
+            if (newcurrentLink && newcurrentLink !== currentLink) {
                 setActiveId(newcurrentLink.id);
                 if (newcurrentLink.parentId) setExpanded(newcurrentLink.parentId)
             }

@@ -2,17 +2,14 @@ import { TAttribute } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, Grid } from '@material-ui/core';
 import { AddCircleOutline as AddCircleOutlineIcon } from '@material-ui/icons';
+import { Skeleton } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
 
+import { useForceUpdate } from '../../helpers/forceUpdate';
+import commonStyles from '../../styles/common.module.scss';
 import AttributeItem from './AttributeItem';
 import styles from './Attributes.module.scss';
-import { Skeleton } from '@material-ui/lab';
-import commonStyles from '../../styles/common.module.scss';
 
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
-}
 
 export default function AttributesPage() {
     const attributes = useRef<TAttribute[] | null>(null);
