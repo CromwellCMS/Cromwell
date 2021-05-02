@@ -134,7 +134,7 @@ export interface TPost extends TBasePageEntity {
     // Short description to display in blog list
     excerpt?: string | null;
     // Is published?
-    isPublished?: boolean | null;
+    published?: boolean | null;
     // Publish date
     publishDate?: Date | null;
 }
@@ -389,11 +389,12 @@ export type TCmsEntity = TCmsEntityCore & TBasePageEntity;
 
 
 export type TCurrency = {
+    id: string;
     tag: string;
     title?: string;
     /** Local curency symbols that will be added to price in getPriceWithCurrency method */
     symbol?: string;
-    /** Ratio for currencies to compare: "USD": 1,"EURO": 0.8, etc. */
+    /** Ratio for currencies to compare: "USD": 1,"EURO": 0.83, "GBP": 0.72 etc. */
     ratio?: number;
 }
 

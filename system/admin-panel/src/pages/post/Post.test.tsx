@@ -22,7 +22,7 @@ jest.mock('../../constants/PageInfos', () => {
 const testData: TPost = {
     id: '1',
     title: 'test1',
-    isPublished: true,
+    published: true,
     slug: 'test_slug',
     delta: '{ \"ops\": [{ \"insert\": \"Lorem ipsum dolor sit amet\" }, {\"attributes\":{\"header\":1},\"insert\":\"\\n\"}] }',  // eslint-disable-line
 }

@@ -72,18 +72,28 @@ export const defaultCmsConfig: TCmsConfig = {
         defaultShippingPrice: 10,
         currencies: [
             {
+                id: '1',
                 "tag": "USD",
                 "title": "US Dollar",
                 "symbol": "$",
                 "ratio": 1
             },
             {
+                id: '2',
                 "tag": "EUR",
                 "title": "Euro",
                 "symbol": "€",
                 "ratio": 0.8
             },
             {
+                id: '3',
+                "tag": "GBP",
+                "title": "British pound",
+                "symbol": "£",
+                "ratio": 0.72
+            },
+            {
+                id: '4',
                 "tag": "RUB",
                 "title": "Russian Ruble",
                 "symbol": "₽",

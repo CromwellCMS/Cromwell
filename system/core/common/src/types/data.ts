@@ -325,6 +325,7 @@ export type TPageStats = {
     categorySlug?: string;
     postSlug?: string;
     tagSlug?: string;
+    pageId?: string;
 }
 
 export type TSalePerDay = {

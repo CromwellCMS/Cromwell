@@ -30,7 +30,7 @@ export class UpdatePost extends BasePageInput implements TPostInput {
     excerpt?: string | null;
 
     @Field(() => Boolean, { nullable: true })
-    isPublished: boolean;
+    published: boolean;
 
     @Field(type => Date, { nullable: true })
     publishDate?: Date | null;

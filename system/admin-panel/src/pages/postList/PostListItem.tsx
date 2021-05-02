@@ -56,8 +56,8 @@ const PostListItem = (props: TPropsType) => {
                         </div>
                     </Grid>
                     <Grid item xs={2} className={styles.itemSubInfo}>
-                        <p className={styles.itemPublished}>{props.data?.isPublished ? 'published' : 'draft'}</p>
-                        {(props.data?.isPublished && props.data?.publishDate) ? (
+                        <p className={styles.itemPublished}>{props.data?.published ? 'published' : 'draft'}</p>
+                        {(props.data?.published && props.data?.publishDate) ? (
                             <p className={styles.itemCreate} >at: {toLocaleDateString(props.data?.publishDate)}</p>
                         ) : (
                                 <p className={styles.itemCreate} >created at: {toLocaleDateString(props.data?.createDate)}</p>

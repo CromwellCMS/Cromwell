@@ -1,5 +1,6 @@
+import { TCmsEntityInput, TCurrency } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
-import { TCmsSettings, TCurrency, TCmsEntityInput } from '@cromwell/core';
+
 import { CurrencyDto } from './currency.dto';
 
 export class CmsConfigUpdateDto implements TCmsEntityInput {

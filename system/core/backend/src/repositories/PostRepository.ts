@@ -68,7 +68,7 @@ export class PostRepository extends BaseRepository<Post> {
         });
         post.delta = input.delta;
         post.excerpt = input.excerpt;
-        post.isPublished = input.isPublished;
+        post.published = input.published;
         post.authorId = input.authorId;
         post.publishDate = input.publishDate;
     }
@@ -134,16 +134,16 @@ export class PostRepository extends BaseRepository<Post> {
         if (filterParams?.published !== undefined && filterParams?.published !== null) {
 
             if (filterParams.published) {
-                const query = `"${this.metadata.tablePath}".isPublished = :isPublished`;
-                qb.andWhere(query, { isPublished: filterParams.published });
+                const query = `"${this.metadata.tablePath}".published = :published`;
+                qb.andWhere(query, { published: filterParams.published });
             }
 
             if (filterParams.published === false) {
                 const brackets = new Brackets(subQb => {
-                    const query = `"${this.metadata.tablePath}".isPublished = :isPublished`;
-                    subQb.where(query, { isPublished: filterParams.published });
+                    const query = `"${this.metadata.tablePath}".published = :published`;
+                    subQb.where(query, { published: filterParams.published });
 
-                    const query2 = `"${this.metadata.tablePath}".isPublished IS NULL`;
+                    const query2 = `"${this.metadata.tablePath}".published IS NULL`;
                     subQb.orWhere(query2);
                 });
                 qb.andWhere(brackets);

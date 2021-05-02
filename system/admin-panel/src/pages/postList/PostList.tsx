@@ -101,7 +101,7 @@ const PostList = (props: TPropsType) => {
                     }
                     mainImage
                     publishDate
-                    isPublished
+                    published
                 }
             `,
             customFragmentName: 'PostListFragment',
@@ -118,6 +118,11 @@ const PostList = (props: TPropsType) => {
         const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
         list.clearState();
         list.init();
+    }
+
+    const updateList = () => {
+        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        list?.updateData();
     }
 
     const handleFilterInput = debounce(1000, () => {
@@ -147,7 +152,7 @@ const PostList = (props: TPropsType) => {
         }
         setIsLoading(false);
         setPostToDelete(null);
-        resetList();
+        updateList();
     }
 
     const handleCreatePost = () => {
@@ -183,7 +188,7 @@ const PostList = (props: TPropsType) => {
         }
         setDeleteSelectedOpen(false);
         setIsLoading(false);
-        resetList();
+        updateList();
         resetSelected();
     }
 

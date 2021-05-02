@@ -24,6 +24,9 @@ export class PageStats extends BaseEntity implements TPageStats {
 
     @Column({ type: "varchar", nullable: true })
     tagSlug?: string;
+
+    @Column({ type: "varchar", nullable: true })
+    pageId?: string;
 }
 
 

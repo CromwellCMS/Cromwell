@@ -42,6 +42,23 @@
         margin-top: 15px;
         font-weight: 500;
     }
+
+    div.textField {
+        margin-bottom: 15px;
+    }
+}
+
+.currencyItem {
+    @include paper;
+    padding: 15px;
+    padding-top: 5px;
+}
+.currencyItemHeader {
+    display: flex;
+    justify-content: space-between;
+}
+.currencyBadge {
+    padding: 24px 0 0 27px;
 }
 
 @media screen and (max-width: $mobileBreakpoint) {

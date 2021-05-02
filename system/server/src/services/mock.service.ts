@@ -345,7 +345,8 @@ export class MockService {
             for (let i = 0; i < reviewsNum && i < this.reviewsMock.length; i++) {
                 const review: TProductReviewInput = {
                     ...this.reviewsMock[i],
-                    productId: prod.id
+                    productId: prod.id,
+                    approved: Math.random() > 0.3,
                 }
                 promises.push(this.productReviewRepo.createProductReview(review));
             }
@@ -437,7 +438,7 @@ export class MockService {
                 authorId: users[Math.floor(Math.random() * (users.length))].id,
                 title: this.getRandomName(),
                 mainImage: getRandImg(),
-                isPublished: true,
+                published: true,
                 isEnabled: true,
                 tagIds: this.getRandomElementsFromArray(tagIds, 3),
                 publishDate: new Date(Date.now()),

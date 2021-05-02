@@ -78,7 +78,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogPost
             post = await client?.getPostBySlug(slug);
 
             // Don't allow unpublished posts to be seen by customers
-            if (!post?.isPublished) post = undefined;
+            if (!post?.published) post = undefined;
         } catch (e) {
             console.error('BlogPostPage::getStaticProps', e)
         }

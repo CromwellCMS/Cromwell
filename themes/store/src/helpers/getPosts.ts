@@ -30,7 +30,7 @@ export const handleGetFilteredPosts = async (params: TPagedParams<TPost>, filter
                     color
                     image
                 }
-                isPublished 
+                published 
                 publishDate
                 readTime
         }

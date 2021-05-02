@@ -1,9 +1,9 @@
-import { getRandStr, TImageSettings } from '@cromwell/core';
+import { TImageSettings } from '@cromwell/core';
 import { IconButton, Tooltip } from '@material-ui/core';
 import { Add as AddIcon, Delete as DeleteIcon } from '@material-ui/icons';
 import React, { Component } from 'react';
 
-import { Draggable } from '../../helpers/Draggable/Draggable';
+import DraggableList from '../draggableList/DraggableList';
 import ImagePicker, { ImagePickerProps } from '../imagePicker/ImagePicker';
 import styles from './GalleryPicker.module.scss';
 
@@ -14,64 +14,7 @@ class GalleryPicker extends Component<{
         imagePicker?: ImagePickerProps['classes'];
     }
 }> {
-    private draggable: Draggable;
     private uncontrolledInput: TImageSettings[] = [];
-
-    private randId = getRandStr(6);
-    private galleryItemClass = 'galleryItem_' + this.randId;
-    private galleryContainerClass = 'galleryContainer_' + this.randId;
-    private getImgHtmlId = (index: number) => `img_${this.randId}_${index}`;
-    private getIndexFromElem = (elem?: HTMLElement) => {
-        const idx = parseInt(elem?.id?.replace(`img_${this.randId}_`, ''));
-        if (!isNaN(idx)) return idx;
-    };
-
-    componentDidMount() {
-        this.draggable = new Draggable({
-            draggableSelector: '.' + this.galleryItemClass,
-            containerSelector: '.' + this.galleryContainerClass,
-            rootElementSelector: '.' + styles.GalleryPicker,
-            onBlockInserted: this.onBlockInserted,
-            dragPlacement: 'element',
-            createFrame: true,
-            disableInsert: true,
-            primaryColor: 'transparent',
-        });
-    }
-
-    componentDidUpdate() {
-        this.draggable?.updateBlocks();
-    }
-
-    private onBlockInserted = (container: HTMLElement, draggedBlock: HTMLElement, nextElement?: HTMLElement) => {
-        let images = [...this.props.images ?? this.uncontrolledInput];
-        const index = this.getIndexFromElem(draggedBlock);
-        const nextIndex = this.getIndexFromElem(nextElement) ?? -1;
-
-        if (index !== undefined) {
-            const img = images[index];
-
-            delete images[index];
-
-            if (nextIndex === -1) {
-                images.push(img);
-            } else {
-                const filtered: TImageSettings[] = []
-                images.forEach((image, i) => {
-                    if (i === nextIndex) {
-                        filtered.push(img)
-                    }
-                    filtered.push(image)
-                });
-                images = filtered;
-                if (!images.includes(img)) images.push(img);
-            }
-            images = images.filter(Boolean);
-
-            this.uncontrolledInput = images;
-            this.props.onChange?.(images);
-        }
-    }
 
     private onImageChange = (index: number, value: TImageSettings | null) => {
         let images = [...(this.props.images ?? this.uncontrolledInput)];
@@ -98,24 +41,19 @@ class GalleryPicker extends Component<{
 
         return (
             <div className={styles.GalleryPicker}>
-                <div className={`${this.galleryContainerClass} ${this.galleryItemClass} ${styles.container}`}>
-                    {images.map((image, index) => {
-                        const onSrcChange = (src: string | undefined) => {
-                            this.onImageChange(index, src ? Object.assign({}, image, { src }) : undefined)
-                        }
-                        return (
-                            <div className={this.galleryItemClass} key={image.src + index} id={this.getImgHtmlId(index)}>
-                                <ImagePicker
-                                    classes={this.props.classes?.imagePicker}
-                                    showRemove
-                                    value={image.src}
-                                    placeholder="Pick an image"
-                                    onChange={onSrcChange}
-                                />
-                            </div>
-                        )
-                    })}
-                </div>
+                <DraggableList<TImageSettings>
+                    component={ImageItem}
+                    componentProps={{
+                        onImageChange: this.onImageChange,
+                        classes: this.props.classes?.imagePicker,
+                        allImages: images,
+                    }}
+                    data={images}
+                    onChange={(items) => {
+                        this.uncontrolledInput = items;
+                        this.props.onChange?.(items);
+                    }}
+                />
                 <div className={styles.actions}>
                     <Tooltip title="Add image">
                         <IconButton
@@ -139,6 +77,27 @@ class GalleryPicker extends Component<{
             </div>
         );
     }
+}
+
+const ImageItem = (props: {
+    itemProps: {
+        onImageChange: (index: number, value: TImageSettings | null) => void;
+        classes: ImagePickerProps['classes'];
+        allImages: TImageSettings[];
+    };
+    data: TImageSettings;
+}) => {
+    const onSrcChange = (src: string | undefined) => {
+        props.itemProps.onImageChange(props.itemProps.allImages.indexOf(props.data),
+            src ? Object.assign({}, props.data, { src }) : undefined);
+    }
+    return <ImagePicker
+        classes={props.itemProps.classes}
+        showRemove
+        value={props.data.src}
+        placeholder="Pick an image"
+        onChange={onSrcChange}
+    />
 }
 
 export default GalleryPicker;

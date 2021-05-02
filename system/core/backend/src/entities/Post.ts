@@ -42,7 +42,7 @@ export class Post extends BasePageEntity implements TPost {
 
   @Field(type => Boolean, { nullable: true })
   @Column({ type: "boolean", nullable: true })
-  isPublished?: boolean | null;
+  published?: boolean | null;
 
   @Field(type => Date, { nullable: true })
   @Column({ type: "datetime", nullable: true })

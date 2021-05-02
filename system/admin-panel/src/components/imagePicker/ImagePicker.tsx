@@ -42,7 +42,6 @@ const ImagePicker = (props: ImagePickerProps) => {
             setInternalValue(val);
     }
 
-
     const element = (
         <div className={`${styles.wrapper} ${props.className} ${props.classes?.root}`}
             style={{ paddingTop: props.label ? '18px' : '', ...(props.style ?? {}) }}>
