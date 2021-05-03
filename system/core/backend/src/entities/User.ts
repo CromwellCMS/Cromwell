@@ -36,8 +36,7 @@ export class User extends BasePageEntity implements TUser {
     @Column({ type: "varchar", nullable: true })
     phone?: string;
 
-
-    @Column()
+    @Column({ type: "varchar", nullable: false })
     password: string;
 
     /**
@@ -46,4 +45,12 @@ export class User extends BasePageEntity implements TUser {
      */
     @Column({ type: "varchar", nullable: true })
     refreshTokens?: string | null;
+
+    // A secret code sent to user e-mail to reset his password
+    @Column({ type: "varchar", nullable: true })
+    resetPasswordCode?: string | null;
+
+    // A date when resetPasswordCode was generated
+    @Column({ type: "datetime", nullable: true })
+    resetPasswordDate?: Date | null;
 }

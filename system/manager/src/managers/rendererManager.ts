@@ -1,4 +1,4 @@
-import { serviceLocator } from '@cromwell/core';
+import { serviceLocator, TCmsSettings, sleep } from '@cromwell/core';
 import {
     buildDirName,
     getLogger,
@@ -23,8 +23,6 @@ import { closeService, isPortUsed, isServiceRunning, startService } from './base
 
 const { cacheKeys, servicesEnv } = managerConfig;
 const logger = getLogger('detailed');
-const rendererDir = getRendererDir();
-const rendererTempDir = getRendererTempDir();
 const rendererStartupPath = getRendererStartupPath();
 const errorLogger = getLogger('errors-only').error;
 
@@ -37,7 +35,12 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
     }
 
     const cmsConfig = await readCMSConfig();
-    const cmsSettings = await getRestAPIClient()?.getCmsSettings();
+    let cmsSettings: TCmsSettings | undefined;
+    try {
+        cmsSettings = await getRestAPIClient()?.getCmsSettings();
+    } catch (error) {
+        errorLogger(error);
+    }
 
     if (!cmsConfig?.frontendPort) {
         const message = 'Manager: Failed to start Renderer: frontendPort in cmsconfig is not defined';
@@ -82,7 +85,7 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
                     await closeRenderer();
                     try {
                         await tcpPortUsed.waitUntilFree(cmsConfig.frontendPort, 500, 4000);
-                    } catch (e) { console.error(e) };
+                    } catch (e) { console.error(e) }
                     await startRenderer(command);
                 }
             }
@@ -215,16 +218,23 @@ export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promis
         const buildSuccess = await rendererBuild(themeModuleName);
         if (buildSuccess) {
             const themeBuildNextDir = resolve(themeDir, buildDirName, '.next');
-            await new Promise(done => setTimeout(done, 200));
+            await sleep(0.2);
             try {
                 if (await fs.pathExists(themeBuildNextDir)) await fs.remove(themeBuildNextDir);
             } catch (e) {
                 logger.error(e);
             }
-            await new Promise(done => setTimeout(done, 200));
+            await sleep(0.2);
+
+            const nextCacheDir = resolve(tempNextDir, 'cache');
+            if (await fs.pathExists(nextCacheDir)) await fs.remove(nextCacheDir);
+            await sleep(0.2);
+
             await fs.move(tempNextDir, themeBuildNextDir);
-            await new Promise(done => setTimeout(done, 200));
+            await sleep(0.2);
             await fs.remove(tempDir);
+
+
             logger.log('RendererManager:: successfully saved theme');
             return true;
         } else {
@@ -251,7 +261,7 @@ export const rendererStartWatchDev = async (themeName: string) => {
 
     const commad: TRendererCommands = 'dev';
 
-    const proc = await startService({
+    await startService({
         path: rendererStartupPath,
         name: cacheKeys.renderer,
         args: [commad, `--theme-name=${themeName}`],
@@ -264,36 +274,4 @@ const isThemeBuilt = async (dir: string): Promise<boolean> => {
         && await fs.pathExists(resolve(dir, '.next/build-manifest.json'))
         && await fs.pathExists(resolve(dir, '.next/prerender-manifest.json'))
     )
-}
-
-const applyNewTheme = async (nextThemeModuleName: string): Promise<boolean> => {
-    if (ManagerState.rendererStatus === 'busy' ||
-        ManagerState.rendererStatus === 'building') {
-        logger.error(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, aborting changeTheme process..`)
-        return false;
-    }
-    const themeDir = await getNodeModuleDir(nextThemeModuleName);
-
-    logger.log(`RendererManager:: changeTheme: ${nextThemeModuleName}, ${themeDir}`);
-    if (themeDir) {
-        const themeBuildNextDir = resolve(themeDir, buildDirName, '.next');
-        if (await fs.pathExists(themeBuildNextDir)) {
-
-            ManagerState.rendererStatus = 'busy';
-
-            await closeRenderer();
-
-            await makeEmptyDir(rendererTempDir);
-            const tempNextDir = resolve(rendererTempDir, '.next');
-            fs.copy(themeBuildNextDir, tempNextDir);
-
-            const success = await startRenderer();
-
-            ManagerState.rendererStatus = 'running';
-
-            return success;
-        }
-    }
-
-    return false;
 }

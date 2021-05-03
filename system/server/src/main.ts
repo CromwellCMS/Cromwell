@@ -16,7 +16,7 @@ import { ExceptionFilter } from './filters/exception.filter';
 import { connectDatabase } from './helpers/connectDataBase';
 import { corsHandler } from './helpers/corsHandler';
 import { getResolvers } from './helpers/getResolvers';
-import { loadEnv } from './helpers/loadEnv';
+import { checkConfigs, loadEnv } from './helpers/loadEnv';
 import { AppModule } from './modules/app.module';
 import { authServiceInst } from './services/auth.service';
 
@@ -26,6 +26,7 @@ async function bootstrap(): Promise<void> {
     const envMode = loadEnv();
     const config = readCMSConfigSync();
     if (!config) throw new Error('Failed to read CMS config ' + JSON.stringify(config));
+    await checkConfigs();
 
     // Connect to DB via TypeOrm
     await connectDatabase(envMode.serverType);

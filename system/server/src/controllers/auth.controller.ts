@@ -1,14 +1,27 @@
-import { Body, Controller, Get, Post, Request, Response, UnauthorizedException, UseGuards, HttpException, HttpStatus } from '@nestjs/common';
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
-import { FastifyReply } from 'fastify';
-import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
-import { TRequestWithUser } from '../auth/constants';
-import { JwtAuthGuard } from '../auth/auth.guard';
-import { LoginDto } from '../dto/login.dto';
-import { UserDto } from '../dto/user.dto';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { AuthService } from '../services/auth.service';
 import { validateEmail } from '@cromwell/core-backend';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpException,
+    HttpStatus,
+    Post,
+    Request,
+    Response,
+    UnauthorizedException,
+    UseGuards,
+} from '@nestjs/common';
+import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { FastifyReply } from 'fastify';
+
+import { JwtAuthGuard } from '../auth/auth.guard';
+import { TRequestWithUser } from '../auth/constants';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { LoginDto } from '../dto/login.dto';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { UserDto } from '../dto/user.dto';
+import { AuthService } from '../services/auth.service';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -85,22 +98,41 @@ export class AuthController {
     }
 
 
-    @Post('reset-password')
+    @Post('forgot-password')
     @UseGuards(ThrottlerGuard)
-    @Throttle(3, 10)
+    @Throttle(4, 10)
     @ApiOperation({
-        description: 'Reset password for a user account',
+        description: 'Send an e-mail with reset code for a user account',
     })
     @ApiBody({ type: CreateUserDto })
     @ApiResponse({
         status: 201,
         type: Boolean,
     })
-    async resetPassword(@Body() input: CreateUserDto) {
+    async frogotPassword(@Body() input: CreateUserDto) {
         if (!input?.email || !validateEmail(input.email))
             throw new HttpException('Email is not valid', HttpStatus.NOT_ACCEPTABLE);
 
-        return this.authService.resetUserPassword(input.email);
+        return this.authService.forgotUserPassword(input.email);
+    }
+
+
+    @Post('reset-password')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(5, 10)
+    @ApiOperation({
+        description: 'Set a new password for user with provided secret code',
+    })
+    @ApiBody({ type: ResetPasswordDto })
+    @ApiResponse({
+        status: 201,
+        type: Boolean,
+    })
+    async resetPassword(@Body() input: ResetPasswordDto) {
+        if (!input?.email || !validateEmail(input.email))
+            throw new HttpException('Email is not valid', HttpStatus.NOT_ACCEPTABLE);
+
+        return this.authService.resetUserPassword(input);
     }
 
 

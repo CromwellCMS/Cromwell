@@ -8,7 +8,17 @@ import {
     TUser,
 } from '@cromwell/core';
 import { getCStore, getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, TextField, Tooltip, useMediaQuery, useTheme, FormControl, FormLabel, FormControlLabel, RadioGroup, Radio } from '@material-ui/core';
+import {
+    Button,
+    FormControl,
+    FormControlLabel,
+    Radio,
+    RadioGroup,
+    TextField,
+    Tooltip,
+    useMediaQuery,
+    useTheme,
+} from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 
@@ -43,11 +53,10 @@ const CheckoutPage: TCromwellPage = (props) => {
     const [canValidate, setCanValidate] = useState(false);
     const [singInType, setSingInType] = useState<TFromType>('sign-in');
     const [placedOrder, setPlacedOrder] = useState<TOrder | null>(null);
+    const [orderTotal, setOrderTotal] = useState<TOrder | null>(null);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
-    const shippingPrice = getStoreItem('cmsSettings')?.defaultShippingPrice ?? 0;
-    const totalPrice = shippingPrice + cstore.getCartTotal().total;
 
     useEffect(() => {
         const onUserChange = (value: TUser | undefined) => {
@@ -60,12 +69,30 @@ const CheckoutPage: TCromwellPage = (props) => {
             forceUpdate();
         }
 
+        getOrderTotal();
+
+        cstore.onCartUpdate(() => {
+            getOrderTotal();
+        }, 'checkout');
+
         onStoreChange('userInfo', onUserChange);
 
         return () => {
             removeOnStoreChange('userInfo', onUserChange);
         }
     }, []);
+
+    const getOrderTotal = async () => {
+        try {
+            const total = await getRestAPIClient()?.getOrderTotal({
+                cart: JSON.stringify(cstore.getCart())
+            });
+            if (total) setOrderTotal(total);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
 
     const changeForm = (key: keyof typeof form, value: any) => {
         setForm(prevState => {
@@ -98,7 +125,6 @@ const CheckoutPage: TCromwellPage = (props) => {
     }
 
     const handlePlaceOrder = async () => {
-        const cartInfo = cstore.getCartTotal();
         if (!canValidate) setCanValidate(true);
 
         if (!form?.name || form.name == '' ||
@@ -119,12 +145,8 @@ const CheckoutPage: TCromwellPage = (props) => {
                 customerEmail: form.email,
                 customerComment: form.comment,
                 userId: userInfo?.id,
-                cartTotalPrice: cartInfo.total,
-                totalQnt: cartInfo.amount,
-                cartOldTotalPrice: cartInfo.totalOld,
                 cart: JSON.stringify(cstore.getCart()),
-                orderTotalPrice: totalPrice,
-                shippingPrice: shippingPrice,
+                fromUrl: window.location.origin,
             });
         } catch (e) {
             console.error(e);
@@ -242,7 +264,7 @@ const CheckoutPage: TCromwellPage = (props) => {
                         value={form.shippingMethod ?? 0}
                         onChange={(event, value: string) => changeForm('shippingMethod', parseInt(value))}>
                         <FormControlLabel value={0} control={<Radio color="primary" />}
-                            label={`Standard shipping: ${cstore.getPriceWithCurrency(shippingPrice)}`} />
+                            label={`Standard shipping: ${cstore.getPriceWithCurrency(orderTotal?.shippingPrice)}`} />
                     </RadioGroup>
                 </FormControl>
                 <div className={styles.delimiter}></div>
@@ -250,15 +272,15 @@ const CheckoutPage: TCromwellPage = (props) => {
                 <h2 className={styles.subHeader}>Order details</h2>
                 <div className={styles.detailsRow}>
                     <p>Cart total: </p>
-                    <b>{cstore.getPriceWithCurrency(cstore.getCartTotal().total)}</b>
+                    <b>{cstore.getPriceWithCurrency(orderTotal?.cartTotalPrice)}</b>
                 </div>
                 <div className={styles.detailsRow}>
                     <p>Delivery:</p>
-                    <b>{cstore.getPriceWithCurrency(shippingPrice)}</b>
+                    <b>{cstore.getPriceWithCurrency(orderTotal?.shippingPrice)}</b>
                 </div>
                 <div className={styles.detailsRow}>
                     <p className={styles.totalText}>Total:</p>
-                    <b className={styles.totalText}>{cstore.getPriceWithCurrency(totalPrice)}</b>
+                    <b className={styles.totalText}>{cstore.getPriceWithCurrency(orderTotal?.orderTotalPrice)}</b>
                 </div>
 
                 <div className={styles.orderBtnWrapper}>

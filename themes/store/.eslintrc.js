@@ -28,5 +28,6 @@ module.exports = {
         "@typescript-eslint/no-var-requires": "off",
         "react/prop-types": "off",
         "react/display-name": "off",
+        "no-empty": "off",
     }
 };

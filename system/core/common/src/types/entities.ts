@@ -236,6 +236,7 @@ type TProductReviewCore = {
     description?: string;
     rating?: number;
     userName?: string;
+    userEmail?: string;
     userId?: string;
     approved?: boolean;
 }
@@ -268,11 +269,25 @@ type TOrderCore = {
     customerAddress?: string;
     customerComment?: string;
     shippingMethod?: string;
+    fromUrl?: string;
 }
 
 export type TOrder = TOrderCore & TBasePageEntity;
 
 export type TOrderInput = TOrderCore & TBasePageEntityInput;
+
+export type TServerCreateOrder = {
+    status?: string;
+    userId?: string;
+    cart?: string;
+    customerName?: string;
+    customerPhone?: string;
+    customerEmail?: string;
+    customerAddress?: string;
+    shippingMethod?: string;
+    customerComment?: string;
+    fromUrl?: string;
+}
 
 export type TOrderFilter = {
     status?: string;
@@ -283,6 +298,23 @@ export type TOrderFilter = {
     dateFrom?: string;
     dateTo?: string;
 }
+
+
+// Blog comment
+type TPostCommentCore = {
+    postId: string;
+    title?: string;
+    comment?: string;
+    userName?: string;
+    userEmail?: string;
+    userId?: string;
+    approved?: boolean;
+}
+
+export type TPostComment = TPostCommentCore & TBasePageEntity;
+
+export type TPostCommentInput = TPostCommentCore & TBasePageEntityInput;
+
 
 // Theme entity
 

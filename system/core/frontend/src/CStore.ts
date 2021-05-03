@@ -9,31 +9,51 @@ const watchedKey = 'CromwellShop_Watched';
 
 const currencyKey = 'CromwellShop_Currency';
 
+type TLocalStorage = {
+    getItem: (key: string) => any;
+    setItem: (key: string, value: any) => void;
+}
+
+type TApiClient = {
+    getProductById: (id: string) => Promise<TProduct | undefined>;
+    getAttributes: () => Promise<TAttribute[] | undefined>;
+};
+
 class CStore {
 
     // < LISTS >    cart / wishlist / comparision list / watched items
+    private localStorage: TLocalStorage & { internalStore: Record<string, any> } = {
+        internalStore: {},
+        getItem: (key: string) => this.localStorage.internalStore[key],
+        setItem: (key: string, value: any) => { this.localStorage.internalStore[key] = value },
+    }
+
+    private store: TLocalStorage;
+    private apiClient?: TApiClient;
+
+    constructor(local?: boolean, apiClient?: TApiClient) {
+        if (local || isServer()) this.store = this.localStorage;
+        else this.store = window.localStorage;
+
+        this.apiClient = apiClient ?? getGraphQLClient();
+    }
 
     private onCartUpdatedCallbacks: Record<string, (cart: TStoreListItem[]) => void> = {};
 
     private getList = (key: string): TStoreListItem[] => {
         let list: TStoreListItem[] = [];
-        if (!isServer()) {
-            let listJSON = window.localStorage.getItem(key);
-            if (listJSON) try {
-                listJSON = JSON.parse(listJSON);
-                if (listJSON && Array.isArray(listJSON)) {
-                    list = listJSON;
-                }
-            } catch (e) { }
-        }
+        let listJSON = this.store.getItem(key);
+        if (listJSON) try {
+            listJSON = JSON.parse(listJSON);
+            if (listJSON && Array.isArray(listJSON)) {
+                list = listJSON;
+            }
+        } catch (e) { }
         return list;
     }
 
     private saveList = (key: string, list: TStoreListItem[]) => {
-        if (!isServer()) {
-            window.localStorage.setItem(key, JSON.stringify(list));
-        }
-
+        this.store.setItem(key, JSON.stringify(list));
         if (key === cartKey) {
             Object.keys(this.onCartUpdatedCallbacks).forEach(cbId => {
                 this.onCartUpdatedCallbacks[cbId](list);
@@ -219,7 +239,7 @@ class CStore {
     }
 
     public addToWatchedItems = (item: TStoreListItem) => {
-        const hasBeenAdded = this.addToList(watchedKey, item);
+        this.addToList(watchedKey, item);
     }
 
     /**
@@ -228,16 +248,14 @@ class CStore {
      * such items from the cart.
      */
     private updateList = async (listKey: string) => {
-        const client = getGraphQLClient();
         const list = this.getList(listKey)
         const promises: Record<string, Promise<TProduct | undefined>> = {};
-
         for (const listItem of list) {
             const id = listItem?.product?.id;
-            if (client && id) {
+            if (this.apiClient && id) {
                 if (!promises[id]) {
-                    promises[id] = client.getProductById(id).catch(e => {
-                        console.log(e);
+                    promises[id] = this.apiClient.getProductById(id).catch(e => {
+                        console.error(e);
                         return undefined;
                     });
                 }
@@ -248,13 +266,13 @@ class CStore {
 
         let attributes: TAttribute[] | undefined = undefined;
         try {
-            attributes = await client?.getAttributes();
-        } catch (e) { console.log(e) }
+            attributes = await this.apiClient?.getAttributes();
+        } catch (e) { console.error(e) }
 
         const updatedList: TStoreListItem[] = [];
 
         list.forEach(listItem => {
-            const updated = updatedProducts.find(u => (u && listItem.product && (u.id === listItem.product.id)))
+            const updated = updatedProducts.find(u => (u && listItem.product && (u.id + '' === listItem.product.id + '')))
             if (updated) {
                 let hasAllAttrs = true;
                 if (listItem.pickedAttributes && updated.attributes) {
@@ -436,7 +454,7 @@ class CStore {
     public getActiveCurrencyTag = (): string | undefined => {
         let currency = getStoreItem('currency');
         if (!currency) {
-            let _currency: string | null | undefined = !isServer() ? window.localStorage.getItem(currencyKey) : null;
+            let _currency: string | null | undefined = this.store.getItem(currencyKey);
             if (!_currency || _currency === "") {
                 _currency = this.getDafaultCurrencyTag();
             }
@@ -457,14 +475,11 @@ class CStore {
         if (currency) {
             setStoreItem('currency', currency);
 
-            if (!isServer()) {
-                window.localStorage.setItem(currencyKey, currency);
-            }
+            this.store.setItem(currencyKey, currency);
 
             // Re-render page
             const forceUpdatePage = getStoreItem('forceUpdatePage');
             if (forceUpdatePage) forceUpdatePage();
-
         }
     }
 
@@ -472,7 +487,9 @@ class CStore {
 
 }
 
-export const getCStore = (): CStore => {
+export const getCStore = (local?: boolean, apiClient?: TApiClient): CStore => {
+    if (local) return new CStore(local, apiClient);
+
     let cstore = getStoreItem('cstore');
     if (!cstore) {
         cstore = new CStore();

@@ -11,13 +11,13 @@ import {
     TCreateUser,
     TFrontendBundle,
     TOrder,
-    TOrderInput,
     TPackageCromwellConfig,
     TPageConfig,
     TPageInfo,
     TPluginConfig,
     TProductReview,
     TProductReviewInput,
+    TServerCreateOrder,
     TThemeConfig,
     TUser,
 } from '@cromwell/core';
@@ -134,7 +134,15 @@ class CRestAPIClient {
         return this.post('auth/sign-up', credentials);
     }
 
-    public resetPassword = async (credentials: { email: string }): Promise<boolean | undefined> => {
+    public forgotPassword = async (credentials: { email: string }): Promise<boolean | undefined> => {
+        return this.post('auth/forgot-password', credentials);
+    }
+
+    public resetPassword = async (credentials: {
+        email: string;
+        code: string;
+        newPassword: string;
+    }): Promise<boolean | undefined> => {
         return this.post('auth/reset-password', credentials);
     }
 
@@ -217,7 +225,11 @@ class CRestAPIClient {
         return data ?? false;
     }
 
-    public placeOrder = async (input: TOrderInput): Promise<TOrder | undefined> => {
+    public getOrderTotal = async (input: TServerCreateOrder): Promise<TOrder | undefined> => {
+        return this.post(`cms/get-order-total`, input);
+    }
+
+    public placeOrder = async (input: TServerCreateOrder): Promise<TOrder | undefined> => {
         return this.post(`cms/place-order`, input);
     }
 

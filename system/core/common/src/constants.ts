@@ -180,3 +180,5 @@ export const getRandStr = (lenght: number = 12) =>
 
 
 export const genericPageName = 'pages/[slug]';
+
+export const sleep = (time: number) => new Promise(done => setTimeout(done, time * 1000));

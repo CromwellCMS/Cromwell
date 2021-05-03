@@ -13,6 +13,7 @@ import {
     configFileName,
     getCmsEntity,
     getCmsModuleInfo,
+    getCmsSettings,
     getLogger,
     getNodeModuleDir,
     getPublicThemesDir,
@@ -25,18 +26,18 @@ import { resolve } from 'path';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
-import { CmsService } from './cms.service';
-import { PluginService } from './plugin.service';
+import { pluginServiceInst } from './plugin.service';
 
 const logger = getLogger('detailed');
+
+export let themeServiceInst: ThemeService;
 
 @Injectable()
 export class ThemeService {
 
-    constructor(
-        private readonly cmsService: CmsService,
-        private readonly pluginService: PluginService,
-    ) { }
+    constructor() {
+        themeServiceInst = this;
+    }
 
     async findOne(themeName: string): Promise<TThemeEntity | undefined> {
         const themeRepo = getCustomRepository(GenericTheme.repository);
@@ -64,7 +65,7 @@ export class ThemeService {
     * @param cb 
     */
     public async saveThemeUserConfig(themeConfig: TThemeConfig): Promise<boolean> {
-        const cmsSettings = await this.cmsService.getSettings();
+        const cmsSettings = await getCmsSettings();
         if (cmsSettings?.themeName) {
             const theme = await this.findOne(cmsSettings.themeName)
             if (theme) {
@@ -82,7 +83,7 @@ export class ThemeService {
     * @param cb 
     */
     public async saveThemeOriginalConfig(themeConfig: TThemeConfig): Promise<boolean> {
-        const cmsSettings = await this.cmsService.getSettings();
+        const cmsSettings = await getCmsSettings();
         if (cmsSettings?.themeName) {
             const theme = await this.findOne(cmsSettings.themeName)
             if (theme) {
@@ -110,7 +111,7 @@ export class ThemeService {
             userConfig: TThemeConfig | null = null,
             themeInfo: TPackageCromwellConfig | null = null;
 
-        const cmsSettings = await this.cmsService.getSettings();
+        const cmsSettings = await getCmsSettings();
         if (cmsSettings?.themeName) {
 
             const theme = await this.findOne(cmsSettings.themeName);
@@ -470,7 +471,7 @@ export class ThemeService {
             for (const mod of pageConfig.modifications) {
                 const pluginName = mod?.plugin?.pluginName;
                 if (pluginName) {
-                    const pluginEntity = await this.pluginService.findOne(pluginName);
+                    const pluginEntity = await pluginServiceInst.findOne(pluginName);
                     try {
                         const pluginConfig = Object.assign({}, mod?.plugin?.settings,
                             JSON.parse(pluginEntity?.settings ?? '{}'));

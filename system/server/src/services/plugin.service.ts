@@ -1,30 +1,37 @@
-import { TFrontendBundle, TPluginEntity, TSciprtMetaInfo } from '@cromwell/core';
-import { TPluginConfig, TPluginEntityInput } from '@cromwell/core';
+import { TFrontendBundle, TPluginConfig, TPluginEntity, TPluginEntityInput, TSciprtMetaInfo } from '@cromwell/core';
 import {
     buildDirName,
+    configFileName,
+    getCmsModuleInfo,
+    getLogger,
     getMetaInfoPath,
+    getNodeModuleDir,
     getPluginAdminBundlePath,
     getPluginAdminCjsPath,
     getPluginFrontendBundlePath,
     getPluginFrontendCjsPath,
-    serverLogFor,
-    getCmsModuleInfo,
-    getLogger,
+    getPublicPluginsDir,
     incrementServiceVersion,
+    serverLogFor,
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import { getCustomRepository } from 'typeorm';
-import { configFileName, getPublicPluginsDir, getNodeModuleDir } from '@cromwell/core-backend';
+
 import { GenericPlugin } from '../helpers/genericEntities';
 
 const logger = getLogger('detailed');
 
+export let pluginServiceInst: PluginService;
 
 @Injectable()
 export class PluginService {
+
+    constructor() {
+        pluginServiceInst = this;
+    }
 
     public async findOne(pluginName: string): Promise<TPluginEntity | undefined> {
         const pluginRepo = getCustomRepository(GenericPlugin.repository);
