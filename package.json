@@ -26,11 +26,5 @@
         "plugins/*",
         "themes/*"
     ],
-    "cromwell": {
-        "themes": [
-            "@cromwell/theme-store",
-            "@cromwell/theme-blog"
-        ]
-    },
-    "cache-version": "0.0.6; modify this string to reset circleci cache"
+    "cache-version": "7; modify this string to reset circleci cache"
 }
