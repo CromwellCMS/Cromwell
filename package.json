@@ -32,5 +32,5 @@
             "@cromwell/theme-blog"
         ]
     },
-    "cache-version": "0.0.4; modify this string to reset circleci cache"
+    "cache-version": "0.0.5; modify this string to reset circleci cache"
 }
