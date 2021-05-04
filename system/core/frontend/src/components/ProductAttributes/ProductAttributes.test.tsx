@@ -5,6 +5,17 @@ jest.mock('next/link', () => {
     }
 });
 
+jest.mock('../../CStore', () => {
+    return {
+        getCStore: () => {
+            return {
+                applyProductVariants: () => null,
+            }
+        },
+    }
+});
+
+
 
 import { render, screen } from '@testing-library/react';
 import React from 'react';
@@ -15,7 +26,6 @@ describe('ProductAttributes', () => {
 
     it("renders attributes", async () => {
         render(<ProductAttributes
-            onChange={() => { }}
             product={{
                 name: '_test1_',
                 id: '1',

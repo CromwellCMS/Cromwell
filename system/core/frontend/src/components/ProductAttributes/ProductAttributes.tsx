@@ -20,7 +20,7 @@ export const ProductAttributes = (props: {
      * it applies modifications to "product" prop and calls this method.
      * If value has no productVariant, then original product will be returned  
      * */
-    onChange: (checkedAttrs: Record<string, string[]>, modifiedProduct: TProduct) => void;
+    onChange?: (checkedAttrs: Record<string, string[]>, modifiedProduct: TProduct) => void;
 
     /** UI elements to replace default ones */
     elements?: {
@@ -45,7 +45,7 @@ export const ProductAttributes = (props: {
             const newCheckedAttrs: Record<string, string[]> = Object.assign({}, prev);
             newCheckedAttrs[key] = checks;
             setTimeout(() => {
-                onChange(newCheckedAttrs, cstore.applyProductVariants(
+                onChange?.(newCheckedAttrs, cstore.applyProductVariants(
                     product, newCheckedAttrs, attributes));
             }, 10);
 

@@ -123,7 +123,7 @@ export const apiExtensionRoute = `${apiV1BaseRoute}/ext`;
 
 const getBaseUrl = (key: keyof TCmsConfig) => {
     const cmsConfig = getCmsSettings();
-    if (!cmsConfig) throw new Error('core:serviceLocator: !cmsConfig');
+    if (!cmsConfig) throw new Error('core:serviceLocator: CmsConfig was not found in the global store!');
     const port = cmsConfig[key] as string;
     if (!port) throw new Error('core:serviceLocator: !port for ' + key);
 
