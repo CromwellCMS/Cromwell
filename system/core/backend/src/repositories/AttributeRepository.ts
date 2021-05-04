@@ -27,6 +27,7 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         attribute.type = input.type;
         attribute.values = input.values.sort((a, b) => (a.value > b.value) ? 1 : -1);
         attribute.icon = input.icon;
+        attribute.required = input.required;
         if (input.isEnabled === undefined) attribute.isEnabled = true;
     }
 

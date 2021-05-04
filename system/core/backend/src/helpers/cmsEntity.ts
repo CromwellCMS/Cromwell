@@ -4,18 +4,16 @@ import { getStoreItem, setStoreItem, TCmsConfig, TCmsSettings } from '@cromwell/
 import { serverLogFor } from './constants';
 
 export const getCmsEntity = async (): Promise<CmsEntity> => {
-    const all = await CmsEntity.find();
-    let entity = all?.[0];
+    const entity = await CmsEntity.findOne();
+    if (entity) return entity;
 
-    if (!entity) {
-        // Probably CMS was launched for the first time and no settings persist in DB.
-        // Create settings record
-        const config = await readCMSConfig();
-        const { versions, ...defaultSettings } = config?.defaultSettings ?? {};
-        entity = Object.assign(new CmsEntity(), defaultSettings);
-        await entity.save();
-    }
-    return entity;
+    // Probably CMS was launched for the first time and no settings persist in DB.
+    // Create settings record
+    const config = await readCMSConfig();
+    const { versions, ...defaultSettings } = config?.defaultSettings ?? {};
+    const newEntity = Object.assign(new CmsEntity(), defaultSettings);
+    await newEntity.save();
+    return newEntity;
 }
 
 

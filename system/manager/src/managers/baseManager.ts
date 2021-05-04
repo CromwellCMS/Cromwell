@@ -25,7 +25,7 @@ import { closeServer, startServer } from './serverManager';
 
 const logger = getLogger('detailed');
 const errorLogger = getLogger('errors-only');
-const { cacheKeys, servicesEnv } = config;
+const { cacheKeys } = config;
 const serviceProcesses: Record<string, ChildProcess> = {};
 
 export const closeService = async (name: string): Promise<boolean> => {
@@ -126,7 +126,7 @@ export const startSystem = async (scriptName: TScriptName) => {
 
         const { windowsDev } = config;
 
-        windowsDev.otherDirs.forEach((dir, i) => {
+        windowsDev.otherDirs.forEach((dir) => {
             spawn(`npx rollup -cw`, [],
                 { shell: true, stdio: 'inherit', cwd: resolve(process.cwd(), dir) });
         });
@@ -159,7 +159,7 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
     await checkConfigs();
 
     if (serviceName === 'adminPanel' || serviceName === 'a') {
-        const pckg = getModulePackage('@cromwell/admin-panel')
+        const pckg = await getModulePackage('@cromwell/admin-panel')
         await checkModules(isDevelopment, pckg ? [pckg] : undefined);
         await startAdminPanel(isDevelopment ? 'dev' : 'prod');
     }
@@ -180,7 +180,7 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
 
 }
 
-export const closeServiceByName = async (serviceName: TServiceNames, isDevelopment?: boolean) => {
+export const closeServiceByName = async (serviceName: TServiceNames) => {
     if (!serviceNames.includes(serviceName)) {
         errorLogger.error('Invalid service name. Available names are: ' + serviceNames);
     }

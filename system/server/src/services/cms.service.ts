@@ -28,7 +28,7 @@ import {
     UserRepository,
 } from '@cromwell/core-backend';
 import { getCStore } from '@cromwell/core-frontend';
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { format } from 'date-fns';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
@@ -43,7 +43,6 @@ import { CmsStatsDto, SalePerDayDto } from '../dto/cms-stats.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
-import { GenericCms } from '../helpers/genericEntities';
 import { themeServiceInst } from './theme.service';
 
 const logger = getLogger('detailed');
@@ -61,8 +60,7 @@ export class CmsService {
         const entity = await getCmsEntity();
         if (entity) {
             entity.themeName = themeName;
-            const cmsRepo = getCustomRepository(GenericCms.repository);
-            await cmsRepo.save(entity);
+            await entity.save();
             return true;
         }
         return false;
@@ -127,12 +125,11 @@ export class CmsService {
         const cmsEntity = await getCmsEntity();
         if (cmsEntity.installed) {
             logger.error('CMS already installed');
-            return false;
+            throw new HttpException('CMS already installed', HttpStatus.FORBIDDEN);
         }
 
         cmsEntity.installed = true;
-        const cmsRepo = getCustomRepository(GenericCms.repository);
-        await cmsRepo.save(cmsEntity);
+        await cmsEntity.save();
 
         const settings = await getCmsSettings();
         if (settings) {
@@ -199,7 +196,7 @@ export class CmsService {
         try {
             if (input.cart) cart = JSON.parse(input.cart);
         } catch (error) {
-            logger.error(error)
+            logger.error('placeOrder: Failed to parse cart', error)
         }
 
         const createOrder: TOrderInput = {
@@ -249,8 +246,7 @@ export class CmsService {
             }
 
         } catch (error) {
-            logger.error(error)
-
+            logger.error(error);
         }
         // < / Send e-mail >
 
@@ -263,7 +259,7 @@ export class CmsService {
         try {
             if (input.cart) cart = JSON.parse(input.cart);
         } catch (error) {
-            logger.error(error);
+            logger.error('placeOrder: Failed to parse cart', error)
         }
         if (typeof cart !== 'object') return orderTotal;
 

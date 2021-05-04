@@ -1,5 +1,6 @@
 import { TModuleConfig, TPackageCromwellConfig, TPackageJson } from '@cromwell/core';
 import fs from 'fs-extra';
+import normalizePath from 'normalize-path';
 import { dirname, isAbsolute, resolve } from 'path';
 
 import { getLogger } from '../helpers/constants';
@@ -13,21 +14,26 @@ export const cmsConfigFileName = 'cmsconfig.json';
 
 export const getTempDir = () => resolve(process.cwd(), tempDirName);
 
-const resolveModulePath = (moduleName: string): string | undefined => {
+export const resolvePackageJsonPath = (moduleName: string): string | undefined => {
+    return require.resolve(`${moduleName}/package.json`);
+}
+
+export const getNodeModuleDirSync = (moduleName: string) => {
     try {
-        return require.resolve(`${moduleName}/package.json`);
+        const modulePath = resolvePackageJsonPath(moduleName);
+        if (modulePath) return dirname(fs.realpathSync(modulePath));
     } catch (e) {
         errorLog('Failed to resolve module path of: ' + moduleName + e, 'Error');
     }
 }
-export const getNodeModuleDirSync = (moduleName: string) => {
-    const modulePath = resolveModulePath(moduleName);
-    if (modulePath) return dirname(fs.realpathSync(modulePath));
-}
 
 export const getNodeModuleDir = async (moduleName: string) => {
-    const modulePath = resolveModulePath(moduleName);
-    if (modulePath) return dirname(await fs.realpath(modulePath));
+    try {
+        const modulePath = resolvePackageJsonPath(moduleName);
+        if (modulePath) return dirname(await fs.realpath(modulePath));
+    } catch (e) {
+        errorLog('Failed to resolve module path of: ' + moduleName + e, 'Error');
+    }
 }
 
 export const getCMSConfigPath = () => resolve(process.cwd(), cmsConfigFileName);
@@ -147,8 +153,8 @@ export const getCmsModuleConfig = async (moduleName?: string): Promise<TModuleCo
     }
 }
 
-export const getCmsModuleInfo = (moduleName?: string): TPackageCromwellConfig | undefined => {
-    const pckg = getModulePackage(moduleName);
+export const getCmsModuleInfo = async (moduleName?: string): Promise<TPackageCromwellConfig | undefined> => {
+    const pckg = await getModulePackage(moduleName);
     if (pckg?.cromwell) {
         if (!pckg.cromwell.name) pckg.cromwell.name = pckg.name;
         return JSON.parse(JSON.stringify(pckg.cromwell));
@@ -172,12 +178,21 @@ export const getPublicDir = () => resolve(process.cwd(), 'public');
 export const getPublicPluginsDir = () => resolve(getPublicDir(), 'plugins');
 export const getPublicThemesDir = () => resolve(getPublicDir(), 'themes');
 
+export const readPackage = async (path: string) => {
+    if (await fs.pathExists(path))
+        return await fs.readJSON(path);
+}
 
-export const getModulePackage = (moduleName?: string): TPackageJson | undefined => {
-    if (!moduleName) moduleName = process.cwd();
+export const getModulePackage = async (moduleName?: string): Promise<TPackageJson | undefined> => {
+    let pPath: string | undefined = moduleName ?? process.cwd();
     try {
-        return require(`${moduleName}/package.json`);
-    } catch (e) {
-        errorLog('Failed to resolve module path of: ' + moduleName + e, 'Error');
+        if (!isAbsolute(pPath)) pPath = resolvePackageJsonPath(pPath);
+    } catch (error) {
+        errorLog('Failed to resolve module path of: ' + moduleName + error, 'Error');
     }
+    if (pPath && !pPath.endsWith('package.json')) pPath = pPath + '/package.json';
+    if (pPath) pPath = normalizePath(pPath);
+    try {
+        if (pPath) return await readPackage(pPath);
+    } catch (e) { errorLog('Failed to read package.json at: ' + pPath) }
 }

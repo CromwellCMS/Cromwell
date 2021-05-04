@@ -51,7 +51,7 @@ export class PostRepository extends BaseRepository<Post> {
         if (input.readTime) {
             post.readTime = input.readTime;
         } else if (input.content) {
-            const text = sanitizeHtml(input.content, {
+            const text = sanitizeHtml(input.content ?? '', {
                 allowedTags: []
             });
             post.readTime = readingTime(text).minutes + '';
@@ -59,13 +59,13 @@ export class PostRepository extends BaseRepository<Post> {
 
         post.title = input.title;
         post.mainImage = input.mainImage ?? null;
-        post.content = sanitizeHtml(input.content, {
+        post.content = input.content ? sanitizeHtml(input.content, {
             allowedTags: sanitizeHtml.defaults.allowedTags.concat(['img', 'iframe']),
             allowedAttributes: {
                 a: ['href', 'name', 'target'],
                 '*': ['href', 'class', 'src', 'align', 'alt', 'title', 'width', 'height', 'style']
             },
-        });
+        }) : input.content;
         post.delta = input.delta;
         post.excerpt = input.excerpt;
         post.published = input.published;

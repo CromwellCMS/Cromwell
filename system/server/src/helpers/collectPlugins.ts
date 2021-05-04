@@ -1,13 +1,13 @@
-import { readPluginsExportsSync, serverLogFor } from '@cromwell/core-backend';
+import { readPluginsExports, serverLogFor } from '@cromwell/core-backend';
 
 let pluginsCache;
 
-export const collectPlugins = (): {
+export const collectPlugins = async (): Promise<{
     resolvers: any[],
     entities: any[]
-} => {
+}> => {
     if (pluginsCache) return pluginsCache;
-    const pluginInfos = readPluginsExportsSync();
+    const pluginInfos = await readPluginsExports();
 
     serverLogFor('detailed', `Found ${pluginInfos.length} plugins. `
         + pluginInfos.map(info => info.pluginName).join(', '));

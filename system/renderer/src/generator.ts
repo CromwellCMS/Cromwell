@@ -46,7 +46,7 @@ const main = async () => {
 
     await fs.ensureDir(tempDir);
 
-    const pckg = getModulePackage(themeName);
+    const pckg = await getModulePackage(themeName);
     if (pckg) await downloader({
         rootDir: process.cwd(),
         packages: [pckg],
@@ -260,7 +260,7 @@ const devGenerate = async (themeName: string) => {
 
         await fs.ensureDir(dirname(pagePath));
         await fs.outputFile(pagePath, pageContent);
-    };
+    }
 
     // Create jsconfig for Next.js
     const jsconfigPath = resolve(tempDir, 'jsconfig.json')
@@ -276,8 +276,6 @@ const devGenerate = async (themeName: string) => {
 
 
     // Create next.config.js
-    const themePckgJsonPath = resolve(themeExports.themeDir, 'package.json');
-    const themePckg = require(themePckgJsonPath);
     const nextConfigPath = resolve(tempDir, 'next.config.js');
     if (!fs.existsSync(nextConfigPath)) {
         await fs.outputFile(nextConfigPath, `

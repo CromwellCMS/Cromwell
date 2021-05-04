@@ -715,6 +715,7 @@ class CGraphQLClient {
                 icon
             }
             type
+            required
        }
    `;
 

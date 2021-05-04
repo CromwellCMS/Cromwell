@@ -16,6 +16,9 @@ export class AttributeInput extends BasePageInput implements TAttributeInput {
     @Field(type => String, { nullable: true })
     icon?: string;
 
+    @Field(type => Boolean, { nullable: true })
+    required?: boolean;
+
 }
 
 @InputType("AttributeValueInput")

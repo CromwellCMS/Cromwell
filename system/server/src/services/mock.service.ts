@@ -561,11 +561,11 @@ export class MockService {
             await this.tagRepo.deleteTag(item.id);
         }
 
-        const promises: Promise<TTag>[] = [];
+        const promises: Promise<TTag | void>[] = [];
         for (let i = 0; i < 20; i++) {
             promises.push(this.tagRepo.createTag({
                 name: this.getRandomName().split(' ')[0]
-            }));
+            }).then(it => it).catch((e) => { console.error(e); }));
         }
         await Promise.all(promises);
         return true;

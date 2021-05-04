@@ -17,7 +17,7 @@ const errorLogger = getLogger('errors-only').error;
 export const buildTask = async (watch?: boolean) => {
     const workingDir = process.cwd();
 
-    const moduleInfo = getCmsModuleInfo();
+    const moduleInfo = await getCmsModuleInfo();
     const moduleConfig = await getCmsModuleConfig();
 
     if (!moduleInfo?.name) {
