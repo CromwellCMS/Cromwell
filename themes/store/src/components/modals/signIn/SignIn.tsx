@@ -14,7 +14,7 @@ import Modal from '../baseModal/Modal'
 import { toast } from '../../toast/toast';
 
 
-export type TFromType = 'sign-in' | 'sign-up' | 'reset-pass';
+export type TFromType = 'sign-in' | 'sign-up' | 'forgot-pass' | 'reset-pass';
 
 export default function SingIn(props: {
     open: boolean;
@@ -28,8 +28,9 @@ export default function SingIn(props: {
     const [emailInput, setEmailInput] = useState('');
     const [passwordInput, setPasswordInput] = useState('');
     const [nameInput, setNameInput] = useState('');
+    const [codeInput, setCodeInput] = useState('');
     const [submitPressed, setSubmitPressed] = useState(false);
-    const [activeTab, setActiveTab] = useState(props.type === 'sign-up' ? 1 : 0);
+    const [activeTab, setActiveTab] = useState<number | null>(props.type === 'sign-up' ? 1 : 0);
     const [formType, setFormType] = useState<TFromType>(props.type);
 
     const handleClickShowPassword = () => {
@@ -105,7 +106,7 @@ export default function SingIn(props: {
         setLoading(false);
     }
 
-    const handleResetPass = async (e) => {
+    const handleForgotPass = async (e) => {
         e.preventDefault();
         setSubmitPressed(true);
 
@@ -113,9 +114,11 @@ export default function SingIn(props: {
 
         setLoading(true);
         try {
-            const success = await apiClient?.resetPassword({ email: emailInput });
+            const success = await apiClient?.forgotPassword({ email: emailInput });
             if (success) {
-                toast.success('Password has been reset. Check your e-mail');
+                toast.success('We send you an e-mail');
+                setSubmitPressed(false);
+                setFormType('reset-pass');
             } else {
                 throw new Error('!success');
             }
@@ -135,7 +138,51 @@ export default function SingIn(props: {
         setLoading(false);
     }
 
-    const handleTabChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+    const handleResetPass = async (e) => {
+        e.preventDefault();
+        setSubmitPressed(true);
+
+        if (!emailInput || emailInput == '' || !codeInput || codeInput === ''
+            || !passwordInput || passwordInput === '') return;
+
+        setLoading(true);
+        try {
+            const success = await apiClient?.resetPassword({
+                email: emailInput,
+                code: codeInput,
+                newPassword: passwordInput,
+            });
+            if (success) {
+                toast.success('Password has been reset.');
+                setSubmitPressed(false);
+                setFormType('sign-in');
+                setActiveTab(0);
+            } else {
+                throw new Error('!success');
+            }
+        } catch (e) {
+            console.error(e);
+            let info = e?.message;
+            try {
+                info = JSON.parse(e.message)
+            } catch (e) { }
+
+            if (info?.statusCode === 429) {
+
+            } else if (info?.statusCode === 417) {
+                toast.error?.('Exceeded reset password attempts');
+                setSubmitPressed(false);
+                setCodeInput('')
+                setFormType('sign-in');
+                setActiveTab(0);
+            } else {
+                toast.error?.('Incorrect e-mail or user was not found');
+            }
+        }
+        setLoading(false);
+    }
+
+    const handleTabChange = (event: React.ChangeEvent<unknown>, newValue: number) => {
         setActiveTab(newValue);
         if (newValue === 1) setFormType('sign-up');
         if (newValue === 0) setFormType('sign-in');
@@ -164,6 +211,9 @@ export default function SingIn(props: {
                         label="Sign up" />
                 </Tabs>
                 <form className={styles.loginForm} onSubmit={formType === 'sign-in' ? handleLoginClick : handleSignUp} >
+                    {(formType === 'reset-pass') && (
+                        <p className={styles.resetPassInstructions}>We sent you an e-mail with reset code. Copy the code below and create a new password</p>
+                    )}
                     <TextField
                         label="E-mail"
                         value={emailInput}
@@ -186,7 +236,19 @@ export default function SingIn(props: {
                             id="name-input"
                         />
                     )}
-                    {(formType === 'sign-up' || formType == 'sign-in') && (
+                    {formType === 'reset-pass' && (
+                        <TextField
+                            label="Code"
+                            value={codeInput}
+                            className={styles.textField}
+                            onChange={e => setCodeInput(e.target.value)}
+                            fullWidth
+                            error={codeInput === '' && submitPressed}
+                            helperText={codeInput === '' && submitPressed ? "This field is required" : undefined}
+                            id="name-input"
+                        />
+                    )}
+                    {(formType === 'sign-up' || formType == 'sign-in' || formType === 'reset-pass') && (
                         <TextField
                             label="Password"
                             type={showPassword ? 'text' : 'password'}
@@ -214,8 +276,8 @@ export default function SingIn(props: {
                     )}
                     {formType === 'sign-in' && (
                         <p className={styles.forgotPassText} onClick={() => {
-                            setActiveTab(3)
-                            setFormType('reset-pass')
+                            setActiveTab(null)
+                            setFormType('forgot-pass')
                         }}>Forgot your password?</p>
                     )}
                     {formType === 'sign-in' && (
@@ -235,6 +297,15 @@ export default function SingIn(props: {
                             disabled={loading}
                             variant="outlined"
                             color="inherit">Sign up</Button>
+                    )}
+                    {formType === 'forgot-pass' && (
+                        <Button
+                            type="submit"
+                            onClick={handleForgotPass}
+                            className={styles.loginBtn}
+                            disabled={loading}
+                            variant="outlined"
+                            color="inherit">Forgot password</Button>
                     )}
                     {formType === 'reset-pass' && (
                         <Button

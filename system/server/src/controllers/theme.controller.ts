@@ -1,5 +1,5 @@
 import { TFrontendBundle, TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
-import { getLogger, getThemeAdminPanelBundleDir, serverLogFor } from '@cromwell/core-backend';
+import { getCmsSettings, getLogger, getThemeAdminPanelBundleDir, serverLogFor } from '@cromwell/core-backend';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
@@ -246,7 +246,7 @@ export class ThemeController {
 
         if (!pageRoute || pageRoute === "") throw new HttpException('Invalid pageRoute or bundle not found', HttpStatus.NOT_ACCEPTABLE);
 
-        const cmsSettings = await this.cmsService.getSettings();
+        const cmsSettings = await getCmsSettings();
         if (!cmsSettings?.themeName) throw new HttpException('!cmsSettings?.themeName', HttpStatus.INTERNAL_SERVER_ERROR);
 
         const pagePath = await getThemeAdminPanelBundleDir(cmsSettings.themeName, pageRoute);

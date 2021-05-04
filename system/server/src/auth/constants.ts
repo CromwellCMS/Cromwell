@@ -15,6 +15,11 @@ export const authSettings = {
     accessTokenCookieName: 'crw_access_token',
     refreshTokenCookieName: 'crw_refresh_token',
     maxTokensPerUser: parseInt(process.env.JWT_MAX_TOKENS_PER_USER ?? '20'),
+
+    // approximate, for one server instance
+    resetPasswordAttempts: 5,
+    // 3 hours
+    resetPasswordCodeExpirationAccessTime: 1000 * 60 * 60 * 3
 }
 
 export const bcryptSaltRounds = 10;

@@ -20,8 +20,6 @@ export const buildTask = async (watch?: boolean) => {
     const moduleInfo = getCmsModuleInfo();
     const moduleConfig = await getCmsModuleConfig();
 
-    let isConfigValid = false;
-
     if (!moduleInfo?.name) {
         errorLogger('Package.json must have "name" property');
         return;
@@ -41,7 +39,6 @@ export const buildTask = async (watch?: boolean) => {
 
 
     if (moduleInfo.type === 'theme') {
-        isConfigValid = true;
 
         await checkModules();
 
@@ -72,8 +69,6 @@ export const buildTask = async (watch?: boolean) => {
     }
 
     if (moduleInfo.type === 'plugin') {
-        isConfigValid = true;
-
         console.log(`Starting to build ${moduleInfo.type}...`);
         const rollupBuildSuccess = await rollupBuild(moduleInfo, moduleConfig, watch);
 
@@ -83,8 +78,6 @@ export const buildTask = async (watch?: boolean) => {
         }
         console.log(`Successfully build ${moduleInfo.type}`);
     }
-
-
 }
 
 
@@ -159,6 +152,7 @@ const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TM
 
 // Copied from rollup's repo
 const onRollupEvent = (done?: (success: boolean) => void) => (event: RollupWatcherEvent) => {
+    let input = (event as any)?.input;
     switch (event.code) {
         case 'ERROR':
             handleError(event.error, true);
@@ -166,7 +160,6 @@ const onRollupEvent = (done?: (success: boolean) => void) => (event: RollupWatch
             break;
 
         case 'BUNDLE_START':
-            let input = event.input;
             if (typeof input !== 'string') {
                 input = Array.isArray(input)
                     ? input.join(', ')

@@ -11,6 +11,7 @@ export * from './entities/Cms';
 export * from './entities/Order';
 export * from './entities/Tag';
 export * from './entities/PageStats';
+export * from './entities/PostComment';
 
 export * from './entities/paged/PagedProduct';
 export * from './entities/paged/PagedMeta';
@@ -71,3 +72,4 @@ export * from './helpers/cmsEntity';
 export * from './helpers/serviceVersions';
 export * from './helpers/createGenericEntity';
 export * from './helpers/validation';
+export * from './helpers/emailing';

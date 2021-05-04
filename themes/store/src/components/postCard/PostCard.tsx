@@ -4,7 +4,7 @@ import { useMediaQuery, useTheme } from '@material-ui/core';
 import { AccountCircle as AccountCircleIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import styles from './PostCard.module.scss';
 

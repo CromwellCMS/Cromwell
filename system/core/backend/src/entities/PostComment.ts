@@ -1,23 +1,23 @@
-import { TProductReview } from '@cromwell/core';
+import { TPostComment } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, ManyToOne, JoinColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 import { BasePageEntity } from './BasePageEntity';
-import { Product } from './Product';
+import { Post } from './Post';
 
 @Entity()
 @ObjectType()
-export class ProductReview extends BasePageEntity implements TProductReview {
+export class PostComment extends BasePageEntity implements TPostComment {
 
     @Column()
     @Field(type => String, { nullable: true })
-    productId: string;
+    postId: string;
 
-    @ManyToOne(type => Product, product => product.reviews, {
+    @ManyToOne(type => Post, post => post.comments, {
         onDelete: "CASCADE"
     })
-    @JoinColumn({ name: "productId" })
-    product: Product;
+    @JoinColumn({ name: "postId" })
+    post: Post;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
@@ -25,11 +25,7 @@ export class ProductReview extends BasePageEntity implements TProductReview {
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
-    description?: string;
-
-    @Field(type => Number, { nullable: true })
-    @Column({ type: "float", nullable: true })
-    rating?: number;
+    comment?: string;
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })

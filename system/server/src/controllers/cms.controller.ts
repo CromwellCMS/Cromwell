@@ -1,10 +1,9 @@
 import { TOrder, TPackageCromwellConfig, TProductReview } from '@cromwell/core';
 import {
     getCmsModuleInfo,
+    getCmsSettings,
     getLogger,
     getPublicDir,
-    InputOrder,
-    OrderRepository,
     ProductReviewInput,
     ProductReviewRepository,
     readCmsModules,
@@ -21,8 +20,10 @@ import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { CmsStatsDto } from '../dto/cms-stats.dto';
-import { PageStatsDto } from '../dto/page-stats.dto';
+import { CreateOrderDto } from '../dto/create-order.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
+import { OrderTotalDto } from '../dto/order-total.dto';
+import { PageStatsDto } from '../dto/page-stats.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { CmsService } from '../services/cms.service';
 import { ThemeService } from '../services/theme.service';
@@ -49,7 +50,7 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getConfig(): Promise<CmsConfigDto | undefined> {
         // logger.log('CmsController::getConfig');
-        const config = await this.cmsService.getSettings();
+        const config = await getCmsSettings();
         if (!config) {
             throw new HttpException('CmsController::getConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -67,7 +68,7 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPrivateConfig(): Promise<AdvancedCmsConfigDto | undefined> {
         // logger.log('CmsController::getPrivateConfig');
-        const config = await this.cmsService.getSettings();
+        const config = await getCmsSettings();
         if (!config) {
             throw new HttpException('CmsController::getPrivateConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -231,7 +232,7 @@ export class CmsController {
         description: 'Configure CMS after first launch',
     })
     async setUp() {
-        const config = await this.cmsService.getSettings();
+        const config = await getCmsSettings();
         if (!config) {
             throw new HttpException('CmsController::setUp Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -306,20 +307,39 @@ export class CmsController {
     }
 
 
+    @Post('get-order-total')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(4, 1)
+    @ApiOperation({
+        description: 'Calculates cart total sum plu delivery costs',
+    })
+    @ApiBody({ type: CreateOrderDto })
+    @ApiResponse({
+        status: 200,
+        type: OrderTotalDto,
+    })
+    async getOrderTotal(@Body() input: CreateOrderDto): Promise<OrderTotalDto | undefined> {
+        if (!input) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
+
+        return this.cmsService.calcOrderTotal(input);
+    }
+
+
     @Post('place-order')
     @UseGuards(ThrottlerGuard)
-    @Throttle(2, 20)
+    @Throttle(3, 20)
     @ApiOperation({
         description: 'Creates new Order in the shop',
     })
+    @ApiBody({ type: CreateOrderDto })
     @ApiResponse({
         status: 200,
     })
-    async placeOrder(@Body() input: InputOrder): Promise<TOrder> {
+    async placeOrder(@Body() input: CreateOrderDto): Promise<TOrder | undefined> {
         if (!input || !input.customerEmail
             || !input.customerPhone) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
-        return getCustomRepository(OrderRepository).createOrder(input);
+        return this.cmsService.placeOrder(input);
     }
 
 
@@ -329,6 +349,7 @@ export class CmsController {
     @ApiOperation({
         description: 'Creates new Review for a product in the shop',
     })
+    @ApiBody({ type: ProductReviewInput })
     @ApiResponse({
         status: 200,
     })

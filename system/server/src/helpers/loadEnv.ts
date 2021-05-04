@@ -1,4 +1,7 @@
 import { setStoreItem } from '@cromwell/core';
+import { getServerDir, getServerTempDir } from '@cromwell/core-backend';
+import fs from 'fs-extra';
+import { resolve } from 'path';
 import yargs from 'yargs-parser';
 
 import { TServerCommands } from './constants';
@@ -32,4 +35,13 @@ export const loadEnv = (): TEnv => {
         serverType,
     }
     return sEnv;
+}
+
+export const checkConfigs = async () => {
+    const mailsDir = resolve(getServerTempDir(), 'emails');
+    const serverDir = getServerDir();
+    if (! await fs.pathExists(mailsDir) && serverDir) {
+        const templatesSrc = resolve(serverDir, 'static/emails');
+        await fs.copy(templatesSrc, mailsDir);
+    }
 }

@@ -1,33 +1,36 @@
 import {
-    getStoreItem,
     setStoreItem,
-    TCmsConfig,
-    TCmsSettings,
     TOrder,
+    TOrderInput,
     TPackageCromwellConfig,
     TProductReview,
+    TStoreListItem,
     TUser,
     TUserRole,
 } from '@cromwell/core';
 import {
     applyGetPaged,
+    AttributeRepository,
     getCmsEntity,
+    getCmsSettings,
+    getEmailTemplate,
     getLogger,
     getNodeModuleDir,
     Order,
     OrderRepository,
     PageStats,
     Product,
+    ProductRepository,
     ProductReview,
     ProductReviewRepository,
-    readCMSConfig,
-    serverLogFor,
+    sendEmail,
     User,
     UserRepository,
 } from '@cromwell/core-backend';
+import { getCStore } from '@cromwell/core-frontend';
 import { Injectable } from '@nestjs/common';
+import { format } from 'date-fns';
 import fs from 'fs-extra';
-import nodemailer from 'nodemailer';
 import { join, resolve } from 'path';
 import stream from 'stream';
 import { getCustomRepository, getManager } from 'typeorm';
@@ -37,39 +40,22 @@ import * as util from 'util';
 import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { CmsStatsDto, SalePerDayDto } from '../dto/cms-stats.dto';
+import { CreateOrderDto } from '../dto/create-order.dto';
+import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { GenericCms } from '../helpers/genericEntities';
+import { themeServiceInst } from './theme.service';
 
 const logger = getLogger('detailed');
-let nodemailerTransporter;
-let sendmailTransporter;
 
-// Don't re-read cmsconfig.json but update info from DB
-export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
-    let config: TCmsConfig | undefined = undefined;
-    const cmsSettings = getStoreItem('cmsSettings');
-    if (!cmsSettings) config = await readCMSConfig();
-
-    if (!cmsSettings && !config) {
-        serverLogFor('errors-only', 'getCmsSettings: Failed to read CMS config', 'Error');
-        return;
-    }
-    const entity = await getCmsEntity();
-
-    const settings: TCmsSettings = Object.assign({}, cmsSettings,
-        config, JSON.parse(JSON.stringify(entity)), { currencies: entity.currencies });
-
-    delete settings.defaultSettings;
-    delete (settings as any)._currencies;
-
-    setStoreItem('cmsSettings', settings);
-    return settings;
-}
+export let cmsServiceInst: CmsService;
 
 @Injectable()
 export class CmsService {
 
-    public getSettings = getCmsSettings;
+    constructor() {
+        cmsServiceInst = this;
+    }
 
     public async setThemeName(themeName: string) {
         const entity = await getCmsEntity();
@@ -174,60 +160,9 @@ export class CmsService {
         entity.sendFromEmail = input.sendFromEmail;
 
         await entity.save();
-        const config = await this.getSettings();
+        const config = await getCmsSettings();
         if (config)
             return new AdvancedCmsConfigDto().parseConfig(config);
-    }
-
-    async sendEmail(addresses: string[], subject: string, htmlContent: string,): Promise<boolean> {
-        const cmsSettings = getStoreItem('cmsSettings');
-
-        const sendFrom = (cmsSettings?.sendFromEmail && cmsSettings.sendFromEmail !== '') ? cmsSettings.sendFromEmail : 'Service@CromwellCMS.com';
-        const messageContent = {
-            from: sendFrom,
-            to: addresses.join(', '),
-            subject: subject,
-            html: htmlContent,
-        };
-
-        // Define sender service.
-        // If SMTP connection string provided, use nodemailer
-        if (cmsSettings?.smtpConnectionString && cmsSettings.smtpConnectionString !== '') {
-            if (!nodemailerTransporter) {
-                nodemailerTransporter = nodemailer.createTransport(cmsSettings.smtpConnectionString);
-            }
-            try {
-                await nodemailerTransporter.sendMail(messageContent);
-                return true;
-            } catch (e) {
-                logger.error(e);
-                return false;
-            }
-
-        } else {
-            // Otherwise use local SMTP client via sendmail
-
-            if (!sendmailTransporter) {
-                sendmailTransporter = require('sendmail')({
-                    logger: {
-                        debug: logger.log,
-                        info: logger.info,
-                        warn: logger.warn,
-                        error: logger.error
-                    },
-                    silent: false,
-                })
-            }
-            return new Promise(done => {
-                sendmailTransporter(messageContent, (err, reply) => {
-                    logger.log(reply);
-                    if (err)
-                        logger.error(err && err.stack);
-                    err ? done(false) : done(true);
-                });
-            })
-
-        }
     }
 
     async viewPage(input: PageStatsDto) {
@@ -254,6 +189,104 @@ export class CmsService {
             newPage.views = 1;
             await newPage.save();
         }
+    }
+
+    async placeOrder(input: CreateOrderDto): Promise<TOrder | undefined> {
+        const orderTotal = await this.calcOrderTotal(input);
+        const settings = await getCmsSettings();
+        const { themeConfig } = await themeServiceInst.readConfigs();
+        let cart: TStoreListItem[] | undefined;
+        try {
+            if (input.cart) cart = JSON.parse(input.cart);
+        } catch (error) {
+            logger.error(error)
+        }
+
+        const createOrder: TOrderInput = {
+            cartOldTotalPrice: orderTotal.cartOldTotalPrice,
+            cartTotalPrice: orderTotal.cartTotalPrice,
+            totalQnt: orderTotal.totalQnt,
+            shippingPrice: orderTotal.shippingPrice,
+            orderTotalPrice: orderTotal.orderTotalPrice,
+            cart: input.cart,
+            status: input.status,
+            userId: input.userId,
+            customerName: input.customerName,
+            customerPhone: input.customerPhone,
+            customerEmail: input.customerEmail,
+            customerAddress: input.customerAddress,
+            customerComment: input.customerComment,
+            shippingMethod: input.shippingMethod,
+            fromUrl: input.fromUrl,
+        }
+
+        const fromUrl = input.fromUrl;
+
+        // < Send e-mail >
+        try {
+
+            if (input.customerEmail && fromUrl) {
+                const mailProps = {
+                    createDate: format(new Date(Date.now()), 'd MMMM yyyy'),
+                    logoUrl: (settings?.logo) && fromUrl + '/' + settings.logo,
+                    orderLink: (themeConfig?.defaultPages?.account) && fromUrl + '/' + themeConfig.defaultPages.account,
+                    totalPrice: getCStore().getPriceWithCurrency(orderTotal.orderTotalPrice),
+                    unsubscribeUrl: fromUrl,
+                    products: (cart ?? []).map(item => {
+                        return {
+                            link: (themeConfig?.defaultPages?.product && item?.product?.slug) &&
+                                fromUrl + '/' + themeConfig.defaultPages.product.replace('[slug]', item.product.slug),
+                            title: `${item?.amount ? item.amount + ' x ' : ''}${item?.product?.name ?? ''}`,
+                            price: getCStore().getPriceWithCurrency((item.product?.price ?? 0) * (item.amount ?? 1)),
+                        }
+                    }),
+                    shippingPrice: getCStore().getPriceWithCurrency(orderTotal.shippingPrice),
+                }
+
+                const compiledEmail = await getEmailTemplate('order', mailProps)
+                if (compiledEmail)
+                    await sendEmail([input.customerEmail], 'Order', compiledEmail);
+            }
+
+        } catch (error) {
+            logger.error(error)
+
+        }
+        // < / Send e-mail >
+
+        return getCustomRepository(OrderRepository).createOrder(createOrder);
+    }
+
+    async calcOrderTotal(input: CreateOrderDto): Promise<OrderTotalDto> {
+        const orderTotal = new OrderTotalDto();
+        let cart: TStoreListItem[] | undefined;
+        try {
+            if (input.cart) cart = JSON.parse(input.cart);
+        } catch (error) {
+            logger.error(error);
+        }
+        if (typeof cart !== 'object') return orderTotal;
+
+        const settings = await getCmsSettings();
+
+        const cstore = getCStore(true, {
+            getProductById: (id) => getCustomRepository(ProductRepository).getProductById(id),
+            getAttributes: () => getCustomRepository(AttributeRepository).getAttributes(),
+        });
+
+        cstore.saveCart(cart);
+        await cstore.updateCart();
+        const total = cstore.getCartTotal();
+
+        orderTotal.cartOldTotalPrice = total.totalOld;
+        orderTotal.cartTotalPrice = total.total;
+        orderTotal.totalQnt = total.amount;
+
+        const shippingPrice = settings?.defaultShippingPrice ?? 0;
+        orderTotal.shippingPrice = shippingPrice;
+
+        orderTotal.orderTotalPrice = orderTotal.cartTotalPrice + orderTotal.shippingPrice;
+        return orderTotal;
     }
 
     async getCmsStats(): Promise<CmsStatsDto> {

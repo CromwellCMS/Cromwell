@@ -76,6 +76,7 @@ const SettingsPage = () => {
             toast.success?.('Settings saved');
             setSettings(newConfig);
             setStoreItem('cmsSettings', newConfig);
+            cstore.setActiveCurrency(newConfig.currencies?.[0]?.tag);
         } catch (e) {
             console.error(e);
             toast.error('Failed to save settings');
@@ -212,7 +213,6 @@ const SettingsPage = () => {
                                     const curr = currencies.find(curr => curr.id === item.i);
                                     if (curr) sortedCurrencies.push(curr);
                                 });
-                                if (sortedCurrencies[0]?.tag) cstore.setActiveCurrency(sortedCurrencies[0].tag);
                                 changeSettigns('currencies', sortedCurrencies)
                             }}
                         >

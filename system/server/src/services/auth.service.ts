@@ -1,9 +1,9 @@
-import { TCreateUser, TUser } from '@cromwell/core';
-import { getLogger, User, UserRepository } from '@cromwell/core-backend';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { ModuleRef } from '@nestjs/core';
+import { sleep, TCreateUser, TUser } from '@cromwell/core';
+import { getEmailTemplate, getLogger, sendEmail, User, UserRepository } from '@cromwell/core-backend';
+import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
+import cryptoRandomString from 'crypto-random-string';
 import { FastifyReply } from 'fastify';
 import { getCustomRepository } from 'typeorm';
 
@@ -15,7 +15,7 @@ import {
     TTokenInfo,
     TTokenPayload,
 } from '../auth/constants';
-import { CmsService } from './cms.service';
+import { ResetPasswordDto } from '../dto/reset-password.dto';
 
 const logger = getLogger('detailed');
 
@@ -24,10 +24,13 @@ export let authServiceInst: AuthService | undefined;
 @Injectable()
 export class AuthService {
 
+    private resetPasswordAttempts: Record<string, {
+        attempts: number;
+        firstDate: Date;
+    }> = {};
+
     constructor(
         private jwtService: JwtService,
-        private moduleRef: ModuleRef,
-        private cmsService: CmsService,
     ) {
         authServiceInst = this;
     }
@@ -63,18 +66,73 @@ export class AuthService {
         return userRepo.createUser(data);
     }
 
-    async resetUserPassword(email: string) {
-        // const userRepo = getCustomRepository(UserRepository);
-        // const user = await userRepo.getUserByEmail(email);
-        // if (!user?.id) return false;
+    async forgotUserPassword(email: string) {
+        const userRepo = getCustomRepository(UserRepository);
+        const user = await userRepo.getUserByEmail(email);
+        if (!user?.id) throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
 
-        // const newRandPass = await userRepo.hashPassword(cryptoRandomString({ length: 9 }));
-        // user.password = newRandPass;
-        // await user.save();
+        const secretCode = cryptoRandomString({ length: 6, type: 'numeric' });
 
-        const success = await this.cmsService.sendEmail([email], 'Reset password', '<p>Hello!</p>');
+        user.resetPasswordCode = secretCode;
+        user.resetPasswordDate = new Date(Date.now());
+        await user.save();
 
-        return success;
+        const compiledMail = await getEmailTemplate('forgot-password', {
+            resetCode: secretCode
+        });
+        if (compiledMail) {
+            const success = await sendEmail([email], 'Forgot password', compiledMail);
+            return success;
+        }
+        logger.error('forgot-password was not found');
+        throw new HttpException('Failed', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    async resetUserPassword(input: ResetPasswordDto) {
+        const userRepo = getCustomRepository(UserRepository);
+        const user = await userRepo.getUserByEmail(input.email);
+        if (!user?.id || !user.resetPasswordCode || !user.resetPasswordDate)
+            throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
+
+        const resetUserCode = async () => {
+            if (!user) return;
+            user.resetPasswordDate = null;
+            user.resetPasswordCode = null;
+            await user.save();
+        }
+
+        if (!this.resetPasswordAttempts[user.email]) {
+            this.resetPasswordAttempts[user.email] = {
+                attempts: 1,
+                firstDate: new Date(Date.now()),
+            }
+            this.memoryLeakChecker();
+        } else {
+            this.resetPasswordAttempts[user.email].attempts++;
+
+            if (this.resetPasswordAttempts[user.email].attempts > authSettings.resetPasswordAttempts) {
+                logger.warn('Exceeded reset password attempts');
+                delete this.resetPasswordAttempts[user.email];
+                await resetUserCode();
+                throw new HttpException('Exceeded reset password attempts', HttpStatus.EXPECTATION_FAILED);
+            }
+        }
+
+        if (user.resetPasswordDate.getTime() +
+            authSettings.resetPasswordCodeExpirationAccessTime < new Date(Date.now()).getTime()) {
+            logger.warn('Tried to reset password with expired code');
+            await resetUserCode();
+            throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
+        }
+
+        if (input.code !== user.resetPasswordCode) {
+            logger.warn('Tried to reset password with invalid code');
+            throw new HttpException('Failed', HttpStatus.BAD_REQUEST);
+        }
+
+        user.password = await this.hashPassword(input.newPassword);
+        await resetUserCode();
+        return true;
     }
 
     async hashPassword(plain: string): Promise<string> {
@@ -325,5 +383,34 @@ export class AuthService {
         return null;
     }
 
+    private isCheckerActive = false;
+
+    async memoryLeakChecker() {
+        if (this.isCheckerActive) return;
+        this.isCheckerActive = true;
+
+        const checkCycle = async () => {
+            try {
+                if (Object.keys(this.resetPasswordAttempts).filter(Boolean).length === 0) return;
+
+                // remove old/expired resetPasswordAttempts from memory
+                for (const email of Object.keys(this.resetPasswordAttempts)) {
+                    if (this.resetPasswordAttempts[email].firstDate.getTime() +
+                        authSettings.resetPasswordCodeExpirationAccessTime < new Date(Date.now()).getTime()) {
+                        delete this.resetPasswordAttempts[email];
+                    }
+                }
+
+            } catch (error) {
+                logger.error(error);
+            }
+
+            await sleep(10);
+            checkCycle();
+        }
+
+        checkCycle();
+        this.isCheckerActive = false;
+    }
 
 }

@@ -59,6 +59,7 @@ module.exports = {
         post: 'blog/[slug]',
         tag: 'tag/[slug]',
         pages: 'pages/[slug]',
+        account: 'account',
     },
     pages: [
         {

@@ -1,7 +1,7 @@
 jobs:
   build:
     docker:
-      - image: circleci/node:12.22.1
+      - image: circleci/node:14.15.4
 
     working_directory: ~/repo
 
@@ -12,7 +12,6 @@ jobs:
       - restore_cache:
           keys:
           - cache-v3-{{ checksum "package.json" }}
-          - cache-v3
 
       - run:
           name: Git reset source code

@@ -134,7 +134,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyProductReviewFilter(qb, filterParams);
-        return await getPaged(qb, this.metadata.tablePath, pagedParams);
+        return await getPaged<TProductReview>(qb, this.metadata.tablePath, pagedParams);
     }
 
 

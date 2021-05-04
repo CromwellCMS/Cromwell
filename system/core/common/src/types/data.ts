@@ -142,7 +142,7 @@ export type TThemeConfig = {
     globalModifications?: TCromwellBlockData[];
 }
 
-export type TDefaultPageName = 'index' | 'category' | 'product' | 'post' | 'tag' | 'pages';
+export type TDefaultPageName = 'index' | 'category' | 'product' | 'post' | 'tag' | 'pages' | 'account' | 'blog';
 
 export type TPalette = {
     primaryColor?: string;
