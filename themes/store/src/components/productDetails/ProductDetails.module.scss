@@ -1,4 +1,4 @@
-@import "../../../styles/variables.scss";
+@import "../../styles/variables.scss";
 
 .ProductDetails {
     display: flex;
@@ -7,7 +7,13 @@
     border-radius: 8px;
     overflow: hidden;
     background-color: #fff;
+
+    &.compact {
+        box-shadow: none;
+        margin: 0;
+    }
 }
+
 .productNotFound {
     display: flex;
     justify-content: center;
@@ -109,31 +115,9 @@
     padding: 15px;
 }
 
-.productAttributesBlock {
-    margin: 5px 0;
-}
-
 .productActionsBlock {
     display: flex;
     flex-wrap: wrap;
-}
-
-body .attrValue {
-    margin-right: 10px;
-    margin-bottom: 10px;
-}
-
-.attrValueIcon {
-    width: 20px;
-    height: 20px;
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: contain;
-    margin-right: 10px;
-}
-
-.reviewInputBox {
-
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
@@ -159,4 +143,8 @@ body .attrValue {
     .tabsBlock {
         padding-right: 0;
     }
+}
+
+.fullwidth {
+    width: 100%;
 }

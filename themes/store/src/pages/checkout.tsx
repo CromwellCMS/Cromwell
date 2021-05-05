@@ -22,7 +22,7 @@ import {
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 
-import { CartProductList } from '../components/checkoutPage/productList/CartProductList';
+import { CartProductList } from '../components/productList/CartProductList';
 import Layout from '../components/layout/Layout';
 import SignInModal, { TFromType } from '../components/modals/signIn/SignIn';
 import { toast } from '../components/toast/toast';

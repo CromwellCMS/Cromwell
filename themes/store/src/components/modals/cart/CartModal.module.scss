@@ -1,4 +1,5 @@
 @import "../../../styles/common.module.scss";
+@import "../../../styles/variables.scss";
 
 .cartModal {
     @include paper;
@@ -11,16 +12,30 @@
     background-color: #fff;
     border-radius: 10px;
     outline: none;
+    position: relative;
 
     .cartList {
         background-color: #fff;
         border-radius: 10px;
         width: 100%;
         height: 100%;
-        overflow: hidden;
+        min-height: 100px;
     }
 
     .checkoutBtn {
         margin: 15px auto 15px;
+    }
+
+    .closeBtn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        z-index: 5;
+    }
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
+    .cartModal {
+        height: 90vh;
     }
 }

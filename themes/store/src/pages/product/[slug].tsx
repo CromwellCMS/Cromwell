@@ -3,7 +3,7 @@ import { CContainer, getGraphQLClient } from '@cromwell/core-frontend';
 import React from 'react';
 
 import Layout from '../../components/layout/Layout';
-import { ProductDetails } from '../../components/productPage/productDetails/ProductDetails';
+import ProductDetails from '../../components/productDetails/ProductDetails';
 import commonStyles from '../../styles/common.module.scss';
 
 interface ProductProps {

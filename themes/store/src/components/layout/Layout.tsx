@@ -1,6 +1,5 @@
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 import React from 'react';
-//@ts-ignore
 import { primaryColor } from '../../constants.js';
 import { Header } from '../header/Header';
 import { Footer } from '../footer/Footer';

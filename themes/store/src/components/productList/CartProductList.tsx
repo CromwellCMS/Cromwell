@@ -5,8 +5,9 @@ import { DeleteForever as DeleteForeverIcon, ExpandMore as ExpandMoreIcon } from
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
-import commonStyles from '../../../styles/common.module.scss';
-import { LoadBox } from '../../loadbox/Loadbox';
+import commonStyles from '../../styles/common.module.scss';
+import { LoadBox } from '../loadbox/Loadbox';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import styles from './CartProductList.module.scss';
 
 export const CartProductList = (props: {
@@ -44,6 +45,10 @@ export const CartProductList = (props: {
             setCart(cart);
             setIsLoading(false);
         })();
+
+        cstore.onCartUpdate (() => {
+            forceUpdate();
+        }, 'ProductActions');
     }, []);
 
 
@@ -57,7 +62,6 @@ export const CartProductList = (props: {
     const cartInfo = cstore.getCartTotal();
     const cartTotal = cartInfo.total
     const cartTotalOldPrice = cartInfo.totalOld;
-    const amount = cartInfo.amount;
 
     const productList = (
         <div className={styles.productList}>
@@ -126,7 +130,8 @@ export const CartProductList = (props: {
                         )}
                         <span className={styles.price}>{cstore.getPriceWithCurrency(cartTotal)}</span>
                     </p>
-                    <p className={styles.itemsText}>Items: {amount}</p>
+                    <div></div>
+                    {/* <p className={styles.itemsText}>Items: {amount}</p> */}
                 </div>
                 {isMobile && !!_collapsedByDefault.current && (
                     <IconButton>
@@ -146,10 +151,4 @@ export const CartProductList = (props: {
 
         </div >
     )
-}
-
-
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
 }
