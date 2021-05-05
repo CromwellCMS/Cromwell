@@ -7,7 +7,7 @@ const localProjectDir = __dirname;
 // 'build' | 'dev' | 'prod'
 const scriptName = process.argv[2];
 
-const main = async () => {
+const main = () => {
 
     const buildDir = getAdminPanelServiceBuildDir();
     const tempDir = getAdminPanelTempDir();

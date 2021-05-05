@@ -8,11 +8,11 @@ import { graphQlAuthChecker } from '@App/auth/auth.guard';
 import { mockWorkingDirectory } from './helpers';
 
 export const setupResolver = async (name: string): Promise<[ApolloServer, ApolloServerTestClient]> => {
-    const testDir = await mockWorkingDirectory(name);
+    await mockWorkingDirectory(name);
     await connectDatabase('plugin');
 
     const schema = await buildSchema({
-        resolvers: [...getResolvers('main')] as any,
+        resolvers: [...(await getResolvers('main'))] as any,
         validate: false,
         authChecker: graphQlAuthChecker,
     });

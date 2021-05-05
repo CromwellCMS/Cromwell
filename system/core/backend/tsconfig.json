@@ -16,7 +16,13 @@
     "moduleResolution": "node",
     "types": [
       "node",
+      "jest",
     ],
+    "paths": {
+      "@App/*": [
+        "src/*"
+      ],
+    },
   },
   "include": [
     "src/**/*.ts",

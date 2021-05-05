@@ -17,7 +17,7 @@ const buildScriptPath = resolve(localProjectRootDir, 'build/index.js');
   */
 const scriptName = process.argv[2];
 
-const main = async () => {
+const main = () => {
 
   const utilsDir = getUtilsDir();
   const utilsBuildDir = getUtilsBuildDir();

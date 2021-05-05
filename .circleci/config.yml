@@ -6,12 +6,11 @@ jobs:
     working_directory: ~/repo
 
     steps:
-
       - checkout
 
       - restore_cache:
           keys:
-          - cache-v3-{{ checksum "package.json" }}
+            - cache-v3-{{ checksum "package.json" }}
 
       - run:
           name: Git reset source code
@@ -20,7 +19,7 @@ jobs:
 
       - checkout
 
-      - run: 
+      - run:
           name: build
           command: npm run build
           environment:
@@ -31,33 +30,38 @@ jobs:
           paths:
             - ~/repo
 
-      - run: 
+      - run:
           name: test server
           command: npm run test:server
           environment:
             NODE_OPTIONS: --max_old_space_size=4096
 
-      - run: 
+      - run:
+          name: test backend
+          command: npm run test:backend
+          environment:
+            NODE_OPTIONS: --max_old_space_size=4096
+
+      - run:
           name: test core frontend
           command: npm run test:frontend
           environment:
             NODE_OPTIONS: --max_old_space_size=4096
 
-      - run: 
+      - run:
           name: test admin panel
           command: npm run test:admin
           environment:
             NODE_OPTIONS: --max_old_space_size=4096
 
-      - run: 
+      - run:
           name: test cli
           command: npm run test:cli
           environment:
             NODE_OPTIONS: --max_old_space_size=4096
 
-      - run: 
+      - run:
           name: test utils
           command: npm run test:utils
           environment:
             NODE_OPTIONS: --max_old_space_size=4096
-      

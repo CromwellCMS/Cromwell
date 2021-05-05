@@ -9,6 +9,9 @@ export class AttributeValue implements TAttributeValue {
     value: string;
 
     @Field(type => String, { nullable: true })
+    title?: string;
+
+    @Field(type => String, { nullable: true })
     icon?: string;
 }
 
@@ -38,4 +41,8 @@ export class Attribute extends BasePageEntity implements TAttribute {
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     icon?: string;
+
+    @Field(type => Boolean, { nullable: true })
+    @Column({ type: "boolean", nullable: true })
+    required?: boolean;
 }

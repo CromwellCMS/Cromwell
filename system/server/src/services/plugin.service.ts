@@ -18,6 +18,7 @@ import { Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
+import decache from 'decache';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericPlugin } from '../helpers/genericEntities';
@@ -118,7 +119,7 @@ export class PluginService {
 
 
             // Read module info from package.json
-            const moduleInfo = getCmsModuleInfo(pluginName);
+            const moduleInfo = await getCmsModuleInfo(pluginName);
             delete moduleInfo?.frontendDependencies;
             delete moduleInfo?.bundledDependencies;
 
@@ -127,7 +128,9 @@ export class PluginService {
             const filePath = resolve(pluginPath, configFileName);
             if (await fs.pathExists(filePath)) {
                 try {
-                    // decache(filePath);
+                    decache(filePath);
+                } catch (error) { }
+                try {
                     pluginConfig = require(filePath);
                 } catch (e) {
                     console.error(e);

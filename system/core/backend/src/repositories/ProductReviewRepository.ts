@@ -37,16 +37,16 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         productReview.product = product;
 
 
-        productReview.title = sanitizeHtml(input.title, {
+        productReview.title = input.title ? sanitizeHtml(input.title, {
             allowedTags: []
-        });
-        productReview.description = sanitizeHtml(input.description, {
+        }) : input.title;
+        productReview.description = input.description ? sanitizeHtml(input.description, {
             allowedTags: []
-        });
+        }) : input.description;
         productReview.rating = input.rating;
-        productReview.userName = sanitizeHtml(input.userName, {
+        productReview.userName = input.userName ? sanitizeHtml(input.userName, {
             allowedTags: []
-        });
+        }) : input.userName;
         productReview.approved = input.approved;
         productReview.userId = input.userId;
     }

@@ -23,6 +23,7 @@ import {
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import { resolve } from 'path';
+import decache from 'decache';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
@@ -513,7 +514,9 @@ export class ThemeService {
             const filePath = resolve(themePath, configFileName);
             if (await fs.pathExists(filePath)) {
                 try {
-                    // decache(filePath);
+                    decache(filePath);
+                } catch (error) { }
+                try {
                     themeConfig = require(filePath);
                 } catch (e) {
                     console.error(e);
@@ -521,7 +524,7 @@ export class ThemeService {
             }
 
             // Read module info from package.json
-            const moduleInfo = getCmsModuleInfo(themeName);
+            const moduleInfo = await getCmsModuleInfo(themeName);
             delete moduleInfo?.frontendDependencies;
             delete moduleInfo?.bundledDependencies;
 

@@ -63,12 +63,12 @@ export * from './repositories/PageStatsRepository';
 
 
 export * from './helpers/readThemeExports';
-export * from './helpers/cmsConfigHandler';
+export * from './helpers/cms-settings';
 export * from './helpers/paths';
 export * from './helpers/constants';
 export * from './helpers/readPluginsExports';
 export * from './helpers/readCmsModules';
-export * from './helpers/cmsEntity';
+export * from './helpers/cms-settings';
 export * from './helpers/serviceVersions';
 export * from './helpers/createGenericEntity';
 export * from './helpers/validation';

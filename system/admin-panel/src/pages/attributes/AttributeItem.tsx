@@ -1,22 +1,22 @@
 import { TAttribute, TAttributeInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { createStyles, IconButton, makeStyles, TextField, Theme, Tooltip } from '@material-ui/core';
+import { createStyles, IconButton, makeStyles, Radio, TextField, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
     Delete as DeleteIcon,
     Image as ImageIcon,
     Save as SaveIcon,
 } from '@material-ui/icons';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { getFileManager } from '../../components/fileManager/helpers';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import { toast } from '../../components/toast/toast';
 import { CheckList } from '../../components/transferList/TransferList';
-import styles from './Attributes.module.scss';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 
-const useStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles(() =>
     createStyles({
         textFieldRoot: {
             '& input': {
@@ -60,6 +60,7 @@ const AttributeItem = (props: { data: TAttribute; handleRemove: (data: TAttribut
                 type: attribute.current.type,
                 icon: attribute.current.icon,
                 slug: attribute.current.slug,
+                required: attribute.current.required,
             }
             if (attribute.current.id) {
                 // update
@@ -107,6 +108,11 @@ const AttributeItem = (props: { data: TAttribute; handleRemove: (data: TAttribut
         }
     }
 
+    const handleToggleRequired = () => {
+        attribute.current.required = !attribute.current.required;
+        forceUpdate();
+    }
+
     const deleteAttributeConfirmed = async () => {
         setIsDeleteModalOpen(false);
         let success = false;
@@ -144,6 +150,12 @@ const AttributeItem = (props: { data: TAttribute; handleRemove: (data: TAttribut
                 setChecked={handleCheckedValuesChange}
                 fullWidthToggle={false}
                 actions={<div style={{ marginLeft: 'auto', display: 'flex' }}>
+                    <Tooltip title={attribute.current.required ? 'required' : 'optional'}>
+                        <Radio
+                            checked={attribute.current.required ?? false}
+                            onClick={handleToggleRequired}
+                        />
+                    </Tooltip>
                     <Tooltip title="Add new value">
                         <IconButton onClick={handleAddValue}><AddCircleOutlineIcon /></IconButton>
                     </Tooltip>
@@ -219,10 +231,5 @@ const AttributeItem = (props: { data: TAttribute; handleRemove: (data: TAttribut
     )
 }
 
-
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
-}
 
 export default AttributeItem;

@@ -198,6 +198,7 @@ export interface TAttribute extends TBasePageEntity {
     values: TAttributeValue[];
     type: 'radio' | 'checkbox';
     icon?: string;
+    required?: boolean;
 }
 
 export type TAttributeInput = Omit<TAttribute, TDBAuxiliaryColumns>;

@@ -16,7 +16,7 @@ const npmRunPath = require('npm-run-path');
 const scriptName = process.argv[2];
 
 
-const main = async () => {
+const main = () => {
     const config = readCMSConfigSync();
 
     const isServiceBuilt = () => {
@@ -135,8 +135,7 @@ const main = async () => {
     }
 
     if (scriptName === 'buildStart') {
-        await build();
-        start();
+        build().then(start);
         return;
     }
 

@@ -2,10 +2,13 @@ import fs from 'fs-extra';
 import { resolve } from 'path';
 
 import {
-    buildDirName, configFileName, getPluginBackendPath, getPluginFrontendBundlePath,
-    getNodeModuleDirSync
+    buildDirName,
+    configFileName,
+    getNodeModuleDirSync,
+    getPluginBackendPath,
+    getPluginFrontendBundlePath,
 } from './paths';
-import { readCmsModulesSync } from './readCmsModules';
+import { readCmsModules } from './readCmsModules';
 
 export type TPluginInfo = {
     pluginName: string;
@@ -14,11 +17,11 @@ export type TPluginInfo = {
     backendPath?: string;
 }
 
-export const readPluginsExportsSync = (): TPluginInfo[] => {
+export const readPluginsExports = async (): Promise<TPluginInfo[]> => {
 
     const infos: TPluginInfo[] = [];
 
-    const pluginNames: string[] = readCmsModulesSync().plugins;
+    const pluginNames: string[] = (await readCmsModules()).plugins;
 
     for (const name of pluginNames) {
         const pluginDir = getNodeModuleDirSync(name);

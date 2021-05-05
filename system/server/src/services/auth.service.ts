@@ -77,7 +77,7 @@ export class AuthService {
         user.resetPasswordDate = new Date(Date.now());
         await user.save();
 
-        const compiledMail = await getEmailTemplate('forgot-password', {
+        const compiledMail = await getEmailTemplate('forgot-password.html', {
             resetCode: secretCode
         });
         if (compiledMail) {

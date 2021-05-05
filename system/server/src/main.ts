@@ -38,7 +38,7 @@ async function bootstrap(): Promise<void> {
 
     // GraphQL
     const schema = await buildSchema({
-        resolvers: getResolvers(envMode.serverType),
+        resolvers: await getResolvers(envMode.serverType),
         validate: false,
         dateScalarMode: "isoDate",
         authChecker: graphQlAuthChecker,
@@ -97,7 +97,7 @@ async function bootstrap(): Promise<void> {
         SwaggerModule.setup(`/${apiPrefix}/api-docs`, app, document);
     }
 
-    const port = envMode.serverType === 'main' ? (config.mainApiPort ?? 4016) : (config.pluginApiPort ?? 4032)
+    const port = envMode.serverType === 'main' ? (config.mainApiPort ?? 4016) : (config.pluginApiPort ?? 4032);
     await app.listen(port, '::');
     console.log(`Application is running on: ${await app.getUrl()}`);
 

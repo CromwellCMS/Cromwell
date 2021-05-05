@@ -1,22 +1,10 @@
 import { setStoreItem } from '@cromwell/core';
 import {
-    Attribute,
-    CmsEntity,
     getCmsSettings,
     getOrmConfigPath,
     getServerDir,
     getServerTempDir,
-    Order,
-    PageStats,
-    PluginEntity,
-    Post,
-    PostComment,
-    Product,
-    ProductCategory,
-    ProductReview,
-    Tag,
-    ThemeEntity,
-    User,
+    ORMEntities,
     readCmsModules,
 } from '@cromwell/core-backend';
 import fs from 'fs-extra';
@@ -24,10 +12,10 @@ import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import { ConnectionOptions, createConnection, getConnection, getCustomRepository } from 'typeorm';
 
+import { PluginService } from '../services/plugin.service';
+import { ThemeService } from '../services/theme.service';
 import { collectPlugins } from './collectPlugins';
 import { GenericCms, GenericPlugin, GenericTheme } from './genericEntities';
-import { ThemeService } from '../services/theme.service'
-import { PluginService } from '../services/plugin.service'
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
@@ -89,10 +77,7 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
     const connectionOptions: ConnectionOptions = {
         ...ormconfig,
         entities: [
-            Product, ProductCategory, Post, User,
-            Attribute, ProductReview, Order,
-            ThemeEntity, PluginEntity, CmsEntity,
-            Tag, PageStats, PostComment,
+            ...ORMEntities,
             ...(sType === 'plugin' ? pluginsExports.entities : []),
             ...(ormconfig?.entities ?? [])
         ],

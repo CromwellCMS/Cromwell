@@ -92,11 +92,12 @@ export class CmsController {
         const themeModuleNames = (await readCmsModules()).themes;
 
         for (const themeName of themeModuleNames) {
-            const moduleInfo = getCmsModuleInfo(themeName);
-            delete moduleInfo?.frontendDependencies;
-            delete moduleInfo?.bundledDependencies;
+            const moduleInfo = await getCmsModuleInfo(themeName);
 
             if (moduleInfo) {
+                delete moduleInfo.frontendDependencies;
+                delete moduleInfo.bundledDependencies;
+
                 await this.cmsService.parseModuleConfigImages(moduleInfo, themeName);
                 out.push(moduleInfo);
             }
@@ -121,7 +122,7 @@ export class CmsController {
         const pluginModules = (await readCmsModules()).plugins;
 
         for (const pluginName of pluginModules) {
-            const moduleInfo = getCmsModuleInfo(pluginName);
+            const moduleInfo = await getCmsModuleInfo(pluginName);
             delete moduleInfo?.frontendDependencies;
             delete moduleInfo?.bundledDependencies;
 
@@ -372,12 +373,12 @@ export class CmsController {
     @ApiResponse({
         status: 200
     })
-    async viewPage(@Body() input: PageStatsDto): Promise<void> {
-        if (input?.pageRoute && input.pageRoute !== '') {
-            return this.cmsService.viewPage(input);
-        } else {
+    async viewPage(@Body() input: PageStatsDto): Promise<boolean> {
+        if (!input?.pageRoute || input.pageRoute === '')
             throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
-        }
+
+        await this.cmsService.viewPage(input);
+        return true;
     }
 
 
