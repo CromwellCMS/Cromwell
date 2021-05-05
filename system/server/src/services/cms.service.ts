@@ -259,7 +259,7 @@ export class CmsService {
         try {
             if (input.cart) cart = JSON.parse(input.cart);
         } catch (error) {
-            logger.error('placeOrder: Failed to parse cart', error)
+            logger.error('placeOrder: Failed to parse cart', error);
         }
         if (typeof cart !== 'object') return orderTotal;
 
@@ -275,12 +275,9 @@ export class CmsService {
         const total = cstore.getCartTotal();
 
         orderTotal.cartOldTotalPrice = total.totalOld;
-        orderTotal.cartTotalPrice = total.total;
+        orderTotal.cartTotalPrice = total.total ?? 0;
         orderTotal.totalQnt = total.amount;
-
-        const shippingPrice = settings?.defaultShippingPrice ?? 0;
-        orderTotal.shippingPrice = shippingPrice;
-
+        orderTotal.shippingPrice = settings?.defaultShippingPrice ?? 0;
         orderTotal.orderTotalPrice = orderTotal.cartTotalPrice + orderTotal.shippingPrice;
         return orderTotal;
     }
