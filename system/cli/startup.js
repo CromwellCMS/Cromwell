@@ -14,7 +14,7 @@ const buildScriptPath = resolve(localProjectRootDir, 'build/cli.js');
   */
 const scriptName = process.argv[2];
 
-const main = async () => {
+const main = () => {
 
   const hasBuild = fs.existsSync(buildScriptPath);
   if (!hasBuild || scriptName === 'buildService') {

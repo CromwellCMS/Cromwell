@@ -9,7 +9,7 @@ const scriptName = process.argv[2];
 const serverRootDir = getServerDir();
 const buildDir = normalizePath(resolve(serverRootDir, 'build'));
 
-const main = async () => {
+const main = () => {
 
     const buildServer = () => {
         spawnSync(`npx --no-install rollup -c`, [],
