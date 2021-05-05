@@ -1,33 +1,22 @@
-import { getServerDir, getServerTempDir } from './paths';
-import { getLogger } from './constants';
-import { getCmsSettings } from './cmsEntity';
-import { getStoreItem } from '@cromwell/core';
 import fs from 'fs-extra';
 import Handlebars from 'handlebars';
-import { resolve } from 'path';
 import nodemailer from 'nodemailer';
+import { resolve } from 'path';
+
+import { getCmsSettings } from './cms-settings';
+import { getLogger } from './constants';
+import { getServerDir, getServerTempDir } from './paths';
 
 const logger = getLogger('detailed');
 
 let nodemailerTransporter;
 let sendmailTransporter;
 
-export const getEmailTemplate = async (tempType: 'forgot-password' | 'order', props?: Record<string, any>) => {
-    let mailFileName;
-    switch (tempType) {
-        case 'order':
-            mailFileName = 'order.html';
-            break;
-        case 'forgot-password':
-            mailFileName = 'forgot-password.html';
-            break;
-    }
-    if (!mailFileName) return;
-
+export const getEmailTemplate = async (fileName: string, props?: Record<string, any>): Promise<string | undefined> => {
     // User can create his own template and override original 
-    const mailUserPath = resolve(getServerTempDir(), 'emails', mailFileName);
+    const mailUserPath = resolve(getServerTempDir(), 'emails', fileName);
     const serverDir = getServerDir();
-    const mailOriginalPath = serverDir ? resolve(serverDir, 'static/emails', mailFileName) : undefined;
+    const mailOriginalPath = serverDir ? resolve(serverDir, 'static/emails', fileName) : undefined;
 
     let emailContent;
     if (await fs.pathExists(mailUserPath)) {

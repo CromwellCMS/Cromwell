@@ -1,6 +1,28 @@
-import { logFor, TLogLevel, TCmsConfig, logLevelMoreThan } from '@cromwell/core';
+import { logFor, logLevelMoreThan, TCmsConfig, TLogLevel } from '@cromwell/core';
 import colorsdef from 'colors/safe';
+
+import { Attribute } from '../entities/Attribute';
+import { CmsEntity } from '../entities/Cms';
+import { Order } from '../entities/Order';
+import { PageStats } from '../entities/PageStats';
+import { PluginEntity } from '../entities/Plugin';
+import { Post } from '../entities/Post';
+import { PostComment } from '../entities/PostComment';
+import { Product } from '../entities/Product';
+import { ProductCategory } from '../entities/ProductCategory';
+import { ProductReview } from '../entities/ProductReview';
+import { Tag } from '../entities/Tag';
+import { ThemeEntity } from '../entities/Theme';
+import { User } from '../entities/User';
+
 const colors: any = colorsdef;
+
+export const ORMEntities = [
+    ThemeEntity, PluginEntity,
+    Product, ProductCategory, Post, User,
+    Attribute, ProductReview, Order,
+    CmsEntity, Tag, PageStats, PostComment,
+]
 
 export const rendererMessages = {
     onBuildStartMessage: 'onBuildStart',

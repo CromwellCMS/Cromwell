@@ -1,6 +1,6 @@
 import { TCmsSettings, TServiceVersions } from '@cromwell/core';
 
-import { getCmsEntity } from './cmsEntity';
+import { getCmsEntity } from './cms-settings';
 
 export const extractServiceVersion = (settings: TCmsSettings | undefined, serviceName: keyof TServiceVersions): number | undefined => {
     if (settings?.versions) {
