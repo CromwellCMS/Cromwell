@@ -1,27 +1,35 @@
-import { getCStore } from '@cromwell/core-frontend';
-import { TStoreListItem } from '@cromwell/core';
-import { Modal } from '@material-ui/core';
+import { TAttribute, TStoreListItem } from '@cromwell/core';
+import { getCStore, getGraphQLClient } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
-
+import { IconButton } from '@material-ui/core';
+import { Close as CloseIcon } from '@material-ui/icons';
 import { appState } from '../../../helpers/AppState';
+import { useForceUpdate } from '../../../helpers/forceUpdate';
 import commonStyles from '../../../styles/common.module.scss';
 import { ProductCard } from '../../productCard/ProductCard';
+import Modal from '../baseModal/Modal';
 import styles from './WishlistModal.module.scss';
 
 export const WishlistModal = observer(() => {
-    const handleCartClose = () => {
+    const forceUpdate = useForceUpdate();
+    const handleClose = () => {
         appState.isWishlistOpen = false;
     }
 
     const [wishlist, setWishlist] = useState<TStoreListItem[]>([]);
+    const [attributes, setAttributes] = useState<TAttribute[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const cstore = getCStore();
 
-    const handleDeleteItem = (item: TStoreListItem) => {
-        cstore.removeFromCart(item);
-        setWishlist(cstore.getWishlist());
+    const updateAttributes = async () => {
+        try {
+            const data = await getGraphQLClient()?.getAttributes();
+            if (data) setAttributes(data);
+        } catch (e) {
+            console.error(e);
+        }
     }
 
     useEffect(() => {
@@ -32,7 +40,7 @@ export const WishlistModal = observer(() => {
         if (appState.isWishlistOpen) {
             (async () => {
                 setIsLoading(true);
-                await cstore.updateWishlist();
+                await Promise.all([cstore.updateWishlist(), updateAttributes()])
                 const wishlist = cstore.getWishlist()
                 setWishlist(wishlist);
                 setIsLoading(false);
@@ -40,17 +48,34 @@ export const WishlistModal = observer(() => {
         }
     }, [appState.isWishlistOpen]);
 
+    useEffect(() => {
+        cstore.onWishlistUpdate(() => {
+            const wishlist = cstore.getWishlist()
+            setWishlist(wishlist);
+            forceUpdate();
+        }, 'WishlistModal');
+    }, []);
+
     return (
         <Modal
             className={clsx(commonStyles.center)}
             open={appState.isWishlistOpen}
-            onClose={handleCartClose}
+            onClose={handleClose}
+            blurSelector={"#CB_root"}
         >
-            <div className={clsx(commonStyles.content, styles.wishlistModal)}>
+            <div className={clsx(styles.wishlistModal)}>
+                <IconButton onClick={handleClose} className={styles.closeBtn}>
+                    <CloseIcon />
+                </IconButton>
                 <div className={styles.wishList}>
                     {wishlist.map((it, i) => {
                         return (
-                            <ProductCard key={i} data={it.product} variant='list' />
+                            <ProductCard
+                                attributes={attributes}
+                                key={i}
+                                data={it.product}
+                                variant='list'
+                            />
                         )
                     })}
                 </div>

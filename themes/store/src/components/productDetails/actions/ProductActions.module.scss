@@ -2,8 +2,6 @@
     // display: flex;
     // flex-wrap: wrap;
     position: relative;
-    border-top: 1px solid #bbb;
-    padding-top: 15px;
 
     .actionButton {
         margin-right: 15px;
@@ -33,6 +31,40 @@
         text-align: center;
         input {
             text-align: center;
+        }
+    }
+}
+
+.productAttributesBlock {
+    margin: 5px 0;
+    border-bottom: 1px solid #bbb;
+    margin-bottom: 15px;
+}
+
+body .attrValue {
+    margin-right: 10px;
+    margin-bottom: 10px;
+}
+
+.attrValueIcon {
+    width: 20px;
+    height: 20px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 10px;
+}
+
+.validateAttributes {
+    .invalidAttrTitle {
+        color: #aa2e25;
+    }
+
+    .invalidAttrValue {
+        background-color: #ff574b3f;
+
+        .attrValueText {
+            color: #aa2e25;
         }
     }
 }

@@ -54,7 +54,7 @@ export const Header = () => {
                 setItemsInCart(cart.length);
         }, 'headerCart');
 
-        const onUserChange = (value) => {
+        const onUserChange = () => {
             forceUpdate();
         }
 
@@ -73,7 +73,7 @@ export const Header = () => {
     const handleLogout = async () => {
         setUserOptionsOpen(false);
         try {
-            await getRestAPIClient()!.logOut();
+            await getRestAPIClient()?.logOut();
         } catch (e) {
             console.error(e);
         }
@@ -89,7 +89,7 @@ export const Header = () => {
                             <FormControl className={styles.formControl}>
                                 <Select
                                     className={styles.select}
-                                    value={currency}
+                                    value={currency ?? ''}
                                     onChange={handleCurrencyChange}
                                 >
                                     {currencies && Array.isArray(currencies) && currencies.map(curr => (
@@ -199,6 +199,7 @@ export const Header = () => {
 }
 
 function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
+    const state = useState(0);
+    return () => state[1](value => ++value);
 }
+

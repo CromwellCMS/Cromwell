@@ -1,34 +1,23 @@
 import { getThemeCustomConfigProp, TAttribute, TProduct, TProductReview } from '@cromwell/core';
-import {
-    CContainer,
-    CGallery,
-    CImage,
-    CList,
-    CText,
-    getCStore,
-    getGraphQLClient,
-    ProductAttributes,
-    useRouter,
-} from '@cromwell/core-frontend';
-import { Button } from '@material-ui/core';
+import { CContainer, CGallery, CImage, CList, CText, getCStore, getGraphQLClient, useRouter } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-import { LoadBox } from '../../loadbox/Loadbox';
-import { Pagination } from '../../pagination/Pagination';
-import { ProductActions } from '../../productPage/actions/ProductActions';
-import { ReviewItem } from '../../productPage/reviewItem/ReviewItem';
-import { SwipeableTabs } from '../../tabs/Tabs';
-import ReviewForm from '../reviewForm/ReviewForm';
+import { LoadBox } from '../loadbox/Loadbox';
+import { Pagination } from '../pagination/Pagination';
+import { ProductActions } from './actions/ProductActions';
+import { ReviewItem } from './reviewItem/ReviewItem';
+import { SwipeableTabs } from '../tabs/Tabs';
+import ReviewForm from './reviewForm/ReviewForm';
 import styles from './ProductDetails.module.scss';
 
-export const ProductDetails = (props: {
+export default function ProductDetails(props: {
     product?: TProduct | null;
     attributes?: TAttribute[];
-}) => {
+    compact?: boolean;
+}) {
     const productRef = useRef(props.product);
     const modifiedProductRef = useRef(props.product);
-    const [pickedAttributes, setPickedAttributes] = useState({});
     const cstore = getCStore();
 
     if (props.product && props.product !== productRef.current) {
@@ -45,7 +34,7 @@ export const ProductDetails = (props: {
     }, []);
 
     return (
-        <CContainer id="product_01" className={styles.ProductDetails}>
+        <CContainer id="product_01" className={styles.ProductDetails + (props.compact ? ' ' + styles.compact : '')}>
             {(!product && router && router.isFallback) && (
                 <LoadBox />
             )}
@@ -55,7 +44,7 @@ export const ProductDetails = (props: {
                 </div>
             )}
             {product && (<>
-                <CContainer id="product_0" className={styles.mainBlock}>
+                <CContainer id="product_0" className={styles.mainBlock + (props.compact ? ' ' + styles.fullwidth : '')}>
                     <CContainer id="product_0" className={styles.imageAndCaptionBlock}>
                         <CContainer id="product_2" className={styles.imageBlock}>
                             <CGallery id="product_1" gallery={{
@@ -65,7 +54,9 @@ export const ProductDetails = (props: {
                                     }
                                 }) : [],
                                 loop: false,
-                                ratio: 1,
+                                width: 400,
+                                height: 400,
+                                ratio: props.compact ? undefined : 1,
                                 showThumbs: {
                                     width: '80px',
                                     height: '80px',
@@ -94,40 +85,13 @@ export const ProductDetails = (props: {
                                 )}
                                 <CText id="product_7" className={styles.price}>{cstore.getPriceWithCurrency(product.price)}</CText>
                             </CContainer>
-                            <CContainer id="productAttributesBlock" className={styles.productAttributesBlock}>
-                                {productRef.current && props.attributes && (
-                                    <ProductAttributes
-                                        attributes={props.attributes}
-                                        product={productRef.current}
-                                        onChange={(attrs, modified) => {
-                                            modifiedProductRef.current = modified;
-                                            setPickedAttributes(attrs);
-                                        }}
-                                        elements={{
-                                            attributeValue: (attrProps) => {
-                                                return (
-                                                    <Button
-                                                        onClick={attrProps.onClick}
-                                                        variant={attrProps.isChecked ? 'contained' : 'outlined'}
-                                                        className={styles.attrValue}
-                                                    >
-                                                        {attrProps.icon && (
-                                                            <div
-                                                                style={{ backgroundImage: `url(${attrProps.icon}` }}
-                                                                className={styles.attrValueIcon}></div>
-                                                        )}
-                                                        <p style={{ textTransform: 'none' }}>{attrProps.value}</p>
-                                                    </Button>
-                                                )
-                                            }
-                                        }}
-                                    />
-                                )}
-                            </CContainer>
                             <CContainer id="productActionsBlock">
                                 <ProductActions
+                                    onAttrChange={(attrs, modified) => {
+                                        modifiedProductRef.current = modified;
+                                    }}
+                                    attributes={props.attributes}
                                     product={product}
-                                    pickedAttributes={pickedAttributes}
                                 />
                             </CContainer>
                         </CContainer>
@@ -187,31 +151,33 @@ export const ProductDetails = (props: {
                         ]} />
                     </CContainer>
                 </CContainer>
-
-                <CContainer id="product_8" className={styles.infoBlock}>
-                    <CContainer id="product_9" className={styles.advantagesBlock}>
-                        <CContainer id="main_02" className={styles.advantageItem}>
-                            <CImage id="main_09" src="/themes/@cromwell/theme-store/free_shipping.png" />
-                            <CContainer id="main_11" className={styles.advantageItemText}>
-                                <CText id="main_06" className={styles.advantageItemHeader}>FREE SHIPPING & RETURN</CText>
+                {!props.compact && (
+                    <CContainer id="product_8" className={styles.infoBlock}>
+                        <CContainer id="product_9" className={styles.advantagesBlock}>
+                            <CContainer id="main_02" className={styles.advantageItem}>
+                                <CImage id="main_09" src="/themes/@cromwell/theme-store/free_shipping.png" />
+                                <CContainer id="main_11" className={styles.advantageItemText}>
+                                    <CText id="main_06" className={styles.advantageItemHeader}>FREE SHIPPING & RETURN</CText>
+                                </CContainer>
+                            </CContainer>
+                            <CContainer id="main_03" className={styles.advantageItem}>
+                                <CImage id="main_09" src="/themes/@cromwell/theme-store/wallet.png" />
+                                <CContainer id="main_13" className={styles.advantageItemText}>
+                                    <CText id="main_07" className={styles.advantageItemHeader}>MONEY BACK GUARANTEE</CText>
+                                </CContainer>
+                            </CContainer>
+                            <CContainer id="main_04" className={styles.advantageItem}>
+                                <CImage id="main_09" src="/themes/@cromwell/theme-store/technical-support.png" />
+                                <CContainer id="main_10" className={styles.advantageItemText}>
+                                    <CText id="main_08" className={styles.advantageItemHeader} >ONLINE SUPPORT 24/7</CText>
+                                </CContainer>
                             </CContainer>
                         </CContainer>
-                        <CContainer id="main_03" className={styles.advantageItem}>
-                            <CImage id="main_09" src="/themes/@cromwell/theme-store/wallet.png" />
-                            <CContainer id="main_13" className={styles.advantageItemText}>
-                                <CText id="main_07" className={styles.advantageItemHeader}>MONEY BACK GUARANTEE</CText>
-                            </CContainer>
-                        </CContainer>
-                        <CContainer id="main_04" className={styles.advantageItem}>
-                            <CImage id="main_09" src="/themes/@cromwell/theme-store/technical-support.png" />
-                            <CContainer id="main_10" className={styles.advantageItemText}>
-                                <CText id="main_08" className={styles.advantageItemHeader} >ONLINE SUPPORT 24/7</CText>
-                            </CContainer>
-                        </CContainer>
+                        <CImage id="product_10" src="/themes/@cromwell/theme-store/sub_banner_3.jpg"
+                            className={styles.infoBanner} imgLink="/category/1" withEffect={true} />
                     </CContainer>
-                    <CImage id="product_10" src="/themes/@cromwell/theme-store/sub_banner_3.jpg"
-                        className={styles.infoBanner} imgLink="/category/1" withEffect={true} />
-                </CContainer>
+                )}
+
             </>)}
         </CContainer>
 

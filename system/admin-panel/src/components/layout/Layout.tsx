@@ -1,5 +1,6 @@
 import '../../styles/global.scss';
 import 'react-toastify/dist/ReactToastify.css';
+import 'swiper/swiper-bundle.min.css';
 
 import { createMuiTheme, ThemeProvider, Toolbar } from '@material-ui/core';
 import React, { Suspense } from 'react';
