@@ -240,7 +240,7 @@ export class CmsService {
                     shippingPrice: getCStore().getPriceWithCurrency(orderTotal.shippingPrice),
                 }
 
-                const compiledEmail = await getEmailTemplate('order', mailProps)
+                const compiledEmail = await getEmailTemplate('order.html', mailProps)
                 if (compiledEmail)
                     await sendEmail([input.customerEmail], 'Order', compiledEmail);
             }

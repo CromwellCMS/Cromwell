@@ -93,6 +93,11 @@ export const getServerStartupPath = () => {
 }
 export const getOrmConfigPath = () => resolve(process.cwd(), 'ormconfig.json');
 export const getServerTempDir = () => resolve(getTempDir(), 'server');
+export const getServerTempEmailsDir = () => resolve(getServerTempDir(), 'emails');
+export const getServerDefaultEmailsDir = () => {
+    const serverDir = getServerDir();
+    if (serverDir) resolve(serverDir, 'static/emails');
+}
 
 
 // Utils
