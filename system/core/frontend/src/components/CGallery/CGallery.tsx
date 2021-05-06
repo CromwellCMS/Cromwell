@@ -1,6 +1,4 @@
-import 'swiper/swiper-bundle.min.css';
-
-import { getStoreItem, isServer, TCromwellBlockProps, TGallerySettings } from '@cromwell/core';
+import { getStoreItem, TCromwellBlockProps, TGallerySettings, getRandStr } from '@cromwell/core';
 import React from 'react';
 import Swiper, {
     Autoplay,
@@ -39,6 +37,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
     private galleryContainer?: HTMLElement | null;
     private swiper?: Swiper;
     private galleryThumbs?: Swiper;
+    private randId = getRandStr(5);
 
     private containerRef = React.createRef<HTMLDivElement>();
     private primaryColor?: string = getStoreItem('palette')?.primaryColor;
@@ -105,7 +104,11 @@ export class CGallery extends React.Component<TCGalleryProps> {
         const gallerySettings = this.gallerySettings;
         this.prevGallerySettings = gallerySettings;
 
-        if (this.swiper) this.swiper.destroy();
+        try {
+            if (this.swiper) this.swiper.destroy();
+        } catch (error) {
+            console.error(error);
+        }
 
         let options: SwiperOptions = {
             loop: gallerySettings.loop ?? false,
@@ -141,25 +144,33 @@ export class CGallery extends React.Component<TCGalleryProps> {
         // filter out undefined values
         options = Object.assign({}, ...Object.keys(options).filter(key => options[key]).map(key => ({ [key]: options[key] })));
 
-        if (gallerySettings.showThumbs) {
-            this.galleryThumbs = new Swiper(`#${this.swiperThumbsId}`, {
-                spaceBetween: 10,
-                slidesPerView: 4,
-                grabCursor: true,
-                loop: gallerySettings.loop ?? false,
-                freeMode: true,
-                loopedSlides: gallerySettings.loop ? 5 : undefined,
-                watchSlidesVisibility: true,
-                watchSlidesProgress: true,
-            });
-            options.thumbs = {
-                swiper: this.galleryThumbs,
-                slideThumbActiveClass: styles.swiperThumbActive
+        if (gallerySettings.showThumbs && this.swiperThumbsId && document.getElementById(this.swiperThumbsId)) {
+            try {
+                this.galleryThumbs = new Swiper(`#${this.swiperThumbsId}`, {
+                    spaceBetween: 10,
+                    slidesPerView: 4,
+                    grabCursor: true,
+                    loop: gallerySettings.loop ?? false,
+                    freeMode: true,
+                    loopedSlides: gallerySettings.loop ? 5 : undefined,
+                    watchSlidesVisibility: true,
+                    watchSlidesProgress: true,
+                });
+                options.thumbs = {
+                    swiper: this.galleryThumbs,
+                    slideThumbActiveClass: styles.swiperThumbActive
+                }
+                options.loopedSlides = 5;
+            } catch (error) {
+                console.error(error);
             }
-            options.loopedSlides = 5;
         }
 
-        this.swiper = new Swiper(`#${this.swiperId}`, options);
+        try {
+            this.swiper = new Swiper(`#${this.swiperId}`, options);
+        } catch (error) {
+            console.error(error);
+        }
 
         if (typeof gallerySettings?.navigation === 'object' && gallerySettings.navigation?.showOnHover) {
             this.swiper?.navigation?.nextEl?.style.setProperty('display', 'none');
@@ -170,12 +181,16 @@ export class CGallery extends React.Component<TCGalleryProps> {
     private updateGallery = () => {
         if (!this.gallerySettings || !this.swiperId || !this.swiper || !this.swiper.$el) return;
 
-        this.swiper.update?.();
-        this.galleryThumbs?.update?.();
-        this.swiper.slideTo?.(0);
+        try {
+            this.swiper.update?.();
+            this.galleryThumbs?.update?.();
+            this.swiper.slideTo?.(0);
 
-        if (this.gallerySettings.lazy) {
-            this.swiper.lazy?.load?.();
+            if (this.gallerySettings.lazy) {
+                this.swiper.lazy?.load?.();
+            }
+        } catch (e) {
+            console.error(e);
         }
     }
 
@@ -214,7 +229,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                 content={(data, blockRef, setContentInstance) => {
                     setContentInstance(this);
                     this.gallerySettings = data?.gallery ?? propsSettings;
-                    this.swiperId = `swiper-container_${data?.id}`;
+                    this.swiperId = `swiper-container_${data?.id}_${this.randId}`;
                     this.swiperThumbsId = `${this.swiperId}_thumbs`;
                     const gallerySettings = this.gallerySettings;
 
@@ -229,7 +244,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                             <div className={`swiper-wrapper ${styles.swiperWrapper}`}
                                 ref={this.containerRef}
                             >
-                                {gallerySettings.images && gallerySettings.images.map((i) => {
+                                {gallerySettings.images && gallerySettings.images.map((i, index) => {
                                     let imgItem = (
                                         <img
                                             src={gallerySettings?.lazy ? undefined : i.src}
@@ -266,7 +281,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                                         );
                                     }
                                     imgItem = (
-                                        <div key={i.src} className={`swiper-slide ${styles.swiperSlide}`}>
+                                        <div key={i.src + index} className={`swiper-slide ${styles.swiperSlide}`}>
                                             {imgItem}
                                         </div>
                                     );

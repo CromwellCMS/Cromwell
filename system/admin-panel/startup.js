@@ -1,7 +1,7 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
 const { spawn, spawnSync, fork } = require('child_process');
-const { getAdminPanelServiceBuildDir, getAdminPanelTempDir, getAdminPanelDir } = require('@cromwell/core-backend');
+const { getAdminPanelServiceBuildDir } = require('@cromwell/core-backend');
 const localProjectDir = __dirname;
 
 // 'build' | 'dev' | 'prod'
@@ -10,7 +10,6 @@ const scriptName = process.argv[2];
 const main = () => {
 
     const buildDir = getAdminPanelServiceBuildDir();
-    const tempDir = getAdminPanelTempDir();
 
     const isServiceBuilt = () => {
         return (fs.existsSync(buildDir)

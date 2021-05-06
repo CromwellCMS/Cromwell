@@ -1,4 +1,4 @@
-import { TAttribute, TAttributeInstanceValue, TProduct } from '@cromwell/core';
+import { TAttribute, TAttributeInstance, TAttributeInstanceValue, TProduct } from '@cromwell/core';
 import React, { useState } from 'react';
 
 import { getCStore } from '../../CStore';
@@ -30,7 +30,10 @@ export const ProductAttributes = (props: {
             value: string;
             isChecked: boolean;
             icon?: string;
+            attribute?: TAttribute;
+            attributeInstance?: TAttributeInstance;
         }>;
+        attributeTitle?: React.ComponentType<{ attribute?: TAttribute; }>;
     }
 }): JSX.Element => {
     const { attributes, product, onChange } = props;
@@ -38,9 +41,9 @@ export const ProductAttributes = (props: {
     const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
     const cstore = getCStore();
     const ValueComp = props.elements?.attributeValue;
+    const TitleComp = props.elements?.attributeTitle;
 
     const handleSetAttribute = (key: string, checks: string[]) => {
-        // console.log('key', key, 'checks', checks)
         setCheckedAttrs(prev => {
             const newCheckedAttrs: Record<string, string[]> = Object.assign({}, prev);
             newCheckedAttrs[key] = checks;
@@ -63,7 +66,7 @@ export const ProductAttributes = (props: {
                         return (
                             <div key={attr.key} className={styles.attribute}>
                                 <div className={styles.headerWrapper}>
-                                    <p>{attr.key}</p>
+                                    {TitleComp ? <TitleComp attribute={origAttribute}>{attr.key}</TitleComp> : <p>{attr.key}</p>}
                                 </div>
                                 <div className={styles.valuesWrapper}>
                                     {attr.values.map((attrValue: TAttributeInstanceValue) => {
@@ -98,6 +101,8 @@ export const ProductAttributes = (props: {
                                                     onClick={handleClick}
                                                     value={value}
                                                     isChecked={isChecked}
+                                                    attribute={origAttribute}
+                                                    attributeInstance={attr}
                                                 />
                                             }
 

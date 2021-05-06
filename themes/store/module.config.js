@@ -6,6 +6,7 @@ module.exports = {
     },
     globalCss: [
         "react-toastify/dist/ReactToastify.css",
+        "swiper/swiper-bundle.min.css",
         '../styles/global.scss'
     ],
     headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;900&display=swap\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />",

@@ -1,4 +1,4 @@
-import { TCromwellPage, TGetStaticProps, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import { TAttribute, TCromwellPage, TGetStaticProps, TPagedList, TProduct, TProductCategory } from '@cromwell/core';
 import { CContainer, CList, getGraphQLClient } from '@cromwell/core-frontend';
 import React from 'react';
 
@@ -13,6 +13,7 @@ import styles from '../../styles/pages/Category.module.scss';
 interface CategoryProps {
     category?: TProductCategory | null;
     products?: TPagedList<TProduct> | null;
+    attributes?: TAttribute[];
     slug?: string;
 }
 
@@ -32,14 +33,21 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
                         <div className={styles.sortContainer}>
                             <CategorySort listId={listId} />
                         </div>
-                        {category && (
+                        {category && props.attributes && (
                             <CList<TProduct>
                                 id={listId}
-                                ListItem={(props) => (
-                                    <div className={styles.productWrapper}>
-                                        <ProductCard data={props.data} className={styles.product} key={props.data?.id} />
-                                    </div>
-                                )}
+                                ListItem={(p) => {
+                                    return (
+                                        <div className={styles.productWrapper}>
+                                            <ProductCard
+                                                data={p.data}
+                                                className={styles.product}
+                                                key={p.data?.id}
+                                                attributes={props.attributes}
+                                            />
+                                        </div>
+                                    )
+                                }}
                                 usePagination
                                 useShowMoreButton
                                 useQueryPagination
@@ -61,21 +69,20 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
                         )}
                     </div>
                 </div>
-
             </div>
         </Layout>
     );
 }
 
 export const getStaticProps: TGetStaticProps = async (context): Promise<CategoryProps> => {
-    // console.log('context', context)
     const slug = (context && context.params) ? context.params.slug : null;
     // console.log('CategoryThemePage::getStaticProps: slug', slug, 'context.params', context.params)
+    const client = getGraphQLClient();
+
     let category: TProductCategory | undefined | null = null;
     if (slug && typeof slug === 'string') {
         try {
-            category = await getGraphQLClient()?.
-                getProductCategoryBySlug(slug);
+            category = await client?.getProductCategoryBySlug(slug);
         } catch (e) {
             console.error('ProductCategory::getStaticProps 1, slug: ' + slug, e)
         }
@@ -85,17 +92,26 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<Category
     let products: TPagedList<TProduct> | undefined | null = null;
     if (category) {
         try {
-            products = await getGraphQLClient()?.getProductsFromCategory(category.id,
+            products = await client?.getProductsFromCategory(category.id,
                 { pageSize: 20 })
         } catch (e) {
             console.error('ProductCategory::getStaticProps 2, slug: ' + slug, e)
         }
     }
 
+    let attributes: TAttribute[] | undefined;
+
+    try {
+        attributes = await client?.getAttributes();
+    } catch (e) {
+        console.error('Product::getStaticProps', e)
+    }
+
     return {
         slug: slug as string,
         category: category ? category : null,
-        products: products ? products : null
+        products: products ? products : null,
+        attributes
     }
 
 }

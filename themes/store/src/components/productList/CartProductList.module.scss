@@ -1,4 +1,5 @@
-@import "../../../styles/variables.scss";
+@import "../../styles/variables.scss";
+@import "../../styles/common.module.scss";
 
 .CartProductList {
     width: 100%;
@@ -11,6 +12,7 @@
     width: 100%;
     height: 100%;
     overflow-y: auto;
+    @include styledScrollBar;
 }
 
 .listItem {
@@ -81,8 +83,6 @@
     margin-right: 10px;
 }
 
-.itemsText {
-}
 
 .actions {
     display: flex;

@@ -1,12 +1,12 @@
-import { Button } from '@material-ui/core';
-import { ShoppingCart as ShoppingCartIcon } from '@material-ui/icons';
+import { Button, IconButton } from '@material-ui/core';
+import { ShoppingCart as ShoppingCartIcon, Close as CloseIcon } from '@material-ui/icons';
 import { observer } from 'mobx-react';
 import React from 'react';
 import { Link } from '@cromwell/core-frontend'
 
 import { appState } from '../../../helpers/AppState';
 import commonStyles from '../../../styles/common.module.scss';
-import { CartProductList } from '../../checkoutPage/productList/CartProductList';
+import { CartProductList } from '../../productList/CartProductList';
 import styles from './CartModal.module.scss';
 import Modal from '../baseModal/Modal'
 
@@ -22,6 +22,9 @@ export const CartModal = observer(() => {
             blurSelector={"#CB_root"}
         >
             <div className={styles.cartModal}>
+                <IconButton onClick={handleCartClose} className={styles.closeBtn}>
+                    <CloseIcon />
+                </IconButton>
                 <div className={styles.cartList}>
                     <CartProductList onProductOpen={handleCartClose} />
                 </div>

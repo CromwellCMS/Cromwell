@@ -32,7 +32,7 @@ const Modal = (props: {
         if (props.open) {
             setBlur(true);
         } else {
-            setBlur(false);
+            if (blurred.current) setBlur(false);
         }
     }, [props.open]);
 

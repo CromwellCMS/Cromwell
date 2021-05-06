@@ -19,6 +19,12 @@ type TApiClient = {
     getAttributes: () => Promise<TAttribute[] | undefined>;
 };
 
+type OperationResult = {
+    success: boolean;
+    message?: string;
+    code: number;
+}
+
 class CStore {
 
     // < LISTS >    cart / wishlist / comparision list / watched items
@@ -38,7 +44,7 @@ class CStore {
         this.apiClient = apiClient ?? getGraphQLClient();
     }
 
-    private onCartUpdatedCallbacks: Record<string, (cart: TStoreListItem[]) => void> = {};
+    private onListUpdatedCallbacks: Record<string, Record<string, (cart: TStoreListItem[]) => void>> = {};
 
     private getList = (key: string): TStoreListItem[] => {
         let list: TStoreListItem[] = [];
@@ -54,11 +60,10 @@ class CStore {
 
     private saveList = (key: string, list: TStoreListItem[]) => {
         this.store.setItem(key, JSON.stringify(list));
-        if (key === cartKey) {
-            Object.keys(this.onCartUpdatedCallbacks).forEach(cbId => {
-                this.onCartUpdatedCallbacks[cbId](list);
-            })
-        }
+
+        Object.keys(this.onListUpdatedCallbacks[key] ?? {}).forEach(cbId => {
+            this.onListUpdatedCallbacks[key]?.[cbId]?.(list);
+        })
     }
 
     /** Will return -1 if not found, otherwise first index of matched item in a list  */
@@ -115,25 +120,51 @@ class CStore {
         return index;
     }
 
-    private addToList = (key: string, product: TStoreListItem): boolean => {
+    private addToList = (key: string, product: TStoreListItem): OperationResult => {
         const list = this.getList(key);
         if (this.getIndexInList(key, product) === -1) {
             list.push(product);
-        } else return false;
+        } else {
+            return {
+                success: false,
+                code: 1,
+                message: 'Item already in the list'
+            }
+        }
 
         this.saveList(key, list);
-        return true;
+        return {
+            success: true,
+            code: 0
+        }
     }
 
-    private removeFromList = (key: string, product: TStoreListItem): boolean => {
+    private addOnListUpdated = (key: string, cb: (cart: TStoreListItem[]) => any, id?: string): string => {
+        const cbId = id ?? Object.keys(this.onListUpdatedCallbacks[key] ?? {}).length + '';
+        if (!this.onListUpdatedCallbacks[key]) this.onListUpdatedCallbacks[key] = {};
+        this.onListUpdatedCallbacks[key][cbId] = cb;
+        return cbId;
+    }
+
+    private removeFromList = (key: string, product: TStoreListItem): OperationResult => {
         const list = this.getList(key);
         const index = this.getIndexInList(key, product);
         if (index > -1) {
             list.splice(index, 1);
-        } else return false;
+        } else {
+            return {
+                success: false,
+                code: 6,
+                message: 'Item was not in the list'
+            }
+        }
 
         this.saveList(key, list);
-        return true;
+        return {
+            success: true,
+            code: 7,
+            message: 'Removed'
+        }
     }
 
 
@@ -159,7 +190,35 @@ class CStore {
         return false;
     }
 
-    public addToCart = (product: TStoreListItem): boolean => {
+    public addToCart = (product: TStoreListItem, attributes?: TAttribute[]): OperationResult & {
+        missingAttributes?: TAttribute[];
+    } => {
+        if (!product?.product) return {
+            success: false,
+            code: 3,
+            message: 'Product not found'
+        }
+
+
+        if (attributes) {
+            const missingAttributes: TAttribute[] = [];
+            for (const attr of attributes) {
+                if (attr.required) {
+                    if (!product.pickedAttributes || !product.pickedAttributes[attr.key] ||
+                        !product.pickedAttributes[attr.key].length)
+                        missingAttributes.push(attr);
+                }
+            }
+            if (missingAttributes.length) {
+                return {
+                    success: false,
+                    code: 4,
+                    message: `Attribute${missingAttributes.length > 1 ? 's' : ''} ${missingAttributes.map(attr => attr.key).join(', ')} ${missingAttributes.length > 1 ? 'are' : 'is'} required`,
+                    missingAttributes,
+                }
+            }
+
+        }
         return this.addToList(cartKey, product);
     }
 
@@ -177,14 +236,13 @@ class CStore {
     }
 
     public removeFromCart = (product: TStoreListItem) => {
-        this.removeFromList(cartKey, product);
+        return this.removeFromList(cartKey, product);
+    }
+ 
+    public onCartUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
+        return this.addOnListUpdated(cartKey, cb, id);
     }
 
-    public onCartUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
-        const key = id ? id : Object.keys(this.onCartUpdatedCallbacks).length + '';
-        this.onCartUpdatedCallbacks[key] = cb;
-        return key;
-    }
 
 
     public getWishlist = () => {
@@ -196,12 +254,16 @@ class CStore {
         return false;
     }
 
-    public addToWishlist = (product: TStoreListItem): boolean => {
+    public addToWishlist = (product: TStoreListItem): OperationResult => {
         return this.addToList(wishlistKey, product);
     }
 
     public removeFromWishlist = (product: TStoreListItem) => {
-        this.removeFromList(wishlistKey, product);
+        return this.removeFromList(wishlistKey, product);
+    }
+
+    public onWishlistUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
+        return this.addOnListUpdated(wishlistKey, cb, id);
     }
 
 
@@ -215,14 +277,18 @@ class CStore {
         return false;
     }
 
-
-    public addToCompare = (product: TStoreListItem): boolean => {
+    public addToCompare = (product: TStoreListItem): OperationResult => {
         return this.addToList(compareKey, product);
     }
 
     public removeFromCompare = (product: TStoreListItem) => {
-        this.removeFromList(compareKey, product);
+        return this.removeFromList(compareKey, product);
     }
+
+    public onCompareUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
+        return this.addOnListUpdated(compareKey, cb, id);
+    }
+
 
 
     public getWatchedItems = () => {
@@ -230,7 +296,7 @@ class CStore {
     }
 
     public saveWatchedItems = (items: TStoreListItem[]) => {
-        this.saveList(watchedKey, items);
+        return this.saveList(watchedKey, items);
     }
 
     public isInWatchedItems = (item: TStoreListItem): boolean => {
@@ -239,7 +305,11 @@ class CStore {
     }
 
     public addToWatchedItems = (item: TStoreListItem) => {
-        this.addToList(watchedKey, item);
+        return this.addToList(watchedKey, item);
+    }
+
+    public onWathcedItemsUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
+        return this.addOnListUpdated(watchedKey, cb, id);
     }
 
     /**
@@ -310,7 +380,7 @@ class CStore {
             }
         })
 
-        this.saveList(listKey, updatedList);
+        return this.saveList(listKey, updatedList);
     }
 
     public updateCart = async () => {
