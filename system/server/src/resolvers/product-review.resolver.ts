@@ -68,7 +68,6 @@ export class ProductReviewResolver {
         return this.repository.deleteManyFilteredProductReviews(input, filterParams);
     }
 
-    @Authorized<TAuthRole>("administrator", "guest")
     @Query(() => PagedProductReview)
     async [getFilteredPath](
         @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TProductReview>,

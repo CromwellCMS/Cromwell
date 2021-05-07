@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import {
-    MenuItem,
-    FormControl,
-    Select,
-    TextField as MuiTextField,
-    ListItem,
-    IconButton,
-    InputLabel
-} from '@material-ui/core';
-import { TProduct, getBlockInstance, TPagedParams } from '@cromwell/core';
-import { getGraphQLClient, TCGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { getBlockInstance, TProduct } from '@cromwell/core';
+import { TCList } from '@cromwell/core-frontend';
+import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import React, { useState } from 'react';
 
 type TSortOption = {
     key?: keyof TProduct;
@@ -31,7 +23,7 @@ export const CategorySort = (props: {
             const listId = props.listId;
             const option: TSortOption | undefined = sortOptions.find(o => o.title === val);
             if (option && listId) {
-                const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+                const list = getBlockInstance<TCList>(listId)?.getContentInstance();
                 if (list) {
                     const params = Object.assign({}, list.getPagedParams());
                     params.order = option.direction;

@@ -11,15 +11,15 @@ import { LoadBox } from '../../loadbox/Loadbox';
 import commonStyles from '../../../styles/common.module.scss';
 import { ProductCard } from '../../productCard/ProductCard';
 import Modal from '../baseModal/Modal';
-import styles from './WishlistModal.module.scss';
+import styles from './WatchedModal.module.scss';
 
-export const WishlistModal = observer(() => {
+export const WatchedModal = observer(() => {
     const forceUpdate = useForceUpdate();
     const handleClose = () => {
-        appState.isWishlistOpen = false;
+        appState.isWatchedOpen = false;
     }
 
-    const [wishlist, setWishlist] = useState<TStoreListItem[]>([]);
+    const [list, setList] = useState<TStoreListItem[]>([]);
     const [attributes, setAttributes] = useState<TAttribute[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const cstore = getCStore();
@@ -38,33 +38,33 @@ export const WishlistModal = observer(() => {
          * Since getCart method wll retrieve products from local storage and 
          * after a while products can be modified at the server, we need to refresh cart first  
          */
-        if (appState.isWishlistOpen) {
+        if (appState.isWatchedOpen) {
             (async () => {
                 setIsLoading(true);
-                await Promise.all([cstore.updateWishlist(), updateAttributes()])
-                const wishlist = cstore.getWishlist()
-                setWishlist(wishlist);
+                await Promise.all([cstore.updateWatchedItems(), updateAttributes()])
+                const watched = cstore.getWatchedItems()
+                setList(watched);
                 setIsLoading(false);
             })();
         }
-    }, [appState.isWishlistOpen]);
+    }, [appState.isWatchedOpen]);
 
     useEffect(() => {
-        cstore.onWishlistUpdate(() => {
-            const wishlist = cstore.getWishlist();
-            setWishlist(wishlist);
+        cstore.onWathcedItemsUpdate(() => {
+            const watched = cstore.getWatchedItems();
+            setList(watched);
             forceUpdate();
-        }, 'WishlistModal');
+        }, 'WatchedModal');
     }, []);
 
     return (
         <Modal
             className={clsx(commonStyles.center)}
-            open={appState.isWishlistOpen}
+            open={appState.isWatchedOpen}
             onClose={handleClose}
             blurSelector={"#CB_root"}
         >
-            <div className={clsx(styles.wishlistModal)}>
+            <div className={clsx(styles.watchedtModal)}>
                 <IconButton onClick={handleClose} className={styles.closeBtn}>
                     <CloseIcon />
                 </IconButton>
@@ -72,9 +72,9 @@ export const WishlistModal = observer(() => {
                     <LoadBox />
                 )}
                 {!isLoading && (
-                    <div className={styles.wishList}>
-                        <h3 className={styles.modalTitle}>Wishlist</h3>
-                        {[...wishlist].reverse().map((it, i) => {
+                    <div className={styles.watched}>
+                        <h3 className={styles.modalTitle}>Watched Items</h3>
+                        {[...list].reverse().map((it, i) => {
                             return (
                                 <ProductCard
                                     className={styles.prductCard}

@@ -73,7 +73,8 @@ export class CGallery extends React.Component<TCGalleryProps> {
         if (!this.swiperId) return;
         const galleryContainer = document.getElementById(this.swiperId);
 
-        if (this.prevGallerySettings !== this.gallerySettings || this.galleryContainer !== galleryContainer) {
+        if (this.prevGallerySettings !== this.gallerySettings ||
+            this.galleryContainer !== galleryContainer || !this.swiper) {
             // init
             this.galleryContainer = galleryContainer;
             this.initGallery();

@@ -8,7 +8,7 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CContainer, CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useRef, useState } from 'react';
@@ -34,7 +34,7 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
     const forceUpdate = useForceUpdate();
 
     const updateList = () => {
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.clearState();
         list?.init();
     }
@@ -131,7 +131,7 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
 
 export default SearchPage;
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProps> => {
+export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
     const client = getGraphQLClient();
 
     let posts: TPagedList<TPost> | undefined;
@@ -154,6 +154,6 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProp
 }
 
 function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
+    const state = useState(0);
+    return () => state[1](value => ++value);
 }

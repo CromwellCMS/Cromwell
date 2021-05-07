@@ -57,7 +57,7 @@ export const filterCList = (filterOptions: TProductFilter, productListId: string
     productCategoryId: string, client: TCGraphQLClient | undefined, cb: (data: TFilteredProductList | undefined) => void) => {
     // console.log('filterCList', checkedAttrs, priceRange);
 
-    const list: TCList | undefined = getBlockInstance(productListId)?.getContentInstance() as any;
+    const list = getBlockInstance<TCList>(productListId)?.getContentInstance();
     if (list) {
         const listProps = Object.assign({}, list.getProps());
         listProps.loader = async (pagedParams: TPagedParams<TProduct>): Promise<TFilteredProductList | undefined> => {

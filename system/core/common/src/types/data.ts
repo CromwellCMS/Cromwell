@@ -1,5 +1,4 @@
-
-import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks'
+import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks';
 import { TCmsEntityCore, TProduct, TUser } from './entities';
 
 

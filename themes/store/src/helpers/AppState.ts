@@ -12,6 +12,9 @@ class State {
 
     @observable
     isCompareOpen: boolean = false;
+
+    @observable
+    isWatchedOpen: boolean = false;
 }
 
 export const appState = new State();

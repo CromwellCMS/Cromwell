@@ -1,6 +1,6 @@
-import React from 'react';
-import { Document, Html, Main, NextScript, DocumentContext } from '@cromwell/core-frontend';
+import { Document, DocumentContext } from '@cromwell/core-frontend';
 import { ServerStyleSheets } from '@material-ui/core';
+import React from 'react';
 
 export default class MyDocument extends Document {
 
@@ -11,23 +11,23 @@ export default class MyDocument extends Document {
 
         try {
             ctx.renderPage = () =>
-              originalRenderPage({
-                enhanceApp: (App) => (props) =>
-                  sheet.collect(<App {...props} />),
-              })
-      
+                originalRenderPage({
+                    enhanceApp: (App) => (props) =>
+                        sheet.collect(<App {...props} />),
+                })
+
             const initialProps = await Document.getInitialProps(ctx)
             return {
-              ...initialProps,
-              styles: (
-                <>
-                  {initialProps.styles}
-                  {sheet.getStyleElement()}
-                </>
-              ),
+                ...initialProps,
+                styles: (
+                    <>
+                        {initialProps.styles}
+                        {sheet.getStyleElement()}
+                    </>
+                ),
             }
-          } finally {
-          }
+        } finally {
+        }
     }
 
 }

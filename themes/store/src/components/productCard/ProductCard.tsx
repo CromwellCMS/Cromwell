@@ -84,7 +84,7 @@ export const ProductCard = (props?: {
                 toast.success("Added! Click here to open cart", {
                     position: toast.POSITION.TOP_RIGHT,
                     onClick: () => {
-                        appState.isWishlistOpen = true;
+                        appState.isCartOpen = true;
                     }
                 });
             }
@@ -136,8 +136,11 @@ export const ProductCard = (props?: {
         } else {
             const hasBeenAdded = cstore.addToCompare({ product });
             if (hasBeenAdded) {
-                toast.success("Added!", {
-                    position: toast.POSITION.TOP_RIGHT
+                toast.success("Added! Click here to compare", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    onClick: () => {
+                        appState.isCompareOpen = true;
+                    }
                 });
             } else {
                 toast.warn("Product is already in your list!", {
@@ -195,10 +198,10 @@ export const ProductCard = (props?: {
                 </div>
                 <div className={styles.ratingBlock}>
                     <Rating name="read-only" value={data?.rating?.average} precision={0.5} readOnly />
-                    {(data?.rating?.reviewsNumber !== undefined && props?.variant === 'list') && (
+                    {((data?.rating?.reviewsNumber !== undefined && props?.variant === 'list' && data?.rating?.reviewsNumber && !isMobile) && (
                         <p className={styles.ratingCaption}>
                             {data?.rating?.average ? data?.rating?.average.toFixed(2) : ''} based on {data?.rating?.reviewsNumber} reviews.</p>
-                    )}
+                    )) || null}
                 </div>
             </div>
             <ProductQuickView

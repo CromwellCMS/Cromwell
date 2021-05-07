@@ -64,13 +64,13 @@ const ReviewList = (props: TPropsType) => {
     }, []);
 
     const resetList = () => {
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.clearState();
         list?.init();
     }
 
     const updateList = () => {
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.updateData();
     }
 

@@ -25,11 +25,12 @@ import { CImage } from '../CImage/CImage';
 import { CPlugin } from '../CPlugin/CPlugin';
 import { CText } from '../CText/CText';
 
-export class CromwellBlock extends Component<TCromwellBlockProps> implements TCromwellBlock {
+export class CromwellBlock<TContentBlock = React.Component> extends
+    Component<TCromwellBlockProps<TContentBlock>> implements TCromwellBlock<TContentBlock> {
 
     private data?: TCromwellBlockData;
     private htmlId: string;
-    private contentInstance: React.Component;
+    private contentInstance: React.Component & TContentBlock;
     private childBlocks: TCromwellBlockData[] = [];
     private hasBeenMoved?: boolean = false;
     private blockRef = React.createRef<HTMLDivElement>();
@@ -51,15 +52,15 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
 
     public getBlockRef = () => this.blockRef;
     public getContentInstance = () => this.contentInstance;
-    public setContentInstance = (contentInstance: React.Component) => this.contentInstance = contentInstance;
+    public setContentInstance = (contentInstance) => this.contentInstance = contentInstance;
     public getBlockInstance = (id: string): TCromwellBlock | undefined => getStoreItem('blockInstances')?.[id];
 
-    constructor(props: TCromwellBlockProps) {
+    constructor(props: TCromwellBlockProps<TContentBlock>) {
         super(props);
 
         let instances = getStoreItem('blockInstances');
         if (!instances) instances = {}
-        instances[this.props.id] = this;
+        instances[this.props.id] = this as TCromwellBlock;
         setStoreItem('blockInstances', instances);
 
         this.readConfig();
@@ -67,9 +68,11 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         if (this.data?.parentId && this.hasBeenMoved) {
             const parentInst = this.getBlockInstance(this.data?.parentId);
             if (parentInst) {
-                parentInst.notifyChildRegistered(this);
+                parentInst.notifyChildRegistered(this as TCromwellBlock);
             }
         }
+
+        this.props.blockRef?.(this);
     }
 
     componentDidMount() {
@@ -208,7 +211,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
     }
 
 
-    public notifyChildRegistered(inst: TCromwellBlock) {
+    public notifyChildRegistered(inst) {
         const id = inst.getData()?.id;
         if (id) {
             const resolver = this.childResolvers[id];
@@ -299,7 +302,7 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
             + (className ? ' ' + className : '');
 
 
-        const blockContent = getContent ? getContent(this) : this.getDefaultContent();
+        const blockContent = getContent ? getContent(this as TCromwellBlock) : this.getDefaultContent();
 
         let blockStyles: React.CSSProperties = {};
 
@@ -338,9 +341,9 @@ export class CromwellBlock extends Component<TCromwellBlockProps> implements TCr
         }
 
         // Merge with custom css from config
-        if (data.styles) {
+        if (data.style) {
             try {
-                const stylesParsed = JSON.parse(data.styles);
+                const stylesParsed = typeof data.style === 'string' ? JSON.parse(data.style) : data.style;
                 blockStyles = {
                     ...blockStyles,
                     ...stylesParsed,

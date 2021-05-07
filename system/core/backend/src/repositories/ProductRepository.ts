@@ -40,15 +40,15 @@ export class ProductRepository extends BaseRepository<Product> {
 
     applyGetProductRating(qb: SelectQueryBuilder<TProduct>) {
         const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
-        qb.addSelect(`AVG(${reviewTable}.${String(ratingKey)})`, 'product_' + averageKey)
-            .addSelect(`COUNT(${reviewTable}.id)`, 'product_' + reviewsCountKey)
+        qb.addSelect(`AVG(${reviewTable}.${String(ratingKey)})`, this.metadata.tablePath + '_' + averageKey)
+            .addSelect(`COUNT(${reviewTable}.id)`, this.metadata.tablePath + '_' + reviewsCountKey)
             .leftJoin(ProductReview, reviewTable, `${reviewTable}.productId = ${this.metadata.tablePath}.id `)
             .groupBy(`${this.metadata.tablePath}.id`);
     }
 
     applyGetProductViews(qb: SelectQueryBuilder<TProduct>) {
         const statsTable = getCustomRepository(PageStatsRepository).metadata.tablePath;
-        qb.addSelect(`${statsTable}.views`, 'product_views')
+        qb.addSelect(`${statsTable}.views`, this.metadata.tablePath + '_' + 'views')
             .leftJoin(PageStats, statsTable, `${statsTable}.productSlug = ${this.metadata.tablePath}.slug`)
     }
 
@@ -56,22 +56,21 @@ export class ProductRepository extends BaseRepository<Product> {
         this.applyGetProductRating(qb);
 
         if (params?.orderBy === "rating") {
-            params.orderBy = 'product_' + averageKey as any;
+            params.orderBy = this.metadata.tablePath + '_' + averageKey as any;
             return getPaged(qb, undefined, params);
         }
         if (params?.orderBy === 'views') {
             this.applyGetProductViews(qb);
-            params.orderBy = 'product_views' as any;
+            params.orderBy = this.metadata.tablePath + '_' + 'views' as any;
             return getPaged(qb, undefined, params);
         }
-        return getPaged(qb, this.metadata.tablePath, params);
+        return await getPaged(qb, this.metadata.tablePath, params);
     }
 
     async getProducts(params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         logger.log('ProductRepository::getProducts');
         const qb = this.createQueryBuilder(this.metadata.tablePath);
-        const prods = await this.applyAndGetPagedProducts(qb, params)
-        return prods;
+        return await this.applyAndGetPagedProducts(qb, params);
     }
 
     async getProductById(id: string): Promise<Product | undefined> {

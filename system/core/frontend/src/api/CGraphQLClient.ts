@@ -816,6 +816,8 @@ class CGraphQLClient {
             userId
             approved
             isEnabled
+            createDate
+            updateDate
         }
   `
 

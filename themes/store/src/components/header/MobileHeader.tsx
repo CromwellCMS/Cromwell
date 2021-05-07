@@ -10,10 +10,15 @@ import {
     Visibility as VisibilityIcon,
 } from '@material-ui/icons';
 import React, { useState } from 'react';
-
+import Router from 'next/router';
 import { appState } from '../../helpers/AppState';
 import { HeaderSearch } from './HeaderSearch';
 import styles from './MobileHeader.module.scss';
+
+let globalCloseMenu;
+Router.events.on('routeChangeStart', () => {
+    globalCloseMenu?.();
+})
 
 export const MobileHeader = () => {
     const [menuOpen, setMenuOpen] = useState(false);
@@ -24,10 +29,24 @@ export const MobileHeader = () => {
     }
     const handleOpenMenu = () => {
         setMenuOpen(true);
+        globalCloseMenu = () => setMenuOpen(false);
     }
 
     const handleOpenCart = () => {
         appState.isCartOpen = true;
+    }
+
+    const handleOpenWishlist = () => {
+        appState.isWishlistOpen = true;
+    }
+
+    const handleOpenWatched = () => {
+        appState.isWatchedOpen = true;
+    }
+
+
+    const handleOpenCompare = () => {
+        appState.isCompareOpen = true;
     }
 
     return (
@@ -49,7 +68,7 @@ export const MobileHeader = () => {
 
                             </div>
                             <div className={styles.rightActions}>
-                                <IconButton onClick={handleOpenCart}>
+                                <IconButton onClick={handleOpenWishlist}>
                                     <FavoriteIcon />
                                 </IconButton>
                                 <IconButton onClick={handleOpenCart}>
@@ -70,13 +89,13 @@ export const MobileHeader = () => {
             >
                 <div className={styles.drawer}>
                     <div className={styles.menuActions}>
-                        <IconButton onClick={handleOpenCart}>
+                        <IconButton onClick={handleOpenWatched}>
                             <VisibilityIcon />
                         </IconButton>
-                        <IconButton onClick={handleOpenCart}>
+                        <IconButton onClick={handleOpenCompare}>
                             <EqualizerIcon />
                         </IconButton>
-                        <IconButton onClick={handleOpenCart}>
+                        <IconButton onClick={handleOpenWishlist}>
                             <FavoriteIcon />
                         </IconButton>
                         <IconButton onClick={handleOpenCart}>

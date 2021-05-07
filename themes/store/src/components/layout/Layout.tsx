@@ -5,6 +5,7 @@ import { Header } from '../header/Header';
 import { Footer } from '../footer/Footer';
 import { CartModal } from '../modals/cart/CartModal';
 import { WishlistModal } from '../modals/wishlist/WishlistModal';
+import { WatchedModal } from '../modals/watched/WatchedModal';
 import styles from './Layout.module.scss';
 
 type TProps = {
@@ -39,6 +40,7 @@ export default function Layout(props: TProps | undefined) {
                 <Header />
                 <CartModal />
                 <WishlistModal />
+                <WatchedModal />
                 {props?.children}
                 <Footer />
                 <div style={{ fontSize: '12px' }}>Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a>, <a href="https://www.flaticon.com/authors/kiranshastry" title="Kiranshastry">Kiranshastry</a>, <a href="https://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a>, <a href="https://www.flaticon.com/authors/monkik" title="monkik">monkik</a>, <a href="https://www.flaticon.com/authors/itim2101" title="itim2101">itim2101</a>, <a href="https://creativemarket.com/eucalyp" title="Eucalyp">Eucalyp</a>  from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a>; <a href="https://www.vecteezy.com/free-vector/banner-cdr">Banner Cdr Vectors by Vecteezy</a>; <a href="https://www.vecteezy.com/free-vector/banner">Banner Vectors by Vecteezy</a></div>

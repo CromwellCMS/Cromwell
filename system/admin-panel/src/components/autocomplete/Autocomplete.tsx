@@ -102,7 +102,7 @@ class Autocomplete<TItemDataType> extends React.Component<{
     }
 
     private searchRequest = debounce(500, async (searchText: string) => {
-        const list: TCList | undefined = getBlockInstance(this.listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(this.listId)?.getContentInstance();
         if (!list) {
             return;
         }
@@ -201,10 +201,10 @@ class Autocomplete<TItemDataType> extends React.Component<{
                                                 {ItemComponent ? (
                                                     <ItemComponent data={props.data} />
                                                 ) : (
-                                                        <ListItem button>
-                                                            <p className={styles.itemText}>{this.props.getOptionLabel(props.data)}</p>
-                                                        </ListItem>
-                                                    )}
+                                                    <ListItem button>
+                                                        <p className={styles.itemText}>{this.props.getOptionLabel(props.data)}</p>
+                                                    </ListItem>
+                                                )}
                                             </div>
                                         )
                                     }}

@@ -25,6 +25,7 @@ import {
     ProductReviewRepository,
     sendEmail,
     User,
+    PageStatsRepository,
     UserRepository,
 } from '@cromwell/core-backend';
 import { getCStore } from '@cromwell/core-frontend';
@@ -297,8 +298,8 @@ export class CmsService {
         const orderCountKey = 'orderCount';
         const days = 7;
 
-        // Page stats
-        const pageStatsTable = 'page_stats';
+        // Page stats 
+        const pageStatsTable = getCustomRepository(PageStatsRepository).metadata.tablePath;
         const viewsPagesCountKey = 'viewsPagesCount';
         const viewsSumKey: keyof PageStats = 'views';
 

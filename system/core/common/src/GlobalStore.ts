@@ -1,6 +1,8 @@
-import { TCromwellStore, TCmsSettings } from './types/data';
+import React from 'react';
+
+import { ECommonComponentNames, isServer } from './constants';
 import { TCommonComponentProps, TCromwellBlock } from './types/blocks';
-import { isServer, ECommonComponentNames } from './constants';
+import { TCmsSettings, TCromwellStore } from './types/data';
 
 const initialStore: TCromwellStore = {}
 
@@ -88,7 +90,8 @@ export const getThemeCustomConfigProp = (propPath: string): any => {
     return getProp(getThemeCustomConfig(), propPath.split('/'));
 }
 
-export const loadCommonComponent = (componentName: ECommonComponentNames | string): React.ComponentType<TCommonComponentProps> | undefined => {
+export const getCommonComponent = (componentName: ECommonComponentNames | string):
+    React.ComponentType<TCommonComponentProps & Record<string, any>> | undefined => {
     const components = getStore().components;
     return components ? components[componentName] : undefined;
 }
@@ -102,9 +105,9 @@ export const saveCommonComponent = (componentName: ECommonComponentNames | strin
     components[componentName] = component;
 }
 
-export const getBlockInstance = (blockId: string): TCromwellBlock | undefined => {
+export const getBlockInstance = <TContentBlock = React.Component>(blockId: string): TCromwellBlock<TContentBlock> | undefined => {
     const blockInstances = getStore().blockInstances;
     if (blockInstances) {
-        return blockInstances[blockId];
+        return blockInstances[blockId] as any;
     }
 }

@@ -12,8 +12,8 @@ div.ReviewItem {
     }
 
     .userName {
-        font-weight: 600;
-        margin-right: 15px;
+        font-weight: 500;
+        margin-right: 10px;
     }
 
     .title {
@@ -25,4 +25,8 @@ div.ReviewItem {
     .description {
         font-size: 16px;
     }
+
+    // .createDate {
+    //     margin-left: 15px;
+    // }
 }

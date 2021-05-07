@@ -116,7 +116,7 @@ const ProductList = (props: TPropsType) => {
     }
 
     const resetList = () => {
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         totalElements.current = null;
         list?.clearState();
         list?.init();
@@ -124,7 +124,7 @@ const ProductList = (props: TPropsType) => {
 
     const updateList = () => {
         totalElements.current = null;
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.updateData();
     }
 

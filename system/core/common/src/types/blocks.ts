@@ -13,7 +13,7 @@ export type StaticPageContext<Q extends ParsedUrlQuery = ParsedUrlQuery> = {
 }
 export type TGetStaticProps<
     P extends { [key: string]: any } = { [key: string]: any },
-    Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: StaticPageContext) => Promise<P>;
+    Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: StaticPageContext<Q>) => Promise<P>;
 
 
 export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
@@ -42,15 +42,15 @@ export type TAdminPanelPluginProps<TSettings = any> = {
     pluginName: string;
 }
 
-export type TCromwellBlock = React.Component<TCromwellBlockProps> & {
-    getContentInstance: () => React.Component;
-    setContentInstance: (contentInstance: React.Component) => void;
+export type TCromwellBlock<TContentBlock = React.Component> = React.Component<TCromwellBlockProps<TContentBlock>> & {
+    getContentInstance: () => (React.Component & TContentBlock) | undefined;
+    setContentInstance: (contentInstance: React.Component & TContentBlock) => void;
     getData: () => TCromwellBlockData | undefined;
     getBlockRef: () => React.RefObject<HTMLDivElement>;
     contentRender: (getContent?: TBlockContentProvider['getter'] | null) => React.ReactNode | null;
     consumerRender: (jsxParentId?: string) => JSX.Element | null;
     getDefaultContent: () => React.ReactNode | null;
-    notifyChildRegistered: (inst: TCromwellBlock) => void;
+    notifyChildRegistered: (childInst: TCromwellBlock<any>) => void;
     rerender: () => Promise<void> | void;
     addDidUpdateListener: (id: string, func: () => void) => void;
     movedCompForceUpdate?: () => void;
@@ -61,16 +61,16 @@ export type TDataComponentProps<Data> = {
     component: React.ComponentType<Data>;
 }
 
-
-export type TCromwellBlockProps = {
+export type TCromwellBlockProps<TContentBlock = React.Component> = {
     id: string;
     type?: TCromwellBlockType;
+    blockRef?: <T = TCromwellBlock<TContentBlock>>(block: T) => void;
     className?: string;
     onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => any;
     jsxParentId?: string;
     content?: (data: TCromwellBlockData | undefined,
         blockRef: React.RefObject<HTMLDivElement>,
-        setContentInstance: (inst: React.Component) => void
+        setContentInstance: TCromwellBlock<TContentBlock>['setContentInstance']
     ) => React.ReactNode;
 } & TCromwellBlockData;
 
@@ -124,7 +124,7 @@ export type TCromwellBlockData = {
     }
 
     /** CSS styles to apply to this block's wrapper*/
-    styles?: string;
+    style?: string | React.CSSProperties;
 
     /**
      * Non-virtual blocks that exist in JSX cannot be deleted (or moved) in theme's source code by user

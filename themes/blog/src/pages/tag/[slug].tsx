@@ -10,7 +10,7 @@ import {
 } from '@cromwell/core';
 import { CList, getGraphQLClient, LoadBox, TCList, useRouter } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
@@ -32,12 +32,12 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
     const router = useRouter?.();
 
     const updateList = () => {
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.updateData();
     }
 
     const resetList = () => {
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.clearState();
         list?.init();
     }

@@ -1,5 +1,5 @@
 import { TAttribute, TCromwellPage, TGetStaticProps, TProduct } from '@cromwell/core';
-import { CContainer, getGraphQLClient } from '@cromwell/core-frontend';
+import { CContainer, CText, getGraphQLClient } from '@cromwell/core-frontend';
 import React from 'react';
 
 import Layout from '../../components/layout/Layout';
@@ -11,12 +11,18 @@ interface ProductProps {
     attributes?: TAttribute[];
 }
 const Product: TCromwellPage<ProductProps> = (props) => {
-    // console.log('ProductThemePage props', props);
-
     return (
         <Layout>
             <div className={commonStyles.content}>
                 <ProductDetails {...props} />
+                <CText
+                    id="product_showcase-title"
+                    style={{
+                        margin: '40px 20px 10px 20px',
+                        fontWeight: 600,
+                        fontSize: '26px'
+                    }}
+                >Featured items</CText>
                 <CContainer id="Product_ProductShowcase" />
             </div>
         </Layout>
@@ -26,9 +32,8 @@ const Product: TCromwellPage<ProductProps> = (props) => {
 export default Product;
 
 export const getStaticProps: TGetStaticProps = async (context): Promise<ProductProps> => {
-    // console.log('context', context)
     const slug = context?.params?.slug ?? null;
-    console.log('ProductThemePage::getStaticProps: pid', slug, 'context.params', context?.params)
+    // console.log('ProductThemePage::getStaticProps: pid', slug, 'context.params', context?.params)
     const client = getGraphQLClient();
     let product: TProduct | undefined = undefined;
     if (slug && typeof slug === 'string') {
@@ -63,3 +68,4 @@ export const getStaticPaths = () => {
         fallback: true
     };
 }
+
