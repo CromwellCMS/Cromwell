@@ -32,13 +32,13 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
     const router = useRouter?.();
 
     const resetList = () => {
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.clearState();
         list?.init();
     }
 
     const updateList = () => {
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.updateData();
     }
 
@@ -85,30 +85,30 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
                     {(router?.isFallback) ? (
                         <LoadBox />
                     ) : (
-                            <CList<TPost>
-                                id={listId}
-                                ListItem={(props) => (
-                                    <div className={styles.postWrapper}>
-                                        <PostCard data={props.data} key={props.data?.id} />
-                                    </div>
-                                )}
-                                usePagination
-                                useShowMoreButton
-                                useQueryPagination
-                                disableCaching
-                                pageSize={20}
-                                maxDomPages={2}
-                                scrollContainerSelector={`.${layoutStyles.Layout}`}
-                                firstBatch={props.posts}
-                                loader={handleGetPosts}
-                                cssClasses={{
-                                    page: styles.postList
-                                }}
-                                elements={{
-                                    pagination: Pagination
-                                }}
-                            />
-                        )}
+                        <CList<TPost>
+                            id={listId}
+                            ListItem={(props) => (
+                                <div className={styles.postWrapper}>
+                                    <PostCard data={props.data} key={props.data?.id} />
+                                </div>
+                            )}
+                            usePagination
+                            useShowMoreButton
+                            useQueryPagination
+                            disableCaching
+                            pageSize={20}
+                            maxDomPages={2}
+                            scrollContainerSelector={`.${layoutStyles.Layout}`}
+                            firstBatch={props.posts}
+                            loader={handleGetPosts}
+                            cssClasses={{
+                                page: styles.postList
+                            }}
+                            elements={{
+                                pagination: Pagination
+                            }}
+                        />
+                    )}
                 </div>
             </div>
         </Layout>

@@ -58,10 +58,12 @@ body .attrValue {
 .validateAttributes {
     .invalidAttrTitle {
         color: #aa2e25;
+        font-weight: 500;
     }
 
     .invalidAttrValue {
-        background-color: #ff574b3f;
+        background-color: #ff000021;
+        border: 2px solid #d9443a;
 
         .attrValueText {
             color: #aa2e25;

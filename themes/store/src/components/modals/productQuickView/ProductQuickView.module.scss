@@ -2,6 +2,7 @@
 
 .ProductQuickView {
     @include paper;
+    @include styledScrollBar;
     width: 800px;
     min-height: 300px;
     max-height: 90vh;

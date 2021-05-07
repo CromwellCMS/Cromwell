@@ -1,10 +1,9 @@
 import { TPost, TTag } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
-import { useMediaQuery, useTheme } from '@material-ui/core';
 import { AccountCircle as AccountCircleIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import styles from './PostCard.module.scss';
 
@@ -17,10 +16,7 @@ export const PostCard = (props?: {
     imageHeight?: string;
 }) => {
     const data = props?.data;
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
     const postLink = `/post/${data?.slug ?? data?.id}`;
-    const avatar = data?.author?.avatar;
 
     return (
         <div className={clsx(styles.PostCard, styles._onHoverLinkContainer, props?.coverImage && styles.coverImage)}>

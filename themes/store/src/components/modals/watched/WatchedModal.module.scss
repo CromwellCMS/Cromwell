@@ -1,6 +1,6 @@
 @import "../../../styles/common.module.scss";
 
-.wishlistModal {
+.watchedtModal {
     height: 70vh;
     min-height: 500px;
     max-height: 100vh;
@@ -14,7 +14,7 @@
     border-radius: 10px;
     outline: none;
 
-    .wishList {
+    .watched {
         @include styledScrollBar;
         background-color: #fff;
         border-radius: 10px;
@@ -33,18 +33,18 @@
         border-radius: 100%;
     }
 
+    .checkoutBtn {
+        margin: 15px auto 0;
+    }
+
     .modalTitle {
         font-size: 24px;
         margin: 10px 15px 20px 15px;
     }
-
-    .checkoutBtn {
-        margin: 15px auto 0;
-    }
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-    .wishlistModal {
+    .watchedtModal {
         height: 90vh;
         width: 380px;
 

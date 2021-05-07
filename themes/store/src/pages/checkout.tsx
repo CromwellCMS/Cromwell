@@ -22,15 +22,16 @@ import {
 import { Alert } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 
-import { CartProductList } from '../components/productList/CartProductList';
 import Layout from '../components/layout/Layout';
 import SignInModal, { TFromType } from '../components/modals/signIn/SignIn';
+import { CartProductList } from '../components/productList/CartProductList';
 import { toast } from '../components/toast/toast';
+import { useForceUpdate } from '../helpers/forceUpdate';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Checkout.module.scss';
 
 
-const CheckoutPage: TCromwellPage = (props) => {
+const CheckoutPage: TCromwellPage = () => {
 
     const userInfo = getStoreItem('userInfo');
     const [form, setForm] = useState<{
@@ -319,9 +320,3 @@ const CheckoutPage: TCromwellPage = (props) => {
 }
 
 export default CheckoutPage;
-
-
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
-}

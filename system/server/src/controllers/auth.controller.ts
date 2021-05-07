@@ -154,5 +154,4 @@ export class AuthController {
             return new UserDto().parseUser(user);
         }
     }
-
 }

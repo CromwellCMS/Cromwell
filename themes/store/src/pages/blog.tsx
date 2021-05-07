@@ -34,13 +34,13 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
     const forceUpdate = useForceUpdate();
 
     const resetList = () => {
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.clearState();
         list?.init();
     }
 
     const updateList = () => {
-        const list: TCList | undefined = getBlockInstance(listId)?.getContentInstance() as any;
+        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.updateData();
     }
 
@@ -163,6 +163,6 @@ export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
 }
 
 function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
+    const state = useState(0);
+    return () => state[1](value => ++value);
 }

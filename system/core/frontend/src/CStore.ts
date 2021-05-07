@@ -238,7 +238,7 @@ class CStore {
     public removeFromCart = (product: TStoreListItem) => {
         return this.removeFromList(cartKey, product);
     }
- 
+
     public onCartUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
         return this.addOnListUpdated(cartKey, cb, id);
     }
@@ -536,9 +536,9 @@ class CStore {
         return currency;
     }
 
-    public getActiveCurrencySymbol = (): string | undefined => {
+    public getActiveCurrencySymbol = (): string => {
         const currency = this.getActiveCurrencyTag();
-        return getStoreItem('cmsSettings')?.currencies?.find(curr => curr.tag === currency)?.symbol;
+        return getStoreItem('cmsSettings')?.currencies?.find(curr => curr.tag === currency)?.symbol ?? '';
     }
 
     public setActiveCurrency = (currency: string) => {

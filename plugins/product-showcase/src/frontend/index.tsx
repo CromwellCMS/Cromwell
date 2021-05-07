@@ -1,25 +1,28 @@
+import 'swiper/swiper-bundle.css';
+
 import { gql } from '@apollo/client';
 import {
     ECommonComponentNames,
-    loadCommonComponent,
+    getCommonComponent,
+    getRandStr,
     StaticPageContext,
+    TAttribute,
     TFrontendPluginProps,
     TPagedList,
     TProduct,
-    getRandStr,
 } from '@cromwell/core';
 import { getGraphQLClient, Link } from '@cromwell/core-frontend';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Navigation, Pagination, Swiper, SwiperOptions, Virtual } from 'swiper';
 import { VirtualData } from 'swiper/types/components/virtual';
 
 import { useStyles } from './styles';
-import "swiper/swiper-bundle.css";
 
 Swiper.use([Navigation, Pagination, Virtual]);
 
 type ProductShowcaseProps = {
     productShowcase?: TPagedList<TProduct>;
+    attributes?: TAttribute[];
 }
 
 const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX.Element => {
@@ -27,8 +30,9 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
     const classes = useStyles();
     const [virtualData, setVirtualData] = useState<VirtualData>({ slides: [] } as any);
     const productShowcaseData = props.data?.productShowcase;
+    const attributes = props.data?.attributes;
     // Try to load component if a Theme has already defined common Product view
-    let CommmonProductComp = loadCommonComponent(ECommonComponentNames.ProductCard);
+    let CommmonProductComp = getCommonComponent(ECommonComponentNames.ProductCard);
     if (!CommmonProductComp) {
         // Default view otherwise
         CommmonProductComp = (props: { data?: TProduct | undefined }): JSX.Element => {
@@ -40,7 +44,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
                     <p>{p.price}</p>
                 </div>
             )
-            else return <></>
+            else return <></>;
         }
     }
     // console.log('ProductShowcase render props', props)
@@ -91,7 +95,6 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
 
     return (
         <div className={classes.wrapper}>
-            <h3 className={classes.title}>Featured items</h3>
             <div className={classes.list}>
                 <div className={`swiper-container ${classes.swiperContainer}`} id={swiperId.current}>
                     <div className="swiper-wrapper">
@@ -100,7 +103,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
                             <div className="swiper-slide"
                                 key={index}
                                 style={{ left: `${virtualData.offset}px` }}
-                            >{CommmonProductComp && <CommmonProductComp data={slide} />}</div>
+                            >{CommmonProductComp && <CommmonProductComp data={slide} attributes={attributes} />}</div>
                         ))}
                     </div>
                     <div className={`swiper-pagination ${classes.swiperPagination}`}></div>
@@ -114,11 +117,11 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
 
 export const getStaticProps = async (context: StaticPageContext): Promise<ProductShowcaseProps> => {
     // slug of a product page
+    const client = getGraphQLClient('plugin');
     const slug = context?.params?.slug ?? null;
     let data;
-    const limit = 20;
     try {
-        data = await getGraphQLClient('plugin')?.query({
+        data = await client?.query({
             query: gql`
                 query productShowcase($slug: String) {
                     productShowcase(slug: $slug) {
@@ -149,7 +152,15 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
         console.error('ProductShowcase::getStaticProps', e, JSON.stringify(e?.result?.errors ?? null), null, 2)
     }
 
+    let attributes: TAttribute[] | undefined;
+    try {
+        attributes = await client?.getAttributes();
+    } catch (e) {
+        console.error('Product::getStaticProps', e)
+    }
+
     return {
+        attributes,
         productShowcase: data?.data?.productShowcase
     }
 }

@@ -56,8 +56,11 @@ export const ProductActions = (props: {
         } else {
             const result = cstore.addToCart(item, attributes);
             if (result.success) {
-                toast.success("Added!", {
-                    position: toast.POSITION.TOP_RIGHT
+                toast.success("Added! Click here to open cart", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    onClick: () => {
+                        appState.isCartOpen = true;
+                    }
                 });
             }
             if (result.code === 1) {
@@ -81,8 +84,11 @@ export const ProductActions = (props: {
         } else {
             const hasBeenAdded = cstore.addToWishlist({ product });
             if (hasBeenAdded) {
-                toast.success("Added!", {
-                    position: toast.POSITION.TOP_RIGHT
+                toast.success("Added! Click here to open wishlist", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    onClick: () => {
+                        appState.isWishlistOpen = true;
+                    }
                 });
             } else {
                 toast.warn("Product is already in your wishlist!", {
@@ -99,8 +105,11 @@ export const ProductActions = (props: {
         } else {
             const hasBeenAdded = cstore.addToCompare({ product });
             if (hasBeenAdded) {
-                toast.success("Added!", {
-                    position: toast.POSITION.TOP_RIGHT
+                toast.success("Added! Click here to compare", {
+                    position: toast.POSITION.TOP_RIGHT,
+                    onClick: () => {
+                        appState.isCompareOpen = true;
+                    }
                 });
             } else {
                 toast.warn("Product is already in your list!", {

@@ -11,7 +11,8 @@
     ],
     "rules": {
         "@typescript-eslint/no-namespace": "off",
-        "@typescript-eslint/no-var-requires": 0
+        "@typescript-eslint/no-var-requires": 0,
+        "@typescript-eslint/no-explicit-any": "off"
     },
     "env": {
         "node": true
