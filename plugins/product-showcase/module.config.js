@@ -15,11 +15,13 @@ module.exports = {
         const commonjs = require('@rollup/plugin-commonjs');
         const typescript = require('rollup-plugin-ts-compiler');
         const postcss = require('rollup-plugin-postcss');
-        const { terser } = require('rollup-plugin-terser');
+        // const { terser } = require('rollup-plugin-terser');
         return {
             main: {
                 plugins: [
-                    typescript(),
+                    typescript({
+                        monorepo: true
+                    }),
                     commonjs(),
                     postcss({
                         extract: false,
@@ -31,6 +33,7 @@ module.exports = {
             backend: {
                 plugins: [
                     typescript({
+                        monorepo: true,
                         compilerOptions: {
                             target: 'ES2019'
                         }

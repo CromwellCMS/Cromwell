@@ -29,8 +29,8 @@ describe('CGallery', () => {
         render(<CGallery id="1" gallery={{
             loop: false,
             slides: [
-                <p>_test3_</p>,
-                <p>_test4_</p>
+                <p key="1">_test3_</p>,
+                <p key="2">_test4_</p>
             ]
         }} />);
 

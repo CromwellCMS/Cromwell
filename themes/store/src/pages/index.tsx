@@ -53,7 +53,7 @@ const Index: TCromwellPage = (props) => {
                                 <CImage src="/themes/@cromwell/theme-store/sub_banner_3.jpg" id="main_sub_banner_3" className={styles.mainSubBanner} />
                             </CContainer>
                             <CContainer id="main_24" className={styles.mainShowcaseWrapper}>
-                                <CPlugin id="main_showcase" />
+                                <CPlugin id="main_showcase" style={{ height: '440px' }} />
                             </CContainer>
                         </CContainer>
                     </CContainer>
@@ -64,5 +64,3 @@ const Index: TCromwellPage = (props) => {
 }
 
 export default Index;
-
-

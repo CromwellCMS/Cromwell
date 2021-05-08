@@ -16,7 +16,6 @@ import { useResizeDetector } from 'react-resize-detector';
 import { appState } from '../../helpers/AppState';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import commonStyles from '../../styles/common.module.scss';
-import ProductQuickView from '../modals/productQuickView/ProductQuickView';
 import { toast } from '../toast/toast';
 import styles from './ProductCard.module.scss';
 
@@ -31,7 +30,6 @@ export const ProductCard = (props?: {
     const productLink = `/product/${data?.slug ?? data?.id}`;
     const wrapperRef = useRef<HTMLDivElement>(null);
     const [imageHeigth, setImageHeigth] = useState<number | null>(null);
-    const [quickViewOpen, setQuickViewOpen] = useState(false);
     const cstore = getCStore();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -97,7 +95,8 @@ export const ProductCard = (props?: {
                 toast.error(`Please pick following attributes: ${result.missingAttributes.map(attr => attr.key).join(', ')}`, {
                     position: toast.POSITION.TOP_RIGHT
                 });
-                setQuickViewOpen(true);
+                appState.isQuickViewOpen = true;
+                appState.quickViewProductId = product?.id;
             }
             forceUpdate();
         }
@@ -204,12 +203,7 @@ export const ProductCard = (props?: {
                     )) || null}
                 </div>
             </div>
-            <ProductQuickView
-                product={props?.data}
-                open={quickViewOpen}
-                attributes={props?.attributes}
-                onClose={() => setQuickViewOpen(false)}
-            />
+
         </div>
     )
 }

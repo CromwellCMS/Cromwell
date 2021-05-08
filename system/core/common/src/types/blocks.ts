@@ -189,41 +189,49 @@ export type TImageSettings = {
 };
 
 export type TGallerySettings = {
+    responsive?: Record<number, TGallerySettings>;
     images?: TImageSettings[];
     slides?: React.ReactNode[];
-    direction?: "horizontal" | "vertical";
+    orientation?: "horizontal" | "vertical";
     loop?: boolean;
     height?: number;
     width?: number;
-    autoHeight?: boolean;
     lazy?: boolean;
     breakpoints?: any;
     /** ratio = width / height */
     ratio?: number;
-    slidesPerView?: number;
+    slideMaxWidth?: number;
+    slideMinWidth?: number;
+    autoHeight?: boolean;
+    visibleSlides?: number;
+    autoPlay?: boolean;
     speed?: number;
-    delay?: number;
+    interval?: number;
     effect?: 'slide' | 'fade' | 'cube' | 'coverflow' | 'flip';
     spaceBetween?: number;
-    watchSlidesProgress?: boolean;
-    objectFit?: 'contain' | 'cover';
+    backgroundSize?: 'contain' | 'cover';
     navigation?: {
         showOnHover?: boolean;
     } | boolean;
-    showPagination?: boolean;
-    showScrollbar?: boolean;
-    showThumbs?: boolean | {
-        width?: string;
-        height?: string;
+    pagination?: boolean;
+    thumbs?: boolean | {
+        width?: number;
+        height?: number;
         loop?: boolean;
     };
     zoom?: {
         zoomOnHover?: boolean;
         maxRatio?: number;
     };
+    fullscreen?: boolean;
     components?: {
         imgWrapper?: React.ComponentType<{ image?: TImageSettings }>;
+        backButton?: React.ComponentType;
+        nextButton?: React.ComponentType;
     };
+    classes?: {
+        navBtn?: string;
+    }
 }
 
 export type TBlockContentProvider = {

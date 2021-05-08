@@ -1,346 +1,283 @@
-import { getStoreItem, TCromwellBlockProps, TGallerySettings, getRandStr } from '@cromwell/core';
-import React from 'react';
-import Swiper, {
-    Autoplay,
-    EffectCoverflow,
-    EffectCube,
-    EffectFade,
-    EffectFlip,
-    Lazy,
-    Navigation,
-    Pagination,
-    SwiperOptions,
-    Thumbs,
-    Zoom,
-} from 'swiper';
+import { getRandStr, TCromwellBlockData, TCromwellBlockProps, TGallerySettings } from '@cromwell/core';
+import clsx from 'clsx';
+import {
+    ButtonBack,
+    ButtonNext,
+    CarouselContext,
+    CarouselInjectedProps,
+    CarouselProvider,
+    CarouselStoreInterface,
+    DotGroup,
+    Image as CarouselImage,
+    ImageWithZoom,
+    Slide,
+    Slider,
+    WithStore,
+} from 'pure-react-carousel';
+import React, { useContext, useEffect } from 'react';
+import ReactResizeDetector from 'react-resize-detector';
 
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 import { Link } from '../Link/Link';
 import styles from './CGallery.module.scss';
-
-
-Swiper.use([Navigation, Pagination, Lazy, Thumbs, Zoom, EffectCoverflow, EffectCube, EffectFade, EffectFlip, Autoplay]);
-
+import Lightbox from './Lightbox';
+import Thumbs from './Thumbs';
 
 type TCGalleryProps = {
     className?: string;
     shouldComponentUpdate?: boolean;
 } & TCromwellBlockProps;
 
+class CarouselStoreSetterRaw extends React.Component<CarouselInjectedProps & {
+    setStore: (store: CarouselStoreInterface) => any;
+}> {
+    constructor(props) {
+        super(props);
+        this.props.setStore(this.props.carouselStore);
+    }
+    render() {
+        this.props.setStore(this.props.carouselStore);
+        return <></>;
+    }
+}
+const CarouselStoreSetter = WithStore(CarouselStoreSetterRaw);
+
 export class CGallery extends React.Component<TCGalleryProps> {
 
     private gallerySettings?: TGallerySettings;
-    private prevGallerySettings?: TGallerySettings;
-    private swiperId?: string;
-    private swiperThumbsId?: string;
-    private height?: string;
-    private galleryContainer?: HTMLElement | null;
-    private swiper?: Swiper;
-    private galleryThumbs?: Swiper;
+    private galleryId?: string;
+    private thumbsId?: string;
     private randId = getRandStr(5);
+    private galleryStore?: CarouselStoreInterface;
+    private thumbsStore?: CarouselStoreInterface;
+    private activeSlide: number = 0;
+    private setLightbox?: (open: boolean, index: number) => void;
+    private forceUpdateThumbs?: () => void;
 
-    private containerRef = React.createRef<HTMLDivElement>();
-    private primaryColor?: string = getStoreItem('palette')?.primaryColor;
-
-    shouldComponentUpdate(nextProps: TCGalleryProps) {
-        if (this.prevGallerySettings !== this.gallerySettings) return true;
-        if (this.swiperId) {
-            const galleryContainer = document.getElementById(this.swiperId);
-            if (galleryContainer) {
-                if (galleryContainer !== this.galleryContainer) return true;
-            }
-        }
-        if (nextProps) {
-            if (nextProps.shouldComponentUpdate === false) return false;
-        }
-
-        return true;
+    private onActiveSlideChange = (index: number) => {
+        this.activeSlide = index;
+        if (this.gallerySettings?.thumbs && this.gallerySettings?.images?.length)
+            this.forceUpdateThumbs?.();
     }
 
-    componentDidMount() {
-        this.didUpdate();
-        window.addEventListener('resize', this.updateDimensions);
-
-        setTimeout(() => {
-            this.didUpdate();
-        }, 600)
-    }
-    componentDidUpdate() {
-        this.didUpdate();
+    private setActiveSlide = (index: number) => {
+        this.galleryStore?.setStoreState({ currentSlide: index })
     }
 
-    private didUpdate = () => {
-        if (!this.swiperId) return;
-        const galleryContainer = document.getElementById(this.swiperId);
-
-        if (this.prevGallerySettings !== this.gallerySettings ||
-            this.galleryContainer !== galleryContainer || !this.swiper) {
-            // init
-            this.galleryContainer = galleryContainer;
-            this.initGallery();
-        } else {
-            // update
-            this.updateGallery();
-        }
-        this.updateDimensions();
+    private openFullScreen = (index: number) => {
+        this.setLightbox?.(true, index);
     }
 
-    private updateDimensions = () => {
-        if (!this.containerRef?.current || !this.gallerySettings) return;
-
-        this.containerRef.current.style.width = this.gallerySettings.width ? this.gallerySettings.width + 'px' : '100%';
-
-        let height = this.gallerySettings.height;
-        if (this.gallerySettings.ratio) {
-            height = this.containerRef.current.clientWidth / this.gallerySettings.ratio;
-        }
-        if (height) {
-            this.containerRef.current.style.height = height + 'px';
-        }
-
+    private onSlideClick = (index: number) => {
+        if (this.gallerySettings?.fullscreen) this.openFullScreen(index)
     }
 
-    private initGallery = () => {
-        if (!this.gallerySettings || !this.swiperId) return;
-        const gallerySettings = this.gallerySettings;
-        this.prevGallerySettings = gallerySettings;
+    private getContent = (data?: TCromwellBlockData, width?: number, height?: number) => {
+        const { gallery: propsSettings } = this.props;
+        const totalGallerySettings = data?.gallery ?? propsSettings;
 
-        try {
-            if (this.swiper) this.swiper.destroy();
-        } catch (error) {
-            console.error(error);
-        }
+        this.gallerySettings = totalGallerySettings;
 
-        let options: SwiperOptions = {
-            loop: gallerySettings.loop ?? false,
-            direction: gallerySettings.direction ?? 'horizontal',
-            breakpoints: gallerySettings.breakpoints,
-            slidesPerView: gallerySettings.slidesPerView,
-            speed: gallerySettings.speed,
-            effect: gallerySettings.effect,
-            autoplay: gallerySettings.delay ? {
-                delay: gallerySettings.delay
-            } : undefined,
-            spaceBetween: gallerySettings.spaceBetween,
-            watchSlidesProgress: gallerySettings.watchSlidesProgress,
-            scrollbar: gallerySettings.showScrollbar && {
-                el: '.swiper-scrollbar',
-            },
-            pagination: gallerySettings.showPagination && {
-                el: '.swiper-pagination',
-                clickable: true
-            },
-            navigation: gallerySettings.navigation && {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            },
-            zoom: gallerySettings.zoom && {
-                toggle: gallerySettings.zoom.zoomOnHover ? false : true
-            },
-            lazy: gallerySettings.lazy && {
-                loadPrevNext: true
-            },
-            autoHeight: gallerySettings.autoHeight ?? false,
-        }
-        // filter out undefined values
-        options = Object.assign({}, ...Object.keys(options).filter(key => options[key]).map(key => ({ [key]: options[key] })));
-
-        if (gallerySettings.showThumbs && this.swiperThumbsId && document.getElementById(this.swiperThumbsId)) {
-            try {
-                this.galleryThumbs = new Swiper(`#${this.swiperThumbsId}`, {
-                    spaceBetween: 10,
-                    slidesPerView: 4,
-                    grabCursor: true,
-                    loop: gallerySettings.loop ?? false,
-                    freeMode: true,
-                    loopedSlides: gallerySettings.loop ? 5 : undefined,
-                    watchSlidesVisibility: true,
-                    watchSlidesProgress: true,
-                });
-                options.thumbs = {
-                    swiper: this.galleryThumbs,
-                    slideThumbActiveClass: styles.swiperThumbActive
+        if (totalGallerySettings?.responsive && width && Object.keys(totalGallerySettings?.responsive).length) {
+            // find closest breakpoint to width but less
+            let closest = 0;
+            Object.keys(totalGallerySettings.responsive).forEach((b, index) => {
+                if (index === 0) {
+                    // use first if no appropriate would found
+                    this.gallerySettings = totalGallerySettings?.responsive?.[b];
                 }
-                options.loopedSlides = 5;
-            } catch (error) {
-                console.error(error);
-            }
+                const breakpoint = parseInt(b);
+                if (isNaN(breakpoint)) return;
+                if (breakpoint > closest && breakpoint < width) {
+                    closest = breakpoint;
+                    this.gallerySettings = totalGallerySettings?.responsive?.[b];
+                }
+            });
+
+            // Make responsive config override higher-level one
+            this.gallerySettings = Object.assign({}, totalGallerySettings, this.gallerySettings)
         }
 
-        try {
-            this.swiper = new Swiper(`#${this.swiperId}`, options);
-        } catch (error) {
-            console.error(error);
+        const gallerySettings = this.gallerySettings;
+        this.galleryId = `CGallery_${data?.id}_${this.randId}`;
+        this.thumbsId = `${this.galleryId}_thumbs`;
+
+        if (!gallerySettings || !(gallerySettings.images || gallerySettings.slides)) return <></>;
+        const Image = gallerySettings.zoom ? ImageWithZoom : CarouselImage;
+
+        const totalSlides = gallerySettings.images?.length ?? gallerySettings.slides?.length ?? 0
+        let visibleSlides = gallerySettings.visibleSlides ?? 1;
+        if (visibleSlides > totalSlides) visibleSlides = totalSlides;
+
+        const ButtonBackContent = gallerySettings.components?.backButton ?? (() => <div className={clsx(styles.navBtnContent, styles.btnBack)}></div>);
+        const ButtonNextContent = gallerySettings.components?.nextButton ?? (() => <div className={clsx(styles.navBtnContent, styles.btnNext)}></div>);
+
+        let slideWidth;
+        if (width && gallerySettings.slideMinWidth && !gallerySettings.visibleSlides) {
+            const maxSlides = Math.floor(width / gallerySettings.slideMinWidth)
+            slideWidth = width / maxSlides;
+            if (gallerySettings.slideMaxWidth && slideWidth > gallerySettings.slideMaxWidth) slideWidth = gallerySettings.slideMaxWidth;
+
+            visibleSlides = maxSlides;
         }
 
-        if (typeof gallerySettings?.navigation === 'object' && gallerySettings.navigation?.showOnHover) {
-            this.swiper?.navigation?.nextEl?.style.setProperty('display', 'none');
-            this.swiper?.navigation?.prevEl?.style.setProperty('display', 'none');
-        }
-    }
+        let containerHeight = gallerySettings.height;
+        if (gallerySettings.autoHeight) containerHeight = height;
 
-    private updateGallery = () => {
-        if (!this.gallerySettings || !this.swiperId || !this.swiper || !this.swiper.$el) return;
+        const galleryJsx = (
+            <CarouselProvider
+                orientation={gallerySettings.orientation}
+                visibleSlides={visibleSlides}
+                naturalSlideWidth={gallerySettings.ratio ? 100 * gallerySettings.ratio : 125}
+                naturalSlideHeight={100}
+                totalSlides={totalSlides}
+                infinite={gallerySettings.loop}
+                interval={gallerySettings.interval}
+                isPlaying={gallerySettings.autoPlay}
+            >
+                <CarouselOnChangeWatcher onChange={this.onActiveSlideChange} />
+                <CarouselStoreSetter setStore={(store) => { this.galleryStore = store }} />
+                <div
+                    className={styles.container}
+                    style={{
+                        height: containerHeight ? containerHeight + 'px' : '100%',
+                        width: gallerySettings.width ? gallerySettings.width + 'px' : '100%',
+                    }}>
+                    <Slider>
+                        {gallerySettings.images && gallerySettings.images.map((img, index) => {
+                            if (!img.src) return <></>;
+                            let imgItem = (
+                                <Image src={img.src}
+                                    overlayClassName={styles.imageOverlay}
+                                    alt={img.alt}
+                                    hasMasterSpinner={true}
+                                    className={clsx(gallerySettings?.backgroundSize === 'cover' ? styles.slideCover : styles.slideContain)}
+                                />
+                            );
 
-        try {
-            this.swiper.update?.();
-            this.galleryThumbs?.update?.();
-            this.swiper.slideTo?.(0);
+                            if (gallerySettings.components?.imgWrapper) {
+                                const WrapComp = gallerySettings.components.imgWrapper;
+                                imgItem = <WrapComp image={img}>{imgItem}</WrapComp>
+                            }
 
-            if (this.gallerySettings.lazy) {
-                this.swiper.lazy?.load?.();
-            }
-        } catch (e) {
-            console.error(e);
-        }
-    }
+                            if (img.href) {
+                                imgItem = (
+                                    <Link href={img.href}>{imgItem}</Link>
+                                );
+                            }
+                            imgItem = (
+                                <Slide onClick={() => this.onSlideClick(index)} index={index} key={img.src + index}
+                                    style={{
+                                        height: gallerySettings.height && gallerySettings.height + 'px'
+                                    }}
+                                >
+                                    {imgItem}
+                                </Slide>
+                            );
 
-    private onMouseEnter = () => {
-        if (typeof this.gallerySettings?.navigation === 'object' && this.gallerySettings?.navigation?.showOnHover) {
-            this.swiper?.navigation?.nextEl?.style.setProperty('display', 'block');
-            this.swiper?.navigation?.prevEl?.style.setProperty('display', 'block');
-        }
+                            return imgItem;
+                        })}
+                        {gallerySettings.slides && gallerySettings.slides.map((slideJsx, index) => {
+                            let el = slideJsx;
+                            if (gallerySettings.components?.imgWrapper) {
+                                const WrapComp = gallerySettings.components.imgWrapper;
+                                el = <WrapComp>{el}</WrapComp>
+                            }
+                            return (
+                                <Slide
+                                    onClick={() => this.onSlideClick(index)}
+                                    index={index}
+                                    key={`slide_${index}`}
+                                    style={{
+                                        height: height && height + 'px',
+                                        // width: slideWidth && slideWidth + 'px',
+                                    }}
+                                >
+                                    {el}
+                                </Slide>
+                            );
+                        })}
+                    </Slider>
+                    {gallerySettings.pagination && (
+                        <div className={styles.dotContainer}>
+                            <DotGroup className={styles.dotGroup} />
+                        </div>
+                    )}
+                    {gallerySettings.navigation && (<>
+                        <ButtonBack className={clsx(styles.navBtn, styles.navBtnBack, gallerySettings.classes?.navBtn)}><ButtonBackContent /></ButtonBack>
+                        <ButtonNext className={clsx(styles.navBtn, styles.navBtnNext, gallerySettings.classes?.navBtn)}><ButtonNextContent /></ButtonNext>
+                    </>)}
+                </div>
+            </CarouselProvider>
+        );
 
-        if (this.swiper && this.gallerySettings?.zoom?.zoomOnHover) {
-            this.swiper.zoom.enable();
-            this.swiper.zoom.in();
-            this.swiper.$el.addClass(styles.swiperZommedIn);
-        }
-    }
-
-    private onMouseLeave = () => {
-        if (typeof this.gallerySettings?.navigation === 'object' && this.gallerySettings?.navigation?.showOnHover) {
-            this.swiper?.navigation?.nextEl?.style.setProperty('display', 'none');
-            this.swiper?.navigation?.prevEl?.style.setProperty('display', 'none');
-        }
-
-        if (this.swiper && this.gallerySettings?.zoom?.zoomOnHover) {
-            this.swiper.zoom.out();
-            this.swiper.zoom.disable();
-            this.swiper.$el.removeClass(styles.swiperZommedIn);
-        }
+        return (
+            <>
+                {galleryJsx}
+                {gallerySettings?.thumbs && gallerySettings?.images?.length && (
+                    <Thumbs
+                        thumbsId={this.thumbsId}
+                        gallerySettings={gallerySettings}
+                        width={width}
+                        activeSlide={this.activeSlide}
+                        totalSlides={totalSlides}
+                        setActiveSlide={this.setActiveSlide}
+                        getUpdate={(forceUpdate) => { this.forceUpdateThumbs = forceUpdate }}
+                    />
+                )}
+                {gallerySettings?.fullscreen && gallerySettings.images && (
+                    <Lightbox
+                        images={gallerySettings.images?.map(img => img.src) ?? []}
+                        getState={(setOpen) => {
+                            this.setLightbox = setOpen;
+                        }}
+                    />
+                )}
+            </>
+        );
     }
 
     render() {
-        const { gallery: propsSettings, ...rest } = this.props;
-
         return (
-            <CromwellBlock {...rest} type='gallery'
+            <CromwellBlock {...this.props} type='gallery'
                 key={this.props.id + '_crw'}
-                content={(data, blockRef, setContentInstance) => {
+                content={(data, ref, setContentInstance) => {
                     setContentInstance(this);
-                    this.gallerySettings = data?.gallery ?? propsSettings;
-                    this.swiperId = `swiper-container_${data?.id}_${this.randId}`;
-                    this.swiperThumbsId = `${this.swiperId}_thumbs`;
-                    const gallerySettings = this.gallerySettings;
-
-                    if (!gallerySettings || !(gallerySettings.images || gallerySettings.slides)) return <></>;
-
                     return (
-                        <div className={`swiper-container ${styles.swiperContainer}`}
-                            id={this.swiperId}
-                            onMouseEnter={this.onMouseEnter}
-                            onMouseLeave={this.onMouseLeave}
+                        <ReactResizeDetector
+                            handleWidth handleHeight
+                            refreshMode="throttle"
+                            refreshRate={50}
                         >
-                            <div className={`swiper-wrapper ${styles.swiperWrapper}`}
-                                ref={this.containerRef}
-                            >
-                                {gallerySettings.images && gallerySettings.images.map((i, index) => {
-                                    let imgItem = (
-                                        <img
-                                            src={gallerySettings?.lazy ? undefined : i.src}
-                                            data-src={gallerySettings?.lazy ? i.src : undefined}
-                                            className={`${styles.swiperImage} ${gallerySettings?.lazy ? 'swiper-lazy' : ''} ${gallerySettings.zoom ? 'swiper-zoom-target' : ''}`}
-                                            alt={i.alt}
-                                            style={{
-                                                objectFit: gallerySettings?.objectFit ?? 'cover',
-                                            }}
-                                        />
-                                    );
-
-                                    if (gallerySettings.lazy) {
-                                        imgItem = <>{imgItem}
-                                            <div className="swiper-lazy-preloader swiper-lazy-preloader-white"
-                                                style={{
-                                                    border: `4px solid ${this.primaryColor ? this.primaryColor : '#fff'}`,
-                                                    borderTopColor: 'transparent'
-                                                }}></div>
-                                        </>
-                                    }
-
-                                    if (gallerySettings.components?.imgWrapper) {
-                                        const WrapComp = gallerySettings.components.imgWrapper;
-                                        imgItem = <WrapComp image={i}>{imgItem}</WrapComp>
-                                    }
-                                    if (gallerySettings.zoom) {
-                                        imgItem = <div className="swiper-zoom-container">{imgItem}</div>
-                                    }
-
-                                    if (i.href) {
-                                        imgItem = (
-                                            <Link href={i.href}>{imgItem}</Link>
-                                        );
-                                    }
-                                    imgItem = (
-                                        <div key={i.src + index} className={`swiper-slide ${styles.swiperSlide}`}>
-                                            {imgItem}
-                                        </div>
-                                    );
-
-                                    return imgItem;
-                                })}
-                                {gallerySettings.slides && gallerySettings.slides.map((slideJsx, index) => {
-                                    let el = slideJsx;
-                                    if (gallerySettings.components?.imgWrapper) {
-                                        const WrapComp = gallerySettings.components.imgWrapper;
-                                        el = <WrapComp>{el}</WrapComp>
-                                    }
-                                    if (gallerySettings.zoom) {
-                                        el = <div className="swiper-zoom-container">{el}</div>
-                                    }
-                                    el = (
-                                        <div key={`slide_${index}`} className={`swiper-slide ${styles.swiperSlide}`}>
-                                            {el}
-                                        </div>
-                                    );
-                                    return el;
-                                })}
-                            </div>
-                            {gallerySettings.showPagination && (
-                                <div className={`swiper-pagination ${styles.swiperPagination}`}></div>
-                            )}
-                            {gallerySettings.navigation && (<>
-                                <div className="swiper-button-prev"></div>
-                                <div className="swiper-button-next"></div>
-                            </>)}
-                            {gallerySettings.showScrollbar && (
-                                <div className="swiper-scrollbar"></div>
-                            )}
-                            {gallerySettings.showThumbs && (
-                                <div className="swiper-container gallery-thumbs"
-                                    id={this.swiperThumbsId}
-                                >
-                                    <div className="swiper-wrapper">
-                                        {gallerySettings.images && gallerySettings.images.map((i, index) => {
-                                            const img = i.thumb ?? i.src;
-                                            const opt = typeof gallerySettings.showThumbs === 'object' ? gallerySettings.showThumbs : undefined;
-                                            return (
-                                                <div className={`swiper-slide ${styles.swiperThumb}`}
-                                                    key={`${i.src}_${index}`}
-                                                    style={{
-                                                        backgroundImage: `url(${img})`,
-                                                        width: opt?.width ?? '80px',
-                                                        height: opt?.height ?? '80px',
-                                                    }}></div>
-                                            )
-                                        })}
+                            {({ targetRef, width, height }) => {
+                                return (
+                                    <div id={this.galleryId}
+                                        className={styles.max}
+                                        ref={targetRef as any}
+                                    >
+                                        {this.getContent(data, width, height)}
                                     </div>
-                                </div>
-                            )}
-                        </div>
+                                )
+                            }}
+                        </ReactResizeDetector>
                     )
                 }}
             />
         )
     }
+}
+
+export function CarouselOnChangeWatcher(props: {
+    onChange: (index: number) => void;
+}) {
+    const carouselContext = useContext(CarouselContext);
+
+    useEffect(() => {
+        function onChange() {
+            props.onChange(carouselContext.state.currentSlide);
+        }
+        carouselContext.subscribe(onChange);
+        return () => carouselContext.unsubscribe(onChange);
+    }, [carouselContext]);
+    return <></>;
 }

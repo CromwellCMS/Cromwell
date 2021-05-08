@@ -146,7 +146,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
 
         importPath = importPath.replace(/\\/g, '/');
         let globalPropName = namedImport;
-        let importerKey = namedImport;
+        const importerKey = namedImport;
         let saveAsModulesStr = '';
 
         if (saveAsModules && Array.isArray(saveAsModules)) {
@@ -195,7 +195,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
             return;
         }
         if (!moduleRootPath && modulePath) {
-            moduleRootPath = dirname(modulePath).replace(/\\/g, '/');;
+            moduleRootPath = dirname(modulePath).replace(/\\/g, '/');
         }
 
         // Get package.json to set all Dependencies as external and then transpile them same way
@@ -225,7 +225,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
                 for (const depName of Object.keys(modulePackageJson.peerDependencies)) {
                     packageExternals.push(depName);
                     collectedDependencies[depName] = modulePackageJson.peerDependencies[depName];
-                };
+                }
             }
         } catch (e) {
             console.error(colors.brightRed('Cromwell:bundler:: Failed to read package.json dependencies of module: ' + moduleName));
@@ -305,11 +305,11 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
             for (const key of aditionalExports) {
                 const path = key.path ?? modulePath;
                 if (path) await handleExportKey(key.name, path, key.importType, key.saveAsModules)
-            };
+            }
         }
 
         // Main generated file that contains references to generated chunks
-        let content = `
+        const content = `
             const moduleName = '${moduleName}';
 
             const isServer = () => (typeof window === 'undefined');
@@ -441,14 +441,13 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
             })
         ];
 
-        let moduleStats: any[] = [];
+        const moduleStats: any[] = [];
 
         const shouldLogBuild = false;
 
         const compiler = webpack(parsingWebpackConfig);
 
-
-        compiler.hooks.shouldEmit.tap('CromwellBundlerPlugin', (compilation) => {
+        compiler.hooks.shouldEmit.tap('CromwellBundlerPlugin', () => {
             return false;
         });
 
@@ -531,7 +530,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
                     return {
                         [ext.usedName]: useGlobals ? extStr : `commonjs ${ext.usedName}`
                     }
-                };
+                }
                 return {};
             }));
 
