@@ -1,7 +1,6 @@
 @import "../../styles/variables.scss";
 
 .ProductDetails {
-    display: flex;
     margin: 20px 0;
     border-radius: 8px;
     overflow: hidden;
@@ -34,10 +33,10 @@
 }
 
 .imageBlock {
-    width: 55%;
+    width: 75%;
 }
 .captionBlock {
-    width: 45%;
+    width: 25%;
     padding: 15px;
 }
 
@@ -75,7 +74,7 @@
 .infoBlock {
     display: flex;
     flex-direction: column;
-    width: 22%;
+    width: 25%;
 }
 .advantagesBlock {
     display: flex;
@@ -105,6 +104,7 @@
     position: relative;
     margin-top: 20px;
     padding-right: 20px;
+    width: 75%;
 }
 
 .tab {
@@ -127,13 +127,49 @@ div.tabsHeader {
     padding: 10px 0 30px 10px;
 }
 
-@media screen and (max-width: $mobileBreakpoint) {
+.tabsAndSidebar {
+    display: flex;
+}
+
+.compact {
+    .imageBlock {
+        width: 60%;
+    }
+    .captionBlock {
+        width: 40%;
+    }
+    .tabsBlock {
+        padding-right: 0;
+        width: 100%;
+    }
     .infoBlock {
         display: none;
     }
+}
 
+@media screen and (max-width: 980px) {
+    .imageBlock {
+        width: 60%;
+    }
+    .captionBlock {
+        width: 40%;
+    }
+    .tabsBlock {
+        padding-right: 0;
+        width: 60%;
+    }
+    .infoBlock {
+        width: 40%;
+    }
+}
+
+@media screen and (max-width: $mobileBreakpoint) {
     .mainBlock {
         width: 100%;
+    }
+
+    .infoBlock {
+        display: none;
     }
 
     .imageAndCaptionBlock {
@@ -147,8 +183,13 @@ div.tabsHeader {
         width: 100%;
     }
 
+    .tabsAndSidebar {
+        flex-direction: column;
+    }
+
     .tabsBlock {
         padding-right: 0;
+        width: 100%;
     }
 
     div.tabsHeader {

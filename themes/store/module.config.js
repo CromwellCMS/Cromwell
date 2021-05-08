@@ -6,7 +6,8 @@ module.exports = {
     },
     globalCss: [
         "react-toastify/dist/ReactToastify.css",
-        "swiper/swiper-bundle.min.css",
+        "pure-react-carousel/dist/react-carousel.es.css",
+        'react-image-lightbox/style.css',
         '../styles/global.scss'
     ],
     headHtml: "<link href=\"https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700;900&display=swap\" rel=\"stylesheet\" /><meta name=\"viewport\" content=\"width=device-width\"><meta property=\"og:appConfig_headHtml\" content=\"blah_blah\" key=\"blah_blah\" />",
@@ -14,7 +15,7 @@ module.exports = {
         const commonjs = require('@rollup/plugin-commonjs');
         const json = require('@rollup/plugin-json');
         const postcss = require('rollup-plugin-postcss');
-        const { terser } = require('rollup-plugin-terser');
+        // const { terser } = require('rollup-plugin-terser');
         const typescript = require('rollup-plugin-ts-compiler');
 
         // All plugins below will be instantiated for every output options (pages, admin panel, etc)
@@ -92,9 +93,8 @@ module.exports = {
                             }
                         ],
                         "width": "100%",
-                        "height": 300,
                         "ratio": 3.75,
-                        "showPagination": true,
+                        "pagination": true,
                         "effect": "coverflow",
                         "loop": true,
                         "delay": 2222,
@@ -139,6 +139,7 @@ module.exports = {
                     "type": "plugin",
                     "id": "Product_ProductShowcase_Plugin",
                     "parentId": "Product_ProductShowcase",
+                    "style": { height: '440px' },
                     "index": 1,
                     "isVirtual": true,
                     "plugin": {

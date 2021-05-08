@@ -85,8 +85,8 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
             />
             <TextField
                 fullWidth
-                onChange={handleNumberInput('slidesPerView')}
-                value={data?.gallery?.slidesPerView ?? 1}
+                onChange={handleNumberInput('visibleSlides')}
+                value={data?.gallery?.visibleSlides ?? 1}
                 className={styles.settingsInput}
                 type="number"
                 label="Slides Per View" />
@@ -112,9 +112,9 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
                 type="number"
                 label="Ratio width:height" />
             <TextField
-                onChange={handleNumberInput('delay')}
+                onChange={handleNumberInput('interval')}
                 fullWidth
-                value={data?.gallery?.delay ?? null}
+                value={data?.gallery?.interval ?? null}
                 className={styles.settingsInput}
                 type="number"
                 label="Delay before autoslide to next, ms" />
@@ -138,8 +138,8 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
             <FormControlLabel
                 control={
                     <Checkbox
-                        checked={!!data?.gallery?.showPagination}
-                        onChange={handleBoolInput('showPagination')}
+                        checked={!!data?.gallery?.pagination}
+                        onChange={handleBoolInput('pagination')}
                         color="primary"
                     />
                 }
@@ -148,18 +148,8 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
             <FormControlLabel
                 control={
                     <Checkbox
-                        checked={!!data?.gallery?.showScrollbar}
-                        onChange={handleBoolInput('showScrollbar')}
-                        color="primary"
-                    />
-                }
-                label="Show scrollbar"
-            />
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={!!data?.gallery?.showThumbs}
-                        onChange={handleBoolInput('showThumbs')}
+                        checked={!!data?.gallery?.thumbs}
+                        onChange={handleBoolInput('thumbs')}
                         color="primary"
                     />
                 }
@@ -175,6 +165,16 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
                 }
                 label="Loop slides"
             />
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={!!data?.gallery?.fullscreen}
+                        onChange={handleBoolInput('fullscreen')}
+                        color="primary"
+                    />
+                }
+                label="Enable lightbox pop-up"
+            />
             <TextField
                 onChange={handleNumberInput('spaceBetween')}
                 fullWidth
@@ -188,14 +188,14 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
                 <InputLabel >Object fit</InputLabel>
                 <Select
                     fullWidth
-                    onChange={handleTextInput('objectFit')}
-                    value={data?.gallery?.objectFit ?? 'cover'}
+                    onChange={handleTextInput('backgroundSize')}
+                    value={data?.gallery?.backgroundSize ?? 'cover'}
                 >
                     <MenuItem value={'contain'}>Contain</MenuItem>
                     <MenuItem value={'cover'}>Cover</MenuItem>
                 </Select>
             </FormControl>
-            <FormControl
+            {/* <FormControl
                 fullWidth
                 className={styles.settingsInput} >
                 <InputLabel >Effect</InputLabel>
@@ -210,7 +210,7 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
                     <MenuItem value={'coverflow'}>coverflow</MenuItem>
                     <MenuItem value={'flip'}>flip</MenuItem>
                 </Select>
-            </FormControl>
+            </FormControl> */}
         </div>
     );
 }

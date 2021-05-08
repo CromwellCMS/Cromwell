@@ -1,19 +1,14 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-export const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles(() =>
     createStyles({
         wrapper: {
-            display: 'flex',
-            flexDirection: 'column',
             width: '100%',
+            height: '100%',
             padding: '10px 0'
-        },
-        list: {
-            display: 'flex'
         },
         listItem: {
             margin: '0 10px',
-            padding: '10px'
         },
         popover: {
             pointerEvents: 'none',

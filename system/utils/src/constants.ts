@@ -68,5 +68,7 @@ export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     "react-toastify",
     "swiper",
     "tslib",
-    "whatwg-fetch"
+    "whatwg-fetch",
+    "pure-react-carousel",
+    "react-image-lightbox",
 ];

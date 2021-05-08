@@ -1,14 +1,15 @@
 import { TAttribute, TStoreListItem } from '@cromwell/core';
 import { getCStore, getGraphQLClient } from '@cromwell/core-frontend';
+import { IconButton } from '@material-ui/core';
+import { Close as CloseIcon } from '@material-ui/icons';
 import clsx from 'clsx';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
-import { IconButton } from '@material-ui/core';
-import { Close as CloseIcon } from '@material-ui/icons';
+
 import { appState } from '../../../helpers/AppState';
 import { useForceUpdate } from '../../../helpers/forceUpdate';
-import { LoadBox } from '../../loadbox/Loadbox';
 import commonStyles from '../../../styles/common.module.scss';
+import { LoadBox } from '../../loadbox/Loadbox';
 import { ProductCard } from '../../productCard/ProductCard';
 import Modal from '../baseModal/Modal';
 import styles from './WatchedModal.module.scss';

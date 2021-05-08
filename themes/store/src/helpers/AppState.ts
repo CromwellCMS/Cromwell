@@ -1,4 +1,5 @@
 import { observable } from "mobx";
+import { TProduct } from '@cromwell/core';
 
 class State {
     @observable
@@ -15,6 +16,12 @@ class State {
 
     @observable
     isWatchedOpen: boolean = false;
+
+    @observable
+    isQuickViewOpen: boolean = false;
+
+    @observable
+    quickViewProductId: string | undefined;
 }
 
 export const appState = new State();
