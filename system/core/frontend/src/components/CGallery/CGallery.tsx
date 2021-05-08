@@ -151,7 +151,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                                     overlayClassName={styles.imageOverlay}
                                     alt={img.alt}
                                     hasMasterSpinner={true}
-                                    className={clsx(gallerySettings?.backgroundSize === 'cover' ? styles.slideCover : styles.slideContain)}
+                                    className={clsx(gallerySettings?.backgroundSize === 'contain' ? styles.slideContain : styles.slideCover)}
                                 />
                             );
 

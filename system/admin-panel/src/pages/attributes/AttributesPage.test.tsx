@@ -28,7 +28,6 @@ jest.mock('@cromwell/core-frontend', () => {
 
 import { render, screen } from '@testing-library/react';
 import AttributesPage from './AttributesPage';
-import { getGraphQLClient } from '@cromwell/core-frontend';
 
 
 describe('AttributesPage', () => {

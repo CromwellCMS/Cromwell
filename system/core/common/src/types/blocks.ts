@@ -219,10 +219,7 @@ export type TGallerySettings = {
         height?: number;
         loop?: boolean;
     };
-    zoom?: {
-        zoomOnHover?: boolean;
-        maxRatio?: number;
-    };
+    zoom?: boolean;
     fullscreen?: boolean;
     components?: {
         imgWrapper?: React.ComponentType<{ image?: TImageSettings }>;

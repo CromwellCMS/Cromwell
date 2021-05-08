@@ -62,17 +62,14 @@ export default function ProductDetails(props: {
                                 }
                             }) : [],
                             loop: false,
-                            navigation: {
-                                showOnHover: true
-                            },
-                            zoom: {
-                                zoomOnHover: true
-                            },
+                            navigation: true,
+                            zoom: true,
                             thumbs: {
                                 width: 80,
                                 height: 80,
                             },
                             fullscreen: true,
+                            backgroundSize: 'contain',
                             // width: 400,
                             // height: 400,
                             responsive: {
