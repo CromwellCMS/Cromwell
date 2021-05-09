@@ -8,8 +8,8 @@
     "build"
   ],
   "keywords": [],
-  "author": "Cromwell",
-  "license": "ISC",
+  "author": "CromwellJS",
+  "license": "MIT",
   "scripts": {
     "build": "npx rollup -c",
     "watch": "npx rollup -cw",

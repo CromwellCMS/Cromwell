@@ -7,8 +7,8 @@
     "static"
   ],
   "keywords": [],
-  "author": "cromwell",
-  "license": "ISC",
+  "author": "CromwellJS",
+  "license": "MIT",
   "scripts": {
     "build": "node startup.js build",
     "dev": "node startup.js dev",

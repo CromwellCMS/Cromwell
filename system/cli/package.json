@@ -7,8 +7,8 @@
     "bin"
   ],
   "keywords": [],
-  "author": "Cromwell",
-  "license": "ISC",
+  "author": "CromwellJS",
+  "license": "MIT",
   "dependencies": {
     "yargs": "^16.2.0",
     "bin-links": "^2.2.1",
