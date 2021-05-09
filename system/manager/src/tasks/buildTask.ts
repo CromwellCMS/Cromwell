@@ -8,7 +8,7 @@ import ms from 'pretty-ms';
 import { OutputOptions, rollup, RollupWatcherEvent, watch as rollupWatch } from 'rollup';
 
 import { rendererBuildAndSaveTheme, rendererStartWatchDev } from '../managers/rendererManager';
-import { checkModules } from './checkModules';
+import { checkDepenencies, checkModules } from './checkModules';
 
 const { handleError, bold, underline, cyan, stderr, green } = require('rollup/dist/shared/loadConfigFile.js');
 const { relativeId } = require('rollup/dist/shared/rollup.js');
@@ -19,6 +19,7 @@ export const buildTask = async (watch?: boolean) => {
 
     const moduleInfo = await getCmsModuleInfo();
     const moduleConfig = await getCmsModuleConfig();
+    await checkDepenencies();
 
     if (!moduleInfo?.name) {
         errorLogger('Package.json must have "name" property');

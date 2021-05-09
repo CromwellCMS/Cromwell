@@ -73,3 +73,4 @@ export * from './helpers/serviceVersions';
 export * from './helpers/createGenericEntity';
 export * from './helpers/validation';
 export * from './helpers/emailing';
+export * from './helpers/auth.guard';

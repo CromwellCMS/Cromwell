@@ -188,6 +188,7 @@ export type TPluginConfig = {
     backend?: {
         resolversDir?: string;
         entitiesDir?: string;
+        controllersDir?: string;
     }
     defaultSettings?: any;
 }

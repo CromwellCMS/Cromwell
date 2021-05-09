@@ -162,7 +162,7 @@ export const getCmsModuleInfo = async (moduleName?: string): Promise<TPackageCro
     const pckg = await getModulePackage(moduleName);
     if (pckg?.cromwell) {
         if (!pckg.cromwell.name) pckg.cromwell.name = pckg.name;
-        return JSON.parse(JSON.stringify(pckg.cromwell));
+        return pckg.cromwell;
     }
 }
 

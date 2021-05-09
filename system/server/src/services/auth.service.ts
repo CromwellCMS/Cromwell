@@ -1,5 +1,15 @@
 import { sleep, TCreateUser, TUser } from '@cromwell/core';
-import { getEmailTemplate, getLogger, sendEmail, User, UserRepository } from '@cromwell/core-backend';
+import {
+    getEmailTemplate,
+    getLogger,
+    sendEmail,
+    TAuthUserInfo,
+    TRequestWithUser,
+    TTokenInfo,
+    TTokenPayload,
+    User,
+    UserRepository,
+} from '@cromwell/core-backend';
 import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import bcrypt from 'bcrypt';
@@ -7,14 +17,7 @@ import cryptoRandomString from 'crypto-random-string';
 import { FastifyReply } from 'fastify';
 import { getCustomRepository } from 'typeorm';
 
-import {
-    authSettings,
-    bcryptSaltRounds,
-    TAuthUserInfo,
-    TRequestWithUser,
-    TTokenInfo,
-    TTokenPayload,
-} from '../auth/constants';
+import { authSettings, bcryptSaltRounds } from '../auth/constants';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 
 const logger = getLogger('detailed');
@@ -377,7 +380,7 @@ export class AuthService {
             return authUserInfo;
 
         } catch (err) {
-            logger.log('JwtAuthGuard: ', err.message);
+            logger.log('processRequest: ', err.message);
             this.clearTokenCookies(response, request);
         }
         return null;

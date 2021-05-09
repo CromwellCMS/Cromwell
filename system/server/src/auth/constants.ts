@@ -1,6 +1,4 @@
-import { TUserRole } from '@cromwell/core';
 import cryptoRandomString from 'crypto-random-string';
-import { FastifyRequest } from 'fastify';
 
 export const isRandomSecret = !process.env.JWT_ACCESS_TOKEN_SECRET; 
 
@@ -25,30 +23,3 @@ export const authSettings = {
 }
 
 export const bcryptSaltRounds = 10;
-
-export type TAuthUserInfo = {
-    id: string;
-    email: string;
-    role: TUserRole;
-}
-
-export type TTokenPayload = {
-    sub: string;
-    username: string;
-    role: TUserRole;
-}
-
-export type TRequestWithUser = FastifyRequest & {
-    user: TAuthUserInfo;
-    cookies: any;
-}
-
-export type TTokenInfo = {
-    token: string;
-    maxAge: string;
-    cookie: string;
-}
-
-export type TGraphQLContext = {
-    user?: TAuthUserInfo;
-}

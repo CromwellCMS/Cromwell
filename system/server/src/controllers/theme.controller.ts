@@ -1,11 +1,17 @@
 import { TFrontendBundle, TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
-import { getCmsSettings, getLogger, getThemeAdminPanelBundleDir, serverLogFor } from '@cromwell/core-backend';
+import {
+    getCmsSettings,
+    getLogger,
+    getThemeAdminPanelBundleDir,
+    JwtAuthGuard,
+    Roles,
+    serverLogFor,
+} from '@cromwell/core-backend';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 
-import { JwtAuthGuard, Roles } from '../auth/auth.guard';
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { PageConfigDto } from '../dto/page-config.dto';

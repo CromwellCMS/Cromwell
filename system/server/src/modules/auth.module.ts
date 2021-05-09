@@ -1,7 +1,7 @@
+import { JwtAuthGuard } from '@cromwell/core-backend';
 import { Global, Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 
-import { JwtAuthGuard } from '../auth/auth.guard';
 import { AuthService } from '../services/auth.service';
 import { RestApiModule } from './restapi.module';
 

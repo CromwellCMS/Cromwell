@@ -1,4 +1,4 @@
-import { TAdditionalExports, TExternal, TFrontendDependency, TPackageJson, TSciprtMetaInfo } from '@cromwell/core';
+import { TAdditionalExports, TExternal, TFrontendDependency, TPackageJson, TSciprtMetaInfo, sleep } from '@cromwell/core';
 import { getPublicDir } from '@cromwell/core-backend';
 import archiver from 'archiver';
 import colorsdef from 'colors/safe';
@@ -733,6 +733,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         // // Cleanup generated
         if (isProduction) {
             if (await fs.pathExists(nodeLibEntry)) await fs.remove(nodeLibEntry);
+            if (await fs.pathExists(oneChunkLibEntry)) await fs.remove(oneChunkLibEntry);
             if (await fs.pathExists(libEntry)) await fs.remove(libEntry);
             if (await fs.pathExists(exportsGeneratedPath)) await fs.remove(exportsGeneratedPath);
 
@@ -751,9 +752,9 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         archive.pipe(output);
         archive.directory(moduleBuildDir, '/');
         await archive.finalize();
+        await sleep(0.2);
 
         await fs.move(tempZipPath, moduleArchivePath);
-
 
         console.log(colors.cyan(`Cromwell:bundler: Module: ${colors.brightCyan(`"${moduleName}"`)} has been ${colors.brightCyan('processed')}`));
 

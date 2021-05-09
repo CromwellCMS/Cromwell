@@ -4,6 +4,7 @@ import {
     DeleteManyInput,
     PagedParamsInput,
     PagedUser,
+    TGraphQLContext,
     UpdateUser,
     User,
     UserFilterInput,
@@ -12,7 +13,6 @@ import {
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { TGraphQLContext } from '../auth/constants';
 
 const getOneByIdPath = GraphQLPaths.User.getOneById;
 const getManyPath = GraphQLPaths.User.getMany;

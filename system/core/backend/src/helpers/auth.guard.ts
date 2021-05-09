@@ -1,7 +1,35 @@
-import { getStoreItem, TAuthRole } from '@cromwell/core';
+import { getStoreItem, TAuthRole, TUserRole } from '@cromwell/core';
 import { CanActivate, ExecutionContext, Injectable, SetMetadata } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { TAuthUserInfo, TRequestWithUser, TGraphQLContext } from './constants';
+import { FastifyRequest } from 'fastify';
+
+
+export type TAuthUserInfo = {
+    id: string;
+    email: string;
+    role: TUserRole;
+}
+
+export type TTokenPayload = {
+    sub: string;
+    username: string;
+    role: TUserRole;
+}
+
+export type TRequestWithUser = FastifyRequest & {
+    user: TAuthUserInfo;
+    cookies: any;
+}
+
+export type TTokenInfo = {
+    token: string;
+    maxAge: string;
+    cookie: string;
+}
+
+export type TGraphQLContext = {
+    user?: TAuthUserInfo;
+}
 
 export const Roles = (...roles: TAuthRole[]) => SetMetadata('roles', roles);
 

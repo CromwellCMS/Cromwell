@@ -5,7 +5,7 @@ import { ThrottlerModule } from '@nestjs/throttler';
 
 @Module({
     imports: [
-        RestApiModule,
+        RestApiModule.forRoot(),
         AuthModule,
         ThrottlerModule.forRoot({
             ttl: 30,

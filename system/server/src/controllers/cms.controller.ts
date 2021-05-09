@@ -4,9 +4,11 @@ import {
     getCmsSettings,
     getLogger,
     getPublicDir,
+    JwtAuthGuard,
     ProductReviewInput,
     ProductReviewRepository,
     readCmsModules,
+    Roles,
 } from '@cromwell/core-backend';
 import { Body, Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -15,7 +17,6 @@ import fs from 'fs-extra';
 import { join } from 'path';
 import { getCustomRepository } from 'typeorm';
 
-import { JwtAuthGuard, Roles } from '../auth/auth.guard';
 import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
@@ -33,7 +34,6 @@ const logger = getLogger('detailed');
 @ApiBearerAuth()
 @ApiTags('CMS')
 @Controller('cms')
-
 export class CmsController {
 
     constructor(

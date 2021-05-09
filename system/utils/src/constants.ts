@@ -67,7 +67,7 @@ export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     "react-router-dom",
     "react-toastify",
     "tslib",
-    "whatwg-fetch",
+    "react-resize-detector",
     {
         name: "pure-react-carousel",
         bundledCss: [

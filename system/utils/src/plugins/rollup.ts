@@ -215,8 +215,15 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             if (fs.pathExistsSync(resolversDefDir)) resolversDir = 'src/backend/resolvers';
         }
 
-        if (entitiesdir || resolversDir) {
+        let controllersDir = pluginConfig?.backend?.controllersDir;
+        if (!controllersDir) {
+            const controllersDefDir = resolve(process.cwd(), 'src/backend/controllers');
+            if (fs.pathExistsSync(controllersDefDir)) controllersDir = 'src/backend/controllers';
+        }
+
+        if (entitiesdir || resolversDir || controllersDir) {
             let resolverFiles: string[] = [];
+            let controllerFiles: string[] = [];
             let entityFiles: string[] = [];
 
             if (entitiesdir) {
@@ -227,8 +234,12 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                 const resolversFullDir = resolve(process.cwd(), resolversDir);
                 resolverFiles = fs.readdirSync(resolversFullDir).map(file => normalizePath(resolve(resolversFullDir, file)));
             }
+            if (controllersDir) {
+                const controllersFullDir = resolve(process.cwd(), controllersDir);
+                controllerFiles = fs.readdirSync(controllersFullDir).map(file => normalizePath(resolve(controllersFullDir, file)));
+            }
 
-            if (entityFiles.length > 0 || resolverFiles.length > 0) {
+            if (entityFiles.length > 0 || resolverFiles.length > 0 || controllerFiles.length) {
                 const cjsOptions = Object.assign({}, specifiedOptions?.backend ?? inputOptions);
 
                 const optionsInput = '$$' + moduleInfo.name + '/backend';
@@ -245,12 +256,21 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
                 let exportsStr = '';
                 const resolverNames: string[] = [];
+                const controllerNames: string[] = [];
                 const entityNames: string[] = [];
+                
                 resolverFiles.forEach(file => {
                     const name = `resolver_${cryptoRandomString({ length: 8 })}`
                     resolverNames.push(name);
                     exportsStr += `import ${name} from '${file}'\n`;
                 });
+
+                controllerFiles.forEach(file => {
+                    const name = `controller_${cryptoRandomString({ length: 8 })}`
+                    controllerNames.push(name);
+                    exportsStr += `import ${name} from '${file}'\n`;
+                });
+
                 entityFiles.forEach(file => {
                     const name = `entity_${cryptoRandomString({ length: 8 })}`
                     entityNames.push(name);
@@ -259,7 +279,13 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
                 exportsStr += 'export const resolvers = [\n';
                 resolverNames.forEach(name => exportsStr += `\t${name},\n`);
-                exportsStr += '];\nexport const entities = [\n';
+                exportsStr += '];\n';
+
+                exportsStr += 'export const controllers = [\n';
+                controllerNames.forEach(name => exportsStr += `\t${name},\n`);
+                exportsStr += '];\n';
+
+                exportsStr += 'export const entities = [\n';
                 entityNames.forEach(name => exportsStr += `\t${name},\n`);
                 exportsStr += '];\n';
 
