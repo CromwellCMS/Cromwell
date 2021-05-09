@@ -10,7 +10,7 @@ module.exports = {
                 plugins: [
                     typescript(),
                     commonjs(),
-                    // terser()
+                    terser()
                 ]
             }
         }

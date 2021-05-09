@@ -1,5 +1,5 @@
-import { CPlugin, getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
 import { getStoreItem, setStoreItem } from '@cromwell/core';
+import { AdminPanelWidgetPlace, getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
 import React, { useEffect, useState } from 'react';
 
 import styles from './PluginPage.module.scss';
@@ -29,10 +29,16 @@ const PluginPage = (props) => {
     if (!canShow) return <LoadBox />
 
     return (
-        <CPlugin id={pluginName}
-            pluginName={pluginName}
-            className={styles.PluginPage}
-        />
+        <div className={styles.PluginPage}>
+            <AdminPanelWidgetPlace
+                widgetName="PluginSettings"
+                pluginName={pluginName}
+                widgetProps={{
+                    pluginName,
+                    globalSettings: getStoreItem('pluginsSettings')?.[pluginName] ?? {}
+                }}
+            />
+        </div>
     )
 }
 

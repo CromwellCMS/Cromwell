@@ -1,13 +1,13 @@
 import React from 'react';
 
-class PageErrorBoundary extends React.Component<unknown, { hasError: boolean, errorMessage: string }> {
+export class WidgetErrorBoundary extends React.Component<{ widgetName: string }, { hasError: boolean, errorMessage: string }> {
     constructor(props) {
         super(props);
         this.state = { hasError: false, errorMessage: '' };
     }
 
     static getDerivedStateFromError(error) {
-        return { hasError: true, errorMessage: JSON.stringify(error) };
+        return { hasError: true, errorMessage: JSON.stringify(error?.error ?? error?.message) };
     }
 
     componentDidCatch(error, errorInfo) {
@@ -18,14 +18,12 @@ class PageErrorBoundary extends React.Component<unknown, { hasError: boolean, er
         if (this.state.hasError) {
             return (
                 <div>
-                    <h3>Page crashed</h3>
+                    <p>Widget {this.props.widgetName} crashed</p>
                     <p>{this.state.errorMessage}</p>
                 </div>
             );
         }
-
         return this.props.children;
     }
 }
 
-export default PageErrorBoundary;

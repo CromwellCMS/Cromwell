@@ -12,9 +12,11 @@ module.exports = {
         return {
             main: {
                 plugins: [
-                    typescript(),
+                    typescript({
+                        monorepo: true,
+                    }),
                     commonjs(),
-                    // terser()
+                    terser()
                 ]
             },
             backend: {

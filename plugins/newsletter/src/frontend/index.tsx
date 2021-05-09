@@ -1,20 +1,16 @@
 import { gql } from '@apollo/client';
-import { TFrontendPluginProps } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, InputBase, Tooltip } from '@material-ui/core';
 import { Alert, AlertProps } from '@material-ui/lab';
-import React, { Component, useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useStyles } from './styles';
 
-
-export default function NewsletterPlugin(props: TFrontendPluginProps): JSX.Element {
-    const client = getGraphQLClient();
+export default function NewsletterPlugin(): JSX.Element {
     const [email, setEmail] = useState('');
     const [hasSubscribed, setHasSubscribed] = useState(false);
     const [canValidate, setCanValidate] = useState(false);
     const classes = useStyles();
-
 
     const validateEmail = (email) => {
         if (!canValidate) setCanValidate(true);

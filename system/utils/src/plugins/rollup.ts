@@ -18,7 +18,6 @@ import {
     getThemePagesMetaPath,
     getThemeRollupBuildDir,
     pluginAdminBundlePath,
-    pluginAdminCjsPath,
     pluginFrontendBundlePath,
     pluginFrontendCjsPath,
 } from '@cromwell/core-backend';
@@ -32,7 +31,6 @@ import isPromise from 'is-promise';
 import normalizePath from 'normalize-path';
 import { dirname, isAbsolute, join, resolve } from 'path';
 import { OutputOptions, Plugin, RollupOptions } from 'rollup';
-import externalGlobals from 'rollup-plugin-external-globals';
 
 import { cromwellStoreModulesPath, getGlobalModuleStatusStr, getGlobalModuleStr } from '../constants';
 import {
@@ -45,6 +43,7 @@ import {
     isExternalForm,
     parseFrontendDeps,
 } from '../shared';
+import externalGlobals from './rollup-globals';
 
 const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): boolean => {
     // Mark all as external for backend bundle and only include in frontendDeps for frontend bundle
@@ -94,20 +93,32 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
     const inputOptions = specifiedOptions?.main;
     const outOptions: RollupOptions[] = [];
 
+    const resolveFileExtension = (basePath: string): string | undefined => {
+        const globStr = `${normalizePath(resolve(process.cwd(), basePath))}.+(ts|tsx|js|jsx)`;
+        const files = glob.sync(globStr);
+        return files[0]
+    }
+
+
     if (moduleInfo.type === 'plugin') {
         const pluginConfig = moduleConfig as TPluginConfig | undefined;
 
-        const handleInputFile = (inputFilePath: string, distChunk: string, cjsChunk: string) => {
+        let frontendInputFile = pluginConfig?.frontendInputFile;
+        if (!frontendInputFile) {
+            frontendInputFile = resolveFileExtension('src/frontend/index');
+        }
 
+        if (frontendInputFile) {
             // Plugin frontend
-            const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
-            const inputPath = isAbsolute(inputFilePath) ? normalizePath(inputFilePath) :
-                normalizePath(resolve(process.cwd(), inputFilePath));
 
-            const optionsInput = '$$' + moduleInfo.name + '/' + inputFilePath;
+            const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
+            const inputPath = isAbsolute(frontendInputFile) ? normalizePath(frontendInputFile) :
+                normalizePath(resolve(process.cwd(), frontendInputFile));
+
+            const optionsInput = '$$' + moduleInfo.name + '/' + frontendInputFile;
             options.input = optionsInput;
             options.output = Object.assign({}, options.output, {
-                file: resolve(process.cwd(), buildDirName, distChunk),
+                file: resolve(process.cwd(), buildDirName, pluginFrontendBundlePath),
                 format: "iife",
                 name: strippedName,
                 banner: '(function() {',
@@ -129,12 +140,12 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             }));
             outOptions.push(options);
 
-            // Plugin frontend cjs (for getStatic paths at server)
+            // Plugin frontend cjs (for getStaticPaths at server)
             const cjsOptions = Object.assign({}, specifiedOptions?.frontendCjs ?? inputOptions);
 
             cjsOptions.input = optionsInput;
             cjsOptions.output = Object.assign({}, cjsOptions.output, {
-                file: resolve(process.cwd(), buildDirName, cjsChunk),
+                file: resolve(process.cwd(), buildDirName, pluginFrontendCjsPath),
                 format: "cjs",
                 name: moduleInfo.name,
                 exports: "auto"
@@ -154,20 +165,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                 moduleConfig,
             }));
             outOptions.push(cjsOptions);
-        }
 
-        const resolveFileExtension = (basePath: string): string | undefined => {
-            const globStr = `${normalizePath(resolve(process.cwd(), basePath))}.+(ts|tsx|js|jsx)`;
-            const files = glob.sync(globStr);
-            return files[0]
-        }
-
-        let frontendInputFile = pluginConfig?.frontendInputFile;
-        if (!frontendInputFile) {
-            frontendInputFile = resolveFileExtension('src/frontend/index');
-        }
-        if (frontendInputFile) {
-            handleInputFile(frontendInputFile, pluginFrontendBundlePath, pluginFrontendCjsPath);
         }
 
         // Plugin admin panel
@@ -175,8 +173,33 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         if (!adminInputFile) {
             adminInputFile = resolveFileExtension('src/admin/index');
         }
+
         if (adminInputFile) {
-            handleInputFile(adminInputFile, pluginAdminBundlePath, pluginAdminCjsPath);
+            const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
+            const inputPath = isAbsolute(adminInputFile) ? normalizePath(adminInputFile) :
+                normalizePath(resolve(process.cwd(), adminInputFile));
+
+            const optionsInput = '$$' + moduleInfo.name + '/' + adminInputFile;
+            options.input = optionsInput;
+            options.output = Object.assign({}, options.output, {
+                file: resolve(process.cwd(), buildDirName, pluginAdminBundlePath),
+                format: "iife",
+                name: strippedName,
+            } as OutputOptions);
+
+            options.plugins = [...(options.plugins ?? [])];
+
+            options.plugins.push(virtual({
+                [optionsInput]: `
+                        import '${inputPath}';
+                        `
+            }))
+            options.plugins.push(rollupPluginCromwellFrontend({
+                moduleInfo,
+                moduleConfig,
+                frontendDeps,
+            }));
+            outOptions.push(options);
         }
 
         // Plugin backend

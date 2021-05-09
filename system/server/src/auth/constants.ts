@@ -2,6 +2,8 @@ import { TUserRole } from '@cromwell/core';
 import cryptoRandomString from 'crypto-random-string';
 import { FastifyRequest } from 'fastify';
 
+export const isRandomSecret = !process.env.JWT_ACCESS_TOKEN_SECRET; 
+
 export const authSettings = {
     accessSecret: process.env.JWT_ACCESS_TOKEN_SECRET ?? cryptoRandomString({ length: 8 }),
     refreshSecret: process.env.JWT_REFRESH_TOKEN_SECRET ?? cryptoRandomString({ length: 8 }),

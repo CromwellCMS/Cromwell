@@ -68,13 +68,19 @@ const ReviewListItem = (props: TPropsType) => {
                     </Grid>
                     <Grid item xs={props.embedded ? 4 : 3} className={styles.itemSubInfo}>
                         <p className={styles.status}>{props.data?.approved ? <DoneIcon /> : <HourglassEmptyIcon />} {props.data?.approved ? 'Approved' : 'Pending'}</p>
-                        <p className={styles.createDate}>{toLocaleDateString(props.data?.createDate)}</p>
+                        {!props.embedded && (
+                            <p className={styles.createDate}>{toLocaleDateString(props.data?.createDate)}</p>
+                        )}
                     </Grid>
                     <Grid item xs={props.embedded ? 5 : 4} className={styles.itemSubInfo}>
                         {props.data?.title && (
                             <p className={styles.title}>{props.data?.title ?? ''}</p>
                         )}
-                        <Rating name="read-only" value={props.data?.rating ?? 0} precision={0.5} readOnly />
+                        <Rating name="read-only"
+                            size="small"
+                            value={props.data?.rating ?? 0}
+                            precision={0.5} readOnly
+                        />
                     </Grid>
                     {!props.embedded && (
                         <Grid item xs={2} className={styles.listItemActions}>

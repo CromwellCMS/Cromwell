@@ -52,7 +52,7 @@ export default function Sidebar() {
 
     useEffect(() => {
         onStoreChange('userInfo', () => {
-            forceUpdate();
+            setTimeout(forceUpdate, 100);
         });
         history?.listen(() => {
             const currentInfo = pageInfos.find(i => '#' + i.route === window.location.hash);
@@ -61,6 +61,7 @@ export default function Sidebar() {
                 setActiveId(newcurrentLink.id);
                 if (newcurrentLink.parentId) setExpanded(newcurrentLink.parentId)
             }
+            setTimeout(forceUpdate, 100);
         });
     }, []);
 

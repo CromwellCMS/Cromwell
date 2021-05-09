@@ -19,7 +19,7 @@ import styles from './Layout.module.scss';
 const theme = createMuiTheme({
   palette: {
     primary: {
-      main: '#673ab7',
+      main: '#8228c5',
       light: '#8561c5',
       dark: '#482880',
     },
