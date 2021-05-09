@@ -1,4 +1,4 @@
-import { TFrontendDependency, TPackageCromwellConfig } from '@cromwell/core';
+import { TPackageCromwellConfig } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class ModuleInfoDto implements TPackageCromwellConfig {

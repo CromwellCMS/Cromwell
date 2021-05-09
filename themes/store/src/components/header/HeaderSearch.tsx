@@ -2,7 +2,7 @@ import { gql } from '@apollo/client';
 import { TPagedParams, TProduct } from '@cromwell/core';
 import { getCStore, getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
 import { ClickAwayListener, Fade, Grid, Popper, TextField as MuiTextField, withStyles } from '@material-ui/core';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { debounce } from 'throttle-debounce';
 
 import styles from './Header.module.scss';
@@ -16,7 +16,7 @@ const TextField = withStyles({
     },
 })(MuiTextField);
 
-export class HeaderSearch extends React.Component<{}, {
+export class HeaderSearch extends React.Component<unknown, {
     searchOpen: boolean;
     isLoading: boolean;
     searchItems: TProduct[];
@@ -124,7 +124,7 @@ export class HeaderSearch extends React.Component<{}, {
                                     )}
                                     {!isLoading && searchItems.map(product => {
                                         return (
-                                            <Link href={`/product/${product.slug}`}>
+                                            <Link href={`/product/${product.slug}`} key={product.id}>
                                                 <Grid container className={styles.listItem}>
                                                     <Grid xs={7} className={styles.itemMain}>
                                                         <div

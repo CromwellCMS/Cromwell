@@ -1,5 +1,5 @@
-import { TAttributeValue, TFrontendPluginProps, TFilteredProductList, TProductFilter } from '@cromwell/core';
-import { getGraphQLClient } from '@cromwell/core-frontend';
+import { TAttributeValue, TFilteredProductList, TFrontendPluginProps, TProductFilter } from '@cromwell/core';
+import { getGraphQLClient, iconFromPath } from '@cromwell/core-frontend';
 import {
     Card,
     CardHeader,
@@ -14,18 +14,21 @@ import {
     SwipeableDrawer,
     Typography,
     useMediaQuery,
-    useTheme
+    useTheme,
 } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon, FilterList as FilterListIcon, Close as CloseIcon } from '@material-ui/icons';
 import clsx from 'clsx';
-import { debounce } from 'debounce';
-import React, { Component, useEffect, useRef, useState } from 'react';
+import { debounce } from 'throttle-debounce';
+import React, { useEffect, useRef, useState } from 'react';
 
-import { TProductFilterSettings, TInstanceSettings } from '../types';
+import { defaultSettings } from '../constants';
+import { TInstanceSettings, TProductFilterSettings } from '../types';
 import { Slider } from './components/slider';
 import { filterCList, TProductFilterData } from './service';
 import { useStyles } from './styles';
-import { defaultSettings } from '../constants';
+
+const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>);
+const FilterListIcon = iconFromPath(<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path>);
+const CloseIcon = iconFromPath(<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>);
 
 const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductFilterSettings, TInstanceSettings>): JSX.Element => {
     const { attributes, productCategory, filterMeta } = props.data ?? {};
@@ -94,10 +97,10 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         applyFilter();
     }, [checkedAttrs]);
 
-    const onPriceRangeChange = debounce((newValue: number[]) => {
+    const onPriceRangeChange = debounce(500, (newValue: number[]) => {
         priceRange.current = newValue;
         applyFilter();
-    }, 500);
+    });
 
     if (collapsedItems['price'] === undefined) {
         collapsedItems['price'] = collapsedByDefault.current;

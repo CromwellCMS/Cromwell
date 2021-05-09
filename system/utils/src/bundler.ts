@@ -30,6 +30,7 @@ import {
     moduleMetaInfoFileName,
     moduleNodeBuidFileName,
     moduleNodeGeneratedFileName,
+    moduleOneChunkGeneratedFileName,
 } from './constants';
 import { CromwellWebpackPlugin } from './plugins/webpack';
 import {
@@ -87,6 +88,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         frontendDependencies = collectFrontendDependencies(packages, forceInstall);
     }
 
+    // // test
     // frontendDependencies = [
     //     // { name: '@cromwell/core', version: 'workspace:1.1.0' },
     //     { name: 'clsx', version: '^1.1.1' },
@@ -97,6 +99,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
     const modulesExcludeExports: Record<string, string[]> = {};
     const modulesToIgnore: Record<string, string[]> = {};
     const modulesAdditionalExports: Record<string, TAdditionalExports[]> = {};
+    const modulesBundledCss: Record<string, string[]> = {};
     const frontendDependenciesNames: string[] = [];
 
     frontendDependencies.forEach(dep => {
@@ -114,6 +117,9 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         }
         if (dep.ignore) {
             modulesToIgnore[dep.name] = dep.ignore;
+        }
+        if (dep.bundledCss) {
+            modulesBundledCss[dep.name] = dep.bundledCss;
         }
         frontendDependenciesNames.push(dep.name);
     });
@@ -172,14 +178,14 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
             `;
     }
 
-    // cache keys for initially installed modules
-    for (const dep of frontendDependencies) {
-        getModuleInfo(dep.name, dep.version, buildDir);
-    }
+    // // cache keys for initially installed modules
+    // for (const dep of frontendDependencies) {
+    //     getModuleInfo(dep.name, dep.version, buildDir);
+    // }
 
     /**
      * Start bundling a node module. After bundling requsted moduleName will parse 
-     * used modules and bundle them same way recursively
+     * used dependent (child) modules and bundle them same way recursively
      * @param moduleName 
      */
     const bundleNodeModuleRecursive = async (moduleName: string, moduleVer: string): Promise<string | undefined> => {
@@ -235,6 +241,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         // const moduleBuildDir = resolve(buildDir, `${moduleName}@${moduleVer}`);
         const moduleBuildDir = resolve(buildDir, `${moduleName}@${modulePackageJson.version}`);
         const libEntry = resolve(moduleBuildDir, moduleGeneratedFileName);
+        const oneChunkLibEntry = resolve(moduleBuildDir, moduleOneChunkGeneratedFileName);
         const nodeLibEntry = resolve(moduleBuildDir, moduleNodeGeneratedFileName);
         const metaInfoPath = resolve(moduleBuildDir, moduleMetaInfoFileName);
         const bundleInfoPath = resolve(moduleBuildDir, moduleBundleInfoFileName);
@@ -308,9 +315,14 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
             }
         }
 
+        const cssEntryContent = (modulesBundledCss[moduleName] ?? []).map(cssFile => `import '${cssFile}';`).join('\n');
+
+
         // Main generated file that contains references to generated chunks
         const content = `
             const moduleName = '${moduleName}';
+
+            ${cssEntryContent}
 
             const isServer = () => (typeof window === 'undefined');
             const getStore = () => {
@@ -381,7 +393,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         await fs.writeFile(libEntry, content);
 
 
-        // Main generated file that contains references to generated chunks
+        // Generated lib entry for Node.js environment execution
         const nodeContent = `
             import * as defaultImport from '${modulePath}'
             const moduleName = '${moduleName}';
@@ -409,6 +421,12 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
             `;
 
         await fs.writeFile(nodeLibEntry, nodeContent);
+
+
+        // One chunk lib build
+        const oneChunkContent = cssEntryContent + '\n' + nodeContent;
+        await fs.writeFile(oneChunkLibEntry, oneChunkContent);
+
 
 
         // 1. FIRST BUILD PASS
@@ -573,7 +591,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
 
 
         // Additional one-chunk build
-        const webpackSingleConfig = makeConfig(webWebpackConfig, nodeLibEntry, true);
+        const webpackSingleConfig = makeConfig(webWebpackConfig, oneChunkLibEntry, true);
         webpackSingleConfig.output!.publicPath = `/${bundledModulesDirName}/${moduleName}@${modulePackageJson.version}/`;
         webpackSingleConfig!.output!.filename = moduleLibBuidFileName;
         webpackSingleConfig!.optimization = undefined;
@@ -593,7 +611,6 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
                 // console.log(stats?.toString({ colors: true }))
                 done(true);
             });
-
         });
 
 

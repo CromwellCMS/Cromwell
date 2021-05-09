@@ -1,19 +1,12 @@
 import { TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, ProductAttributes } from '@cromwell/core-frontend';
 import { Button, IconButton, Input } from '@material-ui/core';
-import {
-    Add as AddIcon,
-    AddShoppingCart as AddShoppingCartIcon,
-    Equalizer as EqualizerIcon,
-    Favorite as FavoriteIcon,
-    Remove as RemoveIcon,
-    ShoppingCart as ShoppingCartIcon,
-} from '@material-ui/icons';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
 import { appState } from '../../../helpers/AppState';
 import { useForceUpdate } from '../../../helpers/forceUpdate';
+import { AddIcon, AddShoppingCartIcon, EqualizerIcon, FavoriteIcon, RemoveIcon, ShoppingCartIcon } from '../../icons';
 import { toast } from '../../toast/toast';
 import styles from './ProductActions.module.scss';
 

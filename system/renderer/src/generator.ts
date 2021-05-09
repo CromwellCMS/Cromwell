@@ -175,6 +175,7 @@ const devGenerate = async (themeName: string) => {
          }
          ` : ''}
          `;
+
         let pageContent = `
          ${globalCssImports}
          ${pageImports}
@@ -254,6 +255,12 @@ const devGenerate = async (themeName: string) => {
  
              ${pageInfo.fileContent}
              `
+        } else {
+            const globalStyles = `
+            import 'pure-react-carousel/dist/react-carousel.es.css';
+            import 'react-image-lightbox/style.css';`
+
+            pageContent = globalStyles + '\n' + pageContent;
         }
 
         const pagePath = resolve(pagesLocalDir, pageInfo.name + '.js');

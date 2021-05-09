@@ -23,7 +23,6 @@
     "@cromwell/plugin-product-showcase": "^1.0.0",
     "@cromwell/theme-blog": "1.0.0",
     "@material-ui/core": "4.11.2",
-    "@material-ui/icons": "4.11.2",
     "@material-ui/lab": "4.0.0-alpha.57",
     "clsx": "1.1.1",
     "date-fns": "2.19.0",
@@ -34,11 +33,11 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "react-is": "17.0.1",
-    "react-resize-detector": "^6.7.1",
+    "react-resize-detector": "6.7.1",
     "react-swipeable-views": "0.13.9",
     "react-toastify": "6.0.8",
     "reset-css": "5.0.1",
-    "throttle-debounce": "^3.0.1",
+    "throttle-debounce": "3.0.1",
     "tslib": "2.1.0"
   },
   "devDependencies": {
@@ -82,8 +81,10 @@
       "mobx",
       "mobx-react",
       "react-swipeable-views",
+      "react-resize-detector",
       "@material-ui/core",
       "date-fns",
+      "throttle-debounce",
       {
         "name": "@material-ui/lab",
         "externals": [
@@ -161,28 +162,18 @@
             "importName": "Collapse"
           }
         ]
-      },
-      {
-        "name": "@material-ui/icons",
-        "externals": [
-          {
-            "usedName": "@material-ui/core/SvgIcon",
-            "moduleName": "@material-ui/core",
-            "importName": "SvgIcon"
-          }
-        ]
       }
     ],
-    "bundledDependencies": [
+    "firstLoadedDependencies": [
       "mobx",
       "mobx-react",
       "date-fns",
+      "react-resize-detector",
       "react-swipeable-views",
       "@material-ui/core",
       "@material-ui/styles",
       "@material-ui/utils",
       "@material-ui/system",
-      "swiper",
       "react-toastify",
       "prop-types",
       "hoist-non-react-statics",
@@ -211,7 +202,10 @@
       "fast-json-stable-stringify",
       "zen-observable",
       "ts-invariant",
-      "optimism"
+      "optimism",
+      "throttle-debounce",
+      "pure-react-carousel",
+      "@apollo/client"
     ]
   },
   "resolutions": {

@@ -527,6 +527,7 @@ export class ThemeService {
             const moduleInfo = await getCmsModuleInfo(themeName);
             delete moduleInfo?.frontendDependencies;
             delete moduleInfo?.bundledDependencies;
+            delete moduleInfo?.firstLoadedDependencies;
 
             // Make symlink for public static content
             const themePublicDir = resolve(themePath, 'static');

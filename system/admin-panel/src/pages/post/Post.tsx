@@ -4,7 +4,7 @@ import { gql } from '@apollo/client';
 import { getStoreItem, onStoreChange, serviceLocator, TPost, TPostInput, TTag, TUser } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, Tooltip } from '@material-ui/core';
-import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon, Settings as SettingsIcon } from '@material-ui/icons';
+import { OpenInNew as OpenInNewIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
@@ -18,6 +18,7 @@ import { store } from '../../redux/store';
 import styles from './Post.module.scss';
 import PostSettings from './PostSettings';
 
+const ArrowBackIcon = <svg width="1em" height="1em" focusable="false" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"></path></svg>
 const textPreloader = [];
 for (let i = 0; i < 30; i++) {
     textPreloader.push(<Skeleton variant="text" height="10px" style={{ margin: '3px 0' }} key={i} />)
@@ -241,7 +242,7 @@ const Post = (props) => {
                     <Link to={postListInfo.route}>
                         <IconButton
                         >
-                            <ArrowBackIcon />
+                            {ArrowBackIcon}
                         </IconButton>
                     </Link>
                     <Tooltip title="Edit title in settings">

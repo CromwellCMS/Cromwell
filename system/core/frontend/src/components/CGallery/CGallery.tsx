@@ -124,6 +124,11 @@ export class CGallery extends React.Component<TCGalleryProps> {
         let containerHeight = gallerySettings.height;
         if (gallerySettings.autoHeight) containerHeight = height;
 
+        let interval = gallerySettings.interval;
+        if (typeof interval === 'number') {
+            if (interval < 400) interval = 400;
+        }
+
         const galleryJsx = (
             <CarouselProvider
                 orientation={gallerySettings.orientation}
@@ -132,7 +137,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                 naturalSlideHeight={100}
                 totalSlides={totalSlides}
                 infinite={gallerySettings.loop}
-                interval={gallerySettings.interval}
+                interval={interval}
                 isPlaying={gallerySettings.autoPlay}
             >
                 <CarouselOnChangeWatcher onChange={this.onActiveSlideChange} />

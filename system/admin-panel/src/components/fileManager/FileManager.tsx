@@ -13,6 +13,7 @@ import {
     Publish as PublishIcon,
     ZoomIn as ZoomInIcon,
     NavigateNext as NavigateNextIcon,
+    Home as HomeIcon,
 } from '@material-ui/icons';
 import React from 'react';
 import LazyLoad from 'react-lazy-load';
@@ -22,7 +23,6 @@ import Pagination from '../pagination/Pagination';
 import Modal from '../modal/Modal';
 import styles from './FileManager.module.scss';
 import { IFileManager, TItemType, TState } from './types';
-
 
 class FileManager extends React.Component<any, TState> implements IFileManager {
 
@@ -389,9 +389,9 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                 </div>
                 <div className={styles.breadcrumbs}>
                     <Breadcrumbs separator={<NavigateNextIcon fontSize="small" />} aria-label="breadcrumb">
-                        <p className={styles.pathChunk}
+                        <div className={styles.pathChunk}
                             onClick={() => this.openPath('/')}
-                            key={'/'}>/</p>
+                            key={'/'}><HomeIcon style={{ fontSize: '21px' }} /></div>
                         {breadcrumbsPath.split('/').map((pathChunk, index) => {
                             const fullPath = breadcrumbsPath.split('/').slice(0, index + 1).join('/');
                             return (

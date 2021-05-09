@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client';
 import { TPagedParams, TPost, TPostFilter } from '@cromwell/core';
-import { getCStore, getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
+import { getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
 import { ClickAwayListener, Fade, Grid, Popper, TextField as MuiTextField, withStyles } from '@material-ui/core';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { debounce } from 'throttle-debounce';
 
 import styles from './Header.module.scss';
@@ -16,7 +16,7 @@ const TextField = withStyles({
     },
 })(MuiTextField);
 
-export class HeaderSearch extends React.Component<{}, {
+export class HeaderSearch extends React.Component<unknown, {
     searchOpen: boolean;
     isLoading: boolean;
     searchItems: TPost[];
@@ -96,7 +96,6 @@ export class HeaderSearch extends React.Component<{}, {
     }
 
     render() {
-        const cstore = getCStore();
         const { isLoading, searchItems, searchOpen } = this.state;
 
         return (
@@ -121,7 +120,7 @@ export class HeaderSearch extends React.Component<{}, {
                                     )}
                                     {!isLoading && searchItems.map(post => {
                                         return (
-                                            <Grid container className={styles.listItem}>
+                                            <Grid container className={styles.listItem} key={post.id}>
                                                 <Link href={`/post/${post.slug}`} >
                                                     <Grid item xs={12} className={styles.itemMain}>
                                                         <div

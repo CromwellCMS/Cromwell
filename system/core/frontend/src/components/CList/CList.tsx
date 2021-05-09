@@ -1,5 +1,5 @@
 import { isServer, TCromwellBlockProps, TPagedList, TPagedParams } from '@cromwell/core';
-import debounce from 'debounce';
+import { debounce } from 'throttle-debounce';
 import React from 'react';
 
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
@@ -234,7 +234,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
     }
 
 
-    private onScroll = debounce(() => {
+    private onScroll = debounce(50, () => {
         const props = this.getProps();
         if (props.useAutoLoading) {
             const minRangeToLoad = props.minRangeToLoad ?? 200;
@@ -268,7 +268,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
                 }
             }
         }
-    }, 50)
+    })
 
     public clearState = () => {
         const props = this.getProps();

@@ -9,8 +9,6 @@ import { terser } from 'rollup-plugin-terser';
 import pkg from './package.json';
 
 const external = id => {
-    if (id === 'swiper/swiper-bundle.min.css') return false;
-
     return !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
 }
 

@@ -11,7 +11,7 @@ import {
 } from '@material-ui/core';
 import { Close as CloseIcon } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { debounce } from 'throttle-debounce';
 
 import styles from './Autocomplete.module.scss';
@@ -150,7 +150,7 @@ class Autocomplete<TItemDataType> extends React.Component<{
     }
 
     render() {
-        const { isLoading, searchItems, searchOpen } = this.state;
+        const { searchOpen } = this.state;
         const ItemComponent = this.props.itemComponent;
 
         return (
@@ -201,10 +201,10 @@ class Autocomplete<TItemDataType> extends React.Component<{
                                                 {ItemComponent ? (
                                                     <ItemComponent data={props.data} />
                                                 ) : (
-                                                    <ListItem button>
-                                                        <p className={styles.itemText}>{this.props.getOptionLabel(props.data)}</p>
-                                                    </ListItem>
-                                                )}
+                                                        <ListItem button>
+                                                            <p className={styles.itemText}>{this.props.getOptionLabel(props.data)}</p>
+                                                        </ListItem>
+                                                    )}
                                             </div>
                                         )
                                     }}

@@ -1,11 +1,12 @@
 import { TFrontendPluginProps } from '@cromwell/core';
-import { Link } from '@cromwell/core-frontend';
+import { Link, iconFromPath } from '@cromwell/core-frontend';
 import { Collapse, IconButton, MenuItem, Popover, useMediaQuery, useTheme } from '@material-ui/core';
-import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
 
 import { TMainMenuItem, TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
+
+const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>);
 
 const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
     const classes = useStyles();

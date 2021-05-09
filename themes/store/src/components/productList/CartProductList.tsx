@@ -1,13 +1,13 @@
 import { TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
-import { Collapse, IconButton, useMediaQuery, useTheme, Grid } from '@material-ui/core';
-import { DeleteForever as DeleteForeverIcon, ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
+import { Collapse, Grid, IconButton, useMediaQuery, useTheme } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
-import commonStyles from '../../styles/common.module.scss';
-import { LoadBox } from '../loadbox/Loadbox';
 import { useForceUpdate } from '../../helpers/forceUpdate';
+import commonStyles from '../../styles/common.module.scss';
+import { DeleteForeverIcon, ExpandMoreIcon } from '../icons';
+import { LoadBox } from '../loadbox/Loadbox';
 import styles from './CartProductList.module.scss';
 
 export const CartProductList = (props: {
@@ -46,7 +46,7 @@ export const CartProductList = (props: {
             setIsLoading(false);
         })();
 
-        cstore.onCartUpdate (() => {
+        cstore.onCartUpdate(() => {
             forceUpdate();
         }, 'ProductActions');
     }, []);
@@ -137,7 +137,7 @@ export const CartProductList = (props: {
                     <IconButton>
                         <ExpandMoreIcon
                             // className={classes.expandMoreIcon}
-                            htmlColor="#111"
+                            color="#111"
                             style={{ transform: !isCollapsed.current ? 'rotate(180deg)' : '' }}
                         />
                     </IconButton>
@@ -148,7 +148,6 @@ export const CartProductList = (props: {
                     {productList}
                 </Collapse>
             ) : productList}
-
         </div >
     )
 }

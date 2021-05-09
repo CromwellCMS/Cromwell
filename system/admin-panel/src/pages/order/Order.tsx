@@ -7,7 +7,7 @@ import {
     WarningRounded as WarningRoundedIcon,
 } from '@material-ui/icons';
 import { Autocomplete, Skeleton } from '@material-ui/lab';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 
 import { toast } from '../../components/toast/toast';
@@ -41,6 +41,7 @@ const OrderPage = () => {
             console.error(e)
         }
         setOrderLoading(false);
+        setCartLoading(false);
 
         if (!orderData) {
             setNotFound(true);
@@ -132,8 +133,6 @@ const OrderPage = () => {
 
     const cartInfo = cstore.getCartTotal();
     const cartNewTotal = cartInfo.total;
-    const cartNewTotalOldPrice = cartInfo.totalOld;
-    const cartAmount = cartInfo.amount
     const orderTotalPriceRecalc = (data?.cartTotalPrice ?? 0) + (data?.shippingPrice ?? 0);
 
     return (

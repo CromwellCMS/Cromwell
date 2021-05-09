@@ -13,6 +13,7 @@ export const moduleArchiveFileName = 'module.zip';
 export const bundledModulesDirName = 'bundled-modules';
 
 export const moduleGeneratedFileName = 'generated.js';
+export const moduleOneChunkGeneratedFileName = 'generated.lib.js';
 export const moduleNodeGeneratedFileName = 'generated.node.js';
 export const moduleExportsDirChunk = 'generated';
 
@@ -34,7 +35,6 @@ export const tempPckgName = '@cromwell/temp-bundler';
 export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     "@apollo/client",
     "@cromwell/core",
-    "@cromwell/core-frontend",
     {
         "name": "@cromwell/core-frontend",
         "externals": [
@@ -57,7 +57,7 @@ export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     },
     "@loadable/component",
     "clsx",
-    "debounce",
+    "throttle-debounce",
     "query-string",
     "quill",
     "react",
@@ -66,9 +66,19 @@ export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     "react-number-format",
     "react-router-dom",
     "react-toastify",
-    "swiper",
     "tslib",
     "whatwg-fetch",
-    "pure-react-carousel",
-    "react-image-lightbox",
+    {
+        name: "pure-react-carousel",
+        bundledCss: [
+            'pure-react-carousel/dist/react-carousel.es.css',
+        ]
+    },
+    {
+        name: "react-image-lightbox",
+        bundledCss: [
+            'react-image-lightbox/style.css',
+        ]
+    },
 ];
+

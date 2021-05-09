@@ -93,38 +93,52 @@ export function GalleryBlockSidebar(props: TBaseMenuProps) {
             <TextField
                 fullWidth
                 onChange={handleNumberInput('width')}
-                value={data?.gallery?.width ?? null}
+                value={data?.gallery?.width ?? ''}
                 className={styles.settingsInput}
                 type="number"
                 label="Width (px)" />
             <TextField
                 onChange={handleNumberInput('height')}
                 fullWidth
-                value={data?.gallery?.height ?? null}
+                value={data?.gallery?.height ?? ''}
                 className={styles.settingsInput}
                 type="number"
                 label="Height (px)" />
             <TextField
                 onChange={handleNumberInput('ratio')}
                 fullWidth
-                value={data?.gallery?.ratio ?? null}
+                value={data?.gallery?.ratio ?? ''}
                 className={styles.settingsInput}
                 type="number"
                 label="Ratio width:height" />
             <TextField
-                onChange={handleNumberInput('interval')}
+                onChange={(event) => {
+                    handleNumberInput('interval')(event);
+                    handleBoolInput('autoPlay')(event as any, false);
+                    setTimeout(() => handleBoolInput('autoPlay')(event as any, true), 10);
+                }}
                 fullWidth
-                value={data?.gallery?.interval ?? null}
+                value={data?.gallery?.interval ?? ''}
                 className={styles.settingsInput}
                 type="number"
-                label="Delay before autoslide to next, ms" />
-            <TextField
+                label="Interval between slides, ms" />
+            {/* <TextField
                 onChange={handleNumberInput('speed')}
                 fullWidth
                 value={data?.gallery?.speed ?? null}
                 className={styles.settingsInput}
                 type="number"
-                label="Transition time between slides, ms" />
+                label="Transition time between slides, ms" /> */}
+            <FormControlLabel
+                control={
+                    <Checkbox
+                        checked={!!data?.gallery?.autoPlay}
+                        onChange={handleBoolInput('autoPlay')}
+                        color="primary"
+                    />
+                }
+                label="Auto play"
+            />
             <FormControlLabel
                 control={
                     <Checkbox

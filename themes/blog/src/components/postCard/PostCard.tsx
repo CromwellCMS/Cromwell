@@ -1,6 +1,6 @@
 import { TPost, TTag } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
-import { AccountCircle as AccountCircleIcon } from '@material-ui/icons';
+import { AccountCircleIcon } from '../icons';
 import clsx from 'clsx';
 import { format } from 'date-fns';
 import React from 'react';

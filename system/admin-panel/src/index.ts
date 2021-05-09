@@ -3,7 +3,7 @@ import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 
 const importer = getModuleImporter();
 
-; (async () => {
+(async () => {
     const [React, ReactDOM] = await Promise.all([
         import('react'),
         import('react-dom'),
@@ -22,4 +22,3 @@ const importer = getModuleImporter();
 
     await import('./app');
 })();
-
