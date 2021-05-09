@@ -97,6 +97,7 @@ export class CmsController {
             if (moduleInfo) {
                 delete moduleInfo.frontendDependencies;
                 delete moduleInfo.bundledDependencies;
+                delete moduleInfo.firstLoadedDependencies;
 
                 await this.cmsService.parseModuleConfigImages(moduleInfo, themeName);
                 out.push(moduleInfo);
@@ -125,6 +126,7 @@ export class CmsController {
             const moduleInfo = await getCmsModuleInfo(pluginName);
             delete moduleInfo?.frontendDependencies;
             delete moduleInfo?.bundledDependencies;
+            delete moduleInfo?.firstLoadedDependencies;
 
             if (moduleInfo) {
                 await this.cmsService.parseModuleConfigImages(moduleInfo, pluginName);

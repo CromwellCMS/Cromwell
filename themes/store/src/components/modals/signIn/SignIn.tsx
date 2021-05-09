@@ -1,17 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { TUser } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import { setStoreItem, TUser } from '@cromwell/core';
-import { observer } from 'mobx-react';
-import {
-    AccountCircle as AccountCircleIcon,
-    Visibility as VisibilityIcon,
-    VisibilityOff as VisibilityOffIcon,
-} from '@material-ui/icons';
-import { Button, TextField, InputAdornment, IconButton, Tabs, Tab } from '@material-ui/core';
+import { Button, IconButton, InputAdornment, Tab, Tabs, TextField } from '@material-ui/core';
+import React, { useState } from 'react';
+
 import commonStyles from '../../../styles/common.module.scss';
-import styles from './SignIn.module.scss';
-import Modal from '../baseModal/Modal'
+import { VisibilityIcon, VisibilityOffIcon } from '../../icons';
 import { toast } from '../../toast/toast';
+import Modal from '../baseModal/Modal';
+import styles from './SignIn.module.scss';
 
 
 export type TFromType = 'sign-in' | 'sign-up' | 'forgot-pass' | 'reset-pass';

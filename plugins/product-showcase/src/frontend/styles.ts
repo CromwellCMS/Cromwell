@@ -19,12 +19,5 @@ export const useStyles = makeStyles(() =>
             pointerEvents: 'initial',
             padding: '15px'
         },
-        swiperContainer: {
-            width: '100%',
-            padding: '15px 0'
-        },
-        swiperPagination: {
-            bottom: 0
-        }
     }),
 );

@@ -1,5 +1,3 @@
-import 'swiper/swiper-bundle.min.css';
-
 import { gql } from '@apollo/client';
 import { serviceLocator, TAttribute, TProduct, TProductInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';

@@ -101,17 +101,15 @@ module.exports = {
                 "next/dynamic",
                 "next/document",
                 "@material-ui/core",
-                "@material-ui/icons",
                 "@material-ui/lab",
                 "@apollo/client",
                 "@loadable/component",
-                "debounce",
+                "throttle-debounce",
                 "whatwg-fetch",
                 "query-string",
                 "react-number-format",
                 "react-router-dom",
                 "react-toastify",
-                "swiper",
                 "tslib"
             ]
         }),

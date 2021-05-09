@@ -139,7 +139,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                     } catch (error) {
                         console.error(`Cromwell:importer: An error occurred while loading the library: import { ${namedExport} } from '${moduleName}'`, error);
                         return false;
-                    };
+                    }
                 }
                 return false;
             }
@@ -168,101 +168,102 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                 const scriptId = `${moduleName}@${moduleVer}-main-module-importer`;
                 if (document.getElementById(scriptId)) return true;
 
-                Cromwell.importStatuses[moduleName] = new Promise(async (onLoad) => {
+                let onLoad;
+                const importPromise = new Promise<"failed" | "ready" | "default">(done => onLoad = done);
+                Cromwell.importStatuses[moduleName] = importPromise;
 
-                    if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
-                    if (!Cromwell.imports) Cromwell.imports = {};
+                if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
+                if (!Cromwell.imports) Cromwell.imports = {};
 
-                    // Load meta and externals if it has any
+                // Load meta and externals if it has any
 
-                    try {
-                        const metaInfoStr = await fetch(`/${metaFilepath}`).then(res => res.text());
-                        if (metaInfoStr) {
-                            const metaInfo: TSciprtMetaInfo = JSON.parse(metaInfoStr);
-                            // { [moduleName]: namedExports }
-                            if (metaInfo) {
-                                if (metaInfo.import === 'lib') {
-                                    isLibImport = true;
-                                }
-                                await Cromwell?.importSciptExternals?.(metaInfo);
-
-                                if (canShowInfo) console.log('Cromwell:importer: Successfully loaded all script externals for module: ' + moduleName, metaInfo);
+                try {
+                    const metaInfoStr = await fetch(`/${metaFilepath}`).then(res => res.text());
+                    if (metaInfoStr) {
+                        const metaInfo: TSciprtMetaInfo = JSON.parse(metaInfoStr);
+                        // { [moduleName]: namedExports }
+                        if (metaInfo) {
+                            if (metaInfo.import === 'lib') {
+                                isLibImport = true;
                             }
-                        } else {
-                            throw new Error('Failed to fetch file:  /' + metaFilepath)
+                            await Cromwell?.importSciptExternals?.(metaInfo);
+
+                            if (canShowInfo) console.log('Cromwell:importer: Successfully loaded all script externals for module: ' + moduleName, metaInfo);
                         }
-                    } catch (e) {
-                        console.error('Cromwell:importer: Failed to load meta info about importer of the module: ' + moduleName, e);
-                    }
-
-
-
-                    if (Cromwell.modules?.[moduleName]) {
-                        // Module has been asyc imported in some other importer or was bundled intentionally that way with reference in global store.
-                        return true;
-                    }
-
-                    const filePath = isLibImport ? importerEntireLibFilepath : importerFilepath
-                    try {
-                        await new Promise(done => {
-                            const domScript = document.createElement('script');
-                            domScript.id = scriptId;
-                            domScript.src = filePath;
-                            domScript.onload = () => done(true);
-                            document.head.appendChild(domScript);
-                        });
-
-                        if (canShowInfo) console.log(`Cromwell:importer: Importer for module "${moduleName}" executed`);
-
-                        if (isLibImport && Cromwell?.modules?.[moduleName]) {
-                            //@ts-ignore
-                            Cromwell.imports[moduleName] = { 'default': () => { } };
-                        };
-                        if (canShowInfo) console.log(`Cromwell:importer: isLibImport:`, isLibImport, 'Cromwell?.modules?.[moduleName]',
-                            Cromwell?.modules?.[moduleName], ' Cromwell.imports[moduleName] ', Cromwell.imports[moduleName]);
-
-                    } catch (e) {
-                        console.error('Cromwell:importer: Failed to execute importer for module: ' + moduleName, e);
-                        Cromwell.importStatuses[moduleName] = 'failed';
-                        onLoad('failed');
-                        return false;
-                    }
-
-
-                    if (!Cromwell.imports[moduleName]) {
-                        console.error('Cromwell:importer: Failed to load importer for module: ' + moduleName);
-                        Cromwell.importStatuses[moduleName] = 'failed';
-                        onLoad('failed');
-                        return false;
-                    };
-
-                    if (canShowInfo) console.log('Cromwell:importer: Successfully loaded importer for module: ' + moduleName);
-
-                    const success = await importAllNamed();
-
-                    if (success.includes(false)) {
-                        console.error('Cromwell:importer: Failed to import one of named exports');
-                        Cromwell.importStatuses[moduleName] = 'failed';
-                        onLoad('failed');
-                        return false;
                     } else {
-                        if (canShowInfo) console.log('Cromwell:importer: All initially requested named exports for module "' + moduleName + '" have been successfully loaded', namedExports);
+                        throw new Error('Failed to fetch file:  /' + metaFilepath)
                     }
+                } catch (e) {
+                    console.error('Cromwell:importer: Failed to load meta info about importer of the module: ' + moduleName, e);
+                }
 
-                    if (isLibImport) {
-                        Cromwell.importStatuses[moduleName] = 'default';
-                        onLoad('default');
-                    } else {
-                        Cromwell.importStatuses[moduleName] = 'ready';
-                        onLoad('ready');
-                    }
 
+
+                if (Cromwell.modules?.[moduleName]) {
+                    // Module has been asyc imported in some other importer or was bundled intentionally that way with reference in global store.
                     return true;
-                })
+                }
 
-                const status = await Cromwell.importStatuses[moduleName];
-                if (status === 'ready') return true;
-                return false;
+                const filePath = isLibImport ? importerEntireLibFilepath : importerFilepath;
+                try {
+                    const success = await new Promise(done => {
+                        const domScript = document.createElement('script');
+                        domScript.id = scriptId;
+                        domScript.src = filePath;
+                        domScript.onload = () => done(true);
+                        domScript.onerror = (e) => {
+                            console.error('Cromwell:importer: Failed to load importer for module: ' + moduleName, e);
+                            done(false);
+                        }
+                        document.head.appendChild(domScript);
+                    });
+                    if (!success) throw new Error('');
+
+                    if (canShowInfo) console.log(`Cromwell:importer: Importer for module "${moduleName}" executed`);
+
+                    if (isLibImport && Cromwell?.modules?.[moduleName]) {
+                        Cromwell.imports[moduleName] = { 'default': () => { } } as any;
+                    }
+                    if (canShowInfo) console.log(`Cromwell:importer: isLibImport:`, isLibImport, 'Cromwell?.modules?.[moduleName]',
+                        Cromwell?.modules?.[moduleName], ' Cromwell.imports[moduleName] ', Cromwell.imports[moduleName]);
+
+                } catch (e) {
+                    console.error('Cromwell:importer: Failed to execute importer for module: ' + moduleName, e);
+                    Cromwell.importStatuses[moduleName] = 'failed';
+                    onLoad('failed');
+                    return false;
+                }
+
+
+                if (!Cromwell.imports[moduleName]) {
+                    console.error('Cromwell:importer: Failed to load importer for module: ' + moduleName);
+                    Cromwell.importStatuses[moduleName] = 'failed';
+                    onLoad('failed');
+                    return false;
+                }
+
+                if (canShowInfo) console.log('Cromwell:importer: Successfully loaded importer for module: ' + moduleName);
+
+                const success = await importAllNamed();
+
+                if (success.includes(false)) {
+                    console.error('Cromwell:importer: Failed to import one of named exports');
+                    Cromwell.importStatuses[moduleName] = 'failed';
+                    onLoad('failed');
+                    return false;
+                } else {
+                    if (canShowInfo) console.log('Cromwell:importer: All initially requested named exports for module "' + moduleName + '" have been successfully loaded', namedExports);
+                }
+
+                if (isLibImport) {
+                    Cromwell.importStatuses[moduleName] = 'default';
+                    onLoad('default');
+                } else {
+                    Cromwell.importStatuses[moduleName] = 'ready';
+                    onLoad('ready');
+                }
+
+                return true;
             }
 
             // check if this module is being imported by another async request
@@ -286,17 +287,17 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                     if (!Cromwell?.imports?.[moduleName]) throw new Error('ready:!Cromwell.imports[moduleName]' + moduleName);
 
                     const lastStatus = Cromwell.importStatuses[moduleName];
-                    Cromwell.importStatuses[moduleName] = new Promise(async done => {
-                        const success = await importAllNamed();
 
-                        Cromwell.importStatuses![moduleName] = lastStatus;
+                    let onLoad;
+                    const importPromise = new Promise<"failed" | "ready" | "default">(done => onLoad = done);
+                    Cromwell.importStatuses[moduleName] = importPromise;
 
-                        if (success.includes(false)) done(lastStatus);
-                        else done(lastStatus);
-                    });
+                    const success = await importAllNamed();
 
-                    await Cromwell.importStatuses[moduleName];
+                    Cromwell.importStatuses[moduleName] = lastStatus;
 
+                    if (success.includes(false)) onLoad(lastStatus);
+                    else onLoad(lastStatus);
                     return true;
                 }
 
@@ -328,7 +329,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
         if (metaInfo.name && typeof Cromwell.scriptStatuses[metaInfo.name] === 'object') {
             await Cromwell.scriptStatuses[metaInfo.name];
             return true;
-        };
+        }
 
         if (metaInfo.name && typeof Cromwell.scriptStatuses[metaInfo.name] === 'string') return true;
         if (metaInfo.name && Cromwell.modules?.[metaInfo.name]) {
@@ -380,4 +381,3 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
     return Cromwell;
 }
-

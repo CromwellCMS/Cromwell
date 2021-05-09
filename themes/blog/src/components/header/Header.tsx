@@ -1,33 +1,16 @@
 import { getCmsSettings } from '@cromwell/core';
 import { CPlugin, Link } from '@cromwell/core-frontend';
-import {
-    AppBar,
-    createStyles,
-    IconButton,
-    makeStyles,
-    Select as MuiSelect,
-    Slide,
-    SwipeableDrawer,
-    TextField as MuiTextField,
-    Theme,
-    Toolbar,
-    useMediaQuery,
-    useScrollTrigger,
-    useTheme,
-    withStyles,
-} from '@material-ui/core';
-import { Close as CloseIcon, Menu as MenuIcon } from '@material-ui/icons';
-import React, { useEffect, useState } from 'react';
+import { AppBar, IconButton, Slide, SwipeableDrawer, Toolbar, useScrollTrigger } from '@material-ui/core';
+import React, { useState } from 'react';
 
 import commonStyles from '../../styles/common.module.scss';
+import { CloseIcon, MenuIcon } from '../icons';
 import styles from './Header.module.scss';
 import { HeaderSearch } from './HeaderSearch';
 
 const Header = () => {
     const cmsConfig = getCmsSettings();
     const [menuOpen, setMenuOpen] = useState(false);
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
     const handleCloseMenu = () => {
         setMenuOpen(false);
     }
@@ -60,7 +43,7 @@ const Header = () => {
                                 </div>
                                 <div className={styles.mobileActions}>
                                     <IconButton onClick={handleOpenMenu}>
-                                        <MenuIcon htmlColor="#111" />
+                                        <MenuIcon color="#111" />
                                     </IconButton>
                                 </div>
                             </div>
@@ -77,7 +60,7 @@ const Header = () => {
                     <div className={styles.menuActions}>
                         <div></div>
                         <IconButton onClick={handleCloseMenu}>
-                            <CloseIcon htmlColor="#111" />
+                            <CloseIcon color="#111" />
                         </IconButton>
                     </div>
                     <div className={styles.mobileSearch}>

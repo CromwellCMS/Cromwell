@@ -2,13 +2,12 @@ import {
     getRandStr,
     TFrontendDependency,
     TModuleConfig,
+    TPackageCromwellConfig,
     TPackageJson,
     TPagesMetaInfo,
     TPluginConfig,
     TRollupConfig,
     TSciprtMetaInfo,
-    TThemeConfig,
-    TPackageCromwellConfig
 } from '@cromwell/core';
 import {
     buildDirName,
@@ -35,7 +34,7 @@ import { dirname, isAbsolute, join, resolve } from 'path';
 import { OutputOptions, Plugin, RollupOptions } from 'rollup';
 import externalGlobals from 'rollup-plugin-external-globals';
 
-import { cromwellStoreModulesPath, getGlobalModuleStr, getGlobalModuleStatusStr } from '../constants';
+import { cromwellStoreModulesPath, getGlobalModuleStatusStr, getGlobalModuleStr } from '../constants';
 import {
     collectFrontendDependencies,
     collectPackagesInfo,
@@ -78,7 +77,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
     } catch (e) {
         errorLogger('Failed to find package.json in project root');
         console.error(e);
-    };
+    }
 
     if (!moduleInfo.name) throw new Error(`CromwellPlugin Error. Failed to find name of the package in working directory`);
 
@@ -90,8 +89,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
     const frontendDeps = collectFrontendDependencies(packages, false);
 
     let specifiedOptions: TRollupConfig | undefined = moduleConfig?.rollupConfig?.() as any;
-    //@ts-ignore
-    if (isPromise(specifiedOptions)) specifiedOptions = await specifiedOptions;
+    if (isPromise(specifiedOptions)) specifiedOptions = await specifiedOptions as any;
 
     const inputOptions = specifiedOptions?.main;
     const outOptions: RollupOptions[] = [];
@@ -298,7 +296,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                 });
                 pageImports += `export * as Page_${cryptoRandomString({ length: 12 })} from '${fileName}';\n`;
                 // pageImports += `export const Page_${cryptoRandomString({ length: 12 })} = require('${fileName}');\n`;
-            };
+            }
 
             options.plugins = [...(options.plugins ?? [])];
 
@@ -439,18 +437,20 @@ export const rollupPluginCromwellFrontend = (settings?: {
 
     }
 
-    let packageJson: TPackageJson;
-    try {
-        packageJson = require(resolve(process.cwd(), 'package.json'));
-    } catch (e) { console.error(e) }
+    const packageJson: TPackageJson = require(resolve(process.cwd(), 'package.json'));
 
     const plugin: Plugin = {
         name: 'cromwell-frontend',
         options(options: RollupOptions) {
             if (!options.plugins) options.plugins = [];
-            options.plugins.push(externalGlobals((id) => {
+
+            options.plugins.push(externalGlobals((id: string) => {
+                const extStr = `${cromwellStoreModulesPath}["${id}"]`;
+                if (settings?.moduleInfo?.type === 'theme' && id.startsWith('next/')) {
+                    return extStr;
+                }
                 const isExt = resolveExternal(id, settings?.frontendDeps);
-                if (isExt) return `${cromwellStoreModulesPath}["${id}"]`;
+                if (isExt) return extStr;
             }, {
                 include: '**/*.+(ts|tsx|js|jsx)'
             }));
@@ -459,25 +459,37 @@ export const rollupPluginCromwellFrontend = (settings?: {
         },
         resolveId(source, importer) {
             if (settings?.moduleInfo?.type === 'theme' && settings?.pagesMetaInfo?.paths) {
+                // If bundle frontend pages (not AdminPanel) mark css as exteranl to leave it to Next.js Webpack
                 if (/\.s?css$/.test(source)) {
                     return { id: source, external: true };
                 }
             }
 
-            if (settings?.moduleInfo?.type === 'theme' && settings?.type === 'themePages') {
-                // left external for themes, so Next.js will bundle node modules
-                if (resolveExternal(source)) {
-                    return { id: source, external: true };
+            if (resolveExternal(source, settings?.frontendDeps)) {
+                // Mark external frontendDependencies from package.json
+                return { id: source, external: true };
+            }
+
+            if (isExternalForm(source)) {
+                // Other node_modules...
+
+                if (packageJson.cromwell?.bundledDependencies?.includes(source)) {
+                    // Bundled by Rollup by for Themes and Plugins
+                    return { id: require.resolve(source), external: false };
                 }
-            } else {
-                // bundle node modules with plugins that aren't specified in frontendDeps
-                if (resolveExternal(source, settings?.frontendDeps)) {
+
+                if (source.startsWith('next/')) {
+                    // Leave Next.js modules external for the next step 
                     return { id: source, external: true };
                 }
 
-                if (isExternalForm(source)) {
+                if (/\.s?css$/.test(source)) {
+                    // Bundle css with AdminPanel pages
                     return { id: require.resolve(source), external: false };
                 }
+
+                throw new Error(`Found used node_module: ${source} that wasn't declared in package.json 
+                            in frontendDependencies or bundledDependencies. Read more in docs: {@TODO: link}`);
             }
 
             return null;
@@ -486,7 +498,6 @@ export const rollupPluginCromwellFrontend = (settings?: {
 
     if (settings?.generateMeta !== false) {
         plugin.transform = function (code, id): string | null {
-            // console.log('id', id);
             id = normalizePath(id);
             if (!/\.(m?jsx?|tsx?)$/.test(id)) return null;
 
@@ -607,13 +618,11 @@ export const rollupPluginCromwellFrontend = (settings?: {
 
                 scriptsInfo[info.fileName] = metaInfo;
 
-                //@ts-ignore
                 this.emitFile({
                     type: 'asset',
                     fileName: getMetaInfoPath(info.fileName),
                     source: JSON.stringify(metaInfo, null, 2)
                 });
-
 
                 if (settings?.pagesMetaInfo?.paths) {
                     settings.pagesMetaInfo.paths = settings.pagesMetaInfo.paths.map(paths => {
@@ -654,36 +663,37 @@ export const rollupPluginCromwellFrontend = (settings?: {
 
             if (settings?.pagesMetaInfo?.paths && settings.srcDir && settings.buildDir) {
 
-                // Generate lists of frontend modules (node_modules marked as frontend in package.json) 
+                // Generate lists of frontend node_modules 
                 // that are going to be bundled in one chunk by Next.js to load
                 // on first page open when a client has no cached modules. 
                 // By default frontend modules are requsted by separate requests from client
                 // So this optimization basically cuts hundreds of requests on first load. 
-                // List mapped from package.json's cromwell.bundledDependencies
+                // List mapped from package.json's cromwell.firstLoadedDependencies
                 // Beware! For now this feature works in a way that 
                 // modules are going to be bundled entirely without any tree-shaking
                 // We definetely don't want @material-ui/icons in this list!
                 for (const pagePath of settings.pagesMetaInfo.paths) {
-                    if (pagePath?.localPath && packageJson.cromwell?.bundledDependencies) {
+                    if (pagePath?.localPath && packageJson.cromwell?.firstLoadedDependencies) {
 
-                        packageJson.cromwell.bundledDependencies = Array.from(new Set(packageJson.cromwell.bundledDependencies));
+                        packageJson.cromwell.firstLoadedDependencies = Array.from(new Set(packageJson.cromwell.firstLoadedDependencies));
                         let importsStr = `${interopDefaultContent}\n`;
 
-                        for (const depName of packageJson.cromwell.bundledDependencies) {
+                        for (const depName of packageJson.cromwell.firstLoadedDependencies) {
 
                             const strippedDepName = depName.replace(/\W/g, '_') + '_' + getRandStr(4);
                             importsStr += `
                                 import * as ${strippedDepName} from '${depName}';
                                 ${getGlobalModuleStr(depName)} = interopDefault(${strippedDepName}, 'default');
                                 ${getGlobalModuleStatusStr(depName)} = 'default';
-                                `
+                                `;
                         }
 
                         const generatedFileName = normalizePath(resolve(settings.buildDir, 'dependencies', pagePath.pageName + '.generated.js'));
                         fs.outputFileSync(generatedFileName, importsStr);
 
                         pagePath.localDepsBundle = generatedFileName
-                            .replace(settings.buildDir!, '').replace(/^\//, '');
+                            .replace(settings.buildDir, '').replace(/^\//, '');
+
 
                         // Code below generates lists with actually used keys of modules (very useful feature)
                         // But currently it doesn't work, bcs if Importer in browser will try to load additional
@@ -704,8 +714,8 @@ export const rollupPluginCromwellFrontend = (settings?: {
                         //         if (rendererDefaultDeps.includes(usedModuleName) ||
                         //             usedModuleName.startsWith('next/')) continue;
 
-                        //         if (!packageJson.cromwell?.bundledDependencies ||
-                        //             !packageJson.cromwell?.bundledDependencies.includes(usedModuleName)) continue;
+                        //         if (!packageJson.cromwell?.firstLoadedDependencies ||
+                        //             !packageJson.cromwell?.firstLoadedDependencies.includes(usedModuleName)) continue;
 
                         //         const strippedusedModuleName = usedModuleName.replace(/\W/g, '_') + '_' + getRandStr(4);
 
@@ -792,11 +802,9 @@ const initStylesheetsLoader = (srcDir: string, buildDir: string, basePath?: stri
     }
 
     const watcher = chokidar.watch(globStr, {
-        ignored: /(^|[\/\\])\../, // ignore dotfiles
+        ignored: /(^|[/\\])\../, // ignore dotfiles
         persistent: true
     });
-
-
 
     watcher
         .on('add', copyFile)

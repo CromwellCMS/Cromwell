@@ -30,6 +30,7 @@ export { getGraphQLClient, TCGraphQLClient } from './api/CGraphQLClient';
 export { getRestAPIClient, TCRestAPIClient, TPluginsModifications } from './api/CRestAPIClient';
 export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore } from './CStore';
+export { iconFromPath } from './helpers/iconFromPath';
 export { loadFrontendBundle } from './helpers/loadFrontendBundle';
 export { fetch } from './helpers/isomorphicFetch';
 export { throbber } from './components/throbber';
@@ -37,3 +38,4 @@ export { default as Document, Html, Main, NextScript, DocumentContext } from 'ne
 import * as nextRouter from 'next/router';
 export { default as Head } from 'next/head';
 export const useRouter: typeof nextRouter.useRouter | undefined = nextRouter?.useRouter;
+

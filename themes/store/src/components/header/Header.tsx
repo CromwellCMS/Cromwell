@@ -1,17 +1,20 @@
-import { getCmsSettings, TCurrency, TUser, setStoreItem, onStoreChange, removeOnStoreChange, getStoreItem } from '@cromwell/core';
-import { CContainer, CHTML, CPlugin, CText, getCStore, Link, getRestAPIClient } from '@cromwell/core-frontend';
-import { FormControl, ListItem, MenuItem, Select as MuiSelect, withStyles, Popover } from '@material-ui/core';
 import {
-    ExpandMore as ExpandMoreIcon,
-    AccountCircle as AccountCircleIcon,
-    AccountCircleOutlined as AccountCircleOutlinedIcon,
-    ExitToApp as ExitToAppIcon,
-} from '@material-ui/icons';
+    getCmsSettings,
+    getStoreItem,
+    onStoreChange,
+    removeOnStoreChange,
+    setStoreItem,
+    TCurrency,
+    TUser,
+} from '@cromwell/core';
+import { CContainer, CHTML, CPlugin, CText, getCStore, getRestAPIClient, Link } from '@cromwell/core-frontend';
+import { FormControl, ListItem, MenuItem, Popover, Select as MuiSelect, withStyles } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { appState } from '../../helpers/AppState';
 import commonStyles from '../../styles/common.module.scss';
+import { AccountCircleIcon, AccountCircleOutlinedIcon, ExitToAppIcon, ExpandMoreIcon } from '../icons';
 import SingInModal from '../modals/signIn/SignIn';
 import styles from './Header.module.scss';
 import { HeaderSearch } from './HeaderSearch';

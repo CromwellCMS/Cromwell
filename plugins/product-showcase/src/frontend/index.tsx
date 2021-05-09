@@ -20,7 +20,7 @@ type ProductShowcaseProps = {
 }
 
 const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX.Element => {
-    const swiperId = useRef(`ProductShowcase_${getRandStr(5)}`);
+    const galleryId = useRef(`ProductShowcase_${getRandStr(5)}`);
     const classes = useStyles();
     const data = props.data?.productShowcase;
     const attributes = props.data?.attributes;
@@ -46,12 +46,13 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
         <div className={classes.wrapper}>
             <CGallery
                 style={{ height: '100%' }}
-                id={swiperId.current}
+                id={galleryId.current}
                 gallery={{
                     slides: data?.elements?.map(product => {
                         return (
                             <div className={classes.listItem}>
-                                {ProductComp && <ProductComp data={product} attributes={attributes} key={product.id} />}
+                                {ProductComp && <ProductComp data={product}
+                                    attributes={attributes} key={product.id} />}
                             </div>
                         )
                     }) ?? [],

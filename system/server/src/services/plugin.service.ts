@@ -122,6 +122,7 @@ export class PluginService {
             const moduleInfo = await getCmsModuleInfo(pluginName);
             delete moduleInfo?.frontendDependencies;
             delete moduleInfo?.bundledDependencies;
+            delete moduleInfo?.firstLoadedDependencies;
 
             // Read plugin config
             let pluginConfig: TPluginConfig | undefined;

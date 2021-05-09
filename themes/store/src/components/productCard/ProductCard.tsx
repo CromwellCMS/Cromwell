@@ -1,13 +1,6 @@
 import { TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
 import { IconButton, Tooltip, useMediaQuery, useTheme } from '@material-ui/core';
-import {
-    AddShoppingCart as AddShoppingCartIcon,
-    Equalizer as EqualizerIcon,
-    Favorite as FavoriteIcon,
-    FavoriteBorder as FavoriteBorderIcon,
-    ShoppingCart as ShoppingCartIcon,
-} from '@material-ui/icons';
 import { Rating } from '@material-ui/lab';
 import clsx from 'clsx';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -16,6 +9,7 @@ import { useResizeDetector } from 'react-resize-detector';
 import { appState } from '../../helpers/AppState';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import commonStyles from '../../styles/common.module.scss';
+import { AddShoppingCartIcon, EqualizerIcon, FavoriteBorderIcon, FavoriteIcon, ShoppingCartIcon } from '../icons';
 import { toast } from '../toast/toast';
 import styles from './ProductCard.module.scss';
 

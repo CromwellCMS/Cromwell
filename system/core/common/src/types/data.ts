@@ -268,6 +268,7 @@ export type TPackageCromwellConfig = {
     frontendDependencies?: (string | TFrontendDependency)[];
     themes?: string[];
     plugins?: string[];
+    firstLoadedDependencies?: string[];
     bundledDependencies?: string[];
 }
 
@@ -284,6 +285,7 @@ export type TFrontendDependency = {
     excludeExports?: string[];
     ignore?: string[];
     addExports?: TAdditionalExports[];
+    bundledCss?: string[];
 }
 
 export type TExternal = {

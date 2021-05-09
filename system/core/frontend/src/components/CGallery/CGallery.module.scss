@@ -12,6 +12,7 @@
     border: 0;
     background-color: transparent;
     padding: 0;
+    outline: none;
 }
 .navBtnBack {
     left: 5px;
@@ -39,9 +40,10 @@
     opacity: 1;
     box-shadow: 0 3px 6px 0 rgb(0 0 0 / 4%), 0 0 10px 3px rgb(0 0 0 / 5%);
 }
-button[disabled] {
-    // display: none;
+
+button[disabled] .navBtnContent {
     opacity: 0.1;
+    cursor: initial;
 }
 
 .btnNext {
@@ -58,6 +60,7 @@ button[disabled] {
 }
 
 .thumbnailImg {
+    object-fit: cover;
     border-radius: 8px;
 }
 
@@ -89,6 +92,7 @@ button[disabled] {
         box-shadow: 0 3px 6px 0 rgb(0 0 0 / 4%), 0 0 10px 3px rgb(0 0 0 / 5%);
         margin: 0 3px;
         transition: 0.3s;
+        outline: none;
     }
 
     button[disabled] {

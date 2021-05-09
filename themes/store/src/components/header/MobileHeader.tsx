@@ -1,22 +1,16 @@
 import { getCmsSettings } from '@cromwell/core';
 import { CContainer, CPlugin, Link } from '@cromwell/core-frontend';
 import { AppBar, IconButton, Slide, SwipeableDrawer, Toolbar, useScrollTrigger } from '@material-ui/core';
-import {
-    Close as CloseIcon,
-    Equalizer as EqualizerIcon,
-    Favorite as FavoriteIcon,
-    Menu as MenuIcon,
-    ShoppingCart as ShoppingCartIcon,
-    Visibility as VisibilityIcon,
-} from '@material-ui/icons';
-import React, { useState } from 'react';
 import Router from 'next/router';
+import React, { useState } from 'react';
+
 import { appState } from '../../helpers/AppState';
+import { CloseIcon, EqualizerIcon, FavoriteIcon, MenuIcon, ShoppingCartIcon, VisibilityIcon } from '../icons';
 import { HeaderSearch } from './HeaderSearch';
 import styles from './MobileHeader.module.scss';
 
 let globalCloseMenu;
-Router.events.on('routeChangeStart', () => {
+Router?.events?.on('routeChangeStart', () => {
     globalCloseMenu?.();
 })
 
