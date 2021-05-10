@@ -38,9 +38,10 @@ export const setupController = async (name: string) => {
     }
 }
 
-export const tearDownController = async (app: INestApplication) => {
+export const tearDownController = async (app: INestApplication, testDir: string) => {
     await app?.close();
 
     await closeConnection();
     await new Promise(done => setTimeout(done, 100));
+    return testDir;
 }

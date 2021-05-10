@@ -20,7 +20,7 @@ export const authSettings = {
     // approximate, for one server instance
     resetPasswordAttempts: 5,
     // 3 hours
-    resetPasswordCodeExpirationAccessTime: 1000 * 60 * 60 * 3
+    resetPasswordCodeExpirationAccessTime: 1000 * 60 * 60 * 3,
 }
 
 export const bcryptSaltRounds = 10;
