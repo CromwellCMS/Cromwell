@@ -1,9 +1,7 @@
 import { rollupConfigWrapper } from '@App/plugins/rollup';
-import { moduleArchiveFileName, moduleLibBuidFileName, moduleMetaInfoFileName } from '@App/constants';
-import { getBundledModulesDir } from '@App/shared';
-import { TModuleConfig, TPackageCromwellConfig, TPackageJson } from '@cromwell/core';
+import { TPackageCromwellConfig, TPackageJson } from '@cromwell/core';
 import * as fs from 'fs-extra';
-import { join, resolve } from 'path';
+import { join } from 'path';
 
 import { mockWorkingDirectory, tearDown } from './helpers';
 
@@ -26,9 +24,6 @@ describe('rollup', () => {
             version: '1',
             cromwell: moduleInfo
         }
-        const moduleConfig: TModuleConfig = {
-            // adminInputFile: 'index.js'
-        }
 
         await fs.outputJSON(join(testDir, 'package.json'), pckg);
         await fs.outputFile(
@@ -49,7 +44,7 @@ describe('rollup', () => {
         );
 
         const configs = await rollupConfigWrapper(moduleInfo);
-        expect(configs.length).toEqual(5);
+        expect(configs.length).toEqual(4);
     });
 
 
@@ -62,9 +57,6 @@ describe('rollup', () => {
             name: 'test',
             version: '1',
             cromwell: moduleInfo
-        }
-        const moduleConfig: TModuleConfig = {
-            // adminInputFile: 'index.js'
         }
 
         await fs.outputJSON(join(testDir, 'package.json'), pckg);
