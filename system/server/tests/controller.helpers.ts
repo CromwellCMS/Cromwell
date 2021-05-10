@@ -1,4 +1,4 @@
-jest.mock('@App/helpers/fireAction', () => {
+jest.mock('@App/helpers/mainFireAction', () => {
     return {
         mainFireAction: () => null,
     }

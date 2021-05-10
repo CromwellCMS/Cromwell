@@ -5,7 +5,7 @@ import { ApolloServer } from 'apollo-server';
 import { ApolloServerTestClient, createTestClient } from 'apollo-server-testing';
 import { buildSchema } from 'type-graphql';
 
-jest.mock('@App/helpers/fireAction', () => {
+jest.mock('@App/helpers/mainFireAction', () => {
     return {
         mainFireAction: () => null,
     }

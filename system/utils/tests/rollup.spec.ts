@@ -35,7 +35,7 @@ describe('rollup', () => {
             `export default () => 'test';`
         );
         await fs.outputFile(
-            join(testDir, 'src/backend/entities/index.js'),
+            join(testDir, 'src/backend/index.js'),
             `class TestEnt {}; export default TestEnt;`
         );
         await fs.outputFile(
