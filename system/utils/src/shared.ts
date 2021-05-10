@@ -153,7 +153,7 @@ const hoistDeps = (store: TDependency[], packages: TPackage[],
         const versions = Object.entries(module.versions).sort((a, b) => b[1] - a[1])
             .map(entry => entry[0]);
 
-        let hoistedVersion = versions[0];
+        const hoistedVersion = versions[0];
 
         // Exclude modules that are local packages from being inclued in main package
         let localPckIndex: number | null = null;

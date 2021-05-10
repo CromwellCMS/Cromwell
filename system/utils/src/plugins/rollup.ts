@@ -120,6 +120,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             options.output = Object.assign({}, options.output, {
                 file: resolve(process.cwd(), buildDirName, pluginFrontendBundlePath),
                 format: "iife",
+                exports: 'default',
                 name: strippedName,
                 banner: '(function() {',
                 footer: `return ${strippedName};})();`
@@ -203,74 +204,23 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         }
 
         // Plugin backend
-        let entitiesdir = pluginConfig?.backend?.entitiesDir;
-        if (!entitiesdir) {
-            const entitiesDefDir = resolve(process.cwd(), 'src/backend/entities');
-            if (fs.pathExistsSync(entitiesDefDir)) entitiesdir = 'src/backend/entities';
-        }
+        const backendInputFile = resolveFileExtension(pluginConfig?.backend ?? 'src/backend/index');
+        if (backendInputFile) {
+            const cjsOptions = Object.assign({}, specifiedOptions?.backend ?? inputOptions);
 
-        let resolversDir = pluginConfig?.backend?.resolversDir;
-        if (!resolversDir) {
-            const resolversDefDir = resolve(process.cwd(), 'src/backend/resolvers');
-            if (fs.pathExistsSync(resolversDefDir)) resolversDir = 'src/backend/resolvers';
-        }
+            cjsOptions.input = backendInputFile;
+            cjsOptions.output = Object.assign({}, cjsOptions.output, {
+                file: getPluginBackendPath(resolve(process.cwd(), buildDirName)),
+                format: "cjs",
+                name: moduleInfo.name,
+                exports: "auto"
+            } as OutputOptions)
 
-        if (entitiesdir || resolversDir) {
-            let resolverFiles: string[] = [];
-            let entityFiles: string[] = [];
+            cjsOptions.plugins = [...(cjsOptions.plugins ?? [])];
 
-            if (entitiesdir) {
-                const entitiesFullDir = resolve(process.cwd(), entitiesdir)
-                entityFiles = fs.readdirSync(entitiesFullDir).map(file => normalizePath(resolve(entitiesFullDir, file)));
-            }
-            if (resolversDir) {
-                const resolversFullDir = resolve(process.cwd(), resolversDir);
-                resolverFiles = fs.readdirSync(resolversFullDir).map(file => normalizePath(resolve(resolversFullDir, file)));
-            }
+            cjsOptions.external = isExternalForm;
 
-            if (entityFiles.length > 0 || resolverFiles.length > 0) {
-                const cjsOptions = Object.assign({}, specifiedOptions?.backend ?? inputOptions);
-
-                const optionsInput = '$$' + moduleInfo.name + '/backend';
-
-                cjsOptions.input = optionsInput;
-                cjsOptions.output = Object.assign({}, cjsOptions.output, {
-                    file: getPluginBackendPath(resolve(process.cwd(), buildDirName)),
-                    format: "cjs",
-                    name: moduleInfo.name,
-                    exports: "auto"
-                } as OutputOptions)
-
-                cjsOptions.plugins = [...(cjsOptions.plugins ?? [])];
-
-                let exportsStr = '';
-                const resolverNames: string[] = [];
-                const entityNames: string[] = [];
-                resolverFiles.forEach(file => {
-                    const name = `resolver_${cryptoRandomString({ length: 8 })}`
-                    resolverNames.push(name);
-                    exportsStr += `import ${name} from '${file}'\n`;
-                });
-                entityFiles.forEach(file => {
-                    const name = `entity_${cryptoRandomString({ length: 8 })}`
-                    entityNames.push(name);
-                    exportsStr += `import ${name} from '${file}'\n`;
-                });
-
-                exportsStr += 'export const resolvers = [\n';
-                resolverNames.forEach(name => exportsStr += `\t${name},\n`);
-                exportsStr += '];\nexport const entities = [\n';
-                entityNames.forEach(name => exportsStr += `\t${name},\n`);
-                exportsStr += '];\n';
-
-                cjsOptions.plugins.push(virtual({
-                    [optionsInput]: exportsStr
-                }));
-
-                cjsOptions.external = isExternalForm;
-
-                outOptions.push(cjsOptions);
-            }
+            outOptions.push(cjsOptions);
         }
 
     }

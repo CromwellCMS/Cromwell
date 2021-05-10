@@ -25,6 +25,6 @@ const nativeResolvers = [
 export const getResolvers = async (sType: 'main' | 'plugin'): Promise<any> => sType === 'main' ? [
     ...nativeResolvers,
 ] : [
-    ...nativeResolvers,
-    ...((await collectPlugins()).resolvers),
-]
+        ...nativeResolvers,
+        ...((await collectPlugins()).resolvers ?? []),
+    ]

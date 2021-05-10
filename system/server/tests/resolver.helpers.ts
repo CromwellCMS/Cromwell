@@ -1,9 +1,15 @@
 import { closeConnection, connectDatabase } from '@App/helpers/connectDataBase';
 import { getResolvers } from '@App/helpers/getResolvers';
+import { graphQlAuthChecker } from '@cromwell/core-backend';
 import { ApolloServer } from 'apollo-server';
 import { ApolloServerTestClient, createTestClient } from 'apollo-server-testing';
 import { buildSchema } from 'type-graphql';
-import { graphQlAuthChecker } from '@App/auth/auth.guard';
+
+jest.mock('@App/helpers/mainFireAction', () => {
+    return {
+        mainFireAction: () => null,
+    }
+});
 
 import { mockWorkingDirectory } from './helpers';
 

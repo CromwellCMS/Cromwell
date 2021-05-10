@@ -1,15 +1,6 @@
-import { SetMetadata } from '@nestjs/common';
-import { TAuthRole } from '@cromwell/core';
-
-jest.mock('@App/auth/auth.guard', () => {
-    class JwtAuthGuard {
-        async canActivate(context): Promise<boolean> {
-            return true;
-        }
-    }
+jest.mock('@App/helpers/mainFireAction', () => {
     return {
-        JwtAuthGuard,
-        Roles: (...roles: TAuthRole[]) => SetMetadata('roles', roles)
+        mainFireAction: () => null,
     }
 });
 
@@ -47,9 +38,10 @@ export const setupController = async (name: string) => {
     }
 }
 
-export const tearDownController = async (app: INestApplication, testDir) => {
+export const tearDownController = async (app: INestApplication, testDir: string) => {
     await app?.close();
 
     await closeConnection();
     await new Promise(done => setTimeout(done, 100));
+    return testDir;
 }

@@ -1,6 +1,4 @@
 module.exports = {
-    frontendInputFile: "src/frontend/index.tsx",
-    adminInputFile: "src/admin/index.tsx",
     defaultSettings: {
         listId: "Category_ProductList"
     },
@@ -13,7 +11,12 @@ module.exports = {
                 plugins: [
                     typescript(),
                     commonjs(),
-                    terser()
+                    terser({
+                        compress: {
+                            side_effects: false,
+                            negate_iife: false,
+                        }
+                    }),
                 ]
             },
             backend: {

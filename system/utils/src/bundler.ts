@@ -733,6 +733,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         // // Cleanup generated
         if (isProduction) {
             if (await fs.pathExists(nodeLibEntry)) await fs.remove(nodeLibEntry);
+            if (await fs.pathExists(oneChunkLibEntry)) await fs.remove(oneChunkLibEntry);
             if (await fs.pathExists(libEntry)) await fs.remove(libEntry);
             if (await fs.pathExists(exportsGeneratedPath)) await fs.remove(exportsGeneratedPath);
 
@@ -753,7 +754,6 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         await archive.finalize();
         await sleep(0.2);
         await fs.move(tempZipPath, moduleArchivePath);
-
 
         console.log(colors.cyan(`Cromwell:bundler: Module: ${colors.brightCyan(`"${moduleName}"`)} has been ${colors.brightCyan('processed')}`));
 

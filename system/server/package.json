@@ -44,7 +44,7 @@
     "fastify-rate-limit": "^5.5.0",
     "fastify-swagger": "^3.5.0",
     "fs-extra": "^9.0.1",
-    "graphql": "^15.3.0",
+    "graphql": "15.3.0",
     "graphql-tools": "^7.0.2",
     "handlebars": "^4.7.7",
     "normalize-path": "^3.0.0",

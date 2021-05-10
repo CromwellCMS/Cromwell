@@ -185,10 +185,7 @@ export type TPluginConfig = {
     adminInputFile?: string
     frontendInputFile?: string
     frontendModule?: string;
-    backend?: {
-        resolversDir?: string;
-        entitiesDir?: string;
-    }
+    backend?: string;
     defaultSettings?: any;
 }
 

@@ -1,31 +1,39 @@
-import { readPluginsExports, serverLogFor } from '@cromwell/core-backend';
+import { readPluginsExports, serverLogFor, getLogger, TBackendModule } from '@cromwell/core-backend';
 
-let pluginsCache;
+let pluginsCache: TBackendModule;
+const logger = getLogger('errors-only');
 
-export const collectPlugins = async (): Promise<{
-    resolvers: any[],
-    entities: any[]
-}> => {
+export const collectPlugins = async (): Promise<TBackendModule> => {
     if (pluginsCache) return pluginsCache;
     const pluginInfos = await readPluginsExports();
 
     serverLogFor('detailed', `Found ${pluginInfos.length} plugins. `
         + pluginInfos.map(info => info.pluginName).join(', '));
 
-    let pluginsResolvers: any[] = [];
-    let pluginsEntities: any[] = [];
+    let collectedResolvers: any[] = [];
+    let collectedEntities: any[] = [];
+    let collectedControllers: any[] = [];
+    let collectedProviders: any[] = [];
+
     pluginInfos.forEach(info => {
         if (info.backendPath) {
-            const { resolvers, entities } = require(info.backendPath);
-            if (resolvers && Array.isArray(resolvers)) pluginsResolvers = [...pluginsResolvers, ...resolvers]
-            if (entities && Array.isArray(entities)) pluginsEntities = [...pluginsEntities, ...entities]
+            try {
+                const { resolvers, entities, controllers, providers } = require(info.backendPath) as TBackendModule;
+                if (resolvers && Array.isArray(resolvers)) collectedResolvers = [...collectedResolvers, ...resolvers]
+                if (entities && Array.isArray(entities)) collectedEntities = [...collectedEntities, ...entities]
+                if (controllers && Array.isArray(controllers)) collectedControllers = [...collectedControllers, ...controllers]
+                if (providers && Array.isArray(providers)) collectedProviders = [...collectedProviders, ...providers]
+            } catch (error) {
+                logger.error(error);
+            }
         }
-
     });
 
     pluginsCache = {
-        resolvers: pluginsResolvers,
-        entities: pluginsEntities
+        resolvers: collectedResolvers,
+        entities: collectedEntities,
+        controllers: collectedControllers,
+        providers: collectedProviders,
     }
 
     return pluginsCache;

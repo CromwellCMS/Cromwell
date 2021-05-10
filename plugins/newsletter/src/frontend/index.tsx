@@ -1,5 +1,4 @@
-import { gql } from '@apollo/client';
-import { getGraphQLClient } from '@cromwell/core-frontend';
+import { getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, InputBase, Tooltip } from '@material-ui/core';
 import { Alert, AlertProps } from '@material-ui/lab';
 import React, { useState } from 'react';
@@ -25,20 +24,13 @@ export default function NewsletterPlugin(): JSX.Element {
     const submit = async () => {
         if (!validateEmail(email)) return;
 
-        const client = getGraphQLClient('plugin');
+        const client = getRestAPIClient('plugin');
         try {
-            const response = await client?.query({
-                query: gql`
-                    query pluginNewsletterSubscribe($email: String!) {
-                        pluginNewsletterSubscribe(email: $email)
-                    }
-                `,
-                variables: {
-                    email
-                }
+            const response = await client.post('plugin-newsletter/subscribe', {
+                email
             });
 
-            if (response?.data?.pluginNewsletterSubscribe) {
+            if (response) {
                 setHasSubscribed(true);
             }
         } catch (e) {
@@ -50,28 +42,28 @@ export default function NewsletterPlugin(): JSX.Element {
         <div className={classes.subscribeInputContainer}>
             {hasSubscribed ? (
                 <div>
-                    <CustomAlert severity="success">You are subscribed!</CustomAlert>
+                    <CustomAlert severity="success">Thank you for subscription!</CustomAlert>
                 </div>
             ) : (
-                <>
-                    <Tooltip open={canValidate && !validateEmail(email)}
-                        title="Invalid e-mail"
-                        // title={
-                        //     <CustomAlert severity="warning">Invalid e-mail</CustomAlert>
-                        // }
-                        arrow>
-                        <InputBase className={classes.subscribeInput}
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                        />
-                    </Tooltip>
-                    <Button
-                        onClick={submit}
-                        variant="contained"
-                        color="primary"
-                        className={classes.subscribeBtn}>Subscribe!</Button>
-                </>
-            )
+                    <>
+                        <Tooltip open={canValidate && !validateEmail(email)}
+                            title="Invalid e-mail"
+                            // title={
+                            //     <CustomAlert severity="warning">Invalid e-mail</CustomAlert>
+                            // }
+                            arrow>
+                            <InputBase className={classes.subscribeInput}
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </Tooltip>
+                        <Button
+                            onClick={submit}
+                            variant="contained"
+                            color="primary"
+                            className={classes.subscribeBtn}>Subscribe!</Button>
+                    </>
+                )
             }
 
         </div >

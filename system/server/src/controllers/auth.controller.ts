@@ -1,4 +1,4 @@
-import { validateEmail } from '@cromwell/core-backend';
+import { JwtAuthGuard, validateEmail, TRequestWithUser } from '@cromwell/core-backend';
 import {
     Body,
     Controller,
@@ -15,8 +15,6 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { FastifyReply } from 'fastify';
 
-import { JwtAuthGuard } from '../auth/auth.guard';
-import { TRequestWithUser } from '../auth/constants';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginDto } from '../dto/login.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';

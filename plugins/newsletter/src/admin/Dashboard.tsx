@@ -1,7 +1,7 @@
-import { gql } from '@apollo/client';
-import { getGraphQLClient, WidgetTypes, getPluginStaticUrl } from '@cromwell/core-frontend';
+import { getPluginStaticUrl, getRestAPIClient, WidgetTypes } from '@cromwell/core-frontend';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
+
 import { useStyles } from './styles';
 
 export const Dashboard = (props: WidgetTypes['Dashboard']) => {
@@ -22,16 +22,9 @@ export const Dashboard = (props: WidgetTypes['Dashboard']) => {
     }, []);
 
     const getStats = async () => {
-        const client = getGraphQLClient('plugin');
-        const data = await client?.query({
-            query: gql`
-                query pluginNewsletterStats {
-                    pluginNewsletterStats
-                }
-            `,
-        });
-        const count = data?.data?.pluginNewsletterStats;
-        setNewsletterCount(count ?? '')
+        const client = getRestAPIClient('plugin');
+        const data = await client.get<string>('plugin-newsletter/stats');
+        setNewsletterCount(data ?? '')
     }
 
     return (

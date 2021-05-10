@@ -1,4 +1,4 @@
-import { logFor, TPagedList, TProduct } from '@cromwell/core';
+import { TPagedList, TProduct } from '@cromwell/core';
 import { getLogger, PagedProduct, PluginRepository, ProductCategory, ProductRepository } from '@cromwell/core-backend';
 import { Arg, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
@@ -7,14 +7,13 @@ import { TSettings } from '../../types';
 
 const logger = getLogger('detailed');
 
-
 @Resolver(ProductCategory)
-export default class ProductShowcaseResolver {
+export default class PluginProductShowcaseResolver {
 
     private get productRepo() { return getCustomRepository(ProductRepository) }
 
     @Query(() => PagedProduct)
-    async productShowcase(@Arg("slug", { nullable: true }) slug?: string): Promise<TPagedList<TProduct>> {
+    async pluginProductShowcase(@Arg("slug", { nullable: true }) slug?: string): Promise<TPagedList<TProduct>> {
         logger.log('ProductShowcaseResolver::productShowcase slug:' + slug);
         const timestamp = Date.now();
 
@@ -52,9 +51,9 @@ export default class ProductShowcaseResolver {
                     products.elements?.length >= maxSize) break;
             }
 
-            if (products.elements!.length < maxSize) {
+            if (products.elements && products.elements.length < maxSize) {
                 (await this.productRepo.getProducts({ pageSize: maxSize }))?.elements?.forEach(prod => {
-                    if (products.elements!.length < maxSize) {
+                    if (products.elements && products.elements.length < maxSize) {
                         products.elements?.push(prod);
                     }
                 })

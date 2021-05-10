@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 
 import { apiExtensionRoute, apiMainRoute, currentApiVersion } from '@cromwell/core';
-import { readCMSConfigSync, serverMessages } from '@cromwell/core-backend';
+import { graphQlAuthChecker, readCMSConfigSync, serverMessages, TGraphQLContext } from '@cromwell/core-backend';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -10,8 +10,7 @@ import { ApolloServer } from 'apollo-server-fastify';
 import fastify from 'fastify';
 import { buildSchema } from 'type-graphql';
 
-import { graphQlAuthChecker } from './auth/auth.guard';
-import { authSettings, TGraphQLContext } from './auth/constants';
+import { authSettings } from './auth/constants';
 import { ExceptionFilter } from './filters/exception.filter';
 import { connectDatabase } from './helpers/connectDataBase';
 import { corsHandler } from './helpers/corsHandler';
@@ -111,4 +110,3 @@ async function bootstrap(): Promise<void> {
         if (process.send) process.send(serverMessages.onStartErrorMessage);
     }
 })();
-

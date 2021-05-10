@@ -4,13 +4,15 @@ import { AuthController } from '../controllers/auth.controller';
 import { PluginController } from '../controllers/plugin.controller';
 import { ThemeController } from '../controllers/theme.controller';
 import { CmsService } from '../services/cms.service';
+import { collectPlugins } from '../helpers/collectPlugins';
 import { MockService } from '../services/mock.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 
-export const getControllers = (sType: 'main' | 'plugin', dev?: boolean) => {
+export const getControllers = async (sType: 'main' | 'plugin', dev?: boolean) => {
     if (sType !== 'main') return [
-        // @TODO: ...(collectPlugins().Controllers),
+        CmsController,
+        ...((await collectPlugins()).controllers ?? []),
     ];
     const def: any[] = [
         CmsController,
@@ -22,18 +24,17 @@ export const getControllers = (sType: 'main' | 'plugin', dev?: boolean) => {
     return def;
 }
 
-export const getServices = (sType: 'main' | 'plugin', dev?: boolean) => {
-    if (sType !== 'main') return [
-        CmsService,
-        // @TODO: ...(collectPlugins().Controllers),
-    ];
+export const getServices = async (sType: 'main' | 'plugin', dev?: boolean) => {
     const def: any[] = [
         CmsService, PluginService, ThemeService,
     ];
+    if (sType !== 'main') {
+        def.concat((await collectPlugins()).providers ?? [])
+    }
     if (dev) def.push(MockService);
     return def;
 }
 
-export const getExports = (sType: 'main' | 'plugin') => {
+export const getExports = () => {
     return [CmsService];
 }

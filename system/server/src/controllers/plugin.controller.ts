@@ -1,9 +1,8 @@
 import { TFrontendBundle, TPluginConfig } from '@cromwell/core';
-import { getLogger } from '@cromwell/core-backend';
+import { getLogger, JwtAuthGuard, Roles } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { JwtAuthGuard, Roles } from '../auth/auth.guard';
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { PluginService } from '../services/plugin.service';
 
