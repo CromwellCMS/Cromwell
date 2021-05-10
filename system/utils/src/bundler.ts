@@ -753,7 +753,6 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         archive.directory(moduleBuildDir, '/');
         await archive.finalize();
         await sleep(0.2);
-
         await fs.move(tempZipPath, moduleArchivePath);
 
         console.log(colors.cyan(`Cromwell:bundler: Module: ${colors.brightCyan(`"${moduleName}"`)} has been ${colors.brightCyan('processed')}`));
