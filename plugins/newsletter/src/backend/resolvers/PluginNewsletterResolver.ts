@@ -1,4 +1,5 @@
-import { Arg, Query, Resolver } from 'type-graphql';
+import { TAuthRole } from '@cromwell/core';
+import { Arg, Query, Resolver, Authorized } from 'type-graphql';
 import { getManager } from 'typeorm';
 
 import PluginNewsletter from '../entities/PluginNewsletter';
@@ -7,10 +8,16 @@ import PluginNewsletter from '../entities/PluginNewsletter';
 @Resolver(PluginNewsletter)
 export default class PluginNewsletterResolver {
 
-    @Query(() => [String])
-    async pluginNewsletterExport(): Promise<string[]> {
-        const newsletters = await getManager().find(PluginNewsletter);
-        return newsletters?.map(news => news.email) ?? [];
+    @Authorized<TAuthRole>("administrator")
+    @Query(() => [PluginNewsletter])
+    async pluginNewsletterExport(): Promise<PluginNewsletter[]> {
+        return await getManager().find(PluginNewsletter);
+    }
+
+    @Authorized<TAuthRole>("administrator")
+    @Query(() => String)
+    async pluginNewsletterStats(): Promise<string> {
+        return (await getManager().find(PluginNewsletter) ?? []).length + '';
     }
 
     @Query(() => Boolean)

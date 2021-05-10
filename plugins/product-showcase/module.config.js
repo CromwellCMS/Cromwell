@@ -14,8 +14,7 @@ module.exports = {
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
         const typescript = require('rollup-plugin-ts-compiler');
-        const postcss = require('rollup-plugin-postcss');
-        // const { terser } = require('rollup-plugin-terser');
+        const { terser } = require('rollup-plugin-terser');
         return {
             main: {
                 plugins: [
@@ -23,11 +22,7 @@ module.exports = {
                         monorepo: true
                     }),
                     commonjs(),
-                    postcss({
-                        extract: false,
-                        inject: true,
-                    }),
-                    // terser()
+                    terser()
                 ]
             },
             backend: {
@@ -39,10 +34,6 @@ module.exports = {
                         }
                     }),
                     commonjs(),
-                    postcss({
-                        extract: false,
-                        inject: true,
-                    }),
                 ]
             },
         }

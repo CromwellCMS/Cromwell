@@ -10,6 +10,7 @@ export { TCList, TCListProps, TItemComponentProps, TPaginationProps } from './co
 export { Link } from './components/Link/Link';
 export { ProductAttributes } from './components/ProductAttributes/ProductAttributes';
 export { LoadBox } from './components/loadBox/Loadbox';
+export * from './components/AdminPanelWidget/AdminPanelWidgetPlace';
 export {
     cromwellIdToHTML,
     cromwellIdFromHTML,
@@ -26,13 +27,16 @@ export {
     awaitImporter,
     CromwellBlockCSSclass,
 } from './constants';
-export { getGraphQLClient, TCGraphQLClient } from './api/CGraphQLClient';
-export { getRestAPIClient, TCRestAPIClient, TPluginsModifications } from './api/CRestAPIClient';
+export * from './api/CGraphQLClient';
+export * from './api/CRestAPIClient';
 export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore } from './CStore';
 export { iconFromPath } from './helpers/iconFromPath';
 export { loadFrontendBundle } from './helpers/loadFrontendBundle';
 export { fetch } from './helpers/isomorphicFetch';
+export * from './helpers/registerWidget';
+export * from './helpers/contentGetters';
+export * from './widget-types';
 export { throbber } from './components/throbber';
 export { default as Document, Html, Main, NextScript, DocumentContext } from 'next/document';
 import * as nextRouter from 'next/router';

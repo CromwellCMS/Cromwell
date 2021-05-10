@@ -1,8 +1,8 @@
 {
   "name": "@cromwell/theme-store",
   "version": "1.0.0",
-  "author": "cromwell",
-  "license": "ISC",
+  "author": "CromwellJS",
+  "license": "MIT",
   "main": "package.json",
   "files": [
     "build",

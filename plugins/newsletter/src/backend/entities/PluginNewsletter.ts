@@ -1,9 +1,10 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { NewsletterForm } from '../../types';
 
 @Entity()
-@ObjectType()
-class PluginNewsletter {
+@ObjectType('PluginNewsletter_NewsletterForm')
+class PluginNewsletter_NewsletterForm implements NewsletterForm {
 
     @Field(() => ID)
     @PrimaryGeneratedColumn()
@@ -14,4 +15,4 @@ class PluginNewsletter {
     email: string;
 }
 
-export default PluginNewsletter;
+export default PluginNewsletter_NewsletterForm;

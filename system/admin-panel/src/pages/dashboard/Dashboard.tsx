@@ -2,13 +2,14 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 
 import { TCmsStats, TProductReview } from '@cromwell/core';
-import { getCStore, getRestAPIClient, getGraphQLClient } from '@cromwell/core-frontend';
+import { getCStore, getRestAPIClient, getGraphQLClient, getWidgetsForPlace, onWidgetRegister, WidgetTypes } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import { CountUp } from 'countup.js';
 import * as echarts from 'echarts';
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import ReactResizeDetector from 'react-resize-detector';
+import { debounce } from 'throttle-debounce';
 
 import { getOrdersPerDayOption, getSalesValuePerDayOption } from './config/chartOptions';
 import { getDefaultLayout } from './config/defaultLayout';
@@ -19,7 +20,7 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 
 
 export default class Dashboard extends React.Component<any, {
-    stats: TCmsStats;
+    stats?: TCmsStats;
     reviews: TProductReview[];
 }> {
 
@@ -27,9 +28,35 @@ export default class Dashboard extends React.Component<any, {
     private ordersChart;
     private salesValueChart;
 
+    private setWidgetSize: WidgetTypes['Dashboard']['setSize'] = (pluginName, widgetLayouts) => {
+        if (!pluginName || !widgetLayouts?.lg) return;
+        const layout = this.getGridLayout();
+
+        Object.keys(widgetLayouts).forEach(breakPoint => {
+            if (layout[breakPoint]) layout[breakPoint] = layout[breakPoint].map(item => {
+                if (item.i === `$widget_${pluginName}`) return Object.assign({}, item, widgetLayouts[breakPoint]);
+                return item;
+            })
+        });
+        this.onLayoutChange(null, layout, true);
+    }
+
+    private widgets = getWidgetsForPlace('Dashboard', {
+        stats: this.state?.stats,
+        setSize: this.setWidgetSize,
+    });
+
     componentDidMount() {
         this.getCmsStats();
         this.getReviews();
+
+        onWidgetRegister('Dashboard', () => {
+            this.widgets = getWidgetsForPlace('Dashboard', {
+                stats: this.state?.stats,
+                setSize: this.setWidgetSize,
+            });
+            this.forceUpdate();
+        })
     }
 
     private async getCmsStats() {
@@ -97,17 +124,55 @@ export default class Dashboard extends React.Component<any, {
         if (saved) {
             try {
                 saved = JSON.parse(saved);
-                if (saved) return saved;
+                if (typeof saved !== 'object') saved = null;
             } catch (error) {
                 console.error(error);
             }
         }
-        return getDefaultLayout();
+        const layout = saved ?? getDefaultLayout();
+
+        // Filter old widgets from saved that aren't loaded yet
+        const filterWidgets = (array: { i: string }[]) => {
+            return array.filter(item => {
+                if (item.i.startsWith('$widget_')) {
+                    if (!this.widgets.some(w => `$widget_${w.key}` === item.i)) {
+                        return false;
+                    }
+                }
+                return true;
+            });
+        }
+        layout.lg = filterWidgets(layout.lg);
+        layout.md = filterWidgets(layout.md);
+        layout.sm = filterWidgets(layout.sm);
+        layout.xs = filterWidgets(layout.xs);
+        layout.xxs = filterWidgets(layout.xxs);
+
+        // Add new widgets
+        let maxY = 0;
+        layout.xxs.forEach(item => {
+            if (item.y > maxY) maxY = item.y;
+        });
+        maxY++;
+        this.widgets.forEach(widget => {
+            const widgetKey = `$widget_${widget.key}`;
+            const hasWidget = layout.lg.some(item => item.i === widgetKey);
+            if (!hasWidget) {
+                layout.lg.push({ i: widgetKey, x: 0, y: maxY, w: 6, h: 6 });
+                layout.md.push({ i: widgetKey, x: 0, y: maxY, w: 4, h: 6 });
+                layout.sm.push({ i: widgetKey, x: 0, y: maxY, w: 3, h: 6 });
+                layout.xs.push({ i: widgetKey, x: 0, y: maxY, w: 2, h: 4 });
+                layout.xxs.push({ i: widgetKey, x: 0, y: maxY, w: 2, h: 4 });
+                maxY++;
+            }
+        });
+        return layout;
     }
 
-    private onLayoutChange = (currentLayout, allLayouts) => {
+    private onLayoutChange = debounce(200, (currentLayout, allLayouts, shouldUpdate?: boolean) => {
         window.localStorage.setItem('crw_dashboard_layout', JSON.stringify(allLayouts));
-    }
+        if (shouldUpdate) this.forceUpdate();
+    })
 
     render() {
         const averageRating = this.state?.stats?.averageRating ?? 0;
@@ -224,6 +289,13 @@ export default class Dashboard extends React.Component<any, {
                             })}
                         </div>
                     </div>
+                    {this.widgets.map(widget => {
+                        return (
+                            <div key={`$widget_${widget.key}`} className={styles.chartBox}>
+                                {widget}
+                            </div>
+                        )
+                    })}
                 </ResponsiveGridLayout>
             </div>
         )

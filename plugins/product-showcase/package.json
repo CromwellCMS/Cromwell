@@ -5,8 +5,8 @@
   "files": [
     "build"
   ],
-  "author": "",
-  "license": "ISC",
+  "author": "CromwellJS",
+  "license": "MIT",
   "scripts": {
     "build": "npx --no-install cromwell b",
     "watch": "npx --no-install cromwell b -w"

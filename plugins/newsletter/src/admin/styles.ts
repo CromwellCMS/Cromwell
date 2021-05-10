@@ -1,6 +1,6 @@
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
+import { createStyles, makeStyles } from '@material-ui/core';
 
-export const useStyles = makeStyles((theme: Theme) =>
+export const useStyles = makeStyles(() =>
     createStyles({
         paper: {
             boxShadow: '0 3px 6px 0 rgba(0, 0, 0, 0.04), 0 0 10px 3px rgba(0, 0, 0, 0.05)',
@@ -15,6 +15,24 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
         saveBtn: {
             margin: '20px 0 0 auto'
+        },
+        dashboard: {
+            padding: '25px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '100%',
+            width: '100%',
+        },
+        dashboardText: {
+            fontSize: '22px',
+            fontWeight: 500,
+        },
+        dashboardIcon: {
+            width: '50px',
+            height: '50px',
+            objectFit: 'contain',
+            marginRight: '25px'
         }
     }),
 );

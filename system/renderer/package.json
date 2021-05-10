@@ -2,11 +2,11 @@
   "name": "@cromwell/renderer",
   "version": "1.0.0",
   "main": "buld/renderer.js",
-  "author": "cromwell",
+  "author": "CromwellJS",
   "files": [
     "build"
   ],
-  "license": "ISC",
+  "license": "MIT",
   "scripts": {
     "buildService": "node startup.js buildService",
     "dev": "node startup.js dev",

@@ -11,6 +11,7 @@
     ],
     "rules": {
         "@typescript-eslint/no-namespace": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
         "@typescript-eslint/no-var-requires": 0
     },
     "env": {

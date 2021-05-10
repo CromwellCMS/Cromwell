@@ -1,7 +1,6 @@
 import { GraphQLPaths, TAuthRole, TOrder, TPagedList } from '@cromwell/core';
 import {
     DeleteManyInput,
-    getLogger,
     InputOrder,
     Order,
     OrderFilterInput,
@@ -21,8 +20,6 @@ const deletePath = GraphQLPaths.Order.delete;
 const deleteManyPath = GraphQLPaths.Order.deleteMany;
 const deleteManyFilteredPath = GraphQLPaths.Order.deleteManyFiltered;
 const getFilteredPath = GraphQLPaths.Order.getFiltered;
-
-const logger = getLogger('detailed');
 
 @Resolver(Order)
 export class OrderResolver {

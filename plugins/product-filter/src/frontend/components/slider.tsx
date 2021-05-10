@@ -1,10 +1,9 @@
-
-import React, { Component, useEffect, useRef, useState } from 'react';
 import { getCStore } from '@cromwell/core-frontend';
+import { Slider as MUISlider } from '@material-ui/core';
+import React, { useState } from 'react';
+
 import { IOSSliderStyles } from '../styles';
-import {
-    Slider as MUISlider
-} from '@material-ui/core';
+
 
 const getPriceText = (value: number) => {
     return getCStore().getPriceWithCurrency(value);

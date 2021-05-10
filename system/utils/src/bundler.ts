@@ -1,4 +1,4 @@
-import { TAdditionalExports, TExternal, TFrontendDependency, TPackageJson, TSciprtMetaInfo } from '@cromwell/core';
+import { TAdditionalExports, TExternal, TFrontendDependency, TPackageJson, TSciprtMetaInfo, sleep } from '@cromwell/core';
 import { getPublicDir } from '@cromwell/core-backend';
 import archiver from 'archiver';
 import colorsdef from 'colors/safe';
@@ -751,7 +751,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         archive.pipe(output);
         archive.directory(moduleBuildDir, '/');
         await archive.finalize();
-
+        await sleep(0.2);
         await fs.move(tempZipPath, moduleArchivePath);
 
 

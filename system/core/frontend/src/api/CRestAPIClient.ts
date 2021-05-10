@@ -27,7 +27,7 @@ import { fetch } from '../helpers/isomorphicFetch';
 
 export type TPluginsModifications = TPluginConfig & { [x: string]: any };
 
-type TErrorInfo = {
+export type TErrorInfo = {
     statusCode: number;
     message: string;
     route: string;
