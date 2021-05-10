@@ -30,6 +30,8 @@ jest.mock('@cromwell/core-frontend', () => {
                 getActiveCurrencySymbol: jest.fn().mockImplementation(() => ''),
             }
         },
+        getWidgetsForPlace: () => [<></>],
+        onWidgetRegister: () => null,
     }
 });
 
