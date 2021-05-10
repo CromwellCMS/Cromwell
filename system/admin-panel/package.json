@@ -114,7 +114,6 @@
       "@apollo/client",
       "@loadable/component",
       "throttle-debounce",
-      "whatwg-fetch",
       "query-string",
       "react",
       "react-dom",

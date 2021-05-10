@@ -3,6 +3,8 @@ import { Attribute, AttributeInput, AttributeRepository } from '@cromwell/core-b
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { mainFireAction } from '../helpers/mainFireAction';
+
 const getOneByIdPath = GraphQLPaths.Attribute.getOneById;
 const getManyPath = GraphQLPaths.Attribute.getMany;
 const createPath = GraphQLPaths.Attribute.create;
@@ -27,19 +29,25 @@ export class AttributeResolver {
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Attribute)
     async [createPath](@Arg("data") data: AttributeInput): Promise<TAttribute> {
-        return await this.repository.createAttribute(data);
+        const attr = await this.repository.createAttribute(data);
+        mainFireAction('create_attribute', attr);
+        return attr;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Attribute)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: AttributeInput): Promise<Attribute> {
-        return await this.repository.updateAttribute(id, data);
+        const attr = await this.repository.updateAttribute(id, data);
+        mainFireAction('update_attribute', attr);
+        return attr;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
-        return await this.repository.deleteAttribute(id);
+        const attr = await this.repository.deleteAttribute(id);
+        mainFireAction('delete_attribute', { id });
+        return attr;
     }
 
 }

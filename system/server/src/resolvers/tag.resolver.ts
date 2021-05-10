@@ -1,15 +1,9 @@
 import { GraphQLPaths, TAuthRole, TPagedList, TTag } from '@cromwell/core';
-import {
-    DeleteManyInput,
-    getLogger,
-    InputTag,
-    PagedParamsInput,
-    PagedTag,
-    Tag,
-    TagRepository,
-} from '@cromwell/core-backend';
+import { DeleteManyInput, InputTag, PagedParamsInput, PagedTag, Tag, TagRepository } from '@cromwell/core-backend';
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
+
+import { mainFireAction } from '../helpers/mainFireAction';
 
 const getOneBySlugPath = GraphQLPaths.Tag.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Tag.getOneById;
@@ -19,7 +13,6 @@ const updatePath = GraphQLPaths.Tag.update;
 const deletePath = GraphQLPaths.Tag.delete;
 const deleteManyPath = GraphQLPaths.Tag.deleteMany;
 
-const logger = getLogger('detailed');
 
 @Resolver(Tag)
 export class TagResolver {
@@ -45,19 +38,25 @@ export class TagResolver {
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Tag)
     async [createPath](@Arg("data") data: InputTag): Promise<TTag> {
-        return this.repository.createTag(data);
+        const tag = await this.repository.createTag(data);
+        mainFireAction('create_tag', tag);
+        return tag;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Tag)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: InputTag): Promise<TTag | undefined> {
-        return this.repository.updateTag(id, data);
+        const tag = await this.repository.updateTag(id, data);
+        mainFireAction('update_tag', tag);
+        return tag;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
-        return this.repository.deleteTag(id);
+        const tag = await this.repository.deleteTag(id);
+        mainFireAction('delete_tag', { id });
+        return tag;
     }
 
     @Authorized<TAuthRole>("administrator")

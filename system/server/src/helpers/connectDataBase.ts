@@ -77,7 +77,7 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
         ...ormconfig,
         entities: [
             ...ORMEntities,
-            ...(sType === 'plugin' ? (await collectPlugins()).entities : []),
+            ...(sType === 'plugin' ? ((await collectPlugins()).entities ?? [] as any) : []),
             ...(ormconfig?.entities ?? [])
         ],
         migrations: [

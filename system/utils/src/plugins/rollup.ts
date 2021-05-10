@@ -120,6 +120,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             options.output = Object.assign({}, options.output, {
                 file: resolve(process.cwd(), buildDirName, pluginFrontendBundlePath),
                 format: "iife",
+                exports: 'default',
                 name: strippedName,
                 banner: '(function() {',
                 footer: `return ${strippedName};})();`
@@ -203,100 +204,23 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         }
 
         // Plugin backend
-        let entitiesdir = pluginConfig?.backend?.entitiesDir;
-        if (!entitiesdir) {
-            const entitiesDefDir = resolve(process.cwd(), 'src/backend/entities');
-            if (fs.pathExistsSync(entitiesDefDir)) entitiesdir = 'src/backend/entities';
-        }
+        const backendInputFile = resolveFileExtension(pluginConfig?.backend ?? 'src/backend/index');
+        if (backendInputFile) {
+            const cjsOptions = Object.assign({}, specifiedOptions?.backend ?? inputOptions);
 
-        let resolversDir = pluginConfig?.backend?.resolversDir;
-        if (!resolversDir) {
-            const resolversDefDir = resolve(process.cwd(), 'src/backend/resolvers');
-            if (fs.pathExistsSync(resolversDefDir)) resolversDir = 'src/backend/resolvers';
-        }
+            cjsOptions.input = backendInputFile;
+            cjsOptions.output = Object.assign({}, cjsOptions.output, {
+                file: getPluginBackendPath(resolve(process.cwd(), buildDirName)),
+                format: "cjs",
+                name: moduleInfo.name,
+                exports: "auto"
+            } as OutputOptions)
 
-        let controllersDir = pluginConfig?.backend?.controllersDir;
-        if (!controllersDir) {
-            const controllersDefDir = resolve(process.cwd(), 'src/backend/controllers');
-            if (fs.pathExistsSync(controllersDefDir)) controllersDir = 'src/backend/controllers';
-        }
+            cjsOptions.plugins = [...(cjsOptions.plugins ?? [])];
 
-        if (entitiesdir || resolversDir || controllersDir) {
-            let resolverFiles: string[] = [];
-            let controllerFiles: string[] = [];
-            let entityFiles: string[] = [];
+            cjsOptions.external = isExternalForm;
 
-            if (entitiesdir) {
-                const entitiesFullDir = resolve(process.cwd(), entitiesdir)
-                entityFiles = fs.readdirSync(entitiesFullDir).map(file => normalizePath(resolve(entitiesFullDir, file)));
-            }
-            if (resolversDir) {
-                const resolversFullDir = resolve(process.cwd(), resolversDir);
-                resolverFiles = fs.readdirSync(resolversFullDir).map(file => normalizePath(resolve(resolversFullDir, file)));
-            }
-            if (controllersDir) {
-                const controllersFullDir = resolve(process.cwd(), controllersDir);
-                controllerFiles = fs.readdirSync(controllersFullDir).map(file => normalizePath(resolve(controllersFullDir, file)));
-            }
-
-            if (entityFiles.length > 0 || resolverFiles.length > 0 || controllerFiles.length) {
-                const cjsOptions = Object.assign({}, specifiedOptions?.backend ?? inputOptions);
-
-                const optionsInput = '$$' + moduleInfo.name + '/backend';
-
-                cjsOptions.input = optionsInput;
-                cjsOptions.output = Object.assign({}, cjsOptions.output, {
-                    file: getPluginBackendPath(resolve(process.cwd(), buildDirName)),
-                    format: "cjs",
-                    name: moduleInfo.name,
-                    exports: "auto"
-                } as OutputOptions)
-
-                cjsOptions.plugins = [...(cjsOptions.plugins ?? [])];
-
-                let exportsStr = '';
-                const resolverNames: string[] = [];
-                const controllerNames: string[] = [];
-                const entityNames: string[] = [];
-                
-                resolverFiles.forEach(file => {
-                    const name = `resolver_${cryptoRandomString({ length: 8 })}`
-                    resolverNames.push(name);
-                    exportsStr += `import ${name} from '${file}'\n`;
-                });
-
-                controllerFiles.forEach(file => {
-                    const name = `controller_${cryptoRandomString({ length: 8 })}`
-                    controllerNames.push(name);
-                    exportsStr += `import ${name} from '${file}'\n`;
-                });
-
-                entityFiles.forEach(file => {
-                    const name = `entity_${cryptoRandomString({ length: 8 })}`
-                    entityNames.push(name);
-                    exportsStr += `import ${name} from '${file}'\n`;
-                });
-
-                exportsStr += 'export const resolvers = [\n';
-                resolverNames.forEach(name => exportsStr += `\t${name},\n`);
-                exportsStr += '];\n';
-
-                exportsStr += 'export const controllers = [\n';
-                controllerNames.forEach(name => exportsStr += `\t${name},\n`);
-                exportsStr += '];\n';
-
-                exportsStr += 'export const entities = [\n';
-                entityNames.forEach(name => exportsStr += `\t${name},\n`);
-                exportsStr += '];\n';
-
-                cjsOptions.plugins.push(virtual({
-                    [optionsInput]: exportsStr
-                }));
-
-                cjsOptions.external = isExternalForm;
-
-                outOptions.push(cjsOptions);
-            }
+            outOptions.push(cjsOptions);
         }
 
     }

@@ -161,19 +161,19 @@ export class PostRepository extends BaseRepository<Post> {
     }
 
     async deleteManyFilteredPosts(input: TDeleteManyInput, filterParams?: PostFilterInput): Promise<boolean | undefined> {
-        // Select first, because JOIN with DELETE is not supported by Typeorm (such a shame)
-        const qb = this.createQueryBuilder().select(['id']);
+        // Select first, because JOIN with DELETE is not supported by Typeorm (such a shame), we need it fot post filter with tags (see above). 
+        const qb = this.createQueryBuilder(this.metadata.tablePath).select(['id']);
         this.applyPostFilter(qb, filterParams);
         this.applyDeletMany(qb, input);
         const ids: { id: string | number }[] = await qb.execute();
-
-        const deleteQb = this.createQueryBuilder()
+        const deleteQb = this.createQueryBuilder(this.metadata.tablePath)
             .delete().from<Post>(this.metadata.tablePath);
 
         this.applyDeletMany(deleteQb, {
             all: false,
             ids: ids.map(id => id?.id + ''),
         });
+
         await deleteQb.execute();
         return true;
     }

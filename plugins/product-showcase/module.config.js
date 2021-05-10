@@ -3,11 +3,6 @@ module.exports = {
     title: "Product showcase",
     icon: "static/icon_showcase.png",
     info: '',
-    adminInputFile: "src/admin/index.tsx",
-    frontendInputFile: "src/frontend/index.tsx",
-    backend: {
-        resolversDir: "src/backend/resolvers",
-    },
     defaultSettings: {
         size: 20
     },
@@ -22,7 +17,12 @@ module.exports = {
                         monorepo: true
                     }),
                     commonjs(),
-                    terser()
+                    terser({
+                        compress: {
+                            side_effects: false,
+                            negate_iife: false,
+                        }
+                    }),
                 ]
             },
             backend: {

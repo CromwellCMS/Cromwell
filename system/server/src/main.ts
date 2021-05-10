@@ -110,4 +110,3 @@ async function bootstrap(): Promise<void> {
         if (process.send) process.send(serverMessages.onStartErrorMessage);
     }
 })();
-

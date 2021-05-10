@@ -12,6 +12,7 @@ import {
 } from '@cromwell/core-backend';
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
+import { mainFireAction } from '../helpers/mainFireAction';
 
 
 const getOneByIdPath = GraphQLPaths.User.getOneById;
@@ -43,7 +44,9 @@ export class UserResolver {
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => User)
     async [createPath](@Arg("data") data: CreateUser): Promise<TUser> {
-        return await this.repository.createUser(data);
+        const user = await this.repository.createUser(data);
+        mainFireAction('create_user', user);
+        return user;
     }
 
     @Authorized<TAuthRole>("administrator", "self")
@@ -54,13 +57,17 @@ export class UserResolver {
         if (data.role && data.role !== ctx.user.role && ctx.user.role !== 'administrator') throw new Error(message);
         if (ctx.user.role === 'guest') throw new Error(message);
 
-        return await this.repository.updateUser(id, data);
+        const user = await this.repository.updateUser(id, data);
+        mainFireAction('update_user', user);
+        return user;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
-        return await this.repository.deleteUser(id);
+        const user = await this.repository.deleteUser(id);
+        mainFireAction('delete_user', { id });
+        return user;
     }
 
     @Authorized<TAuthRole>("administrator", 'author', "guest")

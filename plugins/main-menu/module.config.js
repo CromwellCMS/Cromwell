@@ -1,6 +1,4 @@
 module.exports = {
-    adminInputFile: "src/admin/index.tsx",
-    frontendInputFile: "src/frontend/index.tsx",
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
         const { terser } = require('rollup-plugin-terser');
@@ -10,7 +8,12 @@ module.exports = {
                 plugins: [
                     typescript(),
                     commonjs(),
-                    terser()
+                    terser({
+                        compress: {
+                            side_effects: false,
+                            negate_iife: false,
+                        }
+                    }),
                 ]
             }
         }

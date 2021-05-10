@@ -16,6 +16,8 @@ import {
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { mainFireAction } from '../helpers/mainFireAction';
+
 const getOneBySlugPath = GraphQLPaths.Post.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Post.getOneById;
 const getManyPath = GraphQLPaths.Post.getMany;
@@ -55,19 +57,25 @@ export class PostResolver {
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Post)
     async [createPath](@Arg("data") data: CreatePost): Promise<Post> {
-        return this.repository.createPost(data);
+        const post = await this.repository.createPost(data);
+        mainFireAction('create_post', post);
+        return post;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Post)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdatePost): Promise<Post> {
-        return this.repository.updatePost(id, data);
+        const post = await this.repository.updatePost(id, data);
+        mainFireAction('update_post', post);
+        return post;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
-        return this.repository.deletePost(id);
+        const success = await this.repository.deletePost(id);
+        mainFireAction('delete_post', { id });
+        return success;
     }
 
     @Authorized<TAuthRole>("administrator")

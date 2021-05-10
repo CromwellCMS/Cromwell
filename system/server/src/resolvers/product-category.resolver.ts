@@ -14,6 +14,8 @@ import {
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { mainFireAction } from '../helpers/mainFireAction';
+
 const getOneBySlugPath = GraphQLPaths.ProductCategory.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.ProductCategory.getOneById;
 const getManyPath = GraphQLPaths.ProductCategory.getMany;
@@ -52,19 +54,25 @@ export class ProductCategoryResolver {
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => ProductCategory)
     async [createPath](@Arg("data") data: CreateProductCategory) {
-        return await this.repository.createProductCategory(data);
+        const category = await this.repository.createProductCategory(data);
+        mainFireAction('create_product_category', category);
+        return category;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => ProductCategory)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProductCategory) {
-        return await this.repository.updateProductCategory(id, data);
+        const category = await this.repository.updateProductCategory(id, data);
+        mainFireAction('update_product_category', category);
+        return category;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string) {
-        return await this.repository.deleteProductCategory(id);
+        const category = await this.repository.deleteProductCategory(id);
+        mainFireAction('delete_product_category', { id });
+        return category;
     }
 
     @Authorized<TAuthRole>("administrator")

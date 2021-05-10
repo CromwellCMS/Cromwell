@@ -5,15 +5,14 @@ import { loadEnv } from '../helpers/loadEnv';
 
 const env = loadEnv();
 
-@Module({
-    providers: getServices(env.serverType, env.envMode === 'dev'),
-    exports: getExports(),
-})
+@Module({})
 export class RestApiModule {
     static async forRoot(): Promise<DynamicModule> {
         return {
             module: RestApiModule,
             controllers: await getControllers(env.serverType, env.envMode === 'dev'),
+            providers: await getServices(env.serverType, env.envMode === 'dev'),
+            exports: getExports(),
         }
     }
 }

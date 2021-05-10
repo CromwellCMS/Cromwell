@@ -11,6 +11,8 @@ import {
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { mainFireAction } from '../helpers/mainFireAction';
+
 const getOneByIdPath = GraphQLPaths.ProductReview.getOneById;
 const getManyPath = GraphQLPaths.ProductReview.getMany;
 const createPath = GraphQLPaths.ProductReview.create;
@@ -38,19 +40,25 @@ export class ProductReviewResolver {
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => ProductReview)
     async [createPath](@Arg("data") data: ProductReviewInput): Promise<TProductReview> {
-        return await this.repository.createProductReview(data);
+        const review = await this.repository.createProductReview(data);
+        mainFireAction('create_product_review', review);
+        return review;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => ProductReview)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: ProductReviewInput): Promise<ProductReview> {
-        return await this.repository.updateProductReview(id, data);
+        const review = await this.repository.updateProductReview(id, data);
+        mainFireAction('update_product_review', review);
+        return review;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
-        return await this.repository.deleteProductReview(id);
+        const review = await this.repository.deleteProductReview(id);
+        mainFireAction('delete_product_review', { id });
+        return review;
     }
 
     @Authorized<TAuthRole>("administrator")

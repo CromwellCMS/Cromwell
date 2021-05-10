@@ -105,7 +105,6 @@ module.exports = {
                 "@apollo/client",
                 "@loadable/component",
                 "throttle-debounce",
-                "whatwg-fetch",
                 "query-string",
                 "react-number-format",
                 "react-router-dom",

@@ -1,11 +1,11 @@
-import { GraphQLPaths, TAttribute, TAttributeInput, TPagedParams, TPost, TPostInput } from '@cromwell/core';
-import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
+import { GraphQLPaths, TAttribute, TAttributeInput } from '@cromwell/core';
 import { AttributeRepository } from '@cromwell/core-backend';
+import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
 import { ApolloServerTestClient } from 'apollo-server-testing';
+import { getCustomRepository } from 'typeorm';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
-import { getCustomRepository } from 'typeorm';
 
 describe('Attribute resolver', () => {
     let server: ApolloServer;

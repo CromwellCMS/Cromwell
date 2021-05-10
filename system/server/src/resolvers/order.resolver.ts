@@ -11,6 +11,8 @@ import {
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { mainFireAction } from '../helpers/mainFireAction';
+
 const getOneBySlugPath = GraphQLPaths.Order.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Order.getOneById;
 const getManyPath = GraphQLPaths.Order.getMany;
@@ -48,19 +50,25 @@ export class OrderResolver {
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Order)
     async [createPath](@Arg("data") data: InputOrder): Promise<Order> {
-        return this.repository.createOrder(data);
+        const order = await this.repository.createOrder(data);
+        mainFireAction('create_order', order);
+        return order;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Order)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: InputOrder): Promise<Order | undefined> {
-        return this.repository.updateOrder(id, data);
+        const order = await this.repository.updateOrder(id, data);
+        mainFireAction('create_order', order);
+        return order;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
-        return this.repository.deleteOrder(id);
+        const order = await this.repository.deleteOrder(id);
+        mainFireAction('delete_order', { id });
+        return order;
     }
 
     @Authorized<TAuthRole>("administrator")

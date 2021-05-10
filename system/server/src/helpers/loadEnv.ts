@@ -55,12 +55,13 @@ export const checkConfigs = async (envMode: TEnv) => {
         }
 
         const cached = await getSettings();
-        if (!cached) {
+        if (!cached || !cached.accessSecret || !cached.refreshSecret || !cached.cookieSecret || !cached.actionsSecret) {
             await cacache.put(serverCachePath, 'auth_settings', JSON.stringify(authSettings));
         } else {
             authSettings.accessSecret = cached.accessSecret;
             authSettings.refreshSecret = cached.refreshSecret;
             authSettings.cookieSecret = cached.cookieSecret;
+            authSettings.actionsSecret = cached.actionsSecret;
         }
     }
 

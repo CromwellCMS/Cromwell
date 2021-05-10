@@ -327,7 +327,7 @@ class CRestAPIClient {
 
 }
 
-export const getRestAPIClient = (serverType: 'main' | 'plugin' = 'main'): CRestAPIClient | undefined => {
+export const getRestAPIClient = (serverType: 'main' | 'plugin' = 'main'): CRestAPIClient => {
     let clients = getStoreItem('apiClients');
     if (serverType === 'main' && clients?.mainRestAPIClient) return clients.mainRestAPIClient;
     if (serverType === 'plugin' && clients?.pluginRestAPIClient) return clients.pluginRestAPIClient;

@@ -11,7 +11,8 @@ import { ThemeService } from '../services/theme.service';
 
 export const getControllers = async (sType: 'main' | 'plugin', dev?: boolean) => {
     if (sType !== 'main') return [
-        ...(await collectPlugins()).controllers,
+        CmsController,
+        ...((await collectPlugins()).controllers ?? []),
     ];
     const def: any[] = [
         CmsController,
@@ -23,13 +24,13 @@ export const getControllers = async (sType: 'main' | 'plugin', dev?: boolean) =>
     return def;
 }
 
-export const getServices = (sType: 'main' | 'plugin', dev?: boolean) => {
-    if (sType !== 'main') return [
-        CmsService,
-    ];
+export const getServices = async (sType: 'main' | 'plugin', dev?: boolean) => {
     const def: any[] = [
         CmsService, PluginService, ThemeService,
     ];
+    if (sType !== 'main') {
+        def.concat((await collectPlugins()).providers ?? [])
+    }
     if (dev) def.push(MockService);
     return def;
 }

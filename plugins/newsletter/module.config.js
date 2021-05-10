@@ -10,7 +10,12 @@ module.exports = {
                         monorepo: true,
                     }),
                     commonjs(),
-                    terser()
+                    terser({
+                        compress: {
+                            side_effects: false,
+                            negate_iife: false,
+                        }
+                    }),
                 ]
             },
             backend: {

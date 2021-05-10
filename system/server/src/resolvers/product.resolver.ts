@@ -26,6 +26,8 @@ import {
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
+import { mainFireAction } from '../helpers/mainFireAction';
+
 const categoriesKey: keyof TProduct = 'categories';
 const ratingKey: keyof TProduct = 'rating';
 const reviewsKey: keyof TProduct = 'reviews';
@@ -66,19 +68,25 @@ export class ProductResolver {
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Product)
     async [createPath](@Arg("data") data: CreateProduct): Promise<Product> {
-        return this.repository.createProduct(data);
+        const product = await this.repository.createProduct(data);
+        mainFireAction('create_product', product);
+        return product;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Product)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProduct): Promise<Product> {
-        return this.repository.updateProduct(id, data);
+        const product = await this.repository.updateProduct(id, data);
+        mainFireAction('update_product', product);
+        return product;
     }
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
-        return this.repository.deleteProduct(id);
+        const product = await this.repository.deleteProduct(id);
+        mainFireAction('update_product', { id });
+        return product;
     }
 
     @Authorized<TAuthRole>("administrator")
