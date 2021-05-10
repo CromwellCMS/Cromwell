@@ -73,12 +73,11 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
     }
     ormconfig = Object.assign(adjustedOptions as any, ormconfig) as ConnectionOptions;
 
-    const pluginsExports = await collectPlugins();
     const connectionOptions: ConnectionOptions = {
         ...ormconfig,
         entities: [
             ...ORMEntities,
-            ...(sType === 'plugin' ? pluginsExports.entities : []),
+            ...(sType === 'plugin' ? (await collectPlugins()).entities : []),
             ...(ormconfig?.entities ?? [])
         ],
         migrations: [

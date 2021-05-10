@@ -86,7 +86,7 @@ const PostSettings = (props: {
                 </IconButton>
                 <TextField
                     label="Title"
-                    value={title}
+                    value={title ?? ''}
                     fullWidth
                     className={styles.settingItem}
                     onChange={e => setTitle(e.target.value)}
@@ -95,7 +95,7 @@ const PostSettings = (props: {
                     label="Page URL"
                     className={styles.settingItem}
                     fullWidth
-                    value={slug}
+                    value={slug ?? ''}
                     onChange={e => setSlug(e.target.value)}
                     helperText={pageFullUrl}
                 />
@@ -154,14 +154,14 @@ const PostSettings = (props: {
                     label="Meta title"
                     className={styles.settingItem}
                     fullWidth
-                    value={pageTitle}
+                    value={pageTitle ?? ''}
                     onChange={e => setPageTitle(e.target.value)}
                 />
                 <TextField
                     label="Meta description"
                     className={styles.settingItem}
                     fullWidth
-                    value={pageDescription}
+                    value={pageDescription ?? ''}
                     onChange={e => setPageDescription(e.target.value)}
                 />
             </div>

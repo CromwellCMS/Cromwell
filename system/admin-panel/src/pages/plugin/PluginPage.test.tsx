@@ -13,7 +13,8 @@ jest.mock('@cromwell/core-frontend', () => {
         CPlugin: (props) => {
             return <p>{props.pluginName}</p>
         },
-        LoadBox: () => <div></div>
+        LoadBox: () => <div></div>,
+        AdminPanelWidgetPlace: (props) =>  <p>{props.pluginName}</p>,
     }
 });
 
@@ -21,7 +22,7 @@ import { render, screen } from '@testing-library/react';
 
 import PluginPage from './PluginPage';
 
-describe('AttributesPage', () => {
+describe('PluginPage', () => {
 
     const testPluginName = '_test_';
 
