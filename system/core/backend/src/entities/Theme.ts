@@ -15,6 +15,9 @@ export class ThemeEntity extends BasePageEntity implements TThemeEntity {
     @Column()
     isInstalled: boolean;
 
+    @Column({ type: "varchar" })
+    version: string;
+
     @Field(type => Boolean, { nullable: true })
     @Column({ type: "boolean", nullable: true })
     hasAdminBundle?: boolean;

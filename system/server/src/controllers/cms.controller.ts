@@ -31,6 +31,7 @@ import { ServerActionDto } from '../dto/server-action.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { mainFireAction } from '../helpers/mainFireAction';
 import { CmsService } from '../services/cms.service';
+import { pluginServiceInst } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 
 const logger = getLogger('detailed');
@@ -290,11 +291,11 @@ export class CmsController {
     }
 
 
-    @Get('install-theme')
+    @Get('activate-theme')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')
     @ApiOperation({
-        description: `Installs downloaded theme`,
+        description: `Activates downloaded theme`,
         parameters: [{ name: 'themeName', in: 'query', required: true }]
     })
     @ApiResponse({
@@ -302,15 +303,37 @@ export class CmsController {
         type: Boolean
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async installTheme(@Query('themeName') themeName: string): Promise<boolean> {
+    async activateTheme(@Query('themeName') themeName: string): Promise<boolean> {
 
-        logger.log('CmsController::installTheme');
+        logger.log('CmsController::activateTheme');
 
         if (themeName && themeName !== "") {
-            return this.themeService.installTheme(themeName);
+            return this.themeService.activateTheme(themeName);
         } else {
             throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+
+    @Get('activate-plugin')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: 'Activates downloaded plugin.',
+        parameters: [{ name: 'pluginName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async activatePlugin(@Query('pluginName') pluginName: string): Promise<boolean> {
+        logger.log('PluginController::activatePlugin');
+
+        if (pluginName && pluginName !== "") {
+            return pluginServiceInst.activatePlugin(pluginName);
+        }
+        throw new HttpException('Invalid pluginName', HttpStatus.NOT_ACCEPTABLE);
     }
 
 

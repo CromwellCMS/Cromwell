@@ -46,10 +46,16 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     private _currencies?: string;
 
     @Column({ type: "varchar", nullable: true })
+    version?: string;
+
+    @Column({ type: "varchar", nullable: true })
     versions?: string;
 
     @Column({ type: "boolean", nullable: true })
     installed?: boolean;
+
+    @Column({ type: "boolean", nullable: true })
+    beta?: boolean;
 
     @Column({ type: "varchar", nullable: true })
     smtpConnectionString?: string;

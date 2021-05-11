@@ -104,11 +104,11 @@ export default function ThemeList() {
         }
     }
 
-    const handleInstallTheme = (themeName: string) => async () => {
+    const handleActivateTheme = (themeName: string) => async () => {
         setIsLoading(true);
         let success = false;
         try {
-            success = await client?.installTheme(themeName);
+            success = await client?.activateTheme(themeName);
             await getThemeList();
         } catch (e) {
             console.error(e);
@@ -155,7 +155,7 @@ export default function ThemeList() {
                         <CardActions className={styles.themeActions} disableSpacing>
                             {!isInstalled && (
                                 <Button size="small" color="primary" variant="contained"
-                                    onClick={handleInstallTheme(info.name)}
+                                    onClick={handleActivateTheme(info.name)}
                                     disabled={isChangingTheme}
                                 >Install theme</Button>
                             )}

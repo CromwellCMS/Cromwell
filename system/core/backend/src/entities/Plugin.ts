@@ -19,6 +19,9 @@ export class PluginEntity extends BasePageEntity implements TPluginEntity {
     @Column()
     isInstalled: boolean;
 
+    @Column({ type: "varchar" })
+    version: string;
+
     @Field(type => Boolean, { nullable: true })
     @Column({ type: "boolean", nullable: true })
     hasAdminBundle?: boolean;

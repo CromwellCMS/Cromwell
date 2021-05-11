@@ -1,7 +1,7 @@
 import { TCmsSettings, TPackageCromwellConfig } from '@cromwell/core';
 import { INestApplication } from '@nestjs/common';
 import request from 'supertest';
-import { AuthService } from '@App/services/auth.service';
+
 import { setupController, tearDownController } from '../controller.helpers';
 
 describe('CMS Controller', () => {

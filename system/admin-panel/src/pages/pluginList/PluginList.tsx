@@ -1,6 +1,6 @@
-import { TPluginEntity, TPackageCromwellConfig } from '@cromwell/core';
+import { TPackageCromwellConfig, TPluginEntity } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, Card, IconButton, Tooltip } from '@material-ui/core';
+import { Button, IconButton, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
     Delete as DeleteIcon,
@@ -10,9 +10,9 @@ import {
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
-import { pluginPageInfo } from '../../constants/PageInfos';
 import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
+import { pluginPageInfo } from '../../constants/PageInfos';
 import styles from './PluginList.module.scss';
 
 export default function PluginList() {
@@ -56,11 +56,11 @@ export default function PluginList() {
 
     }
 
-    const handleInstallPlugin = (pluginName: string) => async () => {
+    const handleActivatePlugin = (pluginName: string) => async () => {
         setIsLoading(true);
         let success = false;
         try {
-            success = await getRestAPIClient()?.installPlugin(pluginName);
+            success = await getRestAPIClient()?.activatePlugin(pluginName);
             await getPluginList();
         } catch (e) {
             console.error(e);
@@ -119,7 +119,7 @@ export default function PluginList() {
                             )
                         ) : (
                             <Tooltip title="Install plugin">
-                                <IconButton onClick={handleInstallPlugin(pluginName)}>
+                                <IconButton onClick={handleActivatePlugin(pluginName)}>
                                     <LibraryAddIcon />
                                 </IconButton>
                             </Tooltip>

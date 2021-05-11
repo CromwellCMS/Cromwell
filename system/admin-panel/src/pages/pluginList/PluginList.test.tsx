@@ -15,12 +15,13 @@ const testDataDB: TPluginEntity[] = [
     {
         id: '_test1_',
         name: '_test1_',
+        version: '1.1.1',
         title: '_test1_title',
         isInstalled: true,
     },
 ]
 
-const installPlugin = jest.fn().mockImplementation(async () => true);
+const activatePlugin = jest.fn().mockImplementation(async () => true);
 
 jest.mock('@cromwell/core-frontend', () => {
     return {
@@ -32,7 +33,7 @@ jest.mock('@cromwell/core-frontend', () => {
         getRestAPIClient: () => {
             return {
                 getPluginList: jest.fn().mockImplementation(async () => testDataAll),
-                installPlugin,
+                activatePlugin,
             }
         }
     }
@@ -44,7 +45,7 @@ jest.mock('../../constants/PageInfos', () => {
     }
 });
 
-import { fireEvent, render, screen, act } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 
 import PluginListPage from './PluginList';
 
@@ -69,7 +70,7 @@ describe('PluginList page', () => {
         });
         await screen.findByText('_test2_title');
 
-        expect(installPlugin.mock.calls.length === 1).toBeTruthy();
+        expect(activatePlugin.mock.calls.length === 1).toBeTruthy();
     })
 
 })

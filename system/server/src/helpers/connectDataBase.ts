@@ -105,7 +105,7 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
 
 
     // Check installed cms modules. All available themes and plugins should be registered in DB
-    // If some are not, then install them here at Server startup
+    // If some are not, then activate them here at Server startup
     const cmsModules = await readCmsModules();
 
     const pluginRepo = getCustomRepository(GenericPlugin.repository);
@@ -114,7 +114,7 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
     const pluginService = new PluginService();
     for (const pluginName of cmsModules.plugins) {
         if (!dbPlugins.find(plugin => plugin.name === pluginName)) {
-            await pluginService.installPlugin(pluginName);
+            await pluginService.activatePlugin(pluginName);
         }
     }
 
@@ -124,7 +124,7 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
     const themeService = new ThemeService();
     for (const themeName of cmsModules.themes) {
         if (!dbThemes.find(theme => theme.name === themeName)) {
-            await themeService.installTheme(themeName);
+            await themeService.activateTheme(themeName);
         }
     }
 
