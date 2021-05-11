@@ -85,6 +85,7 @@ export const defaultCmsConfig: TCmsConfig = {
     pluginApiPort: 4032,
     adminPanelPort: 4064,
     frontendPort: 4128,
+    centralServerUrl: 'http://localhost:4008/api/',
     useWatch: true,
     defaultSettings: {
         installed: false,

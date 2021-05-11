@@ -11,7 +11,7 @@ const { walk } = require("estree-walker");
 const isReference = require("is-reference");
 const { attachScopes, makeLegalIdentifier } = require("@rollup/pluginutils");
 
-function analyzeImport(node, importBindings: Map<string, string>, code: MagicString, getName, globals) {
+function analyzeImport(node, importBindings: Map<string, string>, code: MagicString, getName, globals, createVars?: boolean) {
     const name = node.source.value && getName(node.source.value);
     if (!name) {
         return false;
@@ -25,10 +25,15 @@ function analyzeImport(node, importBindings: Map<string, string>, code: MagicStr
 
         importBindings.set(spec.local.name, makeGlobalName(
             spec.imported ? spec.imported.name : "default",
-            strippedName
+            createVars ? strippedName : name
         ));
     }
-    code.overwrite(node.start, node.end, `const ${strippedName} = ${name}`);
+    if (createVars) {
+        code.overwrite(node.start, node.end, `const ${strippedName} = ${name}`);
+    }
+    else {
+        code.remove(node.start, node.end);
+    }
     return true;
 }
 
@@ -108,7 +113,8 @@ function getDynamicImportSource(node) {
     }
 }
 
-function importToGlobals({ ast, code, getName, getDynamicWrapper }) {
+
+function importToGlobals({ ast, code, getName, getDynamicWrapper, createVars }) {
     let scope = attachScopes(ast, "scope");
     const bindings = new Map;
     const globals = new Set;
@@ -117,7 +123,7 @@ function importToGlobals({ ast, code, getName, getDynamicWrapper }) {
 
     for (const node of ast.body) {
         if (node.type === "ImportDeclaration") {
-            isTouched = analyzeImport(node, bindings, code, getName, globals) || isTouched;
+            isTouched = analyzeImport(node, bindings, code, getName, globals, createVars) || isTouched;
         } else if (node.type === "ExportNamedDeclaration") {
             isTouched = analyzeExportNamed(node, code, getName, tempNames) || isTouched;
         }
@@ -168,8 +174,13 @@ function importToGlobals({ ast, code, getName, getDynamicWrapper }) {
 
 
 function createPlugin(globals,
-    { include, exclude, dynamicWrapper = defaultDynamicWrapper }
-        : { include?: string[] | string; exclude?: string[] | string; dynamicWrapper?: typeof defaultDynamicWrapper } = {}): Plugin {
+    { include, exclude, dynamicWrapper = defaultDynamicWrapper, createVars }
+        : {
+            include?: string[] | string;
+            exclude?: string[] | string;
+            dynamicWrapper?: typeof defaultDynamicWrapper;
+            createVars?: boolean;
+        } = {}): Plugin {
     if (!globals) {
         throw new TypeError("Missing mandatory option 'globals'");
     }
@@ -202,7 +213,8 @@ function createPlugin(globals,
                 ast,
                 code: magicCode,
                 getName,
-                getDynamicWrapper: dynamicWrapper
+                getDynamicWrapper: dynamicWrapper,
+                createVars,
             });
             return isTouched ? {
                 code: magicCode.toString(),
