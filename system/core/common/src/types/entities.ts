@@ -442,3 +442,44 @@ export type TDeleteManyInput = {
     ids: string[];
     all?: boolean;
 }
+
+
+
+// CCS for Cromwell Central Server
+export type TCCSVersion = {
+    name: string;
+    createdAt: Date;
+    version: string;
+    packageVersion: string;
+    beta: boolean;
+    restartServices: string[];
+    description?: string;
+    changelog?: string;
+    image?: string;
+}
+
+export type TCCSModuleShortInfo = {
+    version: string;
+    packageVersion: string;
+    betaVersion?: string;
+    betaPackageVersion?: string;
+}
+
+export type TCCSModuleInfoDto = {
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    packageName: string;
+    version: string;
+    packageVersion: string;
+    betaVersion: string;
+    betaPackageVersion: string;
+    author: string;
+    authorLink: string;
+    slug?: string;
+    title?: string;
+    description?: string;
+    excerpt?: string;
+    image?: string;
+    icon?: string;
+}

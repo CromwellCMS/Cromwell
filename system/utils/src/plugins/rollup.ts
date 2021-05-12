@@ -425,9 +425,9 @@ export const rollupPluginCromwellFrontend = (settings?: {
                 const isExt = resolveExternal(id, settings?.frontendDeps);
                 if (isExt) return extStr;
             }, {
-                include: '**/*.+(ts|tsx|js|jsx)'
+                include: '**/*.+(ts|tsx|js|jsx)',
+                createVars: true,
             }));
-
             return options;
         },
         resolveId(source, importer) {

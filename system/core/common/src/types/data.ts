@@ -104,6 +104,7 @@ export type TCmsConfig = {
     adminPanelPort?: number;
     frontendPort?: number;
     managerPort?: number;
+    centralServerUrl?: string;
     defaultSettings?: TCmsEntityCore;
     pm?: 'yarn' | 'cromwella';
     watchPoll?: number;
