@@ -4,7 +4,7 @@ import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags
 
 import { MockService } from '../services/mock.service';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @ApiBearerAuth()
 @ApiTags('Mock')

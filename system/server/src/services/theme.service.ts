@@ -30,7 +30,7 @@ import { getCustomRepository } from 'typeorm';
 import { GenericTheme } from '../helpers/genericEntities';
 import { pluginServiceInst } from './plugin.service';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 export let themeServiceInst: ThemeService;
 

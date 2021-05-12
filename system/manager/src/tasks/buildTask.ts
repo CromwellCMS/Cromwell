@@ -12,7 +12,7 @@ import { checkDepenencies, checkModules } from './checkModules';
 
 const { handleError, bold, underline, cyan, stderr, green } = require('rollup/dist/shared/loadConfigFile.js');
 const { relativeId } = require('rollup/dist/shared/rollup.js');
-const errorLogger = getLogger('errors-only').error;
+const logger = getLogger(false);
 
 export const buildTask = async (watch?: boolean) => {
     const workingDir = process.cwd();
@@ -22,12 +22,12 @@ export const buildTask = async (watch?: boolean) => {
     await checkDepenencies();
 
     if (!moduleInfo?.name) {
-        errorLogger('Package.json must have "name" property');
+        logger.error('Package.json must have "name" property');
         return;
     }
 
     if (!moduleInfo?.type) {
-        errorLogger(`package.json must have CMS module config with "type" property. Eg.: 
+        logger.error(`package.json must have CMS module config with "type" property. Eg.: 
         {
             "name": "cromwell-plugin-your-plugin",
             "dependencies": {},
@@ -89,7 +89,7 @@ const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TM
         const rollupConfig = await rollupConfigWrapper(moduleInfo, moduleConfig, watch);
 
         if (rollupConfig.length === 0) {
-            errorLogger('Failed to find input files');
+            logger.error('Failed to find input files');
             return false;
         }
 
@@ -145,7 +145,7 @@ const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TM
         }
 
     } catch (e) {
-        errorLogger(e);
+        logger.error(e);
     }
     return rollupBuildSuccess;
 }

@@ -3,6 +3,8 @@ import { defaultFrontendDeps, downloader, parseFrontendDeps, TPackage } from '@c
 import fs from 'fs-extra';
 import { resolve } from 'path';
 
+const logger = getLogger(false);
+
 export const checkModules = async (isDevelopment?: boolean, pckgs?: TPackage[]) => {
     // If cms launched for the first time, we need to download bundled modules
     if (!pckgs) {
@@ -39,7 +41,7 @@ export const checkDepenencies = async () => {
     }
     if (wrongDeps.length) {
         wrongDeps.sort();
-        getLogger('errors-only').error('CromwellCMS already includes following dependencies: '
+        logger.error('CromwellCMS already includes following dependencies: '
             + wrongDeps.join(', ') + '\n Please configure them as peerDependencies in your package.json');
 
         process.exit(0);

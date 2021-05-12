@@ -20,7 +20,7 @@ import { getCustomRepository } from 'typeorm';
 import { authSettings, bcryptSaltRounds } from '../auth/constants';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 export let authServiceInst: AuthService | undefined;
 

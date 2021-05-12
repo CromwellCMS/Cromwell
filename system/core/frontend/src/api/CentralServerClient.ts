@@ -14,8 +14,13 @@ class CentralServerClient {
         this.baseUrl = centralServerUrl;
     }
 
-    get(path: string) {
-        return fetch(`${this.baseUrl}/api/${path}`);
+    async get(path: string) {
+        const responce = await fetch(`${this.baseUrl}/api/${path}`);
+        const body = await responce.json()
+        if (responce.status >= 400) {
+            throw new Error(JSON.stringify(body))
+        }
+        return body;
     }
 
     // < CMS >
@@ -27,29 +32,29 @@ class CentralServerClient {
         return this.get('cms/full-info');
     }
 
-    async getCmsAllVersions(): Promise<TCCSVersion[]> {
-        return this.get('cms/all-versions');
-    }
-
     async getVersionByPackage(packageVersion: string): Promise<TCCSVersion | undefined> {
         return this.get(`cms/version-by-package/${packageVersion}`);
     }
 
-    // < /CMS >
+    async checkUpdate(version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
+        return this.get(`cms/check-update/${version}?beta=${beta ? 'true' : 'false'}`);
+    }
+
+    // < / CMS >
 
 
     // < Plugin >
 
     async getPluginInfo(name: string): Promise<TCCSModuleShortInfo> {
-        return this.get(`plugin​/info?name=${name}`);
+        return this.get(`plugin/info?name=${name}`);
     }
 
     async getPluginFullInfo(name: string): Promise<TCCSModuleInfoDto> {
-        return this.get(`plugin​?name=${name}`);
+        return this.get(`plugin?name=${name}`);
     }
 
     async getPluginAllVersions(name: string): Promise<TCCSVersion[]> {
-        return this.get(`plugin​/all-versions?name=${name}`);
+        return this.get(`plugin/all-versions?name=${name}`);
     }
 
     // < / Plugin >

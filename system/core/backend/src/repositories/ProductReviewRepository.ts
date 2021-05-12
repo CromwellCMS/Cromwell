@@ -10,7 +10,7 @@ import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 import { ProductRepository } from './ProductRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @EntityRepository(ProductReview)
 export class ProductReviewRepository extends BaseRepository<ProductReview> {

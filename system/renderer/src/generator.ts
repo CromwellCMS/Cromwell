@@ -1,4 +1,4 @@
-import { getStoreItem, setStoreItem, genericPageName } from '@cromwell/core';
+import { genericPageName, getStoreItem, setStoreItem, sleep } from '@cromwell/core';
 import {
     getCmsModuleConfig,
     getModulePackage,
@@ -13,7 +13,6 @@ import {
 } from '@cromwell/core-backend';
 import { bundledModulesDirName, downloader, getBundledModulesDir } from '@cromwell/utils';
 import fs from 'fs-extra';
-import makeEmptyDir from 'make-empty-dir';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
@@ -89,8 +88,12 @@ const devGenerate = async (themeName: string) => {
     // Create pages in Nex.js pages dir based on theme's pages
 
     // console.log('pagesLocalDir', pagesLocalDir)
-    await makeEmptyDir(tempDir, { recursive: true });
-    await new Promise(done => setTimeout(done, 200));
+    if (await fs.pathExists(tempDir)) {
+        await fs.remove(tempDir);
+        await sleep(0.1);
+    }
+    await fs.ensureDir(tempDir);
+    await sleep(0.1);
     await fs.ensureDir(pagesLocalDir);
 
     // Add pages/[slug] page for dynamic pages creation in Admin Panel

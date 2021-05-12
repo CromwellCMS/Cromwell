@@ -6,7 +6,7 @@ import { BaseRepository } from './BaseRepository';
 import { handleBaseInput, checkEntitySlug } from './BaseQueries';
 import { getLogger } from '../helpers/constants';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @EntityRepository(Attribute)
 export class AttributeRepository extends BaseRepository<Attribute> {

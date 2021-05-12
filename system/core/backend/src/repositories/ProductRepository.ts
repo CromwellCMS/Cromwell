@@ -25,7 +25,7 @@ import { PageStatsRepository } from './PageStatsRepository';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { ProductReviewRepository } from './ProductReviewRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 const averageKey: keyof Product = 'averageRating';
 const reviewsCountKey: keyof Product = 'reviewsCount';
 const ratingKey: keyof TProductReview = 'rating';

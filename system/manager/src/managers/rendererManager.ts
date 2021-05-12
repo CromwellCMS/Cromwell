@@ -1,9 +1,8 @@
-import { serviceLocator, TCmsSettings, sleep } from '@cromwell/core';
+import { serviceLocator, sleep, TCmsSettings } from '@cromwell/core';
 import {
     buildDirName,
     getLogger,
     getNodeModuleDir,
-    getRendererDir,
     getRendererStartupPath,
     getRendererTempDir,
     readCMSConfig,
@@ -12,7 +11,6 @@ import {
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import axios from 'axios';
 import fs from 'fs-extra';
-import makeEmptyDir from 'make-empty-dir';
 import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
 
@@ -22,9 +20,8 @@ import { ManagerState } from '../managerState';
 import { closeService, isPortUsed, isServiceRunning, startService } from './baseManager';
 
 const { cacheKeys, servicesEnv } = managerConfig;
-const logger = getLogger('detailed');
+const logger = getLogger();
 const rendererStartupPath = getRendererStartupPath();
-const errorLogger = getLogger('errors-only').error;
 
 export const startRenderer = async (command?: TRendererCommands): Promise<boolean> => {
     if (ManagerState.rendererStatus === 'busy' ||
@@ -39,12 +36,12 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
     try {
         cmsSettings = await getRestAPIClient()?.getCmsSettings();
     } catch (error) {
-        errorLogger(error);
+        logger.error(error);
     }
 
     if (!cmsConfig?.frontendPort) {
         const message = 'Manager: Failed to start Renderer: frontendPort in cmsconfig is not defined';
-        errorLogger(message);
+        logger.error(message);
         throw new Error(message);
     }
 
@@ -52,19 +49,19 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
 
     if (!isBuild && await isPortUsed(cmsConfig.frontendPort)) {
         const message = `Manager: Failed to start Renderer: frontendPort ${cmsConfig.frontendPort} is already in use. You may want to run close command: cromwell close --sv renderer`;
-        errorLogger(message);
+        logger.error(message);
         throw new Error(message);
     }
 
     if (!cmsSettings) {
-        errorLogger(`Failed to get cmsSettings from API server. Renderer will be launched with default theme`);
+        logger.error(`Failed to get cmsSettings from API server. Renderer will be launched with default theme`);
     }
 
     const themeName = cmsSettings?.themeName ?? cmsSettings?.defaultSettings?.themeName ??
         cmsConfig?.defaultSettings?.themeName;
 
     if (!themeName) {
-        errorLogger(`Failed to find active theme name`);
+        logger.error(`Failed to find active theme name`);
         return false;
     }
 
@@ -119,15 +116,15 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
             } else {
                 ManagerState.rendererStatus = 'inactive';
             }
-            if (success) getLogger('errors-only').log(`Renderer has successfully started`);
-            else errorLogger(`Failed to start renderer`);
+            if (success) logger.log(`Renderer has successfully started`);
+            else logger.error(`Failed to start renderer`);
 
             return success;
 
         } else {
             ManagerState.rendererStatus = 'inactive';
             const mess = 'RendererManager:: failed to start Renderer';
-            errorLogger(mess);
+            logger.error(mess);
             return false;
         }
     }
@@ -155,8 +152,8 @@ export const isRendererRunning = async (): Promise<boolean> => {
     return isServiceRunning(cacheKeys.renderer);
 }
 
-export const restartRenderer = async (themeName: string): Promise<boolean> => {
-    const success = await closeRenderer();
+export const restartRenderer = async (): Promise<boolean> => {
+    await closeRenderer();
     return startRenderer();
 }
 
@@ -201,7 +198,7 @@ export const rendererBuildAndStart = async (themeName: string): Promise<boolean>
 
     const buildSuccess = await rendererBuild(themeName);
     if (buildSuccess) {
-        const success = await restartRenderer(themeName);
+        const success = await restartRenderer();
         ManagerState.rendererStatus = rendererInitialStatus;
         return success;
     }
@@ -257,7 +254,12 @@ export const rendererStartWatchDev = async (themeName: string) => {
 
     await closeRenderer();
 
-    await makeEmptyDir(getRendererTempDir());
+    const rendererTempDir = getRendererTempDir();
+    if (rendererTempDir && await fs.pathExists(rendererTempDir)) {
+        await fs.remove(rendererTempDir);
+        await sleep(0.1);
+    }
+    await fs.ensureDir(rendererTempDir);
 
     const commad: TRendererCommands = 'dev';
 

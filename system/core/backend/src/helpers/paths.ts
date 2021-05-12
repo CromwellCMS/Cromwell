@@ -5,7 +5,6 @@ import { dirname, isAbsolute, resolve } from 'path';
 
 import { getLogger } from '../helpers/constants';
 
-const errorLog = getLogger('errors-only').error;
 export const cmsName = 'cromwell';
 export const tempDirName = `.${cmsName}`;
 export const buildDirName = `build`;
@@ -13,6 +12,7 @@ export const configFileName = 'module.config.js';
 export const cmsConfigFileName = 'cmsconfig.json';
 
 export const getTempDir = () => resolve(process.cwd(), tempDirName);
+const logger = getLogger();
 
 export const resolvePackageJsonPath = (moduleName: string): string | undefined => {
     return require.resolve(`${moduleName}/package.json`);
@@ -23,7 +23,7 @@ export const getNodeModuleDirSync = (moduleName: string) => {
         const modulePath = resolvePackageJsonPath(moduleName);
         if (modulePath) return dirname(fs.realpathSync(modulePath));
     } catch (e) {
-        errorLog('Failed to resolve module path of: ' + moduleName + e, 'Error');
+        logger.error('Failed to resolve module path of: ' + moduleName + e, 'Error');
     }
 }
 
@@ -32,7 +32,7 @@ export const getNodeModuleDir = async (moduleName: string) => {
         const modulePath = resolvePackageJsonPath(moduleName);
         if (modulePath) return dirname(await fs.realpath(modulePath));
     } catch (e) {
-        errorLog('Failed to resolve module path of: ' + moduleName + e, 'Error');
+        logger.error('Failed to resolve module path of: ' + moduleName + e, 'Error');
     }
 }
 
@@ -153,7 +153,7 @@ export const getCmsModuleConfig = async (moduleName?: string): Promise<TModuleCo
         try {
             return require(configPath);
         } catch (e) {
-            errorLog('Failed to require module config at: ' + configPath, 'Error');
+            logger.error('Failed to require module config at: ' + configPath, 'Error');
         }
     }
 }
@@ -193,11 +193,11 @@ export const getModulePackage = async (moduleName?: string): Promise<TPackageJso
     try {
         if (!isAbsolute(pPath)) pPath = resolvePackageJsonPath(pPath);
     } catch (error) {
-        errorLog('Failed to resolve module path of: ' + moduleName + error, 'Error');
+        logger.error('Failed to resolve module path of: ' + moduleName + error, 'Error');
     }
     if (pPath && !pPath.endsWith('package.json')) pPath = pPath + '/package.json';
     if (pPath) pPath = normalizePath(pPath);
     try {
         if (pPath) return await readPackage(pPath);
-    } catch (e) { errorLog('Failed to read package.json at: ' + pPath) }
+    } catch (e) { logger.error('Failed to read package.json at: ' + pPath) }
 }

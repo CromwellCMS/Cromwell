@@ -26,6 +26,7 @@ import { CmsStatsDto } from '../dto/cms-stats.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
+import { CmsStatusDto } from '../dto/cms-status.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { ServerActionDto } from '../dto/server-action.dto';
 import { publicSystemDirs } from '../helpers/constants';
@@ -34,7 +35,7 @@ import { CmsService } from '../services/cms.service';
 import { pluginServiceInst } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @ApiBearerAuth()
 @ApiTags('CMS')
@@ -445,5 +446,35 @@ export class CmsController {
             payload: input.payload,
         });
         return true;
+    }
+
+
+    @Get('status')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator', 'guest')
+    @ApiOperation({
+        description: `Returns Updates available and other info for AdminPanel NotificationCenter`,
+    })
+    @ApiResponse({
+        status: 200,
+        type: CmsStatusDto,
+    })
+    async getStatus(): Promise<CmsStatusDto> {
+        return this.cmsService.getCmsStatus();
+    }
+
+
+    @Get('launch-update')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Launches CMS update`,
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    async updateCms(): Promise<boolean> {
+        return this.cmsService.updateCms();
     }
 }

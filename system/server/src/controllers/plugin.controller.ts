@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { PluginService } from '../services/plugin.service';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @ApiBearerAuth()
 @ApiTags('Plugins')

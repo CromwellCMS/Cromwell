@@ -1,11 +1,10 @@
-import { TAdditionalExports, TExternal, TFrontendDependency, TPackageJson, TSciprtMetaInfo, sleep } from '@cromwell/core';
+import { sleep, TAdditionalExports, TExternal, TFrontendDependency, TPackageJson, TSciprtMetaInfo } from '@cromwell/core';
 import { getPublicDir } from '@cromwell/core-backend';
 import archiver from 'archiver';
 import colorsdef from 'colors/safe';
 import cryptoRandomString from 'crypto-random-string';
 import fs from 'fs-extra';
 import importFrom from 'import-from';
-import makeEmptyDir from 'make-empty-dir';
 import mkdirp from 'mkdirp';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
@@ -40,7 +39,7 @@ import {
     getModuleInfo,
     globPackages,
     interopDefaultContent,
-    parseFrontendDeps
+    parseFrontendDeps,
 } from './shared';
 import { TBundleInfo } from './types';
 
@@ -67,7 +66,11 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
     const nodeModulesDir = resolve(buildDir, 'node_modules');
 
     if (rebundle) {
-        await makeEmptyDir(buildDir, { recursive: true });
+        if (buildDir && await fs.pathExists(buildDir)) {
+            await fs.remove(buildDir);
+            await sleep(0.1);
+        }
+        await fs.ensureDir(buildDir);
     }
     if (!fs.existsSync(buildDir)) {
         await mkdirp(buildDir);
@@ -260,7 +263,11 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         let imports = '';
 
         try {
-            await makeEmptyDir(moduleBuildDir, { recursive: true });
+            if (moduleBuildDir && await fs.pathExists(moduleBuildDir)) {
+                await fs.remove(moduleBuildDir);
+                await sleep(0.1);
+            }
+            await fs.ensureDir(moduleBuildDir);
         } catch (e) {
             console.error('Failed to make dir: ' + moduleBuildDir, e);
             return moduleBuildDir;

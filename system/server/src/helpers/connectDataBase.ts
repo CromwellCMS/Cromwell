@@ -1,18 +1,10 @@
 import { setStoreItem } from '@cromwell/core';
-import {
-    getCmsSettings,
-    getOrmConfigPath,
-    getServerDir,
-    getServerTempDir,
-    ORMEntities,
-    readCmsModules,
-    getModulePackage,
-} from '@cromwell/core-backend';
+import { getOrmConfigPath, getServerDir, getServerTempDir, ORMEntities, readCmsModules } from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import { ConnectionOptions, createConnection, getConnection, getCustomRepository } from 'typeorm';
-import {} from '@cromwell/core-frontend';
+
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 import { collectPlugins } from './collectPlugins';
@@ -129,16 +121,6 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
         }
     }
 
-    // Check CmsSettings
-    const settings = await getCmsSettings();
-
-    // Check CMS version
-    const cmsPckg = await getModulePackage('@cromwell/cms');
-    if (cmsPckg?.version) {
-        if (cmsPckg.version !== settings?.versions) {
-
-        }
-    }
 }
 
 export const closeConnection = async () => {

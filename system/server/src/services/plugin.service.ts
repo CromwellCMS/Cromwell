@@ -24,7 +24,7 @@ import { getCustomRepository } from 'typeorm';
 
 import { GenericPlugin } from '../helpers/genericEntities';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 export let pluginServiceInst: PluginService;
 

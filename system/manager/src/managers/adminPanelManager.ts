@@ -6,8 +6,7 @@ import { TAdminPanelCommands } from '../constants';
 import { ManagerState } from '../managerState';
 import { closeService, isPortUsed, startService } from './baseManager';
 
-const logger = getLogger('detailed');
-const errorLogger = getLogger('errors-only');
+const logger = getLogger();
 const adminPanelStartupPath = getAdminPanelStartupPath();
 
 export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<boolean> => {
@@ -18,13 +17,13 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
 
     if (!cmsConfig?.adminPanelPort) {
         const message = 'Manager: Failed to start Admin Panel: adminPanelPort in cmsconfig is not defined';
-        errorLogger.error(message);
+        logger.error(message);
         throw new Error(message);
     }
 
     if (command !== 'build' && await isPortUsed(cmsConfig.adminPanelPort)) {
         const message = `Manager: Failed to start Admin Panel: adminPanelPort ${cmsConfig.adminPanelPort} is already in use. You may want to run close command: cromwell close --sv adminPanel`;
-        errorLogger.error(message);
+        logger.error(message);
         throw new Error(message);
     }
 
@@ -41,7 +40,7 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
                     await closeAdminPanel();
                     try {
                         await tcpPortUsed.waitUntilFree(cmsConfig.adminPanelPort, 500, 4000);
-                    } catch (e) { console.error(e) };
+                    } catch (e) { console.error(e) }
                     await startAdminPanel(command);
                 }
             }
@@ -53,12 +52,12 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
             proc?.on('message', async (message: string) => {
                 if (message === adminPanelMessages.onStartMessage) {
                     ManagerState.adminPanelStatus = 'running';
-                    errorLogger.log(`AdminPanel has successfully started`)
+                    logger.log(`AdminPanel has successfully started`)
                     done?.(true);
                 }
                 if (message === adminPanelMessages.onStartErrorMessage) {
                     ManagerState.adminPanelStatus = 'inactive';
-                    errorLogger.log(`Failed to start AdminPanel`, 'Error')
+                    logger.log(`Failed to start AdminPanel`, 'Error')
                     done?.(false);
                 }
             });
@@ -69,7 +68,7 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
 }
 
 export const closeAdminPanel = async (): Promise<boolean> => {
-    const { cacheKeys, servicesEnv } = config;
+    const { cacheKeys } = config;
     const success = await closeService(cacheKeys.adminPanel);
     if (success) {
         ManagerState.adminPanelStatus = 'inactive';

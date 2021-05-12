@@ -20,8 +20,9 @@ import {
     TServerCreateOrder,
     TThemeConfig,
     TUser,
+    TCmsStats,
+    TCmsStatus,
 } from '@cromwell/core';
-import { TCmsStats } from '@cromwell/core/src/types/data';
 
 import { fetch } from '../helpers/isomorphicFetch';
 
@@ -244,6 +245,14 @@ class CRestAPIClient {
 
     public getCmsStats = async (): Promise<TCmsStats | undefined> => {
         return this.get(`cms/stats`);
+    }
+
+    public getCmsStatus = async (): Promise<TCmsStatus | undefined> => {
+        return this.get(`cms/status`);
+    }
+
+    public launchCmsUpdate = async (): Promise<boolean | undefined> => {
+        return this.get(`cms/launch-update`);
     }
 
 

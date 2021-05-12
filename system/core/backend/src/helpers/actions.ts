@@ -1,7 +1,7 @@
 import { getLogger } from "./constants";
 import { ActionTypes, ActionNames } from './types';
 
-const logger = getLogger('errors-only');
+const logger = getLogger();
 
 const actions: Record<string, Record<string, ((payload) => any)>> = {};
 

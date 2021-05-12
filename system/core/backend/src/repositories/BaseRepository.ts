@@ -4,7 +4,7 @@ import { DeleteQueryBuilder, Repository, SelectQueryBuilder } from 'typeorm';
 import { getPaged } from './BaseQueries';
 import { getLogger } from '../helpers/constants';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 export class BaseRepository<EntityType, EntityInputType = EntityType> extends Repository<EntityType> {
 

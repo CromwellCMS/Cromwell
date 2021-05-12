@@ -17,7 +17,7 @@ import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
 import { applyGetManyFromOne, applyGetPaged, checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { ProductRepository } from './ProductRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @EntityRepository(ProductCategory)
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {

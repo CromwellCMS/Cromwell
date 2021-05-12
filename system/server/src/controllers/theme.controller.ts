@@ -20,7 +20,7 @@ import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { CmsService } from '../services/cms.service';
 import { ThemeService } from '../services/theme.service';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @ApiBearerAuth()
 @ApiTags('Themes')

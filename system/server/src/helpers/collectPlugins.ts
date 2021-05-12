@@ -1,7 +1,7 @@
 import { readPluginsExports, serverLogFor, getLogger, TBackendModule } from '@cromwell/core-backend';
 
 let pluginsCache: TBackendModule;
-const logger = getLogger('errors-only');
+const logger = getLogger();
 
 export const collectPlugins = async (): Promise<TBackendModule> => {
     if (pluginsCache) return pluginsCache;

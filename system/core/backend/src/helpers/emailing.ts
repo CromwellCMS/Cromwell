@@ -7,7 +7,7 @@ import { getCmsSettings } from './cms-settings';
 import { getLogger } from './constants';
 import { getServerDir, getServerTempDir } from './paths';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 let nodemailerTransporter;
 let sendmailTransporter;

@@ -45,6 +45,7 @@ import {
 } from '../shared';
 import externalGlobals from './rollup-globals';
 
+const logger = getLogger(false);
 const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): boolean => {
     // Mark all as external for backend bundle and only include in frontendDeps for frontend bundle
     if (isExternalForm(source)) {
@@ -63,8 +64,6 @@ const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): 
     return false;
 }
 
-const errorLogger = getLogger('errors-only').error;
-
 export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean): Promise<RollupOptions[]> => {
 
     if (!moduleInfo) throw new Error(`CromwellPlugin Error. Provide config as second argumet to the wrapper function`);
@@ -74,7 +73,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         const pckg: TPackageJson = require(resolve(process.cwd(), 'package.json'));
         if (pckg?.name) moduleInfo.name = pckg.name;
     } catch (e) {
-        errorLogger('Failed to find package.json in project root');
+        logger.error('Failed to find package.json in project root');
         console.error(e);
     }
 

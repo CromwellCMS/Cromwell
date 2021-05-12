@@ -15,7 +15,7 @@ import { ExceptionFilter } from './filters/exception.filter';
 import { connectDatabase } from './helpers/connectDataBase';
 import { corsHandler } from './helpers/corsHandler';
 import { getResolvers } from './helpers/getResolvers';
-import { checkConfigs, loadEnv } from './helpers/loadEnv';
+import { checkConfigs, loadEnv, checkCmsVersion } from './helpers/loadEnv';
 import { AppModule } from './modules/app.module';
 import { authServiceInst } from './services/auth.service';
 
@@ -28,7 +28,7 @@ async function bootstrap(): Promise<void> {
 
     // Connect to DB via TypeOrm
     await connectDatabase(envMode.serverType);
-
+    await checkCmsVersion();
 
     // Launch Nest.js with Fastify
     const apiPrefix = envMode.serverType === 'main' ? apiMainRoute : apiExtensionRoute;
@@ -110,3 +110,4 @@ async function bootstrap(): Promise<void> {
         if (process.send) process.send(serverMessages.onStartErrorMessage);
     }
 })();
+

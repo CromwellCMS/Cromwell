@@ -10,7 +10,7 @@ import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 const bcryptSaltRounds = 10;
 
 @EntityRepository(User)

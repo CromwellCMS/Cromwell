@@ -6,7 +6,7 @@ import { getLogger } from '../helpers/constants';
 import { checkEntitySlug, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @EntityRepository(PluginEntity)
 export class PluginRepository extends BaseRepository<PluginEntity> {

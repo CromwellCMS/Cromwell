@@ -14,14 +14,15 @@ import { TPackage } from './types';
 
 const streamPipeline = promisify(require('stream').pipeline);
 const colors: any = colorsdef;
-const logger = getLogger('errors-only');
+const logger = getLogger();
 
 export const downloader = async (options?: {
     rootDir?: string;
     packages?: TPackage[];
     targetModule?: string;
 }) => {
-    let { rootDir, packages, targetModule } = options ?? {};
+    let { rootDir, packages } = options ?? {};
+    const { targetModule } = options ?? {};
     rootDir = rootDir ?? process.cwd();
 
     // Check for bundled modules
@@ -38,7 +39,7 @@ export const downloader = async (options?: {
         if (!packages) {
             const packagePaths = await globPackages(rootDir);
             packages = collectPackagesInfo(packagePaths);
-        };
+        }
         if (!packages) {
             logger.error('No packages found');
             return;
@@ -82,7 +83,7 @@ export const downloader = async (options?: {
                     }
                 }
             }
-        } catch (e) { };
+        } catch (e) { }
     }
 
     // Download in 10 parallel requests

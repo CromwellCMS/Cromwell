@@ -1,5 +1,7 @@
-import { logFor, logLevelMoreThan, TCmsConfig, TLogLevel } from '@cromwell/core';
+import { logFor, TCmsConfig, TLogLevel } from '@cromwell/core';
 import colorsdef from 'colors/safe';
+import { join } from 'path';
+import * as winston from 'winston';
 
 import { Attribute } from '../entities/Attribute';
 import { CmsEntity } from '../entities/Cms';
@@ -14,8 +16,11 @@ import { ProductReview } from '../entities/ProductReview';
 import { Tag } from '../entities/Tag';
 import { ThemeEntity } from '../entities/Theme';
 import { User } from '../entities/User';
+import { getTempDir } from './paths';
 
 const colors: any = colorsdef;
+
+
 
 export const ORMEntities = [
     ThemeEntity, PluginEntity,
@@ -61,21 +66,73 @@ export const serverLogFor = (level: TLogLevel, msg: string,
     logFor(level, msg, func);
 }
 
-export const getLogger = (level: TLogLevel, func?: (...args) => any) => {
+
+const { combine, timestamp, label, printf } = winston.format;
+const loggerFormat = printf(({ message, level, timestamp }) => {
+    return `[${timestamp}] ${message}`;
+});
+
+let logger;
+let fileLogger;
+
+export const getLogger = (writeToFile = true) => {
+    const logsDir = join(getTempDir(), 'logs');
+    if (!logger) {
+        logger = winston.createLogger({
+            format: combine(
+                timestamp(),
+                loggerFormat
+            ),
+            transports: [
+                new winston.transports.Console(),
+            ],
+        });
+    }
+    if (!fileLogger) {
+        fileLogger = winston.createLogger({
+            format: combine(
+                timestamp(),
+                loggerFormat
+            ),
+            transports: [
+                new winston.transports.File({
+                    filename: join(logsDir, 'error.log'),
+                    level: 'error',
+                }),
+            ],
+        });
+    }
+
     return {
         log: (...args) => {
-            if (logLevelMoreThan(level)) func ? func(...args) : console.log(...args);
+            logger.log({
+                level: 'info',
+                message: args.join(' '),
+            });
         },
         info: (...args) => {
-            if (logLevelMoreThan(level)) func ? func(...args) : console.log(...args);
+            logger.info({
+                level: 'info',
+                message: colors.cyan('Info: ') + args.join(' '),
+            });
         },
         warn: (...args) => {
-            const msg = colors.brightYellow('Warning: ') + args.join(' ');
-            if (logLevelMoreThan(level)) func ? func(msg) : console.warn(msg);
+            logger.warn({
+                level: 'warn',
+                message: colors.brightYellow('Warning: ') + args.join(' '),
+            });
         },
         error: (...args) => {
-            const msg = colors.brightRed('Error: ') + args.join(' ');
-            if (logLevelMoreThan(level)) func ? func(msg) : console.error(msg);
+            logger.error({
+                level: 'error',
+                message: colors.brightRed('Error: ') + args.join(' '),
+            });
+            if (writeToFile) {
+                fileLogger.error({
+                    level: 'error',
+                    message: 'Error: ' + args.join(' '),
+                });
+            }
         }
     }
 }
@@ -85,7 +142,7 @@ export const defaultCmsConfig: TCmsConfig = {
     pluginApiPort: 4032,
     adminPanelPort: 4064,
     frontendPort: 4128,
-    centralServerUrl: 'http://localhost:4008/api/',
+    centralServerUrl: 'http://localhost:4008',
     useWatch: true,
     defaultSettings: {
         installed: false,
@@ -125,3 +182,5 @@ export const defaultCmsConfig: TCmsConfig = {
         ]
     }
 }
+
+export const cmsPackageName = '@cromwell/cms';

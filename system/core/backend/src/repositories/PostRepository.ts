@@ -13,7 +13,7 @@ import { BaseRepository } from './BaseRepository';
 import { TagRepository } from './TagRepository';
 import { UserRepository } from './UserRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @EntityRepository(Post)
 export class PostRepository extends BaseRepository<Post> {
