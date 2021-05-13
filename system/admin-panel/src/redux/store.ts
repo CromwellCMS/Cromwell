@@ -20,4 +20,6 @@ export const store = createStore<TAppState>(undefined, {
 export type DispatchType = typeof store.dispatch;
 export type StoreAction = ReturnType<typeof store.dispatch>;
 
-updateChecker();
+setTimeout(() => {
+    updateChecker();
+})

@@ -12,7 +12,6 @@ import {
     getPluginFrontendCjsPath,
     getPublicPluginsDir,
     incrementServiceVersion,
-    serverLogFor,
     getModulePackage,
 } from '@cromwell/core-backend';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
@@ -78,7 +77,7 @@ export class PluginService {
 
         const pluginDir = await getNodeModuleDir(pluginName);
         if (!pluginDir) {
-            serverLogFor('errors-only', 'Failed to resolve plugin directory of: ' + pluginName + ". Probably plugin was used in module cofig by name but wasn't installed in node_modules", 'Error');
+            logger.error('Failed to resolve plugin directory of: ' + pluginName + ". Probably plugin was used in module cofig by name but wasn't installed in node_modules");
             return;
         }
         const filePath = pathGetter(resolve(pluginDir, buildDirName));

@@ -2,13 +2,16 @@ import { getStoreItem, setStoreItem, TCmsConfig, TCmsSettings } from '@cromwell/
 import fs from 'fs-extra';
 
 import { CmsEntity } from '../entities/Cms';
-import { defaultCmsConfig, serverLogFor } from './constants';
+import { defaultCmsConfig } from './constants';
+import { getLogger } from './logger';
 import { getCMSConfigPath } from './paths';
+
 
 /**
  * Read CMS config from file in [project root]/cmsconfig.json, saves it into the store and returns
  */
 export const readCMSConfigSync = (): TCmsConfig => {
+    const logger = getLogger();
     const configPath = getCMSConfigPath();
     let customConfig;
     if (fs.pathExistsSync(configPath)) {
@@ -16,7 +19,7 @@ export const readCMSConfigSync = (): TCmsConfig => {
             const config = JSON.parse(fs.readFileSync(configPath, { encoding: 'utf8', flag: 'r' }));
             if (config && typeof config === 'object') customConfig = config;
         } catch (e) {
-            serverLogFor('errors-only', 'Failed to read CMS config at: ' + configPath + e, 'Error');
+            logger.error('Failed to read CMS config at: ' + configPath + e, 'Error');
         }
     }
     return Object.assign({}, defaultCmsConfig, customConfig);
@@ -56,12 +59,13 @@ export const getCmsEntity = async (): Promise<CmsEntity> => {
 
 // Don't re-read cmsconfig.json but update info from DB
 export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
+    const logger = getLogger();
     let config: TCmsConfig | undefined = undefined;
     const cmsSettings = getStoreItem('cmsSettings');
     if (!cmsSettings) config = await readCMSConfig();
 
     if (!cmsSettings && !config) {
-        serverLogFor('errors-only', 'getCmsSettings: Failed to read CMS config', 'Error');
+        logger.error('getCmsSettings: Failed to read CMS config', 'Error');
         return;
     }
     const entity = await getCmsEntity();

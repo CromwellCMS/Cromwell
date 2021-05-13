@@ -6,7 +6,7 @@ import { EntityRepository, getCustomRepository, SelectQueryBuilder, Brackets } f
 import { PostFilterInput } from '../entities/filter/PostFilterInput';
 import { Post } from '../entities/Post';
 import { Tag } from '../entities/Tag';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';

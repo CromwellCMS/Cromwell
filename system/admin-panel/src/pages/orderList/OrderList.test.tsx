@@ -47,6 +47,11 @@ jest.mock('@cromwell/core-frontend', () => {
                 getFilteredOrders: jest.fn().mockImplementation(() => testData)
             }
         },
+        getRestAPIClient: () => {
+            return {
+                getCmsStatus: () => null,
+            }
+        },
         getCStore: () => ({
             getPriceWithCurrency: () => '',
         })

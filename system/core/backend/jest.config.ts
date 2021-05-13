@@ -6,7 +6,7 @@ const config: Config.InitialOptions = {
         '@App/(.*)': '<rootDir>/src/$1',
         "\\.s?css$": "identity-obj-proxy",
     },
-    // silent: false,
+    silent: false,
     testRegex: "/(tests|src)/.*\\.(test|spec)\\.[jt]sx?$",
     maxConcurrency: 1,
     globals: {

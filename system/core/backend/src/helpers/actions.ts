@@ -1,7 +1,6 @@
-import { getLogger } from "./constants";
+import { getLogger } from "./logger";
 import { ActionTypes, ActionNames } from './types';
 
-const logger = getLogger();
 
 const actions: Record<string, Record<string, ((payload) => any)>> = {};
 
@@ -10,6 +9,7 @@ export const registerAction = <T extends ActionNames>(options: {
     actionName: T;
     action: (payload: ActionTypes[T]) => any;
 }) => {
+    const logger = getLogger();
     const { pluginName, actionName, action } = options ?? {};
     if (!pluginName || !actionName || !action) {
         logger.error('registerAction: Invalid options: ' + options);
@@ -24,6 +24,7 @@ export const fireAction = <T extends ActionNames>(options: {
     actionName: T | string;
     payload?: ActionTypes[T];
 }) => {
+    const logger = getLogger();
     const { payload, actionName } = options ?? {};
     if (!actionName) {
         logger.error('fireAction: Invalid options: ' + options);

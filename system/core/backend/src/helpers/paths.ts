@@ -3,7 +3,7 @@ import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { dirname, isAbsolute, resolve } from 'path';
 
-import { getLogger } from '../helpers/constants';
+import { getLogger } from './logger';
 
 export const cmsName = 'cromwell';
 export const tempDirName = `.${cmsName}`;
@@ -12,7 +12,6 @@ export const configFileName = 'module.config.js';
 export const cmsConfigFileName = 'cmsconfig.json';
 
 export const getTempDir = () => resolve(process.cwd(), tempDirName);
-const logger = getLogger();
 
 export const resolvePackageJsonPath = (moduleName: string): string | undefined => {
     return require.resolve(`${moduleName}/package.json`);
@@ -23,6 +22,7 @@ export const getNodeModuleDirSync = (moduleName: string) => {
         const modulePath = resolvePackageJsonPath(moduleName);
         if (modulePath) return dirname(fs.realpathSync(modulePath));
     } catch (e) {
+        const logger = getLogger();
         logger.error('Failed to resolve module path of: ' + moduleName + e, 'Error');
     }
 }
@@ -32,6 +32,7 @@ export const getNodeModuleDir = async (moduleName: string) => {
         const modulePath = resolvePackageJsonPath(moduleName);
         if (modulePath) return dirname(await fs.realpath(modulePath));
     } catch (e) {
+        const logger = getLogger();
         logger.error('Failed to resolve module path of: ' + moduleName + e, 'Error');
     }
 }
@@ -153,6 +154,7 @@ export const getCmsModuleConfig = async (moduleName?: string): Promise<TModuleCo
         try {
             return require(configPath);
         } catch (e) {
+            const logger = getLogger();
             logger.error('Failed to require module config at: ' + configPath, 'Error');
         }
     }
@@ -189,6 +191,7 @@ export const readPackage = async (path: string) => {
 }
 
 export const getModulePackage = async (moduleName?: string): Promise<TPackageJson | undefined> => {
+    const logger = getLogger();
     let pPath: string | undefined = moduleName ?? process.cwd();
     try {
         if (!isAbsolute(pPath)) pPath = resolvePackageJsonPath(pPath);

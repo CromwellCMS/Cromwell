@@ -17,7 +17,7 @@ import { ProductFilterInput } from '../entities/filter/ProductFilterInput';
 import { PageStats } from '../entities/PageStats';
 import { Product } from '../entities/Product';
 import { ProductReview } from '../entities/ProductReview';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { applyGetManyFromOne, checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';

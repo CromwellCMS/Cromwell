@@ -1,4 +1,5 @@
 export * from './helpers/paths';
+export * from './helpers/logger';
 export * from './helpers/constants';
 export * from './helpers/readThemeExports';
 export * from './helpers/cms-settings';
@@ -61,6 +62,7 @@ export * from './inputs/ProductReviewInput';
 export * from './inputs/InputOrder';
 export * from './inputs/InputTag';
 export * from './inputs/DeleteManyInput';
+export * from './inputs/PluginInput';
 
 export * from './repositories/BaseQueries';
 export * from './repositories/ProductCategoryRepository';

@@ -48,6 +48,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 getThemesInfo: jest.fn().mockImplementation(async () => testDataAll),
                 getCmsSettingsAndSave: jest.fn().mockImplementation(async () => cmsSettings),
                 activateTheme,
+                getCmsStatus: () => null,
             }
         },
         getWebSocketClient: () => undefined,

@@ -1,5 +1,4 @@
 import React from 'react';
-import loadable from '@loadable/component';
 import { TProductCategory, TPagedList } from '@cromwell/core';
 
 const testData: TPagedList<TProductCategory> = {
@@ -20,6 +19,11 @@ jest.mock('@cromwell/core-frontend', () => {
         getGraphQLClient: () => {
             return {
                 getRootCategories: jest.fn().mockImplementation(() => testData),
+            }
+        },
+        getRestAPIClient: () => {
+            return {
+                getCmsStatus: () => null,
             }
         },
     }

@@ -1,9 +1,9 @@
 import { TPluginEntity, TPluginEntityInput, TThemeEntity, TThemeEntityInput } from '@cromwell/core';
-import { CmsEntity, createGenericEntity, PluginEntity, ThemeEntity } from '@cromwell/core-backend';
+import { CmsEntity, createGenericEntity, PluginEntity, ThemeEntity, PluginInput } from '@cromwell/core-backend';
 import { Resolver } from 'type-graphql';
 
 export const GenericTheme = createGenericEntity<TThemeEntity, TThemeEntityInput>('Theme', ThemeEntity);
-export const GenericPlugin = createGenericEntity<TPluginEntity, TPluginEntityInput>('Plugin', PluginEntity);
+export const GenericPlugin = createGenericEntity<TPluginEntity, TPluginEntityInput>('Plugin', PluginEntity, PluginInput);
 export const GenericCms = createGenericEntity<CmsEntity>('Cms', CmsEntity);
 
 

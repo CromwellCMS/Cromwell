@@ -10,7 +10,7 @@ import {
 
 import { ProductCategoryFilterInput } from '../entities/filter/ProductCategoryFilterInput';
 import { ProductCategory } from '../entities/ProductCategory';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
 import { PagedParamsInput } from '../inputs/PagedParamsInput';
 import { UpdateProductCategory } from '../inputs/UpdateProductCategory';

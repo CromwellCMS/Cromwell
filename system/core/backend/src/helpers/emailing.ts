@@ -4,16 +4,16 @@ import nodemailer from 'nodemailer';
 import { resolve } from 'path';
 
 import { getCmsSettings } from './cms-settings';
-import { getLogger } from './constants';
+import { getLogger } from './logger';
 import { getServerDir, getServerTempDir } from './paths';
 
-const logger = getLogger();
 
 let nodemailerTransporter;
 let sendmailTransporter;
 
 export const getEmailTemplate = async (fileName: string, props?: Record<string, any>): Promise<string | undefined> => {
     // User can create his own template and override original 
+    const logger = getLogger();
     const mailUserPath = resolve(getServerTempDir(), 'emails', fileName);
     const serverDir = getServerDir();
     const mailOriginalPath = serverDir ? resolve(serverDir, 'static/emails', fileName) : undefined;
@@ -34,6 +34,7 @@ export const getEmailTemplate = async (fileName: string, props?: Record<string, 
 
 export const sendEmail = async (addresses: string[], subject: string, htmlContent: string): Promise<boolean> => {
     const cmsSettings = await getCmsSettings();
+    const logger = getLogger();
 
     const sendFrom = (cmsSettings?.sendFromEmail && cmsSettings.sendFromEmail !== '') ? cmsSettings.sendFromEmail : 'Service@CromwellCMS.com';
     const messageContent = {

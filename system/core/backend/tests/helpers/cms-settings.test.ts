@@ -2,6 +2,7 @@ import { getCmsEntity, readCMSConfig, readCMSConfigSync } from '../../src/helper
 import { defaultCmsConfig } from '../../src/helpers/constants';
 import { connectDatabase, mockWorkingDirectory } from '../helpers';
 
+
 describe('cms config / settings', () => {
 
     beforeAll(async () => {

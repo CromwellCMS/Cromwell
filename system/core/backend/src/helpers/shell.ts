@@ -1,6 +1,6 @@
 import { spawn } from 'child_process';
 
-import { getLogger } from './constants';
+import { getLogger } from './logger';
 
 const logger = getLogger();
 

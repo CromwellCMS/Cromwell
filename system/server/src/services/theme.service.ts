@@ -18,7 +18,6 @@ import {
     getNodeModuleDir,
     getPublicThemesDir,
     incrementServiceVersion,
-    serverLogFor,
     getModulePackage,
 } from '@cromwell/core-backend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -119,7 +118,7 @@ export class ThemeService {
             const theme = await this.findOne(cmsSettings.themeName);
 
             if (!theme) {
-                serverLogFor('errors-only', `Current theme ${cmsSettings?.themeName} was not registered in DB`, 'Error');
+                logger.error(`Current theme ${cmsSettings?.themeName} was not registered in DB`);
             }
 
             try {
@@ -479,7 +478,7 @@ export class ThemeService {
                             JSON.parse(pluginEntity?.settings ?? '{}'));
                         out[pluginName] = pluginConfig;
                     } catch (e) {
-                        serverLogFor('errors-only', 'Failed to parse plugin settings of ' + pluginName + e, 'Error')
+                        logger.error('Failed to parse plugin settings of ' + pluginName + e)
                     }
                 }
             }

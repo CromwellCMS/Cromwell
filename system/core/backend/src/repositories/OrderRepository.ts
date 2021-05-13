@@ -5,7 +5,7 @@ import { DateUtils } from 'typeorm/util/DateUtils';
 
 import { OrderFilterInput } from '../entities/filter/OrderFilterInput';
 import { Order } from '../entities/Order';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
