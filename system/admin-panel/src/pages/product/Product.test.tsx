@@ -38,6 +38,11 @@ jest.mock('@cromwell/core-frontend', () => {
         getCStore: () => ({
             getActiveCurrencySymbol: () => ''
         }),
+        getRestAPIClient: () => {
+            return {
+                getCmsStatus: () => null,
+            }
+        },
     }
 });
 

@@ -17,7 +17,7 @@ import { ProductFilterInput } from '../entities/filter/ProductFilterInput';
 import { PageStats } from '../entities/PageStats';
 import { Product } from '../entities/Product';
 import { ProductReview } from '../entities/ProductReview';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { applyGetManyFromOne, checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
@@ -25,7 +25,7 @@ import { PageStatsRepository } from './PageStatsRepository';
 import { ProductCategoryRepository } from './ProductCategoryRepository';
 import { ProductReviewRepository } from './ProductReviewRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 const averageKey: keyof Product = 'averageRating';
 const reviewsCountKey: keyof Product = 'reviewsCount';
 const ratingKey: keyof TProductReview = 'rating';

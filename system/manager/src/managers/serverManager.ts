@@ -6,7 +6,7 @@ import { TServerCommands } from '../constants';
 import { closeService, isPortUsed, startService } from './baseManager';
 
 const { cacheKeys, servicesEnv } = config;
-const logger = getLogger('errors-only');
+const logger = getLogger();
 const serverStartupPath = getServerStartupPath();
 
 export const startServer = async (command?: TServerCommands): Promise<boolean> => {
@@ -54,7 +54,7 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
 
                         if (sType === 'plugin')
                             await tcpPortUsed.waitUntilFree(cmsConfig.pluginApiPort, 500, 4000);
-                    } catch (e) { console.error(e) };
+                    } catch (e) { console.error(e) }
                     await startServer(command);
                 }
             }

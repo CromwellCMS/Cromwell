@@ -10,14 +10,14 @@ import {
 
 import { ProductCategoryFilterInput } from '../entities/filter/ProductCategoryFilterInput';
 import { ProductCategory } from '../entities/ProductCategory';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 import { CreateProductCategory } from '../inputs/CreateProductCategory';
 import { PagedParamsInput } from '../inputs/PagedParamsInput';
 import { UpdateProductCategory } from '../inputs/UpdateProductCategory';
 import { applyGetManyFromOne, applyGetPaged, checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { ProductRepository } from './ProductRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @EntityRepository(ProductCategory)
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {

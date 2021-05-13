@@ -4,13 +4,13 @@ import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, Se
 
 import { ProductReviewFilter } from '../entities/filter/ProductReviewFilter';
 import { ProductReview } from '../entities/ProductReview';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 import { ProductRepository } from './ProductRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @EntityRepository(ProductReview)
 export class ProductReviewRepository extends BaseRepository<ProductReview> {

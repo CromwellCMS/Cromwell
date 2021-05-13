@@ -6,7 +6,7 @@ const config: Config.InitialOptions = {
   moduleNameMapper: {
     '@App/(.*)': '<rootDir>/src/$1'
   },
-  silent: false,
+  // silent: false,
   testRegex: "/tests/.*\\.(test|spec)\\.[jt]sx?$",
   /** for circle ci free plan */
   maxWorkers: 1,
@@ -15,7 +15,8 @@ const config: Config.InitialOptions = {
     "ts-jest": {
     }
   },
-  globalTeardown: "<rootDir>/tests/teardown.ts"
+  globalTeardown: "<rootDir>/tests/teardown.ts",
+  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
 };
 
 export default config;

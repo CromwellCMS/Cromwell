@@ -1,5 +1,7 @@
 import {
     setStoreItem,
+    sleep,
+    TCCSVersion,
     TOrder,
     TOrderInput,
     TPackageCromwellConfig,
@@ -11,24 +13,28 @@ import {
 import {
     applyGetPaged,
     AttributeRepository,
+    cmsPackageName,
     getCmsEntity,
     getCmsSettings,
     getEmailTemplate,
     getLogger,
+    getModulePackage,
     getNodeModuleDir,
+    incrementServiceVersion,
     Order,
     OrderRepository,
     PageStats,
+    PageStatsRepository,
     Product,
     ProductRepository,
     ProductReview,
     ProductReviewRepository,
+    runShellComand,
     sendEmail,
     User,
-    PageStatsRepository,
     UserRepository,
 } from '@cromwell/core-backend';
-import { getCStore } from '@cromwell/core-frontend';
+import { getCentralServerClient, getCStore } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { format } from 'date-fns';
 import fs from 'fs-extra';
@@ -41,17 +47,20 @@ import * as util from 'util';
 import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { CmsStatsDto, SalePerDayDto } from '../dto/cms-stats.dto';
+import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { themeServiceInst } from './theme.service';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 export let cmsServiceInst: CmsService;
 
 @Injectable()
 export class CmsService {
+
+    private isUpdating: boolean = false;
 
     constructor() {
         cmsServiceInst = this;
@@ -409,5 +418,77 @@ export class CmsService {
 
         return stats;
     }
+
+    async checkCmsUpdate(): Promise<TCCSVersion | undefined> {
+        const settings = await getCmsSettings();
+        const isBeta = !!settings?.beta;
+        try {
+            return await getCentralServerClient().checkUpdate(settings?.version ?? '0', isBeta);
+        } catch (error) { }
+    }
+
+    async getCmsStatus(): Promise<CmsStatusDto> {
+        const status = new CmsStatusDto();
+        const settings = await getCmsSettings();
+        const availableUpdate = await this.checkCmsUpdate();
+        status.updateAvailable = !!availableUpdate;
+        status.updateInfo = availableUpdate;
+        status.isUpdating = this.isUpdating;
+        status.currentVersion = settings?.version;
+
+        status.notifications = [];
+
+        if (!settings?.smtpConnectionString) {
+            status.notifications.push({
+                type: 'warning',
+                message: 'Setup SMTP settings'
+            })
+        }
+
+        return status;
+    }
+
+    async updateCms(): Promise<boolean> {
+        // Only works with one server instance. In scaling manual update required.
+        if (this.isUpdating) return false;
+        this.isUpdating = true;
+
+        try {
+            const availableUpdate = await this.checkCmsUpdate();
+            if (!availableUpdate?.packageVersion) throw new HttpException(`Update failed: !availableUpdate?.packageVersion`, HttpStatus.INTERNAL_SERVER_ERROR);
+
+            const pckg = await getModulePackage();
+            if (!pckg?.dependencies?.[cmsPackageName])
+                throw new HttpException(`Update failed: Could not find ${cmsPackageName} in package.json`, HttpStatus.INTERNAL_SERVER_ERROR);
+
+            await runShellComand(`npm install ${cmsPackageName}@${availableUpdate?.packageVersion} -S`);
+            await sleep(1);
+
+            const cmsPckg = await getModulePackage(cmsPackageName);
+            if (!cmsPckg?.version || cmsPckg.version !== availableUpdate.packageVersion)
+                throw new HttpException(`Update failed: cmsPckg.version !== availableUpdate.packageVersion`, HttpStatus.INTERNAL_SERVER_ERROR);
+
+            const cmsEntity = await getCmsEntity();
+            cmsEntity.version = availableUpdate.version;
+            await cmsEntity.save();
+            await getCmsSettings();
+
+            for (const service of (availableUpdate?.restartServices ?? [])) {
+                // CAN POSSIBLY RESTART THIS SERVER INSTANCE
+                await incrementServiceVersion(service as any);
+            }
+            await sleep(1);
+
+        } catch (error) {
+            logger.error(error);
+
+            this.isUpdating = false;
+            throw new HttpException(error?.message ?? error, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        this.isUpdating = false;
+        return true;
+    }
 }
+
 

@@ -1,6 +1,7 @@
-import { getStoreItem, setStoreItem, genericPageName } from '@cromwell/core';
+import { genericPageName, getStoreItem, setStoreItem, sleep } from '@cromwell/core';
 import {
     getCmsModuleConfig,
+    getLogger,
     getModulePackage,
     getNodeModuleDir,
     getPublicDir,
@@ -9,11 +10,9 @@ import {
     getThemeBuildDir,
     readCMSConfig,
     readThemeExports,
-    serverLogFor,
 } from '@cromwell/core-backend';
 import { bundledModulesDirName, downloader, getBundledModulesDir } from '@cromwell/utils';
 import fs from 'fs-extra';
-import makeEmptyDir from 'make-empty-dir';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
@@ -21,6 +20,7 @@ import yargs from 'yargs-parser';
 
 const localThemeBuildDurChunk = 'theme';
 const disableSSR = false;
+const logger = getLogger();
 
 const main = async () => {
     const args = yargs(process.argv.slice(2));
@@ -31,13 +31,13 @@ const main = async () => {
 
     const themeName = args.themeName ?? config?.defaultSettings?.themeName;
     if (!themeName) {
-        serverLogFor('errors-only', 'No theme name provided', 'Error');
+        logger.error('No theme name provided');
         return;
     }
 
     const themeDir = await getNodeModuleDir(themeName);
     if (!themeDir) {
-        serverLogFor('errors-only', 'Theme directory was not found for: ' + themeName, 'Error');
+        logger.error('Theme directory was not found for: ' + themeName);
         return;
     }
 
@@ -89,8 +89,12 @@ const devGenerate = async (themeName: string) => {
     // Create pages in Nex.js pages dir based on theme's pages
 
     // console.log('pagesLocalDir', pagesLocalDir)
-    await makeEmptyDir(tempDir, { recursive: true });
-    await new Promise(done => setTimeout(done, 200));
+    if (await fs.pathExists(tempDir)) {
+        await fs.remove(tempDir);
+        await sleep(0.1);
+    }
+    await fs.ensureDir(tempDir);
+    await sleep(0.1);
     await fs.ensureDir(pagesLocalDir);
 
     // Add pages/[slug] page for dynamic pages creation in Admin Panel

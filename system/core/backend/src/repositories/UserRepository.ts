@@ -4,13 +4,13 @@ import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeor
 
 import { UserFilterInput } from '../entities/filter/UserFilterInput';
 import { User } from '../entities/User';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';
 import { PagedParamsInput } from './../inputs/PagedParamsInput';
 import { checkEntitySlug, getPaged, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 const bcryptSaltRounds = 10;
 
 @EntityRepository(User)

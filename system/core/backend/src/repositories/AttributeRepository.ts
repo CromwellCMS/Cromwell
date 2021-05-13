@@ -4,9 +4,9 @@ import { EntityRepository, Repository } from 'typeorm';
 import { Attribute } from '../entities/Attribute';
 import { BaseRepository } from './BaseRepository';
 import { handleBaseInput, checkEntitySlug } from './BaseQueries';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @EntityRepository(Attribute)
 export class AttributeRepository extends BaseRepository<Attribute> {

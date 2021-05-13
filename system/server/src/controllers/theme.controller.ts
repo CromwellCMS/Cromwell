@@ -5,7 +5,6 @@ import {
     getThemeAdminPanelBundleDir,
     JwtAuthGuard,
     Roles,
-    serverLogFor,
 } from '@cromwell/core-backend';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -20,7 +19,7 @@ import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { CmsService } from '../services/cms.service';
 import { ThemeService } from '../services/theme.service';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @ApiBearerAuth()
 @ApiTags('Themes')
@@ -264,7 +263,7 @@ export class ThemeController {
                 out = {};
                 out.source = (await fs.readFile(pagePathBunle)).toString();
             } catch (e) {
-                serverLogFor('errors-only', 'Failed to read page file at: ' + pagePathBunle, 'Error');
+                logger.error('Failed to read page file at: ' + pagePathBunle, 'Error');
             }
 
             const pageMetaInfoPath = pagePathBunle + '_meta.json';
@@ -272,7 +271,7 @@ export class ThemeController {
                 try {
                     if (out) out.meta = await fs.readJSON(pageMetaInfoPath);
                 } catch (e) {
-                    serverLogFor('errors-only', 'Failed to read meta of page at: ' + pageMetaInfoPath, 'Error');
+                    logger.error('Failed to read meta of page at: ' + pageMetaInfoPath, 'Error');
                 }
             }
             return out;

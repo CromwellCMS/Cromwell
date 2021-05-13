@@ -1,5 +1,4 @@
-import { logFor, logLevelMoreThan, TCmsConfig, TLogLevel } from '@cromwell/core';
-import colorsdef from 'colors/safe';
+import { TCmsConfig } from '@cromwell/core';
 
 import { Attribute } from '../entities/Attribute';
 import { CmsEntity } from '../entities/Cms';
@@ -15,7 +14,6 @@ import { Tag } from '../entities/Tag';
 import { ThemeEntity } from '../entities/Theme';
 import { User } from '../entities/User';
 
-const colors: any = colorsdef;
 
 export const ORMEntities = [
     ThemeEntity, PluginEntity,
@@ -48,43 +46,12 @@ export const serverMessages = {
     onStartErrorMessage: 'onStartError',
 }
 
-
-export const serverLogFor = (level: TLogLevel, msg: string,
-    type?: 'Log' | 'Warning' | 'Error', func?: (msg: string) => any) => {
-
-    if (type === 'Warning') {
-        msg = colors.brightYellow('Warning: ') + msg;
-    }
-    if (type === 'Error') {
-        msg = colors.brightRed('Error: ') + msg;
-    }
-    logFor(level, msg, func);
-}
-
-export const getLogger = (level: TLogLevel, func?: (...args) => any) => {
-    return {
-        log: (...args) => {
-            if (logLevelMoreThan(level)) func ? func(...args) : console.log(...args);
-        },
-        info: (...args) => {
-            if (logLevelMoreThan(level)) func ? func(...args) : console.log(...args);
-        },
-        warn: (...args) => {
-            const msg = colors.brightYellow('Warning: ') + args.join(' ');
-            if (logLevelMoreThan(level)) func ? func(msg) : console.warn(msg);
-        },
-        error: (...args) => {
-            const msg = colors.brightRed('Error: ') + args.join(' ');
-            if (logLevelMoreThan(level)) func ? func(msg) : console.error(msg);
-        }
-    }
-}
-
 export const defaultCmsConfig: TCmsConfig = {
     mainApiPort: 4016,
     pluginApiPort: 4032,
     adminPanelPort: 4064,
     frontendPort: 4128,
+    centralServerUrl: 'http://localhost:4008',
     useWatch: true,
     defaultSettings: {
         installed: false,
@@ -124,3 +91,5 @@ export const defaultCmsConfig: TCmsConfig = {
         ]
     }
 }
+
+export const cmsPackageName = '@cromwell/cms';

@@ -104,6 +104,7 @@ export type TCmsConfig = {
     adminPanelPort?: number;
     frontendPort?: number;
     managerPort?: number;
+    centralServerUrl?: string;
     defaultSettings?: TCmsEntityCore;
     pm?: 'yarn' | 'cromwella';
     watchPoll?: number;
@@ -330,4 +331,30 @@ export type TSalePerDay = {
     date: Date;
     orders: number;
     salesValue: number;
+}
+
+export type TCmsStatus = {
+    currentVersion?: string;
+    updateAvailable: boolean;
+    updateInfo?: TUpdateInfo;
+    notifications?: TNotification[];
+    isUpdating?: boolean;
+}
+
+export type TUpdateInfo = {
+    name: string;
+    version: string;
+    packageVersion: string;
+    beta: boolean;
+    description?: string;
+    changelog?: string;
+    image?: string;
+    createdAt: Date;
+}
+
+export type TNotification = {
+    message: string;
+    type: 'info' | 'warning' | 'error';
+    documentaionLink?: string;
+    pageLink?: string
 }

@@ -1,11 +1,8 @@
 import { TPackageJson } from '@cromwell/core';
 import { isAbsolute, resolve } from 'path';
 
-import { getLogger } from '../helpers/constants';
+import { cmsPackageName } from '../helpers/constants';
 import { readPackage, resolvePackageJsonPath } from './paths';
-
-const defaultThemes = ["@cromwell/theme-store"];
-const logger = getLogger('errors-warnings');
 
 export const readCmsModules = async () => {
     const themes: string[] = [];
@@ -60,7 +57,7 @@ export const readCmsModules = async () => {
         }
     }
 
-    await readPackageCmsModules('@cromwell/cms');
+    await readPackageCmsModules(cmsPackageName);
     await readPackageCmsModules(resolve(process.cwd(), 'package.json'));
 
     return {

@@ -15,6 +15,7 @@ const testDataDB: TThemeEntity[] = [
     {
         id: '_test1_',
         name: '_test1_',
+        version: '1.1.1',
         title: '_test1_title',
         isInstalled: true,
     },
@@ -27,7 +28,7 @@ const cmsSettings: TCmsSettings = {
     themeName: '_test1_'
 }
 
-const installTheme = jest.fn().mockImplementation(async () => true);
+const activateTheme = jest.fn().mockImplementation(async () => true);
 
 jest.mock('../../constants/PageInfos', () => {
     return {
@@ -46,7 +47,8 @@ jest.mock('@cromwell/core-frontend', () => {
             return {
                 getThemesInfo: jest.fn().mockImplementation(async () => testDataAll),
                 getCmsSettingsAndSave: jest.fn().mockImplementation(async () => cmsSettings),
-                installTheme,
+                activateTheme,
+                getCmsStatus: () => null,
             }
         },
         getWebSocketClient: () => undefined,
@@ -80,7 +82,7 @@ describe('ThemeList page', () => {
 
         await screen.findByText('_test2_title');
 
-        expect(installTheme.mock.calls.length === 1).toBeTruthy();
+        expect(activateTheme.mock.calls.length === 1).toBeTruthy();
     })
 
 })

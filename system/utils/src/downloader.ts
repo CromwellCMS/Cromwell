@@ -1,27 +1,35 @@
 import { TFrontendDependency, TSciprtMetaInfo } from '@cromwell/core';
-import { getLogger, serverLogFor } from '@cromwell/core-backend';
+import { getLogger } from '@cromwell/core-backend';
 import colorsdef from 'colors/safe';
 import extractZip from 'extract-zip';
 import fs from 'fs-extra';
 import moduleDownloader from 'github-directory-downloader';
 import fetch from 'node-fetch';
 import { resolve } from 'path';
-import { promisify } from 'util';
 import readline from 'readline';
+import { promisify } from 'util';
+
 import { moduleMetaInfoFileName } from './constants';
-import { collectFrontendDependencies, collectPackagesInfo, getBundledModulesDir, globPackages, parseFrontendDeps } from './shared';
+import {
+    collectFrontendDependencies,
+    collectPackagesInfo,
+    getBundledModulesDir,
+    globPackages,
+    parseFrontendDeps,
+} from './shared';
 import { TPackage } from './types';
 
 const streamPipeline = promisify(require('stream').pipeline);
 const colors: any = colorsdef;
-const logger = getLogger('errors-only');
+const logger = getLogger();
 
 export const downloader = async (options?: {
     rootDir?: string;
     packages?: TPackage[];
     targetModule?: string;
 }) => {
-    let { rootDir, packages, targetModule } = options ?? {};
+    let { rootDir, packages } = options ?? {};
+    const { targetModule } = options ?? {};
     rootDir = rootDir ?? process.cwd();
 
     // Check for bundled modules
@@ -38,7 +46,7 @@ export const downloader = async (options?: {
         if (!packages) {
             const packagePaths = await globPackages(rootDir);
             packages = collectPackagesInfo(packagePaths);
-        };
+        }
         if (!packages) {
             logger.error('No packages found');
             return;
@@ -82,7 +90,7 @@ export const downloader = async (options?: {
                     }
                 }
             }
-        } catch (e) { };
+        } catch (e) { }
     }
 
     // Download in 10 parallel requests
@@ -109,7 +117,7 @@ export const downloadBundle = async (moduleName: string, saveTo: string) => {
     const stats = await moduleDownloader(url, resolve(saveTo, moduleName));
 
     if (!stats.success || stats.downloaded === 0) {
-        serverLogFor('errors-only', `Failed to download module ${moduleName}` + stats.error, 'Error');
+        logger.error(`Failed to download module ${moduleName}` + stats.error);
         await fs.remove(resolve(saveTo, moduleName));
     }
 }
@@ -126,7 +134,7 @@ export const downloadBundleZipped = async (moduleName: string, saveTo: string): 
         }
         responseBody = response.body;
     } catch (e) {
-        serverLogFor('errors-only', `Failed to download module ${moduleName}` + e, 'Error');
+        logger.error(`Failed to download module ${moduleName}` + e);
         return false;
     }
 
@@ -140,9 +148,9 @@ export const downloadBundleZipped = async (moduleName: string, saveTo: string): 
     await new Promise(done => setTimeout(done, 500));
 
     try {
-        await extractZip(zipPath, { dir: moduleDir })
+        await extractZip(zipPath, { dir: moduleDir });
     } catch (err) {
-        serverLogFor('errors-only', `Failed to unzip module ${moduleName}` + err, 'Error');
+        logger.error(`Failed to unzip module ${moduleName}` + err);
         await fs.remove(moduleDir);
         return false;
     }

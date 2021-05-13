@@ -1,11 +1,11 @@
-import { GraphQLPaths, TPagedParams, TPluginEntity, TPluginEntityInput } from '@cromwell/core';
+import { GenericPlugin } from '@App/helpers/genericEntities';
+import { GraphQLPaths, TPluginEntityInput } from '@cromwell/core';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
 import { ApolloServerTestClient } from 'apollo-server-testing';
-import { GenericPlugin } from '@App/helpers/genericEntities';
+import { getCustomRepository } from 'typeorm';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
-import { getCustomRepository } from 'typeorm';
 
 describe('Generic resolver', () => {
     // Tests via Theme resolver
@@ -142,6 +142,7 @@ describe('Generic resolver', () => {
             name: data1.name,
             pageTitle: data1.pageTitle,
             isInstalled: data1.isInstalled,
+            version: '1.0.1',
         }
 
         const res = await client.mutate({
@@ -197,6 +198,7 @@ describe('Generic resolver', () => {
             name: data1.name,
             pageTitle: data1.pageTitle,
             isInstalled: data1.isInstalled,
+            version: '1.0.1',
         }
 
         const res = await client.mutate({

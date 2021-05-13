@@ -4,7 +4,7 @@ import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
 
-const logger = getLogger('errors-only');
+const logger = getLogger();
 
 export const startNginx = async (isDevelopment?: boolean): Promise<boolean> => {
     const nginxDir = normalizePath(resolve(getTempDir(), 'nginx/docker-compose.yml'));

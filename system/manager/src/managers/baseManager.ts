@@ -23,8 +23,7 @@ import { closeNginx, startNginx } from './dockerManager';
 import { closeRenderer, startRenderer } from './rendererManager';
 import { closeServer, startServer } from './serverManager';
 
-const logger = getLogger('detailed');
-const errorLogger = getLogger('errors-only');
+const logger = getLogger();
 const { cacheKeys } = config;
 const serviceProcesses: Record<string, ChildProcess> = {};
 
@@ -73,8 +72,8 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
     const proc = fork(path, args, { stdio: sync ? 'inherit' : 'pipe', cwd: dir ?? process.cwd() });
     await saveProcessPid(name, proc.pid);
     serviceProcesses[name] = proc;
-    proc?.stdout?.on('data', buff => errorLogger.log(buff?.toString?.() ?? buff));
-    proc?.stderr?.on('data', buff => errorLogger.log(buff?.toString?.() ?? buff));
+    proc?.stdout?.on('data', buff => logger.log(buff?.toString?.() ?? buff));
+    proc?.stderr?.on('data', buff => logger.error(buff?.toString?.() ?? buff));
 
     if (watchName && onVersionChange) {
         startWatchService(watchName, onVersionChange);
@@ -148,7 +147,7 @@ export const startSystem = async (scriptName: TScriptName) => {
 export const startServiceByName = async (serviceName: TServiceNames, isDevelopment?: boolean) => {
 
     if (!serviceNames.includes(serviceName)) {
-        errorLogger.error('Invalid service name. Available names are: ' + serviceNames);
+        logger.warn('Invalid service name. Available names are: ' + serviceNames);
     }
 
     setStoreItem('environment', {
@@ -182,7 +181,7 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
 
 export const closeServiceByName = async (serviceName: TServiceNames) => {
     if (!serviceNames.includes(serviceName)) {
-        errorLogger.error('Invalid service name. Available names are: ' + serviceNames);
+        logger.warn('Invalid service name. Available names are: ' + serviceNames);
     }
 
     if (serviceName === 'adminPanel' || serviceName === 'a') {

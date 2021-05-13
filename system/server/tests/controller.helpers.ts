@@ -1,10 +1,7 @@
-jest.mock('@App/helpers/mainFireAction', () => {
-    return {
-        mainFireAction: () => null,
-    }
-});
+
 
 import { closeConnection, connectDatabase } from '@App/helpers/connectDataBase';
+import { getStoreItem, setStoreItem } from '@cromwell/core';
 import { AppModule } from '@App/modules/app.module';
 import { INestApplication } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
@@ -17,6 +14,11 @@ export const setupController = async (name: string) => {
     const testDir = await mockWorkingDirectory(name);
 
     await connectDatabase('plugin');
+
+    let cmsSettings = getStoreItem('cmsSettings');
+    if (!cmsSettings) cmsSettings = {};
+    cmsSettings.installed = false;
+    setStoreItem('cmsSettings', cmsSettings);
 
     const moduleRef = await Test.createTestingModule({
         imports: [AppModule],

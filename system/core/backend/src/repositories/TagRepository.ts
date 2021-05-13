@@ -2,11 +2,11 @@ import { TPagedList, TPagedParams, TTag, TTagInput } from '@cromwell/core';
 import { EntityRepository } from 'typeorm';
 
 import { Tag } from '../entities/Tag';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 import { checkEntitySlug, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @EntityRepository(Tag)
 export class TagRepository extends BaseRepository<Tag> {

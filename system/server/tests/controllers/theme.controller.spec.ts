@@ -9,7 +9,6 @@ describe('Theme Controller', () => {
     let app: INestApplication;
     let testDir;
 
-    const defaultTheme = '@cromwell/theme-store';
     const defaultPage = 'product/[slug]';
 
     beforeAll(async () => {

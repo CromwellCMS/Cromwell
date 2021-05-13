@@ -8,7 +8,7 @@ import PluginNewsletterResolver from './resolvers/PluginNewsletterResolver';
 //     pluginName: "@cromwell/plugin-newsletter",
 //     actionName: 'update_post',
 //     action: (payload) => {
-//         getLogger('errors-only').warn('Update post: ' + JSON.stringify(payload));
+//          getLogger().warn('Update post: ' + JSON.stringify(payload));
 //     }
 // })
 

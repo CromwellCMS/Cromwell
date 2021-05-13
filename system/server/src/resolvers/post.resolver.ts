@@ -30,7 +30,7 @@ const getFilteredPath = GraphQLPaths.Post.getFiltered;
 
 const authorKey: keyof TPost = 'author';
 const tagsKey: keyof TPost = 'tags';
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @Resolver(Post)
 export class PostResolver {

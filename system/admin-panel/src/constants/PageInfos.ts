@@ -1,5 +1,4 @@
 import {
-    Category as CategoryIcon,
     Dashboard as DashboardIcon,
     FilterList as FilterListIcon,
     FormatPaint as FormatPaintIcon,
@@ -39,6 +38,7 @@ import ThemeListPage from '../pages/themeList/ThemeList';
 import UserPage from '../pages/user/User';
 import UserListPage from '../pages/userList/UserList';
 import WelcomePage from '../pages/welcome/Welcome';
+import { CategoryIcon } from './icons';
 
 export type SidebarLinkType = {
     id: string;
@@ -235,7 +235,7 @@ export const sideBarLinks: SidebarLinkType[] = [
                 id: '3_productList',
                 title: 'Products',
                 route: productListInfo.route,
-                icon: React.createElement(StorageIcon)
+                icon: React.createElement(StorageIcon),
             },
             {
                 id: '4_Attributes',
@@ -247,7 +247,9 @@ export const sideBarLinks: SidebarLinkType[] = [
                 id: '5_Categories',
                 title: 'Categories',
                 route: categoryListPageInfo.route,
-                icon: React.createElement(CategoryIcon)
+                icon: React.createElement(CategoryIcon, {
+                    viewBox: "0 0 300 300"
+                }),
             },
             {
                 id: '11_Order_list',
@@ -327,3 +329,4 @@ export const getLinkByInfo = (pageInfo: PageInfo) => {
     }
     return getFromLinks(sideBarLinks);
 }
+

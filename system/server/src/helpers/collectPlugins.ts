@@ -1,13 +1,13 @@
-import { readPluginsExports, serverLogFor, getLogger, TBackendModule } from '@cromwell/core-backend';
+import { getLogger, readPluginsExports, TBackendModule } from '@cromwell/core-backend';
 
 let pluginsCache: TBackendModule;
-const logger = getLogger('errors-only');
+const logger = getLogger();
 
 export const collectPlugins = async (): Promise<TBackendModule> => {
     if (pluginsCache) return pluginsCache;
     const pluginInfos = await readPluginsExports();
 
-    serverLogFor('detailed', `Found ${pluginInfos.length} plugins. `
+    logger.info(`Found ${pluginInfos.length} plugins. `
         + pluginInfos.map(info => info.pluginName).join(', '));
 
     let collectedResolvers: any[] = [];

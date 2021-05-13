@@ -25,6 +25,7 @@ import { Link, useHistory } from 'react-router-dom';
 
 import { getLinkByInfo, loginPageInfo, pageInfos, sideBarLinks, userPageInfo } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';
+import NotificationCenter from '../notificationCenter/NotificationCenter';
 import styles from './Sidebar.module.scss';
 import SidebarLink from './SidebarLink';
 
@@ -85,6 +86,9 @@ export default function Sidebar() {
                 <div className={styles.sidebarHeader}>
                     <img src="/admin/static/logo_icon_white.png" alt="logo" className={styles.logo} />
                     {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
+                    <div>
+                        <NotificationCenter color="#fff" />
+                    </div>
                     <div className={styles.sidebarMobileActions}>
                         <IconButton onClick={handleCloseMenu} >
                             <CloseIcon htmlColor="#999" />
@@ -169,6 +173,7 @@ export default function Sidebar() {
                                 <img src="/admin/static/logo_icon.png" alt="logo" className={styles.logoMobile} />
                                 {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                                 <div className={styles.mobileActions}>
+                                    <NotificationCenter />
                                     <IconButton onClick={handleOpenMenu}>
                                         <MenuIcon />
                                     </IconButton>

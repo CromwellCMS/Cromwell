@@ -18,7 +18,7 @@ import {
     getNodeModuleDir,
     getPublicThemesDir,
     incrementServiceVersion,
-    serverLogFor,
+    getModulePackage,
 } from '@cromwell/core-backend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
@@ -29,7 +29,7 @@ import { getCustomRepository } from 'typeorm';
 import { GenericTheme } from '../helpers/genericEntities';
 import { pluginServiceInst } from './plugin.service';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 export let themeServiceInst: ThemeService;
 
@@ -118,7 +118,7 @@ export class ThemeService {
             const theme = await this.findOne(cmsSettings.themeName);
 
             if (!theme) {
-                serverLogFor('errors-only', `Current theme ${cmsSettings?.themeName} was not registered in DB`, 'Error');
+                logger.error(`Current theme ${cmsSettings?.themeName} was not registered in DB`);
             }
 
             try {
@@ -478,7 +478,7 @@ export class ThemeService {
                             JSON.parse(pluginEntity?.settings ?? '{}'));
                         out[pluginName] = pluginConfig;
                     } catch (e) {
-                        serverLogFor('errors-only', 'Failed to parse plugin settings of ' + pluginName + e, 'Error')
+                        logger.error('Failed to parse plugin settings of ' + pluginName + e)
                     }
                 }
             }
@@ -501,77 +501,80 @@ export class ThemeService {
     }
 
 
-    public async installTheme(themeName: string): Promise<boolean> {
+    public async activateTheme(themeName: string): Promise<boolean> {
         const themePath = await getNodeModuleDir(themeName);
-        if (themePath) {
+        const themePckg = await getModulePackage(themeName);
 
-            // @TODO Execute install script
-
-
-
-            // Read theme config
-            let themeConfig;
-            const filePath = resolve(themePath, configFileName);
-            if (await fs.pathExists(filePath)) {
-                try {
-                    decache(filePath);
-                } catch (error) { }
-                try {
-                    themeConfig = require(filePath);
-                } catch (e) {
-                    console.error(e);
-                }
-            }
-
-            // Read module info from package.json
-            const moduleInfo = await getCmsModuleInfo(themeName);
-            delete moduleInfo?.frontendDependencies;
-            delete moduleInfo?.bundledDependencies;
-            delete moduleInfo?.firstLoadedDependencies;
-
-            // Make symlink for public static content
-            const themePublicDir = resolve(themePath, 'static');
-            if (await fs.pathExists(themePublicDir)) {
-                try {
-                    const publicThemesDir = getPublicThemesDir();
-                    await fs.ensureDir(publicThemesDir);
-                    await fs.copy(themePublicDir, resolve(publicThemesDir, themeName));
-                } catch (e) { console.log(e) }
-            }
-
-            // Create DB entity
-            const input: TThemeEntityInput = {
-                name: themeName,
-                slug: themeName,
-                isInstalled: true,
-                title: moduleInfo?.title,
-                pageTitle: moduleInfo?.title
-            };
-            if (themeConfig) {
-                try {
-                    input.defaultSettings = JSON.stringify(themeConfig);
-                } catch (e) {
-                    console.error(e);
-                }
-            }
-
-            if (moduleInfo) {
-                try {
-                    input.moduleInfo = JSON.stringify(moduleInfo);
-                } catch (e) {
-                    console.error(e);
-                }
-            }
+        if (!themePckg?.version || !themePath) throw new HttpException('Failed to find package.json of the theme ' + themeName, HttpStatus.INTERNAL_SERVER_ERROR);
 
 
+        // @TODO Execute install script
+
+
+
+        // Read theme config
+        let themeConfig;
+        const filePath = resolve(themePath, configFileName);
+        if (await fs.pathExists(filePath)) {
             try {
-                const entity = await this.createEntity(input)
-                if (entity) {
-                    return true;
-                }
+                decache(filePath);
+            } catch (error) { }
+            try {
+                themeConfig = require(filePath);
             } catch (e) {
-                console.error(e)
+                console.error(e);
             }
+        }
+
+        // Read module info from package.json
+        const moduleInfo = await getCmsModuleInfo(themeName);
+        delete moduleInfo?.frontendDependencies;
+        delete moduleInfo?.bundledDependencies;
+        delete moduleInfo?.firstLoadedDependencies;
+
+        // Copy static content into public 
+        const themePublicDir = resolve(themePath, 'static');
+        if (await fs.pathExists(themePublicDir)) {
+            try {
+                const publicThemesDir = getPublicThemesDir();
+                await fs.ensureDir(publicThemesDir);
+                await fs.copy(themePublicDir, resolve(publicThemesDir, themeName));
+            } catch (e) { console.log(e) }
+        }
+
+        // Create DB entity
+        const input: TThemeEntityInput = {
+            name: themeName,
+            version: themePckg.version,
+            slug: themeName,
+            isInstalled: true,
+            title: moduleInfo?.title,
+            pageTitle: moduleInfo?.title
+        };
+        if (themeConfig) {
+            try {
+                input.defaultSettings = JSON.stringify(themeConfig);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        if (moduleInfo) {
+            try {
+                input.moduleInfo = JSON.stringify(moduleInfo);
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+
+        try {
+            const entity = await this.createEntity(input)
+            if (entity) {
+                return true;
+            }
+        } catch (e) {
+            console.error(e)
         }
 
         return false;

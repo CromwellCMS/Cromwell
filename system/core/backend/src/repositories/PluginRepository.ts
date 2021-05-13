@@ -2,11 +2,11 @@ import { TPagedList, TPagedParams, TPluginEntityInput } from '@cromwell/core';
 import { EntityRepository } from 'typeorm';
 
 import { PluginEntity } from '../entities/Plugin';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 import { checkEntitySlug, handleBaseInput } from './BaseQueries';
 import { BaseRepository } from './BaseRepository';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @EntityRepository(PluginEntity)
 export class PluginRepository extends BaseRepository<PluginEntity> {

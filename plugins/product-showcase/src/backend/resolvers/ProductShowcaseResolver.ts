@@ -5,7 +5,7 @@ import { getCustomRepository } from 'typeorm';
 
 import { TSettings } from '../../types';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @Resolver(ProductCategory)
 export default class PluginProductShowcaseResolver {

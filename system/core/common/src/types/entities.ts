@@ -322,6 +322,7 @@ export type TPostCommentInput = TPostCommentCore & TBasePageEntityInput;
 type TThemeEntityCore = {
     name: string;
     isInstalled: boolean;
+    version: string;
     hasAdminBundle?: boolean;
     title?: string;
     settings?: string;
@@ -340,6 +341,7 @@ type TPluginEntityCore = {
     name: string;
     title?: string;
     isInstalled: boolean;
+    version: string;
     hasAdminBundle?: boolean;
     settings?: string;
     defaultSettings?: string;
@@ -389,10 +391,14 @@ export type TCmsEntityCore = {
     // < / >
 
     // < INTERNAL >
+    // CMS version, used for updates
+    version?: string;
     // Internal. https://github.com/CromwellCMS/Cromwell/blob/55046c48d9da0a44e4b11e7918c73876fcd1cfc1/system/manager/src/managers/baseManager.ts#L194:L206
     versions?: TServiceVersions | string;
     // Internal. If false or not set, will launch installation at first Admin Panel visit.
     installed?: boolean;
+    // Recieve unstable beta-updates
+    beta?: boolean;
     // < / >
 }
 
@@ -435,4 +441,45 @@ export type TCurrency = {
 export type TDeleteManyInput = {
     ids: string[];
     all?: boolean;
+}
+
+
+
+// CCS for Cromwell Central Server
+export type TCCSVersion = {
+    name: string;
+    createdAt: Date;
+    version: string;
+    packageVersion: string;
+    beta: boolean;
+    restartServices: string[];
+    description?: string;
+    changelog?: string;
+    image?: string;
+}
+
+export type TCCSModuleShortInfo = {
+    version: string;
+    packageVersion: string;
+    betaVersion?: string;
+    betaPackageVersion?: string;
+}
+
+export type TCCSModuleInfoDto = {
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    packageName: string;
+    version: string;
+    packageVersion: string;
+    betaVersion: string;
+    betaPackageVersion: string;
+    author: string;
+    authorLink: string;
+    slug?: string;
+    title?: string;
+    description?: string;
+    excerpt?: string;
+    image?: string;
+    icon?: string;
 }

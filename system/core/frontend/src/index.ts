@@ -29,6 +29,7 @@ export {
 } from './constants';
 export * from './api/CGraphQLClient';
 export * from './api/CRestAPIClient';
+export * from './api/CentralServerClient';
 export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore } from './CStore';
 export { iconFromPath } from './helpers/iconFromPath';

@@ -1,9 +1,10 @@
 import { setStoreItem } from '@cromwell/core';
-import { getServerDir, getServerTempDir } from '@cromwell/core-backend';
+import { cmsPackageName, getCmsEntity, getCmsSettings, getModulePackage, getServerDir, getServerTempDir } from '@cromwell/core-backend';
 import cacache from 'cacache';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import yargs from 'yargs-parser';
+import { getCentralServerClient } from '@cromwell/core-frontend';
 
 import { authSettings, isRandomSecret } from '../auth/constants';
 import { TServerCommands } from './constants';
@@ -72,6 +73,25 @@ export const checkConfigs = async (envMode: TEnv) => {
         if (! await fs.pathExists(mailsDir) && serverDir) {
             const templatesSrc = resolve(serverDir, 'static/emails');
             await fs.copy(templatesSrc, mailsDir);
+        }
+    }
+}
+
+
+export const checkCmsVersion = async () => {
+    // Check CMS version
+    const settings = await getCmsSettings();
+    const cmsPckg = await getModulePackage(cmsPackageName);
+    if (cmsPckg?.version && cmsPckg.version !== settings?.version) {
+        try {
+            const cmsEntity = await getCmsEntity();
+            const remoteinfo = await getCentralServerClient().getVersionByPackage(cmsPckg.version);
+            if (remoteinfo) {
+                cmsEntity.version = remoteinfo.version;
+                await cmsEntity.save();
+            }
+        } catch (error) {
+            console.error(error);
         }
     }
 }

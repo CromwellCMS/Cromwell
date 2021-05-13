@@ -2,9 +2,9 @@ import { TPagedList, TPagedParams, TDeleteManyInput } from '@cromwell/core';
 import { DeleteQueryBuilder, Repository, SelectQueryBuilder } from 'typeorm';
 
 import { getPaged } from './BaseQueries';
-import { getLogger } from '../helpers/constants';
+import { getLogger } from '../helpers/logger';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 export class BaseRepository<EntityType, EntityInputType = EntityType> extends Repository<EntityType> {
 

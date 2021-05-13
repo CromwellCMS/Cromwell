@@ -3,6 +3,7 @@ import { getRestAPIClient } from '@cromwell/core-frontend';
 
 import { authSettings } from '../auth/constants';
 import { ServerActionDto } from '../dto/server-action.dto';
+const logger = getLogger();
 
 export const mainFireAction = async <T extends ActionNames>(actionName: T, payload?: ActionTypes[T]) => {
     const action = new ServerActionDto();
@@ -12,6 +13,6 @@ export const mainFireAction = async <T extends ActionNames>(actionName: T, paylo
     try {
         await getRestAPIClient('plugin').post('cms/fire-action', action);
     } catch (error) {
-        getLogger('errors-only').error(error);
+        logger.error('mainFireAction', error);
     }
 }

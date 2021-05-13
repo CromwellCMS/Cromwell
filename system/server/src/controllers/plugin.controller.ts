@@ -6,7 +6,7 @@ import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
 import { PluginService } from '../services/plugin.service';
 
-const logger = getLogger('detailed');
+const logger = getLogger();
 
 @ApiBearerAuth()
 @ApiTags('Plugins')
@@ -131,24 +131,5 @@ export class PluginController {
     }
 
 
-    @Get('install')
-    @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
-    @ApiOperation({
-        description: 'Installs downloaded plugin.',
-        parameters: [{ name: 'pluginName', in: 'query', required: true }]
-    })
-    @ApiResponse({
-        status: 200,
-        type: Boolean
-    })
-    @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async installPlugin(@Query('pluginName') pluginName: string): Promise<boolean> {
-        logger.log('PluginController::installPlugin');
-
-        if (pluginName && pluginName !== "") {
-            return this.pluginService.installPlugin(pluginName);
-        }
-        throw new HttpException('Invalid pluginName', HttpStatus.NOT_ACCEPTABLE);
-    }
+    
 }
