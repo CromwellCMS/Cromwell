@@ -17,6 +17,11 @@ export const setupResolver = async (name: string): Promise<[ApolloServer, Apollo
     cmsSettings.installed = false;
     setStoreItem('cmsSettings', cmsSettings);
 
+    let cmsSettings = getStoreItem('cmsSettings');
+    if (!cmsSettings) cmsSettings = {};
+    cmsSettings.installed = false;
+    setStoreItem('cmsSettings', cmsSettings);
+
     const schema = await buildSchema({
         resolvers: [...(await getResolvers())] as any,
         validate: false,
