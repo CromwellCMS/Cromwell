@@ -201,6 +201,10 @@ header.appBar {
     padding: 0 10px;
 }
 
+.mobileActions {
+    display: flex;
+}
+
 @media screen and (max-width: $mobileBreakpoint) {
     // mobile
     .sidebarMobileHeader {

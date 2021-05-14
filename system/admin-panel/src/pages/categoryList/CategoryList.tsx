@@ -354,8 +354,8 @@ const CategoryList = (props: TPropsType) => {
 }
 
 function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
+    const state = useState(0);
+    return () => state[1](value => ++value);
 }
 
 export default connect(mapStateToProps)(CategoryList);

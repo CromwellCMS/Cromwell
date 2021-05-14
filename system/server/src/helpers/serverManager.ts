@@ -24,10 +24,14 @@ export const launch = async () => {
     if (serverInfo.port) {
         logger.warn('Proxy serverManager: called launch, but Server was already launched!')
     }
-    const info = await makeServer();
-    if (info.port) updateServerInfo(info);
-}
+    try {
+        const info = await makeServer();
+        if (info.port) updateServerInfo(info);
+    } catch (error) {
+        logger.error('Proxy could not launch server', error);
+    }
 
+}
 
 const makeServer = async (): Promise<ServerInfo> => {
     const info: ServerInfo = {};
@@ -35,7 +39,7 @@ const makeServer = async (): Promise<ServerInfo> => {
 
     const buildPath = getServerBuildPath();
     if (!buildPath || !fs.existsSync(buildPath)) {
-        logger.error('Server: Could not find proxy build at: ' + buildPath);
+        logger.error('Proxy could not find proxy build at: ' + buildPath);
         throw new Error('')
     }
 

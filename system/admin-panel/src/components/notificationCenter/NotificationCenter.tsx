@@ -1,19 +1,19 @@
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, Collapse, Grid, IconButton, Popover, Tooltip, LinearProgress } from '@material-ui/core';
+import { Grid, IconButton, LinearProgress, Popover, Tooltip } from '@material-ui/core';
 import {
-    ExpandMore as ExpandMoreIcon,
     NotificationImportant as NotificationImportantIcon,
     NotificationsNone as NotificationsNoneIcon,
+    Update as UpdateIcon,
 } from '@material-ui/icons';
-import UpdateIcon from '@material-ui/icons/Update';
 import { Alert, AlertProps } from '@material-ui/lab';
 import clsx from 'clsx';
 import React, { useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 
-import { store, TAppState } from '../../redux/store';
 import { updateStatus } from '../../redux/helpers';
+import { store, TAppState } from '../../redux/store';
 import styles from './NotificationCenter.module.scss';
+import UpdateInfoCard from './UpdateInfoCard';
 
 
 const mapStateToProps = (state: TAppState) => {
@@ -27,7 +27,6 @@ type TPropsType = PropsType<PropsType, { color?: string },
 
 function NotificationCenter(props: TPropsType) {
     const [open, setopen] = useState(false);
-    const [changelogCollapsed, setChangelogCollapsed] = useState(true);
     const popperAnchorEl = useRef<HTMLDivElement | null>(null);
     const client = getRestAPIClient();
 
@@ -63,9 +62,6 @@ function NotificationCenter(props: TPropsType) {
         await updateStatus();
     }
 
-    const toggleChangelog = () => {
-        setChangelogCollapsed(!changelogCollapsed)
-    }
 
     return (
         <div ref={popperAnchorEl}>
@@ -98,28 +94,11 @@ function NotificationCenter(props: TPropsType) {
                         </Grid>
                     )}
                     {props.status?.updateAvailable && updateInfo && !props.status?.isUpdating && (
-                        <Grid item container xs={12} className={styles.update}>
-                            <h3 className={styles.updateTitle}>
-                                <UpdateIcon style={{ marginRight: '7px' }} />
-                                Update available</h3>
-                            <p>{props.status?.currentVersion ?? ''} {'>'} {updateInfo.version}</p>
-                            <div className={styles.changelogTitle}>
-                                <p onClick={toggleChangelog}>See changelog</p>
-                                <ExpandMoreIcon
-                                    className={clsx(styles.expand, !changelogCollapsed && styles.expandOpen)}
-                                    onClick={toggleChangelog}
-                                />
-                            </div>
-                            <Collapse in={!changelogCollapsed} timeout="auto" unmountOnExit>
-                                <div className={styles.changelogList}
-                                    dangerouslySetInnerHTML={{ __html: updateInfo.changelog }}></div>
-                            </Collapse>
-                            <Button
-                                color="primary"
-                                variant="contained"
-                                onClick={handleStartUpdate}
-                            >Update</Button>
-                        </Grid>
+                        <UpdateInfoCard
+                            updateInfo={updateInfo}
+                            currentVersion={props.status?.currentVersion}
+                            onStartUpdate={handleStartUpdate}
+                        />
                     )}
                     {notifications && (
                         notifications.map((note, index) => {
