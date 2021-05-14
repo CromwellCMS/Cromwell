@@ -19,9 +19,9 @@ importer.modules['@cromwell/core'] = core;
 (async () => {
     let isInstalled = true;
     const restClient = getRestAPIClient();
-    const restClientExt = getRestAPIClient('plugin');
+    const restClientExt = getRestAPIClient();
     const graphClient = getGraphQLClient();
-    const graphClientExt = getGraphQLClient('plugin');
+    const graphClientExt = getGraphQLClient();
 
 
     const request = async <T>(req: Promise<T>): Promise<T> => {

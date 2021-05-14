@@ -3,7 +3,7 @@ import { DeleteManyInput, InputTag, PagedParamsInput, PagedTag, Tag, TagReposito
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { mainFireAction } from '../helpers/mainFireAction';
+import { serverFireAction } from '../helpers/serverFireAction';
 
 const getOneBySlugPath = GraphQLPaths.Tag.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Tag.getOneById;
@@ -39,7 +39,7 @@ export class TagResolver {
     @Mutation(() => Tag)
     async [createPath](@Arg("data") data: InputTag): Promise<TTag> {
         const tag = await this.repository.createTag(data);
-        mainFireAction('create_tag', tag);
+        serverFireAction('create_tag', tag);
         return tag;
     }
 
@@ -47,7 +47,7 @@ export class TagResolver {
     @Mutation(() => Tag)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: InputTag): Promise<TTag | undefined> {
         const tag = await this.repository.updateTag(id, data);
-        mainFireAction('update_tag', tag);
+        serverFireAction('update_tag', tag);
         return tag;
     }
 
@@ -55,7 +55,7 @@ export class TagResolver {
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const tag = await this.repository.deleteTag(id);
-        mainFireAction('delete_tag', { id });
+        serverFireAction('delete_tag', { id });
         return tag;
     }
 

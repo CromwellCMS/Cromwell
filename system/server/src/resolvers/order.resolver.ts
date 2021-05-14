@@ -11,7 +11,7 @@ import {
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { mainFireAction } from '../helpers/mainFireAction';
+import { serverFireAction } from '../helpers/serverFireAction';
 
 const getOneBySlugPath = GraphQLPaths.Order.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Order.getOneById;
@@ -51,7 +51,7 @@ export class OrderResolver {
     @Mutation(() => Order)
     async [createPath](@Arg("data") data: InputOrder): Promise<Order> {
         const order = await this.repository.createOrder(data);
-        mainFireAction('create_order', order);
+        serverFireAction('create_order', order);
         return order;
     }
 
@@ -59,7 +59,7 @@ export class OrderResolver {
     @Mutation(() => Order)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: InputOrder): Promise<Order | undefined> {
         const order = await this.repository.updateOrder(id, data);
-        mainFireAction('create_order', order);
+        serverFireAction('create_order', order);
         return order;
     }
 
@@ -67,7 +67,7 @@ export class OrderResolver {
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const order = await this.repository.deleteOrder(id);
-        mainFireAction('delete_order', { id });
+        serverFireAction('delete_order', { id });
         return order;
     }
 

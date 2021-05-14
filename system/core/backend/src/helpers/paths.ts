@@ -92,6 +92,18 @@ export const getServerStartupPath = () => {
     const serverDir = getServerDir();
     if (serverDir) return resolve(serverDir, 'startup.js');
 }
+export const getServerBuildDir = () => {
+    const serverDir = getServerDir();
+    if (serverDir) return resolve(serverDir, 'build');
+}
+export const getServerBuildPath = () => {
+    const serverDir = getServerDir();
+    if (serverDir) return resolve(serverDir, 'build/server.js');
+}
+export const getServerBuildProxyPath = () => {
+    const serverDir = getServerDir();
+    if (serverDir) return resolve(serverDir, 'build/proxy.js');
+}
 export const getOrmConfigPath = () => resolve(process.cwd(), 'ormconfig.json');
 export const getServerTempDir = () => resolve(getTempDir(), 'server');
 export const getServerTempEmailsDir = () => resolve(getServerTempDir(), 'emails');

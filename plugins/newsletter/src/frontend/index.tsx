@@ -24,7 +24,7 @@ export default function NewsletterPlugin(): JSX.Element {
     const submit = async () => {
         if (!validateEmail(email)) return;
 
-        const client = getRestAPIClient('plugin');
+        const client = getRestAPIClient();
         try {
             const response = await client.post('plugin-newsletter/subscribe', {
                 email

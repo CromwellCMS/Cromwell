@@ -13,7 +13,7 @@ import { mockWorkingDirectory } from './helpers';
 export const setupController = async (name: string) => {
     const testDir = await mockWorkingDirectory(name);
 
-    await connectDatabase('plugin');
+    await connectDatabase();
 
     let cmsSettings = getStoreItem('cmsSettings');
     if (!cmsSettings) cmsSettings = {};

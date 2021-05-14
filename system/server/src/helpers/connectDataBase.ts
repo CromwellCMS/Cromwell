@@ -12,7 +12,7 @@ import { GenericCms, GenericPlugin, GenericTheme } from './genericEntities';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 
-export const connectDatabase = async (sType: 'main' | 'plugin') => {
+export const connectDatabase = async () => {
 
     const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
 
@@ -70,7 +70,7 @@ export const connectDatabase = async (sType: 'main' | 'plugin') => {
         ...ormconfig,
         entities: [
             ...ORMEntities,
-            ...(sType === 'plugin' ? ((await collectPlugins()).entities ?? [] as any) : []),
+            ...((await collectPlugins()).entities ?? [] as any),
             ...(ormconfig?.entities ?? [])
         ],
         migrations: [

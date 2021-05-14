@@ -46,6 +46,7 @@ jest.mock('../../constants/PageInfos', () => {
 });
 
 import { fireEvent, render, screen } from '@testing-library/react';
+import { BrowserRouter as Router } from 'react-router-dom';
 
 import PluginListPage from './PluginList';
 
@@ -53,14 +54,14 @@ describe('PluginList page', () => {
 
 
     it("renders plugins", async () => {
-        render(<PluginListPage />);
+        render(<Router><PluginListPage /></Router>);
 
         await screen.findByText('_test1_title');
         await screen.findByText('_test2_title');
     });
 
     it('installs plugin', async () => {
-        const { container } = render(<PluginListPage />);
+        const { container } = render(<Router><PluginListPage /></Router>);
 
         await screen.findByText('_test1_title');
         await screen.findByText('_test2_title');

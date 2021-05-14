@@ -14,7 +14,7 @@ import {
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { mainFireAction } from '../helpers/mainFireAction';
+import { serverFireAction } from '../helpers/serverFireAction';
 
 const getOneBySlugPath = GraphQLPaths.ProductCategory.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.ProductCategory.getOneById;
@@ -55,7 +55,7 @@ export class ProductCategoryResolver {
     @Mutation(() => ProductCategory)
     async [createPath](@Arg("data") data: CreateProductCategory) {
         const category = await this.repository.createProductCategory(data);
-        mainFireAction('create_product_category', category);
+        serverFireAction('create_product_category', category);
         return category;
     }
 
@@ -63,7 +63,7 @@ export class ProductCategoryResolver {
     @Mutation(() => ProductCategory)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProductCategory) {
         const category = await this.repository.updateProductCategory(id, data);
-        mainFireAction('update_product_category', category);
+        serverFireAction('update_product_category', category);
         return category;
     }
 
@@ -71,7 +71,7 @@ export class ProductCategoryResolver {
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string) {
         const category = await this.repository.deleteProductCategory(id);
-        mainFireAction('delete_product_category', { id });
+        serverFireAction('delete_product_category', { id });
         return category;
     }
 

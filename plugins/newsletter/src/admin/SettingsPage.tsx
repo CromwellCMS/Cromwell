@@ -14,7 +14,7 @@ export function SettingsPage() {
         if (isLoading) return;
 
         setIsloading(true);
-        const client = getGraphQLClient('plugin');
+        const client = getGraphQLClient();
         try {
             const data = await client?.query({
                 query: gql`

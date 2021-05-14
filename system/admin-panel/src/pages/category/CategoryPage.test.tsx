@@ -33,7 +33,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 getFilteredProductCategories: jest.fn().mockImplementation(() => ({ elements: [testData] })),
             }
         },
-        CList: (props) => {
+        CList: () => {
             return <div>...list</div>
         },
         getRestAPIClient: () => {

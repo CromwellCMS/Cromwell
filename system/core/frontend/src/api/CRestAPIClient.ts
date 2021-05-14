@@ -1,13 +1,15 @@
 import {
-    apiExtensionRoute,
     apiMainRoute,
     getStoreItem,
     isServer,
     logFor,
     serviceLocator,
     setStoreItem,
+    TCCSVersion,
     TCmsEntityInput,
     TCmsSettings,
+    TCmsStats,
+    TCmsStatus,
     TCreateUser,
     TFrontendBundle,
     TOrder,
@@ -20,8 +22,6 @@ import {
     TServerCreateOrder,
     TThemeConfig,
     TUser,
-    TCmsStats,
-    TCmsStatus,
 } from '@cromwell/core';
 
 import { fetch } from '../helpers/isomorphicFetch';
@@ -255,7 +255,6 @@ class CRestAPIClient {
         return this.get(`cms/launch-update`);
     }
 
-
     // < / CMS >
 
 
@@ -315,6 +314,10 @@ class CRestAPIClient {
 
     // < Plugin >
 
+    public getPluginUpdate = async (pluginName: string): Promise<TCCSVersion | undefined> => {
+        return this.get(`plugin/check-update?pluginName=${pluginName}`);
+    }
+
     public getPluginSettings = async (pluginName: string): Promise<any | undefined> => {
         return this.get(`plugin/settings?pluginName=${pluginName}`);
     }
@@ -336,19 +339,16 @@ class CRestAPIClient {
 
 }
 
-export const getRestAPIClient = (serverType: 'main' | 'plugin' = 'main'): CRestAPIClient => {
+export const getRestAPIClient = (): CRestAPIClient => {
     let clients = getStoreItem('apiClients');
-    if (serverType === 'main' && clients?.mainRestAPIClient) return clients.mainRestAPIClient;
-    if (serverType === 'plugin' && clients?.pluginRestAPIClient) return clients.pluginRestAPIClient;
+    if (clients?.restAPIClient) return clients.restAPIClient;
 
-    const typeUrl = serverType === 'plugin' ? serviceLocator.getPluginApiUrl() : serviceLocator.getMainApiUrl();
-    const baseUrl = `${typeUrl}/${serverType === 'main' ? apiMainRoute : apiExtensionRoute}`;
+    const typeUrl = serviceLocator.getMainApiUrl();
+    const baseUrl = `${typeUrl}/${apiMainRoute}`;
 
     const newClient = new CRestAPIClient(baseUrl);
     if (!clients) clients = {};
-    if (serverType === 'main') clients.mainRestAPIClient = newClient;
-    if (serverType === 'plugin') clients.pluginRestAPIClient = newClient;
-
+    clients.restAPIClient = newClient;
     setStoreItem('apiClients', clients);
     return newClient;
 }

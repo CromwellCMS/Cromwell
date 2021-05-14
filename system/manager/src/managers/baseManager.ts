@@ -72,8 +72,8 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
     const proc = fork(path, args, { stdio: sync ? 'inherit' : 'pipe', cwd: dir ?? process.cwd() });
     await saveProcessPid(name, proc.pid);
     serviceProcesses[name] = proc;
-    proc?.stdout?.on('data', buff => logger.log(buff?.toString?.() ?? buff));
-    proc?.stderr?.on('data', buff => logger.error(buff?.toString?.() ?? buff));
+    proc?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff));
+    proc?.stderr?.on('data', buff => console.error(buff?.toString?.() ?? buff));
 
     if (watchName && onVersionChange) {
         startWatchService(watchName, onVersionChange);
@@ -133,8 +133,7 @@ export const startSystem = async (scriptName: TScriptName) => {
 
     await saveProcessPid(cacheKeys.manager, process.pid)
 
-    await startServer(isDevelopment ? 'devMain' : 'prodMain');
-    await startServer(isDevelopment ? 'devPlugin' : 'prodPlugin');
+    await startServer(isDevelopment ? 'dev' : 'prod');
     await startAdminPanel();
     await startRenderer();
 
@@ -169,8 +168,7 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
     }
 
     if (serviceName === 'server' || serviceName === 's') {
-        await startServer(isDevelopment ? 'devMain' : 'prodMain');
-        await startServer(isDevelopment ? 'devPlugin' : 'prodPlugin');
+        await startServer(isDevelopment ? 'dev' : 'prod');
     }
 
     if (serviceName === 'nginx' || serviceName === 'n') {
@@ -193,8 +191,7 @@ export const closeServiceByName = async (serviceName: TServiceNames) => {
     }
 
     if (serviceName === 'server' || serviceName === 's') {
-        await closeServer('main');
-        await closeServer('plugin');
+        await closeServer();
     }
 
     if (serviceName === 'nginx' || serviceName === 'n') {
@@ -206,8 +203,7 @@ export const closeServiceByName = async (serviceName: TServiceNames) => {
 export const closeSystem = async () => {
     await closeAdminPanel();
     await closeRenderer();
-    await closeServer('main');
-    await closeServer('plugin');
+    await closeServer();
     await closeService(cacheKeys.manager);
 }
 

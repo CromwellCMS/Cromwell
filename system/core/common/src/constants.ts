@@ -138,13 +138,10 @@ const getBaseUrl = (key: keyof TCmsConfig) => {
 
 export const serviceLocator = {
     getMainApiUrl: () => {
-        return getBaseUrl('mainApiPort');
-    },
-    getPluginApiUrl: () => {
-        return getBaseUrl('pluginApiPort');
+        return getBaseUrl('apiPort');
     },
     getApiWsUrl: () => {
-        return getBaseUrl('mainApiPort');
+        return getBaseUrl('apiPort');
     },
     getFrontendUrl: () => {
         return getBaseUrl('frontendPort');

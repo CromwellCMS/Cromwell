@@ -70,7 +70,7 @@ const ProductShowcase = (props: TFrontendPluginProps<ProductShowcaseProps>): JSX
 
 export const getStaticProps = async (context: StaticPageContext): Promise<ProductShowcaseProps> => {
     // slug of a product page
-    const client = getGraphQLClient('plugin');
+    const client = getGraphQLClient();
     const slug = context?.params?.slug ?? null;
     let data;
     try {

@@ -419,9 +419,8 @@ export type TCmsEntityInput = {
 
 export type TServiceVersions = {
     renderer?: number;
-    serverMain?: number;
-    serverPlugin?: number;
-    adminPanel?: number;
+    server?: number;
+    admin?: number;
 };
 
 export type TCmsEntity = TCmsEntityCore & TBasePageEntity;

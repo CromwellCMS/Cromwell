@@ -36,7 +36,7 @@ class CentralServerClient {
         return this.get(`cms/version-by-package/${packageVersion}`);
     }
 
-    async checkUpdate(version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
+    async checkCmsUpdate(version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
         return this.get(`cms/check-update/${version}?beta=${beta ? 'true' : 'false'}`);
     }
 
@@ -57,6 +57,10 @@ class CentralServerClient {
         return this.get(`plugin/all-versions?name=${name}`);
     }
 
+    async checkPluginUpdate(name: string, version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
+        return this.get(`plugin/check-update/${version}?name=${name}&beta=${beta ? 'true' : 'false'}`);
+    }
+
     // < / Plugin >
 
 
@@ -72,6 +76,10 @@ class CentralServerClient {
 
     async getThemeAllVersions(name: string): Promise<TCCSVersion[]> {
         return this.get(`theme/all-versions?name=${name}`);
+    }
+
+    async checkThemeUpdate(name: string, version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
+        return this.get(`theme/check-update/${version}?name=${name}&beta=${beta ? 'true' : 'false'}`);
     }
 
     // < / Theme >

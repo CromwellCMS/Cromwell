@@ -13,7 +13,6 @@ describe('cms config / settings', () => {
     it('read cms config and and return default settings', () => {
         const config = readCMSConfigSync();
         expect(config.adminPanelPort).toEqual(defaultCmsConfig.adminPanelPort);
-        expect(config.pluginApiPort).toEqual(defaultCmsConfig.pluginApiPort);
         expect(config.useWatch).toEqual(defaultCmsConfig.useWatch);
         expect(config.defaultSettings?.defaultPageSize).toEqual(defaultCmsConfig.defaultSettings?.defaultPageSize);
     });
@@ -21,7 +20,6 @@ describe('cms config / settings', () => {
     it('read cms config async and and return default settings', async () => {
         const config = await readCMSConfig();
         expect(config.adminPanelPort).toEqual(defaultCmsConfig.adminPanelPort);
-        expect(config.pluginApiPort).toEqual(defaultCmsConfig.pluginApiPort);
         expect(config.useWatch).toEqual(defaultCmsConfig.useWatch);
         expect(config.defaultSettings?.defaultPageSize).toEqual(defaultCmsConfig.defaultSettings?.defaultPageSize);
     });

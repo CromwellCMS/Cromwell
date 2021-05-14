@@ -21,7 +21,7 @@ const testDataDB: TThemeEntity[] = [
     },
 ]
 const cmsSettings: TCmsSettings = {
-    mainApiPort: 1,
+    apiPort: 1,
     adminPanelPort: 1,
     frontendPort: 1,
     managerPort: 1,

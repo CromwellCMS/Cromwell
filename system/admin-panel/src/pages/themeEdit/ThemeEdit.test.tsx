@@ -43,7 +43,6 @@ jest.mock('@cromwell/core-frontend', () => {
     }
 });
 
-import { getRestAPIClient } from '@cromwell/core-frontend';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
@@ -64,7 +63,7 @@ describe('ThemeEdit page', () => {
         const pageBtn = await screen.findByText('_test1_name_');
         fireEvent.click(pageBtn);
 
-        const settingsBtn = await screen.findByText('Settings');
+        await screen.findByText('Settings');
         await screen.findByDisplayValue('_test1_title_')
     });
 })

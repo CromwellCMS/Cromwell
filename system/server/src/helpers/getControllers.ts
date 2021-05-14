@@ -9,28 +9,23 @@ import { MockService } from '../services/mock.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 
-export const getControllers = async (sType: 'main' | 'plugin', dev?: boolean) => {
-    if (sType !== 'main') return [
-        CmsController,
-        ...((await collectPlugins()).controllers ?? []),
-    ];
+export const getControllers = async (dev?: boolean) => {
     const def: any[] = [
         CmsController,
         PluginController,
         ThemeController,
         AuthController,
+        ...((await collectPlugins()).controllers ?? []),
     ];
     if (dev) def.push(MockController);
     return def;
 }
 
-export const getServices = async (sType: 'main' | 'plugin', dev?: boolean) => {
+export const getServices = async (dev?: boolean) => {
     const def: any[] = [
         CmsService, PluginService, ThemeService,
+        ...((await collectPlugins()).providers ?? [])
     ];
-    if (sType !== 'main') {
-        def.concat((await collectPlugins()).providers ?? [])
-    }
     if (dev) def.push(MockService);
     return def;
 }

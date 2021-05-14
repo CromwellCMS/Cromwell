@@ -16,7 +16,7 @@ import {
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { mainFireAction } from '../helpers/mainFireAction';
+import { serverFireAction } from '../helpers/serverFireAction';
 
 const getOneBySlugPath = GraphQLPaths.Post.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Post.getOneById;
@@ -58,7 +58,7 @@ export class PostResolver {
     @Mutation(() => Post)
     async [createPath](@Arg("data") data: CreatePost): Promise<Post> {
         const post = await this.repository.createPost(data);
-        mainFireAction('create_post', post);
+        serverFireAction('create_post', post);
         return post;
     }
 
@@ -66,7 +66,7 @@ export class PostResolver {
     @Mutation(() => Post)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdatePost): Promise<Post> {
         const post = await this.repository.updatePost(id, data);
-        mainFireAction('update_post', post);
+        serverFireAction('update_post', post);
         return post;
     }
 
@@ -74,7 +74,7 @@ export class PostResolver {
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const success = await this.repository.deletePost(id);
-        mainFireAction('delete_post', { id });
+        serverFireAction('delete_post', { id });
         return success;
     }
 

@@ -34,7 +34,7 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
             name: cacheKeys.adminPanel,
             args: [env],
             sync: command === 'build' ? true : false,
-            watchName: command !== 'build' ? 'adminPanel' : undefined,
+            watchName: command !== 'build' ? 'admin' : undefined,
             onVersionChange: async () => {
                 if (cmsConfig.useWatch) {
                     await closeAdminPanel();

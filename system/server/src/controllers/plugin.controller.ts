@@ -4,6 +4,7 @@ import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, UseGuard
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { FrontendBundleDto } from '../dto/frontend-bundle.dto';
+import { UpdateInfoDto } from '../dto/update-info.dto';
 import { PluginService } from '../services/plugin.service';
 
 const logger = getLogger();
@@ -36,12 +37,12 @@ export class PluginController {
                 try {
                     if (plugin.defaultSettings) defaultSettings = JSON.parse(plugin.defaultSettings);
                 } catch (e) {
-                    logger.log(e, console.error);
+                    getLogger(false).error(e);
                 }
                 try {
                     if (plugin.settings) settings = JSON.parse(plugin.settings);
                 } catch (e) {
-                    logger.log(e, console.error);
+                    getLogger(false).error(e);
                 }
 
                 const out = Object.assign({}, defaultSettings, settings);
@@ -131,5 +132,21 @@ export class PluginController {
     }
 
 
-    
+    @Get('check-update')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator', 'guest')
+    @ApiOperation({
+        description: `Returns available Update for sepcified Plugin`,
+        parameters: [{ name: 'pluginName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: UpdateInfoDto,
+    })
+    async getStatus(@Query('pluginName') pluginName: string): Promise<UpdateInfoDto | boolean | undefined> {
+        const update = await this.pluginService.checkPluginUpdate(pluginName);
+        if (update) return new UpdateInfoDto()?.parseVersion?.(update);
+        return false;
+    }
+
 }
