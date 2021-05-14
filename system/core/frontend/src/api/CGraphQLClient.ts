@@ -2,51 +2,51 @@ import {
     ApolloClient,
     ApolloQueryResult,
     createHttpLink,
+    DocumentNode,
     gql,
     InMemoryCache,
+    MutationOptions,
     NormalizedCacheObject,
     QueryOptions,
-    MutationOptions,
-    DocumentNode
 } from '@apollo/client';
 import {
     apiMainRoute,
-    apiExtensionRoute,
     getStoreItem,
     GraphQLPaths,
+    isServer,
     serviceLocator,
     setStoreItem,
     TAttribute,
     TAttributeInput,
+    TCreateUser,
+    TDBEntity,
+    TDeleteManyInput,
+    TFilteredProductList,
+    TOrder,
+    TOrderFilter,
+    TOrderInput,
     TPagedList,
     TPagedParams,
+    TPost,
+    TPostFilter,
+    TPostInput,
     TProduct,
     TProductCategory,
-    TProductInput,
-    TProductReview,
-    TProductReviewInput,
-    TPost,
-    TPostInput,
+    TProductCategoryFilter,
     TProductCategoryInput,
     TProductFilter,
-    TFilteredProductList,
-    TPostFilter,
-    TDBEntity,
-    TUser,
-    TCreateUser,
-    TUpdateUser,
-    TProductCategoryFilter,
-    TOrder,
-    TOrderInput,
-    TDeleteManyInput,
-    TOrderFilter,
-    TUserFilter,
-    TTag,
+    TProductInput,
+    TProductReview,
     TProductReviewFilter,
+    TProductReviewInput,
+    TTag,
     TTagInput,
-    isServer,
+    TUpdateUser,
+    TUser,
+    TUserFilter,
 } from '@cromwell/core';
-import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch'
+
+import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch';
 
 class CGraphQLClient {
 
@@ -836,6 +836,7 @@ class CGraphQLClient {
             updateDate
             isEnabled
             name
+            version
             title
             isInstalled
             hasAdminBundle
@@ -857,6 +858,7 @@ class CGraphQLClient {
             updateDate
             isEnabled
             name
+            version
             isInstalled
             hasAdminBundle
             settings
@@ -869,19 +871,16 @@ class CGraphQLClient {
 
 export type TCGraphQLClient = CGraphQLClient;
 
-export const getGraphQLClient = (serverType: 'main' | 'plugin' = 'main', fetch?: any): CGraphQLClient => {
+export const getGraphQLClient = (fetch?: any): CGraphQLClient => {
     let clients = getStoreItem('apiClients');
-    if (serverType === 'main' && clients?.mainGraphQLClient) return clients.mainGraphQLClient;
-    if (serverType === 'plugin' && clients?.pluginGraphQLClient) return clients.pluginGraphQLClient;
+    if (clients?.graphQLClient) return clients.graphQLClient;
 
-    const typeUrl = serverType === 'plugin' ? serviceLocator.getPluginApiUrl() : serviceLocator.getMainApiUrl();
-    const baseUrl = `${typeUrl}/${serverType === 'main' ? apiMainRoute : apiExtensionRoute}/graphql`;
+    const typeUrl = serviceLocator.getMainApiUrl();
+    const baseUrl = `${typeUrl}/${apiMainRoute}/graphql`;
 
     const newClient = new CGraphQLClient(baseUrl, fetch);
     if (!clients) clients = {};
-    if (serverType === 'main') clients.mainGraphQLClient = newClient;
-    if (serverType === 'plugin') clients.pluginGraphQLClient = newClient;
-
+    clients.graphQLClient = newClient;
     setStoreItem('apiClients', clients);
     return newClient;
 }

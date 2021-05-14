@@ -24,10 +24,8 @@ export type TCromwellStore = {
         logLevel?: TLogLevel;
     },
     apiClients?: {
-        mainGraphQLClient?: any;
-        pluginGraphQLClient?: any;
-        mainRestAPIClient?: any;
-        pluginRestAPIClient?: any;
+        graphQLClient?: any;
+        restAPIClient?: any;
     }
     webSocketClient?: any;
     cstore?: any;
@@ -99,8 +97,7 @@ export type TPagedMeta = {
 export type TCmsConfig = {
     domain?: string;
     protocol?: 'http' | 'https';
-    mainApiPort?: number;
-    pluginApiPort?: number;
+    apiPort?: number;
     adminPanelPort?: number;
     frontendPort?: number;
     managerPort?: number;

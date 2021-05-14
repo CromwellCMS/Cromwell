@@ -1,24 +1,25 @@
-import { TFrontendBundle, TPluginConfig, TPluginEntity, TPluginEntityInput, TSciprtMetaInfo } from '@cromwell/core';
+import { TCCSVersion, TFrontendBundle, TPluginConfig, TPluginEntity, TPluginEntityInput, TSciprtMetaInfo } from '@cromwell/core';
 import {
     buildDirName,
     configFileName,
+    getCmsSettings,
     getCmsModuleInfo,
     getLogger,
     getMetaInfoPath,
+    getModulePackage,
     getNodeModuleDir,
     getPluginAdminBundlePath,
     getPluginAdminCjsPath,
     getPluginFrontendBundlePath,
     getPluginFrontendCjsPath,
     getPublicPluginsDir,
-    incrementServiceVersion,
-    getModulePackage,
 } from '@cromwell/core-backend';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
+import { getCentralServerClient } from '@cromwell/core-frontend';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
-import decache from 'decache';
+import requireFromString from 'require-from-string';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericPlugin } from '../helpers/genericEntities';
@@ -104,10 +105,21 @@ export class PluginService {
                     cjsPath
                 }
             } catch (e) {
-                console.error("Failed to read plugin's settings", e);
+                logger.error("Failed to read plugin's settings", e);
             }
         }
         return out;
+    }
+
+
+    async checkPluginUpdate(pluginName: string): Promise<TCCSVersion | undefined> {
+        const settings = await getCmsSettings();
+        const pckg = await getModulePackage(pluginName);
+        const isBeta = !!settings?.beta;
+        try {
+            return await getCentralServerClient().checkPluginUpdate(
+                pluginName, pckg?.version ?? '0', isBeta);
+        } catch (error) { }
     }
 
 
@@ -116,9 +128,6 @@ export class PluginService {
         const pluginPckg = await getModulePackage(pluginName);
 
         if (!pluginPckg?.version || !pluginPath) throw new HttpException('Failed to find package.json of the plugin ' + pluginName, HttpStatus.INTERNAL_SERVER_ERROR);
-
-        // @TODO Execute install script
-
 
         // Read module info from package.json
         const moduleInfo = await getCmsModuleInfo(pluginName);
@@ -131,12 +140,10 @@ export class PluginService {
         const filePath = resolve(pluginPath, configFileName);
         if (await fs.pathExists(filePath)) {
             try {
-                decache(filePath);
-            } catch (error) { }
-            try {
-                pluginConfig = require(filePath);
+                const content = (await fs.readFile(filePath)).toString();
+                pluginConfig = requireFromString(content, filePath);
             } catch (e) {
-                console.error(e);
+                logger.error(e);
             }
         }
         const defaultSettings = pluginConfig?.defaultSettings;
@@ -148,7 +155,7 @@ export class PluginService {
                 const publicPluginsDir = getPublicPluginsDir();
                 await fs.ensureDir(publicPluginsDir);
                 await fs.copy(pluginPublicDir, resolve(publicPluginsDir, pluginName));
-            } catch (e) { console.log(e) }
+            } catch (e) { logger.log(e) }
         }
 
 
@@ -172,7 +179,7 @@ export class PluginService {
                 input.defaultSettings = JSON.stringify(defaultSettings);
                 input.settings = JSON.stringify(defaultSettings);
             } catch (e) {
-                console.error(e);
+                logger.error(e);
             }
         }
 
@@ -180,7 +187,7 @@ export class PluginService {
             try {
                 input.moduleInfo = JSON.stringify(moduleInfo);
             } catch (e) {
-                console.error(e);
+                logger.error(e);
             }
         }
 
@@ -189,10 +196,8 @@ export class PluginService {
         try {
             entity = await pluginRepo.createEntity(input);
         } catch (e) {
-            console.error(e)
+            logger.error(e)
         }
-
-        await incrementServiceVersion('serverPlugin');
 
         if (entity) {
             return true;

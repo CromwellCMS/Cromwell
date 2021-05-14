@@ -21,8 +21,8 @@ describe('CMS Controller', () => {
             .get('/cms/config')
             .expect(200)
             .then(response => {
-                const { mainApiPort, themeName } = response.body as TCmsSettings;
-                expect(typeof mainApiPort).toBe('number');
+                const { apiPort, themeName } = response.body as TCmsSettings;
+                expect(typeof apiPort).toBe('number');
                 expect(typeof themeName).toBe('string');
             })
     });

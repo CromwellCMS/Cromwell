@@ -47,8 +47,7 @@ export const serverMessages = {
 }
 
 export const defaultCmsConfig: TCmsConfig = {
-    mainApiPort: 4016,
-    pluginApiPort: 4032,
+    apiPort: 4016,
     adminPanelPort: 4064,
     frontendPort: 4128,
     centralServerUrl: 'http://localhost:4008',

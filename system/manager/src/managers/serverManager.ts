@@ -13,23 +13,18 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
     let serverProc;
 
     const cmsConfig = await readCMSConfig();
-    const sType = (command === 'devMain' || command === 'prodMain') ? 'main' : 'plugin';
 
-    if (!cmsConfig?.mainApiPort || !cmsConfig?.pluginApiPort) {
-        const message = 'Manager: Failed to start Server: mainApiPort | pluginApiPort is not defined in cmsconfig';
+    if (!cmsConfig?.apiPort) {
+        const message = 'Manager: Failed to start Server: apiPort is not defined in cmsconfig';
         logger.error(message);
         throw new Error(message);
     }
 
     if (command !== 'build') {
         let message;
-        if (sType === 'main' && await isPortUsed(cmsConfig.mainApiPort)) {
-            message = `Manager: Failed to start Server: mainApiPort ${cmsConfig.mainApiPort} is already in use. You may want to run close command: cromwell close --sv server`;
+        if (await isPortUsed(cmsConfig.apiPort)) {
+            message = `Manager: Failed to start Server: apiPort ${cmsConfig.apiPort} is already in use. You may want to run close command: cromwell close --sv server`;
         }
-        if (sType === 'plugin' && await isPortUsed(cmsConfig.pluginApiPort)) {
-            message = `Manager: Failed to start Server: pluginApiPort ${cmsConfig.pluginApiPort} is already in use. You may want to run close command: cromwell close --sv server`;
-        }
-
         if (message) {
             logger.error(message);
             throw new Error(message);
@@ -41,19 +36,15 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
     if (env && serverStartupPath) {
         serverProc = await startService({
             path: serverStartupPath,
-            name: sType === 'main' ? cacheKeys.serverMain : cacheKeys.serverPlugin,
+            name: cacheKeys.serverMain,
             args: [env],
             sync: command === 'build' ? true : false,
-            watchName: command !== 'build' ? sType === 'main' ? 'serverMain' : 'serverPlugin' : undefined,
+            watchName: command !== 'build' ? 'server' : undefined,
             onVersionChange: async () => {
                 if (cmsConfig.useWatch) {
-                    await closeServer(sType);
+                    await closeServer();
                     try {
-                        if (sType === 'main')
-                            await tcpPortUsed.waitUntilFree(cmsConfig.mainApiPort, 500, 4000);
-
-                        if (sType === 'plugin')
-                            await tcpPortUsed.waitUntilFree(cmsConfig.pluginApiPort, 500, 4000);
+                        await tcpPortUsed.waitUntilFree(cmsConfig.apiPort, 500, 4000);
                     } catch (e) { console.error(e) }
                     await startServer(command);
                 }
@@ -81,9 +72,9 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
     return false;
 }
 
-export const closeServer = async (sType: 'main' | 'plugin'): Promise<boolean> => {
+export const closeServer = async (): Promise<boolean> => {
     try {
-        return closeService(sType === 'main' ? cacheKeys.serverMain : cacheKeys.serverPlugin);
+        return closeService(cacheKeys.serverMain);
     } catch (e) {
         console.error(e);
     }

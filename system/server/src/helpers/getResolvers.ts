@@ -22,9 +22,7 @@ const nativeResolvers = [
     TagResolver,
 ];
 
-export const getResolvers = async (sType: 'main' | 'plugin'): Promise<any> => sType === 'main' ? [
+export const getResolvers = async (): Promise<any> => [
     ...nativeResolvers,
-] : [
-        ...nativeResolvers,
-        ...((await collectPlugins()).resolvers ?? []),
-    ]
+    ...((await collectPlugins()).resolvers ?? []),
+]

@@ -11,7 +11,7 @@ import {
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { mainFireAction } from '../helpers/mainFireAction';
+import { serverFireAction } from '../helpers/serverFireAction';
 
 const getOneByIdPath = GraphQLPaths.ProductReview.getOneById;
 const getManyPath = GraphQLPaths.ProductReview.getMany;
@@ -41,7 +41,7 @@ export class ProductReviewResolver {
     @Mutation(() => ProductReview)
     async [createPath](@Arg("data") data: ProductReviewInput): Promise<TProductReview> {
         const review = await this.repository.createProductReview(data);
-        mainFireAction('create_product_review', review);
+        serverFireAction('create_product_review', review);
         return review;
     }
 
@@ -49,7 +49,7 @@ export class ProductReviewResolver {
     @Mutation(() => ProductReview)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: ProductReviewInput): Promise<ProductReview> {
         const review = await this.repository.updateProductReview(id, data);
-        mainFireAction('update_product_review', review);
+        serverFireAction('update_product_review', review);
         return review;
     }
 
@@ -57,7 +57,7 @@ export class ProductReviewResolver {
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const review = await this.repository.deleteProductReview(id);
-        mainFireAction('delete_product_review', { id });
+        serverFireAction('delete_product_review', { id });
         return review;
     }
 

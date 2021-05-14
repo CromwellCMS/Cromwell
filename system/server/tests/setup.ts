@@ -1,7 +1,7 @@
 
-jest.mock('@App/helpers/mainFireAction', () => {
+jest.mock('@App/helpers/serverFireAction', () => {
     return {
-        mainFireAction: () => null,
+        serverFireAction: () => null,
     }
 });
 
@@ -34,4 +34,4 @@ import { join } from 'path';
 import fs from 'fs-extra';
 
 const testDir = join(getServerTempDir(), 'test');
-fs.removeSync(testDir);
+if (fs.pathExistsSync(testDir)) fs.removeSync(testDir);

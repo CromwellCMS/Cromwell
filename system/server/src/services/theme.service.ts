@@ -15,15 +15,15 @@ import {
     getCmsModuleInfo,
     getCmsSettings,
     getLogger,
+    getModulePackage,
     getNodeModuleDir,
     getPublicThemesDir,
     incrementServiceVersion,
-    getModulePackage,
 } from '@cromwell/core-backend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import decache from 'decache';
+import requireFromString from 'require-from-string';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
@@ -124,18 +124,18 @@ export class ThemeService {
             try {
                 if (theme?.defaultSettings) themeConfig = JSON.parse(theme.defaultSettings);
             } catch (e) {
-                logger.log(e, console.error);
+                getLogger(false).error(e);
             }
             try {
                 if (theme?.settings) userConfig = JSON.parse(theme.settings);
             } catch (e) {
-                logger.log(e, console.error);
+                getLogger(false).error(e);
             }
 
             try {
                 if (theme?.moduleInfo) themeInfo = JSON.parse(theme.moduleInfo);
             } catch (e) {
-                logger.log(e, console.error);
+                getLogger(false).error(e);
             }
         }
 
@@ -246,19 +246,19 @@ export class ThemeService {
      */
     public async saveUserPageConfig(userPageConfig: TPageConfig): Promise<boolean> {
         if (!userPageConfig) {
-            console.error('Server::saveUserPageConfig: Invalid userPageConfig')
+            logger.error('Server::saveUserPageConfig: Invalid userPageConfig')
             return false;
         }
         if (!userPageConfig.route || userPageConfig.route === '') {
-            console.error('Server::saveUserPageConfig: Invalid userPageConfig, no route', JSON.stringify(userPageConfig));
+            logger.error('Server::saveUserPageConfig: Invalid userPageConfig, no route', JSON.stringify(userPageConfig));
             throw new HttpException("Invalid page config, no route", HttpStatus.NOT_ACCEPTABLE);
         }
         if (!userPageConfig.name || userPageConfig.name === '') {
-            console.error('Server::saveUserPageConfig: Invalid userPageConfig, no name', JSON.stringify(userPageConfig));
+            logger.error('Server::saveUserPageConfig: Invalid userPageConfig, no name', JSON.stringify(userPageConfig));
             throw new HttpException("Invalid page config, no name", HttpStatus.NOT_ACCEPTABLE);
         }
         if (!userPageConfig.modifications) {
-            console.error('Server::saveUserPageConfig: Invalid userPageConfig, no modifications', JSON.stringify(userPageConfig));
+            logger.error('Server::saveUserPageConfig: Invalid userPageConfig, no modifications', JSON.stringify(userPageConfig));
             return false;
         }
 
@@ -517,12 +517,10 @@ export class ThemeService {
         const filePath = resolve(themePath, configFileName);
         if (await fs.pathExists(filePath)) {
             try {
-                decache(filePath);
-            } catch (error) { }
-            try {
-                themeConfig = require(filePath);
+                const content = (await fs.readFile(filePath)).toString();
+                themeConfig = requireFromString(content, filePath);
             } catch (e) {
-                console.error(e);
+                logger.error(e);
             }
         }
 
@@ -539,7 +537,7 @@ export class ThemeService {
                 const publicThemesDir = getPublicThemesDir();
                 await fs.ensureDir(publicThemesDir);
                 await fs.copy(themePublicDir, resolve(publicThemesDir, themeName));
-            } catch (e) { console.log(e) }
+            } catch (e) { logger.log(e) }
         }
 
         // Create DB entity
@@ -555,7 +553,7 @@ export class ThemeService {
             try {
                 input.defaultSettings = JSON.stringify(themeConfig);
             } catch (e) {
-                console.error(e);
+                logger.error(e);
             }
         }
 
@@ -563,7 +561,7 @@ export class ThemeService {
             try {
                 input.moduleInfo = JSON.stringify(moduleInfo);
             } catch (e) {
-                console.error(e);
+                logger.error(e);
             }
         }
 
@@ -574,7 +572,7 @@ export class ThemeService {
                 return true;
             }
         } catch (e) {
-            console.error(e)
+            logger.error(e)
         }
 
         return false;

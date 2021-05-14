@@ -1,5 +1,5 @@
 import { setStoreItem } from '@cromwell/core';
-import { cmsPackageName, getCmsEntity, getCmsSettings, getModulePackage, getServerDir, getServerTempDir } from '@cromwell/core-backend';
+import { cmsPackageName, getCmsEntity, getCmsSettings, getLogger, getModulePackage, getServerDir, getServerTempDir } from '@cromwell/core-backend';
 import cacache from 'cacache';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -11,10 +11,11 @@ import { TServerCommands } from './constants';
 import { rebuildPage } from './PageBuilder';
 
 let sEnv: TEnv | undefined = undefined;
+const logger = getLogger();
 
 type TEnv = {
     envMode: 'dev' | 'prod';
-    serverType: 'main' | 'plugin';
+    scriptName: TServerCommands;
 }
 
 export const loadEnv = (): TEnv => {
@@ -22,11 +23,16 @@ export const loadEnv = (): TEnv => {
 
     setStoreItem('rebuildPage', rebuildPage);
     const args = yargs(process.argv.slice(2));
-    const scriptName = process.argv[2] as TServerCommands | undefined;
+    const scriptName = process.argv[2] as TServerCommands;
 
-    const envMode = (scriptName === 'devMain' || scriptName === 'devPlugin') ? 'dev' : 'prod';
+    if (!scriptName || (scriptName as any) === '') {
+        const msg = 'Provide in first argument to this script one of these commands: build dev prod serverDev serverProd';
+        getLogger(false).error(msg);
+        throw new Error(msg);
+    }
+
+    const envMode = (scriptName === 'dev') ? 'dev' : 'prod';
     const logLevel = args.logLevel ?? envMode === 'dev' ? 'detailed' : 'errors-only';
-    const serverType = (scriptName === 'devPlugin' || scriptName === 'prodPlugin') ? 'plugin' : 'main';
 
     setStoreItem('environment', {
         mode: envMode,
@@ -35,17 +41,18 @@ export const loadEnv = (): TEnv => {
 
     sEnv = {
         envMode,
-        serverType,
+        scriptName,
     }
     return sEnv;
 }
 
 
-export const checkConfigs = async (envMode: TEnv) => {
+export const checkConfigs = async () => {
     const serverCachePath = resolve(getServerTempDir(), 'cache');
 
     // If secret keys weren't set in config, they will be randomly generated
-    // Since we have two server instances, we need to sync keys between them via filecache
+    // Save them into filecache to not generate on every launch, otherwise it'll
+    // cause log-out for all users
     if (isRandomSecret) {
         const getSettings = async () => {
             try {
@@ -67,13 +74,11 @@ export const checkConfigs = async (envMode: TEnv) => {
     }
 
 
-    if (envMode.serverType === 'main') {
-        const mailsDir = resolve(getServerTempDir(), 'emails');
-        const serverDir = getServerDir();
-        if (! await fs.pathExists(mailsDir) && serverDir) {
-            const templatesSrc = resolve(serverDir, 'static/emails');
-            await fs.copy(templatesSrc, mailsDir);
-        }
+    const mailsDir = resolve(getServerTempDir(), 'emails');
+    const serverDir = getServerDir();
+    if (! await fs.pathExists(mailsDir) && serverDir) {
+        const templatesSrc = resolve(serverDir, 'static/emails');
+        await fs.copy(templatesSrc, mailsDir);
     }
 }
 
@@ -91,7 +96,7 @@ export const checkCmsVersion = async () => {
                 await cmsEntity.save();
             }
         } catch (error) {
-            console.error(error);
+            logger.error(error);
         }
     }
 }

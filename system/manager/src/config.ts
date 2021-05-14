@@ -14,18 +14,18 @@ const config = {
     /** Config for root "dev" script */
     "servicesDev": {
         "adminPanel": "dev", // 'dev' | 'prod' | 'build' | null
-        "server": "devMain", // 'dev' | 'prod' | 'build' | null
+        "server": "dev", // 'dev' | 'prod' | 'build' | null
         "renderer": "dev", // 'dev' | 'prod' | 'build' | null
     },
     /** Config for root "start" script */
     "servicesProd": {
         "adminPanel": "prod", // 'dev' | 'prod' | 'build' | null
-        "server": "prodMain", // 'dev' | 'prod' | 'build' | null
+        "server": "prod", // 'dev' | 'prod' | 'build' | null
         "renderer": "prod", // 'dev' | 'prod' | 'build' | null
     },
     "servicesEnv": {
         "adminPanel": "prod",
-        "server": "prodMain",
+        "server": "prod",
         "renderer": "prod",
     },
     "cacheKeys": {

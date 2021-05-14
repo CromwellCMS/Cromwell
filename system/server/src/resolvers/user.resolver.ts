@@ -12,7 +12,7 @@ import {
 } from '@cromwell/core-backend';
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
-import { mainFireAction } from '../helpers/mainFireAction';
+import { serverFireAction } from '../helpers/serverFireAction';
 
 
 const getOneByIdPath = GraphQLPaths.User.getOneById;
@@ -45,7 +45,7 @@ export class UserResolver {
     @Mutation(() => User)
     async [createPath](@Arg("data") data: CreateUser): Promise<TUser> {
         const user = await this.repository.createUser(data);
-        mainFireAction('create_user', user);
+        serverFireAction('create_user', user);
         return user;
     }
 
@@ -58,7 +58,7 @@ export class UserResolver {
         if (ctx.user.role === 'guest') throw new Error(message);
 
         const user = await this.repository.updateUser(id, data);
-        mainFireAction('update_user', user);
+        serverFireAction('update_user', user);
         return user;
     }
 
@@ -66,7 +66,7 @@ export class UserResolver {
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const user = await this.repository.deleteUser(id);
-        mainFireAction('delete_user', { id });
+        serverFireAction('delete_user', { id });
         return user;
     }
 

@@ -10,7 +10,7 @@ import { mockWorkingDirectory } from './helpers';
 
 export const setupResolver = async (name: string): Promise<[ApolloServer, ApolloServerTestClient]> => {
     await mockWorkingDirectory(name);
-    await connectDatabase('plugin');
+    await connectDatabase();
 
     let cmsSettings = getStoreItem('cmsSettings');
     if (!cmsSettings) cmsSettings = {};
@@ -18,7 +18,7 @@ export const setupResolver = async (name: string): Promise<[ApolloServer, Apollo
     setStoreItem('cmsSettings', cmsSettings);
 
     const schema = await buildSchema({
-        resolvers: [...(await getResolvers('main'))] as any,
+        resolvers: [...(await getResolvers())] as any,
         validate: false,
         authChecker: graphQlAuthChecker,
     });

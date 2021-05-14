@@ -26,7 +26,7 @@ import {
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { mainFireAction } from '../helpers/mainFireAction';
+import { serverFireAction } from '../helpers/serverFireAction';
 
 const categoriesKey: keyof TProduct = 'categories';
 const ratingKey: keyof TProduct = 'rating';
@@ -69,7 +69,7 @@ export class ProductResolver {
     @Mutation(() => Product)
     async [createPath](@Arg("data") data: CreateProduct): Promise<Product> {
         const product = await this.repository.createProduct(data);
-        mainFireAction('create_product', product);
+        serverFireAction('create_product', product);
         return product;
     }
 
@@ -77,7 +77,7 @@ export class ProductResolver {
     @Mutation(() => Product)
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProduct): Promise<Product> {
         const product = await this.repository.updateProduct(id, data);
-        mainFireAction('update_product', product);
+        serverFireAction('update_product', product);
         return product;
     }
 
@@ -85,7 +85,7 @@ export class ProductResolver {
     @Mutation(() => Boolean)
     async [deletePath](@Arg("id") id: string): Promise<boolean> {
         const product = await this.repository.deleteProduct(id);
-        mainFireAction('update_product', { id });
+        serverFireAction('update_product', { id });
         return product;
     }
 

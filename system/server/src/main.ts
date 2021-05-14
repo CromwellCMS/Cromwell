@@ -1,46 +1,52 @@
+require('dotenv').config();
 import 'reflect-metadata';
 
-import { apiExtensionRoute, apiMainRoute, currentApiVersion } from '@cromwell/core';
-import { graphQlAuthChecker, readCMSConfigSync, serverMessages, TGraphQLContext } from '@cromwell/core-backend';
+import { apiMainRoute, currentApiVersion } from '@cromwell/core';
+import { getLogger, graphQlAuthChecker, readCMSConfigSync, serverMessages, TGraphQLContext } from '@cromwell/core-backend';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ApolloServer } from 'apollo-server-fastify';
 import fastify from 'fastify';
+import getPort from 'get-port';
 import { buildSchema } from 'type-graphql';
 
 import { authSettings } from './auth/constants';
 import { ExceptionFilter } from './filters/exception.filter';
+import { collectPlugins } from './helpers/collectPlugins';
 import { connectDatabase } from './helpers/connectDataBase';
 import { corsHandler } from './helpers/corsHandler';
 import { getResolvers } from './helpers/getResolvers';
-import { checkConfigs, loadEnv, checkCmsVersion } from './helpers/loadEnv';
+import { checkCmsVersion, checkConfigs, loadEnv } from './helpers/loadEnv';
 import { AppModule } from './modules/app.module';
 import { authServiceInst } from './services/auth.service';
 
-require('dotenv').config();
+const logger = getLogger();
 
 async function bootstrap(): Promise<void> {
-    const envMode = loadEnv();
-    const config = readCMSConfigSync();
-    await checkConfigs(envMode);
+    loadEnv();
+    readCMSConfigSync();
+    await checkConfigs();
 
     // Connect to DB via TypeOrm
-    await connectDatabase(envMode.serverType);
+    await connectDatabase();
     await checkCmsVersion();
 
+    const envMode = loadEnv();
+
     // Launch Nest.js with Fastify
-    const apiPrefix = envMode.serverType === 'main' ? apiMainRoute : apiExtensionRoute;
+    const apiPrefix = apiMainRoute;
     const fastifyInstance = fastify();
 
     // GraphQL
     const schema = await buildSchema({
-        resolvers: await getResolvers(envMode.serverType),
+        resolvers: (await getResolvers()),
+        orphanedTypes: (await collectPlugins()).entities as any,
         validate: false,
         dateScalarMode: "isoDate",
         authChecker: graphQlAuthChecker,
-    })
+    });
 
     const apolloServer = new ApolloServer({
         debug: envMode.envMode === 'dev',
@@ -55,7 +61,6 @@ async function bootstrap(): Promise<void> {
         path: `/${apiPrefix}/graphql`,
         cors: corsHandler,
     }));
-
 
     // JWT Auth
     fastifyInstance.addHook('preHandler', async (request: any, reply) => {
@@ -83,7 +88,6 @@ async function bootstrap(): Promise<void> {
     app.register(require('fastify-multipart'));
     app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
-
     // Setup SwaggerUI
     if (envMode.envMode === 'dev') {
         const options = new DocumentBuilder()
@@ -95,19 +99,24 @@ async function bootstrap(): Promise<void> {
         SwaggerModule.setup(`/${apiPrefix}/api-docs`, app, document);
     }
 
-    const port = envMode.serverType === 'main' ? (config.mainApiPort ?? 4016) : (config.pluginApiPort ?? 4032);
+    const port = await getPort({ port: getPort.makeRange(4032, 4063) });
     await app.listen(port, '::');
-    console.log(`Application is running on: ${await app.getUrl()}`);
+    logger.info(`Application is running on: ${await app.getUrl()}`);
 
-    if (process.send) process.send(serverMessages.onStartMessage);
+    if (process.send) process.send(JSON.stringify({
+        message: serverMessages.onStartMessage,
+        port,
+    }));
 }
 
 (async () => {
     try {
         await bootstrap();
     } catch (e) {
-        console.log(e);
-        if (process.send) process.send(serverMessages.onStartErrorMessage);
+        logger.error(e);
+        if (process.send) process.send(JSON.stringify({
+            message: serverMessages.onStartErrorMessage,
+        }));
     }
 })();
 

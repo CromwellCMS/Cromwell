@@ -22,7 +22,7 @@ export const Dashboard = (props: WidgetTypes['Dashboard']) => {
     }, []);
 
     const getStats = async () => {
-        const client = getRestAPIClient('plugin');
+        const client = getRestAPIClient();
         const data = await client.get<string>('plugin-newsletter/stats');
         setNewsletterCount(data ?? '')
     }

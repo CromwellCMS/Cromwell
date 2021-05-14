@@ -1,6 +1,5 @@
 import { TOrder, TPackageCromwellConfig, TProductReview } from '@cromwell/core';
 import {
-    fireAction,
     getCmsModuleInfo,
     getCmsSettings,
     getLogger,
@@ -18,19 +17,17 @@ import fs from 'fs-extra';
 import { join } from 'path';
 import { getCustomRepository } from 'typeorm';
 
-import { authSettings } from '../auth/constants';
 import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { CmsStatsDto } from '../dto/cms-stats.dto';
+import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
-import { CmsStatusDto } from '../dto/cms-status.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
-import { ServerActionDto } from '../dto/server-action.dto';
 import { publicSystemDirs } from '../helpers/constants';
-import { mainFireAction } from '../helpers/mainFireAction';
+import { serverFireAction } from '../helpers/serverFireAction';
 import { CmsService } from '../services/cms.service';
 import { pluginServiceInst } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
@@ -371,7 +368,7 @@ export class CmsController {
             || !input.customerPhone) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
         const order = await this.cmsService.placeOrder(input);
-        mainFireAction('create_order', order);
+        serverFireAction('create_order', order);
         return order;
     }
 
@@ -391,7 +388,7 @@ export class CmsController {
             || !(input.description || input.rating) || input.approved) throw new HttpException('Review form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
         const review = await getCustomRepository(ProductReviewRepository).createProductReview(input);
-        mainFireAction('create_product_review', review);
+        serverFireAction('create_product_review', review);
         return review;
     }
 
@@ -429,25 +426,6 @@ export class CmsController {
     async getStats(): Promise<CmsStatsDto> {
         return this.cmsService.getCmsStats();
     }
-
-
-    @Post('fire-action')
-    @ApiOperation({
-        description: `Internal. Endpoint of Extension server called from Main server to fire actions (such as Post update/create/etc.)`,
-    })
-    @ApiResponse({ status: 200 })
-    @ApiBody({ type: ServerActionDto })
-    async fireAction(@Body() input: ServerActionDto) {
-        if (!input.actionName || !input.secretKey) throw new HttpException('fire-action: forn incomplete', HttpStatus.NOT_ACCEPTABLE);
-        if (input.secretKey !== authSettings.actionsSecret) throw new HttpException('', HttpStatus.FORBIDDEN);
-
-        fireAction({
-            actionName: input.actionName,
-            payload: input.payload,
-        });
-        return true;
-    }
-
 
     @Get('status')
     @UseGuards(JwtAuthGuard)

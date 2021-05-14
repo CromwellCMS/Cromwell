@@ -423,7 +423,7 @@ export class CmsService {
         const settings = await getCmsSettings();
         const isBeta = !!settings?.beta;
         try {
-            return await getCentralServerClient().checkUpdate(settings?.version ?? '0', isBeta);
+            return await getCentralServerClient().checkCmsUpdate(settings?.version ?? '0', isBeta);
         } catch (error) { }
     }
 
