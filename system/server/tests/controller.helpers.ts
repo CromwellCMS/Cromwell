@@ -20,11 +20,6 @@ export const setupController = async (name: string) => {
     cmsSettings.installed = false;
     setStoreItem('cmsSettings', cmsSettings);
 
-    let cmsSettings = getStoreItem('cmsSettings');
-    if (!cmsSettings) cmsSettings = {};
-    cmsSettings.installed = false;
-    setStoreItem('cmsSettings', cmsSettings);
-
     const moduleRef = await Test.createTestingModule({
         imports: [AppModule],
     }).compile();
