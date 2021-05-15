@@ -306,16 +306,4 @@ export class ProductRepository extends BaseRepository<Product> {
         return true;
     }
 
-    private buildProductPage(product: TProduct) {
-        const rebuildPage = getStoreItem('rebuildPage');
-        if (rebuildPage) {
-            rebuildPage(`${BasePagePaths.Product}/${product.slug}`);
-            if (product.categories) {
-                product.categories.forEach(cat => {
-                    rebuildPage(`${BasePagePaths.ProductCategory}/${cat.slug}`);
-                })
-            }
-        }
-    }
-
 }

@@ -318,6 +318,14 @@ class CRestAPIClient {
         return this.get(`plugin/check-update?pluginName=${pluginName}`);
     }
 
+    public updatePlugin = async (pluginName: string): Promise<boolean | undefined> => {
+        return this.get(`plugin/update?pluginName=${pluginName}`);
+    }
+
+    public installPlugin = async (pluginName: string): Promise<boolean | undefined> => {
+        return this.get(`plugin/install?pluginName=${pluginName}`);
+    }
+
     public getPluginSettings = async (pluginName: string): Promise<any | undefined> => {
         return this.get(`plugin/settings?pluginName=${pluginName}`);
     }

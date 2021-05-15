@@ -1,5 +1,5 @@
-require('dotenv').config();
 import 'reflect-metadata';
+require('dotenv').config();
 
 import { apiMainRoute, currentApiVersion } from '@cromwell/core';
 import { getLogger, graphQlAuthChecker, readCMSConfigSync, serverMessages, TGraphQLContext } from '@cromwell/core-backend';
@@ -19,6 +19,7 @@ import { connectDatabase } from './helpers/connectDataBase';
 import { corsHandler } from './helpers/corsHandler';
 import { getResolvers } from './helpers/getResolvers';
 import { checkCmsVersion, checkConfigs, loadEnv } from './helpers/loadEnv';
+import { childRegister } from './helpers/serverManager';
 import { AppModule } from './modules/app.module';
 import { authServiceInst } from './services/auth.service';
 
@@ -102,11 +103,8 @@ async function bootstrap(): Promise<void> {
     const port = await getPort({ port: getPort.makeRange(4032, 4063) });
     await app.listen(port, '::');
     logger.info(`Application is running on: ${await app.getUrl()}`);
-
-    if (process.send) process.send(JSON.stringify({
-        message: serverMessages.onStartMessage,
-        port,
-    }));
+    childRegister(port);
+    
 }
 
 (async () => {

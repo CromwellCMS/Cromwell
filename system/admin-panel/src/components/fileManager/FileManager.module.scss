@@ -6,6 +6,7 @@
     display: flex;
     flex-direction: column;
     background-color: #fff;
+    border-radius: 6px;
 
     @mixin headerPart {
         display: flex;

@@ -143,10 +143,42 @@ export class PluginController {
         status: 200,
         type: UpdateInfoDto,
     })
-    async getStatus(@Query('pluginName') pluginName: string): Promise<UpdateInfoDto | boolean | undefined> {
+    async checkUpdate(@Query('pluginName') pluginName: string): Promise<UpdateInfoDto | boolean | undefined> {
         const update = await this.pluginService.checkPluginUpdate(pluginName);
         if (update) return new UpdateInfoDto()?.parseVersion?.(update);
         return false;
+    }
+
+
+    @Get('update')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Updates a Plugin to latest version`,
+        parameters: [{ name: 'pluginName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    async updatePlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
+        return this.pluginService.updatePlugin(pluginName);
+    }
+
+
+    @Get('install')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Installs a Plugin`,
+        parameters: [{ name: 'pluginName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    async installPlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
+        return this.pluginService.installPlugin(pluginName);
     }
 
 }
