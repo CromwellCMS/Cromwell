@@ -52,6 +52,7 @@ import { CreateOrderDto } from '../dto/create-order.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { themeServiceInst } from './theme.service';
+import { childSendMessage } from '../helpers/serverManager';
 
 const logger = getLogger();
 
@@ -461,7 +462,7 @@ export class CmsService {
             if (!pckg?.dependencies?.[cmsPackageName])
                 throw new HttpException(`Update failed: Could not find ${cmsPackageName} in package.json`, HttpStatus.INTERNAL_SERVER_ERROR);
 
-            await runShellComand(`npm install ${cmsPackageName}@${availableUpdate?.packageVersion} -S`);
+            await runShellComand(`npm install ${cmsPackageName}@${availableUpdate?.packageVersion} -S --save-exact`);
             await sleep(1);
 
             const cmsPckg = await getModulePackage(cmsPackageName);
@@ -475,9 +476,15 @@ export class CmsService {
 
             for (const service of (availableUpdate?.restartServices ?? [])) {
                 // CAN POSSIBLY RESTART THIS SERVER INSTANCE
+                // Restarts entire service by Manager service
                 await incrementServiceVersion(service as any);
             }
             await sleep(1);
+
+            if ((availableUpdate?.restartServices ?? []).includes('apiServer')) {
+                // Restart API server by Proxy manager
+                childSendMessage('restart-me');
+            }
 
         } catch (error) {
             logger.error(error);

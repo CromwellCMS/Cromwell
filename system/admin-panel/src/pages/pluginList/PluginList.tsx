@@ -1,17 +1,15 @@
 import { TCCSVersion, TPackageCromwellConfig, TPluginEntity } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, Collapse, Grid, IconButton, LinearProgress, Tooltip } from '@material-ui/core';
+import { Button, Grid, IconButton, LinearProgress, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
     Close as CloseIcon,
     Delete as DeleteIcon,
-    ExpandMore as ExpandMoreIcon,
     LibraryAdd as LibraryAddIcon,
     Settings as SettingsIcon,
     Update as UpdateIcon,
 } from '@material-ui/icons';
-import clsx from 'clsx';
-import React, { useState } from 'react';
+import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import Modal from '../../components/modal/Modal';
@@ -141,14 +139,23 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
         }
     }
 
-    private startUpdate = (plugin: TPluginEntity) => {
+    private startUpdate = async (plugin: TPluginEntity) => {
         this.pluginsUnderUpdate[plugin.name] = true;
         this.setState({ updateModalInfo: null });
+        let success;
+        try {
+            success = await getRestAPIClient().updatePlugin(plugin.name);
+        } catch (error) {
+            console.error(error)
+        }
+        if (success) toast.success('Plugin updated');
+        else toast.error('Failed to update plugin');
+        this.pluginsUnderUpdate[plugin.name] = false;
+        this.forceUpdate();
     }
 
 
     render() {
-
         const { isLoading, installedPlugins, pluginPackages } = this.state;
 
         return (
@@ -209,17 +216,17 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                                         </IconButton>
                                     </Tooltip>
                                 ) : (
-                                    <div style={{ opacity: 0.3, padding: '12px' }}><SettingsIcon /></div>
-                                )
+                                        <div style={{ opacity: 0.3, padding: '12px' }}><SettingsIcon /></div>
+                                    )
                             ) : (
-                                <Tooltip title="Install plugin">
-                                    <IconButton
-                                        disabled={isUnderUpdate}
-                                        onClick={this.handleActivatePlugin(pluginName)}>
-                                        <LibraryAddIcon />
-                                    </IconButton>
-                                </Tooltip>
-                            )}
+                                    <Tooltip title="Install plugin">
+                                        <IconButton
+                                            disabled={isUnderUpdate}
+                                            onClick={this.handleActivatePlugin(pluginName)}>
+                                            <LibraryAddIcon />
+                                        </IconButton>
+                                    </Tooltip>
+                                )}
                             <Tooltip title="Delete plugin">
                                 <IconButton
                                     disabled={isUnderUpdate}

@@ -8,7 +8,6 @@ import { getCentralServerClient } from '@cromwell/core-frontend';
 
 import { authSettings, isRandomSecret } from '../auth/constants';
 import { TServerCommands } from './constants';
-import { rebuildPage } from './PageBuilder';
 
 let sEnv: TEnv | undefined = undefined;
 const logger = getLogger();
@@ -21,7 +20,6 @@ type TEnv = {
 export const loadEnv = (): TEnv => {
     if (sEnv) return sEnv;
 
-    setStoreItem('rebuildPage', rebuildPage);
     const args = yargs(process.argv.slice(2));
     const scriptName = process.argv[2] as TServerCommands;
 

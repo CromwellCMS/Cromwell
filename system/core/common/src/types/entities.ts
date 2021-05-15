@@ -442,8 +442,6 @@ export type TDeleteManyInput = {
     all?: boolean;
 }
 
-
-
 // CCS for Cromwell Central Server
 export type TCCSVersion = {
     name: string;

@@ -9,7 +9,6 @@ export type TCromwellStore = {
     cmsSettings?: TCmsSettings;
     pageConfig?: TPageConfig;
     themeCustomConfig?: Record<string, any>;
-    rebuildPage?: (path: string) => void;
     /** { [ComponentName]: (Class/function) } */
     components?: Record<string, React.ComponentType<TCommonComponentProps & { [x: string]: any }>>;
     /** { [CromwellBlockId]: Instance} */
