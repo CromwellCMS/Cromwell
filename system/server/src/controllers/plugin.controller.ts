@@ -162,7 +162,7 @@ export class PluginController {
         type: Boolean,
     })
     async updatePlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
-        return this.pluginService.updatePlugin(pluginName);
+        return this.pluginService.handlePluginUpdate(pluginName);
     }
 
 
@@ -178,7 +178,23 @@ export class PluginController {
         type: Boolean,
     })
     async installPlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
-        return this.pluginService.installPlugin(pluginName);
+        return this.pluginService.handleInstallPlugin(pluginName);
+    }
+
+
+    @Get('delete')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Deletes a Plugin`,
+        parameters: [{ name: 'pluginName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    async deletePlugin(@Query('pluginName') pluginName: string): Promise<boolean | undefined> {
+        return this.pluginService.handleDeletePlugin(pluginName);
     }
 
 }

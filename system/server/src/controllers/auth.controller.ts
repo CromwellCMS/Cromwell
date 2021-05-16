@@ -39,12 +39,19 @@ export class AuthController {
         type: UserDto
     })
     async login(@Request() req: TRequestWithUser, @Response() response: FastifyReply, @Body() input: LoginDto) {
-        if (req.user?.id) return;
+        if (req.user?.id) {
+            response.status(200);
+            response.send();
+            return;
+        }
 
         const user = await this.authService.validateUser(input.email, input.password);
         if (!user) {
+            response.status(403);
+            response.send({ message: 'Login failed', statusCode: 403 });
             throw new UnauthorizedException('Login failed');
         }
+
         req.user = {
             id: user.id,
             email: user.email,

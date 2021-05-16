@@ -63,4 +63,6 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     @Column({ type: "varchar", nullable: true })
     sendFromEmail?: string;
 
+    @Column({ type: "boolean", nullable: true })
+    isUpdating?: boolean = false;
 }

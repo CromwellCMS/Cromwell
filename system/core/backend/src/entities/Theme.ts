@@ -15,10 +15,6 @@ export class ThemeEntity extends BasePageEntity implements TThemeEntity {
     @Column()
     isInstalled: boolean;
 
-    @Field(type => String, { nullable: true })
-    @Column({ type: "varchar" })
-    version: string;
-
     @Field(type => Boolean, { nullable: true })
     @Column({ type: "boolean", nullable: true })
     hasAdminBundle?: boolean;
@@ -34,4 +30,8 @@ export class ThemeEntity extends BasePageEntity implements TThemeEntity {
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     moduleInfo?: string;
+
+    @Field(type => Boolean, { nullable: true })
+    @Column({ type: "boolean", nullable: true })
+    isUpdating?: boolean = false;
 }

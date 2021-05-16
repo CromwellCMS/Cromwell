@@ -4,10 +4,11 @@ import { getLogger } from './logger';
 
 const logger = getLogger();
 
-export const runShellComand = (comand: string): Promise<void> => {
+export const runShellCommand = (command: string, cwd?: string): Promise<void> => {
+    logger.info('Running shell command: ' + command);
     return new Promise<void>(done => {
-        const proc = spawn(comand, [],
-            { shell: true, stdio: 'pipe', cwd: process.cwd() });
+        const proc = spawn(command, [],
+            { shell: true, stdio: 'pipe', cwd: cwd ?? process.cwd() });
 
         if (proc.stderr && proc.stderr.on) {
             proc.stderr.on('data', (data) => {

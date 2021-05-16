@@ -511,7 +511,6 @@ export class ThemeService {
         // @TODO Execute install script
 
 
-
         // Read theme config
         let themeConfig;
         const filePath = resolve(themePath, configFileName);
@@ -543,7 +542,6 @@ export class ThemeService {
         // Create DB entity
         const input: TThemeEntityInput = {
             name: themeName,
-            version: themePckg.version,
             slug: themeName,
             isInstalled: true,
             title: moduleInfo?.title,

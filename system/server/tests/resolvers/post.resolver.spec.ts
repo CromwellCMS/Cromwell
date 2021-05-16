@@ -123,7 +123,7 @@ describe('Post resolver', () => {
             content: data1.content
         }
 
-        const res = await client.mutate({
+        await client.mutate({
             mutation: gql`
               mutation testUpdatePost($id: String!, $data: UpdatePost!) {
                   ${path}(id: $id, data: $data) {

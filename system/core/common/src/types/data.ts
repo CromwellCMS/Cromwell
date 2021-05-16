@@ -254,6 +254,7 @@ export type TPackageJson = {
 
 export type TPackageCromwellConfig = {
     name?: string;
+    version?: string;
     type?: 'plugin' | 'theme';
     title?: string;
     description?: string;

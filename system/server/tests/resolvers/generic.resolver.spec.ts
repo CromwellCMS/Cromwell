@@ -142,7 +142,6 @@ describe('Generic resolver', () => {
             name: data1.name,
             pageTitle: data1.pageTitle,
             isInstalled: data1.isInstalled,
-            version: '1.0.1',
         }
 
         const res = await client.mutate({
@@ -198,7 +197,6 @@ describe('Generic resolver', () => {
             name: data1.name,
             pageTitle: data1.pageTitle,
             isInstalled: data1.isInstalled,
-            version: '1.0.1',
         }
 
         const res = await client.mutate({

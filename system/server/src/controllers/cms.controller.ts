@@ -136,7 +136,6 @@ export class CmsController {
                 out.push(moduleInfo);
             }
         }
-
         return out;
     }
 
@@ -453,6 +452,6 @@ export class CmsController {
         type: Boolean,
     })
     async updateCms(): Promise<boolean> {
-        return this.cmsService.updateCms();
+        return this.cmsService.handleUpdateCms();
     }
 }

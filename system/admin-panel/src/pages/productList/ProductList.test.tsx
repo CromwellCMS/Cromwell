@@ -46,6 +46,11 @@ jest.mock('@cromwell/core-frontend', () => {
                 getAttributes: jest.fn().mockImplementation(async () => []),
             }
         },
+        getRestAPIClient: () => {
+            return {
+                getCmsStatus: jest.fn().mockImplementation(async () => ({})),
+            }
+        },
         getCStore: () => {
             return {
                 getPriceWithCurrency: price => price,

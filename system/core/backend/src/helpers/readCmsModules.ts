@@ -10,7 +10,7 @@ export const readCmsModules = async () => {
 
     const proccessed: string[] = [];
 
-    const readPackageCmsModules = async (packageName: string) => {
+    const readPackageCmsModules = async (packageName: string, root?: boolean) => {
         if (proccessed.includes(packageName)) return;
         proccessed.push(packageName);
 
@@ -24,10 +24,15 @@ export const readCmsModules = async () => {
             try {
                 pckg = await readPackage(packagePath);
             } catch (error) { }
-            if (!pckg?.cromwell) return;
+
+            if (!pckg) return;
+            if (!pckg.cromwell && !root) return;
 
             const packageThemes = pckg?.cromwell?.themes ?? [];
             const packagePlugins = pckg?.cromwell?.plugins ?? [];
+
+            if (pckg.name && pckg.cromwell?.type === 'theme') packageThemes.push(pckg.name);
+            if (pckg.name && pckg.cromwell?.type === 'plugin') packagePlugins.push(pckg.name);
 
             for (const themeName of packageThemes) {
                 if (!themes.includes(themeName)) {
@@ -58,7 +63,7 @@ export const readCmsModules = async () => {
     }
 
     await readPackageCmsModules(cmsPackageName);
-    await readPackageCmsModules(resolve(process.cwd(), 'package.json'));
+    await readPackageCmsModules(resolve(process.cwd(), 'package.json'), true);
 
     return {
         themes,

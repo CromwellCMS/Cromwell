@@ -92,7 +92,7 @@ async function bootstrap(): Promise<void> {
     // Setup SwaggerUI
     if (envMode.envMode === 'dev') {
         const options = new DocumentBuilder()
-            .setTitle('Cromwell Server API')
+            .setTitle('Cromwell API Server')
             .setVersion(currentApiVersion)
             .addBearerAuth()
             .build();
@@ -102,7 +102,7 @@ async function bootstrap(): Promise<void> {
 
     const port = await getPort({ port: getPort.makeRange(4032, 4063) });
     await app.listen(port, '::');
-    logger.info(`Application is running on: ${await app.getUrl()}`);
+    logger.info(`API Server is running on: ${await app.getUrl()}`);
     childRegister(port);
     
 }

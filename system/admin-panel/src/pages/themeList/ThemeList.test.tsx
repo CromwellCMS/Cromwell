@@ -15,7 +15,6 @@ const testDataDB: TThemeEntity[] = [
     {
         id: '_test1_',
         name: '_test1_',
-        version: '1.1.1',
         title: '_test1_title',
         isInstalled: true,
     },

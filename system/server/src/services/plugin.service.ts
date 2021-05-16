@@ -7,6 +7,7 @@ import {
     TPluginEntity,
     TPluginEntityInput,
     TSciprtMetaInfo,
+    getRandStr,
 } from '@cromwell/core';
 import {
     buildDirName,
@@ -22,7 +23,9 @@ import {
     getPluginFrontendBundlePath,
     getPluginFrontendCjsPath,
     getPublicPluginsDir,
-    runShellComand,
+    runShellCommand,
+    readPluginsExports,
+    incrementServiceVersion,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -34,6 +37,7 @@ import { getCustomRepository } from 'typeorm';
 
 import { GenericPlugin } from '../helpers/genericEntities';
 import { childSendMessage } from '../helpers/serverManager';
+import { setPendingKill, setPendingRestart, startTransaction, endTransaction } from '../helpers/stateManager';
 
 const logger = getLogger();
 
@@ -65,6 +69,27 @@ export class PluginService {
         return pluginRepo.find();
     }
 
+    private async setIsUpdating(pluginName: string, updating: boolean) {
+        try {
+            const pluginRepo = getCustomRepository(GenericPlugin.repository);
+            const entity = await this.findOne(pluginName);
+            if (entity) {
+                entity.isUpdating = updating;
+                await pluginRepo.save(entity);
+            }
+        } catch (error) {
+            logger.error(error);
+        }
+    }
+
+    private async getIsUpdating(pluginName: string) {
+        try {
+            return (await this.findOne(pluginName))?.isUpdating;
+        } catch (error) {
+            logger.error(error);
+        }
+        return false;
+    }
 
     /**
      * Reads files of a plugin in frontend or admin directory.
@@ -140,81 +165,137 @@ export class PluginService {
         } catch (error) { }
     }
 
+    async handlePluginUpdate(pluginName: string): Promise<boolean> {
+        if (await this.getIsUpdating(pluginName)) return false;
 
-    async updatePlugin(pluginName: string) {
+        const transactionId = getRandStr(8);
+        startTransaction(transactionId);
+        await this.setIsUpdating(pluginName, true);
+
+        let success = false;
+        let error: any;
+        try {
+            success = await this.updatePlugin(pluginName)
+        } catch (e) {
+            error = e;
+            success = false;
+        }
+        endTransaction(transactionId);
+        await this.setIsUpdating(pluginName, false);
+
+        if (!success) {
+            throw new HttpException(error?.message, error?.status);
+        }
+        return true;
+    }
+
+    async updatePlugin(pluginName: string): Promise<boolean> {
         const pluginPckgOld = await getModulePackage(pluginName);
-        if (!pluginPckgOld?.version) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!pluginName || pluginName === '' || !pluginPckgOld?.version) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
         const oldVersion = pluginPckgOld.version;
 
         const updateInfo = await this.checkPluginUpdate(pluginName)
         if (!updateInfo || !updateInfo.packageVersion) throw new HttpException('No update available', HttpStatus.METHOD_NOT_ALLOWED);
 
-        await runShellComand(`npm install ${pluginName}@${updateInfo.packageVersion} -S --save-exact`);
+        await runShellCommand(`npm install ${pluginName}@${updateInfo.packageVersion} -S --save-exact`, process.cwd());
         await sleep(1);
 
         const pluginPckgNew = await getModulePackage(pluginName);
+
         if (!pluginPckgNew?.version) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
         if (!/^\d/.test(pluginPckgNew.version)) pluginPckgNew.version = pluginPckgNew.version.substr(1);
         if (pluginPckgNew.version !== updateInfo.packageVersion) {
             throw new HttpException('New version was not applied', HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        const resp = await childSendMessage('make-new');
-        if (resp.message !== 'success') {
-            // Rollback
-            await runShellComand(`npm install ${pluginName}@${oldVersion} -S --save-exact`);
-            await sleep(1);
+        for (const service of (updateInfo?.restartServices ?? [])) {
+            // Restarts entire service by Manager service
+            await incrementServiceVersion(service as any);
+        }
+        await sleep(1);
 
-            throw new HttpException('Could not start server with new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
-        } else {
-            const resp2 = await childSendMessage('apply-new');
+        if ((updateInfo?.restartServices ?? []).includes('api-server')) {
+            // Restart API server by Proxy manager via "Safe reload" and rollback possibility:
+            const resp1 = await childSendMessage('make-new');
+            if (resp1.message !== 'success') {
+                // Rollback
+                await runShellCommand(`npm install ${pluginName}@${oldVersion} -S --save-exact`);
+                await sleep(1);
 
-            if (resp2.message !== 'success') throw new HttpException('Could not start server with new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new HttpException('Could not start server with new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
+            } else {
+                const resp2 = await childSendMessage('apply-new', resp1.payload);
 
-            await this.activatePlugin(pluginName);
+                if (resp2.message !== 'success') throw new HttpException('Could not apply new server with new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
 
-            setTimeout(() => {
-                childSendMessage('kill-me');
-            }, 3000);
+                setPendingKill(2000);
+            }
+
         }
 
+        await this.activatePlugin(pluginName);
         return true;
     }
 
-    async installPlugin(pluginName: string) {
+
+    async handleInstallPlugin(pluginName: string): Promise<boolean> {
+        const transactionId = getRandStr(8);
+        startTransaction(transactionId);
+
+        let success = false;
+        let error: any;
+        try {
+            success = await this.installPlugin(pluginName)
+        } catch (e) {
+            error = e;
+            success = false;
+        }
+        endTransaction(transactionId);
+
+        if (!success) {
+            throw new HttpException(error?.message, error?.status);
+        }
+        return true;
+    }
+
+    async installPlugin(pluginName: string): Promise<boolean> {
         const info = await this.getPluginLatest(pluginName)
-        if (!info || !info.packageVersion || !info.version) throw new HttpException('Plugin was not found', HttpStatus.METHOD_NOT_ALLOWED);
+        if (!pluginName || pluginName === '' || !info || !info.packageVersion || !info.version) throw new HttpException('Plugin was not found', HttpStatus.METHOD_NOT_ALLOWED);
 
         const settings = await getCmsSettings();
         const isBeta = !!settings?.beta;
         const version = isBeta ? (info.betaVersion ?? info.version) : info.version;
 
-        await runShellComand(`npm install ${pluginName}@${version} -S --save-exact`);
+        await runShellCommand(`npm install ${pluginName}@${version} -S --save-exact`);
         await sleep(1);
 
         const pluginPckgNew = await getModulePackage(pluginName);
         if (!pluginPckgNew?.version) throw new HttpException('Plugin package was not found', HttpStatus.INTERNAL_SERVER_ERROR);
 
+        const pluginExports = (await readPluginsExports()).find(p => p.pluginName === pluginName);
+        if (!pluginExports) throw new HttpException('Plugin in not a CMS module', HttpStatus.INTERNAL_SERVER_ERROR);
 
-        const resp1 = await childSendMessage('make-new');
-        if (resp1.message !== 'success') {
-            // Rollback
-            await runShellComand(`npm uninstall ${pluginName} -S`);
-            await sleep(1);
 
-            throw new HttpException('Could not start server with the new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
-        } else {
-            const resp2 = await childSendMessage('apply-new', resp1.payload);
+        if (pluginExports.backendPath && await fs.pathExists(pluginExports.backendPath)) {
+            // If plugin has backend, we need to apply it by restarting API server
+            // Using "Safe reload" will switch to a new server only if it successfully started:
+            const resp1 = await childSendMessage('make-new');
+            if (resp1.message !== 'success') {
+                // Rollback
+                await runShellCommand(`npm uninstall ${pluginName} -S`);
+                await sleep(1);
 
-            if (resp2.message !== 'success') throw new HttpException('Could not start server with the new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
+                throw new HttpException('Could not start server with the new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
+            } else {
+                const resp2 = await childSendMessage('apply-new', resp1.payload);
 
-            await this.activatePlugin(pluginName);
+                if (resp2.message !== 'success') throw new HttpException('Could not start server with the new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
 
-            setTimeout(() => {
-                childSendMessage('kill-me');
-            }, 3000);
+                setPendingKill(2000);
+            }
         }
 
+        await this.activatePlugin(pluginName);
         return true;
     }
 
@@ -262,7 +343,6 @@ export class PluginService {
         // Create DB entity
         const input: TPluginEntityInput = {
             name: pluginName,
-            version: pluginPckg.version,
             slug: pluginName,
             title: moduleInfo?.title,
             pageTitle: moduleInfo?.title,
@@ -311,5 +391,51 @@ export class PluginService {
             return true;
         }
         return false;
+    }
+
+
+    async handleDeletePlugin(pluginName: string): Promise<boolean> {
+        const transactionId = getRandStr(8);
+        startTransaction(transactionId);
+
+        let success = false;
+        let error: any;
+        try {
+            success = await this.deletePlugin(pluginName)
+        } catch (e) {
+            error = e;
+            success = false;
+        }
+        endTransaction(transactionId);
+
+        if (!success) {
+            throw new HttpException(error?.message, error?.status);
+        }
+        return true;
+    }
+
+    private async deletePlugin(pluginName: string): Promise<boolean> {
+        const pluginPckgOld = await getModulePackage(pluginName);
+        const oldVersion = pluginPckgOld?.version;
+        if (!pluginName || pluginName === '' || !oldVersion) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
+
+        const pluginExports = (await readPluginsExports()).find(p => p.pluginName === pluginName);
+        if (!pluginExports) throw new HttpException('Plugin in not a CMS module', HttpStatus.INTERNAL_SERVER_ERROR);
+
+        await runShellCommand(`npm uninstall ${pluginName} -S`);
+        await sleep(1);
+
+        const pluginPckgNew = await getModulePackage(pluginName);
+        if (pluginPckgNew) throw new HttpException(`Failed to remove plugin's package`, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        if (pluginExports.backendPath) {
+            setPendingRestart(1000);
+        }
+
+        const pluginRepo = getCustomRepository(GenericPlugin.repository);
+        const entity = await this.findOne(pluginName);
+        if (entity?.id) await pluginRepo.deleteEntity(entity.id);
+
+        return true;
     }
 }

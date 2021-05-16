@@ -167,9 +167,8 @@ export const logLevelMoreThan = (level: TLogLevel): boolean => {
 }
 
 export const logFor = (level: TLogLevel, msg: string, func?: (msg: string) => any) => {
-    if (logLevelMoreThan(level)) func ? func(msg) : console.log(msg);
+    if (logLevelMoreThan(level)) typeof func === 'function' ? func(msg) : console.log(msg);
 }
-
 
 export const getRandStr = (lenght: number = 12) =>
     Math.random().toString(36).substring(2, Math.floor(lenght / 2) + 2) +
