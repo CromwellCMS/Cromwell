@@ -1,13 +1,7 @@
 import fs from 'fs-extra';
 import { resolve } from 'path';
 
-import {
-    buildDirName,
-    configFileName,
-    getNodeModuleDirSync,
-    getPluginBackendPath,
-    getPluginFrontendBundlePath,
-} from './paths';
+import { buildDirName, configFileName, getNodeModuleDir, getPluginBackendPath, getPluginFrontendBundlePath } from './paths';
 import { readCmsModules } from './readCmsModules';
 
 export type TPluginInfo = {
@@ -24,29 +18,28 @@ export const readPluginsExports = async (): Promise<TPluginInfo[]> => {
     const pluginNames: string[] = (await readCmsModules()).plugins;
 
     for (const name of pluginNames) {
-        const pluginDir = getNodeModuleDirSync(name);
+        const pluginDir = await getNodeModuleDir(name);
         if (pluginDir) {
             const configPath = resolve(pluginDir, configFileName);
 
-            if (fs.existsSync(configPath)) {
+            if (await fs.pathExists(configPath)) {
 
                 const pluginInfo: TPluginInfo = {
                     pluginName: name
                 };
 
                 const frontendPath = getPluginFrontendBundlePath(resolve(pluginDir, buildDirName));
-                if (fs.existsSync(frontendPath)) {
+                if (await fs.pathExists(frontendPath)) {
                     pluginInfo.frontendPath = frontendPath.replace(/\\/g, '/');
                 }
 
-
                 // const adminPanelPath = resolve(pluginsDir, name, config.adminDir, 'index.js');
-                // if (fs.existsSync(adminPanelPath)) {
+                // if (await fs.pathExists(adminPanelPath)) {
                 //     pluginInfo.adminPanelPath = adminPanelPath.replace(/\\/g, '/');
                 // }
 
                 const backendPath = getPluginBackendPath(resolve(pluginDir, buildDirName));
-                if (fs.existsSync(backendPath)) {
+                if (await fs.pathExists(backendPath)) {
                     pluginInfo.backendPath = backendPath
                 }
 
@@ -57,5 +50,4 @@ export const readPluginsExports = async (): Promise<TPluginInfo[]> => {
     }
 
     return infos;
-
 }

@@ -68,8 +68,8 @@ const winStart = () => {
         const defaultTimeout = 3;
         const finalTimeout = (timeout ? timeout + defaultTimeout : defaultTimeout) + overallTimeout;
         console.log('starting terminal for: ', title, '\ncommand:', command)
-        const sumComand = `powershell "$app = Start-Process cmd.exe -ArgumentList '/k title ${title} timeout /t ${finalTimeout} && ${command}' -passthru; $app.Id"`;
-        let newPid = execSync(sumComand).toString();
+        const sumCommand = `powershell "$app = Start-Process cmd.exe -ArgumentList '/k title ${title} timeout /t ${finalTimeout} && ${command}' -passthru; $app.Id"`;
+        let newPid = execSync(sumCommand).toString();
         // console.log('startTerminal childProcess newPid: ', newPid);
         newPid = parseInt(newPid);
         if (newPid && !isNaN(newPid)) {

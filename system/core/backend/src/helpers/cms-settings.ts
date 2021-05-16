@@ -29,6 +29,7 @@ export const readCMSConfigSync = (): TCmsConfig => {
  * Read CMS config from file in [project root]/cmsconfig.json, saves it into the store and returns
  */
 export const readCMSConfig = async (): Promise<TCmsConfig> => {
+    const logger = getLogger();
     const configPath = getCMSConfigPath();
     let customConfig;
     if (await fs.pathExists(configPath)) {
@@ -36,7 +37,7 @@ export const readCMSConfig = async (): Promise<TCmsConfig> => {
             const config: TCmsConfig | undefined = await fs.readJSON(configPath);
             if (config && typeof config === 'object') customConfig = config;
         } catch (e) {
-            console.error(e);
+            logger.error(e);
         }
     }
     return Object.assign({}, defaultCmsConfig, customConfig);

@@ -9,32 +9,38 @@ import { restartMessage } from './constants';
 
 const logger = getLogger();
 
+/**
+ * Proxy manager
+ */
+
 type ServerInfo = {
     id?: string;
     port?: number;
     childInst?: ChildProcess;
 }
-const serverInfo: ServerInfo = {};
+const activeServer: ServerInfo = {};
 let isRestarting = false;
 let isPendingRestart = false;
 const madeServers: Record<string, ServerInfo> = {}
 
-export const getServerPort = () => serverInfo.port;
+export const getServerPort = () => activeServer.port;
 
-/** Used only at app startup. Should not be called from some other place */
-export const launch = async () => {
-    if (serverInfo.port) {
+
+/** Used only at Proxy startup. Should not be called from any other place */
+export const launchServerManager = async () => {
+    if (activeServer.port) {
         logger.warn('Proxy serverManager: called launch, but Server was already launched!')
     }
     try {
         const info = await makeServer();
-        updateServerInfo(info);
+        updateActiveServer(info);
     } catch (error) {
         logger.error('Proxy could not launch server', error);
     }
 }
 
 const makeServer = async (): Promise<ServerInfo> => {
+    logger.info('Proxy manger: making new server...');
     const info: ServerInfo = {};
     const env = loadEnv();
     const serverId = getRandStr(8);
@@ -93,6 +99,7 @@ const makeServer = async (): Promise<ServerInfo> => {
 }
 
 const closeServer = async (info: ServerInfo) => {
+    logger.info('Proxy manger: killing server...');
     info.childInst?.kill();
 }
 
@@ -102,12 +109,13 @@ const restartServer = async () => {
         isPendingRestart = true;
         return;
     }
+    logger.info('Proxy manger: restarting server...');
 
     isRestarting = true;
 
     // Make new server first
     let newServer: ServerInfo;
-    const oldServer = { ...serverInfo };
+    const oldServer = { ...activeServer };
     try {
         newServer = await makeServer();
     } catch (error) {
@@ -124,9 +132,9 @@ const restartServer = async () => {
 
     await sleep(0.5);
     // Update info to redirect proxy on the new server
-    updateServerInfo(newServer);
+    updateActiveServer(newServer);
 
-    // Wait for the case if the old server is still processing long heavy requests
+    // Wait in case if the old server is still processing any long-lasting requests
     await sleep(4);
 
     // Kill the old server
@@ -134,7 +142,7 @@ const restartServer = async () => {
         await closeServer(oldServer);
         await tcpPortUsed.waitUntilFree(oldServer.port, 500, 5000);
     } catch (error) {
-        logger.error('Failed to kill old server', error);
+        logger.error('Failed to kill old server at ' + oldServer.port, error);
     }
 
     isRestarting = false;
@@ -145,29 +153,56 @@ const restartServer = async () => {
     }
 }
 
-const updateServerInfo = (info: ServerInfo) => {
+const updateActiveServer = (info: ServerInfo) => {
     Object.keys(info).forEach(key => {
-        serverInfo[key] = info[key];
+        activeServer[key] = info[key];
     })
 }
 
 export const serverAliveWatcher = async () => {
     await sleep(60);
 
+    // Watch for the active server and if it's not alive for some reason, restart / make new
     let isAlive = true;
-
-    if (!serverInfo.port) {
+    if (!activeServer.port) {
         isAlive = false;
     }
     try {
-        if (serverInfo.port) {
-            isAlive = await tcpPortUsed.check(serverInfo.port, '127.0.0.1');
+        if (activeServer.port) {
+            isAlive = await tcpPortUsed.check(activeServer.port, '127.0.0.1');
         }
     } catch (error) { }
 
     if (!isAlive) {
         logger.error('serverAliveWatcher: Server is not alive. Restarting...');
         await restartServer();
+    }
+
+    // Watch for other created servers that aren't active and kill them.
+    // Basically they shouldn't be created in the first place, but we have 
+    // IPC API for child servers and they can create new instances, so who knows...
+    for (const info of Object.values(madeServers)) {
+        if (info?.port && info.port !== activeServer.port && info.childInst) {
+            try {
+                if (await tcpPortUsed.check(info.port, '127.0.0.1')) {
+                    // Found other server that is alive
+                    setTimeout(async () => {
+                        try {
+                            if (info?.port && info.port !== activeServer.port && await tcpPortUsed.check(info.port, '127.0.0.1')) {
+                                // If after 50 seconds it's still alive and is not active, kill it
+                                await closeServer(info)
+                                info.childInst = undefined;
+                                info.port = undefined;
+                            }
+                        } catch (error) {
+                            logger.error(error);
+                        }
+                    }, 50000);
+                }
+            } catch (error) {
+                logger.error(error);
+            }
+        }
     }
 
     serverAliveWatcher();
@@ -177,7 +212,7 @@ const onMessageCallbacks: (((msg: any) => any) | undefined)[] = [];
 
 
 export const childRegister = (port: number) => {
-    updateServerInfo({ port });
+    updateActiveServer({ port });
 
     if (process.send) process.send(JSON.stringify({
         message: serverMessages.onStartMessage,
@@ -201,7 +236,7 @@ type IPCMessage = {
 
 export const childSendMessage = async (message: IPCMessageType, payload?: any): Promise<IPCMessage> => {
     const messageId = getRandStr(8);
-
+    
     let responseResolver;
     const responsePromise = new Promise<IPCMessage>(res => responseResolver = res);
     const cb = (message) => {
@@ -214,7 +249,7 @@ export const childSendMessage = async (message: IPCMessageType, payload?: any): 
 
     if (process.send) process.send(JSON.stringify({
         id: messageId,
-        port: serverInfo.port,
+        port: activeServer.port,
         message,
         payload,
     } as IPCMessage));
@@ -263,7 +298,7 @@ const parentRegisterChild = (child: ChildProcess) => {
                     } as IPCMessage));
                     return;
                 } else {
-                    updateServerInfo(madeServers[message.payload]);
+                    updateActiveServer(madeServers[message.payload]);
                     await sleep(1);
                     child.send(JSON.stringify({
                         id: message.id,
@@ -275,7 +310,9 @@ const parentRegisterChild = (child: ChildProcess) => {
         }
 
         if (message.message === 'kill-me') {
-            child.kill();
+            await closeServer({
+                childInst: child
+            });
             child.send(JSON.stringify({
                 id: message.id,
                 message: 'success',

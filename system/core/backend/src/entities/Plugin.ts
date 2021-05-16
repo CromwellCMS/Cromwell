@@ -19,10 +19,6 @@ export class PluginEntity extends BasePageEntity implements TPluginEntity {
     @Column()
     isInstalled: boolean;
 
-    @Field(type => String, { nullable: true })
-    @Column({ type: "varchar" })
-    version: string;
-
     @Field(type => Boolean, { nullable: true })
     @Column({ type: "boolean", nullable: true })
     hasAdminBundle?: boolean;
@@ -38,4 +34,8 @@ export class PluginEntity extends BasePageEntity implements TPluginEntity {
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     moduleInfo?: string;
+
+    @Field(type => Boolean, { nullable: true })
+    @Column({ type: "boolean", nullable: true })
+    isUpdating?: boolean = false;
 }

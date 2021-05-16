@@ -27,11 +27,13 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
     updateModalInfo?: {
         update: TCCSVersion;
         plugin: TPluginEntity;
+        info: TPackageCromwellConfig;
     } | null;
 }> {
 
     private pluginUpdates: Record<string, TCCSVersion> = {};
     private pluginsUnderUpdate: Record<string, boolean> = {};
+    private updateInterval;
 
     constructor(props) {
         super(props);
@@ -47,13 +49,21 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
         this.init();
     }
 
+    componentWillUnmount() {
+        if (this.updateInterval) clearInterval(this.updateInterval);
+    }
+
     private async init() {
+        this.setState({ isLoading: true });
         await this.getPluginList();
+        this.setState({ isLoading: false });
+
         await this.getPluginUpdates();
+
+        this.updateInterval = setInterval(this.getPluginList, 30000);
     }
 
     private getPluginList = async () => {
-        this.setState({ isLoading: true });
         try {
             const pluginInfos = await getRestAPIClient()?.getPluginList();
             if (pluginInfos && Array.isArray(pluginInfos)) {
@@ -71,18 +81,23 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
             const pluginEntities: TPluginEntity[] = await graphQLClient.getAllEntities('Plugin',
                 graphQLClient.PluginFragment, 'PluginFragment');
 
-            if (pluginEntities && Array.isArray(pluginEntities))
+            if (pluginEntities && Array.isArray(pluginEntities)) {
+                pluginEntities.forEach(ent => {
+                    this.pluginsUnderUpdate[ent.name] = ent.isUpdating;
+                })
+
                 this.setState({
                     installedPlugins: pluginEntities
                 });
+            }
 
         } catch (e) { console.error(e); }
 
-        this.setState({ isLoading: false });
     }
 
     private getPluginUpdates = async () => {
         for (const plugin of this.state.pluginPackages) {
+            this.pluginUpdates[plugin.name] = undefined;
             try {
                 const update = await getRestAPIClient().getPluginUpdate(plugin.name);
                 if (update) {
@@ -128,12 +143,13 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
 
     }
 
-    private handleShowUpdate = (plugin?: TPluginEntity, update?: TCCSVersion) => () => {
+    private handleShowUpdate = (plugin?: TPluginEntity, info?: TPackageCromwellConfig, update?: TCCSVersion,) => () => {
         if (plugin && update) {
             this.setState({
                 updateModalInfo: {
                     plugin,
                     update,
+                    info,
                 }
             });
         }
@@ -148,6 +164,15 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
         } catch (error) {
             console.error(error)
         }
+
+        if (success) this.pluginUpdates[plugin.name] = undefined;
+
+        try {
+            await this.getPluginList();
+        } catch (error) {
+            console.error(error)
+        }
+
         if (success) toast.success('Plugin updated');
         else toast.error('Failed to update plugin');
         this.pluginsUnderUpdate[plugin.name] = false;
@@ -193,9 +218,9 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                             <Grid item>
                                 <p className={styles.pluginName}>{title}</p>
                                 <p className={styles.pluginVersion}
-                                    onClick={this.handleShowUpdate(pluginEntity, availableUpdate)}
+                                    onClick={this.handleShowUpdate(pluginEntity, info, availableUpdate)}
                                     style={{ cursor: availableUpdate ? 'pointer' : 'initial' }}
-                                >{(pluginEntity?.version ?? '') + (availableUpdate ? ' > ' + availableUpdate.version + ' Open info' : '')}</p>
+                                >{(info?.version ?? '') + (availableUpdate ? ' > ' + availableUpdate.version + ' Open info' : '')}</p>
                             </Grid>
                         </div>
                         <div className={styles.actions}>
@@ -262,10 +287,11 @@ const UpdateModalContent = (props: {
     pluginsUnderUpdate: Record<string, boolean>;
     update?: TCCSVersion;
     plugin?: TPluginEntity;
+    info?: TPackageCromwellConfig;
     onStartUpdate: (plugin: TPluginEntity) => void;
     onClose: () => void;
 }) => {
-    const { update, plugin } = props;
+    const { update, plugin, info } = props;
     const isUnderUpdate = plugin?.name && props.pluginsUnderUpdate[plugin.name];
 
     return (
@@ -278,7 +304,7 @@ const UpdateModalContent = (props: {
                     style={{ marginRight: '-10px' }}
                     onClick={props.onClose}><CloseIcon /></IconButton>
             </Grid>
-            <p>{plugin?.version ?? ''} {'>'} {update.version}</p>
+            <p>{info?.version ?? ''} {'>'} {update.version}</p>
 
             <div className={styles.changelogList}
                 dangerouslySetInnerHTML={{ __html: update.changelog }}></div>

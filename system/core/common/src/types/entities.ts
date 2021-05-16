@@ -322,12 +322,12 @@ export type TPostCommentInput = TPostCommentCore & TBasePageEntityInput;
 type TThemeEntityCore = {
     name: string;
     isInstalled: boolean;
-    version: string;
     hasAdminBundle?: boolean;
     title?: string;
     settings?: string;
     defaultSettings?: string;
     moduleInfo?: string;
+    isUpdating?: boolean;
 }
 
 export type TThemeEntity = TThemeEntityCore & TBasePageEntity;
@@ -341,11 +341,11 @@ type TPluginEntityCore = {
     name: string;
     title?: string;
     isInstalled: boolean;
-    version: string;
     hasAdminBundle?: boolean;
     settings?: string;
     defaultSettings?: string;
     moduleInfo?: string;
+    isUpdating?: boolean;
 }
 
 export type TPluginEntity = TPluginEntityCore & TBasePageEntity;
@@ -399,6 +399,8 @@ export type TCmsEntityCore = {
     installed?: boolean;
     // Recieve unstable beta-updates
     beta?: boolean;
+    // Is currently under update
+    isUpdating?: boolean;
     // < / >
 }
 
@@ -420,6 +422,7 @@ export type TCmsEntityInput = {
 export type TServiceVersions = {
     renderer?: number;
     server?: number;
+    "api-server"?: number;
     admin?: number;
 };
 
@@ -449,7 +452,7 @@ export type TCCSVersion = {
     version: string;
     packageVersion: string;
     beta: boolean;
-    restartServices: string[];
+    restartServices: (keyof TServiceVersions)[];
     description?: string;
     changelog?: string;
     image?: string;

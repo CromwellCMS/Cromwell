@@ -14,7 +14,9 @@ export const cmsConfigFileName = 'cmsconfig.json';
 export const getTempDir = () => resolve(process.cwd(), tempDirName);
 
 export const resolvePackageJsonPath = (moduleName: string): string | undefined => {
-    return require.resolve(`${moduleName}/package.json`);
+    return require.resolve(`${moduleName}/package.json`, {
+        paths: [process.cwd()]
+    });
 }
 
 export const getNodeModuleDirSync = (moduleName: string) => {
@@ -176,6 +178,7 @@ export const getCmsModuleInfo = async (moduleName?: string): Promise<TPackageCro
     const pckg = await getModulePackage(moduleName);
     if (pckg?.cromwell) {
         if (!pckg.cromwell.name) pckg.cromwell.name = pckg.name;
+        if (!pckg.cromwell.version) pckg.cromwell.version = pckg.version;
         return pckg.cromwell;
     }
 }

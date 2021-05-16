@@ -7,6 +7,7 @@ import {
     TPackageCromwellConfig,
     TProductReview,
     TStoreListItem,
+    getRandStr,
     TUser,
     TUserRole,
 } from '@cromwell/core';
@@ -29,7 +30,7 @@ import {
     ProductRepository,
     ProductReview,
     ProductReviewRepository,
-    runShellComand,
+    runShellCommand,
     sendEmail,
     User,
     UserRepository,
@@ -53,6 +54,7 @@ import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { themeServiceInst } from './theme.service';
 import { childSendMessage } from '../helpers/serverManager';
+import { setPendingKill, startTransaction, endTransaction } from '../helpers/stateManager';
 
 const logger = getLogger();
 
@@ -61,10 +63,18 @@ export let cmsServiceInst: CmsService;
 @Injectable()
 export class CmsService {
 
-    private isUpdating: boolean = false;
-
     constructor() {
         cmsServiceInst = this;
+    }
+
+    private async setIsUpdating(updating: boolean) {
+        const entity = await getCmsEntity();
+        entity.isUpdating = updating;
+        await entity.save();
+    }
+
+    private async getIsUpdating() {
+        return (await getCmsEntity()).isUpdating;
     }
 
     public async setThemeName(themeName: string) {
@@ -434,7 +444,7 @@ export class CmsService {
         const availableUpdate = await this.checkCmsUpdate();
         status.updateAvailable = !!availableUpdate;
         status.updateInfo = availableUpdate;
-        status.isUpdating = this.isUpdating;
+        status.isUpdating = settings?.isUpdating;
         status.currentVersion = settings?.version;
 
         status.notifications = [];
@@ -449,10 +459,23 @@ export class CmsService {
         return status;
     }
 
+    async handleUpdateCms() {
+        const transactionId = getRandStr(8);
+        startTransaction(transactionId);
+        try {
+            await this.updateCms()
+        } catch (error) {
+            endTransaction(transactionId);
+            throw new HttpException(error.message, error.status);
+        }
+        endTransaction(transactionId);
+        return true;
+    }
+
     async updateCms(): Promise<boolean> {
         // Only works with one server instance. In scaling manual update required.
-        if (this.isUpdating) return false;
-        this.isUpdating = true;
+        if (this.getIsUpdating()) return false;
+        this.setIsUpdating(true);
 
         try {
             const availableUpdate = await this.checkCmsUpdate();
@@ -462,12 +485,18 @@ export class CmsService {
             if (!pckg?.dependencies?.[cmsPackageName])
                 throw new HttpException(`Update failed: Could not find ${cmsPackageName} in package.json`, HttpStatus.INTERNAL_SERVER_ERROR);
 
-            await runShellComand(`npm install ${cmsPackageName}@${availableUpdate?.packageVersion} -S --save-exact`);
+            const cmsPckgOld = await getModulePackage(cmsPackageName);
+            const versionOld = cmsPckgOld?.version;
+            if (!versionOld)
+                throw new HttpException(`Update failed: Could not find ${cmsPackageName} package`, HttpStatus.INTERNAL_SERVER_ERROR);
+
+            await runShellCommand(`npm install ${cmsPackageName}@${availableUpdate.packageVersion} -S --save-exact`);
             await sleep(1);
 
             const cmsPckg = await getModulePackage(cmsPackageName);
             if (!cmsPckg?.version || cmsPckg.version !== availableUpdate.packageVersion)
                 throw new HttpException(`Update failed: cmsPckg.version !== availableUpdate.packageVersion`, HttpStatus.INTERNAL_SERVER_ERROR);
+
 
             const cmsEntity = await getCmsEntity();
             cmsEntity.version = availableUpdate.version;
@@ -481,21 +510,33 @@ export class CmsService {
             }
             await sleep(1);
 
-            if ((availableUpdate?.restartServices ?? []).includes('apiServer')) {
+            if ((availableUpdate?.restartServices ?? []).includes('api-server')) {
                 // Restart API server by Proxy manager
-                childSendMessage('restart-me');
+
+                const resp1 = await childSendMessage('make-new');
+                if (resp1.message !== 'success') {
+                    // Rollback
+                    await runShellCommand(`npm install ${cmsPackageName}@${versionOld} -S --save-exact`);
+                    await sleep(1);
+
+                    throw new HttpException('Could not start server after update', HttpStatus.INTERNAL_SERVER_ERROR);
+                } else {
+                    const resp2 = await childSendMessage('apply-new', resp1.payload);
+
+                    if (resp2.message !== 'success') throw new HttpException('Could not apply new server after update', HttpStatus.INTERNAL_SERVER_ERROR);
+
+                    setPendingKill(2000);
+                }
             }
 
         } catch (error) {
             logger.error(error);
-
-            this.isUpdating = false;
+            this.setIsUpdating(false);
             throw new HttpException(error?.message ?? error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        this.isUpdating = false;
+        this.setIsUpdating(false);
         return true;
     }
 }
-
 

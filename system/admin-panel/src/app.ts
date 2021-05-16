@@ -1,4 +1,4 @@
-import { setStoreItem, TPluginEntity, onStoreChange } from '@cromwell/core';
+import { setStoreItem, TPluginEntity, onStoreChange, TFrontendBundle } from '@cromwell/core';
 import * as core from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient, TErrorInfo } from '@cromwell/core-frontend';
 import * as coreFrontend from '@cromwell/core-frontend';
@@ -131,7 +131,7 @@ importer.modules['@cromwell/core'] = core;
 
             const loadPlugin = async (pluginName) => {
                 try {
-                    const bundle = await restClient.getPluginAdminBundle(pluginName);
+                    const bundle = await restClient.get<TFrontendBundle>(`plugin/admin-bundle?pluginName=${pluginName}`, true);
                     const success = await new Promise(done => {
                         const sourceBlob = new Blob([bundle.source], { type: 'text/javascript' });
                         const objectURL = URL.createObjectURL(sourceBlob);
