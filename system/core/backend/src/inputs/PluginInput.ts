@@ -15,9 +15,6 @@ export class PluginInput extends BasePageInput implements TPluginEntityInput {
     @Field(() => Boolean)
     isInstalled: boolean;
 
-    @Field(() => String)
-    version: string;
-
     @Field(() => Boolean, { nullable: true })
     hasAdminBundle?: boolean;
 
