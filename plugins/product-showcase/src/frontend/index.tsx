@@ -76,8 +76,8 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
     try {
         data = await client?.query({
             query: gql`
-                query productShowcase($slug: String) {
-                    productShowcase(slug: $slug) {
+                query pluginProductShowcase($slug: String) {
+                    pluginProductShowcase(slug: $slug) {
                         pagedMeta {
                             pageSize
                         }
@@ -114,7 +114,7 @@ export const getStaticProps = async (context: StaticPageContext): Promise<Produc
 
     return {
         attributes,
-        productShowcase: data?.data?.productShowcase
+        productShowcase: data?.data?.pluginProductShowcase,
     }
 }
 

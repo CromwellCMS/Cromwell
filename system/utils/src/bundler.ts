@@ -5,7 +5,6 @@ import colorsdef from 'colors/safe';
 import cryptoRandomString from 'crypto-random-string';
 import fs from 'fs-extra';
 import importFrom from 'import-from';
-import mkdirp from 'mkdirp';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
 import resolveFrom from 'resolve-from';
@@ -73,7 +72,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         await fs.ensureDir(buildDir);
     }
     if (!fs.existsSync(buildDir)) {
-        await mkdirp(buildDir);
+        await fs.ensureDir(buildDir);
     }
 
     if (!await fs.pathExists(publicBuildLink))
@@ -301,7 +300,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
                 export default ${exportKey};
                 `;
 
-            await mkdirp(dirname(exportContentPath));
+            await fs.ensureDir(dirname(exportContentPath));
             await fs.writeFile(exportContentPath, exportContent);
         }
 

@@ -148,7 +148,7 @@ const devGenerate = async (themeName: string) => {
          import { getModuleImporter } from '@cromwell/utils/build/importer.js';
          import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
          import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, 
-             fsRequire } from 'build/renderer';
+            fsRequireSync } from 'build/renderer';
  
  
          const cmsSettings = ${JSON.stringify(config)};
@@ -174,7 +174,7 @@ const devGenerate = async (themeName: string) => {
  
          ${pageInfo.metaInfoPath ? `
          if (isServer()) {
-             const metaInfo = fsRequire("${pageInfo.metaInfoPath}", true);
+             const metaInfo = fsRequireSync("${pageInfo.metaInfoPath}", true);
              importer.importSciptExternals(metaInfo);
          }
          ` : ''}
