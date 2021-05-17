@@ -1,5 +1,5 @@
 import { setStoreItem } from '@cromwell/core';
-import { getOrmConfigPath, getServerDir, getServerTempDir, ORMEntities, readCmsModules } from '@cromwell/core-backend';
+import { getLogger, getOrmConfigPath, getServerDir, getServerTempDir, ORMEntities, readCmsModules } from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
@@ -11,6 +11,7 @@ import { collectPlugins } from './collectPlugins';
 import { GenericCms, GenericPlugin, GenericTheme } from './genericEntities';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
+const logger = getLogger();
 
 export const connectDatabase = async () => {
 
@@ -107,7 +108,11 @@ export const connectDatabase = async () => {
     const pluginService = new PluginService();
     for (const pluginName of cmsModules.plugins) {
         if (!dbPlugins.find(plugin => plugin.name === pluginName)) {
-            await pluginService.activatePlugin(pluginName);
+            try {
+                await pluginService.activatePlugin(pluginName);
+            } catch (error) {
+                logger.error('Server connectDatabase: failed to activate plugin ' + pluginName, error);
+            }
         }
     }
 
@@ -117,7 +122,11 @@ export const connectDatabase = async () => {
     const themeService = new ThemeService();
     for (const themeName of cmsModules.themes) {
         if (!dbThemes.find(theme => theme.name === themeName)) {
-            await themeService.activateTheme(themeName);
+            try {
+                await themeService.activateTheme(themeName);
+            } catch (error) {
+                logger.error('Server connectDatabase: failed to activate theme ' + themeName, error);
+            }
         }
     }
 

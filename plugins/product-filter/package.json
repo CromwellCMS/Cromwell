@@ -15,7 +15,10 @@
   "cromwell": {
     "type": "plugin",
     "title": "Product filter",
-    "icon": "static/icon_funnel.png"
+    "icon": "static/icon_funnel.png",
+    "frontendDependencies": [
+      "@material-ui/core"
+    ]
   },
   "dependencies": {
     "@material-ui/core": "4.11.2"

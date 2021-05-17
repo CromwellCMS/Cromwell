@@ -36,9 +36,9 @@ importer.modules['@cromwell/core'] = core;
         userInfo,
         themeConfig
     ] = await Promise.all([
-        request(restClient?.getCmsSettingsAndSave()),
-        request(restClient?.getUserInfo()),
-        request(restClient?.getThemeConfig()),
+        request(restClient?.getCmsSettingsAndSave({ disableLog: true })),
+        request(restClient?.getUserInfo({ disableLog: true })),
+        request(restClient?.getThemeConfig({ disableLog: true })),
     ]);
 
     // Redirect to /setup page if not installed
@@ -57,7 +57,7 @@ importer.modules['@cromwell/core'] = core;
         graphClient?.setOnUnauthorized(null);
         graphClientExt?.setOnUnauthorized(null);
         try {
-            userInfo = await restClient?.getUserInfo();
+            userInfo = await restClient?.getUserInfo({ disableLog: true });
         } catch (e) {
             console.error(e);
         }
@@ -80,15 +80,14 @@ importer.modules['@cromwell/core'] = core;
 
 
     const onRestApiError = (info: TErrorInfo) => {
-        if (info.route !== 'auth/user-info') {
-            if (info?.statusCode === 429) {
-                toast.error('Too many requests. Try again later');
-            } else {
-                if (info?.message)
-                    toast.error(info.message);
-            }
+        if (info?.statusCode === 429) {
+            toast.error('Too many requests. Try again later');
+        } else {
+            if (info?.message && !info?.disableLog)
+                toast.error(info.message);
         }
     }
+
     restClient?.onError(onRestApiError, 'app');
     restClientExt?.onError(onRestApiError, 'app');
 
@@ -131,7 +130,7 @@ importer.modules['@cromwell/core'] = core;
 
             const loadPlugin = async (pluginName) => {
                 try {
-                    const bundle = await restClient.get<TFrontendBundle>(`plugin/admin-bundle?pluginName=${pluginName}`, true);
+                    const bundle = await restClient.get<TFrontendBundle>(`plugin/admin-bundle?pluginName=${pluginName}`, { disableLog: true });
                     const success = await new Promise(done => {
                         const sourceBlob = new Blob([bundle.source], { type: 'text/javascript' });
                         const objectURL = URL.createObjectURL(sourceBlob);

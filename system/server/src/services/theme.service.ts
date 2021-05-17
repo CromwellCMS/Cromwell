@@ -1,5 +1,9 @@
 import {
+    getRandStr,
     getStoreItem,
+    sleep,
+    TCCSModuleShortInfo,
+    TCCSVersion,
     TCmsSettings,
     TCromwellBlockData,
     TPackageCromwellConfig,
@@ -19,7 +23,9 @@ import {
     getNodeModuleDir,
     getPublicThemesDir,
     incrementServiceVersion,
+    runShellCommand,
 } from '@cromwell/core-backend';
+import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -27,6 +33,8 @@ import requireFromString from 'require-from-string';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
+import { childSendMessage } from '../helpers/serverManager';
+import { endTransaction, setPendingKill, startTransaction } from '../helpers/stateManager';
 import { pluginServiceInst } from './plugin.service';
 
 const logger = getLogger();
@@ -57,6 +65,28 @@ export class ThemeService {
     public async createEntity(theme: TThemeEntityInput): Promise<TThemeEntity | undefined> {
         const themeRepo = getCustomRepository(GenericTheme.repository);
         return themeRepo.createEntity(theme);
+    }
+
+    private async setIsUpdating(name: string, updating: boolean) {
+        try {
+            const repo = getCustomRepository(GenericTheme.repository);
+            const entity = await this.findOne(name);
+            if (entity) {
+                entity.isUpdating = updating;
+                await repo.save(entity);
+            }
+        } catch (error) {
+            logger.error(error);
+        }
+    }
+
+    private async getIsUpdating(name: string) {
+        try {
+            return (await this.findOne(name))?.isUpdating;
+        } catch (error) {
+            logger.error(error);
+        }
+        return false;
     }
 
 
@@ -511,23 +541,25 @@ export class ThemeService {
         // @TODO Execute install script
 
 
-        // Read theme config
-        let themeConfig;
-        const filePath = resolve(themePath, configFileName);
-        if (await fs.pathExists(filePath)) {
-            try {
-                const content = (await fs.readFile(filePath)).toString();
-                themeConfig = requireFromString(content, filePath);
-            } catch (e) {
-                logger.error(e);
-            }
-        }
-
         // Read module info from package.json
         const moduleInfo = await getCmsModuleInfo(themeName);
         delete moduleInfo?.frontendDependencies;
         delete moduleInfo?.bundledDependencies;
         delete moduleInfo?.firstLoadedDependencies;
+
+        // Read theme config
+        let themeConfig;
+        const filePath = resolve(themePath, configFileName);
+        console.log('activateTheme filePath', filePath);
+        if (await fs.pathExists(filePath)) {
+            try {
+                const content = (await fs.readFile(filePath)).toString();
+                themeConfig = requireFromString(content, filePath);
+                console.log('activateTheme themeConfig', themeConfig);
+            } catch (e) {
+                logger.error(e);
+            }
+        }
 
         // Copy static content into public 
         const themePublicDir = resolve(themePath, 'static');
@@ -563,16 +595,203 @@ export class ThemeService {
             }
         }
 
+        const themeRepo = getCustomRepository(GenericTheme.repository);
+        let entity;
 
+        // Update entity if already in DB
         try {
-            const entity = await this.createEntity(input)
+            entity = await themeRepo.getBySlug(themeName);
             if (entity) {
-                return true;
+                entity = Object.assign({}, entity, input);
+                await themeRepo.save(entity);
             }
-        } catch (e) {
-            logger.error(e)
+        } catch (error) { }
+
+        // Create new if not found
+        if (!entity) {
+            try {
+                entity = await themeRepo.createEntity(input);
+            } catch (e) {
+                logger.error(e);
+            }
         }
 
+        if (entity) {
+            return true;
+        }
         return false;
+    }
+
+    async checkThemeUpdate(name: string): Promise<TCCSVersion | undefined> {
+        const settings = await getCmsSettings();
+        const isBeta = !!settings?.beta;
+        const pckg = await getModulePackage(name);
+        try {
+            return await getCentralServerClient().checkThemeUpdate(
+                name, pckg?.version ?? '0', isBeta);
+        } catch (error) { }
+    }
+
+    async getThemeLatest(name: string): Promise<TCCSModuleShortInfo | undefined> {
+        try {
+            return await getCentralServerClient().getThemeInfo(name);
+        } catch (error) { }
+    }
+
+
+
+    async handleThemeUpdate(themeName: string): Promise<boolean> {
+        if (await this.getIsUpdating(themeName)) return false;
+
+        const transactionId = getRandStr(8);
+        startTransaction(transactionId);
+        await this.setIsUpdating(themeName, true);
+
+        let success = false;
+        let error: any;
+        try {
+            success = await this.updateTheme(themeName)
+        } catch (e) {
+            error = e;
+            success = false;
+        }
+        endTransaction(transactionId);
+        await this.setIsUpdating(themeName, false);
+
+        if (!success) {
+            throw new HttpException(error?.message, error?.status);
+        }
+        return true;
+    }
+
+    async updateTheme(themeName: string): Promise<boolean> {
+        const pckgOld = await getModulePackage(themeName);
+        if (!themeName || themeName === '' || !pckgOld?.version) throw new HttpException('Theme package not found', HttpStatus.INTERNAL_SERVER_ERROR);
+        const oldVersion = pckgOld.version;
+
+        const updateInfo = await this.checkThemeUpdate(themeName)
+        if (!updateInfo || !updateInfo.packageVersion) throw new HttpException('No update available', HttpStatus.METHOD_NOT_ALLOWED);
+
+        await runShellCommand(`npm install ${themeName}@${updateInfo.packageVersion} -S --save-exact`, process.cwd());
+        await sleep(1);
+
+        const pckgNew = await getModulePackage(themeName);
+
+        if (!pckgNew?.version) throw new HttpException('Theme package not found', HttpStatus.INTERNAL_SERVER_ERROR);
+        if (!/^\d/.test(pckgNew.version)) pckgNew.version = pckgNew.version.substr(1);
+        if (pckgNew.version !== updateInfo.packageVersion) {
+            throw new HttpException('New version was not applied', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        if (!updateInfo.restartServices) updateInfo.restartServices = [];
+        const settings = await getCmsSettings();
+        if (settings?.themeName === themeName)
+            updateInfo.restartServices.push('renderer');
+
+        for (const service of updateInfo.restartServices) {
+            // Restarts entire service by Manager service
+            await incrementServiceVersion(service as any);
+        }
+        await sleep(1);
+
+        if ((updateInfo?.restartServices ?? []).includes('api-server')) {
+            // Restart API server by Proxy manager via "Safe reload" and rollback possibility:
+            const resp1 = await childSendMessage('make-new');
+            if (resp1.message !== 'success') {
+                // Rollback
+                await runShellCommand(`npm install ${themeName}@${oldVersion} -S --save-exact`);
+                await sleep(1);
+
+                throw new HttpException('Could not start server with new theme', HttpStatus.INTERNAL_SERVER_ERROR);
+            } else {
+                const resp2 = await childSendMessage('apply-new', resp1.payload);
+
+                if (resp2.message !== 'success') throw new HttpException('Could not apply new server with new plugin', HttpStatus.INTERNAL_SERVER_ERROR);
+
+                setPendingKill(2000);
+            }
+
+        }
+
+        await this.activateTheme(themeName);
+        return true;
+    }
+
+
+    async handleInstallTheme(themeName: string): Promise<boolean> {
+        const transactionId = getRandStr(8);
+        startTransaction(transactionId);
+
+        let success = false;
+        let error: any;
+        try {
+            success = await this.installTheme(themeName)
+        } catch (e) {
+            error = e;
+            success = false;
+        }
+        endTransaction(transactionId);
+
+        if (!success) {
+            throw new HttpException(error?.message, error?.status);
+        }
+        return true;
+    }
+
+    async installTheme(themeName: string): Promise<boolean> {
+        const info = await this.getThemeLatest(themeName)
+        if (!themeName || themeName === '' || !info || !info.packageVersion || !info.version) throw new HttpException('Theme was not found', HttpStatus.METHOD_NOT_ALLOWED);
+
+        const settings = await getCmsSettings();
+        const isBeta = !!settings?.beta;
+        const version = isBeta ? (info.betaVersion ?? info.version) : info.version;
+
+        await runShellCommand(`npm install ${themeName}@${version} -S --save-exact`);
+        await sleep(1);
+
+        const pckgNew = await getModulePackage(themeName);
+        if (!pckgNew?.version) throw new HttpException('Theme package was not found', HttpStatus.INTERNAL_SERVER_ERROR);
+
+        await this.activateTheme(themeName);
+        return true;
+    }
+
+
+    async handleDeleteTheme(name: string): Promise<boolean> {
+        const transactionId = getRandStr(8);
+        startTransaction(transactionId);
+
+        let success = false;
+        let error: any;
+        try {
+            success = await this.deleteTheme(name)
+        } catch (e) {
+            error = e;
+            success = false;
+        }
+        endTransaction(transactionId);
+
+        if (!success) {
+            throw new HttpException(error?.message, error?.status);
+        }
+        return true;
+    }
+
+    private async deleteTheme(themeName: string): Promise<boolean> {
+        const pckgOld = await getModulePackage(themeName);
+        const oldVersion = pckgOld?.version;
+        if (!themeName || themeName === '' || !oldVersion) throw new HttpException('Plugin package not found', HttpStatus.INTERNAL_SERVER_ERROR);
+
+        await runShellCommand(`npm uninstall ${themeName} -S`);
+        await sleep(1);
+
+        const pckgNew = await getModulePackage(themeName);
+        if (pckgNew) throw new HttpException(`Failed to remove theme's package`, HttpStatus.INTERNAL_SERVER_ERROR);
+
+        const themeRepo = getCustomRepository(GenericTheme.repository);
+        const entity = await this.findOne(themeName);
+        if (entity?.id) await themeRepo.deleteEntity(entity.id);
+
+        return true;
     }
 }

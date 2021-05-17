@@ -32,6 +32,13 @@ export type TErrorInfo = {
     statusCode: number;
     message: string;
     route: string;
+    disableLog?: boolean;
+}
+
+export type TRequestOptions = {
+    method?: string;
+    input?: any;
+    disableLog?: boolean;
 }
 
 class CRestAPIClient {
@@ -40,37 +47,31 @@ class CRestAPIClient {
     private onUnauthorized: (() => any) | null = null;
     private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
 
-    private handleError = async (responce: Response, data: any, route: string, disableLog?: boolean): Promise<any> => {
+    private handleError = async (responce: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
         if ((responce.status === 403 || responce.status === 401) && !isServer()) {
             this.onUnauthorized?.();
         }
 
         if (responce.status >= 400) {
-            if (!disableLog)
-                this.logError(route, `Request failed, status: ${responce.status}. ${data?.message}`);
-
             const errorInfo: TErrorInfo = {
                 statusCode: responce.status,
                 message: data?.message,
                 route,
+                disableLog,
             };
-            Object.values(this.onErrorCallbacks).forEach(cb => cb(errorInfo));
-
-            throw new Error(JSON.stringify(errorInfo));
+            return [data, errorInfo];
         }
-        return data;
+        return [data, null];
     }
 
     private logError = (route: string, e?: any) => {
         logFor('errors-only', `CRestAPIClient route: ${route}` + e, console.error)
     }
 
-    public fetch = async <T>(route: string, options?: {
-        method?: string;
-        input?: any;
-        disableLog?: boolean;
-    }): Promise<T | undefined> => {
+    public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
         const input = options?.input;
+        let data;
+        let errorInfo: TErrorInfo | null = null;
         try {
             const res = await fetch(`${this.baseUrl}/${route}`, {
                 method: options?.method ?? 'get',
@@ -78,39 +79,54 @@ class CRestAPIClient {
                 body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
                 headers: { 'Content-Type': 'application/json' },
             });
-            const data = await res.json();
-            return this.handleError(res, data, route, options?.disableLog);
+            const dataParsed = await res.json();
+            [data, errorInfo] = await this.handleError(res, dataParsed, route, options?.disableLog);
         } catch (e) {
-            if (!options?.disableLog)
-                this.logError(route, e);
-
-            throw new Error(e);
+            errorInfo = {
+                route,
+                statusCode: 0,
+                message: 'Could not connect to the Server. ' + String(e),
+                disableLog: options?.disableLog,
+            }
         }
+
+        if (errorInfo) {
+            for (const cb of Object.values(this.onErrorCallbacks)) {
+                cb(errorInfo);
+            }
+            if (!options?.disableLog)
+                this.logError(route, `Request failed, status: ${errorInfo.statusCode}. ${errorInfo.message}`);
+
+            throw new Error(JSON.stringify(errorInfo));
+        }
+
+        return data;
     }
 
-    public get = async <T>(route: string, disableLog?: boolean): Promise<T | undefined> => {
-        return this.fetch(route, {
-            disableLog,
-        });
+    public get = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
+        return this.fetch(route, options);
     }
 
-    public post = async <T>(route: string, input?: any): Promise<T | undefined> => {
+    public post = async <T>(route: string, input?: any, options?: TRequestOptions): Promise<T | undefined> => {
         return this.fetch(route, {
             method: 'post',
             input,
+            ...(options ?? {}),
         });
     }
 
-    public delete = async <T>(route: string): Promise<T | undefined> => {
+    public delete = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
         return this.fetch(route, {
             method: 'delete',
+            ...(options ?? {}),
         });
     }
 
-    public put = async <T>(route: string, input?: any): Promise<T | undefined> => {
+    public put = async <T>(route: string, input?: any, options?: TRequestOptions): Promise<T | undefined> => {
         return this.fetch(route, {
             method: 'put',
             input,
+            ...(options ?? {}),
         });
     }
 
@@ -119,32 +135,33 @@ class CRestAPIClient {
     public login = async (credentials: {
         email: string;
         password: string;
-    }): Promise<TUser | undefined> => {
-        return this.post('auth/login', credentials);
+    }, options?: TRequestOptions): Promise<TUser | undefined> => {
+        return this.post('auth/login', credentials, options);
     }
 
-    public logOut = async () => {
-        return this.post('auth/log-out', {});
+    public logOut = async (options?: TRequestOptions) => {
+        return this.post('auth/log-out', {}, options);
     }
 
-    public getUserInfo = async (): Promise<TUser | undefined> => {
-        return this.get('auth/user-info');
+
+    public getUserInfo = async (options?: TRequestOptions): Promise<TUser | undefined> => {
+        return this.get('auth/user-info', options);
     }
 
-    public signUp = async (credentials: TCreateUser): Promise<TUser | undefined> => {
-        return this.post('auth/sign-up', credentials);
+    public signUp = async (credentials: TCreateUser, options?: TRequestOptions): Promise<TUser | undefined> => {
+        return this.post('auth/sign-up', credentials, options);
     }
 
-    public forgotPassword = async (credentials: { email: string }): Promise<boolean | undefined> => {
-        return this.post('auth/forgot-password', credentials);
+    public forgotPassword = async (credentials: { email: string }, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.post('auth/forgot-password', credentials, options);
     }
 
     public resetPassword = async (credentials: {
         email: string;
         code: string;
         newPassword: string;
-    }): Promise<boolean | undefined> => {
-        return this.post('auth/reset-password', credentials);
+    }, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.post('auth/reset-password', credentials, options);
     }
 
     public setOnUnauthorized(func: (() => any) | null) {
@@ -159,35 +176,35 @@ class CRestAPIClient {
 
     // < CMS >
 
-    public getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
-        return this.get(`cms/config`, true);
+    public getCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
+        return this.get(`cms/config`, options);
     }
 
-    public getAdvancedCmsSettings = async (): Promise<TCmsSettings | undefined> => {
-        return this.get(`cms/advanced-config`);
+    public getAdvancedCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
+        return this.get(`cms/advanced-config`, options);
     }
 
-    public getCmsSettingsAndSave = async (): Promise<TCmsSettings | undefined> => {
-        const config = await this.getCmsSettings();
+    public getCmsSettingsAndSave = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
+        const config = await this.getCmsSettings(options);
         if (config) {
             setStoreItem('cmsSettings', config);
             return config;
         }
     }
 
-    public readPublicDir = (path?: string): Promise<string[] | null | undefined> => {
-        return this.get(`cms/read-public-dir?path=${path ?? '/'}`);
+    public readPublicDir = (path?: string, options?: TRequestOptions): Promise<string[] | null | undefined> => {
+        return this.get(`cms/read-public-dir?path=${path ?? '/'}`, options);
     }
 
-    public createPublicDir = (dirName: string, inPath?: string): Promise<string[] | null | undefined> => {
-        return this.get(`cms/create-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`);
+    public createPublicDir = (dirName: string, inPath?: string, options?: TRequestOptions): Promise<string[] | null | undefined> => {
+        return this.get(`cms/create-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`, options);
     }
 
-    public removePublicDir = (dirName: string, inPath?: string): Promise<string[] | null | undefined> => {
-        return this.get(`cms/remove-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`);
+    public removePublicDir = (dirName: string, inPath?: string, options?: TRequestOptions): Promise<string[] | null | undefined> => {
+        return this.get(`cms/remove-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`, options);
     }
 
-    public uploadPublicFiles = async (inPath: string, files: File[]): Promise<boolean | null | undefined> => {
+    public uploadPublicFiles = async (inPath: string, files: File[], options?: TRequestOptions): Promise<boolean | null | undefined> => {
         const formData = new FormData();
         for (const file of files) {
             formData.append(file.name, file);
@@ -195,64 +212,65 @@ class CRestAPIClient {
         const response = await fetch(`${this.baseUrl}/cms/upload-public-file?inPath=${inPath ?? '/'}`, {
             method: 'POST',
             credentials: 'include',
-            body: formData
+            body: formData,
+            ...(options ?? {}),
         });
         return response.body;
     }
 
-    public getThemesInfo = async (): Promise<TPackageCromwellConfig[] | undefined> => {
-        return this.get(`cms/themes`);
+    public getThemesInfo = async (options?: TRequestOptions): Promise<TPackageCromwellConfig[] | undefined> => {
+        return this.get(`cms/themes`, options);
     }
 
-    public getPluginList = async (): Promise<TPackageCromwellConfig[] | undefined> => {
-        return this.get(`cms/plugins`);
+    public getPluginList = async (options?: TRequestOptions): Promise<TPackageCromwellConfig[] | undefined> => {
+        return this.get(`cms/plugins`, options);
     }
 
-    public setUpCms = async (): Promise<boolean | undefined> => {
-        return this.post(`cms/set-up`, {});
+    public setUpCms = async (options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.post(`cms/set-up`, {}, options);
     }
 
-    public updateCmsConfig = async (input: TCmsEntityInput): Promise<TCmsSettings | undefined> => {
-        return this.post(`cms/update-config`, input);
+    public updateCmsConfig = async (input: TCmsEntityInput, options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
+        return this.post(`cms/update-config`, input, options);
     }
 
-    public activateTheme = async (themeName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`cms/activate-theme?themeName=${themeName}`);
+    public activateTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean> => {
+        const data = await this.get<boolean>(`cms/activate-theme?themeName=${themeName}`, options);
         return data ?? false;
     }
 
-    public activatePlugin = async (pluginName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`cms/activate-plugin?pluginName=${pluginName}`);
+    public activatePlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean> => {
+        const data = await this.get<boolean>(`cms/activate-plugin?pluginName=${pluginName}`, options);
         return data ?? false;
     }
 
-    public changeTheme = async (themeName: string): Promise<boolean> => {
-        const data = await this.get<boolean>(`cms/change-theme?themeName=${themeName}`);
+    public changeTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean> => {
+        const data = await this.get<boolean>(`cms/change-theme?themeName=${themeName}`, options);
         return data ?? false;
     }
 
-    public getOrderTotal = async (input: TServerCreateOrder): Promise<TOrder | undefined> => {
-        return this.post(`cms/get-order-total`, input);
+    public getOrderTotal = async (input: TServerCreateOrder, options?: TRequestOptions): Promise<TOrder | undefined> => {
+        return this.post(`cms/get-order-total`, input, options);
     }
 
-    public placeOrder = async (input: TServerCreateOrder): Promise<TOrder | undefined> => {
-        return this.post(`cms/place-order`, input);
+    public placeOrder = async (input: TServerCreateOrder, options?: TRequestOptions): Promise<TOrder | undefined> => {
+        return this.post(`cms/place-order`, input, options);
     }
 
-    public placeProductReview = async (input: TProductReviewInput): Promise<TProductReview | undefined> => {
-        return this.post(`cms/place-product-review`, input);
+    public placeProductReview = async (input: TProductReviewInput, options?: TRequestOptions): Promise<TProductReview | undefined> => {
+        return this.post(`cms/place-product-review`, input, options);
     }
 
-    public getCmsStats = async (): Promise<TCmsStats | undefined> => {
-        return this.get(`cms/stats`);
+    public getCmsStats = async (options?: TRequestOptions): Promise<TCmsStats | undefined> => {
+        return this.get(`cms/stats`, options);
     }
 
-    public getCmsStatus = async (): Promise<TCmsStatus | undefined> => {
-        return this.get(`cms/status`);
+    public getCmsStatus = async (options?: TRequestOptions): Promise<TCmsStatus | undefined> => {
+        return this.get(`cms/status`, options);
     }
 
-    public launchCmsUpdate = async (): Promise<boolean | undefined> => {
-        return this.get(`cms/launch-update`);
+    public launchCmsUpdate = async (options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.get(`cms/launch-update`, options);
     }
 
     // < / CMS >
@@ -260,53 +278,69 @@ class CRestAPIClient {
 
     // < Theme >
 
-    public getPageConfig = async (pageRoute: string): Promise<TPageConfig | undefined> => {
-        return this.get(`theme/page?pageRoute=${pageRoute}`);
+    public getThemeUpdate = async (themeName: string, options?: TRequestOptions): Promise<TCCSVersion | undefined> => {
+        return this.get(`theme/check-update?themeName=${themeName}`, options);
     }
 
-    public savePageConfig = async (config: TPageConfig): Promise<boolean> => {
-        const data = await this.post<boolean>(`theme/page`, config);
+    public updateTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.get(`theme/update?themeName=${themeName}`, options);
+    }
+
+    public installTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.get(`theme/install?themeName=${themeName}`, options);
+    }
+
+    public deleteTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.get(`theme/delete?themeName=${themeName}`, options);
+    }
+
+    public getPageConfig = async (pageRoute: string, options?: TRequestOptions): Promise<TPageConfig | undefined> => {
+        return this.get(`theme/page?pageRoute=${pageRoute}`, options);
+    }
+
+    public savePageConfig = async (config: TPageConfig, options?: TRequestOptions): Promise<boolean> => {
+        const data = await this.post<boolean>(`theme/page`, config, options);
         return data ?? false;
     }
 
-    public deletePage = async (pageRoute: string): Promise<boolean | undefined> => {
-        return this.delete(`theme/page?pageRoute=${pageRoute}`);
+    public deletePage = async (pageRoute: string, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.delete(`theme/page?pageRoute=${pageRoute}`, options);
     }
 
-    public resetPage = async (pageRoute: string): Promise<boolean | undefined> => {
-        return this.get(`theme/page/reset?pageRoute=${pageRoute}`);
+    public resetPage = async (pageRoute: string, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.get(`theme/page/reset?pageRoute=${pageRoute}`, options);
     }
 
-    public getPluginsModifications = async (pageRoute: string): Promise<Record<string, TPluginsModifications> | undefined> => {
-        return this.get(`theme/plugins?pageRoute=${pageRoute}`);
+    public getPluginsModifications = async (pageRoute: string, options?: TRequestOptions): Promise<Record<string, TPluginsModifications> | undefined> => {
+        return this.get(`theme/plugins?pageRoute=${pageRoute}`, options);
     }
 
-    public getPluginNames = async (): Promise<string[] | undefined> => {
-        return this.get(`theme/plugin-names`);
+    public getPluginNames = async (options?: TRequestOptions): Promise<string[] | undefined> => {
+        return this.get(`theme/plugin-names`, options);
     }
 
-    public getPagesInfo = async (): Promise<TPageInfo[] | undefined> => {
-        return this.get(`theme/pages/info`);
+    public getPagesInfo = async (options?: TRequestOptions): Promise<TPageInfo[] | undefined> => {
+        return this.get(`theme/pages/info`, options);
     }
 
-    public getPageConfigs = async (): Promise<TPageConfig[] | undefined> => {
-        return this.get(`theme/pages/configs`);
+    public getPageConfigs = async (options?: TRequestOptions): Promise<TPageConfig[] | undefined> => {
+        return this.get(`theme/pages/configs`, options);
     }
 
-    public getThemeInfo = async (): Promise<TPackageCromwellConfig | undefined> => {
-        return this.get(`theme/info`);
+    public getThemeInfo = async (options?: TRequestOptions): Promise<TPackageCromwellConfig | undefined> => {
+        return this.get(`theme/info`, options);
     }
 
-    public getThemeConfig = async (): Promise<TThemeConfig | undefined> => {
-        return this.get(`theme/config`);
+    public getThemeConfig = async (options?: TRequestOptions): Promise<TThemeConfig | undefined> => {
+        return this.get(`theme/config`, options);
     }
 
-    public getThemeCustomConfig = async (): Promise<Record<string, any> | undefined> => {
-        return this.get(`theme/custom-config`);
+    public getThemeCustomConfig = async (options?: TRequestOptions): Promise<Record<string, any> | undefined> => {
+        return this.get(`theme/custom-config`, options);
     }
 
-    public getThemePageBundle = async (pageRoute: string): Promise<TFrontendBundle | undefined> => {
-        return this.get(`theme/page-bundle?pageRoute=${pageRoute}`);
+    public getThemePageBundle = async (pageRoute: string, options?: TRequestOptions): Promise<TFrontendBundle | undefined> => {
+        return this.get(`theme/page-bundle?pageRoute=${pageRoute}`, options);
     }
 
     // < / Theme >
@@ -314,33 +348,37 @@ class CRestAPIClient {
 
     // < Plugin >
 
-    public getPluginUpdate = async (pluginName: string): Promise<TCCSVersion | undefined> => {
-        return this.get(`plugin/check-update?pluginName=${pluginName}`);
+    public getPluginUpdate = async (pluginName: string, options?: TRequestOptions): Promise<TCCSVersion | undefined> => {
+        return this.get(`plugin/check-update?pluginName=${pluginName}`, options);
     }
 
-    public updatePlugin = async (pluginName: string): Promise<boolean | undefined> => {
-        return this.get(`plugin/update?pluginName=${pluginName}`);
+    public updatePlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.get(`plugin/update?pluginName=${pluginName}`, options);
     }
 
-    public installPlugin = async (pluginName: string): Promise<boolean | undefined> => {
-        return this.get(`plugin/install?pluginName=${pluginName}`);
+    public installPlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.get(`plugin/install?pluginName=${pluginName}`, options);
     }
 
-    public getPluginSettings = async (pluginName: string): Promise<any | undefined> => {
-        return this.get(`plugin/settings?pluginName=${pluginName}`);
+    public deletePlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.get(`plugin/delete?pluginName=${pluginName}`, options);
     }
 
-    public savePluginSettings = async (pluginName: string, settings: any): Promise<boolean> => {
-        const data = await this.post<boolean>(`plugin/settings?pluginName=${pluginName}`, settings);
+    public getPluginSettings = async (pluginName: string, options?: TRequestOptions): Promise<any | undefined> => {
+        return this.get(`plugin/settings?pluginName=${pluginName}`, options);
+    }
+
+    public savePluginSettings = async (pluginName: string, settings: any, options?: TRequestOptions): Promise<boolean> => {
+        const data = await this.post<boolean>(`plugin/settings?pluginName=${pluginName}`, settings, options);
         return data ?? false;
     }
 
-    public getPluginFrontendBundle = async (pluginName: string): Promise<TFrontendBundle | undefined> => {
-        return this.get(`plugin/frontend-bundle?pluginName=${pluginName}`);
+    public getPluginFrontendBundle = async (pluginName: string, options?: TRequestOptions): Promise<TFrontendBundle | undefined> => {
+        return this.get(`plugin/frontend-bundle?pluginName=${pluginName}`, options);
     }
 
-    public getPluginAdminBundle = async (pluginName: string): Promise<TFrontendBundle | undefined> => {
-        return this.get(`plugin/admin-bundle?pluginName=${pluginName}`);
+    public getPluginAdminBundle = async (pluginName: string, options?: TRequestOptions): Promise<TFrontendBundle | undefined> => {
+        return this.get(`plugin/admin-bundle?pluginName=${pluginName}`, options);
     }
 
     // < / Plugin >
