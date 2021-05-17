@@ -78,7 +78,7 @@ mutation createProduct {
   createProduct(data: {
     name: "US SpaceForce",
     categoryIds: ["1","2","3"],
-    images: ["/images/product1.png", "/images/product1.png", "/images/product1.png"]
+    images: ["/images/product.jpg", "/images/product.jpg", "/images/product.jpg"]
   }){
     id
   }
@@ -90,12 +90,12 @@ mutation updateProduct {
     slug: "Throbber4",
     mainImage: "/images/product_3.jpg",
     images: [
-  "/images/product1.png",
-  "/images/product2.png",
-        "/images/pproduct1.png",
-  "/images/product2.png",
-  "/images/product2.png",
-  "/images/product3.png"
+  "/images/product.jpg",
+  "/images/product_2.jpg",
+        "/images/product.jpg",
+  "/images/product_2.jpg",
+  "/images/product_2.jpg",
+  "/images/product_3.jpg"
     ]
     attributes: [
       { key: "1", values: [
@@ -268,6 +268,20 @@ query getFilteredPosts {
         fullName
       }
     }
+  }
+}
+
+query getProductReviewsOfProduct {
+	getProductReviews(pagedParams: {}) {
+			elements {
+        id
+				productId
+        title
+        description
+        rating
+        userName
+        isEnabled
+      }
   }
 }
 

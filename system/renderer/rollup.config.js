@@ -1,10 +1,9 @@
-import commonjs from "@rollup/plugin-commonjs";
-import nodeResolve from "@rollup/plugin-node-resolve";
-import typescript from "rollup-plugin-ts-compiler";
-import packageJson from './package.json';
-import { rollupPluginCromwellFrontend } from '@cromwell/utils';
+import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
-import { terser } from "rollup-plugin-terser";
+import nodeResolve from '@rollup/plugin-node-resolve';
+import typescript from 'rollup-plugin-ts-compiler';
+
+import packageJson from './package.json';
 
 const { resolve } = require('path');
 
@@ -38,9 +37,8 @@ export default [
                 format: "esm",
             }
         ],
-        // external,
+        external,
         plugins: [
-            // autoExternal(),
             typescript({
                 compilerOptions: {
                     module: 'ESNext',
@@ -48,7 +46,6 @@ export default [
                 sharedState,
                 monorepo: true,
             }),
-            rollupPluginCromwellFrontend({ generateMeta: false }),
             nodeResolve({
                 preferBuiltins: false
             }),

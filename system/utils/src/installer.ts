@@ -3,10 +3,8 @@ import { each as asyncEach } from 'async';
 import { spawn, spawnSync } from 'child_process';
 import colorsdef from 'colors/safe';
 import fs from 'fs-extra';
-import { sync as mkdirp } from 'mkdirp';
 import nodeCleanup from 'node-cleanup';
 import path, { resolve } from 'path';
-import { sync as rimraf } from 'rimraf';
 import symlinkDir from 'symlink-dir';
 
 import { downloader } from './downloader';
@@ -33,7 +31,7 @@ export const installer = async (projectRootDir: string, installationMode: string
             const includeInDir = resolve(includeInPath, '../');
             if (!fs.existsSync(includeInDir)) {
                 try {
-                    mkdirp(includeInDir);
+                    fs.ensureDir(includeInDir);
                 } catch (e) {
                     console.log(e);
                 }
@@ -127,7 +125,7 @@ export const installer = async (projectRootDir: string, installationMode: string
                     if (fs.existsSync(modulesPath)) {
                         // console.log('modulesPath', modulesPath)
                         try {
-                            rimraf(modulesPath);
+                            await fs.remove(modulesPath);
                         } catch (e) {
                             console.log(e);
                         }

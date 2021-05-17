@@ -1,7 +1,7 @@
-import { BasePageNames, getStoreItem, isServer, StaticPageContext } from '@cromwell/core';
+import { BasePageNames, StaticPageContext } from '@cromwell/core';
 import { getRestAPIClient, TPluginsModifications } from '@cromwell/core-frontend';
 
-import { fsRequire } from '../helpers/checkCMSConfig';
+import { fsRequire, getPluginCjsPath } from '../helpers/checkCMSConfig';
 
 /**
  * Fetches data for all plugins at specified page. Server-side only.
@@ -11,12 +11,7 @@ import { fsRequire } from '../helpers/checkCMSConfig';
 export const pluginsDataFetcher = async (pageName: BasePageNames | string, context: StaticPageContext): Promise<{
     pluginsData: Record<string, any>;
     pluginsSettings: Record<string, any>;
-    // pluginsBundles: Record<string, string>;
 }> => {
-    const cmsSettings = getStoreItem('cmsSettings');
-    if (!cmsSettings) {
-        throw new Error('pluginsDataFetcher !cmsSettings ' + cmsSettings);
-    }
     const restAPIClient = getRestAPIClient();
 
     let pluginsModifications: Record<string, TPluginsModifications> | undefined;
@@ -26,72 +21,70 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
         console.error(e)
     }
     const pluginConfigs = pluginsModifications ? Object.entries(pluginsModifications) : undefined;
-    // console.log('pageName', pageName, 'pluginConfigs', JSON.stringify(pluginConfigs))
     const pluginsData: Record<string, any> = {};
-    const pluginsSettings: Record<string, any> = {}
-    // const pluginsBundles: Record<string, string> = {};
-    // console.log('pluginConfigs', pluginConfigs);
+    const pluginsSettings: Record<string, any> = {};
 
-    if (pluginConfigs && Array.isArray(pluginConfigs)) {
-        for (const pluginConfigEntry of pluginConfigs) {
-            // console.log('pluginConfig', pluginConfigEntry);
-            const pluginName = pluginConfigEntry[0];
-            const pluginConfig = pluginConfigEntry[1];
-            const pluginContext = Object.assign({}, context);
-            pluginContext.pluginsConfig = pluginConfig;
+    const fetchPluginData = async (pluginName: string, pluginConfig: TPluginsModifications): Promise<void> => {
+        const pluginContext = Object.assign({}, context);
+        pluginContext.pluginsConfig = pluginConfig;
 
-            let settings;
+        let settings;
+        try {
+            settings = await restAPIClient?.getPluginSettings(pluginName);
+        } catch (e) {
+            console.error(e)
+        }
+        if (settings) pluginsSettings[pluginName] = settings;
+
+        let pluginCjsPath;
+        try {
+            pluginCjsPath = await getPluginCjsPath(pluginName);
+        } catch (e) {
+            console.error(e)
+        }
+
+        if (pluginCjsPath) {
+            let plugin: any;
+
             try {
-                settings = await restAPIClient?.getPluginSettings(pluginName);
+                plugin = await fsRequire(pluginCjsPath);
             } catch (e) {
-                console.error(e)
-            }
-            if (settings) pluginsSettings[pluginName] = settings;
-            // console.log('settings', settings);
-
-            let bundleInfo;
-            try {
-                bundleInfo = await restAPIClient?.getPluginFrontendBundle(pluginName);
-            } catch (e) {
-                console.error(e)
+                console.error('[Error] pluginsDataFetcher: Failed to require plugin: ' + pluginName, e);
             }
 
-            // Require module
-            // console.log('pluginConfigObj', pageName, pluginName, pluginConfigObj)
-            if (bundleInfo?.cjsPath && isServer()) {
-                try {
-                    // console.log('pluginsDataFetcher1 bundleInfo.cjsPath', bundleInfo.cjsPath)
-                    const plugin: any = fsRequire(bundleInfo.cjsPath);
+            if (!plugin) {
+                console.error('[Error] pluginsDataFetcher: cjs build of the Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)
+            } else {
+                const getStaticProps = plugin.getStaticProps;
 
-                    if (!plugin) {
-                        console.error('cjs build of the Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)
-                    } else {
-                        const getStaticProps = plugin.getStaticProps;
-                        // console.log('plugin', plugin, 'getStaticProps', getStaticProps)
-
-                        let pluginStaticProps = {};
-                        if (getStaticProps) {
-                            try {
-                                pluginStaticProps = await getStaticProps(pluginContext);
-                                pluginStaticProps = JSON.parse(JSON.stringify(pluginStaticProps));
-                            } catch (e) {
-                                console.error('pluginsDataFetcher1', e);
-                            }
-                        }
-                        pluginsData[pluginName] = pluginStaticProps;
+                let pluginStaticProps = {};
+                if (getStaticProps) {
+                    try {
+                        pluginStaticProps = await getStaticProps(pluginContext);
+                        pluginStaticProps = JSON.parse(JSON.stringify(pluginStaticProps));
+                    } catch (e) {
+                        console.error('[Error] pluginsDataFetcher: Failed to getStaticProps of ' + pluginName, e);
                     }
-
-                } catch (e) {
-                    console.error('pluginsDataFetcher2', e);
                 }
+                pluginsData[pluginName] = pluginStaticProps;
             }
-
         }
     }
+
+    const pluginPromises: Promise<void>[] = [];
+    if (pluginConfigs && Array.isArray(pluginConfigs)) {
+        for (const pluginConfigEntry of pluginConfigs) {
+            pluginPromises.push(
+                fetchPluginData(pluginConfigEntry[0], pluginConfigEntry[1])
+            );
+        }
+    }
+
+    await Promise.all(pluginPromises);
+
     return {
         pluginsData,
         pluginsSettings,
-        // pluginsBundles
     };
 }
 

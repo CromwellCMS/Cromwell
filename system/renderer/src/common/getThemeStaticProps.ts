@@ -1,4 +1,4 @@
-import { BasePageNames, getStoreItem, StaticPageContext } from '@cromwell/core';
+import { BasePageNames, StaticPageContext } from '@cromwell/core';
 
 /**
  * Server-side only
@@ -10,18 +10,13 @@ export const getThemeStaticProps = async (pageName: BasePageNames | string,
     pageGetStaticProps: ((context: StaticPageContext) => any) | undefined | null,
     context: StaticPageContext): Promise<Record<string, any>> => {
 
-    const cmsSettings = getStoreItem('cmsSettings');
-    if (!cmsSettings) {
-        throw new Error('getThemeStaticProps !cmsSettings ' + cmsSettings);
-    }
     let childStaticProps = {}
     if (pageGetStaticProps) {
         try {
             childStaticProps = await pageGetStaticProps(context);
             childStaticProps = JSON.parse(JSON.stringify(childStaticProps));
         } catch (e) {
-            console.error('getThemeStaticProps', e);
-            console.log('pageName: ', pageName, 'pageGetStaticProps', pageGetStaticProps)
+            console.error('[Error] getThemeStaticProps: failed to get StaticProps of page: ' + pageName, e);
         }
     }
     return childStaticProps;

@@ -50,7 +50,7 @@ const fs = require('fs');
         }
 
         spawnSync(`npm i yarn -g`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-        spawnSync(`yarn install`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`yarn install --non-interactive`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
     // Build core

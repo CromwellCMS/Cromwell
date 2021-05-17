@@ -26,7 +26,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         }
 
         const apiClient = getRestAPIClient();
-        const timestamp = Date.now();
+        // const timestamp = Date.now();
 
         const [
             childStaticProps,
@@ -51,7 +51,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
             pluginsSettings,
         } = pluginsReq;
 
-        const timestamp2 = Date.now();
+        // const timestamp2 = Date.now();
 
         const pageStats: TPageStats = {
             pageRoute
@@ -76,9 +76,9 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         const headHtml = themeConfig?.headHtml ?? null;
         const palette = themeConfig?.palette ?? null;
 
-        console.log('getStaticProps for page: ' + pageName);
-        console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms')
-        // console.log('pluginssData', pluginsData, 'childStaticProps', childStaticProps);
+        // console.log('getStaticProps for page: ' + pageName);
+        // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms')
+
         const props: TCromwellPageCoreProps = {
             pluginsData,
             pluginsSettings,

@@ -57,6 +57,7 @@ async function bootstrap(): Promise<void> {
             return { user: context?.request?.user }
         }
     });
+    await apolloServer.start();
 
     fastifyInstance.register(apolloServer.createHandler({
         path: `/${apiPrefix}/graphql`,
@@ -104,7 +105,7 @@ async function bootstrap(): Promise<void> {
     await app.listen(port, '::');
     logger.info(`API Server is running on: ${await app.getUrl()}`);
     childRegister(port);
-    
+
 }
 
 (async () => {

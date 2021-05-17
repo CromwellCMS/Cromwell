@@ -6,11 +6,11 @@ import ReactHtmlParser, { Transform } from 'react-html-parser';
 import { isValidElementType } from 'react-is';
 
 function useForceUpdate() {
-    const [value, setValue] = useState(0); // integer state
-    return () => setValue(value => ++value); // update the state to force render
+    const state = useState(0);
+    return () => state[1](value => ++value);
 }
 
-const parserTransform: Transform = (node: DomElement, index: number) => {
+const parserTransform: Transform = (node: DomElement) => {
     if (node.type === 'script') {
         if (node.children?.[0]?.data && node.children[0].data !== '')
             return <script dangerouslySetInnerHTML={{ __html: node.children[0].data }} />
@@ -31,7 +31,7 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
         const { pluginsData, pluginsSettings, pageConfig, themeCustomConfig,
             childStaticProps, cmsSettings, headHtml, pagesInfo,
-            palette, ...restProps } = props;
+            palette } = props;
 
         const forcedChildStaticProps = useRef(null);
         if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
@@ -62,7 +62,6 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
 
         const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;
 
-        // console.log('getPage: TCromwellPageCoreProps pageName', pageName, 'props', props);
         return (
             <>
                 <Head>
