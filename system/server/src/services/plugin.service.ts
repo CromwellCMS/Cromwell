@@ -306,6 +306,10 @@ export class PluginService {
 
         if (!pluginPckg?.version || !pluginPath) throw new HttpException('Failed to find package.json of the plugin ' + pluginName, HttpStatus.INTERNAL_SERVER_ERROR);
 
+
+        // @TODO Execute install script
+
+
         // Read module info from package.json
         const moduleInfo = await getCmsModuleInfo(pluginName);
         delete moduleInfo?.frontendDependencies;
@@ -383,7 +387,7 @@ export class PluginService {
             try {
                 entity = await pluginRepo.createEntity(input);
             } catch (e) {
-                logger.error(e)
+                logger.error(e);
             }
         }
 

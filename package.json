@@ -57,5 +57,11 @@
         "throttle-debounce": "3.0.1",
         "tslib": "2.1.0"
     },
+    "cromwell": {
+        "themes": [
+            "@cromwell/theme-store",
+            "@cromwell/theme-blog"
+        ]
+    },
     "cache-version": "7; modify this string to reset circleci cache"
 }

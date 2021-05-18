@@ -54,7 +54,7 @@ export const getSelectedInput = (): TDeleteManyInput => {
 
 export const updateStatus = async () => {
     try {
-        const status = await getRestAPIClient().getCmsStatus();
+        const status = await getRestAPIClient().getCmsStatus({ disableLog: true });
         if (status) {
             store.setStateProp({
                 prop: 'status',

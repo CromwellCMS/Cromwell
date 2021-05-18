@@ -462,80 +462,79 @@ export class CmsService {
     async handleUpdateCms() {
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
+        if (await this.getIsUpdating()) return false;
+        this.setIsUpdating(true);
+
+        let success = false;
+        let error: any;
         try {
-            await this.updateCms()
-        } catch (error) {
-            endTransaction(transactionId);
-            throw new HttpException(error.message, error.status);
+            success = await this.updateCms();
+        } catch (err) {
+            error = err;
         }
+
+        await this.setIsUpdating(false);
         endTransaction(transactionId);
+
+        if (!success) {
+            logger.error(error);
+            throw new HttpException(error?.message, error?.status);
+        }
         return true;
     }
 
     async updateCms(): Promise<boolean> {
-        // Only works with one server instance. In scaling manual update required.
-        if (this.getIsUpdating()) return false;
-        this.setIsUpdating(true);
+        const availableUpdate = await this.checkCmsUpdate();
+        if (!availableUpdate?.packageVersion) throw new HttpException(`Update failed: !availableUpdate?.packageVersion`, HttpStatus.INTERNAL_SERVER_ERROR);
 
-        try {
-            const availableUpdate = await this.checkCmsUpdate();
-            if (!availableUpdate?.packageVersion) throw new HttpException(`Update failed: !availableUpdate?.packageVersion`, HttpStatus.INTERNAL_SERVER_ERROR);
+        const pckg = await getModulePackage();
+        if (!pckg?.dependencies?.[cmsPackageName])
+            throw new HttpException(`Update failed: Could not find ${cmsPackageName} in package.json`, HttpStatus.INTERNAL_SERVER_ERROR);
 
-            const pckg = await getModulePackage();
-            if (!pckg?.dependencies?.[cmsPackageName])
-                throw new HttpException(`Update failed: Could not find ${cmsPackageName} in package.json`, HttpStatus.INTERNAL_SERVER_ERROR);
+        const cmsPckgOld = await getModulePackage(cmsPackageName);
+        const versionOld = cmsPckgOld?.version;
+        if (!versionOld)
+            throw new HttpException(`Update failed: Could not find ${cmsPackageName} package`, HttpStatus.INTERNAL_SERVER_ERROR);
 
-            const cmsPckgOld = await getModulePackage(cmsPackageName);
-            const versionOld = cmsPckgOld?.version;
-            if (!versionOld)
-                throw new HttpException(`Update failed: Could not find ${cmsPackageName} package`, HttpStatus.INTERNAL_SERVER_ERROR);
+        await runShellCommand(`npm install ${cmsPackageName}@${availableUpdate.packageVersion} -S --save-exact`);
+        await sleep(1);
 
-            await runShellCommand(`npm install ${cmsPackageName}@${availableUpdate.packageVersion} -S --save-exact`);
-            await sleep(1);
-
-            const cmsPckg = await getModulePackage(cmsPackageName);
-            if (!cmsPckg?.version || cmsPckg.version !== availableUpdate.packageVersion)
-                throw new HttpException(`Update failed: cmsPckg.version !== availableUpdate.packageVersion`, HttpStatus.INTERNAL_SERVER_ERROR);
+        const cmsPckg = await getModulePackage(cmsPackageName);
+        if (!cmsPckg?.version || cmsPckg.version !== availableUpdate.packageVersion)
+            throw new HttpException(`Update failed: cmsPckg.version !== availableUpdate.packageVersion`, HttpStatus.INTERNAL_SERVER_ERROR);
 
 
-            const cmsEntity = await getCmsEntity();
-            cmsEntity.version = availableUpdate.version;
-            await cmsEntity.save();
-            await getCmsSettings();
+        const cmsEntity = await getCmsEntity();
+        cmsEntity.version = availableUpdate.version;
+        await cmsEntity.save();
+        await getCmsSettings();
 
-            for (const service of (availableUpdate?.restartServices ?? [])) {
-                // CAN POSSIBLY RESTART THIS SERVER INSTANCE
-                // Restarts entire service by Manager service
-                await incrementServiceVersion(service as any);
+        for (const service of (availableUpdate?.restartServices ?? [])) {
+            // CAN POSSIBLY RESTART THIS SERVER INSTANCE
+            // Restarts entire service by Manager service
+            await incrementServiceVersion(service as any);
+        }
+        await sleep(1);
+
+        if ((availableUpdate?.restartServices ?? []).includes('api-server')) {
+            
+            // Restart API server by Proxy manager
+            const resp1 = await childSendMessage('make-new');
+            if (resp1.message !== 'success') {
+                // Rollback
+                await runShellCommand(`npm install ${cmsPackageName}@${versionOld} -S --save-exact`);
+                await sleep(1);
+
+                throw new HttpException('Could not start server after update', HttpStatus.INTERNAL_SERVER_ERROR);
+            } else {
+                const resp2 = await childSendMessage('apply-new', resp1.payload);
+
+                if (resp2.message !== 'success') throw new HttpException('Could not apply new server after update', HttpStatus.INTERNAL_SERVER_ERROR);
+
+                setPendingKill(2000);
             }
-            await sleep(1);
-
-            if ((availableUpdate?.restartServices ?? []).includes('api-server')) {
-                // Restart API server by Proxy manager
-
-                const resp1 = await childSendMessage('make-new');
-                if (resp1.message !== 'success') {
-                    // Rollback
-                    await runShellCommand(`npm install ${cmsPackageName}@${versionOld} -S --save-exact`);
-                    await sleep(1);
-
-                    throw new HttpException('Could not start server after update', HttpStatus.INTERNAL_SERVER_ERROR);
-                } else {
-                    const resp2 = await childSendMessage('apply-new', resp1.payload);
-
-                    if (resp2.message !== 'success') throw new HttpException('Could not apply new server after update', HttpStatus.INTERNAL_SERVER_ERROR);
-
-                    setPendingKill(2000);
-                }
-            }
-
-        } catch (error) {
-            logger.error(error);
-            this.setIsUpdating(false);
-            throw new HttpException(error?.message ?? error, HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        this.setIsUpdating(false);
         return true;
     }
 }

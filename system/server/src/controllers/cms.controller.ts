@@ -292,7 +292,7 @@ export class CmsController {
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')
     @ApiOperation({
-        description: `Activates downloaded theme`,
+        description: `Activates/enables (installs in DB) downloaded theme. Does NOT make it as currently used by Renderer. See "change-theme"`,
         parameters: [{ name: 'themeName', in: 'query', required: true }]
     })
     @ApiResponse({

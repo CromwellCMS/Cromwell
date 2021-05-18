@@ -1,11 +1,5 @@
 import { TFrontendBundle, TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
-import {
-    getCmsSettings,
-    getLogger,
-    getThemeAdminPanelBundleDir,
-    JwtAuthGuard,
-    Roles,
-} from '@cromwell/core-backend';
+import { getCmsSettings, getLogger, getThemeAdminPanelBundleDir, JwtAuthGuard, Roles } from '@cromwell/core-backend';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
@@ -16,6 +10,7 @@ import { ModuleInfoDto } from '../dto/module-info.dto';
 import { PageConfigDto } from '../dto/page-config.dto';
 import { PageInfoDto } from '../dto/page-info.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
+import { UpdateInfoDto } from '../dto/update-info.dto';
 import { CmsService } from '../services/cms.service';
 import { ThemeService } from '../services/theme.service';
 
@@ -279,6 +274,72 @@ export class ThemeController {
 
         throw new HttpException("Page bundle doesn't exist", HttpStatus.NOT_ACCEPTABLE);
 
+    }
+
+
+    @Get('check-update')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator', 'guest')
+    @ApiOperation({
+        description: `Returns available Update for sepcified Theme`,
+        parameters: [{ name: 'themeName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: UpdateInfoDto,
+    })
+    async checkUpdate(@Query('themeName') themeName: string): Promise<UpdateInfoDto | boolean | undefined> {
+        const update = await this.themeService.checkThemeUpdate(themeName);
+        if (update) return new UpdateInfoDto()?.parseVersion?.(update);
+        return false;
+    }
+
+
+    @Get('update')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Updates a Theme to latest version`,
+        parameters: [{ name: 'themeName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    async updateTheme(@Query('themeName') themeName: string): Promise<boolean | undefined> {
+        return this.themeService.handleThemeUpdate(themeName);
+    }
+
+
+    @Get('install')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Installs a Theme`,
+        parameters: [{ name: 'themeName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    async installTheme(@Query('themeName') themeName: string): Promise<boolean | undefined> {
+        return this.themeService.handleInstallTheme(themeName);
+    }
+
+
+    @Get('delete')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Deletes a Theme`,
+        parameters: [{ name: 'themeName', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+        type: Boolean,
+    })
+    async deleteTheme(@Query('themeName') themeName: string): Promise<boolean | undefined> {
+        return this.themeService.handleDeleteTheme(themeName);
     }
 
 }

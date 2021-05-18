@@ -16,7 +16,10 @@
   "cromwell": {
     "type": "plugin",
     "title": "Main menu",
-    "icon": "static/icon_menu.png"
+    "icon": "static/icon_menu.png",
+    "frontendDependencies": [
+      "@material-ui/core"
+    ]
   },
   "dependencies": {
     "@material-ui/core": "4.11.2"

@@ -117,8 +117,8 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
 
     }
 
-    private handleDeletePlugin = (pluginName: string) => () => {
-
+    private handleDeletePlugin = (pluginName: string) => async () => {
+        await getRestAPIClient().deletePlugin(pluginName);
     }
 
     private handleActivatePlugin = (pluginName: string) => async () => {
@@ -241,17 +241,17 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                                         </IconButton>
                                     </Tooltip>
                                 ) : (
-                                        <div style={{ opacity: 0.3, padding: '12px' }}><SettingsIcon /></div>
-                                    )
+                                    <div style={{ opacity: 0.3, padding: '12px' }}><SettingsIcon /></div>
+                                )
                             ) : (
-                                    <Tooltip title="Install plugin">
-                                        <IconButton
-                                            disabled={isUnderUpdate}
-                                            onClick={this.handleActivatePlugin(pluginName)}>
-                                            <LibraryAddIcon />
-                                        </IconButton>
-                                    </Tooltip>
-                                )}
+                                <Tooltip title="Install plugin">
+                                    <IconButton
+                                        disabled={isUnderUpdate}
+                                        onClick={this.handleActivatePlugin(pluginName)}>
+                                        <LibraryAddIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
                             <Tooltip title="Delete plugin">
                                 <IconButton
                                     disabled={isUnderUpdate}

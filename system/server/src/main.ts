@@ -112,7 +112,7 @@ async function bootstrap(): Promise<void> {
     try {
         await bootstrap();
     } catch (e) {
-        logger.error(e);
+        logger.error('Server: error on launch:', e);
         if (process.send) process.send(JSON.stringify({
             message: serverMessages.onStartErrorMessage,
         }));

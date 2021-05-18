@@ -41,7 +41,7 @@ export class AuthController {
     async login(@Request() req: TRequestWithUser, @Response() response: FastifyReply, @Body() input: LoginDto) {
         if (req.user?.id) {
             response.status(200);
-            response.send();
+            response.send(true);
             return;
         }
 

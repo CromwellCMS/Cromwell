@@ -14,7 +14,10 @@
   "cromwell": {
     "type": "plugin",
     "title": "Product showcase",
-    "icon": "static/icon_showcase.png"
+    "icon": "static/icon_showcase.png",
+    "frontendDependencies": [
+      "@material-ui/core"
+    ]
   },
   "dependencies": {
     "@material-ui/core": "4.11.2"

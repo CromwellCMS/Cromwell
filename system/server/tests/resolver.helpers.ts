@@ -1,15 +1,29 @@
 import { closeConnection, connectDatabase } from '@App/helpers/connectDataBase';
 import { getResolvers } from '@App/helpers/getResolvers';
-import { graphQlAuthChecker } from '@cromwell/core-backend';
 import { getStoreItem, setStoreItem } from '@cromwell/core';
+import { graphQlAuthChecker } from '@cromwell/core-backend';
 import { ApolloServer } from 'apollo-server';
 import { ApolloServerTestClient, createTestClient } from 'apollo-server-testing';
+import fs from 'fs-extra';
+import { resolve } from 'path';
 import { buildSchema } from 'type-graphql';
 
 import { mockWorkingDirectory } from './helpers';
 
 export const setupResolver = async (name: string): Promise<[ApolloServer, ApolloServerTestClient]> => {
-    await mockWorkingDirectory(name);
+    const testDir = await mockWorkingDirectory(name);
+
+    await fs.outputJSON(resolve(testDir, 'package.json'), {
+        "name": "@cromwell/test",
+        "version": "1.0.0",
+        "cromwell": {
+            "themes": [
+                "@cromwell/theme-store",
+                "@cromwell/theme-blog"
+            ]
+        },
+    });
+
     await connectDatabase();
 
     let cmsSettings = getStoreItem('cmsSettings');

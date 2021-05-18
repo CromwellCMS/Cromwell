@@ -1,17 +1,27 @@
-
-
 import { closeConnection, connectDatabase } from '@App/helpers/connectDataBase';
-import { getStoreItem, setStoreItem } from '@cromwell/core';
 import { AppModule } from '@App/modules/app.module';
+import { getStoreItem, setStoreItem } from '@cromwell/core';
 import { INestApplication } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
-import { Test, } from '@nestjs/testing';
+import { Test } from '@nestjs/testing';
+import fs from 'fs-extra';
+import { resolve } from 'path';
 
 import { mockWorkingDirectory } from './helpers';
 
-
 export const setupController = async (name: string) => {
     const testDir = await mockWorkingDirectory(name);
+
+    await fs.outputJSON(resolve(testDir, 'package.json'), {
+        "name": "@cromwell/test",
+        "version": "1.0.0",
+        "cromwell": {
+            "themes": [
+                "@cromwell/theme-store",
+                "@cromwell/theme-blog"
+            ]
+        },
+    });
 
     await connectDatabase();
 

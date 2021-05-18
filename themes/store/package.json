@@ -1,12 +1,12 @@
 {
   "name": "@cromwell/theme-store",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "CromwellJS",
   "license": "MIT",
-  "main": "package.json",
   "files": [
     "build",
-    "static"
+    "static",
+    "module.config.js"
   ],
   "scripts": {
     "build": "npx --no-install cromwell b",
@@ -76,8 +76,7 @@
       "@cromwell/plugin-newsletter"
     ],
     "themes": [
-      "@cromwell/theme-store",
-      "@cromwell/theme-blog"
+      "@cromwell/theme-store"
     ],
     "frontendDependencies": [
       "mobx",
