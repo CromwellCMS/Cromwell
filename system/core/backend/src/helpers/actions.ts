@@ -20,23 +20,28 @@ export const registerAction = <T extends ActionNames>(options: {
     actions[actionName][pluginName] = action;
 }
 
-export const fireAction = <T extends ActionNames>(options: {
+export const fireAction = async <T extends ActionNames>(options: {
     actionName: T | string;
     payload?: ActionTypes[T];
-}) => {
+}): Promise<Record<string, any>> => {
     const logger = getLogger();
     const { payload, actionName } = options ?? {};
     if (!actionName) {
         logger.error('fireAction: Invalid options: ' + options);
-        return;
+        return {};
     }
 
     if (!actions[actionName]) actions[actionName] = {};
-    Object.keys(actions[actionName]).forEach(pluginName => {
-        try {
-            actions[actionName][pluginName](payload);
-        } catch (error) {
-            logger.error(`fireAction: Action of ${pluginName} failed: ` + error);
-        }
-    });
+    const results = await Promise.all(
+        Object.keys(actions[actionName]).map(async (pluginName) => {
+            let res;
+            try {
+                res = await actions[actionName][pluginName](payload);
+            } catch (error) {
+                logger.error(`fireAction: Action of ${pluginName} failed: ` + error);
+            }
+            return { [pluginName]: res }
+        })
+    );
+    return Object.assign({}, ...results);
 }

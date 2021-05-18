@@ -1,7 +1,7 @@
 import { TModuleConfig, TPackageCromwellConfig, TPackageJson } from '@cromwell/core';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
-import { dirname, isAbsolute, resolve } from 'path';
+import { dirname, isAbsolute, resolve, join } from 'path';
 
 import { getLogger } from './logger';
 
@@ -42,7 +42,8 @@ export const getCMSConfigPath = () => resolve(process.cwd(), cmsConfigFileName);
 export const getCoreCommonDir = () => getNodeModuleDirSync('@cromwell/core');
 export const getCoreFrontendDir = () => getNodeModuleDirSync('@cromwell/core-backend');
 export const getCoreBackendDir = () => getNodeModuleDirSync('@cromwell/core-frontend');
-
+export const getLogsDir = () => join(getTempDir(), 'logs');
+export const getErrorLogPath = () => join(getLogsDir(), 'error.log');
 
 // Manager
 export const getManagerDir = () => getNodeModuleDirSync('@cromwell/cms');
