@@ -1,4 +1,4 @@
-import { getLogger, getManagerDir, getModulePackage, getTempDir } from '@cromwell/core-backend';
+import { getCmsModuleInfo, getLogger, getManagerDir, getModulePackage, getTempDir } from '@cromwell/core-backend';
 import { defaultFrontendDeps, downloader, parseFrontendDeps, TPackage } from '@cromwell/utils';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -29,21 +29,36 @@ export const checkDepenencies = async () => {
     const rendererDeps = Object.keys(rendererPckg?.dependencies ?? {});
 
     const wrongDeps: string[] = [];
+    const wrongCmsModules: string[] = [];
     if (pckg?.dependencies) {
-        Object.keys(pckg.dependencies).forEach(dep => {
+        for (const dep of Object.keys(pckg.dependencies)) {
             if (dep.startsWith('@cromwell/') || serverDeps.includes(dep) ||
                 backendDeps.includes(dep) || defaultDeps.includes(dep) ||
                 rendererDeps.includes(dep)
             ) {
                 wrongDeps.push(dep);
             }
-        })
+
+            const moduleInfo = await getCmsModuleInfo(dep);
+            if (moduleInfo?.type) {
+                wrongCmsModules.push(dep)
+            }
+        }
     }
+
     if (wrongDeps.length) {
         wrongDeps.sort();
         logger.error('CromwellCMS already includes following dependencies: '
             + wrongDeps.join(', ') + '\n Please configure them as peerDependencies in your package.json');
+    }
 
+    if (wrongCmsModules.length) {
+        wrongCmsModules.sort();
+        logger.error('Do not include themes or pluins as dependencies in your package.json: '
+            + wrongCmsModules.join(', ') + '\n Please configure them as peerDependencies and themes or plugins under "cromwell" property');
+    }
+
+    if (wrongDeps.length && wrongCmsModules.length) {
         process.exit(0);
     }
 }

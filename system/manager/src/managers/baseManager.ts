@@ -227,7 +227,7 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
     let currentVersion: number | null | undefined = null;
 
     try {
-        const remoteSettings = await getRestAPIClient()?.getCmsSettings();
+        const remoteSettings = await getRestAPIClient()?.getCmsSettings({ disableLog: true });
         if (remoteSettings) {
             const remoteVersion = extractServiceVersion(remoteSettings, serviceName);
             currentVersion = remoteVersion;
@@ -241,7 +241,7 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
     const watchService = async (serviceName: keyof TServiceVersions) => {
         const currentSettings = getStoreItem('cmsSettings');
         try {
-            const remoteSettings = await getRestAPIClient()?.getCmsSettings();
+            const remoteSettings = await getRestAPIClient()?.getCmsSettings({ disableLog: true });
             const remoteVersion = extractServiceVersion(remoteSettings, serviceName);
 
             if (currentVersion !== null && remoteVersion && remoteVersion !== currentVersion) {

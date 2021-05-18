@@ -17,6 +17,7 @@ import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { pluginPageInfo } from '../../constants/PageInfos';
 import commonStyles from '../../styles/common.module.scss';
+import { loadPlugins, loadPlugin } from '../../helpers/loadPlugins';
 import styles from './PluginList.module.scss';
 
 
@@ -173,10 +174,14 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
             console.error(error)
         }
 
+        await loadPlugin(plugin.name);
+
         if (success) toast.success('Plugin updated');
         else toast.error('Failed to update plugin');
         this.pluginsUnderUpdate[plugin.name] = false;
         this.forceUpdate();
+
+        loadPlugins({ onlyNew: true });
     }
 
 

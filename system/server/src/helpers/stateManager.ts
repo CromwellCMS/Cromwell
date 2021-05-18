@@ -15,7 +15,6 @@ const store: {
     transactions: {},
 }
 
-
 export const setPendingKill = (time?: number) => {
     store.pendingTimer = time;
     store.isPendingKill = true;
@@ -26,7 +25,11 @@ export const setPendingRestart = (time?: number) => {
     store.isPendingRestart = true;
 }
 
-/** Save status of any pending job into the store */
+/** 
+ * Save status of any pending job into the store.
+ * Transactions used to ensure server won't be restarted or killed by
+ * any Theme/Plugin update/installation job until all transactions are completed.
+ */
 export const startTransaction = (id: string) => {
     if (store.isClosing) {
         throw new HttpException('Could not start transaction: Server is closing', HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,4 +1,5 @@
 import {
+    getRandStr,
     sleep,
     TCCSModuleShortInfo,
     TCCSVersion,
@@ -7,7 +8,6 @@ import {
     TPluginEntity,
     TPluginEntityInput,
     TSciprtMetaInfo,
-    getRandStr,
 } from '@cromwell/core';
 import {
     buildDirName,
@@ -23,21 +23,22 @@ import {
     getPluginFrontendBundlePath,
     getPluginFrontendCjsPath,
     getPublicPluginsDir,
-    runShellCommand,
-    readPluginsExports,
     incrementServiceVersion,
+    readPluginsExports,
+    runShellCommand,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import decache from 'decache';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
-import requireFromString from 'require-from-string';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericPlugin } from '../helpers/genericEntities';
 import { childSendMessage } from '../helpers/serverManager';
-import { setPendingKill, setPendingRestart, startTransaction, endTransaction } from '../helpers/stateManager';
+import { endTransaction, setPendingKill, setPendingRestart, startTransaction } from '../helpers/stateManager';
+import { cmsServiceInst } from './cms.service';
 
 const logger = getLogger();
 
@@ -180,10 +181,14 @@ export class PluginService {
             error = e;
             success = false;
         }
-        endTransaction(transactionId);
+
+        if (success) await cmsServiceInst.installModuleDependencies(pluginName);
         await this.setIsUpdating(pluginName, false);
 
+        endTransaction(transactionId);
+
         if (!success) {
+            logger.error('Failed to update plugin: ', error?.message, error);
             throw new HttpException(error?.message, error?.status);
         }
         return true;
@@ -250,9 +255,13 @@ export class PluginService {
             error = e;
             success = false;
         }
+
+        if (success) await cmsServiceInst.installModuleDependencies(pluginName);
+
         endTransaction(transactionId);
 
         if (!success) {
+            logger.error('Failed to install plugin: ', error?.message, error);
             throw new HttpException(error?.message, error?.status);
         }
         return true;
@@ -274,7 +283,6 @@ export class PluginService {
 
         const pluginExports = (await readPluginsExports()).find(p => p.pluginName === pluginName);
         if (!pluginExports) throw new HttpException('Plugin in not a CMS module', HttpStatus.INTERNAL_SERVER_ERROR);
-
 
         if (pluginExports.backendPath && await fs.pathExists(pluginExports.backendPath)) {
             // If plugin has backend, we need to apply it by restarting API server
@@ -309,7 +317,6 @@ export class PluginService {
 
         // @TODO Execute install script
 
-
         // Read module info from package.json
         const moduleInfo = await getCmsModuleInfo(pluginName);
         delete moduleInfo?.frontendDependencies;
@@ -321,8 +328,10 @@ export class PluginService {
         const filePath = resolve(pluginPath, configFileName);
         if (await fs.pathExists(filePath)) {
             try {
-                const content = (await fs.readFile(filePath)).toString();
-                pluginConfig = requireFromString(content, filePath);
+                decache(filePath);
+            } catch (error) { }
+            try {
+                pluginConfig = require(filePath);
             } catch (e) {
                 logger.error(e);
             }

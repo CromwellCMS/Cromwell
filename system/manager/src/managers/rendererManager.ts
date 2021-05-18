@@ -34,7 +34,7 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
     const cmsConfig = await readCMSConfig();
     let cmsSettings: TCmsSettings | undefined;
     try {
-        cmsSettings = await getRestAPIClient()?.getCmsSettings();
+        cmsSettings = await getRestAPIClient()?.getCmsSettings({ disableLog: true });
     } catch (error) {
         logger.error(error);
     }

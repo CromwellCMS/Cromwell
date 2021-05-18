@@ -27,13 +27,14 @@ import {
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import decache from 'decache';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import requireFromString from 'require-from-string';
 import { getCustomRepository } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
 import { childSendMessage } from '../helpers/serverManager';
+import { cmsServiceInst } from './cms.service';
 import { endTransaction, setPendingKill, startTransaction } from '../helpers/stateManager';
 import { pluginServiceInst } from './plugin.service';
 
@@ -552,8 +553,10 @@ export class ThemeService {
         const filePath = resolve(themePath, configFileName);
         if (await fs.pathExists(filePath)) {
             try {
-                const content = (await fs.readFile(filePath)).toString();
-                themeConfig = requireFromString(content, filePath);
+                decache(filePath);
+            } catch (error) { }
+            try {
+                themeConfig = require(filePath);
             } catch (e) {
                 logger.error(e);
             }
@@ -637,7 +640,6 @@ export class ThemeService {
     }
 
 
-
     async handleThemeUpdate(themeName: string): Promise<boolean> {
         if (await this.getIsUpdating(themeName)) return false;
 
@@ -653,8 +655,11 @@ export class ThemeService {
             error = e;
             success = false;
         }
-        endTransaction(transactionId);
+
+        if (success) await cmsServiceInst.installModuleDependencies(themeName);
         await this.setIsUpdating(themeName, false);
+
+        endTransaction(transactionId);
 
         if (!success) {
             throw new HttpException(error?.message, error?.status);
@@ -728,6 +733,9 @@ export class ThemeService {
             error = e;
             success = false;
         }
+
+        if (success) await cmsServiceInst.installModuleDependencies(themeName);
+
         endTransaction(transactionId);
 
         if (!success) {
@@ -753,6 +761,7 @@ export class ThemeService {
         await this.activateTheme(themeName);
         return true;
     }
+
 
 
     async handleDeleteTheme(name: string): Promise<boolean> {

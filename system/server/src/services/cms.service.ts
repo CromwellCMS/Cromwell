@@ -1,4 +1,5 @@
 import {
+    getRandStr,
     setStoreItem,
     sleep,
     TCCSVersion,
@@ -7,7 +8,6 @@ import {
     TPackageCromwellConfig,
     TProductReview,
     TStoreListItem,
-    getRandStr,
     TUser,
     TUserRole,
 } from '@cromwell/core';
@@ -52,9 +52,10 @@ import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
-import { themeServiceInst } from './theme.service';
 import { childSendMessage } from '../helpers/serverManager';
-import { setPendingKill, startTransaction, endTransaction } from '../helpers/stateManager';
+import { endTransaction, setPendingKill, startTransaction } from '../helpers/stateManager';
+import { pluginServiceInst } from './plugin.service';
+import { themeServiceInst } from './theme.service';
 
 const logger = getLogger();
 
@@ -517,7 +518,7 @@ export class CmsService {
         await sleep(1);
 
         if ((availableUpdate?.restartServices ?? []).includes('api-server')) {
-            
+
             // Restart API server by Proxy manager
             const resp1 = await childSendMessage('make-new');
             if (resp1.message !== 'success') {
@@ -537,5 +538,33 @@ export class CmsService {
 
         return true;
     }
+
+
+    async installModuleDependencies(moduleName: string) {
+        const pckg = await getModulePackage(moduleName);
+
+        for (const pluginName of (pckg?.cromwell?.plugins ?? [])) {
+            const pluginPckg = await getModulePackage(pluginName);
+            if (pluginPckg) continue;
+
+            try {
+                await pluginServiceInst.handleInstallPlugin(pluginName);
+            } catch (error) {
+                logger.error(error);
+            }
+        }
+
+        for (const themeName of (pckg?.cromwell?.themes ?? [])) {
+            const themePckg = await getModulePackage(themeName);
+            if (themePckg) continue;
+
+            try {
+                await themeServiceInst.handleInstallTheme(themeName);
+            } catch (error) {
+                logger.error(error);
+            }
+        }
+    }
+
 }
 
