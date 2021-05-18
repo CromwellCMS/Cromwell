@@ -35,6 +35,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 activatePlugin,
                 getPluginUpdate: jest.fn().mockImplementation(async () => null),
                 updatePlugin: jest.fn().mockImplementation(async () => null),
+                deletePlugin: jest.fn().mockImplementation(async () => null),
             }
         }
     }

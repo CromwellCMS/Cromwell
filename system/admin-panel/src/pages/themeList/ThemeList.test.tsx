@@ -46,6 +46,7 @@ jest.mock('@cromwell/core-frontend', () => {
             return {
                 getThemesInfo: jest.fn().mockImplementation(async () => testDataAll),
                 getCmsSettingsAndSave: jest.fn().mockImplementation(async () => cmsSettings),
+                getThemeUpdate: jest.fn().mockImplementation(async () => null),
                 activateTheme,
                 getCmsStatus: () => null,
             }
