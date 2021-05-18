@@ -550,12 +550,10 @@ export class ThemeService {
         // Read theme config
         let themeConfig;
         const filePath = resolve(themePath, configFileName);
-        console.log('activateTheme filePath', filePath);
         if (await fs.pathExists(filePath)) {
             try {
                 const content = (await fs.readFile(filePath)).toString();
                 themeConfig = requireFromString(content, filePath);
-                console.log('activateTheme themeConfig', themeConfig);
             } catch (e) {
                 logger.error(e);
             }
