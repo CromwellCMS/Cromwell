@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "files": [
-    "build"
+    "build",
+    "static",
+    "cromwell.config.js"
   ],
   "author": "CromwellJS",
   "license": "MIT",

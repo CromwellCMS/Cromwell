@@ -6,7 +6,8 @@
   "main": "package.json",
   "files": [
     "build",
-    "static"
+    "static",
+    "cromwell.config.js"
   ],
   "scripts": {
     "build": "npx --no-install cromwell b",

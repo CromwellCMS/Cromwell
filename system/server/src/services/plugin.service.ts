@@ -268,7 +268,7 @@ export class PluginService {
     }
 
     async installPlugin(pluginName: string): Promise<boolean> {
-        const info = await this.getPluginLatest(pluginName)
+        const info = await this.getPluginLatest(pluginName);
         if (!pluginName || pluginName === '' || !info || !info.packageVersion || !info.version) throw new HttpException('Plugin was not found', HttpStatus.METHOD_NOT_ALLOWED);
 
         const settings = await getCmsSettings();
@@ -414,7 +414,7 @@ export class PluginService {
         let success = false;
         let error: any;
         try {
-            success = await this.deletePlugin(pluginName)
+            success = await this.deletePlugin(pluginName);
         } catch (e) {
             error = e;
             success = false;
@@ -452,3 +452,4 @@ export class PluginService {
         return true;
     }
 }
+

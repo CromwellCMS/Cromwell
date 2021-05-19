@@ -3,7 +3,9 @@
   "version": "1.0.1",
   "description": "",
   "files": [
-    "build"
+    "build",
+    "static",
+    "cromwell.config.js"
   ],
   "main": "dist",
   "module": "es",

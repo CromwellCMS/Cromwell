@@ -4,7 +4,8 @@
   "description": "",
   "files": [
     "build",
-    "static"
+    "static",
+    "cromwell.config.js"
   ],
   "author": "CromwellJS",
   "license": "MIT",

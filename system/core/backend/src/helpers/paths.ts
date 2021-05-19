@@ -8,7 +8,7 @@ import { getLogger } from './logger';
 export const cmsName = 'cromwell';
 export const tempDirName = `.${cmsName}`;
 export const buildDirName = `build`;
-export const configFileName = 'module.config.js';
+export const configFileName = `${cmsName}.config.js`;
 export const cmsConfigFileName = 'cmsconfig.json';
 
 export const getTempDir = () => resolve(process.cwd(), tempDirName);

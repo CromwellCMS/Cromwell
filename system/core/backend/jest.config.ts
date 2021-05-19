@@ -17,6 +17,7 @@ const config: Config.InitialOptions = {
         "^.+\\.tsx?$": "ts-jest"
     },
     moduleFileExtensions: ["ts", "tsx", "js", "jsx", "json", "node"],
+    globalTeardown: "<rootDir>/tests/teardown.ts",
     setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"]
 };
 
