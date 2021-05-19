@@ -55,14 +55,11 @@ jest.mock('@cromwell/core-frontend', () => {
     }
 });
 
-import { getRestAPIClient } from '@cromwell/core-frontend';
 import { fireEvent, render, screen } from '@testing-library/react';
 
 import ThemeListPage from './ThemeList';
 
 describe('ThemeList page', () => {
-
-    const apiClient = getRestAPIClient();
 
     it("renders themes", async () => {
         render(<ThemeListPage />);

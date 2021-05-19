@@ -1,7 +1,15 @@
 import fs from 'fs-extra';
+import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 
-import { buildDirName, configFileName, getNodeModuleDir, getPluginBackendPath, getPluginFrontendBundlePath } from './paths';
+import {
+    buildDirName,
+    getCmsModuleInfo,
+    getNodeModuleDir,
+    getPluginAdminBundlePath,
+    getPluginBackendPath,
+    getPluginFrontendBundlePath,
+} from './paths';
 import { readCmsModules } from './readCmsModules';
 
 export type TPluginInfo = {
@@ -18,35 +26,32 @@ export const readPluginsExports = async (): Promise<TPluginInfo[]> => {
     const pluginNames: string[] = (await readCmsModules()).plugins;
 
     for (const name of pluginNames) {
+        const info = await getCmsModuleInfo(name);
+        if (!info) continue;
+
         const pluginDir = await getNodeModuleDir(name);
-        if (pluginDir) {
-            const configPath = resolve(pluginDir, configFileName);
+        if (!pluginDir) continue;
 
-            if (await fs.pathExists(configPath)) {
+        const pluginInfo: TPluginInfo = {
+            pluginName: name
+        };
 
-                const pluginInfo: TPluginInfo = {
-                    pluginName: name
-                };
-
-                const frontendPath = getPluginFrontendBundlePath(resolve(pluginDir, buildDirName));
-                if (await fs.pathExists(frontendPath)) {
-                    pluginInfo.frontendPath = frontendPath.replace(/\\/g, '/');
-                }
-
-                // const adminPanelPath = resolve(pluginsDir, name, config.adminDir, 'index.js');
-                // if (await fs.pathExists(adminPanelPath)) {
-                //     pluginInfo.adminPanelPath = adminPanelPath.replace(/\\/g, '/');
-                // }
-
-                const backendPath = getPluginBackendPath(resolve(pluginDir, buildDirName));
-                if (await fs.pathExists(backendPath)) {
-                    pluginInfo.backendPath = backendPath
-                }
-
-                infos.push(pluginInfo);
-            }
+        const frontendPath = getPluginFrontendBundlePath(resolve(pluginDir, buildDirName));
+        if (await fs.pathExists(frontendPath)) {
+            pluginInfo.frontendPath = normalizePath(frontendPath);
         }
 
+        const adminPath = getPluginAdminBundlePath(resolve(pluginDir, buildDirName));
+        if (await fs.pathExists(adminPath)) {
+            pluginInfo.adminPanelPath = normalizePath(adminPath);
+        }
+
+        const backendPath = getPluginBackendPath(resolve(pluginDir, buildDirName));
+        if (await fs.pathExists(backendPath)) {
+            pluginInfo.backendPath = normalizePath(backendPath)
+        }
+
+        infos.push(pluginInfo);
     }
 
     return infos;

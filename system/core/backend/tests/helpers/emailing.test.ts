@@ -1,9 +1,9 @@
-import { connectDatabase, mockWorkingDirectory } from '../helpers';
-import { getServerDefaultEmailsDir, getServerTempEmailsDir } from '../../src/helpers/paths';
-import { getEmailTemplate } from '../../src/helpers/emailing';
-
 import fs from 'fs-extra';
 import { resolve } from 'path';
+
+import { getEmailTemplate } from '../../src/helpers/emailing';
+import { getServerTempEmailsDir } from '../../src/helpers/paths';
+import { connectDatabase, mockWorkingDirectory } from '../helpers';
 
 describe('emailing', () => {
 

@@ -19,6 +19,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import Modal from '../../components/modal/Modal';
 import { toast } from '../../components/toast/toast';
+import { loadPlugins } from '../../helpers/loadPlugins';
 import { themeEditPageInfo } from '../../constants/PageInfos';
 import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
@@ -215,6 +216,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
         else toast.error('Failed to update theme');
         this.themeUnderUpdate[theme.name] = false;
         this.forceUpdate();
+        loadPlugins({ onlyNew: true });
     }
 
     private handleDelete = async (theme: TPackageCromwellConfig) => {

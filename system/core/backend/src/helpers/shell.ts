@@ -6,13 +6,14 @@ const logger = getLogger();
 
 export const runShellCommand = (command: string, cwd?: string): Promise<void> => {
     logger.info('Running shell command: ' + command);
+
     return new Promise<void>(done => {
         const proc = spawn(command, [],
             { shell: true, stdio: 'pipe', cwd: cwd ?? process.cwd() });
 
         if (proc.stderr && proc.stderr.on) {
             proc.stderr.on('data', (data) => {
-                logger.error(data.toString ? data.toString() : data);
+                logger.warn(data.toString ? data.toString() : data);
             });
         }
         if (proc.stdout && proc.stdout.on) {

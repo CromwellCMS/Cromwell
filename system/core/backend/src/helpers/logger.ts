@@ -1,9 +1,8 @@
 import { logFor, TLogLevel } from '@cromwell/core';
 import colorsdef from 'colors/safe';
-import { join } from 'path';
 import * as winston from 'winston';
 
-import { getTempDir } from './paths';
+import { getErrorLogPath } from './paths';
 
 const colors: any = colorsdef;
 
@@ -30,7 +29,6 @@ let logger;
 let fileLogger;
 
 export const getLogger = (writeToFile = true) => {
-    const logsDir = join(getTempDir(), 'logs');
     if (!logger) {
         logger = winston.createLogger({
             format: combine(
@@ -50,7 +48,7 @@ export const getLogger = (writeToFile = true) => {
             ),
             transports: [
                 new winston.transports.File({
-                    filename: join(logsDir, 'error.log'),
+                    filename: getErrorLogPath(),
                     level: 'error',
                 }),
             ],

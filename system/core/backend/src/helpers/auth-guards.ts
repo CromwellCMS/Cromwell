@@ -49,16 +49,22 @@ export class JwtAuthGuard implements CanActivate {
 }
 
 export const graphQlAuthChecker = (
-    { root, args, context, info },
-    roles: TAuthRole[],
+    options?: {
+        root?: any;
+        args?: Record<string, any>;
+        context?: TGraphQLContext;
+        info?: any;
+    } | null,
+    roles?: TAuthRole[] | null,
 ) => {
+    const { root, args, context, info } = options ?? {};
     if (getStoreItem('cmsSettings')?.installed === false) return true;
 
     const userInfo: TAuthUserInfo | undefined = (context as TGraphQLContext)?.user;
     return matchRoles(userInfo, roles, args?.id);
 };
 
-const matchRoles = (user?: TAuthUserInfo, roles?: TAuthRole[], entityId?: string): boolean => {
+const matchRoles = (user?: TAuthUserInfo, roles?: TAuthRole[] | null, entityId?: string): boolean => {
     if (!roles || roles.length === 0) return true;
     if (!user?.id) return false;
     if (user.role === 'administrator') return true;

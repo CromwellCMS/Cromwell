@@ -1,3 +1,4 @@
+import fs from 'fs-extra';
 import { join, resolve } from 'path';
 import { ORMEntities, defaultCmsConfig } from '../src/helpers/constants';
 import { ConnectionOptions, createConnection, getConnection, getCustomRepository } from 'typeorm';
@@ -23,4 +24,9 @@ export const connectDatabase = async () => {
     }
 
     await createConnection(connectionOptions);
+}
+
+export const clearTestDir = () => {
+    const testDir = resolve(process.cwd(), '.cromwell/test');
+    if (fs.pathExistsSync(testDir)) fs.removeSync(testDir);
 }

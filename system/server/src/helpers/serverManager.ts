@@ -21,7 +21,7 @@ type ServerInfo = {
 const activeServer: ServerInfo = {};
 let isRestarting = false;
 let isPendingRestart = false;
-const madeServers: Record<string, ServerInfo> = {}
+const madeServers: Record<string, ServerInfo> = {};
 
 export const getServerPort = () => activeServer.port;
 
@@ -62,7 +62,7 @@ const makeServer = async (): Promise<ServerInfo> => {
     await new Promise(done => {
         setTimeout(() => {
             if (!hasReported) done(false);
-        }, 10000);
+        }, 15000);
 
         serverProc.on('message', (message) => {
             let msg;
@@ -216,7 +216,7 @@ export const childRegister = (port: number) => {
 
     if (process.send) process.send(JSON.stringify({
         message: serverMessages.onStartMessage,
-        port,
+        port: port,
     }));
 
     process.on('message', (m) => {
@@ -236,7 +236,7 @@ type IPCMessage = {
 
 export const childSendMessage = async (message: IPCMessageType, payload?: any): Promise<IPCMessage> => {
     const messageId = getRandStr(8);
-    
+
     let responseResolver;
     const responsePromise = new Promise<IPCMessage>(res => responseResolver = res);
     const cb = (message) => {

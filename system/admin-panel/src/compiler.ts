@@ -10,11 +10,11 @@ const run = async () => {
 
     const compiler = webpack(webpackConfig);
 
-    compiler.hooks.watchRun.tap('adminPanelStart', (params) => {
+    compiler.hooks.watchRun.tap('adminPanelStart', () => {
         console.log(chalk.cyan('\r\nBegin compile at ' + new Date() + '\r\n'));
     });
 
-    compiler.hooks.done.tap('adminPanelDone', (params) => {
+    compiler.hooks.done.tap('adminPanelDone', () => {
         setTimeout(() => {
             console.log(chalk.cyan('\r\nEnd compile at ' + new Date() + '\r\n'));
 

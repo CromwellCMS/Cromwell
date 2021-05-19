@@ -1,14 +1,14 @@
 import { TModuleConfig, TPackageCromwellConfig, TPackageJson } from '@cromwell/core';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
-import { dirname, isAbsolute, resolve } from 'path';
+import { dirname, isAbsolute, resolve, join } from 'path';
 
 import { getLogger } from './logger';
 
 export const cmsName = 'cromwell';
 export const tempDirName = `.${cmsName}`;
 export const buildDirName = `build`;
-export const configFileName = 'module.config.js';
+export const configFileName = `${cmsName}.config.js`;
 export const cmsConfigFileName = 'cmsconfig.json';
 
 export const getTempDir = () => resolve(process.cwd(), tempDirName);
@@ -25,7 +25,6 @@ export const getNodeModuleDirSync = (moduleName: string) => {
         if (modulePath) return dirname(fs.realpathSync(modulePath));
     } catch (e) {
         const logger = getLogger();
-        logger.error('Failed to resolve module path of: ' + moduleName + e, 'Error');
     }
 }
 
@@ -35,7 +34,6 @@ export const getNodeModuleDir = async (moduleName: string) => {
         if (modulePath) return dirname(await fs.realpath(modulePath));
     } catch (e) {
         const logger = getLogger();
-        logger.error('Failed to resolve module path of: ' + moduleName + e, 'Error');
     }
 }
 
@@ -44,7 +42,8 @@ export const getCMSConfigPath = () => resolve(process.cwd(), cmsConfigFileName);
 export const getCoreCommonDir = () => getNodeModuleDirSync('@cromwell/core');
 export const getCoreFrontendDir = () => getNodeModuleDirSync('@cromwell/core-backend');
 export const getCoreBackendDir = () => getNodeModuleDirSync('@cromwell/core-frontend');
-
+export const getLogsDir = () => join(getTempDir(), 'logs');
+export const getErrorLogPath = () => join(getLogsDir(), 'error.log');
 
 // Manager
 export const getManagerDir = () => getNodeModuleDirSync('@cromwell/cms');
@@ -210,9 +209,7 @@ export const getModulePackage = async (moduleName?: string): Promise<TPackageJso
     let pPath: string | undefined = moduleName ?? process.cwd();
     try {
         if (!isAbsolute(pPath)) pPath = resolvePackageJsonPath(pPath);
-    } catch (error) {
-        logger.error('Failed to resolve module path of: ' + moduleName + error, 'Error');
-    }
+    } catch (error) { }
     if (pPath && !pPath.endsWith('package.json')) pPath = pPath + '/package.json';
     if (pPath) pPath = normalizePath(pPath);
     try {

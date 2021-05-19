@@ -1,8 +1,6 @@
-const constants = require('./src/constants');
-
 module.exports = {
     palette: {
-        primaryColor: constants.primaryColor
+        primaryColor: '#9900CC',
     },
     globalCss: [
         "react-toastify/dist/ReactToastify.css",
