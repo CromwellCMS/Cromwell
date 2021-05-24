@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 require('dotenv').config();
 
-import { apiMainRoute, currentApiVersion } from '@cromwell/core';
+import { apiV1BaseRoute, currentApiVersion } from '@cromwell/core';
 import { getLogger, graphQlAuthChecker, readCMSConfigSync, serverMessages, TGraphQLContext } from '@cromwell/core-backend';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -37,7 +37,7 @@ async function bootstrap(): Promise<void> {
     const envMode = loadEnv();
 
     // Launch Nest.js with Fastify
-    const apiPrefix = apiMainRoute;
+    const apiPrefix = apiV1BaseRoute;
     const fastifyInstance = fastify();
 
     // GraphQL

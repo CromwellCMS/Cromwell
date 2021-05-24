@@ -1,5 +1,5 @@
 import {
-    apiMainRoute,
+    apiV1BaseRoute,
     getStoreItem,
     isServer,
     logFor,
@@ -390,7 +390,7 @@ export const getRestAPIClient = (): CRestAPIClient => {
     if (clients?.restAPIClient) return clients.restAPIClient;
 
     const typeUrl = serviceLocator.getMainApiUrl();
-    const baseUrl = `${typeUrl}/${apiMainRoute}`;
+    const baseUrl = `${typeUrl}/${apiV1BaseRoute}`;
 
     const newClient = new CRestAPIClient(baseUrl);
     if (!clients) clients = {};

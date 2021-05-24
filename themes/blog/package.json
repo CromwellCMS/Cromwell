@@ -68,7 +68,10 @@
       "@cromwell/theme-blog"
     ],
     "frontendDependencies": [
-      "react-swipeable-views"
+      "react-swipeable-views",
+      "@material-ui/lab",
+      "@material-ui/core",
+      "date-fns"
     ],
     "firstLoadedDependencies": [
       "date-fns",

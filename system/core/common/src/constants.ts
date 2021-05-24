@@ -117,8 +117,6 @@ export const isServer = (): boolean => (typeof window === 'undefined');
 
 export const currentApiVersion = '1.0.0';
 export const apiV1BaseRoute = 'api/v1';
-export const apiMainRoute = `${apiV1BaseRoute}/main`;
-export const apiExtensionRoute = `${apiV1BaseRoute}/ext`;
 // export const isServer = (): boolean => true;
 
 const getBaseUrl = (key: keyof TCmsConfig) => {
