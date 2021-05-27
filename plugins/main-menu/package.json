@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/plugin-main-menu",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "files": [
     "build",
@@ -45,12 +45,12 @@
     "@rollup/plugin-commonjs": "^13.0.2",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^8.4.0",
-    "rollup-plugin-ts-compiler": "^1.0.15",
     "@types/node": "14.0.13",
     "@types/react": "16.9.36",
     "@types/react-dom": "16.9.8",
     "rollup": "^2.28.2",
     "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-ts-compiler": "^1.0.15",
     "typescript": "4.2.4"
   }
 }
