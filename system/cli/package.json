@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/cli",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "main": "build/cli.js",
   "files": [
     "build",
