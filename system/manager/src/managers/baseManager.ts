@@ -136,10 +136,6 @@ export const startSystem = async (scriptName: TScriptName) => {
     await startServer(isDevelopment ? 'dev' : 'prod');
     await startAdminPanel();
     await startRenderer();
-
-    if (!isDevelopment) {
-        await startNginx(isDevelopment);
-    }
 }
 
 

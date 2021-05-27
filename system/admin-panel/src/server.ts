@@ -95,8 +95,6 @@ const start = async () => {
         decorateReply: false,
     });
 
-    console.log('adminPanelStaticDir', adminPanelStaticDir, 'publicDir', publicDir, 'webTempDir', webTempDir)
-
     const indexPageHandle = (req, res) => {
         // route requested, send index.html 
         res.type('text/html').send(`

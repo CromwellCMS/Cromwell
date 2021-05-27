@@ -4,7 +4,8 @@
   "main": "buld/renderer.js",
   "author": "CromwellJS",
   "files": [
-    "build"
+    "build",
+    "startup.js"
   ],
   "license": "MIT",
   "scripts": {
@@ -16,8 +17,8 @@
     "gen": "node startup.js gen"
   },
   "dependencies": {
-    "@cromwell/core": "1.1.0",
-    "@cromwell/core-backend": "1.0.0",
+    "@cromwell/core": "1.1.1",
+    "@cromwell/core-backend": "1.0.1",
     "@cromwell/core-frontend": "1.0.0",
     "@cromwell/utils": "1.0.0",
     "fs-extra": "10.0.0",
@@ -60,7 +61,7 @@
     "webpack": "5.11.1"
   },
   "rendererFrontendDependencies": {
-    "@cromwell/core": "1.1.0",
+    "@cromwell/core": "1.1.1",
     "@cromwell/core-frontend": "1.0.0",
     "react-is": "17.0.1",
     "react-html-parser": "2.0.2"

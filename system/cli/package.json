@@ -4,7 +4,8 @@
   "main": "build/cli.js",
   "files": [
     "build",
-    "bin"
+    "bin",
+    "startup.js"
   ],
   "keywords": [],
   "author": "CromwellJS",

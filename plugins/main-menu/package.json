@@ -29,8 +29,8 @@
   "peerDependencies": {
     "@apollo/client": "3.2.1",
     "@cromwell/cli": "1.0.0",
-    "@cromwell/core": "1.1.0",
-    "@cromwell/core-backend": "1.0.0",
+    "@cromwell/core": "1.1.1",
+    "@cromwell/core-backend": "1.0.1",
     "@cromwell/core-frontend": "1.0.0",
     "@cromwell/utils": "1.0.0",
     "clsx": "1.1.1",

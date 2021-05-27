@@ -16,13 +16,13 @@
   "dependencies": {
     "@material-ui/core": "4.11.2",
     "@material-ui/lab": "4.0.0-alpha.57",
-    "date-fns": "2.19.0",
+    "date-fns": "2.21.3",
     "reset-css": "5.0.1"
   },
   "peerDependencies": {
     "@apollo/client": "3.2.1",
     "@cromwell/cli": "1.0.0",
-    "@cromwell/core": "1.1.0",
+    "@cromwell/core": "1.1.1",
     "@cromwell/core-frontend": "1.0.0",
     "clsx": "1.1.1",
     "next": "10.1.3",

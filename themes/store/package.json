@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/theme-store",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "author": "CromwellJS",
   "license": "MIT",
   "files": [
@@ -15,7 +15,7 @@
   "dependencies": {
     "@material-ui/core": "4.11.2",
     "@material-ui/lab": "4.0.0-alpha.57",
-    "date-fns": "2.19.0",
+    "date-fns": "2.21.3",
     "mobx": "5.15.7",
     "mobx-react": "6.3.1",
     "react-swipeable-views": "0.13.9",
@@ -24,7 +24,7 @@
   "peerDependencies": {
     "@apollo/client": "3.2.1",
     "@cromwell/cli": "1.0.0",
-    "@cromwell/core": "1.1.0",
+    "@cromwell/core": "1.1.1",
     "@cromwell/core-frontend": "1.0.0",
     "@cromwell/utils": "1.0.0",
     "@cromwell/plugin-main-menu": "^1.0.0",

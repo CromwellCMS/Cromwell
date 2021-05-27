@@ -9,7 +9,7 @@ import {
     rendererMessages,
 } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import axios from 'axios';
+import fetch, { Response } from 'node-fetch';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
@@ -106,7 +106,8 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
             ManagerState.rendererStatus = 'busy';
             let success = false;
             try {
-                success = (await axios.get(rendererUrl)).status < 400;
+                const responce: Response = await fetch(rendererUrl);
+                success = responce.status < 400;
             } catch (e) {
                 logger.error(e);
             }
