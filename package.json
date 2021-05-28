@@ -11,6 +11,8 @@
         "dev:win": "node ./system/manager/src/utils/windowsDev.js",
         "link:cli": "cd ./system/cli && npm link --only=production && yarn",
         "bundle:modules": "npx crw bm",
+        "lerna:patch": "lerna version patch --exact --no-push",
+        "lerna:publish": "lerna publish from-package",
         "clean": "node system/cli/src/utils/cleanup.js",
         "win-remove-node-modules": "rmdir \"./node_modules\" /q /s",
         "test": "npm run test:server && npm run test:backend && npm run test:frontend && npm run test:admin && npm run test:cli && npm run test:utils",
