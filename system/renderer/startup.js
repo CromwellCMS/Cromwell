@@ -1,9 +1,14 @@
 const fs = require('fs-extra');
 const { spawn, spawnSync } = require('child_process');
-const { readCMSConfigSync, rendererMessages } = require('@cromwell/core-backend');
-const { buildDir, rendererRootDir, tempDir } = require('./constants');
 const { resolve } = require('path');
 const npmRunPath = require('npm-run-path');
+const {
+    getRendererDir, getRendererTempDir, getRendererBuildDir, readCMSConfigSync, rendererMessages
+} = require('@cromwell/core-backend');
+
+const buildDir = getRendererBuildDir();
+const tempDir = getRendererTempDir();
+const rendererRootDir = getRendererDir();
 
 
 /**

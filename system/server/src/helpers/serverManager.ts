@@ -261,80 +261,82 @@ export const childSendMessage = async (message: IPCMessageType, payload?: any): 
 
 const parentRegisterChild = (child: ChildProcess) => {
     child.on('message', async (msg: any) => {
-        const message: IPCMessage = JSON.parse(msg);
+        try {
+            const message: IPCMessage = JSON.parse(msg);
 
-        if (message.message === 'make-new') {
-            try {
-                const info = await makeServer();
-                if (!info.port) throw new Error('!info.port')
+            if (message.message === 'make-new') {
+                try {
+                    const info = await makeServer();
+                    if (!info.port) throw new Error('!info.port')
 
-                child.send(JSON.stringify({
-                    id: message.id,
-                    message: 'success',
-                    payload: info.id,
-                } as IPCMessage));
-                return;
+                    child.send(JSON.stringify({
+                        id: message.id,
+                        message: 'success',
+                        payload: info.id,
+                    } as IPCMessage));
+                    return;
 
-            } catch (error) {
-                child.send(JSON.stringify({
-                    id: message.id,
-                    message: 'failed',
-                } as IPCMessage));
-
-                logger.error(error);
-                return;
-            }
-        }
-
-        if (message.message === 'apply-new' && message.payload) {
-            const port = madeServers[message.payload]?.port;
-            if (port) {
-                const isAlive = await tcpPortUsed.check(port, '127.0.0.1');
-
-                if (!isAlive) {
+                } catch (error) {
                     child.send(JSON.stringify({
                         id: message.id,
                         message: 'failed',
                     } as IPCMessage));
-                    return;
-                } else {
-                    updateActiveServer(madeServers[message.payload]);
-                    await sleep(1);
-                    child.send(JSON.stringify({
-                        id: message.id,
-                        message: 'success',
-                    } as IPCMessage));
+
+                    logger.error(error);
                     return;
                 }
             }
+
+            if (message.message === 'apply-new' && message.payload) {
+                const port = madeServers[message.payload]?.port;
+                if (port) {
+                    const isAlive = await tcpPortUsed.check(port, '127.0.0.1');
+
+                    if (!isAlive) {
+                        child.send(JSON.stringify({
+                            id: message.id,
+                            message: 'failed',
+                        } as IPCMessage));
+                        return;
+                    } else {
+                        updateActiveServer(madeServers[message.payload]);
+                        await sleep(1);
+                        child.send(JSON.stringify({
+                            id: message.id,
+                            message: 'success',
+                        } as IPCMessage));
+                        return;
+                    }
+                }
+            }
+
+            if (message.message === 'kill-me') {
+                await closeServer({
+                    childInst: child
+                });
+                return;
+            }
+
+            if (message.message === 'restart-me') {
+                await restartServer();
+                child.send(JSON.stringify({
+                    id: message.id,
+                    message: 'success',
+                } as IPCMessage));
+                return;
+            }
+
+
+            if (message.id) {
+                child.send(JSON.stringify({
+                    id: message.id,
+                    message: 'failed',
+                } as IPCMessage));
+            }
+
+        } catch (error) {
+            logger.error(error);
         }
 
-        if (message.message === 'kill-me') {
-            await closeServer({
-                childInst: child
-            });
-            child.send(JSON.stringify({
-                id: message.id,
-                message: 'success',
-            } as IPCMessage));
-            return;
-        }
-
-        if (message.message === 'restart-me') {
-            await restartServer();
-            child.send(JSON.stringify({
-                id: message.id,
-                message: 'success',
-            } as IPCMessage));
-            return;
-        }
-
-
-        if (message.id) {
-            child.send(JSON.stringify({
-                id: message.id,
-                message: 'failed',
-            } as IPCMessage));
-        }
     });
 }
