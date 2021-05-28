@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/utils",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "main": "build/exports.js",
   "module": "build/exports.js",
   "types": "build/exports.d.ts",
