@@ -18,11 +18,13 @@ const main = () => {
         )
     }
 
-    const buildService = () => {
+    const buildService = (dev = false) => {
         spawnSync(`npx --no-install rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
 
-        spawnSync(`npx --no-install cross-env NODE_ENV=development npx webpack`, [],
+        let command = 'npx webpack';
+        if (dev) command = 'npx --no-install cross-env NODE_ENV=development ' + command;
+        spawnSync(command, [],
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
     }
 
@@ -33,7 +35,7 @@ const main = () => {
 
     if (scriptName === 'dev') {
         if (!isServiceBuilt()) {
-            buildService();
+            buildService(true);
         }
 
         spawn(`node ${resolve(buildDir, 'server.js')}`, ['development'],
@@ -47,13 +49,7 @@ const main = () => {
             buildService();
         }
 
-        const serverProc = fork(resolve(buildDir, 'server.js'), ['production'],
-            { stdio: 'inherit', cwd: process.cwd() });
-
-        serverProc.on('message', (message) => {
-            if (process.send) process.send(message);
-        });
-        return;
+        require(resolve(buildDir, 'server.js'));
     }
 }
 

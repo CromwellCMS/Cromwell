@@ -82,3 +82,15 @@ export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     },
 ];
 
+export const systemPackages = [
+    '@cromwell/core',
+    '@cromwell/admin-panel',
+    '@cromwell/cli',
+    '@cromwell/core-backend',
+    '@cromwell/core-frontend',
+    '@cromwell/cms',
+    '@cromwell/renderer',
+    '@cromwell/server',
+    '@cromwell/utils',
+]
+

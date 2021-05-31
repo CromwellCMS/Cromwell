@@ -1,10 +1,12 @@
 import { TServiceNames } from '@cromwell/cms';
+import { spawn } from 'child_process';
 import yargs from 'yargs/yargs';
+
 import { createTask } from './tasks/create';
 
 const args = yargs(process.argv.slice(2))
     // START
-    .command<{ service?: string; development?: boolean }>({
+    .command<{ service?: string; development?: boolean; detached?: boolean }>({
         command: 'start [options]',
         describe: 'starts CMS or a specified service',
         aliases: ['start', 's'],
@@ -20,18 +22,38 @@ const args = yargs(process.argv.slice(2))
                     desc: 'Start service in development mode',
                     type: 'boolean'
                 })
+                .option('detached', {
+                    alias: 'd',
+                    desc: 'Start service detached from terminal',
+                    type: 'boolean'
+                })
         },
         handler: async (argv) => {
             const serviceToStart = argv.service as TServiceNames;
             const development = argv.development;
+            const detached = argv.detached;
+
+            if (detached) {
+                let command = `npx --no-install crw s`;
+                if (serviceToStart) command += ` --sv ${serviceToStart}`;
+                if (development) command += ' --dev';
+
+                const subprocess = spawn(command, {
+                    shell: true,
+                    detached: true,
+                    stdio: 'ignore',
+                });
+                subprocess.unref();
+                return;
+            }
 
             const { checkModules, startServiceByName, startSystem } = require('@cromwell/cms');
 
             if (serviceToStart) {
-                await startServiceByName(serviceToStart, development);
+                await startServiceByName(serviceToStart, development, detached);
             } else {
                 await checkModules(development);
-                await startSystem(development ? 'development' : 'production');
+                await startSystem(development ? 'development' : 'production', detached);
             }
         }
     })
@@ -141,11 +163,10 @@ const args = yargs(process.argv.slice(2))
             downloader();
         }
     })
-
     // CLEAN
     .command({
         command: 'clean',
-        describe: 'remove all compiled directories',
+        describe: 'Dev tool. Supposed to be used in Cromwell monorepo. Removes all compiled and temp directories',
         aliases: ['clean'],
         handler: (argv) => {
             require('../src/utils/cleanup.js');

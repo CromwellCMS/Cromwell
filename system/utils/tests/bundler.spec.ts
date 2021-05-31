@@ -1,7 +1,7 @@
 import { bundler } from '@App/bundler';
 import { moduleArchiveFileName, moduleLibBuidFileName, moduleMetaInfoFileName } from '@App/constants';
 import { getBundledModulesDir } from '@App/shared';
-import { TPackageJson } from '@cromwell/core';
+import { sleep, TPackageJson } from '@cromwell/core';
 import * as fs from 'fs-extra';
 import { join, resolve } from 'path';
 
@@ -27,8 +27,13 @@ describe('bundler', () => {
         await bundler({
             projectRootDir: process.cwd(),
             isProduction: true,
-            targetPackage: moduleToBundle
+            targetPackage: {
+                name: moduleToBundle,
+                version: '4.1.1',
+            }
         });
+
+        await sleep(0.5);
 
         expect(await fs.pathExists(moduleBuildDir)).toBeTruthy();
         expect(await fs.pathExists(join(moduleBuildDir, moduleArchiveFileName))).toBeTruthy();

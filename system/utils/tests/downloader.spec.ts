@@ -26,7 +26,10 @@ describe('downloader', () => {
         }
 
         await downloader({
-            targetModule: moduleToDownload
+            targetModule: {
+                name: moduleToDownload,
+                version: '4.1.1',
+            }
         })
         expect(await fs.pathExists(moduleBuildDir)).toBeTruthy();
         expect(await fs.pathExists(join(moduleBuildDir, moduleArchiveFileName))).toBeTruthy();

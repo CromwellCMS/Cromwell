@@ -1,0 +1,17 @@
+{
+    "version": "independent",
+    "command": {
+        "publish": {
+            "ignoreChanges": [
+                "ignored-file",
+                "*.md"
+            ]
+        }
+    },
+    "packages": [
+        "plugins/*",
+        "system/*",
+        "system/core/*",
+        "themes/*"
+    ]
+}

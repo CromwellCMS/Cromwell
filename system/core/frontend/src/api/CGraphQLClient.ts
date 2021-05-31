@@ -10,7 +10,7 @@ import {
     QueryOptions,
 } from '@apollo/client';
 import {
-    apiMainRoute,
+    apiV1BaseRoute,
     getStoreItem,
     GraphQLPaths,
     isServer,
@@ -876,7 +876,7 @@ export const getGraphQLClient = (fetch?: any): CGraphQLClient => {
     if (clients?.graphQLClient) return clients.graphQLClient;
 
     const typeUrl = serviceLocator.getMainApiUrl();
-    const baseUrl = `${typeUrl}/${apiMainRoute}/graphql`;
+    const baseUrl = `${typeUrl}/${apiV1BaseRoute}/graphql`;
 
     const newClient = new CGraphQLClient(baseUrl, fetch);
     if (!clients) clients = {};

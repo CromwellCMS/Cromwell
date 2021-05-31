@@ -11,6 +11,8 @@
         "dev:win": "node ./system/manager/src/utils/windowsDev.js",
         "link:cli": "cd ./system/cli && npm link --only=production && yarn",
         "bundle:modules": "npx crw bm",
+        "lerna:patch": "lerna version patch --exact --no-push",
+        "lerna:publish": "lerna publish from-package",
         "clean": "node system/cli/src/utils/cleanup.js",
         "win-remove-node-modules": "rmdir \"./node_modules\" /q /s",
         "test": "npm run test:server && npm run test:backend && npm run test:frontend && npm run test:admin && npm run test:cli && npm run test:utils",
@@ -30,14 +32,8 @@
     "resolutions": {
         "@apollo/client": "3.2.1",
         "@loadable/component": "5.14.1",
-        "@material-ui/core": "4.11.2",
-        "@material-ui/styles": "4.11.4",
-        "@material-ui/utils": "4.11.2",
-        "@material-ui/icons": "4.11.2",
-        "@material-ui/lab": "4.0.0-alpha.57",
-        "@material-ui/pickers": "3.3.10",
         "clsx": "1.1.1",
-        "date-fns": "2.19.0",
+        "date-fns": "2.21.3",
         "graphql": "15.3.0",
         "graphql-tag": "2.12.4",
         "mobx": "5.15.7",
@@ -63,5 +59,8 @@
             "@cromwell/theme-blog"
         ]
     },
-    "cache-version": "7; modify this string to reset circleci cache"
+    "cache-version": "7; modify this string to reset circleci cache",
+    "devDependencies": {
+        "lerna": "^4.0.0"
+    }
 }

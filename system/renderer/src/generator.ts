@@ -112,6 +112,12 @@ const devGenerate = async (themeName: string) => {
         const pageRelativePath: string | undefined = pageInfo.path ? normalizePath(pageInfo.path).replace(
             normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk) : undefined;
 
+        let depsBundlePath;
+        if (pageInfo.depsBundlePath) {
+            depsBundlePath = normalizePath(pageInfo.depsBundlePath).replace(
+                normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
+        }
+
         let metaInfoRelativePath;
         if (pageInfo.metaInfoPath) metaInfoRelativePath = normalizePath(
             pageInfo.metaInfoPath).replace(normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
@@ -149,6 +155,7 @@ const devGenerate = async (themeName: string) => {
          import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
          import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, 
             fsRequireSync } from 'build/renderer';
+         import metaInfo from '${pageInfo.metaInfoPath}';
  
  
          const cmsSettings = ${JSON.stringify(config)};
@@ -174,7 +181,6 @@ const devGenerate = async (themeName: string) => {
  
          ${pageInfo.metaInfoPath ? `
          if (isServer()) {
-             const metaInfo = fsRequireSync("${pageInfo.metaInfoPath}", true);
              importer.importSciptExternals(metaInfo);
          }
          ` : ''}
@@ -186,16 +192,13 @@ const devGenerate = async (themeName: string) => {
  
          const ${pageDynamicImportName} = dynamic(async () => {
  
-             ${pageInfo.depsBundlePath ? `
+             ${depsBundlePath ? `
              if (!importer.hasBeenExecuted) {
-                 await import('${pageInfo.depsBundlePath}');
+                 await import('${depsBundlePath}');
              }
              ` : ''}
  
-             ${pageInfo.metaInfoPath ? `
-             const meta = await import('${metaInfoRelativePath}');
-             await importer.importSciptExternals(meta);
-             ` : ''}
+             await importer.importSciptExternals(metaInfo);
 
              ${pageRelativePath ? `
              const pagePromise = import('${pageRelativePath}');

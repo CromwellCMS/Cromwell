@@ -9,7 +9,10 @@ const logger = getLogger();
 export const startNginx = async (isDevelopment?: boolean): Promise<boolean> => {
     const nginxDir = normalizePath(resolve(getTempDir(), 'nginx/docker-compose.yml'));
     const workingDir = normalizePath(process.cwd());
-    spawn(`docker-compose -f ${nginxDir} --project-directory ${workingDir} up`, { shell: true, cwd: workingDir, stdio: isDevelopment ? 'inherit' : 'ignore' });
+    spawn(`docker-compose -f ${nginxDir} --project-directory ${workingDir} up`, {
+        shell: true, cwd: workingDir,
+        stdio: (isDevelopment) ? 'inherit' : 'ignore',
+    });
     try {
         await tcpPortUsed.waitUntilUsed(80, 500, 6000);
         logger.log(`Nginx has successfully started`);

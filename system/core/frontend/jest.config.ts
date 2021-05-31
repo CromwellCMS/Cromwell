@@ -9,6 +9,8 @@ const config: Config.InitialOptions = {
     },
     // silent: false,
     testRegex: "/(tests|src)/.*\\.(test|spec)\\.[jt]sx?$",
+    /** for circle ci free plan */
+    maxWorkers: 1,
     maxConcurrency: 1,
     globals: {
         "ts-jest": {

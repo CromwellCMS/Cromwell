@@ -18,7 +18,7 @@ export const checkModules = async (isDevelopment?: boolean, pckgs?: TPackage[]) 
 export const checkDepenencies = async () => {
     // Enforce peerDependencies if some plugin or theme used it as dependency
     const pckg = await getModulePackage();
-    const defaultDeps = parseFrontendDeps(defaultFrontendDeps).map(dep => dep.name);
+    const defaultDeps = (await parseFrontendDeps(defaultFrontendDeps)).map(dep => dep.name);
     const serverPckg = await getModulePackage('@cromwell/server')
     const serverDeps = Object.keys(serverPckg?.dependencies ?? {});
 

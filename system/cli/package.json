@@ -1,19 +1,20 @@
 {
   "name": "@cromwell/cli",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "main": "build/cli.js",
   "files": [
     "build",
-    "bin"
+    "bin",
+    "startup.js"
   ],
   "keywords": [],
   "author": "CromwellJS",
   "license": "MIT",
   "dependencies": {
-    "yargs": "^16.2.0",
+    "@pnpm/link-bins": "^5.3.22",
     "bin-links": "^2.2.1",
     "read-package-json-fast": "^2.0.1",
-    "@pnpm/link-bins": "^5.3.22"
+    "yargs": "^16.2.0"
   },
   "scripts": {
     "build": "npx rollup -c",
@@ -25,8 +26,8 @@
     "@rollup/plugin-commonjs": "^13.0.2",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^8.4.0",
-    "@types/jest": "^26.0.20",
     "@types/fs-extra": "^9.0.1",
+    "@types/jest": "^26.0.20",
     "@types/node": "14.0.13",
     "@types/yargs": "^15.0.12",
     "jest": "^26.6.3",

@@ -26,7 +26,7 @@ const logger = getLogger();
 export const downloader = async (options?: {
     rootDir?: string;
     packages?: TPackage[];
-    targetModule?: string;
+    targetModule?: string | TFrontendDependency;
 }) => {
     let { rootDir, packages } = options ?? {};
     const { targetModule } = options ?? {};
@@ -39,10 +39,10 @@ export const downloader = async (options?: {
     let frontendDeps: TFrontendDependency[] = [];
 
     if (targetModule) {
-        frontendDeps = parseFrontendDeps([targetModule]);
+        frontendDeps = await parseFrontendDeps([targetModule]);
 
     } else {
-        // Collect frontendDependencies from cromwella.json in all packages
+        // Collect frontendDependencies from all packages
         if (!packages) {
             const packagePaths = await globPackages(rootDir);
             packages = collectPackagesInfo(packagePaths);
@@ -51,7 +51,7 @@ export const downloader = async (options?: {
             logger.error('No packages found');
             return;
         }
-        frontendDeps = collectFrontendDependencies(packages, true);
+        frontendDeps = await collectFrontendDependencies(packages, true);
     }
 
     const bundledModulesDir = getBundledModulesDir();
