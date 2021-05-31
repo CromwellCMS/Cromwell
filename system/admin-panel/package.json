@@ -127,6 +127,95 @@
       "@material-ui/core",
       "@material-ui/pickers",
       {
+        "name": "@material-ui/pickers",
+        "externals": [
+          {
+            "usedName": "@material-ui/core/Typography",
+            "moduleName": "@material-ui/core",
+            "importName": "Typography"
+          },
+          {
+            "usedName": "@material-ui/core/Button",
+            "moduleName": "@material-ui/core",
+            "importName": "Button"
+          },
+          {
+            "usedName": "@material-ui/core/Toolbar",
+            "moduleName": "@material-ui/core",
+            "importName": "Toolbar"
+          },
+          {
+            "usedName": "@material-ui/core/TextField",
+            "moduleName": "@material-ui/core",
+            "importName": "TextField"
+          },
+          {
+            "usedName": "@material-ui/core/IconButton",
+            "moduleName": "@material-ui/core",
+            "importName": "IconButton"
+          },
+          {
+            "usedName": "@material-ui/core/SvgIcon",
+            "moduleName": "@material-ui/core",
+            "importName": "SvgIcon"
+          },
+          {
+            "usedName": "@material-ui/core/InputAdornment",
+            "moduleName": "@material-ui/core",
+            "importName": "InputAdornment"
+          },
+          {
+            "usedName": "@material-ui/core/CircularProgress",
+            "moduleName": "@material-ui/core",
+            "importName": "CircularProgress"
+          },
+          {
+            "usedName": "@material-ui/core/DialogActions",
+            "moduleName": "@material-ui/core",
+            "importName": "DialogActions"
+          },
+          {
+            "usedName": "@material-ui/core/DialogContent",
+            "moduleName": "@material-ui/core",
+            "importName": "DialogContent"
+          },
+          {
+            "usedName": "@material-ui/core/Dialog",
+            "moduleName": "@material-ui/core",
+            "importName": "Dialog"
+          },
+          {
+            "usedName": "@material-ui/core/Popover",
+            "moduleName": "@material-ui/core",
+            "importName": "Popover"
+          },
+          {
+            "usedName": "@material-ui/core/Grid",
+            "moduleName": "@material-ui/core",
+            "importName": "Grid"
+          },
+          {
+            "usedName": "@material-ui/core/Tab",
+            "moduleName": "@material-ui/core",
+            "importName": "Tab"
+          },
+          {
+            "usedName": "@material-ui/core/Tabs",
+            "moduleName": "@material-ui/core",
+            "importName": "Tabs"
+          },
+          {
+            "usedName": "@material-ui/core/Paper",
+            "moduleName": "@material-ui/core",
+            "importName": "Paper"
+          },
+          {
+            "usedName": "@material-ui/core/styles",
+            "moduleName": "@material-ui/core"
+          }
+        ]
+      },
+      {
         "name": "@material-ui/lab",
         "externals": [
           {

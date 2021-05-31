@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/theme-store",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "author": "CromwellJS",
   "license": "MIT",
   "files": [
@@ -15,6 +15,7 @@
   "dependencies": {
     "@material-ui/core": "4.11.2",
     "@material-ui/lab": "4.0.0-alpha.57",
+    "@material-ui/pickers": "3.3.10",
     "date-fns": "2.21.3",
     "mobx": "5.15.7",
     "mobx-react": "6.3.1",
@@ -79,86 +80,9 @@
       "react-swipeable-views",
       "react-resize-detector",
       "@material-ui/core",
+      "@material-ui/lab",
       "date-fns",
-      "throttle-debounce",
-      {
-        "name": "@material-ui/lab",
-        "externals": [
-          {
-            "usedName": "@material-ui/core/styles",
-            "moduleName": "@material-ui/core"
-          },
-          {
-            "usedName": "@material-ui/core/ButtonBase",
-            "moduleName": "@material-ui/core",
-            "importName": "ButtonBase"
-          },
-          {
-            "usedName": "@material-ui/core/utils",
-            "moduleName": "@material-ui/core"
-          },
-          {
-            "usedName": "@material-ui/core/Tabs",
-            "moduleName": "@material-ui/core",
-            "importName": "Tabs"
-          },
-          {
-            "usedName": "@material-ui/core/Fab",
-            "moduleName": "@material-ui/core",
-            "importName": "Fab"
-          },
-          {
-            "usedName": "@material-ui/core/Tooltip",
-            "moduleName": "@material-ui/core",
-            "importName": "Tooltip"
-          },
-          {
-            "usedName": "@material-ui/core/Avatar",
-            "moduleName": "@material-ui/core",
-            "importName": "Avatar"
-          },
-          {
-            "usedName": "@material-ui/core/Popper",
-            "moduleName": "@material-ui/core",
-            "importName": "Popper"
-          },
-          {
-            "usedName": "@material-ui/core/ListSubheader",
-            "moduleName": "@material-ui/core",
-            "importName": "ListSubheader"
-          },
-          {
-            "usedName": "@material-ui/core/Paper",
-            "moduleName": "@material-ui/core",
-            "importName": "Paper"
-          },
-          {
-            "usedName": "@material-ui/core/IconButton",
-            "moduleName": "@material-ui/core",
-            "importName": "IconButton"
-          },
-          {
-            "usedName": "@material-ui/core/Chip",
-            "moduleName": "@material-ui/core",
-            "importName": "Chip"
-          },
-          {
-            "usedName": "@material-ui/core/Zoom",
-            "moduleName": "@material-ui/core",
-            "importName": "Zoom"
-          },
-          {
-            "usedName": "@material-ui/core/Typography",
-            "moduleName": "@material-ui/core",
-            "importName": "Typography"
-          },
-          {
-            "usedName": "@material-ui/core/Collapse",
-            "moduleName": "@material-ui/core",
-            "importName": "Collapse"
-          }
-        ]
-      }
+      "throttle-debounce"
     ],
     "firstLoadedDependencies": [
       "mobx",

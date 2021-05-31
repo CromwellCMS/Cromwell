@@ -7,7 +7,7 @@ import glob from 'glob';
 import importFrom from 'import-from';
 import path, { isAbsolute, resolve } from 'path';
 
-import { bundledModulesDirName, defaultFrontendDeps } from './constants';
+import { bundledModulesDirName, defaultFrontendDeps, systemPackages } from './constants';
 import { TDependency, TGetDeps, THoistedDeps, TLocalSymlink, TModuleInfo, TNonHoisted, TPackage } from './types';
 
 const colors: any = colorsdef;
@@ -263,6 +263,9 @@ export const globPackages = async (projectRootDir: string): Promise<string[]> =>
     for (const p of cmsModules.themes) {
         await addDir(p);
     }
+    for (const p of systemPackages) {
+        await addDir(p);
+    }
 
     return packagePaths;
 }
@@ -329,21 +332,33 @@ export const hoistDependencies = (packages: TPackage[], isProduction, forceInsta
     return { packages, hoistedDependencies, hoistedDevDependencies };
 }
 
-export const parseFrontendDeps = (dependencies: (string | TFrontendDependency)[]): TFrontendDependency[] => {
+export const parseFrontendDeps = async (dependencies: (string | TFrontendDependency)[]): Promise<TFrontendDependency[]> => {
+    const packagePaths = await globPackages(process.cwd());
+    const packages = collectPackagesInfo(packagePaths);
+    let allDeps: Record<string, string> = {};
+    packages.forEach(p => {
+        allDeps = {
+            ...allDeps,
+            ...(p.dependencies ?? {}),
+            ...(p.devDependencies ?? {}),
+            ...(p.peerDependencies ?? {}),
+        }
+    })
+
     return dependencies.map(dep => {
         if (typeof dep === 'object') {
-            if (!dep.version) dep.version = getNodeModuleVersion(dep.name);
+            if (!dep.version) dep.version = allDeps[dep.name];
             return dep;
         }
         return {
             name: dep,
-            version: getNodeModuleVersion(dep)!
+            version: allDeps[dep],
         }
     });
 }
 
-export const collectFrontendDependencies = (packages: (TPackage)[], forceInstall?: boolean): TFrontendDependency[] => {
-    const frontendDependencies = parseFrontendDeps(defaultFrontendDeps);
+export const collectFrontendDependencies = async (packages: TPackage[], forceInstall?: boolean): Promise<TFrontendDependency[]> => {
+    const frontendDependencies = await parseFrontendDeps(defaultFrontendDeps);
 
     packages.forEach(pckg => {
         const pckheDeps = pckg?.cromwell?.frontendDependencies;
@@ -385,7 +400,6 @@ export const collectFrontendDependencies = (packages: (TPackage)[], forceInstall
                     }
                 } else {
                     frontendDependencies.push(frontendDep);
-
                 }
             })
         }

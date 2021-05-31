@@ -81,15 +81,16 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
     let frontendDependencies: TFrontendDependency[] = [];
 
     if (targetPackage) {
-        frontendDependencies = parseFrontendDeps([targetPackage]);
+        frontendDependencies = await parseFrontendDeps([targetPackage]);
 
     } else {
         // Collect frontendDependencies from cromwella.json in all packages
         const packagePaths = await globPackages(projectRootDir);
         const packages = await collectPackagesInfo(packagePaths);
-        frontendDependencies = collectFrontendDependencies(packages, forceInstall);
+        frontendDependencies = await collectFrontendDependencies(packages, forceInstall);
     }
 
+    
     // // test
     // frontendDependencies = [
     //     // { name: '@cromwell/core', version: 'workspace:1.1.0' },

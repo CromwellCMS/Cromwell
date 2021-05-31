@@ -84,7 +84,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
     const packagePaths = await globPackages(process.cwd());
     const packages = collectPackagesInfo(packagePaths);
-    const frontendDeps = collectFrontendDependencies(packages, false);
+    const frontendDeps = await collectFrontendDependencies(packages, false);
 
     let specifiedOptions: TRollupConfig | undefined = moduleConfig?.rollupConfig?.() as any;
     if (isPromise(specifiedOptions)) specifiedOptions = await specifiedOptions as any;
@@ -133,7 +133,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                         export default defaulComp;
                         `
             }))
-            options.plugins.push(rollupPluginCromwellFrontend({
+            options.plugins.push(await rollupPluginCromwellFrontend({
                 moduleInfo,
                 moduleConfig,
                 frontendDeps,
@@ -159,7 +159,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                     export default allExports;
                     `
             }))
-            cjsOptions.plugins.push(rollupPluginCromwellFrontend({
+            cjsOptions.plugins.push(await rollupPluginCromwellFrontend({
                 generateMeta: false,
                 moduleInfo,
                 moduleConfig,
@@ -194,7 +194,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                         import '${inputPath}';
                         `
             }))
-            options.plugins.push(rollupPluginCromwellFrontend({
+            options.plugins.push(await rollupPluginCromwellFrontend({
                 moduleInfo,
                 moduleConfig,
                 frontendDeps,
@@ -285,7 +285,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             } as OutputOptions);
 
             options.plugins.push(scssExternalPlugin());
-            options.plugins.push(rollupPluginCromwellFrontend({
+            options.plugins.push(await rollupPluginCromwellFrontend({
                 pagesMetaInfo, buildDir, srcDir, moduleInfo,
                 moduleConfig, watch,
                 frontendDeps, dependecyOptions,
@@ -296,7 +296,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
             // Theme admin panel config
             if (!watch) {
-                pagesMetaInfo.paths.forEach(pagePath => {
+                for (const pagePath of pagesMetaInfo.paths) {
                     const adminOptions = (Object.assign({}, (specifiedOptions?.adminPanel ?? inputOptions)));
                     adminOptions.plugins = [...(adminOptions.plugins ?? [])];
 
@@ -305,7 +305,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                         [optionsInput]: `import pageComp from '${pagePath.srcFullPath}';export default pageComp;`
                     }));
                     adminOptions.input = optionsInput;
-                    adminOptions.plugins.push(rollupPluginCromwellFrontend({
+                    adminOptions.plugins.push(await rollupPluginCromwellFrontend({
                         buildDir, moduleInfo,
                         moduleConfig, frontendDeps,
                         type: 'themeAdminPanel'
@@ -322,7 +322,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                     } as OutputOptions);
 
                     adminPanelOptions.push(adminOptions);
-                });
+                };
                 adminPanelOptions.forEach(opt => outOptions.push(opt));
             }
 
@@ -350,7 +350,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                 format: "iife",
             } as OutputOptions);
 
-            adminOptions.plugins.push(rollupPluginCromwellFrontend({
+            adminOptions.plugins.push(await rollupPluginCromwellFrontend({
                 pagesMetaInfo, buildDir, srcDir,
                 moduleInfo, moduleConfig, frontendDeps
             }));
@@ -374,7 +374,7 @@ const scssExternalPlugin = (): Plugin => {
 
 }
 
-export const rollupPluginCromwellFrontend = (settings?: {
+export const rollupPluginCromwellFrontend = async (settings?: {
     packageJsonPath?: string;
     generateMeta?: boolean;
     pagesMetaInfo?: TPagesMetaInfo;
@@ -386,7 +386,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
     frontendDeps?: TFrontendDependency[];
     dependecyOptions?: RollupOptions[];
     type?: 'themePages' | 'themeAdminPanel';
-}): Plugin => {
+}): Promise<Plugin> => {
 
     const scriptsInfo: Record<string, TSciprtMetaInfo> = {};
     const importsInfo: Record<string, {
@@ -394,7 +394,7 @@ export const rollupPluginCromwellFrontend = (settings?: {
         internals: string[];
     }> = {};
 
-    if (settings?.frontendDeps) settings.frontendDeps = parseFrontendDeps(settings.frontendDeps);
+    if (settings?.frontendDeps) settings.frontendDeps = await parseFrontendDeps(settings.frontendDeps);
 
     // Defer stylesheetsLoader until compile info available. Look for: stylesheetsLoaderStarter()
     let stylesheetsLoaderStarter;
