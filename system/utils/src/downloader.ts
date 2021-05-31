@@ -26,7 +26,7 @@ const logger = getLogger();
 export const downloader = async (options?: {
     rootDir?: string;
     packages?: TPackage[];
-    targetModule?: string;
+    targetModule?: string | TFrontendDependency;
 }) => {
     let { rootDir, packages } = options ?? {};
     const { targetModule } = options ?? {};

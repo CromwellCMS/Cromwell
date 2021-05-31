@@ -52,7 +52,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
     isProduction?: boolean;
     rebundle?: boolean;
     forceInstall?: boolean;
-    targetPackage?: string;
+    targetPackage?: string | TFrontendDependency;
 }) => {
 
     // console.log('process', process.cwd(), '__dirname', __dirname, 'projectRootDir', projectRootDir)
@@ -90,7 +90,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         frontendDependencies = await collectFrontendDependencies(packages, forceInstall);
     }
 
-    
+
     // // test
     // frontendDependencies = [
     //     // { name: '@cromwell/core', version: 'workspace:1.1.0' },
