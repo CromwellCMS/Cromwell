@@ -49,13 +49,7 @@ const main = () => {
             buildService();
         }
 
-        const serverProc = fork(resolve(buildDir, 'server.js'), ['production'],
-            { stdio: 'inherit', cwd: process.cwd() });
-
-        serverProc.on('message', (message) => {
-            if (process.send) process.send(message);
-        });
-        return;
+        require(resolve(buildDir, 'server.js'));
     }
 }
 

@@ -340,3 +340,7 @@ const parentRegisterChild = (child: ChildProcess) => {
 
     });
 }
+
+export const closeAllServers = () => {
+    Object.values(madeServers).forEach(closeServer);
+}

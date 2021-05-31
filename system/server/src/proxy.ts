@@ -1,9 +1,10 @@
 import { getLogger, readCMSConfigSync } from '@cromwell/core-backend';
 import http from 'http';
 import httpProxy from 'http-proxy';
+import nodeCleanup from 'node-cleanup';
 
 import { loadEnv } from './helpers/loadEnv';
-import { getServerPort, launchServerManager, serverAliveWatcher } from './helpers/serverManager';
+import { getServerPort, launchServerManager, serverAliveWatcher, closeAllServers } from './helpers/serverManager';
 
 require('dotenv').config();
 const logger = getLogger();
@@ -43,5 +44,9 @@ async function main(): Promise<void> {
 
     serverAliveWatcher();
 }
+
+nodeCleanup(() => {
+    closeAllServers();
+});
 
 main();

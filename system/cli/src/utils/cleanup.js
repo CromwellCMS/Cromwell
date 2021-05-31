@@ -1,8 +1,11 @@
 const fs = require('fs-extra');
 const { resolve, join } = require("path");
 
+/**
+ * Dev tool. Supposed to be used in Cromwell monorepo
+ */
 const projectRootDir = process.cwd();
-const systemDir = resolve(projectRootDir, 'system')
+const systemDir = resolve(projectRootDir, 'system');
 
 
 const folders = [

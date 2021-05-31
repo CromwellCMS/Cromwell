@@ -12,6 +12,7 @@ import { ChildProcess, fork, spawn } from 'child_process';
 import isRunning from 'is-running';
 import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
+import nodeCleanup from 'node-cleanup';
 import treeKill from 'tree-kill';
 
 import config from '../config';
@@ -69,7 +70,10 @@ export const startService = async ({ path, name, args, dir, sync, watchName, onV
     watchName?: keyof TServiceVersions;
     onVersionChange?: () => Promise<void>;
 }): Promise<ChildProcess> => {
-    const proc = fork(path, args, { stdio: sync ? 'inherit' : 'pipe', cwd: dir ?? process.cwd() });
+    const proc = fork(path, args, {
+        stdio: sync ? 'inherit' : 'pipe',
+        cwd: dir ?? process.cwd(),
+    });
     await saveProcessPid(name, proc.pid);
     serviceProcesses[name] = proc;
     proc?.stdout?.on('data', buff => console.log(buff?.toString?.() ?? buff));
@@ -110,9 +114,10 @@ export const startSystem = async (scriptName: TScriptName) => {
         await startServer('build');
         await startAdminPanel('build');
         await startRenderer('buildService');
-
         return;
     }
+
+    await saveProcessPid(cacheKeys.manager, process.pid)
 
     if (isDevelopment) {
 
@@ -131,11 +136,9 @@ export const startSystem = async (scriptName: TScriptName) => {
         });
     }
 
-    await saveProcessPid(cacheKeys.manager, process.pid)
-
-    await startServer(isDevelopment ? 'dev' : 'prod');
-    await startAdminPanel();
-    await startRenderer();
+    await startServiceByName('server', isDevelopment);
+    await startServiceByName('adminPanel', isDevelopment);
+    await startServiceByName('renderer', isDevelopment);
 }
 
 
@@ -271,3 +274,14 @@ export const killByPid = async (pid: number) => {
     })
     return success;
 }
+
+
+nodeCleanup((exitCode, signal) => {
+    Object.values(serviceProcesses).forEach(child => {
+        try {
+            child?.kill()
+        } catch (error) {
+            logger.error(error);
+        }
+    })
+});

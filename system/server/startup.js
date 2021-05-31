@@ -50,11 +50,7 @@ const main = () => {
             buildServer();
         }
 
-        const serverProc = fork(buildProxyPath, process.argv.slice(2));
-
-        serverProc.on('message', (message) => {
-            if (process.send) process.send(message);
-        });
+        require(buildProxyPath);
     }
 
 }
