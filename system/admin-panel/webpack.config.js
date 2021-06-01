@@ -1,5 +1,4 @@
 const path = require('path');
-const { CromwellWebpackPlugin } = require('@cromwell/utils');
 const localProjectDir = __dirname;
 
 const buildMode = process.env.NODE_ENV || 'production';
@@ -14,9 +13,6 @@ module.exports = {
     },
     output: {
         path: path.resolve(localProjectDir, 'build'),
-        // filename: isProduction
-        //     ? 'webapp.[contenthash:8].js'
-        //     : 'webapp.js',
         filename: 'webapp.js',
         publicPath: '/admin/build/',
         chunkFilename: 'chunks' + '/[id].js'
@@ -27,12 +23,15 @@ module.exports = {
     watchOptions: {
         ignored: ['build/**', '.cromwell/**', 'node_modules/**']
     },
-    optimization: {
-        splitChunks: {
-            minSize: 20000,
-            chunks: 'all',
+    externals: [
+        function ({ context, request }, callback) {
+            if (request.startsWith('next')) {
+                console.log('request.replace', request.replace(/\W/g, '_'))
+                return callback(null, `root CromwellStore.nodeModules.modules['${request.replace(/\W/g, '_')}']`);
+            }
+            callback();
         },
-    },
+    ],
     module: {
         rules: [
             {
@@ -83,34 +82,4 @@ module.exports = {
             },
         ]
     },
-    plugins: [
-        new CromwellWebpackPlugin({
-            moduleName: '@cromwell/admin-panel',
-            moduleBuiltins: [
-                '@cromwell/utils/build/importer.js',
-                '@cromwell/core-frontend',
-                '@cromwell/core',
-                "react",
-                "react-dom",
-            ],
-            packageExternals: [
-                "clsx",
-                "next/head",
-                "next/router",
-                "next/link",
-                "next/dynamic",
-                "next/document",
-                "@material-ui/core",
-                "@material-ui/lab",
-                "@apollo/client",
-                "@loadable/component",
-                "throttle-debounce",
-                "query-string",
-                "react-number-format",
-                "react-router-dom",
-                "react-toastify",
-                "tslib"
-            ]
-        }),
-    ],
 }

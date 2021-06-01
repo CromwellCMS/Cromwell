@@ -49,13 +49,13 @@ export const checkDepenencies = async () => {
     if (wrongDeps.length) {
         wrongDeps.sort();
         logger.error('CromwellCMS already includes following dependencies: '
-            + wrongDeps.join(', ') + '\n Please configure them as peerDependencies in your package.json');
+            + wrongDeps.join(', ') + '\n Please configure them as devDependencies in your package.json');
     }
 
     if (wrongCmsModules.length) {
         wrongCmsModules.sort();
         logger.error('Do not include themes or pluins as dependencies in your package.json: '
-            + wrongCmsModules.join(', ') + '\n Please configure them as peerDependencies and themes or plugins under "cromwell" property');
+            + wrongCmsModules.join(', ') + '\n Please configure them as devDependencies and themes or plugins under "cromwell" property');
     }
 
     if (wrongDeps.length && wrongCmsModules.length) {

@@ -7,7 +7,7 @@ import glob from 'glob';
 import importFrom from 'import-from';
 import path, { isAbsolute, resolve } from 'path';
 
-import { bundledModulesDirName, defaultFrontendDeps, systemPackages } from './constants';
+import { bundledModulesDirName } from './constants';
 import { TDependency, TGetDeps, THoistedDeps, TLocalSymlink, TModuleInfo, TNonHoisted, TPackage } from './types';
 
 const colors: any = colorsdef;
@@ -430,3 +430,80 @@ const interopDefault = (lib, importName) => {
     return lib;
 }
 `;
+
+
+
+export const jsOperators = ['let', 'var', 'const', 'function', 'class', 'new', 'delete',
+    'import', 'export', 'default', 'typeof', 'in', 'of', 'instanceof', 'void',
+    'return', 'try', 'catch', 'throw', 'if', 'else', 'switch', 'case',
+    'continue', 'do', 'while'];
+
+export const cromwellStoreModulesPath = 'CromwellStore.nodeModules.modules';
+export const cromwellStoreStatusesPath = 'CromwellStore.nodeModules.importStatuses';
+export const cromwellStoreImportsPath = 'CromwellStore.nodeModules.imports';
+export const getGlobalModuleStr = (moduleName: string) => `${cromwellStoreModulesPath}['${moduleName}']`;
+export const getGlobalModuleStatusStr = (moduleName: string) => `${cromwellStoreStatusesPath}['${moduleName}']`;
+export const tempPckgName = '@cromwell/temp-bundler';
+
+export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
+    "@apollo/client",
+    "@cromwell/core",
+    {
+        "name": "@cromwell/core-frontend",
+        "externals": [
+            {
+                "usedName": "next/head"
+            },
+            {
+                "usedName": "next/router"
+            },
+            {
+                "usedName": "next/link"
+            },
+            {
+                "usedName": "next/dynamic"
+            },
+            {
+                "usedName": "next/document"
+            }
+        ]
+    },
+    "@loadable/component",
+    "clsx",
+    "throttle-debounce",
+    "query-string",
+    "quill",
+    "react",
+    "react-dom",
+    "react-is",
+    "react-number-format",
+    "react-router-dom",
+    "react-toastify",
+    "tslib",
+    "react-resize-detector",
+    {
+        name: "pure-react-carousel",
+        bundledCss: [
+            'pure-react-carousel/dist/react-carousel.es.css',
+        ]
+    },
+    {
+        name: "react-image-lightbox",
+        bundledCss: [
+            'react-image-lightbox/style.css',
+        ]
+    },
+];
+
+export const systemPackages = [
+    '@cromwell/core',
+    '@cromwell/admin-panel',
+    '@cromwell/cli',
+    '@cromwell/core-backend',
+    '@cromwell/core-frontend',
+    '@cromwell/cms',
+    '@cromwell/renderer',
+    '@cromwell/server',
+    '@cromwell/utils',
+]
+

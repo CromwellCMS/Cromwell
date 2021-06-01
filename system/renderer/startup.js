@@ -5,6 +5,7 @@ const npmRunPath = require('npm-run-path');
 const {
     getRendererDir, getRendererTempDir, getRendererBuildDir, readCMSConfigSync, rendererMessages
 } = require('@cromwell/core-backend');
+const yargs = require('yargs-parser');
 
 const buildDir = getRendererBuildDir();
 const tempDir = getRendererTempDir();
@@ -43,9 +44,13 @@ const main = () => {
         )
     }
 
-    const gen = () => {
-        spawnSync(`node ${resolve(buildDir, 'generator.js')} ${process.argv.slice(2).join(' ')}`, [],
-            { shell: true, stdio: 'inherit', cwd: process.cwd() });
+    const gen = async () => {
+        const generator = require(resolve(buildDir, 'generator.js')).generator;
+        const args = yargs(process.argv.slice(2));
+        await generator({
+            scriptName,
+            targetThemeName: args.themeName,
+        });
     }
 
     const build = async () => {
@@ -54,7 +59,7 @@ const main = () => {
             if (!isServiceBuilt()) {
                 buildService();
             }
-            gen();
+            await gen();
             await new Promise(done => {
                 const proc = spawn(`next build`, [],
                     { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
@@ -87,7 +92,7 @@ const main = () => {
             // if (!isFrontendBuilt()) {
             //     await build();
             // }
-            gen();
+            await gen();
 
             proc = spawn(`npx --no-install next start -p ${config.frontendPort}`, [],
                 { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
@@ -121,11 +126,13 @@ const main = () => {
         if (!isServiceBuilt()) {
             buildService();
         }
-        gen();
 
-        spawn(`next dev -p ${config.frontendPort}`, [],
-            { shell: true, stdio: 'inherit', cwd: tempDir, env: npmRunPath.env() });
+        (async () => {
+            await gen();
 
+            spawn(`next dev -p ${config.frontendPort}`, [],
+                { shell: true, stdio: 'inherit', cwd: tempDir, env: npmRunPath.env() });
+        })();
         return;
     }
 

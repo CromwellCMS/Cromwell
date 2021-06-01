@@ -13,11 +13,6 @@ import webpack, { Configuration } from 'webpack';
 
 import {
     bundledModulesDirName,
-    cromwellStoreImportsPath,
-    cromwellStoreModulesPath,
-    cromwellStoreStatusesPath,
-    getGlobalModuleStr,
-    jsOperators,
     moduleArchiveFileName,
     moduleBundleInfoFileName,
     moduleChunksBuildDirChunk,
@@ -39,6 +34,11 @@ import {
     globPackages,
     interopDefaultContent,
     parseFrontendDeps,
+    cromwellStoreImportsPath,
+    cromwellStoreModulesPath,
+    cromwellStoreStatusesPath,
+    getGlobalModuleStr,
+    jsOperators,
 } from './shared';
 import { TBundleInfo } from './types';
 
