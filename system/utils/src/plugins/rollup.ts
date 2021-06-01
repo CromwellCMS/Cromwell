@@ -16,11 +16,15 @@ import {
     getPluginBackendPath,
     getThemeBuildDir,
     getThemePagesMetaPath,
+    getThemePagesVirtualPath,
     getThemeRollupBuildDir,
     pluginAdminBundlePath,
     pluginFrontendBundlePath,
     pluginFrontendCjsPath,
 } from '@cromwell/core-backend';
+import { generator } from '@cromwell/renderer/build/generator';
+import { babel } from '@rollup/plugin-babel';
+import { nodeResolve } from '@rollup/plugin-node-resolve';
 import virtual from '@rollup/plugin-virtual';
 import chokidar from 'chokidar';
 import cryptoRandomString from 'crypto-random-string';
@@ -32,11 +36,13 @@ import normalizePath from 'normalize-path';
 import { dirname, isAbsolute, join, resolve } from 'path';
 import { OutputOptions, Plugin, RollupOptions } from 'rollup';
 
-import { cromwellStoreModulesPath, getGlobalModuleStatusStr, getGlobalModuleStr } from '../constants';
 import {
     collectFrontendDependencies,
     collectPackagesInfo,
+    cromwellStoreModulesPath,
     getDepVersion,
+    getGlobalModuleStatusStr,
+    getGlobalModuleStr,
     getNodeModuleVersion,
     globPackages,
     interopDefaultContent,
@@ -74,7 +80,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         if (pckg?.name) moduleInfo.name = pckg.name;
     } catch (e) {
         logger.error('Failed to find package.json in project root');
-        console.error(e);
+        logger.error(e);
     }
 
     if (!moduleInfo.name) throw new Error(`CromwellPlugin Error. Failed to find name of the package in working directory`);
@@ -110,7 +116,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         if (frontendInputFile) {
             // Plugin frontend
 
-            const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
+            const options: RollupOptions = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
             const inputPath = isAbsolute(frontendInputFile) ? normalizePath(frontendInputFile) :
                 normalizePath(resolve(process.cwd(), frontendInputFile));
 
@@ -243,40 +249,24 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             throw new Error('Pages directory was not found')
         }
 
-        const options = (Object.assign({}, specifiedOptions?.themePages ? specifiedOptions.themePages : inputOptions));
+        // Theme frontend
+        const options: RollupOptions = (Object.assign({}, specifiedOptions?.themePages ? specifiedOptions.themePages : inputOptions));
         const globStr = `${pagesDir}/**/*.+(ts|tsx|js|jsx)`;
         const pageFiles = glob.sync(globStr);
-        const pagesMetaInfo: TPagesMetaInfo = {
-            paths: [],
-            rootBuildDir,
+
+        const pagesMetaInfo = await collectPages({
             buildDir,
-        }
+            rootBuildDir,
+            pagesDir,
+        });
 
         const adminPanelOptions: RollupOptions[] = [];
         const dependecyOptions: RollupOptions[] = [];
 
-        // Theme frontend
         if (pageFiles && pageFiles.length > 0) {
-
-            let pageImports = '';
-            for (let fileName of pageFiles) {
-                fileName = normalizePath(fileName);
-                const pageName = fileName.replace(normalizePath(pagesDir) + '/', '').replace(/\.(m?jsx?|tsx?)$/, '');
-                pagesMetaInfo.paths.push({
-                    srcFullPath: fileName,
-                    pageName
-                });
-                pageImports += `export * as Page_${cryptoRandomString({ length: 12 })} from '${fileName}';\n`;
-                // pageImports += `export const Page_${cryptoRandomString({ length: 12 })} = require('${fileName}');\n`;
-            }
-
             options.plugins = [...(options.plugins ?? [])];
 
-            const optionsInput = '$$' + moduleInfo.name + '/' + pagesDirChunk;
-            options.plugins.push(virtual({
-                [optionsInput]: pageImports
-            }));
-            options.input = optionsInput;
+            options.input = getThemePagesVirtualPath(buildDir);
 
             options.output = Object.assign({}, options.output, {
                 dir: buildDir,
@@ -285,19 +275,35 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             } as OutputOptions);
 
             options.plugins.push(scssExternalPlugin());
+
+            options.plugins.push(nodeResolve({
+                extensions: ['.js', '.jsx', '.ts', '.tsx'],
+            }));
+
+            options.plugins.push(babel({
+                extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                babelHelpers: 'bundled',
+                presets: ['@babel/preset-react']
+            }));
+
             options.plugins.push(await rollupPluginCromwellFrontend({
                 pagesMetaInfo, buildDir, srcDir, moduleInfo,
                 moduleConfig, watch,
                 frontendDeps, dependecyOptions,
-                type: 'themePages'
+                type: 'themePages',
+                rootBuildDir, pagesDir,
             }));
 
             outOptions.push(options);
 
+            if (watch) {
+                startPagesWatcher(rootBuildDir, buildDir, pagesDir, moduleInfo.name);
+            }
+
             // Theme admin panel config
             if (!watch) {
                 for (const pagePath of pagesMetaInfo.paths) {
-                    const adminOptions = (Object.assign({}, (specifiedOptions?.adminPanel ?? inputOptions)));
+                    const adminOptions: RollupOptions = (Object.assign({}, (specifiedOptions?.adminPanel ?? inputOptions)));
                     adminOptions.plugins = [...(adminOptions.plugins ?? [])];
 
                     const optionsInput = '$$' + moduleInfo.name + '/admin/' + pagePath.pageName;
@@ -308,7 +314,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                     adminOptions.plugins.push(await rollupPluginCromwellFrontend({
                         buildDir, moduleInfo,
                         moduleConfig, frontendDeps,
-                        type: 'themeAdminPanel'
+                        type: 'themeAdminPanel',
+                        rootBuildDir, pagesDir,
                     }));
 
                     const pageStrippedName = pagePath?.pageName?.replace(/\W/g, '_') ?? strippedName;
@@ -335,7 +342,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         const adminPanelDirChunk = 'admin-panel';
         const adminPanelDir = resolve(srcDir, adminPanelDirChunk);
         if (!watch && fs.pathExistsSync(adminPanelDir)) {
-            const adminOptions = (Object.assign({}, specifiedOptions?.themePages ? specifiedOptions.themePages : inputOptions));
+            const adminOptions: RollupOptions = (Object.assign({}, specifiedOptions?.themePages ? specifiedOptions.themePages : inputOptions));
 
             adminOptions.plugins = [...(adminOptions.plugins ?? [])];
 
@@ -352,7 +359,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
             adminOptions.plugins.push(await rollupPluginCromwellFrontend({
                 pagesMetaInfo, buildDir, srcDir,
-                moduleInfo, moduleConfig, frontendDeps
+                moduleInfo, moduleConfig, frontendDeps,
+                rootBuildDir, pagesDir,
             }));
 
             outOptions.push(adminOptions);
@@ -379,7 +387,9 @@ export const rollupPluginCromwellFrontend = async (settings?: {
     generateMeta?: boolean;
     pagesMetaInfo?: TPagesMetaInfo;
     buildDir?: string;
+    rootBuildDir?: string;
     srcDir?: string;
+    pagesDir?: string;
     watch?: boolean;
     moduleInfo?: TPackageCromwellConfig;
     moduleConfig?: TModuleConfig;
@@ -473,7 +483,14 @@ export const rollupPluginCromwellFrontend = async (settings?: {
             id = normalizePath(id);
             if (!/\.(m?jsx?|tsx?)$/.test(id)) return null;
 
-            const ast = this.parse(code);
+            let ast;
+            try {
+                ast = this.parse(code);
+            } catch (error) {
+                logger.error(error)
+            }
+            if (!ast) return null;
+
             walk(ast, {
                 enter(node: any, walker) {
                     if (node.type === 'ImportDeclaration') {
@@ -512,8 +529,15 @@ export const rollupPluginCromwellFrontend = async (settings?: {
             return null;
         };
 
-        plugin.generateBundle = function (options, bundle) {
+        plugin.generateBundle = async function (options, bundle) {
 
+            if (settings?.pagesMetaInfo && settings.buildDir && settings.rootBuildDir && settings.pagesDir) {
+                settings.pagesMetaInfo = await collectPages({
+                    buildDir: settings.buildDir,
+                    rootBuildDir: settings.rootBuildDir,
+                    pagesDir: settings.pagesDir,
+                });
+            }
 
             Object.values(bundle).forEach((info: any) => {
 
@@ -596,7 +620,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                     source: JSON.stringify(metaInfo, null, 2)
                 });
 
-                if (settings?.pagesMetaInfo?.paths) {
+                if (settings?.pagesMetaInfo?.paths && settings.buildDir) {
                     settings.pagesMetaInfo.paths = settings.pagesMetaInfo.paths.map(paths => {
 
                         if (info.fileName && paths.srcFullPath === normalizePath(info.facadeModuleId)) {
@@ -634,104 +658,18 @@ export const rollupPluginCromwellFrontend = async (settings?: {
             });
 
             if (settings?.pagesMetaInfo?.paths && settings.srcDir && settings.buildDir) {
+                await generatePagesMeta(settings.pagesMetaInfo, settings.buildDir, settings.moduleInfo?.name)
+            }
+        }
 
-                // Generate lists of frontend node_modules 
-                // that are going to be bundled in one chunk by Next.js to load
-                // on first page open when a client has no cached modules. 
-                // By default frontend modules are requsted by separate requests from client
-                // So this optimization basically cuts hundreds of requests on first load. 
-                // List mapped from package.json's cromwell.firstLoadedDependencies
-                // Beware! For now this feature works in a way that 
-                // modules are going to be bundled entirely without any tree-shaking
-                // We definetely don't want @material-ui/icons in this list!
-                for (const pagePath of settings.pagesMetaInfo.paths) {
-                    if (pagePath?.localPath && packageJson.cromwell?.firstLoadedDependencies) {
-
-                        packageJson.cromwell.firstLoadedDependencies = Array.from(new Set(packageJson.cromwell.firstLoadedDependencies));
-                        let importsStr = `${interopDefaultContent}\n`;
-
-                        for (const depName of packageJson.cromwell.firstLoadedDependencies) {
-
-                            const strippedDepName = depName.replace(/\W/g, '_') + '_' + getRandStr(4);
-                            importsStr += `
-                                import * as ${strippedDepName} from '${depName}';
-                                ${getGlobalModuleStr(depName)} = interopDefault(${strippedDepName}, 'default');
-                                ${getGlobalModuleStatusStr(depName)} = 'default';
-                                `;
-                        }
-
-                        const generatedFileName = normalizePath(resolve(settings.buildDir, 'dependencies', pagePath.pageName + '.generated.js'));
-                        fs.outputFileSync(generatedFileName, importsStr);
-
-                        pagePath.localDepsBundle = generatedFileName
-                            .replace(settings.buildDir, '').replace(/^\//, '');
-
-
-                        // Code below generates lists with actually used keys of modules (very useful feature)
-                        // But currently it doesn't work, bcs if Importer in browser will try to load additional
-                        // key, we'll have two instances of a module. In case with material-ui or react it will
-                        // crash everything. But code can be reused later if we'll decide to make it work.
-
-                        // const meta = scriptsInfo[pagePath.localPath];
-                        // if (meta?.externalDependencies) {
-
-                        //     let importsStr = `${interopDefaultContent}\n`;
-                        //     for (const usedModule of Object.keys(meta.externalDependencies)) {
-                        //         const usedkeys = meta.externalDependencies[usedModule];
-                        //         let usedModuleName: string[] | string = usedModule.split('@');
-                        //         usedModuleName.pop();
-                        //         usedModuleName = usedModuleName.join('@');
-
-
-                        //         if (rendererDefaultDeps.includes(usedModuleName) ||
-                        //             usedModuleName.startsWith('next/')) continue;
-
-                        //         if (!packageJson.cromwell?.firstLoadedDependencies ||
-                        //             !packageJson.cromwell?.firstLoadedDependencies.includes(usedModuleName)) continue;
-
-                        //         const strippedusedModuleName = usedModuleName.replace(/\W/g, '_') + '_' + getRandStr(4);
-
-                        //         // if (usedkeys.includes('default')) {
-                        //         importsStr += `
-                        //             import * as ${strippedusedModuleName} from '${usedModuleName}';
-                        //             ${getGlobalModuleStr(usedModuleName)} = interopDefault(${strippedusedModuleName}, 'default');
-                        //             ${getGlobalModuleStr(usedModuleName)}.didDefaultImport = true;
-                        //             `
-                        //         // } else {
-                        //         //     let importKeysStr = '';
-                        //         //     let exportKeysStr = '';
-                        //         //     usedkeys.forEach((key, index) => {
-                        //         //         const keyAs = key + '_' + getRandStr(4);
-                        //         //         importKeysStr += `${key} as ${keyAs}`;
-                        //         //         exportKeysStr += `${key}: ${keyAs}`;
-                        //         //         if (index < usedkeys.length - 1) {
-                        //         //             importKeysStr += ', ';
-                        //         //             exportKeysStr += ', ';
-                        //         //         }
-                        //         //     })
-
-                        //         //     importsStr += `
-                        //         //     import { ${importKeysStr} } from '${resolvedModuleName}';
-                        //         //     ${getGlobalModuleStr(usedModuleName)} = { ${exportKeysStr} };
-                        //         //     `
-                        //         // }
-                        //     }
-                        //     // console.log('importsStr for' + meta.name, '\n', importsStr, '\n\n');
-
-                        //     const generatedFileName = normalizePath(resolve(settings.buildDir, 'dependencies', pagePath.pageName + '.generated.js'));
-                        //     fs.outputFileSync(generatedFileName, importsStr);
-
-                        //     pagePath.localDepsBundle = generatedFileName
-                        //         .replace(settings.buildDir!, '').replace(/^\//, '');
-                        // }
-
-                    }
-                }
-
-                delete settings.pagesMetaInfo.buildDir;
-                delete settings.pagesMetaInfo.rootBuildDir;
-                fs.outputFileSync(getThemePagesMetaPath(settings.buildDir), JSON.stringify(settings.pagesMetaInfo, null, 2));
-
+        plugin.writeBundle = function () {
+            if (hasToRunRendererGenerator) {
+                hasToRunRendererGenerator = false;
+                generator({
+                    scriptName: "build",
+                    targetThemeName: settings?.moduleInfo?.name,
+                    preserveTempDir: true,
+                });
             }
         }
     }
@@ -739,6 +677,107 @@ export const rollupPluginCromwellFrontend = async (settings?: {
     return plugin;
 }
 
+
+let hasToRunRendererGenerator = false;
+
+const generatePagesMeta = async (pagesMetaInfo: TPagesMetaInfo, buildDir: string, themeName?: string) => {
+    // Generate lists of frontend node_modules 
+    // that are going to be bundled in one chunk by Next.js to load
+    // on first page open when a client has no cached modules. 
+    // By default frontend modules are requsted by separate requests from client
+    // So this optimization basically cuts hundreds of requests on first load. 
+    // List mapped from package.json's cromwell.firstLoadedDependencies
+    // Beware! For now this feature works in a way that 
+    // modules are going to be bundled entirely without any tree-shaking
+    // We definetely don't want @material-ui/icons in this list!
+    const packageJson: TPackageJson = require(resolve(process.cwd(), 'package.json'));
+
+    for (const pagePath of pagesMetaInfo.paths) {
+        if (pagePath?.localPath && packageJson.cromwell?.firstLoadedDependencies) {
+
+            packageJson.cromwell.firstLoadedDependencies = Array.from(new Set(packageJson.cromwell.firstLoadedDependencies));
+            let importsStr = `${interopDefaultContent}\n`;
+
+            for (const depName of packageJson.cromwell.firstLoadedDependencies) {
+
+                const strippedDepName = depName.replace(/\W/g, '_') + '_' + getRandStr(4);
+                importsStr += `
+                    import * as ${strippedDepName} from '${depName}';
+                    ${getGlobalModuleStr(depName)} = interopDefault(${strippedDepName}, 'default');
+                    ${getGlobalModuleStatusStr(depName)} = 'default';
+                `;
+            }
+
+            const generatedFileName = normalizePath(resolve(buildDir, 'dependencies', pagePath.pageName + '.generated.js'));
+            fs.outputFileSync(generatedFileName, importsStr);
+
+            pagePath.localDepsBundle = generatedFileName
+                .replace(buildDir, '').replace(/^\//, '');
+
+
+            // Code below generates lists with actually used keys of modules (very useful feature)
+            // But currently it doesn't work, bcs if Importer in browser will try to load additional
+            // key, we'll have two instances of a module. In case with material-ui or react it will
+            // crash everything. But code can be reused later if we'll decide to make it work.
+
+            // const meta = scriptsInfo[pagePath.localPath];
+            // if (meta?.externalDependencies) {
+
+            //     let importsStr = `${interopDefaultContent}\n`;
+            //     for (const usedModule of Object.keys(meta.externalDependencies)) {
+            //         const usedkeys = meta.externalDependencies[usedModule];
+            //         let usedModuleName: string[] | string = usedModule.split('@');
+            //         usedModuleName.pop();
+            //         usedModuleName = usedModuleName.join('@');
+
+
+            //         if (rendererDefaultDeps.includes(usedModuleName) ||
+            //             usedModuleName.startsWith('next/')) continue;
+
+            //         if (!packageJson.cromwell?.firstLoadedDependencies ||
+            //             !packageJson.cromwell?.firstLoadedDependencies.includes(usedModuleName)) continue;
+
+            //         const strippedusedModuleName = usedModuleName.replace(/\W/g, '_') + '_' + getRandStr(4);
+
+            //         // if (usedkeys.includes('default')) {
+            //         importsStr += `
+            //             import * as ${strippedusedModuleName} from '${usedModuleName}';
+            //             ${getGlobalModuleStr(usedModuleName)} = interopDefault(${strippedusedModuleName}, 'default');
+            //             ${getGlobalModuleStr(usedModuleName)}.didDefaultImport = true;
+            //             `
+            //         // } else {
+            //         //     let importKeysStr = '';
+            //         //     let exportKeysStr = '';
+            //         //     usedkeys.forEach((key, index) => {
+            //         //         const keyAs = key + '_' + getRandStr(4);
+            //         //         importKeysStr += `${key} as ${keyAs}`;
+            //         //         exportKeysStr += `${key}: ${keyAs}`;
+            //         //         if (index < usedkeys.length - 1) {
+            //         //             importKeysStr += ', ';
+            //         //             exportKeysStr += ', ';
+            //         //         }
+            //         //     })
+
+            //         //     importsStr += `
+            //         //     import { ${importKeysStr} } from '${resolvedModuleName}';
+            //         //     ${getGlobalModuleStr(usedModuleName)} = { ${exportKeysStr} };
+            //         //     `
+            //         // }
+            //     }
+            //     const generatedFileName = normalizePath(resolve(settings.buildDir, 'dependencies', pagePath.pageName + '.generated.js'));
+            //     fs.outputFileSync(generatedFileName, importsStr);
+
+            //     pagePath.localDepsBundle = generatedFileName
+            //         .replace(settings.buildDir!, '').replace(/^\//, '');
+            // }
+
+        }
+    }
+
+    delete pagesMetaInfo.buildDir;
+    delete pagesMetaInfo.rootBuildDir;
+    fs.outputFileSync(getThemePagesMetaPath(buildDir), JSON.stringify(pagesMetaInfo, null, 2));
+}
 
 
 const stylesheetsLoaderDirs: string[] = [];
@@ -782,4 +821,66 @@ const initStylesheetsLoader = (srcDir: string, buildDir: string, basePath?: stri
         .on('add', copyFile)
         .on('change', copyFile)
         .on('unlink', removeFile);
+}
+
+const collectPages = async (settings: {
+    buildDir: string;
+    pagesDir: string;
+    rootBuildDir: string;
+}): Promise<TPagesMetaInfo> => {
+    const { pagesDir, buildDir, rootBuildDir } = settings;
+
+    const globStr = `${pagesDir}/**/*.+(ts|tsx|js|jsx)`;
+    const pageFiles = glob.sync(globStr);
+    const pagesMetaInfo: TPagesMetaInfo = {
+        paths: [],
+        rootBuildDir,
+        buildDir,
+    }
+
+    let pageImports = '';
+    for (let fileName of pageFiles) {
+        fileName = normalizePath(fileName);
+        const pageName = fileName.replace(normalizePath(pagesDir) + '/', '').replace(/\.(m?jsx?|tsx?)$/, '');
+        pagesMetaInfo.paths.push({
+            srcFullPath: fileName,
+            pageName
+        });
+        pageImports += `export * as Page_${pageName.replace(/\W/g, '_')} from '${fileName}';\n`;
+    }
+
+    const importsFilePath = getThemePagesVirtualPath(buildDir);
+    const prevImports = await fs.pathExists(importsFilePath) ? (await fs.readFile(importsFilePath)).toString() : undefined;
+    if (prevImports !== pageImports) {
+        await fs.outputFile(importsFilePath, pageImports);
+    }
+
+    return pagesMetaInfo;
+}
+
+
+let pagesWatcherActive = false;
+const startPagesWatcher = (rootBuildDir: string, buildDir: string, pagesDir: string, themeName: string) => {
+    if (pagesWatcherActive) return;
+    pagesWatcherActive = true;
+
+    const globStr = `${pagesDir}/**/*.+(ts|tsx|js|jsx)`;
+
+    const updatePagesInfo = async () => {
+        await collectPages({
+            buildDir,
+            pagesDir,
+            rootBuildDir,
+        });
+        hasToRunRendererGenerator = true;
+    }
+
+    const watcher = chokidar.watch(globStr, {
+        ignored: /(^|[/\\])\../, // ignore dotfiles
+        persistent: true
+    });
+
+    watcher
+        .on('add', updatePagesInfo)
+        .on('unlink', updatePagesInfo);
 }

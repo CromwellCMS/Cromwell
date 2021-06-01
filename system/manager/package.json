@@ -58,7 +58,7 @@
     "@typescript-eslint/parser": "^4.22.0",
     "eslint": "^7.25.0",
     "rollup-plugin-terser": "^7.0.2",
-    "rollup-plugin-ts-compiler": "^1.0.15",
+    "rollup-plugin-ts-compiler": "^1.0.16",
     "typescript": "4.2.4"
   },
   "startupDependencies": {

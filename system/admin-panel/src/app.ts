@@ -1,7 +1,6 @@
+import './helpers/importDependecies';
 import { onStoreChange, setStoreItem } from '@cromwell/core';
-import * as core from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient, TErrorInfo } from '@cromwell/core-frontend';
-import * as coreFrontend from '@cromwell/core-frontend';
 import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -14,10 +13,16 @@ import { loadPlugins } from './helpers/loadPlugins';
 import { store } from './redux/store';
 
 const importer = getModuleImporter();
-importer.modules['@cromwell/core-frontend'] = coreFrontend;
-importer.modules['@cromwell/core'] = core;
 
 (async () => {
+
+    try {
+        const meta = await (await fetch('/admin/build/meta.json')).json();
+        await importer.importSciptExternals(meta);
+    } catch (e) {
+        console.error(e);
+    }
+
     let isInstalled = true;
     const restClient = getRestAPIClient();
     const graphClient = getGraphQLClient();

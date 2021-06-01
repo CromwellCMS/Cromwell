@@ -4,8 +4,8 @@ import { resolve } from 'path';
 import { Compiler } from 'webpack';
 import ExternalModuleFactoryPlugin from 'webpack/lib/ExternalModuleFactoryPlugin';
 
-import { getGlobalModuleStr, jsOperators, moduleMetaInfoFileName } from '../constants';
-import { getDepVersion, getModuleInfo, isExternalForm } from '../shared';
+import { moduleMetaInfoFileName } from '../constants';
+import { getDepVersion, getModuleInfo, isExternalForm, getGlobalModuleStr, jsOperators, } from '../shared';
 
 // Marks every node_module as external and collects import bindings for them in meta.json
 export class CromwellWebpackPlugin {

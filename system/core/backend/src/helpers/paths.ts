@@ -32,9 +32,13 @@ export const getNodeModuleDir = async (moduleName: string) => {
     try {
         const modulePath = resolvePackageJsonPath(moduleName);
         if (modulePath) return dirname(await fs.realpath(modulePath));
-    } catch (e) {
-        const logger = getLogger();
-    }
+    } catch (e) { }
+
+    try {
+        // if module is a root package
+        const rootPackage = await getModulePackage();
+        if (rootPackage?.name === moduleName) return await fs.realpath(process.cwd());
+    } catch (e) { }
 }
 
 export const getCMSConfigPath = () => resolve(process.cwd(), cmsConfigFileName);
@@ -166,10 +170,7 @@ export const getCmsModuleConfig = async (moduleName?: string): Promise<TModuleCo
         const configPath = resolve(path, configFileName);
         try {
             return require(configPath);
-        } catch (e) {
-            const logger = getLogger();
-            logger.error('Failed to require module config at: ' + configPath, 'Error');
-        }
+        } catch (e) { }
     }
 }
 
@@ -194,6 +195,7 @@ export const getPluginAdminBundlePath = (distDir: string) => resolve(distDir, pl
 export const getPluginAdminCjsPath = (distDir: string) => resolve(distDir, pluginAdminCjsPath);
 export const getPluginBackendPath = (distDir: string) => resolve(distDir, 'backend/index.js');
 export const getThemePagesMetaPath = (distDir: string) => resolve(distDir, 'pages_meta.json');
+export const getThemePagesVirtualPath = (distDir: string) => resolve(distDir, '__virtual.js');
 
 export const getPublicDir = () => resolve(process.cwd(), 'public');
 export const getPublicPluginsDir = () => resolve(getPublicDir(), 'plugins');

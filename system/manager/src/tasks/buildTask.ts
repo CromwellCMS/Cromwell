@@ -21,23 +21,35 @@ export const buildTask = async (watch?: boolean) => {
     const moduleConfig = await getCmsModuleConfig();
     await checkDepenencies();
 
+    const errorEg = `
+    {
+        "name": "cromwell-plugin-your-plugin",
+        "version": "1.0.0",
+        "dependencies": {},
+        "cromwell" : {
+            "type": "plugin"
+        }
+    }`;
+
+    if (!moduleInfo) {
+        logger.error('package.json must have "cromwell" property. Eg.:' + errorEg);
+        return;
+    }
+
     if (!moduleInfo?.name) {
-        logger.error('Package.json must have "name" property');
+        logger.error('cromwell config in package.json must have "name" property. Eg.:' + errorEg);
         return;
     }
 
     if (!moduleInfo?.type) {
-        logger.error(`package.json must have CMS module config with "type" property. Eg.: 
-        {
-            "name": "cromwell-plugin-your-plugin",
-            "dependencies": {},
-            "cromwell" : {
-                "type": "plugin"
-            }
-        }`);
+        logger.error('cromwell config in package.json must have "type" property. Eg.:' + errorEg);
         return;
     }
 
+    if (moduleInfo.type !== 'theme' && moduleInfo.type !== 'plugin') {
+        logger.error('"type" property of cromwell config in package.json must have either "plugin" or "theme" value. Eg.:' + errorEg);
+        return;
+    }
 
     if (moduleInfo.type === 'theme') {
 

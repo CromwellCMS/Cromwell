@@ -22,14 +22,16 @@ const localThemeBuildDurChunk = 'theme';
 const disableSSR = false;
 const logger = getLogger();
 
-const main = async () => {
-    const args = yargs(process.argv.slice(2));
-    const scriptName = process.argv[2];
-
+export const generator = async (options: {
+    scriptName: string;
+    targetThemeName?: string;
+    preserveTempDir?: boolean;
+}) => {
+    const { scriptName, targetThemeName, preserveTempDir } = options
     const config = await readCMSConfig();
     if (config) setStoreItem('cmsSettings', config);
 
-    const themeName = args.themeName ?? config?.defaultSettings?.themeName;
+    const themeName = targetThemeName ?? config?.defaultSettings?.themeName;
     if (!themeName) {
         logger.error('No theme name provided');
         return;
@@ -53,7 +55,7 @@ const main = async () => {
     });
 
     if (scriptName === 'dev' || scriptName === 'build' || scriptName === 'buildStart') {
-        await devGenerate(themeName);
+        await devGenerate(themeName, preserveTempDir);
     } else {
         await prodGenerate(themeName);
     }
@@ -75,7 +77,7 @@ const main = async () => {
     }
 };
 
-const devGenerate = async (themeName: string) => {
+const devGenerate = async (themeName: string, preserveTempDir?: boolean) => {
     const tempDir = getRendererTempDir();
     const tempDirBuild = resolve(tempDir, 'build');
     const rendererBuildDir = getRendererBuildDir();
@@ -87,9 +89,7 @@ const devGenerate = async (themeName: string) => {
     const themeExports = await readThemeExports(themeName);
 
     // Create pages in Nex.js pages dir based on theme's pages
-
-    // console.log('pagesLocalDir', pagesLocalDir)
-    if (await fs.pathExists(tempDir)) {
+    if (!preserveTempDir && await fs.pathExists(tempDir)) {
         await fs.remove(tempDir);
         await sleep(0.1);
     }
@@ -273,7 +273,11 @@ const devGenerate = async (themeName: string) => {
         const pagePath = resolve(pagesLocalDir, pageInfo.name + '.js');
 
         await fs.ensureDir(dirname(pagePath));
-        await fs.outputFile(pagePath, pageContent);
+        try {
+            await fs.outputFile(pagePath, pageContent);
+        } catch (error) {
+            logger.error(error);
+        }
     }
 
     // Create jsconfig for Next.js
@@ -333,9 +337,3 @@ const prodGenerate = async (themeName: string) => {
         }
     }
 }
-
-main();
-
-
-
-
