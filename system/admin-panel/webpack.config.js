@@ -26,7 +26,6 @@ module.exports = {
     externals: [
         function ({ context, request }, callback) {
             if (request.startsWith('next')) {
-                console.log('request.replace', request.replace(/\W/g, '_'))
                 return callback(null, `root CromwellStore.nodeModules.modules['${request.replace(/\W/g, '_')}']`);
             }
             callback();

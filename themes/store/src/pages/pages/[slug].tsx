@@ -6,7 +6,7 @@ import Layout from '../../components/layout/Layout';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Pages.module.scss';
 
-const SomePage: TCromwellPage = (props) => {
+const SomePage: TCromwellPage = () => {
     return (
         <Layout>
             <CContainer className={styles.Pages} id="PagesGenericPage">
