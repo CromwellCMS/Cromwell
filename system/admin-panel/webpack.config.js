@@ -1,5 +1,6 @@
 const path = require('path');
 const localProjectDir = __dirname;
+const webpack = require('webpack');
 
 const buildMode = process.env.NODE_ENV || 'production';
 const isProduction = buildMode === 'production';
@@ -9,7 +10,7 @@ module.exports = {
     target: "web",
     devtool: isProduction ? false : "source-map",
     entry: {
-        webapp: path.resolve(localProjectDir, 'src/index.ts')
+        webapp: ['webpack-hot-middleware/client', path.resolve(localProjectDir, 'src/index.ts')]
     },
     output: {
         path: path.resolve(localProjectDir, 'build'),
@@ -24,7 +25,7 @@ module.exports = {
         ignored: ['build/**', '.cromwell/**', 'node_modules/**']
     },
     externals: [
-        function ({ context, request }, callback) {
+        function ({ request }, callback) {
             if (request.startsWith('next')) {
                 return callback(null, `root CromwellStore.nodeModules.modules['${request.replace(/\W/g, '_')}']`);
             }
@@ -50,7 +51,7 @@ module.exports = {
                 use: [
                     {
                         loader: "ts-loader"
-                    }
+                    },
                 ]
             },
             {
@@ -66,19 +67,14 @@ module.exports = {
                         }
                     },
                     {
-                        loader: 'postcss-loader',
-                        options: {
-                            sourceMap: true,
-                            config: {
-                                path: 'postcss.config.js'
-                            }
-                        }
-                    },
-                    {
                         loader: 'sass-loader', options: { sourceMap: true }
                     }
                 ],
             },
         ]
     },
+    plugins: [
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
+    ]
 }

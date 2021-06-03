@@ -765,6 +765,9 @@ export class ThemeService {
 
 
     async handleDeleteTheme(name: string): Promise<boolean> {
+        if (await this.getIsUpdating(name)) return false;
+
+        await this.setIsUpdating(name, true);
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
@@ -776,6 +779,7 @@ export class ThemeService {
             error = e;
             success = false;
         }
+        await this.setIsUpdating(name, false);
         endTransaction(transactionId);
 
         if (!success) {

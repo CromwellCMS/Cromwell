@@ -3,7 +3,6 @@ import { serviceLocator, TPagedParams, TProductCategory, TProductCategoryInput }
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
-import Quill from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
@@ -12,6 +11,7 @@ import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
 import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
+import { Quill as QuillType } from 'quill';
 import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
@@ -23,7 +23,7 @@ export default function CategoryPage(props) {
     const history = useHistory();
     const [category, setCategoryData] = useState<TProductCategory | undefined | null>(null);
     const editorId = 'category-description-editor';
-    const quillEditor = useRef<Quill | null>(null);
+    const quillEditor = useRef<QuillType | null>(null);
     const [parentCategory, setParentCategory] = useState<TProductCategory | null>(null);
 
     const urlParams = new URLSearchParams(props?.location?.search);
@@ -106,7 +106,8 @@ export default function CategoryPage(props) {
             console.error(e);
         }
 
-        quillEditor.current = initQuillEditor(`#${editorId}`, postContent);
+        const Quill: any = await import('quill');
+        quillEditor.current = initQuillEditor(Quill?.default, `#${editorId}`, postContent);
     }
 
     useEffect(() => {

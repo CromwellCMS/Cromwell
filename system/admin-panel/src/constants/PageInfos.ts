@@ -12,33 +12,34 @@ import {
     Stars as StarsIcon,
     Storage as StorageIcon,
 } from '@material-ui/icons';
-import React from 'react';
+import React, { lazy } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import sidebarStyles from '../components/sidebar/Sidebar.module.scss';
-import AttributesPage from '../pages/attributes/AttributesPage';
-import CategoryPage from '../pages/category/CategoryPage';
-import CategoryListPage from '../pages/categoryList/CategoryList';
-import DashboardPage from '../pages/dashboard/Dashboard';
-import LoginPage from '../pages/login/LoginPage';
-import OrderPage from '../pages/order/Order';
-import OrderListPage from '../pages/orderList/OrderList';
-import PluginPage from '../pages/plugin/PluginPage';
-import PluginListPage from '../pages/pluginList/PluginList';
-import PostPage from '../pages/post/Post';
-import PostListPage from '../pages/postList/PostList';
-import ProductPage from '../pages/product/Product';
-import ProductListPage from '../pages/productList/ProductList';
-import ReviewListPage from '../pages/reviewList/ReviewList';
-import SettingsPage from '../pages/settings/Settings';
-import TagPage from '../pages/tag/Tag';
-import TagListPage from '../pages/tagList/TagList';
-import ThemeEditPage from '../pages/themeEdit/ThemeEdit';
-import ThemeListPage from '../pages/themeList/ThemeList';
-import UserPage from '../pages/user/User';
-import UserListPage from '../pages/userList/UserList';
-import WelcomePage from '../pages/welcome/Welcome';
 import { CategoryIcon } from './icons';
+
+const AttributesPage = lazy(() => import('../pages/attributes/AttributesPage'));
+const CategoryPage = lazy(() => import('../pages/category/CategoryPage'));
+const CategoryListPage = lazy(() => import('../pages/categoryList/CategoryList'));
+const DashboardPage = lazy(() => import('../pages/dashboard/Dashboard'));
+const LoginPage = lazy(() => import('../pages/login/LoginPage'));
+const OrderPage = lazy(() => import('../pages/order/Order'));
+const OrderListPage = lazy(() => import('../pages/orderList/OrderList'));
+const PluginPage = lazy(() => import('../pages/plugin/PluginPage'));
+const PluginListPage = lazy(() => import('../pages/pluginList/PluginList'));
+const PostPage = lazy(() => import('../pages/post/Post'));
+const PostListPage = lazy(() => import('../pages/postList/PostList'));
+const ProductPage = lazy(() => import('../pages/product/Product'));
+const ProductListPage = lazy(() => import('../pages/productList/ProductList'));
+const ReviewListPage = lazy(() => import('../pages/reviewList/ReviewList'));
+const SettingsPage = lazy(() => import('../pages/settings/Settings'));
+const TagPage = lazy(() => import('../pages/tag/Tag'));
+const TagListPage = lazy(() => import('../pages/tagList/TagList'));
+const ThemeEditPage = lazy(() => import('../pages/themeEdit/ThemeEdit'));
+const ThemeListPage = lazy(() => import('../pages/themeList/ThemeList'));
+const UserPage = lazy(() => import('../pages/user/User'));
+const UserListPage = lazy(() => import('../pages/userList/UserList'));
+const WelcomePage = lazy(() => import('../pages/welcome/Welcome'));
 
 export type SidebarLinkType = {
     id: string;

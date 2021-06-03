@@ -1,29 +1,27 @@
 import { serviceLocator, setStoreItem } from '@cromwell/core';
 import {
     adminPanelMessages,
-    getAdminPanelDir,
     getAdminPanelServiceBuildDir,
+    getAdminPanelStaticDir,
     getAdminPanelTempDir,
     getAdminPanelWebPublicDir,
     getAdminPanelWebServiceBuildDir,
     getPublicDir,
     readCMSConfigSync,
-    getAdminPanelStaticDir
 } from '@cromwell/core-backend';
-import { bundledModulesDirName, getBundledModulesDir, downloader } from '@cromwell/utils';
-import { fork } from 'child_process';
+import { bundledModulesDirName, downloader, getBundledModulesDir } from '@cromwell/utils';
 import compress from 'compression';
 import fastify from 'fastify';
+import fastifyStatic from 'fastify-static';
 import fs from 'fs-extra';
+import middie from 'middie';
+import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
-import middie from 'middie'
-import normalizePath from 'normalize-path';
-import fastifyStatic from 'fastify-static';
+import webpack from 'webpack';
 
 
 const start = async () => {
-    const watch = true;
     const cmsConfig = readCMSConfigSync();
     setStoreItem('cmsSettings', cmsConfig);
 
@@ -66,12 +64,26 @@ const start = async () => {
     const app = fastify();
     await app.register(middie);
 
-    let bs;
+    let compiler;
     if (isDevelopment) {
+        const webpackConfig = require('../webpack.config');
+        const chalk = require('react-dev-utils/chalk');
+        compiler = webpack(webpackConfig);
 
-        bs = require('browser-sync').create();
-        bs.init({ watch: false });
-        app.use(require('connect-browser-sync')(bs));
+        compiler.hooks.watchRun.tap('adminPanelStart', () => {
+            console.log(chalk.cyan('\r\nBegin compile at ' + new Date() + '\r\n'));
+        });
+        compiler.hooks.done.tap('adminPanelDone', () => {
+            setTimeout(() => {
+                console.log(chalk.cyan('\r\nEnd compile at ' + new Date() + '\r\n'));
+            }, 100)
+        });
+
+        app.use(require("webpack-dev-middleware")(compiler, {
+            publicPath: webpackConfig.output.publicPath
+        }));
+
+        app.use(require("webpack-hot-middleware")(compiler));
     }
 
     app.use(compress());
@@ -139,14 +151,11 @@ const start = async () => {
     });
 
     if (isDevelopment) {
-
-        const buildProc = fork(resolve(serviceBuildDir, 'compiler.js'), watch ? ['--watch'] : [],
-            { stdio: 'inherit', cwd: getAdminPanelDir(), env: { NODE_ENV: 'development' } });
-
-        buildProc.on('message', (message) => {
-            if (message === adminPanelMessages.onBuildEndMessage && bs) {
-                bs.reload();
-            }
+        compiler.watch({}, (err, stats) => {
+            console.log(stats?.toString({
+                chunks: false,
+                colors: true
+            }));
         });
     }
 

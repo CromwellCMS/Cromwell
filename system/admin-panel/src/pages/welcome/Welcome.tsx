@@ -2,7 +2,7 @@ import { setStoreItem } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, IconButton, InputAdornment, TextField, withStyles } from '@material-ui/core';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
-import React, { useEffect, useState } from 'react';
+import React, {  useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import ImagePicker from '../../components/imagePicker/ImagePicker';
@@ -79,7 +79,7 @@ export default function welcomePage() {
             <div className={styles.wrapper}>
                 <img src="/admin/static/logo_small.png" width="150px" className={styles.logo} />
                 <h1 className={styles.title}>Welcome to Cromwell CMS!</h1>
-                <h3 className={styles.subtitle}>Let's create your account</h3>
+                <h3 className={styles.subtitle}>Let&apos;s create your account</h3>
                 <div className={styles.inputForm}>
                     <div className={styles.userMainInfo}>
                         <ImagePicker

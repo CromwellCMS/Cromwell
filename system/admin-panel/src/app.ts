@@ -1,4 +1,5 @@
 import './helpers/importDependecies';
+
 import { onStoreChange, setStoreItem } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient, TErrorInfo } from '@cromwell/core-frontend';
 import { getModuleImporter } from '@cromwell/utils/build/importer.js';
@@ -128,9 +129,10 @@ const importer = getModuleImporter();
     }
 
     ReactDOM.render(
-        React.createElement(Provider, {
-            store,
-        }, React.createElement(Layout)),
+        React.createElement(
+            Provider, { store, },
+            React.createElement(Layout)
+        ),
         document.getElementById('root')
     );
 })();

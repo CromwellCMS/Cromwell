@@ -10,12 +10,12 @@
     z-index: 9990;
     background-size: cover;
     background-position: center;
-    background-color: #34002e;
-    color: #fff;
+    background-color: #fff;
+    color: #000;
 
-    :global(.MuiSvgIcon-root) {
-        color: #fff;
-    }
+    // :global(.MuiSvgIcon-root) {
+    //     color: #fff;
+    // }
 }
 
 .loginForm {
@@ -34,11 +34,29 @@
 svg.loginIcon {
     width: 50px;
     height: 50px;
-    color: #fff;
+    // color: #fff;
     margin-bottom: 15px;
 }
 
 button.loginBtn {
     margin-top: 20px;
-    color: #fff;
+    // color: #fff;
+}
+
+.resetPassInstructions {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.forgotPassText {
+    text-decoration: underline;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+
+
+.logo {
+    margin-bottom: 20px;
 }

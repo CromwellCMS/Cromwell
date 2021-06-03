@@ -1,14 +1,15 @@
-import Quill from 'quill';
+import { Quill as QuillType } from 'quill';
 import { getFileManager } from '../components/fileManager/helpers';
 
-export const initQuillEditor = (selector: string, postContent?: Record<string, any>): Quill | undefined => {
+export const initQuillEditor = (quillClass: new (...args: any[]) => QuillType,
+    selector: string, postContent?: Record<string, any>): QuillType | undefined => {
     const container = document.querySelector(selector);
     if (!container) {
         console.error('initQuillEditor: Failed to find container by selector: ' + selector);
         return;
     }
 
-    const quill = new Quill(container, {
+    const quill = new quillClass(container, {
         theme: 'snow',
         placeholder: "Let's write an awesome story!",
         modules: {
@@ -34,7 +35,7 @@ export const initQuillEditor = (selector: string, postContent?: Record<string, a
 
 
     const toolbar = quill.getModule('toolbar');
-    toolbar.addHandler('image', async (prop) => {
+    toolbar.addHandler('image', async () => {
         const photoPath = await getFileManager()?.getPhoto();
         if (photoPath) {
             const selection = quill.getSelection();
@@ -49,7 +50,7 @@ export const initQuillEditor = (selector: string, postContent?: Record<string, a
     return quill;
 }
 
-export const getQuillHTML = (quill: Quill, selector: string): string | undefined => {
+export const getQuillHTML = (quill: QuillType, selector: string): string | undefined => {
     quill.disable();
     let descriptionHTML;
     const editorEl = document.querySelector(selector);

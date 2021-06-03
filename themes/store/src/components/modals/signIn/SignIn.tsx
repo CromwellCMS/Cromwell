@@ -112,7 +112,7 @@ export default function SingIn(props: {
         try {
             const success = await apiClient?.forgotPassword({ email: emailInput });
             if (success) {
-                toast.success('We send you an e-mail');
+                toast.success('We sent you an e-mail');
                 setSubmitPressed(false);
                 setFormType('reset-pass');
             } else {

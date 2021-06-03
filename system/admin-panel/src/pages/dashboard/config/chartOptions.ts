@@ -1,9 +1,8 @@
 import { TSalePerDay } from '@cromwell/core';
 import { format } from 'date-fns';
-import * as echarts from 'echarts';
 
 
-export const getOrdersPerDayOption = (sales: TSalePerDay[]) => {
+export const getOrdersPerDayOption = (echarts, sales: TSalePerDay[]) => {
     return {
         color: ['#3398DB'],
         tooltip: {
@@ -53,7 +52,7 @@ export const getOrdersPerDayOption = (sales: TSalePerDay[]) => {
     };
 }
 
-export const getSalesValuePerDayOption = (sales: TSalePerDay[]) => {
+export const getSalesValuePerDayOption = (echarts, sales: TSalePerDay[]) => {
     return {
         color: ['#3398DB'],
         tooltip: {

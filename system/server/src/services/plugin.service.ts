@@ -244,6 +244,8 @@ export class PluginService {
 
 
     async handleInstallPlugin(pluginName: string): Promise<boolean> {
+        if (await this.getIsUpdating(pluginName)) return false;
+        
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
@@ -408,8 +410,11 @@ export class PluginService {
 
 
     async handleDeletePlugin(pluginName: string): Promise<boolean> {
+        if (await this.getIsUpdating(pluginName)) return false;
+
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
+        await this.setIsUpdating(pluginName, true);
 
         let success = false;
         let error: any;
@@ -419,6 +424,7 @@ export class PluginService {
             error = e;
             success = false;
         }
+        await this.setIsUpdating(pluginName, false);
         endTransaction(transactionId);
 
         if (!success) {
