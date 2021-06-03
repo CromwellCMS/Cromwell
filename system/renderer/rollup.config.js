@@ -22,6 +22,8 @@ const external = id => {
         }
     }
 }
+
+const buildDir = 'build';
 const sharedState = {};
 const compilerOptions = {
     module: 'ESNext',
@@ -29,8 +31,6 @@ const compilerOptions = {
     declarationMap: true,
     declarationDir: resolve(__dirname, buildDir)
 }
-
-const buildDir = 'build';
 
 export default [
     {
