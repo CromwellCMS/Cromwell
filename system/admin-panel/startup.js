@@ -1,6 +1,6 @@
 const fs = require('fs-extra');
 const { resolve } = require('path');
-const { spawn, spawnSync, fork } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const { getAdminPanelServiceBuildDir } = require('@cromwell/core-backend');
 const localProjectDir = __dirname;
 

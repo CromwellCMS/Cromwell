@@ -9,14 +9,14 @@ import {
     getRendererTempDir,
     getThemeBuildDir,
     readCMSConfig,
-    readThemeExports,
 } from '@cromwell/core-backend';
 import { bundledModulesDirName, downloader, getBundledModulesDir } from '@cromwell/utils';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
-import yargs from 'yargs-parser';
+
+import { readThemeExports } from './helpers/readThemeExports';
 
 const localThemeBuildDurChunk = 'theme';
 const disableSSR = false;
@@ -25,9 +25,8 @@ const logger = getLogger();
 export const generator = async (options: {
     scriptName: string;
     targetThemeName?: string;
-    preserveTempDir?: boolean;
 }) => {
-    const { scriptName, targetThemeName, preserveTempDir } = options
+    const { scriptName, targetThemeName } = options
     const config = await readCMSConfig();
     if (config) setStoreItem('cmsSettings', config);
 
@@ -55,7 +54,7 @@ export const generator = async (options: {
     });
 
     if (scriptName === 'dev' || scriptName === 'build' || scriptName === 'buildStart') {
-        await devGenerate(themeName, preserveTempDir);
+        await devGenerate(themeName);
     } else {
         await prodGenerate(themeName);
     }
@@ -77,7 +76,7 @@ export const generator = async (options: {
     }
 };
 
-const devGenerate = async (themeName: string, preserveTempDir?: boolean) => {
+const devGenerate = async (themeName: string) => {
     const tempDir = getRendererTempDir();
     const tempDirBuild = resolve(tempDir, 'build');
     const rendererBuildDir = getRendererBuildDir();
@@ -89,10 +88,6 @@ const devGenerate = async (themeName: string, preserveTempDir?: boolean) => {
     const themeExports = await readThemeExports(themeName);
 
     // Create pages in Nex.js pages dir based on theme's pages
-    if (!preserveTempDir && await fs.pathExists(tempDir)) {
-        await fs.remove(tempDir);
-        await sleep(0.1);
-    }
     await fs.ensureDir(tempDir);
     await sleep(0.1);
     await fs.ensureDir(pagesLocalDir);
@@ -118,9 +113,9 @@ const devGenerate = async (themeName: string, preserveTempDir?: boolean) => {
                 normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
         }
 
-        let metaInfoRelativePath;
-        if (pageInfo.metaInfoPath) metaInfoRelativePath = normalizePath(
-            pageInfo.metaInfoPath).replace(normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
+        // let metaInfoRelativePath;
+        // if (pageInfo.metaInfoPath) metaInfoRelativePath = normalizePath(
+        //     pageInfo.metaInfoPath).replace(normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
 
         let globalCssImports = '';
         if (pageInfo.name === '_app' && themeConfig?.globalCss && pageRelativePath &&
@@ -315,13 +310,6 @@ const devGenerate = async (themeName: string, preserveTempDir?: boolean) => {
             await symlinkDir(rendererBuildDir, tempDirBuild)
         } catch (e) { console.error(e) }
     }
-
-    // Link theme's build dir
-    const localThemeBuildDir = resolve(tempDir, localThemeBuildDurChunk);
-    try {
-        await symlinkDir(themeExports.themeBuildDir, localThemeBuildDir)
-    } catch (e) { console.error(e) }
-
 }
 
 const prodGenerate = async (themeName: string) => {
@@ -333,7 +321,9 @@ const prodGenerate = async (themeName: string) => {
         const themeNextBuildDir = resolve(themeBuildDir, '.next');
         if (fs.existsSync(themeNextBuildDir)) {
             await fs.remove(rendererTempNextDir);
+            await sleep(0.1);
             await fs.copy(themeNextBuildDir, rendererTempNextDir);
+            await sleep(0.1);
         }
     }
 }

@@ -1,5 +1,11 @@
-import { TModuleConfig, TPackageCromwellConfig } from '@cromwell/core';
-import { getCmsModuleConfig, getCmsModuleInfo, getLogger, getThemeNextBuildDirByPath } from '@cromwell/core-backend';
+import { sleep, TModuleConfig, TPackageCromwellConfig } from '@cromwell/core';
+import {
+    getCmsModuleConfig,
+    getCmsModuleInfo,
+    getLogger,
+    getRendererTempDir,
+    getThemeNextBuildDirByPath,
+} from '@cromwell/core-backend';
 import { rollupConfigWrapper } from '@cromwell/utils';
 import dateTime from 'date-time';
 import fs from 'fs-extra';
@@ -56,8 +62,11 @@ export const buildTask = async (watch?: boolean) => {
         await checkModules();
 
         // Clean old build
-        // const rollupBuildDir = getThemeRollupBuildDirByPath(workingDir);
-        // if (rollupBuildDir && await fs.pathExists(rollupBuildDir)) await fs.remove(rollupBuildDir);
+        const rendererTempDir = getRendererTempDir();
+        if (rendererTempDir && await fs.pathExists(rendererTempDir)) {
+            await fs.remove(rendererTempDir);
+            await sleep(0.1);
+        }
 
         console.log(`Starting to pre-build ${moduleInfo.type}...`);
         const rollupBuildSuccess = await rollupBuild(moduleInfo, moduleConfig, watch);
@@ -66,7 +75,7 @@ export const buildTask = async (watch?: boolean) => {
             console.error(`Failed to pre-build ${moduleInfo.type}`);
             return false;
         }
-        console.log(`Successfully pre-build ${moduleInfo.type}`);
+        console.log(`Successfully pre-built ${moduleInfo.type}`);
 
         console.log('Running Next.js build...');
 
@@ -95,7 +104,7 @@ export const buildTask = async (watch?: boolean) => {
 
 
 const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean): Promise<boolean> => {
-    if (!moduleInfo) return false;
+    if (!moduleInfo || !moduleInfo.type) return false;
     let rollupBuildSuccess = false;
     try {
         const rollupConfig = await rollupConfigWrapper(moduleInfo, moduleConfig, watch);
@@ -108,8 +117,12 @@ const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TM
         if (watch) {
             const watcher = rollupWatch(rollupConfig);
 
+            let eventHandler = onRollupEvent;
+            if (moduleInfo.type === 'theme') {
+                eventHandler = onRollupEventShort;
+            }
             rollupBuildSuccess = await new Promise(done => {
-                watcher.on('event', onRollupEvent(done));
+                watcher.on('event', eventHandler(done));
             })
         } else {
 
@@ -200,6 +213,26 @@ const onRollupEvent = (done?: (success: boolean) => void) => (event: RollupWatch
 
         case 'END':
             stderr(`\n[${dateTime()}] waiting for changes...`);
+            done?.(true);
+    }
+}
+
+
+const onRollupEventShort = (done?: (success: boolean) => void) => (event: RollupWatcherEvent) => {
+    switch (event.code) {
+        case 'ERROR':
+            handleError(event.error, true);
+            done?.(false);
+            break;
+
+        case 'BUNDLE_START':
+            stderr('wait  - compiling...');
+            break;
+
+        case 'BUNDLE_END':
+            break;
+
+        case 'END':
             done?.(true);
     }
 }

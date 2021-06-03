@@ -5,12 +5,16 @@ import {
     getNodeModuleDir,
     getRendererStartupPath,
     getRendererTempDir,
+    getThemeAdminPanelDir,
+    getThemeBuildDir,
+    getThemeRollupBuildDir,
+    getThemeTempAdminPanelDir,
     readCMSConfig,
     rendererMessages,
 } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import fetch, { Response } from 'node-fetch';
 import fs from 'fs-extra';
+import fetch, { Response } from 'node-fetch';
 import { resolve } from 'path';
 import tcpPortUsed from 'tcp-port-used';
 
@@ -210,37 +214,59 @@ export const rendererBuildAndStart = async (themeName: string): Promise<boolean>
 export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promise<boolean> => {
     const tempDir = getRendererTempDir();
     const tempNextDir = resolve(tempDir, '.next');
+
     const themeDir = await getNodeModuleDir(themeModuleName);
+    if (!themeDir) return false;
 
-    if (themeDir) {
-        const buildSuccess = await rendererBuild(themeModuleName);
-        if (buildSuccess) {
-            const themeBuildNextDir = resolve(themeDir, buildDirName, '.next');
-            await sleep(0.2);
-            try {
-                if (await fs.pathExists(themeBuildNextDir)) await fs.remove(themeBuildNextDir);
-            } catch (e) {
-                logger.error(e);
-            }
-            await sleep(0.2);
+    const buildSuccess = await rendererBuild(themeModuleName);
+    if (!buildSuccess) return false;
 
-            const nextCacheDir = resolve(tempNextDir, 'cache');
-            if (await fs.pathExists(nextCacheDir)) await fs.remove(nextCacheDir);
-            await sleep(0.2);
+    // Clean old build
+    const themeBuildDir = await getThemeBuildDir(themeModuleName);
+    if (themeBuildDir && await fs.pathExists(themeBuildDir)) {
+        try {
+            await fs.remove(themeBuildDir);
+        } catch (e) {
+            logger.error(e);
+        }
+        await sleep(0.1);
+    }
 
-            await fs.move(tempNextDir, themeBuildNextDir);
-            await sleep(0.2);
-            await fs.remove(tempDir);
+    const themeBuildNextDir = resolve(themeDir, buildDirName, '.next');
+    await sleep(0.1);
+    try {
+        if (await fs.pathExists(themeBuildNextDir)) await fs.remove(themeBuildNextDir);
+    } catch (e) {
+        logger.error(e);
+    }
+    await sleep(0.2);
 
+    const nextCacheDir = resolve(tempNextDir, 'cache');
+    if (await fs.pathExists(nextCacheDir)) await fs.remove(nextCacheDir);
+    await sleep(0.1);
 
-            logger.log('RendererManager:: successfully saved theme');
-            return true;
-        } else {
+    await fs.move(tempNextDir, themeBuildNextDir);
+    await sleep(0.2);
 
+    const themeRollupBuildDir = await getThemeRollupBuildDir(themeModuleName);
+    const themeTempAdminBuildDir = getThemeTempAdminPanelDir();
+    const adminBuildDir = await getThemeAdminPanelDir(themeModuleName);
+
+    if (themeRollupBuildDir) {
+        if (await fs.pathExists(themeRollupBuildDir)) await fs.remove(themeRollupBuildDir);
+        await sleep(0.2);
+
+        if (themeTempAdminBuildDir && adminBuildDir &&
+            await fs.pathExists(themeTempAdminBuildDir)) {
+            await fs.move(themeTempAdminBuildDir, adminBuildDir);
         }
     }
 
-    return false;
+    await fs.remove(tempDir);
+    await sleep(0.1);
+
+    logger.log('RendererManager:: successfully saved theme');
+    return true;
 }
 
 
@@ -254,12 +280,7 @@ export const rendererStartWatchDev = async (themeName: string) => {
     }
 
     await closeRenderer();
-
     const rendererTempDir = getRendererTempDir();
-    if (rendererTempDir && await fs.pathExists(rendererTempDir)) {
-        await fs.remove(rendererTempDir);
-        await sleep(0.1);
-    }
     await fs.ensureDir(rendererTempDir);
 
     const commad: TRendererCommands = 'dev';

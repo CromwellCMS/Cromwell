@@ -137,6 +137,9 @@ export const getThemeBuildDir = async (themeModuleName: string) => {
         return resolve(themeDir, buildDirName);
     }
 }
+export const getThemeTempRollupBuildDir = () => {
+    return resolve(getRendererTempDir(), 'theme')
+}
 export const getThemeRollupBuildDir = async (themeModuleName: string) => {
     const themeBuildDir = await getThemeBuildDir(themeModuleName);
     if (themeBuildDir) {
@@ -155,12 +158,21 @@ export const getThemeNextBuildDir = async (themeModuleName: string) => {
 }
 export const getThemeNextBuildDirByPath = (themeDir: string) => {
     return resolve(themeDir, buildDirName, '.next');
-
 }
-export const getThemeAdminPanelBundleDir = async (themeModuleName: string, pageRoute: string) => {
+export const getThemeTempAdminPanelDir = () => {
+    const themeBuildDir = getThemeTempRollupBuildDir();
+    return resolve(themeBuildDir, 'admin')
+}
+export const getThemeAdminPanelDir = async (themeModuleName: string) => {
     const themeBuildDir = await getThemeRollupBuildDir(themeModuleName);
     if (themeBuildDir) {
-        return resolve(themeBuildDir, 'admin', pageRoute)
+        return resolve(themeBuildDir, 'admin')
+    }
+}
+export const getThemeAdminPanelBundleDir = async (themeModuleName: string, pageRoute: string) => {
+    const themeAdminPanelDir = await getThemeAdminPanelDir(themeModuleName);
+    if (themeAdminPanelDir) {
+        return resolve(themeAdminPanelDir, pageRoute)
     }
 }
 

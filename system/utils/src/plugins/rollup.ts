@@ -14,10 +14,9 @@ import {
     getLogger,
     getMetaInfoPath,
     getPluginBackendPath,
-    getThemeBuildDir,
     getThemePagesMetaPath,
     getThemePagesVirtualPath,
-    getThemeRollupBuildDir,
+    getThemeTempRollupBuildDir,
     pluginAdminBundlePath,
     pluginFrontendBundlePath,
     pluginFrontendCjsPath,
@@ -227,12 +226,10 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
             outOptions.push(cjsOptions);
         }
-
     }
 
     if (moduleInfo.type === 'theme') {
-        const buildDir = normalizePath((await getThemeRollupBuildDir(process.cwd()))!);
-        const rootBuildDir = normalizePath((await getThemeBuildDir(process.cwd()))!);
+        const buildDir = normalizePath(getThemeTempRollupBuildDir());
         if (!buildDir) throw new Error(`CromwellPlugin Error. Failed to find package directory of ` + moduleInfo.name);
 
         let srcDir = process.cwd();
@@ -256,7 +253,6 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
         const pagesMetaInfo = await collectPages({
             buildDir,
-            rootBuildDir,
             pagesDir,
         });
 
@@ -276,28 +272,31 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
             options.plugins.push(scssExternalPlugin());
 
-            options.plugins.push(nodeResolve({
-                extensions: ['.js', '.jsx', '.ts', '.tsx'],
-            }));
+            if (!options.plugins.find(plugin => plugin.name === '@rollup/plugin-node-resolve' || plugin.name === 'node-resolve'))
+                options.plugins.push(nodeResolve({
+                    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                }));
 
-            options.plugins.push(babel({
-                extensions: ['.js', '.jsx', '.ts', '.tsx'],
-                babelHelpers: 'bundled',
-                presets: ['@babel/preset-react']
-            }));
+            if (!options.plugins.find(plugin => plugin.name === '@rollup/plugin-babel' || plugin.name === 'babel'))
+                options.plugins.push(babel({
+                    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                    babelHelpers: 'bundled',
+                    presets: ['@babel/preset-react']
+                }));
 
             options.plugins.push(await rollupPluginCromwellFrontend({
                 pagesMetaInfo, buildDir, srcDir, moduleInfo,
                 moduleConfig, watch,
+                generatePagesMeta: true,
                 frontendDeps, dependecyOptions,
                 type: 'themePages',
-                rootBuildDir, pagesDir,
+                pagesDir,
             }));
 
             outOptions.push(options);
 
             if (watch) {
-                startPagesWatcher(rootBuildDir, buildDir, pagesDir, moduleInfo.name);
+                startPagesWatcher(buildDir, pagesDir);
             }
 
             // Theme admin panel config
@@ -315,21 +314,21 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                         buildDir, moduleInfo,
                         moduleConfig, frontendDeps,
                         type: 'themeAdminPanel',
-                        rootBuildDir, pagesDir,
+                        pagesDir,
                     }));
 
-                    const pageStrippedName = pagePath?.pageName?.replace(/\W/g, '_') ?? strippedName;
+                    const pageStrippedName = 'page_' + (pagePath?.pageName?.replace(/\W/g, '_') ?? strippedName);
 
                     adminOptions.output = Object.assign({}, adminOptions.output, {
                         dir: resolve(buildDir, 'admin', dirname(pagePath.pageName)),
                         format: "iife",
-                        name: pagePath?.pageName?.replace(/\W/g, '_'),
+                        name: pageStrippedName,
                         banner: '(function() {',
                         footer: `return ${pageStrippedName};})();`
                     } as OutputOptions);
 
                     adminPanelOptions.push(adminOptions);
-                };
+                }
                 adminPanelOptions.forEach(opt => outOptions.push(opt));
             }
 
@@ -360,7 +359,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             adminOptions.plugins.push(await rollupPluginCromwellFrontend({
                 pagesMetaInfo, buildDir, srcDir,
                 moduleInfo, moduleConfig, frontendDeps,
-                rootBuildDir, pagesDir,
+                pagesDir,
             }));
 
             outOptions.push(adminOptions);
@@ -373,7 +372,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 const scssExternalPlugin = (): Plugin => {
     return {
         name: 'cromwell-scssExternalPlugin',
-        resolveId(source, importer) {
+        resolveId(source) {
             if (/\.s?css$/.test(source)) {
                 return { id: source, external: true };
             }
@@ -385,9 +384,9 @@ const scssExternalPlugin = (): Plugin => {
 export const rollupPluginCromwellFrontend = async (settings?: {
     packageJsonPath?: string;
     generateMeta?: boolean;
+    generatePagesMeta?: boolean;
     pagesMetaInfo?: TPagesMetaInfo;
     buildDir?: string;
-    rootBuildDir?: string;
     srcDir?: string;
     pagesDir?: string;
     watch?: boolean;
@@ -439,7 +438,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
             }));
             return options;
         },
-        resolveId(source, importer) {
+        resolveId(source) {
             if (settings?.moduleInfo?.type === 'theme' && settings?.pagesMetaInfo?.paths) {
                 // If bundle frontend pages (not AdminPanel) mark css as exteranl to leave it to Next.js Webpack
                 if (/\.s?css$/.test(source)) {
@@ -483,16 +482,9 @@ export const rollupPluginCromwellFrontend = async (settings?: {
             id = normalizePath(id);
             if (!/\.(m?jsx?|tsx?)$/.test(id)) return null;
 
-            let ast;
-            try {
-                ast = this.parse(code);
-            } catch (error) {
-                logger.error(error)
-            }
-            if (!ast) return null;
-
+            const ast = this.parse(code);
             walk(ast, {
-                enter(node: any, walker) {
+                enter(node: any) {
                     if (node.type === 'ImportDeclaration') {
                         if (!node.specifiers || !node.source) return;
                         const source = node.source.value;
@@ -531,10 +523,9 @@ export const rollupPluginCromwellFrontend = async (settings?: {
 
         plugin.generateBundle = async function (options, bundle) {
 
-            if (settings?.pagesMetaInfo && settings.buildDir && settings.rootBuildDir && settings.pagesDir) {
+            if (settings?.pagesMetaInfo && settings.buildDir && settings.pagesDir) {
                 settings.pagesMetaInfo = await collectPages({
                     buildDir: settings.buildDir,
-                    rootBuildDir: settings.rootBuildDir,
                     pagesDir: settings.pagesDir,
                 });
             }
@@ -620,7 +611,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                     source: JSON.stringify(metaInfo, null, 2)
                 });
 
-                if (settings?.pagesMetaInfo?.paths && settings.buildDir) {
+                if (settings?.pagesMetaInfo?.paths && settings.buildDir && settings.generatePagesMeta) {
                     settings.pagesMetaInfo.paths = settings.pagesMetaInfo.paths.map(paths => {
 
                         if (info.fileName && paths.srcFullPath === normalizePath(info.facadeModuleId)) {
@@ -657,8 +648,8 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                 }
             });
 
-            if (settings?.pagesMetaInfo?.paths && settings.srcDir && settings.buildDir) {
-                await generatePagesMeta(settings.pagesMetaInfo, settings.buildDir, settings.moduleInfo?.name)
+            if (settings?.pagesMetaInfo?.paths && settings.srcDir && settings.buildDir && settings.generatePagesMeta) {
+                await generatePagesMeta(settings.pagesMetaInfo, settings.buildDir)
             }
         }
 
@@ -668,7 +659,6 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                 generator({
                     scriptName: "build",
                     targetThemeName: settings?.moduleInfo?.name,
-                    preserveTempDir: true,
                 });
             }
         }
@@ -680,7 +670,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
 
 let hasToRunRendererGenerator = false;
 
-const generatePagesMeta = async (pagesMetaInfo: TPagesMetaInfo, buildDir: string, themeName?: string) => {
+const generatePagesMeta = async (pagesMetaInfo: TPagesMetaInfo, buildDir: string) => {
     // Generate lists of frontend node_modules 
     // that are going to be bundled in one chunk by Next.js to load
     // on first page open when a client has no cached modules. 
@@ -775,7 +765,6 @@ const generatePagesMeta = async (pagesMetaInfo: TPagesMetaInfo, buildDir: string
     }
 
     delete pagesMetaInfo.buildDir;
-    delete pagesMetaInfo.rootBuildDir;
     fs.outputFileSync(getThemePagesMetaPath(buildDir), JSON.stringify(pagesMetaInfo, null, 2));
 }
 
@@ -826,15 +815,13 @@ const initStylesheetsLoader = (srcDir: string, buildDir: string, basePath?: stri
 const collectPages = async (settings: {
     buildDir: string;
     pagesDir: string;
-    rootBuildDir: string;
 }): Promise<TPagesMetaInfo> => {
-    const { pagesDir, buildDir, rootBuildDir } = settings;
+    const { pagesDir, buildDir } = settings;
 
     const globStr = `${pagesDir}/**/*.+(ts|tsx|js|jsx)`;
     const pageFiles = glob.sync(globStr);
     const pagesMetaInfo: TPagesMetaInfo = {
         paths: [],
-        rootBuildDir,
         buildDir,
     }
 
@@ -860,7 +847,7 @@ const collectPages = async (settings: {
 
 
 let pagesWatcherActive = false;
-const startPagesWatcher = (rootBuildDir: string, buildDir: string, pagesDir: string, themeName: string) => {
+const startPagesWatcher = (buildDir: string, pagesDir: string) => {
     if (pagesWatcherActive) return;
     pagesWatcherActive = true;
 
@@ -870,7 +857,6 @@ const startPagesWatcher = (rootBuildDir: string, buildDir: string, pagesDir: str
         await collectPages({
             buildDir,
             pagesDir,
-            rootBuildDir,
         });
         hasToRunRendererGenerator = true;
     }

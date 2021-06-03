@@ -1,9 +1,13 @@
-import { TThemeConfig, TPagesMetaInfo, getRandStr } from '@cromwell/core';
+import { getRandStr, TPagesMetaInfo } from '@cromwell/core';
+import {
+    getMetaInfoPath,
+    getNodeModuleDir,
+    getThemePagesMetaPath,
+    getThemeTempRollupBuildDir,
+} from '@cromwell/core-backend';
 import fs from 'fs-extra';
-import { resolve, isAbsolute } from 'path';
 import normalizePath from 'normalize-path';
-
-import { getMetaInfoPath, getThemePagesMetaPath, getNodeModuleDir, getThemeRollupBuildDir } from './paths';
+import { resolve } from 'path';
 
 export type TThemeExportsInfo = {
     pagesInfo: TPagePathInfo[]
@@ -30,7 +34,7 @@ export const readThemeExports = async (themeModuleName: string | undefined): Pro
     const themeDir = await getNodeModuleDir(themeModuleName);
     if (!themeDir) throw new Error('readThemeExports: !themeDir of ' + themeModuleName);
 
-    const buildDir = await getThemeRollupBuildDir(themeModuleName);
+    const buildDir = getThemeTempRollupBuildDir();
     if (!buildDir) throw new Error('readThemeExports: !buildDir of ' + themeModuleName);
 
     const metainfoPath = getThemePagesMetaPath(buildDir);

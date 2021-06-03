@@ -1,7 +1,6 @@
 export * from './helpers/paths';
 export * from './helpers/logger';
 export * from './helpers/constants';
-export * from './helpers/readThemeExports';
 export * from './helpers/cms-settings';
 export * from './helpers/readPluginsExports';
 export * from './helpers/readCmsModules';

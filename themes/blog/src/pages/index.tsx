@@ -1,6 +1,6 @@
 import { TCromwellPage, TGetStaticProps, TPagedList, TPost } from '@cromwell/core';
-import { CImage, CContainer, CText } from '@cromwell/core-frontend';
-import React, { useRef, useState } from 'react';
+import { CContainer, CImage, CText } from '@cromwell/core-frontend';
+import React from 'react';
 
 import Layout from '../components/layout/Layout';
 import { PostCard } from '../components/postCard/PostCard';
@@ -64,7 +64,7 @@ const IndexPage: TCromwellPage<BlogProps> = (props) => {
 
 export default IndexPage;
 
-export const getStaticProps: TGetStaticProps = async (context): Promise<BlogProps> => {
+export const getStaticProps: TGetStaticProps = async (): Promise<BlogProps> => {
     let posts: TPagedList<TPost> | undefined;
     try {
         posts = await handleGetFilteredPosts({ pageSize: 20, order: 'DESC', orderBy: 'publishDate' });
