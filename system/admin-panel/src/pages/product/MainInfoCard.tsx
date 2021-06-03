@@ -1,6 +1,6 @@
 import { serviceLocator, TAttributeProductVariant, TProduct } from '@cromwell/core';
 import { TextField } from '@material-ui/core';
-import Quill from 'quill';
+import { Quill as QuillType } from 'quill';
 import React, { useEffect, useRef } from 'react';
 
 import GalleryPicker from '../../components/galleryPicker/GalleryPicker';
@@ -49,25 +49,30 @@ const MainInfoCard = (props: {
 
     const productVariantVal = useRef(props.productVariantVal);
     const isNewVariant = productVariantVal.current !== props.productVariantVal;
-    const quillEditor = useRef<Quill | null>(null);
+    const quillEditor = useRef<QuillType | null>(null);
     if (isNewVariant) {
         productVariantVal.current = props.productVariantVal;
     }
 
     useEffect(() => {
-        let descriptionDelta;
-        if (product?.descriptionDelta) {
-            try {
-                descriptionDelta = JSON.parse(product.descriptionDelta);
-            } catch (e) { console.error(e) }
-        }
-        quillEditor.current = initQuillEditor(`#${editorId}`, descriptionDelta);
+        init();
 
         // Save editor content on close
         return () => {
             fullSave();
         }
     }, [])
+
+    const init = async () => {
+        let descriptionDelta;
+        if (product?.descriptionDelta) {
+            try {
+                descriptionDelta = JSON.parse(product.descriptionDelta);
+            } catch (e) { console.error(e) }
+        }
+        const Quill: any = await import('quill');
+        quillEditor.current = initQuillEditor(Quill?.default, `#${editorId}`, descriptionDelta);
+    }
 
     const handleChange = (prop: keyof TProduct, val: any) => {
         if (product) {

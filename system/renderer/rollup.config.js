@@ -22,9 +22,15 @@ const external = id => {
         }
     }
 }
-const sharedState = {};
 
 const buildDir = 'build';
+const sharedState = {};
+const compilerOptions = {
+    module: 'ESNext',
+    declaration: true,
+    declarationMap: true,
+    declarationDir: resolve(__dirname, buildDir)
+}
 
 export default [
     {
@@ -40,9 +46,7 @@ export default [
         external,
         plugins: [
             typescript({
-                compilerOptions: {
-                    module: 'ESNext',
-                },
+                compilerOptions,
                 sharedState,
                 monorepo: true,
             }),
@@ -65,9 +69,7 @@ export default [
         external,
         plugins: [
             typescript({
-                compilerOptions: {
-                    module: 'ESNext',
-                },
+                compilerOptions,
                 sharedState,
                 monorepo: true,
             }),

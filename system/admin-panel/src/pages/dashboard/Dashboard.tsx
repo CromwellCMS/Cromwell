@@ -5,7 +5,6 @@ import { TCmsStats, TProductReview } from '@cromwell/core';
 import { getCStore, getRestAPIClient, getGraphQLClient, getWidgetsForPlace, onWidgetRegister, WidgetTypes } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import { CountUp } from 'countup.js';
-import * as echarts from 'echarts';
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import ReactResizeDetector from 'react-resize-detector';
@@ -18,7 +17,6 @@ import styles from './Dashboard.module.scss';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
-
 export default class Dashboard extends React.Component<any, {
     stats?: TCmsStats;
     reviews: TProductReview[];
@@ -27,6 +25,7 @@ export default class Dashboard extends React.Component<any, {
     private contentRef: React.RefObject<HTMLDivElement> = React.createRef();
     private ordersChart;
     private salesValueChart;
+    private echarts;
 
     private setWidgetSize: WidgetTypes['Dashboard']['setSize'] = (pluginName, widgetLayouts) => {
         if (!pluginName || !widgetLayouts?.lg) return;
@@ -61,6 +60,10 @@ export default class Dashboard extends React.Component<any, {
 
     private async getCmsStats() {
         const cstore = getCStore();
+
+        const echarts = await import('echarts');
+        this.echarts = echarts;
+
         try {
             const stats = await getRestAPIClient()?.getCmsStats();
             if (stats) {
@@ -82,7 +85,7 @@ export default class Dashboard extends React.Component<any, {
 
                 if (stats.salesPerDay) {
                     this.ordersChart = echarts.init(document.getElementById('ordersLastWeek'));
-                    this.ordersChart.setOption(getOrdersPerDayOption(stats.salesPerDay));
+                    this.ordersChart.setOption(getOrdersPerDayOption(echarts, stats.salesPerDay));
 
                     const ordersCountLastWeek = stats.salesPerDay.reduce<number>((prev, curr) => curr.orders + prev, 0);
                     const countUp = new CountUp('ordersTotalLastWeek', ordersCountLastWeek, {
@@ -92,7 +95,7 @@ export default class Dashboard extends React.Component<any, {
 
 
                     this.salesValueChart = echarts.init(document.getElementById('salesValueLastWeek'));
-                    this.salesValueChart.setOption(getSalesValuePerDayOption(stats.salesPerDay));
+                    this.salesValueChart.setOption(getSalesValuePerDayOption(echarts, stats.salesPerDay));
 
                     const salesValueTotalLastWeek = stats.salesPerDay.reduce<number>((prev, curr) => curr.salesValue + prev, 0);
                     const countUp2 = new CountUp('salesValueTotalLastWeek', salesValueTotalLastWeek, {

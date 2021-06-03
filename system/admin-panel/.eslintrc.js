@@ -30,5 +30,6 @@ module.exports = {
         "@typescript-eslint/no-namespace": "off",
         "react/display-name": "off",
         "react/prop-types": "off",
+        "no-empty": "off",
     }
 }

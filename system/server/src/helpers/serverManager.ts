@@ -55,7 +55,7 @@ const makeServer = async (): Promise<ServerInfo> => {
     const serverProc = fork(buildPath, [env.scriptName],
         { stdio: 'inherit', cwd: process.cwd() });
 
-    parentRegisterChild(serverProc);
+    parentRegisterChild(serverProc, info);
     info.childInst = serverProc;
     let hasReported = false;
 
@@ -183,24 +183,20 @@ export const serverAliveWatcher = async () => {
     // IPC API for child servers and they can create new instances, so who knows...
     for (const info of Object.values(madeServers)) {
         if (info?.port && info.port !== activeServer.port && info.childInst) {
-            try {
-                if (await tcpPortUsed.check(info.port, '127.0.0.1')) {
-                    // Found other server that is alive
-                    setTimeout(async () => {
-                        try {
-                            if (info?.port && info.port !== activeServer.port && await tcpPortUsed.check(info.port, '127.0.0.1')) {
-                                // If after 50 seconds it's still alive and is not active, kill it
-                                await closeServer(info)
-                                info.childInst = undefined;
-                                info.port = undefined;
-                            }
-                        } catch (error) {
-                            logger.error(error);
+            if (await checkServerAlive(info)) {
+                // Found other server that is alive
+                setTimeout(async () => {
+                    try {
+                        if (info?.port && info.port !== activeServer.port && await tcpPortUsed.check(info.port, '127.0.0.1')) {
+                            // If after 50 seconds it's still alive and is not active, kill it
+                            await closeServer(info)
+                            info.childInst = undefined;
+                            info.port = undefined;
                         }
-                    }, 50000);
-                }
-            } catch (error) {
-                logger.error(error);
+                    } catch (error) {
+                        logger.error(error);
+                    }
+                }, 50000);
             }
         }
     }
@@ -208,8 +204,20 @@ export const serverAliveWatcher = async () => {
     serverAliveWatcher();
 }
 
-const onMessageCallbacks: (((msg: any) => any) | undefined)[] = [];
+const checkServerAlive = async (info: ServerInfo) => {
+    if (info?.port) {
+        try {
+            if (await tcpPortUsed.check(info.port, '127.0.0.1')) {
+                return true;
+            }
+        } catch (error) {
+            logger.error(error);
+        }
+    }
+    return false;
+}
 
+const onMessageCallbacks: (((msg: any) => any) | undefined)[] = [];
 
 export const childRegister = (port: number) => {
     updateActiveServer({ port });
@@ -259,7 +267,7 @@ export const childSendMessage = async (message: IPCMessageType, payload?: any): 
     return resp;
 }
 
-const parentRegisterChild = (child: ChildProcess) => {
+const parentRegisterChild = (child: ChildProcess, childInfo: ServerInfo) => {
     child.on('message', async (msg: any) => {
         try {
             const message: IPCMessage = JSON.parse(msg);
@@ -268,19 +276,24 @@ const parentRegisterChild = (child: ChildProcess) => {
                 try {
                     const info = await makeServer();
                     if (!info.port) throw new Error('!info.port')
+                    if (!(await checkServerAlive(info))) throw new Error('new server is not alive')
 
-                    child.send(JSON.stringify({
-                        id: message.id,
-                        message: 'success',
-                        payload: info.id,
-                    } as IPCMessage));
+                    if (await checkServerAlive(childInfo)) {
+                        child.send(JSON.stringify({
+                            id: message.id,
+                            message: 'success',
+                            payload: info.id,
+                        } as IPCMessage));
+                    }
                     return;
 
                 } catch (error) {
-                    child.send(JSON.stringify({
-                        id: message.id,
-                        message: 'failed',
-                    } as IPCMessage));
+                    if (await checkServerAlive(childInfo)) {
+                        child.send(JSON.stringify({
+                            id: message.id,
+                            message: 'failed',
+                        } as IPCMessage));
+                    }
 
                     logger.error(error);
                     return;
@@ -293,18 +306,22 @@ const parentRegisterChild = (child: ChildProcess) => {
                     const isAlive = await tcpPortUsed.check(port, '127.0.0.1');
 
                     if (!isAlive) {
-                        child.send(JSON.stringify({
-                            id: message.id,
-                            message: 'failed',
-                        } as IPCMessage));
+                        if (await checkServerAlive(childInfo)) {
+                            child.send(JSON.stringify({
+                                id: message.id,
+                                message: 'failed',
+                            } as IPCMessage));
+                        }
                         return;
                     } else {
                         updateActiveServer(madeServers[message.payload]);
                         await sleep(1);
-                        child.send(JSON.stringify({
-                            id: message.id,
-                            message: 'success',
-                        } as IPCMessage));
+                        if (await checkServerAlive(childInfo)) {
+                            child.send(JSON.stringify({
+                                id: message.id,
+                                message: 'success',
+                            } as IPCMessage));
+                        }
                         return;
                     }
                 }
@@ -319,19 +336,17 @@ const parentRegisterChild = (child: ChildProcess) => {
 
             if (message.message === 'restart-me') {
                 await restartServer();
-                child.send(JSON.stringify({
-                    id: message.id,
-                    message: 'success',
-                } as IPCMessage));
                 return;
             }
 
 
             if (message.id) {
-                child.send(JSON.stringify({
-                    id: message.id,
-                    message: 'failed',
-                } as IPCMessage));
+                if (await checkServerAlive(childInfo)) {
+                    child.send(JSON.stringify({
+                        id: message.id,
+                        message: 'failed',
+                    } as IPCMessage));
+                }
             }
 
         } catch (error) {

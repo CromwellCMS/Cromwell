@@ -6,7 +6,7 @@ import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, Tooltip } from '@material-ui/core';
 import { OpenInNew as OpenInNewIcon, Settings as SettingsIcon } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
-import Quill from 'quill';
+import { Quill as QuillType } from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
@@ -33,7 +33,7 @@ const Post = (props) => {
     const [isLoading, setIsloading] = useState(false);
     const [notFound, setNotFound] = useState(false);
     const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-    const quillEditor = useRef<Quill | null>(null);
+    const quillEditor = useRef<QuillType | null>(null);
     const actionsRef = useRef<HTMLDivElement | null>(null);
     const hasChanges = useRef<boolean>(false);
     const history = useHistory();
@@ -91,8 +91,9 @@ const Post = (props) => {
         }
     }
 
-    const _initEditor = (postContent?: any) => {
-        const quill = initQuillEditor('#quill-editor', postContent);
+    const _initEditor = async (postContent?: any) => {
+        const Quill: any = await import('quill');
+        const quill = initQuillEditor(Quill?.default, '#quill-editor', postContent);
 
         quill.on('text-change', () => {
             if (!hasChanges.current) {
@@ -125,7 +126,7 @@ const Post = (props) => {
             }
 
             if (post) {
-                _initEditor(postContent);
+                await _initEditor(postContent);
             }
             else setNotFound(true);
         }
@@ -135,7 +136,7 @@ const Post = (props) => {
                 title: 'Untitled',
                 published: false,
             });
-            _initEditor();
+            await _initEditor();
         }
     }
 

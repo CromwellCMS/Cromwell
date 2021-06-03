@@ -119,7 +119,28 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
     }
 
     private handleDeletePlugin = (pluginName: string) => async () => {
-        await getRestAPIClient().deletePlugin(pluginName);
+        this.pluginsUnderUpdate[pluginName] = true;
+        this.setState({ updateModalInfo: null });
+
+        try {
+            await getRestAPIClient().deletePlugin(pluginName);
+
+            try {
+                await this.getPluginList();
+            } catch (error) {
+                console.error(error)
+            }
+            toast.info('Plugin deleted');
+
+        } catch (error) {
+            console.error(error);
+            toast.error('Failed to delete plugin');
+        }
+
+        this.pluginsUnderUpdate[pluginName] = false;
+        this.forceUpdate();
+
+        loadPlugins({ onlyNew: true });
     }
 
     private handleActivatePlugin = (pluginName: string) => async () => {
@@ -208,7 +229,9 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                     const pluginIcon = info.icon;
                     const pluginEntity = installedPlugins?.find(ent => ent.name === pluginName)
                     const title = pluginEntity?.title ?? info.title ?? pluginName;
-                    const availableUpdate = this.pluginUpdates[info.name];
+                    let availableUpdate: TCCSVersion | undefined = this.pluginUpdates[info.name];
+                    if (availableUpdate?.packageVersion === info?.version) availableUpdate = undefined;
+
                     const isUnderUpdate = this.pluginsUnderUpdate[info.name];
 
                     return (<Grid container

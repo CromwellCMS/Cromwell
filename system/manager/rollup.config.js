@@ -1,9 +1,7 @@
-import commonjs from "@rollup/plugin-commonjs";
-import typescript from "rollup-plugin-ts-compiler";
-import { resolve } from 'path';
+import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
-import { terser } from "rollup-plugin-terser";
-import { dirname, isAbsolute } from 'path';
+import { isAbsolute, resolve } from 'path';
+import typescript from 'rollup-plugin-ts-compiler';
 
 const external = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
 
@@ -30,7 +28,6 @@ export default [
             }),
             json(),
             commonjs(),
-            // terser(),
         ]
     },
 ];

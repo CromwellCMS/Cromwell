@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/admin-panel",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "build/server.js",
   "files": [
     "build",
@@ -13,6 +13,7 @@
   "scripts": {
     "build": "node startup.js build",
     "dev": "node startup.js dev",
+    "watch:server": "npx rollup -cw",
     "prod": "node startup.js prod",
     "test": "npx --no-install jest",
     "test:watch": "npx --no-install jest --watch"
@@ -107,7 +108,9 @@
     "typescript": "4.2.4",
     "typescript-plugin-css-modules": "^2.7.0",
     "webpack": "5.11.1",
-    "webpack-cli": "^3.3.12"
+    "webpack-cli": "^3.3.12",
+    "webpack-dev-middleware": "^5.0.0",
+    "webpack-hot-middleware": "^2.25.0"
   },
   "eslintConfig": {
     "extends": "react-app"

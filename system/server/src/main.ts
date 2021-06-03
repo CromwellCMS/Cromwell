@@ -51,6 +51,7 @@ async function bootstrap(): Promise<void> {
 
     const apolloServer = new ApolloServer({
         debug: envMode.envMode === 'dev',
+        //@ts-ignore
         playground: envMode.envMode === 'dev',
         schema,
         context: (context): TGraphQLContext => {

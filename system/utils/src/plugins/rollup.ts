@@ -21,7 +21,6 @@ import {
     pluginFrontendBundlePath,
     pluginFrontendCjsPath,
 } from '@cromwell/core-backend';
-import { generator } from '@cromwell/renderer/build/generator';
 import { babel } from '@rollup/plugin-babel';
 import { nodeResolve } from '@rollup/plugin-node-resolve';
 import virtual from '@rollup/plugin-virtual';
@@ -51,6 +50,7 @@ import {
 import externalGlobals from './rollup-globals';
 
 const logger = getLogger(false);
+
 const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): boolean => {
     // Mark all as external for backend bundle and only include in frontendDeps for frontend bundle
     if (isExternalForm(source)) {
@@ -656,6 +656,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
         plugin.writeBundle = function () {
             if (hasToRunRendererGenerator) {
                 hasToRunRendererGenerator = false;
+                const { generator } = require('@cromwell/renderer/build/generator');
                 generator({
                     scriptName: "build",
                     targetThemeName: settings?.moduleInfo?.name,
