@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/server",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "build/server.js",
   "files": [
     "build",

@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/cms",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "main": "build/index.js",
   "types": "build",
   "files": [
@@ -22,7 +22,7 @@
     "@cromwell/core-backend": "1.0.5",
     "@cromwell/core-frontend": "1.0.4",
     "@cromwell/renderer": "1.0.7",
-    "@cromwell/server": "1.0.7",
+    "@cromwell/server": "1.0.8",
     "@cromwell/utils": "1.0.7",
     "async": "3.2.0",
     "cacache": "15.0.6",
