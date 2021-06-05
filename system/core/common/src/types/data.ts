@@ -347,6 +347,7 @@ export type TUpdateInfo = {
     changelog?: string;
     image?: string;
     createdAt: Date;
+    onlyManualUpdate?: boolean;
 }
 
 export type TNotification = {

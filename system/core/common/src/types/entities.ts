@@ -452,6 +452,7 @@ export type TCCSVersion = {
     version: string;
     packageVersion: string;
     beta: boolean;
+    onlyManualUpdate?: boolean;
     restartServices: (keyof TServiceVersions)[];
     description?: string;
     changelog?: string;

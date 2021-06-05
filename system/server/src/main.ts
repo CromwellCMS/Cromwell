@@ -51,14 +51,13 @@ async function bootstrap(): Promise<void> {
 
     const apolloServer = new ApolloServer({
         debug: envMode.envMode === 'dev',
-        //@ts-ignore
         playground: envMode.envMode === 'dev',
         schema,
         context: (context): TGraphQLContext => {
             return { user: context?.request?.user }
         }
     });
-    await apolloServer.start();
+    // await apolloServer.start();
 
     fastifyInstance.register(apolloServer.createHandler({
         path: `/${apiPrefix}/graphql`,

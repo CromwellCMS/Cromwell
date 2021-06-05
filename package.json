@@ -32,6 +32,8 @@
     "resolutions": {
         "@apollo/client": "3.2.1",
         "@loadable/component": "5.14.1",
+        "apollo-server-fastify": "3.0.0-alpha.3",
+        "apollo-server-core": "3.0.0-alpha.3",
         "clsx": "1.1.1",
         "date-fns": "2.21.3",
         "graphql": "15.3.0",

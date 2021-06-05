@@ -18,7 +18,6 @@ import middie from 'middie';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
-import webpack from 'webpack';
 
 
 const start = async () => {
@@ -66,6 +65,7 @@ const start = async () => {
 
     let compiler;
     if (isDevelopment) {
+        const webpack = require('webpack');
         const webpackConfig = require('../webpack.config');
         const chalk = require('react-dev-utils/chalk');
         compiler = webpack(webpackConfig);

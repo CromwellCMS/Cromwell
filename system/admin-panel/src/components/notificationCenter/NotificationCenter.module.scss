@@ -101,3 +101,28 @@ div.alert {
 div.updateProgress {
     margin: 15px 0 5px 0;
 }
+
+.warning {
+    display: flex;
+    align-items: center;
+    margin-bottom: 9px;
+
+    svg {
+        color: #ff9100;
+    }
+    p {
+        font-weight: 500;
+    }
+}
+
+.command {
+    background-color: #333;
+    font-weight: 500;
+    color: #fff;
+    padding: 3px 5px;
+    border-radius: 5px;
+    margin: 5px 0;
+    line-height: 25px;
+    display: block;
+    word-break: break-all;
+}

@@ -23,7 +23,6 @@ import {
     getPluginFrontendBundlePath,
     getPluginFrontendCjsPath,
     getPublicPluginsDir,
-    incrementServiceVersion,
     readPluginsExports,
     runShellCommand,
 } from '@cromwell/core-backend';
@@ -37,7 +36,13 @@ import { getCustomRepository } from 'typeorm';
 
 import { GenericPlugin } from '../helpers/genericEntities';
 import { childSendMessage } from '../helpers/serverManager';
-import { endTransaction, setPendingKill, setPendingRestart, startTransaction } from '../helpers/stateManager';
+import {
+    endTransaction,
+    restartService,
+    setPendingKill,
+    setPendingRestart,
+    startTransaction,
+} from '../helpers/stateManager';
 import { cmsServiceInst } from './cms.service';
 
 const logger = getLogger();
@@ -49,6 +54,24 @@ export class PluginService {
 
     constructor() {
         pluginServiceInst = this;
+        this.init();
+    }
+
+    private async init() {
+        await sleep(2);
+        const entities = await this.getAll();
+        for (const entity of entities) {
+            if (await this.getIsUpdating(entity.name)) {
+                // Limit updating time in case if previous server instance
+                // crashed and was unable to set isUpdating to false
+                setTimeout(async () => {
+                    if (await this.getIsUpdating(entity.name)) {
+                        logger.error(`Server: ${entity.name} is still updating after minute of runnig a new server instance. Setting isUpdating to false`);
+                        await this.setIsUpdating(entity.name, false);
+                    }
+                }, 60000);
+            }
+        }
     }
 
     public async findOne(pluginName: string): Promise<TPluginEntity | undefined> {
@@ -201,6 +224,7 @@ export class PluginService {
 
         const updateInfo = await this.checkPluginUpdate(pluginName)
         if (!updateInfo || !updateInfo.packageVersion) throw new HttpException('No update available', HttpStatus.METHOD_NOT_ALLOWED);
+        if (updateInfo.onlyManualUpdate) throw new HttpException(`Update failed: Cannot launch automatic update. Please update using npm install command and restart CMS`, HttpStatus.FORBIDDEN);
 
         await runShellCommand(`npm install ${pluginName}@${updateInfo.packageVersion} -S --save-exact`, process.cwd());
         await sleep(1);
@@ -215,7 +239,7 @@ export class PluginService {
 
         for (const service of (updateInfo?.restartServices ?? [])) {
             // Restarts entire service by Manager service
-            await incrementServiceVersion(service as any);
+            await restartService(service);
         }
         await sleep(1);
 
@@ -245,7 +269,7 @@ export class PluginService {
 
     async handleInstallPlugin(pluginName: string): Promise<boolean> {
         if (await this.getIsUpdating(pluginName)) return false;
-        
+
         const transactionId = getRandStr(8);
         startTransaction(transactionId);
 
