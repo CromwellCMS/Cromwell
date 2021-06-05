@@ -32,7 +32,7 @@ import decache from 'decache';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
-import { getCustomRepository } from 'typeorm';
+import { getConnection, getCustomRepository } from 'typeorm';
 
 import { GenericPlugin } from '../helpers/genericEntities';
 import { childSendMessage } from '../helpers/serverManager';
@@ -58,7 +58,9 @@ export class PluginService {
     }
 
     private async init() {
-        await sleep(2);
+        await sleep(1);
+        if (!getConnection()?.isConnected) return;
+
         const entities = await this.getAll();
         for (const entity of entities) {
             if (await this.getIsUpdating(entity.name)) {

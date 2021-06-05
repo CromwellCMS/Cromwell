@@ -29,7 +29,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import decache from 'decache';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import { getCustomRepository } from 'typeorm';
+import { getCustomRepository, getConnection } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
 import { childSendMessage } from '../helpers/serverManager';
@@ -50,7 +50,9 @@ export class ThemeService {
     }
 
     private async init() {
-        await sleep(2);
+        await sleep(1);
+        if (!getConnection()?.isConnected) return;
+
         const entities = await this.getAll();
         for (const entity of entities) {
             if (await this.getIsUpdating(entity.name)) {

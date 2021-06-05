@@ -40,7 +40,7 @@ import { format } from 'date-fns';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
 import stream from 'stream';
-import { getCustomRepository, getManager } from 'typeorm';
+import { getConnection, getCustomRepository, getManager } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
 import * as util from 'util';
 
@@ -69,6 +69,9 @@ export class CmsService {
     }
 
     private async init() {
+        await sleep(1);
+        if (!getConnection()?.isConnected) return;
+
         if (await this.getIsUpdating()) {
             // Limit updating time in case if previous server instance
             // crashed and was unable to set isUpdating to false
