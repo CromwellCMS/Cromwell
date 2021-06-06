@@ -30,6 +30,8 @@ async function main(): Promise<void> {
     });
 
     const server = http.createServer((req, res) => {
+        console.log('req?.url', req?.url)
+
         const proxyApiServer = () => {
             const serverPort = getServerPort();
             if (serverPort) {
