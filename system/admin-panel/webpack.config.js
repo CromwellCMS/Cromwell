@@ -5,12 +5,17 @@ const webpack = require('webpack');
 const buildMode = process.env.NODE_ENV || 'production';
 const isProduction = buildMode === 'production';
 
+const entry = [path.resolve(localProjectDir, 'src/index.ts')];
+if (!isProduction) {
+    entry.unshift('webpack-hot-middleware/client')
+}
+
 module.exports = {
     mode: buildMode,
     target: "web",
     devtool: isProduction ? false : "source-map",
     entry: {
-        webapp: ['webpack-hot-middleware/client', path.resolve(localProjectDir, 'src/index.ts')]
+        webapp: entry
     },
     output: {
         path: path.resolve(localProjectDir, 'build'),
