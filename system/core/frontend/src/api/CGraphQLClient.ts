@@ -50,22 +50,32 @@ import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch';
 
 class CGraphQLClient {
 
-    private readonly apolloClient: ApolloClient<NormalizedCacheObject>;
+    private apolloClient: ApolloClient<NormalizedCacheObject>;
     private onUnauthorized: (() => any) | null = null;
     private onErrorCallbacks: Record<string, ((message: string) => any)> = {};
+    public getBaseUrl = () => {
+        const typeUrl = serviceLocator.getMainApiUrl();
+        return `${typeUrl}/${apiV1BaseRoute}/graphql`;
+    }
+    private fetch;
+    private lastBaseUrl: string | undefined;
 
-    constructor(private baseUrl: string, fetch?: any) {
-
+    constructor(fetch?: any) {
         if (isServer() && !fetch) {
             fetch = isomorphicFetch;
         }
+        this.fetch = fetch;
+        this.checkUrl();
+    }
 
+    private createClient() {
         const cache = new InMemoryCache();
         const link = createHttpLink({
-            uri: this.baseUrl,
+            uri: this.getBaseUrl(),
             credentials: 'include',
-            fetch
+            fetch: this.fetch,
         });
+
         this.apolloClient = new ApolloClient({
             cache: cache,
             link: link,
@@ -82,10 +92,21 @@ class CGraphQLClient {
         });
     }
 
+    private checkUrl() {
+        const baseUrl = this.getBaseUrl();
+        if (!baseUrl) return;
+        if (this.lastBaseUrl === baseUrl) return;
+
+        this.lastBaseUrl = baseUrl;
+        this.createClient();
+    }
+
     public async query<T = any>(options: QueryOptions, path: string): Promise<T>;
     public async query<T = any>(options: QueryOptions): Promise<ApolloQueryResult<T>>;
 
     public async query(options: QueryOptions, path?: string) {
+        this.checkUrl();
+
         const res = await this.handleError(() => this.apolloClient.query(options))
         if (path) return this.returnData(res, path);
         return res;
@@ -96,6 +117,8 @@ class CGraphQLClient {
     public async mutate<T = any>(options: MutationOptions): Promise<ReturnType<ApolloClient<T>['mutate']>>;
 
     public async mutate(options: MutationOptions, path?: string) {
+        this.checkUrl();
+
         const res = await this.handleError(() => this.apolloClient.mutate(options))
         if (path) return this.returnData(res, path);
         return res;
@@ -875,10 +898,7 @@ export const getGraphQLClient = (fetch?: any): CGraphQLClient => {
     let clients = getStoreItem('apiClients');
     if (clients?.graphQLClient) return clients.graphQLClient;
 
-    const typeUrl = serviceLocator.getMainApiUrl();
-    const baseUrl = `${typeUrl}/${apiV1BaseRoute}/graphql`;
-
-    const newClient = new CGraphQLClient(baseUrl, fetch);
+    const newClient = new CGraphQLClient(fetch);
     if (!clients) clients = {};
     clients.graphQLClient = newClient;
     setStoreItem('apiClients', clients);

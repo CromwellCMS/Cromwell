@@ -111,7 +111,7 @@ export const startSystem = async (scriptName: TScriptName, port?: string) => {
     await checkConfigs();
 
     if (scriptName === 'build') {
-        await startServer('build', port);
+        await startServer('build');
         await startAdminPanel('build');
         await startRenderer('buildService');
         return;
@@ -137,8 +137,8 @@ export const startSystem = async (scriptName: TScriptName, port?: string) => {
     }
 
     await startServiceByName('server', isDevelopment, port);
-    await startServiceByName('adminPanel', isDevelopment);
-    await startServiceByName('renderer', isDevelopment);
+    await startServiceByName('adminPanel', isDevelopment, port);
+    await startServiceByName('renderer', isDevelopment, port);
 }
 
 
@@ -158,12 +158,16 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
     if (serviceName === 'adminPanel' || serviceName === 'a') {
         const pckg = await getModulePackage('@cromwell/admin-panel')
         await checkModules(isDevelopment, pckg ? [pckg] : undefined);
-        await startAdminPanel(isDevelopment ? 'dev' : 'prod');
+        await startAdminPanel(isDevelopment ? 'dev' : 'prod', {
+            serverPort: port
+        });
     }
 
     if (serviceName === 'renderer' || serviceName === 'r') {
         await checkModules(isDevelopment);
-        await startRenderer(isDevelopment ? 'dev' : 'prod');
+        await startRenderer(isDevelopment ? 'dev' : 'prod', {
+            serverPort: port
+        });
     }
 
     if (serviceName === 'server' || serviceName === 's') {

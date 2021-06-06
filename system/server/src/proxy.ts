@@ -17,8 +17,12 @@ async function main(): Promise<void> {
     let argsPort: number | undefined = parseInt(args.port + '');
     if (isNaN(argsPort)) argsPort = undefined;
 
+    if (argsPort) {
+        process.env.API_PORT = argsPort + '';
+    }
+
     const config = readCMSConfigSync();
-    const port = argsPort ?? config.apiPort ?? 4016;
+    const port = config.apiPort ?? 4016;
 
     // Start a proxy at the server port. Actual server will be laucnhed at random port.
     // This way we can dynamically spawn new server instances and switch between them via proxy
@@ -64,7 +68,7 @@ async function main(): Promise<void> {
 
     server.on("error", err => logger.log(err));
 
-    await launchServerManager();
+    await launchServerManager(argsPort);
 
     await server.listen(port);
     logger.info(`Proxy Server is running on: http://localhost:${port}`);

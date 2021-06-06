@@ -27,7 +27,9 @@ const { cacheKeys, servicesEnv } = managerConfig;
 const logger = getLogger();
 const rendererStartupPath = getRendererStartupPath();
 
-export const startRenderer = async (command?: TRendererCommands): Promise<boolean> => {
+export const startRenderer = async (command?: TRendererCommands, options?: {
+    serverPort?: string | number;
+}): Promise<boolean> => {
     if (ManagerState.rendererStatus === 'busy' ||
         ManagerState.rendererStatus === 'building' ||
         ManagerState.rendererStatus === 'running') {
@@ -78,7 +80,10 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
         const rendererProc = await startService({
             path: rendererStartupPath,
             name: cacheKeys.renderer,
-            args: [rendererEnv, `--theme-name=${themeName}`],
+            args: [rendererEnv,
+                `--theme-name=${themeName}`,
+                options?.serverPort ? `--server-port=${options.serverPort}` : ''
+            ],
             sync: command === 'build' ? true : false,
             watchName: !isBuild ? 'renderer' : undefined,
             onVersionChange: async () => {
@@ -87,7 +92,7 @@ export const startRenderer = async (command?: TRendererCommands): Promise<boolea
                     try {
                         await tcpPortUsed.waitUntilFree(cmsConfig.frontendPort, 500, 4000);
                     } catch (e) { console.error(e) }
-                    await startRenderer(command);
+                    await startRenderer(command, options);
                 }
             }
         });
@@ -157,11 +162,6 @@ export const isRendererRunning = async (): Promise<boolean> => {
     return isServiceRunning(cacheKeys.renderer);
 }
 
-export const restartRenderer = async (): Promise<boolean> => {
-    await closeRenderer();
-    return startRenderer();
-}
-
 export const rendererBuild = async (themeName: string): Promise<boolean> => {
     if (!rendererStartupPath) return false;
 
@@ -189,26 +189,6 @@ export const rendererBuild = async (themeName: string): Promise<boolean> => {
     }
 
     return success;
-}
-
-export const rendererBuildAndStart = async (themeName: string): Promise<boolean> => {
-
-    if (ManagerState.rendererStatus === 'busy' ||
-        ManagerState.rendererStatus === 'building') {
-        logger.error(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, failed to buildAndStart`)
-        return false;
-    }
-    const rendererInitialStatus = ManagerState.rendererStatus;
-    ManagerState.rendererStatus = 'building';
-
-    const buildSuccess = await rendererBuild(themeName);
-    if (buildSuccess) {
-        const success = await restartRenderer();
-        ManagerState.rendererStatus = rendererInitialStatus;
-        return success;
-    }
-
-    return false;
 }
 
 export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promise<boolean> => {

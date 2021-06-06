@@ -18,9 +18,14 @@ import middie from 'middie';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
+import yargs from 'yargs-parser';
 
 
 const start = async () => {
+    const args = yargs(process.argv.slice(2));
+    if (args.serverPort) {
+        process.env.API_PORT = args.serverPort + '';
+    }
     const cmsConfig = readCMSConfigSync();
     setStoreItem('cmsSettings', cmsConfig);
 

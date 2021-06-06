@@ -4,14 +4,8 @@ import { TErrorInfo, TRequestOptions } from './CRestAPIClient'
 
 class CentralServerClient {
 
-    private baseUrl: string;
-
-    constructor() {
-        const centralServerUrl = getStoreItem('cmsSettings')?.centralServerUrl;
-        if (!centralServerUrl) {
-            throw new Error('Central cerver URL undefined');
-        }
-        this.baseUrl = centralServerUrl;
+    public getBaseUrl = () => {
+        return getStoreItem('cmsSettings')?.centralServerUrl;
     }
 
     private handleError = async (responce: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
@@ -32,7 +26,7 @@ class CentralServerClient {
         let data;
         let errorInfo: TErrorInfo | null = null;
         try {
-            const res = await fetch(`${this.baseUrl}/api/${route}`, {
+            const res = await fetch(`${this.getBaseUrl()}/api/${route}`, {
                 method: options?.method ?? 'get',
                 credentials: 'include',
                 body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,

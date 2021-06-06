@@ -1,4 +1,4 @@
-import { logFor, TLogLevel } from '@cromwell/core';
+import { getStoreItem, logFor, TLogLevel } from '@cromwell/core';
 import colorsdef from 'colors/safe';
 import * as winston from 'winston';
 
@@ -57,6 +57,7 @@ export const getLogger = (writeToFile = true) => {
 
     return {
         log: (...args) => {
+            if (getStoreItem('environment')?.mode !== 'dev') return;
             logger.log({
                 level: 'info',
                 message: args.join(' '),

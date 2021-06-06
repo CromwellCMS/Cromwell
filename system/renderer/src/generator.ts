@@ -1,4 +1,4 @@
-import { genericPageName, getStoreItem, setStoreItem, sleep } from '@cromwell/core';
+import { genericPageName, setStoreItem, sleep } from '@cromwell/core';
 import {
     getCmsModuleConfig,
     getLogger,
@@ -25,6 +25,7 @@ const logger = getLogger();
 export const generator = async (options: {
     scriptName: string;
     targetThemeName?: string;
+    serverPort?: string;
 }) => {
     const { scriptName, targetThemeName } = options
     const config = await readCMSConfig();
@@ -74,6 +75,11 @@ export const generator = async (options: {
             await symlinkDir(bundledDir, bundledPublicDir)
         } catch (e) { console.error(e) }
     }
+
+    // Output .env file
+    let envContent = '';
+    if (options.serverPort) envContent += `API_PORT=${options.serverPort}`;
+    await fs.outputFile(resolve(tempDir, '.env.local'), envContent);
 };
 
 const devGenerate = async (themeName: string) => {
@@ -81,7 +87,6 @@ const devGenerate = async (themeName: string) => {
     const tempDirBuild = resolve(tempDir, 'build');
     const rendererBuildDir = getRendererBuildDir();
     const themeConfig = await getCmsModuleConfig(themeName);
-    const config = getStoreItem('cmsSettings');
     const pagesLocalDir = resolve(tempDir, 'pages');
 
     // Read pages
@@ -152,9 +157,7 @@ const devGenerate = async (themeName: string) => {
             fsRequireSync } from 'build/renderer';
          import metaInfo from '${pageInfo.metaInfoPath}';
  
- 
-         const cmsSettings = ${JSON.stringify(config)};
-         checkCMSConfig(cmsSettings, getStoreItem, setStoreItem);
+         checkCMSConfig();
          
          const importer = getModuleImporter();
          ${cromwellStoreModulesPath}['react'] = React;
