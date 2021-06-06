@@ -136,7 +136,7 @@ export const startSystem = async (scriptName: TScriptName, port?: string) => {
         });
     }
 
-    await startServiceByName('server', isDevelopment);
+    await startServiceByName('server', isDevelopment, port);
     await startServiceByName('adminPanel', isDevelopment);
     await startServiceByName('renderer', isDevelopment);
 }

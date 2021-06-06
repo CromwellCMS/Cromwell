@@ -22,6 +22,9 @@ export class CmsConfigDto implements TCmsSettings {
     managerPort?: number;
 
     @ApiProperty()
+    centralServerUrl?: string;
+
+    @ApiProperty()
     themeName?: string;
 
     @ApiProperty()
@@ -61,6 +64,7 @@ export class CmsConfigDto implements TCmsSettings {
         this.domain = config.domain;
         this.protocol = config.protocol;
         this.apiPort = config.apiPort;
+        this.centralServerUrl = config.centralServerUrl;
         this.adminPanelPort = config.adminPanelPort;
         this.frontendPort = config.frontendPort;
         this.managerPort = config.managerPort;

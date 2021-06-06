@@ -32,7 +32,7 @@ class CentralServerClient {
         let data;
         let errorInfo: TErrorInfo | null = null;
         try {
-            const res = await fetch(`${this.baseUrl}/${route}`, {
+            const res = await fetch(`${this.baseUrl}/api/${route}`, {
                 method: options?.method ?? 'get',
                 credentials: 'include',
                 body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,

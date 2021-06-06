@@ -58,7 +58,7 @@ const start = async () => {
         await symlinkDir(bundledModulesDir, bundledLocalLink);
     }
 
-    const port = process.env.PORT ?? cmsConfig.adminPanelPort;
+    const port = cmsConfig.adminPanelPort ?? 4064;
 
     const app = fastify();
     await app.register(middie);

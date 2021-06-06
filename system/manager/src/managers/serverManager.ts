@@ -13,7 +13,6 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
     let serverProc;
 
     const cmsConfig = await readCMSConfig();
-
     argsPort = parseInt(argsPort + '');
     if (isNaN(argsPort)) argsPort = undefined;
     const port = argsPort ?? cmsConfig?.apiPort;
@@ -41,7 +40,7 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
         serverProc = await startService({
             path: serverStartupPath,
             name: cacheKeys.serverMain,
-            args: [env, `--port ${port}`],
+            args: [env, `--port=${port}`],
             sync: command === 'build' ? true : false,
             watchName: command !== 'build' ? 'server' : undefined,
             onVersionChange: async () => {
