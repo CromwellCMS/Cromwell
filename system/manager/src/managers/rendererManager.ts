@@ -112,6 +112,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
         });
 
         if (!onStartError) {
+            if (!rendererUrl) return false;
             ManagerState.rendererStatus = 'busy';
             let success = false;
             try {
