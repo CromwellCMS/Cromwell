@@ -6,7 +6,10 @@ import { createTask } from './tasks/create';
 
 const args = yargs(process.argv.slice(2))
     // START
-    .command<{ service?: string; development?: boolean; detached?: boolean }>({
+    .command<{
+        service?: string; development?: boolean;
+        detached?: boolean; port?: string;
+    }>({
         command: 'start [options]',
         describe: 'starts CMS or a specified service',
         aliases: ['start', 's'],
@@ -27,16 +30,23 @@ const args = yargs(process.argv.slice(2))
                     desc: 'Start service detached from terminal',
                     type: 'boolean'
                 })
+                .option('port', {
+                    alias: 'p',
+                    desc: 'Port of a proxy server',
+                    type: 'string'
+                })
         },
         handler: async (argv) => {
             const serviceToStart = argv.service as TServiceNames;
             const development = argv.development;
             const detached = argv.detached;
+            const port = argv.port;
 
             if (detached) {
                 let command = `npx --no-install crw s`;
                 if (serviceToStart) command += ` --sv ${serviceToStart}`;
                 if (development) command += ' --dev';
+                if (port) command += ` --port ${port}`
 
                 const subprocess = spawn(command, {
                     shell: true,
@@ -50,10 +60,10 @@ const args = yargs(process.argv.slice(2))
             const { checkModules, startServiceByName, startSystem } = require('@cromwell/cms');
 
             if (serviceToStart) {
-                await startServiceByName(serviceToStart, development, detached);
+                await startServiceByName(serviceToStart, development, port);
             } else {
                 await checkModules(development);
-                await startSystem(development ? 'development' : 'production', detached);
+                await startSystem(development ? 'development' : 'production', port);
             }
         }
     })

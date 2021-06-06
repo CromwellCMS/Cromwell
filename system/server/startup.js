@@ -1,6 +1,5 @@
 const fs = require('fs-extra');
-const { resolve } = require('path');
-const { spawn, spawnSync, fork } = require('child_process');
+const { spawn, spawnSync } = require('child_process');
 const { getServerDir, serverMessages, getServerBuildProxyPath, getServerBuildDir } = require('@cromwell/core-backend');
 const normalizePath = require('normalize-path');
 

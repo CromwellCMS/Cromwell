@@ -2,9 +2,10 @@ import { getLogger, readCMSConfigSync } from '@cromwell/core-backend';
 import http from 'http';
 import httpProxy from 'http-proxy';
 import nodeCleanup from 'node-cleanup';
+import yargs from 'yargs-parser';
 
 import { loadEnv } from './helpers/loadEnv';
-import { getServerPort, launchServerManager, serverAliveWatcher, closeAllServers } from './helpers/serverManager';
+import { closeAllServers, getServerPort, launchServerManager, serverAliveWatcher } from './helpers/serverManager';
 
 require('dotenv').config();
 const logger = getLogger();
@@ -12,8 +13,12 @@ const logger = getLogger();
 
 async function main(): Promise<void> {
     loadEnv();
+    const args = yargs(process.argv.slice(2));
+    let argsPort: number | undefined = parseInt(args.port + '');
+    if (isNaN(argsPort)) argsPort = undefined;
+
     const config = readCMSConfigSync();
-    const port = config.apiPort ?? 4016;
+    const port = argsPort ?? config.apiPort ?? 4016;
 
     // Start a proxy at the server port. Actual server will be laucnhed at random port.
     // This way we can dynamically spawn new server instances and switch between them via proxy
@@ -25,16 +30,37 @@ async function main(): Promise<void> {
     });
 
     const server = http.createServer((req, res) => {
-        const serverPort = getServerPort();
-        if (serverPort) {
-            proxy.web(req, res, {
-                target: `http://localhost:${serverPort}`
-            });
+        const proxyApiServer = () => {
+            const serverPort = getServerPort();
+            if (serverPort) {
+                proxy.web(req, res, {
+                    target: `http://localhost:${serverPort}`
+                });
+            } else {
+                res.writeHead(500, { 'Content-Type': 'text/plain' });
+                res.end('Proxy: Server is down');
+            }
+        }
+
+        if (req?.url) {
+
+            if (req.url.startsWith('/admin')) {
+                proxy.web(req, res, {
+                    target: `http://localhost:${config.adminPanelPort}`
+                });
+            } else if (req.url.startsWith('/api/v1')) {
+                proxyApiServer();
+            } else {
+                proxy.web(req, res, {
+                    target: `http://localhost:${config.frontendPort}`
+                });
+            }
         } else {
-            res.writeHead(500, { 'Content-Type': 'text/plain' });
-            res.end('Proxy: Server is down');
+
+            proxyApiServer();
         }
     });
+
     server.on("error", err => logger.log(err));
 
     await launchServerManager();

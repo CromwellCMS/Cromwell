@@ -97,7 +97,7 @@ export const isPortUsed = (port: number): Promise<boolean> => {
     return tcpPortUsed.check(port, '127.0.0.1');
 }
 
-export const startSystem = async (scriptName: TScriptName) => {
+export const startSystem = async (scriptName: TScriptName, port?: string) => {
 
     const isDevelopment = scriptName === 'development';
 
@@ -111,7 +111,7 @@ export const startSystem = async (scriptName: TScriptName) => {
     await checkConfigs();
 
     if (scriptName === 'build') {
-        await startServer('build');
+        await startServer('build', port);
         await startAdminPanel('build');
         await startRenderer('buildService');
         return;
@@ -142,7 +142,7 @@ export const startSystem = async (scriptName: TScriptName) => {
 }
 
 
-export const startServiceByName = async (serviceName: TServiceNames, isDevelopment?: boolean) => {
+export const startServiceByName = async (serviceName: TServiceNames, isDevelopment?: boolean, port?: string) => {
 
     if (!serviceNames.includes(serviceName)) {
         logger.warn('Invalid service name. Available names are: ' + serviceNames);
@@ -167,7 +167,7 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
     }
 
     if (serviceName === 'server' || serviceName === 's') {
-        await startServer(isDevelopment ? 'dev' : 'prod');
+        await startServer(isDevelopment ? 'dev' : 'prod', port);
     }
 
     if (serviceName === 'nginx' || serviceName === 'n') {
@@ -276,7 +276,7 @@ export const killByPid = async (pid: number) => {
 }
 
 
-nodeCleanup((exitCode, signal) => {
+nodeCleanup(() => {
     Object.values(serviceProcesses).forEach(child => {
         try {
             child?.kill()
