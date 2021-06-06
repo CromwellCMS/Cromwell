@@ -40,17 +40,6 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.css$/i,
-                use: [
-                    { loader: 'style-loader' },
-                    {
-                        loader: 'css-loader', options: {
-                            sourceMap: true
-                        }
-                    }
-                ],
-            },
-            {
                 test: /\.ts(x?)$/,
                 exclude: /node_modules/,
                 use: [
@@ -60,19 +49,29 @@ module.exports = {
                 ]
             },
             {
+                test: /\.css$/i,
+                use: [
+                    { loader: 'style-loader' },
+                    {
+                        loader: 'css-loader', options: {
+                            sourceMap: isProduction ? false : true,
+                        }
+                    },
+                ],
+            },
+            {
                 test: /\.s[ac]ss$/i,
                 use: [
                     { loader: 'style-loader' },
                     {
                         loader: 'css-loader', options: {
-                            sourceMap: true,
                             modules: {
                                 localIdentName: '[local]_[hash:base64:5]'
                             },
                         }
                     },
                     {
-                        loader: 'sass-loader', options: { sourceMap: true }
+                        loader: 'sass-loader', options: { sourceMap: isProduction ? false : true }
                     }
                 ],
             },

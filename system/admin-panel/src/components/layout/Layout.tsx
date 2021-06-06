@@ -1,7 +1,3 @@
-import '../../styles/global.scss';
-import 'react-toastify/dist/ReactToastify.css';
-import 'pure-react-carousel/dist/react-carousel.es.css';
-
 import { createMuiTheme, ThemeProvider, Toolbar } from '@material-ui/core';
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom';
@@ -64,7 +60,7 @@ function Layout() {
                 <Page404 />
               </Route>
             </Switch>
-            <div className={styles.iconsCredits} >Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a>, <a href="https://icon54.com/" title="Pixel perfect">Pixel perfect</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
+            <div className={styles.iconsCredits} >Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a>, <a href="https://icon54.com/" title="Pixel perfect">Pixel perfect</a>, <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
           </div>
         </HashRouter>
         {document?.body && ReactDOM.createPortal(

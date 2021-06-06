@@ -15,7 +15,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import Modal from '../../components/modal/Modal';
 import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
-import { pluginPageInfo } from '../../constants/PageInfos';
+import { pluginPageInfo, pluginMarketPageInfo } from '../../constants/PageInfos';
 import commonStyles from '../../styles/common.module.scss';
 import { loadPlugins, loadPlugin } from '../../helpers/loadPlugins';
 import styles from './PluginList.module.scss';
@@ -162,7 +162,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
     }
 
     private handleOpenMarket = () => {
-
+        this.props.history?.push(pluginMarketPageInfo.route);
     }
 
     private handleShowUpdate = (plugin?: TPluginEntity, info?: TPackageCromwellConfig, update?: TCCSVersion,) => () => {
@@ -216,7 +216,6 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                     onClick={this.handleOpenMarket}
                     variant="contained"
                     color="primary"
-                    size="large"
                     startIcon={<AddCircleOutlineIcon />}
                 >Add plugins</Button>
                 {isLoading && (

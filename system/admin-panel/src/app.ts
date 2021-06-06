@@ -1,8 +1,14 @@
+import './helpers/Draggable/Draggable.css';
 import './helpers/importDependecies';
+import './styles/global.scss';
+import 'pure-react-carousel/dist/react-carousel.es.css';
+import 'quill/dist/quill.snow.css';
+import 'react-grid-layout/css/styles.css';
+import 'react-resizable/css/styles.css';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { onStoreChange, setStoreItem } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient, TErrorInfo } from '@cromwell/core-frontend';
-import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux-ts';
@@ -13,17 +19,7 @@ import { loginPageInfo, welcomePageInfo } from './constants/PageInfos';
 import { loadPlugins } from './helpers/loadPlugins';
 import { store } from './redux/store';
 
-const importer = getModuleImporter();
-
 (async () => {
-
-    try {
-        const meta = await (await fetch('/admin/build/meta.json')).json();
-        await importer.importSciptExternals(meta);
-    } catch (e) {
-        console.error(e);
-    }
-
     let isInstalled = true;
     const restClient = getRestAPIClient();
     const graphClient = getGraphQLClient();

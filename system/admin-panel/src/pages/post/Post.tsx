@@ -1,4 +1,3 @@
-import 'quill/dist/quill.snow.css';
 
 import { gql } from '@apollo/client';
 import { getStoreItem, onStoreChange, serviceLocator, TPost, TPostInput, TTag, TUser } from '@cromwell/core';

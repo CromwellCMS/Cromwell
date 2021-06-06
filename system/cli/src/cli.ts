@@ -57,6 +57,10 @@ const args = yargs(process.argv.slice(2))
                 return;
             }
 
+            if (port) {
+                process.env.API_PORT = port + '';
+            }
+
             const { checkModules, startServiceByName, startSystem } = require('@cromwell/cms');
 
             if (serviceToStart) {

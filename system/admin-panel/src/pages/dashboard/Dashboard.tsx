@@ -1,6 +1,3 @@
-import 'react-grid-layout/css/styles.css';
-import 'react-resizable/css/styles.css';
-
 import { TCmsStats, TProductReview } from '@cromwell/core';
 import { getCStore, getRestAPIClient, getGraphQLClient, getWidgetsForPlace, onWidgetRegister, WidgetTypes } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';

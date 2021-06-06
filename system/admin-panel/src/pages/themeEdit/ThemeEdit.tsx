@@ -1,5 +1,3 @@
-import '../../helpers/Draggable/Draggable.css';
-
 import {
     genericPageName,
     getRandStr,

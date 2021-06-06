@@ -10,7 +10,7 @@ import { toast } from '../../components/toast/toast';
 import styles from './Welcome.module.scss';
 
 
-export default function welcomePage() {
+export default function WelcomePage() {
     const apiClient = getRestAPIClient();
     const graphQLClient = getGraphQLClient();
     const history = useHistory();

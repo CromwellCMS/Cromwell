@@ -264,6 +264,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
                     return (
                         <div className={`${styles.themeCard} ${commonStyles.paper}`} key={info.name}>
                             <CardActionArea
+                                className={styles.cardActionArea}
                                 style={{ opacity: isUnderUpdate ? 0.5 : 1 }}
                             >
                                 <div
