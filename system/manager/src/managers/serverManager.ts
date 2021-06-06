@@ -9,12 +9,15 @@ const { cacheKeys, servicesEnv } = config;
 const logger = getLogger();
 const serverStartupPath = getServerStartupPath();
 
-export const startServer = async (command?: TServerCommands): Promise<boolean> => {
+export const startServer = async (command?: TServerCommands, argsPort?: string | number): Promise<boolean> => {
     let serverProc;
 
     const cmsConfig = await readCMSConfig();
+    argsPort = parseInt(argsPort + '');
+    if (isNaN(argsPort)) argsPort = undefined;
+    const port = argsPort ?? cmsConfig?.apiPort;
 
-    if (!cmsConfig?.apiPort) {
+    if (!port) {
         const message = 'Manager: Failed to start Server: apiPort is not defined in cmsconfig';
         logger.error(message);
         throw new Error(message);
@@ -22,8 +25,8 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
 
     if (command !== 'build') {
         let message;
-        if (await isPortUsed(cmsConfig.apiPort)) {
-            message = `Manager: Failed to start Server: apiPort ${cmsConfig.apiPort} is already in use. You may want to run close command: cromwell close --sv server`;
+        if (await isPortUsed(port)) {
+            message = `Manager: Failed to start Server: apiPort ${port} is already in use. You may want to run close command: cromwell close --sv server`;
         }
         if (message) {
             logger.error(message);
@@ -37,14 +40,14 @@ export const startServer = async (command?: TServerCommands): Promise<boolean> =
         serverProc = await startService({
             path: serverStartupPath,
             name: cacheKeys.serverMain,
-            args: [env],
+            args: [env, `--port=${port}`],
             sync: command === 'build' ? true : false,
             watchName: command !== 'build' ? 'server' : undefined,
             onVersionChange: async () => {
                 if (cmsConfig.useWatch) {
                     await closeServer();
                     try {
-                        await tcpPortUsed.waitUntilFree(cmsConfig.apiPort, 500, 4000);
+                        await tcpPortUsed.waitUntilFree(port, 500, 4000);
                     } catch (e) { console.error(e) }
                     await startServer(command);
                 }

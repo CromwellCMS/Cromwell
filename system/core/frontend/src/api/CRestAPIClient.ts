@@ -42,10 +42,13 @@ export type TRequestOptions = {
 }
 
 class CRestAPIClient {
-    constructor(private baseUrl: string) { }
 
     private onUnauthorized: (() => any) | null = null;
     private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
+    public getBaseUrl = () => {
+        const typeUrl = serviceLocator.getMainApiUrl();
+        return `${typeUrl}/${apiV1BaseRoute}`;
+    }
 
     private handleError = async (responce: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
         if ((responce.status === 403 || responce.status === 401) && !isServer()) {
@@ -69,11 +72,13 @@ class CRestAPIClient {
     }
 
     public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
+
+
         const input = options?.input;
         let data;
         let errorInfo: TErrorInfo | null = null;
         try {
-            const res = await fetch(`${this.baseUrl}/${route}`, {
+            const res = await fetch(`${this.getBaseUrl()}/${route}`, {
                 method: options?.method ?? 'get',
                 credentials: 'include',
                 body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
@@ -209,7 +214,7 @@ class CRestAPIClient {
         for (const file of files) {
             formData.append(file.name, file);
         }
-        const response = await fetch(`${this.baseUrl}/cms/upload-public-file?inPath=${inPath ?? '/'}`, {
+        const response = await fetch(`${this.getBaseUrl()}/cms/upload-public-file?inPath=${inPath ?? '/'}`, {
             method: 'POST',
             credentials: 'include',
             body: formData,
@@ -389,10 +394,7 @@ export const getRestAPIClient = (): CRestAPIClient => {
     let clients = getStoreItem('apiClients');
     if (clients?.restAPIClient) return clients.restAPIClient;
 
-    const typeUrl = serviceLocator.getMainApiUrl();
-    const baseUrl = `${typeUrl}/${apiV1BaseRoute}`;
-
-    const newClient = new CRestAPIClient(baseUrl);
+    const newClient = new CRestAPIClient();
     if (!clients) clients = {};
     clients.restAPIClient = newClient;
     setStoreItem('apiClients', clients);

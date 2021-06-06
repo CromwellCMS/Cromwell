@@ -54,6 +54,13 @@ export const downloader = async (options?: {
         frontendDeps = await collectFrontendDependencies(packages, true);
     }
 
+    frontendDeps = frontendDeps.filter(dep => {
+        // @cromwell frontend dependencies already bundled with services
+        if (dep.name.startsWith('@cromwell')) return false;
+
+        return true;
+    })
+
     const bundledModulesDir = getBundledModulesDir();
 
     await fs.ensureDir(bundledModulesDir);

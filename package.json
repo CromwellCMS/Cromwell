@@ -21,7 +21,9 @@
         "test:frontend": "cd system/core/frontend && npm run test",
         "test:backend": "cd system/core/backend && npm run test",
         "test:cli": "cd system/cli && npm run test",
-        "test:utils": "cd system/utils && npm run test"
+        "test:utils": "cd system/utils && npm run test",
+        "heroku-postbuild": "node ./startup.js build --no-install",
+        "start": "node ./system/manager/src/utils/herokuStart.js"
     },
     "workspaces": [
         "system/*",
@@ -29,6 +31,10 @@
         "plugins/*",
         "themes/*"
     ],
+    "engines": {
+        "node": "14.x",
+        "yarn": "1.x"
+    },
     "resolutions": {
         "@apollo/client": "3.2.1",
         "@loadable/component": "5.14.1",

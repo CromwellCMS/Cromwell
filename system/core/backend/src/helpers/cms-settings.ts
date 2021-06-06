@@ -6,6 +6,14 @@ import { defaultCmsConfig } from './constants';
 import { getLogger } from './logger';
 import { getCMSConfigPath } from './paths';
 
+const getEnvConfig = () => {
+    return JSON.parse(JSON.stringify({
+        apiPort: process.env.API_PORT,
+        adminPanelPort: process.env.ADMIN_PORT,
+        frontendPort: process.env.FRONTEND_PORT,
+        centralServerUrl: process.env.CCS_URL,
+    }));
+}
 
 /**
  * Read CMS config from file in [project root]/cmsconfig.json, saves it into the store and returns
@@ -22,7 +30,7 @@ export const readCMSConfigSync = (): TCmsConfig => {
             logger.error('Failed to read CMS config at: ' + configPath + e, 'Error');
         }
     }
-    return Object.assign({}, defaultCmsConfig, customConfig);
+    return Object.assign({}, defaultCmsConfig, customConfig, getEnvConfig());
 }
 
 /**
@@ -40,7 +48,7 @@ export const readCMSConfig = async (): Promise<TCmsConfig> => {
             logger.error(e);
         }
     }
-    return Object.assign({}, defaultCmsConfig, customConfig);
+    return Object.assign({}, defaultCmsConfig, customConfig, getEnvConfig());
 }
 
 

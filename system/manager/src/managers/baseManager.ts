@@ -97,7 +97,7 @@ export const isPortUsed = (port: number): Promise<boolean> => {
     return tcpPortUsed.check(port, '127.0.0.1');
 }
 
-export const startSystem = async (scriptName: TScriptName) => {
+export const startSystem = async (scriptName: TScriptName, port?: string) => {
 
     const isDevelopment = scriptName === 'development';
 
@@ -136,13 +136,13 @@ export const startSystem = async (scriptName: TScriptName) => {
         });
     }
 
-    await startServiceByName('server', isDevelopment);
-    await startServiceByName('adminPanel', isDevelopment);
-    await startServiceByName('renderer', isDevelopment);
+    await startServiceByName('server', isDevelopment, port);
+    await startServiceByName('adminPanel', isDevelopment, port);
+    await startServiceByName('renderer', isDevelopment, port);
 }
 
 
-export const startServiceByName = async (serviceName: TServiceNames, isDevelopment?: boolean) => {
+export const startServiceByName = async (serviceName: TServiceNames, isDevelopment?: boolean, port?: string) => {
 
     if (!serviceNames.includes(serviceName)) {
         logger.warn('Invalid service name. Available names are: ' + serviceNames);
@@ -158,16 +158,20 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
     if (serviceName === 'adminPanel' || serviceName === 'a') {
         const pckg = await getModulePackage('@cromwell/admin-panel')
         await checkModules(isDevelopment, pckg ? [pckg] : undefined);
-        await startAdminPanel(isDevelopment ? 'dev' : 'prod');
+        await startAdminPanel(isDevelopment ? 'dev' : 'prod', {
+            serverPort: port
+        });
     }
 
     if (serviceName === 'renderer' || serviceName === 'r') {
         await checkModules(isDevelopment);
-        await startRenderer(isDevelopment ? 'dev' : 'prod');
+        await startRenderer(isDevelopment ? 'dev' : 'prod', {
+            serverPort: port
+        });
     }
 
     if (serviceName === 'server' || serviceName === 's') {
-        await startServer(isDevelopment ? 'dev' : 'prod');
+        await startServer(isDevelopment ? 'dev' : 'prod', port);
     }
 
     if (serviceName === 'nginx' || serviceName === 'n') {
@@ -276,7 +280,7 @@ export const killByPid = async (pid: number) => {
 }
 
 
-nodeCleanup((exitCode, signal) => {
+nodeCleanup(() => {
     Object.values(serviceProcesses).forEach(child => {
         try {
             child?.kill()

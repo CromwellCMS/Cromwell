@@ -21,7 +21,6 @@ import {
     getLogger,
     getModulePackage,
     getNodeModuleDir,
-    incrementServiceVersion,
     Order,
     OrderRepository,
     PageStats,
@@ -41,7 +40,7 @@ import { format } from 'date-fns';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
 import stream from 'stream';
-import { getCustomRepository, getManager } from 'typeorm';
+import { getConnection, getCustomRepository, getManager } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
 import * as util from 'util';
 
@@ -53,7 +52,7 @@ import { CreateOrderDto } from '../dto/create-order.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { childSendMessage } from '../helpers/serverManager';
-import { endTransaction, setPendingKill, startTransaction } from '../helpers/stateManager';
+import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
 import { pluginServiceInst } from './plugin.service';
 import { themeServiceInst } from './theme.service';
 
@@ -66,6 +65,23 @@ export class CmsService {
 
     constructor() {
         cmsServiceInst = this;
+        this.init();
+    }
+
+    private async init() {
+        await sleep(1);
+        if (!getConnection()?.isConnected) return;
+
+        if (await this.getIsUpdating()) {
+            // Limit updating time in case if previous server instance
+            // crashed and was unable to set isUpdating to false
+            setTimeout(async () => {
+                if (await this.getIsUpdating()) {
+                    logger.error('Server: CMS is still updating after minute of runnig a new server instance. Setting isUpdating to false');
+                    await this.setIsUpdating(false);
+                }
+            }, 60000);
+        }
     }
 
     private async setIsUpdating(updating: boolean) {
@@ -487,6 +503,7 @@ export class CmsService {
     async updateCms(): Promise<boolean> {
         const availableUpdate = await this.checkCmsUpdate();
         if (!availableUpdate?.packageVersion) throw new HttpException(`Update failed: !availableUpdate?.packageVersion`, HttpStatus.INTERNAL_SERVER_ERROR);
+        if (availableUpdate.onlyManualUpdate) throw new HttpException(`Update failed: Cannot launch automatic update. Please update using npm install command and restart CMS`, HttpStatus.FORBIDDEN);
 
         const pckg = await getModulePackage();
         if (!pckg?.dependencies?.[cmsPackageName])
@@ -511,9 +528,8 @@ export class CmsService {
         await getCmsSettings();
 
         for (const service of (availableUpdate?.restartServices ?? [])) {
-            // CAN POSSIBLY RESTART THIS SERVER INSTANCE
             // Restarts entire service by Manager service
-            await incrementServiceVersion(service as any);
+            await restartService(service);
         }
         await sleep(1);
 

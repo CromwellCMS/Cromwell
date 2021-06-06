@@ -5,6 +5,7 @@ const fs = require('fs');
 (async () => {
 
     const scriptName = process.argv[2] ? process.argv[2] : 'production';
+    const noInstall = process.argv.includes('--no-install')
 
     const isCoreBuilt = () => {
         return !(!fs.existsSync(resolve(coreDir, 'common/dist')) ||
@@ -36,7 +37,7 @@ const fs = require('fs');
 
     // Check node_modules
     let didInstall = false;
-    if (!hasNodeModules() || scriptName === 'build') {
+    if ((!hasNodeModules() || scriptName === 'build') && !noInstall) {
         didInstall = true;
 
         if (scriptName === 'build') {

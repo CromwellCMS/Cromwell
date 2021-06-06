@@ -22,7 +22,6 @@ import {
     getModulePackage,
     getNodeModuleDir,
     getPublicThemesDir,
-    incrementServiceVersion,
     runShellCommand,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
@@ -30,12 +29,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import decache from 'decache';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import { getCustomRepository } from 'typeorm';
+import { getCustomRepository, getConnection } from 'typeorm';
 
 import { GenericTheme } from '../helpers/genericEntities';
 import { childSendMessage } from '../helpers/serverManager';
+import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
 import { cmsServiceInst } from './cms.service';
-import { endTransaction, setPendingKill, startTransaction } from '../helpers/stateManager';
 import { pluginServiceInst } from './plugin.service';
 
 const logger = getLogger();
@@ -47,6 +46,26 @@ export class ThemeService {
 
     constructor() {
         themeServiceInst = this;
+        this.init();
+    }
+
+    private async init() {
+        await sleep(1);
+        if (!getConnection()?.isConnected) return;
+
+        const entities = await this.getAll();
+        for (const entity of entities) {
+            if (await this.getIsUpdating(entity.name)) {
+                // Limit updating time in case if previous server instance
+                // crashed and was unable to set isUpdating to false
+                setTimeout(async () => {
+                    if (await this.getIsUpdating(entity.name)) {
+                        logger.error(`Server: ${entity.name} is still updating after minute of runnig a new server instance. Setting isUpdating to false`);
+                        await this.setIsUpdating(entity.name, false);
+                    }
+                }, 60000);
+            }
+        }
     }
 
     async findOne(themeName: string): Promise<TThemeEntity | undefined> {
@@ -66,6 +85,11 @@ export class ThemeService {
     public async createEntity(theme: TThemeEntityInput): Promise<TThemeEntity | undefined> {
         const themeRepo = getCustomRepository(GenericTheme.repository);
         return themeRepo.createEntity(theme);
+    }
+
+    public getAll(): Promise<TThemeEntity[]> {
+        const themeRepo = getCustomRepository(GenericTheme.repository);
+        return themeRepo.find();
     }
 
     private async setIsUpdating(name: string, updating: boolean) {
@@ -523,7 +547,7 @@ export class ThemeService {
 
         cms.themeName = themeName;
         await cms.save();
-        await incrementServiceVersion('renderer');
+        await restartService('renderer');
 
         const cmsSettings = getStoreItem('cmsSettings');
         const timeout = (cmsSettings?.watchPoll ?? 2000) + 1000;
@@ -674,6 +698,7 @@ export class ThemeService {
 
         const updateInfo = await this.checkThemeUpdate(themeName)
         if (!updateInfo || !updateInfo.packageVersion) throw new HttpException('No update available', HttpStatus.METHOD_NOT_ALLOWED);
+        if (updateInfo.onlyManualUpdate) throw new HttpException(`Update failed: Cannot launch automatic update. Please update using npm install command and restart CMS`, HttpStatus.FORBIDDEN);
 
         await runShellCommand(`npm install ${themeName}@${updateInfo.packageVersion} -S --save-exact`, process.cwd());
         await sleep(1);
@@ -693,7 +718,7 @@ export class ThemeService {
 
         for (const service of updateInfo.restartServices) {
             // Restarts entire service by Manager service
-            await incrementServiceVersion(service as any);
+            await restartService(service);
         }
         await sleep(1);
 

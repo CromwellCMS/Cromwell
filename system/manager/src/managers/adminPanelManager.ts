@@ -9,7 +9,9 @@ import { closeService, isPortUsed, startService } from './baseManager';
 const logger = getLogger();
 const adminPanelStartupPath = getAdminPanelStartupPath();
 
-export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<boolean> => {
+export const startAdminPanel = async (command?: TAdminPanelCommands, options?: {
+    serverPort?: string | number;
+}): Promise<boolean> => {
     const { cacheKeys, servicesEnv } = config;
     const env = command ?? servicesEnv.adminPanel;
 
@@ -32,7 +34,9 @@ export const startAdminPanel = async (command?: TAdminPanelCommands): Promise<bo
         const proc = await startService({
             path: adminPanelStartupPath,
             name: cacheKeys.adminPanel,
-            args: [env],
+            args: [env,
+                options?.serverPort ? `--server-port=${options.serverPort}` : ''
+            ],
             sync: command === 'build' ? true : false,
             watchName: command !== 'build' ? 'admin' : undefined,
             onVersionChange: async () => {

@@ -18,10 +18,14 @@ import middie from 'middie';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
-import webpack from 'webpack';
+import yargs from 'yargs-parser';
 
 
 const start = async () => {
+    const args = yargs(process.argv.slice(2));
+    if (args.serverPort) {
+        process.env.API_PORT = args.serverPort + '';
+    }
     const cmsConfig = readCMSConfigSync();
     setStoreItem('cmsSettings', cmsConfig);
 
@@ -59,13 +63,14 @@ const start = async () => {
         await symlinkDir(bundledModulesDir, bundledLocalLink);
     }
 
-    const port = process.env.PORT ?? cmsConfig.adminPanelPort;
+    const port = cmsConfig.adminPanelPort ?? 4064;
 
     const app = fastify();
     await app.register(middie);
 
     let compiler;
     if (isDevelopment) {
+        const webpack = require('webpack');
         const webpackConfig = require('../webpack.config');
         const chalk = require('react-dev-utils/chalk');
         compiler = webpack(webpackConfig);

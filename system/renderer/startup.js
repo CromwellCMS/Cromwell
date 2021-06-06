@@ -36,20 +36,13 @@ const main = () => {
             { shell: true, stdio: 'inherit', cwd: rendererRootDir, env: npmRunPath.env() });
     }
 
-    const isFrontendBuilt = () => {
-        return (fs.existsSync(resolve(tempDir, '.next/static'))
-            && fs.existsSync(resolve(tempDir, '.next/BUILD_ID'))
-            && fs.existsSync(resolve(tempDir, '.next/build-manifest.json'))
-            && fs.existsSync(resolve(tempDir, '.next/prerender-manifest.json'))
-        )
-    }
-
     const gen = async () => {
         const generator = require(resolve(buildDir, 'generator.js')).generator;
         const args = yargs(process.argv.slice(2));
         await generator({
             scriptName,
             targetThemeName: args.themeName,
+            serverPort: args.serverPort,
         });
     }
 
@@ -89,9 +82,6 @@ const main = () => {
     const start = async () => {
         let proc;
         try {
-            // if (!isFrontendBuilt()) {
-            //     await build();
-            // }
             await gen();
 
             proc = spawn(`npx --no-install next start -p ${config.frontendPort}`, [],

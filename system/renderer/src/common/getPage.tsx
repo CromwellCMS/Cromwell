@@ -1,4 +1,4 @@
-import { BasePageNames, getStoreItem, setStoreItem, TCromwellPage, TCromwellPageCoreProps } from '@cromwell/core';
+import { BasePageNames, setStoreItem, TCromwellPage, TCromwellPageCoreProps } from '@cromwell/core';
 import { CContainer, Head, pageRootContainerId } from '@cromwell/core-frontend';
 import { DomElement } from 'htmlparser2';
 import React, { useRef, useState } from 'react';
@@ -18,11 +18,6 @@ const parserTransform: Transform = (node: DomElement) => {
 }
 
 export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwellPage): TCromwellPage => {
-    const cmsSettings = getStoreItem('cmsSettings');
-    if (!cmsSettings) {
-        throw new Error('getPage !cmsSettings ' + cmsSettings);
-    }
-
     if (!PageComponent) throw new Error('getPage !PageComponent');
     if (!isValidElementType(PageComponent)) throw new Error('getPage PageComponent !isValidElementType');
 

@@ -23,6 +23,10 @@ export const loadEnv = (): TEnv => {
     const args = yargs(process.argv.slice(2));
     const scriptName = process.argv[2] as TServerCommands;
 
+    if (args.proxyPort) {
+        process.env.API_PORT = args.proxyPort + '';
+    }
+
     if (!scriptName || (scriptName as any) === '') {
         const msg = 'Provide in first argument to this script one of these commands: build dev prod serverDev serverProd';
         getLogger(false).error(msg);

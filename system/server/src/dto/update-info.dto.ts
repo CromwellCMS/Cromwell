@@ -16,6 +16,9 @@ export class UpdateInfoDto implements TUpdateInfo {
     beta: boolean;
 
     @ApiProperty()
+    onlyManualUpdate?: boolean;
+    
+    @ApiProperty()
     description?: string;
 
     @ApiProperty()
@@ -36,6 +39,7 @@ export class UpdateInfoDto implements TUpdateInfo {
         this.changelog = ver.changelog;
         this.image = ver.image;
         this.createdAt = ver.createdAt;
+        this.onlyManualUpdate = ver.onlyManualUpdate;
         return this;
     }
 }

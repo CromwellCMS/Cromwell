@@ -121,17 +121,27 @@ export const apiV1BaseRoute = 'api/v1';
 
 const getBaseUrl = (key: keyof TCmsConfig) => {
     const cmsConfig = getCmsSettings();
-    if (!cmsConfig) throw new Error('core:serviceLocator: CmsConfig was not found in the global store!');
+    if (!cmsConfig) {
+        console.error('core:serviceLocator: CmsConfig was not found in the global store!');
+        return undefined;
+    }
     const port = cmsConfig[key] as string;
-    if (!port) throw new Error('core:serviceLocator: !port for ' + key);
 
     if (isServer()) {
+        if (!port) {
+            console.error('core:serviceLocator: !port for ' + key);
+            return undefined;
+        }
         return `http://localhost:${port}`;
     }
-    if (window.location.hostname === 'localhost')
+    if (window.location.hostname === 'localhost') {
+        if (!port) {
+            console.error('core:serviceLocator: !port for ' + key);
+            return undefined;
+        }
         return window.location.protocol + '//localhost:' + port;
-    else
-        return window.location.protocol + '//' + window.location.host;
+    }
+    else return window.location.protocol + '//' + window.location.host;
 }
 
 export const serviceLocator = {

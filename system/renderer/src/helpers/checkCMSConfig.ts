@@ -1,17 +1,4 @@
-import { getStoreItem, setStoreItem, TCmsSettings, isServer } from "@cromwell/core";
-
-export const checkCMSConfig = (newSettings: TCmsSettings,
-    getStoreItemRepl?: typeof getStoreItem,
-    setStoreItemRepl?: typeof setStoreItem,
-): void => {
-    const getStoreItemScoped = getStoreItemRepl ?? getStoreItem;
-    const setStoreItemScoped = setStoreItemRepl ?? setStoreItem;
-    const cmsSettings = getStoreItemScoped('cmsSettings');
-    if (!cmsSettings) {
-        setStoreItemScoped('cmsSettings', newSettings);
-    }
-    setStoreItemScoped('fsRequire', fsRequire);
-}
+import { isServer, setStoreItem } from '@cromwell/core';
 
 let normalizePath;
 let nodeRequire;
@@ -30,6 +17,14 @@ const checkBackendModules = () => {
     requireFromString = nodeRequire('require-from-string');
     coreBackend = nodeRequire('@cromwell/core-backend');
     pathResolve = nodeRequire('path').resolve;
+}
+
+export const checkCMSConfig = (): void => {
+    if (!isServer()) return undefined;
+    checkBackendModules();
+
+    const config = coreBackend.readCMSConfigSync();
+    setStoreItem('cmsSettings', config);
 }
 
 export const getPluginCjsPath = async (pluginName: string) => {

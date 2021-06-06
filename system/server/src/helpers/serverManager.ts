@@ -18,7 +18,9 @@ type ServerInfo = {
     port?: number;
     childInst?: ChildProcess;
 }
-const activeServer: ServerInfo = {};
+const activeServer: ServerInfo & {
+    proxyPort?: number
+} = {};
 let isRestarting = false;
 let isPendingRestart = false;
 const madeServers: Record<string, ServerInfo> = {};
@@ -27,7 +29,8 @@ export const getServerPort = () => activeServer.port;
 
 
 /** Used only at Proxy startup. Should not be called from any other place */
-export const launchServerManager = async () => {
+export const launchServerManager = async (proxyPort?: number) => {
+    activeServer.proxyPort = proxyPort;
     if (activeServer.port) {
         logger.warn('Proxy serverManager: called launch, but Server was already launched!')
     }
@@ -52,8 +55,14 @@ const makeServer = async (): Promise<ServerInfo> => {
         throw new Error('')
     }
 
-    const serverProc = fork(buildPath, [env.scriptName],
-        { stdio: 'inherit', cwd: process.cwd() });
+    const serverProc = fork(
+        buildPath,
+        [
+            env.scriptName,
+            activeServer.proxyPort ? `proxy-port=${activeServer.proxyPort}` : ''
+        ],
+        { stdio: 'inherit', cwd: process.cwd() }
+    );
 
     parentRegisterChild(serverProc, info);
     info.childInst = serverProc;
