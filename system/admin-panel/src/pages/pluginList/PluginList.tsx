@@ -13,6 +13,7 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import Modal from '../../components/modal/Modal';
+import { askConfirmation } from '../../components/modal/Confirmation';
 import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { pluginPageInfo, pluginMarketPageInfo } from '../../constants/PageInfos';
@@ -118,7 +119,13 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
 
     }
 
-    private handleDeletePlugin = (pluginName: string) => async () => {
+    private handleDeletePlugin = (info: TPackageCromwellConfig) => async () => {
+        const positive = await askConfirmation({
+            title: `Delete plugin ${info.title ?? info.name}?`
+        });
+        if (!positive) return;
+
+        const pluginName = info.name;
         this.pluginsUnderUpdate[pluginName] = true;
         this.setState({ updateModalInfo: null });
 
@@ -282,7 +289,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                             <Tooltip title="Delete plugin">
                                 <IconButton
                                     disabled={isUnderUpdate}
-                                    onClick={this.handleDeletePlugin(pluginName)}>
+                                    onClick={this.handleDeletePlugin(info)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </Tooltip>

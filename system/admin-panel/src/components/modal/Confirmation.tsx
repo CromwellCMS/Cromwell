@@ -1,10 +1,8 @@
+import { Button } from '@material-ui/core';
 import React from 'react';
-import {
-    // Modal,
-    Button
-} from '@material-ui/core';
-import styles from './Confirmation.module.scss'
+
 import commonStyles from '../../styles/common.module.scss';
+import styles from './Confirmation.module.scss';
 import Modal from './Modal';
 
 const ConfirmationModal = (props: {
@@ -50,3 +48,57 @@ const ConfirmationModal = (props: {
 export default ConfirmationModal;
 
 export const modalStyles = styles;
+
+
+let confirmPromptInst: ConfirmPrompt | undefined;
+
+export class ConfirmPrompt extends React.Component<any, {
+    open: boolean;
+    title?: string;
+}> {
+
+    private confirmResolve: (val: boolean) => any;
+
+    constructor(props) {
+        super(props);
+        confirmPromptInst = this;
+    }
+
+    public askConfirm = (title?: string) => {
+        this.setState({
+            open: true,
+            title
+        });
+
+        const confirmPromise = new Promise<boolean>(done => {
+            this.confirmResolve = done;
+        })
+
+        return confirmPromise;
+    }
+
+    public confirmInput = (agree: boolean) => {
+        this.confirmResolve?.(agree);
+        this.setState({
+            open: false,
+            title: undefined,
+        });
+    }
+
+    render() {
+        return (
+            <ConfirmationModal
+                title={this.state?.title ?? ''}
+                open={this.state?.open ?? false}
+                onClose={() => this.confirmInput(false)}
+                onConfirm={() => this.confirmInput(true)}
+            />
+        )
+    }
+}
+
+export const askConfirmation = async (options?: {
+    title?: string;
+}): Promise<boolean> => {
+    return confirmPromptInst?.askConfirm(options?.title) ?? false;
+}

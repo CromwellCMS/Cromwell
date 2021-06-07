@@ -43,7 +43,7 @@ export const launchServerManager = async (proxyPort?: number) => {
 }
 
 const makeServer = async (): Promise<ServerInfo> => {
-    logger.info('Proxy manger: making new server...');
+    logger.info('Proxy manger: Launching new API server...');
     const info: ServerInfo = {};
     const env = loadEnv();
     const serverId = getRandStr(8);

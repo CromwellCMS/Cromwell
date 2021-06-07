@@ -8,6 +8,7 @@ import { pageInfos } from '../../constants/PageInfos';
 import Page404 from '../../pages/404/404page';
 import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
 import FileManager from '../fileManager/FileManager';
+import { ConfirmPrompt } from '../modal/Confirmation';
 import LoadBox from '../loadBox/LoadBox';
 import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
@@ -66,6 +67,7 @@ function Layout() {
         {document?.body && ReactDOM.createPortal(
           <div className={styles.toastContainer} ><ToastContainer /></div>, document.body)}
         <FileManager />
+        <ConfirmPrompt />
       </div>
     </ThemeProvider>
   );
