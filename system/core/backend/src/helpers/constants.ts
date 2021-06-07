@@ -82,10 +82,10 @@ export const defaultCmsConfig: TCmsConfig = {
             },
             {
                 id: '4',
-                "tag": "RUB",
-                "title": "Russian Ruble",
-                "symbol": "₽",
-                "ratio": 74
+                "tag": "CNY",
+                "title": "Chinese Yuan",
+                "symbol": '¥',
+                "ratio": 6.40
             }
         ]
     }

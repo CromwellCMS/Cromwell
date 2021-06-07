@@ -14,6 +14,7 @@
     "build": "node startup.js build",
     "dev": "node startup.js dev",
     "watch:server": "npx rollup -cw",
+    "build:server": "npx rollup -c",
     "prod": "node startup.js prod",
     "test": "npx --no-install jest",
     "test:watch": "npx --no-install jest --watch"

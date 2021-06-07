@@ -2,7 +2,7 @@ import { TOrder } from '@cromwell/core';
 import { getCStore } from '@cromwell/core-frontend';
 import { Checkbox, Grid, IconButton } from '@material-ui/core';
 import { DeleteForever as DeleteForeverIcon, Edit as EditIcon } from '@material-ui/icons';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ type TListItemProps = {
     listItemProps: ListItemProps;
 }
 
-const mapStateToProps = (state: TAppState, ownProps: TListItemProps) => {
+const mapStateToProps = (state: TAppState) => {
     return {
         selectedItems: state.selectedItems,
         allSelected: state.allSelected,

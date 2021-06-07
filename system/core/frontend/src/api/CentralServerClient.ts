@@ -25,8 +25,11 @@ class CentralServerClient {
         const input = options?.input;
         let data;
         let errorInfo: TErrorInfo | null = null;
+        const baseUrl = this.getBaseUrl();
+        if (!baseUrl) throw new Error('CentralServer URL is not defined');
+
         try {
-            const res = await fetch(`${this.getBaseUrl()}/api/${route}`, {
+            const res = await fetch(`${baseUrl}/api/${route}`, {
                 method: options?.method ?? 'get',
                 credentials: 'include',
                 body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,

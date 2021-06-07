@@ -16,6 +16,7 @@ import { Skeleton } from '@material-ui/lab';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
+import { askConfirmation } from '../../components/modal/Confirmation';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import Modal from '../../components/modal/Modal';
 import { toast } from '../../components/toast/toast';
@@ -220,6 +221,11 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
     }
 
     private handleDelete = async (theme: TPackageCromwellConfig) => {
+        const positive = await askConfirmation({
+            title: `Delete theme ${theme.title ?? theme.name}?`
+        });
+        if (!positive) return;
+
         this.themeUnderUpdate[theme.name] = true;
         this.forceUpdate();
 
@@ -264,6 +270,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
                     return (
                         <div className={`${styles.themeCard} ${commonStyles.paper}`} key={info.name}>
                             <CardActionArea
+                                className={styles.cardActionArea}
                                 style={{ opacity: isUnderUpdate ? 0.5 : 1 }}
                             >
                                 <div

@@ -16,6 +16,7 @@
   "cromwell": {
     "type": "plugin",
     "title": "Product filter",
+    "description": "Adds customizable product filter in a category page",
     "icon": "static/icon_funnel.png",
     "frontendDependencies": [
       "@material-ui/core"

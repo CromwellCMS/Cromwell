@@ -16,6 +16,7 @@
   "cromwell": {
     "type": "plugin",
     "title": "Product showcase",
+    "description": "Adds a carousel with products. On a product page will fetch products from same categories, on other pages - most recent products",
     "icon": "static/icon_showcase.png",
     "frontendDependencies": [
       "@material-ui/core"

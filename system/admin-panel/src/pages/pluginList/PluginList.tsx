@@ -13,9 +13,10 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 import Modal from '../../components/modal/Modal';
+import { askConfirmation } from '../../components/modal/Confirmation';
 import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
-import { pluginPageInfo } from '../../constants/PageInfos';
+import { pluginPageInfo, pluginMarketPageInfo } from '../../constants/PageInfos';
 import commonStyles from '../../styles/common.module.scss';
 import { loadPlugins, loadPlugin } from '../../helpers/loadPlugins';
 import styles from './PluginList.module.scss';
@@ -118,7 +119,13 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
 
     }
 
-    private handleDeletePlugin = (pluginName: string) => async () => {
+    private handleDeletePlugin = (info: TPackageCromwellConfig) => async () => {
+        const positive = await askConfirmation({
+            title: `Delete plugin ${info.title ?? info.name}?`
+        });
+        if (!positive) return;
+
+        const pluginName = info.name;
         this.pluginsUnderUpdate[pluginName] = true;
         this.setState({ updateModalInfo: null });
 
@@ -162,7 +169,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
     }
 
     private handleOpenMarket = () => {
-
+        this.props.history?.push(pluginMarketPageInfo.route);
     }
 
     private handleShowUpdate = (plugin?: TPluginEntity, info?: TPackageCromwellConfig, update?: TCCSVersion,) => () => {
@@ -216,7 +223,6 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                     onClick={this.handleOpenMarket}
                     variant="contained"
                     color="primary"
-                    size="large"
                     startIcon={<AddCircleOutlineIcon />}
                 >Add plugins</Button>
                 {isLoading && (
@@ -283,7 +289,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                             <Tooltip title="Delete plugin">
                                 <IconButton
                                     disabled={isUnderUpdate}
-                                    onClick={this.handleDeletePlugin(pluginName)}>
+                                    onClick={this.handleDeletePlugin(info)}>
                                     <DeleteIcon />
                                 </IconButton>
                             </Tooltip>

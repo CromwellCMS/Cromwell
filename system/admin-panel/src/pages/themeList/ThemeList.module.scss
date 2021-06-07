@@ -12,14 +12,19 @@
     // height: 100%;
 }
 
-div.mainInfo {
-    padding: 10px 10px 0 10px;
-}
-
 .themeCard {
     width: 300px;
     margin: 0 20px 20px 0;
     background-color: #fff;
+
+    .cardActionArea {
+        padding: 10px;
+    }
+
+    div.mainInfo {
+        margin-top: 20px;
+        padding: 0;
+    }
 }
 
 .themeImage {
@@ -137,3 +142,4 @@ div.updateProgress {
         font-size: 13px;
     }
 }
+

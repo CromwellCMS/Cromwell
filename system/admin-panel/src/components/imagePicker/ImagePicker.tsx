@@ -43,7 +43,7 @@ const ImagePicker = (props: ImagePickerProps) => {
     }
 
     const element = (
-        <div className={`${styles.wrapper} ${props.className} ${props.classes?.root}`}
+        <div className={`${styles.wrapper} ${props.className ?? ''} ${props.classes?.root ?? ''}`}
             style={{ paddingTop: props.label ? '18px' : '', ...(props.style ?? {}) }}>
             <Tooltip title={props.toolTip ?? ''}>
                 <div className={`${styles.image} ${props.classes?.image}`}

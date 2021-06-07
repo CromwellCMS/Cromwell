@@ -9,17 +9,6 @@
     // overflow: auto;
 }
 
-:global(div.react-grid-item.react-grid-placeholder) {
-    background-color: $primaryColor;
-}
-
-.topStats {
-}
-
-.topStatItem {
-    // padding: 10px;
-}
-
 .topStatContent {
     @include paper;
     padding: 10px;

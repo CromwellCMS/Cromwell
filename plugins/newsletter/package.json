@@ -16,6 +16,7 @@
   "cromwell": {
     "type": "plugin",
     "title": "Newsletter",
+    "description": "Provides a way for web-site visitors to leave thir e-mails for newsletter subscription. E-mails can be CSV exported in Admin panel",
     "icon": "static/icon_email.png",
     "frontendDependencies": [
       "@material-ui/core",
