@@ -1,11 +1,12 @@
 @import "../../styles/common.module.scss";
 
-.PluginModal {
+.MarketModal {
     @include paper;
+    @include styledScrollBar;
     display: flex;
     flex-direction: column;
     width: 800px;
-    height: 500px;
+    height: 700px;
     max-width: 80vw;
     max-height: 80vh;
     overflow: auto;
@@ -15,6 +16,7 @@
 .header {
     display: flex;
     justify-content: space-between;
+    margin-bottom: 15px;
 }
 
 .title {
@@ -36,4 +38,14 @@
 .description {
     font-size: 16px;
     color: rgba(0, 0, 0, 0.64);
+}
+
+.images {
+    margin-bottom: 20px;
+}
+
+.description {
+    li {
+        margin: 4px 0;
+    }
 }

@@ -1,5 +1,5 @@
 import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks';
-import { TCmsEntityCore, TProduct, TUser } from './entities';
+import { TCmsEntityCore, TProduct, TUser, TServiceVersions } from './entities';
 
 
 export type TCromwellStore = {
@@ -257,9 +257,14 @@ export type TPackageCromwellConfig = {
     version?: string;
     type?: 'plugin' | 'theme';
     title?: string;
+    author?: string;
+    excerpt?: string;
     description?: string;
     icon?: string;
-    previewImage?: string;
+    image?: string;
+    images?: string[];
+    tags?: string[];
+    packageName?: string;
     frontendDependencies?: (string | TFrontendDependency)[];
     themes?: string[];
     plugins?: string[];
@@ -355,4 +360,47 @@ export type TNotification = {
     type: 'info' | 'warning' | 'error';
     documentaionLink?: string;
     pageLink?: string
+}
+
+
+// CCS for Cromwell Central Server
+export type TCCSVersion = {
+    name: string;
+    createdAt: Date;
+    version: string;
+    packageVersion: string;
+    beta: boolean;
+    onlyManualUpdate?: boolean;
+    restartServices: (keyof TServiceVersions)[];
+    description?: string;
+    changelog?: string;
+    image?: string;
+}
+
+export type TCCSModuleShortInfo = {
+    version: string;
+    packageVersion: string;
+    betaVersion?: string;
+    betaPackageVersion?: string;
+}
+
+export type TCCSModuleInfo = {
+    name: string;
+    createdAt: Date;
+    updatedAt: Date;
+    packageName: string;
+    version: string;
+    packageVersion: string;
+    betaVersion: string;
+    betaPackageVersion: string;
+    author: string;
+    authorLink: string;
+    slug?: string;
+    title?: string;
+    description?: string;
+    excerpt?: string;
+    image?: string;
+    images?: string[];
+    icon?: string;
+    tags?: string[];
 }

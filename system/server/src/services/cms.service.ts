@@ -25,6 +25,7 @@ import {
     OrderRepository,
     PageStats,
     PageStatsRepository,
+    PostRepository,
     Product,
     ProductRepository,
     ProductReview,
@@ -134,7 +135,9 @@ export class CmsService {
 
 
     public async parseModuleConfigImages(moduleInfo: TPackageCromwellConfig, moduleName: string) {
-        if (moduleInfo?.icon) {
+        if (!moduleInfo) return;
+
+        if (moduleInfo.icon) {
             const moduleDir = await getNodeModuleDir(moduleName);
             // Read icon and convert to base64
             if (moduleDir) {
@@ -146,16 +149,21 @@ export class CmsService {
             }
         }
 
-        if (moduleInfo?.previewImage) {
+        if (!moduleInfo.images) moduleInfo.images = [];
+
+        if (moduleInfo.image) {
             // Read image and convert to base64
             const moduleDir = await getNodeModuleDir(moduleName);
             if (moduleDir) {
-                const imgPath = resolve(moduleDir, moduleInfo.previewImage);
+                const imgPath = resolve(moduleDir, moduleInfo.image);
                 if (await fs.pathExists(imgPath)) {
                     const data = (await fs.readFile(imgPath))?.toString('base64');
-                    if (data) moduleInfo.previewImage = data;
+                    if (data) moduleInfo.image = data;
                 }
             }
+
+            if (!moduleInfo.images.includes(moduleInfo.image))
+                moduleInfo.images.push(moduleInfo.image);
         }
     }
 

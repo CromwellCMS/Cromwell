@@ -1,5 +1,5 @@
 import { fetch } from '../helpers/isomorphicFetch';
-import { getStoreItem, TCCSVersion, TCCSModuleShortInfo, TCCSModuleInfoDto, TPagedParams, TPagedList } from '@cromwell/core';
+import { getStoreItem, TCCSVersion, TCCSModuleShortInfo, TCCSModuleInfo, TPagedParams, TPagedList } from '@cromwell/core';
 import { TErrorInfo, TRequestOptions } from './CRestAPIClient'
 
 class CentralServerClient {
@@ -70,7 +70,7 @@ class CentralServerClient {
         return this.get('cms/info');
     }
 
-    async getCmsFullInfo(): Promise<TCCSModuleInfoDto | undefined> {
+    async getCmsFullInfo(): Promise<TCCSModuleInfo | undefined> {
         return this.get('cms/full-info');
     }
 
@@ -91,11 +91,16 @@ class CentralServerClient {
         return this.get(`plugin/info?name=${name}`);
     }
 
-    async getPluginList(params?: TPagedParams<TCCSModuleInfoDto>): Promise<TPagedList<TCCSModuleInfoDto> | undefined> {
-        return this.post(`plugin/list`, params);
+    async getPluginList(params?: TPagedParams<TCCSModuleInfo>, filter?: {
+        search?: string;
+    }): Promise<TPagedList<TCCSModuleInfo> | undefined> {
+        return this.post(`plugin/list`, {
+            params,
+            filter,
+        });
     }
 
-    async getPluginFullInfo(name: string): Promise<TCCSModuleInfoDto | undefined> {
+    async getPluginFullInfo(name: string): Promise<TCCSModuleInfo | undefined> {
         return this.get(`plugin?name=${name}`);
     }
 
@@ -116,11 +121,16 @@ class CentralServerClient {
         return this.get(`theme/info?name=${name}`);
     }
 
-    async getThemeList(params?: TPagedParams<TCCSModuleInfoDto>): Promise<TPagedList<TCCSModuleInfoDto> | undefined> {
-        return this.post(`theme/list`, params);
+    async getThemeList(params?: TPagedParams<TCCSModuleInfo>, filter?: {
+        search?: string;
+    }): Promise<TPagedList<TCCSModuleInfo> | undefined> {
+        return this.post(`theme/list`, {
+            params,
+            filter,
+        });
     }
 
-    async getThemeFullInfo(name: string): Promise<TCCSModuleInfoDto | undefined> {
+    async getThemeFullInfo(name: string): Promise<TCCSModuleInfo | undefined> {
         return this.get(`theme?name=${name}`);
     }
 

@@ -11,7 +11,11 @@ import {
     LinearProgress,
     Typography,
 } from '@material-ui/core';
-import { Close as CloseIcon, Update as UpdateIcon } from '@material-ui/icons';
+import {
+    Close as CloseIcon,
+    AddCircleOutline as AddCircleOutlineIcon,
+    Update as UpdateIcon
+} from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
@@ -21,8 +25,9 @@ import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import Modal from '../../components/modal/Modal';
 import { toast } from '../../components/toast/toast';
 import { loadPlugins } from '../../helpers/loadPlugins';
-import { themeEditPageInfo } from '../../constants/PageInfos';
+import { themeEditPageInfo, themeMarketPageInfo } from '../../constants/PageInfos';
 import { store } from '../../redux/store';
+import MarketModal from '../../components/market/MarketModal';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './ThemeList.module.scss';
 
@@ -32,6 +37,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
     packages: TPackageCromwellConfig[];
     installedThemes: TThemeEntity[];
     cmsConfig?: TCmsSettings;
+    openedTheme?: TPackageCromwellConfig;
     isChangingTheme?: boolean;
     updateModalInfo?: {
         update: TCCSVersion;
@@ -251,105 +257,125 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
         this.forceUpdate();
     }
 
+    private handleOpenMarket = () => {
+        this.props.history?.push(themeMarketPageInfo.route);
+    }
+
+    private openTheme = (info: TPackageCromwellConfig) => {
+        this.setState({
+            openedTheme: {
+                ...info,
+                image: info.image && `data:image/png;base64,${info.image}`,
+                images: info.images && info.images.map(img => `data:image/png;base64,${img}`)
+            }
+        })
+    }
+
     render() {
         const { isLoading, packages, installedThemes, cmsConfig, isChangingTheme } = this.state;
         return (
             <div className={styles.ThemeList}>
-                {isLoading && Array(2).fill(1).map((it, index) => {
-                    return (
-                        <Skeleton key={index} variant="rect" height="388px" width="300px" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
-                    )
-                })}
-                {!isLoading && packages.map(info => {
-                    const isActive = Boolean(cmsConfig && cmsConfig.themeName === info.name);
-                    const entity = installedThemes?.find(ent => ent.name === info.name);
-                    const isInstalled = entity?.isInstalled ?? false;
-                    const availableUpdate = this.themeUpdates[info.name];
-                    const isUnderUpdate = this.themeUnderUpdate[info.name];
+                <Button
+                    className={styles.addBtn}
+                    onClick={this.handleOpenMarket}
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddCircleOutlineIcon />}
+                >Add themes</Button>
+                {isLoading && (
+                    <div className={styles.list}>
+                        {Array(2).fill(1).map((it, index) => (
+                            <Skeleton key={index} variant="rect" height="388px" width="300px" style={{ margin: '0 10px 20px 10px' }} > </Skeleton>
+                        ))}
+                    </div>
+                )}
+                {!isLoading &&
+                    <div className={styles.list}>
+                        {packages.map(info => {
+                            const isActive = Boolean(cmsConfig && cmsConfig.themeName === info.name);
+                            const entity = installedThemes?.find(ent => ent.name === info.name);
+                            const isInstalled = entity?.isInstalled ?? false;
+                            const availableUpdate = this.themeUpdates[info.name];
+                            const isUnderUpdate = this.themeUnderUpdate[info.name];
 
-                    return (
-                        <div className={`${styles.themeCard} ${commonStyles.paper}`} key={info.name}>
-                            <CardActionArea
-                                className={styles.cardActionArea}
-                                style={{ opacity: isUnderUpdate ? 0.5 : 1 }}
-                            >
-                                <div
-                                    style={{ backgroundImage: `url("data:image/png;base64,${info.previewImage}")` }}
-                                    className={styles.themeImage}
-                                ></div>
-                                <CardContent className={styles.mainInfo}>
-                                    <Badge color="secondary" badgeContent={isActive ? 'Active' : null}>
-                                        <Typography gutterBottom variant="h5" component="h2" className={styles.themeTitle}>
-                                            {info.title}
-                                        </Typography>
-                                    </Badge>
-                                    <p className={styles.version}
-                                        onClick={this.handleShowUpdate(entity, info, availableUpdate)}
-                                        style={{ cursor: availableUpdate ? 'pointer' : 'initial' }}
-                                    >{(info?.version ?? '') +
-                                        (availableUpdate ? ' > ' + availableUpdate.version + ' Open info' : '')}</p>
-                                    <Typography variant="body2" color="textSecondary" component="p">
-                                        {info.description}
-                                    </Typography>
-                                </CardContent>
-                            </CardActionArea>
-                            <CardActions
-                                style={{ opacity: isUnderUpdate ? 0.5 : 1 }}
-                                className={styles.themeActions}
-                                disableSpacing
-                            >
-                                {!isInstalled && (
-                                    <Button
-                                        disabled={isUnderUpdate || isChangingTheme}
-                                        size="small" color="primary" variant="contained"
-                                        onClick={this.handleActivateTheme(info.name)}
-                                    >Install theme</Button>
-                                )}
-                                {isInstalled && isActive && (
-                                    <Button
-                                        disabled={isUnderUpdate || isChangingTheme}
-                                        size="small" color="primary" variant="contained"
-                                        onClick={() => {
-                                            const route = `${themeEditPageInfo.baseRoute}/${info.name}`;
-                                            this.props.history.push(route);
-                                        }}
+                            return (
+                                <div className={`${styles.themeCard} ${commonStyles.paper}`} key={info.name}>
+                                    <CardActionArea
+                                        className={styles.cardActionArea}
+                                        style={{ opacity: isUnderUpdate ? 0.5 : 1 }}
                                     >
-                                        Edit theme
-                                    </Button>
-                                )}
-                                {availableUpdate && (
-                                    <Button
-                                        disabled={isUnderUpdate || isChangingTheme}
-                                        size="small" color="primary" variant="contained"
-                                        onClick={() => this.startUpdate(info)}
+                                        <div
+                                            style={{ backgroundImage: `url("data:image/png;base64,${info.image}")` }}
+                                            className={styles.themeImage}
+                                        ></div>
+                                        <CardContent className={styles.mainInfo}>
+                                            <Badge color="secondary" badgeContent={isActive ? 'Active' : null}>
+                                                <Typography gutterBottom variant="h5" component="h2" className={styles.themeTitle}>
+                                                    {info.title}
+                                                </Typography>
+                                            </Badge>
+                                            <p className={styles.version}
+                                                onClick={this.handleShowUpdate(entity, info, availableUpdate)}
+                                                style={{ cursor: availableUpdate ? 'pointer' : 'initial' }}
+                                            >{(info?.version ?? '') +
+                                                (availableUpdate ? ' > ' + availableUpdate.version + ' Open info' : '')}</p>
+                                            <Typography variant="body2" color="textSecondary" component="p">
+                                                {info.excerpt}
+                                            </Typography>
+                                        </CardContent>
+                                    </CardActionArea>
+                                    <CardActions
+                                        style={{ opacity: isUnderUpdate ? 0.5 : 1 }}
+                                        className={styles.themeActions}
+                                        disableSpacing
                                     >
-                                        Update
-                                    </Button>
-                                )}
-                                {isInstalled && !isActive && (
-                                    <Button size="small" color="primary" variant="contained"
-                                        onClick={() => this.handleSetActiveTheme(info)}
-                                        disabled={isUnderUpdate || isChangingTheme}
-                                    >
-                                        Set active
-                                    </Button>
-                                )}
-                                <Button size="small" color="primary" variant="outlined"
-                                    disabled={isUnderUpdate || isChangingTheme}
-                                    onClick={() => this.handleDelete(info)}
-                                >
-                                    Delete
-                              </Button>
-                                <Button size="small" color="primary" variant="outlined">
-                                    Info
-                              </Button>
-                                {isUnderUpdate && (
-                                    <LinearProgress className={styles.updateProgress} />
-                                )}
-                            </CardActions>
-                        </div>
-                    )
-                })}
+                                        {!isInstalled && (
+                                            <Button
+                                                disabled={isUnderUpdate || isChangingTheme}
+                                                size="small" color="primary" variant="contained"
+                                                onClick={this.handleActivateTheme(info.name)}
+                                            >Install theme</Button>
+                                        )}
+                                        {isInstalled && isActive && (
+                                            <Button
+                                                disabled={isUnderUpdate || isChangingTheme}
+                                                size="small" color="primary" variant="contained"
+                                                onClick={() => {
+                                                    const route = `${themeEditPageInfo.baseRoute}/${info.name}`;
+                                                    this.props.history.push(route);
+                                                }}
+                                            >
+                                                Edit theme
+                                            </Button>
+                                        )}
+                                        {availableUpdate && (
+                                            <Button
+                                                disabled={isUnderUpdate || isChangingTheme}
+                                                size="small" color="primary" variant="contained"
+                                                onClick={() => this.startUpdate(info)}
+                                            >Update</Button>
+                                        )}
+                                        {isInstalled && !isActive && (
+                                            <Button size="small" color="primary" variant="contained"
+                                                onClick={() => this.handleSetActiveTheme(info)}
+                                                disabled={isUnderUpdate || isChangingTheme}
+                                            >Set active</Button>
+                                        )}
+                                        <Button size="small" color="primary" variant="outlined"
+                                            disabled={isUnderUpdate || isChangingTheme}
+                                            onClick={() => this.handleDelete(info)}
+                                        >Delete</Button>
+                                        <Button size="small" color="primary" variant="outlined"
+                                            onClick={() => this.openTheme(info)}
+                                        >Info</Button>
+                                        {isUnderUpdate && (
+                                            <LinearProgress className={styles.updateProgress} />
+                                        )}
+                                    </CardActions>
+                                </div>
+                            )
+                        })}
+                    </div>}
                 <LoadingStatus isActive={isChangingTheme} />
                 {/* <ManagerLogger isActive={isChangingTheme} /> */}
                 <Modal
@@ -365,11 +391,24 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
                         onClose={() => this.setState({ updateModalInfo: null })}
                     />
                 </Modal>
+                <Modal
+                    open={!!this.state.openedTheme}
+                    blurSelector="#root"
+                    className={commonStyles.center}
+                    onClose={() => this.setState({ openedTheme: undefined })}
+                >
+                    {this.state?.openedTheme && (
+                        <MarketModal
+                            installedModules={this.state?.installedThemes ?? []}
+                            data={this.state.openedTheme}
+                            noInstall
+                        />
+                    )}
+                </Modal>
             </div>
         )
 
     }
-
 }
 
 

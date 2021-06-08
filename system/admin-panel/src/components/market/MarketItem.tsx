@@ -1,22 +1,28 @@
-import { TCCSModuleInfoDto } from '@cromwell/core';
-import { Badge, Button, Grid, Typography, CardActionArea, LinearProgress } from '@material-ui/core';
+import { TCCSModuleInfo, TPackageCromwellConfig } from '@cromwell/core';
+import { Badge, Button, CardActionArea, Grid, LinearProgress, Typography } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useState } from 'react';
 
-import { ListItemProps } from './PluginMarket';
-import styles from './PluginMarketItem.module.scss';
+import styles from './MarketItem.module.scss';
 
-type TListItemProps = {
-    data?: TCCSModuleInfoDto;
+export type ListItemProps = {
+    installedModules: TPackageCromwellConfig[];
+    open: (info: TCCSModuleInfo) => any;
+    install: (info: TCCSModuleInfo) => Promise<boolean>;
+}
+
+type PropsType = {
+    data?: TCCSModuleInfo;
     listItemProps: ListItemProps;
 }
 
-export default function PluginMarketItem(props: TListItemProps) {
+export default function MarketItem(props: PropsType) {
     const data = props?.data;
     const [installing, setInstalling] = useState(false);
-    const [installed, setInstalled] = useState(!!(props.data?.name && props?.listItemProps?.installedPlugins?.find(plugin => plugin.name === props.data?.name)));
+    const [installed, setInstalled] = useState(!!(props.data?.name
+        && props?.listItemProps?.installedModules?.find(inst => inst.name === props.data?.name)));
 
-    const installPlugin = async () => {
+    const installModule = async () => {
         if (!props.listItemProps?.install || !data) return;
 
         setInstalling(true);
@@ -30,13 +36,14 @@ export default function PluginMarketItem(props: TListItemProps) {
             <div className={clsx(styles.listItemContent, installing && styles.installing)}>
                 {data?.image && (
                     <CardActionArea
+                        onClick={() => props.listItemProps?.open(props.data)}
                         className={styles.cardActionArea}
                     >
                         <img src={data.image} className={styles.image} />
                     </CardActionArea>
                 )}
                 <div className={styles.caption}>
-                    <Badge color="secondary" badgeContent={installed ? 'Installed' : null}>
+                    <Badge color="secondary" badgeContent={installed ? 'installed' : null}>
                         <Typography gutterBottom variant="h5" component="h3" className={styles.title}>
                             {data?.title ?? ''}
                         </Typography>
@@ -52,7 +59,7 @@ export default function PluginMarketItem(props: TListItemProps) {
                     <Button
                         disabled={installed || installing}
                         size="small" color="primary" variant="contained"
-                        onClick={installPlugin}
+                        onClick={installModule}
                     >Install</Button>
                 </div>
                 {installing && (

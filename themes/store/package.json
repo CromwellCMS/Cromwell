@@ -65,9 +65,11 @@
   },
   "cromwell": {
     "type": "theme",
-    "title": "Store",
-    "previewImage": "static/theme-store.png",
-    "description": "Online store theme",
+    "title": "Default Online Store",
+    "image": "static/theme-store.png",
+    "excerpt": "Default CromwellCMS Online Store theme",
+    "description": "<p>Full-featured online store theme.</p><p><br></p><ul><li>Home page with gallery and banners</li><li>Product categories with filtration</li><li>Search</li><li>Customer reviews</li><li>Quick-view</li><li>Save product as favorite</li><li>Compare products</li><li>Related products</li><li>Blog</li></ul>",
+    "author": "CromwellCMS",
     "plugins": [
       "@cromwell/plugin-product-filter",
       "@cromwell/plugin-main-menu",

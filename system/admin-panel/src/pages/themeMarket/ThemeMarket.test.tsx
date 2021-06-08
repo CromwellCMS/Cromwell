@@ -17,12 +17,12 @@ jest.mock('@cromwell/core-frontend', () => {
     return {
         getRestAPIClient: () => {
             return {
-                getPluginList: jest.fn().mockImplementation(async () => testDataAll),
+                getThemesInfo: jest.fn().mockImplementation(async () => testDataAll),
             }
         },
         getCentralServerClient: () => {
             return {
-                getPluginList: jest.fn().mockImplementation(async () => ({ elements: testDataAll })),
+                getThemeList: jest.fn().mockImplementation(async () => ({ elements: testDataAll })),
             }
         },
         CList: (props: any) => {
@@ -46,7 +46,7 @@ jest.mock('@cromwell/core-frontend', () => {
 import { render, screen } from '@testing-library/react';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-import PluginMarket from './PluginMarket';
+import PluginMarket from './ThemeMarket';
 
 describe('PluginList page', () => {
 
