@@ -128,7 +128,7 @@ const OrderList = (props: TPropsType) => {
         updateList();
     }
 
-    const handleFilterInput = debounce(1000, () => {
+    const handleFilterInput = debounce(400, () => {
         resetList();
     });
 

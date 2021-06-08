@@ -114,11 +114,13 @@ button[disabled] .navBtnContent {
 }
 
 .slideCover {
+    object-fit: cover;
     > div {
         background-size: cover !important;
     }
 }
 .slideContain {
+    object-fit: contain;
     > div {
         background-size: contain !important;
         background-position: center;
@@ -130,4 +132,8 @@ button[disabled] .navBtnContent {
     > div {
         z-index: 5000 !important;
     }
+}
+
+.thumbs {
+    margin-top: 15px;
 }

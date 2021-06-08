@@ -13,16 +13,28 @@ export class ModuleInfoDto implements TPackageCromwellConfig {
 
     @ApiProperty()
     description?: string;
+    
+    @ApiProperty()
+    excerpt?: string;
 
     @ApiProperty()
     icon?: string;
 
     @ApiProperty()
-    previewImage?: string;
+    image?: string;
+
+    @ApiProperty()
+    images?: string[];
 
     @ApiProperty()
     themes?: string[];
 
     @ApiProperty()
     plugins?: string[];
+
+    @ApiProperty()
+    packageName?: string;
+
+    @ApiProperty()
+    tags?: string[];
 }

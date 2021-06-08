@@ -12,12 +12,12 @@ import Modal from '../../components/modal/Modal';
 import Pagination from '../../components/pagination/Pagination';
 import { toast } from '../../components/toast/toast';
 import commonStyles from '../../styles/common.module.scss';
-import styles from './PluginMarket.module.scss';
+import styles from './ThemeMarket.module.scss';
 
-export default class PluginMarket extends Component<Partial<RouteComponentProps>, {
-    installedPlugins: TPackageCromwellConfig[];
+export default class ThemeMarket extends Component<Partial<RouteComponentProps>, {
+    installedThemes: TPackageCromwellConfig[];
     isLoading: boolean;
-    openedPlugin?: TCCSModuleInfo;
+    openedTheme?: TCCSModuleInfo;
 }> {
 
     private listId = 'plugin_market';
@@ -28,7 +28,7 @@ export default class PluginMarket extends Component<Partial<RouteComponentProps>
 
         this.state = {
             isLoading: true,
-            installedPlugins: [],
+            installedThemes: [],
         }
     }
 
@@ -38,16 +38,16 @@ export default class PluginMarket extends Component<Partial<RouteComponentProps>
 
     private async init() {
         this.setState({ isLoading: true });
-        await this.getPluginList();
+        await this.getThemeList();
         this.setState({ isLoading: false });
     }
 
-    private getPluginList = async () => {
+    private getThemeList = async () => {
         try {
-            const pluginInfos = await getRestAPIClient()?.getPluginList();
-            if (pluginInfos && Array.isArray(pluginInfos)) {
+            const infos = await getRestAPIClient()?.getThemesInfo();
+            if (infos && Array.isArray(infos)) {
                 this.setState({
-                    installedPlugins: pluginInfos,
+                    installedThemes: infos,
                 })
             }
         } catch (e) {
@@ -56,26 +56,26 @@ export default class PluginMarket extends Component<Partial<RouteComponentProps>
     }
 
     public loadList = async (props) => {
-        return getCentralServerClient().getPluginList(props, this.filterInput);
+        return getCentralServerClient().getThemeList(props, this.filterInput);
     }
 
-    public openPlugin = (info: TCCSModuleInfo) => {
-        this.setState({ openedPlugin: info });
+    public openTheme = (info: TCCSModuleInfo) => {
+        this.setState({ openedTheme: info });
     }
 
-    public installPlugin = async (info: TCCSModuleInfo | TPackageCromwellConfig): Promise<boolean> => {
+    public installTheme = async (info: TCCSModuleInfo | TPackageCromwellConfig): Promise<boolean> => {
         let success = false;
         try {
-            success = await getRestAPIClient().installPlugin(info.name);
+            success = await getRestAPIClient().installTheme(info.name);
         } catch (error) {
             console.error(error);
         }
-        await this.getPluginList();
+        await this.getThemeList();
 
         if (success) {
-            toast.success('Plugin installed');
+            toast.success('Theme installed');
         } else {
-            toast.error('Failed to install plugin');
+            toast.error('Failed to install theme');
         }
         return success;
     }
@@ -92,7 +92,7 @@ export default class PluginMarket extends Component<Partial<RouteComponentProps>
 
     render() {
         return (
-            <div className={styles.PluginMarket}>
+            <div className={styles.ThemeMarket}>
                 <div className={styles.listHeader}>
                     <TextField
                         className={styles.filterItem}
@@ -110,9 +110,9 @@ export default class PluginMarket extends Component<Partial<RouteComponentProps>
                         id={this.listId}
                         ListItem={MarketItem}
                         listItemProps={{
-                            installedModules: this.state?.installedPlugins ?? [],
-                            install: this.installPlugin,
-                            open: this.openPlugin,
+                            installedModules: this.state?.installedThemes ?? [],
+                            install: this.installTheme,
+                            open: this.openTheme,
                         }}
                         useAutoLoading
                         usePagination
@@ -129,16 +129,16 @@ export default class PluginMarket extends Component<Partial<RouteComponentProps>
                     />
                 )}
                 <Modal
-                    open={!!this.state.openedPlugin}
+                    open={!!this.state.openedTheme}
                     blurSelector="#root"
                     className={commonStyles.center}
-                    onClose={() => this.setState({ openedPlugin: undefined })}
+                    onClose={() => this.setState({ openedTheme: undefined })}
                 >
-                    {this.state.openedPlugin && (
+                    {this.state?.openedTheme && (
                         <MarketModal
-                            installedModules={this.state?.installedPlugins ?? []}
-                            install={this.installPlugin}
-                            data={this.state.openedPlugin}
+                            installedModules={this.state?.installedThemes ?? []}
+                            install={this.installTheme}
+                            data={this.state.openedTheme}
                         />
                     )}
                 </Modal>

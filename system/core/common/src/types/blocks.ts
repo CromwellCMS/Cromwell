@@ -212,6 +212,7 @@ export type TGallerySettings = {
     thumbs?: boolean | {
         width?: number;
         height?: number;
+        backgroundSize?: 'contain' | 'cover';
         loop?: boolean;
     };
     zoom?: boolean;

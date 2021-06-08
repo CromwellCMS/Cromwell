@@ -56,9 +56,10 @@
   },
   "cromwell": {
     "type": "theme",
-    "title": "Blog",
-    "previewImage": "static/blog.png",
-    "description": "Simple blog website",
+    "title": "Default Blog",
+    "image": "static/blog.png",
+    "excerpt": "Default CromwellCMS Blog theme",
+    "description": "<p>Default Blog theme. Includes featured posts, tag pages, tag search, website search, newsletter form, custom pages</p>",
     "plugins": [
       "@cromwell/plugin-product-filter",
       "@cromwell/plugin-main-menu",

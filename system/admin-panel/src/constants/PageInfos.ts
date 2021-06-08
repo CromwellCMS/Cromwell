@@ -41,6 +41,7 @@ const UserPage = lazy(() => import('../pages/user/User'));
 const UserListPage = lazy(() => import('../pages/userList/UserList'));
 const WelcomePage = lazy(() => import('../pages/welcome/Welcome'));
 const PluginMarket = lazy(() => import('../pages/pluginMarket/PluginMarket'));
+const ThemeMarket = lazy(() => import('../pages/themeMarket/ThemeMarket'));
 
 export type SidebarLinkType = {
     id: string;
@@ -197,7 +198,11 @@ export const pluginMarketPageInfo: PageInfo = {
     route: '/plugin-market',
     component: PluginMarket,
 }
-
+export const themeMarketPageInfo: PageInfo = {
+    name: 'Theme Market',
+    route: '/theme-market',
+    component: ThemeMarket,
+}
 
 // Export all pages for react-router
 export const pageInfos: PageInfo[] = [
@@ -225,6 +230,7 @@ export const pageInfos: PageInfo[] = [
     tagListPageInfo,
     reviewListPageInfo,
     pluginMarketPageInfo,
+    themeMarketPageInfo,
 ].filter(i => Boolean(i.component));
 
 // Export links for sidebar

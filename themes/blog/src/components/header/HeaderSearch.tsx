@@ -33,7 +33,7 @@ export class HeaderSearch extends React.Component<unknown, {
         }
     }
 
-    private searchRequest = debounce(1000, async (postName: string) => {
+    private searchRequest = debounce(500, async (postName: string) => {
         const pagedParams: TPagedParams<TPost> = {
             pageNumber: 1,
             pageSize: 10,

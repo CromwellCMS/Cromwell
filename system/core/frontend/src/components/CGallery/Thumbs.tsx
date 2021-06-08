@@ -43,7 +43,7 @@ export default class Thumbs extends React.Component<{
         thumbHeight += 16; // for margin
 
         return (
-            <div className={styles.container} id={thumbsId}>
+            <div className={clsx(styles.container, styles.thumbs)} id={thumbsId}>
                 <CarouselProvider
                     visibleSlides={thumbvisibleSlides}
                     naturalSlideWidth={thumbOpts?.width ?? 120}
@@ -67,7 +67,8 @@ export default class Thumbs extends React.Component<{
                                     className={clsx(styles.thumbnail, iActive && styles.activeThumb)}
                                 >
                                     <CarouselImage
-                                        className={styles.thumbnailImg}
+                                        className={clsx(styles.thumbnailImg,
+                                            thumbOpts?.backgroundSize === 'contain' ? styles.slideContain : styles.slideCover)}
                                         hasMasterSpinner={false}
                                         src={imgSrc}
                                     />

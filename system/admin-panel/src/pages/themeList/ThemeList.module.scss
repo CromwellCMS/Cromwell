@@ -1,15 +1,23 @@
 @import "../../styles/common.module.scss";
 
 .ThemeList {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    height: fit-content;
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
     width: 100%;
+    height: fit-content;
     // height: 100%;
+
+    .addBtn {
+        margin-bottom: 15px;
+    }
+}
+
+.list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    width: 100%;
 }
 
 .themeCard {
@@ -142,4 +150,3 @@ div.updateProgress {
         font-size: 13px;
     }
 }
-

@@ -1,0 +1,51 @@
+@import "../../styles/common.module.scss";
+
+.MarketModal {
+    @include paper;
+    @include styledScrollBar;
+    display: flex;
+    flex-direction: column;
+    width: 800px;
+    height: 700px;
+    max-width: 80vw;
+    max-height: 80vh;
+    overflow: auto;
+    padding: 20px 15px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}
+
+.title {
+    margin: 0;
+}
+
+.version {
+    font-size: 12px;
+    color: #666;
+    margin-bottom: 10px;
+}
+
+.excerpt {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.64);
+    margin-bottom: 10px;
+}
+
+.description {
+    font-size: 16px;
+    color: rgba(0, 0, 0, 0.64);
+}
+
+.images {
+    margin-bottom: 20px;
+}
+
+.description {
+    li {
+        margin: 4px 0;
+    }
+}

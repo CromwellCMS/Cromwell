@@ -148,11 +148,18 @@ export class CGallery extends React.Component<TCGalleryProps> {
                         height: containerHeight ? containerHeight + 'px' : '100%',
                         width: gallerySettings.width ? gallerySettings.width + 'px' : '100%',
                     }}>
-                    <Slider>
+                    <Slider
+                        style={containerHeight !== undefined ? {
+                            height: containerHeight + 'px',
+                        } : undefined}
+                    >
                         {gallerySettings.images && gallerySettings.images.map((img, index) => {
                             if (!img.src) return <></>;
                             let imgItem = (
                                 <Image src={img.src}
+                                    style={containerHeight !== undefined ? {
+                                        height: containerHeight + 'px',
+                                    } : undefined}
                                     overlayClassName={styles.imageOverlay}
                                     alt={img.alt}
                                     hasMasterSpinner={true}
@@ -173,7 +180,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                             imgItem = (
                                 <Slide onClick={() => this.onSlideClick(index)} index={index} key={img.src + index}
                                     style={{
-                                        height: gallerySettings.height && gallerySettings.height + 'px'
+                                        height: containerHeight && containerHeight + 'px'
                                     }}
                                 >
                                     {imgItem}
@@ -194,7 +201,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
                                     index={index}
                                     key={`slide_${index}`}
                                     style={{
-                                        height: height && height + 'px',
+                                        height: containerHeight && height + 'px',
                                         // width: slideWidth && slideWidth + 'px',
                                     }}
                                 >

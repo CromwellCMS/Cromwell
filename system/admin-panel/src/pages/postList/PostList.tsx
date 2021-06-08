@@ -125,7 +125,7 @@ const PostList = (props: TPropsType) => {
         list?.updateData();
     }
 
-    const handleFilterInput = debounce(1000, () => {
+    const handleFilterInput = debounce(400, () => {
         filterInput.current.titleSearch = (document.getElementById(titleSearchId) as HTMLInputElement)?.value ?? undefined;
         resetList();
     });
