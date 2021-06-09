@@ -29,7 +29,8 @@
         "system/*",
         "system/core/*",
         "plugins/*",
-        "themes/*"
+        "themes/*",
+        "website"
     ],
     "engines": {
         "node": "14.x",
