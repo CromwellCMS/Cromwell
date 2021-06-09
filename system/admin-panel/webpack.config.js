@@ -1,7 +1,13 @@
 const path = require('path');
 const localProjectDir = __dirname;
 const webpack = require('webpack');
+const resolveFrom = require('resolve-from');
+const coreBackend = require('@cromwell/core-backend');
 
+const styleLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'style-loader');
+const cssLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'css-loader');
+const sassLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'sass-loader');
+const tsLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'ts-loader');
 const buildMode = process.env.NODE_ENV || 'production';
 const isProduction = buildMode === 'production';
 
@@ -44,16 +50,16 @@ module.exports = {
                 exclude: /node_modules/,
                 use: [
                     {
-                        loader: "ts-loader"
+                        loader: tsLoaderPath
                     },
                 ]
             },
             {
                 test: /\.css$/i,
                 use: [
-                    { loader: 'style-loader' },
+                    { loader: styleLoaderPath },
                     {
-                        loader: 'css-loader', options: {
+                        loader: cssLoaderPath, options: {
                             sourceMap: isProduction ? false : true,
                         }
                     },
@@ -62,16 +68,16 @@ module.exports = {
             {
                 test: /\.s[ac]ss$/i,
                 use: [
-                    { loader: 'style-loader' },
+                    { loader: styleLoaderPath },
                     {
-                        loader: 'css-loader', options: {
+                        loader: cssLoaderPath, options: {
                             modules: {
                                 localIdentName: '[local]_[hash:base64:5]'
                             },
                         }
                     },
                     {
-                        loader: 'sass-loader', options: { sourceMap: isProduction ? false : true }
+                        loader: sassLoaderPath, options: { sourceMap: isProduction ? false : true }
                     }
                 ],
             },
