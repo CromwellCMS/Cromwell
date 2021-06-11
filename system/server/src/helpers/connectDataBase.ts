@@ -1,5 +1,12 @@
 import { setStoreItem } from '@cromwell/core';
-import { getLogger, getOrmConfigPath, getServerDir, getServerTempDir, ORMEntities, readCmsModules } from '@cromwell/core-backend';
+import {
+    getLogger,
+    getServerDir,
+    getServerTempDir,
+    ORMEntities,
+    readCMSConfig,
+    readCmsModules,
+} from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
@@ -15,6 +22,7 @@ const logger = getLogger();
 
 export const connectDatabase = async () => {
 
+    const cmsConfig = await readCMSConfig();
     const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
 
     const defaultOrmConfig: ConnectionOptions = {
@@ -27,16 +35,11 @@ export const connectDatabase = async () => {
         }
     }
 
-    let ormconfig: ConnectionOptions | undefined;
-    try {
-        ormconfig = require(getOrmConfigPath())
-    } catch (e) { }
-
     let hasDatabasePath = false;
     const serverDir = getServerDir();
-    if (ormconfig?.database) hasDatabasePath = true;
+    if (cmsConfig?.orm?.database) hasDatabasePath = true;
 
-    ormconfig = Object.assign({}, defaultOrmConfig, ormconfig)
+    let ormconfig: ConnectionOptions = Object.assign({}, defaultOrmConfig, cmsConfig.orm)
 
     if (!ormconfig || !ormconfig.type) throw new Error('Invalid ormconfig');
     setStoreItem('dbType', ormconfig.type);
@@ -61,20 +64,23 @@ export const connectDatabase = async () => {
         }
     }
 
-    if (ormconfig.type === 'mysql' || ormconfig.type === 'postgres') {
+    if (ormconfig.type === 'mysql' || ormconfig.type === 'mariadb' || ormconfig.type === 'postgres') {
         if (ormconfig.migrationsRun === undefined) adjustedOptions.migrationsRun = true;
         if (ormconfig.synchronize === undefined) adjustedOptions.synchronize = false;
     }
     ormconfig = Object.assign(adjustedOptions as any, ormconfig) as ConnectionOptions;
 
+    const pluginExports = await collectPlugins();
+
     const connectionOptions: ConnectionOptions = {
         ...ormconfig,
         entities: [
             ...ORMEntities,
-            ...((await collectPlugins()).entities ?? [] as any),
+            ...(pluginExports.entities ?? [] as any),
             ...(ormconfig?.entities ?? [])
         ],
         migrations: [
+            ...(pluginExports.migrations ?? [] as any),
             (serverDir && ormconfig?.cli?.migrationsDir) ?
                 normalizePath(resolve(serverDir, ormconfig.cli.migrationsDir)) + '/*.js' : '',
         ].filter(it => it && it !== ''),

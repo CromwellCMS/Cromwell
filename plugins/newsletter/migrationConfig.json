@@ -1,0 +1,15 @@
+{
+    "type": "mariadb",
+    "host": "localhost",
+    "port": 3306,
+    "entityPrefix": "crw_",
+    "username": "root",
+    "database": "cromwell",
+    "entities": [
+        "./build/backend/index.js"
+    ],
+    "migrationsTableName": "crw_migrations",
+    "cli": {
+        "migrationsDir": "./src/backend/migrations"
+    }
+}

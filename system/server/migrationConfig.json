@@ -1,6 +1,9 @@
 {
-    "type": "sqlite",
-    "database": "./db.sqlite3",
+    "type": "mariadb",
+    "host": "localhost",
+    "port": 3306,
+    "username": "root",
+    "database": "cromwell",
     "synchronize": false,
     "entityPrefix": "crw_",
     "migrationsRun": true,

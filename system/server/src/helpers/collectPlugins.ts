@@ -4,12 +4,12 @@ let pluginsCache: TBackendModule;
 const logger = getLogger();
 
 let isCollecting = false;
-let collectingPromise: Promise<TBackendModule>;
+let collectingPromise: Promise<TBackendModule> | undefined;
 
 export const collectPlugins = async (updateCache?: boolean): Promise<TBackendModule> => {
     if (pluginsCache && !updateCache) return pluginsCache;
 
-    if (isCollecting) return collectingPromise;
+    if (isCollecting && collectingPromise) return collectingPromise;
     let collectingResolver;
     collectingPromise = new Promise<TBackendModule>(done => collectingResolver = done);
     isCollecting = true;
@@ -23,17 +23,19 @@ export const collectPlugins = async (updateCache?: boolean): Promise<TBackendMod
     let collectedEntities: any[] = [];
     let collectedControllers: any[] = [];
     let collectedProviders: any[] = [];
+    let collectedMigrations: any[] = [];
 
 
     for (const info of pluginInfos) {
         if (!info.backendPath) continue;
         try {
-            const { resolvers, entities, controllers, providers } = require(info.backendPath) as TBackendModule;
+            const { resolvers, entities, controllers, providers, migrations } = require(info.backendPath) as TBackendModule;
 
             if (resolvers && Array.isArray(resolvers)) collectedResolvers = [...collectedResolvers, ...resolvers]
             if (entities && Array.isArray(entities)) collectedEntities = [...collectedEntities, ...entities]
             if (controllers && Array.isArray(controllers)) collectedControllers = [...collectedControllers, ...controllers]
             if (providers && Array.isArray(providers)) collectedProviders = [...collectedProviders, ...providers]
+            if (migrations && Array.isArray(migrations)) collectedMigrations = [...collectedMigrations, ...migrations]
         } catch (error) {
             logger.error('Failed to include plugin: ' + info.backendPath, error);
         }
@@ -44,8 +46,9 @@ export const collectPlugins = async (updateCache?: boolean): Promise<TBackendMod
     pluginsCache.entities = collectedEntities;
     pluginsCache.controllers = collectedControllers;
     pluginsCache.providers = collectedProviders;
+    pluginsCache.migrations = collectedMigrations;
     collectingResolver(pluginsCache);
     isCollecting = false;
-    collectingPromise;
+    collectingPromise = undefined;
     return pluginsCache;
 }

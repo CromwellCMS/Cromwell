@@ -20,15 +20,15 @@ export class ThemeEntity extends BasePageEntity implements TThemeEntity {
     hasAdminBundle?: boolean;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     settings?: string;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     defaultSettings?: string;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     moduleInfo?: string;
 
     @Field(type => Boolean, { nullable: true })

@@ -12,7 +12,7 @@ export class Order extends BasePageEntity implements TOrder {
     status?: string;
 
     @Field(() => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     cart?: string;
 
     @Field(() => Number, { nullable: true })
@@ -50,7 +50,7 @@ export class Order extends BasePageEntity implements TOrder {
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     customerEmail?: string;
-    
+
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     customerAddress?: string;

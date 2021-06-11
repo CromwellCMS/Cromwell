@@ -1,5 +1,6 @@
 import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks';
 import { TCmsEntityCore, TProduct, TUser, TServiceVersions } from './entities';
+import { ConnectionOptions } from 'typeorm';
 
 
 export type TCromwellStore = {
@@ -95,6 +96,7 @@ export type TPagedMeta = {
 // Stored in cmsconfig.json
 export type TCmsConfig = {
     domain?: string;
+    orm?: ConnectionOptions;
     protocol?: 'http' | 'https';
     apiPort?: number;
     adminPanelPort?: number;
@@ -105,7 +107,7 @@ export type TCmsConfig = {
     pm?: 'yarn' | 'cromwella';
     watchPoll?: number;
     useWatch?: boolean;
-}
+};
 
 // Info form cmsconfig.json and settings from DB
 export type TCmsSettings = TCmsConfig & TCmsEntityCore;

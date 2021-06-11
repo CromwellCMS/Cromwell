@@ -109,7 +109,6 @@ export const getServerBuildProxyPath = () => {
     const serverDir = getServerDir();
     if (serverDir) return resolve(serverDir, 'build/proxy.js');
 }
-export const getOrmConfigPath = () => resolve(process.cwd(), 'ormconfig.json');
 export const getServerTempDir = () => resolve(getTempDir(), 'server');
 export const getServerTempEmailsDir = () => resolve(getServerTempDir(), 'emails');
 export const getServerDefaultEmailsDir = () => {

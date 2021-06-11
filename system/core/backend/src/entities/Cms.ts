@@ -21,16 +21,16 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     @Column({ type: "varchar", nullable: true })
     language?: string;
 
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", nullable: true, length: 300 })
     favicon?: string;
 
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", nullable: true, length: 300 })
     logo?: string;
 
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: 'text', nullable: true })
     headerHtml?: string;
 
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: 'text', nullable: true })
     footerHtml?: string;
 
     @Column({ type: "float", nullable: true })
@@ -42,13 +42,13 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     public set currencies(data: TCurrency[] | undefined) {
         this._currencies = data ? JSON.stringify(data) : undefined;
     }
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     private _currencies?: string;
 
     @Column({ type: "varchar", nullable: true })
     version?: string;
 
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", nullable: true, length: 2000 })
     versions?: string;
 
     @Column({ type: "boolean", nullable: true })
@@ -57,7 +57,7 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     @Column({ type: "boolean", nullable: true })
     beta?: boolean;
 
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", nullable: true, length: 400 })
     smtpConnectionString?: string;
 
     @Column({ type: "varchar", nullable: true })

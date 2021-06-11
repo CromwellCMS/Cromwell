@@ -31,7 +31,7 @@ export class Attribute extends BasePageEntity implements TAttribute {
         this.valuesJSON = JSON.stringify(data);
     }
 
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: 'text', nullable: true })
     private valuesJSON: string;
 
     @Field(type => String)
@@ -39,7 +39,7 @@ export class Attribute extends BasePageEntity implements TAttribute {
     type: 'radio' | 'checkbox';
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", nullable: true, length: 300 })
     icon?: string;
 
     @Field(type => Boolean, { nullable: true })

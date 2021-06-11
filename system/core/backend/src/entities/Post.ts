@@ -17,19 +17,19 @@ export class Post extends BasePageEntity implements TPost {
     authorId: string;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     content?: string | null;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     delta?: string | null;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", nullable: true, length: 5000 })
     excerpt?: string | null;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", nullable: true, length: 300 })
     mainImage?: string | null;
 
     @Field(type => String, { nullable: true })

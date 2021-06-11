@@ -20,8 +20,8 @@ export const serverLogFor = (level: TLogLevel, msg: string,
 }
 
 
-const { combine, timestamp, label, printf } = winston.format;
-const loggerFormat = printf(({ message, level, timestamp }) => {
+const { combine, timestamp, printf } = winston.format;
+const loggerFormat = printf(({ message, timestamp }) => {
     return `[${timestamp}] ${message}`;
 });
 

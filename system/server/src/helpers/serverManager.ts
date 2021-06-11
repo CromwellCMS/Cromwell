@@ -32,18 +32,18 @@ export const getServerPort = () => activeServer.port;
 export const launchServerManager = async (proxyPort?: number) => {
     activeServer.proxyPort = proxyPort;
     if (activeServer.port) {
-        logger.warn('Proxy serverManager: called launch, but Server was already launched!')
+        logger.warn('Proxy manager: called launch, but Server was already launched!')
     }
     try {
         const info = await makeServer();
         updateActiveServer(info);
     } catch (error) {
-        logger.error('Proxy could not launch server', error);
+        logger.error('Proxy manager could not launch API server', error);
     }
 }
 
 const makeServer = async (): Promise<ServerInfo> => {
-    logger.info('Proxy manger: Launching new API server...');
+    logger.info('Proxy manager: Launching new API server...');
     const info: ServerInfo = {};
     const env = loadEnv();
     const serverId = getRandStr(8);
@@ -51,8 +51,9 @@ const makeServer = async (): Promise<ServerInfo> => {
 
     const buildPath = getServerBuildPath();
     if (!buildPath || !fs.existsSync(buildPath)) {
-        logger.error('Proxy could not find proxy build at: ' + buildPath);
-        throw new Error('')
+        const msg = 'Proxy manager: could not find server build at: ' + buildPath;
+        logger.error(msg);
+        throw new Error(msg);
     }
 
     const serverProc = fork(
@@ -100,7 +101,7 @@ const makeServer = async (): Promise<ServerInfo> => {
         });
     });
 
-    if (!info.port) throw new Error('Proxy::makeServer: Failed to start server');
+    if (!info.port) throw new Error('Proxy manager: Failed to start API server');
     await tcpPortUsed.waitUntilUsed(info.port, 500, 8000);
 
     madeServers[serverId] = info;
@@ -108,7 +109,7 @@ const makeServer = async (): Promise<ServerInfo> => {
 }
 
 const closeServer = async (info: ServerInfo) => {
-    logger.info('Proxy manger: killing server...');
+    logger.info(`Proxy manager: killing API server at port: ${info.port}...`);
     info.childInst?.kill();
 }
 
@@ -118,7 +119,7 @@ const restartServer = async () => {
         isPendingRestart = true;
         return;
     }
-    logger.info('Proxy manger: restarting server...');
+    logger.info('Proxy manager: restarting API server...');
 
     isRestarting = true;
 
@@ -128,7 +129,7 @@ const restartServer = async () => {
     try {
         newServer = await makeServer();
     } catch (error) {
-        logger.error('Failed to make new server', error);
+        logger.error('Proxy manager: Failed to launch new API server', error);
         isRestarting = false;
 
         if (isPendingRestart) {
@@ -151,7 +152,7 @@ const restartServer = async () => {
         await closeServer(oldServer);
         await tcpPortUsed.waitUntilFree(oldServer.port, 500, 5000);
     } catch (error) {
-        logger.error('Failed to kill old server at ' + oldServer.port, error);
+        logger.error('Proxy manager: Failed to kill old API server at ' + oldServer.port, error);
     }
 
     isRestarting = false;
@@ -183,7 +184,7 @@ export const serverAliveWatcher = async () => {
     } catch (error) { }
 
     if (!isAlive) {
-        logger.error('serverAliveWatcher: Server is not alive. Restarting...');
+        logger.error('Proxy manager watcher: API Server is not alive. Restarting...');
         await restartServer();
     }
 

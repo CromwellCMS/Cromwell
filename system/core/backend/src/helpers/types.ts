@@ -16,6 +16,7 @@ export type TBackendModule = {
     entities?: unknown[];
     resolvers?: unknown[];
     providers?: unknown[];
+    migrations?: unknown[];
 }
 
 // { [ActionName] : PayloadType }

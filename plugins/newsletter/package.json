@@ -11,7 +11,9 @@
   "license": "MIT",
   "scripts": {
     "build": "npx --no-install cromwell b",
-    "watch": "npx --no-install cromwell b -w"
+    "watch": "npx --no-install cromwell b -w",
+    "migrate": "npx --no-install typeorm migration:generate -f migrationConfig -n init",
+    "run:db": "docker run -p 3306:3306 --name mariadb --rm -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -d mariadb:latest"
   },
   "cromwell": {
     "type": "plugin",
@@ -42,8 +44,7 @@
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "tslib": "2.1.0",
-    "type-graphql": "1.1.1",
-    "typeorm": "0.2.32"
+    "type-graphql": "1.1.1"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.2",
@@ -54,6 +55,7 @@
     "rollup": "^2.28.2",
     "rollup-plugin-auto-external": "^2.0.0",
     "rollup-plugin-ts-compiler": "^1.0.16",
+    "typeorm": "0.2.32",
     "typescript": "4.2.4"
   }
 }

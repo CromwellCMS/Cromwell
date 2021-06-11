@@ -1,14 +1,15 @@
 import { DynamicModule, Module } from '@nestjs/common';
 
 import { getControllers, getExports, getServices } from '../helpers/getControllers';
+import { loadEnv } from '../helpers/loadEnv';
 
 @Module({})
 export class RestApiModule {
     static async forRoot(): Promise<DynamicModule> {
         return {
             module: RestApiModule,
-            controllers: await getControllers(),
-            providers: await getServices(),
+            controllers: await getControllers(loadEnv().envMode === 'dev'),
+            providers: await getServices(loadEnv().envMode === 'dev'),
             exports: getExports(),
         }
     }

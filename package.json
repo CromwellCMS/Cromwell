@@ -23,7 +23,8 @@
         "test:cli": "cd system/cli && npm run test",
         "test:utils": "cd system/utils && npm run test",
         "heroku-postbuild": "node ./startup.js build --no-install",
-        "start": "node ./system/manager/src/utils/herokuStart.js"
+        "start": "node ./system/manager/src/utils/herokuStart.js",
+        "start:dev:db": "docker run -p 3306:3306 --name mariadb --rm -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -d mariadb:latest",
     },
     "workspaces": [
         "system/*",

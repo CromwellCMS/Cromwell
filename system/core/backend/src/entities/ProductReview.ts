@@ -24,7 +24,7 @@ export class ProductReview extends BasePageEntity implements TProductReview {
     title?: string;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     description?: string;
 
     @Field(type => Number, { nullable: true })

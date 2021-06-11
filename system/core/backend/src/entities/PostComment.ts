@@ -24,7 +24,7 @@ export class PostComment extends BasePageEntity implements TPostComment {
     title?: string;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     comment?: string;
 
     @Field(type => String, { nullable: true })

@@ -20,7 +20,7 @@ export class Tag extends BasePageEntity implements TTag {
     image?: string | null;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     description?: string | null;
 
 }

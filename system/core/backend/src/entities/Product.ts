@@ -26,7 +26,7 @@ export class Product extends BasePageEntity implements TProduct {
     oldPrice?: number;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "varchar", nullable: true, length: 300 })
     mainImage?: string;
 
     @Field(type => [String], { nullable: true })
@@ -34,11 +34,11 @@ export class Product extends BasePageEntity implements TProduct {
     images?: string[];
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     description?: string;
 
     @Field(type => String, { nullable: true })
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: "text", nullable: true })
     descriptionDelta?: string;
 
     @OneToMany(type => ProductReview, review => review.product, {
@@ -55,7 +55,7 @@ export class Product extends BasePageEntity implements TProduct {
         if (data) this.attributesJSON = JSON.stringify(data);
     }
 
-    @Column({ type: "varchar", nullable: true })
+    @Column({ type: 'text', nullable: true })
     private attributesJSON?: string;
 
     @Field(type => Number, { nullable: true })

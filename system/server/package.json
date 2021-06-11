@@ -19,7 +19,7 @@
     "prod": "node startup.js prod",
     "watch": "npx rollup -cw",
     "test": "npx --no-install jest",
-    "migration:generate": "npx typeorm migration:generate -o -f migrationOrmconfig"
+    "migration:generate": "npx typeorm migration:generate -o -f migrationConfig"
   },
   "dependencies": {
     "@cromwell/core": "1.1.5",
@@ -56,6 +56,7 @@
     "graphql-tools": "7.0.5",
     "handlebars": "4.7.7",
     "http-proxy": "1.18.1",
+    "mysql": "2.18.1",
     "normalize-path": "3.0.0",
     "project-name-generator": "^2.1.9",
     "reflect-metadata": "0.1.13",
