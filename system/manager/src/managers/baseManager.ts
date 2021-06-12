@@ -33,16 +33,12 @@ export const closeService = async (name: string): Promise<boolean> => {
         const kill = (pid: number) => {
             treeKill(pid, 'SIGTERM', async (err) => {
                 if (err) logger.log(err);
-                if (err) {
-                    const isActive = await isServiceRunning(name);
-                    if (isActive) {
-                        logger.log(`BaseManager::closeService: failed to close service ${name} by pid. Service is still active!`);
-                        done(false);
-                    } else {
-                        logger.log(`BaseManager::closeService: failed to close service ${name} by pid. Service already closed. Return success=true`);
-                        done(true);
-                    }
+                const isActive = await isServiceRunning(name);
+                if (isActive) {
+                    logger.log(`BaseManager::closeService: failed to close service ${name} by pid. Service is still active!`);
+                    done(false);
                 } else {
+                    logger.log(`BaseManager::closeService: failed to close service ${name} by pid. Service already closed. Return success=true`);
                     done(true);
                 }
             });
@@ -117,7 +113,7 @@ export const startSystem = async (scriptName: TScriptName, port?: string) => {
         return;
     }
 
-    await saveProcessPid(cacheKeys.manager, process.pid)
+    await saveProcessPid(cacheKeys.manager, process.pid);
 
     if (isDevelopment) {
 
