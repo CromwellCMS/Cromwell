@@ -84,10 +84,10 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     async applyDeletMany(qb: SelectQueryBuilder<EntityType> | DeleteQueryBuilder<EntityType>, input: TDeleteManyInput) {
         if (input.all) {
             if (input.ids && input.ids.length > 0) {
-                qb.andWhere(`"${this.metadata.tablePath}".id NOT IN (:...ids)`, { ids: input.ids ?? [] })
+                qb.andWhere(`${this.metadata.tablePath}.id NOT IN (:...ids)`, { ids: input.ids ?? [] })
             }
         } else {
-            qb.andWhere(`"${this.metadata.tablePath}".id IN (:...ids)`, { ids: input.ids ?? [] })
+            qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
         }
     }
 

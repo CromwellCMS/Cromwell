@@ -36,9 +36,7 @@ const fs = require('fs');
     }
 
     // Check node_modules
-    let didInstall = false;
     if ((!hasNodeModules() || scriptName === 'build') && !noInstall) {
-        didInstall = true;
 
         if (scriptName === 'build') {
             // Force yarn to re-resolve packages (run install). Otherwise some modules may be left unlinked
@@ -78,18 +76,6 @@ const fs = require('fs');
 
     // Build cli
     spawnSync(`node ${cliStartupPath} ${managerCommand}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
-
-    if (didInstall) {
-        const readPackageJson = require('read-package-json-fast');
-        const { linkBinsOfPackages } = require('@pnpm/link-bins');
-
-        function warn(msg) { console.warn(msg) };
-        const packages = [{
-            manifest: readPackageJson(resolve(cliDir, 'package.json')),
-            location: resolve(cliDir, 'package.json'),
-        }];
-        await linkBinsOfPackages(packages, 'node_modules/.bin', { warn });
-    }
 
     // Check themes
     const themesDir = resolve(projectRootDir, 'themes');

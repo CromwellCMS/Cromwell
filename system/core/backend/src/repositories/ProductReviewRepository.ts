@@ -94,16 +94,16 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         if (filterParams?.approved !== undefined && filterParams?.approved !== null) {
 
             if (filterParams.approved) {
-                const query = `"${this.metadata.tablePath}".approved = :approvedSearch`;
+                const query = `${this.metadata.tablePath}.approved = :approvedSearch`;
                 qb.andWhere(query, { approvedSearch: filterParams.approved });
             }
 
             if (filterParams?.approved === false) {
                 const brackets = new Brackets(subQb => {
-                    const query = `"${this.metadata.tablePath}".approved = :approvedSearch`;
+                    const query = `${this.metadata.tablePath}.approved = :approvedSearch`;
                     subQb.where(query, { approvedSearch: filterParams.approved });
 
-                    const query2 = `"${this.metadata.tablePath}".approved IS NULL`;
+                    const query2 = `${this.metadata.tablePath}.approved IS NULL`;
                     subQb.orWhere(query2);
                 });
                 qb.andWhere(brackets);
@@ -112,20 +112,20 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
         // Search by productId
         if (filterParams?.productId && filterParams.productId !== '') {
-            const query = `"${this.metadata.tablePath}".productId = :productId`;
+            const query = `${this.metadata.tablePath}.productId = :productId`;
             qb.andWhere(query, { productId: filterParams.productId });
         }
 
         // Search by userId
         if (filterParams?.userId && filterParams.userId !== '') {
-            const query = `"${this.metadata.tablePath}".userId = :userId`;
+            const query = `${this.metadata.tablePath}.userId = :userId`;
             qb.andWhere(query, { userId: filterParams.userId });
         }
 
         // Search by userName
         if (filterParams?.userName && filterParams.userName !== '') {
             const userNameSearch = `%${filterParams.userName}%`;
-            const query = `"${this.metadata.tablePath}".userName LIKE :userNameSearch`;
+            const query = `${this.metadata.tablePath}.userName LIKE :userNameSearch`;
             qb.andWhere(query, { userNameSearch });
         }
     }

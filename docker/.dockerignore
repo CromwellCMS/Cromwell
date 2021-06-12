@@ -1,0 +1,3 @@
+.cromwell/logs
+.cromwell/server
+.cromwell/nginx

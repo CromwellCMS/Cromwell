@@ -55,7 +55,7 @@ export class ProductRepository extends BaseRepository<Product> {
     async applyAndGetPagedProducts(qb: SelectQueryBuilder<TProduct>, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         this.applyGetProductRating(qb);
 
-        if (params?.orderBy === "rating") {
+        if (params?.orderBy === 'rating') {
             params.orderBy = this.metadata.tablePath + '_' + averageKey as any;
             return getPaged(qb, undefined, params);
         }
@@ -138,7 +138,7 @@ export class ProductRepository extends BaseRepository<Product> {
         logger.log('ProductRepository::updateProduct id: ' + id);
         let product = await this.findOne({
             where: { id },
-            relations: ["categories"]
+            relations: ['categories']
         });
         if (!product) throw new Error(`Product ${id} not found!`);
 

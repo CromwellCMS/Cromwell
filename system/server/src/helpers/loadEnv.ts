@@ -28,9 +28,8 @@ export const loadEnv = (): TEnv => {
     }
 
     if (!scriptName || (scriptName as any) === '') {
-        const msg = 'Provide in first argument to this script one of these commands: build dev prod serverDev serverProd';
+        const msg = 'Provide as first argument to this script one of these commands: build, dev, prod, serverDev, serverProd';
         getLogger(false).error(msg);
-        throw new Error(msg);
     }
 
     const envMode = (scriptName === 'dev') ? 'dev' : 'prod';

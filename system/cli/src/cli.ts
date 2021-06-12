@@ -9,6 +9,7 @@ const args = yargs(process.argv.slice(2))
     .command<{
         service?: string; development?: boolean;
         detached?: boolean; port?: string;
+        try?: boolean;
     }>({
         command: 'start [options]',
         describe: 'starts CMS or a specified service',
@@ -34,6 +35,10 @@ const args = yargs(process.argv.slice(2))
                     alias: 'p',
                     desc: 'Port of a proxy server',
                     type: 'string'
+                })
+                .option('try', {
+                    desc: 'Stop after success start',
+                    type: 'boolean'
                 })
         },
         handler: async (argv) => {
@@ -61,13 +66,20 @@ const args = yargs(process.argv.slice(2))
                 process.env.API_PORT = port + '';
             }
 
-            const { checkModules, startServiceByName, startSystem } = require('@cromwell/cms');
+            const { startServiceByName, startSystem, closeSystem, closeServiceByName } = require('@cromwell/cms');
 
             if (serviceToStart) {
                 await startServiceByName(serviceToStart, development, port);
+                if (argv.try) {
+                    await closeServiceByName(serviceToStart);
+                    process.exit(0);
+                }
             } else {
-                await checkModules(development);
                 await startSystem(development ? 'development' : 'production', port);
+                if (argv.try) {
+                    await closeSystem();
+                    process.exit(0);
+                }
             }
         }
     })

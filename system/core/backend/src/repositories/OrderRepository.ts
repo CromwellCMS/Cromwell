@@ -100,20 +100,20 @@ export class OrderRepository extends BaseRepository<Order> {
     applyOrderFilter(qb: SelectQueryBuilder<TOrder> | DeleteQueryBuilder<TOrder>, filterParams?: OrderFilterInput) {
         // Search by status
         if (filterParams?.status && filterParams.status !== '') {
-            const query = `"${this.metadata.tablePath}".status = :statusSearch`;
+            const query = `${this.metadata.tablePath}.status = :statusSearch`;
             qb.andWhere(query, { statusSearch: filterParams.status });
         }
 
         // Search by orderId
         if (filterParams?.orderId && filterParams.orderId !== '') {
-            const query = `"${this.metadata.tablePath}".id = :orderId`;
+            const query = `${this.metadata.tablePath}.id = :orderId`;
             qb.andWhere(query, { orderId: filterParams.orderId });
         }
 
         // Search by customerName
         if (filterParams?.customerName && filterParams.customerName !== '') {
             const customerNameSearch = `%${filterParams.customerName}%`;
-            const query = `"${this.metadata.tablePath}".customerName LIKE :customerNameSearch`;
+            const query = `${this.metadata.tablePath}.customerName LIKE :customerNameSearch`;
             qb.andWhere(query, { customerNameSearch });
         }
 
@@ -121,14 +121,14 @@ export class OrderRepository extends BaseRepository<Order> {
         if (filterParams?.customerPhone && filterParams.customerPhone !== '') {
             const customerPhone = filterParams.customerPhone.replace(/\W/g, '');
             const customerPhoneSearch = `%${customerPhone}%`;
-            const query = `"${this.metadata.tablePath}".customerPhone LIKE :customerPhoneSearch`;
+            const query = `${this.metadata.tablePath}.customerPhone LIKE :customerPhoneSearch`;
             qb.andWhere(query, { customerPhoneSearch });
         }
 
         // Search by customerEmail
         if (filterParams?.customerEmail && filterParams.customerEmail !== '') {
             const customerEmailSearch = `%${filterParams.customerEmail}%`;
-            const query = `"${this.metadata.tablePath}".customerEmail LIKE :customerEmailSearch`;
+            const query = `${this.metadata.tablePath}.customerEmail LIKE :customerEmailSearch`;
             qb.andWhere(query, { customerEmailSearch });
         }
 
@@ -137,7 +137,7 @@ export class OrderRepository extends BaseRepository<Order> {
             const dateFrom = new Date(Date.parse(filterParams.dateFrom));
             const dateTo = new Date(filterParams.dateTo ? Date.parse(filterParams.dateTo) : Date.now());
 
-            const query = `"${this.metadata.tablePath}".createDate BETWEEN :dateFrom AND :dateTo`;
+            const query = `${this.metadata.tablePath}.createDate BETWEEN :dateFrom AND :dateTo`;
             qb.andWhere(query, {
                 dateFrom: DateUtils.mixedDateToDatetimeString(dateFrom),
                 dateTo: DateUtils.mixedDateToDatetimeString(dateTo),

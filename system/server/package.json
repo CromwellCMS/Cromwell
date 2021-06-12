@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/server",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "main": "build/server.js",
   "files": [
     "build",
@@ -22,9 +22,9 @@
     "migration:generate": "npx typeorm migration:generate -o -f migrationConfig"
   },
   "dependencies": {
-    "@cromwell/core": "1.1.5",
-    "@cromwell/core-backend": "1.0.5",
-    "@cromwell/core-frontend": "1.0.4",
+    "@cromwell/core": "1.1.6",
+    "@cromwell/core-backend": "1.0.6",
+    "@cromwell/core-frontend": "1.0.5",
     "@nestjs/common": "7.6.15",
     "@nestjs/core": "7.6.15",
     "@nestjs/graphql": "7.10.6",

@@ -43,7 +43,7 @@ export class User extends BasePageEntity implements TUser {
      * Stringified array of Refresh tokens. We create one token per client during log-in
      * And then update them in this array on refresh Access token
      */
-    @Column({ type: "varchar", nullable: true, length: 500 })
+    @Column({ type: "varchar", nullable: true, length: 5000 })
     refreshTokens?: string | null;
 
     // A secret code sent to user e-mail to reset his password
