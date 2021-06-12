@@ -85,8 +85,8 @@ const args = yargs(process.argv.slice(2))
                     process.exit(0);
                 }
             } else {
-                await startServiceByName({
-                    scriptName: startSystem ? 'development' : 'production',
+                await startSystem({
+                    scriptName: development ? 'development' : 'production',
                     port,
                     init,
                 });

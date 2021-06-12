@@ -10,7 +10,7 @@ let isNew = false;
 
 if (!fs.existsSync(cmsconfigPath)) {
     isNew = true;
-    const rootPassword = cryptoRandomString({ length: 14, type: 'ascii-printable' });
+    const rootPassword = cryptoRandomString({ length: 14, type: 'base64' });
     cmsConfig = {
         orm: {
             type: 'mariadb',

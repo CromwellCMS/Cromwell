@@ -15,6 +15,6 @@ RUN apt update && apt install nginx curl -y \
     && npx crw s --sv r --try \
     && npx crw s --sv a --try
 
-VOLUME ["/public", "/.cromwell/nginx", "/.cromwell/server", "/.cromwell/logs"]
+VOLUME ["/app/public", "/app/.cromwell/nginx", "/app/.cromwell/server", "/app/.cromwell/logs"]
 EXPOSE 80
 CMD  cd app && node entrypoint.js
