@@ -3,7 +3,6 @@ import tcpPortUsed from 'tcp-port-used';
 
 import config from '../config';
 import { TAdminPanelCommands } from '../constants';
-import { ManagerState } from '../managerState';
 import { closeService, isPortUsed, startService } from './baseManager';
 
 const logger = getLogger();
@@ -30,7 +29,6 @@ export const startAdminPanel = async (command?: TAdminPanelCommands, options?: {
     }
 
     if (env && adminPanelStartupPath) {
-        ManagerState.adminPanelStatus = 'busy';
         const proc = await startService({
             path: adminPanelStartupPath,
             name: cacheKeys.adminPanel,
@@ -55,12 +53,10 @@ export const startAdminPanel = async (command?: TAdminPanelCommands, options?: {
         return new Promise(done => {
             proc?.on('message', async (message: string) => {
                 if (message === adminPanelMessages.onStartMessage) {
-                    ManagerState.adminPanelStatus = 'running';
                     logger.log(`AdminPanel has successfully started`)
                     done?.(true);
                 }
                 if (message === adminPanelMessages.onStartErrorMessage) {
-                    ManagerState.adminPanelStatus = 'inactive';
                     logger.log(`Failed to start AdminPanel`, 'Error')
                     done?.(false);
                 }
@@ -75,7 +71,6 @@ export const closeAdminPanel = async (): Promise<boolean> => {
     const { cacheKeys } = config;
     const success = await closeService(cacheKeys.adminPanel);
     if (success) {
-        ManagerState.adminPanelStatus = 'inactive';
         logger.log(`AdminPanelManager::closeAdminPanel: AdminPanel has been closed`)
     }
     return success;

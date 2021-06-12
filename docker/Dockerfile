@@ -11,10 +11,10 @@ RUN apt update && apt install nginx curl -y \
     && mkdir -p /run/nginx \
     && npm i @cromwell/cli -g \
     && crw create app \
-    && cd app && \
-    && crw s --sv r --try \
-    && crw s --sv a --try
+    && cd app \
+    && npx crw s --sv r --try \
+    && npx crw s --sv a --try
 
 VOLUME ["/public", "/.cromwell/nginx", "/.cromwell/server", "/.cromwell/logs"]
 EXPOSE 80
-CMD ["node", "entrypoint.js"]
+CMD  cd app && node entrypoint.js

@@ -20,7 +20,6 @@ import tcpPortUsed from 'tcp-port-used';
 
 import managerConfig from '../config';
 import { TRendererCommands } from '../constants';
-import { ManagerState } from '../managerState';
 import { closeService, isPortUsed, isServiceRunning, startService } from './baseManager';
 
 const { cacheKeys, servicesEnv } = managerConfig;
@@ -30,12 +29,6 @@ const rendererStartupPath = getRendererStartupPath();
 export const startRenderer = async (command?: TRendererCommands, options?: {
     serverPort?: string | number;
 }): Promise<boolean> => {
-    if (ManagerState.rendererStatus === 'busy' ||
-        ManagerState.rendererStatus === 'building' ||
-        ManagerState.rendererStatus === 'running') {
-        logger.error(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, failed to startRenderer`)
-        return false;
-    }
 
     const cmsConfig = await readCMSConfig();
     let cmsSettings: TCmsSettings | undefined;
@@ -72,11 +65,9 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
     }
 
     const rendererUrl = serviceLocator.getFrontendUrl();
-
     const rendererEnv = command ?? servicesEnv.renderer;
-    if (rendererEnv && rendererStartupPath) {
-        ManagerState.rendererStatus = 'busy';
 
+    if (rendererEnv && rendererStartupPath) {
         const rendererProc = await startService({
             path: rendererStartupPath,
             name: cacheKeys.renderer,
@@ -113,7 +104,6 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
 
         if (!onStartError) {
             if (!rendererUrl) return false;
-            ManagerState.rendererStatus = 'busy';
             let success = false;
             try {
                 const responce: Response = await fetch(rendererUrl);
@@ -122,18 +112,11 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                 logger.error(e);
             }
 
-            if (success) {
-                ManagerState.rendererStatus = 'running';
-            } else {
-                ManagerState.rendererStatus = 'inactive';
-            }
             if (success) logger.log(`Renderer has successfully started`);
             else logger.error(`Failed to start renderer`);
-
             return success;
 
         } else {
-            ManagerState.rendererStatus = 'inactive';
             const mess = 'RendererManager:: failed to start Renderer';
             logger.error(mess);
             return false;
@@ -150,7 +133,6 @@ export const closeRenderer = async (): Promise<boolean> => {
         if (!success) {
             logger.error('RendererManager::closeRenderer: failed to close Renderer by pid. Renderer is still active');
         } else {
-            ManagerState.rendererStatus = 'inactive';
             logger.log('RendererManager::closeRenderer: Renderer has been closed');
         }
         return success;
@@ -253,12 +235,6 @@ export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promis
 
 export const rendererStartWatchDev = async (themeName: string) => {
     if (!rendererStartupPath) return false;
-
-    if (ManagerState.rendererStatus === 'busy' ||
-        ManagerState.rendererStatus === 'building') {
-        logger.error(`RendererManager:: Renderer is ${ManagerState.rendererStatus} now, failed to buildAndStart`)
-        return false;
-    }
 
     await closeRenderer();
     const rendererTempDir = getRendererTempDir();
