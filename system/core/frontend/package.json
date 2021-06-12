@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core-frontend",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/index.js",
   "module": "es",
   "types": "es",
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@apollo/client": "3.2.1",
-    "@cromwell/core": "1.1.5",
+    "@cromwell/core": "1.1.6",
     "@loadable/component": "5.14.1",
     "clsx": "1.1.1",
     "graphql": "15.3.0",
