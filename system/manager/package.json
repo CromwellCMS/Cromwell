@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/cms",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "main": "build/index.js",
   "types": "build",
   "files": [
