@@ -1,7 +1,7 @@
-import { getManager, SelectQueryBuilder } from "typeorm";
+import { getManager, SelectQueryBuilder } from 'typeorm';
 import { TPagedParams, TPagedList, TBasePageEntity, TBasePageEntityInput } from '@cromwell/core';
 import { getStoreItem, getRandStr } from '@cromwell/core';
-import { BasePageEntity } from "../entities/BasePageEntity";
+import { BasePageEntity } from '../entities/BasePageEntity';
 
 const MAX_PAGE_SIZE = 300;
 

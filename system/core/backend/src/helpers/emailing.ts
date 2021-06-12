@@ -13,7 +13,6 @@ let sendmailTransporter;
 
 export const getEmailTemplate = async (fileName: string, props?: Record<string, any>): Promise<string | undefined> => {
     // User can create his own template and override original 
-    const logger = getLogger();
     const mailUserPath = resolve(getServerTempDir(), 'emails', fileName);
     const serverDir = getServerDir();
     const mailOriginalPath = serverDir ? resolve(serverDir, 'static/emails', fileName) : undefined;
@@ -65,8 +64,8 @@ export const sendEmail = async (addresses: string[], subject: string, htmlConten
             sendmailTransporter = require('sendmail')({
                 logger: {
                     debug: logger.log,
-                    info: logger.info,
-                    warn: logger.warn,
+                    info: logger.log,
+                    warn: logger.log,
                     error: logger.error
                 },
                 silent: false,

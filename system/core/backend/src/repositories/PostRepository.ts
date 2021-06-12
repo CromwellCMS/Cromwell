@@ -133,18 +133,15 @@ export class PostRepository extends BaseRepository<Post> {
         // Filter by published
         if (filterParams?.published !== undefined && filterParams?.published !== null) {
 
-            if (filterParams.published) {
-                const query = `"${this.metadata.tablePath}".published = :published`;
-                qb.andWhere(query, { published: filterParams.published });
+            if (filterParams.published === true) {
+                qb.andWhere(`${this.metadata.tablePath}.published IS NOT NULL`);
+                qb.andWhere(`${this.metadata.tablePath}.published != 0`);
             }
 
             if (filterParams.published === false) {
                 const brackets = new Brackets(subQb => {
-                    const query = `"${this.metadata.tablePath}".published = :published`;
-                    subQb.where(query, { published: filterParams.published });
-
-                    const query2 = `"${this.metadata.tablePath}".published IS NULL`;
-                    subQb.orWhere(query2);
+                    subQb.where(`${this.metadata.tablePath}.published = 0`);
+                    subQb.orWhere(`${this.metadata.tablePath}.published IS NULL`);
                 });
                 qb.andWhere(brackets);
             }

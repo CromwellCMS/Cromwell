@@ -110,38 +110,38 @@ export class UserRepository extends BaseRepository<User> {
 
     }
 
-    applyOrderFilter(qb: SelectQueryBuilder<TUser> | DeleteQueryBuilder<TUser>, filterParams?: UserFilterInput) {
+    applyUserFilter(qb: SelectQueryBuilder<TUser> | DeleteQueryBuilder<TUser>, filterParams?: UserFilterInput) {
         // Search by role
         if (filterParams?.role) {
-            const query = `"${this.metadata.tablePath}".role = :role`;
+            const query = `${this.metadata.tablePath}.role = :role`;
             qb.andWhere(query, { role: filterParams.role });
         }
 
         // Search by fullName
         if (filterParams?.fullName && filterParams.fullName !== '') {
             const fullNameSearch = `%${filterParams.fullName}%`;
-            const query = `"${this.metadata.tablePath}".fullName LIKE :fullNameSearch`;
+            const query = `${this.metadata.tablePath}.fullName LIKE :fullNameSearch`;
             qb.andWhere(query, { fullNameSearch });
         }
 
         // Search by email
         if (filterParams?.email && filterParams.email !== '') {
             const emailSearch = `%${filterParams.email}%`;
-            const query = `"${this.metadata.tablePath}".email LIKE :emailSearch`;
+            const query = `${this.metadata.tablePath}.email LIKE :emailSearch`;
             qb.andWhere(query, { emailSearch });
         }
 
         // Search by phone
         if (filterParams?.phone && filterParams.phone !== '') {
             const phoneSearch = `%${filterParams.phone}%`;
-            const query = `"${this.metadata.tablePath}".phone LIKE :phoneSearch`;
+            const query = `${this.metadata.tablePath}.phone LIKE :phoneSearch`;
             qb.andWhere(query, { phoneSearch });
         }
 
         // Search by address
         if (filterParams?.address && filterParams.address !== '') {
             const addressSearch = `%${filterParams.address}%`;
-            const query = `"${this.metadata.tablePath}".address LIKE :addressSearch`;
+            const query = `${this.metadata.tablePath}.address LIKE :addressSearch`;
             qb.andWhere(query, { addressSearch });
         }
     }
@@ -149,7 +149,7 @@ export class UserRepository extends BaseRepository<User> {
     async getFilteredUsers(pagedParams?: PagedParamsInput<TUser>, filterParams?: UserFilterInput): Promise<TPagedList<TUser>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
-        this.applyOrderFilter(qb, filterParams);
+        this.applyUserFilter(qb, filterParams);
         return await getPaged(qb, this.metadata.tablePath, pagedParams);
     }
 
@@ -157,7 +157,7 @@ export class UserRepository extends BaseRepository<User> {
         const qb = this.createQueryBuilder()
             .delete().from<User>(this.metadata.tablePath);
 
-        this.applyOrderFilter(qb, filterParams);
+        this.applyUserFilter(qb, filterParams);
         this.applyDeletMany(qb, input);
         try {
             await qb.execute();

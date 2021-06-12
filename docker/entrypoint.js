@@ -8,7 +8,7 @@ const spawnOpts = { shell: true, cwd: process.cwd(), stdio: 'inherit' };
 let cmsConfig;
 
 if (!fs.existsSync(cmsconfigPath)) {
-    const rootPassword = cryptoRandomString({ length: 14 });
+    const rootPassword = cryptoRandomString({ length: 14, type: 'ascii-printable' });
     cmsConfig = {
         orm: {
             type: 'mariadb',
@@ -46,12 +46,10 @@ const main = async () => {
         if (mariadbProc.stderr && mariadbProc.stderr.on) {
             mariadbProc.stderr.on('data', (data) => {
                 const msg = data.toString ? data.toString() : data;
-
                 if (msg.includes('ready for connections') && !completed) {
                     completed = true;
                     done();
                 }
-
                 console.log(msg);
             });
         }
