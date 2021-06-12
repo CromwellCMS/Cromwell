@@ -93,7 +93,15 @@ export const isPortUsed = (port: number): Promise<boolean> => {
     return tcpPortUsed.check(port, '127.0.0.1');
 }
 
-export const startSystem = async (scriptName: TScriptName, port?: string) => {
+type TStartOptions = {
+    scriptName: TScriptName;
+    port?: string;
+    serviceName?: TServiceNames;
+    init?: boolean;
+}
+
+export const startSystem = async (options: TStartOptions) => {
+    const { scriptName } = options;
 
     const isDevelopment = scriptName === 'development';
 
@@ -132,15 +140,26 @@ export const startSystem = async (scriptName: TScriptName, port?: string) => {
         });
     }
 
-    await startServiceByName('server', isDevelopment, port);
-    await startServiceByName('adminPanel', isDevelopment, port);
-    await startServiceByName('renderer', isDevelopment, port);
+    await startServiceByName({
+        ...options,
+        serviceName: 'server',
+    });
+    await startServiceByName({
+        ...options,
+        serviceName: 'adminPanel',
+    });
+    await startServiceByName({
+        ...options,
+        serviceName: 'renderer',
+    });
 }
 
 
-export const startServiceByName = async (serviceName: TServiceNames, isDevelopment?: boolean, port?: string) => {
+export const startServiceByName = async (options: TStartOptions) => {
+    const { scriptName, port, serviceName, init } = options;
+    const isDevelopment = scriptName === 'development';
 
-    if (!serviceNames.includes(serviceName)) {
+    if (!serviceName || !serviceNames.includes(serviceName)) {
         logger.warn('Invalid service name. Available names are: ' + serviceNames);
     }
 
@@ -167,7 +186,7 @@ export const startServiceByName = async (serviceName: TServiceNames, isDevelopme
     }
 
     if (serviceName === 'server' || serviceName === 's') {
-        await startServer(isDevelopment ? 'dev' : 'prod', port);
+        await startServer(isDevelopment ? 'dev' : 'prod', port, init);
     }
 
     if (serviceName === 'nginx' || serviceName === 'n') {

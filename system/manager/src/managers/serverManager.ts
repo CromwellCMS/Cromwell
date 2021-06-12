@@ -9,7 +9,7 @@ const { cacheKeys, servicesEnv } = config;
 const logger = getLogger();
 const serverStartupPath = getServerStartupPath();
 
-export const startServer = async (command?: TServerCommands, argsPort?: string | number): Promise<boolean> => {
+export const startServer = async (command?: TServerCommands, argsPort?: string | number, init?: boolean): Promise<boolean> => {
     let serverProc;
 
     const cmsConfig = await readCMSConfig();
@@ -40,7 +40,7 @@ export const startServer = async (command?: TServerCommands, argsPort?: string |
         serverProc = await startService({
             path: serverStartupPath,
             name: cacheKeys.serverMain,
-            args: [env, `--port=${port}`],
+            args: [env, `--port=${port}`, init ? '--init' : ''],
             sync: command === 'build' ? true : false,
             watchName: command !== 'build' ? 'server' : undefined,
             onVersionChange: async () => {

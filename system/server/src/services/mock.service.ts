@@ -24,15 +24,8 @@ import cryptoRandomString from 'crypto-random-string';
 import nameGenerator from 'project-name-generator';
 import { getCustomRepository } from 'typeorm';
 
-import { AuthService } from './auth.service';
-
 @Injectable()
 export class MockService {
-
-    constructor(
-        private readonly authService: AuthService,
-    ) { }
-
     private productRepo = getCustomRepository(ProductRepository);
     private productCategoryRepo = getCustomRepository(ProductCategoryRepository);
     private attributeRepo = getCustomRepository(AttributeRepository);
@@ -158,14 +151,6 @@ export class MockService {
         const description = `<div id="quill-editor" class="ql-container ql-snow ql-disabled" style="max-height: 400px;"><div class="ql-editor" data-gramm="false" contenteditable="false" data-placeholder="Let's write an awesome story!" spellcheck="true"><p><strong>Lorem ipsum dolor sit amet</strong>,<em> consectetur adipiscing elit,</em> sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. </p><blockquote>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat.</blockquote><p><br></p><ul><li><span style="color: rgb(46, 46, 46);">Tempor orci eu lobortis elementum nibh tellus molestie nunc.</span></li><li><span style="color: rgb(46, 46, 46);">Mi proin sed libero enim.</span></li><li><span style="color: rgb(46, 46, 46);">Elit pellentesque habitant morbi tristique senectus et netus.</span></li></ul><p><br></p><p><u>Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</u></p></div></div>`;
         const decrDelta = `{"ops":[{"attributes":{"bold":true},"insert":"Lorem ipsum dolor sit amet"},{"insert":","},{"attributes":{"italic":true},"insert":" consectetur adipiscing elit,"},{"insert":" sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. \\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat."},{"attributes":{"blockquote":true},"insert":"\\n"},{"insert":"\\n"},{"attributes":{"color":"#2e2e2e"},"insert":"Tempor orci eu lobortis elementum nibh tellus molestie nunc."},{"attributes":{"list":"bullet"},"insert":"\\n"},{"attributes":{"color":"#2e2e2e"},"insert":"Mi proin sed libero enim."},{"attributes":{"list":"bullet"},"insert":"\\n"},{"attributes":{"color":"#2e2e2e"},"insert":"Elit pellentesque habitant morbi tristique senectus et netus."},{"attributes":{"list":"bullet"},"insert":"\\n"},{"insert":"\\n"},{"attributes":{"underline":true},"insert":"Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},{"insert":"\\n"}]}`;
 
-        // Clear
-        const prodsOld = await this.productRepo.find();
-        const deletePromises: Promise<boolean>[] = []
-        for (const oldProd of prodsOld) {
-            deletePromises.push(this.productRepo.deleteProduct(oldProd.id));
-        }
-        await Promise.all(deletePromises);
-
         const cats = await this.productCategoryRepo.find();
 
         const times = 250;
@@ -246,12 +231,6 @@ export class MockService {
 
     public async mockCategories(): Promise<boolean> {
 
-        // Clear
-        const categories = await this.productCategoryRepo.find();
-        for (const cat of categories) {
-            await this.productCategoryRepo.delete(cat.id)
-        }
-
         const categoriesMock: TProductCategoryInput[] = []
         for (let i = 0; i < 6; i++) {
             const name = this.getRandomName();
@@ -305,13 +284,6 @@ export class MockService {
     }
 
     public async mockAttributes() {
-
-        // Clear
-        const attributsOld = await this.attributeRepo.find();
-        for (const attr of attributsOld) {
-            await this.attributeRepo.deleteAttribute(attr.id);
-        }
-
         for (const attr of this.attributesMock) {
             await this.attributeRepo.createAttribute(attr);
         }
@@ -332,11 +304,6 @@ export class MockService {
 
 
     public async mockReviews() {
-        // Clear
-        const reviewsOld = await this.productReviewRepo.find();
-        for (const item of reviewsOld) {
-            await this.productReviewRepo.deleteProductReview(item.id);
-        }
 
         const products = await this.productRepo.find();
         const promises: Promise<TProductReview>[] = [];
@@ -358,11 +325,6 @@ export class MockService {
     }
 
     public async mockUsers() {
-        // Clear
-        const usersOld = await this.userRepo.find();
-        for (const item of usersOld) {
-            await this.userRepo.deleteUser(item.id);
-        }
 
         const users: TCreateUser[] = [
             {
@@ -404,11 +366,6 @@ export class MockService {
     }
 
     public async mockPosts() {
-        // Clear
-        const postsOld = await this.postRepo.find();
-        for (const item of postsOld) {
-            await this.postRepo.deletePost(item.id);
-        }
 
         const users = await this.userRepo.find({
             where: {
@@ -452,11 +409,6 @@ export class MockService {
     }
 
     public async mockOrders() {
-        // Clear
-        const oldOrders = await this.orderRepo.find();
-        for (const item of oldOrders) {
-            await this.orderRepo.deleteOrder(item.id);
-        }
 
         const mockedOrders: TOrderInput[] = [
             {
@@ -556,11 +508,6 @@ export class MockService {
 
 
     public async mockTags() {
-        // Clear
-        const items = await this.tagRepo.find();
-        for (const item of items) {
-            await this.tagRepo.deleteTag(item.id);
-        }
 
         const promises: Promise<TTag | void>[] = [];
         for (let i = 0; i < 20; i++) {

@@ -6,8 +6,10 @@ const cryptoRandomString = require('crypto-random-string');
 const cmsconfigPath = resolve(process.cwd(), 'cmsconfig.json');
 const spawnOpts = { shell: true, cwd: process.cwd(), stdio: 'inherit' };
 let cmsConfig;
+let isNew = false;
 
 if (!fs.existsSync(cmsconfigPath)) {
+    isNew = true;
     const rootPassword = cryptoRandomString({ length: 14, type: 'ascii-printable' });
     cmsConfig = {
         orm: {
@@ -67,7 +69,7 @@ const main = async () => {
 
     spawnSync(`/usr/sbin/nginx -c /app/nginx.conf`, spawnOpts);
 
-    spawn(`npx --no-install crw s`, spawnOpts);
+    spawn(`npx --no-install crw s ${isNew ? '--init' : ''}`, spawnOpts);
 }
 
 main();

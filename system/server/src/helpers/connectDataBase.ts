@@ -11,9 +11,11 @@ import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import { ConnectionOptions, createConnection, getConnection, getCustomRepository } from 'typeorm';
+import yargs from 'yargs-parser';
 
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
+import { MockService } from '../services/mock.service';
 import { collectPlugins } from './collectPlugins';
 import { GenericCms, GenericPlugin, GenericTheme } from './genericEntities';
 
@@ -22,6 +24,7 @@ const logger = getLogger();
 
 export const connectDatabase = async () => {
 
+    const args = yargs(process.argv.slice(2));
     const cmsConfig = await readCMSConfig();
     const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
 
@@ -134,6 +137,14 @@ export const connectDatabase = async () => {
                 logger.error('Server connectDatabase: failed to activate theme ' + themeName, error);
             }
         }
+    }
+
+
+    if (args.init) {
+        const mockService = new MockService();
+        setTimeout(() => {
+            mockService.mockAll();
+        }, 1000);
     }
 
 }
