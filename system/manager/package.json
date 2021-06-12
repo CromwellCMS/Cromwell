@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/cms",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "main": "build/index.js",
   "types": "build",
   "files": [
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@cromwell/admin-panel": "1.0.10",
-    "@cromwell/cli": "1.0.5",
+    "@cromwell/cli": "1.0.6",
     "@cromwell/core": "1.1.6",
     "@cromwell/core-backend": "1.0.6",
     "@cromwell/core-frontend": "1.0.5",
