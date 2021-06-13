@@ -64,13 +64,12 @@ export const checkConfigs = async () => {
         }
 
         const cached = await getSettings();
-        if (!cached || !cached.accessSecret || !cached.refreshSecret || !cached.cookieSecret || !cached.actionsSecret) {
+        if (!cached || !cached.accessSecret || !cached.refreshSecret || !cached.cookieSecret) {
             await cacache.put(serverCachePath, 'auth_settings', JSON.stringify(authSettings));
         } else {
             authSettings.accessSecret = cached.accessSecret;
             authSettings.refreshSecret = cached.refreshSecret;
             authSettings.cookieSecret = cached.cookieSecret;
-            authSettings.actionsSecret = cached.actionsSecret;
         }
     }
 

@@ -25,7 +25,6 @@ import {
     OrderRepository,
     PageStats,
     PageStatsRepository,
-    PostRepository,
     Product,
     ProductRepository,
     ProductReview,
@@ -361,7 +360,7 @@ export class CmsService {
                 .addSelect(`COUNT(${reviewTable}.id)`, reviewsCountKey).execute();
 
             stats.averageRating = reviewsStats?.[0]?.[averageKey];
-            stats.reviews = reviewsStats?.[0]?.[reviewsCountKey];
+            stats.reviews = parseInt((reviewsStats?.[0]?.[reviewsCountKey] ?? 0) + '');
         }
 
         const getOrders = async () => {
@@ -370,7 +369,7 @@ export class CmsService {
                 .addSelect(`SUM(${orderTable}.${totalPriceKey})`, totalPriceKey)
                 .addSelect(`COUNT(${orderTable}.id)`, orderCountKey).execute();
 
-            stats.orders = ordersStats?.[0]?.[orderCountKey];
+            stats.orders = parseInt((ordersStats?.[0]?.[orderCountKey] ?? 0) + '');
             stats.salesValue = ordersStats?.[0]?.[totalPriceKey];
         }
 
@@ -397,7 +396,7 @@ export class CmsService {
                     .execute();
 
                 const sales = new SalePerDayDto();
-                sales.orders = ordersStats?.[0]?.[orderCountKey] ?? 0;
+                sales.orders = parseInt((ordersStats?.[0]?.[orderCountKey] ?? 0) + '');
                 sales.salesValue = ordersStats?.[0]?.[totalPriceKey] ?? 0;
                 sales.date = dateFrom;
 
@@ -411,7 +410,7 @@ export class CmsService {
                 .addSelect(`SUM(${pageStatsTable}.${viewsSumKey})`, viewsSumKey)
                 .addSelect(`COUNT(${pageStatsTable}.id)`, viewsPagesCountKey).execute();
 
-            stats.pages = viewsStats?.[0]?.[viewsPagesCountKey];
+            stats.pages = parseInt((viewsStats?.[0]?.[viewsPagesCountKey] ?? 0) + '');
             stats.pageViews = viewsStats?.[0]?.[viewsSumKey];
         }
 
@@ -440,7 +439,7 @@ export class CmsService {
                 .where(`${userTable}.${userRoleKey} = :role`, { role: 'customer' as TUserRole })
                 .execute();
 
-            stats.customers = customersStats?.[0]?.[userCountKey];
+            stats.customers = parseInt((customersStats?.[0]?.[userCountKey] ?? 0) + '');
         }
 
         await Promise.all([

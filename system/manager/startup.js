@@ -41,7 +41,9 @@ const main = () => {
   if (scriptName === 'buildService' || scriptName === 'check') return;
 
   const { startSystem } = require('./build/index');
-  startSystem(scriptName);
+  startSystem({
+    scriptName: scriptName,
+  });
 }
 
 main();

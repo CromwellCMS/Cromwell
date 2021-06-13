@@ -12,15 +12,11 @@ Main features of Cromwell CMS:
 - Drag-and-drop theme editor.
 - Simple installation of themes and plugins from official store and their management.
 - Free full-featured online store and blog themes with multiple plugins.
-- Integrated Database. SQLite for development and MySQL/PostgreSQL for production.
+- Integrated Database. SQLite, MySQL, MariaDB, PostgreSQL are supported to use.
 - Developer-friendly experince. Use all power of Next.js, Nest.js, TypeORM, TypeGraphQL along with CMS API to build any type of web-site.  
 
+## Examples
 
-## Installation
+You can see production-ready example
 
-There are multiple ways of how to install and run the CMS
 
-### 1. Docker 
-For most use-cases the recommended way is to to run the CMS insde a Docker container. Our image goes with already installed MariaDB and Nginx, so you only need to install Docker on your OS and then run one commnad.  
-Install Docker for Windows  
-Install Docker for Linux  

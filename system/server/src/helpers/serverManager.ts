@@ -29,20 +29,20 @@ export const getServerPort = () => activeServer.port;
 
 
 /** Used only at Proxy startup. Should not be called from any other place */
-export const launchServerManager = async (proxyPort?: number) => {
+export const launchServerManager = async (proxyPort?: number, init?: boolean) => {
     activeServer.proxyPort = proxyPort;
     if (activeServer.port) {
         logger.warn('Proxy manager: called launch, but Server was already launched!')
     }
     try {
-        const info = await makeServer();
+        const info = await makeServer(init);
         updateActiveServer(info);
     } catch (error) {
         logger.error('Proxy manager could not launch API server', error);
     }
 }
 
-const makeServer = async (): Promise<ServerInfo> => {
+const makeServer = async (init?: boolean): Promise<ServerInfo> => {
     logger.info('Proxy manager: Launching new API server...');
     const info: ServerInfo = {};
     const env = loadEnv();
@@ -60,7 +60,8 @@ const makeServer = async (): Promise<ServerInfo> => {
         buildPath,
         [
             env.scriptName,
-            activeServer.proxyPort ? `proxy-port=${activeServer.proxyPort}` : ''
+            activeServer.proxyPort ? `proxy-port=${activeServer.proxyPort}` : '',
+            init ? '--init' : '',
         ],
         { stdio: 'inherit', cwd: process.cwd() }
     );

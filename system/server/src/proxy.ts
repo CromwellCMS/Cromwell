@@ -68,7 +68,7 @@ async function main(): Promise<void> {
 
     server.on("error", err => logger.log(err));
 
-    await launchServerManager(argsPort);
+    await launchServerManager(argsPort, args.init);
 
     await server.listen(port);
     logger.info(`Proxy Server is running on: http://localhost:${port}`);

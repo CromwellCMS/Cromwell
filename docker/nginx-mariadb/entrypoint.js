@@ -6,9 +6,11 @@ const cryptoRandomString = require('crypto-random-string');
 const cmsconfigPath = resolve(process.cwd(), 'cmsconfig.json');
 const spawnOpts = { shell: true, cwd: process.cwd(), stdio: 'inherit' };
 let cmsConfig;
+let isNew = false;
 
 if (!fs.existsSync(cmsconfigPath)) {
-    const rootPassword = cryptoRandomString({ length: 14, type: 'ascii-printable' });
+    isNew = true;
+    const rootPassword = cryptoRandomString({ length: 20, type: 'base64' });
     cmsConfig = {
         orm: {
             type: 'mariadb',
@@ -34,40 +36,46 @@ const main = async () => {
             { shell: true, stdio: 'pipe', cwd: process.cwd() });
 
         let completed = false;
+        let readyCounter = 0;
 
-        // Limit 8 sec
+        // Limit 10 sec
         setTimeout(() => {
             if (completed) return;
-            console.error('Error. Cromwell docker entrypoint: Exceeded timeout in waiting for DB to start')
+            console.error('Error. Cromwell docker entrypoint: Exceeded timeout while waiting for DB to start')
+            completed = true;
             done();
-        }, 8000);
+        }, 10000);
+
+        const omMessage = (data) => {
+            const msg = data.toString ? data.toString() : data;
+            console.log(msg);
+
+            if (msg.includes('ready for connections') && !completed) {
+                if (isNew) {
+                    readyCounter++;
+                    if (readyCounter > 1) {
+                        completed = true;
+                        done();
+                    }
+                } else {
+                    completed = true;
+                    done();
+                }
+            }
+        }
 
         // Await for 'ready for connections' message
         if (mariadbProc.stderr && mariadbProc.stderr.on) {
-            mariadbProc.stderr.on('data', (data) => {
-                const msg = data.toString ? data.toString() : data;
-                if (msg.includes('ready for connections') && !completed) {
-                    completed = true;
-                    done();
-                }
-                console.log(msg);
-            });
+            mariadbProc.stderr.on('data', omMessage);
         }
         if (mariadbProc.stdout && mariadbProc.stdout.on) {
-            mariadbProc.stdout.on('data', (data) => {
-                const msg = data.toString ? data.toString() : data;
-                if (msg.includes('ready for connections') && !completed) {
-                    completed = true;
-                    done();
-                }
-                console.log(msg);
-            });
+            mariadbProc.stdout.on('data', omMessage);
         }
     });
 
     spawnSync(`/usr/sbin/nginx -c /app/nginx.conf`, spawnOpts);
 
-    spawn(`npx --no-install crw s`, spawnOpts);
+    spawn(`npx crw s ${isNew ? '--init' : ''}`, spawnOpts);
 }
 
 main();

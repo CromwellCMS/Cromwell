@@ -9,7 +9,7 @@ const args = yargs(process.argv.slice(2))
     .command<{
         service?: string; development?: boolean;
         detached?: boolean; port?: string;
-        try?: boolean;
+        try?: boolean; init?: boolean;
     }>({
         command: 'start [options]',
         describe: 'starts CMS or a specified service',
@@ -37,7 +37,11 @@ const args = yargs(process.argv.slice(2))
                     type: 'string'
                 })
                 .option('try', {
-                    desc: 'Stop after success start',
+                    desc: 'Stop after successful start',
+                    type: 'boolean'
+                })
+                .option('init', {
+                    desc: 'Initialize database with test data.',
                     type: 'boolean'
                 })
         },
@@ -46,12 +50,14 @@ const args = yargs(process.argv.slice(2))
             const development = argv.development;
             const detached = argv.detached;
             const port = argv.port;
+            const init = argv.init;
 
             if (detached) {
                 let command = `npx --no-install crw s`;
                 if (serviceToStart) command += ` --sv ${serviceToStart}`;
                 if (development) command += ' --dev';
-                if (port) command += ` --port ${port}`
+                if (port) command += ` --port ${port}`;
+                if (init) command += ` --init`;
 
                 const subprocess = spawn(command, {
                     shell: true,
@@ -67,15 +73,23 @@ const args = yargs(process.argv.slice(2))
             }
 
             const { startServiceByName, startSystem, closeSystem, closeServiceByName } = require('@cromwell/cms');
-
             if (serviceToStart) {
-                await startServiceByName(serviceToStart, development, port);
+                await startServiceByName({
+                    scriptName: development ? 'development' : 'production',
+                    serviceName: serviceToStart,
+                    port,
+                    init,
+                });
                 if (argv.try) {
                     await closeServiceByName(serviceToStart);
                     process.exit(0);
                 }
             } else {
-                await startSystem(development ? 'development' : 'production', port);
+                await startSystem({
+                    scriptName: development ? 'development' : 'production',
+                    port,
+                    init,
+                });
                 if (argv.try) {
                     await closeSystem();
                     process.exit(0);
