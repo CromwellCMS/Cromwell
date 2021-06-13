@@ -146,7 +146,7 @@ npx cromwell start -d
 Open [`http://localhost:4016`](http://localhost:4016) in a web browser to see your web site.  
 
 In this example we do not launch a proxy server (Nginx) or a database service, but Cromwell CMS can work without them. As well as without any config.  
-The CMS has its Node.js proxy to manage traffic to API server, Next.js server and admin panel.  
+The CMS has its Node.js proxy to distribute traffic to API server, Next.js server and admin panel.  
 And if there's no config provided CMS will create and use a new SQLite database in ./.cromwell/server/db.sqlite3  
 
 ** Note that SQLite is not supported by us for production usage! ** You still can use it for preview or development but later you must switch to MySQL/MariaDB/PostgreSQL.  
