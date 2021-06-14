@@ -3,13 +3,14 @@ const { spawn, spawnSync } = require('child_process');
 const { resolve } = require('path');
 const npmRunPath = require('npm-run-path');
 const {
-    getRendererDir, getRendererTempDir, getRendererBuildDir, readCMSConfigSync, rendererMessages
+    getRendererDir, getRendererTempDir, getRendererBuildDir, readCMSConfigSync, rendererMessages, getLogger
 } = require('@cromwell/core-backend');
 const yargs = require('yargs-parser');
 
 const buildDir = getRendererBuildDir();
 const tempDir = getRendererTempDir();
 const rendererRootDir = getRendererDir();
+const logger = getLogger();
 
 
 /**
@@ -57,7 +58,7 @@ const main = () => {
                 const proc = spawn(`next build`, [],
                     { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
 
-                if (proc.stderr && proc.stderr.on && proc.stderr.once) {
+                if (proc.stderr && proc.stderr.on) {
                     proc.stderr.on('data', (data) => {
                         console.log(data.toString ? data.toString() : data);
                     });
@@ -74,7 +75,7 @@ const main = () => {
             })
 
         } catch (e) {
-            console.log(e);
+            logger.error(e);
         }
         if (process.send) process.send(rendererMessages.onBuildEndMessage);
     }
@@ -88,21 +89,31 @@ const main = () => {
                 { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
         } catch (e) {
             if (process.send) process.send(rendererMessages.onStartErrorMessage);
-            console.log(e);
+            logger.error(e);
         }
 
         // @TODO: Make it somehow accept Next.js server's "on ready" event. Just a timeout for now...
-        if (proc && proc.stdout) proc.stdout.once('data', (data) => {
+        if (proc && proc.stdout) proc.stdout.once('data', () => {
             setTimeout(() => {
-                console.log(data.toString ? data.toString() : data);
                 if (process.send) process.send(rendererMessages.onStartMessage);
             }, 10);
         });
 
-        if (proc && proc.stderr) proc.stderr.once('data', (data) => {
-            console.log(data.toString ? data.toString() : data);
+        if (proc && proc.stderr) proc.stderr.once('data', () => {
             if (process.send) process.send(rendererMessages.onStartErrorMessage);
         });
+
+
+        if (proc.stderr && proc.stderr.on) {
+            proc.stderr.on('data', (data) => {
+                logger.log(data.toString ? data.toString() : data);
+            });
+        }
+        if (proc.stdout && proc.stdout.on) {
+            proc.stdout.on('data', (data) => {
+                logger.log(data.toString ? data.toString() : data);
+            });
+        }
 
     }
 

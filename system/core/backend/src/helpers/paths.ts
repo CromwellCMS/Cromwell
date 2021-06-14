@@ -202,6 +202,7 @@ export const pluginAdminBundlePath = 'admin/index.js';
 export const pluginAdminCjsPath = 'admin/cjs.js';
 export const getPluginFrontendBundlePath = (distDir: string) => resolve(distDir, pluginFrontendBundlePath);
 export const getPluginFrontendCjsPath = (distDir: string) => resolve(distDir, pluginFrontendCjsPath);
+export const getPluginFrontendMetaPath = (distDir: string) => getMetaInfoPath(getPluginFrontendBundlePath(distDir));
 export const getPluginAdminBundlePath = (distDir: string) => resolve(distDir, pluginAdminBundlePath);
 export const getPluginAdminCjsPath = (distDir: string) => resolve(distDir, pluginAdminCjsPath);
 export const getPluginBackendPath = (distDir: string) => resolve(distDir, 'backend/index.js');

@@ -24,14 +24,13 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
     if (pageName === '_app') return PageComponent;
 
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
-        const { pluginsData, pluginsSettings, pageConfig, themeCustomConfig,
+        const { plugins, pageConfig, themeCustomConfig,
             childStaticProps, cmsSettings, headHtml, pagesInfo,
             palette } = props;
 
         const forcedChildStaticProps = useRef(null);
         if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
-        if (pluginsData) setStoreItem('pluginsData', pluginsData);
-        if (pluginsSettings) setStoreItem('pluginsSettings', pluginsSettings);
+        if (plugins) setStoreItem('plugins', plugins);
         if (pageConfig) setStoreItem('pageConfig', pageConfig);
         if (themeCustomConfig) setStoreItem('themeCustomConfig', themeCustomConfig);
         if (pagesInfo) setStoreItem('pagesInfo', pagesInfo);

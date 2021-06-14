@@ -1,5 +1,6 @@
 import { BasePageNames, StaticPageContext } from '@cromwell/core';
 import { getRestAPIClient, TPluginsModifications } from '@cromwell/core-frontend';
+import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 
 import { fsRequire, getPluginCjsPath } from '../helpers/checkCMSConfig';
 
@@ -8,10 +9,7 @@ import { fsRequire, getPluginCjsPath } from '../helpers/checkCMSConfig';
  * @param pageName 
  * @param context - StaticPageContext of Page
  */
-export const pluginsDataFetcher = async (pageName: BasePageNames | string, context: StaticPageContext): Promise<{
-    pluginsData: Record<string, any>;
-    pluginsSettings: Record<string, any>;
-}> => {
+export const pluginsDataFetcher = async (pageName: BasePageNames | string, context: StaticPageContext) => {
     const restAPIClient = getRestAPIClient();
 
     let pluginsModifications: Record<string, TPluginsModifications> | undefined;
@@ -21,12 +19,17 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
         console.error(e)
     }
     const pluginConfigs = pluginsModifications ? Object.entries(pluginsModifications) : undefined;
-    const pluginsData: Record<string, any> = {};
-    const pluginsSettings: Record<string, any> = {};
+
+    const plugins: Record<string, {
+        data?: any;
+        settings?: any;
+    }> = {};
 
     const fetchPluginData = async (pluginName: string, pluginConfig: TPluginsModifications): Promise<void> => {
         const pluginContext = Object.assign({}, context);
         pluginContext.pluginsConfig = pluginConfig;
+
+        if (!plugins[pluginName]) plugins[pluginName] = {};
 
         let settings;
         try {
@@ -34,40 +37,45 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
         } catch (e) {
             console.error(e)
         }
-        if (settings) pluginsSettings[pluginName] = settings;
+        if (settings) plugins[pluginName].settings = settings;
 
-        let pluginCjsPath;
+        const pluginCjsPath = await getPluginCjsPath(pluginName);
+
+        if (!pluginCjsPath?.cjsPath) return;
+
         try {
-            pluginCjsPath = await getPluginCjsPath(pluginName);
+            const importer = getModuleImporter();
+            if (pluginCjsPath.metaPath && importer?.importSciptExternals) {
+                const meta = await fsRequire(pluginCjsPath.metaPath, true)
+                if (meta) await importer.importSciptExternals(meta);
+            }
         } catch (e) {
-            console.error(e)
+            console.error('[Error] pluginsDataFetcher: Failed to require plugin Externals: ' + pluginName, e);
         }
 
-        if (pluginCjsPath) {
-            let plugin: any;
+        let plugin: any;
 
-            try {
-                plugin = await fsRequire(pluginCjsPath);
-            } catch (e) {
-                console.error('[Error] pluginsDataFetcher: Failed to require plugin: ' + pluginName, e);
-            }
+        try {
+            plugin = await fsRequire(pluginCjsPath.cjsPath);
+        } catch (e) {
+            console.error('[Error] pluginsDataFetcher: Failed to require plugin: ' + pluginName, e);
+        }
 
-            if (!plugin) {
-                console.error('[Error] pluginsDataFetcher: cjs build of the Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)
-            } else {
-                const getStaticProps = plugin.getStaticProps;
+        if (!plugin) {
+            console.error('[Error] pluginsDataFetcher: cjs build of the Plugin ' + pluginName + ' was not imported, but used by name at page ' + pageName)
+        } else {
+            const getStaticProps = plugin.getStaticProps;
 
-                let pluginStaticProps = {};
-                if (getStaticProps) {
-                    try {
-                        pluginStaticProps = await getStaticProps(pluginContext);
-                        pluginStaticProps = JSON.parse(JSON.stringify(pluginStaticProps));
-                    } catch (e) {
-                        console.error('[Error] pluginsDataFetcher: Failed to getStaticProps of ' + pluginName, e);
-                    }
+            let pluginStaticProps = {};
+            if (getStaticProps) {
+                try {
+                    pluginStaticProps = await getStaticProps(pluginContext);
+                    pluginStaticProps = JSON.parse(JSON.stringify(pluginStaticProps));
+                } catch (e) {
+                    console.error('[Error] pluginsDataFetcher: Failed to getStaticProps of ' + pluginName, e);
                 }
-                pluginsData[pluginName] = pluginStaticProps;
             }
+            plugins[pluginName].data = pluginStaticProps;
         }
     }
 
@@ -75,16 +83,17 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
     if (pluginConfigs && Array.isArray(pluginConfigs)) {
         for (const pluginConfigEntry of pluginConfigs) {
             pluginPromises.push(
-                fetchPluginData(pluginConfigEntry[0], pluginConfigEntry[1])
+                fetchPluginData(pluginConfigEntry[0], pluginConfigEntry[1]).catch(e => console.error(e))
             );
         }
     }
 
-    await Promise.all(pluginPromises);
+    try {
+        await Promise.all(pluginPromises);
+    } catch (error) {
+        console.error(error);
+    }
 
-    return {
-        pluginsData,
-        pluginsSettings,
-    };
+    return plugins;
 }
 

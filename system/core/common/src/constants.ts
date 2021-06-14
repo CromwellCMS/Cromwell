@@ -134,6 +134,7 @@ const getBaseUrl = (key: keyof TCmsConfig) => {
         }
         return `http://localhost:${port}`;
     }
+    
     if (window.location.hostname === 'localhost') {
         if (!port) {
             console.error('core:serviceLocator: !port for ' + key);

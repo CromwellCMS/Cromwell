@@ -4,7 +4,7 @@ sidebar_position: 1
 
 # Introduction
 
-Cromwell CMS is a free open source headless JavaScript CMS for creating lightning-fast web-sites on React and Next.js. It has powerful plugin/theming system while providing extensive Admin panel GUI for Wordpress-like user experience. 
+Cromwell CMS is a free open source headless TypeScript CMS for creating lightning-fast web-sites on React and Next.js. It has powerful plugin/theming system while providing extensive Admin panel GUI for Wordpress-like user experience. 
 We are focused on empowering content-creators and people with no programming knowledge to use all features of CMS in their projects.
 
 Main features of Cromwell CMS:
@@ -17,6 +17,6 @@ Main features of Cromwell CMS:
 
 ## Examples
 
-You can see production-ready example
+There are some production-ready examples
 
 

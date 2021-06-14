@@ -73,7 +73,6 @@ class CRestAPIClient {
 
     public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
 
-
         const input = options?.input;
         let data;
         let errorInfo: TErrorInfo | null = null;

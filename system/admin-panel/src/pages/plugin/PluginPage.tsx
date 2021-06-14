@@ -15,9 +15,10 @@ const PluginPage = (props) => {
             try {
                 const settings: any = await apiClient?.getPluginSettings(pluginName);
                 if (settings) {
-                    const pluginsSettings = getStoreItem('pluginsSettings') ?? {};
-                    pluginsSettings[pluginName] = settings;
-                    setStoreItem('pluginsSettings', pluginsSettings);
+                    const pluginsSettings = getStoreItem('plugins') ?? {};
+                    if (!pluginsSettings[pluginName]) pluginsSettings[pluginName] = {}
+                    pluginsSettings[pluginName].settings = settings;
+                    setStoreItem('plugins', pluginsSettings);
                 }
             } catch (e) {
                 console.error(e);
@@ -35,7 +36,7 @@ const PluginPage = (props) => {
                 pluginName={pluginName}
                 widgetProps={{
                     pluginName,
-                    globalSettings: getStoreItem('pluginsSettings')?.[pluginName] ?? {}
+                    globalSettings: getStoreItem('plugins')?.[pluginName]?.settings ?? {}
                 }}
             />
         </div>

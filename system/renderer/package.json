@@ -39,6 +39,7 @@
   "devDependencies": {
     "@babel/core": "^7.12.10",
     "@rollup/plugin-commonjs": "^13.0.2",
+    "@rollup/plugin-typescript": "^8.2.1",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^8.4.0",
     "@types/domhandler": "^2.4.1",

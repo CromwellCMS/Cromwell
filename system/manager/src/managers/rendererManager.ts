@@ -1,4 +1,4 @@
-import { serviceLocator, sleep, TCmsSettings } from '@cromwell/core';
+import { serviceLocator, sleep, TCmsSettings, TPageInfo } from '@cromwell/core';
 import {
     buildDirName,
     getLogger,
@@ -82,7 +82,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                     await closeRenderer();
                     try {
                         await tcpPortUsed.waitUntilFree(cmsConfig.frontendPort, 500, 4000);
-                    } catch (e) { console.error(e) }
+                    } catch (e) { logger.error(e) }
                     await startRenderer(command, options);
                 }
             }
@@ -112,7 +112,9 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
                 logger.error(e);
             }
 
-            if (success) logger.log(`Renderer has successfully started`);
+            await pollPages();
+
+            if (success) logger.info(`Renderer has successfully started`);
             else logger.error(`Failed to start renderer`);
             return success;
 
@@ -255,4 +257,31 @@ const isThemeBuilt = async (dir: string): Promise<boolean> => {
         && await fs.pathExists(resolve(dir, '.next/build-manifest.json'))
         && await fs.pathExists(resolve(dir, '.next/prerender-manifest.json'))
     )
+}
+
+/** Poll all routes to make Next.js server generate and cache pages */
+const pollPages = async () => {
+    let infos: TPageInfo[] | undefined;
+    try {
+        infos = await getRestAPIClient().getPagesInfo();
+    } catch (error) {
+        logger.error(error);
+    }
+    if (!infos) return;
+
+    const promises = infos.map(async (info) => {
+        for (let i = 0; i < 2; i++) {
+            let pageRoute = info.route.replace('[slug]', 'test');
+            if (pageRoute === 'index') pageRoute = '';
+
+            const pageUrl = serviceLocator.getFrontendUrl() + '/' + pageRoute;
+            try {
+                await fetch(pageUrl);
+            } catch (e) {
+                logger.error(e);
+            }
+        }
+    });
+
+    await Promise.all(promises);
 }
