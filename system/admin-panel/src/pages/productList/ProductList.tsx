@@ -69,12 +69,13 @@ const ProductList = (props: TPropsType) => {
 
     const init = async () => {
         const attributes = await client?.getAttributes();
-        const pluginsData = getStoreItem('pluginsData') ?? {};
-        pluginsData[filterPluginName] = {
-            ...(pluginsData[filterPluginName] ?? {}),
+        const plugins = getStoreItem('plugins') ?? {};
+        if (!plugins[filterPluginName]) plugins[filterPluginName] = {};
+        plugins[filterPluginName].data = {
+            ...(plugins[filterPluginName]?.data ?? {}),
             attributes: attributes,
         }
-        setStoreItem('pluginsData', pluginsData);
+        setStoreItem('plugins', plugins);
     }
 
     const onFilterChange = (params: TProductFilter) => {
@@ -105,12 +106,13 @@ const ProductList = (props: TPropsType) => {
             totalElements.current = products.pagedMeta?.totalElements;
         }
 
-        const pluginsData = getStoreItem('pluginsData') ?? {};
-        pluginsData[filterPluginName] = {
-            ...(pluginsData[filterPluginName] ?? {}),
+        const plugins = getStoreItem('plugins') ?? {};
+        if (!plugins[filterPluginName]) plugins[filterPluginName] = {};
+        plugins[filterPluginName].data = {
+            ...(plugins[filterPluginName]?.data ?? {}),
             filterMeta: products.filterMeta,
         }
-        setStoreItem('pluginsData', pluginsData);
+        setStoreItem('plugins', plugins);
 
         return products;
     }

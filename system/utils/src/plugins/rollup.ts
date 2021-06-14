@@ -309,6 +309,19 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                     adminOptions.plugins.push(virtual({
                         [optionsInput]: `import pageComp from '${pagePath.srcFullPath}';export default pageComp;`
                     }));
+
+                    if (!adminOptions.plugins.find(plugin => plugin.name === '@rollup/plugin-node-resolve' || plugin.name === 'node-resolve'))
+                        adminOptions.plugins.push(nodeResolve({
+                            extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                        }));
+
+                    if (!adminOptions.plugins.find(plugin => plugin.name === '@rollup/plugin-babel' || plugin.name === 'babel'))
+                        adminOptions.plugins.push(babel({
+                            extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                            babelHelpers: 'bundled',
+                            presets: ['@babel/preset-react']
+                        }));
+
                     adminOptions.input = optionsInput;
                     adminOptions.plugins.push(await rollupPluginCromwellFrontend({
                         buildDir, moduleInfo,

@@ -30,7 +30,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
 
         const [
             childStaticProps,
-            pluginsReq,
+            plugins,
             pageConfig,
             themeConfig,
             cmsSettings,
@@ -45,11 +45,6 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
             handleRequset(apiClient?.getThemeCustomConfig()),
             handleRequset(apiClient?.getPagesInfo()),
         ]);
-
-        const {
-            pluginsData,
-            pluginsSettings,
-        } = pluginsReq;
 
         // const timestamp2 = Date.now();
 
@@ -80,8 +75,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms')
 
         const props: TCromwellPageCoreProps = {
-            pluginsData,
-            pluginsSettings,
+            plugins,
             childStaticProps,
             pageConfig,
             cmsSettings,

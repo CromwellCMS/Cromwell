@@ -221,31 +221,37 @@ module.exports = {
             }
         },
         {
-            id: "pages/some_page",
-            route: "pages/some_page",
-            name: "Custom page",
-            title: "Some custom page",
-            modifications: [
-                {
-                    "type": "plugin",
-                    "id": "5",
-                    "plugin": {
-                        "pluginName": "@cromwell/plugin-product-showcase"
-                    }
-                },
-                {
-                    "type": "HTML",
-                    "id": "1",
-                    "parentId": "somep_1",
-                },
-                {
-                    "type": "text",
-                    "id": "3",
-                    "parentId": "somep_1",
-                    "index": "0"
-                },
-            ]
-        }
+            id: "blog/[slug]",
+            route: "blog/[slug]",
+            name: "Blog post",
+            title: "Blog post page",
+            isDynamic: true
+        },
+        {
+            id: "blog",
+            route: "blog",
+            name: "Blog",
+            title: "Blog page",
+        },
+        {
+            id: "tag/[slug]",
+            route: "tag/[slug]",
+            name: "Blog tags",
+            title: "Blog tags page",
+            isDynamic: true
+        },
+        {
+            id: "404",
+            route: "404",
+            name: "404",
+            title: "404 page",
+        },
+        {
+            id: "checkout",
+            route: "checkout",
+            name: "checkout",
+            title: "checkout page",
+        },
     ],
     themeCustomConfig: {
         "product": {

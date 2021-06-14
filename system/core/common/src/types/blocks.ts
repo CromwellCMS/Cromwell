@@ -19,8 +19,11 @@ export type TGetStaticProps<
 export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
 export type TCromwellPageCoreProps = {
-    pluginsData?: Record<string, any> | null;
-    pluginsSettings?: Record<string, any> | null;
+    plugins?: Record<string, {
+        data?: any;
+        code?: string;
+        settings?: any;
+    }>;
     childStaticProps?: Record<string, any> | null;
     pageConfig?: TPageConfig | null;
     cmsSettings?: TCmsSettings | null;

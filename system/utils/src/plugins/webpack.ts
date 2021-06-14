@@ -37,7 +37,7 @@ export class CromwellWebpackPlugin {
             ) : {};
 
         if (!this.options.buildDir) this.options.buildDir = process.cwd();
-        this.usedExternals = options.usedExternals ?? {};;
+        this.usedExternals = options.usedExternals ?? {};
         this.filteredUsedExternals = options.filteredUsedExternals ?? {};
         const usedExternals = this.usedExternals;
         const moduleBuiltins = options.moduleBuiltins;
@@ -113,7 +113,7 @@ export class CromwellWebpackPlugin {
         compiler.hooks.compile.tap('CromwellWebpackPlugin', params => {
             new ExternalModuleFactoryPlugin(
                 undefined,
-                function ({ context, request }, callback) {
+                function ({ request }, callback) {
                     if (!isExternalForm(request)) return callback();
                     if (moduleBuiltins &&
                         moduleBuiltins.includes(request)) return callback();
@@ -139,7 +139,7 @@ export class CromwellWebpackPlugin {
         });
 
         compiler.hooks.normalModuleFactory.tap('CromwellBundlerPlugin', factory => {
-            factory.hooks.parser.for('javascript/auto').tap('CromwellBundlerPlugin', (parser, options) => {
+            factory.hooks.parser.for('javascript/auto').tap('CromwellBundlerPlugin', (parser) => {
                 parser.hooks.import.tap('CromwellBundlerPlugin', this.handleStatement);
                 parser.hooks.importSpecifier.tap('CromwellBundlerPlugin', this.handleStatement);
                 parser.hooks.exportImportSpecifier.tap('CromwellBundlerPlugin', (statement, source, identifierName, exportName) => {
@@ -176,7 +176,7 @@ export class CromwellWebpackPlugin {
                     if (this.options.packageExternals.includes(extName)) {
                         filteredUsedExternals[extName] = usedExternals[extName];
                     }
-                };
+                }
             } else {
                 filteredUsedExternals = usedExternals;
             }

@@ -9,6 +9,7 @@ let pathResolve;
 let hasRequired = false;
 
 const checkBackendModules = () => {
+    setStoreItem('fsRequire', fsRequire);
     if (hasRequired) return;
     hasRequired = true;
     normalizePath = eval(`require('normalize-path');`);
@@ -27,15 +28,27 @@ export const checkCMSConfig = (): void => {
     setStoreItem('cmsSettings', config);
 }
 
-export const getPluginCjsPath = async (pluginName: string) => {
+export const getPluginCjsPath = async (pluginName: string): Promise<{
+    cjsPath: string | undefined;
+    metaPath: string | undefined;
+} | undefined> => {
     if (!isServer()) return undefined;
     checkBackendModules();
     const pluginDir = await coreBackend.getNodeModuleDir(pluginName);
     if (!pluginDir) return;
-    let cjsPath = coreBackend.getPluginFrontendCjsPath(pathResolve(pluginDir, coreBackend.buildDirName));
+    const buildDir = pathResolve(pluginDir, coreBackend.buildDirName);
+
+    let cjsPath = coreBackend.getPluginFrontendCjsPath(buildDir);
     if (cjsPath) cjsPath = normalizePath(cjsPath);
-    if (cjsPath && !(await fs.pathExists(cjsPath))) cjsPath = undefined;
-    return cjsPath;
+    if (cjsPath && !(await fs.pathExists(cjsPath))) return undefined;
+
+    let metaPath = coreBackend.getPluginFrontendMetaPath(buildDir);
+    if (!(await fs.pathExists(metaPath))) metaPath = undefined;
+
+    return {
+        cjsPath,
+        metaPath,
+    }
 }
 
 export const fsRequireSync = (path: string, json?: boolean) => {
@@ -60,3 +73,4 @@ export const fsRequire = async (path: string, json?: boolean) => {
     }
 }
 
+setStoreItem('fsRequire', fsRequire);

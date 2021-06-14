@@ -1,7 +1,8 @@
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
-import typescript from 'rollup-plugin-ts-compiler';
+// import typescript from 'rollup-plugin-ts-compiler';
+import typescript2 from '@rollup/plugin-typescript';
 
 import packageJson from './package.json';
 
@@ -24,13 +25,17 @@ const external = id => {
 }
 
 const buildDir = 'build';
-const sharedState = {};
-const compilerOptions = {
-    module: 'ESNext',
-    declaration: true,
-    declarationMap: true,
-    declarationDir: resolve(__dirname, buildDir)
-}
+
+// const typescriptOptions = {
+//     compilerOptions: {
+//         module: 'ESNext',
+//         declaration: true,
+//         declarationMap: true,
+//         declarationDir: resolve(__dirname, buildDir)
+//     },
+//     sharedState: {},
+//     monorepo: true,
+// }
 
 export default [
     {
@@ -45,11 +50,8 @@ export default [
         ],
         external,
         plugins: [
-            typescript({
-                compilerOptions,
-                sharedState,
-                monorepo: true,
-            }),
+            // typescript(typescriptOptions),
+            typescript2(),
             nodeResolve({
                 preferBuiltins: false
             }),
@@ -68,11 +70,8 @@ export default [
         ],
         external,
         plugins: [
-            typescript({
-                compilerOptions,
-                sharedState,
-                monorepo: true,
-            }),
+            // typescript(typescriptOptions),
+            typescript2(),
             nodeResolve({
                 preferBuiltins: false
             }),

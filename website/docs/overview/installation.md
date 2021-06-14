@@ -4,7 +4,7 @@ sidebar_position: 2
 
 # Installation
 
-There are multiple ways of how to install and run the CMS
+There are multiple ways of how to install and run Cromwell CMS
 
 ## 1. Docker single container
 For most use-cases the recommended way is to to run the CMS insde a Docker container. Our image goes with already installed MariaDB and Nginx, so you only need to install Docker on your OS.
@@ -12,9 +12,9 @@ For most use-cases the recommended way is to to run the CMS insde a Docker conta
 
 After installation run a single command in your terminal / command prompt to create and run a container:
 ```sh
-docker run -d -p 80:80 --name my-website cromwell:latest
+docker run -d -p 80:80 --name my-website cromwell-mariadb:latest
 ```
-Open http://127.0.0.1/ if you installed locally or your web-server IP adress in a web browser. For the fist time it needs to run some configuration scripts, so it will be up and running under one minute    
+Open http://127.0.0.1/ if you installed locally or your web-server IP adress in a web browser. For the fist time system needs to run some configuration scripts, so it will be up and running under one minute.    
 Open http://127.0.0.1/admin to see admin panel.  
 
 Stop the container: 
@@ -30,9 +30,9 @@ docker start my-website
 
 ## 2. Docker compose
 
-For more advanced usage and more granular control you can configure your docker compose file. For this scenario we have another image which contains CMS and Nginx, without database.  
+For advanced usage and more granular control you can configure a docker compose file. For this scenario we have another image which contains CMS and Nginx, without database.  
 
-Create a new directory and place in it docker-compose.yml file with the following content: 
+Create a new directory and place [docker-compose.yml](https://docs.docker.com/compose/) file with the following content: 
 ```yml title="docker-compose.yml"
 version: "3"
 services:
@@ -87,9 +87,9 @@ services:
 ```
 
 Apart of Cromwell CMS the file configures MariaDB and phpMyAdmin to run in separate containers.  
-Another key feature is that it has volumes, so all data will be stored in your current directory, outside of Docker containers. Now you can safely remove containers or images and keep all the data.  
+Another key feature is that it has volumes, so all data will be stored in your current directory, outside of Docker containers. You will be able to remove containers and keep DB data.  
 
-Before start, place your password in environment variables: MYSQL_ROOT_PASSWORD, MYSQL_PASSWORD, DB_PASSWORD.  
+Replace password in environment variables: MYSQL_ROOT_PASSWORD, MYSQL_PASSWORD, DB_PASSWORD.  
 MYSQL_PASSWORD and DB_PASSWORD must have the same value  
 
 Start all services:
@@ -144,8 +144,9 @@ npx cromwell start -d
 ```
 
 Open [`http://localhost:4016`](http://localhost:4016) in a web browser to see your web site.  
+Open [`http://localhost:4016/admin`](http://localhost:4016/admin) to see admin panel.  
 
-In this example we do not launch a proxy server (Nginx) or a database service, but Cromwell CMS can work without them. As well as without any config.  
+In this example we do not launch a proxy server (Nginx) or a database service, but Cromwell CMS can work without them as well as without any config.  
 The CMS has its Node.js proxy to distribute traffic to API server, Next.js server and admin panel.  
 And if there's no config provided CMS will create and use a new SQLite database in ./.cromwell/server/db.sqlite3  
 

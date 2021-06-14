@@ -33,6 +33,10 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
     const canShowInfo = false;
 
+    let normalizePath;
+    let nodeRequire;
+    let resolve;
+
     if (!Cromwell.importModule) Cromwell.importModule = (moduleName, namedExports = ['default']): Promise<boolean> | boolean => {
         Cromwell.hasBeenExecuted = true;
         if (canShowInfo) console.log('Cromwell:importer: importModule ' + moduleName + ' named: ' + namedExports);
@@ -67,10 +71,9 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
             if (Cromwell.importStatuses[moduleName]) return true;
             if (!Cromwell.modules) Cromwell.modules = {};
 
-            const normalizePath = eval(`require('normalize-path');`);
-            const nodeRequire = (name) => eval(`require('${normalizePath(name)}');`);
-            // const resolve = Function('require', "return require('path').resolve", require);
-            const resolve = nodeRequire('path').resolve;
+            if (!normalizePath) normalizePath = eval(`require('normalize-path');`);
+            if (!nodeRequire) nodeRequire = (name) => eval(`require('${normalizePath(name)}');`);
+            if (!resolve) resolve = nodeRequire('path').resolve;
 
             try {
                 // Try to require from bundled modules
@@ -97,6 +100,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
                     if (!reqModule) throw new Error('!reqModule');
 
+                    Cromwell.modules[moduleName] = reqModule;
                     mock(moduleName, reqModule);
 
                 } catch (e) {

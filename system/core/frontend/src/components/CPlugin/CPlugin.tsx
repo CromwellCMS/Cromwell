@@ -21,6 +21,7 @@ export class CPlugin extends React.Component<CPluginProps> {
     render() {
         const props = this.props;
         const { pluginName, component, ...rest } = props;
+
         return (
             <CromwellBlock {...rest} type='plugin'
                 plugin={{ pluginName: pluginName }}
@@ -30,9 +31,12 @@ export class CPlugin extends React.Component<CPluginProps> {
 
                     if (!name) return <></>;
 
+                    const pluginConf = getStoreItem('plugins')?.[name]
+                    const pluginData = pluginConf?.data ?? {};
+                    const settings = pluginConf?.settings ?? {};
+
                     let PluginComponent = component;
                     if (name && !component) {
-
                         const restAPIClient = getRestAPIClient();
                         const loader = (getStoreItem('environment')?.isAdminPanel && props.adminPanel !== false) ?
                             restAPIClient?.getPluginAdminBundle : restAPIClient?.getPluginFrontendBundle;
@@ -45,12 +49,6 @@ export class CPlugin extends React.Component<CPluginProps> {
                         );
                     }
 
-                    const pluginsData = getStoreItem('pluginsData');
-                    const pluginsSettings = getStoreItem('pluginsSettings');
-                    const pluginData = pluginsData?.[name] ?? {};
-                    const settings = pluginsSettings?.[name] ?? {};
-
-                    // console.log('CPlugin name', name, 'PluginComponent', PluginComponent);
                     if (PluginComponent && isValidElementType(PluginComponent)) return (
                         <ErrorBoundary>
                             <PluginComponent

@@ -155,7 +155,9 @@ const devGenerate = async (themeName: string) => {
          import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
          import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, 
             fsRequireSync } from 'build/renderer';
+         ${pageInfo.metaInfoPath ? `
          import metaInfo from '${pageInfo.metaInfoPath}';
+         ` : ''}
  
          checkCMSConfig();
          
@@ -181,8 +183,7 @@ const devGenerate = async (themeName: string) => {
          if (isServer()) {
              importer.importSciptExternals(metaInfo);
          }
-         ` : ''}
-         `;
+         ` : ''} `;
 
         let pageContent = `
          ${globalCssImports}
@@ -196,7 +197,10 @@ const devGenerate = async (themeName: string) => {
              }
              ` : ''}
  
+             ${pageInfo.metaInfoPath ? `
              await importer.importSciptExternals(metaInfo);
+             ` : ''}
+    
 
              ${pageRelativePath ? `
              const pagePromise = import('${pageRelativePath}');
@@ -225,7 +229,7 @@ const devGenerate = async (themeName: string) => {
                 `
             return (() => null);
             `}
-         });;
+         });
  
  
          ${!disableSSR && pageRelativePath ? `

@@ -29,7 +29,7 @@ function analyzeImport(node, importBindings: Map<string, string>, code: MagicStr
         ));
     }
     if (createVars) {
-        code.overwrite(node.start, node.end, `const ${strippedName} = ${name}`);
+        code.overwrite(node.start, node.end, `var ${strippedName} = ${name}`);
     }
     else {
         code.remove(node.start, node.end);

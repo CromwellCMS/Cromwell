@@ -4,9 +4,13 @@ import { ConnectionOptions } from 'typeorm';
 
 
 export type TCromwellStore = {
-    pluginsData?: Record<string, any>;
-    pluginsComponents?: Record<string, any>;
-    pluginsSettings?: Record<string, any>;
+    plugins?: Record<string, {
+        data?: any;
+        component?: any;
+        code?: string;
+        settings?: any;
+    }>;
+
     cmsSettings?: TCmsSettings;
     pageConfig?: TPageConfig;
     themeCustomConfig?: Record<string, any>;
@@ -30,7 +34,7 @@ export type TCromwellStore = {
     webSocketClient?: any;
     cstore?: any;
     nodeModules?: TCromwellNodeModules;
-    fsRequire?: (path: string) => any;
+    fsRequire?: (path: string) => Promise<any>;
     notifier?: TCromwellNotify;
     palette?: TPalette;
     userInfo?: TUser;
