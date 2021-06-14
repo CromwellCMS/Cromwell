@@ -87,9 +87,10 @@ export const checkCmsVersion = async () => {
     // Check CMS version
     const settings = await getCmsSettings();
     const cmsPckg = await getModulePackage(cmsPackageName);
+    const cmsEntity = await getCmsEntity();
+
     if (cmsPckg?.version && cmsPckg.version !== settings?.version) {
         try {
-            const cmsEntity = await getCmsEntity();
             const remoteinfo = await getCentralServerClient().getVersionByPackage(cmsPckg.version);
             if (remoteinfo) {
                 cmsEntity.version = remoteinfo.version;
@@ -97,6 +98,11 @@ export const checkCmsVersion = async () => {
             }
         } catch (error) {
             logger.error(error);
+        }
+
+        if (!cmsEntity.version) {
+            cmsEntity.version = cmsPckg.version;
+            await cmsEntity.save();
         }
     }
 }
