@@ -4,17 +4,17 @@ sidebar_position: 2
 
 # Installation
 
-There are multiple ways of how to install and run Cromwell CMS
+There are multiple ways to install and run Cromwell CMS
 
 ## 1. Docker single container
-For most use-cases the recommended way is to to run the CMS insde a Docker container. Our image goes with already installed MariaDB and Nginx, so you only need to install Docker on your OS.
+For most use-cases the recommended way is to to run the CMS inside a Docker container. Our image goes with already installed MariaDB and Nginx, so you only need to install Docker.
 [You can install Docker on Windows, Linux or other supported platform](https://docs.docker.com/engine/install/)
 
 After installation run a single command in your terminal / command prompt to create and run a container:
 ```sh
 docker run -d -p 80:80 --name my-website cromwell-mariadb:latest
 ```
-Open http://127.0.0.1/ if you installed locally or your web-server IP adress in a web browser. For the fist time system needs to run some configuration scripts, so it will be up and running under one minute.    
+Open http://127.0.0.1/ if you installed locally or your web-server IP address in a web browser. For the fist time system needs to run some configuration scripts, so it will be up and running under one minute.    
 Open http://127.0.0.1/admin to see admin panel.  
 
 Stop the container: 
@@ -30,7 +30,7 @@ docker start my-website
 
 ## 2. Docker compose
 
-For advanced usage and more granular control you can configure a docker compose file. For this scenario we have another image which contains CMS and Nginx, without database.  
+For more granular control you can configure a docker compose file. For this scenario we have another image which contains CMS and Nginx, without database.  
 
 Create a new directory and place [docker-compose.yml](https://docs.docker.com/compose/) file with the following content: 
 ```yml title="docker-compose.yml"
@@ -75,7 +75,7 @@ services:
       - ./.cromwell/server:/app/.cromwell/server
       - ./.cromwell/logs:/app/.cromwell/logs
     ports:
-      - 8080:80
+      - 80:80
     restart: unless-stopped
     environment:
       DB_TYPE: mariadb
@@ -94,6 +94,7 @@ MYSQL_PASSWORD and DB_PASSWORD must have the same value
 
 Start all services:
 ```sh
+cd /path/to/your/dir
 docker-compose up -d
 ```
 
@@ -101,22 +102,29 @@ Open http://127.0.0.1/ in a web browser to see your web site.
 Open http://127.0.0.1/admin to see admin panel.  
 Open http://127.0.0.1:8081 to see phpMyAdmin. 
 
+
+Stop all services and remove containers:
+```sh
+docker-compose down
+```
+
+#### Working directories
 As you can see in your current directory appeared new files:
-- Database will be stored in "db_data"  
-- Images and other files updloaded via file manager in "public"  
-- CMS logs in ".cromwell/logs"  
-- CMS e-mailing templates in ".cromwell/server/emails"  
-- Nginx settings in "nginx"  
+- `db_data` - To store MariaDB Database.   
+- `public` - For public content such as images and other files uploaded via file manager.   
+- `.cromwell/logs` - CMS logs.  
+- `.cromwell/server/emails` - CMS e-mailing templates.
+- `nginx` - Nginx settings.  
 
-For example, if you want to change HTML template that sends to your customers when they place a new order in your store you can modify file at .cromwell/server/emails/order.html  
+For example, if you want to change HTML template that sends to your customers when they place a new order in your store you can modify file at `.cromwell/server/emails/order.html`  
 
-If you want to edit Nginx settings such as add SLL (https), you need to edit nginx/nginx.conf and restart container with CMS.
+If you want to edit Nginx settings such as add SLL (https), you need to edit `nginx/nginx.conf` and restart container with CMS.
 
 
 ## 3. NPM
 
-Since CMS is a set of packages, you can simply install them via npm.  
-First download and install latest Node.js v14 from https://nodejs.org/en/  
+Since the CMS is a set of packages, you can install them via npm.  
+First download and install latest Node.js ** v14 ** from https://nodejs.org/en/  
 
 Create a new directory and open terminal / command prompt
 ```sh
@@ -148,8 +156,24 @@ Open [`http://localhost:4016/admin`](http://localhost:4016/admin) to see admin p
 
 In this example we do not launch a proxy server (Nginx) or a database service, but Cromwell CMS can work without them as well as without any config.  
 The CMS has its Node.js proxy to distribute traffic to API server, Next.js server and admin panel.  
-And if there's no config provided CMS will create and use a new SQLite database in ./.cromwell/server/db.sqlite3  
+And if there's no config provided CMS will create and use a new SQLite database in `./.cromwell/server/db.sqlite3`   
 
-** Note that SQLite is not supported by us for production usage! ** You still can use it for preview or development but later you must switch to MySQL/MariaDB/PostgreSQL.  
+** Note that SQLite is not supported by us for production usage! ** You still can use it for preview or development but later you must switch to MySQL/MariaDB/PostgreSQL. Read in the [next post](/docs/overview/configuration) how to connect a database.    
 If you try to upgrade CMS to a new version with SQLite in future, system can possibly crash.
 
+
+## 4. Cromwell CLI
+
+To simplify previous installation case Cromwell CMS provides CLI that can create a new project. For this example you also should have installed [Node.js ** v14 **](https://nodejs.org/en/) first.  
+
+
+Navigate to a directory where you want to create a new project subdirectory and run:
+```sh
+npx @cromwell/cli create my-website-name
+```
+ 
+Run the CMS:
+```sh
+cd my-website-name
+npx cromwell start -d
+```
