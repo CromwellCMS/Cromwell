@@ -37,7 +37,7 @@ const args = yargs(process.argv.slice(2))
                     type: 'string'
                 })
                 .option('try', {
-                    desc: 'Stop after successful start',
+                    desc: 'Stop after full start',
                     type: 'boolean'
                 })
                 .option('init', {

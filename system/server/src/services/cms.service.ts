@@ -456,9 +456,10 @@ export class CmsService {
 
     async checkCmsUpdate(): Promise<TCCSVersion | undefined> {
         const settings = await getCmsSettings();
+        const cmsPckg = await getModulePackage(cmsPackageName);
         const isBeta = !!settings?.beta;
         try {
-            return await getCentralServerClient().checkCmsUpdate(settings?.version ?? '0', isBeta);
+            return await getCentralServerClient().checkCmsUpdate(settings?.version ?? cmsPckg?.version ?? '0', isBeta);
         } catch (error) { }
     }
 

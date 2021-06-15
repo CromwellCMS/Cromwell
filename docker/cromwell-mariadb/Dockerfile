@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM mariadb:latest
 
-COPY ./nginx /app
+COPY ./cromwell /app
 COPY ./nginx.conf /app/nginx.conf
 
 RUN apt update && apt install nginx curl -y \

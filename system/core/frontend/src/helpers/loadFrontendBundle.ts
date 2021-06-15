@@ -48,8 +48,8 @@ export const loadFrontendBundle = <TLoadable extends (...args: any) => any = (fu
 
                 if (bundle.cjsPath) {
                     try {
-                        const fsRequire = getStoreItem('fsRequire');
-                        comp = await fsRequire!(bundle.cjsPath);
+                        const fsRequire = getStoreItem('fsRequire') as any;
+                        comp = await fsRequire(bundle.cjsPath);
                     } catch (e) {
                         logFor('errors-only', 'loadFrontendBundle: Failed to fsRequire bundle at: ' + bundle.cjsPath + e, console.error);
                         evalCode();
