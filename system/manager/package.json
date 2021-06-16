@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/cms",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "main": "build/index.js",
   "types": "build",
   "files": [
@@ -16,14 +16,14 @@
     "watch": "npx rollup -cw"
   },
   "dependencies": {
-    "@cromwell/admin-panel": "1.0.11",
-    "@cromwell/cli": "1.0.8",
-    "@cromwell/core": "1.1.6",
-    "@cromwell/core-backend": "1.0.7",
-    "@cromwell/core-frontend": "1.0.5",
+    "@cromwell/admin-panel": "1.0.12",
+    "@cromwell/cli": "1.0.9",
+    "@cromwell/core": "1.1.7",
+    "@cromwell/core-backend": "1.0.8",
+    "@cromwell/core-frontend": "1.0.6",
     "@cromwell/renderer": "1.0.9",
     "@cromwell/server": "1.0.11",
-    "@cromwell/utils": "1.0.9",
+    "@cromwell/utils": "1.0.10",
     "async": "3.2.0",
     "cacache": "15.0.6",
     "chalk": "4.1.1",
