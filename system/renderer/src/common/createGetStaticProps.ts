@@ -32,8 +32,8 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         } = {};
 
         try {
-            const data = await getRestAPIClient().get(`theme/renderer?pageRoute=${pageRoute}`);
-            rendererData = JSON.parse(JSON.stringify(data ?? {}));
+            const data: any = await getRestAPIClient().get(`theme/renderer?pageRoute=${pageRoute}`);
+            rendererData = data ?? {};
         } catch (e) {
             console.error(e);
         }
@@ -73,17 +73,19 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         // console.log('getStaticProps for page: ' + pageName);
         // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
+        const props: TCromwellPageCoreProps = {
+            plugins,
+            childStaticProps,
+            pageConfig,
+            cmsSettings,
+            themeCustomConfig,
+            pagesInfo,
+            headHtml,
+            palette,
+        }
+
         return {
-            props: {
-                plugins,
-                childStaticProps,
-                pageConfig,
-                cmsSettings,
-                themeCustomConfig,
-                pagesInfo,
-                headHtml,
-                palette,
-            },
+            props: JSON.parse(JSON.stringify(props)),
             revalidate: 1
         }
     }

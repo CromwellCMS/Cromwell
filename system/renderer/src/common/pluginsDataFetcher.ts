@@ -80,7 +80,6 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
         if (getStaticProps) {
             try {
                 pluginStaticProps = await getStaticProps(pluginContext);
-                pluginStaticProps = JSON.parse(JSON.stringify(pluginStaticProps));
             } catch (e) {
                 console.error('[Error] pluginsDataFetcher: Failed to getStaticProps of ' + pluginName, e);
             }
@@ -94,6 +93,6 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
         console.error(error);
     }
 
-    return  JSON.parse(JSON.stringify(plugins));
+    return  plugins;
 }
 
