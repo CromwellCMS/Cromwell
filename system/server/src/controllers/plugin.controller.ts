@@ -52,7 +52,7 @@ export class PluginController {
         if (!pluginName || pluginName === '')
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        return this.savePluginConfig(pluginName, input);
+        return this.pluginService.savePluginConfig(pluginName, input);
     }
 
 
