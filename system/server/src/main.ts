@@ -51,7 +51,6 @@ async function bootstrap(): Promise<void> {
 
     const apolloServer = new ApolloServer({
         debug: envMode.envMode === 'dev',
-        //@ts-ignore
         playground: envMode.envMode === 'dev',
         schema,
         context: (context): TGraphQLContext => {
@@ -106,14 +105,13 @@ async function bootstrap(): Promise<void> {
     await app.listen(port, '::');
     logger.info(`API Server is running on: ${await app.getUrl()}`);
     childRegister(port);
-
 }
 
 (async () => {
     try {
         await bootstrap();
     } catch (e) {
-        logger.error('Server: error on launch:', e);
+        logger.error('Server: error on launch:', e.stack);
         if (process.send) process.send(JSON.stringify({
             message: serverMessages.onStartErrorMessage,
         }));
