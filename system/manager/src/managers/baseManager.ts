@@ -6,6 +6,7 @@ import {
     getCoreFrontendDir,
     getLogger,
     getModulePackage,
+    readCMSConfig,
 } from '@cromwell/core-backend';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 import { ChildProcess, fork, spawn } from 'child_process';
@@ -105,10 +106,12 @@ export const startSystem = async (options: TStartOptions) => {
 
     const isDevelopment = scriptName === 'development';
 
+    const cmsconfig = await readCMSConfig();
+
     setStoreItem('environment', {
-        mode: isDevelopment ? 'dev' : 'prod',
+        mode: cmsconfig.env ?? isDevelopment ? 'dev' : 'prod',
         logLevel: isDevelopment ? 'detailed' : 'errors-only'
-    })
+    });
 
     await new Promise(resolve => loadCache(resolve));
 
@@ -163,8 +166,10 @@ export const startServiceByName = async (options: TStartOptions) => {
         logger.warn('Invalid service name. Available names are: ' + serviceNames);
     }
 
+    const cmsconfig = await readCMSConfig();
+
     setStoreItem('environment', {
-        mode: isDevelopment ? 'dev' : 'prod',
+        mode: cmsconfig.env ?? isDevelopment ? 'dev' : 'prod',
         logLevel: isDevelopment ? 'detailed' : 'errors-only'
     });
 

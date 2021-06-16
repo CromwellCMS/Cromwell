@@ -63,11 +63,25 @@ const PostList = (props: TPropsType) => {
     }, [])
 
     const getUsers = async () => {
-        const data = await client?.getUsers({
-            pageSize: 9999
+        const administrators = await client.getFilteredUsers({
+            pagedParams: {
+                pageSize: 9999
+            },
+            filterParams: {
+                role: 'administrator'
+            }
         });
-        if (data?.elements) setUsers(data.elements);
+        const authors = await client.getFilteredUsers({
+            pagedParams: {
+                pageSize: 9999
+            },
+            filterParams: {
+                role: 'author'
+            }
+        });
+        setUsers([...(administrators?.elements ?? []), ...(authors?.elements ?? [])]);
     }
+
     const getPostTags = async () => {
         const data = (await client?.getTags({ pageSize: 99999 }))?.elements;
         if (data && Array.isArray(data)) {

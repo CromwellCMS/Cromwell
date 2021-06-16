@@ -315,7 +315,7 @@ class CRestAPIClient {
         return this.get(`theme/page/reset?pageRoute=${pageRoute}`, options);
     }
 
-    public getPluginsModifications = async (pageRoute: string, options?: TRequestOptions): Promise<Record<string, TPluginsModifications> | undefined> => {
+    public getPluginsAtPage = async (pageRoute: string, options?: TRequestOptions): Promise<Record<string, TPluginsModifications> | undefined> => {
         return this.get(`theme/plugins?pageRoute=${pageRoute}`, options);
     }
 

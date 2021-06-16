@@ -279,12 +279,10 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async setActiveTheme(@Query('themeName') themeName: string): Promise<boolean> {
         logger.log('CmsController::setActiveTheme');
+        if (!themeName || themeName === '')
+            throw new HttpException(`Invalid theme name: ${themeName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        if (themeName && themeName !== "") {
-            return this.themeService.setActive(themeName);
-        } else {
-            throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);
-        }
+        return this.themeService.setActive(themeName);
     }
 
 
@@ -301,14 +299,11 @@ export class CmsController {
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async activateTheme(@Query('themeName') themeName: string): Promise<boolean> {
-
         logger.log('CmsController::activateTheme');
+        if (!themeName || themeName === '')
+            throw new HttpException(`Invalid theme name: ${themeName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        if (themeName && themeName !== "") {
-            return this.themeService.activateTheme(themeName);
-        } else {
-            throw new HttpException('Invalid themeName', HttpStatus.NOT_ACCEPTABLE);
-        }
+        return this.themeService.activateTheme(themeName);
     }
 
 
@@ -326,11 +321,10 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async activatePlugin(@Query('pluginName') pluginName: string): Promise<boolean> {
         logger.log('PluginController::activatePlugin');
+        if (!pluginName || pluginName === '')
+            throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        if (pluginName && pluginName !== "") {
-            return pluginServiceInst.activatePlugin(pluginName);
-        }
-        throw new HttpException('Invalid pluginName', HttpStatus.NOT_ACCEPTABLE);
+        return pluginServiceInst.activatePlugin(pluginName);
     }
 
 

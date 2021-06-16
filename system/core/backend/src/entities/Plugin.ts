@@ -13,6 +13,10 @@ export class PluginEntity extends BasePageEntity implements TPluginEntity {
 
     @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
+    version?: string;
+
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
     title?: string;
 
     @Field()

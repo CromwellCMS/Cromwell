@@ -40,7 +40,7 @@ const ProductListItem = (props: TPropsType) => {
         <Grid container className={styles.listItem}>
             {props.data && (
                 <>
-                    <Grid item xs={6} className={styles.itemMain}>
+                    <Grid item xs={8} className={styles.itemMain}>
                         {!props.embedded && (
                             <div className={commonStyles.center}>
                                 <Checkbox
@@ -62,8 +62,8 @@ const ProductListItem = (props: TPropsType) => {
                             </div>
                         </div>
                     </Grid>
-                    <Grid item xs={2}></Grid>
-                    <Grid item xs={4} className={styles.listItemActions}>
+                    <Grid item xs={1}></Grid>
+                    <Grid item xs={3} className={styles.listItemActions}>
                         <Link to={`${productPageInfo.baseRoute}/${props.data?.id}`}>
                             <IconButton
                                 aria-label="edit"

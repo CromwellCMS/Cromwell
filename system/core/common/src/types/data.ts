@@ -111,6 +111,7 @@ export type TCmsConfig = {
     pm?: 'yarn' | 'cromwella';
     watchPoll?: number;
     useWatch?: boolean;
+    env?: 'dev' | 'prod';
 };
 
 // Info form cmsconfig.json and settings from DB

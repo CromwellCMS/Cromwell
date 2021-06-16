@@ -51,17 +51,6 @@ export const getPluginCjsPath = async (pluginName: string): Promise<{
     }
 }
 
-export const fsRequireSync = (path: string, json?: boolean) => {
-    if (!isServer()) return undefined;
-    checkBackendModules();
-
-    if (fs.existsSync(path)) {
-        const str = fs.readFileSync(path).toString();
-        if (json) return JSON.parse(str);
-        return requireFromString(str);
-    }
-}
-
 export const fsRequire = async (path: string, json?: boolean) => {
     if (!isServer()) return undefined;
     checkBackendModules();

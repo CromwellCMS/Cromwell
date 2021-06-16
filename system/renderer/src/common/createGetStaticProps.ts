@@ -1,4 +1,4 @@
-import { BasePageNames, StaticPageContext, TCromwellPageCoreProps, TPageStats } from '@cromwell/core';
+import { BasePageNames, StaticPageContext, TCmsConfig, TPageInfo, TCromwellPageCoreProps, TPageConfig, TPageStats, TThemeConfig } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 
 import { getThemeStaticProps } from './getThemeStaticProps';
@@ -14,36 +14,35 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
             `pages/${context.params.slug}` : pageName;
 
         const pageRoute = context?.params?.slug ? pageName.replace('[slug]', context.params.slug + '') : pageName;
-
-        const handleRequset = async <T>(req?: Promise<T>): Promise<T | null> => {
-            try {
-                const data = await req;
-                return JSON.parse(JSON.stringify(data ?? null));
-            } catch (e) {
-                console.error(e);
-            }
-            return null;
-        }
-
         const apiClient = getRestAPIClient();
+
         // const timestamp = Date.now();
 
-        const [
-            childStaticProps,
-            plugins,
-            pageConfig,
-            themeConfig,
-            cmsSettings,
-            themeCustomConfig,
-            pagesInfo,
-        ] = await Promise.all([
+        let rendererData: {
+            pageConfig?: TPageConfig
+            pluginsSettings?: {
+                pluginName: string;
+                version?: string;
+                settings: any;
+            }[];
+            themeConfig?: TThemeConfig;
+            cmsSettings?: TCmsConfig;
+            themeCustomConfig?: any;
+            pagesInfo?: TPageInfo[];
+        } = {};
+
+        try {
+            const data = await getRestAPIClient().get(`theme/renderer?pageRoute=${pageRoute}`);
+            rendererData = JSON.parse(JSON.stringify(data ?? {}));
+        } catch (e) {
+            console.error(e);
+        }
+
+        const { pageConfig, themeConfig, cmsSettings, themeCustomConfig, pagesInfo, pluginsSettings } = rendererData;
+
+        const [childStaticProps, plugins] = await Promise.all([
             getThemeStaticProps(pageName, pageGetStaticProps, context),
-            pluginsDataFetcher(pageConfigName, context),
-            handleRequset(apiClient?.getPageConfig(pageConfigName)),
-            handleRequset(apiClient?.getThemeConfig()),
-            handleRequset(apiClient?.getCmsSettings()),
-            handleRequset(apiClient?.getThemeCustomConfig()),
-            handleRequset(apiClient?.getPagesInfo()),
+            pluginsDataFetcher(pageConfigName, context, pluginsSettings),
         ]);
 
         // const timestamp2 = Date.now();
@@ -66,26 +65,25 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
             }
         }
 
-        handleRequset(apiClient?.post(`cms/view-page`, pageStats));
+        apiClient?.post(`cms/view-page`, pageStats, { disableLog: true }).catch(() => null);
 
         const headHtml = themeConfig?.headHtml ?? null;
         const palette = themeConfig?.palette ?? null;
 
         // console.log('getStaticProps for page: ' + pageName);
-        // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms')
+        // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
-        const props: TCromwellPageCoreProps = {
-            plugins,
-            childStaticProps,
-            pageConfig,
-            cmsSettings,
-            themeCustomConfig,
-            pagesInfo,
-            headHtml,
-            palette,
-        }
         return {
-            props: props,
+            props: {
+                plugins,
+                childStaticProps,
+                pageConfig,
+                cmsSettings,
+                themeCustomConfig,
+                pagesInfo,
+                headHtml,
+                palette,
+            },
             revalidate: 1
         }
     }

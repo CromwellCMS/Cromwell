@@ -331,10 +331,10 @@ class CGraphQLClient {
         return (input: TDeleteManyInput, filterParams?: TFilter) => {
             return this.mutate({
                 mutation: gql`
-                mutation core${path}($input: DeleteManyInput!, $filterParams: ${filterName}) {
-                    ${path}(input: $input, filterParams: $filterParams)
-                }
-            `,
+                    mutation core${path}($input: DeleteManyInput!, $filterParams: ${filterName}) {
+                        ${path}(input: $input, filterParams: $filterParams)
+                    }
+                `,
                 variables: {
                     input,
                     filterParams
@@ -344,15 +344,15 @@ class CGraphQLClient {
     }
 
     public createGetFiltered<TEntity, TFilter>(entityName: TDBEntity, nativeFragment: DocumentNode,
-        nativeFragmentName: string, filterName: string) {
-        const path = GraphQLPaths[entityName].getFiltered;
-
-        return ({ pagedParams, filterParams, customFragment, customFragmentName }: {
+        nativeFragmentName: string, filterName: string): ((options: {
             pagedParams?: TPagedParams<TEntity>;
             filterParams?: TFilter;
             customFragment?: DocumentNode;
             customFragmentName?: string;
-        }) => {
+        }) => Promise<TPagedList<TEntity>>) {
+        const path = GraphQLPaths[entityName].getFiltered;
+
+        return ({ pagedParams, filterParams, customFragment, customFragmentName }) => {
             const fragment = customFragment ?? nativeFragment;
             const fragmentName = customFragmentName ?? nativeFragmentName;
 
@@ -467,6 +467,7 @@ class CGraphQLClient {
             name
             price
             oldPrice
+            sku
             mainImage
             images
             description

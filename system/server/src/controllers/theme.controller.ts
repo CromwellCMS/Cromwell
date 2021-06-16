@@ -39,13 +39,10 @@ export class ThemeController {
     async getPageConfig(@Query('pageRoute') pageRoute: string): Promise<TPageConfig | null> {
         logger.log('ThemeController::getPageConfig');
 
-        let out: TPageConfig | null = null;
-        if (pageRoute && typeof pageRoute === 'string' && pageRoute !== '') {
-            out = await this.themeService.getPageConfig(pageRoute)
-        } else {
-            throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
-        }
-        return out;
+        if (!pageRoute || pageRoute === '')
+            throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
+
+        return this.themeService.getPageConfig(pageRoute)
     }
 
 
@@ -81,10 +78,10 @@ export class ThemeController {
     async deletePage(@Query('pageRoute') pageRoute: string): Promise<boolean | null> {
         logger.log('ThemeController::deletePage');
 
-        if (pageRoute && typeof pageRoute === 'string' && pageRoute !== '') {
-            return await this.themeService.deletePage(pageRoute);
-        }
-        throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
+        if (!pageRoute || pageRoute === '')
+            throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
+
+        return await this.themeService.deletePage(pageRoute);
     }
 
     @Get('page/reset')
@@ -99,10 +96,10 @@ export class ThemeController {
     async resetPage(@Query('pageRoute') pageRoute: string): Promise<boolean | null> {
         logger.log('ThemeController::deletePage');
 
-        if (pageRoute && typeof pageRoute === 'string' && pageRoute !== '') {
-            return await this.themeService.resetPage(pageRoute);
-        }
-        throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
+        if (!pageRoute || pageRoute === '')
+            throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
+
+        return await this.themeService.resetPage(pageRoute);
     }
 
 
@@ -114,14 +111,13 @@ export class ThemeController {
     @ApiResponse({
         status: 200,
     })
-    async getPluginsAtPage(@Query('pageRoute') pageRoute: string): Promise<Record<string, any>> {
+    async getPluginsAtPage(@Query('pageRoute') pageRoute: string) {
         logger.log('ThemeController::getPluginsAtPage');
 
-        if (pageRoute && typeof pageRoute === 'string' && pageRoute !== '') {
-            return this.themeService.getPluginsAtPage(pageRoute)
-        } else {
-            throw new HttpException("pageRoute is not valid", HttpStatus.NOT_ACCEPTABLE);
-        }
+        if (!pageRoute || pageRoute === '')
+            throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
+
+        return this.themeService.getPluginsAtPage(pageRoute)
     }
 
 
@@ -240,11 +236,11 @@ export class ThemeController {
         type: FrontendBundleDto
     })
     async getPageBundle(@Query('pageRoute') pageRoute: string): Promise<TFrontendBundle | null> {
-
         logger.log('ThemeController::getPageBundle');
         let out: TFrontendBundle | null = null;
 
-        if (!pageRoute || pageRoute === "") throw new HttpException('Invalid pageRoute or bundle not found', HttpStatus.NOT_ACCEPTABLE);
+        if (!pageRoute || pageRoute === '')
+            throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 
         const cmsSettings = await getCmsSettings();
         if (!cmsSettings?.themeName) throw new HttpException('!cmsSettings?.themeName', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -255,8 +251,8 @@ export class ThemeController {
         const pagePathBunle = normalizePath(pagePath) + '.js';
         if (await fs.pathExists(pagePathBunle)) {
             try {
-                out = {};
-                out.source = (await fs.readFile(pagePathBunle)).toString();
+                const source = (await fs.readFile(pagePathBunle)).toString();
+                if (source) out = { source }
             } catch (e) {
                 logger.error('Failed to read page file at: ' + pagePathBunle, 'Error');
             }
@@ -269,11 +265,29 @@ export class ThemeController {
                     logger.error('Failed to read meta of page at: ' + pageMetaInfoPath, 'Error');
                 }
             }
-            return out;
         }
 
-        throw new HttpException("Page bundle doesn't exist", HttpStatus.NOT_ACCEPTABLE);
+        if (!out)
+            throw new HttpException("Page bundle doesn't exist", HttpStatus.NOT_FOUND);
 
+        return out;
+    }
+
+
+    @Get('renderer')
+    @ApiOperation({
+        description: `Gather all data for Renderer service required to render a page`,
+        parameters: [{ name: 'pageRoute', in: 'query', required: true }]
+    })
+    @ApiResponse({
+        status: 200,
+    })
+    async getRendererData(@Query('pageRoute') pageRoute: string) {
+        logger.log('ThemeController::deletePage');
+        if (!pageRoute || pageRoute === '')
+            throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
+
+        return await this.themeService.getRendererData(pageRoute);
     }
 
 

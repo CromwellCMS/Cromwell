@@ -263,7 +263,7 @@ export const sideBarLinks: SidebarLinkType[] = [
                 title: 'Categories',
                 route: categoryListPageInfo.route,
                 icon: React.createElement(CategoryIcon, {
-                    viewBox: "0 0 300 300"
+                    viewBox: "-50 -50 400 400"
                 }),
             },
             {

@@ -26,6 +26,10 @@ export class Product extends BasePageEntity implements TProduct {
     oldPrice?: number;
 
     @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    sku?: string;
+
+    @Field(type => String, { nullable: true })
     @Column({ type: "varchar", nullable: true, length: 300 })
     mainImage?: string;
 
