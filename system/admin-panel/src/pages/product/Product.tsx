@@ -69,6 +69,7 @@ const ProductPage = () => {
                         name
                         price
                         oldPrice
+                        sku
                         mainImage
                         images
                         description
@@ -85,6 +86,7 @@ const ProductPage = () => {
                                     name
                                     price
                                     oldPrice
+                                    sku
                                     mainImage
                                     images
                                     description
@@ -146,6 +148,7 @@ const ProductPage = () => {
                     name: val.productVariant.name,
                     price: typeof val.productVariant.price === 'string' ? parseFloat(val.productVariant.price) : val.productVariant.price,
                     oldPrice: typeof val.productVariant.oldPrice === 'string' ? parseFloat(val.productVariant.oldPrice) : val.productVariant.oldPrice,
+                    sku: val.productVariant.sku,
                     mainImage: val.productVariant.mainImage,
                     images: val.productVariant.images,
                     description: val.productVariant.description,
@@ -162,6 +165,7 @@ const ProductPage = () => {
                 categoryIds: Object.keys(selectedItems).filter(id => selectedItems[id]),
                 price: typeof product.price === 'string' ? parseFloat(product.price) : product.price,
                 oldPrice: typeof product.oldPrice === 'string' ? parseFloat(product.oldPrice) : product.oldPrice,
+                sku: product.sku,
                 mainImage: product.mainImage,
                 images: product.images,
                 description: product.description,
@@ -269,7 +273,7 @@ const ProductPage = () => {
                         className={styles.saveBtn}
                         onClick={handleSave}>
                         Save
-                        </Button>
+                    </Button>
 
                 </div>
             </div>

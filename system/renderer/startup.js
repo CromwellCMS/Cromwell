@@ -2,6 +2,7 @@ const fs = require('fs-extra');
 const { spawn, spawnSync } = require('child_process');
 const { resolve } = require('path');
 const npmRunPath = require('npm-run-path');
+const { setStoreItem } = require('@cromwell/core');
 const {
     getRendererDir, getRendererTempDir, getRendererBuildDir, readCMSConfigSync, rendererMessages, getLogger
 } = require('@cromwell/core-backend');
@@ -25,6 +26,10 @@ const scriptName = process.argv[2];
 
 const main = () => {
     const config = readCMSConfigSync();
+
+    setStoreItem('environment', {
+        mode: config.env ?? scriptName === 'dev' ? 'dev' : 'prod',
+    });
 
     const isServiceBuilt = () => {
         return (fs.existsSync(buildDir)

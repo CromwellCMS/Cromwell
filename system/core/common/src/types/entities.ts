@@ -64,6 +64,8 @@ export interface TProduct extends TBasePageEntity {
     price?: number;
     // Price before sale, optional
     oldPrice?: number;
+    // SKU
+    sku?: string;
     // Href of main image
     mainImage?: string;
     // Hrefs of iamges
@@ -222,6 +224,7 @@ export type TAttributeProductVariant = {
     name?: string;
     price?: number;
     oldPrice?: number;
+    sku?: string;
     mainImage?: string;
     images?: string[];
     description?: string;
@@ -321,6 +324,7 @@ export type TPostCommentInput = TPostCommentCore & TBasePageEntityInput;
 
 type TThemeEntityCore = {
     name: string;
+    version?: string;
     isInstalled: boolean;
     hasAdminBundle?: boolean;
     title?: string;
@@ -339,6 +343,7 @@ export type TThemeEntityInput = TThemeEntityCore & TBasePageEntityInput;
 
 type TPluginEntityCore = {
     name: string;
+    version?: string;
     title?: string;
     isInstalled: boolean;
     hasAdminBundle?: boolean;

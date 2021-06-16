@@ -14,11 +14,9 @@ export const getThemeStaticProps = async (pageName: BasePageNames | string,
     if (pageGetStaticProps) {
         try {
             childStaticProps = await pageGetStaticProps(context);
-            childStaticProps = JSON.parse(JSON.stringify(childStaticProps));
         } catch (e) {
             console.error('[Error] getThemeStaticProps: failed to get StaticProps of page: ' + pageName, e);
         }
     }
     return childStaticProps;
-
 }

@@ -75,6 +75,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
             if (!nodeRequire) nodeRequire = (name) => eval(`require('${normalizePath(name)}');`);
             if (!resolve) resolve = nodeRequire('path').resolve;
 
+
             try {
                 // Try to require from bundled modules
                 try {
@@ -101,6 +102,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                     if (!reqModule) throw new Error('!reqModule');
 
                     Cromwell.modules[moduleName] = reqModule;
+                    Cromwell.importStatuses[moduleName] = 'default';
                     mock(moduleName, reqModule);
 
                 } catch (e) {
@@ -116,13 +118,11 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                 if (canShowInfo) console.log('reqModule: ' + moduleName + ' keys: ' + Object.keys(reqModule).length);
 
                 Cromwell.modules[moduleName] = reqModule;
-
-                return false;
+                Cromwell.importStatuses[moduleName] = 'default';
             }
 
             if (canShowInfo) console.log('Cromwell:importer: Successfully loaded module: ' + moduleName);
 
-            Cromwell.importStatuses[moduleName] = 'ready';
             return true;
         }
 
@@ -313,7 +313,12 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
 
         if (isServer()) {
-            return serverimport()
+            try {
+                return serverimport()
+            } catch (error) {
+                console.error(error);
+            }
+            return false;
         } else {
             return browserImport().then(success => {
                 if (canShowInfo) console.log('Cromwell:importer: Processed module: ' + moduleName, success);

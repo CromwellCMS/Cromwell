@@ -14,6 +14,9 @@ export class AttributeProductVariant implements TAttributeProductVariant {
     oldPrice?: number;
 
     @Field(() => String, { nullable: true })
+    sku?: string;
+
+    @Field(() => String, { nullable: true })
     mainImage?: string;
 
     @Field(() => [String], { nullable: true })

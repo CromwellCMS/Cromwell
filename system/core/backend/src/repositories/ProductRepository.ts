@@ -94,6 +94,7 @@ export class ProductRepository extends BaseRepository<Product> {
         product.name = input.name;
         product.price = input.price;
         product.oldPrice = input.oldPrice;
+        product.sku = input.sku;
         product.mainImage = input.mainImage;
         product.images = input.images;
         product.description = input.description;

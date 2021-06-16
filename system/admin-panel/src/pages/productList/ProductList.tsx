@@ -87,7 +87,11 @@ const ProductList = (props: TPropsType) => {
 
     const handleGetProducts = async (params: TPagedParams<TProduct>) => {
         const products = await client?.getFilteredProducts({
-            pagedParams: params,
+            pagedParams: {
+                ...params,
+                orderBy: 'createDate',
+                order: 'DESC',
+            },
             customFragment: gql`
                 fragment ProductListFragment on Product {
                     id

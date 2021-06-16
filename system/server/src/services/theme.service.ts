@@ -29,8 +29,10 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import decache from 'decache';
 import fs from 'fs-extra';
 import { resolve } from 'path';
-import { getCustomRepository, getConnection } from 'typeorm';
+import { getConnection, getCustomRepository } from 'typeorm';
 
+import { CmsConfigDto } from '../dto/cms-config.dto';
+import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { GenericTheme } from '../helpers/genericEntities';
 import { childSendMessage } from '../helpers/serverManager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
@@ -40,6 +42,13 @@ import { pluginServiceInst } from './plugin.service';
 const logger = getLogger();
 
 export let themeServiceInst: ThemeService;
+
+type TAllConfigs = {
+    themeConfig: TThemeConfig | null;
+    userConfig: TThemeConfig | null;
+    cmsSettings: TCmsSettings | undefined;
+    themeInfo: TPackageCromwellConfig | null;
+}
 
 @Injectable()
 export class ThemeService {
@@ -157,12 +166,7 @@ export class ThemeService {
      * and user's config from /modifications.
      * @param cb callback with both configs.
      */
-    public async readConfigs(): Promise<{
-        themeConfig: TThemeConfig | null;
-        userConfig: TThemeConfig | null;
-        cmsSettings: TCmsSettings | undefined;
-        themeInfo: TPackageCromwellConfig | null;
-    }> {
+    public async readConfigs(): Promise<TAllConfigs> {
         let themeConfig: TThemeConfig | null = null,
             userConfig: TThemeConfig | null = null,
             themeInfo: TPackageCromwellConfig | null = null;
@@ -265,8 +269,9 @@ export class ThemeService {
      * @param pageRoute original route of the page in theme dir
      * @param cb callback to return modifications
      */
-    public async getPageConfig(pageRoute: string): Promise<TPageConfig> {
-        const { themeConfig, userConfig } = await this.readConfigs();
+    public async getPageConfig(pageRoute: string, allConfigs?: TAllConfigs): Promise<TPageConfig> {
+        if (!allConfigs) allConfigs = await this.readConfigs();
+        const { themeConfig, userConfig } = allConfigs;
         // Read user's page config 
         const userPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userConfig, pageRoute);
 
@@ -419,10 +424,10 @@ export class ThemeService {
      * Asynchronously reads theme's and user's configs and merge all pages info with modifications 
      * @param cb cb to return pages info
      */
-    public async readAllPageConfigs(): Promise<TPageConfig[]> {
+    public async readAllPageConfigs(allConfigs?: TAllConfigs): Promise<TPageConfig[]> {
         logger.log('themeController::readAllPageConfigs');
-
-        const { themeConfig, userConfig } = await this.readConfigs();
+        if (!allConfigs) allConfigs = await this.readConfigs();
+        const { themeConfig, userConfig } = allConfigs;
 
         let pages: TPageConfig[] = [];
         if (themeConfig?.pages && Array.isArray(themeConfig.pages)) {
@@ -452,10 +457,10 @@ export class ThemeService {
         return pages;
     }
 
-    public async getPagesInfo(): Promise<TPageInfo[]> {
+    public async getPagesInfo(allConfigs?: TAllConfigs): Promise<TPageInfo[]> {
         const out: TPageInfo[] = [];
 
-        const pages = await this.readAllPageConfigs();
+        const pages = await this.readAllPageConfigs(allConfigs);
 
         pages.forEach(p => {
             const info: TPageInfo = {
@@ -518,26 +523,40 @@ export class ThemeService {
         return true;
     }
 
-    public async getPluginsAtPage(pageRoute: string): Promise<Record<string, any>> {
-        const out: Record<string, any> = {};
+    public async getPluginsAtPage(pageRoute: string, pageConfig?: TPageConfig) {
+        const out: {
+            pluginName: string;
+            version?: string;
+            settings: any;
+        }[] = [];
 
-        const pageConfig = await this.getPageConfig(pageRoute);
+        if (!pageConfig) pageConfig = await this.getPageConfig(pageRoute);
 
         if (pageConfig && pageConfig.modifications && Array.isArray(pageConfig.modifications)) {
-            for (const mod of pageConfig.modifications) {
+            const promises = pageConfig.modifications.map(async mod => {
                 const pluginName = mod?.plugin?.pluginName;
-                if (pluginName) {
-                    const pluginEntity = await pluginServiceInst.findOne(pluginName);
-                    try {
-                        const pluginConfig = Object.assign({}, mod?.plugin?.settings,
-                            JSON.parse(pluginEntity?.settings ?? '{}'));
-                        out[pluginName] = pluginConfig;
-                    } catch (e) {
-                        logger.error('Failed to parse plugin settings of ' + pluginName + e)
-                    }
+                if (!pluginName) return;
+
+                try {
+                    const plugin = await pluginServiceInst.findOne(pluginName);
+                    if (!plugin) return;
+
+                    const pluginDBConfig = await pluginServiceInst.getPluginConfig(pluginName);
+                    const settings = Object.assign({}, (pluginDBConfig ?? {}),
+                        mod?.plugin?.settings);
+
+                    out.push({
+                        pluginName,
+                        version: plugin.version,
+                        settings,
+                    })
+                } catch (e) {
+                    logger.error('Failed to parse plugin settings of ' + pluginName + e)
                 }
-            }
+            });
+            await Promise.all(promises);
         }
+
         return out;
     }
 
@@ -599,6 +618,7 @@ export class ThemeService {
         // Create DB entity
         const input: TThemeEntityInput = {
             name: themeName,
+            version: themePckg.version,
             slug: themeName,
             isInstalled: true,
             title: moduleInfo?.title,
@@ -829,5 +849,23 @@ export class ThemeService {
         if (entity?.id) await themeRepo.deleteEntity(entity.id);
 
         return true;
+    }
+
+    public async getRendererData(pageRoute: string) {
+        const allConfigs = await this.readConfigs();
+        const [pageConfig, pagesInfo] = await Promise.all([
+            this.getPageConfig(pageRoute, allConfigs),
+            this.getPagesInfo(allConfigs),
+        ]);
+        const pluginsSettings = await this.getPluginsAtPage(pageRoute, pageConfig);
+
+        return {
+            pageConfig,
+            pluginsSettings,
+            themeConfig: new ThemeConfigDto().parse(allConfigs.themeConfig),
+            cmsSettings: allConfigs.cmsSettings && new CmsConfigDto().parseConfig(allConfigs.cmsSettings),
+            themeCustomConfig: Object.assign({}, allConfigs.themeConfig?.themeCustomConfig, allConfigs.userConfig?.themeCustomConfig),
+            pagesInfo,
+        }
     }
 }

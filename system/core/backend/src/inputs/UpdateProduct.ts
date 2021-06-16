@@ -17,6 +17,9 @@ export class UpdateProduct extends BasePageInput implements TProductInput {
     @Field(() => Number, { nullable: true })
     oldPrice: number;
 
+    @Field(type => String, { nullable: true })
+    sku?: string;
+
     @Field(() => String, { nullable: true })
     mainImage: string;
 

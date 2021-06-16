@@ -153,8 +153,8 @@ const devGenerate = async (themeName: string) => {
          import Document, { Html, Main, NextScript } from 'next/document';
          import { getModuleImporter } from '@cromwell/utils/build/importer.js';
          import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
-         import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig, 
-            fsRequireSync } from 'build/renderer';
+         import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig
+             } from 'build/renderer';
          ${pageInfo.metaInfoPath ? `
          import metaInfo from '${pageInfo.metaInfoPath}';
          ` : ''}

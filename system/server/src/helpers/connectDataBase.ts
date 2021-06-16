@@ -11,6 +11,7 @@ import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import { ConnectionOptions, createConnection, getConnection, getCustomRepository } from 'typeorm';
+import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import yargs from 'yargs-parser';
 
 import { PluginService } from '../services/plugin.service';
@@ -48,11 +49,11 @@ export const connectDatabase = async () => {
     setStoreItem('dbType', ormconfig.type);
 
     // Adjust unset options for different DBs
-    const adjustedOptions: Partial<Writeable<ConnectionOptions>> = {};
+    const adjustedOptions: Partial<Writeable<ConnectionOptions & MysqlConnectionOptions>> = {};
 
     let isNewSQLiteDB = false;
     if (ormconfig.type === 'sqlite') {
-        if (ormconfig.synchronize === undefined) adjustedOptions.synchronize = true;
+        adjustedOptions.synchronize = true;
 
         if (!hasDatabasePath) {
             if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {
@@ -68,10 +69,15 @@ export const connectDatabase = async () => {
     }
 
     if (ormconfig.type === 'mysql' || ormconfig.type === 'mariadb' || ormconfig.type === 'postgres') {
-        if (ormconfig.migrationsRun === undefined) adjustedOptions.migrationsRun = true;
-        if (ormconfig.synchronize === undefined) adjustedOptions.synchronize = false;
+        adjustedOptions.migrationsRun = true;
+        adjustedOptions.synchronize = false;
     }
-    ormconfig = Object.assign(adjustedOptions as any, ormconfig) as ConnectionOptions;
+
+    if (ormconfig.type === 'mysql' || ormconfig.type === 'mariadb') {
+        adjustedOptions.timezone = '+0';
+    }
+
+    ormconfig = Object.assign(adjustedOptions, ormconfig);
 
     const pluginExports = await collectPlugins();
 

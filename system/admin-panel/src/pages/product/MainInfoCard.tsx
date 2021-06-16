@@ -120,6 +120,11 @@ const MainInfoCard = (props: {
                     inputComponent: NumberFormatCustom as any,
                 }}
             />
+            <TextField label="SKU" variant="outlined"
+                value={product.sku ?? ''}
+                className={styles.textField}
+                onChange={(e) => { handleChange('sku', e.target.value) }}
+            />
             <div className={styles.imageBlock}>
                 <GalleryPicker
                     classes={{
