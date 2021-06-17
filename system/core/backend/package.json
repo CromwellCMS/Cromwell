@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/core-backend",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "main": "dist/index.js",
   "module": "es",
   "types": "es",
