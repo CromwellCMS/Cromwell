@@ -69,7 +69,7 @@ export class Product extends BasePageEntity implements TProduct {
     private attributesJSON?: string;
 
     @Field(type => Number, { nullable: true })
-    views?: number;
+    views?: number
 
     /** 
      * ! Not real columns, workaround to make SELECT count reviews:
