@@ -18,7 +18,7 @@ import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 import { MockService } from '../services/mock.service';
 import { collectPlugins } from './collectPlugins';
-import { loadEnv } from './loadEnv';
+import { loadEnv } from './settings';
 import { GenericCms, GenericPlugin, GenericTheme } from './genericEntities';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };

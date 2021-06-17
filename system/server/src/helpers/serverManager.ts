@@ -4,7 +4,7 @@ import { ChildProcess, fork } from 'child_process';
 import fs from 'fs-extra';
 import tcpPortUsed from 'tcp-port-used';
 
-import { loadEnv } from './loadEnv';
+import { loadEnv } from './settings';
 import { restartMessage } from './constants';
 
 const logger = getLogger();

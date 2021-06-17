@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-require('dotenv').config();
 
 import { apiV1BaseRoute, currentApiVersion } from '@cromwell/core';
 import { getLogger, graphQlAuthChecker, readCMSConfigSync, serverMessages, TGraphQLContext } from '@cromwell/core-backend';
@@ -12,21 +11,19 @@ import fastify from 'fastify';
 import getPort from 'get-port';
 import { buildSchema } from 'type-graphql';
 
-import { authSettings } from './auth/constants';
 import { ExceptionFilter } from './filters/exception.filter';
 import { collectPlugins } from './helpers/collectPlugins';
 import { connectDatabase } from './helpers/connectDataBase';
 import { corsHandler } from './helpers/corsHandler';
 import { getResolvers } from './helpers/getResolvers';
-import { checkCmsVersion, checkConfigs, loadEnv } from './helpers/loadEnv';
 import { childRegister } from './helpers/serverManager';
+import { authSettings, checkCmsVersion, checkConfigs, loadEnv } from './helpers/settings';
 import { AppModule } from './modules/app.module';
 import { authServiceInst } from './services/auth.service';
 
 const logger = getLogger();
 
 async function bootstrap(): Promise<void> {
-    loadEnv();
     readCMSConfigSync();
     await checkConfigs();
 

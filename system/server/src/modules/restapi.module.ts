@@ -1,7 +1,7 @@
 import { DynamicModule, Module } from '@nestjs/common';
 
 import { getControllers, getExports, getServices } from '../helpers/getControllers';
-import { loadEnv } from '../helpers/loadEnv';
+import { loadEnv } from '../helpers/settings';
 
 @Module({})
 export class RestApiModule {

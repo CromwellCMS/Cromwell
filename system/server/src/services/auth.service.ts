@@ -18,7 +18,7 @@ import cryptoRandomString from 'crypto-random-string';
 import { FastifyReply } from 'fastify';
 import { getCustomRepository } from 'typeorm';
 
-import { authSettings, bcryptSaltRounds } from '../auth/constants';
+import { authSettings, bcryptSaltRounds } from '../helpers/settings';
 import { LoginDto } from '../dto/login.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 
