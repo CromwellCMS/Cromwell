@@ -64,11 +64,12 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Post('log-out')
     @ApiOperation({
-        description: 'Logs user out that was logged via cookies',
+        description: 'Logs user out who was logged via cookies',
     })
     async logOut(@Request() request: TRequestWithUser, @Response() response: FastifyReply) {
+        if (request.user)
+            await this.authService.removeRefreshToken(request.user);
 
-        await this.authService.removeRefreshToken(request.user);
         this.authService.clearTokenCookies(response, request);
 
         response.code(200).send(true);

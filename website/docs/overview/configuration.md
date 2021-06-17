@@ -78,7 +78,7 @@ format: **optionName** `: type` (`defaultValue`) - description.
 - **adminPanelPort** `: number` (`4064`) - Port to use for admin panel server.
 - **frontendPort** `: number` (`4128`) - Port to use for Next.js server.
 - **env** `: string` (`prod`) - CMS environment. Available values: `dev`, `prod`.  
-'dev' environment adds detailed log, SwaggerUI at http://localhost:4016/api/v1/api-docs/, "synchronize" by default for SQLite in ConnectionOptions.
+'dev' environment adds: detailed log; SwaggerUI at http://localhost:4016/api/v1/api-docs/; "synchronize" by default for SQLite in ConnectionOptions; /api/v1/mock REST API routes
 - **accessTokenSecret** `: string` - Authentication in Cromwell CMS works via access/refresh JSON Web Token (JWT) method. You can provide a secret that will be used to sign tokens, otherwise the CMS will generate a random secret.
 - **refreshTokenSecret** `: string` - Same as accessTokenSecret, but for refresh JWT.
 - **accessTokenExpirationTime** `: number` (`600`) - Time in seconds after which token will be considered as expired.

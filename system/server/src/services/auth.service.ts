@@ -355,8 +355,16 @@ export class AuthService {
 
     async processRequest(request: TRequestWithUser, response: FastifyReply): Promise<TAuthUserInfo | null> {
         try {
-            const accessToken = request?.cookies?.[authSettings.accessTokenCookieName];
+            let accessToken = request?.cookies?.[authSettings.accessTokenCookieName];
             const refreshToken = request?.cookies?.[authSettings.refreshTokenCookieName];
+
+            if (!accessToken) {
+                const authHeader = String(request?.headers?.['authorization'] ?? '');
+                if (authHeader.startsWith('Bearer ')) {
+                    accessToken = authHeader.substring(7, authHeader.length);
+                }
+            }
+
             if (!accessToken && !refreshToken) return null;
 
             // Validate access token
