@@ -1,17 +1,20 @@
 import cryptoRandomString from 'crypto-random-string';
+import { readCMSConfigSync } from '@cromwell/core-backend';
 
-export const isRandomSecret = !process.env.JWT_ACCESS_TOKEN_SECRET;
+const cmsConfig = readCMSConfigSync();
+
+export const isRandomSecret = !cmsConfig.accessTokenSecret;
 
 export const authSettings = {
-    accessSecret: process.env.JWT_ACCESS_TOKEN_SECRET ?? cryptoRandomString({ length: 8, type: 'ascii-printable' }),
-    refreshSecret: process.env.JWT_REFRESH_TOKEN_SECRET ?? cryptoRandomString({ length: 8, type: 'ascii-printable' }),
-    cookieSecret: process.env.COOKIE_SECRET ?? cryptoRandomString({ length: 8, type: 'url-safe' }),
+    accessSecret: cmsConfig.accessTokenSecret ?? cryptoRandomString({ length: 8, type: 'ascii-printable' }),
+    refreshSecret: cmsConfig.refreshTokenSecret ?? cryptoRandomString({ length: 8, type: 'ascii-printable' }),
+    cookieSecret: cmsConfig.cookieSecret ?? cryptoRandomString({ length: 8, type: 'url-safe' }),
 
     /** 10 min by default */
-    expirationAccessTime: process.env.JWT_ACCESS_TOKEN_EXPIRATION_TIME ?? '600',
-
+    expirationAccessTime: cmsConfig.accessTokenExpirationTime ?? 600,
     /** 15 days by default */
-    expirationRefreshTime: process.env.JWT_REFRESH_TOKEN_EXPIRATION_TIME ?? '1296000',
+    expirationRefreshTime: cmsConfig.refreshTokenExpirationTime ?? 1296000,
+
     accessTokenCookieName: 'crw_access_token',
     refreshTokenCookieName: 'crw_refresh_token',
     maxTokensPerUser: parseInt(process.env.JWT_MAX_TOKENS_PER_USER ?? '20'),

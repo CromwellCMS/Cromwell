@@ -221,9 +221,21 @@ export const readPackage = async (path: string) => {
 export const getModulePackage = async (moduleName?: string): Promise<TPackageJson | undefined> => {
     const logger = getLogger();
     let pPath: string | undefined = moduleName ?? process.cwd();
-    try {
-        if (!isAbsolute(pPath)) pPath = resolvePackageJsonPath(pPath);
-    } catch (error) { }
+
+    if (!isAbsolute(pPath)) {
+        try {
+            pPath = resolvePackageJsonPath(pPath);
+        } catch (error) { }
+    }
+
+    if (moduleName && (!pPath || !isAbsolute(pPath))) {
+        try {
+            // if module is a root package
+            const rootPackage = await getModulePackage();
+            if (rootPackage?.name === moduleName) return rootPackage;
+        } catch (e) { }
+    }
+
     if (pPath && !pPath.endsWith('package.json')) pPath = pPath + '/package.json';
     if (pPath) pPath = normalizePath(pPath);
     try {

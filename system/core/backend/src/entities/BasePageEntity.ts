@@ -5,6 +5,7 @@ import { TBasePageEntity } from '@cromwell/core';
 @Entity()
 @ObjectType()
 export class BasePageEntity extends BaseEntity implements TBasePageEntity {
+    
     @Field(() => ID)
     @PrimaryGeneratedColumn()
     id: string;

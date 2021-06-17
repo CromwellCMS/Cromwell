@@ -79,7 +79,7 @@ async function bootstrap(): Promise<void> {
     // Plugins, extensions, etc.
     fastifyInstance.register(require('fastify-cookie'), {
         secret: authSettings.cookieSecret,
-    })
+    });
     app.register(require('fastify-cors'), corsHandler);
 
     if (envMode.envMode !== 'dev') {

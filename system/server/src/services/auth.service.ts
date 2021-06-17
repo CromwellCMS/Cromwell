@@ -1,4 +1,5 @@
-import { sleep, TCreateUser, TUser } from '@cromwell/core';
+import { UserDto } from '../dto/user.dto';
+import { sleep, TCreateUser } from '@cromwell/core';
 import {
     getEmailTemplate,
     getLogger,
@@ -18,6 +19,7 @@ import { FastifyReply } from 'fastify';
 import { getCustomRepository } from 'typeorm';
 
 import { authSettings, bcryptSaltRounds } from '../auth/constants';
+import { LoginDto } from '../dto/login.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 
 const logger = getLogger();
@@ -38,18 +40,15 @@ export class AuthService {
         authServiceInst = this;
     }
 
-    async validateUser(email: string, pass: string): Promise<TUser | null> {
-
+    async validateUser(email: string, pass: string): Promise<User | null> {
         const userRepository = getCustomRepository(UserRepository);
 
         try {
             const user = await userRepository.getUserByEmail(email);
 
             if (user) {
-                const { password: passwordHash, ...result } = user;
-
-                const isValid = await this.comparePassword(pass, passwordHash);
-                if (isValid) return result;
+                const isValid = await this.comparePassword(pass, user.password);
+                if (isValid) return user;
             }
         } catch (e) {
             logger.error(e);
@@ -59,6 +58,42 @@ export class AuthService {
     }
 
     getUserById = (id: string) => getCustomRepository(UserRepository).getUserById(id);
+
+    async logIn(input: LoginDto): Promise<{
+        accessToken: string;
+        refreshToken: string;
+        userInfo: TAuthUserInfo;
+        userDto: UserDto;
+    } | null> {
+        const user = await this.validateUser(input.email, input.password);
+
+        if (!user) return null;
+
+        const userInfo: TAuthUserInfo = {
+            id: user.id,
+            email: user.email,
+            role: user.role ?? 'customer',
+        }
+
+        if (user.refreshToken) {
+            const isValid = await this.validateRefreshToken(user.refreshToken);
+            if (!isValid) user.refreshToken = null;
+        }
+
+        const refreshToken = user.refreshToken ?? (await this.generateRefreshToken(userInfo)).token;
+        const accessToken = (await this.generateAccessToken(userInfo)).token;
+
+        if (!user.refreshToken) {
+            await this.saveRefreshToken(userInfo, refreshToken);
+        }
+
+        return {
+            accessToken,
+            refreshToken,
+            userInfo,
+            userDto: new UserDto().parseUser(user),
+        }
+    }
 
     async signUpUser(data: TCreateUser, initiator?: TAuthUserInfo) {
         const userRepo = getCustomRepository(UserRepository);
@@ -173,6 +208,14 @@ export class AuthService {
         }
     }
 
+    getAccessTokenInfo(token: string): TTokenInfo {
+        return {
+            token,
+            maxAge: authSettings.expirationAccessTime + '',
+            cookie: `${authSettings.accessTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${authSettings.expirationAccessTime}`
+        }
+    }
+
     async generateRefreshToken(userInfo: TAuthUserInfo): Promise<TTokenInfo> {
         const payload: TTokenPayload = {
             username: userInfo.email,
@@ -193,21 +236,11 @@ export class AuthService {
         }
     }
 
-    async validateUserRefreshTokens(user: User): Promise<string[] | undefined> {
-        if (user.refreshTokens) {
-            // Validate all already created tokens and clear expired
-            const userRefreshTokens: string[] = JSON.parse(user.refreshTokens);
-
-            let validatedTokens = (await Promise.all(userRefreshTokens.map(async token => {
-                const isValid = await this.validateRefreshToken(token);
-                if (isValid) return token;
-            }))).filter(Boolean) as string[];
-
-            const maxTokensPerUser = authSettings.maxTokensPerUser;
-            if (validatedTokens.length > maxTokensPerUser) {
-                validatedTokens = validatedTokens.slice(validatedTokens.length - maxTokensPerUser, validatedTokens.length)
-            }
-            return validatedTokens;
+    getRefreshTokenInfo(token: string): TTokenInfo {
+        return {
+            token,
+            maxAge: authSettings.expirationRefreshTime + '',
+            cookie: `${authSettings.refreshTokenCookieName}=${token}; HttpOnly; Path=/; Max-Age=${authSettings.expirationRefreshTime}`
         }
     }
 
@@ -216,41 +249,29 @@ export class AuthService {
         if (!user) {
             return;
         }
-        const createdRefreshTokens: string[] = await this.validateUserRefreshTokens(user) ?? [];
-
-        createdRefreshTokens.push(newToken);
-        user.refreshTokens = JSON.stringify(createdRefreshTokens);
+        user.refreshToken = newToken;
         await getCustomRepository(UserRepository).save(user);
-
     }
 
-    async updateRefreshToken(userInfo: TAuthUserInfo, oldRefreshToken: string) {
-        const user = await getCustomRepository(UserRepository).getUserById(userInfo.id);
-        if (!user?.refreshTokens) {
-            return;
-        }
-
-        const createdRefreshTokens: string[] =
-            (await this.validateUserRefreshTokens(user) ?? []).filter(token => token !== oldRefreshToken);
-
-        const newToken = await this.generateRefreshToken(userInfo);
-        if (newToken) {
-            createdRefreshTokens.push(newToken.token)
-        }
-        user.refreshTokens = JSON.stringify(createdRefreshTokens);
-        await getCustomRepository(UserRepository).save(user);
-
-        return newToken;
-    }
-
-    async removeRefreshTokens(userInfo: TAuthUserInfo) {
+    async removeRefreshToken(userInfo: TAuthUserInfo) {
         const user = await getCustomRepository(UserRepository).getUserById(userInfo.id);
         if (!user) {
             return;
         }
-
-        user.refreshTokens = null;
+        user.refreshToken = null;
         await getCustomRepository(UserRepository).save(user);
+    }
+
+    async updateRefreshToken(userInfo: TAuthUserInfo) {
+        const user = await getCustomRepository(UserRepository).getUserById(userInfo.id);
+        if (!user) {
+            return;
+        }
+        const newToken = await this.generateRefreshToken(userInfo);
+
+        user.refreshToken = newToken.token;
+        await getCustomRepository(UserRepository).save(user);
+        return newToken;
     }
 
     async validateAccessToken(accessToken: string): Promise<TTokenPayload | undefined> {
@@ -276,15 +297,12 @@ export class AuthService {
     async dbCheckRefreshToken(refreshToken: string, userInfo: TAuthUserInfo): Promise<boolean> {
         try {
             const user = await getCustomRepository(UserRepository).getUserById(userInfo.id);
-            if (!user?.refreshTokens) {
+            if (!user?.refreshToken) {
                 return false;
             }
 
-            const refreshTokens: string[] = JSON.parse(user.refreshTokens);
-
-            if (refreshTokens.includes(refreshToken))
+            if (user.refreshToken === refreshToken)
                 return true;
-
         } catch (e) {
             logger.error(e);
         }
@@ -369,7 +387,7 @@ export class AuthService {
             const newAccessToken = await this.generateAccessToken(authUserInfo);
 
             // Update refresh token
-            const newRefreshToken = await this.updateRefreshToken(authUserInfo, refreshToken);
+            const newRefreshToken = await this.updateRefreshToken(authUserInfo);
 
             if (!newRefreshToken)
                 throw new UnauthorizedException('Failed to update refresh token');

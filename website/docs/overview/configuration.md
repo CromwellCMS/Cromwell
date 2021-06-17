@@ -67,7 +67,6 @@ Remove all DB_* environment variables and add a volume:
 -      DB_DATABASE: cromwell
 -      DB_USER: cromwell
 -      DB_PASSWORD: somepassword
-
 ```
 
 
@@ -78,6 +77,10 @@ format: **optionName** `: type` (`defaultValue`) - description.
 - **apiPort** `: number`  (`4016`)  - Port to use for API and Proxy server. On this port will also be proxied admin panel and Next.js server.
 - **adminPanelPort** `: number` (`4064`) - Port to use for admin panel server.
 - **frontendPort** `: number` (`4128`) - Port to use for Next.js server.
+- **accessTokenSecret** `: string` - Authentication in Cromwell CMS works via access/refresh JSON Web Token (JWT) method. You can provide a secret that will be used to sign tokens, otherwise the CMS will generate a random secret.
+- **refreshTokenSecret** `: string` - Same as accessTokenSecret, but for refresh JWT.
+- **accessTokenExpirationTime** `: number` (`600`) - Time in seconds after which token will be considered as expired.
+- **refreshTokenExpirationTime** `: number` (`1296000`) - Same as accessTokenExpirationTime, but for refresh JWT.
 - **defaultSettings** `: Object` - Default values used to initialize CMS on first launch.
     - **installed** `: boolean` (`false`) - If false, open installation window on admin panel visit until installation finished. Important to note that when there's "installed: false" in DB, all routes will be unprotected by authorization, which means anyone can open admin panel, configure new admin account or make any changes on other pages.
     - **themeName** `: string` (`@cromwell/theme-store`) - NPM package name of an initial theme to use.

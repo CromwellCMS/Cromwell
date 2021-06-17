@@ -4,6 +4,7 @@ import {
     TProduct, TProductCategory, TFilteredProductList, TProductFilterMeta, TProductFilter
 } from '@cromwell/core';
 import { getGraphQLClient, TCGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { getLogger } from '@cromwell/core-backend';
 
 import { } from '../types';
 
@@ -16,7 +17,6 @@ export type TProductFilterData = {
 
 const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: string, pagedParams: TPagedParams<TProduct>,
     filterParams: TProductFilter, cb?: (data: TFilteredProductList | undefined) => void): Promise<TFilteredProductList | undefined> => {
-    // console.log('getFiltered', filterParams);
     let data;
     try {
         data = await client?.query({
@@ -55,7 +55,6 @@ const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: stri
 
 export const filterCList = (filterOptions: TProductFilter, productListId: string,
     productCategoryId: string, client: TCGraphQLClient | undefined, cb: (data: TFilteredProductList | undefined) => void) => {
-    // console.log('filterCList', checkedAttrs, priceRange);
 
     const list = getBlockInstance<TCList>(productListId)?.getContentInstance();
     if (list) {
@@ -75,9 +74,8 @@ export const filterCList = (filterOptions: TProductFilter, productListId: string
 }
 
 export const getStaticProps: TGetStaticProps = async (context): Promise<TProductFilterData> => {
-    // console.log('context', context)
+    const logger = getLogger();
     const slug = (context && context.params) ? context.params.slug : null;
-
     const client = getGraphQLClient();
 
     let productCategory: TProductCategory | undefined = undefined;
@@ -85,10 +83,8 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<TProduct
         try {
             productCategory = await client?.getProductCategoryBySlug(slug);
         } catch (e) {
-            console.error('ProductFilter::getStaticProps', e.message)
+            logger.error('ProductFilter::getStaticProps', e.message)
         }
-    } else {
-        console.error('ProductFilter::getStaticProps: !pid')
     }
 
     let attributes: TAttribute[] | undefined;
@@ -96,7 +92,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<TProduct
     try {
         attributes = await client?.getAttributes();
     } catch (e) {
-        console.error('ProductFilter::getStaticProps getAttributes', e.message)
+        logger.error('ProductFilter::getStaticProps getAttributes', e.message)
     }
 
     let filterMeta: TProductFilterMeta | undefined;

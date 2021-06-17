@@ -6,7 +6,6 @@
     "build",
     "migrations",
     "static",
-    ".env.example",
     "db.sqlite3",
     "startup.js"
   ],
@@ -19,7 +18,7 @@
     "prod": "node startup.js prod",
     "watch": "npx rollup -cw",
     "test": "npx --no-install jest",
-    "migration:generate": "npx typeorm migration:generate -o -f migrationConfig"
+    "migration:generate": "npx typeorm migration:generate -o -f migrationConfig -n init"
   },
   "dependencies": {
     "@cromwell/core": "1.1.7",

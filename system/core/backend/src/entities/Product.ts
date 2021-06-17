@@ -1,15 +1,18 @@
-import { Entity, ManyToMany, JoinTable, Column, OneToMany, ConnectionOptions, ViewColumn } from "typeorm";
-import { ObjectType, Field, ID, Float } from "type-graphql";
-import { TProduct, TProductCategory, TProductReview, getStoreItem, TProductRating } from '@cromwell/core';
+import { TProduct, TProductCategory, TProductRating, TProductReview } from '@cromwell/core';
+import { Field, ObjectType } from 'type-graphql';
+import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+
+import { AttributeInstance } from './AttributeInstance';
 import { BasePageEntity } from './BasePageEntity';
 import { ProductCategory } from './ProductCategory';
 import { ProductReview } from './ProductReview';
-import { AttributeInstance } from './AttributeInstance';
 
 @Entity()
 @ObjectType()
 export class Product extends BasePageEntity implements TProduct {
+
     @Field(type => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     name?: string;
 
@@ -18,6 +21,7 @@ export class Product extends BasePageEntity implements TProduct {
     categories?: TProductCategory[];
 
     @Field(type => Number, { nullable: true })
+    @Index()
     @Column({ type: "float", nullable: true })
     price?: number;
 
@@ -26,6 +30,7 @@ export class Product extends BasePageEntity implements TProduct {
     oldPrice?: number;
 
     @Field(type => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     sku?: string;
 
@@ -59,14 +64,13 @@ export class Product extends BasePageEntity implements TProduct {
         if (data) this.attributesJSON = JSON.stringify(data);
     }
 
+    @Index()
     @Column({ type: 'text', nullable: true })
     private attributesJSON?: string;
 
-    @Field(type => Number, { nullable: true })
-    views?: number;
 
     /** 
-     * ! Not real columns (not used at least), workaround to make SELECT count reviews:
+     * ! Not real columns, workaround to make SELECT count reviews:
      * https://github.com/CromwellCMS/Cromwell/blob/9eb541b1be060f792abbf4f7133071099a8633f2/system/core/backend/src/repositories/ProductRepository.ts#L39-L45
      */
     @Column({ type: "decimal", nullable: true, select: false, insert: false, readonly: true })

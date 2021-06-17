@@ -1,6 +1,6 @@
 import { TUser, TUserRole } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 
 import { BasePageEntity } from './BasePageEntity';
 
@@ -9,6 +9,7 @@ import { BasePageEntity } from './BasePageEntity';
 export class User extends BasePageEntity implements TUser {
 
     @Field(() => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     fullName: string;
 
@@ -25,6 +26,7 @@ export class User extends BasePageEntity implements TUser {
     bio?: string;
 
     @Field(() => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     role?: TUserRole;
 
@@ -33,6 +35,7 @@ export class User extends BasePageEntity implements TUser {
     address?: string;
 
     @Field(() => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     phone?: string;
 
@@ -44,7 +47,7 @@ export class User extends BasePageEntity implements TUser {
      * And then update them in this array on refresh Access token
      */
     @Column({ type: "varchar", nullable: true, length: 5000 })
-    refreshTokens?: string | null;
+    refreshToken?: string | null;
 
     // A secret code sent to user e-mail to reset his password
     @Column({ type: "varchar", nullable: true })
