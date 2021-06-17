@@ -17,6 +17,7 @@ import { FastifyReply } from 'fastify';
 
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginDto } from '../dto/login.dto';
+import { AccessTokensDto, UpdateAccessTokenDto, UpdateAccessTokenResponseDto } from '../dto/access-tokens.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { UserDto } from '../dto/user.dto';
 import { AuthService } from '../services/auth.service';
@@ -29,9 +30,9 @@ export class AuthController {
 
     @Post('login')
     @UseGuards(ThrottlerGuard)
-    @Throttle(10, 20)
+    @Throttle(10, 30)
     @ApiOperation({
-        description: 'Authenticates user',
+        description: 'Authenticates a human user via cookies.',
     })
     @ApiBody({ type: LoginDto })
     @ApiResponse({
@@ -39,56 +40,98 @@ export class AuthController {
         type: UserDto
     })
     async login(@Request() req: TRequestWithUser, @Response() response: FastifyReply, @Body() input: LoginDto) {
-        if (req.user?.id) {
-            response.status(200);
-            response.send(true);
+
+        const authInfo = await this.authService.logIn(input);
+
+        if (!authInfo) {
+            response.status(403);
+            response.send({ message: 'Login failed', statusCode: 403 });
             return;
         }
 
-        const user = await this.authService.validateUser(input.email, input.password);
-        if (!user) {
-            response.status(403);
-            response.send({ message: 'Login failed', statusCode: 403 });
-            throw new UnauthorizedException('Login failed');
+        req.user = authInfo.userInfo;
+
+        if (authInfo.refreshToken && authInfo.accessToken) {
+            this.authService.setAccessTokenCookie(response, req,
+                this.authService.getAccessTokenInfo(authInfo.accessToken));
+
+            this.authService.setRefreshTokenCookie(response, req,
+                this.authService.getRefreshTokenInfo(authInfo.refreshToken));
         }
-
-        req.user = {
-            id: user.id,
-            email: user.email,
-            role: user.role ?? 'customer',
-        }
-
-        const [accessToken, refreshToken] = await Promise.all([
-            this.authService.generateAccessToken(req.user),
-            this.authService.generateRefreshToken(req.user),
-        ]);
-
-        await this.authService.saveRefreshToken(req.user, refreshToken.token);
-
-        if (refreshToken && accessToken) {
-            this.authService.setAccessTokenCookie(response, req, accessToken);
-            this.authService.setRefreshTokenCookie(response, req, refreshToken);
-        }
-        response.code(200).send(new UserDto().parseUser(user));
+        response.code(200).send(authInfo.userDto);
     }
 
     @UseGuards(JwtAuthGuard)
     @Post('log-out')
     @ApiOperation({
-        description: 'Logs user out',
+        description: 'Logs user out that was logged via cookies',
     })
     async logOut(@Request() request: TRequestWithUser, @Response() response: FastifyReply) {
 
-        await this.authService.removeRefreshTokens(request.user);
+        await this.authService.removeRefreshToken(request.user);
         this.authService.clearTokenCookies(response, request);
 
         response.code(200).send(true);
     }
 
 
+    @Post('get-tokens')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(10, 30)
+    @ApiOperation({
+        description: 'Get access/refresh tokens for programmatic API access',
+    })
+    @ApiBody({ type: LoginDto })
+    @ApiResponse({
+        status: 200,
+        type: AccessTokensDto
+    })
+    async getTokens(@Body() input: LoginDto): Promise<AccessTokensDto> {
+        const authInfo = await this.authService.logIn(input);
+        if (!authInfo) throw new UnauthorizedException('Login failed');
+
+        return {
+            accessToken: authInfo.accessToken,
+            refreshToken: authInfo.refreshToken,
+            user: authInfo.userDto,
+        }
+    }
+
+    @Post('update-access-token')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(10, 30)
+    @ApiOperation({
+        description: 'Update access token using refresh token',
+    })
+    @ApiBody({ type: UpdateAccessTokenDto })
+    @ApiResponse({
+        status: 200,
+        type: UpdateAccessTokenResponseDto
+    })
+    async updateAccessToken(@Body() input: UpdateAccessTokenDto): Promise<UpdateAccessTokenResponseDto> {
+
+        const refreshTokenPayload = await this.authService.validateRefreshToken(input.refreshToken);
+        if (!refreshTokenPayload)
+            throw new UnauthorizedException('Refresh token is not valid');
+
+        const authUserInfo = this.authService.payloadToUserInfo(refreshTokenPayload);
+
+        // Check if token is in DB and was not blacklisted
+        const isValid = await this.authService.dbCheckRefreshToken(input.refreshToken, authUserInfo);
+        if (!isValid)
+            throw new UnauthorizedException('Refresh token is not valid');
+
+        const newAccessToken = await this.authService.generateAccessToken(authUserInfo);
+
+        return {
+            accessToken: newAccessToken.token,
+        }
+    }
+
+
     @Post('sign-up')
     @UseGuards(ThrottlerGuard)
-    @Throttle(4, 30)
+    @Throttle(4, 40)
     @ApiOperation({
         description: 'Register new user',
     })

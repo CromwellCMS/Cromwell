@@ -112,6 +112,11 @@ export type TCmsConfig = {
     watchPoll?: number;
     useWatch?: boolean;
     env?: 'dev' | 'prod';
+    accessTokenSecret?: string;
+    refreshTokenSecret?: string;
+    accessTokenExpirationTime?: number;
+    refreshTokenExpirationTime?: number;
+    cookieSecret?: string;
 };
 
 // Info form cmsconfig.json and settings from DB

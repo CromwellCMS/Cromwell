@@ -1,6 +1,6 @@
 import { TPostComment } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, Index, JoinColumn, ManyToOne } from 'typeorm';
 
 import { BasePageEntity } from './BasePageEntity';
 import { Post } from './Post';
@@ -9,8 +9,9 @@ import { Post } from './Post';
 @ObjectType()
 export class PostComment extends BasePageEntity implements TPostComment {
 
-    @Column()
     @Field(type => String, { nullable: true })
+    @Index()
+    @Column()
     postId: string;
 
     @ManyToOne(type => Post, post => post.comments, {
@@ -28,6 +29,7 @@ export class PostComment extends BasePageEntity implements TPostComment {
     comment?: string;
 
     @Field(type => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     userEmail?: string;
 
@@ -36,6 +38,7 @@ export class PostComment extends BasePageEntity implements TPostComment {
     userName?: string;
 
     @Field(type => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     userId?: string;
 

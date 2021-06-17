@@ -18,6 +18,7 @@ import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 import { MockService } from '../services/mock.service';
 import { collectPlugins } from './collectPlugins';
+import { loadEnv } from './settings';
 import { GenericCms, GenericPlugin, GenericTheme } from './genericEntities';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
@@ -28,6 +29,7 @@ export const connectDatabase = async () => {
     const args = yargs(process.argv.slice(2));
     const cmsConfig = await readCMSConfig();
     const tempDBPath = resolve(getServerTempDir(), 'db.sqlite3');
+    const env = loadEnv();
 
     const defaultOrmConfig: ConnectionOptions = {
         type: "sqlite",
@@ -53,7 +55,9 @@ export const connectDatabase = async () => {
 
     let isNewSQLiteDB = false;
     if (ormconfig.type === 'sqlite') {
-        adjustedOptions.synchronize = true;
+        if (env.envMode === 'dev') {
+            adjustedOptions.synchronize = true;
+        }
 
         if (!hasDatabasePath) {
             if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {

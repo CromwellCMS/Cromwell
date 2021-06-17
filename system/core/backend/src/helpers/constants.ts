@@ -52,6 +52,8 @@ export const defaultCmsConfig: TCmsConfig = {
     frontendPort: 4128,
     centralServerUrl: 'http://165.22.20.48:4008',
     useWatch: true,
+    accessTokenExpirationTime: 600,
+    refreshTokenExpirationTime: 1296000,
     defaultSettings: {
         installed: false,
         themeName: "@cromwell/theme-store",

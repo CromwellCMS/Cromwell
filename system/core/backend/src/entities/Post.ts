@@ -1,6 +1,6 @@
 import { TPost, TPostComment } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
 import { BasePageEntity } from './BasePageEntity';
 import { PostComment } from './PostComment';
@@ -9,10 +9,13 @@ import { Tag } from './Tag';
 @Entity()
 @ObjectType()
 export class Post extends BasePageEntity implements TPost {
+
     @Field(type => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     title?: string | null;
 
+    @Index()
     @Column()
     authorId: string;
 
@@ -42,6 +45,7 @@ export class Post extends BasePageEntity implements TPost {
     tags?: Tag[] | null;
 
     @Field(type => Boolean, { nullable: true })
+    @Index()
     @Column({ type: "boolean", nullable: true })
     published?: boolean | null;
 

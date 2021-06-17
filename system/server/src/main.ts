@@ -1,5 +1,4 @@
 import 'reflect-metadata';
-require('dotenv').config();
 
 import { apiV1BaseRoute, currentApiVersion } from '@cromwell/core';
 import { getLogger, graphQlAuthChecker, readCMSConfigSync, serverMessages, TGraphQLContext } from '@cromwell/core-backend';
@@ -12,21 +11,19 @@ import fastify from 'fastify';
 import getPort from 'get-port';
 import { buildSchema } from 'type-graphql';
 
-import { authSettings } from './auth/constants';
 import { ExceptionFilter } from './filters/exception.filter';
 import { collectPlugins } from './helpers/collectPlugins';
 import { connectDatabase } from './helpers/connectDataBase';
 import { corsHandler } from './helpers/corsHandler';
 import { getResolvers } from './helpers/getResolvers';
-import { checkCmsVersion, checkConfigs, loadEnv } from './helpers/loadEnv';
 import { childRegister } from './helpers/serverManager';
+import { authSettings, checkCmsVersion, checkConfigs, loadEnv } from './helpers/settings';
 import { AppModule } from './modules/app.module';
 import { authServiceInst } from './services/auth.service';
 
 const logger = getLogger();
 
 async function bootstrap(): Promise<void> {
-    loadEnv();
     readCMSConfigSync();
     await checkConfigs();
 
@@ -51,7 +48,6 @@ async function bootstrap(): Promise<void> {
 
     const apolloServer = new ApolloServer({
         debug: envMode.envMode === 'dev',
-        //@ts-ignore
         playground: envMode.envMode === 'dev',
         schema,
         context: (context): TGraphQLContext => {
@@ -80,7 +76,7 @@ async function bootstrap(): Promise<void> {
     // Plugins, extensions, etc.
     fastifyInstance.register(require('fastify-cookie'), {
         secret: authSettings.cookieSecret,
-    })
+    });
     app.register(require('fastify-cors'), corsHandler);
 
     if (envMode.envMode !== 'dev') {
@@ -106,14 +102,13 @@ async function bootstrap(): Promise<void> {
     await app.listen(port, '::');
     logger.info(`API Server is running on: ${await app.getUrl()}`);
     childRegister(port);
-
 }
 
 (async () => {
     try {
         await bootstrap();
     } catch (e) {
-        logger.error('Server: error on launch:', e);
+        logger.error('Server: error on launch:', e.stack);
         if (process.send) process.send(JSON.stringify({
             message: serverMessages.onStartErrorMessage,
         }));

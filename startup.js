@@ -23,7 +23,6 @@ const fs = require('fs');
 
     const managerStartupPath = resolve(projectRootDir, 'system/manager/startup.js');
     const cliStartupPath = resolve(projectRootDir, 'system/cli/startup.js');
-    const cliDir = resolve(projectRootDir, 'system/cli');
     const backendNode_modules = resolve(coreDir, 'backend/node_modules');
     const frontendNode_modules = resolve(coreDir, 'frontend/node_modules');
 

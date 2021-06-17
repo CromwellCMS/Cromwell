@@ -1,13 +1,15 @@
 import { TOrder } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 
 import { BasePageEntity } from './BasePageEntity';
 
 @Entity()
 @ObjectType()
 export class Order extends BasePageEntity implements TOrder {
+
     @Field(() => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     status?: string;
 
@@ -36,18 +38,22 @@ export class Order extends BasePageEntity implements TOrder {
     totalQnt?: number;
 
     @Field(() => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     userId?: string;
 
     @Field(() => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     customerName?: string;
 
     @Field(() => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     customerPhone?: string;
 
     @Field(() => String, { nullable: true })
+    @Index()
     @Column({ type: "varchar", nullable: true })
     customerEmail?: string;
 
@@ -62,5 +68,4 @@ export class Order extends BasePageEntity implements TOrder {
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
     customerComment?: string;
-
 }

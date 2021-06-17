@@ -1,12 +1,21 @@
-import { setStoreItem } from '@cromwell/core';
-import { cmsPackageName, getCmsEntity, getCmsSettings, getLogger, getModulePackage, getServerDir, getServerTempDir } from '@cromwell/core-backend';
+import { setStoreItem, TCmsConfig } from '@cromwell/core';
+import {
+    cmsPackageName,
+    getCmsEntity,
+    getCmsSettings,
+    getLogger,
+    getModulePackage,
+    getServerDir,
+    getServerTempDir,
+    readCMSConfigSync,
+} from '@cromwell/core-backend';
+import { getCentralServerClient } from '@cromwell/core-frontend';
 import cacache from 'cacache';
+import cryptoRandomString from 'crypto-random-string';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import yargs from 'yargs-parser';
-import { getCentralServerClient } from '@cromwell/core-frontend';
 
-import { authSettings, isRandomSecret } from '../auth/constants';
 import { TServerCommands } from './constants';
 
 let sEnv: TEnv | undefined = undefined;
@@ -15,6 +24,7 @@ const logger = getLogger();
 type TEnv = {
     envMode: 'dev' | 'prod';
     scriptName: TServerCommands;
+    cmsConfig: TCmsConfig;
 }
 
 export const loadEnv = (): TEnv => {
@@ -22,6 +32,7 @@ export const loadEnv = (): TEnv => {
 
     const args = yargs(process.argv.slice(2));
     const scriptName = process.argv[2] as TServerCommands;
+    const cmsConfig = readCMSConfigSync();
 
     if (args.proxyPort) {
         process.env.API_PORT = args.proxyPort + '';
@@ -32,7 +43,7 @@ export const loadEnv = (): TEnv => {
         getLogger(false).error(msg);
     }
 
-    const envMode = (scriptName === 'dev') ? 'dev' : 'prod';
+    const envMode = cmsConfig?.env ?? (scriptName === 'dev') ? 'dev' : 'prod';
     const logLevel = args.logLevel ?? envMode === 'dev' ? 'detailed' : 'errors-only';
 
     setStoreItem('environment', {
@@ -43,6 +54,7 @@ export const loadEnv = (): TEnv => {
     sEnv = {
         envMode,
         scriptName,
+        cmsConfig,
     }
     return sEnv;
 }
@@ -54,6 +66,9 @@ export const checkConfigs = async () => {
     // If secret keys weren't set in config, they will be randomly generated
     // Save them into filecache to not generate on every launch, otherwise it'll
     // cause log-out for all users
+    const { cmsConfig } = loadEnv();
+    const isRandomSecret = !cmsConfig.accessTokenSecret;
+
     if (isRandomSecret) {
         const getSettings = async () => {
             try {
@@ -106,3 +121,27 @@ export const checkCmsVersion = async () => {
         }
     }
 }
+
+const { cmsConfig } = loadEnv();
+
+export const authSettings = {
+    accessSecret: cmsConfig.accessTokenSecret ?? cryptoRandomString({ length: 8, type: 'ascii-printable' }),
+    refreshSecret: cmsConfig.refreshTokenSecret ?? cryptoRandomString({ length: 8, type: 'ascii-printable' }),
+    cookieSecret: cmsConfig.cookieSecret ?? cryptoRandomString({ length: 8, type: 'url-safe' }),
+
+    /** 10 min by default */
+    expirationAccessTime: cmsConfig.accessTokenExpirationTime ?? 600,
+    /** 15 days by default */
+    expirationRefreshTime: cmsConfig.refreshTokenExpirationTime ?? 1296000,
+
+    accessTokenCookieName: 'crw_access_token',
+    refreshTokenCookieName: 'crw_refresh_token',
+    maxTokensPerUser: parseInt(process.env.JWT_MAX_TOKENS_PER_USER ?? '20'),
+
+    // approximate, for one server instance
+    resetPasswordAttempts: 5,
+    // 3 hours
+    resetPasswordCodeExpirationAccessTime: 1000 * 60 * 60 * 3,
+}
+
+export const bcryptSaltRounds = 10;

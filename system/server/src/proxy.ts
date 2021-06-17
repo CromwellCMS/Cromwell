@@ -4,15 +4,11 @@ import httpProxy from 'http-proxy';
 import nodeCleanup from 'node-cleanup';
 import yargs from 'yargs-parser';
 
-import { loadEnv } from './helpers/loadEnv';
 import { closeAllServers, getServerPort, launchServerManager, serverAliveWatcher } from './helpers/serverManager';
 
-require('dotenv').config();
 const logger = getLogger();
 
-
 async function main(): Promise<void> {
-    loadEnv();
     const args = yargs(process.argv.slice(2));
     let argsPort: number | undefined = parseInt(args.port + '');
     if (isNaN(argsPort)) argsPort = undefined;
