@@ -63,10 +63,10 @@ export const connectDatabase = async () => {
             if (!await fs.pathExists(defaultOrmConfig.database) && serverDir) {
                 // Server probably was launched at the first time and has no DB created
                 // Use mocked DB
-                const dempDBPath = resolve(serverDir, 'db.sqlite3');
-                if (await fs.pathExists(dempDBPath)) {
+                const mockedDBPath = resolve(serverDir, 'db.sqlite3');
+                if (await fs.pathExists(mockedDBPath)) {
                     isNewSQLiteDB = true;
-                    await fs.copy(dempDBPath, tempDBPath);
+                    await fs.copy(mockedDBPath, tempDBPath);
                 }
             }
         }

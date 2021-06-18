@@ -20,7 +20,7 @@ async function main(): Promise<void> {
     const config = readCMSConfigSync();
     const port = config.apiPort ?? 4016;
 
-    // Start a proxy at the server port. Actual server will be laucnhed at random port.
+    // Start a proxy at the server port. Actual server will be launched at random port.
     // This way we can dynamically spawn new server instances and switch between them via proxy
     // with zero downtime. Why do we need this? For example, when a plugin installed, server has to restart
     // to apply plugin's backend. Outage is not an option for production server, right?

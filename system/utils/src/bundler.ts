@@ -1,4 +1,4 @@
-import { sleep, TAdditionalExports, TExternal, TFrontendDependency, TPackageJson, TSciprtMetaInfo } from '@cromwell/core';
+import { sleep, TAdditionalExports, TExternal, TFrontendDependency, TPackageJson, TScriptMetaInfo } from '@cromwell/core';
 import { getPublicDir } from '@cromwell/core-backend';
 import archiver from 'archiver';
 import colorsdef from 'colors/safe';
@@ -18,10 +18,10 @@ import {
     moduleChunksBuildDirChunk,
     moduleExportsDirChunk,
     moduleGeneratedFileName,
-    moduleLibBuidFileName,
-    moduleMainBuidFileName,
+    moduleLibBuildFileName,
+    moduleMainBuildFileName,
     moduleMetaInfoFileName,
-    moduleNodeBuidFileName,
+    moduleNodeBuildFileName,
     moduleNodeGeneratedFileName,
     moduleOneChunkGeneratedFileName,
 } from './constants';
@@ -250,8 +250,8 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         const bundleInfoPath = resolve(moduleBuildDir, moduleBundleInfoFileName);
         const exportsGeneratedPath = resolve(moduleBuildDir, moduleExportsDirChunk);
         const chunksDir = resolve(moduleBuildDir, moduleChunksBuildDirChunk);
-        const moduleMainBuildPath = resolve(moduleBuildDir, moduleMainBuidFileName);
-        const moduleLibBuildPath = resolve(moduleBuildDir, moduleLibBuidFileName);
+        const moduleMainBuildPath = resolve(moduleBuildDir, moduleMainBuildFileName);
+        const moduleLibBuildPath = resolve(moduleBuildDir, moduleLibBuildFileName);
         const moduleArchivePath = resolve(moduleBuildDir, moduleArchiveFileName);
 
         if (await fs.pathExists(libEntry) || await fs.pathExists(moduleLibBuildPath)) {
@@ -581,7 +581,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
                     await fs.writeFile(jsonStatsPath, JSON.stringify(moduleStats, null, 4));
                 }
 
-                if (stats && !stats.hasErrors() && !err && fs.existsSync(resolve(moduleBuildDir, moduleMainBuidFileName))) {
+                if (stats && !stats.hasErrors() && !err && fs.existsSync(resolve(moduleBuildDir, moduleMainBuildFileName))) {
                     console.log(colors.brightGreen('Cromwell:bundler: Successfully built module for web: ' + moduleName));
                     webChunksSuccess = true;
 
@@ -600,7 +600,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         // Additional one-chunk build
         const webpackSingleConfig = makeConfig(webWebpackConfig, oneChunkLibEntry, true);
         webpackSingleConfig.output!.publicPath = `/${bundledModulesDirName}/${moduleName}@${modulePackageJson.version}/`;
-        webpackSingleConfig!.output!.filename = moduleLibBuidFileName;
+        webpackSingleConfig!.output!.filename = moduleLibBuildFileName;
         webpackSingleConfig!.optimization = undefined;
         const singlebuildCompiler = webpack(webpackSingleConfig);
 
@@ -650,7 +650,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
         }
 
 
-        const metaInfoContent: TSciprtMetaInfo = await fs.readJSON(metaInfoPath);
+        const metaInfoContent: TScriptMetaInfo = await fs.readJSON(metaInfoPath);
         metaInfoContent.import = shouldAlwaysImportDefault ? 'lib' : 'chunks';
         await fs.writeFile(metaInfoPath, JSON.stringify(metaInfoContent, null, 4));
 
@@ -669,7 +669,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
 
             nodeBuildCompiler.run(async (err, stats) => {
 
-                if (stats && !stats.hasErrors() && !err && fs.existsSync(resolve(moduleBuildDir, moduleNodeBuidFileName))) {
+                if (stats && !stats.hasErrors() && !err && fs.existsSync(resolve(moduleBuildDir, moduleNodeBuildFileName))) {
                     console.log(colors.brightGreen('Cromwell:bundler: Successfully built module for Node.js: ' + moduleName));
                 } else {
                     console.log(colors.brightRed('Cromwell:bundler: Failed to built module for Node.js: ' + moduleName));
@@ -704,7 +704,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
             const depName = normalizePath(depPath).replace(normalizePath(buildDir) + '/', '');
             const depMetaPath = resolve(depPath, moduleMetaInfoFileName);
             // If dependency can be imported only as a whole, mark it as 'default' in meta of this module
-            const depMetaInfo: TSciprtMetaInfo = await fs.readJSON(depMetaPath);
+            const depMetaInfo: TScriptMetaInfo = await fs.readJSON(depMetaPath);
             if (depMetaInfo) {
                 if (depMetaInfo.import === 'lib' && metaInfoContent.externalDependencies[depName]) {
                     metaInfoContent.externalDependencies[depName] = ['default'];
@@ -777,7 +777,7 @@ export const bundler = async ({ projectRootDir, isProduction, rebundle, forceIns
 export const webWebpackConfig: Configuration = {
     target: 'web',
     output: {
-        filename: moduleMainBuidFileName,
+        filename: moduleMainBuildFileName,
         chunkFilename: moduleChunksBuildDirChunk + '/[name].bundle.js',
         // libraryTarget: 'umd',
         libraryExport: 'default',
@@ -825,7 +825,7 @@ export const webWebpackConfig: Configuration = {
 export const nodeWebpackConfigTemplate: Configuration = {
     target: 'node',
     output: {
-        filename: moduleNodeBuidFileName,
+        filename: moduleNodeBuildFileName,
         libraryTarget: 'commonjs2',
         globalObject: `(() => {
             if (typeof self !== 'undefined') {
@@ -860,7 +860,7 @@ export const parseImportsWebpackConfig: Configuration = {
     mode: "development",
     devtool: false,
     output: {
-        filename: 'temp_' + moduleMainBuidFileName,
+        filename: 'temp_' + moduleMainBuildFileName,
         libraryTarget: "var"
     },
     resolve: {

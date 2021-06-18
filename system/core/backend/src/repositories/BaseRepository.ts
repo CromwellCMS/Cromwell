@@ -81,7 +81,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return true;
     }
 
-    async applyDeletMany(qb: SelectQueryBuilder<EntityType> | DeleteQueryBuilder<EntityType>, input: TDeleteManyInput) {
+    async applyDeleteMany(qb: SelectQueryBuilder<EntityType> | DeleteQueryBuilder<EntityType>, input: TDeleteManyInput) {
         if (input.all) {
             if (input.ids && input.ids.length > 0) {
                 qb.andWhere(`${this.metadata.tablePath}.id NOT IN (:...ids)`, { ids: input.ids ?? [] })
@@ -94,7 +94,7 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
     async deleteMany(input: TDeleteManyInput) {
         logger.log('BaseRepository::deleteMany ' + this.metadata.tablePath, input);
         const qb = this.createQueryBuilder().delete().from<EntityType>(this.metadata.tablePath);
-        this.applyDeletMany(qb, input);
+        this.applyDeleteMany(qb, input);
         await qb.execute();
         return true;
     }

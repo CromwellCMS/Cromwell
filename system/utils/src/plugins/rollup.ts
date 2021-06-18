@@ -7,7 +7,7 @@ import {
     TPagesMetaInfo,
     TPluginConfig,
     TRollupConfig,
-    TSciprtMetaInfo,
+    TScriptMetaInfo,
 } from '@cromwell/core';
 import {
     buildDirName,
@@ -410,7 +410,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
     type?: 'themePages' | 'themeAdminPanel';
 }): Promise<Plugin> => {
 
-    const scriptsInfo: Record<string, TSciprtMetaInfo> = {};
+    const scriptsInfo: Record<string, TScriptMetaInfo> = {};
     const importsInfo: Record<string, {
         externals: Record<string, string[]>;
         internals: string[];
@@ -609,7 +609,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                     }
                 })
 
-                const metaInfo: TSciprtMetaInfo = {
+                const metaInfo: TScriptMetaInfo = {
                     name: settings?.moduleInfo?.name + '/' + info.fileName + '_' + cryptoRandomString({ length: 8 }),
                     externalDependencies: versionedImportedBindings,
                     // importsInfo

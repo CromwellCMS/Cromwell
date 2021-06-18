@@ -7,7 +7,7 @@ import {
     TPluginConfig,
     TPluginEntity,
     TPluginEntityInput,
-    TSciprtMetaInfo,
+    TScriptMetaInfo,
 } from '@cromwell/core';
 import {
     buildDirName,
@@ -189,7 +189,7 @@ export class PluginService {
             try {
                 const source = (await fs.readFile(filePath)).toString();
 
-                let meta: TSciprtMetaInfo | undefined;
+                let meta: TScriptMetaInfo | undefined;
                 if (await fs.pathExists(getMetaInfoPath(filePath))) {
                     try {
                         meta = JSON.parse((await fs.readFile(getMetaInfoPath(filePath))).toString());

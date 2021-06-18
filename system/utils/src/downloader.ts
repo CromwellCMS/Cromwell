@@ -1,4 +1,4 @@
-import { TFrontendDependency, TSciprtMetaInfo } from '@cromwell/core';
+import { TFrontendDependency, TScriptMetaInfo } from '@cromwell/core';
 import { getLogger } from '@cromwell/core-backend';
 import colorsdef from 'colors/safe';
 import extractZip from 'extract-zip';
@@ -84,7 +84,7 @@ export const downloader = async (options?: {
         successfulDownloads++;
         // await downloadBundle(depName, bundledModulesDir);
 
-        let meta: TSciprtMetaInfo;
+        let meta: TScriptMetaInfo;
         try {
             meta = require(resolve(depDir, moduleMetaInfoFileName));
             if (meta?.externalDependencies) {

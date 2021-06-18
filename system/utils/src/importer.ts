@@ -1,7 +1,7 @@
-import { TCromwellNodeModules, TSciprtMetaInfo } from '@cromwell/core';
+import { TCromwellNodeModules, TScriptMetaInfo } from '@cromwell/core';
 import {
-    moduleMainBuidFileName, moduleNodeBuidFileName,
-    moduleMetaInfoFileName, moduleLibBuidFileName, bundledModulesDirName
+    moduleMainBuildFileName, moduleNodeBuildFileName,
+    moduleMetaInfoFileName, moduleLibBuildFileName, bundledModulesDirName
 } from './constants';
 
 /**
@@ -53,9 +53,9 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
         if (!Cromwell.moduleExternals) Cromwell.moduleExternals = {};
 
         const metaFilepath = `${Cromwell.prefix ? `${Cromwell.prefix}/` : ''}${bundledModulesDirName}/${moduleName}/${moduleMetaInfoFileName}`;
-        const importerFilepath = `${Cromwell.prefix ? `/${Cromwell.prefix}` : ''}/${bundledModulesDirName}/${moduleName}/${moduleMainBuidFileName}`;
-        const importerEntireLibFilepath = `${Cromwell.prefix ? `/${Cromwell.prefix}` : ''}/${bundledModulesDirName}/${moduleName}/${moduleLibBuidFileName}`;
-        const importerNodeFilepath = `${bundledModulesDirName}/${moduleName}/${moduleNodeBuidFileName}`;
+        const importerFilepath = `${Cromwell.prefix ? `/${Cromwell.prefix}` : ''}/${bundledModulesDirName}/${moduleName}/${moduleMainBuildFileName}`;
+        const importerEntireLibFilepath = `${Cromwell.prefix ? `/${Cromwell.prefix}` : ''}/${bundledModulesDirName}/${moduleName}/${moduleLibBuildFileName}`;
+        const importerNodeFilepath = `${bundledModulesDirName}/${moduleName}/${moduleNodeBuildFileName}`;
 
         let moduleVer: string | undefined;
         if (/@\d+\.\d+\.\d+/.test(moduleName)) {
@@ -66,7 +66,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
         if (canShowInfo) console.log('moduleName', moduleName, 'moduleVer', moduleVer)
 
         // Server-side. Sync, require()
-        const serverimport = () => {
+        const serverImport = () => {
             if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
             if (Cromwell.importStatuses[moduleName]) return true;
             if (!Cromwell.modules) Cromwell.modules = {};
@@ -82,10 +82,10 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                     const fullPath = resolve(serverPublicDir ? serverPublicDir :
                         resolve(process.cwd(), 'public'), metaFilepath);
 
-                    const metaInfo: TSciprtMetaInfo = nodeRequire(fullPath);
+                    const metaInfo: TScriptMetaInfo = nodeRequire(fullPath);
                     // { [moduleName]: namedExports }
-                    if (metaInfo && Cromwell?.importSciptExternals)
-                        Cromwell.importSciptExternals(metaInfo);
+                    if (metaInfo && Cromwell?.importScriptExternals)
+                        Cromwell.importScriptExternals(metaInfo);
                 } catch (e) {
                     console.error('Cromwell:importer: Failed to require meta info of module server-side: ' + metaFilepath, e);
                 }
@@ -165,7 +165,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
             if (!Cromwell.importStatuses[moduleName]) {
                 if (isDefaultImport) isLibImport = true;
                 if (Cromwell.modules?.[moduleName]) {
-                    // Module has been asyc imported in some other importer or was bundled intentionally that way with reference in global store.
+                    // Module has been async imported in some other importer or was bundled intentionally that way with reference in global store.
                     return true;
                 }
 
@@ -184,13 +184,13 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                 try {
                     const metaInfoStr = await fetch(`/${metaFilepath}`).then(res => res.text());
                     if (metaInfoStr) {
-                        const metaInfo: TSciprtMetaInfo = JSON.parse(metaInfoStr);
+                        const metaInfo: TScriptMetaInfo = JSON.parse(metaInfoStr);
                         // { [moduleName]: namedExports }
                         if (metaInfo) {
                             if (metaInfo.import === 'lib') {
                                 isLibImport = true;
                             }
-                            await Cromwell?.importSciptExternals?.(metaInfo);
+                            await Cromwell?.importScriptExternals?.(metaInfo);
 
                             if (canShowInfo) console.log('Cromwell:importer: Successfully loaded all script externals for module: ' + moduleName, metaInfo);
                         }
@@ -204,7 +204,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
 
                 if (Cromwell.modules?.[moduleName]) {
-                    // Module has been asyc imported in some other importer or was bundled intentionally that way with reference in global store.
+                    // Module has been async imported in some other importer or was bundled intentionally that way with reference in global store.
                     return true;
                 }
 
@@ -276,7 +276,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                 if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
 
                 if (typeof Cromwell?.importStatuses?.[moduleName] === 'object') {
-                    if (canShowInfo) console.log('awaitig... ' + moduleName);
+                    if (canShowInfo) console.log('awaiting... ' + moduleName);
                     const status = await Cromwell.importStatuses[moduleName];
                     if (status === 'default') return true;
 
@@ -314,7 +314,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
         if (isServer()) {
             try {
-                return serverimport()
+                return serverImport()
             } catch (error) {
                 console.error(error);
             }
@@ -328,7 +328,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
     }
 
-    if (!Cromwell.importSciptExternals) Cromwell.importSciptExternals = async (metaInfo: TSciprtMetaInfo | undefined): Promise<boolean> => {
+    if (!Cromwell.importScriptExternals) Cromwell.importScriptExternals = async (metaInfo: TScriptMetaInfo | undefined): Promise<boolean> => {
         Cromwell.hasBeenExecuted = true;
         const externals = metaInfo?.externalDependencies;
         if (!metaInfo || !externals) return false;

@@ -158,7 +158,7 @@ export class OrderRepository extends BaseRepository<Order> {
             .delete().from<Order>(this.metadata.tablePath);
 
         this.applyOrderFilter(qb, filterParams);
-        this.applyDeletMany(qb, input);
+        this.applyDeleteMany(qb, input);
         try {
             await qb.execute();
         } catch (e) {

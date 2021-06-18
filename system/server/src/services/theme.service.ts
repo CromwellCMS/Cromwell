@@ -69,7 +69,7 @@ export class ThemeService {
                 // crashed and was unable to set isUpdating to false
                 setTimeout(async () => {
                     if (await this.getIsUpdating(entity.name)) {
-                        logger.error(`Server: ${entity.name} is still updating after minute of runnig a new server instance. Setting isUpdating to false`);
+                        logger.error(`Server: ${entity.name} is still updating after minute of running a new server instance. Setting isUpdating to false`);
                         await this.setIsUpdating(entity.name, false);
                     }
                 }, 60000);
@@ -208,7 +208,7 @@ export class ThemeService {
 
 
     /**
-     * Will add and overwrite theme's original modificators by user's modificators
+     * Will add and overwrite theme's original modifications by user's modifications
      * @param themeMods 
      * @param userMods 
      */
@@ -216,14 +216,14 @@ export class ThemeService {
         const mods: TCromwellBlockData[] = (themeMods && Array.isArray(themeMods)) ? themeMods : [];
         if (userMods && Array.isArray(userMods)) {
             userMods.forEach(userMod => {
-                let hasOriginaly = false;
+                let hasOriginally = false;
                 mods.forEach((themeMod, i) => {
                     if (themeMod.id === userMod.id) {
                         mods[i] = userMod;
-                        hasOriginaly = true;
+                        hasOriginally = true;
                     }
                 })
-                if (!hasOriginaly) {
+                if (!hasOriginally) {
                     mods.push(userMod);
                 }
             })
@@ -232,8 +232,8 @@ export class ThemeService {
     }
 
     /**
-     * Merges page canfigs from theme's original and user's files. 
-     * Adds optionaly globalMods to the output.
+     * Merges page configs from theme's original and user's files. 
+     * Adds optionally globalMods to the output.
      * @param themeConfig 
      * @param userConfig 
      * @param globalThemeMods 
@@ -242,12 +242,12 @@ export class ThemeService {
     public mergePages(themeConfig?: TPageConfig, userConfig?: TPageConfig,
         globalThemeMods?: TCromwellBlockData[], globalUserMods?: TCromwellBlockData[]): TPageConfig {
         // Merge global mods
-        const globalModificators = this.mergeMods(globalThemeMods, globalUserMods);
+        const globalModifications = this.mergeMods(globalThemeMods, globalUserMods);
 
         let mods = this.mergeMods(themeConfig?.modifications, userConfig?.modifications);
 
         // Merge pages' mods with global mods
-        mods = this.mergeMods(globalModificators, mods);
+        mods = this.mergeMods(globalModifications, mods);
 
         const config = Object.assign({}, themeConfig, userConfig);
         config.modifications = mods;
@@ -265,7 +265,7 @@ export class ThemeService {
 
     /**
      * Read asynchronously configs for specified Page by pageRoute arg and merge them into one.
-     * Output contains theme's original modificators overwritten and supplemented by user's modificators.
+     * Output contains theme's original modifications overwritten and supplemented by user's modifications.
      * @param pageRoute original route of the page in theme dir
      * @param cb callback to return modifications
      */
@@ -281,14 +281,14 @@ export class ThemeService {
 
         // let themeMods: TCromwellBlockData[] | undefined = undefined, userMods: TCromwellBlockData[] | undefined = undefined;
 
-        // Merge users's with theme's mods
+        // Merge user's with theme's mods
         const pageConfig = this.mergePages(themePageConfig, userPageConfig, themeConfig?.globalModifications, userConfig?.globalModifications);
 
         return pageConfig;
     }
 
     /**
-     * Saves userPageConfig into user's theme config. TPageInfo is just overwrited,
+     * Saves userPageConfig into user's theme config. TPageInfo is just overwritten,
      * but modifications (TCromwellBlockData) are applied by an algorithm. New mods
      * overwrite current ones in user's config by blockId and are being added if user
      * config has no same blockId. If user has deleted some block, then should send a mod
@@ -296,7 +296,7 @@ export class ThemeService {
      * config, then mod will be deleted. If mod contains in original config, then it will
      * be saved in user's config with this flag 
      * 
-     * Modificators on userPageConfig (TCromwellBlockData) must contain only newly added 
+     * Modifications on userPageConfig (TCromwellBlockData) must contain only newly added 
      * mods or an empty array. It is not allowed to send all mods from "/theme/page" route 
      * because they contain merged mods from theme's config and we don't need to copy them 
      * into user's config that way. User's config should contain only user's uniques 
@@ -342,7 +342,7 @@ export class ThemeService {
             if (!mod.global && userConfig.globalModifications) {
                 for (const globalMod of userConfig.globalModifications) {
                     if (mod.id === globalMod.id) {
-                        userConfig.globalModifications = userConfig.globalModifications?.filter(fmod => fmod.id !== mod.id);
+                        userConfig.globalModifications = userConfig.globalModifications?.filter(filteredMod => filteredMod.id !== mod.id);
                     }
                 }
             }
@@ -450,9 +450,9 @@ export class ThemeService {
             })
         }
         // Merge global mods
-        const globalModificators = this.mergeMods(themeConfig?.globalModifications, userConfig?.globalModifications);
+        const globalModifications = this.mergeMods(themeConfig?.globalModifications, userConfig?.globalModifications);
         // Merge pages' mods with global mods
-        pages.forEach(p => p.modifications = this.mergeMods(globalModificators, p.modifications));
+        pages.forEach(p => p.modifications = this.mergeMods(globalModifications, p.modifications));
 
         return pages;
     }

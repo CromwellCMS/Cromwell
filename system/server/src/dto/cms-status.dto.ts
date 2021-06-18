@@ -11,7 +11,7 @@ export class NotificationDto implements TNotification {
     type: 'info' | 'warning' | 'error';
 
     @ApiProperty()
-    documentaionLink?: string;
+    documentationLink?: string;
 
     @ApiProperty()
     pageLink?: string

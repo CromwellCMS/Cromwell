@@ -161,12 +161,12 @@ export class PostRepository extends BaseRepository<Post> {
         // Select first, because JOIN with DELETE is not supported by Typeorm (such a shame), we need it fot post filter with tags (see above). 
         const qb = this.createQueryBuilder(this.metadata.tablePath).select(['id']);
         this.applyPostFilter(qb, filterParams);
-        this.applyDeletMany(qb, input);
+        this.applyDeleteMany(qb, input);
         const ids: { id: string | number }[] = await qb.execute();
         const deleteQb = this.createQueryBuilder(this.metadata.tablePath)
             .delete().from<Post>(this.metadata.tablePath);
 
-        this.applyDeletMany(deleteQb, {
+        this.applyDeleteMany(deleteQb, {
             all: false,
             ids: ids.map(id => id?.id + ''),
         });

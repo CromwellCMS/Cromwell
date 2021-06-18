@@ -47,9 +47,9 @@ export const pluginsDataFetcher = async (pageName: BasePageNames | string, conte
 
             try {
                 const importer = getModuleImporter();
-                if (pluginCjsPath.metaPath && importer?.importSciptExternals) {
+                if (pluginCjsPath.metaPath && importer?.importScriptExternals) {
                     const meta = await fsRequire(pluginCjsPath.metaPath, true)
-                    if (meta) await importer.importSciptExternals(meta);
+                    if (meta) await importer.importScriptExternals(meta);
                 }
             } catch (e) {
                 console.error(`[Error] pluginsDataFetcher: Failed to require plugin Externals: ${pluginName} at ${pluginCjsPath.metaPath}`, e);

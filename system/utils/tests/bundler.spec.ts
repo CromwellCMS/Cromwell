@@ -1,5 +1,5 @@
 import { bundler } from '@App/bundler';
-import { moduleArchiveFileName, moduleLibBuidFileName, moduleMetaInfoFileName } from '@App/constants';
+import { moduleArchiveFileName, moduleLibBuildFileName, moduleMetaInfoFileName } from '@App/constants';
 import { getBundledModulesDir } from '@App/shared';
 import { sleep, TPackageJson } from '@cromwell/core';
 import * as fs from 'fs-extra';
@@ -38,7 +38,7 @@ describe('bundler', () => {
         expect(await fs.pathExists(moduleBuildDir)).toBeTruthy();
         expect(await fs.pathExists(join(moduleBuildDir, moduleArchiveFileName))).toBeTruthy();
         expect(await fs.pathExists(join(moduleBuildDir, moduleMetaInfoFileName))).toBeTruthy();
-        expect(await fs.pathExists(join(moduleBuildDir, moduleLibBuidFileName))).toBeTruthy();
+        expect(await fs.pathExists(join(moduleBuildDir, moduleLibBuildFileName))).toBeTruthy();
 
     });
 

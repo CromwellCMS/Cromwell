@@ -143,7 +143,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
             .delete().from<ProductReview>(this.metadata.tablePath);
 
         this.applyProductReviewFilter(qb, filterParams);
-        this.applyDeletMany(qb, input);
+        this.applyDeleteMany(qb, input);
         try {
             await qb.execute();
         } catch (e) {

@@ -99,7 +99,7 @@ export class AuthService {
         const userRepo = getCustomRepository(UserRepository);
         if (data?.role && data.role !== 'customer') {
             if (!initiator?.id || initiator.role !== 'administrator')
-                throw new UnauthorizedException('No permissons to create this user');
+                throw new UnauthorizedException('Denied. You have no permissions to create this type of user');
         }
         return userRepo.createUser(data);
     }

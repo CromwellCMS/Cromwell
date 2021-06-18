@@ -1,4 +1,4 @@
-import { bundledModulesDirName, moduleNodeBuidFileName, moduleMetaInfoFileName } from '@App/constants';
+import { bundledModulesDirName, moduleNodeBuildFileName, moduleMetaInfoFileName } from '@App/constants';
 import { getModuleImporter } from '@App/importer';
 import { getBundledModulesDir } from '@App/shared';
 import { TPackageJson } from '@cromwell/core';
@@ -25,7 +25,7 @@ describe('importer', () => {
         if (await fs.pathExists(moduleBuildDir)) {
             await fs.remove(moduleBuildDir);
         }
-        const nodeBundlePath = join(moduleBuildDir, moduleNodeBuidFileName)
+        const nodeBundlePath = join(moduleBuildDir, moduleNodeBuildFileName)
         await fs.outputFile(nodeBundlePath,
             `global.CromwellStore.nodeModules.modules["${moduleName}"] = 'test';
             module.exports = '_test_';`
@@ -54,7 +54,7 @@ describe('importer', () => {
         if (await fs.pathExists(moduleBuildDir)) {
             await fs.remove(moduleBuildDir);
         }
-        const nodeBundlePath = join(moduleBuildDir, moduleNodeBuidFileName)
+        const nodeBundlePath = join(moduleBuildDir, moduleNodeBuildFileName)
         await fs.outputFile(nodeBundlePath,
             `global.CromwellStore.nodeModules.modules["${moduleName}"] = 'test';
             module.exports = '_test_';`
@@ -70,7 +70,7 @@ describe('importer', () => {
 
         const importer = getModuleImporter();
 
-        const success = await importer?.importSciptExternals?.({
+        const success = await importer?.importScriptExternals?.({
             name: '_tets1_',
             externalDependencies: {
                 [moduleFullName]: ['default']

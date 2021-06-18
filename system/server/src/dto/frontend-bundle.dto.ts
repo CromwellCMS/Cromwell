@@ -6,13 +6,13 @@ export class FrontendBundleDto implements TFrontendBundle {
     source?: string;
 
     @ApiProperty()
-    meta?: TSciprtMetaInfo;
+    meta?: TScriptMetaInfo;
 
     @ApiProperty()
     cjsPath?: string;
 }
 
-export type TSciprtMetaInfo = {
+export type TScriptMetaInfo = {
     name: string;
     // { [moduleName]: namedImports }
     externalDependencies: Record<string, string[]>;

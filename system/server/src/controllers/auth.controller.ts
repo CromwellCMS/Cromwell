@@ -158,7 +158,7 @@ export class AuthController {
         status: 201,
         type: Boolean,
     })
-    async frogotPassword(@Body() input: CreateUserDto) {
+    async forgotPassword(@Body() input: CreateUserDto) {
         if (!input?.email || !validateEmail(input.email))
             throw new HttpException('Email is not valid', HttpStatus.NOT_ACCEPTABLE);
 
