@@ -64,11 +64,12 @@ export class AuthController {
     @UseGuards(JwtAuthGuard)
     @Post('log-out')
     @ApiOperation({
-        description: 'Logs user out that was logged via cookies',
+        description: 'Logs user out who was logged via cookies',
     })
     async logOut(@Request() request: TRequestWithUser, @Response() response: FastifyReply) {
+        if (request.user)
+            await this.authService.removeRefreshToken(request.user);
 
-        await this.authService.removeRefreshToken(request.user);
         this.authService.clearTokenCookies(response, request);
 
         response.code(200).send(true);
@@ -148,7 +149,7 @@ export class AuthController {
 
     @Post('forgot-password')
     @UseGuards(ThrottlerGuard)
-    @Throttle(4, 10)
+    @Throttle(8, 600)
     @ApiOperation({
         description: 'Send an e-mail with reset code for a user account',
     })
@@ -157,7 +158,7 @@ export class AuthController {
         status: 201,
         type: Boolean,
     })
-    async frogotPassword(@Body() input: CreateUserDto) {
+    async forgotPassword(@Body() input: CreateUserDto) {
         if (!input?.email || !validateEmail(input.email))
             throw new HttpException('Email is not valid', HttpStatus.NOT_ACCEPTABLE);
 
@@ -167,7 +168,7 @@ export class AuthController {
 
     @Post('reset-password')
     @UseGuards(ThrottlerGuard)
-    @Throttle(5, 10)
+    @Throttle(6, 600)
     @ApiOperation({
         description: 'Set a new password for user with provided secret code',
     })

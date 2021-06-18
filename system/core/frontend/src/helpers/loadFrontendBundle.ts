@@ -33,7 +33,7 @@ export const loadFrontendBundle = <TLoadable extends (...args: any) => any = (fu
         if (bundle?.source) {
             if (bundle?.meta) {
                 const nodeModules = getStoreItem('nodeModules');
-                await nodeModules?.importSciptExternals?.(bundle.meta);
+                await nodeModules?.importScriptExternals?.(bundle.meta);
             }
 
             if (isServer()) {

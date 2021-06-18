@@ -178,7 +178,7 @@ export type TPageInfo = {
     description?: string;
     /** Is using next.js dynamic routes? */
     isDynamic?: boolean;
-    /** Created in Pagebuilder or manually in config and does not have a corresponding .js file with React component */
+    /** Created in PageBuilder or manually in config and does not have a corresponding .js file with React component */
     isVirtual?: boolean;
 }
 
@@ -207,13 +207,13 @@ export type TCromwellNodeModules = {
     modules?: Record<string, any>;
     moduleExternals?: Record<string, string[]>;
     importModule?: (moduleName: string, namedExports?: string[]) => Promise<boolean> | boolean;
-    importSciptExternals?: (metaInfo: TSciprtMetaInfo) => Promise<boolean>;
+    importScriptExternals?: (metaInfo: TScriptMetaInfo) => Promise<boolean>;
     hasBeenExecuted?: boolean;
     prefix?: string;
     setPrefix?: (prefix: string) => void;
 };
 
-export type TSciprtMetaInfo = {
+export type TScriptMetaInfo = {
     name: string;
     // { [moduleName]: namedImports }
     externalDependencies: Record<string, string[]>;
@@ -236,7 +236,7 @@ export type TPagesMetaInfo = {
 
 export type TFrontendBundle = {
     source?: string;
-    meta?: TSciprtMetaInfo;
+    meta?: TScriptMetaInfo;
     cjsPath?: string;
 }
 
@@ -370,7 +370,7 @@ export type TUpdateInfo = {
 export type TNotification = {
     message: string;
     type: 'info' | 'warning' | 'error';
-    documentaionLink?: string;
+    documentationLink?: string;
     pageLink?: string
 }
 

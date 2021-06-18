@@ -1,12 +1,17 @@
 import { gql } from '@apollo/client';
 import {
-    getBlockInstance, TAttribute, TGetStaticProps, TPagedParams,
-    TProduct, TProductCategory, TFilteredProductList, TProductFilterMeta, TProductFilter
+    getBlockInstance,
+    TAttribute,
+    TFilteredProductList,
+    TGetStaticProps,
+    TPagedParams,
+    TProduct,
+    TProductCategory,
+    TProductFilter,
+    TProductFilterMeta,
 } from '@cromwell/core';
 import { getGraphQLClient, TCGraphQLClient, TCList } from '@cromwell/core-frontend';
-import { getLogger } from '@cromwell/core-backend';
 
-import { } from '../types';
 
 export type TProductFilterData = {
     productCategory?: TProductCategory;
@@ -73,7 +78,11 @@ export const filterCList = (filterOptions: TProductFilter, productListId: string
     }
 }
 
+let getLogger;
+
 export const getStaticProps: TGetStaticProps = async (context): Promise<TProductFilterData> => {
+    if (!getLogger) getLogger = require('@cromwell/core-backend').getLogger;
+
     const logger = getLogger();
     const slug = (context && context.params) ? context.params.slug : null;
     const client = getGraphQLClient();

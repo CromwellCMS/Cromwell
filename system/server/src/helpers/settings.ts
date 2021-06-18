@@ -64,7 +64,7 @@ export const checkConfigs = async () => {
     const serverCachePath = resolve(getServerTempDir(), 'cache');
 
     // If secret keys weren't set in config, they will be randomly generated
-    // Save them into filecache to not generate on every launch, otherwise it'll
+    // Save them into file cache to not generate on every launch, otherwise it'll
     // cause log-out for all users
     const { cmsConfig } = loadEnv();
     const isRandomSecret = !cmsConfig.accessTokenSecret;
@@ -73,8 +73,8 @@ export const checkConfigs = async () => {
         const getSettings = async () => {
             try {
                 const cachedData = await cacache.get(serverCachePath, 'auth_settings');
-                const cachedSeettings: typeof authSettings = JSON.parse(cachedData.data.toString());
-                if (cachedSeettings?.accessSecret) return cachedSeettings;
+                const cachedSettings: typeof authSettings = JSON.parse(cachedData.data.toString());
+                if (cachedSettings?.accessSecret) return cachedSettings;
             } catch (error) { }
         }
 
@@ -106,9 +106,9 @@ export const checkCmsVersion = async () => {
 
     if (cmsPckg?.version && cmsPckg.version !== settings?.version) {
         try {
-            const remoteinfo = await getCentralServerClient().getVersionByPackage(cmsPckg.version);
-            if (remoteinfo) {
-                cmsEntity.version = remoteinfo.version;
+            const remoteInfo = await getCentralServerClient().getVersionByPackage(cmsPckg.version);
+            if (remoteInfo) {
+                cmsEntity.version = remoteInfo.version;
                 await cmsEntity.save();
             }
         } catch (error) {

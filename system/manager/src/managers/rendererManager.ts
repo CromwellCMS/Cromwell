@@ -106,8 +106,8 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
             if (!rendererUrl) return false;
             let success = false;
             try {
-                const responce: Response = await fetch(rendererUrl);
-                success = responce.status < 400;
+                const response: Response = await fetch(rendererUrl);
+                success = response.status < 400;
             } catch (e) {
                 logger.error(e);
             }
@@ -150,12 +150,12 @@ export const isRendererRunning = async (): Promise<boolean> => {
 export const rendererBuild = async (themeName: string): Promise<boolean> => {
     if (!rendererStartupPath) return false;
 
-    const commad: TRendererCommands = 'build';
+    const command: TRendererCommands = 'build';
 
     const proc = await startService({
         path: rendererStartupPath,
         name: cacheKeys.rendererBuilder,
-        args: [commad, `--theme-name=${themeName}`],
+        args: [command, `--theme-name=${themeName}`],
     });
 
     await new Promise(done => {
@@ -242,12 +242,12 @@ export const rendererStartWatchDev = async (themeName: string) => {
     const rendererTempDir = getRendererTempDir();
     await fs.ensureDir(rendererTempDir);
 
-    const commad: TRendererCommands = 'dev';
+    const command: TRendererCommands = 'dev';
 
     await startService({
         path: rendererStartupPath,
         name: cacheKeys.renderer,
-        args: [commad, `--theme-name=${themeName}`],
+        args: [command, `--theme-name=${themeName}`],
     });
 }
 

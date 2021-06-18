@@ -43,9 +43,9 @@ For a Docker container the config will be a bit different since "localhost" insi
 ```
 
 To load the config into a container we need to change docker-compose.yml.  
-Remove all DB_* environment variables and add a volume:
+Remove all DB_* environment variables and add the volume:
 
-```diff title="diff:docker-compose.yml"
+```diff title="diff: docker-compose.yml"
   cromwell:
     image: cromwell:latest
     container_name: cromwell_container
@@ -66,24 +66,24 @@ Remove all DB_* environment variables and add a volume:
 -      DB_PORT: 3306
 -      DB_DATABASE: cromwell
 -      DB_USER: cromwell
--      DB_PASSWORD: somepassword
+-      DB_PASSWORD: my_password
 ```
 
 
 ## Config options
-format: **optionName** `: type` (`defaultValue`) - description.
+Options of cmsconfig.json. Format: **optionName** `: type` (`defaultValue`) - description.
 
 - ** orm: ** `: ConnectionOptions` - Options passed to TypeORM to create a new connection. [Learn more in TypeORM docs](https://typeorm.io/#/connection-options).
 - **apiPort** `: number`  (`4016`)  - Port to use for API and Proxy server. On this port will also be proxied admin panel and Next.js server.
 - **adminPanelPort** `: number` (`4064`) - Port to use for admin panel server.
 - **frontendPort** `: number` (`4128`) - Port to use for Next.js server.
 - **env** `: string` (`prod`) - CMS environment. Available values: `dev`, `prod`.  
-'dev' environment adds detailed log, SwaggerUI at http://localhost:4016/api/v1/api-docs/, "synchronize" by default for SQLite in ConnectionOptions.
+'dev' environment adds: detailed log; SwaggerUI at http://localhost:4016/api/v1/api-docs/; "synchronize" by default for SQLite in ConnectionOptions; /api/v1/mock REST API routes
 - **accessTokenSecret** `: string` - Authentication in Cromwell CMS works via access/refresh JSON Web Token (JWT) method. You can provide a secret that will be used to sign tokens, otherwise the CMS will generate a random secret.
 - **refreshTokenSecret** `: string` - Same as accessTokenSecret, but for refresh JWT.
 - **accessTokenExpirationTime** `: number` (`600`) - Time in seconds after which token will be considered as expired.
 - **refreshTokenExpirationTime** `: number` (`1296000`) - Same as accessTokenExpirationTime, but for refresh JWT.
-- **defaultSettings** `: Object` - Default values used to initialize CMS on first launch.
+- **defaultSettings** `: Object` - Default values used to initialize database settings of the CMS on first launch.
     - **installed** `: boolean` (`false`) - If false, open installation window on admin panel visit until installation finished. Important to note that when there's "installed: false" in DB, all routes will be unprotected by authorization, which means anyone can open admin panel, configure new admin account or make any changes on other pages.
     - **themeName** `: string` (`@cromwell/theme-store`) - NPM package name of an initial theme to use.
     - **logo** `: string` (`/themes/@cromwell/theme-store/shopping-cart.png`) - Path to web site logo in [public](/docs/overview/installation#working-directories) directory

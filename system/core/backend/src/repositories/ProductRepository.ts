@@ -108,11 +108,11 @@ export class ProductRepository extends BaseRepository<Product> {
 
         // Move mainImage into first item in the array if it is not
         if (product.images && product.images.length > 0 && product.mainImage && product.images[0] !== product.mainImage) {
-            const imgs = [...product.images];
-            const index = imgs.indexOf(product.mainImage);
+            const images = [...product.images];
+            const index = images.indexOf(product.mainImage);
             if (index > -1) {
-                imgs.splice(index, 1);
-                product.images = [product.mainImage, ...imgs];
+                images.splice(index, 1);
+                product.images = [product.mainImage, ...images];
             }
         }
         // Set mainImage from array if it hasn't been set
@@ -302,7 +302,7 @@ export class ProductRepository extends BaseRepository<Product> {
             .delete().from<Product>(this.metadata.tablePath);
 
         this.applyProductFilter(qb, filterParams);
-        this.applyDeletMany(qb, input);
+        this.applyDeleteMany(qb, input);
         await qb.execute();
         return true;
     }

@@ -46,10 +46,10 @@ services:
       - 3306:3306
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_ROOT_PASSWORD: root_password
       MYSQL_DATABASE: cromwell
       MYSQL_USER: cromwell
-      MYSQL_PASSWORD: somepassword
+      MYSQL_PASSWORD: my_password
 
   phpmyadmin:
     depends_on:
@@ -83,10 +83,10 @@ services:
       DB_PORT: 3306
       DB_DATABASE: cromwell
       DB_USER: cromwell
-      DB_PASSWORD: somepassword
+      DB_PASSWORD: my_password
 ```
 
-Apart of Cromwell CMS the file configures MariaDB and phpMyAdmin to run in separate containers.  
+Apart of Cromwell CMS the file configures MariaDB and phpMyAdmin to run in separate containers (you can remove phpMyAdmin if you don't need it).  
 Another key feature is that it has volumes, so all data will be stored in your current directory, outside of Docker containers. You will be able to remove containers and keep DB data.  
 
 Replace password in environment variables: MYSQL_ROOT_PASSWORD, MYSQL_PASSWORD, DB_PASSWORD.  
@@ -158,7 +158,7 @@ In this example we do not launch a proxy server (Nginx) or a database service, b
 The CMS has its Node.js proxy to distribute traffic to API server, Next.js server and admin panel.  
 And if there's no config provided CMS will create and use a new SQLite database in `./.cromwell/server/db.sqlite3`   
 
-** Note that SQLite is not supported by us for production usage! ** You still can use it for preview or development but later you must switch to MySQL/MariaDB/PostgreSQL. Read in the [next post](/docs/overview/configuration) how to connect a database.    
+** Note that SQLite is not supported by us for production usage! ** You can still use it for preview or development but later you have to switch to MySQL/MariaDB/PostgreSQL. Read in the [next post](/docs/overview/configuration) how to connect a database.    
 If you try to upgrade CMS to a new version with SQLite in future, system can possibly crash.
 
 

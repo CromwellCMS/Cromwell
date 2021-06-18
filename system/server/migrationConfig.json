@@ -3,7 +3,7 @@
     "host": "localhost",
     "port": 3306,
     "username": "cromwell",
-    "password": "somepassword",
+    "password": "my_password",
     "database": "cromwell",
     "synchronize": false,
     "entityPrefix": "crw_",

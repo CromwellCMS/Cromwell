@@ -181,7 +181,7 @@ const devGenerate = async (themeName: string) => {
  
          ${pageInfo.metaInfoPath ? `
          if (isServer()) {
-             importer.importSciptExternals(metaInfo);
+             importer.importScriptExternals(metaInfo);
          }
          ` : ''} `;
 
@@ -198,7 +198,7 @@ const devGenerate = async (themeName: string) => {
              ` : ''}
  
              ${pageInfo.metaInfoPath ? `
-             await importer.importSciptExternals(metaInfo);
+             await importer.importScriptExternals(metaInfo);
              ` : ''}
     
 

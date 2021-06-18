@@ -99,7 +99,7 @@ export class AuthService {
         const userRepo = getCustomRepository(UserRepository);
         if (data?.role && data.role !== 'customer') {
             if (!initiator?.id || initiator.role !== 'administrator')
-                throw new UnauthorizedException('No permissons to create this user');
+                throw new UnauthorizedException('Denied. You have no permissions to create this type of user');
         }
         return userRepo.createUser(data);
     }
@@ -118,12 +118,12 @@ export class AuthService {
         const compiledMail = await getEmailTemplate('forgot-password.html', {
             resetCode: secretCode
         });
-        if (compiledMail) {
-            const success = await sendEmail([email], 'Forgot password', compiledMail);
-            return success;
+        if (!compiledMail) {
+            logger.error('forgot-password.html template was not found');
+            throw new HttpException('forgot-password.html template was not found', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        logger.error('forgot-password was not found');
-        throw new HttpException('Failed', HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return await sendEmail([email], 'Forgot password', compiledMail);
     }
 
     async resetUserPassword(input: ResetPasswordDto) {
@@ -355,8 +355,16 @@ export class AuthService {
 
     async processRequest(request: TRequestWithUser, response: FastifyReply): Promise<TAuthUserInfo | null> {
         try {
-            const accessToken = request?.cookies?.[authSettings.accessTokenCookieName];
+            let accessToken = request?.cookies?.[authSettings.accessTokenCookieName];
             const refreshToken = request?.cookies?.[authSettings.refreshTokenCookieName];
+
+            if (!accessToken) {
+                const authHeader = String(request?.headers?.['authorization'] ?? '');
+                if (authHeader.startsWith('Bearer ')) {
+                    accessToken = authHeader.substring(7, authHeader.length);
+                }
+            }
+
             if (!accessToken && !refreshToken) return null;
 
             // Validate access token

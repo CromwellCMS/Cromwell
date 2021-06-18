@@ -1,4 +1,4 @@
-import { TExternal, TPackageJson, TSciprtMetaInfo } from '@cromwell/core';
+import { TExternal, TPackageJson, TScriptMetaInfo } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import { Compiler } from 'webpack';
@@ -192,7 +192,7 @@ export class CromwellWebpackPlugin {
             });
 
             // Create meta info file with actually used dependencies
-            const metaInfoContent: TSciprtMetaInfo = {
+            const metaInfoContent: TScriptMetaInfo = {
                 name: `${moduleName}@${moduleVer}`,
                 import: 'chunks',
                 externalDependencies: versionedExternals,

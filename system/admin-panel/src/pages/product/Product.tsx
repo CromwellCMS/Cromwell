@@ -27,7 +27,7 @@ export type TInfoCardRef = {
 const ProductPage = () => {
     const { id: productId } = useParams<{ id: string }>();
     const client = getGraphQLClient();
-    const [isLoading, setIsloading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     // const [product, setProdData] = useState<TProduct | null>(null);
     const [attributes, setAttributes] = useState<TAttribute[]>([]);
 
@@ -55,7 +55,7 @@ const ProductPage = () => {
 
     const getProduct = async () => {
         if (productId && productId !== 'new') {
-            setIsloading(true);
+            setIsLoading(true);
             let prod: TProduct | undefined;
             try {
                 prod = await client?.getProductById(productId, gql`
@@ -110,7 +110,7 @@ const ProductPage = () => {
             }
             else setNotFound(true);
 
-            setIsloading(false);
+            setIsLoading(false);
 
 
         } else if (productId === 'new') {
@@ -121,13 +121,13 @@ const ProductPage = () => {
     }
 
     const getAttributes = async () => {
-        setIsloading(true);
+        setIsLoading(true);
         try {
             const attr = await client?.getAttributes();
             if (attr) setAttributes(attr);
         } catch (e) { console.error(e) }
 
-        setIsloading(false);
+        setIsLoading(false);
     }
 
     useEffect(() => {
@@ -176,7 +176,7 @@ const ProductPage = () => {
                 pageDescription: product.pageDescription,
                 isEnabled: product.isEnabled,
             }
-            setIsloading(true);
+            setIsLoading(true);
 
             if (productId === 'new') {
                 try {
@@ -205,7 +205,7 @@ const ProductPage = () => {
                 }
             }
 
-            setIsloading(false);
+            setIsLoading(false);
         }
     }
 

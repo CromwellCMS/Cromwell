@@ -82,8 +82,6 @@ function Footer(): JSX.Element | null {
                         <li
                           key={key}
                           className="footer__item"
-                          // Developer provided the HTML, so assume it's safe.
-                          // eslint-disable-next-line react/no-danger
                           dangerouslySetInnerHTML={{
                             __html: item.html,
                           }}

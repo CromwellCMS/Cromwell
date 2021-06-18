@@ -1,11 +1,11 @@
 import { TFrontendDependency } from '@cromwell/core';
 
 // Chunks
-export const moduleMainBuidFileName = 'main.bundle.js';
+export const moduleMainBuildFileName = 'main.bundle.js';
 
 // Entire library
-export const moduleLibBuidFileName = 'lib.bundle.js';
-export const moduleNodeBuidFileName = 'node.bundle.js';
+export const moduleLibBuildFileName = 'lib.bundle.js';
+export const moduleNodeBuildFileName = 'node.bundle.js';
 export const moduleMetaInfoFileName = 'meta.json';
 export const moduleBundleInfoFileName = 'bundle.info.json';
 export const moduleArchiveFileName = 'module.zip';
