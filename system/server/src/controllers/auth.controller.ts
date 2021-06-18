@@ -149,7 +149,7 @@ export class AuthController {
 
     @Post('forgot-password')
     @UseGuards(ThrottlerGuard)
-    @Throttle(4, 10)
+    @Throttle(8, 600)
     @ApiOperation({
         description: 'Send an e-mail with reset code for a user account',
     })
@@ -168,7 +168,7 @@ export class AuthController {
 
     @Post('reset-password')
     @UseGuards(ThrottlerGuard)
-    @Throttle(5, 10)
+    @Throttle(6, 600)
     @ApiOperation({
         description: 'Set a new password for user with provided secret code',
     })

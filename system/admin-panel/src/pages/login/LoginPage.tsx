@@ -109,7 +109,7 @@ const LoginPage = () => {
                 newPassword: passwordInput,
             });
             if (success) {
-                toast.success('Password has been reset.');
+                toast.success('Password has been changed.');
                 setFormType('sign-in');
             } else {
                 throw new Error('!success');

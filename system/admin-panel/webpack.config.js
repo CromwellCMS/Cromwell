@@ -13,8 +13,10 @@ const isProduction = buildMode === 'production';
 
 const entry = [path.resolve(localProjectDir, 'src/index.ts')];
 if (!isProduction) {
-    entry.unshift('webpack-hot-middleware/client')
+    entry.unshift('webpack-hot-middleware/client');
 }
+
+console.log('buildMode', buildMode, isProduction)
 
 module.exports = {
     mode: buildMode,
@@ -83,8 +85,8 @@ module.exports = {
             },
         ]
     },
-    plugins: [
+    plugins: isProduction ? [] : [
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoEmitOnErrorsPlugin(),
-    ]
+    ],
 }

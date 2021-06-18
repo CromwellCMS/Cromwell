@@ -149,7 +149,7 @@ export default function SingIn(props: {
                 newPassword: passwordInput,
             });
             if (success) {
-                toast.success('Password has been reset.');
+                toast.success('Password has been changed.');
                 setSubmitPressed(false);
                 setFormType('sign-in');
                 setActiveTab(0);
@@ -301,7 +301,7 @@ export default function SingIn(props: {
                             className={styles.loginBtn}
                             disabled={loading}
                             variant="outlined"
-                            color="inherit">Forgot password</Button>
+                            color="inherit">Reset password</Button>
                     )}
                     {formType === 'reset-pass' && (
                         <Button
@@ -310,7 +310,7 @@ export default function SingIn(props: {
                             className={styles.loginBtn}
                             disabled={loading}
                             variant="outlined"
-                            color="inherit">Reset password</Button>
+                            color="inherit">Change password</Button>
                     )}
                 </form>
             </div>

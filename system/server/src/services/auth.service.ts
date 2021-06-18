@@ -118,12 +118,12 @@ export class AuthService {
         const compiledMail = await getEmailTemplate('forgot-password.html', {
             resetCode: secretCode
         });
-        if (compiledMail) {
-            const success = await sendEmail([email], 'Forgot password', compiledMail);
-            return success;
+        if (!compiledMail) {
+            logger.error('forgot-password.html template was not found');
+            throw new HttpException('forgot-password.html template was not found', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        logger.error('forgot-password was not found');
-        throw new HttpException('Failed', HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return await sendEmail([email], 'Forgot password', compiledMail);
     }
 
     async resetUserPassword(input: ResetPasswordDto) {

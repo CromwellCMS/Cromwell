@@ -211,7 +211,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
         }
     }
 
-    private handleDeletePage = (page) => {
+    private handleDeletePage = () => {
 
     }
 
