@@ -149,7 +149,7 @@ const args = yargs(process.argv.slice(2))
             return yargs.option('type', {
                 alias: 't',
                 desc: 'type of project - default, plugin, theme',
-                type: 'string'
+                choices: ["theme", "t", "plugin", "p", "default", "d"],
             }).option('noInstall', {
                 alias: 'noInstall',
                 desc: 'do not run npm install',
@@ -157,7 +157,7 @@ const args = yargs(process.argv.slice(2))
             })
         },
         handler: (argv) => {
-            createTask(argv.name, argv.noInstall)
+            createTask(argv.name, argv.noInstall, argv.type)
         }
     })
     // BUNDLE MODULES
