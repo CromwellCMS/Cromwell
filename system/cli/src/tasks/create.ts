@@ -19,6 +19,11 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
     "description": "",
     "keywords": [],
     "author": "",
+    "files": [
+      "build",
+      "static",
+      "cromwell.config.js"
+    ],
   }
 
   if (type === 't') type = 'theme';
@@ -44,6 +49,13 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
       "build": "npx cromwell b",
       "watch": "npx cromwell b -w"
     }
+
+    fs.outputFileSync(resolve(dir, '.gitignore'),
+      `/.cromwell
+/build
+/public
+node_modules/
+*.tsbuildinfo`);
   }
 
   fs.outputJSONSync(resolve(dir, 'package.json'), pckg, { spaces: 2 });

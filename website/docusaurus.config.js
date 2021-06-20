@@ -24,7 +24,7 @@ module.exports = {
           activeBasePath: 'never',
         },
         {
-          to: '/docs/tutorials/create-a-plugin',
+          to: '/docs/tutorials/theme-development',
           label: 'Tutorials',
           position: 'left',
           activeBasePath: 'docs/tutorials',
