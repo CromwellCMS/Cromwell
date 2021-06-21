@@ -68,7 +68,6 @@ const folders = [
     join(systemDir, '.cromwell'),
 
     join(projectRootDir, 'package-lock.json'),
-    join(projectRootDir, 'yarn.lock'),
     join(projectRootDir, '.cromwell/server'),
     join(projectRootDir, '.cromwell/renderer'),
     join(projectRootDir, '.cromwell/manager'),

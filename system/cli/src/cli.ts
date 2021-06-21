@@ -123,21 +123,27 @@ const args = yargs(process.argv.slice(2))
         }
     })
     // BUILD
-    .command<{ watch?: boolean }>({
+    .command<{ watch?: boolean; port?: string; }>({
         command: 'build [options]',
         describe: 'builds CMS module - theme or plugin',
         aliases: ['build', 'b'],
         builder: (yargs) => {
-            return yargs.option('watch', {
-                alias: 'w',
-                desc: 'watch files and rebuild on change',
-                type: 'boolean'
-            })
+            return yargs
+                .option('watch', {
+                    alias: 'w',
+                    desc: 'watch files and rebuild on change',
+                    type: 'boolean'
+                })
+                .option('port', {
+                    alias: 'p',
+                    desc: 'Port for Next.js server',
+                    type: 'string'
+                })
         },
         handler: (argv) => {
             const { buildTask } = require('@cromwell/cms');
 
-            buildTask(argv.watch);
+            buildTask(argv.watch, argv.port);
         }
     })
     // CREATE

@@ -28,8 +28,12 @@ const main = () => {
     const config = readCMSConfigSync();
 
     setStoreItem('environment', {
-        mode: config.env ?? scriptName === 'dev' ? 'dev' : 'prod',
+        mode: config.env || scriptName === 'dev' ? 'dev' : 'prod',
     });
+
+    const args = yargs(process.argv.slice(2));
+    const port = args.port || config.frontendPort;
+
 
     const isServiceBuilt = () => {
         return (fs.existsSync(buildDir)
@@ -44,7 +48,6 @@ const main = () => {
 
     const gen = async () => {
         const generator = require(resolve(buildDir, 'generator.js')).generator;
-        const args = yargs(process.argv.slice(2));
         await generator({
             scriptName,
             targetThemeName: args.themeName,
@@ -90,7 +93,7 @@ const main = () => {
         try {
             await gen();
 
-            proc = spawn(`npx --no-install next start -p ${config.frontendPort}`, [],
+            proc = spawn(`npx --no-install next start -p ${port}`, [],
                 { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
         } catch (e) {
             if (process.send) process.send(rendererMessages.onStartErrorMessage);
@@ -136,7 +139,7 @@ const main = () => {
         (async () => {
             await gen();
 
-            spawn(`next dev -p ${config.frontendPort}`, [],
+            spawn(`next dev -p ${port}`, [],
                 { shell: true, stdio: 'inherit', cwd: tempDir, env: npmRunPath.env() });
         })();
         return;
