@@ -20,14 +20,14 @@ const { handleError, bold, underline, cyan, stderr, green } = require('rollup/di
 const { relativeId } = require('rollup/dist/shared/rollup.js');
 const logger = getLogger(false);
 
-export const buildTask = async (watch?: boolean) => {
+export const buildTask = async (watch?: boolean, port?: string) => {
     const workingDir = process.cwd();
 
     const moduleInfo = await getCmsModuleInfo();
     const moduleConfig = await getCmsModuleConfig();
     await checkDepenencies();
 
-    const errorEg = `
+    const errorExample = `
     {
         "name": "cromwell-plugin-your-plugin",
         "version": "1.0.0",
@@ -38,22 +38,22 @@ export const buildTask = async (watch?: boolean) => {
     }`;
 
     if (!moduleInfo) {
-        logger.error('package.json must have "cromwell" property. Eg.:' + errorEg);
+        logger.error('package.json must have "cromwell" property. Eg.:' + errorExample);
         return;
     }
 
     if (!moduleInfo?.name) {
-        logger.error('cromwell config in package.json must have "name" property. Eg.:' + errorEg);
+        logger.error('cromwell config in package.json must have "name" property. Eg.:' + errorExample);
         return;
     }
 
     if (!moduleInfo?.type) {
-        logger.error('cromwell config in package.json must have "type" property. Eg.:' + errorEg);
+        logger.error('cromwell config in package.json must have "type" property. Eg.:' + errorExample);
         return;
     }
 
     if (moduleInfo.type !== 'theme' && moduleInfo.type !== 'plugin') {
-        logger.error('"type" property of cromwell config in package.json must have either "plugin" or "theme" value. Eg.:' + errorEg);
+        logger.error('"type" property of cromwell config in package.json must have either "plugin" or "theme" value. Eg.:' + errorExample);
         return;
     }
 
@@ -80,7 +80,7 @@ export const buildTask = async (watch?: boolean) => {
         console.log('Running Next.js build...');
 
         if (watch) {
-            await rendererStartWatchDev(moduleInfo.name);
+            await rendererStartWatchDev(moduleInfo.name, port);
 
         } else {
             const nextBuildDir = getThemeNextBuildDirByPath(workingDir);

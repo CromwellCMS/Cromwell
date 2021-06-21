@@ -9,6 +9,9 @@ module.exports = {
   organizationName: 'CromwellCMS',
   projectName: 'CromwellCMS',
   themeConfig: {
+    colorMode: {
+      // defaultMode: 'dark',
+    },
     navbar: {
       title: 'My Site',
       logo: {
@@ -24,7 +27,7 @@ module.exports = {
           activeBasePath: 'never',
         },
         {
-          to: '/docs/tutorials/create-a-plugin',
+          to: '/docs/tutorials/theme-development',
           label: 'Tutorials',
           position: 'left',
           activeBasePath: 'docs/tutorials',
@@ -85,14 +88,11 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          editUrl:
-            'https://github.com/CromwellCMS/Cromwell/edit/master/website/docs/',
+          // editUrl: 'https://github.com/CromwellCMS/Cromwell/edit/master/website/docs/',
         },
         blog: {
           showReadingTime: true,
-          editUrl:
-            'https://github.com/CromwellCMS/Cromwell/edit/master/website/blog/',
+          // editUrl: 'https://github.com/CromwellCMS/Cromwell/edit/master/website/blog/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),

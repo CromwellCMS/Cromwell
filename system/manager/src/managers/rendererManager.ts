@@ -235,10 +235,9 @@ export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promis
 }
 
 
-export const rendererStartWatchDev = async (themeName: string) => {
+export const rendererStartWatchDev = async (themeName: string, port?: string) => {
     if (!rendererStartupPath) return false;
 
-    await closeRenderer();
     const rendererTempDir = getRendererTempDir();
     await fs.ensureDir(rendererTempDir);
 
@@ -247,7 +246,7 @@ export const rendererStartWatchDev = async (themeName: string) => {
     await startService({
         path: rendererStartupPath,
         name: cacheKeys.renderer,
-        args: [command, `--theme-name=${themeName}`],
+        args: [command, `--theme-name=${themeName}`, port ? '--port=' + port : ''],
     });
 }
 

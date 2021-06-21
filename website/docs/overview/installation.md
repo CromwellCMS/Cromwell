@@ -158,8 +158,8 @@ In this example we do not launch a proxy server (Nginx) or a database service, b
 The CMS has its Node.js proxy to distribute traffic to API server, Next.js server and admin panel.  
 And if there's no config provided CMS will create and use a new SQLite database in `./.cromwell/server/db.sqlite3`   
 
-** Note that SQLite is not supported by us for production usage! ** You can still use it for preview or development but later you have to switch to MySQL/MariaDB/PostgreSQL. Read in the [next post](/docs/overview/configuration) how to connect a database.    
-If you try to upgrade CMS to a new version with SQLite in future, system can possibly crash.
+** Note that SQLite is not supported by us for production usage! ** You can still use it for preview or development but later you have to switch to MySQL/MariaDB/PostgreSQL. If you try to upgrade CMS to a new version with SQLite in future, system can possibly crash.  
+Read in the [next post](/docs/overview/configuration) how to connect a database.  
 
 
 ## 4. Cromwell CLI

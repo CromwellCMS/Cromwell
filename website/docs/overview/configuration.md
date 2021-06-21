@@ -73,15 +73,15 @@ Remove all DB_* environment variables and add the volume:
 ## Config options
 Options of cmsconfig.json. Format: **optionName** `: type` (`defaultValue`) - description.
 
-- ** orm: ** `: ConnectionOptions` - Options passed to TypeORM to create a new connection. [Learn more in TypeORM docs](https://typeorm.io/#/connection-options).
+- ** orm: ** `: ConnectionOptions` - Options passed to TypeORM to create a new connection. [See in TypeORM docs](https://typeorm.io/#/connection-options).
 - **apiPort** `: number`  (`4016`)  - Port to use for API and Proxy server. On this port will also be proxied admin panel and Next.js server.
 - **adminPanelPort** `: number` (`4064`) - Port to use for admin panel server.
 - **frontendPort** `: number` (`4128`) - Port to use for Next.js server.
 - **env** `: string` (`prod`) - CMS environment. Available values: `dev`, `prod`.  
-'dev' environment adds: detailed log; SwaggerUI at http://localhost:4016/api/v1/api-docs/; "synchronize" by default for SQLite in ConnectionOptions; /api/v1/mock REST API routes
+'dev' environment adds: detailed log; SwaggerUI at http://localhost:4016/api/v1/api-docs/; "synchronize" by default for SQLite in ConnectionOptions; /api/v1/mock REST API routes.
 - **accessTokenSecret** `: string` - Authentication in Cromwell CMS works via access/refresh JSON Web Token (JWT) method. You can provide a secret that will be used to sign tokens, otherwise the CMS will generate a random secret.
 - **refreshTokenSecret** `: string` - Same as accessTokenSecret, but for refresh JWT.
-- **accessTokenExpirationTime** `: number` (`600`) - Time in seconds after which token will be considered as expired.
+- **accessTokenExpirationTime** `: number` (`600`) - Time in seconds after which access token will be considered as expired.
 - **refreshTokenExpirationTime** `: number` (`1296000`) - Same as accessTokenExpirationTime, but for refresh JWT.
 - **defaultSettings** `: Object` - Default values used to initialize database settings of the CMS on first launch.
     - **installed** `: boolean` (`false`) - If false, open installation window on admin panel visit until installation finished. Important to note that when there's "installed: false" in DB, all routes will be unprotected by authorization, which means anyone can open admin panel, configure new admin account or make any changes on other pages.

@@ -96,5 +96,3 @@ out
 .yarn/unplugged
 .yarn/build-state.yml
 .pnp.*
-
-# db.sqlite3
