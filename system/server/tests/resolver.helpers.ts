@@ -24,7 +24,7 @@ export const setupResolver = async (name: string): Promise<[ApolloServer, Apollo
         },
     });
 
-    await connectDatabase();
+    await connectDatabase({ synchronize: true }, true);
 
     let cmsSettings = getStoreItem('cmsSettings');
     if (!cmsSettings) cmsSettings = {};
