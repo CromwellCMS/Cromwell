@@ -28,7 +28,7 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     logo?: string;
 
     @Column({ type: 'text', nullable: true })
-    headerHtml?: string;
+    headHtml?: string;
 
     @Column({ type: 'text', nullable: true })
     footerHtml?: string;

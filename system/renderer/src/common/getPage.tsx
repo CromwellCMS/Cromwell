@@ -25,7 +25,8 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
 
     return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
         const { plugins, pageConfig, themeCustomConfig,
-            childStaticProps, cmsSettings, headHtml, pagesInfo,
+            childStaticProps, cmsSettings, themeHeadHtml,
+            themeFooterHtml, pagesInfo,
             palette } = props;
 
         const forcedChildStaticProps = useRef(null);
@@ -42,7 +43,6 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
             forceUpdate();
         }
         setStoreItem('forceUpdatePage', forceUpdatePage);
-
         let title;
         let description;
         if (pageConfig) {
@@ -64,10 +64,13 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
                 <CContainer id={pageRootContainerId} isConstant={true}>
                     <PageComponent {...pageCompProps} {...props} />
                     {cmsSettings?.footerHtml && ReactHtmlParser(cmsSettings.footerHtml, { transform: parserTransform })}
+                    {themeFooterHtml && ReactHtmlParser(themeFooterHtml, { transform: parserTransform })}
+                    {pageConfig?.footerHtml && ReactHtmlParser(pageConfig?.footerHtml, { transform: parserTransform })}
                 </CContainer>
                 <Head>
-                    {headHtml && ReactHtmlParser(headHtml, { transform: parserTransform })}
-                    {cmsSettings?.headerHtml && ReactHtmlParser(cmsSettings.headerHtml, { transform: parserTransform })}
+                    {themeHeadHtml && ReactHtmlParser(themeHeadHtml, { transform: parserTransform })}
+                    {cmsSettings?.headHtml && ReactHtmlParser(cmsSettings.headHtml, { transform: parserTransform })}
+                    {pageConfig?.headHtml && ReactHtmlParser(pageConfig?.headHtml, { transform: parserTransform })}
                     {title && <title>{title}</title>}
                     {description && <meta property="og:description" content={description} key="description" />}
                 </Head>

@@ -7,6 +7,7 @@ import {
     getPublicDir,
     getRendererBuildDir,
     getRendererTempDir,
+    getRendererTempDevDir,
     getThemeBuildDir,
     readCMSConfig,
 } from '@cromwell/core-backend';
@@ -43,51 +44,21 @@ export const generator = async (options: {
         return;
     }
 
-    const tempDir = getRendererTempDir();
-    const tempDirPublic = resolve(tempDir, 'public');
-
-    await fs.ensureDir(tempDir);
-
-    const pckg = await getModulePackage(themeName);
-    if (pckg) await downloader({
-        rootDir: process.cwd(),
-        packages: [pckg],
-    });
-
     if (scriptName === 'dev' || scriptName === 'build' || scriptName === 'buildStart') {
-        await devGenerate(themeName);
+        await devGenerate(themeName, options);
     } else {
-        await prodGenerate(themeName);
+        await prodGenerate(themeName, options);
     }
-
-    // Link public dir in root to renderer's public dir for Next.js server
-    if (!fs.existsSync(tempDirPublic)) {
-        try {
-            await symlinkDir(getPublicDir(), tempDirPublic)
-        } catch (e) { console.error(e) }
-    }
-
-    // Link bundled modules
-    const bundledDir = getBundledModulesDir();
-    const bundledPublicDir = resolve(getPublicDir(), bundledModulesDirName);
-    if (!fs.existsSync(bundledPublicDir) && fs.existsSync(bundledDir)) {
-        try {
-            await symlinkDir(bundledDir, bundledPublicDir)
-        } catch (e) { console.error(e) }
-    }
-
-    // Output .env file
-    let envContent = '';
-    if (options.serverPort) envContent += `API_PORT=${options.serverPort}`;
-    await fs.outputFile(resolve(tempDir, '.env.local'), envContent);
 };
 
-const devGenerate = async (themeName: string) => {
-    const tempDir = getRendererTempDir();
+const devGenerate = async (themeName: string, options) => {
+    const tempDir = getRendererTempDevDir();
     const tempDirBuild = resolve(tempDir, 'build');
     const rendererBuildDir = getRendererBuildDir();
     const themeConfig = await getCmsModuleConfig(themeName);
     const pagesLocalDir = resolve(tempDir, 'pages');
+
+    await linkFiles(tempDir, themeName, options);
 
     // Read pages
     const themeExports = await readThemeExports(themeName);
@@ -319,8 +290,11 @@ const devGenerate = async (themeName: string) => {
     }
 }
 
-const prodGenerate = async (themeName: string) => {
+const prodGenerate = async (themeName: string, options) => {
     // if prod, recreate .next dir from theme's build dir
+    const tempDir = getRendererTempDir();
+    await linkFiles(tempDir, themeName, options);
+
     const themeBuildDir = await getThemeBuildDir(themeName);
     const rendererTempNextDir = resolve(getRendererTempDir(), '.next');
 
@@ -333,4 +307,37 @@ const prodGenerate = async (themeName: string) => {
             await sleep(0.1);
         }
     }
+}
+
+const linkFiles = async (tempDir: string, themeName: string, options) => {
+    const tempDirPublic = resolve(tempDir, 'public');
+
+    await fs.ensureDir(tempDir);
+
+    const pckg = await getModulePackage(themeName);
+    if (pckg) await downloader({
+        rootDir: process.cwd(),
+        packages: [pckg],
+    });
+
+    // Link public dir in root to renderer's public dir for Next.js server
+    if (!fs.existsSync(tempDirPublic)) {
+        try {
+            await symlinkDir(getPublicDir(), tempDirPublic)
+        } catch (e) { console.error(e) }
+    }
+
+    // Link bundled modules
+    const bundledDir = getBundledModulesDir();
+    const bundledPublicDir = resolve(getPublicDir(), bundledModulesDirName);
+    if (!fs.existsSync(bundledPublicDir) && fs.existsSync(bundledDir)) {
+        try {
+            await symlinkDir(bundledDir, bundledPublicDir)
+        } catch (e) { console.error(e) }
+    }
+
+    // Output .env file
+    let envContent = '';
+    if (options.serverPort) envContent += `API_PORT=${options.serverPort}`;
+    await fs.outputFile(resolve(tempDir, '.env.local'), envContent);
 }

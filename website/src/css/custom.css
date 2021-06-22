@@ -29,6 +29,10 @@ html[data-theme="dark"] {
   --ifm-link-color: #cd3aff;
 }
 
+html[data-theme="light"] {
+  --ifm-code-background: #eee;
+}
+
 .table-of-contents__link--active {
   font-weight: 700;
 }

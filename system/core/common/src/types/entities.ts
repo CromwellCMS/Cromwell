@@ -383,7 +383,7 @@ export type TCmsEntityCore = {
     defaultShippingPrice?: number;
 
     // Custom HTML code injection
-    headerHtml?: string;
+    headHtml?: string;
     footerHtml?: string;
     // < / >
 
@@ -417,7 +417,7 @@ export type TCmsEntityInput = {
     language?: string;
     favicon?: string;
     logo?: string;
-    headerHtml?: string;
+    headHtml?: string;
     footerHtml?: string;
     defaultShippingPrice?: number;
     smtpConnectionString?: string;

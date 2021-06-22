@@ -19,7 +19,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         // const timestamp = Date.now();
 
         let rendererData: {
-            pageConfig?: TPageConfig
+            pageConfig?: TPageConfig;
             pluginsSettings?: {
                 pluginName: string;
                 version?: string;
@@ -32,8 +32,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         } = {};
 
         try {
-            const data: any = await getRestAPIClient().get(`theme/renderer?pageRoute=${pageRoute}`);
-            rendererData = data ?? {};
+            rendererData = (await getRestAPIClient().get(`theme/renderer?pageRoute=${pageRoute}`)) ?? {};
         } catch (e) {
             console.error(e);
         }
@@ -67,9 +66,6 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
 
         apiClient?.post(`cms/view-page`, pageStats, { disableLog: true }).catch(() => null);
 
-        const headHtml = themeConfig?.headHtml ?? null;
-        const palette = themeConfig?.palette ?? null;
-
         // console.log('getStaticProps for page: ' + pageName);
         // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
@@ -80,8 +76,9 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
             cmsSettings,
             themeCustomConfig,
             pagesInfo,
-            headHtml,
-            palette,
+            themeHeadHtml: themeConfig?.headHtml,
+            themeFooterHtml: themeConfig?.footerHtml,
+            palette: themeConfig?.palette,
         }
 
         return {

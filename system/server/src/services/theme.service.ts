@@ -20,6 +20,7 @@ import {
     getCmsSettings,
     getLogger,
     getModulePackage,
+    getModuleStaticDir,
     getNodeModuleDir,
     getPublicThemesDir,
     runShellCommand,
@@ -29,6 +30,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import decache from 'decache';
 import fs from 'fs-extra';
 import { resolve } from 'path';
+import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
 import { CmsConfigDto } from '../dto/cms-config.dto';
@@ -36,12 +38,10 @@ import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { GenericTheme } from '../helpers/genericEntities';
 import { childSendMessage } from '../helpers/serverManager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
-import { cmsServiceInst } from './cms.service';
-import { pluginServiceInst } from './plugin.service';
+import { CmsService } from './cms.service';
+import { PluginService } from './plugin.service';
 
 const logger = getLogger();
-
-export let themeServiceInst: ThemeService;
 
 type TAllConfigs = {
     themeConfig: TThemeConfig | null;
@@ -51,10 +51,18 @@ type TAllConfigs = {
 }
 
 @Injectable()
+@Service()
 export class ThemeService {
 
+    private get cmsService() {
+        return Container.get(CmsService);
+    }
+
+    private get pluginService() {
+        return Container.get(PluginService);
+    }
+
     constructor() {
-        themeServiceInst = this;
         this.init();
     }
 
@@ -468,7 +476,6 @@ export class ThemeService {
                 route: p.route,
                 name: p.name,
                 title: p.title,
-                isDynamic: p.isDynamic,
                 isVirtual: p.isVirtual,
             }
             out.push(info);
@@ -538,10 +545,10 @@ export class ThemeService {
                 if (!pluginName) return;
 
                 try {
-                    const plugin = await pluginServiceInst.findOne(pluginName);
+                    const plugin = await this.pluginService.findOne(pluginName);
                     if (!plugin) return;
 
-                    const pluginDBConfig = await pluginServiceInst.getPluginConfig(pluginName);
+                    const pluginDBConfig = await this.pluginService.getPluginConfig(pluginName);
                     const settings = Object.assign({}, (pluginDBConfig ?? {}),
                         mod?.plugin?.settings);
 
@@ -606,12 +613,12 @@ export class ThemeService {
         }
 
         // Copy static content into public 
-        const themePublicDir = resolve(themePath, 'static');
-        if (await fs.pathExists(themePublicDir)) {
+        const themeStaticDir = await getModuleStaticDir(themeName);
+        if (themeStaticDir && await fs.pathExists(themeStaticDir)) {
             try {
                 const publicThemesDir = getPublicThemesDir();
                 await fs.ensureDir(publicThemesDir);
-                await fs.copy(themePublicDir, resolve(publicThemesDir, themeName));
+                await fs.copy(themeStaticDir, resolve(publicThemesDir, themeName));
             } catch (e) { logger.log(e) }
         }
 
@@ -700,7 +707,7 @@ export class ThemeService {
             success = false;
         }
 
-        if (success) await cmsServiceInst.installModuleDependencies(themeName);
+        if (success) await this.cmsService.installModuleDependencies(themeName);
         await this.setIsUpdating(themeName, false);
 
         endTransaction(transactionId);
@@ -779,7 +786,7 @@ export class ThemeService {
             success = false;
         }
 
-        if (success) await cmsServiceInst.installModuleDependencies(themeName);
+        if (success) await this.cmsService.installModuleDependencies(themeName);
 
         endTransaction(transactionId);
 

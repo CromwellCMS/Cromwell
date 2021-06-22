@@ -46,7 +46,7 @@ export class CmsConfigDto implements TCmsSettings {
     logo?: string;
 
     @ApiProperty()
-    headerHtml?: string;
+    headHtml?: string;
 
     @ApiProperty()
     footerHtml?: string;
@@ -75,7 +75,7 @@ export class CmsConfigDto implements TCmsSettings {
         this.language = config.language;
         this.favicon = config.favicon;
         this.logo = config.logo;
-        this.headerHtml = config.headerHtml;
+        this.headHtml = config.headHtml;
         this.footerHtml = config.footerHtml;
         this.installed = config.installed;
         this.defaultShippingPrice = config.defaultShippingPrice;
@@ -83,4 +83,3 @@ export class CmsConfigDto implements TCmsSettings {
         return this;
     }
 }
-

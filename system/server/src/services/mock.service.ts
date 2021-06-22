@@ -22,9 +22,11 @@ import {
 import { Injectable } from '@nestjs/common';
 import cryptoRandomString from 'crypto-random-string';
 import nameGenerator from 'project-name-generator';
+import { Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
 @Injectable()
+@Service()
 export class MockService {
     private productRepo = getCustomRepository(ProductRepository);
     private productCategoryRepo = getCustomRepository(ProductCategoryRepository);

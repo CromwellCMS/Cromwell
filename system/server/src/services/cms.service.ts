@@ -16,6 +16,7 @@ import {
     AttributeRepository,
     cmsPackageName,
     getCmsEntity,
+    getCmsModuleInfo,
     getCmsSettings,
     getEmailTemplate,
     getLogger,
@@ -29,6 +30,7 @@ import {
     ProductRepository,
     ProductReview,
     ProductReviewRepository,
+    readCmsModules,
     runShellCommand,
     sendEmail,
     User,
@@ -40,6 +42,7 @@ import { format } from 'date-fns';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
 import stream from 'stream';
+import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository, getManager } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
 import * as util from 'util';
@@ -53,18 +56,25 @@ import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { childSendMessage } from '../helpers/serverManager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
-import { pluginServiceInst } from './plugin.service';
-import { themeServiceInst } from './theme.service';
+import { PluginService } from './plugin.service';
+import { ThemeService } from './theme.service';
 
 const logger = getLogger();
 
-export let cmsServiceInst: CmsService;
 
 @Injectable()
+@Service()
 export class CmsService {
 
+    private get pluginService() {
+        return Container.get(PluginService);
+    }
+
+    private get themeService() {
+        return Container.get(ThemeService);
+    }
+
     constructor() {
-        cmsServiceInst = this;
         this.init();
     }
 
@@ -77,7 +87,7 @@ export class CmsService {
             // crashed and was unable to set isUpdating to false
             setTimeout(async () => {
                 if (await this.getIsUpdating()) {
-                    logger.error('Server: CMS is still updating after minute of runnig a new server instance. Setting isUpdating to false');
+                    logger.error('Server: CMS is still updating after minute of running a new server instance. Setting isUpdating to false');
                     await this.setIsUpdating(false);
                 }
             }, 60000);
@@ -184,6 +194,45 @@ export class CmsService {
         return true;
     }
 
+    public async readPlugins(): Promise<TPackageCromwellConfig[]> {
+        const out: TPackageCromwellConfig[] = [];
+
+        const pluginModules = (await readCmsModules()).plugins;
+
+        for (const pluginName of pluginModules) {
+            const moduleInfo = await getCmsModuleInfo(pluginName);
+            delete moduleInfo?.frontendDependencies;
+            delete moduleInfo?.bundledDependencies;
+            delete moduleInfo?.firstLoadedDependencies;
+
+            if (moduleInfo) {
+                await this.parseModuleConfigImages(moduleInfo, pluginName);
+                out.push(moduleInfo);
+            }
+        }
+        return out;
+    }
+
+    public async readThemes(): Promise<TPackageCromwellConfig[]> {
+        const out: TPackageCromwellConfig[] = [];
+
+        const themeModuleNames = (await readCmsModules()).themes;
+
+        for (const themeName of themeModuleNames) {
+            const moduleInfo = await getCmsModuleInfo(themeName);
+
+            if (moduleInfo) {
+                delete moduleInfo.frontendDependencies;
+                delete moduleInfo.bundledDependencies;
+                delete moduleInfo.firstLoadedDependencies;
+
+                await this.parseModuleConfigImages(moduleInfo, themeName);
+                out.push(moduleInfo);
+            }
+        }
+        return out;
+    }
+
     public async updateCmsConfig(input: CmsConfigUpdateDto): Promise<AdvancedCmsConfigDto | undefined> {
         const entity = await getCmsEntity();
         if (!entity) throw new Error('!entity');
@@ -195,7 +244,7 @@ export class CmsService {
         entity.language = input.language;
         entity.favicon = input.favicon;
         entity.logo = input.logo;
-        entity.headerHtml = input.headerHtml;
+        entity.headHtml = input.headHtml;
         entity.footerHtml = input.footerHtml;
         entity.defaultShippingPrice = input.defaultShippingPrice;
         entity.smtpConnectionString = input.smtpConnectionString;
@@ -236,7 +285,7 @@ export class CmsService {
     async placeOrder(input: CreateOrderDto): Promise<TOrder | undefined> {
         const orderTotal = await this.calcOrderTotal(input);
         const settings = await getCmsSettings();
-        const { themeConfig } = await themeServiceInst.readConfigs();
+        const { themeConfig } = await this.themeService.readConfigs();
         let cart: TStoreListItem[] | undefined;
         try {
             if (input.cart) cart = JSON.parse(input.cart);
@@ -572,7 +621,7 @@ export class CmsService {
             if (pluginPckg) continue;
 
             try {
-                await pluginServiceInst.handleInstallPlugin(pluginName);
+                await this.pluginService.handleInstallPlugin(pluginName);
             } catch (error) {
                 logger.error(error);
             }
@@ -583,7 +632,7 @@ export class CmsService {
             if (themePckg) continue;
 
             try {
-                await themeServiceInst.handleInstallTheme(themeName);
+                await this.themeService.handleInstallTheme(themeName);
             } catch (error) {
                 logger.error(error);
             }

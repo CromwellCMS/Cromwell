@@ -1,6 +1,9 @@
 import { setStoreItem } from '@cromwell/core';
 import {
     getLogger,
+    getModuleStaticDir,
+    getPublicPluginsDir,
+    getPublicThemesDir,
     getServerDir,
     getServerTempDir,
     ORMEntities,
@@ -10,21 +13,24 @@ import {
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
+import { Container } from 'typedi';
 import { ConnectionOptions, createConnection, getConnection, getCustomRepository } from 'typeorm';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import yargs from 'yargs-parser';
 
+import { CmsService } from '../services/cms.service';
+import { MockService } from '../services/mock.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
-import { MockService } from '../services/mock.service';
 import { collectPlugins } from './collectPlugins';
+import { GenericPlugin, GenericTheme } from './genericEntities';
 import { loadEnv } from './settings';
-import { GenericCms, GenericPlugin, GenericTheme } from './genericEntities';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 const logger = getLogger();
 
-export const connectDatabase = async () => {
+export const connectDatabase = async (ormConfigOverride?: Partial<Writeable<ConnectionOptions & MysqlConnectionOptions>>,
+    awaitCheck?: boolean) => {
 
     const args = yargs(process.argv.slice(2));
     const cmsConfig = await readCMSConfig();
@@ -45,7 +51,7 @@ export const connectDatabase = async () => {
     const serverDir = getServerDir();
     if (cmsConfig?.orm?.database) hasDatabasePath = true;
 
-    let ormconfig: ConnectionOptions = Object.assign({}, defaultOrmConfig, cmsConfig.orm)
+    let ormconfig: ConnectionOptions = Object.assign({}, defaultOrmConfig, ormConfigOverride, cmsConfig.orm)
 
     if (!ormconfig || !ormconfig.type) throw new Error('Invalid ormconfig');
     setStoreItem('dbType', ormconfig.type);
@@ -53,7 +59,6 @@ export const connectDatabase = async () => {
     // Adjust unset options for different DBs
     const adjustedOptions: Partial<Writeable<ConnectionOptions & MysqlConnectionOptions>> = {};
 
-    let isNewSQLiteDB = false;
     if (ormconfig.type === 'sqlite') {
         if (env.envMode === 'dev') {
             adjustedOptions.synchronize = true;
@@ -65,7 +70,6 @@ export const connectDatabase = async () => {
                 // Use mocked DB
                 const mockedDBPath = resolve(serverDir, 'db.sqlite3');
                 if (await fs.pathExists(mockedDBPath)) {
-                    isNewSQLiteDB = true;
                     await fs.copy(mockedDBPath, tempDBPath);
                 }
             }
@@ -101,31 +105,52 @@ export const connectDatabase = async () => {
 
     if (connectionOptions) await createConnection(connectionOptions);
 
-    if (isNewSQLiteDB) {
-        // if new DB, delete old themes and plugins from tables to install them anew
-        const pluginRepo = getCustomRepository(GenericPlugin.repository);
-        const dbPlugins = await pluginRepo.getAll();
-        await Promise.all(dbPlugins.map(plugin => pluginRepo.remove(plugin)));
+    const checking = checkData(args.init);
+    if (awaitCheck) await checking;
+}
 
-        const themeRepo = getCustomRepository(GenericTheme.repository);
-        const dbThemes = await themeRepo.getAll();
-        await Promise.all(dbThemes.map(theme => themeRepo.remove(theme)));
-
-        const cmsRepo = getCustomRepository(GenericCms.repository);
-        const cmsConfigs = await cmsRepo.getAll();
-        await Promise.all(cmsConfigs.map(config => cmsRepo.remove(config)));
-    }
-
-
-    // Check installed cms modules. All available themes and plugins should be registered in DB
-    // If some are not, then activate them here at Server startup
+const checkData = async (init: boolean) => {
     const cmsModules = await readCmsModules();
 
     const pluginRepo = getCustomRepository(GenericPlugin.repository);
     const dbPlugins = await pluginRepo.getAll();
 
-    const pluginService = new PluginService();
-    for (const pluginName of cmsModules.plugins) {
+    const themeRepo = getCustomRepository(GenericTheme.repository);
+    const dbThemes = await themeRepo.getAll();
+
+    const pluginService = Container.get(PluginService);
+    const themeService = Container.get(ThemeService);
+    const cmsService = Container.get(CmsService);
+
+    // Check versions if some Themes/Plugins were manually updated. 
+    // Run activate to update info in DB
+    const pluginPackages = await cmsService.readPlugins();
+    const promises1 = dbPlugins.map(async ent => {
+        const pckg = pluginPackages.find(p => p.name === ent.name);
+        if (pckg?.version && pckg.version !== ent.version) {
+            try {
+                await pluginService.activatePlugin(ent.name);
+            } catch (error) {
+                logger.error('Server connectDatabase: failed to activate plugin ' + ent.name, error);
+            }
+        }
+    });
+
+    const themePackages = await cmsService.readThemes();
+    const promises2 = dbThemes.map(async ent => {
+        const pckg = themePackages.find(p => p.name === ent.name);
+        if (pckg?.version && pckg.version !== ent.version) {
+            try {
+                await themeService.activateTheme(ent.name);
+            } catch (error) {
+                logger.error('Server connectDatabase: failed to activate theme ' + ent.name, error);
+            }
+        }
+    });
+
+    // Check installed cms modules. All available themes and plugins should be registered in DB
+    // If some are not, then activate them here at Server startup
+    const promises3 = cmsModules.plugins.map(async pluginName => {
         if (!dbPlugins.find(plugin => plugin.name === pluginName)) {
             try {
                 await pluginService.activatePlugin(pluginName);
@@ -133,13 +158,9 @@ export const connectDatabase = async () => {
                 logger.error('Server connectDatabase: failed to activate plugin ' + pluginName, error);
             }
         }
-    }
+    })
 
-    const themeRepo = getCustomRepository(GenericTheme.repository);
-    const dbThemes = await themeRepo.getAll();
-
-    const themeService = new ThemeService();
-    for (const themeName of cmsModules.themes) {
+    const promises4 = cmsModules.themes.map(async themeName => {
         if (!dbThemes.find(theme => theme.name === themeName)) {
             try {
                 await themeService.activateTheme(themeName);
@@ -147,16 +168,40 @@ export const connectDatabase = async () => {
                 logger.error('Server connectDatabase: failed to activate theme ' + themeName, error);
             }
         }
+    })
+
+    // Check all static content is copied in public
+    const promises5 = cmsModules.themes.map(async themeName => {
+        const themeStaticDir = await getModuleStaticDir(themeName);
+        if (themeStaticDir && await fs.pathExists(themeStaticDir)) {
+            try {
+                const publicThemesDir = getPublicThemesDir();
+                await fs.ensureDir(publicThemesDir);
+                await fs.copy(themeStaticDir, resolve(publicThemesDir, themeName), {
+                    overwrite: false,
+                });
+            } catch (e) { logger.log(e) }
+        }
+    });
+
+    const promises6 = cmsModules.plugins.map(async pluginName => {
+        const pluginStaticDir = await getModuleStaticDir(pluginName)
+        if (pluginStaticDir && await fs.pathExists(pluginStaticDir)) {
+            try {
+                const publicPluginsDir = getPublicPluginsDir();
+                await fs.ensureDir(publicPluginsDir);
+                await fs.copy(pluginStaticDir, resolve(publicPluginsDir, pluginName),
+                    { overwrite: false });
+            } catch (e) { logger.log(e) }
+        }
+    });
+
+    await Promise.all([...promises1, ...promises2, ...promises3, ...promises4, ...promises5, ...promises6]);
+
+    if (init) {
+        const mockService = Container.get(MockService);
+        await mockService.mockAll();
     }
-
-
-    if (args.init) {
-        const mockService = new MockService();
-        setTimeout(() => {
-            mockService.mockAll();
-        }, 1000);
-    }
-
 }
 
 export const closeConnection = async () => {

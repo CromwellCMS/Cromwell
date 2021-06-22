@@ -61,6 +61,7 @@ export const getRendererStartupPath = () => {
     if (rendererDir) return resolve(rendererDir, 'startup.js');
 }
 export const getRendererTempDir = () => resolve(getTempDir(), 'renderer');
+export const getRendererTempDevDir = () => resolve(getTempDir(), 'renderer-dev');
 export const getRendererBuildDir = () => {
     const rendererDir = getRendererDir();
     if (rendererDir) return resolve(rendererDir, 'build');
@@ -137,7 +138,7 @@ export const getThemeBuildDir = async (themeModuleName: string) => {
     }
 }
 export const getThemeTempRollupBuildDir = () => {
-    return resolve(getRendererTempDir(), 'theme')
+    return resolve(getRendererTempDevDir(), 'theme')
 }
 export const getThemeRollupBuildDir = async (themeModuleName: string) => {
     const themeBuildDir = await getThemeBuildDir(themeModuleName);
@@ -191,6 +192,13 @@ export const getCmsModuleInfo = async (moduleName?: string): Promise<TPackageCro
         if (!pckg.cromwell.name) pckg.cromwell.name = pckg.name;
         if (!pckg.cromwell.version) pckg.cromwell.version = pckg.version;
         return pckg.cromwell;
+    }
+}
+
+export const getModuleStaticDir = async (moduleName: string) => {
+    const themeDir = isAbsolute(moduleName) ? moduleName : await getNodeModuleDir(moduleName);
+    if (themeDir) {
+        return resolve(themeDir, 'static');
     }
 }
 

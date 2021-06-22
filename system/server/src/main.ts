@@ -29,11 +29,11 @@ async function bootstrap(): Promise<void> {
 
     // Connect to DB via TypeOrm
     await connectDatabase();
-    await checkCmsVersion();
+    checkCmsVersion();
 
     const envMode = loadEnv();
 
-    // Launch Nest.js with Fastify
+    // Init Fastify as Nest.js server
     const apiPrefix = apiV1BaseRoute;
     const fastifyInstance = fastify();
 

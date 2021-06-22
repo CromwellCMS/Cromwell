@@ -18,8 +18,5 @@ export class PageInfoDto implements TPageInfo {
     description?: string;
 
     @ApiProperty()
-    isDynamic?: boolean;
-
-    @ApiProperty()
     isVirtual?: boolean;
 }

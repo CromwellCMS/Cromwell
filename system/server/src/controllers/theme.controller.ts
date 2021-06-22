@@ -29,7 +29,7 @@ export class ThemeController {
 
     @Get('page')
     @ApiOperation({
-        description: `Returns merged page config for specified Page by pageRoute in query param. Output contains theme's original modificators overwritten by user's modificators.`,
+        description: `Returns merged page config for specified Page by pageRoute in query param. Output contains theme's original modifications overwritten by user's modifications.`,
         parameters: [{ name: 'pageRoute', in: 'query', required: true }]
     })
     @ApiResponse({
@@ -50,7 +50,7 @@ export class ThemeController {
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')
     @ApiOperation({
-        description: `Saves page config for specified Page by pageRoute in query param. Modificators (TCromwellBlockData) must contain only newly added mods or an empty array. It is not allowed to send all mods from /theme/page route because they contain mods from theme's config and we don't need to copy them into user's config that way.`,
+        description: `Saves page config for specified Page by pageRoute in query param. Modifications (TCromwellBlockData) must contain only newly added mods or an empty array. It is not allowed to send all mods from /theme/page route because they contain mods from theme's config and we don't need to copy them into user's config that way.`,
     })
     @ApiResponse({
         status: 200,
@@ -68,7 +68,7 @@ export class ThemeController {
 
     @Delete('page')
     @ApiOperation({
-        description: `Deletes virtual page in boths configs`,
+        description: `Deletes virtual page in both configs`,
         parameters: [{ name: 'pageRoute', in: 'query', required: true }]
     })
     @ApiResponse({
@@ -105,7 +105,7 @@ export class ThemeController {
 
     @Get('plugins')
     @ApiOperation({
-        description: `Returns plugins' configs at specified Page by pageRoute in query param. Output contains theme's original modificators overwritten by user's modificators.`,
+        description: `Returns plugins' configs at specified Page by pageRoute in query param. Output contains theme's original modifications overwritten by user's modifications.`,
         parameters: [{ name: 'pageRoute', in: 'query', required: true }]
     })
     @ApiResponse({
@@ -148,7 +148,7 @@ export class ThemeController {
 
     @Get('pages/info')
     @ApiOperation({
-        description: `Returns all pages' metainfo without modificators.`,
+        description: `Returns all pages' info without modifications.`,
     })
     @ApiResponse({
         status: 200,
@@ -248,16 +248,16 @@ export class ThemeController {
         const pagePath = await getThemeAdminPanelBundleDir(cmsSettings.themeName, pageRoute);
         if (!pagePath) throw new HttpException('page path cannot be resolved', HttpStatus.NOT_ACCEPTABLE);
 
-        const pagePathBunle = normalizePath(pagePath) + '.js';
-        if (await fs.pathExists(pagePathBunle)) {
+        const pagePathBundle = normalizePath(pagePath) + '.js';
+        if (await fs.pathExists(pagePathBundle)) {
             try {
-                const source = (await fs.readFile(pagePathBunle)).toString();
+                const source = (await fs.readFile(pagePathBundle)).toString();
                 if (source) out = { source }
             } catch (e) {
-                logger.error('Failed to read page file at: ' + pagePathBunle, 'Error');
+                logger.error('Failed to read page file at: ' + pagePathBundle, 'Error');
             }
 
-            const pageMetaInfoPath = pagePathBunle + '_meta.json';
+            const pageMetaInfoPath = pagePathBundle + '_meta.json';
             if (await fs.pathExists(pageMetaInfoPath)) {
                 try {
                     if (out) out.meta = await fs.readJSON(pageMetaInfoPath);
@@ -295,7 +295,7 @@ export class ThemeController {
     @UseGuards(JwtAuthGuard)
     @Roles('administrator', 'guest')
     @ApiOperation({
-        description: `Returns available Update for sepcified Theme`,
+        description: `Returns available Update for specified Theme`,
         parameters: [{ name: 'themeName', in: 'query', required: true }]
     })
     @ApiResponse({

@@ -17,6 +17,7 @@ import {
     getLogger,
     getMetaInfoPath,
     getModulePackage,
+    getModuleStaticDir,
     getNodeModuleDir,
     getPluginAdminBundlePath,
     getPluginAdminCjsPath,
@@ -32,6 +33,7 @@ import decache from 'decache';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
+import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
 import { GenericPlugin } from '../helpers/genericEntities';
@@ -43,17 +45,19 @@ import {
     setPendingRestart,
     startTransaction,
 } from '../helpers/stateManager';
-import { cmsServiceInst } from './cms.service';
+import { CmsService } from './cms.service';
 
 const logger = getLogger();
 
-export let pluginServiceInst: PluginService;
-
 @Injectable()
+@Service()
 export class PluginService {
 
+    private get cmsService() {
+        return Container.get(CmsService);
+    }
+
     constructor() {
-        pluginServiceInst = this;
         this.init();
     }
 
@@ -242,7 +246,7 @@ export class PluginService {
             success = false;
         }
 
-        if (success) await cmsServiceInst.installModuleDependencies(pluginName);
+        if (success) await this.cmsService.installModuleDependencies(pluginName);
         await this.setIsUpdating(pluginName, false);
 
         endTransaction(transactionId);
@@ -319,7 +323,7 @@ export class PluginService {
             success = false;
         }
 
-        if (success) await cmsServiceInst.installModuleDependencies(pluginName);
+        if (success) await this.cmsService.installModuleDependencies(pluginName);
 
         endTransaction(transactionId);
 
@@ -402,12 +406,12 @@ export class PluginService {
         const defaultSettings = pluginConfig?.defaultSettings;
 
         // Copy static content into public 
-        const pluginPublicDir = resolve(pluginPath, 'static');
-        if (await fs.pathExists(pluginPublicDir)) {
+        const pluginStaticDir = await getModuleStaticDir(pluginName)
+        if (pluginStaticDir && await fs.pathExists(pluginStaticDir)) {
             try {
                 const publicPluginsDir = getPublicPluginsDir();
                 await fs.ensureDir(publicPluginsDir);
-                await fs.copy(pluginPublicDir, resolve(publicPluginsDir, pluginName));
+                await fs.copy(pluginStaticDir, resolve(publicPluginsDir, pluginName));
             } catch (e) { logger.log(e) }
         }
 
