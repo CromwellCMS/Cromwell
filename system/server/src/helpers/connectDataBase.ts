@@ -125,7 +125,7 @@ const checkData = async (init: boolean) => {
     // Check versions if some Themes/Plugins were manually updated. 
     // Run activate to update info in DB
     const pluginPackages = await cmsService.readPlugins();
-    dbPlugins.forEach(async ent => {
+    const promises1 = dbPlugins.map(async ent => {
         const pckg = pluginPackages.find(p => p.name === ent.name);
         if (pckg?.version && pckg.version !== ent.version) {
             try {
@@ -137,7 +137,7 @@ const checkData = async (init: boolean) => {
     });
 
     const themePackages = await cmsService.readThemes();
-    dbThemes.forEach(async ent => {
+    const promises2 = dbThemes.map(async ent => {
         const pckg = themePackages.find(p => p.name === ent.name);
         if (pckg?.version && pckg.version !== ent.version) {
             try {
@@ -150,7 +150,7 @@ const checkData = async (init: boolean) => {
 
     // Check installed cms modules. All available themes and plugins should be registered in DB
     // If some are not, then activate them here at Server startup
-    cmsModules.plugins.forEach(async pluginName => {
+    const promises3 = cmsModules.plugins.map(async pluginName => {
         if (!dbPlugins.find(plugin => plugin.name === pluginName)) {
             try {
                 await pluginService.activatePlugin(pluginName);
@@ -160,7 +160,7 @@ const checkData = async (init: boolean) => {
         }
     })
 
-    cmsModules.themes.forEach(async themeName => {
+    const promises4 = cmsModules.themes.map(async themeName => {
         if (!dbThemes.find(theme => theme.name === themeName)) {
             try {
                 await themeService.activateTheme(themeName);
@@ -171,7 +171,7 @@ const checkData = async (init: boolean) => {
     })
 
     // Check all static content is copied in public
-    cmsModules.themes.forEach(async themeName => {
+    const promises5 = cmsModules.themes.map(async themeName => {
         const themeStaticDir = await getModuleStaticDir(themeName);
         if (themeStaticDir && await fs.pathExists(themeStaticDir)) {
             try {
@@ -184,7 +184,7 @@ const checkData = async (init: boolean) => {
         }
     });
 
-    cmsModules.plugins.forEach(async pluginName => {
+    const promises6 = cmsModules.plugins.map(async pluginName => {
         const pluginStaticDir = await getModuleStaticDir(pluginName)
         if (pluginStaticDir && await fs.pathExists(pluginStaticDir)) {
             try {
@@ -196,12 +196,11 @@ const checkData = async (init: boolean) => {
         }
     });
 
+    await Promise.all([...promises1, ...promises2, ...promises3, ...promises4, ...promises5, ...promises6,])
 
     if (init) {
         const mockService = Container.get(MockService);
-        setTimeout(() => {
-            mockService.mockAll();
-        }, 1000);
+        await mockService.mockAll();
     }
 }
 
