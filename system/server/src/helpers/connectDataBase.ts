@@ -196,7 +196,7 @@ const checkData = async (init: boolean) => {
         }
     });
 
-    await Promise.all([...promises1, ...promises2, ...promises3, ...promises4, ...promises5, ...promises6,])
+    await Promise.all([...promises1, ...promises2, ...promises3, ...promises4, ...promises5, ...promises6]);
 
     if (init) {
         const mockService = Container.get(MockService);
