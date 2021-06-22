@@ -67,7 +67,7 @@ const SettingsPage = () => {
                 language: settings.language,
                 favicon: settings.favicon,
                 logo: settings.logo,
-                headerHtml: settings.headerHtml,
+                headHtml: settings.headHtml,
                 footerHtml: settings.footerHtml,
                 defaultShippingPrice: settings.defaultShippingPrice,
                 smtpConnectionString: settings.smtpConnectionString,
@@ -323,12 +323,12 @@ const SettingsPage = () => {
                     <Grid item xs={12} >
                         <TextField
                             fullWidth
-                            label="Header HTML"
+                            label="Head HTML"
                             multiline
                             rows={4}
                             rowsMax={20}
-                            value={settings?.headerHtml ?? ''}
-                            onChange={handleTextFieldChange('headerHtml')}
+                            value={settings?.headHtml ?? ''}
+                            onChange={handleTextFieldChange('headHtml')}
                             variant="outlined"
                             className={styles.field}
                         />

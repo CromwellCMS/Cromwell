@@ -29,7 +29,8 @@ export type TCromwellPageCoreProps = {
     cmsSettings?: TCmsSettings | null;
     themeCustomConfig?: Record<string, any> | null;
     pagesInfo?: TPageInfo[] | null;
-    headHtml?: string | null;
+    themeHeadHtml?: string | null;
+    themeFooterHtml?: string | null;
     palette?: TPalette | null;
 }
 

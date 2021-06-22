@@ -18,9 +18,6 @@ export class PageConfigDto implements TPageConfig {
     description?: string;
 
     @ApiProperty()
-    isDynamic?: boolean;
-
-    @ApiProperty()
     isVirtual?: boolean;
 
     @ApiProperty()

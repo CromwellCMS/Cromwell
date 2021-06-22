@@ -138,6 +138,8 @@ export type TThemeConfig = {
     palette?: TPalette;
     /** Custom HTML to add into head of every page */
     headHtml?: string;
+    /** Custom HTML to add to the end of every page */
+    footerHtml?: string;
     /** Global CSS files to import from node_modules */
     globalCss?: string[];
     /** Mapping of default CMS pages to theme's components. Such as { category: "category/[slug]" } */
@@ -150,7 +152,7 @@ export type TThemeConfig = {
     globalModifications?: TCromwellBlockData[];
 }
 
-export type TDefaultPageName = 'index' | 'category' | 'product' | 'post' | 'tag' | 'pages' | 'account' | 'blog';
+export type TDefaultPageName = 'index' | 'category' | 'product' | 'post' | 'tag' | 'pages' | 'account' | 'checkout' | 'blog';
 
 export type TPalette = {
     primaryColor?: string;
@@ -176,9 +178,7 @@ export type TPageInfo = {
     title?: string;
     /** Meta description (SEO) */
     description?: string;
-    /** Is using next.js dynamic routes? */
-    isDynamic?: boolean;
-    /** Created in PageBuilder or manually in config and does not have a corresponding .js file with React component */
+    /** If true, this page created in PageBuilder or manually in config and does not have a corresponding source file with React component */
     isVirtual?: boolean;
 }
 
@@ -186,6 +186,10 @@ export type TPageConfig = TPageInfo & {
     modifications: TCromwellBlockData[];
     pageCustomConfig?: Record<string, any>;
     adminPanelProps?: any;
+    /** Custom HTML to add into head of the page */
+    headHtml?: string;
+    /** Custom HTML to add to the end of the page */
+    footerHtml?: string;
 }
 
 export type TPluginConfig = {

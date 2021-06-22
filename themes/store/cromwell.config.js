@@ -116,7 +116,6 @@ module.exports = {
             route: "category/[slug]",
             name: "Product category",
             title: "Product category page",
-            isDynamic: true,
             modifications: [
                 {
                     "type": "plugin",
@@ -134,7 +133,6 @@ module.exports = {
             route: "product/[slug]",
             name: "Product",
             title: "Product page",
-            isDynamic: true,
             modifications: [
                 {
                     "type": "plugin",
@@ -225,7 +223,6 @@ module.exports = {
             route: "blog/[slug]",
             name: "Blog post",
             title: "Blog post page",
-            isDynamic: true
         },
         {
             id: "blog",
@@ -238,7 +235,6 @@ module.exports = {
             route: "tag/[slug]",
             name: "Blog tags",
             title: "Blog tags page",
-            isDynamic: true
         },
         {
             id: "404",

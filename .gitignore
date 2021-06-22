@@ -11,6 +11,7 @@ lerna-debug.log*
 /cmsconfig.json
 /ormconfig.json
 /.vscode/settings.json
+/themes/theme-test
 
 # Diagnostic reports (https://nodejs.org/api/report.html)
 report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json

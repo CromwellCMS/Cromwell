@@ -19,16 +19,15 @@ npx @cromwell/cli create --type theme my-theme-name
 
 ### Project structure
 
-- **`src/pages`** - Directory for Next.js pages. By default there's `index.tsx` created by CLI. You can rename it to .jsx if you don't want to work with Typescript (which is discouraged).
-- **`static`** - Directory for static files your theme will use. Files from this directory will be copied into `public` directory of the CMS on Theme/Plugin installation/update.  
-Your files in the `public` will have a path that follows the pattern: `/themes/${packageName}/${pathRelativelyStaticDir}`.  
+- **`src/pages`** - Directory for Next.js pages. By default there's `index.tsx` created by CLI. You can rename it to .jsx if you don't want to work with TypeScript (which is discouraged).
+- **`static`** - Directory for static files (images). Files from this directory will be copied into `public` directory of the CMS, from where they will be served by server to frontend. You can access your files through following pattern: `/themes/${packageName}/${pathInStaticDir}`.  
 Image example:  `<img src="/themes/@cromwell/theme-store/free_shipping.png" />`
 - **`cromwell.config.js`** - [Config file for your Theme/Plugin.](/docs/development/module-config)  
 
 
 ### Compile
 
-To make Theme work with the CMS we need to run an additional [pre-build phase](#pre-build-phase). With that you cannot directly use Next.js CLI, but Cromwell CLI has a replacement which works in a similar way.  
+To make your Theme work with the CMS we need to run additional [pre-build phase](#pre-build-phase). With that you cannot directly use Next.js CLI, but Cromwell CLI has a replacement which works in a similar way.  
 To start development server with watcher (same as `next dev`):
 ```
 npx cromwell build -w
@@ -43,7 +42,7 @@ Or via shortcut:
 npx crw s -d
 ```
    
-When your Theme is ready and you want to try it with the CMS in a production environment, your need to build it. Same as `next build`:
+When your Theme is ready and you want to try it with the CMS in production environment, your need to build it. Same as `next build`:
 ```
 npx cromwell build
 ```
@@ -58,11 +57,13 @@ Now you can go into Admin panel > Themes > click "Set active" on your Theme card
 
 This is a multipurpose phase that happens before we run Webpack compiler of Next.js.
 
-1. Cromwell CMS needs to generate meta info files on your source code. In order to parse your files, we need to transpile them into plain JavaScript first.
+1. We wrap your pages in a root component that requests and injects settings from Admin panel such as custom head HTML, meta data (SEO), settings for Plugins, etc.
 
-2. We need to generate Admin panel bundles. That adds ability for each page to be opened and modified in Admin panel Theme Editor. Pre-build phase generates one bundle per configured page in cromwell.config.js. For now, to optimize performance these files generated only in production build mode, but not in watch mode.
+2. Cromwell CMS needs to generate meta info files on your source code. In order to parse your files, we need to transpile them into plain JavaScript first.
 
-3. We make your Frontend dependencies available to re-use for Plugins. See [Frontend dependencies](#todo) page for details.
+3. We need to generate Admin panel bundles. That adds ability for each page to be opened and modified in Admin panel Theme Editor. Pre-build phase generates one bundle per [configured page](#configure-pages) in cromwell.config.js. For now, to optimize performance these files generated only in production build mode, but not in watch mode.
+
+4. We make your Frontend dependencies available to re-use for Plugins. See [Frontend dependencies](#todo) page for details.
 
 
 ### Customize bundler
@@ -75,13 +76,36 @@ After generating Theme template with Cromwell CLI, you will also have TypeScript
 Open `cromwell.config.js`. You can see there's `rollupConfig` function that returns the configuring object: 
 ```JavaScript
 {
-    main: RollupConfig,
-    adminPanel: RollupConfig
+    main: RollupOptions,
+    adminPanel: RollupOptions
 }
 ```
-Usually `RollupConfig` is an object that exported from a [Rollup Config File](https://rollupjs.org/guide/en/#configuration-files). But we need to use different configs, so we return them in the `rollupConfig` labeled by properties.
-- `main` - The config used by default for all bundles.
-- `adminPanel` - The config that replaces `main` only for Admin panel page bundles.
+Usually `RollupOptions` is an object that exported from [Rollup Config File](https://rollupjs.org/guide/en/#configuration-files). But we need to use different configs, so we return them in the `rollupConfig` labeled by properties.
+- `main` - Options used by default for all bundles.
+- `adminPanel` - Options that replace `main` only for Admin panel page bundles.
 
-You see the difference in configs because your Theme frontend will be passed further to the Next.js, but Admin panel page bundles will not. Files generated by `adminPanel` config will be executed in the browser, that's why we have `terser` and `postcss` plugin in this config.  
+You see the difference in options because your Theme frontend will be passed further to the Next.js, but Admin panel page bundles will not. Files generated by `adminPanel` options will be executed in the browser, that's why we have `terser` and `postcss` plugins in these options.  
+
+
+### Configure pages
+
+
+You can apply some custom configurations to your pages in `cromwell.config.js`. The config has `pages` property. CLI template has already added there home page config.  
+
+#### Page config properties:
+- **`id`** - Unique id of the page. Required. 
+- **`route`** - Page's route. Required. Usually it has the same value for the page as Next.js router. For example, if you have created file: `info/contacts.tsx`, then your page will be served at `info/contacts` by Next.js, so `route` value will be `info/contacts`. If your page is dynamic, for example `product/[slug].tsx`, then value is `product/[slug]`. There's one exception with the Home page, we use `index` value for it.
+- **`name`** - Name of the page displayed in Theme Editor sidebar.
+- **`title`** - Meta title (SEO). Cromwell CMS will automatically import Head component from `next/head` for the title to work in frontend. But you also can use `next/head` in your code. Note that `title` from the config overrides title in your React component.
+- **`description`** - Meta description (SEO).
+- **`headHtml`** - Custom HTML injected in the head. You don't need to do anything to make it work, after Pre-build phase your pages will be wrapped by our root component to make these injections. 
+- **`footerHtml`** - Custom HTML injected at the end of the page.
+
+Any configurations is not necessary, you can start development even without `cromwell.config.js` file, but if you want your page to work in Admin panel Theme Editor, you have to add a page config for it with at least `id` and `route`.
+
+#### Default pages.
+
+`cromwell.config.js` has `defaultPages` property that tells Admin panel where to find your pages. For example, in a product page of Admin panel at the top right menu you can see icon with tooltip "open product page in the new tab". The icon opens same product in frontend page of an active Theme. Since it's possible for Theme author to place product page anywhere, you need to specify its route in the `defaultPages` for Admin panel links to work. 
+
+### Theme builder support
 

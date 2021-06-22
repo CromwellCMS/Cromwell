@@ -476,7 +476,6 @@ export class ThemeService {
                 route: p.route,
                 name: p.name,
                 title: p.title,
-                isDynamic: p.isDynamic,
                 isVirtual: p.isVirtual,
             }
             out.push(info);

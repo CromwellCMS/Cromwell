@@ -26,7 +26,7 @@ export class CmsConfigUpdateDto implements TCmsEntityInput {
     logo?: string;
 
     @ApiProperty()
-    headerHtml?: string;
+    headHtml?: string;
 
     @ApiProperty()
     footerHtml?: string;

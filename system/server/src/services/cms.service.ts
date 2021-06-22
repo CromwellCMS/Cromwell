@@ -244,7 +244,7 @@ export class CmsService {
         entity.language = input.language;
         entity.favicon = input.favicon;
         entity.logo = input.logo;
-        entity.headerHtml = input.headerHtml;
+        entity.headHtml = input.headHtml;
         entity.footerHtml = input.footerHtml;
         entity.defaultShippingPrice = input.defaultShippingPrice;
         entity.smtpConnectionString = input.smtpConnectionString;

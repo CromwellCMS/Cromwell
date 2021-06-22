@@ -131,6 +131,7 @@ node_modules/
     tag: 'tag/[slug]',
     pages: 'pages/[slug]',
     account: 'account',
+    checkout: 'checkout',
   },
   pages: [
     {
