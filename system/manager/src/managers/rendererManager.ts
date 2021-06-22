@@ -4,7 +4,7 @@ import {
     getLogger,
     getNodeModuleDir,
     getRendererStartupPath,
-    getRendererTempDir,
+    getRendererTempDevDir,
     getThemeAdminPanelDir,
     getThemeBuildDir,
     getThemeRollupBuildDir,
@@ -166,7 +166,7 @@ export const rendererBuild = async (themeName: string): Promise<boolean> => {
         });
     })
 
-    const success = await isThemeBuilt(getRendererTempDir());
+    const success = await isThemeBuilt(getRendererTempDevDir());
     if (success) {
         logger.log('RendererManager:: Renderer build succeeded');
     } else {
@@ -177,7 +177,7 @@ export const rendererBuild = async (themeName: string): Promise<boolean> => {
 }
 
 export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promise<boolean> => {
-    const tempDir = getRendererTempDir();
+    const tempDir = getRendererTempDevDir();
     const tempNextDir = resolve(tempDir, '.next');
 
     const themeDir = await getNodeModuleDir(themeModuleName);
@@ -238,7 +238,7 @@ export const rendererBuildAndSaveTheme = async (themeModuleName: string): Promis
 export const rendererStartWatchDev = async (themeName: string, port?: string) => {
     if (!rendererStartupPath) return false;
 
-    const rendererTempDir = getRendererTempDir();
+    const rendererTempDir = getRendererTempDevDir();
     await fs.ensureDir(rendererTempDir);
 
     const command: TRendererCommands = 'dev';

@@ -13,7 +13,10 @@ import {
     buildDirName,
     getLogger,
     getMetaInfoPath,
+    getModuleStaticDir,
     getPluginBackendPath,
+    getPublicPluginsDir,
+    getPublicThemesDir,
     getThemePagesMetaPath,
     getThemePagesVirtualPath,
     getThemeTempRollupBuildDir,
@@ -71,7 +74,7 @@ const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): 
 
 export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean): Promise<RollupOptions[]> => {
 
-    if (!moduleInfo) throw new Error(`CromwellPlugin Error. Provide config as second argumet to the wrapper function`);
+    if (!moduleInfo) throw new Error(`CromwellPlugin Error. Provide config as second argument to the wrapper function`);
     if (!moduleInfo?.type) throw new Error(`CromwellPlugin Error. Provide one of types to the CromwellConfig: 'plugin', 'theme'`);
 
     try {
@@ -134,8 +137,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
             options.plugins.push(virtual({
                 [optionsInput]: `
-                        import defaulComp from '${inputPath}';
-                        export default defaulComp;
+                        import defaultComp from '${inputPath}';
+                        export default defaultComp;
                         `
             }))
             options.plugins.push(await rollupPluginCromwellFrontend({
@@ -226,6 +229,20 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
             outOptions.push(cjsOptions);
         }
+
+        // Copy static into public
+        if (watch) {
+            startStaticWatcher(moduleInfo.name, 'plugin');
+        } else {
+            const pluginStaticDir = await getModuleStaticDir(moduleInfo.name)
+            if (pluginStaticDir && await fs.pathExists(pluginStaticDir)) {
+                try {
+                    const publicPluginsDir = getPublicPluginsDir();
+                    await fs.ensureDir(publicPluginsDir);
+                    await fs.copy(pluginStaticDir, resolve(publicPluginsDir, moduleInfo.name));
+                } catch (e) { logger.log(e) }
+            }
+        }
     }
 
     if (moduleInfo.type === 'theme') {
@@ -257,7 +274,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         });
 
         const adminPanelOptions: RollupOptions[] = [];
-        const dependecyOptions: RollupOptions[] = [];
+        const dependencyOptions: RollupOptions[] = [];
 
         if (pageFiles && pageFiles.length > 0) {
             options.plugins = [...(options.plugins ?? [])];
@@ -288,7 +305,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                 pagesMetaInfo, buildDir, srcDir, moduleInfo,
                 moduleConfig, watch,
                 generatePagesMeta: true,
-                frontendDeps, dependecyOptions,
+                frontendDeps, dependencyOptions,
                 type: 'themePages',
                 pagesDir,
             }));
@@ -350,6 +367,23 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         }
 
 
+        // Copy static into public
+        if (watch) {
+            startStaticWatcher(moduleInfo.name, 'theme');
+        } else {
+            const themeStaticDir = await getModuleStaticDir(moduleInfo.name);
+            if (themeStaticDir && await fs.pathExists(themeStaticDir)) {
+                try {
+                    const publicThemesDir = getPublicThemesDir();
+                    await fs.ensureDir(publicThemesDir);
+                    await fs.copy(themeStaticDir, resolve(publicThemesDir, moduleInfo.name), {
+                        overwrite: false,
+                    });
+                } catch (e) { logger.log(e) }
+            }
+        }
+
+
         // Theme admin panel page-controller 
         const adminPanelDirChunk = 'admin-panel';
         const adminPanelDir = resolve(srcDir, adminPanelDirChunk);
@@ -406,7 +440,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
     moduleInfo?: TPackageCromwellConfig;
     moduleConfig?: TModuleConfig;
     frontendDeps?: TFrontendDependency[];
-    dependecyOptions?: RollupOptions[];
+    dependencyOptions?: RollupOptions[];
     type?: 'themePages' | 'themeAdminPanel';
 }): Promise<Plugin> => {
 
@@ -453,7 +487,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
         },
         resolveId(source) {
             if (settings?.moduleInfo?.type === 'theme' && settings?.pagesMetaInfo?.paths) {
-                // If bundle frontend pages (not AdminPanel) mark css as exteranl to leave it to Next.js Webpack
+                // If bundle frontend pages (not AdminPanel) mark css as external to leave it to Next.js Webpack
                 if (/\.s?css$/.test(source)) {
                     return { id: source, external: true };
                 }
@@ -688,12 +722,12 @@ const generatePagesMeta = async (pagesMetaInfo: TPagesMetaInfo, buildDir: string
     // Generate lists of frontend node_modules 
     // that are going to be bundled in one chunk by Next.js to load
     // on first page open when a client has no cached modules. 
-    // By default frontend modules are requsted by separate requests from client
+    // By default frontend modules are requested by separate requests from client
     // So this optimization basically cuts hundreds of requests on first load. 
     // List mapped from package.json's cromwell.firstLoadedDependencies
     // Beware! For now this feature works in a way that 
     // modules are going to be bundled entirely without any tree-shaking
-    // We definetely don't want @material-ui/icons in this list!
+    // We definitely don't want @material-ui/icons in this list!
     const packageJson: TPackageJson = require(resolve(process.cwd(), 'package.json'));
 
     for (const pagePath of pagesMetaInfo.paths) {
@@ -883,4 +917,38 @@ const startPagesWatcher = (buildDir: string, pagesDir: string) => {
     watcher
         .on('add', updatePagesInfo)
         .on('unlink', updatePagesInfo);
+}
+
+
+
+let staticWatcherActive = false;
+const startStaticWatcher = async (moduleName: string, type: 'theme' | 'plugin') => {
+    if (staticWatcherActive) return;
+    staticWatcherActive = true;
+
+    const staticDir = normalizePath((await getModuleStaticDir(process.cwd())) ?? '');
+    await fs.ensureDir(staticDir);
+    const publicDir = type === 'theme' ? getPublicThemesDir() : getPublicPluginsDir();
+
+    const globStr = `${staticDir}/**/*`;
+
+    const copyFile = async (filePath: string) => {
+        const pathChunk = normalizePath(filePath).replace(staticDir, '');
+        const publicPath = join(publicDir, moduleName, pathChunk);
+        try {
+            await fs.ensureDir(dirname(publicPath));
+            await fs.copy(filePath, publicPath);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const watcher = chokidar.watch(globStr, {
+        ignored: /(^|[/\\])\../, // ignore dotfiles
+        persistent: true
+    });
+
+    watcher
+        .on('change', copyFile)
+        .on('add', copyFile)
 }

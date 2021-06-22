@@ -65,6 +65,7 @@
     "symlink-dir": "5.0.1",
     "tcp-port-used": "1.0.2",
     "tslib": "2.1.0",
+    "typedi": "^0.10.0",
     "type-graphql": "1.1.1",
     "typeorm": "0.2.32",
     "xlsx-populate": "1.21.0",

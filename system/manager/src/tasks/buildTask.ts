@@ -3,7 +3,7 @@ import {
     getCmsModuleConfig,
     getCmsModuleInfo,
     getLogger,
-    getRendererTempDir,
+    getRendererTempDevDir,
     getThemeNextBuildDirByPath,
 } from '@cromwell/core-backend';
 import { rollupConfigWrapper } from '@cromwell/utils';
@@ -62,7 +62,8 @@ export const buildTask = async (watch?: boolean, port?: string) => {
         await checkModules();
 
         // Clean old build
-        const rendererTempDir = getRendererTempDir();
+        const rendererTempDir = getRendererTempDevDir();
+
         if (rendererTempDir && await fs.pathExists(rendererTempDir)) {
             await fs.remove(rendererTempDir);
             await sleep(0.1);

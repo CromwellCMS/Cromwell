@@ -1,13 +1,11 @@
 import { TOrder, TPackageCromwellConfig, TProductReview } from '@cromwell/core';
 import {
-    getCmsModuleInfo,
     getCmsSettings,
     getLogger,
     getPublicDir,
     JwtAuthGuard,
     ProductReviewInput,
     ProductReviewRepository,
-    readCmsModules,
     Roles,
 } from '@cromwell/core-backend';
 import { Body, Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
@@ -15,6 +13,7 @@ import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import fs from 'fs-extra';
 import { join } from 'path';
+import { Container } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
 import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
@@ -29,7 +28,7 @@ import { PageStatsDto } from '../dto/page-stats.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { serverFireAction } from '../helpers/serverFireAction';
 import { CmsService } from '../services/cms.service';
-import { pluginServiceInst } from '../services/plugin.service';
+import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 
 const logger = getLogger();
@@ -38,6 +37,10 @@ const logger = getLogger();
 @ApiTags('CMS')
 @Controller('cms')
 export class CmsController {
+
+    private get pluginService() {
+        return Container.get(PluginService);
+    }
 
     constructor(
         private readonly cmsService: CmsService,
@@ -90,23 +93,7 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getThemes(): Promise<TPackageCromwellConfig[] | undefined> {
         logger.log('CmsController::getThemes');
-        const out: TPackageCromwellConfig[] = [];
-
-        const themeModuleNames = (await readCmsModules()).themes;
-
-        for (const themeName of themeModuleNames) {
-            const moduleInfo = await getCmsModuleInfo(themeName);
-
-            if (moduleInfo) {
-                delete moduleInfo.frontendDependencies;
-                delete moduleInfo.bundledDependencies;
-                delete moduleInfo.firstLoadedDependencies;
-
-                await this.cmsService.parseModuleConfigImages(moduleInfo, themeName);
-                out.push(moduleInfo);
-            }
-        }
-        return out;
+        return this.cmsService.readThemes();
     }
 
 
@@ -121,22 +108,7 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPlugins(): Promise<TPackageCromwellConfig[]> {
         logger.log('CmsController::getPlugins');
-        const out: TPackageCromwellConfig[] = [];
-
-        const pluginModules = (await readCmsModules()).plugins;
-
-        for (const pluginName of pluginModules) {
-            const moduleInfo = await getCmsModuleInfo(pluginName);
-            delete moduleInfo?.frontendDependencies;
-            delete moduleInfo?.bundledDependencies;
-            delete moduleInfo?.firstLoadedDependencies;
-
-            if (moduleInfo) {
-                await this.cmsService.parseModuleConfigImages(moduleInfo, pluginName);
-                out.push(moduleInfo);
-            }
-        }
-        return out;
+        return this.cmsService.readPlugins();
     }
 
 
@@ -324,7 +296,7 @@ export class CmsController {
         if (!pluginName || pluginName === '')
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        return pluginServiceInst.activatePlugin(pluginName);
+        return this.pluginService.activatePlugin(pluginName);
     }
 
 

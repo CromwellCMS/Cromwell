@@ -56,6 +56,8 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
 /public
 node_modules/
 *.tsbuildinfo`);
+
+    fs.ensureDirSync(resolve(dir, 'static'));
   }
 
   fs.outputJSONSync(resolve(dir, 'package.json'), pckg, { spaces: 2 });

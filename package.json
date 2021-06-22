@@ -67,8 +67,7 @@
     "cromwell": {
         "themes": [
             "@cromwell/theme-store",
-            "@cromwell/theme-blog",
-            "@cromwell/theme-test"
+            "@cromwell/theme-blog"
         ]
     },
     "cache-version": "7; modify this string to reset circleci cache",

@@ -4,12 +4,11 @@ const { resolve } = require('path');
 const npmRunPath = require('npm-run-path');
 const { setStoreItem } = require('@cromwell/core');
 const {
-    getRendererDir, getRendererTempDir, getRendererBuildDir, readCMSConfigSync, rendererMessages, getLogger
+    getRendererDir, getRendererTempDir, getRendererTempDevDir, getRendererBuildDir, readCMSConfigSync, rendererMessages, getLogger
 } = require('@cromwell/core-backend');
 const yargs = require('yargs-parser');
 
 const buildDir = getRendererBuildDir();
-const tempDir = getRendererTempDir();
 const rendererRootDir = getRendererDir();
 const logger = getLogger();
 
@@ -32,8 +31,6 @@ const main = () => {
     });
 
     const args = yargs(process.argv.slice(2));
-    const port = args.port || config.frontendPort;
-
 
     const isServiceBuilt = () => {
         return (fs.existsSync(buildDir)
@@ -58,6 +55,8 @@ const main = () => {
     const build = async () => {
         if (process.send) process.send(rendererMessages.onBuildStartMessage);
         try {
+            const tempDir = getRendererTempDevDir();
+
             if (!isServiceBuilt()) {
                 buildService();
             }
@@ -92,6 +91,8 @@ const main = () => {
         let proc;
         try {
             await gen();
+            const port = args.port || config.frontendPort;
+            const tempDir = getRendererTempDir();
 
             proc = spawn(`npx --no-install next start -p ${port}`, [],
                 { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
@@ -138,6 +139,8 @@ const main = () => {
 
         (async () => {
             await gen();
+            const port = args.port || 4256;
+            const tempDir = getRendererTempDevDir();
 
             spawn(`next dev -p ${port}`, [],
                 { shell: true, stdio: 'inherit', cwd: tempDir, env: npmRunPath.env() });
