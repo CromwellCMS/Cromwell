@@ -21,7 +21,7 @@ const Index: TCromwellPage = (props) => {
                             <CImage id="main_09" src="/themes/@cromwell/theme-store/free_shipping.png" />
                             <CContainer id="main_11" className={styles.advantageItemText}>
                                 <CText id="main_06" className={styles.advantageItemHeader}>FREE SHIPPING & RETURN</CText>
-                                <CText id="main_12">Free shipping on orders over $9</CText>
+                                <CText id="main_12">Free shipping for orders over $9</CText>
                             </CContainer>
                         </CContainer>
                         <CContainer id="main_03" className={styles.advantageItem}>

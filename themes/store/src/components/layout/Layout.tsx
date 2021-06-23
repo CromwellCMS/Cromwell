@@ -34,7 +34,6 @@ const theme = createMuiTheme({
 
 export default function Layout(props: TProps | undefined) {
     // console.log('Layout render. props: ', isElement(props?.children), props);
-
     return (
         <ThemeProvider theme={theme}>
             <div className={styles.Layout}>

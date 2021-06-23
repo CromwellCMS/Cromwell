@@ -14,6 +14,7 @@ import {
     getLogger,
     getMetaInfoPath,
     getModuleStaticDir,
+    getNodeModuleDir,
     getPluginBackendPath,
     getPublicPluginsDir,
     getPublicThemesDir,
@@ -22,6 +23,7 @@ import {
     getThemeTempRollupBuildDir,
     pluginAdminBundlePath,
     pluginFrontendBundlePath,
+    getThemeAdminPanelBundleDir,
     pluginFrontendCjsPath,
 } from '@cromwell/core-backend';
 import { babel } from '@rollup/plugin-babel';
@@ -72,7 +74,7 @@ const resolveExternal = (source: string, frontendDeps?: TFrontendDependency[]): 
     return false;
 }
 
-export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean): Promise<RollupOptions[]> => {
+export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean, admin?: boolean): Promise<RollupOptions[]> => {
 
     if (!moduleInfo) throw new Error(`CromwellPlugin Error. Provide config as second argument to the wrapper function`);
     if (!moduleInfo?.type) throw new Error(`CromwellPlugin Error. Provide one of types to the CromwellConfig: 'plugin', 'theme'`);
@@ -317,7 +319,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
             }
 
             // Theme admin panel config
-            if (!watch) {
+            if (admin || !watch) {
                 for (const pagePath of pagesMetaInfo.paths) {
                     const adminOptions: RollupOptions = (Object.assign({}, (specifiedOptions?.adminPanel ?? inputOptions)));
                     adminOptions.plugins = [...(adminOptions.plugins ?? [])];
@@ -360,6 +362,10 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                     adminPanelOptions.push(adminOptions);
                 }
                 adminPanelOptions.forEach(opt => outOptions.push(opt));
+            }
+
+            if (admin) {
+                startPageBundlesWatcher(moduleInfo.name, resolve(buildDir, 'admin'))
             }
 
         } else {
@@ -899,6 +905,7 @@ const startPagesWatcher = (buildDir: string, pagesDir: string) => {
     if (pagesWatcherActive) return;
     pagesWatcherActive = true;
 
+    pagesDir = normalizePath(pagesDir);
     const globStr = `${pagesDir}/**/*.+(ts|tsx|js|jsx)`;
 
     const updatePagesInfo = async () => {
@@ -930,7 +937,7 @@ const startStaticWatcher = async (moduleName: string, type: 'theme' | 'plugin') 
     await fs.ensureDir(staticDir);
     const publicDir = type === 'theme' ? getPublicThemesDir() : getPublicPluginsDir();
 
-    const globStr = `${staticDir}/**/*`;
+    const globStr = `${staticDir}/**`;
 
     const copyFile = async (filePath: string) => {
         const pathChunk = normalizePath(filePath).replace(staticDir, '');
@@ -944,11 +951,44 @@ const startStaticWatcher = async (moduleName: string, type: 'theme' | 'plugin') 
     }
 
     const watcher = chokidar.watch(globStr, {
-        ignored: /(^|[/\\])\../, // ignore dotfiles
         persistent: true
     });
 
     watcher
         .on('change', copyFile)
         .on('add', copyFile)
+}
+
+
+let pageBundlesWatcherActive = false;
+const startPageBundlesWatcher = async (themeName: string, buildDir: string) => {
+    if (pageBundlesWatcherActive) return;
+    pageBundlesWatcherActive = true;
+
+    buildDir = normalizePath(buildDir);
+    await fs.ensureDir(buildDir);
+
+    const globStr = `${buildDir}/**`;
+
+    const watcher = chokidar.watch(globStr, {
+        persistent: true
+    });
+
+    const copyFile = async (filePath: string) => {
+        const pathChunk = normalizePath(filePath).replace(buildDir, '');
+        const destPath = await getThemeAdminPanelBundleDir(themeName, pathChunk);
+
+        if (!destPath) return;
+        try {
+            await fs.ensureDir(dirname(destPath));
+            await fs.copy(filePath, destPath);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    watcher
+        .on('change', copyFile)
+        .on('add', copyFile);
+
 }

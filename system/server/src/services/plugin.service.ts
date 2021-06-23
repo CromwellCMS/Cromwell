@@ -72,7 +72,7 @@ export class PluginService {
                 // crashed and was unable to set isUpdating to false
                 setTimeout(async () => {
                     if (await this.getIsUpdating(entity.name)) {
-                        logger.error(`Server: ${entity.name} is still updating after minute of runnig a new server instance. Setting isUpdating to false`);
+                        logger.error(`Server: ${entity.name} is still updating after minute of running a new server instance. Setting isUpdating to false`);
                         await this.setIsUpdating(entity.name, false);
                     }
                 }, 60000);
@@ -179,7 +179,7 @@ export class PluginService {
 
         const pluginDir = await getNodeModuleDir(pluginName);
         if (!pluginDir) {
-            logger.error('Failed to resolve plugin directory of: ' + pluginName + ". Probably plugin was used in module cofig by name but wasn't installed in node_modules");
+            logger.error('Failed to resolve plugin directory of: ' + pluginName + ". Probably plugin was used in module config by name but wasn't installed in node_modules");
             return;
         }
         const filePath = pathGetter(resolve(pluginDir, buildDirName));
