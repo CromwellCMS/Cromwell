@@ -1,3 +1,4 @@
+
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
   title: 'My Site',
@@ -10,7 +11,16 @@ module.exports = {
   projectName: 'CromwellCMS',
   themeConfig: {
     colorMode: {
-      // defaultMode: 'dark',
+      defaultMode: 'dark',
+    },
+    prism: {
+      theme: {
+        "plain": {
+          "color": "#d4d4d4",
+          "backgroundColor": "#1e1e1e"
+        },
+        "styles": []
+      },
     },
     navbar: {
       title: 'My Site',

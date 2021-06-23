@@ -6,6 +6,7 @@ const fs = require('fs');
 
     const scriptName = process.argv[2] ? process.argv[2] : 'production';
     const noInstall = process.argv.includes('--no-install')
+    const onlySystem = process.argv.includes('--system')
 
     const isCoreBuilt = () => {
         return !(!fs.existsSync(resolve(coreDir, 'common/dist')) ||
@@ -78,7 +79,7 @@ const fs = require('fs');
 
     // Check themes
     const themesDir = resolve(projectRootDir, 'themes');
-    if (fs.existsSync(themesDir)) {
+    if (!onlySystem && fs.existsSync(themesDir)) {
         const themes = fs.readdirSync(themesDir);
         for (let i = 0; i < themes.length; i++) {
             const theme = themes[i];
@@ -94,7 +95,7 @@ const fs = require('fs');
 
     // Check plugins
     const pluginsDir = resolve(projectRootDir, 'plugins');
-    if (fs.existsSync(pluginsDir)) {
+    if (!onlySystem && fs.existsSync(pluginsDir)) {
         const plugins = fs.readdirSync(pluginsDir);
         for (let i = 0; i < plugins.length; i++) {
             const plugin = plugins[i];

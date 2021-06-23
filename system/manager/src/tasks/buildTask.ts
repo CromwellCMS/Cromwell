@@ -20,7 +20,7 @@ const { handleError, bold, underline, cyan, stderr, green } = require('rollup/di
 const { relativeId } = require('rollup/dist/shared/rollup.js');
 const logger = getLogger(false);
 
-export const buildTask = async (watch?: boolean, port?: string) => {
+export const buildTask = async (watch?: boolean, port?: string, admin?: boolean) => {
     const workingDir = process.cwd();
 
     const moduleInfo = await getCmsModuleInfo();
@@ -70,7 +70,7 @@ export const buildTask = async (watch?: boolean, port?: string) => {
         }
 
         console.log(`Starting to pre-build ${moduleInfo.type}...`);
-        const rollupBuildSuccess = await rollupBuild(moduleInfo, moduleConfig, watch);
+        const rollupBuildSuccess = await rollupBuild(moduleInfo, moduleConfig, watch, admin);
 
         if (!rollupBuildSuccess) {
             console.error(`Failed to pre-build ${moduleInfo.type}`);
@@ -104,11 +104,11 @@ export const buildTask = async (watch?: boolean, port?: string) => {
 }
 
 
-const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean): Promise<boolean> => {
+const rollupBuild = async (moduleInfo: TPackageCromwellConfig, moduleConfig?: TModuleConfig, watch?: boolean, admin?: boolean): Promise<boolean> => {
     if (!moduleInfo || !moduleInfo.type) return false;
     let rollupBuildSuccess = false;
     try {
-        const rollupConfig = await rollupConfigWrapper(moduleInfo, moduleConfig, watch);
+        const rollupConfig = await rollupConfigWrapper(moduleInfo, moduleConfig, watch, admin);
 
         if (rollupConfig.length === 0) {
             logger.error('Failed to find input files');

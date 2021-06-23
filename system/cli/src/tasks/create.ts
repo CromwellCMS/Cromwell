@@ -151,13 +151,14 @@ import React from 'react';
 type IdexProps = {
   data: string;
 }
-const IndexPage: TCromwellPage<IdexProps> = (props) => (
+
+const HomePage: TCromwellPage<IdexProps> = (props) => (
   <div>
     <h1>Hello {props.data}</h1>
   </div>
 )
     
-export default IndexPage;
+export default HomePage;
     
 export const getStaticProps: TGetStaticProps = async (context): Promise<IdexProps> => {
   return {

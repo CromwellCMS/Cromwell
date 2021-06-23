@@ -5,7 +5,7 @@ sidebar_position: 1
 # Theme development
 
 Cromwell CMS follows principles of headless CMS where API server runs separately from its frontend server. So basically you can create any type of frontend and host it wherever you like. But in this scenario you need to manage and deploy this frontend by yourself.  
-Cromwell CMS provides a way to build Themes that are managed and work with the CMS core. CMS users can easily install Themes from official market right in their Admin panel GUI, make active, delete them, change layout in the Page Builder as long as Themes follow guidelines we are going to show.  
+Cromwell CMS provides a way to build Themes that are managed and work with the CMS core. CMS users can easily install Themes from official market right in their Admin panel GUI, make active, delete them, change layout in the Theme Editor as long as Themes follow guidelines we are going to show.  
 
 Cromwell CMS Theme is a Next.js app. Theme development is basically Next.js development. If you are not familiar with Next.js, [you should definitely start with it first](https://nextjs.org/docs/getting-started).   
 
@@ -13,7 +13,7 @@ Cromwell CMS Theme is a Next.js app. Theme development is basically Next.js deve
 ### Create a project
 
 As in [Installation](/docs/overview/installation#4-cromwell-cli), Cromwell CLI can create a new project template. If you want to create Theme use `--type theme` argument or `--type plugin` for Plugin.  
-```sh
+```bash
 npx @cromwell/cli create --type theme my-theme-name
 ```
 
@@ -29,25 +29,25 @@ Image example:  `<img src="/themes/@cromwell/theme-store/free_shipping.png" />`
 
 To make your Theme work with the CMS we need to run additional [pre-build phase](#pre-build-phase). With that you cannot directly use Next.js CLI, but Cromwell CLI has a replacement which works in a similar way.  
 To start development server with watcher (same as `next dev`):
-```
+```bash
 npx cromwell build -w
 ```
 Open [http://localhost:4256/](http://localhost:4256/) to see your website.  
 You may also need to start the CMS to retrieve data from API server:
-```
+```bash
 npx cromwell start --detached 
 ```
 Or via shortcut:
-```
+```bash
 npx crw s -d
 ```
    
 When your Theme is ready and you want to try it with the CMS in production environment, your need to build it. Same as `next build`:
-```
+```bash
 npx cromwell build
 ```
 Or via shortcut:
-```
+```bash
 npx crw b
 ```
 Now you can go into Admin panel > Themes > click "Set active" on your Theme card. It will change active CMS Theme at [http://localhost:4016/](http://localhost:4016/)
@@ -61,7 +61,7 @@ This is a multipurpose phase that happens before we run Webpack compiler of Next
 
 2. Cromwell CMS needs to generate meta info files on your source code. In order to parse your files, we need to transpile them into plain JavaScript first.
 
-3. We need to generate Admin panel bundles. That adds ability for each page to be opened and modified in Admin panel Theme Editor. Pre-build phase generates one bundle per [configured page](#configure-pages) in cromwell.config.js. For now, to optimize performance these files generated only in production build mode, but not in watch mode.
+3. We need to generate Admin panel bundles. That adds ability for each page to be opened and modified in Admin panel Theme Editor. Pre-build phase generates one bundle per [configured page](#configure-pages) in cromwell.config.js. By default these bundles generated only in production build mode (for performance reasons), but if you want to do the same in watch mode, you need to add `--admin`/`-a` argument to the command: `npx crw b -w -a` 
 
 4. We make your Frontend dependencies available to re-use for Plugins. See [Frontend dependencies](#todo) page for details.
 
@@ -74,7 +74,7 @@ By default CMS build command can transpile React and handle CSS/SASS (by passing
 After generating Theme template with Cromwell CLI, you will also have TypeScript support in the build config.
 
 Open `cromwell.config.js`. You can see there's `rollupConfig` function that returns the configuring object: 
-```JavaScript
+```javascript
 {
     main: RollupOptions,
     adminPanel: RollupOptions
@@ -89,8 +89,7 @@ You see the difference in options because your Theme frontend will be passed fur
 
 ### Configure pages
 
-
-You can apply some custom configurations to your pages in `cromwell.config.js`. The config has `pages` property. CLI template has already added there home page config.  
+You can apply some custom configurations to your pages in `cromwell.config.js`. The config has `pages` property which is array of page configs. CLI template has already added there home page config.  
 
 #### Page config properties:
 - **`id`** - Unique id of the page. Required. 
@@ -101,11 +100,46 @@ You can apply some custom configurations to your pages in `cromwell.config.js`. 
 - **`headHtml`** - Custom HTML injected in the head. You don't need to do anything to make it work, after Pre-build phase your pages will be wrapped by our root component to make these injections. 
 - **`footerHtml`** - Custom HTML injected at the end of the page.
 
-Any configurations is not necessary, you can start development even without `cromwell.config.js` file, but if you want your page to work in Admin panel Theme Editor, you have to add a page config for it with at least `id` and `route`.
+It is not necessary to add configs for your pages, and you can start development even without `cromwell.config.js` file, but if you want your page to work in Admin panel Theme Editor, you have to add a page config for it with at least `id` and `route`.
 
 #### Default pages.
 
 `cromwell.config.js` has `defaultPages` property that tells Admin panel where to find your pages. For example, in a product page of Admin panel at the top right menu you can see icon with tooltip "open product page in the new tab". The icon opens same product in frontend page of an active Theme. Since it's possible for Theme author to place product page anywhere, you need to specify its route in the `defaultPages` for Admin panel links to work. 
 
-### Theme builder support
 
+### Page Builder support
+
+Admin panel Theme Editor has `Page Builder` tab which allows users to modify layout, change text or images. This feature works with standard `Blocks` - React components designed for a single purpose: Image Block, Text Block, etc.  
+It doesn't impose any restrictions on how you build your Theme. You still can write any JSX code, but if you want, for example, some image to be modifiable in the Page Builder, you need to use Image Block.  
+
+Let's look into example:
+
+```tsx title="src/pages/index.tsx"
+import { TCromwellPage } from '@cromwell/core';
+import { CContainer, CHTML, CImage, CText } from '@cromwell/core-frontend';
+import React from 'react';
+
+const HomePage: TCromwellPage = () => (
+  <CContainer id="home_0">
+    <CText id="home_1">`User can edit this text`</CText>
+    <CImage id="home_2" src="/themes/you-theme-name/modifiable-image.jpg" />
+    <CHTML id="home_3">
+      <div>
+        <p>`User can edit this text and all HTML tags inside CHTML Block`</p>
+      </div>
+    </CHTML>
+    <CContainer id="home_4">
+      <p>`User will NOT be able to edit this text, but he can drag or delete`</p>
+      <p>`this CContainer with everything inside it`</p>
+      <img src="/themes/you-theme-name/non-modifiable-image.jpg" />
+    </CContainer>
+  </CContainer>
+)
+
+export default HomePage;
+```
+
+We put elements into `CContainer`s. This component equals to `<div>` tag plus properties available to all Blocks: 
+- Draggable - User can drag and drop Block into another position inside any other CContainer.
+- Modifiable - User can edit properties the Block. Properties can be common such as styles and Block type-specific such as 'image path' for `CImage` Block. 
+- Deletable - User can delete Block. Component will remain in the code since we cannot edit files of your Theme, but it will render `<></>` instead of its content.

@@ -14,4 +14,4 @@ We do not promote any provider, but just for the sake of example there is a shor
 - [Create a new sender](https://app.sendgrid.com/settings/sender_auth/senders/new)
 - [Create API key](https://app.sendgrid.com/guide/integrate/langs/smtp) 
 - Create connection string with your key: `smtps://apikey:YOUR_API_KEY@smtp.sendgrid.net`, so it will look like: `smtps://apikey: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@smtp.sendgrid.net`
-- Go to the CMS admin panel, settings page, scroll to E-mailing settings. In "Send e-mails from" paste e-mail address you submitted for a Sendgrid sender in field "From Email Address". Paste your connection string in the field below.
+- Go to the Admin panel > Settings page > scroll to E-mailing settings. In "Send e-mails from" paste e-mail address you submitted for a Sendgrid sender in field "From Email Address". Paste your connection string in the field below.
