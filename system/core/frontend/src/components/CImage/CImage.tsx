@@ -36,27 +36,18 @@ export class CImage extends React.Component<CImageProps> {
                         <img src={_src}
                             alt={_alt}
                             style={{
-                                width: _width ? _width + 'px' : '100%',
+                                width: _width ? _width + 'px' : undefined,
                                 height: _height ? _height + 'px' : undefined,
                                 objectFit: _objectFit ?? 'contain'
                             }}
                         />
                     )
-                    const wrapperStyle = {
-                        display: 'flex',
-                        width: '100%',
-                        height: '100%',
-                    };
 
                     return _link ? (
-                        <Link href={_link}><a style={wrapperStyle}
+                        <Link href={_link}><a
                             className={classes}
                         >{imgEl}</a></Link>
-                    ) : (
-                            <div style={wrapperStyle}
-                                className={classes}
-                            >{imgEl}</div>
-                        )
+                    ) : imgEl
                 }}
             />
         )

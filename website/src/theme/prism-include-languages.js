@@ -4,6 +4,8 @@ const prismIncludeLanguages = (PrismObject) => {
     window.Prism = PrismObject;
 
     require(`prismjs/components/prism-bash`);
+    require("prismjs/plugins/command-line/prism-command-line")
+    require("prismjs/plugins/command-line/prism-command-line.css")
 
     delete PrismObject.languages.javascript;
     delete PrismObject.languages.typescript;
@@ -13,10 +15,12 @@ const prismIncludeLanguages = (PrismObject) => {
     require(`prismjs/components/prism-javascript`);
     // require(`prismjs/components/prism-js-extras`);
 
-    require(`prismjs/components/prism-typescript`);
+    require('prismjs/components/prism-typescript');
 
 
     (function (Prism) {
+      // Taken from prism-js-extras, changed for typescript
+
       Prism.languages.insertBefore('typescript', 'constant', {
         'known-class-name': [
           {
@@ -62,13 +66,6 @@ const prismIncludeLanguages = (PrismObject) => {
 
       Prism.languages.typescript['keyword'] = [
         {
-          pattern: /\b(?:abstract|as|asserts|async|await|break|case|catch|class|const|constructor|continue|debugger|declare|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|is|keyof|let|module|namespace|new|null|of|package|private|protected|public|readonly|return|require|set|static|super|switch|this|throw|try|type|typeof|undefined|var|void|while|with|yield)\b/,
-          alias: 'keyword',
-        },
-      ];
-
-      Prism.languages.typescript['keyword'].unshift(
-        {
           pattern: /\b(?:as|default|export|from|import)\b/,
           alias: 'module'
         },
@@ -83,8 +80,12 @@ const prismIncludeLanguages = (PrismObject) => {
         {
           pattern: /\bundefined\b/,
           alias: 'nil'
-        }
-      );
+        },
+        {
+          pattern: /\b(?:abstract|as|asserts|async|await|break|case|catch|class|const|constructor|continue|debugger|declare|default|delete|do|else|enum|export|extends|finally|for|from|function|get|if|implements|import|in|instanceof|interface|is|keyof|let|module|namespace|new|null|of|package|private|protected|public|readonly|return|require|set|static|super|switch|this|throw|try|type|typeof|undefined|var|void|while|with|yield)\b/,
+          alias: 'keyword',
+        },
+      ];
 
       Prism.languages.insertBefore('typescript', 'operator', {
         'spread': {

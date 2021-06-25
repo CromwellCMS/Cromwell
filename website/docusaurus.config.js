@@ -105,7 +105,10 @@ module.exports = {
           // editUrl: 'https://github.com/CromwellCMS/Cromwell/edit/master/website/blog/',
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
+          customCss: [
+            require.resolve('./src/css/custom.css'),
+            require.resolve('./src/css/syntax-highlight.css'),
+          ]
         },
       },
     ],
