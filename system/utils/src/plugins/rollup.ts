@@ -1,5 +1,6 @@
 import {
     getRandStr,
+    sleep,
     TFrontendDependency,
     TModuleConfig,
     TPackageCromwellConfig,
@@ -14,16 +15,15 @@ import {
     getLogger,
     getMetaInfoPath,
     getModuleStaticDir,
-    getNodeModuleDir,
     getPluginBackendPath,
     getPublicPluginsDir,
     getPublicThemesDir,
+    getThemeAdminPanelBundleDir,
     getThemePagesMetaPath,
     getThemePagesVirtualPath,
     getThemeTempRollupBuildDir,
     pluginAdminBundlePath,
     pluginFrontendBundlePath,
-    getThemeAdminPanelBundleDir,
     pluginFrontendCjsPath,
 } from '@cromwell/core-backend';
 import { babel } from '@rollup/plugin-babel';
@@ -944,7 +944,7 @@ const startStaticWatcher = async (moduleName: string, type: 'theme' | 'plugin') 
         const publicPath = join(publicDir, moduleName, pathChunk);
         try {
             await fs.ensureDir(dirname(publicPath));
-            await fs.copy(filePath, publicPath);
+            await fs.copyFile(filePath, publicPath);
         } catch (error) {
             console.error(error);
         }
@@ -977,11 +977,20 @@ const startPageBundlesWatcher = async (themeName: string, buildDir: string) => {
     const copyFile = async (filePath: string) => {
         const pathChunk = normalizePath(filePath).replace(buildDir, '');
         const destPath = await getThemeAdminPanelBundleDir(themeName, pathChunk);
-
         if (!destPath) return;
+
+        try {
+            if (await fs.pathExists(destPath)) {
+                await fs.remove(destPath);
+            }
+        } catch (error) {
+            await sleep(0.5);
+        }
+
         try {
             await fs.ensureDir(dirname(destPath));
-            await fs.copy(filePath, destPath);
+
+            await fs.copyFile(filePath, destPath);
         } catch (error) {
             console.error(error);
         }

@@ -2,6 +2,7 @@
 
 * {
     box-sizing: border-box;
+
     &::before,
     &::after {
         box-sizing: border-box;
@@ -12,10 +13,12 @@ h1 {
     font-size: 24px;
     font-weight: 500;
 }
+
 h2 {
     font-size: 20px;
     font-weight: 500;
 }
+
 h3 {
     font-size: 18px;
     font-weight: 500;
@@ -27,4 +30,5 @@ h3 {
 
 :global(div.react-grid-item.react-grid-placeholder) {
     background-color: $primaryColor;
+    border-radius: 5px;
 }

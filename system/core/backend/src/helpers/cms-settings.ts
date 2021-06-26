@@ -48,7 +48,9 @@ export const readCMSConfig = async (): Promise<TCmsConfig> => {
             logger.error(e);
         }
     }
-    return Object.assign({}, defaultCmsConfig, customConfig, getEnvConfig());
+    const merged = Object.assign({}, defaultCmsConfig, customConfig, getEnvConfig());
+    merged.defaultSettings = Object.assign({}, defaultCmsConfig?.defaultSettings, customConfig?.defaultSettings);
+    return merged;
 }
 
 
