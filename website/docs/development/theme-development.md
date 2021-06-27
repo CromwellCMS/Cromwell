@@ -5,31 +5,32 @@ sidebar_position: 1
 # Theme development
 
 Cromwell CMS follows principles of headless CMS where API server runs separately from its frontend server. So basically you can create any type of frontend and host it wherever you like. But in this scenario you need to manage and deploy this frontend by yourself.  
-Cromwell CMS provides a way to build Themes that are managed and work with the CMS core. CMS users can easily install Themes from official market right in their Admin panel GUI, make active, delete them, change layout in the Theme Editor as long as Themes follow guidelines we are going to show.  
+To simply the workflow Cromwell CMS provides another option - build Themes that are managed and work with the CMS core. CMS users can easily install Themes from official market right in their Admin panel GUI, make active, delete them, change layout in the Theme Editor as long as Themes follow guidelines we are going to show.  
 
 Cromwell CMS Theme is a Next.js app. Theme development is basically Next.js development. If you are not familiar with Next.js, [you should definitely start with it first](https://nextjs.org/docs/getting-started).   
 
 
 ### Create a project
 
-As in [Installation](/docs/overview/installation#4-cromwell-cli), Cromwell CLI can create a new project template. If you want to create Theme use `--type theme` argument or `--type plugin` for Plugin.  
+As in the [Installation guide](/docs/overview/installation#4-cromwell-cli), Cromwell CLI can create a new project template. Use `--type theme` argument if you want to create Theme or `--type plugin` for Plugin.  
 ```bash
 npx @cromwell/cli create --type theme my-theme-name
 ```
 
 ### Project structure
 
+- **`cromwell.config.js`** - [Config file for your Theme/Plugin.](/docs/development/module-config)  
 - **`src/pages`** - Directory for Next.js pages. By default there's `index.tsx` created by CLI. You can rename it to .jsx if you don't want to work with TypeScript (which is discouraged).
 - **`static`** - Directory for static files (images). Files from this directory will be copied into `public` directory of the CMS, from where they will be served by our server to the frontend. You can access your Theme files through the following pattern: `/themes/${packageName}/${pathInStaticDir}`.  
 Image example:  `<img src="/themes/@cromwell/theme-store/free_shipping.png" />`
-- **`cromwell.config.js`** - [Config file for your Theme/Plugin.](/docs/development/module-config)  
+
 
 
 ### Compile
 
 To make your Theme work with the CMS we need to run additional [pre-build phase](#pre-build-phase). With that you cannot directly use Next.js CLI, but Cromwell CLI has a replacement which works in a similar way.  
 
-First you may optionally start the CMS to retrieve data from API server:
+First you may optionally start the CMS to retrieve data/plugins from API server:
 ```bash
 npx cromwell start --detached 
 ```
@@ -198,7 +199,7 @@ npm publish --access public
 
 ### Install Theme
 
-You can install it in some existing/running project, or create a new basic project:
+You can install your Theme in existing/running project, or create a new basic project:
 ```bash
 npx @cromwell/cli create my-website
 ```

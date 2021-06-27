@@ -13,7 +13,7 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
 
   const dir = resolve(process.cwd(), name + '');
   await fs.ensureDir(dir);
-
+  await fs.ensureDir(resolve(dir, 'static'));
 
   if (type === 't') type = 'theme';
   if (type === 'p') type = 'plugin';
@@ -40,15 +40,20 @@ export const createTask = async (name?: string, noInstall?: boolean, type?: stri
         , [], { shell: true, stdio: 'inherit', cwd: dir });
 
     } else {
-      spawnSync(`npm i --save-exact`, [], { shell: true, stdio: 'inherit', cwd: dir });
-
-      spawnSync(`npm update @cromwell/cms @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase --save-exact`
+      spawnSync(`npm i @cromwell/cms @cromwell/theme-store @cromwell/theme-blog @cromwell/plugin-main-menu @cromwell/plugin-newsletter @cromwell/plugin-product-filter @cromwell/plugin-product-showcase --save-exact`
         , [], { shell: true, stdio: 'inherit', cwd: dir });
     }
   }
 
-
   if (type === 'theme') {
     console.log(`\n Created Theme boilerplate. Run\x1b[36m cd ${name} && npx cromwell b -w\x1b[0m to start development server`)
+  }
+
+  if (type === 'basic') {
+    const pckg = await fs.readJSON(resolve(dir, 'package.json'));
+    pckg.name = name;
+    await fs.outputJSON(resolve(dir, 'package.json'), pckg, { spaces: 2 });
+
+    console.log(`\n Created basic boilerplate. Run\x1b[36m cd ${name} && npx cromwell start\x1b[0m to launch Cromwell CMS`)
   }
 }
