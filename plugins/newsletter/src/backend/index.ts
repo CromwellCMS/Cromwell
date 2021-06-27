@@ -1,6 +1,6 @@
 import { TBackendModule, registerAction, getLogger } from '@cromwell/core-backend';
 
-import PluginNewsletterContoller from './controllers/PluginNewsletterContoller';
+import PluginNewsletterController from './controllers/PluginNewsletterController';
 import PluginNewsletter from './entities/PluginNewsletter';
 import PluginNewsletterResolver from './resolvers/PluginNewsletterResolver';
 import { init1623451249312 } from './migrations/1623451249312-init';
@@ -14,7 +14,7 @@ import { init1623451249312 } from './migrations/1623451249312-init';
 // })
 
 const backendModule: TBackendModule = {
-    controllers: [PluginNewsletterContoller],
+    controllers: [PluginNewsletterController],
     entities: [PluginNewsletter],
     resolvers: [PluginNewsletterResolver],
     migrations: [init1623451249312],

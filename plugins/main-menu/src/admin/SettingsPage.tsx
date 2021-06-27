@@ -29,7 +29,7 @@ export function SettingsPage(props: PluginSettingsProps<TMainMenuSettings>) {
     const forceUpdate = useForceUpdate();
     const { pluginName, globalSettings } = props;
     const items = useRef<TMainMenuItem[]>(globalSettings?.items ?? []);
-
+    
     const handleSave = async () => {
         setIsloading(true);
         if (globalSettings) {
