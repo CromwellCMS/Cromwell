@@ -37,6 +37,7 @@ import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
 import { GenericPlugin } from '../helpers/genericEntities';
+import { serverFireAction } from '../helpers/serverFireAction';
 import { childSendMessage } from '../helpers/serverManager';
 import {
     endTransaction,
@@ -456,6 +457,8 @@ export class PluginService {
             if (entity) {
                 entity = Object.assign({}, entity, input);
                 await pluginRepo.save(entity);
+
+                await serverFireAction('update_plugin', { pluginName });
             }
         } catch (error) { }
 
@@ -463,6 +466,8 @@ export class PluginService {
         if (!entity) {
             try {
                 entity = await pluginRepo.createEntity(input);
+
+                await serverFireAction('install_plugin', { pluginName });
             } catch (e) {
                 logger.error(e);
             }
@@ -520,6 +525,8 @@ export class PluginService {
         const pluginRepo = getCustomRepository(GenericPlugin.repository);
         const entity = await this.findOne(pluginName);
         if (entity?.id) await pluginRepo.deleteEntity(entity.id);
+
+        await serverFireAction('uninstall_plugin', { pluginName });
 
         return true;
     }

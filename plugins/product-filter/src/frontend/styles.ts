@@ -83,7 +83,7 @@ export const useStyles = makeStyles((theme: Theme) =>
                 height: '0.5em',
             },
             '&::-webkit-scrollbar-track': {
-                boxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.2)',
+                backgroundColor: 'rgba($color: #000000, $alpha: 0.1)',
                 borderRadius: '30px',
             },
             '&::-webkit-scrollbar-thumb': {

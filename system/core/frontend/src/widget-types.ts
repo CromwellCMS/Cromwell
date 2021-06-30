@@ -1,8 +1,9 @@
-import { TCmsStats, TOrder, TPost, TProduct, TProductCategory, TTag } from '@cromwell/core';
+import { TCmsStats, TOrder, TPluginSettingsProps, TPost, TProduct, TProductCategory, TTag } from '@cromwell/core';
+
 
 // { [WidgetName] : ComponentPropsType }
 export type WidgetTypes = {
-    PluginSettings: PluginSettingsProps;
+    PluginSettings: TPluginSettingsProps;
     Dashboard: Widget_DashboardProps;
     PostActions: Widget_PostActions;
     TagActions: Widget_EntityActions<TTag>;
@@ -12,12 +13,6 @@ export type WidgetTypes = {
 };
 
 export type WidgetNames = keyof WidgetTypes;
-
-// PluginSettings
-export type PluginSettingsProps<TSettings = any> = {
-    globalSettings?: TSettings;
-    pluginName: string;
-}
 
 export type Widget_DashboardProps = {
     stats: TCmsStats | undefined;

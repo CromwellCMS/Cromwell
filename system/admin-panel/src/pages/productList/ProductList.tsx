@@ -134,12 +134,6 @@ const ProductList = (props: TPropsType) => {
         list?.updateData();
     }
 
-    const handleFilterInput = debounce(400, () => {
-        filterInput.current.nameSearch = (document.getElementById(titleSearchId) as HTMLInputElement)?.value ?? undefined;
-        resetList();
-    });
-
-
     const handleDeleteProductBtnClick = (product: TProduct) => {
         setProductToDelete(product);
     }
@@ -209,12 +203,6 @@ const ProductList = (props: TPropsType) => {
                             />
                         </Tooltip>
                     </div>
-                    <TextField
-                        className={styles.filterItem}
-                        id={titleSearchId}
-                        placeholder="Search by title"
-                        onChange={handleFilterInput}
-                    />
                     <Tooltip title="Show filter">
                         <IconButton
                             onClick={handleToggleFilter}
@@ -230,7 +218,7 @@ const ProductList = (props: TPropsType) => {
                         open={showFilter}
                         onClose={() => setShowFilter(false)}>
                         <div className={styles.filterHeader}>
-                            <div></div>
+                            <h3>Filter</h3>
                             <Tooltip title="Close">
                                 <IconButton
                                     onClick={handleToggleFilter}

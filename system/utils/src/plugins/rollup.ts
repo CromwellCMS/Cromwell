@@ -120,7 +120,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         if (frontendInputFile) {
             // Plugin frontend
 
-            const options: RollupOptions = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
+            const options: RollupOptions = (Object.assign({}, specifiedOptions?.frontend ?? inputOptions));
             const inputPath = isAbsolute(frontendInputFile) ? normalizePath(frontendInputFile) :
                 normalizePath(resolve(process.cwd(), frontendInputFile));
 
@@ -185,7 +185,7 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
         }
 
         if (adminInputFile) {
-            const options = (Object.assign({}, specifiedOptions?.frontendBundle ?? inputOptions));
+            const options = (Object.assign({}, specifiedOptions?.frontend ?? inputOptions));
             const inputPath = isAbsolute(adminInputFile) ? normalizePath(adminInputFile) :
                 normalizePath(resolve(process.cwd(), adminInputFile));
 

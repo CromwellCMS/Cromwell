@@ -1,5 +1,5 @@
 import { TFrontendPluginProps } from '@cromwell/core';
-import { Link, iconFromPath } from '@cromwell/core-frontend';
+import { iconFromPath, Link } from '@cromwell/core-frontend';
 import { Collapse, IconButton, MenuItem, Popover, useMediaQuery, useTheme } from '@material-ui/core';
 import React, { useState } from 'react';
 

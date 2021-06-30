@@ -1,10 +1,11 @@
-import { getRestAPIClient, LoadBox, PluginSettingsProps } from '@cromwell/core-frontend';
+import { TPluginSettingsProps } from '@cromwell/core';
+import { getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
 import { Button, createStyles, makeStyles, TextField } from '@material-ui/core';
 import React, { useState } from 'react';
 
 import { TSettings } from '../types';
 
-export function SettingsPage(props: PluginSettingsProps<TSettings>) {
+export function SettingsPage(props: TPluginSettingsProps<TSettings>) {
     const apiClient = getRestAPIClient();
     const [isLoading, setIsloading] = useState(false);
     const { pluginName, globalSettings } = props;
@@ -35,20 +36,20 @@ export function SettingsPage(props: PluginSettingsProps<TSettings>) {
             {isLoading ? (
                 <LoadBox />
             ) : (
-                    <div >
-                        <TextField
-                            label={'Items in carousel'}
-                            className={classes.item}
-                            value={size}
-                            onChange={handleChangeValue}
-                        />
-                        <Button variant="contained" color="primary"
-                            className={classes.item}
-                            size="large"
-                            onClick={handleSave}
-                        >Save</Button>
-                    </div>
-                )}
+                <div >
+                    <TextField
+                        label={'Items in carousel'}
+                        className={classes.item}
+                        value={size}
+                        onChange={handleChangeValue}
+                    />
+                    <Button variant="contained" color="primary"
+                        className={classes.item}
+                        size="large"
+                        onClick={handleSave}
+                    >Save</Button>
+                </div>
+            )}
         </div>
     )
 }

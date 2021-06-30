@@ -1,5 +1,5 @@
-import { getStoreItem } from '@cromwell/core';
-import { getRestAPIClient, PluginSettingsProps } from '@cromwell/core-frontend';
+import { getStoreItem, TPluginSettingsProps } from '@cromwell/core';
+import { getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 import React, { useState } from 'react';
 
@@ -7,7 +7,7 @@ import { defaultSettings } from '../constants';
 import { TProductFilterSettings } from '../types';
 import { useStyles } from './styles';
 
-export function SettingsPage(props: PluginSettingsProps<TProductFilterSettings>) {
+export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>) {
     const { pluginName, globalSettings: settings } = props;
     const classes = useStyles();
     const [isLoading, setIsloading] = useState(false);
