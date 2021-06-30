@@ -1,4 +1,5 @@
-import { getRestAPIClient, iconFromPath, PluginSettingsProps } from '@cromwell/core-frontend';
+import { TPluginSettingsProps } from '@cromwell/core';
+import { getRestAPIClient, iconFromPath } from '@cromwell/core-frontend';
 import {
     Button,
     CardActionArea,
@@ -22,7 +23,7 @@ const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10
 const AddIcon = iconFromPath(<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>);
 
 
-export function SettingsPage(props: PluginSettingsProps<TMainMenuSettings>) {
+export function SettingsPage(props: TPluginSettingsProps<TMainMenuSettings>) {
     const apiClient = getRestAPIClient();
     const classes = useStyles();
     const [isLoading, setIsloading] = useState(false);
@@ -45,29 +46,29 @@ export function SettingsPage(props: PluginSettingsProps<TMainMenuSettings>) {
             {isLoading ? (
                 <LoadBox />
             ) : (
-                    <>
-                        <h1 style={{ marginBottom: '20px' }}>Main menu plugin</h1>
-                        <h2>Menu items</h2>
-                        <div className={classes.itemList}>
-                            {items.current.map((data, i) => {
-                                return <Item i={i} updateList={forceUpdate} items={items.current} />
-                            })}
-                        </div>
-                        <div className={`${classes.card} ${classes.paper}`}>
-                            <MenuItem
-                                className={classes.addBtn}
-                                onClick={() => { items.current.push({ title: '' }); forceUpdate(); }}>
-                                <AddIcon />
-                            </MenuItem>
-                        </div>
-                        <Button variant="contained" color="primary"
-                            className={classes.saveBtn}
-                            size="large"
-                            onClick={handleSave}>
-                            Save
+                <>
+                    <h1 style={{ marginBottom: '20px' }}>Main menu plugin</h1>
+                    <h2>Menu items</h2>
+                    <div className={classes.itemList}>
+                        {items.current.map((data, i) => {
+                            return <Item i={i} updateList={forceUpdate} items={items.current} />
+                        })}
+                    </div>
+                    <div className={`${classes.card} ${classes.paper}`}>
+                        <MenuItem
+                            className={classes.addBtn}
+                            onClick={() => { items.current.push({ title: '' }); forceUpdate(); }}>
+                            <AddIcon />
+                        </MenuItem>
+                    </div>
+                    <Button variant="contained" color="primary"
+                        className={classes.saveBtn}
+                        size="large"
+                        onClick={handleSave}>
+                        Save
                         </Button>
-                    </>
-                )}
+                </>
+            )}
         </div>
     )
 }

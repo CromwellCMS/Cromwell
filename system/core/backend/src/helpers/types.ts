@@ -22,8 +22,11 @@ export type TBackendModule = {
 // { [ActionName] : PayloadType }
 export type ActionTypes = {
     install_plugin: { pluginName: string; };
+    update_plugin: { pluginName: string; };
     uninstall_plugin: { pluginName: string; };
+
     install_theme: { themeName: string; };
+    update_theme: { themeName: string; };
     uninstall_theme: { themeName: string; };
 
     create_post: TPost;

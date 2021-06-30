@@ -36,6 +36,7 @@ import { getConnection, getCustomRepository } from 'typeorm';
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
 import { GenericTheme } from '../helpers/genericEntities';
+import { serverFireAction } from '../helpers/serverFireAction';
 import { childSendMessage } from '../helpers/serverManager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
 import { CmsService } from './cms.service';
@@ -656,6 +657,8 @@ export class ThemeService {
             if (entity) {
                 entity = Object.assign({}, entity, input);
                 await themeRepo.save(entity);
+
+                await serverFireAction('update_theme', { themeName });
             }
         } catch (error) { }
 
@@ -663,6 +666,8 @@ export class ThemeService {
         if (!entity) {
             try {
                 entity = await themeRepo.createEntity(input);
+
+                await serverFireAction('install_theme', { themeName });
             } catch (e) {
                 logger.error(e);
             }
@@ -855,6 +860,7 @@ export class ThemeService {
         const entity = await this.findOne(themeName);
         if (entity?.id) await themeRepo.deleteEntity(entity.id);
 
+        await serverFireAction('uninstall_theme', { themeName });
         return true;
     }
 

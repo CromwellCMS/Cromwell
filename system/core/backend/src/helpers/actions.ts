@@ -4,10 +4,10 @@ import { ActionTypes, ActionNames } from './types';
 
 const actions: Record<string, Record<string, ((payload) => any)>> = {};
 
-export const registerAction = <T extends ActionNames>(options: {
+export const registerAction = <T extends ActionNames, TPayload = ActionTypes[T]>(options: {
     pluginName: string;
-    actionName: T;
-    action: (payload: ActionTypes[T]) => any;
+    actionName: T | string;
+    action: (payload: TPayload) => any;
 }) => {
     const logger = getLogger();
     const { pluginName, actionName, action } = options ?? {};
@@ -20,9 +20,9 @@ export const registerAction = <T extends ActionNames>(options: {
     actions[actionName][pluginName] = action;
 }
 
-export const fireAction = async <T extends ActionNames>(options: {
+export const fireAction = async <T extends ActionNames, TPayload = ActionTypes[T]>(options: {
     actionName: T | string;
-    payload?: ActionTypes[T];
+    payload?: TPayload;
 }): Promise<Record<string, any>> => {
     const logger = getLogger();
     const { payload, actionName } = options ?? {};

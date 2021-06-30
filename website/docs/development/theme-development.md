@@ -176,11 +176,11 @@ User can create a new page in the Theme Editor. Since there's no way to add Next
 
 ### Publish
 
-Any Theme or Plugin is an NPM package. That's how Cromwell CMS recognizes and manages them. If you want to share your Theme you need to publish it as NPM package.
+Any Theme or Plugin is an NPM package. That's how Cromwell CMS recognizes and manages them. If you want to share your Theme/Plugin you need to publish it as NPM package.
 
-First configure info that will be displayed in Admin panel about your Theme. Open `package.json` > `cromwell` property > modify fields: `title`, `image`, `excerpt`, `description`, `author`. [More about `package.json` config](/docs/development/module-config#package-json)  
+First configure info that will be displayed in Admin panel. Open `package.json` > `cromwell` property > modify fields: `title`, `image`, `excerpt`, `description`, `author`. [More about `package.json` config](/docs/development/module-config#package-json)  
 
-Check that all needed directories are included in your npm package. They should be set in your package.json:
+Check that all needed directories are included in your npm package. They should be set as "files" in your package.json:
 ```json
 "files": [
   "build",
@@ -190,16 +190,18 @@ Check that all needed directories are included in your npm package. They should 
 ```  
 Do not include `.cromwell` and `public` directories, these are CMS runtime directories.   
 
-Make sure you have successfully built your Theme. `./build` directory should contain `.next` and if there any Admin panel pages - `theme/admin`.  
+Make sure you have successfully built your Theme/Plugin.  
+For a Theme `./build` directory should contain `.next` and if there any Admin panel pages - `theme/admin`.  
+For a Plugin `./build` directory should reflect `src` 3 main directories.  
 
 Publish your package to the npm registry:
 ```bash
 npm publish --access public
 ```
 
-### Install Theme
+### Install
 
-You can install your Theme in existing/running project, or create a new basic project:
+You can install your Theme/Plugin in existing/running project, or create a new basic project:
 ```bash
 npx @cromwell/cli create my-website
 ```
@@ -209,4 +211,4 @@ Install your Theme:
 npm i my-theme-name -S
 ```
 
-You don't have to restart CMS, your Theme will be found and displayed in the Admin panel.
+You don't have to restart CMS, your Theme will be found and displayed in the Admin panel. Now you need to set it active.  

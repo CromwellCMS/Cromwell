@@ -12,13 +12,14 @@ import {
     ListItemIcon,
     ListItemText,
     SwipeableDrawer,
+    TextField,
     Typography,
     useMediaQuery,
     useTheme,
 } from '@material-ui/core';
 import clsx from 'clsx';
-import { debounce } from 'throttle-debounce';
 import React, { useEffect, useRef, useState } from 'react';
+import { debounce } from 'throttle-debounce';
 
 import { defaultSettings } from '../constants';
 import { TInstanceSettings, TProductFilterSettings } from '../types';
@@ -38,12 +39,12 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     const [maxPrice, setMaxPrice] = useState<number>(filterMeta?.maxPrice || 0);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const priceRange = useRef<number[]>([]);
+    const search = useRef<string>('');
     const collapsedByDefault = useRef<boolean>(false);
     const classes = useStyles();
     const client = getGraphQLClient();
     const theme = useTheme();
     const isMobile = !props.instanceSettings?.disableMobile && useMediaQuery(theme.breakpoints.down('xs'));
-
     const pcCollapsedByDefault = props.globalSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
     const mobileCollapsedByDefault = props.globalSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
     const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
@@ -70,13 +71,15 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     const applyFilter = () => {
         const productListId = props.instanceSettings?.listId ?? props?.globalSettings?.listId;
         const productCategoryId = productCategory?.id;
+        const nameSearch = search.current;
 
         const filterParams: TProductFilter = {
             attributes: Object.keys(checkedAttrs).map(key => ({
                 key, values: checkedAttrs[key]
             })),
             minPrice: priceRange.current[0],
-            maxPrice: priceRange.current[1]
+            maxPrice: priceRange.current[1],
+            nameSearch: (nameSearch && nameSearch !== '') ? nameSearch : undefined,
         }
 
         props.instanceSettings?.onChange?.(filterParams);
@@ -101,11 +104,19 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         priceRange.current = newValue;
         applyFilter();
     });
+    const onSearchChange = debounce(500, (newValue: string) => {
+        search.current = newValue;
+        applyFilter();
+    });
 
     if (collapsedItems['price'] === undefined) {
         collapsedItems['price'] = collapsedByDefault.current;
     }
+    if (collapsedItems['search'] === undefined) {
+        collapsedItems['search'] = collapsedByDefault.current;
+    }
     const isPriceExpanded = !collapsedItems['price'];
+    const isSearchExpanded = !collapsedItems['search'];
 
     const handleMobileOpen = () => {
         setIsMobileOpen(true);
@@ -126,6 +137,38 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                     </IconButton>
                 </div>
             )}
+            <Card className={classes.card}>
+                <div className={classes.headerWrapper}>
+                    <Typography gutterBottom style={{
+                        fontSize: '14px',
+                        margin: '0 0 0 15px'
+                    }}>Search</Typography>
+                    <IconButton
+                        onClick={() => [
+                            setCollapsedItems((prev) => {
+                                const copy = Object.assign({}, prev);
+                                copy['search'] = !copy['search'];
+                                return copy
+                            })
+                        ]}
+                        className={clsx(classes.expand, {
+                            [classes.expandOpen]: isSearchExpanded,
+                        })}
+                        aria-expanded={isSearchExpanded}
+                    >
+                        <ExpandMoreIcon />
+                    </IconButton>
+                </div>
+                <Collapse in={isSearchExpanded} timeout="auto" unmountOnExit>
+                    <TextField
+                        style={{
+                            marginLeft: '15px'
+                        }}
+                        placeholder="type to search..."
+                        onChange={e => onSearchChange(e.target.value)}
+                    />
+                </Collapse>
+            </Card>
             <Card className={classes.card}>
                 <div className={classes.headerWrapper}>
                     <Typography id="price-range-slider" gutterBottom style={{

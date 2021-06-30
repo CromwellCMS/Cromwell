@@ -117,10 +117,18 @@
 
 div.filterDrawer {
     @include paperElevated;
+    @include styledScrollBar;
     width: 280px;
+    padding-right: 7px;
 }
 
 .filterHeader {
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    padding-left: 15px;
+
+    > h3 {
+        font-weight: 500;
+    }
 }

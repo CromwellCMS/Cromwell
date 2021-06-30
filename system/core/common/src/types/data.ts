@@ -124,7 +124,7 @@ export type TCmsSettings = TCmsConfig & TCmsEntityCore;
 
 export type TRollupConfig = {
     main: Record<string, any>;
-    frontendBundle?: Record<string, any>;
+    frontend?: Record<string, any>;
     frontendCjs?: Record<string, any>;
     backend?: Record<string, any>;
     themePages?: Record<string, any>;
@@ -419,4 +419,18 @@ export type TCCSModuleInfo = {
     images?: string[];
     icon?: string;
     tags?: string[];
+}
+
+
+// PluginSettings
+export type TPluginSettingsProps<TSettings = any> = {
+    globalSettings?: TSettings;
+    pluginName: string;
+}
+
+export type TFrontendPluginProps<TData = any, TGlobalSettings = any, TInstanceSettings = any> = {
+    data?: TData;
+    pluginName: string;
+    globalSettings?: TGlobalSettings;
+    instanceSettings?: TInstanceSettings;
 }

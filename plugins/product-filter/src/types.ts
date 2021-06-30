@@ -1,4 +1,5 @@
-import { TAttributeValue, TFrontendPluginProps, TFilteredProductList, TProductFilter } from '@cromwell/core';
+import { TProductFilter } from '@cromwell/core';
+
 export type TProductFilterSettings = {
     listId?: string;
     mobileIconPosition?: {

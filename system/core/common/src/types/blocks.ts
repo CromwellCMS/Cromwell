@@ -34,13 +34,6 @@ export type TCromwellPageCoreProps = {
     palette?: TPalette | null;
 }
 
-export type TFrontendPluginProps<TData = any, TGlobalSettings = any, TInstanceSettings = any> = {
-    data?: TData;
-    pluginName: string;
-    globalSettings?: TGlobalSettings;
-    instanceSettings?: TInstanceSettings;
-}
-
 export type TCromwellBlock<TContentBlock = React.Component> = React.Component<TCromwellBlockProps<TContentBlock>> & {
     getContentInstance: () => (React.Component & TContentBlock) | undefined;
     setContentInstance: (contentInstance: React.Component & TContentBlock) => void;
