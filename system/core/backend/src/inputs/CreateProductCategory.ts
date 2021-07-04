@@ -18,7 +18,4 @@ export class CreateProductCategory extends BasePageInput implements TProductCate
 
     @Field(() => String, { nullable: true })
     parentId?: string;
-
-    @Field(() => [String], { nullable: true })
-    childIds?: string[];
 }

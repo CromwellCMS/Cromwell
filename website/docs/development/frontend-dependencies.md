@@ -8,7 +8,7 @@ sidebar_position: 4
 
 A website can have dozens of Plugins and each of them can have many heavy dependencies (node_modules), especially in modern React development. There are two main problems:
 
-1. Bloating size of bundles. React, Material UI, plus some other libraries and a Plugin can easily grow up to 500Kb and more. With many Plugins the website will be very slow to load.
+1. Bloating size of bundles. React, Material UI, plus some other libraries and a Plugin can easily grow up to 500Kb and more. With many Plugins the website may be very slow to load.
 2. Multiple instances of dependencies. For example, if you have bundled two React or Material UI libraries and then try to render them in one app, it will crash.
 
 To solve the issue Cromwell CMS has a feature called Frontend dependencies.   
@@ -60,10 +60,10 @@ This is experimental feature, docs will follow in the future.
 ## Maintaining
 
 As dependencies updated by their authors, we will bundle and upload new versions. So on a website potentially we can have installed two Plugins that reference different versions of one Frontend dependency.
-When these Plugins will be displayed at the frontend, the CMS will import only dependency of a first discovered Plugin (which placed higher on the page) by version, then dependency cached and reused for other Plugins. To avoid collisions and multiple instance problem dependencies are re-used by their name, ignoring version.  
+When these Plugins will be displayed at the frontend, the CMS will import only dependency of a first discovered Plugin (which placed higher on the page), then this dependency will be cached and reused for other Plugins. To avoid collisions and multiple instance problem dependencies are re-used by their name, ignoring version.  
 
-In this situation we want to use new version for all Plugins. For this purpose in Cromwell CMS we have bindings between Frontend dependencies and CMS version. You can check it here: [/frontend-dependencies](/frontend-dependencies).
-Plugin/Theme authors must check right version and CMS releases. If Frontend dependency has been updated in a new release, an author has to update it in his package and make a new release. If his package became too outdate, then it will be removed from official market.
+In this situation we want to use new version for all Plugins. For this purpose in Cromwell CMS we have bindings between CMS version and Frontend dependencies. You can check it here: [/frontend-dependencies](/frontend-dependencies).
+Plugin/Theme authors must check version of their dependencies and CMS releases. If Frontend dependency has been updated in a new release, then author has to update it in his package and make a new release. If his package became too outdate, then it will be removed from the official market.
 
 
 ## Big modules problem

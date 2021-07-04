@@ -138,10 +138,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
             productCategory[parentPropertyName] = null;
         }
-
-        if (input.childIds && Array.isArray(input.childIds)) {
-            productCategory.children = await this.getProductCategoriesById(input.childIds);
-        }
     }
 
     async createProductCategory(createProductCategory: CreateProductCategory): Promise<ProductCategory> {

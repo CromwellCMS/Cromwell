@@ -54,14 +54,18 @@ declare global {
 
 export type TDBEntity = keyof {
     Post;
-    User;
+    PostComment;
+    Tag;
     Product;
     ProductCategory;
     ProductReview;
     Attribute;
     Order;
+    User;
+    Theme;
+    Plugin;
     Generic;
-    Tag;
+    CMS;
 }
 
 export type GraphQLPathsType = { [K in TDBEntity]: TGraphQLNode };

@@ -50,7 +50,7 @@ export class OrderRepository extends BaseRepository<Order> {
         order.totalQnt = input.totalQnt;
         order.userId = input.userId;
         order.customerName = input.customerName;
-        order.customerPhone = input.customerPhone?.replace(/\W/g, '');
+        order.customerPhone = input.customerPhone?.replace?.(/\W/g, '');
         order.customerEmail = input.customerEmail;
         order.customerAddress = input.customerAddress;
         order.customerComment = input.customerComment ? sanitizeHtml(input.customerComment, {

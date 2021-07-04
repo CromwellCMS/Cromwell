@@ -45,7 +45,6 @@ export type TProductCategory = TProductCategoryCore & TBasePageEntity;
 
 export type TProductCategoryInput = TBasePageEntityInput & Omit<TProductCategoryCore, 'children' | 'parent' | 'products'> & {
     parentId?: string;
-    childIds?: string[];
 };
 
 export type TProductCategoryFilter = {
@@ -158,6 +157,7 @@ export interface TTag extends TBasePageEntity {
     color?: string | null;
     image?: string | null;
     description?: string | null;
+    descriptionDelta?: string | null;
 }
 
 export type TTagInput = Omit<TTag, TDBAuxiliaryColumns>;
