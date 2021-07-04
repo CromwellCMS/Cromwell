@@ -153,7 +153,6 @@ export default function CategoryPage(props) {
         description: getQuillHTML(quillEditor.current, `#${editorId}`),
         descriptionDelta: JSON.stringify(quillEditor.current.getContents()),
         parentId: category.parent?.id,
-        childIds: category.children?.map(child => child.id),
     });
 
     const handleSave = async () => {
