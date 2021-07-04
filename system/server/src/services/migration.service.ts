@@ -16,6 +16,7 @@ import {
 import {
     Attribute,
     AttributeRepository,
+    BasePageEntity,
     CmsEntity,
     getLogger,
     Order,
@@ -40,7 +41,6 @@ import { Injectable } from '@nestjs/common';
 import { Container, Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
-import { BasePageEntity } from '../../../core/backend/es/entities/BasePageEntity';
 import { GenericPlugin, GenericTheme } from '../helpers/genericEntities';
 import { CmsService } from './cms.service';
 
