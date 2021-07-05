@@ -66,6 +66,7 @@ const ProductPage = () => {
                         updateDate
                         isEnabled
                         pageTitle
+                        pageDescription
                         name
                         price
                         oldPrice

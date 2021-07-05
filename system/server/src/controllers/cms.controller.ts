@@ -8,11 +8,12 @@ import {
     ProductReviewRepository,
     Roles,
 } from '@cromwell/core-backend';
-import { Body, Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards, Response } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import fs from 'fs-extra';
 import { join } from 'path';
+import { FastifyReply } from 'fastify';
 import { Container } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
@@ -31,6 +32,7 @@ import { CmsService } from '../services/cms.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 import { MigrationService } from '../services/migration.service';
+import { ExportOptionsDto } from '../dto/export-options.dto';
 
 const logger = getLogger();
 
@@ -424,24 +426,27 @@ export class CmsController {
     }
 
 
-    @Get('export-db')
+    @Post('export-db')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')
     @ApiOperation({
         description: `Exports DB into Excel file`,
     })
+    @ApiBody({ type: ExportOptionsDto })
     @ApiResponse({
         status: 200,
     })
-    async exportDB() {
-        return this.migrationService.exportDB()
+    async exportDB(@Body() input: ExportOptionsDto, @Response() response: FastifyReply) {
+        if (!Array.isArray(input.tables)) input.tables = [];
+
+        const file = await this.migrationService.exportDB(input.tables as any);
+        response.type('text/html').send(file)
     }
 
 
     @Post('import-db')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')
-    @Header('content-type', 'multipart/form-data')
     @ApiOperation({
         description: 'Import DB from Excel files',
     })
@@ -450,9 +455,10 @@ export class CmsController {
     })
     async importDB(@Req() req: any) {
         try {
-            return await this.migrationService.importDB(req);
+            await this.migrationService.importDB(req);
         } catch (error) {
             logger.error(error);
+            throw new HttpException(String(error), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 }

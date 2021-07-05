@@ -41,6 +41,7 @@ export default function CategoryPage(props) {
                         updateDate
                         isEnabled
                         pageTitle
+                        pageDescription
                         name
                         mainImage
                         description

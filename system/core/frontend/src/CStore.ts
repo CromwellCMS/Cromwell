@@ -538,7 +538,9 @@ class CStore {
 
     public getActiveCurrencySymbol = (): string => {
         const currency = this.getActiveCurrencyTag();
-        return getStoreItem('cmsSettings')?.currencies?.find(curr => curr.tag === currency)?.symbol ?? '';
+        const currencies = getStoreItem('cmsSettings')?.currencies;
+        if (Array.isArray(currencies)) return currencies.find(curr => curr.tag === currency)?.symbol ?? '';
+        return '';
     }
 
     public setActiveCurrency = (currency: string) => {

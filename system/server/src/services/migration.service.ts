@@ -85,60 +85,46 @@ export class MigrationService {
         }
     }
 
-    async exportDB(entityType?: TDBEntity) {
+    async exportDB(entityTypes: TDBEntity[] = []) {
         const XlsxPopulate = require('xlsx-populate');
         const workbook = await XlsxPopulate.fromBlankAsync();
 
-        if (entityType === 'Attribute') {
-            await this.exportAttributes(workbook);
+        const exportAll = (!entityTypes || entityTypes.length === 0);
 
-        } else if (entityType === 'Order') {
-            await this.exportOrders(workbook);
-
-        } else if (entityType === 'Post') {
-            await this.exportPosts(workbook);
-
-        } else if (entityType === 'Product') {
+        if (entityTypes.includes('Product') || exportAll) {
             await this.exportProducts(workbook);
-
-        } else if (entityType === 'ProductCategory') {
+        }
+        if (entityTypes.includes('ProductCategory') || exportAll) {
             await this.exportCategories(workbook);
-
-        } else if (entityType === 'ProductReview') {
-            await this.exportReviews(workbook);
-
-        } else if (entityType === 'Tag') {
-            await this.exportTags(workbook);
-
-        } else if (entityType === 'User') {
-            await this.exportUsers(workbook);
-
-        } else if (entityType === 'Plugin') {
-            await this.exportPlugins(workbook);
-
-        } else if (entityType === 'PostComment') {
-            await this.exportComments(workbook);
-
-        } else if (entityType === 'Theme') {
-            await this.exportThemes(workbook);
-
-        } else if (entityType === 'CMS') {
-            await this.exportCMSSettings(workbook);
-
-        } else {
-            await this.exportProducts(workbook);
-            await this.exportCategories(workbook);
+        }
+        if (entityTypes.includes('Attribute') || exportAll) {
             await this.exportAttributes(workbook);
+        }
+        if (entityTypes.includes('ProductReview') || exportAll) {
             await this.exportReviews(workbook);
+        }
+        if (entityTypes.includes('Order') || exportAll) {
             await this.exportOrders(workbook);
-
+        }
+        if (entityTypes.includes('Post') || exportAll) {
             await this.exportPosts(workbook);
+        }
+        if (entityTypes.includes('Tag') || exportAll) {
             await this.exportTags(workbook);
+        }
+        if (entityTypes.includes('PostComment') || exportAll) {
             await this.exportComments(workbook);
-
+        }
+        if (entityTypes.includes('User') || exportAll) {
             await this.exportUsers(workbook);
+        }
+        if (entityTypes.includes('Plugin') || exportAll) {
             await this.exportPlugins(workbook);
+        }
+        if (entityTypes.includes('Theme') || exportAll) {
             await this.exportThemes(workbook);
+        }
+        if (entityTypes.includes('CMS') || exportAll) {
             await this.exportCMSSettings(workbook);
         }
 
@@ -146,11 +132,7 @@ export class MigrationService {
             workbook.deleteSheet("Sheet1");
         } catch (error) { }
 
-        await workbook.toFileAsync("./out.xlsx");
-
-        return {
-            file: await workbook.outputAsync("base64"),
-        }
+        return await workbook.outputAsync();
     }
 
 
@@ -561,6 +543,7 @@ export class MigrationService {
             const uint8Array = new Uint8Array(file);
             const workbook = await XlsxPopulate.fromDataAsync(uint8Array);
 
+            await this.importUsers(workbook);
             await this.importTags(workbook);
             await this.importPosts(workbook);
 
@@ -570,7 +553,6 @@ export class MigrationService {
             await this.importReviews(workbook);
 
             await this.importOrders(workbook);
-            await this.importUsers(workbook);
             await this.importPlugins(workbook);
             await this.importThemes(workbook);
             await this.importCMSSettings(workbook);
@@ -592,8 +574,9 @@ export class MigrationService {
             'Posts',
             Post,
             (input) => ({
-                ...input, tagIds: typeof input.tagIds === 'string' ?
-                    (input.tagIds as string).split(',') : input.tagIds
+                ...input,
+                tagIds: typeof input.tagIds === 'string' || typeof input.tagIds === 'number' ?
+                    (input.tagIds + '').split(',') : input.tagIds
             }),
             async (input) => input.id && getCustomRepository(PostRepository).updatePost(input.id, input),
             (input) => getCustomRepository(PostRepository).createPost(input),
@@ -615,7 +598,8 @@ export class MigrationService {
             'Attributes',
             Attribute,
             (input) => ({
-                ...input, values: typeof input.values === 'string' ?
+                ...input,
+                values: typeof input.values === 'string' ?
                     JSON.parse(input.values) : input.values,
             }),
             async (input) => input.id && getCustomRepository(AttributeRepository).updateAttribute(input.id, input),
@@ -628,8 +612,9 @@ export class MigrationService {
             'Products',
             Product,
             (input) => ({
-                ...input, categoryIds: typeof input.categoryIds === 'string' ?
-                    (input.categoryIds as string).split(',') : input.categoryIds,
+                ...input,
+                categoryIds: typeof input.categoryIds === 'string' || typeof input.categoryIds === 'number' ?
+                    (input.categoryIds + '').split(',') : input.categoryIds,
                 attributes: typeof input.attributes === 'string' ?
                     JSON.parse(input.attributes as string) : input.attributes,
             }),

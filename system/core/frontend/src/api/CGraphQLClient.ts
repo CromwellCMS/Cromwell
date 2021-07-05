@@ -464,6 +464,7 @@ class CGraphQLClient {
             updateDate
             isEnabled
             pageTitle
+            pageDescription
             name
             price
             oldPrice
@@ -581,6 +582,7 @@ class CGraphQLClient {
             updateDate
             isEnabled
             pageTitle
+            pageDescription
             name
             mainImage
             description
@@ -710,6 +712,7 @@ class CGraphQLClient {
             id
             slug
             pageTitle
+            pageDescription
             createDate
             updateDate
             isEnabled
@@ -761,6 +764,7 @@ class CGraphQLClient {
             updateDate
             isEnabled
             pageTitle
+            pageDescription
             fullName
             email
             avatar
@@ -832,6 +836,8 @@ class CGraphQLClient {
             slug
             createDate
             updateDate
+            pageTitle
+            pageDescription
             isEnabled
             name
             color

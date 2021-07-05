@@ -50,6 +50,7 @@ const Post = (props) => {
                     id
                     slug
                     pageTitle
+                    pageDescription
                     createDate
                     updateDate
                     isEnabled

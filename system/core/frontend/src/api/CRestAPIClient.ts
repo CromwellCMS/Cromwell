@@ -11,6 +11,7 @@ import {
     TCmsStats,
     TCmsStatus,
     TCreateUser,
+    TDBEntity,
     TFrontendBundle,
     TOrder,
     TPackageCromwellConfig,
@@ -50,15 +51,21 @@ class CRestAPIClient {
         return `${typeUrl}/${apiV1BaseRoute}`;
     }
 
-    private handleError = async (responce: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
-        if ((responce.status === 403 || responce.status === 401) && !isServer()) {
+    private handleError = async (response: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
+        if ((response.status === 403 || response.status === 401) && !isServer()) {
             this.onUnauthorized?.();
         }
 
-        if (responce.status >= 400) {
+        if (response.status >= 400) {
+            let message = data?.message;
+            if (!message) {
+                try {
+                    message = (await response.json())?.message;
+                } catch (error) { }
+            }
             const errorInfo: TErrorInfo = {
-                statusCode: responce.status,
-                message: data?.message,
+                statusCode: response.status,
+                message,
                 route,
                 disableLog,
             };
@@ -69,6 +76,17 @@ class CRestAPIClient {
 
     private logError = (route: string, e?: any) => {
         logFor('errors-only', `CRestAPIClient route: ${route}` + e, console.error)
+    }
+
+
+    private throwError(errorInfo: TErrorInfo, route: string, options?: TRequestOptions) {
+        for (const cb of Object.values(this.onErrorCallbacks)) {
+            cb(errorInfo);
+        }
+        if (!options?.disableLog)
+            this.logError(route, `Request failed, status: ${errorInfo.statusCode}. ${errorInfo.message}`);
+
+        throw new Error(JSON.stringify(errorInfo));
     }
 
     public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
@@ -95,17 +113,12 @@ class CRestAPIClient {
         }
 
         if (errorInfo) {
-            for (const cb of Object.values(this.onErrorCallbacks)) {
-                cb(errorInfo);
-            }
-            if (!options?.disableLog)
-                this.logError(route, `Request failed, status: ${errorInfo.statusCode}. ${errorInfo.message}`);
-
-            throw new Error(JSON.stringify(errorInfo));
+            this.throwError(errorInfo, route, options)
         }
 
         return data;
     }
+
 
     public get = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
         return this.fetch(route, options);
@@ -277,18 +290,45 @@ class CRestAPIClient {
         return this.get(`cms/launch-update`, options);
     }
 
+    public exportDB = async (tables?: TDBEntity[], options?: TRequestOptions) => {
+        const url = `${this.getBaseUrl()}/cms/export-db`;
+        const response = await fetch(url, {
+            method: 'POST',
+            credentials: 'include',
+            body: JSON.stringify({ tables }),
+            headers: { 'Content-Type': 'application/json' },
+            ...(options ?? {}),
+        });
+        const [data, errorInfo] = await this.handleError(response, await response.blob(), url, options?.disableLog);
+        if (errorInfo) {
+            this.throwError(errorInfo, url, options);
+        }
+
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(data);
+        a.download = "export.xlsx";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+    }
+
     public importDB = async (files: File[], options?: TRequestOptions): Promise<boolean | null | undefined> => {
         const formData = new FormData();
         for (const file of files) {
             formData.append(file.name, file);
         }
-        const response = await fetch(`${this.getBaseUrl()}/cms/import-db`, {
+        const url = `${this.getBaseUrl()}/cms/import-db`;
+        const response = await fetch(url, {
             method: 'POST',
             credentials: 'include',
             body: formData,
             ...(options ?? {}),
         });
-        return response.body;
+        const [data, errorInfo] = await this.handleError(response, response.body, url, options?.disableLog);
+        if (errorInfo) {
+            this.throwError(errorInfo, url, options);
+        }
+        return data;
     }
 
     // < / CMS >
