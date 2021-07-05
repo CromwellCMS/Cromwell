@@ -78,7 +78,7 @@ export const getLogger = (writeToFile = true) => {
         error: (...args) => {
             logger.error({
                 level: 'error',
-                message: colors.brightRed('Error: ') + args.join(' '),
+                message: colors.brightRed('Error: ') + args.join(' ') + (args[0]?.stack ?? ''),
             });
             if (writeToFile) {
                 fileLogger.error({

@@ -41,6 +41,10 @@
         // margin: 15px 0;
         margin-top: 15px;
         font-weight: 500;
+
+        >h3 {
+            font-size: 24px;
+        }
     }
 
     div.textField {
@@ -53,15 +57,35 @@
     padding: 15px;
     padding-top: 5px;
 }
+
 .currencyItemHeader {
     display: flex;
     justify-content: space-between;
 }
+
 .currencyBadge {
     padding: 24px 0 0 27px;
 }
 
+.exportOptions {
+    border-radius: 5px;
+    border-left: 3px solid #aaa;
+    @include styledScrollBar;
+    display: flex;
+    flex-direction: column;
+    max-height: 200px;
+    overflow: auto;
+    width: 300px;
+    margin: 15px 10px;
+    padding: 0 10px;
+}
+
+.exportBtn {
+    margin: 10px 0;
+}
+
 @media screen and (max-width: $mobileBreakpoint) {
+
     // mobile
     .SettingsPage .list {
         overflow: visible;

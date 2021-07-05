@@ -1,22 +1,13 @@
 import React, { useEffect } from 'react';
 import { toast } from 'react-toastify';
-import Loadbox from './LoadBox';
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
 
-export const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        loadContainer: {
-            width: '64px',
-            margin: '0 0 0 auto',
-            borderRadius: '70px'
-        }
-    }),
-);
+import Loadbox from './LoadBox';
+import styles from './LoadBox.module.scss';
+
 
 export const LoadingStatus = (props: { isActive: boolean }) => {
     const lastState = React.useRef<boolean>(false);
     const toastId = React.useRef<null | string | number>(null);
-    const classes = useStyles();
 
     useEffect(() => {
         return () => {
@@ -29,11 +20,13 @@ export const LoadingStatus = (props: { isActive: boolean }) => {
         if (toastId.current) toast.dismiss(toastId.current);
 
         toastId.current = toast(({ closeToast }) =>
-            <Notification />, {
+            <div
+                className={styles.LoadingStatus}
+            ><Loadbox size={44} /></div>, {
             position: toast.POSITION.BOTTOM_RIGHT,
             autoClose: false,
             closeButton: false,
-            className: classes.loadContainer,
+            className: styles.loadContainer,
             closeOnClick: false
         });
     }
@@ -46,17 +39,5 @@ export const LoadingStatus = (props: { isActive: boolean }) => {
 
     return (
         <></>
-    )
-}
-
-const Notification = () => {
-    return (
-        <div style={{
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center'
-        }}>
-            <Loadbox size={44} />
-        </div>
     )
 }

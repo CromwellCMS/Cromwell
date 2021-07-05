@@ -240,6 +240,14 @@ export class CmsService {
         const entity = await getCmsEntity();
         if (!entity) throw new Error('!entity');
 
+        if (typeof input.currencies === 'string') {
+            try {
+                input.currencies = JSON.parse(input.currencies);
+            } catch (error) {
+                logger.error(error);
+            }
+        }
+
         entity.protocol = input.protocol;
         entity.defaultPageSize = input.defaultPageSize;
         entity.currencies = input.currencies;
@@ -643,4 +651,3 @@ export class CmsService {
     }
 
 }
-

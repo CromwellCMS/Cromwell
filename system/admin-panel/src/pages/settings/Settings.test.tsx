@@ -1,10 +1,10 @@
-import { fireEvent, render, screen, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { TCmsSettings } from '@cromwell/core';
 import React from 'react';
-import { launguages } from '../../constants/launguages';
+import { languages } from '../../constants/languages';
 
 const testData: TCmsSettings = {
-    language: launguages[0].code,
+    language: languages[0].code,
     timezone: 0,
 }
 
@@ -30,7 +30,7 @@ describe('Settings page', () => {
     it("renders settings", async () => {
         render(<SettingsPage />);
 
-        await screen.findByText((text) => text.includes(launguages[0].name));
+        await screen.findByText((text) => text.includes(languages[0].name));
     });
 
 })

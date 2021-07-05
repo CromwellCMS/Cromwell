@@ -8,7 +8,7 @@ import styles from './toast.module.scss';
 class Toast implements TCromwellNotify {
     success(text: string, options?: ToastOptions) {
         return toastify.info(<div className={styles.container}>
-            <Alert severity="success" className={styles.alert}>{text}</Alert>
+            <Alert severity="success" className={styles.alert}><p>{text}</p></Alert>
         </div>, {
             className: styles.toast,
             ...(options ?? {}),
@@ -17,7 +17,7 @@ class Toast implements TCromwellNotify {
 
     warning(text: string, options?: ToastOptions) {
         return toastify.info(<div className={styles.success} >
-            <Alert severity="warning" className={styles.alert}>{text}</Alert>
+            <Alert severity="warning" className={styles.alert}><p>{text}</p></Alert>
         </div>, {
             className: styles.toast,
             ...(options ?? {}),
@@ -26,7 +26,7 @@ class Toast implements TCromwellNotify {
 
     error(text: string, options?: ToastOptions) {
         return toastify.info(<div className={styles.success}>
-            <Alert severity="error" className={styles.alert}>{text}</Alert>
+            <Alert severity="error" className={styles.alert}><p>{text}</p></Alert>
         </div>, {
             className: styles.toast,
             ...(options ?? {}),
@@ -35,7 +35,7 @@ class Toast implements TCromwellNotify {
 
     info(text: string, options?: ToastOptions) {
         return toastify.info(<div className={styles.success}>
-            <Alert severity="info" className={styles.alert}>{text}</Alert>
+            <Alert severity="info" className={styles.alert}><p>{text}</p></Alert>
         </div>, {
             className: styles.toast,
             ...(options ?? {}),

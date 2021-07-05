@@ -33,10 +33,18 @@ div.alert {
     align-items: center;
     padding: 10px 15px;
 
+
+
     :global(.MuiAlert-icon) {
         padding: 0;
     }
+
     :global(.MuiAlert-message) {
         padding: 0;
+        max-width: 86%;
+
+        >p {
+            word-break: break-word;
+        }
     }
 }

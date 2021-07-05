@@ -1,4 +1,4 @@
-export const launguages = [
+export const languages = [
     // { "code": "zh", "name": "Chinese", "nativeName": "中文" },
     { "code": "en", "name": "English", "nativeName": "English" },
     { "code": "fr", "name": "French", "nativeName": "Français" },

@@ -62,6 +62,7 @@ export const handleBaseInput = (entity: TBasePageEntity, input: TBasePageEntityI
         entity.slug = (entity.slug + '').replace(/\W/g, '-').toLowerCase();
     }
     entity.pageTitle = input.pageTitle;
+    entity.pageDescription = input.pageDescription;
     entity.isEnabled = input.isEnabled;
 }
 
