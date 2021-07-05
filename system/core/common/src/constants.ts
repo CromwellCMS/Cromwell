@@ -14,7 +14,7 @@ export enum BasePagePaths {
     ProductCategory = '/category'
 }
 
-export const GraphQLPaths: { [K in TDBEntity]: TGraphQLNode } = {
+export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'PostComment' | 'CMS'>]: TGraphQLNode } = {
     Generic: {
         getOneBySlug: "getGenericBySlug",
         getOneById: "getGenericById",
@@ -134,7 +134,7 @@ const getBaseUrl = (key: keyof TCmsConfig) => {
         }
         return `http://localhost:${port}`;
     }
-    
+
     if (window.location.hostname === 'localhost') {
         if (!port) {
             console.error('core:serviceLocator: !port for ' + key);

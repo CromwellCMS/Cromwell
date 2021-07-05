@@ -23,4 +23,7 @@ export class Tag extends BasePageEntity implements TTag {
     @Column({ type: "text", nullable: true })
     description?: string | null;
 
+    @Field(type => String, { nullable: true })
+    @Column({ type: "text", nullable: true })
+    descriptionDelta?: string | null;
 }

@@ -15,6 +15,7 @@ export * from './helpers/actions';
 export * from './helpers/shell';
 
 export * from './entities/Product';
+export * from './entities/BasePageEntity';
 export * from './entities/ProductCategory';
 export * from './entities/Post';
 export * from './entities/User';

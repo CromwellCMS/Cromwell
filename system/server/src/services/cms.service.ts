@@ -122,7 +122,10 @@ export class CmsService {
 
         const handler = async (field: string, file: any, filename: string): Promise<void> => {
             const fullPath = join(`${dirName}/${filename}`);
-            if (await fs.pathExists(fullPath)) return;
+            if (await fs.pathExists(fullPath)) {
+                await fs.remove(fullPath);
+                await sleep(0.1);
+            }
 
             const pipeline = util.promisify(stream.pipeline);
             const writeStream = fs.createWriteStream(fullPath); //File path

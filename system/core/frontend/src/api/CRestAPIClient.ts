@@ -277,6 +277,20 @@ class CRestAPIClient {
         return this.get(`cms/launch-update`, options);
     }
 
+    public importDB = async (files: File[], options?: TRequestOptions): Promise<boolean | null | undefined> => {
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append(file.name, file);
+        }
+        const response = await fetch(`${this.getBaseUrl()}/cms/import-db`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData,
+            ...(options ?? {}),
+        });
+        return response.body;
+    }
+
     // < / CMS >
 
 

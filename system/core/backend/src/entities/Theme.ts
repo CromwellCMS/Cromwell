@@ -15,6 +15,10 @@ export class ThemeEntity extends BasePageEntity implements TThemeEntity {
     @Column({ type: "varchar", nullable: true })
     version?: string;
 
+    @Field(type => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    title?: string;
+
     @Field()
     @Column()
     isInstalled: boolean;

@@ -57,9 +57,9 @@ export const getPaged = async <T>(qb: SelectQueryBuilder<T>, sortByTableName?: s
 }
 
 export const handleBaseInput = (entity: TBasePageEntity, input: TBasePageEntityInput) => {
-    entity.slug = input.slug
+    entity.slug = input.slug;
     if (entity.slug) {
-        entity.slug = entity.slug.replace(/\W/g, '-').toLowerCase();
+        entity.slug = (entity.slug + '').replace(/\W/g, '-').toLowerCase();
     }
     entity.pageTitle = input.pageTitle;
     entity.isEnabled = input.isEnabled;
@@ -69,7 +69,7 @@ export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, Entit
     // check for absence and set id instead
     let hasModified = false;
     if (!entity.slug || entity.slug === '') {
-        entity.slug = entity.id;
+        entity.slug = entity.id + '';
         hasModified = true;
     }
 

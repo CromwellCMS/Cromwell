@@ -30,6 +30,7 @@ import { serverFireAction } from '../helpers/serverFireAction';
 import { CmsService } from '../services/cms.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
+import { MigrationService } from '../services/migration.service';
 
 const logger = getLogger();
 
@@ -45,6 +46,7 @@ export class CmsController {
     constructor(
         private readonly cmsService: CmsService,
         private readonly themeService: ThemeService,
+        private readonly migrationService: MigrationService,
     ) { }
 
     @Get('config')
@@ -419,5 +421,38 @@ export class CmsController {
     })
     async updateCms(): Promise<boolean> {
         return this.cmsService.handleUpdateCms();
+    }
+
+
+    @Get('export-db')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: `Exports DB into Excel file`,
+    })
+    @ApiResponse({
+        status: 200,
+    })
+    async exportDB() {
+        return this.migrationService.exportDB()
+    }
+
+
+    @Post('import-db')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @Header('content-type', 'multipart/form-data')
+    @ApiOperation({
+        description: 'Import DB from Excel files',
+    })
+    @ApiResponse({
+        status: 200,
+    })
+    async importDB(@Req() req: any) {
+        try {
+            return await this.migrationService.importDB(req);
+        } catch (error) {
+            logger.error(error);
+        }
     }
 }
