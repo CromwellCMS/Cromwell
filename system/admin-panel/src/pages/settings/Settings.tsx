@@ -141,15 +141,12 @@ class SettingsPage extends React.Component<any, {
     }
 
     private importDB = async () => {
-        const inputContainer = document.getElementById('hidden-file-upload') as HTMLInputElement;
-        if (!inputContainer) return;
-        inputContainer.innerHTML = '';
-
         const input = document.createElement('input');
+        input.style.display = 'none';
         input.multiple = true;
         input.type = 'file';
         input.accept = '.xlsx';
-        inputContainer.appendChild(input);
+        document.body.appendChild(input);
 
         input.addEventListener("change", async (e: any) => {
             // Get the selected file from the input element
@@ -164,6 +161,7 @@ class SettingsPage extends React.Component<any, {
             } catch (e) {
                 console.error(e);
             }
+            input.remove();
             this.setState({ exporting: false });
         });
 
@@ -481,7 +479,6 @@ class SettingsPage extends React.Component<any, {
                     </Grid>
                     <LoadingStatus isActive={this.state?.exporting} />
                 </div>
-                <div style={{ display: 'none' }} id="hidden-file-upload"></div>
             </div>
         )
     }

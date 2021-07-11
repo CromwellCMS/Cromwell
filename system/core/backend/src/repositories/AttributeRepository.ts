@@ -31,9 +31,10 @@ export class AttributeRepository extends BaseRepository<Attribute> {
         if (input.isEnabled === undefined) attribute.isEnabled = true;
     }
 
-    async createAttribute(createAttribute: TAttributeInput): Promise<TAttribute> {
+    async createAttribute(createAttribute: TAttributeInput, id?: string): Promise<TAttribute> {
         logger.log('AttributeRepository::createAttribute');
         let attribute = new Attribute();
+        if (id) attribute.id = id;
 
         await this.handleAttributeInput(attribute, createAttribute);
 

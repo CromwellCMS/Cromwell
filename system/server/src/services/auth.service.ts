@@ -1,4 +1,3 @@
-import { UserDto } from '../dto/user.dto';
 import { sleep, TCreateUser } from '@cromwell/core';
 import {
     getEmailTemplate,
@@ -18,9 +17,11 @@ import cryptoRandomString from 'crypto-random-string';
 import { FastifyReply } from 'fastify';
 import { getCustomRepository } from 'typeorm';
 
-import { authSettings, bcryptSaltRounds } from '../helpers/settings';
 import { LoginDto } from '../dto/login.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
+import { UserDto } from '../dto/user.dto';
+import { TLoginInfo } from '../helpers/constants';
+import { authSettings, bcryptSaltRounds } from '../helpers/settings';
 
 const logger = getLogger();
 
@@ -59,12 +60,7 @@ export class AuthService {
 
     getUserById = (id: string) => getCustomRepository(UserRepository).getUserById(id);
 
-    async logIn(input: LoginDto): Promise<{
-        accessToken: string;
-        refreshToken: string;
-        userInfo: TAuthUserInfo;
-        userDto: UserDto;
-    } | null> {
+    async logIn(input: LoginDto): Promise<TLoginInfo> {
         const user = await this.validateUser(input.email, input.password);
 
         if (!user) return null;

@@ -1,4 +1,4 @@
-import { JwtAuthGuard, validateEmail, TRequestWithUser } from '@cromwell/core-backend';
+import { getLogger, JwtAuthGuard, TRequestWithUser, validateEmail } from '@cromwell/core-backend';
 import {
     Body,
     Controller,
@@ -15,12 +15,15 @@ import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { FastifyReply } from 'fastify';
 
+import { AccessTokensDto, UpdateAccessTokenDto, UpdateAccessTokenResponseDto } from '../dto/access-tokens.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { LoginDto } from '../dto/login.dto';
-import { AccessTokensDto, UpdateAccessTokenDto, UpdateAccessTokenResponseDto } from '../dto/access-tokens.dto';
 import { ResetPasswordDto } from '../dto/reset-password.dto';
 import { UserDto } from '../dto/user.dto';
+import { TLoginInfo } from '../helpers/constants';
 import { AuthService } from '../services/auth.service';
+
+const logger = getLogger();
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -41,7 +44,12 @@ export class AuthController {
     })
     async login(@Request() req: TRequestWithUser, @Response() response: FastifyReply, @Body() input: LoginDto) {
 
-        const authInfo = await this.authService.logIn(input);
+        let authInfo: TLoginInfo = null;
+        try {
+            authInfo = await this.authService.logIn(input);
+        } catch (error) {
+            logger.error(error);
+        }
 
         if (!authInfo) {
             response.status(403);
@@ -67,11 +75,15 @@ export class AuthController {
         description: 'Logs user out who was logged via cookies',
     })
     async logOut(@Request() request: TRequestWithUser, @Response() response: FastifyReply) {
-        if (request.user)
-            await this.authService.removeRefreshToken(request.user);
+        if (request.user) {
+            try {
+                await this.authService.removeRefreshToken(request.user);
+            } catch (error) {
+                logger.error(error);
+            }
+        }
 
         this.authService.clearTokenCookies(response, request);
-
         response.code(200).send(true);
     }
 
@@ -141,9 +153,10 @@ export class AuthController {
         status: 201,
         type: UserDto
     })
-    async signUp(@Request() request: TRequestWithUser, @Response() response: FastifyReply, @Body() input: CreateUserDto) {
+    async signUp(@Request() request: TRequestWithUser, @Body() input: CreateUserDto) {
         const user = await this.authService.signUpUser(input, request.user);
-        response.code(201).send(new UserDto().parseUser(user));
+        if (!user) throw new HttpException('Failed to sign up', HttpStatus.INTERNAL_SERVER_ERROR);
+        return new UserDto().parseUser(user);
     }
 
 

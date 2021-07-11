@@ -4,10 +4,10 @@ import { AppProps } from 'next/app';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
 import { ToastContainer } from 'react-toastify';
-import { toast } from '../components/toast/toast';
 
 import { PostCard } from '../components/postCard/PostCard';
 import { ProductCard } from '../components/productCard/ProductCard';
+import { toast } from '../components/toast/toast';
 
 if (isServer()) {
     // useLayoutEffect warnings ssr disable

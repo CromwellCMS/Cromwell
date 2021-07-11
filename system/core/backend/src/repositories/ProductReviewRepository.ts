@@ -51,9 +51,10 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         productReview.userId = input.userId;
     }
 
-    async createProductReview(createProductReview: TProductReviewInput): Promise<TProductReview> {
+    async createProductReview(createProductReview: TProductReviewInput, id?: string): Promise<TProductReview> {
         logger.log('ProductReviewRepository::createProductReview');
         let productReview = new ProductReview();
+        if (id) productReview.id = id;
 
         await this.handleProductReviewInput(productReview, createProductReview);
 

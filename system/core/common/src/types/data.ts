@@ -138,6 +138,8 @@ export type TRollupConfig = {
 export type TThemeConfig = {
     /** Configs for Rollup */
     rollupConfig?: () => TRollupConfig | Promise<TRollupConfig>;
+    /** Next.js config that usually exported from next.config.js */
+    nextConfig?: () => any;
     /** Colors to use */
     palette?: TPalette;
     /** Custom HTML to add into head of every page */

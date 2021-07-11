@@ -62,12 +62,15 @@ This is experimental feature, docs will follow in the future.
 As dependencies updated by their authors, we will bundle and upload new versions. So on a website potentially we can have installed two Plugins that reference different versions of one Frontend dependency.
 When these Plugins will be displayed at the frontend, the CMS will import only dependency of a first discovered Plugin (which placed higher on the page), then this dependency will be cached and reused for other Plugins. To avoid collisions and multiple instance problem dependencies are re-used by their name, ignoring version.  
 
-In this situation we want to use new version for all Plugins. For this purpose in Cromwell CMS we have bindings between CMS version and Frontend dependencies. You can check it here: [/frontend-dependencies](/frontend-dependencies).
-Plugin/Theme authors must check version of their dependencies and CMS releases. If Frontend dependency has been updated in a new release, then author has to update it in his package and make a new release. If his package became too outdate, then it will be removed from the official market.
+Basically we want to use a new version, or ot least same version for all Plugins. For this purpose in Cromwell CMS we have bindings between CMS version and Frontend dependencies. You can check it here: [/frontend-dependencies](/frontend-dependencies).  
+Plugin/Theme authors must check version of their dependencies and CMS releases. If Frontend dependency has been updated in a new CMS release, then author has to update it in his package and make a new release.   
+Plugins should be backward-compatible. New features appeared in a release of Frontend dependency should be checked before use, so Plugin won't crash with an old version.
+
+When making a new Plugin you probably don't want to support all previous versions of Frontend dependencies, so you can set (min CMS version in your cmsconfig.json)[/#todo]
 
 
 ## Big modules problem
 
 As we stated before bundled node modules are chunked, so we can import only things we need. It works well on medium-size modules such as `@material-ui/core`, but not well with big such as `@material-ui/icons` which has more than 5000 exports.
-In order for browser-imports to work we need to load some sort of manifest file to know what chunk to request for imports used in our app. While it's possible to make a couple-Kb chunk for each of 5000 icons from `@material-ui/icons`, the manifest for all of them will be more than 500kb. In this case it makes sense to avoid using Frontend dependency and include icons in source code as we did in [default @cromwell/theme-store](https://github.com/CromwellCMS/Cromwell/blob/master/themes/store/src/components/icons.tsx)  
+In order for browser-imports to work we need to load manifest file to know what chunk to request for imports used in our app. While it's possible to make a couple-Kb chunk for each of 5000 icons from `@material-ui/icons`, the manifest for all of them will be more than 500kb. In this case it makes sense to avoid using Frontend dependency and include icons in source code as we did in [default @cromwell/theme-store](https://github.com/CromwellCMS/Cromwell/blob/master/themes/store/src/components/icons.tsx)  
 

@@ -44,9 +44,10 @@ export class TagRepository extends BaseRepository<Tag> {
         tag.description = input.description;
     }
 
-    async createTag(inputData: TTagInput): Promise<Tag> {
+    async createTag(inputData: TTagInput, id?: string): Promise<Tag> {
         logger.log('TagRepository::createTag');
         let tag = new Tag();
+        if (id) tag.id = id;
 
         await this.handleBaseTagInput(tag, inputData);
         tag = await this.save(tag);

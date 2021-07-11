@@ -140,9 +140,10 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         }
     }
 
-    async createProductCategory(createProductCategory: CreateProductCategory): Promise<ProductCategory> {
+    async createProductCategory(createProductCategory: CreateProductCategory, id?: string): Promise<ProductCategory> {
         logger.log('ProductCategoryRepository::createProductCategory');
         const productCategory = new ProductCategory();
+        if (id) productCategory.id = id;
 
         await this.handleProductCategoryInput(productCategory, createProductCategory);
 
