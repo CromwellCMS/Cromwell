@@ -74,3 +74,5 @@ When making a new Plugin you probably don't want to support all previous version
 As we stated before bundled node modules are chunked, so we can import only things we need. It works well on medium-size modules such as `@material-ui/core`, but not well with big such as `@material-ui/icons` which has more than 5000 exports.
 In order for browser-imports to work we need to load manifest file to know what chunk to request for imports used in our app. While it's possible to make a couple-Kb chunk for each of 5000 icons from `@material-ui/icons`, the manifest for all of them will be more than 500kb. In this case it makes sense to avoid using Frontend dependency and include icons in source code as we did in [default @cromwell/theme-store](https://github.com/CromwellCMS/Cromwell/blob/master/themes/store/src/components/icons.tsx)  
 
+
+## Too many requests problem
