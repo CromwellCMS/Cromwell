@@ -59,9 +59,10 @@ export class OrderRepository extends BaseRepository<Order> {
         order.shippingMethod = input.shippingMethod;
     }
 
-    async createOrder(inputData: TOrderInput): Promise<Order> {
+    async createOrder(inputData: TOrderInput, id?: string): Promise<Order> {
         logger.log('OrderRepository::createOrder');
         let order = new Order();
+        if (id) order.id = id;
 
         await this.handleBaseOrderInput(order, inputData);
         order = await this.save(order);

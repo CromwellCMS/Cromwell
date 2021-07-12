@@ -1,13 +1,14 @@
 import { genericPageName, setStoreItem, sleep } from '@cromwell/core';
 import {
+    configFileName,
     getCmsModuleConfig,
     getLogger,
     getModulePackage,
     getNodeModuleDir,
     getPublicDir,
     getRendererBuildDir,
-    getRendererTempDir,
     getRendererTempDevDir,
+    getRendererTempDir,
     getThemeBuildDir,
     readCMSConfig,
 } from '@cromwell/core-backend';
@@ -57,6 +58,7 @@ const devGenerate = async (themeName: string, options) => {
     const rendererBuildDir = getRendererBuildDir();
     const themeConfig = await getCmsModuleConfig(themeName);
     const pagesLocalDir = resolve(tempDir, 'pages');
+    const themeDir = await getNodeModuleDir(themeName);
 
     await linkFiles(tempDir, themeName, options);
 
@@ -121,11 +123,12 @@ const devGenerate = async (themeName: string, options) => {
          import * as reactIs from 'react-is';
          import * as NextRouter from 'next/router';
          import ReactHtmlParser from 'react-html-parser';
-         import Document, { Html, Main, NextScript } from 'next/document';
          import { getModuleImporter } from '@cromwell/utils/build/importer.js';
-         import { isServer, getStoreItem, setStoreItem } from "@cromwell/core";
-         import { createGetStaticProps, createGetStaticPaths, getPage, checkCMSConfig
-             } from 'build/renderer';
+         import { isServer, getStore } from "@cromwell/core";
+         import { checkCMSConfig } from 'build/renderer';
+         ${pageInfo.name !== '_document' ? `
+         import { getPage, createGetStaticPaths, createGetStaticProps } from 'build/renderer';
+         ` : ''}
          ${pageInfo.metaInfoPath ? `
          import metaInfo from '${pageInfo.metaInfoPath}';
          ` : ''}
@@ -133,6 +136,7 @@ const devGenerate = async (themeName: string, options) => {
          checkCMSConfig();
          
          const importer = getModuleImporter();
+         const CromwellStore = getStore();
          ${cromwellStoreModulesPath}['react'] = React;
          ${cromwellStoreStatusesPath}['react'] = 'default';
          ${cromwellStoreModulesPath}['react-dom'] = ReactDOM;
@@ -270,15 +274,20 @@ const devGenerate = async (themeName: string, options) => {
     const nextConfigPath = resolve(tempDir, 'next.config.js');
     if (!fs.existsSync(nextConfigPath)) {
         await fs.outputFile(nextConfigPath, `
-             module.exports = {
-                future: {
-                    webpack5: true
-                },
+            const cromwellConf = {
                 webpack: (config, { isServer }) => {
                     config.resolve.symlinks = false
                     return config
                 }
-             };`
+            }
+            ${themeConfig?.nextConfig && themeDir ? `
+            const themeConf = require('${normalizePath(themeDir)}/${configFileName}').nextConfig();
+            ` : `
+            const themeConf = {};
+            `}
+            module.exports = Object.assign({}, cromwellConf, themeConf);
+            `
+
         );
     }
 

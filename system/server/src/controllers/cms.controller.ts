@@ -439,8 +439,13 @@ export class CmsController {
     async exportDB(@Body() input: ExportOptionsDto, @Response() response: FastifyReply) {
         if (!Array.isArray(input.tables)) input.tables = [];
 
-        const file = await this.migrationService.exportDB(input.tables as any);
-        response.type('text/html').send(file)
+        try {
+            const file = await this.migrationService.exportDB(input.tables as any);
+            response.type('text/html').send(file);
+        } catch (error) {
+            logger.error(error);
+            response.code(500).send({ message: error + '' });
+        }
     }
 
 

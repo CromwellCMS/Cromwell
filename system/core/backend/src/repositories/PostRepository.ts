@@ -73,9 +73,10 @@ export class PostRepository extends BaseRepository<Post> {
         post.publishDate = input.publishDate;
     }
 
-    async createPost(createPost: TPostInput): Promise<Post> {
+    async createPost(createPost: TPostInput, id?: string): Promise<Post> {
         logger.log('PostRepository::createPost');
         let post = new Post();
+        if (id) post.id = id;
 
         await this.handleBasePostInput(post, createPost);
         post = await this.save(post);

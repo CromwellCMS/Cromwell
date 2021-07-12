@@ -1,3 +1,7 @@
+import { TAuthUserInfo } from '@cromwell/core-backend';
+
+import { UserDto } from '../dto/user.dto';
+
 export const publicSystemDirs = [
     'bundled-modules'
 ]
@@ -12,3 +16,9 @@ export const restartServer = () => {
     }));
 }
 
+export type TLoginInfo = {
+    accessToken: string;
+    refreshToken: string;
+    userInfo: TAuthUserInfo;
+    userDto: UserDto;
+} | null

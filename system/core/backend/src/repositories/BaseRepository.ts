@@ -9,7 +9,7 @@ const logger = getLogger();
 export class BaseRepository<EntityType, EntityInputType = EntityType> extends Repository<EntityType> {
 
     constructor(
-        private EntityClass: new (...args: any[]) => EntityType
+        private EntityClass: new (...args: any[]) => EntityType & { id?: string }
     ) {
         super();
     }
@@ -45,9 +45,11 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
         return entity;
     }
 
-    async createEntity(input: EntityInputType): Promise<EntityType> {
+    async createEntity(input: EntityInputType, id?: string): Promise<EntityType> {
         logger.log('BaseRepository::createEntity');
         let entity = new this.EntityClass();
+        if (id) entity.id = id;
+
         for (const key of Object.keys(input)) {
             entity[key] = input[key];
         }

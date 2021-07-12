@@ -121,9 +121,10 @@ export class ProductRepository extends BaseRepository<Product> {
         }
     }
 
-    async createProduct(createProduct: TProductInput): Promise<Product> {
+    async createProduct(createProduct: TProductInput, id?: string): Promise<Product> {
         logger.log('ProductRepository::createProduct');
         let product = new Product();
+        if (id) product.id = id;
 
         await this.handleProductInput(product, createProduct);
 

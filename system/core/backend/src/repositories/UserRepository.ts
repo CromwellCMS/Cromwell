@@ -59,10 +59,18 @@ export class UserRepository extends BaseRepository<User> {
         user.role = userInput.role;
     }
 
-    async createUser(createUser: TCreateUser): Promise<User> {
+    async createUser(createUser: TCreateUser, id?: string): Promise<User> {
         logger.log('UserRepository::createUser');
         if (!createUser.password || !createUser.email) throw new Error('No credentials provided')
         let user = new User();
+        if (id) {
+            let oldUser;
+            try {
+                oldUser = await this.getUserById(id);
+            } catch (error) { }
+            if (oldUser) throw new Error('User already exists for provided id: ' + id);
+            user.id = id;
+        }
 
         await this.handleUserInput(user, createUser);
 
