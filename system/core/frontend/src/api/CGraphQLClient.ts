@@ -50,15 +50,21 @@ import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch';
 
 class CGraphQLClient {
 
+    /** @internal */
     private apolloClient: ApolloClient<NormalizedCacheObject>;
+    /** @internal */
     private onUnauthorized: (() => any) | null = null;
+    /** @internal */
     private onErrorCallbacks: Record<string, ((message: string) => any)> = {};
+    /** @internal */
+    private fetch;
+    /** @internal */
+    private lastBaseUrl: string | undefined;
+
     public getBaseUrl = () => {
         const typeUrl = serviceLocator.getMainApiUrl();
         return `${typeUrl}/${apiV1BaseRoute}/graphql`;
     }
-    private fetch;
-    private lastBaseUrl: string | undefined;
 
     constructor(fetch?: any) {
         if (isServer() && !fetch) {
@@ -68,6 +74,7 @@ class CGraphQLClient {
         this.checkUrl();
     }
 
+    /** @internal */
     private createClient() {
         const cache = new InMemoryCache();
         const link = createHttpLink({
@@ -92,6 +99,7 @@ class CGraphQLClient {
         });
     }
 
+    /** @internal */
     private checkUrl() {
         const baseUrl = this.getBaseUrl();
         if (!baseUrl) return;
@@ -124,6 +132,7 @@ class CGraphQLClient {
         return res;
     }
 
+    /** @internal */
     private async handleError<T>(func: () => Promise<T>): Promise<T> {
         try {
             return await func();
@@ -138,6 +147,7 @@ class CGraphQLClient {
         }
     }
 
+    /** @internal */
     public returnData = (res: any, path: string) => {
         const data = res?.data?.[path];
         if (data) {

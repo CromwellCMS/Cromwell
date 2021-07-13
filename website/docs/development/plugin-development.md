@@ -57,9 +57,9 @@ function SettingsPage(props: TPluginSettingsProps<MySettingsType>) {
 }
 
 registerWidget({
-    pluginName: 'your-plugin-name',
-    widgetName: 'PluginSettings',
-    component: SettingsPage
+  pluginName: 'your-plugin-name',
+  widgetName: 'PluginSettings',
+  component: SettingsPage
 });
 ```
 :::note
@@ -151,26 +151,26 @@ import { getLogger, PostRepository, registerAction } from '@cromwell/core-backen
 import { getCustomRepository } from 'typeorm';
 
 registerAction({
-    pluginName: 'your-plugin-name',
-    actionName: 'install_plugin',
-    action: (payload) => {
-        if (payload.pluginName === 'your-plugin-name') {
-            getLogger().info('Thanks for installing our plugin!');
-        }
+  pluginName: 'your-plugin-name',
+  actionName: 'install_plugin',
+  action: (payload) => {
+    if (payload.pluginName === 'your-plugin-name') {
+      getLogger().info('Thanks for installing our plugin!');
     }
+  }
 });
 
 registerAction({
-    pluginName: 'your-plugin-name',
-    actionName: 'update_post',
-    action: (payload) => {
-        getLogger().warn('Updated post: ' + JSON.stringify(payload));
+  pluginName: 'your-plugin-name',
+  actionName: 'update_post',
+  action: (payload) => {
+    getLogger().warn('Updated post: ' + JSON.stringify(payload));
 
-        // Custom logic to process Post after update.
-        const post = await getCustomRepository(PostRepository).getPostById(payload.id);
-        post.title += ' custom title modification';
-        await post.save();
-    }
+    // Custom logic to process Post after update.
+    const post = await getCustomRepository(PostRepository).getPostById(payload.id);
+    post.title += ' custom title modification';
+    await post.save();
+  }
 });
 
 ```
@@ -185,16 +185,16 @@ registerAction({
 It's also possible to register and fire custom actions, if you want, for example, to use them in different plugins:
 ```ts title="src/backend/index.ts"
 registerAction<any, { data: string }>({
-    pluginName: 'your-plugin-name',
-    actionName: 'your-plugin-name-custom_action',
-    action: (payload) => {
-        console.log(payload.data)
-    }
+  pluginName: 'your-plugin-name',
+  actionName: 'your-plugin-name-custom_action',
+  action: (payload) => {
+    console.log(payload.data)
+  }
 });
 
 fireAction<any, { data: string }>({
-    actionName: 'your-plugin-name-custom_action',
-    payload: { data: 'test1' }
+  actionName: 'your-plugin-name-custom_action',
+  payload: { data: 'test1' }
 })
 ```
 
@@ -210,9 +210,9 @@ type DataType = {
 }
 
 export default function YouPluginName(props: TFrontendPluginProps<DataType>) {
-    return (
-        <div>{props.data.message}</div>
-    )
+  return (
+    <div>{props.data.message}</div>
+  )
 }
 
 export const getStaticProps: TGetStaticProps = async (context): Promise<DataType> => {

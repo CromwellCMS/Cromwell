@@ -29,12 +29,17 @@ All available properties:
 - **description** - Full description about your Module. For example, used when user opens info about Theme.
 - **author** - Name of author of Module
 - **authorLink** - Link to the author's website
-- **icon** - Path to an icon, relative from project root: "static/my-icon.png". For example, used in Plugins page of Admin panel.
-- **image** - Path to main image of Module. In Theme card at Themes page. 
-- **images** - Array of paths to additional. Used when user opens Theme info in pop-up. 
+- **icon** - Path to an icon, relative to the project root: "static/my-icon.png". For example, used in Plugins page of Admin panel.
+- **image** - Path to main image of Module. Used in Theme card at Themes page. 
+- **images** - Array of paths to additional images. Used when user opens Theme info in pop-up. 
+- **frontendDependencies** - [Frontend dependencies](/docs/development/frontend-dependencies)
+- **firstLoadedDependencies** - [Bundled Frontend dependencies](/docs/development/frontend-dependencies#too-many-requests)
 
-Module config used to configure a CMS module.  
-Config exported from `cromwell.config.js` in the root of your project. This file in not required as well as all properties in it.
+
+## Module JS config
+
+For more advanced configuration you can setup JS config.  
+Config exported from `cromwell.config.js` file in the root of your project. This file in not required to use.
 
 ```tsx title="cromwell.config.js"
 module.exports = {
@@ -47,7 +52,7 @@ module.exports = {
 
 Config properties:
 
-- **rollupConfig** - Object with custom Rollup options to pre-build Theme or build Plugin. Exports options under properties directed at different parts of a target bundle:
+- **rollupConfig** - Function that returns an object with custom Rollup options to pre-build Theme or build Plugin. [Example](https://github.com/CromwellCMS/Cromwell/blob/master/themes/store/cromwell.config.js#L10). Require you dev dependencies inside this function, so when the CMS will have to look for other settings, it won't need to require them. The function exports Rollup options under properties directed at different parts of a target bundle:
   - `main` - default config used in all cases unless overwritten by other properties.
   - `adminPanel` - Options to use (override) for Theme's Admin panel page bundles OR for Plugin's admin panel bundle.
   - `frontend` - Options for Plugin's frontend bundle

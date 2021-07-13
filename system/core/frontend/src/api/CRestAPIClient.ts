@@ -42,15 +42,19 @@ export type TRequestOptions = {
     disableLog?: boolean;
 }
 
-class CRestAPIClient {
+export class CRestAPIClient {
 
+    /** @internal */
     private onUnauthorized: (() => any) | null = null;
+
+    /** @internal */
     private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
     public getBaseUrl = () => {
         const typeUrl = serviceLocator.getMainApiUrl();
         return `${typeUrl}/${apiV1BaseRoute}`;
     }
 
+    /** @internal */
     private handleError = async (response: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
         if ((response.status === 403 || response.status === 401) && !isServer()) {
             this.onUnauthorized?.();
@@ -74,11 +78,12 @@ class CRestAPIClient {
         return [data, null];
     }
 
+    /** @internal */
     private logError = (route: string, e?: any) => {
         logFor('errors-only', `CRestAPIClient route: ${route}` + e, console.error)
     }
 
-
+    /** @internal */
     private throwError(errorInfo: TErrorInfo, route: string, options?: TRequestOptions) {
         for (const cb of Object.values(this.onErrorCallbacks)) {
             cb(errorInfo);
@@ -89,8 +94,10 @@ class CRestAPIClient {
         throw new Error(JSON.stringify(errorInfo));
     }
 
+    /**
+     * Makes a custom request to a specified route
+     */
     public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
-
         const input = options?.input;
         let data;
         let errorInfo: TErrorInfo | null = null;

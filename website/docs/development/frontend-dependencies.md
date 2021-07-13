@@ -69,10 +69,38 @@ Plugins should be backward-compatible. New features appeared in a release of Fro
 When making a new Plugin you probably don't want to support all previous versions of Frontend dependencies, so you can set (min CMS version in your cmsconfig.json)[/#todo]
 
 
-## Big modules problem
+## Big modules
 
-As we stated before bundled node modules are chunked, so we can import only things we need. It works well on medium-size modules such as `@material-ui/core`, but not well with big such as `@material-ui/icons` which has more than 5000 exports.
-In order for browser-imports to work we need to load manifest file to know what chunk to request for imports used in our app. While it's possible to make a couple-Kb chunk for each of 5000 icons from `@material-ui/icons`, the manifest for all of them will be more than 500kb. In this case it makes sense to avoid using Frontend dependency and include icons in source code as we did in [default @cromwell/theme-store](https://github.com/CromwellCMS/Cromwell/blob/master/themes/store/src/components/icons.tsx)  
+As we stated before bundled node modules are chunked, so we can load only things we need. It works well on medium-size modules such as `@material-ui/core`, but not well with big such as `@material-ui/icons` which has more than 5000 exports.
+In order for browser-imports to work we need to load manifest file to know what chunk to request for imports used in our app. While it's possible to make a couple-Kb chunk for each of 5000 icons from `@material-ui/icons`, the manifest for all of them will be more than 500kb. Which is clearly will be much more that size of icons we are going to use from it. In this case it makes sense to avoid using Frontend dependency and include icons in source code as we did in [default @cromwell/theme-store](https://github.com/CromwellCMS/Cromwell/blob/master/themes/store/src/components/icons.tsx)  
 
 
-## Too many requests problem
+## Too many requests
+
+With web applications having in total hundreds dependencies we start facing a problem when on load our app is making hundreds of requests for Frontend dependencies. That's obviously doesn't perform well. 
+
+To solve the problem Themes can bundle Frontend dependencies and still allow them to be reusable for Plugins. These Frontend dependencies will be loaded initially, without subsequent requests, so they go in package.json's cromwell info under `firstLoadedDependencies` property:
+```json title="package.json"
+{
+  "name": "your-plugin-name",
+  "version": "1.0.0",
+  "cromwell": {
+    "type": "plugin",
+    "frontendDependencies": [
+      "@material-ui/core"
+    ],
+    "firstLoadedDependencies": [
+      "@material-ui/core",
+      "@material-ui/styles",
+      "@material-ui/utils",
+      "@material-ui/system",
+      "jss",
+      "jss-plugin-global",
+      "jss-plugin-nested",
+      /* ... */
+    ]
+  }
+}
+```
+As you can see we list dependencies of "@material-ui/core" as well, so they will also be reusable. Otherwise if some other Plugin depends on "jss", it will be imported again, so you'll have two "jss" libraries in your app. 
+Make sure these dependencies are actually used at the frontend, and not from devDependencies.
