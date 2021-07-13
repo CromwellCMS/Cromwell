@@ -280,6 +280,7 @@ export type TPackageCromwellConfig = {
     type?: 'plugin' | 'theme';
     title?: string;
     author?: string;
+    authorLink?: string;
     excerpt?: string;
     description?: string;
     icon?: string;

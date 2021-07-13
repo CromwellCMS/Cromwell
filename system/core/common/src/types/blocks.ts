@@ -80,18 +80,19 @@ export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'ima
 
 export type TCromwellBlockData = {
     /**
-     * Component's type
-     */
-    type?: TCromwellBlockType;
-
-    /**
      * Component's id, must be unique in a page.
      */
     id: string;
 
     /**
-     * If true, indicates that this component was created in builder and it doesn't exist in source files.
-     * Exists only in page's config. 
+     * Component's type
+     */
+    type?: TCromwellBlockType;
+
+    /**
+     * 
+     * If true, indicates that this Block was created in Page builder and it doesn't exist in source files as React component. 
+     * Exists only in page's config.
      */
     isVirtual?: boolean;
 
@@ -115,7 +116,7 @@ export type TCromwellBlockData = {
         align?: 'left' | 'right' | 'center';
     }
 
-    /** CSS styles to apply to this block's wrapper*/
+    /** CSS styles to apply to this block's wrapper */
     style?: string | React.CSSProperties;
 
     /**
