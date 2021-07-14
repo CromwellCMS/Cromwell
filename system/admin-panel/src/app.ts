@@ -1,5 +1,5 @@
 import './helpers/Draggable/Draggable.css';
-import './helpers/importDependecies';
+import './helpers/importDependencies';
 import './styles/global.scss';
 import 'pure-react-carousel/dist/react-carousel.es.css';
 import 'quill/dist/quill.snow.css';
@@ -50,17 +50,16 @@ import { store } from './redux/store';
         }
     }
 
+    const onUnauthorizedCbId = 'admin-logout';
     const onUnauthorized = async () => {
         let userInfo;
-        restClient?.setOnUnauthorized(null);
-        graphClient?.setOnUnauthorized(null);
+        restClient?.removeOnUnauthorized(onUnauthorizedCbId);
         try {
             userInfo = await restClient?.getUserInfo({ disableLog: true });
         } catch (e) {
             console.error(e);
         }
-        restClient?.setOnUnauthorized(onUnauthorized);
-        graphClient?.setOnUnauthorized(onUnauthorized);
+        restClient?.onUnauthorized(onUnauthorized, onUnauthorizedCbId);
         if (!userInfo?.id) {
             if (!window.location.hash.includes(loginPageInfo.route)) {
                 window.location.href = '/admin/#' + loginPageInfo.route;
@@ -69,9 +68,8 @@ import { store } from './redux/store';
         }
     }
 
-    restClient?.setOnUnauthorized(onUnauthorized);
-    graphClient?.setOnUnauthorized(onUnauthorized);
-
+    restClient?.onUnauthorized(onUnauthorized, onUnauthorizedCbId);
+    graphClient?.onUnauthorized(onUnauthorized, onUnauthorizedCbId);
 
     const onRestApiError = (info: TErrorInfo) => {
         if (info?.statusCode === 429) {

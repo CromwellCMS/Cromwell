@@ -1,9 +1,16 @@
 {
     "extends": "@tsconfig/docusaurus/tsconfig.json",
     "compilerOptions": {
-        "skipLibCheck": true
+        "skipLibCheck": true,
+        "target": "es5"
     },
     "include": [
-        "src/"
+        "src/",
+        "../system/core/frontend/src/**/*.ts",
+        "../system/core/frontend/src/**/*.tsx"
+    ],
+    "exclude": [
+        "../system/core/frontend/src/**/*test.ts",
+        "../system/core/frontend/src/**/*test.tsx"
     ]
 }

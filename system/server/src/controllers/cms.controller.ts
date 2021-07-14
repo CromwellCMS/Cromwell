@@ -17,7 +17,7 @@ import { FastifyReply } from 'fastify';
 import { Container } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
-import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
+import { AdminCmsConfigDto } from '../dto/admin-cms-config.dto';
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { CmsStatsDto } from '../dto/cms-stats.dto';
@@ -67,22 +67,22 @@ export class CmsController {
         return new CmsConfigDto().parseConfig(config);
     }
 
-    @Get('advanced-config')
+    @Get('admin-config')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator', 'guest')
-    @ApiOperation({ description: 'Returns advanced/private CMS settings from DB and cmsconfig.json' })
+    @ApiOperation({ description: 'Returns admin CMS settings from DB and cmsconfig.json' })
     @ApiResponse({
         status: 200,
-        type: AdvancedCmsConfigDto,
+        type: AdminCmsConfigDto,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getPrivateConfig(): Promise<AdvancedCmsConfigDto | undefined> {
+    async getPrivateConfig(): Promise<AdminCmsConfigDto | undefined> {
         // logger.log('CmsController::getPrivateConfig');
         const config = await getCmsSettings();
         if (!config) {
             throw new HttpException('CmsController::getPrivateConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new AdvancedCmsConfigDto().parseConfig(config);
+        return new AdminCmsConfigDto().parseConfig(config);
     }
 
 
@@ -234,9 +234,9 @@ export class CmsController {
     @ApiBody({ type: CmsConfigUpdateDto })
     @ApiResponse({
         status: 200,
-        type: AdvancedCmsConfigDto,
+        type: AdminCmsConfigDto,
     })
-    async updateCmsConfig(@Body() input: CmsConfigUpdateDto): Promise<AdvancedCmsConfigDto | undefined> {
+    async updateCmsConfig(@Body() input: CmsConfigUpdateDto): Promise<AdminCmsConfigDto | undefined> {
         return this.cmsService.updateCmsConfig(input);
     }
 

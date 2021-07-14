@@ -37,15 +37,24 @@ export type TErrorInfo = {
 }
 
 export type TRequestOptions = {
+    /**
+     * HTTP method: 'get', 'post', 'put', etc.
+     */
     method?: string;
+    /**
+     * Body for 'post' and 'put' requests
+     */
     input?: any;
+    /**
+     * Disable error logging
+     */
     disableLog?: boolean;
 }
 
 export class CRestAPIClient {
 
     /** @internal */
-    private onUnauthorized: (() => any) | null = null;
+    private onUnauthorizedCallbacks: Record<string, ((route: string) => any)> = {};
 
     /** @internal */
     private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
@@ -57,7 +66,7 @@ export class CRestAPIClient {
     /** @internal */
     private handleError = async (response: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
         if ((response.status === 403 || response.status === 401) && !isServer()) {
-            this.onUnauthorized?.();
+            Object.values(this.onUnauthorizedCallbacks).forEach(cb => cb?.(route));
         }
 
         if (response.status >= 400) {
@@ -95,7 +104,8 @@ export class CRestAPIClient {
     }
 
     /**
-     * Makes a custom request to a specified route
+     * Make a custom request to a specified route
+     * @auth no
      */
     public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
         const input = options?.input;
@@ -127,10 +137,18 @@ export class CRestAPIClient {
     }
 
 
+    /**
+     * Makes GET request to specified route
+     * @auth no
+     */
     public get = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
         return this.fetch(route, options);
     }
 
+    /**
+     * Makes POST request to specified route
+     * @auth no
+     */
     public post = async <T>(route: string, input?: any, options?: TRequestOptions): Promise<T | undefined> => {
         return this.fetch(route, {
             method: 'post',
@@ -139,6 +157,10 @@ export class CRestAPIClient {
         });
     }
 
+    /**
+     * Makes DELETE request to specified route
+     * @auth no
+     */
     public delete = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
         return this.fetch(route, {
             method: 'delete',
@@ -146,6 +168,10 @@ export class CRestAPIClient {
         });
     }
 
+    /**
+     * Makes PUT request to specified route
+     * @auth no
+     */
     public put = async <T>(route: string, input?: any, options?: TRequestOptions): Promise<T | undefined> => {
         return this.fetch(route, {
             method: 'put',
@@ -156,6 +182,10 @@ export class CRestAPIClient {
 
     // < Auth >
 
+    /**
+     * Logs user in via cookies
+     * @auth no
+     */
     public login = async (credentials: {
         email: string;
         password: string;
@@ -163,23 +193,43 @@ export class CRestAPIClient {
         return this.post('auth/login', credentials, options);
     }
 
+    /**
+     * Logs user out via cookies
+     * @auth any
+     */
     public logOut = async (options?: TRequestOptions) => {
         return this.post('auth/log-out', {}, options);
     }
 
 
+    /**
+     * Returns currently logged user profile
+     * @auth any
+     */
     public getUserInfo = async (options?: TRequestOptions): Promise<TUser | undefined> => {
         return this.get('auth/user-info', options);
     }
 
+    /**
+     * Sign up a new user
+     * @auth no
+     */
     public signUp = async (credentials: TCreateUser, options?: TRequestOptions): Promise<TUser | undefined> => {
         return this.post('auth/sign-up', credentials, options);
     }
 
+    /**
+     * Initiate reset password transaction. Will send a code to user's email
+     * @auth no
+     */
     public forgotPassword = async (credentials: { email: string }, options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.post('auth/forgot-password', credentials, options);
     }
 
+    /**
+     * Finish reset password transaction. Set a new password
+     * @auth no
+     */
     public resetPassword = async (credentials: {
         email: string;
         code: string;
@@ -188,26 +238,61 @@ export class CRestAPIClient {
         return this.post('auth/reset-password', credentials, options);
     }
 
-    public setOnUnauthorized(func: (() => any) | null) {
-        this.onUnauthorized = func;
+    /**
+     * Add on unauthorized error callback. Triggers if any of methods of this
+     * client get unauthorized error
+     */
+    public onUnauthorized(callback: ((route: string) => any), id?: string) {
+        if (!id) id = Object.keys(this.onErrorCallbacks).length + '';
+        this.onUnauthorizedCallbacks[id] = callback;
     }
 
+    /**
+     * Remove on unauthorized error callback
+     */
+    public removeOnUnauthorized(id: string) {
+        delete this.onUnauthorizedCallbacks[id];
+    }
+
+    /**
+     * Add on error callback. Triggers if any of methods of this
+     * client get any type of error
+     */
     public onError(cb: ((info: TErrorInfo) => any), id?: string) {
         if (!id) id = Object.keys(this.onErrorCallbacks).length + '';
         this.onErrorCallbacks[id] = cb;
     }
 
+    /**
+     * Remove on error callback
+     */
+    public removeOnError(id: string) {
+        delete this.onErrorCallbacks[id];
+    }
+
 
     // < CMS >
 
+    /**
+     * Get public CMS settings
+     * @auth no
+     */
     public getCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
         return this.get(`cms/config`, options);
     }
 
-    public getAdvancedCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
-        return this.get(`cms/advanced-config`, options);
+    /**
+     * Get admin CMS settings
+     * @auth admin
+     */
+    public getAdminCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
+        return this.get(`cms/admin-config`, options);
     }
 
+    /**
+     * Get public CMS settings and save into the store
+     * @auth no
+     */
     public getCmsSettingsAndSave = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
         const config = await this.getCmsSettings(options);
         if (config) {
@@ -216,18 +301,34 @@ export class CRestAPIClient {
         }
     }
 
+    /**
+     * List files in a public directory by specified path
+     * @auth no
+     */
     public readPublicDir = (path?: string, options?: TRequestOptions): Promise<string[] | null | undefined> => {
         return this.get(`cms/read-public-dir?path=${path ?? '/'}`, options);
     }
 
+    /**
+     * Crates a public directory by specified path
+     * @auth admin
+     */
     public createPublicDir = (dirName: string, inPath?: string, options?: TRequestOptions): Promise<string[] | null | undefined> => {
         return this.get(`cms/create-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`, options);
     }
 
+    /**
+     * Removes a public directory by specified path
+     * @auth admin
+     */
     public removePublicDir = (dirName: string, inPath?: string, options?: TRequestOptions): Promise<string[] | null | undefined> => {
         return this.get(`cms/remove-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`, options);
     }
 
+    /**
+     * Upload files in specified public directory
+     * @auth admin
+     */
     public uploadPublicFiles = async (inPath: string, files: File[], options?: TRequestOptions): Promise<boolean | null | undefined> => {
         const formData = new FormData();
         for (const file of files) {
@@ -242,61 +343,115 @@ export class CRestAPIClient {
         return response.body;
     }
 
+    /**
+     * Get info about currently used Theme
+     * @auth no
+     */
     public getThemesInfo = async (options?: TRequestOptions): Promise<TPackageCromwellConfig[] | undefined> => {
         return this.get(`cms/themes`, options);
     }
 
+    /**
+     * List all installed Plugins
+     * @auth admin
+     */
     public getPluginList = async (options?: TRequestOptions): Promise<TPackageCromwellConfig[] | undefined> => {
         return this.get(`cms/plugins`, options);
     }
 
+    /** @internal */
     public setUpCms = async (options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.post(`cms/set-up`, {}, options);
     }
 
+    /**
+     * Update CMS config
+     * @auth admin
+     */
     public updateCmsConfig = async (input: TCmsEntityInput, options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
         return this.post(`cms/update-config`, input, options);
     }
 
+    /**
+     * Active disabled Theme
+     * @auth admin
+     */
     public activateTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean> => {
         const data = await this.get<boolean>(`cms/activate-theme?themeName=${themeName}`, options);
         return data ?? false;
     }
 
+    /**
+     * Active disabled Plugin
+     * @auth admin
+     */
     public activatePlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean> => {
         const data = await this.get<boolean>(`cms/activate-plugin?pluginName=${pluginName}`, options);
         return data ?? false;
     }
 
+    /**
+     * Set active Theme
+     * @auth admin
+     */
     public changeTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean> => {
         const data = await this.get<boolean>(`cms/change-theme?themeName=${themeName}`, options);
         return data ?? false;
     }
 
+    /**
+     * Calculate total price of a cart 
+     * @auth no
+     */
     public getOrderTotal = async (input: TServerCreateOrder, options?: TRequestOptions): Promise<TOrder | undefined> => {
         return this.post(`cms/get-order-total`, input, options);
     }
 
+    /**
+     * Place a new order in the store
+     * @auth no
+     */
     public placeOrder = async (input: TServerCreateOrder, options?: TRequestOptions): Promise<TOrder | undefined> => {
         return this.post(`cms/place-order`, input, options);
     }
 
+    /**
+     * Place a review about some product
+     * @auth no
+     */
     public placeProductReview = async (input: TProductReviewInput, options?: TRequestOptions): Promise<TProductReview | undefined> => {
         return this.post(`cms/place-product-review`, input, options);
     }
 
+    /**
+     * Get CMS recent statistics, for Admin panel home page
+     * @auth admin
+     */
     public getCmsStats = async (options?: TRequestOptions): Promise<TCmsStats | undefined> => {
         return this.get(`cms/stats`, options);
     }
 
+    /**
+     * Get CMS updates info
+     * @auth admin
+     */
     public getCmsStatus = async (options?: TRequestOptions): Promise<TCmsStatus | undefined> => {
         return this.get(`cms/status`, options);
     }
 
+    /**
+     * Launch CMS update
+     * @auth admin
+     */
     public launchCmsUpdate = async (options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.get(`cms/launch-update`, options);
     }
 
+    /**
+     * Export database into Excel (.xlsx) file. 
+     * @auth admin
+     * @param tables specify tables to export or export all if not provided
+     */
     public exportDB = async (tables?: TDBEntity[], options?: TRequestOptions) => {
         const url = `${this.getBaseUrl()}/cms/export-db`;
         const response = await fetch(url, {
@@ -319,6 +474,10 @@ export class CRestAPIClient {
         a.remove();
     }
 
+    /**
+     * Import database from Excel (.xlsx) file/files
+     * @auth admin
+     */
     public importDB = async (files: File[], options?: TRequestOptions): Promise<boolean | null | undefined> => {
         const formData = new FormData();
         for (const file of files) {
@@ -343,67 +502,130 @@ export class CRestAPIClient {
 
     // < Theme >
 
+    /**
+     * Check if Theme has available update
+     * @auth admin
+     */
     public getThemeUpdate = async (themeName: string, options?: TRequestOptions): Promise<TCCSVersion | undefined> => {
         return this.get(`theme/check-update?themeName=${themeName}`, options);
     }
 
+    /**
+     * Launch Theme update
+     * @auth admin
+     */
     public updateTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.get(`theme/update?themeName=${themeName}`, options);
     }
 
+    /**
+     * Install a new Theme
+     * @param themeName npm package name of a Theme
+     * @auth admin
+     */
     public installTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.get(`theme/install?themeName=${themeName}`, options);
     }
 
+    /**
+     * Delete (uninstall) Theme
+     * @param themeName npm package name of a Theme
+     * @auth admin
+     */
     public deleteTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.get(`theme/delete?themeName=${themeName}`, options);
     }
 
+    /**
+     * Get page config by page route of currently active Theme
+     * @auth no
+     */
     public getPageConfig = async (pageRoute: string, options?: TRequestOptions): Promise<TPageConfig | undefined> => {
         return this.get(`theme/page?pageRoute=${pageRoute}`, options);
     }
 
+    /**
+     * Update page config by page route of currently active Theme
+     * @auth admin
+     */
     public savePageConfig = async (config: TPageConfig, options?: TRequestOptions): Promise<boolean> => {
         const data = await this.post<boolean>(`theme/page`, config, options);
         return data ?? false;
     }
 
+    /**
+     * Delete generic page of currently active Theme
+     * @auth admin
+     */
     public deletePage = async (pageRoute: string, options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.delete(`theme/page?pageRoute=${pageRoute}`, options);
     }
 
+    /**
+     * Remove all user's modifications for specified page of currently active Theme
+     * @auth admin
+     */
     public resetPage = async (pageRoute: string, options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.get(`theme/page/reset?pageRoute=${pageRoute}`, options);
     }
 
+    /**
+     * Get all used Plugins at specified page of currently active Theme
+     * @auth no
+     */
     public getPluginsAtPage = async (pageRoute: string, options?: TRequestOptions): Promise<Record<string, TPluginsModifications> | undefined> => {
         return this.get(`theme/plugins?pageRoute=${pageRoute}`, options);
     }
 
+    /**
+     * Get all used Plugins in currently active Theme
+     * @auth no
+     */
     public getPluginNames = async (options?: TRequestOptions): Promise<string[] | undefined> => {
         return this.get(`theme/plugin-names`, options);
     }
 
+    /**
+     * Get all pages info of currently active Theme
+     * @auth no
+     */
     public getPagesInfo = async (options?: TRequestOptions): Promise<TPageInfo[] | undefined> => {
         return this.get(`theme/pages/info`, options);
     }
 
+    /**
+     * Get all page config of currently active Theme
+     * @auth no
+     */
     public getPageConfigs = async (options?: TRequestOptions): Promise<TPageConfig[] | undefined> => {
         return this.get(`theme/pages/configs`, options);
     }
 
+    /**
+     * Get theme info of currently active Theme
+     * @auth no
+     */
     public getThemeInfo = async (options?: TRequestOptions): Promise<TPackageCromwellConfig | undefined> => {
         return this.get(`theme/info`, options);
     }
 
+    /**
+     * Get theme config of currently active Theme
+     * @auth no
+     */
     public getThemeConfig = async (options?: TRequestOptions): Promise<TThemeConfig | undefined> => {
         return this.get(`theme/config`, options);
     }
 
+    /** @internal */
     public getThemeCustomConfig = async (options?: TRequestOptions): Promise<Record<string, any> | undefined> => {
         return this.get(`theme/custom-config`, options);
     }
 
+    /**
+     * Get Admin panel page bundle by specified route of currently active Theme
+     * @auth no
+     */
     public getThemePageBundle = async (pageRoute: string, options?: TRequestOptions): Promise<TFrontendBundle | undefined> => {
         return this.get(`theme/page-bundle?pageRoute=${pageRoute}`, options);
     }
@@ -413,35 +635,75 @@ export class CRestAPIClient {
 
     // < Plugin >
 
+    /**
+     * Get available update info for Plugin
+     * @param pluginName npm package name of Plugin
+     * @auth admin
+     */
     public getPluginUpdate = async (pluginName: string, options?: TRequestOptions): Promise<TCCSVersion | undefined> => {
         return this.get(`plugin/check-update?pluginName=${pluginName}`, options);
     }
 
+    /**
+     * Launch Plugin update
+     * @param pluginName npm package name of Plugin
+     * @auth admin
+     */
     public updatePlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.get(`plugin/update?pluginName=${pluginName}`, options);
     }
 
+    /**
+     * Install a new Plugin
+     * @param pluginName npm package name of Plugin
+     * @auth admin
+     */
     public installPlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.get(`plugin/install?pluginName=${pluginName}`, options);
     }
 
+    /**
+     * Delete (uninstall) Plugin
+     * @param pluginName npm package name of Plugin
+     * @auth admin
+     */
     public deletePlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.get(`plugin/delete?pluginName=${pluginName}`, options);
     }
 
+    /**
+     * Get settings of Plugin
+     * @param pluginName npm package name of Plugin
+     * @auth no
+     */
     public getPluginSettings = async (pluginName: string, options?: TRequestOptions): Promise<any | undefined> => {
         return this.get(`plugin/settings?pluginName=${pluginName}`, options);
     }
 
+    /**
+     * Save settings for Plugin
+     * @param pluginName npm package name of Plugin
+     * @auth admin
+     */
     public savePluginSettings = async (pluginName: string, settings: any, options?: TRequestOptions): Promise<boolean> => {
         const data = await this.post<boolean>(`plugin/settings?pluginName=${pluginName}`, settings, options);
         return data ?? false;
     }
 
+    /**
+     * Get frontend bundle of Plugin
+     * @param pluginName npm package name of Plugin
+     * @auth no
+     */
     public getPluginFrontendBundle = async (pluginName: string, options?: TRequestOptions): Promise<TFrontendBundle | undefined> => {
         return this.get(`plugin/frontend-bundle?pluginName=${pluginName}`, options);
     }
 
+    /**
+     * Get admin panel bundle of Plugin
+     * @param pluginName npm package name of Plugin
+     * @auth no
+     */
     public getPluginAdminBundle = async (pluginName: string, options?: TRequestOptions): Promise<TFrontendBundle | undefined> => {
         return this.get(`plugin/admin-bundle?pluginName=${pluginName}`, options);
     }
@@ -450,6 +712,9 @@ export class CRestAPIClient {
 
 }
 
+/**
+ * Get instance of API client
+ */
 export const getRestAPIClient = (): CRestAPIClient => {
     let clients = getStoreItem('apiClients');
     if (clients?.restAPIClient) return clients.restAPIClient;
