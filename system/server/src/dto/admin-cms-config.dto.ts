@@ -3,7 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 import { CmsConfigDto } from './cms-config.dto';
 
-export class AdvancedCmsConfigDto extends CmsConfigDto {
+export class AdminCmsConfigDto extends CmsConfigDto {
     @ApiProperty()
     smtpConnectionString?: string;
 

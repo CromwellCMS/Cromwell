@@ -388,7 +388,7 @@ export type TCmsEntityCore = {
     // < / >
 
 
-    // < Advanced / private config >
+    // < Admin config >
     // SMTP connection string to e-mail service provider
     smtpConnectionString?: string;
     // E-mail to send mails from

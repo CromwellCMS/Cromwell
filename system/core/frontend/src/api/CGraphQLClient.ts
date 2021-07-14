@@ -53,7 +53,7 @@ class CGraphQLClient {
     /** @internal */
     private apolloClient: ApolloClient<NormalizedCacheObject>;
     /** @internal */
-    private onUnauthorized: (() => any) | null = null;
+    private onUnauthorizedCallbacks: Record<string, (() => any)> = {};
     /** @internal */
     private onErrorCallbacks: Record<string, ((message: string) => any)> = {};
     /** @internal */
@@ -61,11 +61,13 @@ class CGraphQLClient {
     /** @internal */
     private lastBaseUrl: string | undefined;
 
+    /** @internal */
     public getBaseUrl = () => {
         const typeUrl = serviceLocator.getMainApiUrl();
         return `${typeUrl}/${apiV1BaseRoute}/graphql`;
     }
 
+    /** @internal */
     constructor(fetch?: any) {
         if (isServer() && !fetch) {
             fetch = isomorphicFetch;
@@ -112,6 +114,11 @@ class CGraphQLClient {
     public async query<T = any>(options: QueryOptions, path: string): Promise<T>;
     public async query<T = any>(options: QueryOptions): Promise<ApolloQueryResult<T>>;
 
+    /**
+     * Make a custom query via ApolloClient
+     * @param path query name. Used to return data, if it's not provided
+     * ApolloQueryResult will be returned
+     */
     public async query(options: QueryOptions, path?: string) {
         this.checkUrl();
 
@@ -124,6 +131,11 @@ class CGraphQLClient {
     public async mutate<T = any>(options: MutationOptions, path: string): Promise<T>;
     public async mutate<T = any>(options: MutationOptions): Promise<ReturnType<ApolloClient<T>['mutate']>>;
 
+    /**
+     * Make a custom mutation via ApolloClient
+     * @param path query name. Used to return data, if it's not provided
+     * ApolloQueryResult will be returned
+     */
     public async mutate(options: MutationOptions, path?: string) {
         this.checkUrl();
 
@@ -140,7 +152,7 @@ class CGraphQLClient {
             Object.values(this.onErrorCallbacks).forEach(cb => cb(e?.message));
 
             if (e?.message?.includes?.('Access denied') && !isServer()) {
-                if (this.onUnauthorized) this.onUnauthorized();
+                Object.values(this.onUnauthorizedCallbacks).forEach(cb => cb?.());
             }
 
             throw new Error(e);
@@ -160,13 +172,36 @@ class CGraphQLClient {
         return errors ?? null;
     }
 
-    public setOnUnauthorized(func: (() => any) | null) {
-        this.onUnauthorized = func;
+    /**
+     * Add on unauthorized error callback. Triggers if any of methods of this
+     * client get unauthorized error
+     */
+    public onUnauthorized(callback: (() => any), id?: string) {
+        if (!id) id = Object.keys(this.onErrorCallbacks).length + '';
+        this.onUnauthorizedCallbacks[id] = callback;
     }
 
+    /**
+     * Remove on unauthorized error callback
+     */
+    public removeOnUnauthorized(id: string) {
+        delete this.onUnauthorizedCallbacks[id];
+    }
+
+    /**
+     * Add on error callback. Triggers if any of methods of this
+     * client get any type of error
+     */
     public onError(cb: ((message: string) => any), id?: string) {
         if (!id) id = Object.keys(this.onErrorCallbacks).length + '';
         this.onErrorCallbacks[id] = cb;
+    }
+
+    /**
+     * Remove on error callback
+     */
+    public removeOnError(id: string) {
+        delete this.onErrorCallbacks[id];
     }
 
     public PagedMetaFragment = gql`
@@ -179,6 +214,7 @@ class CGraphQLClient {
     `;
 
 
+    /** @internal */
     public createGetMany<TEntity>(entityName: TDBEntity, nativeFragment: DocumentNode, nativeFragmentName: string) {
         const path = GraphQLPaths[entityName].getMany;
 
@@ -209,6 +245,7 @@ class CGraphQLClient {
     }
 
 
+    /** @internal */
     public createGetById<TEntity>(entityName: TDBEntity, nativeFragment: DocumentNode, nativeFragmentName: string) {
         const path = GraphQLPaths[entityName].getOneById;
 
@@ -232,6 +269,7 @@ class CGraphQLClient {
         }
     }
 
+    /** @internal */
     public createGetBySlug<TEntity>(entityName: TDBEntity, nativeFragment: DocumentNode, nativeFragmentName: string) {
         const path = GraphQLPaths[entityName].getOneBySlug;
 
@@ -255,6 +293,7 @@ class CGraphQLClient {
         }
     }
 
+    /** @internal */
     public createUpdateEntiy<TEntity, TInput>(entityName: TDBEntity, inputName: string, nativeFragment: DocumentNode, nativeFragmentName: string) {
         const path = GraphQLPaths[entityName].update;
 
@@ -280,6 +319,7 @@ class CGraphQLClient {
     }
 
 
+    /** @internal */
     public createCreateEntity<TEntity, TInput>(entityName: TDBEntity, inputName: string, nativeFragment: DocumentNode, nativeFragmentName: string) {
         const path = GraphQLPaths[entityName].create;
 
@@ -303,6 +343,7 @@ class CGraphQLClient {
         }
     }
 
+    /** @internal */
     public createDeleteEntity(entityName: TDBEntity) {
         const path = GraphQLPaths[entityName].delete;
         return (id: string) => {
@@ -319,6 +360,7 @@ class CGraphQLClient {
         }
     }
 
+    /** @internal */
     public createDeleteMany(entityName: TDBEntity) {
         const path = GraphQLPaths[entityName].deleteMany;
         return (input: TDeleteManyInput) => {
@@ -335,6 +377,7 @@ class CGraphQLClient {
         }
     }
 
+    /** @internal */
     public createDeleteManyFiltered<TFilter>(entityName: TDBEntity, filterName: string) {
         const path = GraphQLPaths[entityName].deleteManyFiltered;
 
@@ -353,6 +396,7 @@ class CGraphQLClient {
         }
     }
 
+    /** @internal */
     public createGetFiltered<TEntity, TFilter>(entityName: TDBEntity, nativeFragment: DocumentNode,
         nativeFragmentName: string, filterName: string): ((options: {
             pagedParams?: TPagedParams<TEntity>;
@@ -392,6 +436,10 @@ class CGraphQLClient {
 
     // < Generic CRUD >
 
+    /** 
+     * Get all records of a generic entity 
+     * @auth admin
+     */
     public getAllEntities = async <EntityType>(entityName: string, fragment: DocumentNode, fragmentName: string): Promise<EntityType[]> => {
         const path = GraphQLPaths.Generic.getMany + entityName;
         return this.query({
@@ -406,6 +454,10 @@ class CGraphQLClient {
         }, path);
     }
 
+    /** 
+     * Get a record by id of a generic entity 
+     * @auth admin
+     */
     public getEntityById = async <EntityType>(entityName: string, fragment: DocumentNode, fragmentName: string, entityId: string)
         : Promise<EntityType | undefined> => {
         const path = GraphQLPaths.Generic.getOneById + entityName;
@@ -424,6 +476,10 @@ class CGraphQLClient {
         }, path);
     }
 
+    /** 
+     * Update a record of a generic entity 
+     * @auth admin
+     */
     public updateEntity = async <EntityType, EntityInputType>(entityName: string, entityInputName: string, fragment: DocumentNode,
         fragmentName: string, entityId: string, data: EntityInputType): Promise<EntityType | undefined> => {
         const path = GraphQLPaths.Generic.update + entityName;
@@ -443,6 +499,10 @@ class CGraphQLClient {
         }, path);
     }
 
+    /** 
+     * Create a record by id of a generic entity 
+     * @auth admin
+     */
     public createEntity = async <EntityType, EntityInputType>(entityName: string, entityInputName: string, fragment: DocumentNode,
         fragmentName: string, data: EntityInputType): Promise<EntityType | undefined> => {
         const path = GraphQLPaths.Generic.create + entityName;
@@ -504,6 +564,7 @@ class CGraphQLClient {
         }
     `;
 
+
     public getProducts = this.createGetMany<TProduct>('Product', this.ProductFragment, 'ProductFragment');
     public getProductById = this.createGetById<TProduct>('Product', this.ProductFragment, 'ProductFragment');
     public getProductBySlug = this.createGetBySlug<TProduct>('Product', this.ProductFragment, 'ProductFragment');
@@ -512,7 +573,6 @@ class CGraphQLClient {
     public deleteProduct = this.createDeleteEntity('Product');
     public deleteManyProducts = this.createDeleteMany('Product');
     public deleteManyFilteredProducts = this.createDeleteManyFiltered<TProductFilter>('Product', 'ProductFilterInput');
-
 
 
     public getProductsFromCategory = async (categoryId: string, pagedParams?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> => {

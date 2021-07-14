@@ -78,7 +78,7 @@ class SettingsPage extends React.Component<any, {
         this.setState({ isLoading: true });
         const client = getRestAPIClient();
         try {
-            const settings = await client.getAdvancedCmsSettings();
+            const settings = await client.getAdminCmsSettings();
             if (!Array.isArray(settings.currencies)) settings.currencies = [];
             if (settings) this.setState({ settings });
         } catch (e) {

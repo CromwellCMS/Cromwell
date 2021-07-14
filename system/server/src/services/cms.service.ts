@@ -47,7 +47,7 @@ import { getConnection, getCustomRepository, getManager } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
 import * as util from 'util';
 
-import { AdvancedCmsConfigDto } from '../dto/advanced-cms-config.dto';
+import { AdminCmsConfigDto } from '../dto/admin-cms-config.dto';
 import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { CmsStatsDto, SalePerDayDto } from '../dto/cms-stats.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
@@ -236,7 +236,7 @@ export class CmsService {
         return out;
     }
 
-    public async updateCmsConfig(input: CmsConfigUpdateDto): Promise<AdvancedCmsConfigDto | undefined> {
+    public async updateCmsConfig(input: CmsConfigUpdateDto): Promise<AdminCmsConfigDto | undefined> {
         const entity = await getCmsEntity();
         if (!entity) throw new Error('!entity');
 
@@ -264,7 +264,7 @@ export class CmsService {
         await entity.save();
         const config = await getCmsSettings();
         if (config)
-            return new AdvancedCmsConfigDto().parseConfig(config);
+            return new AdminCmsConfigDto().parseConfig(config);
     }
 
     async viewPage(input: PageStatsDto) {
