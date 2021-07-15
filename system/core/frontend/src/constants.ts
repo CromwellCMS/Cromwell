@@ -1,5 +1,5 @@
 import { TCromwellBlockData, TCromwellBlockType, getStoreItem, TBlockContentProvider, TCromwellBlock } from '@cromwell/core';
-import React from 'react';
+import React, { ComponentType } from 'react';
 import loadable from '@loadable/component';
 import dynamic from 'next/dynamic';
 
@@ -49,7 +49,7 @@ export const { Consumer: BlockContentConsumer, Provider: BlockContentProvider } 
 
 // In Next.js environment there will be available "dynamic" function, in any other env Next.js module
 // will be excluded and @loadable/component used instead
-export const dynamicLoader = dynamic ?? loadable;
+export const dynamicLoader: ((func: (() => Promise<ComponentType>), options?: any) => ComponentType) = dynamic ?? loadable;
 
 export const pageRootContainerId = 'root';
 

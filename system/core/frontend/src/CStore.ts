@@ -14,18 +14,21 @@ type TLocalStorage = {
     setItem: (key: string, value: any) => void;
 }
 
-type TApiClient = {
+export type TApiClient = {
     getProductById: (id: string) => Promise<TProduct | undefined>;
     getAttributes: () => Promise<TAttribute[] | undefined>;
 };
 
-type OperationResult = {
+export type OperationResult = {
     success: boolean;
     message?: string;
     code: number;
 }
 
-class CStore {
+/**
+ * CStore - CromwellCMS Online Store module. Helps to manage shopping cart, convert currency.
+ */
+export class CStore {
 
     // < LISTS >    cart / wishlist / comparision list / watched items
     private localStorage: TLocalStorage & { internalStore: Record<string, any> } = {
@@ -559,6 +562,12 @@ class CStore {
 
 }
 
+/**
+ * Get CStore instance from global store (singleton)
+ * @param local if true, create and return a new instance, false by default
+ * @param apiClient provide custom apiClient instance
+ * @returns 
+ */
 export const getCStore = (local?: boolean, apiClient?: TApiClient): CStore => {
     if (local) return new CStore(local, apiClient);
 

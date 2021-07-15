@@ -7,6 +7,7 @@ import { Product } from './Product';
 
 @Entity()
 @ObjectType()
+/** @noInheritDoc */
 export class ProductReview extends BasePageEntity implements TProductReview {
 
     @Field(type => String, { nullable: true })

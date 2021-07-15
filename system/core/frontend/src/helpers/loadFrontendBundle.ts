@@ -1,12 +1,14 @@
 import { getStoreItem, setStoreItem, TFrontendBundle, isServer, getStore, logFor } from '@cromwell/core';
 import loadableComponent from '@loadable/component';
+import { dynamicLoader } from '../constants';
 
-export const loadFrontendBundle = <TLoadable extends (...args: any) => any = (func: (() => Promise<React.ComponentType>)) => React.ComponentType>(bundleName: string,
+
+export const loadFrontendBundle = (bundleName: string,
     loader: () => Promise<TFrontendBundle | null | undefined>,
-    loadable?: TLoadable,
+    loadable?: typeof dynamicLoader,
     fallbackComponent?: React.ComponentType,
     dynamicLoaderProps?: Record<string, any>
-): ReturnType<TLoadable> => {
+): ReturnType<typeof dynamicLoader> => {
 
     let components = getStoreItem('components');
     if (!components) {
@@ -19,7 +21,7 @@ export const loadFrontendBundle = <TLoadable extends (...args: any) => any = (fu
         return (savedComp as any)?.default ?? savedComp;
     }
 
-    const loadableFunc = loadable ?? loadableComponent;
+    const loadableFunc: typeof dynamicLoader = loadable ?? loadableComponent;
 
     const loadableComp = loadableFunc(async () => {
         let bundle;

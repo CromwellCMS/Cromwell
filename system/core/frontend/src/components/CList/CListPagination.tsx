@@ -4,7 +4,7 @@ import styles from './CList.module.scss';
 import { getPagedUrl, getPageId, getPageNumsAround } from './helpers';
 import { TCssClasses, TElements } from './types';
 
-
+/** @internal */
 export class Pagination extends React.Component<{
     wrapperRef: React.RefObject<HTMLDivElement>;
     scrollBoxRef: React.RefObject<HTMLDivElement>;

@@ -6,11 +6,5 @@
     },
     "include": [
         "src/",
-        "../system/core/frontend/src/**/*.ts",
-        "../system/core/frontend/src/**/*.tsx"
-    ],
-    "exclude": [
-        "../system/core/frontend/src/**/*test.ts",
-        "../system/core/frontend/src/**/*test.tsx"
     ]
 }

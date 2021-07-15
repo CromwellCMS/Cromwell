@@ -23,11 +23,12 @@ import styles from './CGallery.module.scss';
 import Lightbox from './Lightbox';
 import Thumbs from './Thumbs';
 
-type TCGalleryProps = {
+export type TCGalleryProps = {
     className?: string;
     shouldComponentUpdate?: boolean;
 } & TCromwellBlockProps;
 
+/** @internal */
 class CarouselStoreSetterRaw extends React.Component<CarouselInjectedProps & {
     setStore: (store: CarouselStoreInterface) => any;
 }> {
@@ -40,8 +41,10 @@ class CarouselStoreSetterRaw extends React.Component<CarouselInjectedProps & {
         return <></>;
     }
 }
-const CarouselStoreSetter = WithStore(CarouselStoreSetterRaw);
+/** @internal */
+const CarouselStoreSetter = WithStore(CarouselStoreSetterRaw) as any as React.ComponentType<{ setStore: (store: CarouselStoreInterface) => any; }>;
 
+/** @noInheritDoc */
 export class CGallery extends React.Component<TCGalleryProps> {
 
     private gallerySettings?: TGallerySettings;
@@ -49,7 +52,6 @@ export class CGallery extends React.Component<TCGalleryProps> {
     private thumbsId?: string;
     private randId = getRandStr(5);
     private galleryStore?: CarouselStoreInterface;
-    private thumbsStore?: CarouselStoreInterface;
     private activeSlide: number = 0;
     private setLightbox?: (open: boolean, index: number) => void;
     private forceUpdateThumbs?: () => void;
@@ -141,7 +143,9 @@ export class CGallery extends React.Component<TCGalleryProps> {
                 isPlaying={gallerySettings.autoPlay}
             >
                 <CarouselOnChangeWatcher onChange={this.onActiveSlideChange} />
-                <CarouselStoreSetter setStore={(store) => { this.galleryStore = store }} />
+
+                <CarouselStoreSetter
+                    setStore={(store) => { this.galleryStore = store }} />
                 <div
                     className={styles.container}
                     style={{
@@ -279,6 +283,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
     }
 }
 
+/** @internal */
 export function CarouselOnChangeWatcher(props: {
     onChange: (index: number) => void;
 }) {

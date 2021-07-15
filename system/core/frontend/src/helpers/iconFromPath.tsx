@@ -1,6 +1,5 @@
 import React from 'react';
 
-
 export const iconFromPath = (path): React.ComponentType<React.SVGProps<SVGSVGElement>> => {
     return (props: React.SVGProps<SVGSVGElement>) => (
         <svg

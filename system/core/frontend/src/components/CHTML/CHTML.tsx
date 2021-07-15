@@ -6,6 +6,7 @@ import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 
 type CHTMLProps = { children?: React.ReactNode } & TCromwellBlockProps;
 
+/** @noInheritDoc */
 export class CHTML extends React.Component<CHTMLProps> {
     render() {
         const { children, ...rest } = this.props;

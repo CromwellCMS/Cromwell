@@ -8,7 +8,7 @@ import {
     TCromwellBlockData,
     TCromwellBlockProps,
 } from '@cromwell/core';
-import React, { Component, useEffect, useState } from 'react';
+import React, { Component, useEffect } from 'react';
 
 import {
     BlockContentConsumer,
@@ -18,6 +18,7 @@ import {
     cromwellIdToHTML,
     dynamicLoader,
 } from '../../constants';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import { CContainer } from '../CContainer/CContainer';
 import { CGallery } from '../CGallery/CGallery';
 import { CHTML } from '../CHTML/CHTML';
@@ -25,6 +26,7 @@ import { CImage } from '../CImage/CImage';
 import { CPlugin } from '../CPlugin/CPlugin';
 import { CText } from '../CText/CText';
 
+/** @noInheritDoc */
 export class CromwellBlock<TContentBlock = React.Component> extends
     Component<TCromwellBlockProps<TContentBlock>> implements TCromwellBlock<TContentBlock> {
 
@@ -46,7 +48,7 @@ export class CromwellBlock<TContentBlock = React.Component> extends
 
     public getData = () => {
         this.readConfig();
-        const { content, children, jsxParentId, ...restProps } = this.props;
+        const { ...restProps } = this.props;
         return Object.assign({}, restProps, this.data);
     }
 
@@ -384,9 +386,4 @@ export class CromwellBlock<TContentBlock = React.Component> extends
         }
         return <React.Fragment key={this.htmlId + '_render'}>{this.consumerRender()}</React.Fragment>
     }
-}
-
-function useForceUpdate() {
-    const [value, setValue] = useState(0);
-    return () => setValue(value => ++value);
 }

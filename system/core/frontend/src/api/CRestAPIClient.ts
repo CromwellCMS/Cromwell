@@ -51,6 +51,9 @@ export type TRequestOptions = {
     disableLog?: boolean;
 }
 
+/**
+ * CRestAPIClient - CromwellCMS REST API Client
+ */
 export class CRestAPIClient {
 
     /** @internal */
@@ -713,7 +716,7 @@ export class CRestAPIClient {
 }
 
 /**
- * Get instance of API client
+ * Get CRestAPIClient instance from global store (singleton)
  */
 export const getRestAPIClient = (): CRestAPIClient => {
     let clients = getStoreItem('apiClients');

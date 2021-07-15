@@ -11,8 +11,7 @@
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
-    "generate:rest-api": "cd ../ && npx typedoc --out website/temp --excludePrivate --tsconfig website/tsconfig.json  system/core/frontend/src"
+    "generate:api": "cd ../ && npx typedoc --options website/typedoc.json"
   },
   "dependencies": {
     "@docusaurus/core": "2.0.0-beta.0",
@@ -23,8 +22,10 @@
     "file-loader": "^6.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "typedoc": "^0.21.4",
-    "typedoc-plugin-markdown": "^3.10.3",
+    "@strictsoftware/typedoc-plugin-monorepo": "0.4.2",
+    "typedoc": "0.20.23",
+    "typedoc-plugin-markdown": "3.6.0",
+    "typedoc-plugin-no-inherit": "1.2.0",
     "url-loader": "^4.1.1"
   },
   "devDependencies": {

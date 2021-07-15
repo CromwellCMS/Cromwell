@@ -2,7 +2,12 @@ import { fetch } from '../helpers/isomorphicFetch';
 import { getStoreItem, TCCSVersion, TCCSModuleShortInfo, TCCSModuleInfo, TPagedParams, TPagedList } from '@cromwell/core';
 import { TErrorInfo, TRequestOptions } from './CRestAPIClient'
 
-class CentralServerClient {
+/**
+ * CentralServerClient - CromwellCMS Central Server API Client
+ * CromwellCMS Central Server is official server at ... 
+ * API used to check local CMS updates.
+ */
+export class CentralServerClient {
 
     public getBaseUrl = () => {
         return getStoreItem('cmsSettings')?.centralServerUrl;
@@ -146,4 +151,7 @@ class CentralServerClient {
 
 }
 
+/**
+ * Get CentralServerClient instance from global store (singleton)
+ */
 export const getCentralServerClient = () => new CentralServerClient();

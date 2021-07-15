@@ -1,8 +1,10 @@
 import { isServer } from '@cromwell/core';
 import queryString from 'query-string';
 
+/** @internal */
 export const getPageId = (pageNum: number) => "infinity-page_" + pageNum;
 
+/** @internal */
 export const getPageNumsAround = (currentPage: number, quantity: number, maxPageNum: number): number[] => {
     const pages: number[] = [];
     const half = Math.floor(quantity / 2);
@@ -19,6 +21,7 @@ export const getPageNumsAround = (currentPage: number, quantity: number, maxPage
     return pages;
 }
 
+/** @internal */
 export const getPagedUrl = (pageNum: number, pathname?: string): string | undefined => {
     if (!isServer()) {
         const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
@@ -31,6 +34,7 @@ export const getPagedUrl = (pageNum: number, pathname?: string): string | undefi
     }
 }
 
+/** @internal */
 export const getPageNumberFromUrl = (): number => {
     if (!isServer()) {
         const parsedUrl = queryString.parseUrl(window.location.href, { parseFragmentIdentifier: true });
