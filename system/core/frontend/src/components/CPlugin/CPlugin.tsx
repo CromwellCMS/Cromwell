@@ -7,6 +7,7 @@ import { dynamicLoader } from '../../constants';
 import { loadFrontendBundle } from '../../helpers/loadFrontendBundle';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 
+/** @internal */
 const fallbackComponent = () => <></>;
 
 type CPluginProps = {
@@ -17,6 +18,7 @@ type CPluginProps = {
 } & TCromwellBlockProps;
 
 
+/** @noInheritDoc */
 export class CPlugin extends React.Component<CPluginProps> {
     render() {
         const props = this.props;
@@ -35,7 +37,7 @@ export class CPlugin extends React.Component<CPluginProps> {
                     const pluginData = pluginConf?.data ?? {};
                     const settings = pluginConf?.settings ?? {};
 
-                    let PluginComponent = component;
+                    let PluginComponent: React.ComponentType<TFrontendPluginProps> | undefined = component;
                     if (name && !component) {
                         const restAPIClient = getRestAPIClient();
                         const loader = (getStoreItem('environment')?.isAdminPanel && props.adminPanel !== false) ?
@@ -44,9 +46,9 @@ export class CPlugin extends React.Component<CPluginProps> {
                         PluginComponent = loadFrontendBundle(
                             name,
                             async () => loader?.(name),
-                            dynamicLoader as (func: (() => Promise<typeof component>)) => typeof component,
+                            dynamicLoader,
                             fallbackComponent
-                        );
+                        ) as React.ComponentType<TFrontendPluginProps>;
                     }
 
                     if (PluginComponent && isValidElementType(PluginComponent)) return (
@@ -66,6 +68,7 @@ export class CPlugin extends React.Component<CPluginProps> {
     }
 }
 
+/** @internal */
 class ErrorBoundary extends React.Component<any, { hasError: boolean, errorMessage: string }> {
     constructor(props) {
         super(props);

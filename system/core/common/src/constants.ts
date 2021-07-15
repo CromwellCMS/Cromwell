@@ -145,6 +145,9 @@ const getBaseUrl = (key: keyof TCmsConfig) => {
     else return window.location.protocol + '//' + window.location.host;
 }
 
+/**
+ * Get base url of a CMS Service
+ */
 export const serviceLocator = {
     getMainApiUrl: () => {
         return getBaseUrl('apiPort');

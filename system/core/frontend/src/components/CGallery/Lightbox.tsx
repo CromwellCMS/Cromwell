@@ -3,11 +3,13 @@ import ImageLightbox from 'react-image-lightbox';
 
 import styles from './CGallery.module.scss';
 
+/** @internal */
 type Props = {
     getState: (setOpen: (open: boolean, index: number) => void) => void;
     images: string[];
 }
 
+/** @internal */
 export default class Lightbox extends Component<Props, {
     isOpen: boolean;
     photoIndex: number;

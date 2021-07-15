@@ -6,6 +6,7 @@ import { BasePageEntity } from './BasePageEntity';
 
 @Entity()
 @ObjectType()
+/** @noInheritDoc */
 export class Tag extends BasePageEntity implements TTag {
     @Field(type => String)
     @Column({ type: "varchar", unique: true })

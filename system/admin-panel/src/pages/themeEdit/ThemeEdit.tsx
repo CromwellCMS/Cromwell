@@ -131,9 +131,8 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                 (this.state.themeConfig?.defaultPages?.pages ?? genericPageName) : pageInfo.route;
             const pageComp = await loadFrontendBundle(pageCompPath,
                 () => getRestAPIClient()?.getThemePageBundle(pageCompPath),
-                (func: (() => Promise<React.ComponentType>)) => {
-                    return func();
-                }
+                //@ts-ignore
+                func => func()
             );
 
             this.setState({

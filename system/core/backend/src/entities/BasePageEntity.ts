@@ -4,6 +4,7 @@ import { TBasePageEntity } from '@cromwell/core';
 
 @Entity()
 @ObjectType()
+/** @noInheritDoc */
 export class BasePageEntity extends BaseEntity implements TBasePageEntity {
     
     @Field(() => ID)

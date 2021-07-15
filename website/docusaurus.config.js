@@ -98,6 +98,31 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          sidebarItemsGenerator: async function ({
+            defaultSidebarItemsGenerator,
+            ...args
+          }) {
+            const sidebarItems = await defaultSidebarItemsGenerator(args);
+            return sidebarItems.map(item => {
+              if (item.label === 'API') {
+                item.items = [
+                  {
+                    "type": "doc",
+                    "id": "api/modules/backend"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/modules/common"
+                  },
+                  {
+                    "type": "doc",
+                    "id": "api/modules/frontend"
+                  },
+                ];
+              }
+              return item;
+            });
+          },
           // editUrl: 'https://github.com/CromwellCMS/Cromwell/edit/master/website/docs/',
         },
         blog: {

@@ -6,6 +6,7 @@ import React from 'react';
 import styles from './CGallery.module.scss';
 
 
+/** @internal */
 export default class Thumbs extends React.Component<{
     thumbsId?: string;
     gallerySettings?: TGallerySettings;

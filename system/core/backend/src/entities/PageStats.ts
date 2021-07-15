@@ -2,6 +2,7 @@ import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TPageStats } from '@cromwell/core';
 
 @Entity()
+/** @noInheritDoc */
 export class PageStats extends BaseEntity implements TPageStats {
 
     @PrimaryGeneratedColumn()

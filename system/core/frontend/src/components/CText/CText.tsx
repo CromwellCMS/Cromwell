@@ -10,6 +10,7 @@ type CTextProps = {
     href?: string;
 } & TCromwellBlockProps;
 
+/** @noInheritDoc */
 export class CText extends React.Component<CTextProps> {
     render() {
         const props = this.props;

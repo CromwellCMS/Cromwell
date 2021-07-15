@@ -48,7 +48,10 @@ import {
 
 import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch';
 
-class CGraphQLClient {
+/**
+ * CGraphQLClient - CromwellCMS GraphQL API Client
+ */
+export class CGraphQLClient {
 
     /** @internal */
     private apolloClient: ApolloClient<NormalizedCacheObject>;
@@ -972,6 +975,9 @@ class CGraphQLClient {
 
 export type TCGraphQLClient = CGraphQLClient;
 
+/**
+ * Get CGraphQLClient instance from global store (singleton)
+ */
 export const getGraphQLClient = (fetch?: any): CGraphQLClient => {
     let clients = getStoreItem('apiClients');
     if (clients?.graphQLClient) return clients.graphQLClient;

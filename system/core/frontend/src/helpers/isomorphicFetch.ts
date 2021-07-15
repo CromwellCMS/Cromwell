@@ -1,6 +1,9 @@
 import { isServer, getStore } from '@cromwell/core';
 
 let lastUsedFunc;
+/**
+ * Isomorphic fetch
+ */
 export const fetch = (...args) => {
     if (!lastUsedFunc) {
         if (isServer()) {

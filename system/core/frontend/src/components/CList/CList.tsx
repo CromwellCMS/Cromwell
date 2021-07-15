@@ -11,6 +11,7 @@ import { getPagedUrl, getPageId, getPageNumsAround, getPageNumberFromUrl } from 
 import { TCList, TCListProps, TListenerType } from './types';
 
 
+/** @noInheritDoc */
 export class CList<DataType, ListItemProps = any> extends React.PureComponent<TCListProps<DataType, ListItemProps> & TCromwellBlockProps> implements TCList<DataType, ListItemProps> {
 
     private dataList: DataType[][] = [];
