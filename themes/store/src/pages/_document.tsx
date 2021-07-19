@@ -1,6 +1,9 @@
-import { Document, DocumentContext } from '@cromwell/core-frontend';
 import { ServerStyleSheets } from '@material-ui/core';
+import { DocumentContext } from 'next/document';
+import * as NextDocument from 'next/document';
 import React from 'react';
+
+const Document = NextDocument.default;
 
 export default class MyDocument extends Document {
 
@@ -26,8 +29,7 @@ export default class MyDocument extends Document {
                     </>
                 ),
             }
-        } finally {
-        }
+        } finally { }
     }
 
 }

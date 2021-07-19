@@ -1,5 +1,6 @@
 import { BasePageNames, setStoreItem, TCromwellPage, TCromwellPageCoreProps } from '@cromwell/core';
-import { CContainer, Head, pageRootContainerId } from '@cromwell/core-frontend';
+import { CContainer, pageRootContainerId } from '@cromwell/core-frontend';
+import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 import { DomElement } from 'htmlparser2';
 import React, { useRef, useState } from 'react';
 import ReactHtmlParser, { Transform } from 'react-html-parser';
@@ -55,6 +56,8 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
         }
 
         const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;
+
+        const Head = getModuleImporter()?.modules?.['next/head'];
 
         return (
             <>

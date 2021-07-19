@@ -62,8 +62,9 @@ export class CRestAPIClient {
     /** @internal */
     private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
     public getBaseUrl = () => {
-        const typeUrl = serviceLocator.getMainApiUrl();
-        return `${typeUrl}/${apiV1BaseRoute}`;
+        const apiUrl = serviceLocator.getMainApiUrl();
+        if (!apiUrl) throw new Error('CRestAPIClient: Failed to find base API URL');
+        return `${apiUrl}/${apiV1BaseRoute}`;
     }
 
     /** @internal */
@@ -111,11 +112,12 @@ export class CRestAPIClient {
      * @auth no
      */
     public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
+        const baseUrl = this.getBaseUrl();
         const input = options?.input;
         let data;
         let errorInfo: TErrorInfo | null = null;
         try {
-            const res = await fetch(`${this.getBaseUrl()}/${route}`, {
+            const res = await fetch(`${baseUrl}/${route}`, {
                 method: options?.method ?? 'get',
                 credentials: 'include',
                 body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,

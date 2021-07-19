@@ -44,7 +44,6 @@ async function main(): Promise<void> {
         }
 
         if (req?.url) {
-
             if (req.url.startsWith('/admin')) {
                 proxy.web(req, res, {
                     target: `http://localhost:${config.adminPanelPort}`

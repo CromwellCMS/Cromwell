@@ -1,6 +1,6 @@
-import React from 'react';
-import { Document, Html, Main, NextScript, DocumentContext } from '@cromwell/core-frontend';
 import { ServerStyleSheets } from '@material-ui/core';
+import { default as Document, DocumentContext } from 'next/document';
+import React from 'react';
 
 export default class MyDocument extends Document {
 

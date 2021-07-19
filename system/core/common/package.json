@@ -15,7 +15,6 @@
     "watch": "npx rollup -cw"
   },
   "dependencies": {
-    "next": "11.0.1",
     "react": "17.0.1",
     "react-dom": "17.0.1",
     "tslib": "2.1.0"
@@ -33,6 +32,9 @@
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-ts-compiler": "^1.0.16",
     "typescript": "4.2.4"
+  },
+  "peerDependencies": {
+    "next": "11.0.1"
   },
   "description": "",
   "resolutions": {

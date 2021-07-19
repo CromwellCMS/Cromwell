@@ -3,7 +3,7 @@ import React from 'react';
 import { isValidElementType } from 'react-is';
 
 import { getRestAPIClient } from '../../api/CRestAPIClient';
-import { dynamicLoader } from '../../constants';
+import { getDynamicLoader } from '../../constants';
 import { loadFrontendBundle } from '../../helpers/loadFrontendBundle';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 
@@ -46,7 +46,7 @@ export class CPlugin extends React.Component<CPluginProps> {
                         PluginComponent = loadFrontendBundle(
                             name,
                             async () => loader?.(name),
-                            dynamicLoader,
+                            getDynamicLoader(),
                             fallbackComponent
                         ) as React.ComponentType<TFrontendPluginProps>;
                     }
