@@ -1,7 +1,8 @@
 import { getThemeCustomConfigProp, TAttribute, TCromwellBlock, TProduct, TProductReview } from '@cromwell/core';
-import { CContainer, CGallery, CImage, CList, TCList, CText, getCStore, getGraphQLClient, useRouter } from '@cromwell/core-frontend';
+import { CContainer, CGallery, CImage, CList, TCList, CText, getCStore, getGraphQLClient } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import React, { useEffect, useRef } from 'react';
+import * as nextRouter from 'next/router';
 
 import { LoadBox } from '../loadbox/Loadbox';
 import { Pagination } from '../pagination/Pagination';
@@ -26,7 +27,7 @@ export default function ProductDetails(props: {
         modifiedProductRef.current = props.product;
     }
     const product = modifiedProductRef.current;
-    const router = useRouter?.();
+    const router = nextRouter?.useRouter?.();
     const customTabs = getThemeCustomConfigProp('product/customTabs');
     const client = getGraphQLClient();
 

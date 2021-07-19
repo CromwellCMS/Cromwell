@@ -16,7 +16,7 @@ import {
     CromwellBlockCSSclass,
     cromwellBlockPluginNameToClassname,
     cromwellIdToHTML,
-    dynamicLoader,
+    getDynamicLoader,
 } from '../../constants';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { CContainer } from '../CContainer/CContainer';
@@ -253,7 +253,7 @@ export class CromwellBlock<TContentBlock = React.Component> extends
                 });
                 this.childPromises[block.id] = childPromise;
 
-                const DynamicComp = dynamicLoader(async (): Promise<React.ComponentType> => {
+                const DynamicComp = getDynamicLoader()(async (): Promise<React.ComponentType> => {
                     const child = await childPromise;
                     return () => {
                         child.movedCompForceUpdate = useForceUpdate();

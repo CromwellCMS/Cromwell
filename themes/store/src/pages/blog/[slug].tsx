@@ -1,7 +1,8 @@
 import 'quill/dist/quill.snow.css';
 
 import { TCromwellPage, TGetStaticProps, TPost } from '@cromwell/core';
-import { getGraphQLClient, Link, LoadBox, useRouter } from '@cromwell/core-frontend';
+import { getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
+import * as nextRouter from 'next/router';
 import React from 'react';
 
 import Layout from '../../components/layout/Layout';
@@ -16,7 +17,7 @@ interface BlogPostProps {
 
 const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
     const { post } = props;
-    const router = useRouter?.();
+    const router = nextRouter?.useRouter?.();
 
     return (
         <Layout>

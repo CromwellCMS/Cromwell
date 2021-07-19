@@ -70,6 +70,38 @@ export class CentralServerClient {
         });
     }
 
+    async makeRequestToGitHub(url) {
+        const response = await fetch(url);
+
+        switch (response.status) {
+            case 401:
+                console.log('⚠ The token provided is invalid or has been revoked.', url);
+                throw new Error('Invalid token');
+
+            case 403:
+                // See https://developer.github.com/v3/#rate-limiting
+                if (response.headers.get('X-RateLimit-Remaining') === '0') {
+                    console.log('⚠ Your token rate limit has been exceeded.', url);
+                    throw new Error('Rate limit exceeded');
+                }
+
+                break;
+
+            case 404:
+                console.log('⚠ Repository was not found.', url);
+                throw new Error('Repository not found');
+
+            default:
+        }
+
+        if (!response.ok) {
+            console.log('⚠ Could not obtain repository data from the GitHub API.', { response, url });
+            throw new Error('Fetch error');
+        }
+
+        return response;
+    }
+
     // < CMS >
     async getCmsInfo(): Promise<TCCSModuleShortInfo | undefined> {
         return this.get('cms/info');
@@ -86,6 +118,17 @@ export class CentralServerClient {
     async checkCmsUpdate(version: string, beta?: boolean): Promise<TCCSVersion | undefined> {
         return this.get(`cms/check-update/${version}?beta=${beta ? 'true' : 'false'}`);
     }
+
+    async getAllCmsVersions(): Promise<TCCSModuleShortInfo | undefined> {
+        return this.get('cms/all-versions');
+    }
+
+    async getFrontendDependenciesList() {
+        return await (await this.makeRequestToGitHub(
+            'https://raw.githubusercontent.com/CromwellCMS/bundled-modules/master/list.json'
+        )).json();
+    }
+
 
     // < / CMS >
 

@@ -8,8 +8,9 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CList, getGraphQLClient, LoadBox, TCList, useRouter } from '@cromwell/core-frontend';
+import { CList, getGraphQLClient, LoadBox, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import * as nextRouter from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
 import Layout from '../../components/layout/Layout';
@@ -29,7 +30,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
     const filterInput = useRef<TPostFilter>({});
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
-    const router = useRouter?.();
+    const router = nextRouter?.useRouter?.();
 
     const resetList = () => {
         const list = getBlockInstance<TCList>(listId)?.getContentInstance();

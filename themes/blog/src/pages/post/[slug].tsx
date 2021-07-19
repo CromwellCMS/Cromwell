@@ -1,8 +1,9 @@
 import 'quill/dist/quill.snow.css';
 
 import { TCromwellPage, TGetStaticProps, TPost } from '@cromwell/core';
-import { getGraphQLClient, Link, LoadBox, useRouter } from '@cromwell/core-frontend';
-import React, { useEffect, useRef, useState } from 'react';
+import { getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
+import * as nextRouter from 'next/router';
+import React from 'react';
 
 import Layout from '../../components/layout/Layout';
 import { PostInfo } from '../../components/postCard/PostCard';
@@ -13,10 +14,10 @@ import styles from '../../styles/pages/BlogPost.module.scss';
 interface BlogPostProps {
     post?: TPost | undefined;
 }
-
 const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
+
     const { post } = props;
-    const router = useRouter?.();
+    const router = nextRouter?.useRouter?.();
 
     return (
         <Layout>

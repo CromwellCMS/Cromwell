@@ -121,6 +121,7 @@ const devGenerate = async (themeName: string, options) => {
          import * as cromwellCore from '@cromwell/core';
          import * as cromwellCoreFrontend from '@cromwell/core-frontend';
          import * as reactIs from 'react-is';
+         import * as NextDocument from 'next/document';
          import * as NextRouter from 'next/router';
          import ReactHtmlParser from 'react-html-parser';
          import { getModuleImporter } from '@cromwell/utils/build/importer.js';
@@ -153,6 +154,8 @@ const devGenerate = async (themeName: string, options) => {
          ${cromwellStoreStatusesPath}['react-is'] = 'default';
          ${cromwellStoreModulesPath}['react-html-parser'] = ReactHtmlParser;
          ${cromwellStoreStatusesPath}['react-html-parser'] = 'default';
+         ${cromwellStoreModulesPath}['next/document'] = NextDocument;
+         ${cromwellStoreStatusesPath}['next/document'] = 'default';
  
          ${pageInfo.metaInfoPath ? `
          if (isServer()) {

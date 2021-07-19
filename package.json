@@ -35,7 +35,8 @@
         "system/core/*",
         "plugins/*",
         "themes/*",
-        "website"
+        "website",
+        ".cromwell/bundled-modules"
     ],
     "engines": {
         "node": "14.x",

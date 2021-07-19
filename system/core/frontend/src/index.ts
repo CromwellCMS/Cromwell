@@ -39,8 +39,4 @@ export * from './helpers/registerWidget';
 export * from './helpers/contentGetters';
 export * from './widget-types';
 export { throbber } from './components/throbber';
-export { default as Document, Html, Main, NextScript, DocumentContext } from 'next/document';
-import * as nextRouter from 'next/router';
-export { default as Head } from 'next/head';
-export const useRouter: typeof nextRouter.useRouter | undefined = nextRouter?.useRouter;
 
