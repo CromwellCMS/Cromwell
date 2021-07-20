@@ -61,4 +61,4 @@ Defined in: node_modules/@types/react/index.d.ts:485
 
 **Returns:** *Element*
 
-Defined in: [system/core/frontend/src/components/CImage/CImage.tsx:20](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CImage/CImage.tsx#L20)
+Defined in: [system/core/frontend/src/components/CImage/CImage.tsx:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CImage/CImage.tsx#L20)

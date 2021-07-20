@@ -92,7 +92,7 @@
 
 • **createDate**: Date
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L28)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
 
 ___
 
@@ -100,7 +100,7 @@ ___
 
 • **id**: *string*
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L12)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
 
 ___
 
@@ -108,7 +108,7 @@ ___
 
 • `Optional` **isEnabled**: *undefined* \| *boolean*
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L36)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
 
 ___
 
@@ -116,7 +116,7 @@ ___
 
 • `Optional` **pageDescription**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L24)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
 
 ___
 
@@ -124,7 +124,7 @@ ___
 
 • `Optional` **pageTitle**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L20)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
 
 ___
 
@@ -132,7 +132,7 @@ ___
 
 • `Optional` **slug**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L16)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
 
 ___
 
@@ -140,4 +140,4 @@ ___
 
 • **updateDate**: Date
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L32)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)

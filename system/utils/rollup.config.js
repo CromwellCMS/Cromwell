@@ -2,8 +2,8 @@ import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-ts-compiler";
 import packageJson from './package.json';
 import { resolve } from 'path';
+import fs from 'fs-extra';
 import json from '@rollup/plugin-json';
-import { terser } from "rollup-plugin-terser";
 
 const external = id => {
     const exts = ['util', 'path', 'colors/safe', 'webpack', 'webpack/lib/ExternalModuleFactoryPlugin'];
@@ -22,7 +22,7 @@ const external = id => {
 
 const buildDir = 'build';
 
-export default [
+const options = [
     {
         input: resolve(__dirname, "src/browser.ts"),
         output: [
@@ -40,7 +40,6 @@ export default [
                 monorepo: true,
             }),
             commonjs(),
-            // terser()
         ]
     },
     {
@@ -64,11 +63,14 @@ export default [
                 monorepo: true,
             }),
             json(),
-            // terser(),
         ]
-    },
-    {
-        input: resolve(__dirname, "src/bundler/bundler.ts"),
+    }
+];
+
+const bundlerPath = resolve(__dirname, "src/bundler/bundler.ts");
+if (fs.pathExistsSync(bundlerPath)) {
+    options.push({
+        input: bundlerPath,
         output: [
             {
                 dir: resolve(__dirname, 'bundler'),
@@ -87,7 +89,10 @@ export default [
                 monorepo: true,
             }),
             json(),
-            // terser(),
         ]
-    },
-];
+
+    });
+}
+
+
+export default options;

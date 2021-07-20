@@ -56,7 +56,7 @@ Inherited from: [BasePageEntity](backend.basepageentity.md)
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L28)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
 
 ___
 
@@ -64,7 +64,7 @@ ___
 
 • `Optional` **icon**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:43](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Attribute.ts#L43)
+Defined in: [system/core/backend/src/entities/Attribute.ts:43](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L43)
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L12)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L36)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 • **key**: *string*
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:23](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Attribute.ts#L23)
+Defined in: [system/core/backend/src/entities/Attribute.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L23)
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L24)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
 
 ___
 
@@ -112,7 +112,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L20)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
 
 ___
 
@@ -120,7 +120,7 @@ ___
 
 • `Optional` **required**: *undefined* \| *boolean*
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:47](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Attribute.ts#L47)
+Defined in: [system/core/backend/src/entities/Attribute.ts:47](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L47)
 
 ___
 
@@ -130,7 +130,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L16)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
 
 ___
 
@@ -138,7 +138,7 @@ ___
 
 • **type**: *radio* \| *checkbox*
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:39](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Attribute.ts#L39)
+Defined in: [system/core/backend/src/entities/Attribute.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L39)
 
 ___
 
@@ -148,7 +148,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L32)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
 
 ## Accessors
 
@@ -158,7 +158,7 @@ Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://gith
 
 **Returns:** [*AttributeValue*](backend.attributevalue.md)[]
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:26](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Attribute.ts#L26)
+Defined in: [system/core/backend/src/entities/Attribute.ts:26](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L26)
 
 • set **values**(`data`: [*AttributeValue*](backend.attributevalue.md)[]): *void*
 
@@ -170,4 +170,4 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:30](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Attribute.ts#L30)
+Defined in: [system/core/backend/src/entities/Attribute.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L30)

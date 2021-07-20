@@ -47,7 +47,7 @@ Inherited from: [BasePageInput](backend.basepageinput.md)
 
 • `Optional` **color**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputTag.ts:11](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/InputTag.ts#L11)
+Defined in: [system/core/backend/src/inputs/InputTag.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/InputTag.ts#L11)
 
 ___
 
@@ -55,7 +55,7 @@ ___
 
 • `Optional` **description**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputTag.ts:17](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/InputTag.ts#L17)
+Defined in: [system/core/backend/src/inputs/InputTag.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/InputTag.ts#L17)
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 • `Optional` **image**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputTag.ts:14](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/InputTag.ts#L14)
+Defined in: [system/core/backend/src/inputs/InputTag.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/InputTag.ts#L14)
 
 ___
 
@@ -73,7 +73,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/BasePageInput.ts#L18)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
 
 ___
 
@@ -81,7 +81,7 @@ ___
 
 • **name**: *string*
 
-Defined in: [system/core/backend/src/inputs/InputTag.ts:8](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/InputTag.ts#L8)
+Defined in: [system/core/backend/src/inputs/InputTag.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/InputTag.ts#L8)
 
 ___
 
@@ -91,7 +91,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/BasePageInput.ts#L15)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
 
 ___
 
@@ -101,7 +101,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/BasePageInput.ts#L12)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
 
 ___
 
@@ -111,4 +111,4 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/BasePageInput.ts#L9)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)

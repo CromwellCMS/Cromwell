@@ -19,7 +19,7 @@
 
 • **Blog**: = "/blog"
 
-Defined in: [system/core/common/src/constants.ts:13](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/common/src/constants.ts#L13)
+Defined in: [system/core/common/src/constants.ts:13](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/common/src/constants.ts#L13)
 
 ___
 
@@ -27,7 +27,7 @@ ___
 
 • **Index**: = "/"
 
-Defined in: [system/core/common/src/constants.ts:11](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/common/src/constants.ts#L11)
+Defined in: [system/core/common/src/constants.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/common/src/constants.ts#L11)
 
 ___
 
@@ -35,7 +35,7 @@ ___
 
 • **Product**: = "/product"
 
-Defined in: [system/core/common/src/constants.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/common/src/constants.ts#L12)
+Defined in: [system/core/common/src/constants.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/common/src/constants.ts#L12)
 
 ___
 
@@ -43,4 +43,4 @@ ___
 
 • **ProductCategory**: = "/category"
 
-Defined in: [system/core/common/src/constants.ts:14](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/common/src/constants.ts#L14)
+Defined in: [system/core/common/src/constants.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/common/src/constants.ts#L14)

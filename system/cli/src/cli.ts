@@ -195,7 +195,7 @@ const args = yargs(process.argv.slice(2))
                 })
         },
         handler: (argv) => {
-            const { bundler } = require('@cromwell/utils');
+            const { bundler } = require('@cromwell/utils/bundler/bundler');
             bundler({
                 projectRootDir: process.cwd(),
                 isProduction: !argv.development,

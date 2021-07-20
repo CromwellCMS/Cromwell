@@ -53,7 +53,7 @@ Inherited from: [BasePageEntity](backend.basepageentity.md)
 
 • `Optional` **children**: *undefined* \| [*ProductCategory*](backend.productcategory.md)[]
 
-Defined in: [system/core/backend/src/entities/ProductCategory.ts:30](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/ProductCategory.ts#L30)
+Defined in: [system/core/backend/src/entities/ProductCategory.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductCategory.ts#L30)
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L28)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
 
 ___
 
@@ -71,7 +71,7 @@ ___
 
 • `Optional` **description**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/ProductCategory.ts:23](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/ProductCategory.ts#L23)
+Defined in: [system/core/backend/src/entities/ProductCategory.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductCategory.ts#L23)
 
 ___
 
@@ -79,7 +79,7 @@ ___
 
 • `Optional` **descriptionDelta**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/ProductCategory.ts:27](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/ProductCategory.ts#L27)
+Defined in: [system/core/backend/src/entities/ProductCategory.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductCategory.ts#L27)
 
 ___
 
@@ -89,7 +89,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L12)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
 
 ___
 
@@ -99,7 +99,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L36)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
 
 ___
 
@@ -107,7 +107,7 @@ ___
 
 • `Optional` **mainImage**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/ProductCategory.ts:19](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/ProductCategory.ts#L19)
+Defined in: [system/core/backend/src/entities/ProductCategory.ts:19](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductCategory.ts#L19)
 
 ___
 
@@ -115,7 +115,7 @@ ___
 
 • **name**: *string*
 
-Defined in: [system/core/backend/src/entities/ProductCategory.ts:15](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/ProductCategory.ts#L15)
+Defined in: [system/core/backend/src/entities/ProductCategory.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductCategory.ts#L15)
 
 ___
 
@@ -125,7 +125,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L24)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
 
 ___
 
@@ -135,7 +135,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L20)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
 
 ___
 
@@ -143,7 +143,7 @@ ___
 
 • `Optional` **parent**: *undefined* \| *null* \| [*ProductCategory*](backend.productcategory.md)
 
-Defined in: [system/core/backend/src/entities/ProductCategory.ts:33](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/ProductCategory.ts#L33)
+Defined in: [system/core/backend/src/entities/ProductCategory.ts:33](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductCategory.ts#L33)
 
 ___
 
@@ -151,7 +151,7 @@ ___
 
 • `Optional` **products**: *undefined* \| *TPagedList*<TProduct\>
 
-Defined in: [system/core/backend/src/entities/ProductCategory.ts:36](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/ProductCategory.ts#L36)
+Defined in: [system/core/backend/src/entities/ProductCategory.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductCategory.ts#L36)
 
 ___
 
@@ -161,7 +161,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L16)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
 
 ___
 
@@ -171,4 +171,4 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L32)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)

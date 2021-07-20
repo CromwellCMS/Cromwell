@@ -32,4 +32,4 @@
 
 • **nameSearch**: *string*
 
-Defined in: [system/core/backend/src/entities/filter/ProductCategoryFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/ProductCategoryFilterInput.ts#L8)
+Defined in: [system/core/backend/src/entities/filter/ProductCategoryFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductCategoryFilterInput.ts#L8)

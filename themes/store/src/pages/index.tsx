@@ -7,8 +7,6 @@ import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Index.module.scss';
 
 const Index: TCromwellPage = (props) => {
-    console.log('IndexTheme props', props);
-
     return (
         <Layout>
             <div className={styles.IndexPage}>

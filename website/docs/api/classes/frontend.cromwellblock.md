@@ -69,7 +69,7 @@ Name | Type |
 
 **Returns:** [*CromwellBlock*](frontend.cromwellblock.md)<TContentBlock\>
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:58](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L58)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:58](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L58)
 
 ## Properties
 
@@ -77,7 +77,7 @@ Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx
 
 • `Optional` **movedCompForceUpdate**: *undefined* \| () => *void*
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:45](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L45)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:45](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L45)
 
 ## Methods
 
@@ -94,7 +94,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:119](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L119)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:119](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L119)
 
 ___
 
@@ -104,7 +104,7 @@ ___
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:80](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L80)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:80](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L80)
 
 ___
 
@@ -114,7 +114,7 @@ ___
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:85](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L85)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:85](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L85)
 
 ___
 
@@ -124,7 +124,7 @@ ___
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:90](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L90)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:90](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L90)
 
 ___
 
@@ -134,7 +134,7 @@ ___
 
 **Returns:** *null* \| *Element*
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:368](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L368)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:368](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L368)
 
 ___
 
@@ -151,7 +151,7 @@ Name | Type |
 
 **Returns:** ReactNode
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:292](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L292)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:292](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L292)
 
 ___
 
@@ -167,7 +167,7 @@ Name | Type |
 
 **Returns:** *undefined* \| *TCromwellBlock*<Component<{}, {}, any\>\>
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:58](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L58)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:58](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L58)
 
 ___
 
@@ -177,7 +177,7 @@ ___
 
 **Returns:** *RefObject*<HTMLDivElement\>
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:55](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L55)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:55](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L55)
 
 ___
 
@@ -187,7 +187,7 @@ ___
 
 **Returns:** ReactNode[]
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:228](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L228)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:228](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L228)
 
 ___
 
@@ -197,17 +197,17 @@ ___
 
 **Returns:** *Component*<{}, {}, any\> & TContentBlock
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:56](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L56)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:56](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L56)
 
 ___
 
 ### getData
 
-▸ **getData**(): { `blockRef?`: *undefined* \| <T\>(`block`: T) => *void* ; `className?`: *undefined* \| *string* ; `content?`: *undefined* \| (`data`: *undefined* \| TCromwellBlockData, `blockRef`: *RefObject*<HTMLDivElement\>, `setContentInstance`: (`contentInstance`: *Component*<{}, {}, any\> & TContentBlock) => *void*) => ReactNode ; `editorStyles?`: *undefined* \| { `align?`: *undefined* \| *left* \| *right* \| *center* ; `maxWidth?`: *undefined* \| *number* ; `offsetBottom?`: *undefined* \| *number* ; `offsetLeft?`: *undefined* \| *number* ; `offsetRight?`: *undefined* \| *number* ; `offsetTop?`: *undefined* \| *number*  } ; `gallery?`: *undefined* \| TGallerySettings ; `global?`: *undefined* \| *boolean* ; `html?`: *undefined* \| { `innerHTML?`: *undefined* \| *string*  } ; `id`: *string* ; `image?`: *undefined* \| { `alt?`: *undefined* \| *string* ; `height?`: *undefined* \| *number* ; `link?`: *undefined* \| *string* ; `objectFit?`: *undefined* \| *contain* \| *cover* ; `src?`: *undefined* \| *string* ; `width?`: *undefined* \| *number* ; `withEffect?`: *undefined* \| *boolean*  } ; `index?`: *undefined* \| *number* ; `isConstant?`: *undefined* \| *boolean* ; `isDeleted?`: *undefined* \| *boolean* ; `isVirtual?`: *undefined* \| *boolean* ; `jsxParentId?`: *undefined* \| *string* ; `link?`: *undefined* \| { `href?`: *undefined* \| *string* ; `text?`: *undefined* \| *string*  } ; `onClick?`: *undefined* \| (`event`: *MouseEvent*<HTMLDivElement, MouseEvent\>) => *any* ; `parentId?`: *undefined* \| *string* ; `plugin?`: *undefined* \| { `pluginName?`: *undefined* \| *string* ; `settings?`: *undefined* \| *Record*<string, any\>  } ; `style?`: *undefined* \| *string* \| *CSSProperties* ; `text?`: *undefined* \| { `content?`: *undefined* \| *string* ; `href?`: *undefined* \| *string* ; `textElementType?`: *undefined* \| *object* \| *time* \| *title* \| *address* \| *link* \| *style* \| *html* \| *a* \| *abbr* \| *area* \| *article* \| *aside* \| *audio* \| *b* \| *base* \| *bdi* \| *bdo* \| *big* \| *blockquote* \| *body* \| *br* \| *button* \| *canvas* \| *caption* \| *cite* \| *code* \| *col* \| *colgroup* \| *data* \| *datalist* \| *dd* \| *del* \| *details* \| *dfn* \| *dialog* \| *div* \| *dl* \| *dt* \| *em* \| *embed* \| *fieldset* \| *figcaption* \| *figure* \| *footer* \| *form* \| *h1* \| *h2* \| *h3* \| *h4* \| *h5* \| *h6* \| *head* \| *header* \| *hgroup* \| *hr* \| *i* \| *iframe* \| *img* \| *input* \| *ins* \| *kbd* \| *keygen* \| *label* \| *legend* \| *li* \| *main* \| *map* \| *mark* \| *menu* \| *menuitem* \| *meta* \| *meter* \| *nav* \| *noscript* \| *ol* \| *optgroup* \| *option* \| *output* \| *p* \| *param* \| *picture* \| *pre* \| *progress* \| *q* \| *rp* \| *rt* \| *ruby* \| *s* \| *samp* \| *slot* \| *script* \| *section* \| *select* \| *small* \| *source* \| *span* \| *strong* \| *sub* \| *summary* \| *sup* \| *table* \| *template* \| *tbody* \| *td* \| *textarea* \| *tfoot* \| *th* \| *thead* \| *tr* \| *track* \| *u* \| *ul* \| *var* \| *video* \| *wbr* \| *webview*  } ; `type?`: *undefined* \| *text* \| *image* \| *plugin* \| *container* \| *HTML* \| *gallery* \| *list* \| *link*  } & TCromwellBlockData
+▸ **getData**(): { `blockRef?`: *undefined* \| <T\>(`block`: T) => *void* ; `className?`: *undefined* \| *string* ; `content?`: *undefined* \| (`data`: *undefined* \| TCromwellBlockData, `blockRef`: *RefObject*<HTMLDivElement\>, `setContentInstance`: (`contentInstance`: *Component*<{}, {}, any\> & TContentBlock) => *void*) => ReactNode ; `editorStyles?`: *undefined* \| { `align?`: *undefined* \| *left* \| *right* \| *center* ; `maxWidth?`: *undefined* \| *number* ; `offsetBottom?`: *undefined* \| *number* ; `offsetLeft?`: *undefined* \| *number* ; `offsetRight?`: *undefined* \| *number* ; `offsetTop?`: *undefined* \| *number*  } ; `gallery?`: *undefined* \| TGallerySettings ; `global?`: *undefined* \| *boolean* ; `html?`: *undefined* \| { `innerHTML?`: *undefined* \| *string*  } ; `id`: *string* ; `image?`: *undefined* \| { `alt?`: *undefined* \| *string* ; `height?`: *undefined* \| *string* \| *number* ; `link?`: *undefined* \| *string* ; `objectFit?`: *undefined* \| *contain* \| *cover* ; `src?`: *undefined* \| *string* ; `width?`: *undefined* \| *string* \| *number* ; `withEffect?`: *undefined* \| *boolean*  } ; `index?`: *undefined* \| *number* ; `isConstant?`: *undefined* \| *boolean* ; `isDeleted?`: *undefined* \| *boolean* ; `isVirtual?`: *undefined* \| *boolean* ; `jsxParentId?`: *undefined* \| *string* ; `link?`: *undefined* \| { `href?`: *undefined* \| *string* ; `text?`: *undefined* \| *string*  } ; `onClick?`: *undefined* \| (`event`: *MouseEvent*<HTMLDivElement, MouseEvent\>) => *any* ; `parentId?`: *undefined* \| *string* ; `plugin?`: *undefined* \| { `pluginName?`: *undefined* \| *string* ; `settings?`: *undefined* \| *Record*<string, any\>  } ; `style?`: *undefined* \| *string* \| *CSSProperties* ; `text?`: *undefined* \| { `content?`: *undefined* \| *string* ; `href?`: *undefined* \| *string* ; `textElementType?`: *undefined* \| *object* \| *time* \| *title* \| *address* \| *link* \| *style* \| *html* \| *a* \| *abbr* \| *area* \| *article* \| *aside* \| *audio* \| *b* \| *base* \| *bdi* \| *bdo* \| *big* \| *blockquote* \| *body* \| *br* \| *button* \| *canvas* \| *caption* \| *cite* \| *code* \| *col* \| *colgroup* \| *data* \| *datalist* \| *dd* \| *del* \| *details* \| *dfn* \| *dialog* \| *div* \| *dl* \| *dt* \| *em* \| *embed* \| *fieldset* \| *figcaption* \| *figure* \| *footer* \| *form* \| *h1* \| *h2* \| *h3* \| *h4* \| *h5* \| *h6* \| *head* \| *header* \| *hgroup* \| *hr* \| *i* \| *iframe* \| *img* \| *input* \| *ins* \| *kbd* \| *keygen* \| *label* \| *legend* \| *li* \| *main* \| *map* \| *mark* \| *menu* \| *menuitem* \| *meta* \| *meter* \| *nav* \| *noscript* \| *ol* \| *optgroup* \| *option* \| *output* \| *p* \| *param* \| *picture* \| *pre* \| *progress* \| *q* \| *rp* \| *rt* \| *ruby* \| *s* \| *samp* \| *slot* \| *script* \| *section* \| *select* \| *small* \| *source* \| *span* \| *strong* \| *sub* \| *summary* \| *sup* \| *table* \| *template* \| *tbody* \| *td* \| *textarea* \| *tfoot* \| *th* \| *thead* \| *tr* \| *track* \| *u* \| *ul* \| *var* \| *video* \| *wbr* \| *webview*  } ; `type?`: *undefined* \| *text* \| *image* \| *plugin* \| *container* \| *HTML* \| *gallery* \| *list* \| *link*  } & TCromwellBlockData
 
-**Returns:** { `blockRef?`: *undefined* \| <T\>(`block`: T) => *void* ; `className?`: *undefined* \| *string* ; `content?`: *undefined* \| (`data`: *undefined* \| TCromwellBlockData, `blockRef`: *RefObject*<HTMLDivElement\>, `setContentInstance`: (`contentInstance`: *Component*<{}, {}, any\> & TContentBlock) => *void*) => ReactNode ; `editorStyles?`: *undefined* \| { `align?`: *undefined* \| *left* \| *right* \| *center* ; `maxWidth?`: *undefined* \| *number* ; `offsetBottom?`: *undefined* \| *number* ; `offsetLeft?`: *undefined* \| *number* ; `offsetRight?`: *undefined* \| *number* ; `offsetTop?`: *undefined* \| *number*  } ; `gallery?`: *undefined* \| TGallerySettings ; `global?`: *undefined* \| *boolean* ; `html?`: *undefined* \| { `innerHTML?`: *undefined* \| *string*  } ; `id`: *string* ; `image?`: *undefined* \| { `alt?`: *undefined* \| *string* ; `height?`: *undefined* \| *number* ; `link?`: *undefined* \| *string* ; `objectFit?`: *undefined* \| *contain* \| *cover* ; `src?`: *undefined* \| *string* ; `width?`: *undefined* \| *number* ; `withEffect?`: *undefined* \| *boolean*  } ; `index?`: *undefined* \| *number* ; `isConstant?`: *undefined* \| *boolean* ; `isDeleted?`: *undefined* \| *boolean* ; `isVirtual?`: *undefined* \| *boolean* ; `jsxParentId?`: *undefined* \| *string* ; `link?`: *undefined* \| { `href?`: *undefined* \| *string* ; `text?`: *undefined* \| *string*  } ; `onClick?`: *undefined* \| (`event`: *MouseEvent*<HTMLDivElement, MouseEvent\>) => *any* ; `parentId?`: *undefined* \| *string* ; `plugin?`: *undefined* \| { `pluginName?`: *undefined* \| *string* ; `settings?`: *undefined* \| *Record*<string, any\>  } ; `style?`: *undefined* \| *string* \| *CSSProperties* ; `text?`: *undefined* \| { `content?`: *undefined* \| *string* ; `href?`: *undefined* \| *string* ; `textElementType?`: *undefined* \| *object* \| *time* \| *title* \| *address* \| *link* \| *style* \| *html* \| *a* \| *abbr* \| *area* \| *article* \| *aside* \| *audio* \| *b* \| *base* \| *bdi* \| *bdo* \| *big* \| *blockquote* \| *body* \| *br* \| *button* \| *canvas* \| *caption* \| *cite* \| *code* \| *col* \| *colgroup* \| *data* \| *datalist* \| *dd* \| *del* \| *details* \| *dfn* \| *dialog* \| *div* \| *dl* \| *dt* \| *em* \| *embed* \| *fieldset* \| *figcaption* \| *figure* \| *footer* \| *form* \| *h1* \| *h2* \| *h3* \| *h4* \| *h5* \| *h6* \| *head* \| *header* \| *hgroup* \| *hr* \| *i* \| *iframe* \| *img* \| *input* \| *ins* \| *kbd* \| *keygen* \| *label* \| *legend* \| *li* \| *main* \| *map* \| *mark* \| *menu* \| *menuitem* \| *meta* \| *meter* \| *nav* \| *noscript* \| *ol* \| *optgroup* \| *option* \| *output* \| *p* \| *param* \| *picture* \| *pre* \| *progress* \| *q* \| *rp* \| *rt* \| *ruby* \| *s* \| *samp* \| *slot* \| *script* \| *section* \| *select* \| *small* \| *source* \| *span* \| *strong* \| *sub* \| *summary* \| *sup* \| *table* \| *template* \| *tbody* \| *td* \| *textarea* \| *tfoot* \| *th* \| *thead* \| *tr* \| *track* \| *u* \| *ul* \| *var* \| *video* \| *wbr* \| *webview*  } ; `type?`: *undefined* \| *text* \| *image* \| *plugin* \| *container* \| *HTML* \| *gallery* \| *list* \| *link*  } & TCromwellBlockData
+**Returns:** { `blockRef?`: *undefined* \| <T\>(`block`: T) => *void* ; `className?`: *undefined* \| *string* ; `content?`: *undefined* \| (`data`: *undefined* \| TCromwellBlockData, `blockRef`: *RefObject*<HTMLDivElement\>, `setContentInstance`: (`contentInstance`: *Component*<{}, {}, any\> & TContentBlock) => *void*) => ReactNode ; `editorStyles?`: *undefined* \| { `align?`: *undefined* \| *left* \| *right* \| *center* ; `maxWidth?`: *undefined* \| *number* ; `offsetBottom?`: *undefined* \| *number* ; `offsetLeft?`: *undefined* \| *number* ; `offsetRight?`: *undefined* \| *number* ; `offsetTop?`: *undefined* \| *number*  } ; `gallery?`: *undefined* \| TGallerySettings ; `global?`: *undefined* \| *boolean* ; `html?`: *undefined* \| { `innerHTML?`: *undefined* \| *string*  } ; `id`: *string* ; `image?`: *undefined* \| { `alt?`: *undefined* \| *string* ; `height?`: *undefined* \| *string* \| *number* ; `link?`: *undefined* \| *string* ; `objectFit?`: *undefined* \| *contain* \| *cover* ; `src?`: *undefined* \| *string* ; `width?`: *undefined* \| *string* \| *number* ; `withEffect?`: *undefined* \| *boolean*  } ; `index?`: *undefined* \| *number* ; `isConstant?`: *undefined* \| *boolean* ; `isDeleted?`: *undefined* \| *boolean* ; `isVirtual?`: *undefined* \| *boolean* ; `jsxParentId?`: *undefined* \| *string* ; `link?`: *undefined* \| { `href?`: *undefined* \| *string* ; `text?`: *undefined* \| *string*  } ; `onClick?`: *undefined* \| (`event`: *MouseEvent*<HTMLDivElement, MouseEvent\>) => *any* ; `parentId?`: *undefined* \| *string* ; `plugin?`: *undefined* \| { `pluginName?`: *undefined* \| *string* ; `settings?`: *undefined* \| *Record*<string, any\>  } ; `style?`: *undefined* \| *string* \| *CSSProperties* ; `text?`: *undefined* \| { `content?`: *undefined* \| *string* ; `href?`: *undefined* \| *string* ; `textElementType?`: *undefined* \| *object* \| *time* \| *title* \| *address* \| *link* \| *style* \| *html* \| *a* \| *abbr* \| *area* \| *article* \| *aside* \| *audio* \| *b* \| *base* \| *bdi* \| *bdo* \| *big* \| *blockquote* \| *body* \| *br* \| *button* \| *canvas* \| *caption* \| *cite* \| *code* \| *col* \| *colgroup* \| *data* \| *datalist* \| *dd* \| *del* \| *details* \| *dfn* \| *dialog* \| *div* \| *dl* \| *dt* \| *em* \| *embed* \| *fieldset* \| *figcaption* \| *figure* \| *footer* \| *form* \| *h1* \| *h2* \| *h3* \| *h4* \| *h5* \| *h6* \| *head* \| *header* \| *hgroup* \| *hr* \| *i* \| *iframe* \| *img* \| *input* \| *ins* \| *kbd* \| *keygen* \| *label* \| *legend* \| *li* \| *main* \| *map* \| *mark* \| *menu* \| *menuitem* \| *meta* \| *meter* \| *nav* \| *noscript* \| *ol* \| *optgroup* \| *option* \| *output* \| *p* \| *param* \| *picture* \| *pre* \| *progress* \| *q* \| *rp* \| *rt* \| *ruby* \| *s* \| *samp* \| *slot* \| *script* \| *section* \| *select* \| *small* \| *source* \| *span* \| *strong* \| *sub* \| *summary* \| *sup* \| *table* \| *template* \| *tbody* \| *td* \| *textarea* \| *tfoot* \| *th* \| *thead* \| *tr* \| *track* \| *u* \| *ul* \| *var* \| *video* \| *wbr* \| *webview*  } ; `type?`: *undefined* \| *text* \| *image* \| *plugin* \| *container* \| *HTML* \| *gallery* \| *list* \| *link*  } & TCromwellBlockData
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:49](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L49)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L49)
 
 ___
 
@@ -217,7 +217,7 @@ ___
 
 **Returns:** ReactNode
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:271](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L271)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:271](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L271)
 
 ___
 
@@ -233,7 +233,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:216](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L216)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:216](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L216)
 
 ___
 
@@ -243,7 +243,7 @@ ___
 
 **Returns:** ReactNode
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:377](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L377)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:377](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L377)
 
 ___
 
@@ -253,7 +253,7 @@ ___
 
 **Returns:** *undefined* \| *Promise*<void\>
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:123](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L123)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:123](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L123)
 
 ___
 
@@ -269,4 +269,4 @@ Name | Type |
 
 **Returns:** *any*
 
-Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:57](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L57)
+Defined in: [system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx:57](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CromwellBlock/CromwellBlock.tsx#L57)

@@ -47,7 +47,7 @@ Name |
 
 • **order**: *ASC* \| *DESC*
 
-Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/PagedParamsInput.ts#L17)
+Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PagedParamsInput.ts#L17)
 
 ___
 
@@ -55,7 +55,7 @@ ___
 
 • **orderBy**: keyof T
 
-Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/PagedParamsInput.ts#L14)
+Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PagedParamsInput.ts#L14)
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 • **pageNumber**: *number*
 
-Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/PagedParamsInput.ts#L8)
+Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PagedParamsInput.ts#L8)
 
 ___
 
@@ -71,4 +71,4 @@ ___
 
 • **pageSize**: *number*
 
-Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/PagedParamsInput.ts#L11)
+Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PagedParamsInput.ts#L11)

@@ -33,7 +33,7 @@
 
 • `Optional` **productVariant**: *undefined* \| [*AttributeProductVariant*](backend.attributeproductvariant.md)
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:39](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/AttributeInstance.ts#L39)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L39)
 
 ___
 
@@ -41,4 +41,4 @@ ___
 
 • **value**: *string*
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:36](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/AttributeInstance.ts#L36)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L36)
