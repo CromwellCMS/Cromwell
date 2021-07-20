@@ -15,7 +15,7 @@ describe('Generic resolver', () => {
     let fragment;
 
     beforeAll(async () => {
-        [server] = await setupResolver('generic');
+        server = await setupResolver('generic');
         crwClient = getGraphQLClient();
 
         fragment = crwClient?.PluginFragment;

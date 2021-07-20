@@ -9,7 +9,7 @@ import { buildSchema } from 'type-graphql';
 
 import { mockWorkingDirectory } from './helpers';
 
-export const setupResolver = async (name: string): Promise<[ApolloServer]> => {
+export const setupResolver = async (name: string): Promise<ApolloServer> => {
     const testDir = await mockWorkingDirectory(name);
 
     await fs.outputJSON(resolve(testDir, 'package.json'), {
@@ -36,11 +36,9 @@ export const setupResolver = async (name: string): Promise<[ApolloServer]> => {
         authChecker: graphQlAuthChecker,
     });
 
-    const server = new ApolloServer({
+    return new ApolloServer({
         schema,
     });
-
-    return [server];
 }
 
 export const tearDownResolver = async (server: ApolloServer) => {

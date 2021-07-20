@@ -11,7 +11,7 @@ describe('Order resolver', () => {
     let crwClient: TCGraphQLClient | undefined;
 
     beforeAll(async () => {
-        [server] = await setupResolver('order');
+        server = await setupResolver('order');
         crwClient = getGraphQLClient();
     });
 

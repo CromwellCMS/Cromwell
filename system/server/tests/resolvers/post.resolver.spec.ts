@@ -9,7 +9,7 @@ describe('Post resolver', () => {
     let crwClient: TCGraphQLClient | undefined;
 
     beforeAll(async () => {
-        [server] = await setupResolver('post');
+        server = await setupResolver('post');
         crwClient = getGraphQLClient();
     });
 

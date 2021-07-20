@@ -11,7 +11,7 @@ describe('Product-review resolver', () => {
     let crwClient: TCGraphQLClient | undefined;
 
     beforeAll(async () => {
-        [server] = await setupResolver('product-review');
+        server = await setupResolver('product-review');
         crwClient = getGraphQLClient();
     });
 

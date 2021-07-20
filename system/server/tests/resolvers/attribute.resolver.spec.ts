@@ -11,7 +11,7 @@ describe('Attribute resolver', () => {
     let crwClient: TCGraphQLClient | undefined;
 
     beforeAll(async () => {
-        [server] = await setupResolver('attribute');
+        server = await setupResolver('attribute');
         crwClient = getGraphQLClient();
     });
 

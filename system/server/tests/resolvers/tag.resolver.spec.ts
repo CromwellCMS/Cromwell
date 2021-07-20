@@ -11,7 +11,7 @@ describe('Tag resolver', () => {
     let crwClient: TCGraphQLClient | undefined;
 
     beforeAll(async () => {
-        [server] = await setupResolver('tag');
+        server = await setupResolver('tag');
         crwClient = getGraphQLClient();
     });
 

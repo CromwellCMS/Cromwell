@@ -9,7 +9,7 @@ describe('Product category resolver', () => {
     let crwClient: TCGraphQLClient | undefined;
 
     beforeAll(async () => {
-        [server] = await setupResolver('product-category');
+        server = await setupResolver('product-category');
         crwClient = getGraphQLClient();
     });
 
