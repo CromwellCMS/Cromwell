@@ -1,6 +1,8 @@
 /.cromwell
 /build
 /package-lock.json
+/src/bundler
+/bundler
 
 # Logs
 logs

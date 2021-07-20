@@ -11,7 +11,7 @@ const logger = getLogger();
 
 @ApiBearerAuth()
 @ApiTags('Plugins')
-@Controller('plugin')
+@Controller('v1/plugin')
 export class PluginController {
 
     constructor(private readonly pluginService: PluginService) { }

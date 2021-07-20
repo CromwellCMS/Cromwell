@@ -8,7 +8,7 @@ const logger = getLogger();
 
 @ApiBearerAuth()
 @ApiTags('Mock')
-@Controller('mock')
+@Controller('v1/mock')
 export class MockController {
 
     constructor(private readonly mockService: MockService) { }

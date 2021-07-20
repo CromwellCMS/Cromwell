@@ -1,4 +1,4 @@
-import { apiV1BaseRoute, getStoreItem, serviceLocator, setStoreItem } from '@cromwell/core';
+import { getStoreItem, serviceLocator, setStoreItem } from '@cromwell/core';
 
 /** @internal */
 class CWebSocketClient {
@@ -30,7 +30,7 @@ export const getWebSocketClient = (): CWebSocketClient | undefined => {
     let client = getStoreItem('webSocketClient');
     if (client) return client;
 
-    const baseUrl = `${serviceLocator.getApiWsUrl()}/${apiV1BaseRoute}`;
+    const baseUrl = `${serviceLocator.getApiWsUrl()}/api`;
 
     client = new CWebSocketClient(baseUrl);
 

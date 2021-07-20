@@ -67,4 +67,27 @@ export default [
             // terser(),
         ]
     },
+    {
+        input: resolve(__dirname, "src/bundler/bundler.ts"),
+        output: [
+            {
+                dir: resolve(__dirname, 'bundler'),
+                format: "cjs",
+            }
+        ],
+        external,
+        plugins: [
+            typescript({
+                compilerOptions: {
+                    module: 'ESNext',
+                    declaration: true,
+                    declarationMap: true,
+                    declarationDir: resolve(__dirname, buildDir)
+                },
+                monorepo: true,
+            }),
+            json(),
+            // terser(),
+        ]
+    },
 ];

@@ -144,8 +144,8 @@ export type TCromwellBlockData = {
         withEffect?: boolean;
         alt?: string;
         objectFit?: 'contain' | 'cover';
-        width?: number;
-        height?: number;
+        width?: number | string;
+        height?: number | string;
     };
 
     /** For "HTML" block */

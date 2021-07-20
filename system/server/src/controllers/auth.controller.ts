@@ -26,7 +26,7 @@ import { AuthService } from '../services/auth.service';
 const logger = getLogger();
 
 @ApiTags('Auth')
-@Controller('auth')
+@Controller('v1/auth')
 export class AuthController {
 
     constructor(private authService: AuthService) { }

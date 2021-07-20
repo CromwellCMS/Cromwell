@@ -18,7 +18,7 @@ const logger = getLogger();
 
 @ApiBearerAuth()
 @ApiTags('Themes')
-@Controller('theme')
+@Controller('v1/theme')
 export class ThemeController {
 
     constructor(

@@ -10,7 +10,6 @@ import {
     QueryOptions,
 } from '@apollo/client';
 import {
-    apiV1BaseRoute,
     getStoreItem,
     GraphQLPaths,
     isServer,
@@ -68,7 +67,7 @@ export class CGraphQLClient {
     /** @internal */
     public getBaseUrl = () => {
         const typeUrl = serviceLocator.getMainApiUrl();
-        return `${typeUrl}/${apiV1BaseRoute}/graphql`;
+        return `${typeUrl}/api/graphql`;
     }
 
     /** @internal */

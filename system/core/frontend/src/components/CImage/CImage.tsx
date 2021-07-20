@@ -11,8 +11,8 @@ type CImageProps = {
     alt?: string;
     withEffect?: boolean;
     objectFit?: 'contain' | 'cover';
-    width?: number;
-    height?: number;
+    width?: number | string;
+    height?: number | string;
 } & TCromwellBlockProps;
 
 /** @noInheritDoc */
@@ -37,8 +37,8 @@ export class CImage extends React.Component<CImageProps> {
                         <img src={_src}
                             alt={_alt}
                             style={{
-                                width: _width ? _width + 'px' : undefined,
-                                height: _height ? _height + 'px' : undefined,
+                                width: _width ? typeof _width === 'number' ? _width + 'px' : _width : '100%',
+                                height: _height ? typeof _height === 'number' ? _height + 'px' : _height : undefined,
                                 objectFit: _objectFit ?? 'contain'
                             }}
                         />
