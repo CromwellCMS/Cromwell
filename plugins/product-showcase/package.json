@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/plugin-product-showcase",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "",
   "files": [
     "build",
