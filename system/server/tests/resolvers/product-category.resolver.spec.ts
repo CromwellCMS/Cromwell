@@ -1,24 +1,21 @@
 import { GraphQLPaths, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
-import { ApolloServerTestClient } from 'apollo-server-testing';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
 
 describe('Product category resolver', () => {
     let server: ApolloServer;
-    let client: ApolloServerTestClient;
     let crwClient: TCGraphQLClient | undefined;
 
-
     beforeAll(async () => {
-        [server, client] = await setupResolver('product-category');
+        [server] = await setupResolver('product-category');
         crwClient = getGraphQLClient();
     });
 
     it(`getProductCategories`, async () => {
         const path = GraphQLPaths.ProductCategory.getMany;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
               query testGetProducts($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -53,7 +50,7 @@ describe('Product category resolver', () => {
 
     const getProductCategoryById = async (id: string) => {
         const path = GraphQLPaths.ProductCategory.getOneById;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
             query testGetProductCategoryById($id: String!) {
                 ${path}(id: $id) {
@@ -84,7 +81,7 @@ describe('Product category resolver', () => {
 
     const getProductCategoryBySlug = async (slug: string) => {
         const path = GraphQLPaths.ProductCategory.getOneBySlug;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
             query testGetProductCategoryBySlug($slug: String!) {
                 ${path}(slug: $slug) {
@@ -132,8 +129,8 @@ describe('Product category resolver', () => {
             isEnabled: data1.isEnabled,
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testUpdateProductCategory($id: String!, $data: UpdateProductCategory!) {
                   ${path}(id: $id, data: $data) {
                       ...ProductCategoryFragment
@@ -184,8 +181,8 @@ describe('Product category resolver', () => {
             isEnabled: data1.isEnabled,
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testCreatePost($data: CreateProductCategory!) {
                   ${path}(data: $data) {
                       ...ProductCategoryFragment
@@ -227,8 +224,8 @@ describe('Product category resolver', () => {
         expect(data1.slug).toBeTruthy();
         const path = GraphQLPaths.ProductCategory.delete;
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
                 mutation testDeleteProductCategory($id: String!) {
                     ${path}(id: $id)
                 }

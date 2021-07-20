@@ -2,25 +2,22 @@ import { GraphQLPaths, TAttribute, TAttributeInput } from '@cromwell/core';
 import { AttributeRepository } from '@cromwell/core-backend';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
-import { ApolloServerTestClient } from 'apollo-server-testing';
 import { getCustomRepository } from 'typeorm';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
 
 describe('Attribute resolver', () => {
     let server: ApolloServer;
-    let client: ApolloServerTestClient;
     let crwClient: TCGraphQLClient | undefined;
 
-
     beforeAll(async () => {
-        [server, client] = await setupResolver('attribute');
+        [server] = await setupResolver('attribute');
         crwClient = getGraphQLClient();
     });
 
     it(`getAttributes`, async () => {
         const path = GraphQLPaths.Attribute.getMany;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
                 query coreGetAttributes {
                     ${path} {
@@ -38,7 +35,7 @@ describe('Attribute resolver', () => {
 
     const getAttributeById = async (attributeId: string) => {
         const path = GraphQLPaths.Attribute.getOneById;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
             query testGetAttributeById($attributeId: String!) {
                 ${path}(id: $attributeId) {
@@ -78,8 +75,8 @@ describe('Attribute resolver', () => {
             values: [],
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testUpdateAttribute($id: String!, $data: AttributeInput!) {
                   ${path}(id: $id, data: $data) {
                       ...AttributeFragment
@@ -121,8 +118,8 @@ describe('Attribute resolver', () => {
             values: [],
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testCreateAttribute($data: AttributeInput!) {
                   ${path}(data: $data) {
                       ...AttributeFragment
@@ -155,8 +152,8 @@ describe('Attribute resolver', () => {
 
         const path = GraphQLPaths.Attribute.delete;
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
                 mutation testDeleteAttribute($id: String!) {
                     ${path}(id: $id)
                 }

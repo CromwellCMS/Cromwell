@@ -1,24 +1,21 @@
 import { GraphQLPaths, TPagedParams, TProduct, TProductInput } from '@cromwell/core';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
-import { ApolloServerTestClient } from 'apollo-server-testing';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
 
 describe('Product resolver', () => {
     let server: ApolloServer;
-    let client: ApolloServerTestClient;
     let crwClient: TCGraphQLClient | undefined;
 
-
     beforeAll(async () => {
-        [server, client] = await setupResolver('product');
+        [server] = await setupResolver('product');
         crwClient = getGraphQLClient();
     });
 
     it(`getProducts`, async () => {
         const path = GraphQLPaths.Product.getMany;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
               query testGetProducts($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -53,7 +50,7 @@ describe('Product resolver', () => {
 
     const getProductById = async (productId: string) => {
         const path = GraphQLPaths.Product.getOneById;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
             query testGetProductById($productId: String!) {
                 ${path}(id: $productId) {
@@ -84,7 +81,7 @@ describe('Product resolver', () => {
 
     const getProductBySlug = async (slug: string) => {
         const path = GraphQLPaths.Product.getOneBySlug;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
             query testGetProductBySlug($slug: String!) {
                 ${path}(slug: $slug) {
@@ -132,8 +129,8 @@ describe('Product resolver', () => {
             isEnabled: data1.isEnabled,
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testUpdateProduct($id: String!, $data: UpdateProduct!) {
                   ${path}(id: $id, data: $data) {
                       ...ProductFragment
@@ -184,8 +181,8 @@ describe('Product resolver', () => {
             isEnabled: data1.isEnabled,
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testCreatePost($data: CreateProduct!) {
                   ${path}(data: $data) {
                       ...ProductFragment
@@ -227,8 +224,8 @@ describe('Product resolver', () => {
         expect(data1.slug).toBeTruthy();
         const path = GraphQLPaths.Product.delete;
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
                 mutation testDeleteProduct($id: String!) {
                     ${path}(id: $id)
                 }
