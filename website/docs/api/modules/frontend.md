@@ -4,6 +4,21 @@
 
 CromwellCMS Frontend SDK
 
+Exports Blocks, React components, API clients and frontend helpers. 
+
+### Install
+```
+npm i @cromwell/core-frontend
+```
+
+### Use
+Example of usage
+```ts
+import { getGraphQLClient } from '@cromwell/core-frontend';
+
+const products = await getGraphQLClient().getProducts();
+```
+
 ## Table of contents
 
 ### Classes
@@ -33,6 +48,7 @@ CromwellCMS Frontend SDK
 - [TCListProps](frontend.md#tclistprops)
 - [TCRestAPIClient](frontend.md#tcrestapiclient)
 - [TCssClasses](frontend.md#tcssclasses)
+- [TDynamicLoader](frontend.md#tdynamicloader)
 - [TElements](frontend.md#telements)
 - [TErrorInfo](frontend.md#terrorinfo)
 - [TItemComponentProps](frontend.md#titemcomponentprops)
@@ -52,7 +68,6 @@ CromwellCMS Frontend SDK
 - [BlockContentProvider](frontend.md#blockcontentprovider)
 - [CromwellBlockCSSclass](frontend.md#cromwellblockcssclass)
 - [pageRootContainerId](frontend.md#pagerootcontainerid)
-- [useRouter](frontend.md#userouter)
 
 ### Functions
 
@@ -66,7 +81,6 @@ CromwellCMS Frontend SDK
 - [cromwellBlockTypeFromClassname](frontend.md#cromwellblocktypefromclassname)
 - [cromwellIdFromHTML](frontend.md#cromwellidfromhtml)
 - [cromwellIdToHTML](frontend.md#cromwellidtohtml)
-- [dynamicLoader](frontend.md#dynamicloader)
 - [fetch](frontend.md#fetch)
 - [getBlockById](frontend.md#getblockbyid)
 - [getBlockData](frontend.md#getblockdata)
@@ -74,6 +88,7 @@ CromwellCMS Frontend SDK
 - [getBlockElementById](frontend.md#getblockelementbyid)
 - [getCStore](frontend.md#getcstore)
 - [getCentralServerClient](frontend.md#getcentralserverclient)
+- [getDynamicLoader](frontend.md#getdynamicloader)
 - [getGraphQLClient](frontend.md#getgraphqlclient)
 - [getNamedWidgetForPlace](frontend.md#getnamedwidgetforplace)
 - [getPluginStaticUrl](frontend.md#getpluginstaticurl)
@@ -93,7 +108,7 @@ CromwellCMS Frontend SDK
 
 Ƭ **CContainerProps**: { `children?`: React.ReactNode  } & TCromwellBlockProps
 
-Defined in: [system/core/frontend/src/components/CContainer/CContainer.tsx:6](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/CContainer/CContainer.tsx#L6)
+Defined in: [system/core/frontend/src/components/CContainer/CContainer.tsx:6](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/CContainer/CContainer.tsx#L6)
 
 ___
 
@@ -109,7 +124,7 @@ Name | Type |
 `message`? | *string* |
 `success` | *boolean* |
 
-Defined in: [system/core/frontend/src/CStore.ts:22](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/CStore.ts#L22)
+Defined in: [system/core/frontend/src/CStore.ts:22](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L22)
 
 ___
 
@@ -124,7 +139,7 @@ Name | Type |
 `getAttributes` | () => *Promise*<TAttribute[] \| undefined\> |
 `getProductById` | (`id`: *string*) => *Promise*<TProduct \| undefined\> |
 
-Defined in: [system/core/frontend/src/CStore.ts:17](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/CStore.ts#L17)
+Defined in: [system/core/frontend/src/CStore.ts:17](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L17)
 
 ___
 
@@ -132,7 +147,7 @@ ___
 
 Ƭ **TCGalleryProps**: { `className?`: *string* ; `shouldComponentUpdate?`: *boolean*  } & TCromwellBlockProps
 
-Defined in: [system/core/frontend/src/components/CGallery/CGallery.tsx:26](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/CGallery/CGallery.tsx#L26)
+Defined in: [system/core/frontend/src/components/CGallery/CGallery.tsx:26](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/CGallery/CGallery.tsx#L26)
 
 ___
 
@@ -140,9 +155,9 @@ ___
 
 Ƭ **TCGraphQLClient**: [*CGraphQLClient*](../classes/frontend.cgraphqlclient.md)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:976](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L976)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:976](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L976)
 
-Defined in: [system/core/frontend/src/index.ts:30](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L30)
+Defined in: [system/core/frontend/src/index.ts:30](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L30)
 
 ___
 
@@ -174,9 +189,9 @@ Name | Type | Description |
 `setProps` | (`props`: [*TCListProps*](frontend.md#tclistprops)<DataType, ListItemProps\> \| *null*) => *void* | Replace props. Will use them in any render after instead of React props. Behavior can be reset by setting null   |
 `updateData` | () => *Promise*<void\> | Clear state/data and request new from loader   |
 
-Defined in: [system/core/frontend/src/components/CList/types.ts:104](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/CList/types.ts#L104)
+Defined in: [system/core/frontend/src/components/CList/types.ts:104](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/CList/types.ts#L104)
 
-Defined in: [system/core/frontend/src/index.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L9)
+Defined in: [system/core/frontend/src/index.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L9)
 
 ___
 
@@ -218,9 +233,9 @@ Name | Type | Description |
 `useQueryPagination`? | *boolean* | Parse and set pageNumber in url as query param   |
 `useShowMoreButton`? | *boolean* | If useAutoLoading disabled can show button to load next page in the same container   |
 
-Defined in: [system/core/frontend/src/components/CList/types.ts:33](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/CList/types.ts#L33)
+Defined in: [system/core/frontend/src/components/CList/types.ts:33](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/CList/types.ts#L33)
 
-Defined in: [system/core/frontend/src/index.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L9)
+Defined in: [system/core/frontend/src/index.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L9)
 
 ___
 
@@ -228,9 +243,9 @@ ___
 
 Ƭ **TCRestAPIClient**: *typeof* [*CRestAPIClient*](../classes/frontend.crestapiclient.md)
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:732](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L732)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:734](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CRestAPIClient.ts#L734)
 
-Defined in: [system/core/frontend/src/index.ts:31](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L31)
+Defined in: [system/core/frontend/src/index.ts:31](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L31)
 
 ___
 
@@ -250,7 +265,28 @@ Name | Type |
 `paginationLink`? | *string* |
 `scrollBox`? | *string* |
 
-Defined in: [system/core/frontend/src/components/CList/types.ts:4](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/CList/types.ts#L4)
+Defined in: [system/core/frontend/src/components/CList/types.ts:4](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/CList/types.ts#L4)
+
+___
+
+### TDynamicLoader
+
+Ƭ **TDynamicLoader**: (`func`: () => *Promise*<ComponentType\>, `options?`: *any*) => ComponentType
+
+#### Type declaration:
+
+▸ (`func`: () => *Promise*<ComponentType\>, `options?`: *any*): ComponentType
+
+#### Parameters:
+
+Name | Type |
+:------ | :------ |
+`func` | () => *Promise*<ComponentType\> |
+`options?` | *any* |
+
+**Returns:** ComponentType
+
+Defined in: [system/core/frontend/src/constants.ts:58](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L58)
 
 ___
 
@@ -270,7 +306,7 @@ Name | Type | Description |
 `preloader`? | React.ReactNode | Preloader to show during first data request   |
 `showMore`? | *React.ComponentType*<{ `onClick`: () => *void*  }\> | - |
 
-Defined in: [system/core/frontend/src/components/CList/types.ts:20](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/CList/types.ts#L20)
+Defined in: [system/core/frontend/src/components/CList/types.ts:20](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/CList/types.ts#L20)
 
 ___
 
@@ -287,9 +323,9 @@ Name | Type |
 `route` | *string* |
 `statusCode` | *number* |
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:32](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L32)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:32](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CRestAPIClient.ts#L32)
 
-Defined in: [system/core/frontend/src/index.ts:31](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L31)
+Defined in: [system/core/frontend/src/index.ts:31](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L31)
 
 ___
 
@@ -311,9 +347,9 @@ Name | Type |
 `data`? | DataType |
 `listItemProps`? | ListItemProps |
 
-Defined in: [system/core/frontend/src/components/CList/types.ts:130](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/CList/types.ts#L130)
+Defined in: [system/core/frontend/src/components/CList/types.ts:130](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/CList/types.ts#L130)
 
-Defined in: [system/core/frontend/src/index.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L9)
+Defined in: [system/core/frontend/src/index.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L9)
 
 ___
 
@@ -321,7 +357,7 @@ ___
 
 Ƭ **TListenerType**: *componentDidUpdate*
 
-Defined in: [system/core/frontend/src/components/CList/types.ts:128](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/CList/types.ts#L128)
+Defined in: [system/core/frontend/src/components/CList/types.ts:128](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/CList/types.ts#L128)
 
 ___
 
@@ -337,9 +373,9 @@ Name | Type |
 `onChange` | (`page`: *number*) => *void* |
 `page` | *number* |
 
-Defined in: [system/core/frontend/src/components/CList/types.ts:14](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/CList/types.ts#L14)
+Defined in: [system/core/frontend/src/components/CList/types.ts:14](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/CList/types.ts#L14)
 
-Defined in: [system/core/frontend/src/index.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L9)
+Defined in: [system/core/frontend/src/index.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L9)
 
 ___
 
@@ -347,9 +383,9 @@ ___
 
 Ƭ **TPluginsModifications**: TPluginConfig & { [x: string]: *any*;  }
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:30](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L30)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:30](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CRestAPIClient.ts#L30)
 
-Defined in: [system/core/frontend/src/index.ts:31](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L31)
+Defined in: [system/core/frontend/src/index.ts:31](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L31)
 
 ___
 
@@ -365,9 +401,9 @@ Name | Type | Description |
 `input`? | *any* | Body for 'post' and 'put' requests   |
 `method`? | *string* | HTTP method: 'get', 'post', 'put', etc.   |
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:39](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L39)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:39](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CRestAPIClient.ts#L39)
 
-Defined in: [system/core/frontend/src/index.ts:31](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L31)
+Defined in: [system/core/frontend/src/index.ts:31](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L31)
 
 ___
 
@@ -375,7 +411,7 @@ ___
 
 Ƭ **WidgetNames**: keyof *WidgetTypes*
 
-Defined in: [system/core/frontend/src/widget-types.ts:15](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/widget-types.ts#L15)
+Defined in: [system/core/frontend/src/widget-types.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/widget-types.ts#L15)
 
 ___
 
@@ -395,7 +431,7 @@ Name | Type |
 `ProductActions` | *Widget\_EntityActions*<TProduct\> |
 `TagActions` | *Widget\_EntityActions*<TTag\> |
 
-Defined in: [system/core/frontend/src/widget-types.ts:5](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/widget-types.ts#L5)
+Defined in: [system/core/frontend/src/widget-types.ts:5](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/widget-types.ts#L5)
 
 ___
 
@@ -410,7 +446,7 @@ Name | Type |
 `setSize` | (`pluginName`: *string*, `layouts`: { `lg`: { `h?`: *number* ; `w?`: *number* ; `x?`: *number* ; `y?`: *number*  } ; `md`: { `h?`: *number* ; `w?`: *number* ; `x?`: *number* ; `y?`: *number*  } ; `sm`: { `h?`: *number* ; `w?`: *number* ; `x?`: *number* ; `y?`: *number*  } ; `xs`: { `h?`: *number* ; `w?`: *number* ; `x?`: *number* ; `y?`: *number*  } ; `xxs`: { `h?`: *number* ; `w?`: *number* ; `x?`: *number* ; `y?`: *number*  }  }) => *any* |
 `stats` | TCmsStats \| *undefined* |
 
-Defined in: [system/core/frontend/src/widget-types.ts:17](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/widget-types.ts#L17)
+Defined in: [system/core/frontend/src/widget-types.ts:17](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/widget-types.ts#L17)
 
 ___
 
@@ -431,7 +467,7 @@ Name | Type |
 `data` | T |
 `setData` | (`data`: T) => *any* |
 
-Defined in: [system/core/frontend/src/widget-types.ts:28](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/widget-types.ts#L28)
+Defined in: [system/core/frontend/src/widget-types.ts:28](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/widget-types.ts#L28)
 
 ___
 
@@ -439,7 +475,7 @@ ___
 
 Ƭ **Widget\_PostActions**: *Widget\_EntityActions*<TPost\> & { `quillInstance`: *any*  }
 
-Defined in: [system/core/frontend/src/widget-types.ts:33](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/widget-types.ts#L33)
+Defined in: [system/core/frontend/src/widget-types.ts:33](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/widget-types.ts#L33)
 
 ## Variables
 
@@ -453,7 +489,7 @@ ___
 
 • **BlockContentProvider**: *Provider*<*null* \| TBlockContentProvider\>
 
-Defined in: [system/core/frontend/src/index.ts:22](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L22)
+Defined in: [system/core/frontend/src/index.ts:22](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L22)
 
 ___
 
@@ -461,9 +497,9 @@ ___
 
 • `Const` **CromwellBlockCSSclass**: *CB*= 'CB'
 
-Defined in: [system/core/frontend/src/constants.ts:6](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L6)
+Defined in: [system/core/frontend/src/constants.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L12)
 
-Defined in: [system/core/frontend/src/index.ts:28](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L28)
+Defined in: [system/core/frontend/src/index.ts:28](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L28)
 
 ___
 
@@ -471,17 +507,9 @@ ___
 
 • `Const` **pageRootContainerId**: *root*= 'root'
 
-Defined in: [system/core/frontend/src/constants.ts:54](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L54)
+Defined in: [system/core/frontend/src/constants.ts:62](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L62)
 
-Defined in: [system/core/frontend/src/index.ts:26](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L26)
-
-___
-
-### useRouter
-
-• `Const` **useRouter**: *typeof* nextRouter.useRouter \| *undefined*
-
-Defined in: [system/core/frontend/src/index.ts:45](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/index.ts#L45)
+Defined in: [system/core/frontend/src/index.ts:26](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/index.ts#L26)
 
 ## Functions
 
@@ -506,7 +534,7 @@ Name | Type |
 
 **Returns:** *null* \| *Element*
 
-Defined in: [system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx:7](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx#L7)
+Defined in: [system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx:7](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx#L7)
 
 ___
 
@@ -522,7 +550,7 @@ Name | Type |
 
 **Returns:** *Element*
 
-Defined in: [system/core/frontend/src/components/Link/Link.tsx:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/Link/Link.tsx#L9)
+Defined in: [system/core/frontend/src/components/Link/Link.tsx:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/Link/Link.tsx#L9)
 
 ___
 
@@ -538,7 +566,7 @@ Name | Type |
 
 **Returns:** *Element*
 
-Defined in: [system/core/frontend/src/components/loadBox/Loadbox.tsx:13](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/loadBox/Loadbox.tsx#L13)
+Defined in: [system/core/frontend/src/components/loadBox/Loadbox.tsx:13](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/loadBox/Loadbox.tsx#L13)
 
 ___
 
@@ -560,7 +588,7 @@ Name | Type | Description |
 
 **Returns:** *Element*
 
-Defined in: [system/core/frontend/src/components/ProductAttributes/ProductAttributes.tsx:11](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/ProductAttributes/ProductAttributes.tsx#L11)
+Defined in: [system/core/frontend/src/components/ProductAttributes/ProductAttributes.tsx:11](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/ProductAttributes/ProductAttributes.tsx#L11)
 
 ___
 
@@ -570,7 +598,7 @@ ___
 
 **Returns:** *Promise*<void\>
 
-Defined in: [system/core/frontend/src/constants.ts:56](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L56)
+Defined in: [system/core/frontend/src/constants.ts:64](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L64)
 
 ___
 
@@ -586,7 +614,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/constants.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L9)
+Defined in: [system/core/frontend/src/constants.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L15)
 
 ___
 
@@ -602,7 +630,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/constants.ts:17](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L17)
+Defined in: [system/core/frontend/src/constants.ts:23](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L23)
 
 ___
 
@@ -618,7 +646,7 @@ Name | Type |
 
 **Returns:** *null* \| *text* \| *image* \| *plugin* \| *container* \| *HTML* \| *gallery* \| *list* \| *link*
 
-Defined in: [system/core/frontend/src/constants.ts:10](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L10)
+Defined in: [system/core/frontend/src/constants.ts:16](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L16)
 
 ___
 
@@ -634,7 +662,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/constants.ts:8](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L8)
+Defined in: [system/core/frontend/src/constants.ts:14](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L14)
 
 ___
 
@@ -650,24 +678,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/constants.ts:7](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L7)
-
-___
-
-### dynamicLoader
-
-▸ `Const`**dynamicLoader**(`func`: () => *Promise*<ComponentType<{}\>\>, `options?`: *any*): *ComponentType*<{}\>
-
-#### Parameters:
-
-Name | Type |
-:------ | :------ |
-`func` | () => *Promise*<ComponentType<{}\>\> |
-`options?` | *any* |
-
-**Returns:** *ComponentType*<{}\>
-
-Defined in: [system/core/frontend/src/constants.ts:52](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L52)
+Defined in: [system/core/frontend/src/constants.ts:13](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L13)
 
 ___
 
@@ -685,7 +696,7 @@ Name | Type |
 
 **Returns:** *any*
 
-Defined in: [system/core/frontend/src/helpers/isomorphicFetch.ts:7](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/helpers/isomorphicFetch.ts#L7)
+Defined in: [system/core/frontend/src/helpers/isomorphicFetch.ts:7](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/helpers/isomorphicFetch.ts#L7)
 
 ___
 
@@ -701,7 +712,7 @@ Name | Type |
 
 **Returns:** *undefined* \| *null* \| *TCromwellBlock*<Component<{}, {}, any\>\>
 
-Defined in: [system/core/frontend/src/constants.ts:19](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L19)
+Defined in: [system/core/frontend/src/constants.ts:25](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L25)
 
 ___
 
@@ -717,7 +728,7 @@ Name | Type |
 
 **Returns:** *undefined* \| TCromwellBlockData
 
-Defined in: [system/core/frontend/src/constants.ts:33](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L33)
+Defined in: [system/core/frontend/src/constants.ts:39](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L39)
 
 ___
 
@@ -733,7 +744,7 @@ Name | Type |
 
 **Returns:** *undefined* \| TCromwellBlockData
 
-Defined in: [system/core/frontend/src/constants.ts:26](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L26)
+Defined in: [system/core/frontend/src/constants.ts:32](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L32)
 
 ___
 
@@ -749,7 +760,7 @@ Name | Type |
 
 **Returns:** *undefined* \| *null* \| HTMLElement
 
-Defined in: [system/core/frontend/src/constants.ts:38](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L38)
+Defined in: [system/core/frontend/src/constants.ts:44](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L44)
 
 ___
 
@@ -768,7 +779,7 @@ Name | Type | Description |
 
 **Returns:** [*CStore*](../classes/frontend.cstore.md)
 
-Defined in: [system/core/frontend/src/CStore.ts:571](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/CStore.ts#L571)
+Defined in: [system/core/frontend/src/CStore.ts:571](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L571)
 
 ___
 
@@ -780,7 +791,17 @@ Get CentralServerClient instance from global store (singleton)
 
 **Returns:** [*CentralServerClient*](../classes/frontend.centralserverclient.md)
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:157](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CentralServerClient.ts#L157)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:200](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L200)
+
+___
+
+### getDynamicLoader
+
+▸ `Const`**getDynamicLoader**(): [*TDynamicLoader*](frontend.md#tdynamicloader)
+
+**Returns:** [*TDynamicLoader*](frontend.md#tdynamicloader)
+
+Defined in: [system/core/frontend/src/constants.ts:59](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L59)
 
 ___
 
@@ -798,7 +819,7 @@ Name | Type |
 
 **Returns:** [*CGraphQLClient*](../classes/frontend.cgraphqlclient.md)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:981](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L981)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:981](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L981)
 
 ___
 
@@ -822,7 +843,7 @@ Name | Type |
 
 **Returns:** *null* \| *Element*
 
-Defined in: [system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx:30](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx#L30)
+Defined in: [system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx:30](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx#L30)
 
 ___
 
@@ -838,7 +859,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/helpers/contentGetters.ts:2](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/helpers/contentGetters.ts#L2)
+Defined in: [system/core/frontend/src/helpers/contentGetters.ts:2](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/helpers/contentGetters.ts#L2)
 
 ___
 
@@ -850,7 +871,7 @@ Get CRestAPIClient instance from global store (singleton)
 
 **Returns:** [*CRestAPIClient*](../classes/frontend.crestapiclient.md)
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:721](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L721)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:723](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CRestAPIClient.ts#L723)
 
 ___
 
@@ -872,7 +893,7 @@ Name | Type |
 
 **Returns:** *Record*<string, ComponentType<*WidgetTypes*[T]\>\>
 
-Defined in: [system/core/frontend/src/helpers/registerWidget.ts:32](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/helpers/registerWidget.ts#L32)
+Defined in: [system/core/frontend/src/helpers/registerWidget.ts:32](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/helpers/registerWidget.ts#L32)
 
 ___
 
@@ -895,7 +916,7 @@ Name | Type |
 
 **Returns:** (*null* \| *Element*)[]
 
-Defined in: [system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx:41](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx#L41)
+Defined in: [system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx:41](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/AdminPanelWidget/AdminPanelWidgetPlace.tsx#L41)
 
 ___
 
@@ -911,7 +932,7 @@ Name | Type |
 
 **Returns:** *ComponentType*<SVGProps<SVGSVGElement\>\>
 
-Defined in: [system/core/frontend/src/helpers/iconFromPath.tsx:3](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/helpers/iconFromPath.tsx#L3)
+Defined in: [system/core/frontend/src/helpers/iconFromPath.tsx:3](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/helpers/iconFromPath.tsx#L3)
 
 ___
 
@@ -921,13 +942,13 @@ ___
 
 **Returns:** *boolean*
 
-Defined in: [system/core/frontend/src/constants.ts:45](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/constants.ts#L45)
+Defined in: [system/core/frontend/src/constants.ts:51](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/constants.ts#L51)
 
 ___
 
 ### loadFrontendBundle
 
-▸ `Const`**loadFrontendBundle**(`bundleName`: *string*, `loader`: () => *Promise*<undefined \| *null* \| TFrontendBundle\>, `loadable?`: (`func`: () => *Promise*<ComponentType<{}\>\>, `options?`: *any*) => *ComponentType*<{}\>, `fallbackComponent?`: *ComponentClass*<{}, any\> \| *FunctionComponent*<{}\>, `dynamicLoaderProps?`: *Record*<string, any\>): *ComponentType*<{}\>
+▸ `Const`**loadFrontendBundle**(`bundleName`: *string*, `loader`: () => *Promise*<undefined \| *null* \| TFrontendBundle\>, `loadable?`: [*TDynamicLoader*](frontend.md#tdynamicloader), `fallbackComponent?`: *ComponentClass*<{}, any\> \| *FunctionComponent*<{}\>, `dynamicLoaderProps?`: *Record*<string, any\>): *ComponentType*<{}\>
 
 #### Parameters:
 
@@ -935,13 +956,13 @@ Name | Type |
 :------ | :------ |
 `bundleName` | *string* |
 `loader` | () => *Promise*<undefined \| *null* \| TFrontendBundle\> |
-`loadable?` | (`func`: () => *Promise*<ComponentType<{}\>\>, `options?`: *any*) => *ComponentType*<{}\> |
+`loadable?` | [*TDynamicLoader*](frontend.md#tdynamicloader) |
 `fallbackComponent?` | *ComponentClass*<{}, any\> \| *FunctionComponent*<{}\> |
 `dynamicLoaderProps?` | *Record*<string, any\> |
 
 **Returns:** *ComponentType*<{}\>
 
-Defined in: [system/core/frontend/src/helpers/loadFrontendBundle.ts:6](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/helpers/loadFrontendBundle.ts#L6)
+Defined in: [system/core/frontend/src/helpers/loadFrontendBundle.ts:7](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/helpers/loadFrontendBundle.ts#L7)
 
 ___
 
@@ -964,7 +985,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/helpers/registerWidget.ts:26](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/helpers/registerWidget.ts#L26)
+Defined in: [system/core/frontend/src/helpers/registerWidget.ts:26](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/helpers/registerWidget.ts#L26)
 
 ___
 
@@ -989,7 +1010,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/helpers/registerWidget.ts:6](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/helpers/registerWidget.ts#L6)
+Defined in: [system/core/frontend/src/helpers/registerWidget.ts:6](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/helpers/registerWidget.ts#L6)
 
 ___
 
@@ -999,4 +1020,4 @@ ___
 
 **Returns:** () => *void*
 
-Defined in: [system/core/frontend/src/helpers/forceUpdate.ts:3](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/helpers/forceUpdate.ts#L3)
+Defined in: [system/core/frontend/src/helpers/forceUpdate.ts:3](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/helpers/forceUpdate.ts#L3)

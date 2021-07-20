@@ -35,7 +35,7 @@
 
 • `Optional` **pageNumber**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:7](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/paged/PagedMeta.ts#L7)
+Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:7](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/paged/PagedMeta.ts#L7)
 
 ___
 
@@ -43,7 +43,7 @@ ___
 
 • `Optional` **pageSize**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:10](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/paged/PagedMeta.ts#L10)
+Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:10](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/paged/PagedMeta.ts#L10)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 • `Optional` **totalElements**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:16](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/paged/PagedMeta.ts#L16)
+Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:16](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/paged/PagedMeta.ts#L16)
 
 ___
 
@@ -59,4 +59,4 @@ ___
 
 • `Optional` **totalPages**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:13](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/paged/PagedMeta.ts#L13)
+Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:13](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/paged/PagedMeta.ts#L13)

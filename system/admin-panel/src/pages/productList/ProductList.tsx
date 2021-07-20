@@ -1,16 +1,17 @@
 import { gql } from '@apollo/client';
-import { getBlockInstance, TPagedParams, TProduct, TProductFilter, setStoreItem, getStoreItem } from '@cromwell/core';
-import { CList, getGraphQLClient, TCList, CPlugin } from '@cromwell/core-frontend';
-import { Checkbox, IconButton, TextField, Tooltip, Drawer } from '@material-ui/core';
+import { getBlockInstance, getStoreItem, setStoreItem, TPagedParams, TProduct, TProductFilter } from '@cromwell/core';
+import { CList, CPlugin, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { Checkbox, Drawer, IconButton, Tooltip } from '@material-ui/core';
 import {
-    AddCircle as AddCircleIcon, Delete as DeleteIcon,
-    FilterList as FilterListIcon,
+    AddCircle as AddCircleIcon,
     Close as CloseIcon,
+    Delete as DeleteIcon,
+    FilterList as FilterListIcon,
 } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { useHistory } from 'react-router-dom';
-import { debounce } from 'throttle-debounce';
+
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
@@ -46,7 +47,6 @@ type TPropsType = PropsType<TAppState, Record<string, unknown>,
 
 const ProductList = (props: TPropsType) => {
     const client = getGraphQLClient();
-    const titleSearchId = "product-filter-search";
     const filterInput = useRef<TProductFilter>({});
     const listId = "Admin_ProductsList";
     const history = useHistory();

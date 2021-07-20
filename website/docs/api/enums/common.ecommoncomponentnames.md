@@ -17,7 +17,7 @@
 
 • **PostCard**: = "PostCard"
 
-Defined in: [system/core/common/src/constants.ts:168](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L168)
+Defined in: [system/core/common/src/constants.ts:168](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L168)
 
 ___
 
@@ -25,4 +25,4 @@ ___
 
 • **ProductCard**: = "ProductCard"
 
-Defined in: [system/core/common/src/constants.ts:167](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L167)
+Defined in: [system/core/common/src/constants.ts:167](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L167)

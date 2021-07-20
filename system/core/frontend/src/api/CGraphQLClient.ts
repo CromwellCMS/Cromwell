@@ -45,6 +45,7 @@ import {
     TUser,
     TUserFilter,
 } from '@cromwell/core';
+import clone from 'rfdc';
 
 import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch';
 
@@ -169,7 +170,7 @@ export class CGraphQLClient {
             // Data may be cached, and if it is modified somewhere in the app, 
             // next request can possibly return modified data instead of original.
             // Just to make sure all object references inside are new:
-            return JSON.parse(JSON.stringify(data));
+            return clone(data);
         }
         const errors = res?.errors;
         return errors ?? null;

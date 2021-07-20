@@ -57,7 +57,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:269](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L269)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:269](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L269)
 
 ___
 
@@ -74,7 +74,7 @@ Name | Type |
 
 **Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:144](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L144)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:144](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L144)
 
 ___
 
@@ -91,7 +91,7 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:210](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L210)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:210](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L210)
 
 ___
 
@@ -107,7 +107,7 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:169](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L169)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:169](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L169)
 
 ___
 
@@ -124,7 +124,7 @@ Name | Type |
 
 **Returns:** *Promise*<TProductCategory[]\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:232](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L232)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:232](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L232)
 
 ___
 
@@ -140,7 +140,7 @@ Name | Type |
 
 **Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)[]\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:242](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L242)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:242](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L242)
 
 ___
 
@@ -157,7 +157,7 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TProductCategory\>\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:278](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L278)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:278](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L278)
 
 ___
 
@@ -173,7 +173,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| *null* \| [*ProductCategory*](backend.productcategory.md)\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:247](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L247)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:247](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L247)
 
 ___
 
@@ -189,7 +189,7 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TProductCategory\>\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:26](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L26)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:26](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L26)
 
 ___
 
@@ -205,7 +205,7 @@ Name | Type |
 
 **Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)[]\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:33](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L33)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:33](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L33)
 
 ___
 
@@ -221,7 +221,7 @@ Name | Type |
 
 **Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L38)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L38)
 
 ___
 
@@ -237,7 +237,7 @@ Name | Type |
 
 **Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:47](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L47)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:47](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L47)
 
 ___
 
@@ -247,7 +247,7 @@ ___
 
 **Returns:** *Promise*<TPagedList<[*ProductCategory*](backend.productcategory.md)\>\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:252](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L252)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:252](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L252)
 
 ___
 
@@ -264,7 +264,7 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:56](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L56)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:56](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L56)
 
 ___
 
@@ -281,4 +281,4 @@ Name | Type |
 
 **Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)\>
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:157](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/ProductCategoryRepository.ts#L157)
+Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:157](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/ProductCategoryRepository.ts#L157)

@@ -35,7 +35,7 @@
 
 • `Optional` **address**: *undefined* \| *string*
 
-Defined in: [system/core/common/src/types/entities.ts:176](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L176)
+Defined in: [system/core/common/src/types/entities.ts:176](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L176)
 
 ___
 
@@ -43,7 +43,7 @@ ___
 
 • `Optional` **avatar**: *undefined* \| *string*
 
-Defined in: [system/core/common/src/types/entities.ts:173](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L173)
+Defined in: [system/core/common/src/types/entities.ts:173](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L173)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 • `Optional` **bio**: *undefined* \| *string*
 
-Defined in: [system/core/common/src/types/entities.ts:174](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L174)
+Defined in: [system/core/common/src/types/entities.ts:174](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L174)
 
 ___
 
@@ -59,7 +59,7 @@ ___
 
 • `Optional` **createDate**: *undefined* \| Date
 
-Defined in: [system/core/common/src/types/entities.ts:13](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L13)
+Defined in: [system/core/common/src/types/entities.ts:13](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L13)
 
 ___
 
@@ -67,7 +67,7 @@ ___
 
 • **email**: *string*
 
-Defined in: [system/core/common/src/types/entities.ts:171](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L171)
+Defined in: [system/core/common/src/types/entities.ts:171](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L171)
 
 ___
 
@@ -75,7 +75,7 @@ ___
 
 • **fullName**: *string*
 
-Defined in: [system/core/common/src/types/entities.ts:169](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L169)
+Defined in: [system/core/common/src/types/entities.ts:169](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L169)
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 • **id**: *string*
 
-Defined in: [system/core/common/src/types/entities.ts:5](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L5)
+Defined in: [system/core/common/src/types/entities.ts:5](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L5)
 
 ___
 
@@ -91,7 +91,7 @@ ___
 
 • `Optional` **isEnabled**: *undefined* \| *boolean*
 
-Defined in: [system/core/common/src/types/entities.ts:17](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L17)
+Defined in: [system/core/common/src/types/entities.ts:17](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L17)
 
 ___
 
@@ -99,7 +99,7 @@ ___
 
 • `Optional` **pageDescription**: *undefined* \| *string*
 
-Defined in: [system/core/common/src/types/entities.ts:11](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L11)
+Defined in: [system/core/common/src/types/entities.ts:11](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L11)
 
 ___
 
@@ -107,7 +107,7 @@ ___
 
 • `Optional` **pageTitle**: *undefined* \| *string*
 
-Defined in: [system/core/common/src/types/entities.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L9)
+Defined in: [system/core/common/src/types/entities.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L9)
 
 ___
 
@@ -115,7 +115,7 @@ ___
 
 • `Optional` **phone**: *undefined* \| *string*
 
-Defined in: [system/core/common/src/types/entities.ts:175](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L175)
+Defined in: [system/core/common/src/types/entities.ts:175](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L175)
 
 ___
 
@@ -123,7 +123,7 @@ ___
 
 • `Optional` **role**: *undefined* \| *administrator* \| *author* \| *customer* \| *guest*
 
-Defined in: [system/core/common/src/types/entities.ts:177](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L177)
+Defined in: [system/core/common/src/types/entities.ts:177](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L177)
 
 ___
 
@@ -131,7 +131,7 @@ ___
 
 • `Optional` **slug**: *undefined* \| *string*
 
-Defined in: [system/core/common/src/types/entities.ts:7](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L7)
+Defined in: [system/core/common/src/types/entities.ts:7](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L7)
 
 ___
 
@@ -139,4 +139,4 @@ ___
 
 • `Optional` **updateDate**: *undefined* \| Date
 
-Defined in: [system/core/common/src/types/entities.ts:15](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L15)
+Defined in: [system/core/common/src/types/entities.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L15)

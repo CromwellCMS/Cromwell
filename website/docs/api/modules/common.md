@@ -4,6 +4,21 @@
 
 CromwellCMS Shared SDK
 
+Exports common type definitions and helpers used by frontend and backend.
+
+### Install
+```
+npm i @cromwell/core
+```
+
+### Use
+Example of usage
+```ts
+import { getStoreItem, TCmsSettings } from '@cromwell/core';
+
+const settings: TCmsSettings | undefined = getStoreItem('cmsSettings');
+```
+
 ## Table of contents
 
 ### Enumerations
@@ -157,7 +172,7 @@ CromwellCMS Shared SDK
 
 Ƭ **GraphQLPathsType**: { [K in TDBEntity]: TGraphQLNode}
 
-Defined in: [system/core/common/src/types/data.ts:71](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L71)
+Defined in: [system/core/common/src/types/data.ts:71](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L71)
 
 ___
 
@@ -180,7 +195,7 @@ Name | Type |
 `preview`? | *boolean* |
 `previewData`? | *any* |
 
-Defined in: [system/core/common/src/types/blocks.ts:8](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L8)
+Defined in: [system/core/common/src/types/blocks.ts:8](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L8)
 
 ___
 
@@ -197,7 +212,7 @@ Name | Type |
 `path`? | *string* |
 `saveAsModules`? | *string*[] |
 
-Defined in: [system/core/common/src/types/data.ts:320](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L320)
+Defined in: [system/core/common/src/types/data.ts:320](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L320)
 
 ___
 
@@ -205,7 +220,7 @@ ___
 
 Ƭ **TAttributeInput**: *Omit*<TAttribute, TDBAuxiliaryColumns\>
 
-Defined in: [system/core/common/src/types/entities.ts:206](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L206)
+Defined in: [system/core/common/src/types/entities.ts:206](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L206)
 
 ___
 
@@ -220,7 +235,7 @@ Name | Type |
 `key` | *string* |
 `values` | *TAttributeInstanceValue*[] |
 
-Defined in: [system/core/common/src/types/entities.ts:213](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L213)
+Defined in: [system/core/common/src/types/entities.ts:213](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L213)
 
 ___
 
@@ -235,7 +250,7 @@ Name | Type |
 `productVariant`? | *TAttributeProductVariant* |
 `value` | *string* |
 
-Defined in: [system/core/common/src/types/entities.ts:218](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L218)
+Defined in: [system/core/common/src/types/entities.ts:218](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L218)
 
 ___
 
@@ -256,7 +271,7 @@ Name | Type |
 `price`? | *number* |
 `sku`? | *string* |
 
-Defined in: [system/core/common/src/types/entities.ts:223](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L223)
+Defined in: [system/core/common/src/types/entities.ts:223](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L223)
 
 ___
 
@@ -271,7 +286,7 @@ Name | Type |
 `icon`? | *string* |
 `value` | *string* |
 
-Defined in: [system/core/common/src/types/entities.ts:208](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L208)
+Defined in: [system/core/common/src/types/entities.ts:208](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L208)
 
 ___
 
@@ -279,7 +294,7 @@ ___
 
 Ƭ **TAuthRole**: *TUserRole* \| *self* \| *all*
 
-Defined in: [system/core/common/src/types/entities.ts:180](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L180)
+Defined in: [system/core/common/src/types/entities.ts:180](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L180)
 
 ___
 
@@ -299,7 +314,7 @@ Name | Type |
 `slug`? | *string* |
 `updateDate`? | Date |
 
-Defined in: [system/core/common/src/types/entities.ts:3](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L3)
+Defined in: [system/core/common/src/types/entities.ts:3](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L3)
 
 ___
 
@@ -307,7 +322,7 @@ ___
 
 Ƭ **TBasePageEntityInput**: *Omit*<TBasePageEntity, TDBAuxiliaryColumns\>
 
-Defined in: [system/core/common/src/types/entities.ts:22](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L22)
+Defined in: [system/core/common/src/types/entities.ts:22](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L22)
 
 ___
 
@@ -323,7 +338,7 @@ Name | Type |
 `componentDidUpdate`? | () => *void* |
 `getter` | (`block`: *TCromwellBlock*) => React.ReactNode \| *null* |
 
-Defined in: [system/core/common/src/types/blocks.ts:228](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L228)
+Defined in: [system/core/common/src/types/blocks.ts:228](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L228)
 
 ___
 
@@ -354,7 +369,7 @@ Name | Type |
 `updatedAt` | Date |
 `version` | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:410](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L410)
+Defined in: [system/core/common/src/types/data.ts:410](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L410)
 
 ___
 
@@ -371,7 +386,7 @@ Name | Type |
 `packageVersion` | *string* |
 `version` | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:403](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L403)
+Defined in: [system/core/common/src/types/data.ts:403](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L403)
 
 ___
 
@@ -394,7 +409,7 @@ Name | Type |
 `restartServices` | keyof *TServiceVersions*[] |
 `version` | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:390](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L390)
+Defined in: [system/core/common/src/types/data.ts:390](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L390)
 
 ___
 
@@ -425,7 +440,7 @@ Name | Type |
 `useWatch`? | *boolean* |
 `watchPoll`? | *number* |
 
-Defined in: [system/core/common/src/types/data.ts:105](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L105)
+Defined in: [system/core/common/src/types/data.ts:105](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L105)
 
 ___
 
@@ -433,7 +448,7 @@ ___
 
 Ƭ **TCmsEntity**: *TCmsEntityCore* & *TBasePageEntity*
 
-Defined in: [system/core/common/src/types/entities.ts:434](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L434)
+Defined in: [system/core/common/src/types/entities.ts:434](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L434)
 
 ___
 
@@ -464,7 +479,7 @@ Name | Type |
 `version`? | *string* |
 `versions`? | *TServiceVersions* \| *string* |
 
-Defined in: [system/core/common/src/types/entities.ts:364](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L364)
+Defined in: [system/core/common/src/types/entities.ts:364](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L364)
 
 ___
 
@@ -489,7 +504,7 @@ Name | Type |
 `smtpConnectionString`? | *string* |
 `timezone`? | *number* |
 
-Defined in: [system/core/common/src/types/entities.ts:412](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L412)
+Defined in: [system/core/common/src/types/entities.ts:412](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L412)
 
 ___
 
@@ -497,7 +512,7 @@ ___
 
 Ƭ **TCmsSettings**: *TCmsConfig* & *TCmsEntityCore*
 
-Defined in: [system/core/common/src/types/data.ts:127](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L127)
+Defined in: [system/core/common/src/types/data.ts:127](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L127)
 
 ___
 
@@ -519,7 +534,7 @@ Name | Type |
 `salesValue` | *number* |
 `topPageViews` | *TPageStats*[] |
 
-Defined in: [system/core/common/src/types/data.ts:333](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L333)
+Defined in: [system/core/common/src/types/data.ts:333](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L333)
 
 ___
 
@@ -537,7 +552,7 @@ Name | Type |
 `updateAvailable` | *boolean* |
 `updateInfo`? | *TUpdateInfo* |
 
-Defined in: [system/core/common/src/types/data.ts:361](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L361)
+Defined in: [system/core/common/src/types/data.ts:361](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L361)
 
 ___
 
@@ -551,7 +566,7 @@ Name | Type |
 :------ | :------ |
 `data`? | *TProduct* \| *TPost* \| *any* |
 
-Defined in: [system/core/common/src/types/blocks.ts:75](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L75)
+Defined in: [system/core/common/src/types/blocks.ts:75](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L75)
 
 ___
 
@@ -567,7 +582,7 @@ Name | Type |
 `config`? | *TCromwellBlockData* |
 `id` | *string* |
 
-Defined in: [system/core/common/src/types/blocks.ts:69](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L69)
+Defined in: [system/core/common/src/types/blocks.ts:69](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L69)
 
 ___
 
@@ -575,7 +590,7 @@ ___
 
 Ƭ **TCreateUser**: *Omit*<TUser, TDBAuxiliaryColumns\> & { `password?`: *string*  }
 
-Defined in: [system/core/common/src/types/entities.ts:182](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L182)
+Defined in: [system/core/common/src/types/entities.ts:182](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L182)
 
 ___
 
@@ -589,7 +604,7 @@ Name | Default |
 :------ | :------ |
 `TContentBlock` | React.Component |
 
-Defined in: [system/core/common/src/types/blocks.ts:37](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L37)
+Defined in: [system/core/common/src/types/blocks.ts:37](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L37)
 
 ___
 
@@ -639,7 +654,7 @@ Name | Type | Description |
 `text.textElementType`? | keyof React.ReactHTML | - |
 `type`? | *TCromwellBlockType* | Component's type   |
 
-Defined in: [system/core/common/src/types/blocks.ts:81](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L81)
+Defined in: [system/core/common/src/types/blocks.ts:81](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L81)
 
 ___
 
@@ -653,7 +668,7 @@ Name | Default |
 :------ | :------ |
 `TContentBlock` | React.Component |
 
-Defined in: [system/core/common/src/types/blocks.ts:56](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L56)
+Defined in: [system/core/common/src/types/blocks.ts:56](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L56)
 
 ___
 
@@ -661,7 +676,7 @@ ___
 
 Ƭ **TCromwellBlockType**: *container* \| *plugin* \| *text* \| *HTML* \| *image* \| *gallery* \| *list* \| *link*
 
-Defined in: [system/core/common/src/types/blocks.ts:79](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L79)
+Defined in: [system/core/common/src/types/blocks.ts:79](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L79)
 
 ___
 
@@ -684,7 +699,7 @@ Name | Type |
 `scriptStatuses`? | *Record*<string, *failed* \| *ready* \| Promise<*failed* \| *ready*\>\> |
 `setPrefix`? | (`prefix`: *string*) => *void* |
 
-Defined in: [system/core/common/src/types/data.ts:213](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L213)
+Defined in: [system/core/common/src/types/data.ts:213](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L213)
 
 ___
 
@@ -701,7 +716,7 @@ Name | Type |
 `success`? | (`message`: *string*, `options?`: *any*) => *void* |
 `warning`? | (`message`: *string*, `options?`: *any*) => *void* |
 
-Defined in: [system/core/common/src/types/data.ts:260](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L260)
+Defined in: [system/core/common/src/types/data.ts:260](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L260)
 
 ___
 
@@ -715,7 +730,7 @@ Name | Default |
 :------ | :------ |
 `Props` | *any* \| *undefined* |
 
-Defined in: [system/core/common/src/types/blocks.ts:19](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L19)
+Defined in: [system/core/common/src/types/blocks.ts:19](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L19)
 
 ___
 
@@ -737,7 +752,7 @@ Name | Type |
 `themeFooterHtml`? | *string* \| *null* |
 `themeHeadHtml`? | *string* \| *null* |
 
-Defined in: [system/core/common/src/types/blocks.ts:21](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L21)
+Defined in: [system/core/common/src/types/blocks.ts:21](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L21)
 
 ___
 
@@ -775,7 +790,7 @@ Name | Type | Description |
 `userInfo`? | *TUser* | - |
 `webSocketClient`? | *any* | - |
 
-Defined in: [system/core/common/src/types/data.ts:6](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L6)
+Defined in: [system/core/common/src/types/data.ts:6](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L6)
 
 ___
 
@@ -790,7 +805,7 @@ Name | Type |
 `frontendDependencies`? | (*string* \| *TFrontendDependency*)[] |
 `packages` | *string*[] |
 
-Defined in: [system/core/common/src/types/data.ts:298](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L298)
+Defined in: [system/core/common/src/types/data.ts:298](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L298)
 
 ___
 
@@ -808,7 +823,7 @@ Name | Type | Description |
 `tag` | *string* | - |
 `title`? | *string* | - |
 
-Defined in: [system/core/common/src/types/entities.ts:437](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L437)
+Defined in: [system/core/common/src/types/entities.ts:437](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L437)
 
 ___
 
@@ -816,7 +831,7 @@ ___
 
 Ƭ **TDBEntity**: keyof { `Attribute`: *any* ; `CMS`: *any* ; `Generic`: *any* ; `Order`: *any* ; `Plugin`: *any* ; `Post`: *any* ; `PostComment`: *any* ; `Product`: *any* ; `ProductCategory`: *any* ; `ProductReview`: *any* ; `Tag`: *any* ; `Theme`: *any* ; `User`: *any*  }
 
-Defined in: [system/core/common/src/types/data.ts:55](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L55)
+Defined in: [system/core/common/src/types/data.ts:55](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L55)
 
 ___
 
@@ -837,7 +852,7 @@ Name | Type |
 `component` | *React.ComponentType*<Data\> |
 `pluginName` | *string* |
 
-Defined in: [system/core/common/src/types/blocks.ts:51](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L51)
+Defined in: [system/core/common/src/types/blocks.ts:51](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L51)
 
 ___
 
@@ -845,7 +860,7 @@ ___
 
 Ƭ **TDefaultPageName**: *index* \| *category* \| *product* \| *post* \| *tag* \| *pages* \| *account* \| *checkout* \| *blog*
 
-Defined in: [system/core/common/src/types/data.ts:161](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L161)
+Defined in: [system/core/common/src/types/data.ts:161](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L161)
 
 ___
 
@@ -860,7 +875,7 @@ Name | Type |
 `all`? | *boolean* |
 `ids` | *string*[] |
 
-Defined in: [system/core/common/src/types/entities.ts:448](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L448)
+Defined in: [system/core/common/src/types/entities.ts:448](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L448)
 
 ___
 
@@ -876,7 +891,7 @@ Name | Type |
 `moduleName`? | *string* |
 `usedName` | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:314](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L314)
+Defined in: [system/core/common/src/types/data.ts:314](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L314)
 
 ___
 
@@ -884,7 +899,7 @@ ___
 
 Ƭ **TFilteredProductList**: *TPagedList*<TProduct\> & { `filterMeta`: *TProductFilterMeta*  }
 
-Defined in: [system/core/common/src/types/entities.ts:108](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L108)
+Defined in: [system/core/common/src/types/entities.ts:108](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L108)
 
 ___
 
@@ -900,7 +915,7 @@ Name | Type |
 `meta`? | *TScriptMetaInfo* |
 `source`? | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:247](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L247)
+Defined in: [system/core/common/src/types/data.ts:247](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L247)
 
 ___
 
@@ -921,7 +936,7 @@ Name | Type |
 `name` | *string* |
 `version`? | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:303](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L303)
+Defined in: [system/core/common/src/types/data.ts:303](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L303)
 
 ___
 
@@ -946,7 +961,7 @@ Name | Type |
 `instanceSettings`? | TInstanceSettings |
 `pluginName` | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:438](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L438)
+Defined in: [system/core/common/src/types/data.ts:438](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L438)
 
 ___
 
@@ -990,7 +1005,7 @@ Name | Type | Description |
 `width`? | *number* | - |
 `zoom`? | *boolean* | - |
 
-Defined in: [system/core/common/src/types/blocks.ts:184](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L184)
+Defined in: [system/core/common/src/types/blocks.ts:184](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L184)
 
 ___
 
@@ -1017,7 +1032,7 @@ Name | Type |
 
 **Returns:** *Promise*<P\>
 
-Defined in: [system/core/common/src/types/blocks.ts:14](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L14)
+Defined in: [system/core/common/src/types/blocks.ts:14](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L14)
 
 ___
 
@@ -1037,7 +1052,7 @@ Name | Type |
 `getOneBySlug` | *string* |
 `update` | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:73](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L73)
+Defined in: [system/core/common/src/types/data.ts:73](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L73)
 
 ___
 
@@ -1055,7 +1070,7 @@ Name | Type |
 `src` | *string* |
 `thumb`? | *string* |
 
-Defined in: [system/core/common/src/types/blocks.ts:176](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/blocks.ts#L176)
+Defined in: [system/core/common/src/types/blocks.ts:176](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/blocks.ts#L176)
 
 ___
 
@@ -1063,7 +1078,7 @@ ___
 
 Ƭ **TLogLevel**: *none* \| *errors-only* \| *errors-warnings* \| *minimal* \| *detailed* \| *all*
 
-Defined in: [system/core/common/src/types/data.ts:257](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L257)
+Defined in: [system/core/common/src/types/data.ts:257](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L257)
 
 ___
 
@@ -1071,7 +1086,7 @@ ___
 
 Ƭ **TModuleConfig**: *TThemeConfig* & *TPluginConfig*
 
-Defined in: [system/core/common/src/types/data.ts:211](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L211)
+Defined in: [system/core/common/src/types/data.ts:211](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L211)
 
 ___
 
@@ -1088,7 +1103,7 @@ Name | Type |
 `pageLink`? | *string* |
 `type` | *info* \| *warning* \| *error* |
 
-Defined in: [system/core/common/src/types/data.ts:381](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L381)
+Defined in: [system/core/common/src/types/data.ts:381](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L381)
 
 ___
 
@@ -1096,7 +1111,7 @@ ___
 
 Ƭ **TOrder**: TOrderCore & *TBasePageEntity*
 
-Defined in: [system/core/common/src/types/entities.ts:279](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L279)
+Defined in: [system/core/common/src/types/entities.ts:279](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L279)
 
 ___
 
@@ -1116,7 +1131,7 @@ Name | Type |
 `orderId`? | *string* |
 `status`? | *string* |
 
-Defined in: [system/core/common/src/types/entities.ts:296](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L296)
+Defined in: [system/core/common/src/types/entities.ts:296](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L296)
 
 ___
 
@@ -1124,7 +1139,7 @@ ___
 
 Ƭ **TOrderInput**: TOrderCore & *TBasePageEntityInput*
 
-Defined in: [system/core/common/src/types/entities.ts:281](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L281)
+Defined in: [system/core/common/src/types/entities.ts:281](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L281)
 
 ___
 
@@ -1155,7 +1170,7 @@ Name | Type |
 `type`? | *plugin* \| *theme* |
 `version`? | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:277](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L277)
+Defined in: [system/core/common/src/types/data.ts:277](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L277)
 
 ___
 
@@ -1175,7 +1190,7 @@ Name | Type |
 `peerDependencies`? | *Record*<string, string\> |
 `version`? | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:267](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L267)
+Defined in: [system/core/common/src/types/data.ts:267](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L267)
 
 ___
 
@@ -1183,7 +1198,7 @@ ___
 
 Ƭ **TPageConfig**: *TPageInfo* & { `adminPanelProps?`: *any* ; `footerHtml?`: *string* ; `headHtml?`: *string* ; `modifications`: *TCromwellBlockData*[] ; `pageCustomConfig?`: *Record*<string, any\>  }
 
-Defined in: [system/core/common/src/types/data.ts:191](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L191)
+Defined in: [system/core/common/src/types/data.ts:191](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L191)
 
 ___
 
@@ -1202,7 +1217,7 @@ Name | Type | Description |
 `route` | *string* | Page's url/slug. Can be: 1. Filesystem relative path of page's react component without extension. If file name is "./post/[slug].tsx" then route must be "post/[slug]" 2. Route of a virtual page (generic page). Responsible component is "pages/[slug].js" , route must in format: "pages/any-slug"   |
 `title`? | *string* | Meta title (SEO)   |
 
-Defined in: [system/core/common/src/types/data.ts:168](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L168)
+Defined in: [system/core/common/src/types/data.ts:168](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L168)
 
 ___
 
@@ -1222,7 +1237,7 @@ Name | Type |
 `tagSlug`? | *string* |
 `views`? | *number* |
 
-Defined in: [system/core/common/src/types/data.ts:345](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L345)
+Defined in: [system/core/common/src/types/data.ts:345](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L345)
 
 ___
 
@@ -1243,7 +1258,7 @@ Name | Type |
 `elements`? | Entity[] |
 `pagedMeta`? | *TPagedMeta* |
 
-Defined in: [system/core/common/src/types/data.ts:85](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L85)
+Defined in: [system/core/common/src/types/data.ts:85](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L85)
 
 ___
 
@@ -1260,7 +1275,7 @@ Name | Type |
 `totalElements`? | *number* |
 `totalPages`? | *number* |
 
-Defined in: [system/core/common/src/types/data.ts:97](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L97)
+Defined in: [system/core/common/src/types/data.ts:97](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L97)
 
 ___
 
@@ -1283,7 +1298,7 @@ Name | Type |
 `pageNumber`? | *number* |
 `pageSize`? | *number* |
 
-Defined in: [system/core/common/src/types/data.ts:90](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L90)
+Defined in: [system/core/common/src/types/data.ts:90](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L90)
 
 ___
 
@@ -1300,7 +1315,7 @@ Name | Type |
 `paths` | { `basePath?`: *string* ; `importedStyles?`: *string*[] ; `localDepsBundle?`: *string* ; `localPath?`: *string* ; `pageName`: *string* ; `srcFullPath?`: *string*  }[] |
 `rootBuildDir`? | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:233](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L233)
+Defined in: [system/core/common/src/types/data.ts:233](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L233)
 
 ___
 
@@ -1315,7 +1330,7 @@ Name | Type |
 `primaryColor`? | *string* |
 `secondaryColor`? | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:163](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L163)
+Defined in: [system/core/common/src/types/data.ts:163](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L163)
 
 ___
 
@@ -1334,7 +1349,7 @@ Name | Type | Description |
 `frontendModule`? | *string* | - |
 `rollupConfig`? | () => *TRollupConfig* \| *Promise*<TRollupConfig\> | Configs for Rollup   |
 
-Defined in: [system/core/common/src/types/data.ts:201](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L201)
+Defined in: [system/core/common/src/types/data.ts:201](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L201)
 
 ___
 
@@ -1342,7 +1357,7 @@ ___
 
 Ƭ **TPluginEntity**: TPluginEntityCore & *TBasePageEntity*
 
-Defined in: [system/core/common/src/types/entities.ts:356](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L356)
+Defined in: [system/core/common/src/types/entities.ts:356](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L356)
 
 ___
 
@@ -1350,7 +1365,7 @@ ___
 
 Ƭ **TPluginEntityInput**: TPluginEntityCore & *TBasePageEntityInput*
 
-Defined in: [system/core/common/src/types/entities.ts:358](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L358)
+Defined in: [system/core/common/src/types/entities.ts:358](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L358)
 
 ___
 
@@ -1364,7 +1379,7 @@ Name | Type |
 :------ | :------ |
 `name` | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:253](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L253)
+Defined in: [system/core/common/src/types/data.ts:253](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L253)
 
 ___
 
@@ -1385,7 +1400,7 @@ Name | Type |
 `globalSettings`? | TSettings |
 `pluginName` | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:433](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L433)
+Defined in: [system/core/common/src/types/data.ts:433](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L433)
 
 ___
 
@@ -1393,7 +1408,7 @@ ___
 
 Ƭ **TPostComment**: TPostCommentCore & *TBasePageEntity*
 
-Defined in: [system/core/common/src/types/entities.ts:318](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L318)
+Defined in: [system/core/common/src/types/entities.ts:318](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L318)
 
 ___
 
@@ -1401,7 +1416,7 @@ ___
 
 Ƭ **TPostCommentInput**: TPostCommentCore & *TBasePageEntityInput*
 
-Defined in: [system/core/common/src/types/entities.ts:320](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L320)
+Defined in: [system/core/common/src/types/entities.ts:320](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L320)
 
 ___
 
@@ -1418,7 +1433,7 @@ Name | Type |
 `tagIds`? | *string*[] |
 `titleSearch`? | *string* |
 
-Defined in: [system/core/common/src/types/entities.ts:148](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L148)
+Defined in: [system/core/common/src/types/entities.ts:148](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L148)
 
 ___
 
@@ -1426,7 +1441,7 @@ ___
 
 Ƭ **TPostInput**: *Omit*<TPost, TDBAuxiliaryColumns \| *author* \| *tags*\> & { `authorId`: *string* ; `tagIds?`: *string*[] \| *null*  }
 
-Defined in: [system/core/common/src/types/entities.ts:143](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L143)
+Defined in: [system/core/common/src/types/entities.ts:143](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L143)
 
 ___
 
@@ -1434,7 +1449,7 @@ ___
 
 Ƭ **TProductCategory**: TProductCategoryCore & *TBasePageEntity*
 
-Defined in: [system/core/common/src/types/entities.ts:44](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L44)
+Defined in: [system/core/common/src/types/entities.ts:44](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L44)
 
 ___
 
@@ -1448,7 +1463,7 @@ Name | Type |
 :------ | :------ |
 `nameSearch`? | *string* |
 
-Defined in: [system/core/common/src/types/entities.ts:50](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L50)
+Defined in: [system/core/common/src/types/entities.ts:50](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L50)
 
 ___
 
@@ -1456,7 +1471,7 @@ ___
 
 Ƭ **TProductCategoryInput**: *TBasePageEntityInput* & *Omit*<TProductCategoryCore, *children* \| *parent* \| *products*\> & { `parentId?`: *string*  }
 
-Defined in: [system/core/common/src/types/entities.ts:46](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L46)
+Defined in: [system/core/common/src/types/entities.ts:46](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L46)
 
 ___
 
@@ -1473,7 +1488,7 @@ Name | Type |
 `minPrice`? | *number* |
 `nameSearch`? | *string* |
 
-Defined in: [system/core/common/src/types/entities.ts:97](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L97)
+Defined in: [system/core/common/src/types/entities.ts:97](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L97)
 
 ___
 
@@ -1488,7 +1503,7 @@ Name | Type |
 `key` | *string* |
 `values` | *string*[] |
 
-Defined in: [system/core/common/src/types/entities.ts:103](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L103)
+Defined in: [system/core/common/src/types/entities.ts:103](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L103)
 
 ___
 
@@ -1503,7 +1518,7 @@ Name | Type |
 `maxPrice`? | *number* |
 `minPrice`? | *number* |
 
-Defined in: [system/core/common/src/types/entities.ts:112](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L112)
+Defined in: [system/core/common/src/types/entities.ts:112](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L112)
 
 ___
 
@@ -1511,7 +1526,7 @@ ___
 
 Ƭ **TProductInput**: *Omit*<TProduct, TDBAuxiliaryColumns \| *categories* \| *rating* \| *reviews*\> & { `categoryIds?`: *string*[]  }
 
-Defined in: [system/core/common/src/types/entities.ts:93](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L93)
+Defined in: [system/core/common/src/types/entities.ts:93](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L93)
 
 ___
 
@@ -1526,7 +1541,7 @@ Name | Type |
 `average`? | *number* |
 `reviewsNumber`? | *number* |
 
-Defined in: [system/core/common/src/types/entities.ts:86](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L86)
+Defined in: [system/core/common/src/types/entities.ts:86](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L86)
 
 ___
 
@@ -1534,7 +1549,7 @@ ___
 
 Ƭ **TProductReview**: TProductReviewCore & *TBasePageEntity*
 
-Defined in: [system/core/common/src/types/entities.ts:248](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L248)
+Defined in: [system/core/common/src/types/entities.ts:248](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L248)
 
 ___
 
@@ -1551,7 +1566,7 @@ Name | Type |
 `userId`? | *string* |
 `userName`? | *string* |
 
-Defined in: [system/core/common/src/types/entities.ts:252](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L252)
+Defined in: [system/core/common/src/types/entities.ts:252](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L252)
 
 ___
 
@@ -1559,7 +1574,7 @@ ___
 
 Ƭ **TProductReviewInput**: TProductReviewCore & *TBasePageEntityInput*
 
-Defined in: [system/core/common/src/types/entities.ts:250](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L250)
+Defined in: [system/core/common/src/types/entities.ts:250](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L250)
 
 ___
 
@@ -1578,7 +1593,7 @@ Name | Type |
 `main` | *Record*<string, any\> |
 `themePages`? | *Record*<string, any\> |
 
-Defined in: [system/core/common/src/types/data.ts:129](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L129)
+Defined in: [system/core/common/src/types/data.ts:129](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L129)
 
 ___
 
@@ -1594,7 +1609,7 @@ Name | Type |
 `orders` | *number* |
 `salesValue` | *number* |
 
-Defined in: [system/core/common/src/types/data.ts:355](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L355)
+Defined in: [system/core/common/src/types/data.ts:355](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L355)
 
 ___
 
@@ -1610,7 +1625,7 @@ Name | Type |
 `import`? | *chunks* \| *lib* |
 `name` | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:226](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L226)
+Defined in: [system/core/common/src/types/data.ts:226](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L226)
 
 ___
 
@@ -1633,7 +1648,7 @@ Name | Type |
 `status`? | *string* |
 `userId`? | *string* |
 
-Defined in: [system/core/common/src/types/entities.ts:283](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L283)
+Defined in: [system/core/common/src/types/entities.ts:283](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L283)
 
 ___
 
@@ -1650,7 +1665,7 @@ Name | Type |
 `renderer`? | *number* |
 `server`? | *number* |
 
-Defined in: [system/core/common/src/types/entities.ts:427](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L427)
+Defined in: [system/core/common/src/types/entities.ts:427](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L427)
 
 ___
 
@@ -1666,7 +1681,7 @@ Name | Type |
 `pickedAttributes`? | *Record*<string, string[]\> |
 `product`? | *TProduct* |
 
-Defined in: [system/core/common/src/types/data.ts:327](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L327)
+Defined in: [system/core/common/src/types/data.ts:327](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L327)
 
 ___
 
@@ -1674,7 +1689,7 @@ ___
 
 Ƭ **TTagInput**: *Omit*<TTag, TDBAuxiliaryColumns\>
 
-Defined in: [system/core/common/src/types/entities.ts:163](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L163)
+Defined in: [system/core/common/src/types/entities.ts:163](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L163)
 
 ___
 
@@ -1697,7 +1712,7 @@ Name | Type | Description |
 `rollupConfig`? | () => *TRollupConfig* \| *Promise*<TRollupConfig\> | Configs for Rollup   |
 `themeCustomConfig`? | *Record*<string, any\> | Custom config that will be available at every page in the Store inside pageConfig props   |
 
-Defined in: [system/core/common/src/types/data.ts:138](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L138)
+Defined in: [system/core/common/src/types/data.ts:138](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L138)
 
 ___
 
@@ -1705,7 +1720,7 @@ ___
 
 Ƭ **TThemeEntity**: TThemeEntityCore & *TBasePageEntity*
 
-Defined in: [system/core/common/src/types/entities.ts:337](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L337)
+Defined in: [system/core/common/src/types/entities.ts:337](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L337)
 
 ___
 
@@ -1713,7 +1728,7 @@ ___
 
 Ƭ **TThemeEntityInput**: TThemeEntityCore & *TBasePageEntityInput*
 
-Defined in: [system/core/common/src/types/entities.ts:339](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L339)
+Defined in: [system/core/common/src/types/entities.ts:339](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L339)
 
 ___
 
@@ -1735,7 +1750,7 @@ Name | Type |
 `packageVersion` | *string* |
 `version` | *string* |
 
-Defined in: [system/core/common/src/types/data.ts:369](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/data.ts#L369)
+Defined in: [system/core/common/src/types/data.ts:369](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/data.ts#L369)
 
 ___
 
@@ -1743,7 +1758,7 @@ ___
 
 Ƭ **TUpdateUser**: *Omit*<TUser, TDBAuxiliaryColumns\>
 
-Defined in: [system/core/common/src/types/entities.ts:186](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L186)
+Defined in: [system/core/common/src/types/entities.ts:186](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L186)
 
 ___
 
@@ -1761,7 +1776,7 @@ Name | Type |
 `phone`? | *string* |
 `role`? | *TUserRole* |
 
-Defined in: [system/core/common/src/types/entities.ts:188](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L188)
+Defined in: [system/core/common/src/types/entities.ts:188](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L188)
 
 ___
 
@@ -1769,7 +1784,7 @@ ___
 
 Ƭ **TUserRole**: *administrator* \| *author* \| *customer* \| *guest*
 
-Defined in: [system/core/common/src/types/entities.ts:179](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/types/entities.ts#L179)
+Defined in: [system/core/common/src/types/entities.ts:179](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/types/entities.ts#L179)
 
 ## Variables
 
@@ -1777,7 +1792,7 @@ Defined in: [system/core/common/src/types/entities.ts:179](https://github.com/Cr
 
 • `Const` **GraphQLPaths**: { [K in Exclude<TDBEntity, "Theme" \| "Plugin" \| "PostComment" \| "CMS"\>]: TGraphQLNode}
 
-Defined in: [system/core/common/src/constants.ts:17](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L17)
+Defined in: [system/core/common/src/constants.ts:17](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L17)
 
 ___
 
@@ -1785,7 +1800,7 @@ ___
 
 • `Const` **apiV1BaseRoute**: *api/v1*= 'api/v1'
 
-Defined in: [system/core/common/src/constants.ts:119](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L119)
+Defined in: [system/core/common/src/constants.ts:119](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L119)
 
 ___
 
@@ -1793,7 +1808,7 @@ ___
 
 • `Const` **currentApiVersion**: *1.0.0*= '1.0.0'
 
-Defined in: [system/core/common/src/constants.ts:118](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L118)
+Defined in: [system/core/common/src/constants.ts:118](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L118)
 
 ___
 
@@ -1801,7 +1816,7 @@ ___
 
 • `Const` **genericPageName**: *pages/[slug]*= 'pages/[slug]'
 
-Defined in: [system/core/common/src/constants.ts:190](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L190)
+Defined in: [system/core/common/src/constants.ts:190](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L190)
 
 ___
 
@@ -1809,7 +1824,7 @@ ___
 
 • `Const` **logLevels**: *string*[]
 
-Defined in: [system/core/common/src/constants.ts:171](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L171)
+Defined in: [system/core/common/src/constants.ts:171](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L171)
 
 ___
 
@@ -1828,7 +1843,7 @@ Name | Type |
 `getFrontendUrl` | () => *undefined* \| *string* |
 `getMainApiUrl` | () => *undefined* \| *string* |
 
-Defined in: [system/core/common/src/constants.ts:151](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L151)
+Defined in: [system/core/common/src/constants.ts:151](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L151)
 
 ## Functions
 
@@ -1850,7 +1865,7 @@ Name | Type |
 
 **Returns:** *undefined* \| *TCromwellBlock*<TContentBlock\>
 
-Defined in: [system/core/common/src/GlobalStore.ts:108](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L108)
+Defined in: [system/core/common/src/GlobalStore.ts:108](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L108)
 
 ___
 
@@ -1860,7 +1875,7 @@ ___
 
 **Returns:** *undefined* \| *TCmsSettings*
 
-Defined in: [system/core/common/src/GlobalStore.ts:69](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L69)
+Defined in: [system/core/common/src/GlobalStore.ts:69](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L69)
 
 ___
 
@@ -1876,7 +1891,7 @@ Name | Type |
 
 **Returns:** *undefined* \| *ComponentClass*<*TCommonComponentProps* & *Record*<string, any\>, any\> \| *FunctionComponent*<*TCommonComponentProps* & *Record*<string, any\>\>
 
-Defined in: [system/core/common/src/GlobalStore.ts:93](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L93)
+Defined in: [system/core/common/src/GlobalStore.ts:93](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L93)
 
 ___
 
@@ -1886,7 +1901,7 @@ ___
 
 **Returns:** *undefined* \| *Record*<string, any\>
 
-Defined in: [system/core/common/src/GlobalStore.ts:64](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L64)
+Defined in: [system/core/common/src/GlobalStore.ts:64](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L64)
 
 ___
 
@@ -1902,7 +1917,7 @@ Name | Type | Default value |
 
 **Returns:** *string*
 
-Defined in: [system/core/common/src/constants.ts:185](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L185)
+Defined in: [system/core/common/src/constants.ts:185](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L185)
 
 ___
 
@@ -1912,7 +1927,7 @@ ___
 
 **Returns:** *TCromwellStore*
 
-Defined in: [system/core/common/src/GlobalStore.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L18)
+Defined in: [system/core/common/src/GlobalStore.ts:18](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L18)
 
 ___
 
@@ -1934,7 +1949,7 @@ Name | Type |
 
 **Returns:** *TCromwellStore*[K]
 
-Defined in: [system/core/common/src/GlobalStore.ts:27](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L27)
+Defined in: [system/core/common/src/GlobalStore.ts:27](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L27)
 
 ___
 
@@ -1944,7 +1959,7 @@ ___
 
 **Returns:** *undefined* \| *Record*<string, any\>
 
-Defined in: [system/core/common/src/GlobalStore.ts:74](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L74)
+Defined in: [system/core/common/src/GlobalStore.ts:74](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L74)
 
 ___
 
@@ -1960,7 +1975,7 @@ Name | Type |
 
 **Returns:** *any*
 
-Defined in: [system/core/common/src/GlobalStore.ts:78](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L78)
+Defined in: [system/core/common/src/GlobalStore.ts:78](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L78)
 
 ___
 
@@ -1970,7 +1985,7 @@ ___
 
 **Returns:** *boolean*
 
-Defined in: [system/core/common/src/constants.ts:116](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L116)
+Defined in: [system/core/common/src/constants.ts:116](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L116)
 
 ___
 
@@ -1988,7 +2003,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/common/src/constants.ts:181](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L181)
+Defined in: [system/core/common/src/constants.ts:181](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L181)
 
 ___
 
@@ -2004,7 +2019,7 @@ Name | Type |
 
 **Returns:** *boolean*
 
-Defined in: [system/core/common/src/constants.ts:173](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L173)
+Defined in: [system/core/common/src/constants.ts:173](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L173)
 
 ___
 
@@ -2027,7 +2042,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/common/src/GlobalStore.ts:42](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L42)
+Defined in: [system/core/common/src/GlobalStore.ts:42](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L42)
 
 ___
 
@@ -2050,7 +2065,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/common/src/GlobalStore.ts:56](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L56)
+Defined in: [system/core/common/src/GlobalStore.ts:56](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L56)
 
 ___
 
@@ -2067,7 +2082,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/common/src/GlobalStore.ts:99](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L99)
+Defined in: [system/core/common/src/GlobalStore.ts:99](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L99)
 
 ___
 
@@ -2090,7 +2105,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/common/src/GlobalStore.ts:31](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/GlobalStore.ts#L31)
+Defined in: [system/core/common/src/GlobalStore.ts:31](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/GlobalStore.ts#L31)
 
 ___
 
@@ -2106,4 +2121,4 @@ Name | Type |
 
 **Returns:** *Promise*<unknown\>
 
-Defined in: [system/core/common/src/constants.ts:192](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/common/src/constants.ts#L192)
+Defined in: [system/core/common/src/constants.ts:192](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/common/src/constants.ts#L192)

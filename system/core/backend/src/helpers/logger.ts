@@ -6,20 +6,6 @@ import { getErrorLogPath } from './paths';
 
 const colors: any = colorsdef;
 
-
-export const serverLogFor = (level: TLogLevel, msg: string,
-    type?: 'Log' | 'Warning' | 'Error', func?: (msg: string) => any) => {
-
-    if (type === 'Warning') {
-        msg = colors.brightYellow('Warning: ') + msg;
-    }
-    if (type === 'Error') {
-        msg = colors.brightRed('Error: ') + msg;
-    }
-    logFor(level, msg, func);
-}
-
-
 const { combine, timestamp, printf } = winston.format;
 const loggerFormat = printf(({ message, timestamp }) => {
     return `[${timestamp}] ${message}`;

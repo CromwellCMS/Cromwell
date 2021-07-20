@@ -50,7 +50,7 @@ Inherited from: [BasePageInput](backend.basepageinput.md)
 
 • `Optional` **defaultSettings**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:25](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/PluginInput.ts#L25)
+Defined in: [system/core/backend/src/inputs/PluginInput.ts:25](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/PluginInput.ts#L25)
 
 ___
 
@@ -58,7 +58,7 @@ ___
 
 • `Optional` **hasAdminBundle**: *undefined* \| *boolean*
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:19](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/PluginInput.ts#L19)
+Defined in: [system/core/backend/src/inputs/PluginInput.ts:19](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/PluginInput.ts#L19)
 
 ___
 
@@ -68,7 +68,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L18)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L18)
 
 ___
 
@@ -76,7 +76,7 @@ ___
 
 • **isInstalled**: *boolean*
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:16](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/PluginInput.ts#L16)
+Defined in: [system/core/backend/src/inputs/PluginInput.ts:16](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/PluginInput.ts#L16)
 
 ___
 
@@ -84,7 +84,7 @@ ___
 
 • `Optional` **moduleInfo**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:28](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/PluginInput.ts#L28)
+Defined in: [system/core/backend/src/inputs/PluginInput.ts:28](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/PluginInput.ts#L28)
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 • **name**: *string*
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:10](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/PluginInput.ts#L10)
+Defined in: [system/core/backend/src/inputs/PluginInput.ts:10](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/PluginInput.ts#L10)
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L15)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L15)
 
 ___
 
@@ -112,7 +112,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L12)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L12)
 
 ___
 
@@ -120,7 +120,7 @@ ___
 
 • `Optional` **settings**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:22](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/PluginInput.ts#L22)
+Defined in: [system/core/backend/src/inputs/PluginInput.ts:22](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/PluginInput.ts#L22)
 
 ___
 
@@ -130,7 +130,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L9)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L9)
 
 ___
 
@@ -138,4 +138,4 @@ ___
 
 • `Optional` **title**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:13](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/PluginInput.ts#L13)
+Defined in: [system/core/backend/src/inputs/PluginInput.ts:13](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/PluginInput.ts#L13)

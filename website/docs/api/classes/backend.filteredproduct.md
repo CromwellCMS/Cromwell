@@ -34,7 +34,7 @@
 
 • `Optional` **elements**: *undefined* \| [*Product*](backend.product.md)[]
 
-Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:21](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/FilteredProduct.ts#L21)
+Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:21](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/FilteredProduct.ts#L21)
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 • **filterMeta**: TProductFilterMeta
 
-Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:24](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/FilteredProduct.ts#L24)
+Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:24](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/FilteredProduct.ts#L24)
 
 ___
 
@@ -50,4 +50,4 @@ ___
 
 • `Optional` **pagedMeta**: *undefined* \| [*PagedMeta*](backend.pagedmeta.md)
 
-Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/FilteredProduct.ts#L18)
+Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:18](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/FilteredProduct.ts#L18)

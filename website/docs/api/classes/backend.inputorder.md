@@ -57,7 +57,7 @@ Inherited from: [BasePageInput](backend.basepageinput.md)
 
 • `Optional` **cart**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:15](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L15)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L15)
 
 ___
 
@@ -65,7 +65,7 @@ ___
 
 • `Optional` **cartOldTotalPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:24](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L24)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:24](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L24)
 
 ___
 
@@ -73,7 +73,7 @@ ___
 
 • `Optional` **cartTotalPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:21](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L21)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:21](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L21)
 
 ___
 
@@ -81,7 +81,7 @@ ___
 
 • `Optional` **customerAddress**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:42](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L42)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:42](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L42)
 
 ___
 
@@ -89,7 +89,7 @@ ___
 
 • `Optional` **customerComment**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:48](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L48)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:48](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L48)
 
 ___
 
@@ -97,7 +97,7 @@ ___
 
 • `Optional` **customerEmail**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:39](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L39)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:39](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L39)
 
 ___
 
@@ -105,7 +105,7 @@ ___
 
 • `Optional` **customerName**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:33](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L33)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:33](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L33)
 
 ___
 
@@ -113,7 +113,7 @@ ___
 
 • `Optional` **customerPhone**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:36](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L36)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:36](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L36)
 
 ___
 
@@ -123,7 +123,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L18)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L18)
 
 ___
 
@@ -131,7 +131,7 @@ ___
 
 • `Optional` **orderTotalPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L18)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:18](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L18)
 
 ___
 
@@ -141,7 +141,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L15)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L15)
 
 ___
 
@@ -151,7 +151,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L12)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L12)
 
 ___
 
@@ -159,7 +159,7 @@ ___
 
 • `Optional` **shippingMethod**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:45](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L45)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:45](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L45)
 
 ___
 
@@ -167,7 +167,7 @@ ___
 
 • `Optional` **shippingPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:27](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L27)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:27](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L27)
 
 ___
 
@@ -177,7 +177,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L9)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L9)
 
 ___
 
@@ -185,7 +185,7 @@ ___
 
 • `Optional` **status**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L9)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L9)
 
 ___
 
@@ -193,7 +193,7 @@ ___
 
 • **totalQnt**: *number*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:30](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L30)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:30](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L30)
 
 ___
 
@@ -201,4 +201,4 @@ ___
 
 • `Optional` **userId**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/InputOrder.ts:12](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/InputOrder.ts#L12)
+Defined in: [system/core/backend/src/inputs/InputOrder.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/InputOrder.ts#L12)

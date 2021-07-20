@@ -18,3 +18,10 @@
     align-items: center;
     cursor: pointer;
 }
+
+.searchBox {
+    background-color: #fff;
+    padding: 10px;
+    display: inline-block;
+    border-radius: 10px;
+}

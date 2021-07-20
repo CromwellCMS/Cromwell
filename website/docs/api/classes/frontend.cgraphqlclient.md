@@ -108,7 +108,7 @@ CGraphQLClient - CromwellCMS GraphQL API Client
 
 • **AttributeFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:711](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L711)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:711](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L711)
 
 ___
 
@@ -116,7 +116,7 @@ ___
 
 • **OrderFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:866](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L866)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:866](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L866)
 
 ___
 
@@ -124,7 +124,7 @@ ___
 
 • **PagedMetaFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:210](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L210)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:210](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L210)
 
 ___
 
@@ -132,7 +132,7 @@ ___
 
 • **PluginFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:934](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L934)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:934](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L934)
 
 ___
 
@@ -140,7 +140,7 @@ ___
 
 • **PostFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:783](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L783)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:783](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L783)
 
 ___
 
@@ -148,7 +148,7 @@ ___
 
 • **ProductCategoryFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:650](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L650)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:650](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L650)
 
 ___
 
@@ -156,7 +156,7 @@ ___
 
 • **ProductFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:532](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L532)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:532](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L532)
 
 ___
 
@@ -164,7 +164,7 @@ ___
 
 • **ProductReviewFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:753](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L753)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:753](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L753)
 
 ___
 
@@ -172,7 +172,7 @@ ___
 
 • **TagFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:906](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L906)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:906](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L906)
 
 ___
 
@@ -180,7 +180,7 @@ ___
 
 • **ThemeFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:956](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L956)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:956](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L956)
 
 ___
 
@@ -188,7 +188,7 @@ ___
 
 • **UserFragment**: DocumentNode
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:832](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L832)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:832](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L832)
 
 ___
 
@@ -210,9 +210,9 @@ Name | Type |
 
 **Returns:** *Promise*<TAttribute\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L327)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:731](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L731)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:731](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L731)
 
 ___
 
@@ -234,9 +234,9 @@ Name | Type |
 
 **Returns:** *Promise*<TOrder\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L327)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:895](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L895)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:895](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L895)
 
 ___
 
@@ -258,9 +258,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPost\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L327)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:817](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L817)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:817](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L817)
 
 ___
 
@@ -282,9 +282,9 @@ Name | Type |
 
 **Returns:** *Promise*<TProduct\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L327)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:575](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L575)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:575](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L575)
 
 ___
 
@@ -306,9 +306,9 @@ Name | Type |
 
 **Returns:** *Promise*<TProductCategory\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L327)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:677](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L677)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:677](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L677)
 
 ___
 
@@ -330,9 +330,9 @@ Name | Type |
 
 **Returns:** *Promise*<TProductReview\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L327)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:772](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L772)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:772](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L772)
 
 ___
 
@@ -354,9 +354,9 @@ Name | Type |
 
 **Returns:** *Promise*<TTag\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L327)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:927](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L927)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:927](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L927)
 
 ___
 
@@ -378,9 +378,9 @@ Name | Type |
 
 **Returns:** *Promise*<TUser\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L327)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:855](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L855)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:855](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L855)
 
 ___
 
@@ -400,9 +400,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L351)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:732](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L732)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:732](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L732)
 
 ___
 
@@ -423,9 +423,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L385)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:898](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L898)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:898](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L898)
 
 ___
 
@@ -446,9 +446,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L385)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:820](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L820)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:820](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L820)
 
 ___
 
@@ -469,9 +469,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L385)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:680](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L680)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:680](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L680)
 
 ___
 
@@ -492,9 +492,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L385)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:775](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L775)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:775](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L775)
 
 ___
 
@@ -515,9 +515,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L385)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:578](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L578)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:578](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L578)
 
 ___
 
@@ -538,9 +538,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L385)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:858](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L858)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:858](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L858)
 
 ___
 
@@ -560,9 +560,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L368)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:897](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L897)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:897](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L897)
 
 ___
 
@@ -582,9 +582,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L368)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:819](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L819)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:819](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L819)
 
 ___
 
@@ -604,9 +604,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L368)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:679](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L679)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:679](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L679)
 
 ___
 
@@ -626,9 +626,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L368)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:774](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L774)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:774](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L774)
 
 ___
 
@@ -648,9 +648,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L368)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:577](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L577)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:577](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L577)
 
 ___
 
@@ -670,9 +670,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L368)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:929](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L929)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:929](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L929)
 
 ___
 
@@ -692,9 +692,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L368)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:857](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L857)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:857](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L857)
 
 ___
 
@@ -714,9 +714,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L351)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:896](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L896)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:896](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L896)
 
 ___
 
@@ -736,9 +736,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L351)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:818](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L818)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:818](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L818)
 
 ___
 
@@ -758,9 +758,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L351)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:576](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L576)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:576](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L576)
 
 ___
 
@@ -780,9 +780,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L351)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:678](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L678)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:678](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L678)
 
 ___
 
@@ -802,9 +802,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L351)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:773](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L773)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:773](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L773)
 
 ___
 
@@ -824,9 +824,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L351)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:928](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L928)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:928](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L928)
 
 ___
 
@@ -846,9 +846,9 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L351)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:856](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L856)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:856](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L856)
 
 ___
 
@@ -870,9 +870,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TAttribute\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L253)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:729](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L729)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:729](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L729)
 
 ___
 
@@ -896,9 +896,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TOrder\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L404)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L404)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:899](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L899)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:899](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L899)
 
 ___
 
@@ -922,9 +922,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TPost\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L404)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L404)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:821](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L821)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:821](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L821)
 
 ___
 
@@ -948,9 +948,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TProductCategory\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L404)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L404)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:681](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L681)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:681](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L681)
 
 ___
 
@@ -974,9 +974,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TProductReview\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L404)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L404)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:776](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L776)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:776](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L776)
 
 ___
 
@@ -1000,9 +1000,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TUser\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L404)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L404)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:859](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L859)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:859](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L859)
 
 ___
 
@@ -1024,9 +1024,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TOrder\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L253)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:892](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L892)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:892](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L892)
 
 ___
 
@@ -1048,9 +1048,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TOrder\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L277)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:893](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L893)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:893](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L893)
 
 ___
 
@@ -1072,9 +1072,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TOrder\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L222)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:891](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L891)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:891](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L891)
 
 ___
 
@@ -1096,9 +1096,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPost\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L253)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:814](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L814)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:814](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L814)
 
 ___
 
@@ -1120,9 +1120,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPost\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L277)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:815](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L815)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:815](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L815)
 
 ___
 
@@ -1144,9 +1144,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TPost\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L222)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:813](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L813)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:813](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L813)
 
 ___
 
@@ -1168,9 +1168,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TProduct\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L253)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:572](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L572)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:572](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L572)
 
 ___
 
@@ -1192,9 +1192,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TProduct\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L277)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:573](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L573)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:573](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L573)
 
 ___
 
@@ -1216,9 +1216,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TProductCategory\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L222)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:673](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L673)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:673](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L673)
 
 ___
 
@@ -1240,9 +1240,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TProductCategory\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L253)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:674](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L674)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:674](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L674)
 
 ___
 
@@ -1264,9 +1264,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TProductCategory\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L277)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:675](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L675)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:675](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L675)
 
 ___
 
@@ -1288,9 +1288,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TProductReview\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L253)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:770](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L770)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:770](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L770)
 
 ___
 
@@ -1312,9 +1312,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TProductReview\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L222)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:769](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L769)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:769](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L769)
 
 ___
 
@@ -1336,9 +1336,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TProduct\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L222)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:571](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L571)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:571](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L571)
 
 ___
 
@@ -1360,9 +1360,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TTag\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L253)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:924](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L924)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:924](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L924)
 
 ___
 
@@ -1384,9 +1384,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TTag\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L277)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:925](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L925)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:925](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L925)
 
 ___
 
@@ -1408,9 +1408,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TTag\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L222)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:923](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L923)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:923](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L923)
 
 ___
 
@@ -1432,9 +1432,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TUser\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L253)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:852](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L852)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:852](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L852)
 
 ___
 
@@ -1456,9 +1456,9 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TUser\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L277)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:853](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L853)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:853](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L853)
 
 ___
 
@@ -1480,9 +1480,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TUser\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L222)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:851](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L851)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:851](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L851)
 
 ___
 
@@ -1505,9 +1505,9 @@ Name | Type |
 
 **Returns:** *Promise*<TAttribute\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L301)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:730](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L730)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:730](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L730)
 
 ___
 
@@ -1530,9 +1530,9 @@ Name | Type |
 
 **Returns:** *Promise*<TOrder\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L301)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:894](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L894)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:894](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L894)
 
 ___
 
@@ -1555,9 +1555,9 @@ Name | Type |
 
 **Returns:** *Promise*<TPost\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L301)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:816](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L816)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:816](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L816)
 
 ___
 
@@ -1580,9 +1580,9 @@ Name | Type |
 
 **Returns:** *Promise*<TProduct\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L301)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:574](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L574)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:574](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L574)
 
 ___
 
@@ -1605,9 +1605,9 @@ Name | Type |
 
 **Returns:** *Promise*<TProductCategory\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L301)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:676](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L676)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:676](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L676)
 
 ___
 
@@ -1630,9 +1630,9 @@ Name | Type |
 
 **Returns:** *Promise*<TProductReview\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L301)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:771](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L771)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:771](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L771)
 
 ___
 
@@ -1655,9 +1655,9 @@ Name | Type |
 
 **Returns:** *Promise*<TTag\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L301)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:926](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L926)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:926](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L926)
 
 ___
 
@@ -1680,9 +1680,9 @@ Name | Type |
 
 **Returns:** *Promise*<TUser\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L301)
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:854](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L854)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:854](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L854)
 
 ## Methods
 
@@ -1713,7 +1713,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| EntityType\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:509](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L509)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:509](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L509)
 
 ___
 
@@ -1741,7 +1741,7 @@ Name | Type |
 
 **Returns:** *Promise*<EntityType[]\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:446](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L446)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:446](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L446)
 
 ___
 
@@ -1751,7 +1751,7 @@ ___
 
 **Returns:** *Promise*<undefined \| TAttribute[]\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:734](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L734)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:734](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L734)
 
 ___
 
@@ -1780,7 +1780,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| EntityType\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:464](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L464)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:464](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L464)
 
 ___
 
@@ -1801,7 +1801,7 @@ Name | Type |
 
 **Returns:** *Promise*<TFilteredProductList\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:605](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L605)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:605](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L605)
 
 ___
 
@@ -1818,7 +1818,7 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TProduct\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:581](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L581)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:581](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L581)
 
 ___
 
@@ -1835,7 +1835,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPagedList<TProductCategory\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:683](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L683)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:683](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L683)
 
 ___
 
@@ -1858,7 +1858,7 @@ Name | Type |
 
 **Returns:** *Promise*<T\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:134](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L134)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:134](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L134)
 
 ▸ **mutate**<T\>(`options`: *MutationOptions*<{ [key: string]: *any*;  }, OperationVariables\>): *Promise*<Promise<FetchResult<unknown, Record<string, any\>, Record<string, any\>\>\>\>
 
@@ -1876,7 +1876,7 @@ Name | Type |
 
 **Returns:** *Promise*<Promise<FetchResult<unknown, Record<string, any\>, Record<string, any\>\>\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:135](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L135)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:135](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L135)
 
 ___
 
@@ -1896,7 +1896,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:198](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L198)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:198](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L198)
 
 ___
 
@@ -1916,7 +1916,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:182](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L182)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:182](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L182)
 
 ___
 
@@ -1939,7 +1939,7 @@ Name | Type |
 
 **Returns:** *Promise*<T\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:117](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L117)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:117](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L117)
 
 ▸ **query**<T\>(`options`: *QueryOptions*<OperationVariables, any\>): *Promise*<ApolloQueryResult<T\>\>
 
@@ -1957,7 +1957,7 @@ Name | Type |
 
 **Returns:** *Promise*<ApolloQueryResult<T\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:118](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L118)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:118](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L118)
 
 ___
 
@@ -1975,7 +1975,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:206](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L206)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:206](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L206)
 
 ___
 
@@ -1993,7 +1993,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:190](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L190)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:190](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L190)
 
 ___
 
@@ -2025,4 +2025,4 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| EntityType\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:486](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CGraphQLClient.ts#L486)
+Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:486](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CGraphQLClient.ts#L486)

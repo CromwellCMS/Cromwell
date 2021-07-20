@@ -5,7 +5,7 @@ import { Autocomplete } from '@material-ui/lab';
 import Layout from '@theme/Layout';
 import React, { useEffect, useState } from 'react';
 
-import styles from './frontend-dependencies.module.css';
+import styles from './latest-frontend-dependencies.module.css';
 
 
 export default function FrontendDependencies() {
@@ -41,13 +41,17 @@ export default function FrontendDependencies() {
         >
             <div className={styles.content}>
                 <h1 className={styles.title}>Latest Frontend dependencies</h1>
-                <Autocomplete
-                    id="cms-versions"
-                    options={dependencies}
-                    getOptionLabel={getDepName}
-                    style={{ width: 300 }}
-                    renderInput={(params) => <TextField {...params} label="Search..." variant="outlined" />}
-                />
+                <div
+                    className={styles.searchBox}
+                >
+                    <Autocomplete
+                        id="cms-versions"
+                        options={dependencies}
+                        getOptionLabel={getDepName}
+                        style={{ width: 300 }}
+                        renderInput={(params) => <TextField {...params} label="Search..." variant="outlined" />}
+                    />
+                </div>
                 <div className={styles.listHeader} onClick={handleExpandClick}>
                     <h3 className={styles.expandTitle}>Expand all</h3>
                     <IconButton >

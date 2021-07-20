@@ -104,7 +104,8 @@ module.exports = {
           }) {
             const sidebarItems = await defaultSidebarItemsGenerator(args);
             return sidebarItems.map(item => {
-              if (item.label === 'API') {
+              if (item.label === 'api') {
+                item.label = 'API'
                 item.items = [
                   {
                     "type": "doc",

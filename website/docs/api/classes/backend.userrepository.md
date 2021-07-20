@@ -50,7 +50,7 @@
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L17)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L17)
 
 ## Methods
 
@@ -69,7 +69,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L87)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseRepository.ts#L87)
 
 ___
 
@@ -86,7 +86,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:121](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L121)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:121](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L121)
 
 ___
 
@@ -105,7 +105,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L49)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseRepository.ts#L49)
 
 ___
 
@@ -122,7 +122,7 @@ Name | Type |
 
 **Returns:** *Promise*<[*User*](backend.user.md)\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:62](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L62)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:62](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L62)
 
 ___
 
@@ -140,7 +140,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L76)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseRepository.ts#L76)
 
 ___
 
@@ -158,7 +158,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L97)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseRepository.ts#L97)
 
 ___
 
@@ -175,7 +175,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:164](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L164)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:164](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L164)
 
 ___
 
@@ -191,7 +191,7 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:108](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L108)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:108](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L108)
 
 ___
 
@@ -203,7 +203,7 @@ ___
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L24)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseRepository.ts#L24)
 
 ___
 
@@ -222,7 +222,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L29)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseRepository.ts#L29)
 
 ___
 
@@ -241,7 +241,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L39)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseRepository.ts#L39)
 
 ___
 
@@ -258,7 +258,7 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<TUser\>\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:157](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L157)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:157](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L157)
 
 ___
 
@@ -276,7 +276,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L18)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseRepository.ts#L18)
 
 ___
 
@@ -292,7 +292,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| [*User*](backend.user.md)\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:33](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L33)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:33](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L33)
 
 ___
 
@@ -308,7 +308,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| [*User*](backend.user.md)\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L28)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L28)
 
 ___
 
@@ -324,7 +324,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| [*User*](backend.user.md)\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:43](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L43)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:43](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L43)
 
 ___
 
@@ -340,7 +340,7 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<[*User*](backend.user.md)\>\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L23)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L23)
 
 ___
 
@@ -357,7 +357,7 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L48)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L48)
 
 ___
 
@@ -373,7 +373,7 @@ Name | Type |
 
 **Returns:** *Promise*<string\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:88](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L88)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:88](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L88)
 
 ___
 
@@ -392,7 +392,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L61)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseRepository.ts#L61)
 
 ___
 
@@ -409,4 +409,4 @@ Name | Type |
 
 **Returns:** *Promise*<[*User*](backend.user.md)\>
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:92](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/UserRepository.ts#L92)
+Defined in: [system/core/backend/src/repositories/UserRepository.ts:92](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/UserRepository.ts#L92)

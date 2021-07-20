@@ -35,7 +35,7 @@
 
 • `Optional` **approved**: *undefined* \| *boolean*
 
-Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:17](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L17)
+Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:17](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L17)
 
 ___
 
@@ -43,7 +43,7 @@ ___
 
 • `Optional` **productId**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:8](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L8)
+Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:8](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L8)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 • `Optional` **userId**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:14](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L14)
+Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:14](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L14)
 
 ___
 
@@ -59,4 +59,4 @@ ___
 
 • `Optional` **userName**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:11](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L11)
+Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:11](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L11)
