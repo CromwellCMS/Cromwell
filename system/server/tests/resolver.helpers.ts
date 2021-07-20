@@ -39,10 +39,9 @@ export const setupResolver = async (name: string): Promise<[ApolloServer, Apollo
 
     const server = new ApolloServer({
         schema,
-        playground: true,
     });
 
-    return [server, createTestClient(server)];
+    return [server, createTestClient(server as any)];
 }
 
 export const tearDownResolver = async (server: ApolloServer) => {

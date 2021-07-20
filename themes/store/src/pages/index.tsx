@@ -6,7 +6,7 @@ import Layout from '../components/layout/Layout';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Index.module.scss';
 
-const Index: TCromwellPage = (props) => {
+const Index: TCromwellPage = () => {
     return (
         <Layout>
             <div className={styles.IndexPage}>

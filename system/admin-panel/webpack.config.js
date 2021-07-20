@@ -16,7 +16,7 @@ if (!isProduction) {
     entry.unshift('webpack-hot-middleware/client');
 }
 
-console.log('buildMode', buildMode, isProduction)
+console.log('buildMode', buildMode)
 
 module.exports = {
     mode: buildMode,
