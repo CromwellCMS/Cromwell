@@ -1,0 +1,20 @@
+.content {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.title {
+    margin: 4rem 0 1em;
+}
+
+.expandTitle {
+    margin: 0 2em 0 0;
+}
+
+.listHeader {
+    display: flex;
+    margin: 2em 0 1em 0;
+    align-items: center;
+    cursor: pointer;
+}
