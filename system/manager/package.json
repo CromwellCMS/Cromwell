@@ -16,7 +16,7 @@
     "watch": "npx rollup -cw"
   },
   "dependencies": {
-    "@cromwell/admin-panel": "1.0.14",
+    "@cromwell/admin-panel": "1.1.0",
     "@cromwell/cli": "1.0.9",
     "@cromwell/core": "1.1.8",
     "@cromwell/core-backend": "1.0.10",
