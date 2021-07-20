@@ -39,7 +39,7 @@
 
 • `Optional` **description**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:26](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/AttributeInstance.ts#L26)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:26](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/AttributeInstance.ts#L26)
 
 ___
 
@@ -47,7 +47,7 @@ ___
 
 • `Optional` **descriptionDelta**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:29](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/AttributeInstance.ts#L29)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:29](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/AttributeInstance.ts#L29)
 
 ___
 
@@ -55,7 +55,7 @@ ___
 
 • `Optional` **images**: *undefined* \| *string*[]
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:23](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/AttributeInstance.ts#L23)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:23](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/AttributeInstance.ts#L23)
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 • `Optional` **mainImage**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:20](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/AttributeInstance.ts#L20)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:20](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/AttributeInstance.ts#L20)
 
 ___
 
@@ -71,7 +71,7 @@ ___
 
 • `Optional` **name**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:8](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/AttributeInstance.ts#L8)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:8](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/AttributeInstance.ts#L8)
 
 ___
 
@@ -79,7 +79,7 @@ ___
 
 • `Optional` **oldPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:14](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/AttributeInstance.ts#L14)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:14](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/AttributeInstance.ts#L14)
 
 ___
 
@@ -87,7 +87,7 @@ ___
 
 • `Optional` **price**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:11](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/AttributeInstance.ts#L11)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:11](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/AttributeInstance.ts#L11)
 
 ___
 
@@ -95,4 +95,4 @@ ___
 
 • `Optional` **sku**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:17](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/AttributeInstance.ts#L17)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:17](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/AttributeInstance.ts#L17)

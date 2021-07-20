@@ -1,43 +1,72 @@
 import { TPagedList, TStoreListItem } from './data';
 
 export type TBasePageEntity = {
-    // DB id
+    /**
+     * DB id
+     */
     id: string;
-    // Slug for page route
+    /**
+     * Slug for page route
+     */
     slug?: string;
-    // Page meta title (SEO)
+    /**
+     * Page meta title (SEO)
+     */
     pageTitle?: string;
-    // Page meta description (SEO)
+    /**
+     * Page meta description (SEO)
+     */
     pageDescription?: string;
-    // DB createDate
+    /**
+     * DB createDate
+     */
     createDate?: Date;
-    // DB updateDate
+    /**
+     * DB updateDate
+     */
     updateDate?: Date;
-    // Is displaying at frontend
+    /**
+     * Is displaying at frontend
+     */
     isEnabled?: boolean;
 }
 
-type TDBAuxiliaryColumns = 'id' | 'createDate' | 'updateDate';
+export type TDBAuxiliaryColumns = 'id' | 'createDate' | 'updateDate';
 
 export type TBasePageEntityInput = Omit<TBasePageEntity, TDBAuxiliaryColumns>;
 
 
-// ProductCategory
-
-type TProductCategoryCore = {
-    // Name of the category (h1)
+/**
+ * ProductCategory
+ */
+export type TProductCategoryCore = {
+    /**
+     * Name of the category (h1)
+     */
     name: string;
-    // Href of main image
+    /**
+     * Href of main image
+     */
     mainImage?: string;
-    // Description (HTML allowed)
+    /**
+     * Description (HTML allowed)
+     */
     description?: string;
-    // Description in Quill format
+    /**
+     * Description in Quill format
+     */
     descriptionDelta?: string;
-    // DB children
+    /**
+     * DB children
+     */
     children?: TProductCategory[];
-    // DB parent
+    /**
+     * DB parent
+     */
     parent?: TProductCategory | null;
-    // Products in category
+    /**
+     * Products in category
+     */
     products?: TPagedList<TProduct>;
 }
 
@@ -52,41 +81,72 @@ export type TProductCategoryFilter = {
 }
 
 
-// PRODUCT
-
-export interface TProduct extends TBasePageEntity {
-    // Name of the product (h1)
+/**
+ * PRODUCT
+ */
+export type TProduct = TBasePageEntity & {
+    /**
+     * Name of the product (h1)
+     */
     name?: string;
-    // Categories of the prooduct
+    /**
+     * Categories of the prooduct
+     */
     categories?: TProductCategory[];
-    // Price. Will be discount price if oldPrice is specified
+    /**
+     * Price. Will be discount price if oldPrice is specified
+     */
     price?: number;
-    // Price before sale, optional
+    /**
+     * Price before sale, optional
+     */
     oldPrice?: number;
-    // SKU
+    /**
+     * SKU
+     */
     sku?: string;
-    // Href of main image
+    /**
+     * Href of main image
+     */
     mainImage?: string;
-    // Hrefs of iamges
+    /**
+     * Hrefs of iamges
+     */
     images?: string[];
-    // Description (HTML allowed)
+    /**
+     * Description (HTML allowed)
+     */
     description?: string;
-    // Description in Quill format
+    /**
+     * Description in Quill format
+     */
     descriptionDelta?: string;
-    // Rating data
+    /**
+     * Rating data
+     */
     rating?: TProductRating;
-    // Customer reviews 
+    /**
+     * Customer reviews 
+     */
     reviews?: TProductReview[];
-    // Custom attributes
+    /**
+     * Custom attributes
+     */
     attributes?: TAttributeInstance[];
-    // Qnt of page requests
+    /**
+     * Qnt of page requests
+     */
     views?: number;
 }
 
 export type TProductRating = {
-    // Rating 1-5
+    /**
+     * Rating 1-5
+     */
     average?: number;
-    // Number of customer reviews
+    /**
+     * Number of customer reviews
+     */
     reviewsNumber?: number;
 }
 
@@ -115,30 +175,51 @@ export type TProductFilterMeta = {
 }
 
 
-// POST
-
-export interface TPost extends TBasePageEntity {
-    // Title of post (h1)
+/**
+ * POST
+ */
+export type TPost = {
+    /**
+     * Title of post (h1)
+     */
     title?: string | null;
-    // User-author
+    /**
+     * User-author
+     */
     author?: TUser;
-    // Href of main image
+    /**
+     * Href of main image
+     */
     mainImage?: string | null;
-    // Estimated time in minutes to read the post
+    /**
+     * Estimated time in minutes to read the post
+     */
     readTime?: string | null;
-    // Tags / categories to show post
+    /**
+     * Tags / categories to show post
+     */
     tags?: TTag[] | null;
-    // Post content, HTML
+    /**
+     * Post content, HTML
+     */
     content?: string | null;
-    // Post content, stringified JSON from Quill.js
+    /**
+     * Post content, stringified JSON from Quill.js
+     */
     delta?: string | null;
-    // Short description to display in blog list
+    /**
+     * Short description to display in blog list
+     */
     excerpt?: string | null;
-    // Is published?
+    /**
+     * Is published?
+     */
     published?: boolean | null;
-    // Publish date
+    /**
+     * Publish date
+     */
     publishDate?: Date | null;
-}
+} & TBasePageEntity;
 
 export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author' | 'tags'> & {
     authorId: string;
@@ -152,7 +233,7 @@ export type TPostFilter = {
     published?: boolean;
 }
 
-export interface TTag extends TBasePageEntity {
+export type TTag = TBasePageEntity & {
     name: string;
     color?: string | null;
     image?: string | null;
@@ -162,14 +243,22 @@ export interface TTag extends TBasePageEntity {
 
 export type TTagInput = Omit<TTag, TDBAuxiliaryColumns>;
 
-// USER / AUTHOR
 
-export interface TUser extends TBasePageEntity {
-    // Name
+/**
+ * USER / AUTHOR
+ */
+export type TUser = TBasePageEntity & {
+    /**
+     * Name
+     */
     fullName: string;
-    // E-mail
+    /**
+     * E-mail
+     */
     email: string;
-    // Avatar image
+    /**
+     * Avatar image
+     */
     avatar?: string;
     bio?: string;
     phone?: string;
@@ -193,9 +282,11 @@ export type TUserFilter = {
     role?: TUserRole;
 }
 
-// Attribute
 
-export interface TAttribute extends TBasePageEntity {
+/**
+ * Attribute
+ */
+export type TAttribute = TBasePageEntity & {
     key: string;
     values: TAttributeValue[];
     type: 'radio' | 'checkbox';
@@ -232,9 +323,10 @@ export type TAttributeProductVariant = {
 }
 
 
-// ProductReview
-
-type TProductReviewCore = {
+/**
+ * ProductReview
+ */
+export type TProductReviewCore = {
     productId: string;
     title?: string;
     description?: string;
@@ -256,9 +348,11 @@ export type TProductReviewFilter = {
     approved?: boolean;
 }
 
-// Store order
 
-type TOrderCore = {
+/**
+ * Store order
+ */
+export type TOrderCore = {
     status?: string;
     cart?: string | TStoreListItem[];
     orderTotalPrice?: number;
@@ -304,8 +398,10 @@ export type TOrderFilter = {
 }
 
 
-// Blog comment
-type TPostCommentCore = {
+/**
+ * Blog comment
+ */
+export type TPostCommentCore = {
     postId: string;
     title?: string;
     comment?: string;
@@ -320,9 +416,10 @@ export type TPostComment = TPostCommentCore & TBasePageEntity;
 export type TPostCommentInput = TPostCommentCore & TBasePageEntityInput;
 
 
-// Theme entity
-
-type TThemeEntityCore = {
+/**
+ * Theme entity
+ */
+export type TThemeEntityCore = {
     name: string;
     version?: string;
     isInstalled: boolean;
@@ -339,9 +436,10 @@ export type TThemeEntity = TThemeEntityCore & TBasePageEntity;
 export type TThemeEntityInput = TThemeEntityCore & TBasePageEntityInput;
 
 
-// Plugin entity
-
-type TPluginEntityCore = {
+/**
+ * Plugin entity
+ */
+export type TPluginEntityCore = {
     name: string;
     version?: string;
     title?: string;
@@ -358,59 +456,86 @@ export type TPluginEntity = TPluginEntityCore & TBasePageEntity;
 export type TPluginEntityInput = TPluginEntityCore & TBasePageEntityInput;
 
 
-
-// DB CMS entity
-
+/**
+ * DB CMS entity
+ */
 export type TCmsEntityCore = {
     // < Public config >
-    // Protocol for api client to use
-    protocol?: 'http' | 'https';
-    // Package name of currently used theme
+    /**
+     * Package name of currently used theme
+     */
     themeName?: string;
-    // Page size to use in lists, eg. at Product Category page
+    /**
+     * Page size to use in lists, eg. at Product Category page
+     */
     defaultPageSize?: number;
-    // Available currencies in the store and rates between them to convert
+    /**
+     * Available currencies in the store and rates between them to convert
+     */
     currencies?: TCurrency[];
-    // Default timezone in GMT, number +-
+    /**
+     * Default timezone in GMT, number +-
+     */
     timezone?: number;
-    // Default language
+    /**
+     * Default language
+     */
     language?: string;
-    // Website favicon
+    /**
+     * Website favicon
+     */
     favicon?: string;
-    // Website logo
+    /**
+     * Website logo
+     */
     logo?: string;
-    // Standard shipping price if no shipment methods specified
+    /**
+     * Standard shipping price if no shipment methods specified
+     */
     defaultShippingPrice?: number;
-
-    // Custom HTML code injection
+    /**
+     * Custom HTML code injection
+     */
     headHtml?: string;
     footerHtml?: string;
     // < / >
 
-
     // < Admin config >
-    // SMTP connection string to e-mail service provider
+    /**
+     * SMTP connection string to e-mail service provider
+     */
     smtpConnectionString?: string;
-    // E-mail to send mails from
+    /**
+     * E-mail to send mails from
+     */
     sendFromEmail?: string;
-    // < / >
+    //  < / >
 
     // < INTERNAL >
-    // CMS version, used for updates
+    /**
+     * Internal. CMS version, used for updates
+     */
     version?: string;
-    // Internal. https://github.com/CromwellCMS/Cromwell/blob/55046c48d9da0a44e4b11e7918c73876fcd1cfc1/system/manager/src/managers/baseManager.ts#L194:L206
+    /**
+     * Internal. https://github.com/CromwellCMS/Cromwell/blob/55046c48d9da0a44e4b11e7918c73876fcd1cfc1/system/manager/src/managers/baseManager.ts#L194:L206
+     */
     versions?: TServiceVersions | string;
-    // Internal. If false or not set, will launch installation at first Admin Panel visit.
+    /**
+     * Internal. If false or not set, will launch installation at first Admin Panel visit.
+     */
     installed?: boolean;
-    // Recieve unstable beta-updates
+    /**
+     * Internal. Recieve unstable beta-updates
+     */
     beta?: boolean;
-    // Is currently under update
+    /**
+     * Internal. Is currently under update
+     */
     isUpdating?: boolean;
     // < / >
 }
 
 export type TCmsEntityInput = {
-    protocol?: 'http' | 'https';
     defaultPageSize?: number;
     currencies?: TCurrency[];
     timezone?: number;
@@ -443,7 +568,6 @@ export type TCurrency = {
     /** Ratio for currencies to compare: "USD": 1,"EURO": 0.83, "GBP": 0.72 etc. */
     ratio?: number;
 }
-
 
 export type TDeleteManyInput = {
     ids: string[];

@@ -33,7 +33,7 @@
 
 • **key**: *string*
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/ProductFilterInput.ts#L8)
+Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/ProductFilterInput.ts#L8)
 
 ___
 
@@ -41,4 +41,4 @@ ___
 
 • **values**: *string*[]
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/ProductFilterInput.ts#L11)
+Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/ProductFilterInput.ts#L11)

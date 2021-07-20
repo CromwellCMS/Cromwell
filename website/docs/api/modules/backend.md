@@ -213,7 +213,7 @@ const products = await getCustomRepository(ProductRepository).getProducts();
 
 Ƭ **ActionNames**: keyof [*ActionTypes*](backend.md#actiontypes)
 
-Defined in: [system/core/backend/src/helpers/types.ts:71](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/types.ts#L71)
+Defined in: [system/core/backend/src/helpers/types.ts:71](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/types.ts#L71)
 
 ___
 
@@ -275,7 +275,7 @@ Name | Type |
 `update_theme.themeName` | *string* |
 `update_user`? | TUser |
 
-Defined in: [system/core/backend/src/helpers/types.ts:23](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/types.ts#L23)
+Defined in: [system/core/backend/src/helpers/types.ts:23](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/types.ts#L23)
 
 ___
 
@@ -291,7 +291,7 @@ Name | Type |
 `id` | *string* |
 `role` | TUserRole |
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:7](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/auth-guards.ts#L7)
+Defined in: [system/core/backend/src/helpers/auth-guards.ts:7](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/auth-guards.ts#L7)
 
 ___
 
@@ -309,7 +309,7 @@ Name | Type |
 `providers`? | *unknown*[] |
 `resolvers`? | *unknown*[] |
 
-Defined in: [system/core/backend/src/helpers/types.ts:14](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/types.ts#L14)
+Defined in: [system/core/backend/src/helpers/types.ts:14](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/types.ts#L14)
 
 ___
 
@@ -323,7 +323,7 @@ Name | Type |
 :------ | :------ |
 `user`? | [*TAuthUserInfo*](backend.md#tauthuserinfo) |
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:30](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/auth-guards.ts#L30)
+Defined in: [system/core/backend/src/helpers/auth-guards.ts:30](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/auth-guards.ts#L30)
 
 ___
 
@@ -340,7 +340,7 @@ Name | Type |
 `frontendPath`? | *string* |
 `pluginName` | *string* |
 
-Defined in: [system/core/backend/src/helpers/readPluginsExports.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/readPluginsExports.ts#L15)
+Defined in: [system/core/backend/src/helpers/readPluginsExports.ts:15](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/readPluginsExports.ts#L15)
 
 ___
 
@@ -348,7 +348,7 @@ ___
 
 Ƭ **TRequestWithUser**: FastifyRequest & { `cookies`: *any* ; `user`: [*TAuthUserInfo*](backend.md#tauthuserinfo)  }
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:19](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/auth-guards.ts#L19)
+Defined in: [system/core/backend/src/helpers/auth-guards.ts:19](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/auth-guards.ts#L19)
 
 ___
 
@@ -364,7 +364,7 @@ Name | Type |
 `maxAge` | *string* |
 `token` | *string* |
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:24](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/auth-guards.ts#L24)
+Defined in: [system/core/backend/src/helpers/auth-guards.ts:24](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/auth-guards.ts#L24)
 
 ___
 
@@ -380,7 +380,7 @@ Name | Type |
 `sub` | *string* |
 `username` | *string* |
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:13](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/auth-guards.ts#L13)
+Defined in: [system/core/backend/src/helpers/auth-guards.ts:13](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/auth-guards.ts#L13)
 
 ## Variables
 
@@ -388,7 +388,7 @@ Defined in: [system/core/backend/src/helpers/auth-guards.ts:13](https://github.c
 
 • `Const` **ORMEntities**: (*typeof* [*Attribute*](../classes/backend.attribute.md) \| *typeof* [*CmsEntity*](../classes/backend.cmsentity.md) \| *typeof* [*Product*](../classes/backend.product.md) \| *typeof* [*Order*](../classes/backend.order.md) \| *typeof* [*Post*](../classes/backend.post.md) \| *typeof* [*ProductCategory*](../classes/backend.productcategory.md) \| *typeof* [*ProductReview*](../classes/backend.productreview.md) \| *typeof* [*Tag*](../classes/backend.tag.md) \| *typeof* [*User*](../classes/backend.user.md) \| *typeof* [*PageStats*](../classes/backend.pagestats.md) \| *typeof* [*PluginEntity*](../classes/backend.pluginentity.md) \| *typeof* [*PostComment*](../classes/backend.postcomment.md))[]
 
-Defined in: [system/core/backend/src/helpers/constants.ts:18](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/constants.ts#L18)
+Defined in: [system/core/backend/src/helpers/constants.ts:18](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/constants.ts#L18)
 
 ___
 
@@ -406,7 +406,7 @@ Name | Type |
 `onStartErrorMessage` | *string* |
 `onStartMessage` | *string* |
 
-Defined in: [system/core/backend/src/helpers/constants.ts:33](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/constants.ts#L33)
+Defined in: [system/core/backend/src/helpers/constants.ts:33](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/constants.ts#L33)
 
 ___
 
@@ -414,7 +414,7 @@ ___
 
 • `Const` **buildDirName**: *build*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:10](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L10)
+Defined in: [system/core/backend/src/helpers/paths.ts:10](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L10)
 
 ___
 
@@ -422,7 +422,7 @@ ___
 
 • `Const` **cmsConfigFileName**: *cmsconfig.json*= 'cmsconfig.json'
 
-Defined in: [system/core/backend/src/helpers/paths.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L12)
+Defined in: [system/core/backend/src/helpers/paths.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L12)
 
 ___
 
@@ -430,7 +430,7 @@ ___
 
 • `Const` **cmsName**: *cromwell*= 'cromwell'
 
-Defined in: [system/core/backend/src/helpers/paths.ts:8](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L8)
+Defined in: [system/core/backend/src/helpers/paths.ts:8](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L8)
 
 ___
 
@@ -438,7 +438,7 @@ ___
 
 • `Const` **cmsPackageName**: *@cromwell/cms*= '@cromwell/cms'
 
-Defined in: [system/core/backend/src/helpers/constants.ts:96](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/constants.ts#L96)
+Defined in: [system/core/backend/src/helpers/constants.ts:96](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/constants.ts#L96)
 
 ___
 
@@ -446,7 +446,7 @@ ___
 
 • `Const` **configFileName**: *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:11](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L11)
+Defined in: [system/core/backend/src/helpers/paths.ts:11](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L11)
 
 ___
 
@@ -454,7 +454,7 @@ ___
 
 • `Const` **defaultCmsConfig**: TCmsConfig
 
-Defined in: [system/core/backend/src/helpers/constants.ts:49](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/constants.ts#L49)
+Defined in: [system/core/backend/src/helpers/constants.ts:49](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/constants.ts#L49)
 
 ___
 
@@ -462,7 +462,7 @@ ___
 
 • `Const` **pluginAdminBundlePath**: *admin/index.js*= 'admin/index.js'
 
-Defined in: [system/core/backend/src/helpers/paths.ts:209](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L209)
+Defined in: [system/core/backend/src/helpers/paths.ts:209](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L209)
 
 ___
 
@@ -470,7 +470,7 @@ ___
 
 • `Const` **pluginAdminCjsPath**: *admin/cjs.js*= 'admin/cjs.js'
 
-Defined in: [system/core/backend/src/helpers/paths.ts:210](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L210)
+Defined in: [system/core/backend/src/helpers/paths.ts:210](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L210)
 
 ___
 
@@ -478,7 +478,7 @@ ___
 
 • `Const` **pluginFrontendBundlePath**: *frontend/index.js*= 'frontend/index.js'
 
-Defined in: [system/core/backend/src/helpers/paths.ts:207](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L207)
+Defined in: [system/core/backend/src/helpers/paths.ts:207](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L207)
 
 ___
 
@@ -486,7 +486,7 @@ ___
 
 • `Const` **pluginFrontendCjsPath**: *frontend/cjs.js*= 'frontend/cjs.js'
 
-Defined in: [system/core/backend/src/helpers/paths.ts:208](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L208)
+Defined in: [system/core/backend/src/helpers/paths.ts:208](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L208)
 
 ___
 
@@ -504,7 +504,7 @@ Name | Type |
 `onStartErrorMessage` | *string* |
 `onStartMessage` | *string* |
 
-Defined in: [system/core/backend/src/helpers/constants.ts:25](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/constants.ts#L25)
+Defined in: [system/core/backend/src/helpers/constants.ts:25](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/constants.ts#L25)
 
 ___
 
@@ -522,7 +522,7 @@ Name | Type |
 `onStartErrorMessage` | *string* |
 `onStartMessage` | *string* |
 
-Defined in: [system/core/backend/src/helpers/constants.ts:41](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/constants.ts#L41)
+Defined in: [system/core/backend/src/helpers/constants.ts:41](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/constants.ts#L41)
 
 ___
 
@@ -530,7 +530,7 @@ ___
 
 • `Const` **tempDirName**: *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L9)
+Defined in: [system/core/backend/src/helpers/paths.ts:9](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L9)
 
 ## Functions
 
@@ -546,7 +546,7 @@ Name | Type |
 
 **Returns:** *CustomDecorator*<string\>
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:34](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/auth-guards.ts#L34)
+Defined in: [system/core/backend/src/helpers/auth-guards.ts:34](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/auth-guards.ts#L34)
 
 ___
 
@@ -583,7 +583,7 @@ Name | Type |
 
 **Returns:** *SelectQueryBuilder*<T\>
 
-Defined in: [system/core/backend/src/repositories/BaseQueries.ts:34](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseQueries.ts#L34)
+Defined in: [system/core/backend/src/repositories/BaseQueries.ts:34](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/repositories/BaseQueries.ts#L34)
 
 ___
 
@@ -607,7 +607,7 @@ Name | Type |
 
 **Returns:** *SelectQueryBuilder*<T\>
 
-Defined in: [system/core/backend/src/repositories/BaseQueries.ts:8](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseQueries.ts#L8)
+Defined in: [system/core/backend/src/repositories/BaseQueries.ts:8](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/repositories/BaseQueries.ts#L8)
 
 ___
 
@@ -630,7 +630,7 @@ Name | Type |
 
 **Returns:** *Promise*<T\>
 
-Defined in: [system/core/backend/src/repositories/BaseQueries.ts:69](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseQueries.ts#L69)
+Defined in: [system/core/backend/src/repositories/BaseQueries.ts:69](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/repositories/BaseQueries.ts#L69)
 
 ___
 
@@ -663,7 +663,7 @@ Name | Type |
 `repository` | *ObjectType*<BaseRepository<EntityType, EntityInputType\>\> |
 `updateArgs` | *any* |
 
-Defined in: [system/core/backend/src/helpers/createGenericEntity.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/createGenericEntity.ts#L9)
+Defined in: [system/core/backend/src/helpers/createGenericEntity.ts:9](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/createGenericEntity.ts#L9)
 
 ___
 
@@ -688,7 +688,7 @@ Name | Type |
 
 **Returns:** *Promise*<Record<string, any\>\>
 
-Defined in: [system/core/backend/src/helpers/actions.ts:23](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/actions.ts#L23)
+Defined in: [system/core/backend/src/helpers/actions.ts:23](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/actions.ts#L23)
 
 ___
 
@@ -698,7 +698,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:73](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L73)
+Defined in: [system/core/backend/src/helpers/paths.ts:73](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L73)
 
 ___
 
@@ -708,7 +708,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:74](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L74)
+Defined in: [system/core/backend/src/helpers/paths.ts:74](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L74)
 
 ___
 
@@ -718,7 +718,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:86](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L86)
+Defined in: [system/core/backend/src/helpers/paths.ts:86](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L86)
 
 ___
 
@@ -728,7 +728,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:90](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L90)
+Defined in: [system/core/backend/src/helpers/paths.ts:90](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L90)
 
 ___
 
@@ -738,7 +738,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:78](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L78)
+Defined in: [system/core/backend/src/helpers/paths.ts:78](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L78)
 
 ___
 
@@ -748,7 +748,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:83](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L83)
+Defined in: [system/core/backend/src/helpers/paths.ts:83](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L83)
 
 ___
 
@@ -758,7 +758,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:80](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L80)
+Defined in: [system/core/backend/src/helpers/paths.ts:80](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L80)
 
 ___
 
@@ -768,7 +768,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:44](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L44)
+Defined in: [system/core/backend/src/helpers/paths.ts:44](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L44)
 
 ___
 
@@ -778,7 +778,7 @@ ___
 
 **Returns:** *Promise*<[*CmsEntity*](../classes/backend.cmsentity.md)\>
 
-Defined in: [system/core/backend/src/helpers/cms-settings.ts:57](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/cms-settings.ts#L57)
+Defined in: [system/core/backend/src/helpers/cms-settings.ts:57](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/cms-settings.ts#L57)
 
 ___
 
@@ -794,7 +794,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TModuleConfig\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:179](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L179)
+Defined in: [system/core/backend/src/helpers/paths.ts:179](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L179)
 
 ___
 
@@ -810,7 +810,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPackageCromwellConfig\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:189](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L189)
+Defined in: [system/core/backend/src/helpers/paths.ts:189](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L189)
 
 ___
 
@@ -820,7 +820,7 @@ ___
 
 **Returns:** *Promise*<undefined \| TCmsSettings\>
 
-Defined in: [system/core/backend/src/helpers/cms-settings.ts:72](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/cms-settings.ts#L72)
+Defined in: [system/core/backend/src/helpers/cms-settings.ts:72](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/cms-settings.ts#L72)
 
 ___
 
@@ -830,7 +830,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:48](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L48)
+Defined in: [system/core/backend/src/helpers/paths.ts:48](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L48)
 
 ___
 
@@ -840,7 +840,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:46](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L46)
+Defined in: [system/core/backend/src/helpers/paths.ts:46](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L46)
 
 ___
 
@@ -850,7 +850,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:47](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L47)
+Defined in: [system/core/backend/src/helpers/paths.ts:47](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L47)
 
 ___
 
@@ -867,7 +867,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| string\>
 
-Defined in: [system/core/backend/src/helpers/emailing.ts:14](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/emailing.ts#L14)
+Defined in: [system/core/backend/src/helpers/emailing.ts:14](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/emailing.ts#L14)
 
 ___
 
@@ -877,7 +877,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:50](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L50)
+Defined in: [system/core/backend/src/helpers/paths.ts:50](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L50)
 
 ___
 
@@ -900,7 +900,7 @@ Name | Type |
 `log` | (...`args`: *any*[]) => *void* |
 `warn` | (...`args`: *any*[]) => *void* |
 
-Defined in: [system/core/backend/src/helpers/logger.ts:17](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/logger.ts#L17)
+Defined in: [system/core/backend/src/helpers/logger.ts:17](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/logger.ts#L17)
 
 ___
 
@@ -910,7 +910,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:49](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L49)
+Defined in: [system/core/backend/src/helpers/paths.ts:49](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L49)
 
 ___
 
@@ -920,7 +920,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:53](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L53)
+Defined in: [system/core/backend/src/helpers/paths.ts:53](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L53)
 
 ___
 
@@ -930,7 +930,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:54](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L54)
+Defined in: [system/core/backend/src/helpers/paths.ts:54](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L54)
 
 ___
 
@@ -946,7 +946,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:205](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L205)
+Defined in: [system/core/backend/src/helpers/paths.ts:205](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L205)
 
 ___
 
@@ -962,7 +962,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPackageJson\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:229](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L229)
+Defined in: [system/core/backend/src/helpers/paths.ts:229](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L229)
 
 ___
 
@@ -978,7 +978,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| string\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:198](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L198)
+Defined in: [system/core/backend/src/helpers/paths.ts:198](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L198)
 
 ___
 
@@ -994,7 +994,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| string\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:31](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L31)
+Defined in: [system/core/backend/src/helpers/paths.ts:31](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L31)
 
 ___
 
@@ -1010,7 +1010,7 @@ Name | Type |
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:22](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L22)
+Defined in: [system/core/backend/src/helpers/paths.ts:22](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L22)
 
 ___
 
@@ -1034,7 +1034,7 @@ Name | Type |
 
 **Returns:** *Promise*<TPagedList<T\>\>
 
-Defined in: [system/core/backend/src/repositories/BaseQueries.ts:41](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseQueries.ts#L41)
+Defined in: [system/core/backend/src/repositories/BaseQueries.ts:41](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/repositories/BaseQueries.ts#L41)
 
 ___
 
@@ -1050,7 +1050,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:214](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L214)
+Defined in: [system/core/backend/src/helpers/paths.ts:214](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L214)
 
 ___
 
@@ -1066,7 +1066,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:215](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L215)
+Defined in: [system/core/backend/src/helpers/paths.ts:215](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L215)
 
 ___
 
@@ -1082,7 +1082,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:216](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L216)
+Defined in: [system/core/backend/src/helpers/paths.ts:216](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L216)
 
 ___
 
@@ -1098,7 +1098,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:211](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L211)
+Defined in: [system/core/backend/src/helpers/paths.ts:211](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L211)
 
 ___
 
@@ -1114,7 +1114,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:212](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L212)
+Defined in: [system/core/backend/src/helpers/paths.ts:212](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L212)
 
 ___
 
@@ -1130,7 +1130,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:213](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L213)
+Defined in: [system/core/backend/src/helpers/paths.ts:213](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L213)
 
 ___
 
@@ -1140,7 +1140,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:220](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L220)
+Defined in: [system/core/backend/src/helpers/paths.ts:220](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L220)
 
 ___
 
@@ -1150,7 +1150,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:221](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L221)
+Defined in: [system/core/backend/src/helpers/paths.ts:221](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L221)
 
 ___
 
@@ -1160,7 +1160,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:222](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L222)
+Defined in: [system/core/backend/src/helpers/paths.ts:222](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L222)
 
 ___
 
@@ -1170,7 +1170,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:65](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L65)
+Defined in: [system/core/backend/src/helpers/paths.ts:65](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L65)
 
 ___
 
@@ -1180,7 +1180,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:58](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L58)
+Defined in: [system/core/backend/src/helpers/paths.ts:58](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L58)
 
 ___
 
@@ -1190,7 +1190,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:59](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L59)
+Defined in: [system/core/backend/src/helpers/paths.ts:59](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L59)
 
 ___
 
@@ -1200,7 +1200,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:64](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L64)
+Defined in: [system/core/backend/src/helpers/paths.ts:64](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L64)
 
 ___
 
@@ -1210,7 +1210,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:63](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L63)
+Defined in: [system/core/backend/src/helpers/paths.ts:63](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L63)
 
 ___
 
@@ -1220,7 +1220,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:101](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L101)
+Defined in: [system/core/backend/src/helpers/paths.ts:101](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L101)
 
 ___
 
@@ -1230,7 +1230,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:105](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L105)
+Defined in: [system/core/backend/src/helpers/paths.ts:105](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L105)
 
 ___
 
@@ -1240,7 +1240,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:109](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L109)
+Defined in: [system/core/backend/src/helpers/paths.ts:109](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L109)
 
 ___
 
@@ -1250,7 +1250,7 @@ ___
 
 **Returns:** *void*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:115](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L115)
+Defined in: [system/core/backend/src/helpers/paths.ts:115](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L115)
 
 ___
 
@@ -1260,7 +1260,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:96](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L96)
+Defined in: [system/core/backend/src/helpers/paths.ts:96](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L96)
 
 ___
 
@@ -1270,7 +1270,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:97](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L97)
+Defined in: [system/core/backend/src/helpers/paths.ts:97](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L97)
 
 ___
 
@@ -1280,7 +1280,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:113](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L113)
+Defined in: [system/core/backend/src/helpers/paths.ts:113](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L113)
 
 ___
 
@@ -1290,7 +1290,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:114](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L114)
+Defined in: [system/core/backend/src/helpers/paths.ts:114](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L114)
 
 ___
 
@@ -1300,7 +1300,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:14](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L14)
+Defined in: [system/core/backend/src/helpers/paths.ts:14](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L14)
 
 ___
 
@@ -1317,7 +1317,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| string\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:172](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L172)
+Defined in: [system/core/backend/src/helpers/paths.ts:172](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L172)
 
 ___
 
@@ -1333,7 +1333,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| string\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:166](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L166)
+Defined in: [system/core/backend/src/helpers/paths.ts:166](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L166)
 
 ___
 
@@ -1349,7 +1349,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| string\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:134](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L134)
+Defined in: [system/core/backend/src/helpers/paths.ts:134](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L134)
 
 ___
 
@@ -1365,7 +1365,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| string\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:153](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L153)
+Defined in: [system/core/backend/src/helpers/paths.ts:153](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L153)
 
 ___
 
@@ -1381,7 +1381,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:159](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L159)
+Defined in: [system/core/backend/src/helpers/paths.ts:159](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L159)
 
 ___
 
@@ -1397,7 +1397,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:217](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L217)
+Defined in: [system/core/backend/src/helpers/paths.ts:217](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L217)
 
 ___
 
@@ -1413,7 +1413,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:218](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L218)
+Defined in: [system/core/backend/src/helpers/paths.ts:218](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L218)
 
 ___
 
@@ -1429,7 +1429,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| string\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:143](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L143)
+Defined in: [system/core/backend/src/helpers/paths.ts:143](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L143)
 
 ___
 
@@ -1445,7 +1445,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:149](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L149)
+Defined in: [system/core/backend/src/helpers/paths.ts:149](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L149)
 
 ___
 
@@ -1455,7 +1455,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:162](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L162)
+Defined in: [system/core/backend/src/helpers/paths.ts:162](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L162)
 
 ___
 
@@ -1465,7 +1465,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:140](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L140)
+Defined in: [system/core/backend/src/helpers/paths.ts:140](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L140)
 
 ___
 
@@ -1475,7 +1475,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:127](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L127)
+Defined in: [system/core/backend/src/helpers/paths.ts:127](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L127)
 
 ___
 
@@ -1485,7 +1485,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:122](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L122)
+Defined in: [system/core/backend/src/helpers/paths.ts:122](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L122)
 
 ___
 
@@ -1495,7 +1495,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:123](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L123)
+Defined in: [system/core/backend/src/helpers/paths.ts:123](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L123)
 
 ___
 
@@ -1505,7 +1505,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:131](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L131)
+Defined in: [system/core/backend/src/helpers/paths.ts:131](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L131)
 
 ___
 
@@ -1522,7 +1522,7 @@ Name | Type |
 
 **Returns:** *boolean*
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:51](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/auth-guards.ts#L51)
+Defined in: [system/core/backend/src/helpers/auth-guards.ts:51](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/auth-guards.ts#L51)
 
 ___
 
@@ -1539,7 +1539,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/backend/src/repositories/BaseQueries.ts:59](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/repositories/BaseQueries.ts#L59)
+Defined in: [system/core/backend/src/repositories/BaseQueries.ts:59](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/repositories/BaseQueries.ts#L59)
 
 ___
 
@@ -1551,7 +1551,7 @@ Read CMS config from file in [project root]/cmsconfig.json, saves it into the st
 
 **Returns:** *Promise*<TCmsConfig\>
 
-Defined in: [system/core/backend/src/helpers/cms-settings.ts:39](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/cms-settings.ts#L39)
+Defined in: [system/core/backend/src/helpers/cms-settings.ts:39](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/cms-settings.ts#L39)
 
 ___
 
@@ -1563,7 +1563,7 @@ Read CMS config from file in [project root]/cmsconfig.json, saves it into the st
 
 **Returns:** TCmsConfig
 
-Defined in: [system/core/backend/src/helpers/cms-settings.ts:21](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/cms-settings.ts#L21)
+Defined in: [system/core/backend/src/helpers/cms-settings.ts:21](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/cms-settings.ts#L21)
 
 ___
 
@@ -1573,7 +1573,7 @@ ___
 
 **Returns:** *Promise*<{ `plugins`: *string*[] ; `themes`: *string*[]  }\>
 
-Defined in: [system/core/backend/src/helpers/readCmsModules.ts:7](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/readCmsModules.ts#L7)
+Defined in: [system/core/backend/src/helpers/readCmsModules.ts:7](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/readCmsModules.ts#L7)
 
 ___
 
@@ -1589,7 +1589,7 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/backend/src/helpers/paths.ts:224](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L224)
+Defined in: [system/core/backend/src/helpers/paths.ts:224](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L224)
 
 ___
 
@@ -1599,7 +1599,7 @@ ___
 
 **Returns:** *Promise*<[*TPluginInfo*](backend.md#tplugininfo)[]\>
 
-Defined in: [system/core/backend/src/helpers/readPluginsExports.ts:22](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/readPluginsExports.ts#L22)
+Defined in: [system/core/backend/src/helpers/readPluginsExports.ts:22](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/readPluginsExports.ts#L22)
 
 ___
 
@@ -1625,7 +1625,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/backend/src/helpers/actions.ts:7](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/actions.ts#L7)
+Defined in: [system/core/backend/src/helpers/actions.ts:7](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/actions.ts#L7)
 
 ___
 
@@ -1641,7 +1641,7 @@ Name | Type |
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/backend/src/helpers/paths.ts:16](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/paths.ts#L16)
+Defined in: [system/core/backend/src/helpers/paths.ts:16](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/paths.ts#L16)
 
 ___
 
@@ -1658,7 +1658,7 @@ Name | Type |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [system/core/backend/src/helpers/shell.ts:7](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/shell.ts#L7)
+Defined in: [system/core/backend/src/helpers/shell.ts:7](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/shell.ts#L7)
 
 ___
 
@@ -1676,7 +1676,7 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [system/core/backend/src/helpers/emailing.ts:34](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/emailing.ts#L34)
+Defined in: [system/core/backend/src/helpers/emailing.ts:34](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/emailing.ts#L34)
 
 ___
 
@@ -1692,4 +1692,4 @@ Name | Type |
 
 **Returns:** *boolean*
 
-Defined in: [system/core/backend/src/helpers/validation.ts:1](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/helpers/validation.ts#L1)
+Defined in: [system/core/backend/src/helpers/validation.ts:1](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/helpers/validation.ts#L1)

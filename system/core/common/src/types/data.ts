@@ -2,31 +2,67 @@ import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blo
 import { TCmsEntityCore, TProduct, TUser, TServiceVersions } from './entities';
 import { ConnectionOptions } from 'typeorm';
 
-
+/**
+ * Global store mostly for internal usage.
+ * If you need Redux interactivity, use onStoreChange.
+ */
 export type TCromwellStore = {
+    /**
+     * Internal. Plugins data
+     */
     plugins?: Record<string, {
         data?: any;
         component?: any;
         code?: string;
         settings?: any;
     }>;
-
+    /**
+     * Public CMS Settings 
+     */
     cmsSettings?: TCmsSettings;
+    /**
+     * Config of currently opened Theme's page
+     */
     pageConfig?: TPageConfig;
     themeCustomConfig?: Record<string, any>;
-    /** { [ComponentName]: (Class/function) } */
+
+    /**
+     * Internal. Common component storage. E.g. product cards to be reused by Plugins
+     *  { [ComponentName]: (Class/function) }
+     *  */
     components?: Record<string, React.ComponentType<TCommonComponentProps & { [x: string]: any }>>;
-    /** { [CromwellBlockId]: Instance} */
+
+    /**
+     * Internal. References to all instances of Cromwell Blocks at the page
+     * { [CromwellBlockId]: Instance}
+     */
     blockInstances?: Record<string, TCromwellBlock | undefined>;
+    /**
+     * Short pages info of current Theme
+     */
     pagesInfo?: TPageInfo[];
+
+    /**
+     * Active currency
+     */
     currency?: string;
+
+    /**
+     * Helper to invoke render (force update) of current page's root component
+     */
     forceUpdatePage?: () => void;
-    dbType?: string;
+
+    /**
+     * Info about current DB for backend usage
+     */
+    dbInfo?: TDBInfo;
+
     environment?: {
         mode?: 'dev' | 'prod';
         isAdminPanel?: boolean;
         logLevel?: TLogLevel;
     },
+    /** Internal */
     apiClients?: {
         graphQLClient?: any;
         restAPIClient?: any;
@@ -36,10 +72,11 @@ export type TCromwellStore = {
     nodeModules?: TCromwellNodeModules;
     fsRequire?: (path: string) => Promise<any>;
     notifier?: TCromwellNotify;
-    palette?: TPalette;
+    theme?: TCMSTheme;
     userInfo?: TUser;
     storeChangeCallbacks?: Record<string, ((prop) => any)[]>;
 }
+
 
 declare global {
     namespace NodeJS {
@@ -101,11 +138,12 @@ export type TPagedMeta = {
     totalElements?: number;
 }
 
-// Stored in cmsconfig.json
+/**
+ * cmsconfig.json
+ */
 export type TCmsConfig = {
     domain?: string;
     orm?: ConnectionOptions;
-    protocol?: 'http' | 'https';
     apiPort?: number;
     adminPanelPort?: number;
     frontendPort?: number;
@@ -123,7 +161,9 @@ export type TCmsConfig = {
     cookieSecret?: string;
 };
 
-// Info form cmsconfig.json and settings from DB
+/**
+ * Merged info form cmsconfig.json and settings from DB
+ */
 export type TCmsSettings = TCmsConfig & TCmsEntityCore;
 
 export type TRollupConfig = {
@@ -135,6 +175,9 @@ export type TRollupConfig = {
     adminPanel?: Record<string, any>;
 }
 
+/**
+ * Theme module config, part of cromwell.config.js
+ */
 export type TThemeConfig = {
     /** Configs for Rollup */
     rollupConfig?: () => TRollupConfig | Promise<TRollupConfig>;
@@ -198,8 +241,11 @@ export type TPageConfig = TPageInfo & {
     footerHtml?: string;
 }
 
+/**
+ * Plugin module config, part of cromwell.config.js
+ */
 export type TPluginConfig = {
-    /** Configs for Rollup */
+    /** Options for Rollup */
     rollupConfig?: () => TRollupConfig | Promise<TRollupConfig>;
     adminInputFile?: string
     frontendInputFile?: string
@@ -210,6 +256,9 @@ export type TPluginConfig = {
 
 export type TModuleConfig = TThemeConfig & TPluginConfig;
 
+/**
+ * Internal. Store for reusable Frontend dependencies.
+ */
 export type TCromwellNodeModules = {
     importStatuses?: Record<string, 'failed' | 'ready' | 'default' | Promise<'failed' | 'ready' | 'default'>>;
     scriptStatuses?: Record<string, 'failed' | 'ready' | Promise<'failed' | 'ready'>>;
@@ -256,7 +305,9 @@ export type TPluginInfo = {
 
 export type TLogLevel = "none" | "errors-only" | "errors-warnings" | "minimal" | "detailed" | "all";
 
-// react-toastify, for example
+/**
+ * UI Notification service. In Admin panel it's react-toastify, for example.
+ */
 export type TCromwellNotify = {
     success?: (message: string, options?) => void;
     warning?: (message: string, options?) => void;
@@ -264,6 +315,9 @@ export type TCromwellNotify = {
     info?: (message: string, options?) => void;
 }
 
+/**
+ * package.json definition with cromwell info
+ */
 export type TPackageJson = {
     name?: string;
     version?: string;
@@ -274,6 +328,9 @@ export type TPackageJson = {
     cromwell?: TPackageCromwellConfig;
 };
 
+/**
+ * Module info in package.json under "cromwell" property
+ */
 export type TPackageCromwellConfig = {
     name?: string;
     version?: string;
@@ -386,7 +443,10 @@ export type TNotification = {
 }
 
 
-// CCS for Cromwell Central Server
+/**
+ * Version of a CMS module.
+ * CCS - Cromwell Central Server
+ */
 export type TCCSVersion = {
     name: string;
     createdAt: Date;
@@ -440,4 +500,13 @@ export type TFrontendPluginProps<TData = any, TGlobalSettings = any, TInstanceSe
     pluginName: string;
     globalSettings?: TGlobalSettings;
     instanceSettings?: TInstanceSettings;
+}
+
+export type TCMSTheme = {
+    palette?: TPalette;
+    mode?: 'default' | 'dark';
+}
+
+export type TDBInfo = {
+    dbType?: string;
 }

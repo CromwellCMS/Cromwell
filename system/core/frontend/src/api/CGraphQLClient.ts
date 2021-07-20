@@ -170,7 +170,7 @@ export class CGraphQLClient {
             // Data may be cached, and if it is modified somewhere in the app, 
             // next request can possibly return modified data instead of original.
             // Just to make sure all object references inside are new:
-            return clone(data);
+            return clone({ proto: true })(data);
         }
         const errors = res?.errors;
         return errors ?? null;
@@ -298,7 +298,7 @@ export class CGraphQLClient {
     }
 
     /** @internal */
-    public createUpdateEntiy<TEntity, TInput>(entityName: TDBEntity, inputName: string, nativeFragment: DocumentNode, nativeFragmentName: string) {
+    public createUpdateEntity<TEntity, TInput>(entityName: TDBEntity, inputName: string, nativeFragment: DocumentNode, nativeFragmentName: string) {
         const path = GraphQLPaths[entityName].update;
 
         return (id: string, data: TInput, customFragment?: DocumentNode, customFragmentName?: string): Promise<TEntity> => {
@@ -572,7 +572,7 @@ export class CGraphQLClient {
     public getProducts = this.createGetMany<TProduct>('Product', this.ProductFragment, 'ProductFragment');
     public getProductById = this.createGetById<TProduct>('Product', this.ProductFragment, 'ProductFragment');
     public getProductBySlug = this.createGetBySlug<TProduct>('Product', this.ProductFragment, 'ProductFragment');
-    public updateProduct = this.createUpdateEntiy<TProduct, TProductInput>('Product', 'UpdateProduct', this.ProductFragment, 'ProductFragment')
+    public updateProduct = this.createUpdateEntity<TProduct, TProductInput>('Product', 'UpdateProduct', this.ProductFragment, 'ProductFragment')
     public createProduct = this.createCreateEntity<TProduct, TProductInput>('Product', 'CreateProduct', this.ProductFragment, 'ProductFragment');
     public deleteProduct = this.createDeleteEntity('Product');
     public deleteManyProducts = this.createDeleteMany('Product');
@@ -674,7 +674,7 @@ export class CGraphQLClient {
     public getProductCategories = this.createGetMany<TProductCategory>('ProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment');
     public getProductCategoryById = this.createGetById<TProductCategory>('ProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment');
     public getProductCategoryBySlug = this.createGetBySlug<TProductCategory>('ProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment');
-    public updateProductCategory = this.createUpdateEntiy<TProductCategory, TProductCategoryInput>('ProductCategory', 'UpdateProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment')
+    public updateProductCategory = this.createUpdateEntity<TProductCategory, TProductCategoryInput>('ProductCategory', 'UpdateProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment')
     public createProductCategory = this.createCreateEntity<TProductCategory, TProductCategoryInput>('ProductCategory', 'CreateProductCategory', this.ProductCategoryFragment, 'ProductCategoryFragment');
     public deleteProductCategory = this.createDeleteEntity('ProductCategory');
     public deleteManyProductCategories = this.createDeleteMany('ProductCategory');
@@ -728,7 +728,7 @@ export class CGraphQLClient {
    `;
 
     public getAttributeById = this.createGetById<TAttribute>('Attribute', this.AttributeFragment, 'AttributeFragment');
-    public updateAttribute = this.createUpdateEntiy<TAttribute, TAttributeInput>('Attribute', 'AttributeInput', this.AttributeFragment, 'AttributeFragment')
+    public updateAttribute = this.createUpdateEntity<TAttribute, TAttributeInput>('Attribute', 'AttributeInput', this.AttributeFragment, 'AttributeFragment')
     public createAttribute = this.createCreateEntity<TAttribute, TAttributeInput>('Attribute', 'AttributeInput', this.AttributeFragment, 'AttributeFragment');
     public deleteAttribute = this.createDeleteEntity('Attribute');
 
@@ -769,7 +769,7 @@ export class CGraphQLClient {
 
     public getProductReviews = this.createGetMany<TProductReview>('ProductReview', this.ProductReviewFragment, 'ProductReviewFragment');
     public getProductReviewById = this.createGetById<TProductReview>('ProductReview', this.ProductReviewFragment, 'ProductReviewFragment');
-    public updateProductReview = this.createUpdateEntiy<TProductReview, TProductReviewInput>('ProductReview', 'ProductReviewInput', this.ProductReviewFragment, 'ProductReviewFragment')
+    public updateProductReview = this.createUpdateEntity<TProductReview, TProductReviewInput>('ProductReview', 'ProductReviewInput', this.ProductReviewFragment, 'ProductReviewFragment')
     public createProductReview = this.createCreateEntity<TProductReview, TProductReviewInput>('ProductReview', 'ProductReviewInput', this.ProductReviewFragment, 'ProductReviewFragment');
     public deleteProductReview = this.createDeleteEntity('ProductReview');
     public deleteManyProductReviews = this.createDeleteMany('ProductReview');
@@ -814,7 +814,7 @@ export class CGraphQLClient {
     public getPosts = this.createGetMany<TPost>('Post', this.PostFragment, 'PostFragment');
     public getPostById = this.createGetById<TPost>('Post', this.PostFragment, 'PostFragment');
     public getPostBySlug = this.createGetBySlug<TPost>('Post', this.PostFragment, 'PostFragment');
-    public updatePost = this.createUpdateEntiy<TPost, TPostInput>('Post', 'UpdatePost', this.PostFragment, 'PostFragment')
+    public updatePost = this.createUpdateEntity<TPost, TPostInput>('Post', 'UpdatePost', this.PostFragment, 'PostFragment')
     public createPost = this.createCreateEntity<TPost, TPostInput>('Post', 'CreatePost', this.PostFragment, 'PostFragment');
     public deletePost = this.createDeleteEntity('Post');
     public deleteManyPosts = this.createDeleteMany('Post');
@@ -852,7 +852,7 @@ export class CGraphQLClient {
     public getUsers = this.createGetMany<TUser>('User', this.UserFragment, 'UserFragment');
     public getUserById = this.createGetById<TUser>('User', this.UserFragment, 'UserFragment');
     public getUserBySlug = this.createGetBySlug<TUser>('User', this.UserFragment, 'UserFragment');
-    public updateUser = this.createUpdateEntiy<TUser, TUpdateUser>('User', 'UpdateUser', this.UserFragment, 'UserFragment')
+    public updateUser = this.createUpdateEntity<TUser, TUpdateUser>('User', 'UpdateUser', this.UserFragment, 'UserFragment')
     public createUser = this.createCreateEntity<TUser, TCreateUser>('User', 'CreateUser', this.UserFragment, 'UserFragment');
     public deleteUser = this.createDeleteEntity('User');
     public deleteManyUsers = this.createDeleteMany('User');
@@ -892,7 +892,7 @@ export class CGraphQLClient {
     public getOrders = this.createGetMany<TOrder>('Order', this.OrderFragment, 'OrderFragment');
     public getOrderById = this.createGetById<TOrder>('Order', this.OrderFragment, 'OrderFragment');
     public getOrderBySlug = this.createGetBySlug<TOrder>('Order', this.OrderFragment, 'OrderFragment');
-    public updateOrder = this.createUpdateEntiy<TOrder, TOrderInput>('Order', 'InputOrder', this.OrderFragment, 'OrderFragment')
+    public updateOrder = this.createUpdateEntity<TOrder, TOrderInput>('Order', 'InputOrder', this.OrderFragment, 'OrderFragment')
     public createOrder = this.createCreateEntity<TOrder, TOrderInput>('Order', 'InputOrder', this.OrderFragment, 'OrderFragment');
     public deleteOrder = this.createDeleteEntity('Order');
     public deleteManyOrders = this.createDeleteMany('Order');
@@ -924,7 +924,7 @@ export class CGraphQLClient {
     public getTags = this.createGetMany<TTag>('Tag', this.TagFragment, 'TagFragment');
     public getTagById = this.createGetById<TTag>('Tag', this.TagFragment, 'TagFragment');
     public getTagBySlug = this.createGetBySlug<TTag>('Tag', this.TagFragment, 'TagFragment');
-    public updateTag = this.createUpdateEntiy<TTag, TTagInput>('Tag', 'InputTag', this.TagFragment, 'TagFragment')
+    public updateTag = this.createUpdateEntity<TTag, TTagInput>('Tag', 'InputTag', this.TagFragment, 'TagFragment')
     public createTag = this.createCreateEntity<TTag, TTagInput>('Tag', 'InputTag', this.TagFragment, 'TagFragment');
     public deleteTag = this.createDeleteEntity('Tag');
     public deleteManyTags = this.createDeleteMany('Tag');

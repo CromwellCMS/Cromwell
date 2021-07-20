@@ -53,7 +53,7 @@ Inherited from: [BasePageInput](backend.basepageinput.md)
 
 • **authorId**: *string*
 
-Defined in: [system/core/backend/src/inputs/UpdatePost.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/UpdatePost.ts#L12)
+Defined in: [system/core/backend/src/inputs/UpdatePost.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/UpdatePost.ts#L12)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 • **content**: *string*
 
-Defined in: [system/core/backend/src/inputs/UpdatePost.ts:24](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/UpdatePost.ts#L24)
+Defined in: [system/core/backend/src/inputs/UpdatePost.ts:24](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/UpdatePost.ts#L24)
 
 ___
 
@@ -69,7 +69,7 @@ ___
 
 • **delta**: *string*
 
-Defined in: [system/core/backend/src/inputs/UpdatePost.ts:27](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/UpdatePost.ts#L27)
+Defined in: [system/core/backend/src/inputs/UpdatePost.ts:27](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/UpdatePost.ts#L27)
 
 ___
 
@@ -77,7 +77,7 @@ ___
 
 • `Optional` **excerpt**: *undefined* \| *null* \| *string*
 
-Defined in: [system/core/backend/src/inputs/UpdatePost.ts:30](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/UpdatePost.ts#L30)
+Defined in: [system/core/backend/src/inputs/UpdatePost.ts:30](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/UpdatePost.ts#L30)
 
 ___
 
@@ -87,7 +87,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L18)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/BasePageInput.ts#L18)
 
 ___
 
@@ -95,7 +95,7 @@ ___
 
 • `Optional` **mainImage**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/UpdatePost.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/UpdatePost.ts#L15)
+Defined in: [system/core/backend/src/inputs/UpdatePost.ts:15](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/UpdatePost.ts#L15)
 
 ___
 
@@ -105,7 +105,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L15)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/BasePageInput.ts#L15)
 
 ___
 
@@ -115,7 +115,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L12)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/BasePageInput.ts#L12)
 
 ___
 
@@ -123,7 +123,7 @@ ___
 
 • `Optional` **publishDate**: *undefined* \| *null* \| Date
 
-Defined in: [system/core/backend/src/inputs/UpdatePost.ts:36](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/UpdatePost.ts#L36)
+Defined in: [system/core/backend/src/inputs/UpdatePost.ts:36](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/UpdatePost.ts#L36)
 
 ___
 
@@ -131,7 +131,7 @@ ___
 
 • **published**: *boolean*
 
-Defined in: [system/core/backend/src/inputs/UpdatePost.ts:33](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/UpdatePost.ts#L33)
+Defined in: [system/core/backend/src/inputs/UpdatePost.ts:33](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/UpdatePost.ts#L33)
 
 ___
 
@@ -139,7 +139,7 @@ ___
 
 • `Optional` **readTime**: *undefined* \| *null* \| *string*
 
-Defined in: [system/core/backend/src/inputs/UpdatePost.ts:18](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/UpdatePost.ts#L18)
+Defined in: [system/core/backend/src/inputs/UpdatePost.ts:18](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/UpdatePost.ts#L18)
 
 ___
 
@@ -149,7 +149,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/BasePageInput.ts#L9)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/BasePageInput.ts#L9)
 
 ___
 
@@ -157,7 +157,7 @@ ___
 
 • `Optional` **tagIds**: *undefined* \| *null* \| *string*[]
 
-Defined in: [system/core/backend/src/inputs/UpdatePost.ts:21](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/UpdatePost.ts#L21)
+Defined in: [system/core/backend/src/inputs/UpdatePost.ts:21](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/UpdatePost.ts#L21)
 
 ___
 
@@ -165,4 +165,4 @@ ___
 
 • **title**: *string*
 
-Defined in: [system/core/backend/src/inputs/UpdatePost.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/UpdatePost.ts#L9)
+Defined in: [system/core/backend/src/inputs/UpdatePost.ts:9](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/UpdatePost.ts#L9)

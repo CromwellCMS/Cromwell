@@ -33,7 +33,7 @@
 
 • `Optional` **all**: *undefined* \| *boolean*
 
-Defined in: [system/core/backend/src/inputs/DeleteManyInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/DeleteManyInput.ts#L11)
+Defined in: [system/core/backend/src/inputs/DeleteManyInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/DeleteManyInput.ts#L11)
 
 ___
 
@@ -41,4 +41,4 @@ ___
 
 • **ids**: *string*[]
 
-Defined in: [system/core/backend/src/inputs/DeleteManyInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/DeleteManyInput.ts#L8)
+Defined in: [system/core/backend/src/inputs/DeleteManyInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/DeleteManyInput.ts#L8)

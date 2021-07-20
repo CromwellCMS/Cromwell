@@ -38,7 +38,7 @@
 
 • `Optional` **customerEmail**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/OrderFilterInput.ts#L17)
+Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/OrderFilterInput.ts#L17)
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • `Optional` **customerName**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/OrderFilterInput.ts#L11)
+Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/OrderFilterInput.ts#L11)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 • `Optional` **customerPhone**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/OrderFilterInput.ts#L14)
+Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/OrderFilterInput.ts#L14)
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 • `Optional` **dateFrom**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:23](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/OrderFilterInput.ts#L23)
+Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:23](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/OrderFilterInput.ts#L23)
 
 ___
 
@@ -70,7 +70,7 @@ ___
 
 • `Optional` **dateTo**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:26](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/OrderFilterInput.ts#L26)
+Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:26](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/OrderFilterInput.ts#L26)
 
 ___
 
@@ -78,7 +78,7 @@ ___
 
 • `Optional` **orderId**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:20](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/OrderFilterInput.ts#L20)
+Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:20](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/OrderFilterInput.ts#L20)
 
 ___
 
@@ -86,4 +86,4 @@ ___
 
 • `Optional` **status**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/OrderFilterInput.ts#L8)
+Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/OrderFilterInput.ts#L8)

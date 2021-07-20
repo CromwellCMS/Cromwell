@@ -34,7 +34,7 @@
 
 • `Optional` **icon**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Attribute.ts#L15)
+Defined in: [system/core/backend/src/entities/Attribute.ts:15](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Attribute.ts#L15)
 
 ___
 
@@ -42,7 +42,7 @@ ___
 
 • `Optional` **title**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Attribute.ts#L12)
+Defined in: [system/core/backend/src/entities/Attribute.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Attribute.ts#L12)
 
 ___
 
@@ -50,4 +50,4 @@ ___
 
 • **value**: *string*
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Attribute.ts#L9)
+Defined in: [system/core/backend/src/entities/Attribute.ts:9](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Attribute.ts#L9)

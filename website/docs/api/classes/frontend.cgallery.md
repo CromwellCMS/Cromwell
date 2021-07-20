@@ -61,4 +61,4 @@ Defined in: node_modules/@types/react/index.d.ts:485
 
 **Returns:** *Element*
 
-Defined in: [system/core/frontend/src/components/CGallery/CGallery.tsx:256](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/components/CGallery/CGallery.tsx#L256)
+Defined in: [system/core/frontend/src/components/CGallery/CGallery.tsx:256](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/components/CGallery/CGallery.tsx#L256)

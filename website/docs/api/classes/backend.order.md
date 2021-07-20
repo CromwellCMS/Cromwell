@@ -60,7 +60,7 @@ Inherited from: [BasePageEntity](backend.basepageentity.md)
 
 • `Optional` **cart**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Order.ts:19](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L19)
+Defined in: [system/core/backend/src/entities/Order.ts:19](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L19)
 
 ___
 
@@ -68,7 +68,7 @@ ___
 
 • `Optional` **cartOldTotalPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/Order.ts:31](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L31)
+Defined in: [system/core/backend/src/entities/Order.ts:31](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L31)
 
 ___
 
@@ -76,7 +76,7 @@ ___
 
 • `Optional` **cartTotalPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/Order.ts:27](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L27)
+Defined in: [system/core/backend/src/entities/Order.ts:27](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L27)
 
 ___
 
@@ -86,7 +86,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L28)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L28)
 
 ___
 
@@ -94,7 +94,7 @@ ___
 
 • `Optional` **customerAddress**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Order.ts:63](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L63)
+Defined in: [system/core/backend/src/entities/Order.ts:63](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L63)
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 • `Optional` **customerComment**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Order.ts:71](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L71)
+Defined in: [system/core/backend/src/entities/Order.ts:71](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L71)
 
 ___
 
@@ -110,7 +110,7 @@ ___
 
 • `Optional` **customerEmail**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Order.ts:59](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L59)
+Defined in: [system/core/backend/src/entities/Order.ts:59](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L59)
 
 ___
 
@@ -118,7 +118,7 @@ ___
 
 • `Optional` **customerName**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Order.ts:49](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L49)
+Defined in: [system/core/backend/src/entities/Order.ts:49](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L49)
 
 ___
 
@@ -126,7 +126,7 @@ ___
 
 • `Optional` **customerPhone**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Order.ts:54](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L54)
+Defined in: [system/core/backend/src/entities/Order.ts:54](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L54)
 
 ___
 
@@ -136,7 +136,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L12)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L12)
 
 ___
 
@@ -146,7 +146,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L36)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L36)
 
 ___
 
@@ -154,7 +154,7 @@ ___
 
 • `Optional` **orderTotalPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/Order.ts:23](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L23)
+Defined in: [system/core/backend/src/entities/Order.ts:23](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L23)
 
 ___
 
@@ -164,7 +164,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L24)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L24)
 
 ___
 
@@ -174,7 +174,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L20)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L20)
 
 ___
 
@@ -182,7 +182,7 @@ ___
 
 • `Optional` **shippingMethod**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Order.ts:67](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L67)
+Defined in: [system/core/backend/src/entities/Order.ts:67](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L67)
 
 ___
 
@@ -190,7 +190,7 @@ ___
 
 • `Optional` **shippingPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/Order.ts:35](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L35)
+Defined in: [system/core/backend/src/entities/Order.ts:35](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L35)
 
 ___
 
@@ -200,7 +200,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L16)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L16)
 
 ___
 
@@ -208,7 +208,7 @@ ___
 
 • `Optional` **status**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Order.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L15)
+Defined in: [system/core/backend/src/entities/Order.ts:15](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L15)
 
 ___
 
@@ -216,7 +216,7 @@ ___
 
 • `Optional` **totalQnt**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/Order.ts:39](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L39)
+Defined in: [system/core/backend/src/entities/Order.ts:39](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L39)
 
 ___
 
@@ -226,7 +226,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L32)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L32)
 
 ___
 
@@ -234,4 +234,4 @@ ___
 
 • `Optional` **userId**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/Order.ts:44](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/Order.ts#L44)
+Defined in: [system/core/backend/src/entities/Order.ts:44](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/Order.ts#L44)

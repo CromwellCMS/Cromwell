@@ -61,7 +61,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSVersion\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:118](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L118)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:118](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L118)
 
 ___
 
@@ -79,7 +79,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSVersion\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:159](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L159)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:159](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L159)
 
 ___
 
@@ -97,7 +97,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSVersion\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:189](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L189)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:189](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L189)
 
 ___
 
@@ -120,7 +120,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| T\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:29](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L29)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:29](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L29)
 
 ___
 
@@ -143,7 +143,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| T\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:61](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L61)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:61](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L61)
 
 ___
 
@@ -153,7 +153,7 @@ ___
 
 **Returns:** *Promise*<undefined \| TCCSModuleShortInfo\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:122](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L122)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:122](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L122)
 
 ___
 
@@ -163,7 +163,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L12)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L12)
 
 ___
 
@@ -173,7 +173,7 @@ ___
 
 **Returns:** *Promise*<undefined \| TCCSModuleInfo\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:110](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L110)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:110](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L110)
 
 ___
 
@@ -183,7 +183,7 @@ ___
 
 **Returns:** *Promise*<undefined \| TCCSModuleShortInfo\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:106](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L106)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:106](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L106)
 
 ___
 
@@ -193,7 +193,7 @@ ___
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:126](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L126)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:126](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L126)
 
 ___
 
@@ -209,7 +209,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSVersion[]\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:155](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L155)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:155](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L155)
 
 ___
 
@@ -225,7 +225,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSModuleInfo\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:151](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L151)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:151](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L151)
 
 ___
 
@@ -241,7 +241,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSModuleShortInfo\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:138](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L138)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:138](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L138)
 
 ___
 
@@ -259,7 +259,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPagedList<TCCSModuleInfo\>\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:142](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L142)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:142](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L142)
 
 ___
 
@@ -275,7 +275,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSVersion[]\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:185](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L185)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:185](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L185)
 
 ___
 
@@ -291,7 +291,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSModuleInfo\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:181](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L181)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:181](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L181)
 
 ___
 
@@ -307,7 +307,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSModuleShortInfo\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:168](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L168)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:168](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L168)
 
 ___
 
@@ -325,7 +325,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPagedList<TCCSModuleInfo\>\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:172](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L172)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:172](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L172)
 
 ___
 
@@ -341,7 +341,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSVersion\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:114](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L114)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:114](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L114)
 
 ___
 
@@ -357,7 +357,7 @@ Name | Type |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:73](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L73)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:73](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L73)
 
 ___
 
@@ -381,4 +381,4 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| T\>
 
-Defined in: [system/core/frontend/src/api/CentralServerClient.ts:65](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/api/CentralServerClient.ts#L65)
+Defined in: [system/core/frontend/src/api/CentralServerClient.ts:65](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/api/CentralServerClient.ts#L65)

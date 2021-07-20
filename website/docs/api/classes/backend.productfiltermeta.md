@@ -33,7 +33,7 @@
 
 • `Optional` **maxPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/FilteredProduct.ts#L12)
+Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/FilteredProduct.ts#L12)
 
 ___
 
@@ -41,4 +41,4 @@ ___
 
 • `Optional` **minPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/filter/FilteredProduct.ts#L9)
+Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:9](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/filter/FilteredProduct.ts#L9)

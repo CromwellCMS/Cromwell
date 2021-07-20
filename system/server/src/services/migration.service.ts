@@ -449,7 +449,6 @@ export class MigrationService {
             id: ent.id,
             createDate: ent.createDate,
             updateDate: ent.updateDate,
-            protocol: ent.protocol,
             themeName: ent.themeName,
             defaultPageSize: ent.defaultPageSize,
             currencies: JSON.stringify(ent.currencies),

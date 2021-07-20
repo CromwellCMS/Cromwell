@@ -38,7 +38,7 @@
 
 • `Optional` **approved**: *undefined* \| *boolean*
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:26](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/ProductReviewInput.ts#L26)
+Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:26](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/ProductReviewInput.ts#L26)
 
 ___
 
@@ -46,7 +46,7 @@ ___
 
 • `Optional` **description**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/ProductReviewInput.ts#L14)
+Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/ProductReviewInput.ts#L14)
 
 ___
 
@@ -54,7 +54,7 @@ ___
 
 • **productId**: *string*
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/ProductReviewInput.ts#L8)
+Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/ProductReviewInput.ts#L8)
 
 ___
 
@@ -62,7 +62,7 @@ ___
 
 • `Optional` **rating**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/ProductReviewInput.ts#L17)
+Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/ProductReviewInput.ts#L17)
 
 ___
 
@@ -70,7 +70,7 @@ ___
 
 • `Optional` **title**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/ProductReviewInput.ts#L11)
+Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/ProductReviewInput.ts#L11)
 
 ___
 
@@ -78,7 +78,7 @@ ___
 
 • `Optional` **userId**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:23](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/ProductReviewInput.ts#L23)
+Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:23](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/ProductReviewInput.ts#L23)
 
 ___
 
@@ -86,4 +86,4 @@ ___
 
 • `Optional` **userName**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:20](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/inputs/ProductReviewInput.ts#L20)
+Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:20](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/inputs/ProductReviewInput.ts#L20)

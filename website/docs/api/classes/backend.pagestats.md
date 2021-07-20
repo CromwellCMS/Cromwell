@@ -45,7 +45,7 @@
 
 • `Optional` **categorySlug**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:21](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/PageStats.ts#L21)
+Defined in: [system/core/backend/src/entities/PageStats.ts:21](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/PageStats.ts#L21)
 
 ___
 
@@ -53,7 +53,7 @@ ___
 
 • **id**: *string*
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:9](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/PageStats.ts#L9)
+Defined in: [system/core/backend/src/entities/PageStats.ts:9](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/PageStats.ts#L9)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 • `Optional` **pageId**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:30](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/PageStats.ts#L30)
+Defined in: [system/core/backend/src/entities/PageStats.ts:30](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/PageStats.ts#L30)
 
 ___
 
@@ -69,7 +69,7 @@ ___
 
 • **pageRoute**: *string*
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/PageStats.ts#L12)
+Defined in: [system/core/backend/src/entities/PageStats.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/PageStats.ts#L12)
 
 ___
 
@@ -77,7 +77,7 @@ ___
 
 • `Optional` **postSlug**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:24](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/PageStats.ts#L24)
+Defined in: [system/core/backend/src/entities/PageStats.ts:24](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/PageStats.ts#L24)
 
 ___
 
@@ -85,7 +85,7 @@ ___
 
 • `Optional` **productSlug**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:18](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/PageStats.ts#L18)
+Defined in: [system/core/backend/src/entities/PageStats.ts:18](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/PageStats.ts#L18)
 
 ___
 
@@ -93,7 +93,7 @@ ___
 
 • `Optional` **tagSlug**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:27](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/PageStats.ts#L27)
+Defined in: [system/core/backend/src/entities/PageStats.ts:27](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/PageStats.ts#L27)
 
 ___
 
@@ -101,4 +101,4 @@ ___
 
 • **views**: *number*
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/PageStats.ts#L15)
+Defined in: [system/core/backend/src/entities/PageStats.ts:15](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/PageStats.ts#L15)

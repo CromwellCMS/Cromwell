@@ -68,24 +68,24 @@ Name | Type |
 
 **Returns:** [*CStore*](frontend.cstore.md)
 
-Defined in: [system/core/frontend/src/CStore.ts:41](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L41)
+Defined in: [system/core/frontend/src/CStore.ts:41](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L41)
 
 ## Methods
 
 ### addToCart
 
-▸ **addToCart**(`product`: TStoreListItem, `attributes?`: *TAttribute*[]): [*OperationResult*](../modules/frontend.md#operationresult) & { `missingAttributes?`: *undefined* \| *TAttribute*[]  }
+▸ **addToCart**(`product`: TStoreListItem, `attributes?`: TAttribute[]): [*OperationResult*](../modules/frontend.md#operationresult) & { `missingAttributes?`: *undefined* \| TAttribute[]  }
 
 #### Parameters:
 
 Name | Type |
 :------ | :------ |
 `product` | TStoreListItem |
-`attributes?` | *TAttribute*[] |
+`attributes?` | TAttribute[] |
 
-**Returns:** [*OperationResult*](../modules/frontend.md#operationresult) & { `missingAttributes?`: *undefined* \| *TAttribute*[]  }
+**Returns:** [*OperationResult*](../modules/frontend.md#operationresult) & { `missingAttributes?`: *undefined* \| TAttribute[]  }
 
-Defined in: [system/core/frontend/src/CStore.ts:196](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L196)
+Defined in: [system/core/frontend/src/CStore.ts:196](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L196)
 
 ___
 
@@ -101,7 +101,7 @@ Name | Type |
 
 **Returns:** [*OperationResult*](../modules/frontend.md#operationresult)
 
-Defined in: [system/core/frontend/src/CStore.ts:283](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L283)
+Defined in: [system/core/frontend/src/CStore.ts:283](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L283)
 
 ___
 
@@ -117,7 +117,7 @@ Name | Type |
 
 **Returns:** [*OperationResult*](../modules/frontend.md#operationresult)
 
-Defined in: [system/core/frontend/src/CStore.ts:310](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L310)
+Defined in: [system/core/frontend/src/CStore.ts:310](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L310)
 
 ___
 
@@ -133,13 +133,13 @@ Name | Type |
 
 **Returns:** [*OperationResult*](../modules/frontend.md#operationresult)
 
-Defined in: [system/core/frontend/src/CStore.ts:260](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L260)
+Defined in: [system/core/frontend/src/CStore.ts:260](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L260)
 
 ___
 
 ### applyProductVariants
 
-▸ **applyProductVariants**(`product`: *TProduct*, `checkedAttrs?`: *Record*<string, string[]\>, `attributes?`: *TAttribute*[]): *TProduct*
+▸ **applyProductVariants**(`product`: TProduct, `checkedAttrs?`: *Record*<string, string[]\>, `attributes?`: TAttribute[]): TProduct
 
 Applies all ProductVariants from values of checked attributes
 
@@ -147,13 +147,13 @@ Applies all ProductVariants from values of checked attributes
 
 Name | Type |
 :------ | :------ |
-`product` | *TProduct* |
+`product` | TProduct |
 `checkedAttrs?` | *Record*<string, string[]\> |
-`attributes?` | *TAttribute*[] |
+`attributes?` | TAttribute[] |
 
-**Returns:** *TProduct*
+**Returns:** TProduct
 
-Defined in: [system/core/frontend/src/CStore.ts:447](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L447)
+Defined in: [system/core/frontend/src/CStore.ts:447](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L447)
 
 ___
 
@@ -163,7 +163,7 @@ ___
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/CStore.ts:406](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L406)
+Defined in: [system/core/frontend/src/CStore.ts:406](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L406)
 
 ___
 
@@ -173,7 +173,7 @@ ___
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/CStore.ts:414](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L414)
+Defined in: [system/core/frontend/src/CStore.ts:414](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L414)
 
 ___
 
@@ -183,7 +183,7 @@ ___
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/CStore.ts:418](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L418)
+Defined in: [system/core/frontend/src/CStore.ts:418](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L418)
 
 ___
 
@@ -193,7 +193,7 @@ ___
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/CStore.ts:410](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L410)
+Defined in: [system/core/frontend/src/CStore.ts:410](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L410)
 
 ___
 
@@ -211,7 +211,7 @@ Name | Type |
 
 **Returns:** *string* \| *number*
 
-Defined in: [system/core/frontend/src/CStore.ts:513](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L513)
+Defined in: [system/core/frontend/src/CStore.ts:513](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L513)
 
 ___
 
@@ -221,7 +221,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/CStore.ts:542](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L542)
+Defined in: [system/core/frontend/src/CStore.ts:542](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L542)
 
 ___
 
@@ -231,7 +231,7 @@ ___
 
 **Returns:** *undefined* \| *string*
 
-Defined in: [system/core/frontend/src/CStore.ts:527](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L527)
+Defined in: [system/core/frontend/src/CStore.ts:527](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L527)
 
 ___
 
@@ -241,7 +241,7 @@ ___
 
 **Returns:** TStoreListItem[]
 
-Defined in: [system/core/frontend/src/CStore.ts:174](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L174)
+Defined in: [system/core/frontend/src/CStore.ts:174](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L174)
 
 ___
 
@@ -257,7 +257,7 @@ Name | Type |
 `total` | *number* |
 `totalOld` | *number* |
 
-Defined in: [system/core/frontend/src/CStore.ts:423](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L423)
+Defined in: [system/core/frontend/src/CStore.ts:423](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L423)
 
 ___
 
@@ -267,7 +267,7 @@ ___
 
 **Returns:** TStoreListItem[]
 
-Defined in: [system/core/frontend/src/CStore.ts:274](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L274)
+Defined in: [system/core/frontend/src/CStore.ts:274](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L274)
 
 ___
 
@@ -285,7 +285,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/CStore.ts:495](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L495)
+Defined in: [system/core/frontend/src/CStore.ts:495](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L495)
 
 ___
 
@@ -295,7 +295,7 @@ ___
 
 **Returns:** TStoreListItem[]
 
-Defined in: [system/core/frontend/src/CStore.ts:297](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L297)
+Defined in: [system/core/frontend/src/CStore.ts:297](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L297)
 
 ___
 
@@ -305,7 +305,7 @@ ___
 
 **Returns:** TStoreListItem[]
 
-Defined in: [system/core/frontend/src/CStore.ts:251](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L251)
+Defined in: [system/core/frontend/src/CStore.ts:251](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L251)
 
 ___
 
@@ -321,7 +321,7 @@ Name | Type |
 
 **Returns:** *boolean*
 
-Defined in: [system/core/frontend/src/CStore.ts:187](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L187)
+Defined in: [system/core/frontend/src/CStore.ts:187](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L187)
 
 ___
 
@@ -337,7 +337,7 @@ Name | Type |
 
 **Returns:** *boolean*
 
-Defined in: [system/core/frontend/src/CStore.ts:182](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L182)
+Defined in: [system/core/frontend/src/CStore.ts:182](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L182)
 
 ___
 
@@ -353,7 +353,7 @@ Name | Type |
 
 **Returns:** *boolean*
 
-Defined in: [system/core/frontend/src/CStore.ts:278](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L278)
+Defined in: [system/core/frontend/src/CStore.ts:278](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L278)
 
 ___
 
@@ -369,7 +369,7 @@ Name | Type |
 
 **Returns:** *boolean*
 
-Defined in: [system/core/frontend/src/CStore.ts:305](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L305)
+Defined in: [system/core/frontend/src/CStore.ts:305](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L305)
 
 ___
 
@@ -385,7 +385,7 @@ Name | Type |
 
 **Returns:** *boolean*
 
-Defined in: [system/core/frontend/src/CStore.ts:255](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L255)
+Defined in: [system/core/frontend/src/CStore.ts:255](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L255)
 
 ___
 
@@ -402,7 +402,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/CStore.ts:245](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L245)
+Defined in: [system/core/frontend/src/CStore.ts:245](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L245)
 
 ___
 
@@ -419,7 +419,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/CStore.ts:291](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L291)
+Defined in: [system/core/frontend/src/CStore.ts:291](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L291)
 
 ___
 
@@ -436,7 +436,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/CStore.ts:314](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L314)
+Defined in: [system/core/frontend/src/CStore.ts:314](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L314)
 
 ___
 
@@ -453,7 +453,7 @@ Name | Type |
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/CStore.ts:268](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L268)
+Defined in: [system/core/frontend/src/CStore.ts:268](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L268)
 
 ___
 
@@ -469,7 +469,7 @@ Name | Type |
 
 **Returns:** [*OperationResult*](../modules/frontend.md#operationresult)
 
-Defined in: [system/core/frontend/src/CStore.ts:241](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L241)
+Defined in: [system/core/frontend/src/CStore.ts:241](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L241)
 
 ___
 
@@ -485,7 +485,7 @@ Name | Type |
 
 **Returns:** [*OperationResult*](../modules/frontend.md#operationresult)
 
-Defined in: [system/core/frontend/src/CStore.ts:287](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L287)
+Defined in: [system/core/frontend/src/CStore.ts:287](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L287)
 
 ___
 
@@ -501,7 +501,7 @@ Name | Type |
 
 **Returns:** [*OperationResult*](../modules/frontend.md#operationresult)
 
-Defined in: [system/core/frontend/src/CStore.ts:264](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L264)
+Defined in: [system/core/frontend/src/CStore.ts:264](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L264)
 
 ___
 
@@ -517,7 +517,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/CStore.ts:178](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L178)
+Defined in: [system/core/frontend/src/CStore.ts:178](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L178)
 
 ___
 
@@ -533,7 +533,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/CStore.ts:301](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L301)
+Defined in: [system/core/frontend/src/CStore.ts:301](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L301)
 
 ___
 
@@ -549,7 +549,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/CStore.ts:549](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L549)
+Defined in: [system/core/frontend/src/CStore.ts:549](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L549)
 
 ___
 
@@ -559,7 +559,7 @@ ___
 
 **Returns:** *Promise*<void\>
 
-Defined in: [system/core/frontend/src/CStore.ts:389](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L389)
+Defined in: [system/core/frontend/src/CStore.ts:389](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L389)
 
 ___
 
@@ -569,7 +569,7 @@ ___
 
 **Returns:** *Promise*<void\>
 
-Defined in: [system/core/frontend/src/CStore.ts:397](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L397)
+Defined in: [system/core/frontend/src/CStore.ts:397](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L397)
 
 ___
 
@@ -585,7 +585,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/CStore.ts:228](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L228)
+Defined in: [system/core/frontend/src/CStore.ts:228](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L228)
 
 ___
 
@@ -595,7 +595,7 @@ ___
 
 **Returns:** *Promise*<void\>
 
-Defined in: [system/core/frontend/src/CStore.ts:401](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L401)
+Defined in: [system/core/frontend/src/CStore.ts:401](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L401)
 
 ___
 
@@ -605,4 +605,4 @@ ___
 
 **Returns:** *Promise*<void\>
 
-Defined in: [system/core/frontend/src/CStore.ts:393](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/frontend/src/CStore.ts#L393)
+Defined in: [system/core/frontend/src/CStore.ts:393](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/frontend/src/CStore.ts#L393)

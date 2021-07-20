@@ -109,14 +109,17 @@ module.exports = {
                 item.items = [
                   {
                     "type": "doc",
+                    "label": "Backend",
                     "id": "api/modules/backend"
                   },
                   {
                     "type": "doc",
+                    "label": "Common",
                     "id": "api/modules/common"
                   },
                   {
                     "type": "doc",
+                    "label": "Frontend",
                     "id": "api/modules/frontend"
                   },
                 ];

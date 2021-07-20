@@ -57,7 +57,7 @@ Inherited from: [BasePageEntity](backend.basepageentity.md)
 
 • `Optional` **address**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/User.ts:36](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L36)
+Defined in: [system/core/backend/src/entities/User.ts:36](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L36)
 
 ___
 
@@ -65,7 +65,7 @@ ___
 
 • `Optional` **avatar**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/User.ts:23](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L23)
+Defined in: [system/core/backend/src/entities/User.ts:23](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L23)
 
 ___
 
@@ -73,7 +73,7 @@ ___
 
 • `Optional` **bio**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/User.ts:27](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L27)
+Defined in: [system/core/backend/src/entities/User.ts:27](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L27)
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L28)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L28)
 
 ___
 
@@ -91,7 +91,7 @@ ___
 
 • **email**: *string*
 
-Defined in: [system/core/backend/src/entities/User.ts:19](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L19)
+Defined in: [system/core/backend/src/entities/User.ts:19](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L19)
 
 ___
 
@@ -99,7 +99,7 @@ ___
 
 • **fullName**: *string*
 
-Defined in: [system/core/backend/src/entities/User.ts:15](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L15)
+Defined in: [system/core/backend/src/entities/User.ts:15](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L15)
 
 ___
 
@@ -109,7 +109,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L12)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L12)
 
 ___
 
@@ -119,7 +119,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L36)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L36)
 
 ___
 
@@ -129,7 +129,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L24)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L24)
 
 ___
 
@@ -139,7 +139,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L20)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L20)
 
 ___
 
@@ -147,7 +147,7 @@ ___
 
 • **password**: *string*
 
-Defined in: [system/core/backend/src/entities/User.ts:44](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L44)
+Defined in: [system/core/backend/src/entities/User.ts:44](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L44)
 
 ___
 
@@ -155,7 +155,7 @@ ___
 
 • `Optional` **phone**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/User.ts:41](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L41)
+Defined in: [system/core/backend/src/entities/User.ts:41](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L41)
 
 ___
 
@@ -166,7 +166,7 @@ ___
 Stringified array of Refresh tokens. We create one token per client during log-in
 And then update them in this array on refresh Access token
 
-Defined in: [system/core/backend/src/entities/User.ts:51](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L51)
+Defined in: [system/core/backend/src/entities/User.ts:51](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L51)
 
 ___
 
@@ -174,7 +174,7 @@ ___
 
 • `Optional` **resetPasswordCode**: *undefined* \| *null* \| *string*
 
-Defined in: [system/core/backend/src/entities/User.ts:55](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L55)
+Defined in: [system/core/backend/src/entities/User.ts:55](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L55)
 
 ___
 
@@ -182,7 +182,7 @@ ___
 
 • `Optional` **resetPasswordDate**: *undefined* \| *null* \| Date
 
-Defined in: [system/core/backend/src/entities/User.ts:59](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L59)
+Defined in: [system/core/backend/src/entities/User.ts:59](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L59)
 
 ___
 
@@ -190,7 +190,7 @@ ___
 
 • `Optional` **role**: *undefined* \| *administrator* \| *author* \| *customer* \| *guest*
 
-Defined in: [system/core/backend/src/entities/User.ts:32](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/User.ts#L32)
+Defined in: [system/core/backend/src/entities/User.ts:32](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/User.ts#L32)
 
 ___
 
@@ -200,7 +200,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L16)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L16)
 
 ___
 
@@ -210,4 +210,4 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/ccdbdd0/system/core/backend/src/entities/BasePageEntity.ts#L32)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/b0001b2/system/core/backend/src/entities/BasePageEntity.ts#L32)

@@ -95,7 +95,6 @@ class SettingsPage extends React.Component<any, {
 
         try {
             const newConfig = await client.updateCmsConfig({
-                protocol: settings.protocol,
                 defaultPageSize: settings.defaultPageSize,
                 currencies: settings.currencies,
                 timezone: settings.timezone,

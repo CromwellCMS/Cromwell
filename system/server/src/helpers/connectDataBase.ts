@@ -54,7 +54,9 @@ export const connectDatabase = async (ormConfigOverride?: Partial<Writeable<Conn
     let ormconfig: ConnectionOptions = Object.assign({}, defaultOrmConfig, ormConfigOverride, cmsConfig.orm)
 
     if (!ormconfig || !ormconfig.type) throw new Error('Invalid ormconfig');
-    setStoreItem('dbType', ormconfig.type);
+    setStoreItem('dbInfo', {
+        dbType: ormconfig.type
+    });
 
     // Adjust unset options for different DBs
     const adjustedOptions: Partial<Writeable<ConnectionOptions & MysqlConnectionOptions>> = {};
