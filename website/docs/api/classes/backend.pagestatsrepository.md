@@ -38,7 +38,7 @@
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/PageStatsRepository.ts:7](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/PageStatsRepository.ts#L7)
+Defined in: [system/core/backend/src/repositories/PageStatsRepository.ts:7](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PageStatsRepository.ts#L7)
 
 ## Methods
 
@@ -57,7 +57,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L87)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L87)
 
 ___
 
@@ -76,7 +76,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L49)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L49)
 
 ___
 
@@ -94,7 +94,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L76)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L76)
 
 ___
 
@@ -112,7 +112,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L97)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L97)
 
 ___
 
@@ -124,7 +124,7 @@ ___
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L24)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L24)
 
 ___
 
@@ -143,7 +143,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L29)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L29)
 
 ___
 
@@ -162,7 +162,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L39)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L39)
 
 ___
 
@@ -180,7 +180,7 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L18)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L18)
 
 ___
 
@@ -199,4 +199,4 @@ Name | Type |
 
 Inherited from: BaseRepository
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/repositories/BaseRepository.ts#L61)
+Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L61)

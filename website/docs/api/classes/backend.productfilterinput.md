@@ -35,7 +35,7 @@
 
 • `Optional` **attributes**: *undefined* \| [*ProductFilterAttributes*](backend.productfilterattributes.md)[]
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:24](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/ProductFilterInput.ts#L24)
+Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductFilterInput.ts#L24)
 
 ___
 
@@ -43,7 +43,7 @@ ___
 
 • `Optional` **maxPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:21](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/ProductFilterInput.ts#L21)
+Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductFilterInput.ts#L21)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 • `Optional` **minPrice**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/ProductFilterInput.ts#L18)
+Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductFilterInput.ts#L18)
 
 ___
 
@@ -59,4 +59,4 @@ ___
 
 • `Optional` **nameSearch**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:27](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/ProductFilterInput.ts#L27)
+Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductFilterInput.ts#L27)

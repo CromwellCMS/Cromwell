@@ -53,7 +53,7 @@ Inherited from: [BasePageInput](backend.basepageinput.md)
 
 • `Optional` **attributes**: *undefined* \| [*AttributeInstance*](backend.attributeinstance.md)[]
 
-Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:36](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/UpdateProduct.ts#L36)
+Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateProduct.ts#L36)
 
 ___
 
@@ -61,7 +61,7 @@ ___
 
 • **categoryIds**: *string*[]
 
-Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:12](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/UpdateProduct.ts#L12)
+Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateProduct.ts#L12)
 
 ___
 
@@ -69,7 +69,7 @@ ___
 
 • **description**: *string*
 
-Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:30](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/UpdateProduct.ts#L30)
+Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateProduct.ts#L30)
 
 ___
 
@@ -77,7 +77,7 @@ ___
 
 • `Optional` **descriptionDelta**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:33](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/UpdateProduct.ts#L33)
+Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:33](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateProduct.ts#L33)
 
 ___
 
@@ -85,7 +85,7 @@ ___
 
 • **images**: *string*[]
 
-Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:27](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/UpdateProduct.ts#L27)
+Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateProduct.ts#L27)
 
 ___
 
@@ -95,7 +95,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L18)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
 
 ___
 
@@ -103,7 +103,7 @@ ___
 
 • **mainImage**: *string*
 
-Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:24](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/UpdateProduct.ts#L24)
+Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateProduct.ts#L24)
 
 ___
 
@@ -111,7 +111,7 @@ ___
 
 • **name**: *string*
 
-Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/UpdateProduct.ts#L9)
+Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateProduct.ts#L9)
 
 ___
 
@@ -119,7 +119,7 @@ ___
 
 • **oldPrice**: *number*
 
-Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/UpdateProduct.ts#L18)
+Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateProduct.ts#L18)
 
 ___
 
@@ -129,7 +129,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L15)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
 
 ___
 
@@ -139,7 +139,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L12)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
 
 ___
 
@@ -147,7 +147,7 @@ ___
 
 • **price**: *number*
 
-Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:15](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/UpdateProduct.ts#L15)
+Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateProduct.ts#L15)
 
 ___
 
@@ -155,7 +155,7 @@ ___
 
 • `Optional` **sku**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:21](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/UpdateProduct.ts#L21)
+Defined in: [system/core/backend/src/inputs/UpdateProduct.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateProduct.ts#L21)
 
 ___
 
@@ -165,4 +165,4 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L9)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)

@@ -1,24 +1,21 @@
 import { GraphQLPaths, TPagedParams, TPost, TPostInput } from '@cromwell/core';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
-import { ApolloServerTestClient } from 'apollo-server-testing';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
 
 describe('Post resolver', () => {
     let server: ApolloServer;
-    let client: ApolloServerTestClient;
     let crwClient: TCGraphQLClient | undefined;
 
-
     beforeAll(async () => {
-        [server, client] = await setupResolver('post');
+        server = await setupResolver('post');
         crwClient = getGraphQLClient();
     });
 
     it(`getPosts`, async () => {
         const path = GraphQLPaths.Post.getMany;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
               query testGetPosts($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -49,7 +46,7 @@ describe('Post resolver', () => {
 
     const getPostById = async (postId: string) => {
         const path = GraphQLPaths.Post.getOneById;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
             query testGetPostById($postId: String!) {
                 ${path}(id: $postId) {
@@ -76,7 +73,7 @@ describe('Post resolver', () => {
 
     const getPostBySlug = async (slug: string) => {
         const path = GraphQLPaths.Post.getOneBySlug;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
             query testGetPostBySlug($slug: String!) {
                 ${path}(slug: $slug) {
@@ -123,8 +120,8 @@ describe('Post resolver', () => {
             content: data1.content
         }
 
-        await client.mutate({
-            mutation: gql`
+        await server.executeOperation({
+            query: gql`
               mutation testUpdatePost($id: String!, $data: UpdatePost!) {
                   ${path}(id: $id, data: $data) {
                       ...PostFragment
@@ -168,8 +165,8 @@ describe('Post resolver', () => {
             content: data1.content
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testCreatePost($data: CreatePost!) {
                   ${path}(data: $data) {
                       ...PostFragment
@@ -204,8 +201,8 @@ describe('Post resolver', () => {
         if (!data1?.author?.id) return;
         const path = GraphQLPaths.Post.delete;
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
                 mutation testDeletePost($id: String!) {
                     ${path}(id: $id)
                 }

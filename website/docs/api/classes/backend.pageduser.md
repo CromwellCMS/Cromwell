@@ -33,7 +33,7 @@
 
 • `Optional` **elements**: *undefined* \| [*User*](backend.user.md)[]
 
-Defined in: [system/core/backend/src/entities/paged/PagedUser.ts:13](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/paged/PagedUser.ts#L13)
+Defined in: [system/core/backend/src/entities/paged/PagedUser.ts:13](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedUser.ts#L13)
 
 ___
 
@@ -41,4 +41,4 @@ ___
 
 • `Optional` **pagedMeta**: *undefined* \| [*PagedMeta*](backend.pagedmeta.md)
 
-Defined in: [system/core/backend/src/entities/paged/PagedUser.ts:10](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/paged/PagedUser.ts#L10)
+Defined in: [system/core/backend/src/entities/paged/PagedUser.ts:10](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedUser.ts#L10)

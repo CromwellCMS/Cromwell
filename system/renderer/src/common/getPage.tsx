@@ -1,4 +1,4 @@
-import { BasePageNames, setStoreItem, TCromwellPage, TCromwellPageCoreProps } from '@cromwell/core';
+import { BasePageNames, getStoreItem, setStoreItem, TCromwellPage, TCromwellPageCoreProps } from '@cromwell/core';
 import { CContainer, pageRootContainerId } from '@cromwell/core-frontend';
 import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 import { DomElement } from 'htmlparser2';
@@ -36,7 +36,11 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
         if (pageConfig) setStoreItem('pageConfig', pageConfig);
         if (themeCustomConfig) setStoreItem('themeCustomConfig', themeCustomConfig);
         if (pagesInfo) setStoreItem('pagesInfo', pagesInfo);
-        if (palette) setStoreItem('palette', palette);
+        if (palette) {
+            const theme = getStoreItem('theme') ?? {};
+            theme.palette = palette;
+            setStoreItem('theme', theme);
+        }
 
         const forceUpdate = useForceUpdate();
         const forceUpdatePage = (forcedProps?: any) => {

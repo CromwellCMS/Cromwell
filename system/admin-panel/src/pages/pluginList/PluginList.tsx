@@ -233,7 +233,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                 {!isLoading && pluginPackages && pluginPackages.map(info => {
                     const pluginName = info.name;
                     const pluginIcon = info.icon;
-                    const pluginEntity = installedPlugins?.find(ent => ent.name === pluginName)
+                    const pluginEntity = installedPlugins?.find(ent => ent.name === pluginName);
                     const title = pluginEntity?.title ?? info.title ?? pluginName;
                     let availableUpdate: TCCSVersion | undefined = this.pluginUpdates[info.name];
                     if (availableUpdate?.packageVersion === info?.version) availableUpdate = undefined;

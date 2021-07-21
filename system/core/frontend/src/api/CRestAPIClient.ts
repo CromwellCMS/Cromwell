@@ -1,5 +1,4 @@
 import {
-    apiV1BaseRoute,
     getStoreItem,
     isServer,
     logFor,
@@ -62,9 +61,9 @@ export class CRestAPIClient {
     /** @internal */
     private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
     public getBaseUrl = () => {
-        const apiUrl = serviceLocator.getMainApiUrl();
-        if (!apiUrl) throw new Error('CRestAPIClient: Failed to find base API URL');
-        return `${apiUrl}/${apiV1BaseRoute}`;
+        const serverUrl = serviceLocator.getMainApiUrl();
+        if (!serverUrl) throw new Error('CRestAPIClient: Failed to find base API URL');
+        return `${serverUrl}/api`;
     }
 
     /** @internal */
@@ -195,7 +194,7 @@ export class CRestAPIClient {
         email: string;
         password: string;
     }, options?: TRequestOptions): Promise<TUser | undefined> => {
-        return this.post('auth/login', credentials, options);
+        return this.post('v1/auth/login', credentials, options);
     }
 
     /**
@@ -203,7 +202,7 @@ export class CRestAPIClient {
      * @auth any
      */
     public logOut = async (options?: TRequestOptions) => {
-        return this.post('auth/log-out', {}, options);
+        return this.post('v1/auth/log-out', {}, options);
     }
 
 
@@ -212,7 +211,7 @@ export class CRestAPIClient {
      * @auth any
      */
     public getUserInfo = async (options?: TRequestOptions): Promise<TUser | undefined> => {
-        return this.get('auth/user-info', options);
+        return this.get(`v1/auth/user-info`, options);
     }
 
     /**
@@ -220,7 +219,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public signUp = async (credentials: TCreateUser, options?: TRequestOptions): Promise<TUser | undefined> => {
-        return this.post('auth/sign-up', credentials, options);
+        return this.post('v1/auth/sign-up', credentials, options);
     }
 
     /**
@@ -228,7 +227,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public forgotPassword = async (credentials: { email: string }, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.post('auth/forgot-password', credentials, options);
+        return this.post('v1/auth/forgot-password', credentials, options);
     }
 
     /**
@@ -240,7 +239,7 @@ export class CRestAPIClient {
         code: string;
         newPassword: string;
     }, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.post('auth/reset-password', credentials, options);
+        return this.post('v1/auth/reset-password', credentials, options);
     }
 
     /**
@@ -283,7 +282,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
-        return this.get(`cms/config`, options);
+        return this.get(`v1/cms/config`, options);
     }
 
     /**
@@ -291,7 +290,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public getAdminCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
-        return this.get(`cms/admin-config`, options);
+        return this.get(`v1/cms/admin-config`, options);
     }
 
     /**
@@ -311,7 +310,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public readPublicDir = (path?: string, options?: TRequestOptions): Promise<string[] | null | undefined> => {
-        return this.get(`cms/read-public-dir?path=${path ?? '/'}`, options);
+        return this.get(`v1/cms/read-public-dir?path=${path ?? '/'}`, options);
     }
 
     /**
@@ -319,7 +318,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public createPublicDir = (dirName: string, inPath?: string, options?: TRequestOptions): Promise<string[] | null | undefined> => {
-        return this.get(`cms/create-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`, options);
+        return this.get(`v1/cms/create-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`, options);
     }
 
     /**
@@ -327,7 +326,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public removePublicDir = (dirName: string, inPath?: string, options?: TRequestOptions): Promise<string[] | null | undefined> => {
-        return this.get(`cms/remove-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`, options);
+        return this.get(`v1/cms/remove-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`, options);
     }
 
     /**
@@ -339,7 +338,7 @@ export class CRestAPIClient {
         for (const file of files) {
             formData.append(file.name, file);
         }
-        const response = await fetch(`${this.getBaseUrl()}/cms/upload-public-file?inPath=${inPath ?? '/'}`, {
+        const response = await fetch(`${this.getBaseUrl()}/v1/cms/upload-public-file?inPath=${inPath ?? '/'}`, {
             method: 'POST',
             credentials: 'include',
             body: formData,
@@ -353,7 +352,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getThemesInfo = async (options?: TRequestOptions): Promise<TPackageCromwellConfig[] | undefined> => {
-        return this.get(`cms/themes`, options);
+        return this.get(`v1/cms/themes`, options);
     }
 
     /**
@@ -361,12 +360,12 @@ export class CRestAPIClient {
      * @auth admin
      */
     public getPluginList = async (options?: TRequestOptions): Promise<TPackageCromwellConfig[] | undefined> => {
-        return this.get(`cms/plugins`, options);
+        return this.get(`v1/cms/plugins`, options);
     }
 
     /** @internal */
     public setUpCms = async (options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.post(`cms/set-up`, {}, options);
+        return this.post(`v1/cms/set-up`, {}, options);
     }
 
     /**
@@ -374,7 +373,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public updateCmsConfig = async (input: TCmsEntityInput, options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
-        return this.post(`cms/update-config`, input, options);
+        return this.post(`v1/cms/update-config`, input, options);
     }
 
     /**
@@ -382,7 +381,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public activateTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean> => {
-        const data = await this.get<boolean>(`cms/activate-theme?themeName=${themeName}`, options);
+        const data = await this.get<boolean>(`v1/cms/activate-theme?themeName=${themeName}`, options);
         return data ?? false;
     }
 
@@ -391,7 +390,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public activatePlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean> => {
-        const data = await this.get<boolean>(`cms/activate-plugin?pluginName=${pluginName}`, options);
+        const data = await this.get<boolean>(`v1/cms/activate-plugin?pluginName=${pluginName}`, options);
         return data ?? false;
     }
 
@@ -400,7 +399,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public changeTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean> => {
-        const data = await this.get<boolean>(`cms/change-theme?themeName=${themeName}`, options);
+        const data = await this.get<boolean>(`v1/cms/change-theme?themeName=${themeName}`, options);
         return data ?? false;
     }
 
@@ -409,7 +408,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getOrderTotal = async (input: TServerCreateOrder, options?: TRequestOptions): Promise<TOrder | undefined> => {
-        return this.post(`cms/get-order-total`, input, options);
+        return this.post(`v1/cms/get-order-total`, input, options);
     }
 
     /**
@@ -417,7 +416,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public placeOrder = async (input: TServerCreateOrder, options?: TRequestOptions): Promise<TOrder | undefined> => {
-        return this.post(`cms/place-order`, input, options);
+        return this.post(`v1/cms/place-order`, input, options);
     }
 
     /**
@@ -425,7 +424,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public placeProductReview = async (input: TProductReviewInput, options?: TRequestOptions): Promise<TProductReview | undefined> => {
-        return this.post(`cms/place-product-review`, input, options);
+        return this.post(`v1/cms/place-product-review`, input, options);
     }
 
     /**
@@ -433,7 +432,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public getCmsStats = async (options?: TRequestOptions): Promise<TCmsStats | undefined> => {
-        return this.get(`cms/stats`, options);
+        return this.get(`v1/cms/stats`, options);
     }
 
     /**
@@ -441,7 +440,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public getCmsStatus = async (options?: TRequestOptions): Promise<TCmsStatus | undefined> => {
-        return this.get(`cms/status`, options);
+        return this.get(`v1/cms/status`, options);
     }
 
     /**
@@ -449,7 +448,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public launchCmsUpdate = async (options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.get(`cms/launch-update`, options);
+        return this.get(`v1/cms/launch-update`, options);
     }
 
     /**
@@ -458,7 +457,7 @@ export class CRestAPIClient {
      * @param tables specify tables to export or export all if not provided
      */
     public exportDB = async (tables?: TDBEntity[], options?: TRequestOptions) => {
-        const url = `${this.getBaseUrl()}/cms/export-db`;
+        const url = `${this.getBaseUrl()}/v1/cms/export-db`;
         const response = await fetch(url, {
             method: 'POST',
             credentials: 'include',
@@ -488,7 +487,7 @@ export class CRestAPIClient {
         for (const file of files) {
             formData.append(file.name, file);
         }
-        const url = `${this.getBaseUrl()}/cms/import-db`;
+        const url = `${this.getBaseUrl()}/v1/cms/import-db`;
         const response = await fetch(url, {
             method: 'POST',
             credentials: 'include',
@@ -512,7 +511,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public getThemeUpdate = async (themeName: string, options?: TRequestOptions): Promise<TCCSVersion | undefined> => {
-        return this.get(`theme/check-update?themeName=${themeName}`, options);
+        return this.get(`v1/theme/check-update?themeName=${themeName}`, options);
     }
 
     /**
@@ -520,7 +519,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public updateTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.get(`theme/update?themeName=${themeName}`, options);
+        return this.get(`v1/theme/update?themeName=${themeName}`, options);
     }
 
     /**
@@ -529,7 +528,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public installTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.get(`theme/install?themeName=${themeName}`, options);
+        return this.get(`v1/theme/install?themeName=${themeName}`, options);
     }
 
     /**
@@ -538,7 +537,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public deleteTheme = async (themeName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.get(`theme/delete?themeName=${themeName}`, options);
+        return this.get(`v1/theme/delete?themeName=${themeName}`, options);
     }
 
     /**
@@ -546,7 +545,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getPageConfig = async (pageRoute: string, options?: TRequestOptions): Promise<TPageConfig | undefined> => {
-        return this.get(`theme/page?pageRoute=${pageRoute}`, options);
+        return this.get(`v1/theme/page?pageRoute=${pageRoute}`, options);
     }
 
     /**
@@ -554,7 +553,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public savePageConfig = async (config: TPageConfig, options?: TRequestOptions): Promise<boolean> => {
-        const data = await this.post<boolean>(`theme/page`, config, options);
+        const data = await this.post<boolean>(`v1/theme/page`, config, options);
         return data ?? false;
     }
 
@@ -563,7 +562,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public deletePage = async (pageRoute: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.delete(`theme/page?pageRoute=${pageRoute}`, options);
+        return this.delete(`v1/theme/page?pageRoute=${pageRoute}`, options);
     }
 
     /**
@@ -571,7 +570,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public resetPage = async (pageRoute: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.get(`theme/page/reset?pageRoute=${pageRoute}`, options);
+        return this.get(`v1/theme/page/reset?pageRoute=${pageRoute}`, options);
     }
 
     /**
@@ -579,7 +578,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getPluginsAtPage = async (pageRoute: string, options?: TRequestOptions): Promise<Record<string, TPluginsModifications> | undefined> => {
-        return this.get(`theme/plugins?pageRoute=${pageRoute}`, options);
+        return this.get(`v1/theme/plugins?pageRoute=${pageRoute}`, options);
     }
 
     /**
@@ -587,7 +586,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getPluginNames = async (options?: TRequestOptions): Promise<string[] | undefined> => {
-        return this.get(`theme/plugin-names`, options);
+        return this.get(`v1/theme/plugin-names`, options);
     }
 
     /**
@@ -595,7 +594,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getPagesInfo = async (options?: TRequestOptions): Promise<TPageInfo[] | undefined> => {
-        return this.get(`theme/pages/info`, options);
+        return this.get(`v1/theme/pages/info`, options);
     }
 
     /**
@@ -603,7 +602,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getPageConfigs = async (options?: TRequestOptions): Promise<TPageConfig[] | undefined> => {
-        return this.get(`theme/pages/configs`, options);
+        return this.get(`v1/theme/pages/configs`, options);
     }
 
     /**
@@ -611,7 +610,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getThemeInfo = async (options?: TRequestOptions): Promise<TPackageCromwellConfig | undefined> => {
-        return this.get(`theme/info`, options);
+        return this.get(`v1/theme/info`, options);
     }
 
     /**
@@ -619,12 +618,12 @@ export class CRestAPIClient {
      * @auth no
      */
     public getThemeConfig = async (options?: TRequestOptions): Promise<TThemeConfig | undefined> => {
-        return this.get(`theme/config`, options);
+        return this.get(`v1/theme/config`, options);
     }
 
     /** @internal */
     public getThemeCustomConfig = async (options?: TRequestOptions): Promise<Record<string, any> | undefined> => {
-        return this.get(`theme/custom-config`, options);
+        return this.get(`v1/theme/custom-config`, options);
     }
 
     /**
@@ -632,7 +631,12 @@ export class CRestAPIClient {
      * @auth no
      */
     public getThemePageBundle = async (pageRoute: string, options?: TRequestOptions): Promise<TFrontendBundle | undefined> => {
-        return this.get(`theme/page-bundle?pageRoute=${pageRoute}`, options);
+        return this.get(`v1/theme/page-bundle?pageRoute=${pageRoute}`, options);
+    }
+
+    /** @internal */
+    public batchRendererData = async (pageRoute: string, options?: TRequestOptions): Promise<any> => {
+        return this.get(`v1/theme/renderer?pageRoute=${pageRoute}`, options);
     }
 
     // < / Theme >
@@ -646,7 +650,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public getPluginUpdate = async (pluginName: string, options?: TRequestOptions): Promise<TCCSVersion | undefined> => {
-        return this.get(`plugin/check-update?pluginName=${pluginName}`, options);
+        return this.get(`v1/plugin/check-update?pluginName=${pluginName}`, options);
     }
 
     /**
@@ -655,7 +659,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public updatePlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.get(`plugin/update?pluginName=${pluginName}`, options);
+        return this.get(`v1/plugin/update?pluginName=${pluginName}`, options);
     }
 
     /**
@@ -664,7 +668,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public installPlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.get(`plugin/install?pluginName=${pluginName}`, options);
+        return this.get(`v1/plugin/install?pluginName=${pluginName}`, options);
     }
 
     /**
@@ -673,7 +677,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public deletePlugin = async (pluginName: string, options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.get(`plugin/delete?pluginName=${pluginName}`, options);
+        return this.get(`v1/plugin/delete?pluginName=${pluginName}`, options);
     }
 
     /**
@@ -682,7 +686,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getPluginSettings = async (pluginName: string, options?: TRequestOptions): Promise<any | undefined> => {
-        return this.get(`plugin/settings?pluginName=${pluginName}`, options);
+        return this.get(`v1/plugin/settings?pluginName=${pluginName}`, options);
     }
 
     /**
@@ -691,7 +695,7 @@ export class CRestAPIClient {
      * @auth admin
      */
     public savePluginSettings = async (pluginName: string, settings: any, options?: TRequestOptions): Promise<boolean> => {
-        const data = await this.post<boolean>(`plugin/settings?pluginName=${pluginName}`, settings, options);
+        const data = await this.post<boolean>(`v1/plugin/settings?pluginName=${pluginName}`, settings, options);
         return data ?? false;
     }
 
@@ -701,7 +705,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getPluginFrontendBundle = async (pluginName: string, options?: TRequestOptions): Promise<TFrontendBundle | undefined> => {
-        return this.get(`plugin/frontend-bundle?pluginName=${pluginName}`, options);
+        return this.get(`v1/plugin/frontend-bundle?pluginName=${pluginName}`, options);
     }
 
     /**
@@ -710,7 +714,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getPluginAdminBundle = async (pluginName: string, options?: TRequestOptions): Promise<TFrontendBundle | undefined> => {
-        return this.get(`plugin/admin-bundle?pluginName=${pluginName}`, options);
+        return this.get(`v1/plugin/admin-bundle?pluginName=${pluginName}`, options);
     }
 
     // < / Plugin >

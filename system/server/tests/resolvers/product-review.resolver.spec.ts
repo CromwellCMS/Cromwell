@@ -2,25 +2,22 @@ import { GraphQLPaths, TPagedParams, TProductReview, TProductReviewInput } from 
 import { ProductReviewRepository } from '@cromwell/core-backend';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
-import { ApolloServerTestClient } from 'apollo-server-testing';
 import { getCustomRepository } from 'typeorm';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
 
 describe('Product-review resolver', () => {
     let server: ApolloServer;
-    let client: ApolloServerTestClient;
     let crwClient: TCGraphQLClient | undefined;
 
-
     beforeAll(async () => {
-        [server, client] = await setupResolver('product-review');
+        server = await setupResolver('product-review');
         crwClient = getGraphQLClient();
     });
 
     it(`getProductReviews`, async () => {
         const path = GraphQLPaths.ProductReview.getMany;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
               query testGetProducts($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -55,7 +52,7 @@ describe('Product-review resolver', () => {
 
     const getProductReview = async (productReviewId: string) => {
         const path = GraphQLPaths.ProductReview.getOneById;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
             query testGetProductById($id: String!) {
                 ${path}(id: $id) {
@@ -99,8 +96,8 @@ describe('Product-review resolver', () => {
             productId: data1.productId,
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testUpdateProduct($id: String!, $data: ProductReviewInput!) {
                   ${path}(id: $id, data: $data) {
                       ...ProductReviewFragment
@@ -147,8 +144,8 @@ describe('Product-review resolver', () => {
             productId: data1.productId,
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testCreatePost($data: ProductReviewInput!) {
                   ${path}(data: $data) {
                       ...ProductReviewFragment
@@ -193,8 +190,8 @@ describe('Product-review resolver', () => {
         expect(data1.id).toBeTruthy();
         const path = GraphQLPaths.ProductReview.delete;
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
                 mutation testDeleteProduct($id: String!) {
                     ${path}(id: $id)
                 }

@@ -5,9 +5,6 @@ import { CurrencyDto } from './currency.dto';
 
 export class CmsConfigUpdateDto implements TCmsEntityInput {
     @ApiProperty()
-    protocol?: 'http' | 'https';
-
-    @ApiProperty()
     defaultPageSize?: number;
 
     @ApiProperty({ type: [CurrencyDto] })

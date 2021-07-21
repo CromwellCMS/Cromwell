@@ -87,7 +87,7 @@
 
 • `Optional` **isEnabled**: *undefined* \| *boolean*
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L18)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
 
 ___
 
@@ -95,7 +95,7 @@ ___
 
 • `Optional` **pageDescription**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L15)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
 
 ___
 
@@ -103,7 +103,7 @@ ___
 
 • `Optional` **pageTitle**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L12)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
 
 ___
 
@@ -111,4 +111,4 @@ ___
 
 • `Optional` **slug**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L9)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)

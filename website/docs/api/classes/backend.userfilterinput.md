@@ -36,7 +36,7 @@
 
 • `Optional` **address**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/UserFilterInput.ts#L17)
+Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/UserFilterInput.ts#L17)
 
 ___
 
@@ -44,7 +44,7 @@ ___
 
 • `Optional` **email**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/UserFilterInput.ts#L11)
+Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/UserFilterInput.ts#L11)
 
 ___
 
@@ -52,7 +52,7 @@ ___
 
 • `Optional` **fullName**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/UserFilterInput.ts#L8)
+Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/UserFilterInput.ts#L8)
 
 ___
 
@@ -60,7 +60,7 @@ ___
 
 • `Optional` **phone**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/UserFilterInput.ts#L14)
+Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/UserFilterInput.ts#L14)
 
 ___
 
@@ -68,4 +68,4 @@ ___
 
 • `Optional` **role**: *undefined* \| *administrator* \| *author* \| *customer* \| *guest*
 
-Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:20](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/UserFilterInput.ts#L20)
+Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/UserFilterInput.ts#L20)

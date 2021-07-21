@@ -32,7 +32,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         } = {};
 
         try {
-            rendererData = (await getRestAPIClient().get(`theme/renderer?pageRoute=${pageRoute}`)) ?? {};
+            rendererData = (await getRestAPIClient().batchRendererData(pageRoute)) ?? {};
         } catch (e) {
             console.error(e);
         }

@@ -102,7 +102,7 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:391](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L391)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:392](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L392)
 
 ___
 
@@ -123,7 +123,7 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:382](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L382)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:383](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L383)
 
 ___
 
@@ -144,7 +144,7 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:400](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L400)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:401](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L401)
 
 ___
 
@@ -166,7 +166,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| *null* \| string[]\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:319](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L319)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:320](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L320)
 
 ___
 
@@ -193,7 +193,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| T\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:167](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L167)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:168](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L168)
 
 ___
 
@@ -214,7 +214,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:563](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L563)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:564](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L564)
 
 ___
 
@@ -235,7 +235,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:673](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L673)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:679](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L679)
 
 ___
 
@@ -256,7 +256,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:538](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L538)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:539](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L539)
 
 ___
 
@@ -277,7 +277,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<void\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:458](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L458)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:459](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L459)
 
 ___
 
@@ -304,7 +304,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| T\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:113](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L113)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:113](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L113)
 
 ___
 
@@ -326,7 +326,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:228](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L228)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:229](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L229)
 
 ___
 
@@ -353,7 +353,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| T\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:147](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L147)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:148](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L148)
 
 ___
 
@@ -373,7 +373,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCmsSettings\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:291](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L291)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:292](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L292)
 
 ___
 
@@ -383,7 +383,7 @@ ___
 
 **Returns:** *string*
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:64](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L64)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:63](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L63)
 
 ___
 
@@ -403,7 +403,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCmsSettings\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:283](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L283)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:284](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L284)
 
 ___
 
@@ -423,7 +423,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCmsSettings\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:299](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L299)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:300](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L300)
 
 ___
 
@@ -443,7 +443,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCmsStats\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:433](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L433)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:434](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L434)
 
 ___
 
@@ -463,7 +463,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCmsStatus\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:441](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L441)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:442](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L442)
 
 ___
 
@@ -484,7 +484,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TOrder\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:409](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L409)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:410](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L410)
 
 ___
 
@@ -505,7 +505,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPageConfig\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:546](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L546)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:547](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L547)
 
 ___
 
@@ -525,7 +525,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPageConfig[]\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:603](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L603)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:604](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L604)
 
 ___
 
@@ -545,7 +545,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPageInfo[]\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:595](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L595)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:596](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L596)
 
 ___
 
@@ -566,7 +566,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| TFrontendBundle\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:710](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L710)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:716](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L716)
 
 ___
 
@@ -587,7 +587,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| TFrontendBundle\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:701](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L701)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:707](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L707)
 
 ___
 
@@ -607,7 +607,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPackageCromwellConfig[]\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:361](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L361)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:362](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L362)
 
 ___
 
@@ -627,7 +627,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| string[]\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:587](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L587)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:588](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L588)
 
 ___
 
@@ -648,7 +648,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<any\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:682](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L682)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:688](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L688)
 
 ___
 
@@ -669,7 +669,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| TCCSVersion\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:646](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L646)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:652](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L652)
 
 ___
 
@@ -690,7 +690,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| Record<string, [*TPluginsModifications*](../modules/frontend.md#tpluginsmodifications)\>\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:579](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L579)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:580](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L580)
 
 ___
 
@@ -710,7 +710,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TThemeConfig\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:619](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L619)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:620](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L620)
 
 ___
 
@@ -730,7 +730,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPackageCromwellConfig\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:611](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L611)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:612](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L612)
 
 ___
 
@@ -751,7 +751,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TFrontendBundle\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:632](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L632)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:633](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L633)
 
 ___
 
@@ -772,7 +772,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCCSVersion\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:512](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L512)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:513](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L513)
 
 ___
 
@@ -792,7 +792,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TPackageCromwellConfig[]\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:353](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L353)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:354](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L354)
 
 ___
 
@@ -812,7 +812,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TUser\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:212](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L212)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:213](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L213)
 
 ___
 
@@ -833,7 +833,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| *null* \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:484](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L484)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:485](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L485)
 
 ___
 
@@ -854,7 +854,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:664](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L664)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:670](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L670)
 
 ___
 
@@ -875,7 +875,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:529](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L529)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:530](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L530)
 
 ___
 
@@ -895,7 +895,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:449](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L449)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:450](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L450)
 
 ___
 
@@ -915,7 +915,7 @@ Name | Type |
 
 **Returns:** *Promise*<unknown\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:203](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L203)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:204](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L204)
 
 ___
 
@@ -938,7 +938,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TUser\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:192](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L192)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:193](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L193)
 
 ___
 
@@ -958,7 +958,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:264](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L264)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:265](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L265)
 
 ___
 
@@ -978,7 +978,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:248](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L248)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:249](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L249)
 
 ___
 
@@ -999,7 +999,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TOrder\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:417](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L417)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:418](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L418)
 
 ___
 
@@ -1020,7 +1020,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TProductReview\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:425](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L425)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:426](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L426)
 
 ___
 
@@ -1048,7 +1048,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| T\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:155](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L155)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:156](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L156)
 
 ___
 
@@ -1076,7 +1076,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| T\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:178](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L178)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:179](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L179)
 
 ___
 
@@ -1097,7 +1097,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| *null* \| string[]\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:311](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L311)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:312](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L312)
 
 ___
 
@@ -1115,7 +1115,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:272](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L272)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:273](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L273)
 
 ___
 
@@ -1133,7 +1133,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:256](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L256)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:257](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L257)
 
 ___
 
@@ -1155,7 +1155,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| *null* \| string[]\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L327)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:328](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L328)
 
 ___
 
@@ -1176,7 +1176,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:571](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L571)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:572](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L572)
 
 ___
 
@@ -1200,7 +1200,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:236](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L236)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:237](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L237)
 
 ___
 
@@ -1221,7 +1221,7 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:554](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L554)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:555](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L555)
 
 ___
 
@@ -1243,7 +1243,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:691](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L691)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:697](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L697)
 
 ___
 
@@ -1264,7 +1264,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TUser\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:220](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L220)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:221](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L221)
 
 ___
 
@@ -1285,7 +1285,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| TCmsSettings\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:374](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L374)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:375](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L375)
 
 ___
 
@@ -1306,7 +1306,7 @@ Name | Type | Description |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:655](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L655)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:661](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L661)
 
 ___
 
@@ -1327,7 +1327,7 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:520](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L520)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:521](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L521)
 
 ___
 
@@ -1349,4 +1349,4 @@ Name | Type |
 
 **Returns:** *Promise*<undefined \| *null* \| boolean\>
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:335](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/api/CRestAPIClient.ts#L335)
+Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:336](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L336)

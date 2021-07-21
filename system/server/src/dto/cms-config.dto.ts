@@ -7,9 +7,6 @@ export class CmsConfigDto implements TCmsSettings {
     domain?: string;
 
     @ApiProperty()
-    protocol?: 'http' | 'https';
-
-    @ApiProperty()
     apiPort?: number;
 
     @ApiProperty()
@@ -62,7 +59,6 @@ export class CmsConfigDto implements TCmsSettings {
 
     parseConfig(config: TCmsSettings) {
         this.domain = config.domain;
-        this.protocol = config.protocol;
         this.apiPort = config.apiPort;
         this.centralServerUrl = config.centralServerUrl;
         this.adminPanelPort = config.adminPanelPort;

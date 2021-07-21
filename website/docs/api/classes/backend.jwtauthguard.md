@@ -32,7 +32,7 @@ Name | Type |
 
 **Returns:** [*JwtAuthGuard*](backend.jwtauthguard.md)
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:37](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/helpers/auth-guards.ts#L37)
+Defined in: [system/core/backend/src/helpers/auth-guards.ts:37](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/helpers/auth-guards.ts#L37)
 
 ## Methods
 
@@ -48,4 +48,4 @@ Name | Type |
 
 **Returns:** *Promise*<boolean\>
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:40](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/helpers/auth-guards.ts#L40)
+Defined in: [system/core/backend/src/helpers/auth-guards.ts:40](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/helpers/auth-guards.ts#L40)

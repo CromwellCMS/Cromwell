@@ -1,6 +1,5 @@
 import 'reflect-metadata';
 
-import { apiV1BaseRoute, currentApiVersion } from '@cromwell/core';
 import { getLogger, graphQlAuthChecker, readCMSConfigSync, serverMessages, TGraphQLContext } from '@cromwell/core-backend';
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
@@ -34,7 +33,7 @@ async function bootstrap(): Promise<void> {
     const envMode = loadEnv();
 
     // Init Fastify as Nest.js server
-    const apiPrefix = apiV1BaseRoute;
+    const apiPrefix = 'api';
     const fastifyInstance = fastify();
 
     // GraphQL
@@ -48,7 +47,6 @@ async function bootstrap(): Promise<void> {
 
     const apolloServer = new ApolloServer({
         debug: envMode.envMode === 'dev',
-        playground: envMode.envMode === 'dev',
         schema,
         context: (context): TGraphQLContext => {
             return { user: context?.request?.user }
@@ -91,7 +89,7 @@ async function bootstrap(): Promise<void> {
     if (envMode.envMode === 'dev') {
         const options = new DocumentBuilder()
             .setTitle('Cromwell API Server')
-            .setVersion(currentApiVersion)
+            .setVersion('1.0.0')
             .addBearerAuth()
             .build();
         const document = SwaggerModule.createDocument(app, options);
@@ -114,4 +112,3 @@ async function bootstrap(): Promise<void> {
         }));
     }
 })();
-

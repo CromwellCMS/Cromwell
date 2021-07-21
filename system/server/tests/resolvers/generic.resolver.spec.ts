@@ -2,23 +2,20 @@ import { GenericPlugin } from '@App/helpers/genericEntities';
 import { GraphQLPaths, TPluginEntityInput } from '@cromwell/core';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
-import { ApolloServerTestClient } from 'apollo-server-testing';
 import { getCustomRepository } from 'typeorm';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
 
 describe('Generic resolver', () => {
     // Tests via Theme resolver
-
     let server: ApolloServer;
-    let client: ApolloServerTestClient;
     let crwClient: TCGraphQLClient | undefined;
     const entityName = 'Plugin';
     let fragmentName;
     let fragment;
 
     beforeAll(async () => {
-        [server, client] = await setupResolver('generic');
+        server = await setupResolver('generic');
         crwClient = getGraphQLClient();
 
         fragment = crwClient?.PluginFragment;
@@ -27,7 +24,7 @@ describe('Generic resolver', () => {
 
     it(`getGeneric`, async () => {
         const path = GraphQLPaths.Generic.getMany + entityName;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
               query testGetGenerics($pagedParams: PagedParamsInput!) {
                 ${path} {
@@ -45,7 +42,7 @@ describe('Generic resolver', () => {
 
     const getGenericById = async (id: string) => {
         const path = GraphQLPaths.Generic.getOneById + entityName;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
                 query testGenericGetEntityById($id: String!) {
                     ${path}(id: $id) {
@@ -88,7 +85,7 @@ describe('Generic resolver', () => {
 
     const getGenericBySlug = async (slug: string) => {
         const path = GraphQLPaths.Generic.getOneBySlug + entityName;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
                 query testGenericGetEntityBySlug($slug: String!) {
                     ${path}(slug: $slug) {
@@ -144,8 +141,8 @@ describe('Generic resolver', () => {
             isInstalled: data1.isInstalled,
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testUpdateGeneric($id: String!, $data: PluginInput!) {
                   ${path}(id: $id, data: $data) {
                       ...${fragmentName}
@@ -199,8 +196,8 @@ describe('Generic resolver', () => {
             isInstalled: data1.isInstalled,
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testCreatePost($data: PluginInput!) {
                   ${path}(data: $data) {
                       ...${fragmentName}
@@ -246,8 +243,8 @@ describe('Generic resolver', () => {
         expect(data1.id).toBeTruthy();
         const path = GraphQLPaths.Generic.delete + entityName;
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
                 mutation testDeleteGeneric($id: String!) {
                     ${path}(id: $id)
                 }

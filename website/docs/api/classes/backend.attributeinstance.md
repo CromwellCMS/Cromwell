@@ -33,7 +33,7 @@
 
 • **key**: *string*
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:46](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/AttributeInstance.ts#L46)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:46](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L46)
 
 ___
 
@@ -41,4 +41,4 @@ ___
 
 • **values**: [*AttributeInstanceValue*](backend.attributeinstancevalue.md)[]
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:49](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/AttributeInstance.ts#L49)
+Defined in: [system/core/backend/src/entities/AttributeInstance.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L49)

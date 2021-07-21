@@ -144,8 +144,8 @@ export type TCromwellBlockData = {
         withEffect?: boolean;
         alt?: string;
         objectFit?: 'contain' | 'cover';
-        width?: number;
-        height?: number;
+        width?: number | string;
+        height?: number | string;
     };
 
     /** For "HTML" block */
@@ -226,12 +226,12 @@ export type TGallerySettings = {
 }
 
 export type TBlockContentProvider = {
-    // Will replace content inside any CromwellBlock by JSX this function returns
+    /** Will replace content inside any CromwellBlock by JSX this function returns */
     getter: (block: TCromwellBlock) => React.ReactNode | null;
 
-    // Additional CSS class to apply for block wrapper
+    /** Additional CSS class to apply for block wrapper */
     blockClass?: string;
 
-    // Additional function to run in internal componentDidUpdate of any block
+    /** Additional function to run in internal componentDidUpdate of any block */
     componentDidUpdate?: () => void;
 }

@@ -38,7 +38,7 @@ const logger = getLogger();
 
 @ApiBearerAuth()
 @ApiTags('CMS')
-@Controller('cms')
+@Controller('v1/cms')
 export class CmsController {
 
     private get pluginService() {

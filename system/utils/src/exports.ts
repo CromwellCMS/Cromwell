@@ -10,7 +10,6 @@ export {
     getNodeModuleVersion, getNodeModuleNameWithVersion,
     getBundledModulesDir, parseFrontendDeps, defaultFrontendDeps
 } from './shared';
-export { bundler } from './bundler';
 export { installer } from './installer';
 export { downloader } from './downloader';
 export { bundledModulesDirName } from './constants';

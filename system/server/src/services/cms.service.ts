@@ -248,7 +248,6 @@ export class CmsService {
             }
         }
 
-        entity.protocol = input.protocol;
         entity.defaultPageSize = input.defaultPageSize;
         entity.currencies = input.currencies;
         entity.timezone = input.timezone;

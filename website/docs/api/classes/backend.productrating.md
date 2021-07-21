@@ -33,7 +33,7 @@
 
 • `Optional` **average**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/Product.ts:89](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/Product.ts#L89)
+Defined in: [system/core/backend/src/entities/Product.ts:89](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L89)
 
 ___
 
@@ -41,4 +41,4 @@ ___
 
 • `Optional` **reviewsNumber**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/Product.ts:92](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/Product.ts#L92)
+Defined in: [system/core/backend/src/entities/Product.ts:92](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L92)

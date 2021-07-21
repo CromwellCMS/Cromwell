@@ -35,7 +35,7 @@
 
 • **authorId**: *string*
 
-Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/PostFilterInput.ts#L8)
+Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/PostFilterInput.ts#L8)
 
 ___
 
@@ -43,7 +43,7 @@ ___
 
 • **published**: *boolean*
 
-Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/PostFilterInput.ts#L17)
+Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/PostFilterInput.ts#L17)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 • `Optional` **tagIds**: *undefined* \| *string*[]
 
-Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/PostFilterInput.ts#L14)
+Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/PostFilterInput.ts#L14)
 
 ___
 
@@ -59,4 +59,4 @@ ___
 
 • **titleSearch**: *string*
 
-Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/filter/PostFilterInput.ts#L11)
+Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/PostFilterInput.ts#L11)

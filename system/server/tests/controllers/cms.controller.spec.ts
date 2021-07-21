@@ -18,7 +18,7 @@ describe('CMS Controller', () => {
 
     it(`/GET config`, () => {
         return request(server)
-            .get('/cms/config')
+            .get('/v1/cms/config')
             .expect(200)
             .then(response => {
                 const { apiPort, themeName } = response.body as TCmsSettings;
@@ -29,7 +29,7 @@ describe('CMS Controller', () => {
 
     it(`/GET themes`, () => {
         return request(server)
-            .get('/cms/themes')
+            .get('/v1/cms/themes')
             .expect(200)
             .then(response => {
                 const configs = response.body as TPackageCromwellConfig[];
@@ -40,7 +40,7 @@ describe('CMS Controller', () => {
 
     it(`/GET plugins`, () => {
         return request(server)
-            .get('/cms/plugins')
+            .get('/v1/cms/plugins')
             .expect(200)
             .then(response => {
                 const configs = response.body as TPackageCromwellConfig[];
@@ -51,7 +51,7 @@ describe('CMS Controller', () => {
 
     it(`/GET read-public-dir`, async () => {
         return request(server)
-            .get('/cms/read-public-dir')
+            .get('/v1/cms/read-public-dir')
             .expect(200)
             .then(response => {
                 expect(response.body.length >= 1).toBeTruthy();
@@ -60,21 +60,21 @@ describe('CMS Controller', () => {
 
     it(`/GET create-public-dir`, async () => {
         const dirNum1 = await request(server)
-            .get('/cms/read-public-dir')
+            .get('/v1/cms/read-public-dir')
             .expect(200)
             .then(response => {
                 return response.body.length;
             });
 
         await request(server)
-            .get('/cms/create-public-dir?dirName=test1')
+            .get('/v1/cms/create-public-dir?dirName=test1')
             .expect(200)
             .then(response => {
                 expect(response.body).toBeTruthy();
             });
 
         const dirNum2 = await request(server)
-            .get('/cms/read-public-dir')
+            .get('/v1/cms/read-public-dir')
             .expect(200)
             .then(response => {
                 return response.body.length;
@@ -85,21 +85,21 @@ describe('CMS Controller', () => {
 
     it(`/GET remove-public-dir`, async () => {
         const dirNum1 = await request(server)
-            .get('/cms/read-public-dir')
+            .get('/v1/cms/read-public-dir')
             .expect(200)
             .then(response => {
                 return response.body.length;
             });
 
         await request(server)
-            .get('/cms/remove-public-dir?dirName=test1')
+            .get('/v1/cms/remove-public-dir?dirName=test1')
             .expect(200)
             .then(response => {
                 expect(response.body).toBeTruthy();
             });
 
         const dirNum2 = await request(server)
-            .get('/cms/read-public-dir')
+            .get('/v1/cms/read-public-dir')
             .expect(200)
             .then(response => {
                 return response.body.length;

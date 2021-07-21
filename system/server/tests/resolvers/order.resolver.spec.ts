@@ -1,26 +1,23 @@
-import { GraphQLPaths, TPagedParams, TOrder, TOrderInput } from '@cromwell/core';
+import { GraphQLPaths, TOrder, TOrderInput, TPagedParams } from '@cromwell/core';
 import { OrderRepository } from '@cromwell/core-backend';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
-import { ApolloServerTestClient } from 'apollo-server-testing';
 import { getCustomRepository } from 'typeorm';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
 
 describe('Order resolver', () => {
     let server: ApolloServer;
-    let client: ApolloServerTestClient;
     let crwClient: TCGraphQLClient | undefined;
 
-
     beforeAll(async () => {
-        [server, client] = await setupResolver('order');
+        server = await setupResolver('order');
         crwClient = getGraphQLClient();
     });
 
     it(`getOrders`, async () => {
         const path = GraphQLPaths.Order.getMany;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
               query testGetOrders($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -54,7 +51,7 @@ describe('Order resolver', () => {
 
     const getOrder = async (orderId: string): Promise<TOrder> => {
         const path = GraphQLPaths.Order.getOneById;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
             query testGetOrderById($id: String!) {
                 ${path}(id: $id) {
@@ -98,8 +95,8 @@ describe('Order resolver', () => {
             cartTotalPrice: 111.222,
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testUpdateOrder($id: String!, $data: InputOrder!) {
                   ${path}(id: $id, data: $data) {
                       ...OrderFragment
@@ -145,8 +142,8 @@ describe('Order resolver', () => {
             cartTotalPrice: 111.222,
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testCreateOrder($data: InputOrder!) {
                   ${path}(data: $data) {
                       ...OrderFragment
@@ -190,8 +187,8 @@ describe('Order resolver', () => {
         expect(data1.id).toBeTruthy();
         const path = GraphQLPaths.Order.delete;
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
                 mutation testDeleteOrder($id: String!) {
                     ${path}(id: $id)
                 }

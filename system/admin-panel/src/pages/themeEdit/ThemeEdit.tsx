@@ -1,6 +1,7 @@
 import {
     genericPageName,
     getRandStr,
+    getStoreItem,
     setStoreItem,
     TCromwellBlockData,
     TPageConfig,
@@ -97,7 +98,11 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
         try {
             // const themeInfo = await getRestAPIClient()?.getThemeInfo();
             const themeConfig = await getRestAPIClient()?.getThemeConfig();
-            setStoreItem('palette', themeConfig?.palette);
+
+            const theme = getStoreItem('theme') ?? {};
+            if (themeConfig?.palette) theme.palette = themeConfig.palette;
+            setStoreItem('theme', theme);
+
             this.setState({ themeConfig });
 
             const themeCustomConfig = await getRestAPIClient()?.getThemeCustomConfig();
@@ -116,9 +121,9 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
         setStoreItem('pageConfig', undefined);
         try {
             if (pageInfo.route && pageInfo.route !== '') {
-                const pageCofig: TPageConfig | undefined =
+                const pageConfig: TPageConfig | undefined =
                     await getRestAPIClient()?.getPageConfig(pageInfo.route);
-                setStoreItem('pageConfig', pageCofig);
+                setStoreItem('pageConfig', pageConfig);
             }
         } catch (e) {
             console.error(e)

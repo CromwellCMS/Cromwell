@@ -6,9 +6,7 @@ import Layout from '../components/layout/Layout';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Index.module.scss';
 
-const Index: TCromwellPage = (props) => {
-    console.log('IndexTheme props', props);
-
+const Index: TCromwellPage = () => {
     return (
         <Layout>
             <div className={styles.IndexPage}>
@@ -43,14 +41,23 @@ const Index: TCromwellPage = (props) => {
                 <CContainer id="main_20" className={commonStyles.content}>
                     <CContainer id="main_20" className={styles.mainBlock}>
                         <CContainer id="main_21" className={styles.mainSidebar}>
-                            <CImage id="main_sidebar_image_1" src="/themes/@cromwell/theme-store/sidebar_banner_1.png" className={styles.sidebarBanner} />
-                            {/* <CPlugin id="NewsletterForm_sidebar" pluginName="NewsletterForm" /> */}
+                            <CImage
+                                id="main_sidebar_image_1"
+                                src="/themes/@cromwell/theme-store/sidebar_banner_1.png"
+                                className={styles.sidebarBanner}
+                            />
                         </CContainer>
                         <CContainer id="main_22" className={styles.mainContent}>
                             <CContainer id="main_23" className={styles.mainSubBanners}>
-                                <CImage src="/themes/@cromwell/theme-store/sub_banner_1.jpg" id="main_sub_banner_1" className={styles.mainSubBanner} />
-                                <CImage src="/themes/@cromwell/theme-store/sub_banner_2.jpg" id="main_sub_banner_2" className={styles.mainSubBanner} />
-                                <CImage src="/themes/@cromwell/theme-store/sub_banner_3.jpg" id="main_sub_banner_3" className={styles.mainSubBanner} />
+                                <CImage
+                                    src="/themes/@cromwell/theme-store/sub_banner_1.jpg"
+                                    id="main_sub_banner_1" className={styles.mainSubBanner} />
+                                <CImage
+                                    src="/themes/@cromwell/theme-store/sub_banner_2.jpg"
+                                    id="main_sub_banner_2" className={styles.mainSubBanner} />
+                                <CImage
+                                    src="/themes/@cromwell/theme-store/sub_banner_3.jpg"
+                                    id="main_sub_banner_3" className={styles.mainSubBanner} />
                             </CContainer>
                             <CContainer id="main_24" className={styles.mainShowcaseWrapper}>
                                 <CPlugin id="main_showcase" style={{ height: '440px' }} />

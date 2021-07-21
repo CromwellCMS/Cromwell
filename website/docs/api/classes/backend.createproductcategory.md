@@ -48,7 +48,7 @@ Inherited from: [BasePageInput](backend.basepageinput.md)
 
 • `Optional` **description**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:14](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/CreateProductCategory.ts#L14)
+Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProductCategory.ts#L14)
 
 ___
 
@@ -56,7 +56,7 @@ ___
 
 • `Optional` **descriptionDelta**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:17](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/CreateProductCategory.ts#L17)
+Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProductCategory.ts#L17)
 
 ___
 
@@ -66,7 +66,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L18)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
 
 ___
 
@@ -74,7 +74,7 @@ ___
 
 • `Optional` **mainImage**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:11](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/CreateProductCategory.ts#L11)
+Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProductCategory.ts#L11)
 
 ___
 
@@ -82,7 +82,7 @@ ___
 
 • **name**: *string*
 
-Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:8](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/CreateProductCategory.ts#L8)
+Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProductCategory.ts#L8)
 
 ___
 
@@ -92,7 +92,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L15)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
 
 ___
 
@@ -102,7 +102,7 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L12)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
 
 ___
 
@@ -110,7 +110,7 @@ ___
 
 • `Optional` **parentId**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:20](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/CreateProductCategory.ts#L20)
+Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProductCategory.ts#L20)
 
 ___
 
@@ -120,4 +120,4 @@ ___
 
 Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/BasePageInput.ts#L9)
+Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)

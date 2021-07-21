@@ -19,7 +19,7 @@ describe('Plugin Controller', () => {
 
     it(`/GET settings`, () => {
         return request(server)
-            .get(`/plugin/settings?pluginName=${defaultPlugin}`)
+            .get(`/v1/plugin/settings?pluginName=${defaultPlugin}`)
             .expect(200)
             .then(response => {
                 expect(response.body).toBeTruthy();
@@ -28,7 +28,7 @@ describe('Plugin Controller', () => {
 
     it(`/POST settings`, async () => {
         await request(server)
-            .post(`/plugin/settings?pluginName=${defaultPlugin}`)
+            .post(`/v1/plugin/settings?pluginName=${defaultPlugin}`)
             .send({ _test_: '_test_' })
             .expect(201)
             .then(response => {
@@ -38,7 +38,7 @@ describe('Plugin Controller', () => {
         await new Promise(done => setTimeout(done, 10));
 
         return request(server)
-            .get(`/plugin/settings?pluginName=${defaultPlugin}`)
+            .get(`/v1/plugin/settings?pluginName=${defaultPlugin}`)
             .expect(200)
             .then(response => {
                 expect(response.body['_test_']).toEqual('_test_');
@@ -47,7 +47,7 @@ describe('Plugin Controller', () => {
 
     it(`/GET frontend-bundle`, () => {
         return request(server)
-            .get(`/plugin/frontend-bundle?pluginName=${defaultPlugin}`)
+            .get(`/v1/plugin/frontend-bundle?pluginName=${defaultPlugin}`)
             .expect(200)
             .then(response => {
                 expect(response.body).toBeTruthy();
@@ -56,7 +56,7 @@ describe('Plugin Controller', () => {
 
     it(`/GET admin-bundle`, () => {
         return request(server)
-            .get(`/plugin/admin-bundle?pluginName=${defaultPlugin}`)
+            .get(`/v1/plugin/admin-bundle?pluginName=${defaultPlugin}`)
             .expect(200)
             .then(response => {
                 expect(response.body).toBeTruthy();

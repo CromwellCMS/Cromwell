@@ -55,7 +55,7 @@ Inherited from: [BasePageEntity](backend.basepageentity.md)
 
 • `Optional` **approved**: *undefined* \| *boolean*
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:54](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/ProductReview.ts#L54)
+Defined in: [system/core/backend/src/entities/ProductReview.ts:54](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L54)
 
 ___
 
@@ -65,7 +65,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/BasePageEntity.ts#L28)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
 
 ___
 
@@ -73,7 +73,7 @@ ___
 
 • `Optional` **description**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:30](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/ProductReview.ts#L30)
+Defined in: [system/core/backend/src/entities/ProductReview.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L30)
 
 ___
 
@@ -83,7 +83,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/BasePageEntity.ts#L12)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
 
 ___
 
@@ -93,7 +93,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/BasePageEntity.ts#L36)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
 
 ___
 
@@ -103,7 +103,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/BasePageEntity.ts#L24)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
 
 ___
 
@@ -113,7 +113,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/BasePageEntity.ts#L20)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
 
 ___
 
@@ -121,7 +121,7 @@ ___
 
 • **product**: [*Product*](backend.product.md)
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:22](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/ProductReview.ts#L22)
+Defined in: [system/core/backend/src/entities/ProductReview.ts:22](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L22)
 
 ___
 
@@ -129,7 +129,7 @@ ___
 
 • **productId**: *string*
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:16](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/ProductReview.ts#L16)
+Defined in: [system/core/backend/src/entities/ProductReview.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L16)
 
 ___
 
@@ -137,7 +137,7 @@ ___
 
 • `Optional` **rating**: *undefined* \| *number*
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:35](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/ProductReview.ts#L35)
+Defined in: [system/core/backend/src/entities/ProductReview.ts:35](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L35)
 
 ___
 
@@ -147,7 +147,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/BasePageEntity.ts#L16)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
 
 ___
 
@@ -155,7 +155,7 @@ ___
 
 • `Optional` **title**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:26](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/ProductReview.ts#L26)
+Defined in: [system/core/backend/src/entities/ProductReview.ts:26](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L26)
 
 ___
 
@@ -165,7 +165,7 @@ ___
 
 Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/BasePageEntity.ts#L32)
+Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
 
 ___
 
@@ -173,7 +173,7 @@ ___
 
 • `Optional` **userEmail**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:40](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/ProductReview.ts#L40)
+Defined in: [system/core/backend/src/entities/ProductReview.ts:40](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L40)
 
 ___
 
@@ -181,7 +181,7 @@ ___
 
 • `Optional` **userId**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:49](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/ProductReview.ts#L49)
+Defined in: [system/core/backend/src/entities/ProductReview.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L49)
 
 ___
 
@@ -189,4 +189,4 @@ ___
 
 • `Optional` **userName**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:44](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/ProductReview.ts#L44)
+Defined in: [system/core/backend/src/entities/ProductReview.ts:44](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L44)

@@ -2,25 +2,22 @@ import { GraphQLPaths, TPagedParams, TTag, TTagInput } from '@cromwell/core';
 import { TagRepository } from '@cromwell/core-backend';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
-import { ApolloServerTestClient } from 'apollo-server-testing';
 import { getCustomRepository } from 'typeorm';
 
 import { setupResolver, tearDownResolver } from '../resolver.helpers';
 
 describe('Tag resolver', () => {
     let server: ApolloServer;
-    let client: ApolloServerTestClient;
     let crwClient: TCGraphQLClient | undefined;
 
-
     beforeAll(async () => {
-        [server, client] = await setupResolver('tag');
+        server = await setupResolver('tag');
         crwClient = getGraphQLClient();
     });
 
     it(`getTags`, async () => {
         const path = GraphQLPaths.Tag.getMany;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
               query testGetTags($pagedParams: PagedParamsInput!) {
                   ${path}(pagedParams: $pagedParams) {
@@ -54,7 +51,7 @@ describe('Tag resolver', () => {
 
     const getTag = async (tagId: string): Promise<TTag> => {
         const path = GraphQLPaths.Tag.getOneById;
-        const res = await client.query({
+        const res = await server.executeOperation({
             query: gql`
             query testGetTagById($id: String!) {
                 ${path}(id: $id) {
@@ -97,8 +94,8 @@ describe('Tag resolver', () => {
             name: '__test__',
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testUpdateTag($id: String!, $data: InputTag!) {
                   ${path}(id: $id, data: $data) {
                       ...TagFragment
@@ -143,8 +140,8 @@ describe('Tag resolver', () => {
             name: '__test2__',
         }
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
               mutation testCreateTag($data: InputTag!) {
                   ${path}(data: $data) {
                       ...TagFragment
@@ -188,8 +185,8 @@ describe('Tag resolver', () => {
         expect(data1.id).toBeTruthy();
         const path = GraphQLPaths.Tag.delete;
 
-        const res = await client.mutate({
-            mutation: gql`
+        const res = await server.executeOperation({
+            query: gql`
                 mutation testDeleteTag($id: String!) {
                     ${path}(id: $id)
                 }

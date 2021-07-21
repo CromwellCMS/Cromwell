@@ -33,7 +33,7 @@
 
 • `Optional` **elements**: *undefined* \| [*Post*](backend.post.md)[]
 
-Defined in: [system/core/backend/src/entities/paged/PagedPost.ts:12](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/paged/PagedPost.ts#L12)
+Defined in: [system/core/backend/src/entities/paged/PagedPost.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedPost.ts#L12)
 
 ___
 
@@ -41,4 +41,4 @@ ___
 
 • `Optional` **pagedMeta**: *undefined* \| [*PagedMeta*](backend.pagedmeta.md)
 
-Defined in: [system/core/backend/src/entities/paged/PagedPost.ts:9](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/entities/paged/PagedPost.ts#L9)
+Defined in: [system/core/backend/src/entities/paged/PagedPost.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedPost.ts#L9)

@@ -33,7 +33,7 @@
 
 • `Optional` **icon**: *undefined* \| *string*
 
-Defined in: [system/core/backend/src/inputs/AttributeInput.ts:30](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/AttributeInput.ts#L30)
+Defined in: [system/core/backend/src/inputs/AttributeInput.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/AttributeInput.ts#L30)
 
 ___
 
@@ -41,4 +41,4 @@ ___
 
 • **value**: *string*
 
-Defined in: [system/core/backend/src/inputs/AttributeInput.ts:27](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/backend/src/inputs/AttributeInput.ts#L27)
+Defined in: [system/core/backend/src/inputs/AttributeInput.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/AttributeInput.ts#L27)

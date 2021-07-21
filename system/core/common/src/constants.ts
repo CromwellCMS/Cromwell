@@ -114,9 +114,6 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
 }
 
 export const isServer = (): boolean => (typeof window === 'undefined');
-
-export const currentApiVersion = '1.0.0';
-export const apiV1BaseRoute = 'api/v1';
 // export const isServer = (): boolean => true;
 
 const getBaseUrl = (key: keyof TCmsConfig) => {

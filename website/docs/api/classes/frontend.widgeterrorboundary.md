@@ -36,7 +36,7 @@ Name | Type |
 
 **Returns:** [*WidgetErrorBoundary*](frontend.widgeterrorboundary.md)
 
-Defined in: [system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx:6](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx#L6)
+Defined in: [system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx:6](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx#L6)
 
 ## Methods
 
@@ -53,7 +53,7 @@ Name | Type |
 
 **Returns:** *void*
 
-Defined in: [system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx:16](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx#L16)
+Defined in: [system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx#L16)
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 **Returns:** ReactNode
 
-Defined in: [system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx:20](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx#L20)
+Defined in: [system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx#L20)
 
 ___
 
@@ -84,4 +84,4 @@ Name | Type |
 `errorMessage` | *string* |
 `hasError` | *boolean* |
 
-Defined in: [system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx:12](https://github.com/CromwellCMS/Cromwell/blob/4b5f538/system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx#L12)
+Defined in: [system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/AdminPanelWidget/WidgetErrorBoundary.tsx#L12)

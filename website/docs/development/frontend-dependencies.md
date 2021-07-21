@@ -49,7 +49,7 @@ Default Frontend dependencies are always bundled with Themes, and they are initi
 ## Where to get
 
 #### GiHub repo
-Cromwell CMS provides a [number of ready Frontend dependencies](https://github.com/CromwellCMS/bundled-modules). If they are referenced in package.json, they will be checked and downloaded upon system startup or any build command. Note that it is important to have exact dependency version in package.json because we don't use npm version resolution mechanism here, all modules downloaded from the GitHub repo by their name and exact version.  
+Cromwell CMS provides a [number of ready Frontend dependencies](/latest-frontend-dependencies) from its GitHub repo. If they are referenced in your package.json, they will be checked and downloaded upon system startup or any build command. Note that it is important to have exact dependency version in package.json because we don't use npm version resolution mechanism here, all modules downloaded from the GitHub repo by their name and exact version.  
 You should use them when it's possible instead of other node modules or self-bundled Frontend dependencies. It's important to maintain same bundles and versions across all Plugins/Themes.  
 Especially it's useful for distribution, when a user installs your Theme, the CMS will automatically download its Frontend dependencies.
 
@@ -62,8 +62,8 @@ This is experimental feature, docs will follow in the future.
 As dependencies updated by their authors, we will bundle and upload new versions. So on a website potentially we can have installed two Plugins that reference different versions of one Frontend dependency.
 When these Plugins will be displayed at the frontend, the CMS will import only dependency of a first discovered Plugin (which placed higher on the page), then this dependency will be cached and reused for other Plugins. To avoid collisions and multiple instance problem dependencies are re-used by their name, ignoring version.  
 
-Basically we want to use a new version, or ot least same version for all Plugins. For this purpose in Cromwell CMS we have bindings between CMS version and Frontend dependencies. You can check it here: [/frontend-dependencies](/frontend-dependencies).  
-Plugin/Theme authors must check version of their dependencies and CMS releases. If Frontend dependency has been updated in a new CMS release, then author has to update it in his package and make a new release.   
+Basically we want to use a new version, or ot least same version for all Plugins. For this purpose in Cromwell CMS we reference latest dependencies at the page: [/latest-frontend-dependencies](/latest-frontend-dependencies).  
+Plugin/Theme authors must check version of their dependencies and CMS releases. If Frontend dependency has been updated with a new CMS release, then author has to update it in his package and make a new release.   
 Plugins should be backward-compatible. New features appeared in a release of Frontend dependency should be checked before use, so Plugin won't crash with an old version.
 
 When making a new Plugin you probably don't want to support all previous versions of Frontend dependencies, so you can set (min CMS version in your cmsconfig.json)[/#todo]
