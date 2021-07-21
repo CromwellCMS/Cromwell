@@ -10,9 +10,14 @@ import { DeleteForeverIcon, ExpandMoreIcon } from '../icons';
 import { LoadBox } from '../loadbox/Loadbox';
 import styles from './CartProductList.module.scss';
 
+/**
+ * Displays cart in the global store by default (cart manager)
+ * or cart passed in props (static cart view).
+ */
 export const CartProductList = (props: {
     onProductOpen?: (product: TProduct) => void;
     collapsedByDefault?: boolean;
+    cart?: TStoreListItem[];
 }) => {
     const [cart, setCart] = useState<TStoreListItem[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -22,6 +27,7 @@ export const CartProductList = (props: {
     const cstore = getCStore();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
+    const isStatic = !!props.cart;
 
     if (_collapsedByDefault.current !== props.collapsedByDefault) {
         isCollapsed.current = !!props.collapsedByDefault;
@@ -38,17 +44,19 @@ export const CartProductList = (props: {
          * Since getCart method wll retrieve products from local storage and 
          * after a while products can be modified at the server, we need to refresh cart first  
          */
-        (async () => {
-            setIsLoading(true);
-            await cstore.updateCart();
-            const cart = cstore.getCart();
-            setCart(cart);
-            setIsLoading(false);
-        })();
+        if (!isStatic) {
+            (async () => {
+                setIsLoading(true);
+                await cstore.updateCart();
+                const cart = cstore.getCart();
+                setCart(cart);
+                setIsLoading(false);
+            })();
 
-        cstore.onCartUpdate(() => {
-            forceUpdate();
-        }, 'ProductActions');
+            cstore.onCartUpdate(() => {
+                forceUpdate();
+            }, 'ProductActions');
+        }
     }, []);
 
 
@@ -59,16 +67,18 @@ export const CartProductList = (props: {
         }
     }
 
-    const cartInfo = cstore.getCartTotal();
+    const viewCart = props.cart ?? cart;
+    const cartInfo = cstore.getCartTotal(viewCart);
     const cartTotal = cartInfo.total
     const cartTotalOldPrice = cartInfo.totalOld;
+
 
     const productList = (
         <div className={styles.productList}>
             {isLoading && (
                 <LoadBox />
             )}
-            {!isLoading && cart.map((it, i) => {
+            {!isLoading && viewCart.map((it, i) => {
                 const product = it.product;
                 const checkedAttrKeys = Object.keys(it.pickedAttributes || {});
                 if (product) {
@@ -104,12 +114,14 @@ export const CartProductList = (props: {
                             </Grid>
                             <Grid item xs={2} className={styles.itemBlock} style={{ marginLeft: 'auto', paddingRight: '0px' }}>
                                 <div className={styles.actions} >
-                                    <IconButton
-                                        aria-label="Delete"
-                                        onClick={() => { handleDeleteItem(it); }}
-                                    >
-                                        <DeleteForeverIcon />
-                                    </IconButton>
+                                    {!isStatic && (
+                                        <IconButton
+                                            aria-label="Delete"
+                                            onClick={() => { handleDeleteItem(it); }}
+                                        >
+                                            <DeleteForeverIcon />
+                                        </IconButton>
+                                    )}
                                 </div>
                             </Grid>
                         </Grid>

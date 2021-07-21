@@ -1,0 +1,64 @@
+@import "../variables.scss";
+@import "../common.module.scss";
+
+.AccountPage {
+    position: relative;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.AccountPage div.contactInfo {
+    @include paper;
+    margin: 30px 0;
+    padding: 10px;
+}
+
+.fields {
+    // @extend .container;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-size: 26px;
+    margin: 20px 0 10px;
+}
+
+.subheader {
+    font-size: 26px;
+    margin-bottom: 15px;
+}
+
+.AccountPage div.order {
+    @include paper;
+    margin-bottom: 20px;
+    padding: 15px;
+}
+
+.orderTitle {
+    font-size: 20px;
+}
+
+.detailsRow {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px dashed #bbb;
+    margin: 15px 0;
+}
+.totalText {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.signInBlock {
+    display: flex;
+    margin: 20px 0 20px 0;
+
+    .singinBtn {
+        margin-right: 15px;
+    }
+}

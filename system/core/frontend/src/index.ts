@@ -27,7 +27,7 @@ export {
     awaitImporter,
     CromwellBlockCSSclass,
 } from './constants';
-export { getGraphQLClient, TCGraphQLClient } from './api/CGraphQLClient';
+export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo, getGraphQLErrorInfo } from './api/CGraphQLClient';
 export { getRestAPIClient, TCRestAPIClient, TErrorInfo, TPluginsModifications, TRequestOptions } from './api/CRestAPIClient';
 export * from './api/CentralServerClient';
 export { getWebSocketClient } from './api/CWebSocketClient';

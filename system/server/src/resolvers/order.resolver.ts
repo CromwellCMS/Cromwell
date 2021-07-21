@@ -2,13 +2,14 @@ import { GraphQLPaths, TAuthRole, TOrder, TPagedList } from '@cromwell/core';
 import {
     DeleteManyInput,
     InputOrder,
+    TGraphQLContext,
     Order,
     OrderFilterInput,
     OrderRepository,
     PagedOrder,
     PagedParamsInput,
 } from '@cromwell/core-backend';
-import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
+import { Arg, Ctx, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
 import { serverFireAction } from '../helpers/serverFireAction';
@@ -22,6 +23,7 @@ const deletePath = GraphQLPaths.Order.delete;
 const deleteManyPath = GraphQLPaths.Order.deleteMany;
 const deleteManyFilteredPath = GraphQLPaths.Order.deleteManyFiltered;
 const getFilteredPath = GraphQLPaths.Order.getFiltered;
+const getOrdersOfUser = GraphQLPaths.Order.getOrdersOfUser;
 
 @Resolver(Order)
 export class OrderResolver {
@@ -30,9 +32,27 @@ export class OrderResolver {
 
     @Authorized<TAuthRole>("administrator", "guest")
     @Query(() => PagedOrder)
-    async [getManyPath](@Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>):
-        Promise<TPagedList<TOrder>> {
+    async [getManyPath](
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>
+    ): Promise<TPagedList<TOrder>> {
         return this.repository.getOrders(pagedParams);
+    }
+
+    @Authorized<TAuthRole>("all")
+    @Query(() => PagedOrder)
+    async [getOrdersOfUser](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("userId") userId: string,
+        @Arg("pagedParams", { nullable: true }) pagedParams?: PagedParamsInput<TOrder>
+    ): Promise<TPagedList<TOrder> | undefined> {
+        if (!ctx?.user?.role) throw new Error('Access denied.');
+
+        if (ctx.user.role === 'guest' || ctx.user.role === 'administrator' ||
+            ctx.user.id + '' === userId + '') {
+            const orders = await this.repository.getOrdersOfUser(userId, pagedParams);
+            console.log('orders', orders)
+            return orders;
+        }
     }
 
     @Authorized<TAuthRole>("administrator", "guest")
@@ -41,10 +61,18 @@ export class OrderResolver {
         return this.repository.getOrderBySlug(slug);
     }
 
-    @Authorized<TAuthRole>("administrator", "guest")
+    @Authorized<TAuthRole>("all")
     @Query(() => Order)
-    async [getOneByIdPath](@Arg("id") id: string): Promise<Order | undefined> {
-        return this.repository.getOrderById(id);
+    async [getOneByIdPath](
+        @Ctx() ctx: TGraphQLContext,
+        @Arg("id") id: string
+    ): Promise<Order | undefined> {
+        if (!ctx?.user?.role) throw new Error('Access denied.');
+
+        const order = await this.repository.getOrderById(id);
+        if (ctx.user.role === 'guest' || ctx.user.role === 'administrator' ||
+            (order?.userId && ctx.user.id + '' === order.userId + ''))
+            return order;
     }
 
     @Authorized<TAuthRole>("administrator")

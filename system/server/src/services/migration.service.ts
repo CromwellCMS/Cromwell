@@ -40,6 +40,7 @@ import {
 import { Injectable } from '@nestjs/common';
 import { Container, Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
+import cryptoRandomString from 'crypto-random-string';
 
 import { GenericPlugin, GenericTheme } from '../helpers/genericEntities';
 import { CmsService } from './cms.service';
@@ -52,9 +53,16 @@ export class MigrationService {
         return Container.get(CmsService);
     }
 
+    private _xlsxPopulate;
+    private get xlsxPopulate() {
+        if (!this._xlsxPopulate) {
+            this._xlsxPopulate = require('xlsx-populate');
+        }
+        return this._xlsxPopulate;
+    }
+
     public async exportDB(entityTypes: TDBEntity[] = []) {
-        const XlsxPopulate = require('xlsx-populate');
-        const workbook = await XlsxPopulate.fromBlankAsync();
+        const workbook = await this.xlsxPopulate.fromBlankAsync();
 
         const exportAll = (!entityTypes || entityTypes.length === 0);
 
@@ -114,11 +122,9 @@ export class MigrationService {
         }
         if (!files?.length) return;
 
-        const XlsxPopulate = require('xlsx-populate');
-
         for (const file of files) {
             const uint8Array = new Uint8Array(file);
-            const workbook = await XlsxPopulate.fromDataAsync(uint8Array);
+            const workbook = await this.xlsxPopulate.fromDataAsync(uint8Array);
 
             await this.importUsers(workbook);
             await this.importTags(workbook);
@@ -646,7 +652,10 @@ export class MigrationService {
             User,
             (input) => input,
             async (input) => input.id && getCustomRepository(UserRepository).updateUser(input.id, input),
-            (input: TCreateUser & { id?: string }) => getCustomRepository(UserRepository).createUser(input, input.id),
+            (input: TCreateUser & { id?: string }) => getCustomRepository(UserRepository).createUser({
+                ...input,
+                password: cryptoRandomString({ length: 14, type: 'url-safe' }),
+            }, input.id),
         )
     }
 

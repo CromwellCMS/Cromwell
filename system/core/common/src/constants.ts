@@ -101,6 +101,7 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
         deleteManyFiltered: "deleteManyFilteredOrders",
         deleteMany: "deleteManyOrders",
         getFiltered: "getFilteredOrders",
+        getOrdersOfUser: 'getOrdersOfUser',
     },
     Tag: {
         getOneBySlug: "getTagBySlug",

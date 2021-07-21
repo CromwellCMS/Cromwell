@@ -2,6 +2,10 @@
   "name": "@cromwell/website",
   "version": "1.0.0",
   "private": true,
+  "files": [
+    "build",
+    "static"
+  ],
   "scripts": {
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
@@ -14,7 +18,7 @@
     "generate:api": "cd ../ && npx typedoc --options website/typedoc.json"
   },
   "dependencies": {
-    "@cromwell/core-backend": "1.0.10",
+    "@cromwell/core-backend": "1.0.11",
     "@cromwell/core-frontend": "^1.0.7",
     "@docusaurus/core": "2.0.0-beta.0",
     "@docusaurus/preset-classic": "2.0.0-beta.0",

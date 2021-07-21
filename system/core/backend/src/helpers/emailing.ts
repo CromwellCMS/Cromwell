@@ -24,8 +24,8 @@ export const getEmailTemplate = async (fileName: string, props?: Record<string, 
         emailContent = (await fs.readFile(mailOriginalPath)).toString();
     }
 
-    if (emailContent && props) {
-        emailContent = Handlebars.compile(emailContent)(props);
+    if (emailContent) {
+        emailContent = Handlebars.compile(emailContent)(props ?? {});
     }
 
     return emailContent;

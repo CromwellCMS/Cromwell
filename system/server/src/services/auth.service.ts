@@ -111,12 +111,12 @@ export class AuthService {
         user.resetPasswordDate = new Date(Date.now());
         await user.save();
 
-        const compiledMail = await getEmailTemplate('forgot-password.html', {
+        const compiledMail = await getEmailTemplate('forgot-password.hbs', {
             resetCode: secretCode
         });
         if (!compiledMail) {
-            logger.error('forgot-password.html template was not found');
-            throw new HttpException('forgot-password.html template was not found', HttpStatus.INTERNAL_SERVER_ERROR);
+            logger.error('forgot-password.hbs template was not found');
+            throw new HttpException('forgot-password.hbs template was not found', HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return await sendEmail([email], 'Forgot password', compiledMail);

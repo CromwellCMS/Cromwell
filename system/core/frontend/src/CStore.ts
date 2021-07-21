@@ -420,8 +420,8 @@ export class CStore {
     }
 
 
-    public getCartTotal = () => {
-        const cart = this.getCart();
+    public getCartTotal = (customCart?: TStoreListItem[]) => {
+        const cart = customCart ?? this.getCart();
         const total: number = cart.reduce<number>((prev, current) =>
             prev += (current.product?.price ?? 0) * (current.amount ?? 1), 0);
 
