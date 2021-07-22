@@ -1,7 +1,7 @@
 import { NextPage } from 'next';
 import React from 'react';
 
-import { TCmsSettings, TPageConfig, TPageInfo, TPalette } from './data';
+import { TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette } from './data';
 import { TPost, TProduct } from './entities';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
@@ -32,6 +32,7 @@ export type TCromwellPageCoreProps = {
     themeHeadHtml?: string | null;
     themeFooterHtml?: string | null;
     palette?: TPalette | null;
+    defaultPages?: Record<TDefaultPageName, string>;
 }
 
 export type TCromwellBlock<TContentBlock = React.Component> = React.Component<TCromwellBlockProps<TContentBlock>> & {

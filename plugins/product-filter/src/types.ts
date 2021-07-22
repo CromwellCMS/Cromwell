@@ -1,4 +1,4 @@
-import { TProductFilter } from '@cromwell/core';
+import { TProductCategory, TProductFilter } from '@cromwell/core';
 
 export type TProductFilterSettings = {
     listId?: string;
@@ -14,4 +14,9 @@ export type TInstanceSettings = {
     onChange?: (params: TProductFilter) => void;
     disableMobile?: boolean;
     listId?: string;
+    /** 
+     * Custom on category click handler. Return true to 
+     * skip default handler (navigate to category) 
+     * */
+    onCategoryClick?: (category: TProductCategory) => boolean;
 }

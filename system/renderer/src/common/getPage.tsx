@@ -28,12 +28,13 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
         const { plugins, pageConfig, themeCustomConfig,
             childStaticProps, cmsSettings, themeHeadHtml,
             themeFooterHtml, pagesInfo,
-            palette } = props;
+            palette, defaultPages } = props;
 
         const forcedChildStaticProps = useRef(null);
         if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
         if (plugins) setStoreItem('plugins', plugins);
         if (pageConfig) setStoreItem('pageConfig', pageConfig);
+        if (defaultPages) setStoreItem('defaultPages', defaultPages);
         if (themeCustomConfig) setStoreItem('themeCustomConfig', themeCustomConfig);
         if (pagesInfo) setStoreItem('pagesInfo', pagesInfo);
         if (palette) {

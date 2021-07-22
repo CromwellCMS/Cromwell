@@ -480,7 +480,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
 
             options.plugins.push(externalGlobals((id: string) => {
                 const extStr = `${cromwellStoreModulesPath}["${id}"]`;
-                if (settings?.moduleInfo?.type === 'theme' && id.startsWith('next/')) {
+                if (id.startsWith('next/')) {
                     return extStr;
                 }
                 const isExt = resolveExternal(id, settings?.frontendDeps);

@@ -26,10 +26,27 @@
     padding: 5px;
 }
 
-.sortContainer {
+.header {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
+    align-items: center;
     margin: 20px 0 20px 20px;
+}
+
+.title {
+    font-size: 26px;
+    margin-left: 15px;
+}
+
+.sort {
+    min-width: 100px;
+}
+
+.description {
+    margin-top: 30px;
+    background-color: #fff;
+    border-radius: 6px;
+    padding: 15px;
 }
 
 @media (max-width: 985px) {

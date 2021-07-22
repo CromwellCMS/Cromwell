@@ -10,7 +10,7 @@ import {
     TProductFilter,
     TProductFilterMeta,
 } from '@cromwell/core';
-import { getGraphQLClient, TCGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { getGraphQLClient, getGraphQLErrorInfo, TCGraphQLClient, TCList } from '@cromwell/core-frontend';
 
 
 export type TProductFilterData = {
@@ -22,36 +22,39 @@ export type TProductFilterData = {
 
 const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: string, pagedParams: TPagedParams<TProduct>,
     filterParams: TProductFilter, cb?: (data: TFilteredProductList | undefined) => void): Promise<TFilteredProductList | undefined> => {
-    let data;
-    try {
-        data = await client?.query({
-            query: gql`
-            query getFilteredProducts($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!) {
-                getFilteredProducts(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
-                    pagedMeta {
-                        ...PagedMetaFragment
-                    }
-                    filterMeta {
-                        minPrice
-                        maxPrice
-                    }
-                    elements {
-                        ...ProductFragment
+
+    const getProducts = async () => {
+        try {
+            return await client?.query({
+                query: gql`
+                query getFilteredProducts($categoryId: String!, $pagedParams: PagedParamsInput!, $filterParams: ProductFilterInput!) {
+                    getFilteredProducts(categoryId: $categoryId, pagedParams: $pagedParams, filterParams: $filterParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        filterMeta {
+                            minPrice
+                            maxPrice
+                        }
+                        elements {
+                            ...ProductFragment
+                        }
                     }
                 }
-            }
-            ${client?.ProductFragment}
-            ${client?.PagedMetaFragment}
-        `,
-            variables: {
-                pagedParams,
-                filterParams,
-                categoryId
-            }
-        });
-    } catch (e) {
-        console.error('ProductFilter::getFiltered error: ', e.message)
+                ${client?.ProductFragment}
+                ${client?.PagedMetaFragment}
+            `,
+                variables: {
+                    pagedParams,
+                    filterParams,
+                    categoryId
+                }
+            });
+        } catch (e) {
+            console.error('ProductFilter::getFiltered error: ', e.message)
+        }
     }
+    const data = await getProducts();
 
     const filteredList: TFilteredProductList | undefined = data?.data?.getFilteredProducts;
     if (cb) cb(filteredList);
@@ -84,20 +87,40 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<TProduct
     if (!getLogger) getLogger = require('@cromwell/core-backend').getLogger;
 
     const logger = getLogger();
-    const slug = (context && context.params) ? context.params.slug : null;
+    const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
 
-    let productCategory: TProductCategory | undefined = undefined;
-    if (slug && typeof slug === 'string') {
+    const getCategory = async () => {
+        if (!slug) return;
         try {
-            productCategory = await client?.getProductCategoryBySlug(slug);
-        } catch (e) {
-            logger.error('ProductFilter::getStaticProps', e.message)
+            return await client?.getProductCategoryBySlug(
+                slug as string,
+                gql`
+                    ${client.ProductCategoryFragment}
+                    fragment PCategory on ProductCategory {
+                        ...ProductCategoryFragment
+                        parent {
+                            name
+                            slug
+                            id
+                        }
+                        children {
+                          name
+                          slug
+                          id
+                        }
+                    }
+                `,
+                'PCategory'
+            )
+        } catch (error) {
+            logger.error('ProductFilter::getStaticProps', error);
+            logger.error(JSON.stringify(getGraphQLErrorInfo(error), null, 2));
         }
     }
+    const productCategory = await getCategory();
 
     let attributes: TAttribute[] | undefined;
-
     try {
         attributes = await client?.getAttributes();
     } catch (e) {

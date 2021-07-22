@@ -92,6 +92,16 @@ export const useStyles = makeStyles((theme: Theme) =>
                 borderRadius: '30px',
             },
         },
+        categoryBox: {
+            display: 'flex',
+            flexDirection: 'column',
+            padding: '5px 15px',
+            alignItems: 'flex-start',
+        },
+        category: {
+            marginBottom: '10px',
+            minHeight: '30px',
+        }
     }),
 );
 
