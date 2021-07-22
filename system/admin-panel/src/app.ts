@@ -83,9 +83,9 @@ import { store } from './redux/store';
     restClient?.onError(onRestApiError, 'app');
 
 
-    const onGraphQlError = (message) => {
-        if (message)
-            toast.error(message);
+    const onGraphQlError = (info) => {
+        if (info?.message)
+            toast.error(info.message);
     }
     graphClient?.onError(onGraphQlError, 'app');
 

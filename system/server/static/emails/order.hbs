@@ -1,0 +1,280 @@
+<!DOCTYPE html
+  PUBLIC "-//W3C//DTD XHTML 1.0 Transitional //EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:o="urn:schemas-microsoft-com:office:office"
+  xmlns:v="urn:schemas-microsoft-com:vml">
+
+<head>
+  <meta name="viewport" content="width=device-width">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <title>Simple Transactional Email</title>
+  <link href="https://fonts.googleapis.com/css?family&#x3D;Lato" rel="stylesheet" type="text/css">
+  <style media="all" type="text/css">
+    @media only screen and (max-width: 660px) {
+
+      table[class=body] h1,
+      table[class=body] h2,
+      table[class=body] h3,
+      table[class=body] h4 {
+        font-weight: 600 !important;
+      }
+
+      table[class=body] h1 {
+        font-size: 22px !important;
+      }
+
+      table[class=body] h2 {
+        font-size: 18px !important;
+      }
+
+      table[class=body] h3 {
+        font-size: 16px !important;
+      }
+
+      table[class=body] .content,
+      table[class=body] .wrapper {
+        padding: 10px !important;
+      }
+
+      table[class=body] .container {
+        padding: 0 !important;
+        width: 100% !important;
+      }
+
+      table[class=body] .btn table,
+      table[class=body] .btn a {
+        width: 100% !important;
+      }
+    }
+  </style>
+</head>
+
+<body
+  style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; -webkit-font-smoothing: antialiased; font-size: 14px; height: 100% !important; line-height: 1.6em; margin: 0; padding: 0; -ms-text-size-adjust: 100%; -webkit-text-size-adjust: 100%; width: 100% !important; background-color: #f6f6f6;">
+
+  <table class="body"
+    style="box-sizing: border-box; border-collapse: separate !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0; width: 100%; background-color: #f6f6f6;"
+    width="100%" bgcolor="#f6f6f6">
+    <tr>
+      <td
+        style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top;"
+        valign="top"></td>
+      <td class="container"
+        style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top; display: block; margin: 0 auto !important; max-width: 620px; padding: 10px; width: 620px;"
+        width="620" valign="top">
+        <div class="content"
+          style="box-sizing: border-box; display: block; margin: 0 auto; max-width: 620px; padding: 10px;">
+          <span class="preheader"
+            style="color: transparent; display: none; height: 0; max-height: 0; max-width: 0; opacity: 0; overflow: hidden; mso-hide: all; visibility: hidden; width: 0;">Thank
+            you for placing your order in our store.</span>
+          <table class="main"
+            style="box-sizing: border-box; border-collapse: separate !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0; width: 100%; background: #ffffff; border-radius: 3px;"
+            width="100%">
+
+            <tr>
+              <td class="wrapper"
+                style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top;"
+                valign="top">
+                <table
+                  style="box-sizing: border-box; border-collapse: separate !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; border-spacing: 0;"
+                  width="100%">
+                  <tr>
+                    <td
+                      style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top;"
+                      valign="top">
+                      <table class="header"
+                        style="box-sizing: border-box; border-collapse: separate !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0; width: 100%; padding: 5px 15px 10px 15px;"
+                        width="100%">
+                        <tr>
+                          <td
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top;"
+                            valign="top">
+                            <img src="{{ logoUrl }}" height="60px" class="logo"
+                              style="-ms-interpolation-mode: bicubic; max-width: 100%; width: auto; height: 55px;">
+                          </td>
+                          <td
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; text-align: right; vertical-align: middle;"
+                            align="right" valign="middle">
+                            <p
+                              style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px;">
+                              {{createDate}}</p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  <tr class="center" style="text-align: center;" align="center">
+                    <td
+                      style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top;"
+                      valign="top">
+                      <img width="250" height="250px" src="https://i.ibb.co/bz9vznd/okok.gif"
+                        style="-ms-interpolation-mode: bicubic; max-width: 100%; width: 250px; height: 250px;">
+                    </td>
+                    <td
+                      style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top;"
+                      valign="top"></td>
+                  </tr>
+                  <tr class="center" style="text-align: center;" align="center">
+                    <td
+                      style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top; padding: 10px 0 20px 0;"
+                      valign="top">
+                      <p
+                        style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-weight: normal; margin: 0; margin-bottom: 0; font-size: 18px; color: #333;">
+                        <strong>Thank you for placing your order</strong>
+                      </p>
+                      <p
+                        style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-weight: normal; margin: 0; margin-bottom: 15px; font-size: 18px; color: #333;">
+                        <strong>in our store!</strong>
+                      </p>
+                    </td>
+                  </tr>
+                  <tr class="center" style="text-align: center;" align="center">
+                    <td
+                      style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top;"
+                      valign="top">
+                      <table
+                        style="box-sizing: border-box; border-collapse: separate !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; border-spacing: 0;"
+                        width="100%">
+                        <tr style="background-color: #111; color: #fff">
+                          <td class="orderCell"
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: middle; padding: 15px 20px; border-bottom: 1px dashed #ccc; text-align: left;"
+                            valign="middle" align="left">
+                            <p
+                              style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-weight: normal; margin: 0; font-size: 16px; margin-bottom: 0; text-align: left; background-color: #111; color: #fff;">
+                              PRODUCTS</p>
+                          </td>
+                          <td class="orderCell"
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: middle; padding: 15px 20px; border-bottom: 1px dashed #ccc; text-align: left;"
+                            valign="middle" align="left">
+                            <p
+                              style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-weight: normal; margin: 0; font-size: 16px; margin-bottom: 0; text-align: left; background-color: #111; color: #fff;">
+                              PRICE</p>
+                          </td>
+                        </tr>
+                        {{#each products}}
+                        <tr class="orderRow" style="padding-bottom: 10px; border-bottom: 1px dashed #ccc;">
+                          <td class="orderCell"
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: middle; padding: 15px 20px; border-bottom: 1px dashed #ccc; text-align: left;"
+                            valign="middle" align="left">
+                            <a target="_blank" href="{{this.link}}"
+                              style="box-sizing: border-box; text-decoration: underline; color: #444; margin-bottom: 0; font-size: 16px; text-align: left;">{{this.title}}</a>
+                          </td>
+                          <td class="orderCell"
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: middle; padding: 15px 20px; border-bottom: 1px dashed #ccc; text-align: left;"
+                            valign="middle" align="left">
+                            <p
+                              style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-weight: normal; margin: 0; font-size: 16px; margin-bottom: 0; color: #444; text-align: left;">
+                              {{this.price}}</p>
+                          </td>
+                        </tr>
+                        {{/each}}
+                        <tr class="orderRow" style="padding-bottom: 10px; border-bottom: 1px dashed #ccc;">
+                          <td class="orderCell"
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: middle; padding: 15px 20px; border-bottom: 1px dashed #ccc; text-align: left;"
+                            valign="middle" align="left">
+                            <p
+                              style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-weight: normal; margin: 0; font-size: 16px; margin-bottom: 0; color: #444; text-align: left;">
+                              <strong>Shipping</strong>
+                            </p>
+                          </td>
+                          <td class="orderCell"
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: middle; padding: 15px 20px; border-bottom: 1px dashed #ccc; text-align: left;"
+                            valign="middle" align="left">
+                            <p
+                              style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-weight: normal; margin: 0; font-size: 16px; margin-bottom: 0; color: #444; text-align: left;">
+                              <strong>{{shippingPrice}}</strong>
+                            </p>
+                          </td>
+                        </tr>
+                        <tr class="orderRow" style="padding-bottom: 10px; border-bottom: 1px dashed #ccc;">
+                          <td class="orderTotal"
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: middle; padding: 15px 20px; border-bottom: 0; text-align: left; border-top: 1px solid #333;"
+                            valign="middle" align="left">
+                            <p
+                              style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-weight: normal; margin: 0; margin-bottom: 0; color: #444; text-align: left; font-size: 20px;">
+                              <strong>Total</strong>
+                            </p>
+                          </td>
+                          <td class="orderTotal"
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: middle; padding: 15px 20px; border-bottom: 0; text-align: left; border-top: 1px solid #333;"
+                            valign="middle" align="left">
+                            <p
+                              style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-weight: normal; margin: 0; margin-bottom: 0; color: #444; text-align: left; font-size: 20px;">
+                              <strong>{{totalPrice}}</strong>
+                            </p>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  {{#if orderLink}}
+                  <tr>
+                    <td
+                      style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top; padding-top: 30px;"
+                      valign="top">
+                      <table class="btn btn-primary" cellpadding="0" cellspacing="0"
+                        style="box-sizing: border-box; border-collapse: separate !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0; width: 100%;"
+                        width="100%">
+                        <tr>
+                          <td align="center"
+                            style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top; padding-bottom: 15px;"
+                            valign="top">
+                            <table cellpadding="0" cellspacing="0"
+                              style="box-sizing: border-box; border-collapse: separate !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; border-spacing: 0; width: auto;">
+                              <tr>
+                                <td
+                                  style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top; background-color: #348eda; border-radius: 5px; text-align: center;"
+                                  valign="top" bgcolor="#348eda" align="center">
+                                  <a href="{{orderLink}}"
+                                    style="box-sizing: border-box; color: #ffffff; text-decoration: none; background-color: #348eda; border: solid 1px #348eda; border-radius: 5px; cursor: pointer; display: inline-block; font-size: 14px; font-weight: bold; margin: 0; padding: 12px 25px; text-transform: capitalize; border-color: #348eda;">Details</a>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
+                    </td>
+                  </tr>
+                  {{/if}}
+                  <tr>
+                    <td
+                      style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top; padding: 30px 20px 0 20px;"
+                      valign="top">
+                      <p
+                        style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; font-weight: normal; margin: 0; margin-bottom: 15px; color: #aaa;">
+                        Copyright © 2021</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+          </table>
+          <div class="footer" style="box-sizing: border-box; clear: both; width: 100%;">
+            <table
+              style="box-sizing: border-box; border-collapse: separate !important; mso-table-lspace: 0pt; mso-table-rspace: 0pt; width: 100%; border-spacing: 0; color: #999999; font-size: 12px;"
+              width="100%">
+              <tr style="color: #999999; font-size: 12px;">
+                <td class="align-center"
+                  style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; vertical-align: top; font-size: 12px; color: #999999; text-align: center; padding: 20px 0;"
+                  valign="top" align="center">
+                  <p
+                    style="font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-weight: normal; margin: 0; margin-bottom: 15px; color: #999999; font-size: 12px;">
+                    <a href="{{ unsubscribeUrl }}"
+                      style="box-sizing: border-box; text-decoration: underline; color: #999999; font-size: 12px;">
+                      <unsubscribe style="color: #999999; font-size: 12px;">Unsubscribe</unsubscribe>
+                    </a>.
+                  </p>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </td>
+      <td
+        style="box-sizing: border-box; font-family: 'Lato', 'montserrat', 'trebuchet ms', 'lucida grande', 'lucida sans unicode', 'lucida sans', 'tahoma', sans-serif; font-size: 14px; vertical-align: top;"
+        valign="top"></td>
+    </tr>
+  </table>
+
+</body>
+
+</html>

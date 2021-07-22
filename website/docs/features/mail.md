@@ -15,3 +15,17 @@ We do not promote any provider, but just for the sake of example there is a shor
 - [Create API key](https://app.sendgrid.com/guide/integrate/langs/smtp) 
 - Create connection string with your key: `smtps://apikey:YOUR_API_KEY@smtp.sendgrid.net`, so it will look like: `smtps://apikey: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@smtp.sendgrid.net`
 - Go to the Admin panel > Settings page > scroll to E-mailing settings. In "Send e-mails from" paste e-mail address you submitted for a Sendgrid sender in field "From Email Address". Paste your connection string in the field below.
+
+
+## Templates
+
+Emailing templates can be fully customized for your website.  
+Navigate to [`.cromwell/server/emails`](/docs/overview/installation#working-directories) directory. There are copied number of templates:
+- `order.hbs` - For new order placement
+- `forgot-password.hbs` - Email with secret code when user starts reset-password transaction.
+
+The CMS use [Handlebars](https://handlebarsjs.com/guide/) as templating engine. You can edit CMS templates as you like, just keep Handlebars variables to insert data.
+
+:::important
+Make a backup of your custom template. When you run CMS update, it may replace your templates with new ones. Your templates may become incompatible if some variables change in original template. 
+:::

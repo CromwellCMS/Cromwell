@@ -80,6 +80,12 @@ export default function SingIn(props: {
                 password: passwordInput,
                 fullName: nameInput,
             });
+
+            await apiClient?.login({
+                email: emailInput,
+                password: passwordInput,
+            });
+
             if (user?.id) {
                 props.onSignIn(user);
                 toast.success('Created new account!');

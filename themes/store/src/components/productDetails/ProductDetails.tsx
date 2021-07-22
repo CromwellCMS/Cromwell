@@ -1,22 +1,21 @@
-import { getThemeCustomConfigProp, TAttribute, TCromwellBlock, TProduct, TProductReview } from '@cromwell/core';
-import { CContainer, CGallery, CImage, CList, TCList, CText, getCStore, getGraphQLClient } from '@cromwell/core-frontend';
+import { getThemeCustomConfigProp, TCromwellBlock, TProductReview } from '@cromwell/core';
+import { CContainer, CGallery, CImage, CList, CText, getCStore, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
-import React, { useEffect, useRef } from 'react';
 import * as nextRouter from 'next/router';
+import React, { useEffect, useRef } from 'react';
 
+import { ProductProps } from '../../pages/product/[slug]';
 import { LoadBox } from '../loadbox/Loadbox';
 import { Pagination } from '../pagination/Pagination';
-import { ProductActions } from './actions/ProductActions';
-import { ReviewItem } from './reviewItem/ReviewItem';
 import { SwipeableTabs } from '../tabs/Tabs';
-import ReviewForm from './reviewForm/ReviewForm';
+import { ProductActions } from './actions/ProductActions';
 import styles from './ProductDetails.module.scss';
+import ReviewForm from './reviewForm/ReviewForm';
+import { ReviewItem } from './reviewItem/ReviewItem';
 
 export default function ProductDetails(props: {
-    product?: TProduct | null;
-    attributes?: TAttribute[];
     compact?: boolean;
-}) {
+} & ProductProps) {
     const productRef = useRef(props.product);
     const reviewsRef = useRef<TCromwellBlock<TCList> | null | undefined>(null);
     const modifiedProductRef = useRef(props.product);

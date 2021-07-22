@@ -48,6 +48,22 @@ import clone from 'rfdc';
 
 import { fetch as isomorphicFetch } from '../helpers/isomorphicFetch';
 
+export type TGraphQLErrorInfo = {
+    graphQLErrors: any;
+    networkError: any;
+    message: string;
+    extraInfo: any;
+}
+
+export const getGraphQLErrorInfo = (error: any): TGraphQLErrorInfo => {
+    return {
+        graphQLErrors: error?.graphQLErrors,
+        networkError: error?.networkError,
+        message: error?.message,
+        extraInfo: error?.extraInfo,
+    }
+}
+
 /**
  * CGraphQLClient - CromwellCMS GraphQL API Client
  */
@@ -58,7 +74,7 @@ export class CGraphQLClient {
     /** @internal */
     private onUnauthorizedCallbacks: Record<string, (() => any)> = {};
     /** @internal */
-    private onErrorCallbacks: Record<string, ((message: string) => any)> = {};
+    private onErrorCallbacks: Record<string, ((info: TGraphQLErrorInfo) => any)> = {};
     /** @internal */
     private fetch;
     /** @internal */
@@ -152,7 +168,7 @@ export class CGraphQLClient {
         try {
             return await func();
         } catch (e) {
-            Object.values(this.onErrorCallbacks).forEach(cb => cb(e?.message));
+            Object.values(this.onErrorCallbacks).forEach(cb => cb(getGraphQLErrorInfo(e)));
 
             if (e?.message?.includes?.('Access denied') && !isServer()) {
                 Object.values(this.onUnauthorizedCallbacks).forEach(cb => cb?.());
@@ -195,7 +211,7 @@ export class CGraphQLClient {
      * Add on error callback. Triggers if any of methods of this
      * client get any type of error
      */
-    public onError(cb: ((message: string) => any), id?: string) {
+    public onError(cb: ((message: TGraphQLErrorInfo) => any), id?: string) {
         if (!id) id = Object.keys(this.onErrorCallbacks).length + '';
         this.onErrorCallbacks[id] = cb;
     }
@@ -227,19 +243,19 @@ export class CGraphQLClient {
 
             return this.query({
                 query: gql`
-              query core${path}($pagedParams: PagedParamsInput!) {
-                  ${path}(pagedParams: $pagedParams) {
-                      pagedMeta {
-                          ...PagedMetaFragment
-                      }
-                      elements {
-                          ...${fragmentName}
-                      }
-                  }
-              }
-              ${fragment}
-              ${this.PagedMetaFragment}
-          `,
+                    query core${path}($pagedParams: PagedParamsInput!) {
+                        ${path}(pagedParams: $pagedParams) {
+                            pagedMeta {
+                                ...PagedMetaFragment
+                            }
+                            elements {
+                                ...${fragmentName}
+                            }
+                        }
+                    }
+                    ${fragment}
+                    ${this.PagedMetaFragment}
+                `,
                 variables: {
                     pagedParams: pagedParams ?? {},
                 }
@@ -306,13 +322,13 @@ export class CGraphQLClient {
 
             return this.mutate({
                 mutation: gql`
-                mutation core${path}($id: String!, $data: ${inputName}!) {
-                    ${path}(id: $id, data: $data) {
-                        ...${fragmentName}
+                    mutation core${path}($id: String!, $data: ${inputName}!) {
+                        ${path}(id: $id, data: $data) {
+                            ...${fragmentName}
+                        }
                     }
-                }
-                ${fragment}
-            `,
+                    ${fragment}
+                `,
                 variables: {
                     id,
                     data,
@@ -897,6 +913,35 @@ export class CGraphQLClient {
     public deleteManyOrders = this.createDeleteMany('Order');
     public deleteManyFilteredOrders = this.createDeleteManyFiltered<TOrderFilter>('Order', 'OrderFilterInput');
     public getFilteredOrders = this.createGetFiltered<TOrder, TOrderFilter>('Order', this.OrderFragment, 'OrderFragment', 'OrderFilterInput');
+
+
+    public getOrdersOfUser = async (userId: string, pagedParams: TPagedParams<TOrder>,
+        customFragment?: DocumentNode, customFragmentName?: string): Promise<TPagedList<TOrder> | undefined> => {
+        const path = GraphQLPaths.Order.getOrdersOfUser;
+        const fragment = customFragment ?? this.OrderFragment;
+        const fragmentName = customFragmentName ?? 'OrderFragment';
+
+        return this.query({
+            query: gql`
+                query coreGetOrdersOfUser($userId: String!, $pagedParams: PagedParamsInput) {
+                    ${path}(userId: $userId, pagedParams: $pagedParams) {
+                        pagedMeta {
+                            ...PagedMetaFragment
+                        }
+                        elements {
+                            ...${fragmentName}
+                        }
+                    }
+                }
+                ${fragment}
+                ${this.PagedMetaFragment}
+            `,
+            variables: {
+                userId,
+                pagedParams
+            }
+        }, path);
+    }
 
     // </Order>
 

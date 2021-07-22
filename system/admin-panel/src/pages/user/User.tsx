@@ -1,8 +1,18 @@
 import { getStoreItem, setStoreItem, TCreateUser, TUpdateUser, TUser, TUserRole } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
-import { Button, FormControl, IconButton, InputAdornment, InputLabel, MenuItem, Select, TextField, Grid } from '@material-ui/core';
+import {
+    Button,
+    FormControl,
+    Grid,
+    IconButton,
+    InputAdornment,
+    InputLabel,
+    MenuItem,
+    Select,
+    TextField,
+} from '@material-ui/core';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router-dom';
 
 import ImagePicker from '../../components/imagePicker/ImagePicker';
@@ -18,7 +28,7 @@ export default function UserPage() {
     const [notFound, setNotFound] = useState(false);
     const [passwordInput, setPasswordInput] = useState('');
     const history = useHistory();
-    let [userData, setUserData] = useState<TUser | undefined | null>(null);
+    const [userData, setUserData] = useState<TUser | undefined | null>(null);
     const [showPassword, setShowPassword] = useState(false);
     const isNew = userId === 'new';
 

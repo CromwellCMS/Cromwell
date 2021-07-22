@@ -1,7 +1,7 @@
 import { closeConnection, connectDatabase } from '@App/helpers/connectDataBase';
 import { getResolvers } from '@App/helpers/getResolvers';
 import { getStoreItem, setStoreItem } from '@cromwell/core';
-import { graphQlAuthChecker } from '@cromwell/core-backend';
+import { TGraphQLContext } from '@cromwell/core-backend';
 import { ApolloServer } from 'apollo-server';
 import fs from 'fs-extra';
 import { resolve } from 'path';
@@ -33,12 +33,23 @@ export const setupResolver = async (name: string): Promise<ApolloServer> => {
     const schema = await buildSchema({
         resolvers: [...(await getResolvers())] as any,
         validate: false,
-        authChecker: graphQlAuthChecker,
+        authChecker: () => true,
     });
 
-    return new ApolloServer({
+    const apolloServer = new ApolloServer({
         schema,
+        context: (): TGraphQLContext => {
+            return {
+                user: {
+                    id: 'test',
+                    email: 'test@test.org',
+                    role: 'administrator',
+                }
+            }
+        }
     });
+
+    return apolloServer;
 }
 
 export const tearDownResolver = async (server: ApolloServer) => {

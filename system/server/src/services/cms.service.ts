@@ -344,9 +344,13 @@ export class CmsService {
                     shippingPrice: getCStore().getPriceWithCurrency(orderTotal.shippingPrice),
                 }
 
-                const compiledEmail = await getEmailTemplate('order.html', mailProps)
-                if (compiledEmail)
-                    await sendEmail([input.customerEmail], 'Order', compiledEmail);
+                const compiledEmail = await getEmailTemplate('order.hbs', mailProps);
+                if (!compiledEmail) {
+                    logger.error('order.hbs template was not found');
+                    throw new HttpException('order.hbs template was not found', HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+
+                await sendEmail([input.customerEmail], 'Order', compiledEmail);
             }
 
         } catch (error) {

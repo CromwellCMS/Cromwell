@@ -168,4 +168,12 @@ export class OrderRepository extends BaseRepository<Order> {
         return true;
     }
 
+    async getOrdersOfUser(userId: string, pagedParams?: PagedParamsInput<TOrder>): Promise<TPagedList<TOrder>> {
+        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        qb.select();
+        qb.where(`${this.metadata.tablePath}.userId = :userId`, {
+            userId,
+        });
+        return await getPaged<TOrder>(qb, this.metadata.tablePath, pagedParams);
+    }
 }
