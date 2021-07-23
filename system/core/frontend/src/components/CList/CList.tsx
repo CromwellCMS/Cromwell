@@ -435,14 +435,16 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
     }
 
     private loadNextPage = async () => {
-        if (this.maxPageBound < this.maxPage && this.maxPageBound + 1 < this.currentPageNum + this.maxDomPages) {
-            this.maxPageBound++;
-            const nextNum = this.maxPageBound;
-            // console.log('loadNextPage', nextNum, this.pageStatuses[nextNum])
-            this.setThrobberAutoloadingAfter(true);
-            await this.loadPage(nextNum);
-            this.forceUpdate();
-        }
+        if (this.maxPageBound >= this.maxPage) return;
+        const props = this.getProps();
+        if (props.useAutoLoading && this.maxPageBound + 1 >= this.currentPageNum + this.maxDomPages) return;
+
+        this.maxPageBound++;
+        const nextNum = this.maxPageBound;
+        // console.log('loadNextPage', nextNum, this.pageStatuses[nextNum])
+        this.setThrobberAutoloadingAfter(true);
+        await this.loadPage(nextNum);
+        this.forceUpdate();
     }
 
     private loadPreviousPage = async () => {
@@ -558,11 +560,11 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
                         {props.elements?.showMore ? (
                             <props.elements.showMore onClick={handleShowMoreClick} />
                         ) : (
-                                <div
-                                    className={styles.showMoreBtn}
-                                    onClick={handleShowMoreClick}
-                                >Show more</div>
-                            )}
+                            <div
+                                className={styles.showMoreBtn}
+                                onClick={handleShowMoreClick}
+                            >Show more</div>
+                        )}
 
                     </div>
                 )}

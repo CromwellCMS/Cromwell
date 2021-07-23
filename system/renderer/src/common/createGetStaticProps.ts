@@ -1,4 +1,13 @@
-import { BasePageNames, StaticPageContext, TCmsConfig, TPageInfo, TCromwellPageCoreProps, TPageConfig, TPageStats, TThemeConfig } from '@cromwell/core';
+import {
+    BasePageNames,
+    StaticPageContext,
+    TCmsConfig,
+    TCromwellPageCoreProps,
+    TPageConfig,
+    TPageInfo,
+    TPageStats,
+    TThemeConfig,
+} from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 
 import { getThemeStaticProps } from './getThemeStaticProps';
@@ -37,7 +46,8 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
             console.error(e);
         }
 
-        const { pageConfig, themeConfig, cmsSettings, themeCustomConfig, pagesInfo, pluginsSettings } = rendererData;
+        const { pageConfig, themeConfig, cmsSettings,
+            themeCustomConfig, pagesInfo, pluginsSettings } = rendererData;
 
         const [childStaticProps, plugins] = await Promise.all([
             getThemeStaticProps(pageName, pageGetStaticProps, context),
@@ -76,6 +86,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
             cmsSettings,
             themeCustomConfig,
             pagesInfo,
+            defaultPages: themeConfig?.defaultPages,
             themeHeadHtml: themeConfig?.headHtml,
             themeFooterHtml: themeConfig?.footerHtml,
             palette: themeConfig?.palette,

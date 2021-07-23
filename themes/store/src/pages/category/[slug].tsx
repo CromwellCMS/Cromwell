@@ -31,8 +31,11 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
             <CContainer id="Category_ProductFilter" />
           </div>
           <div className={styles.main}>
-            <div className={styles.sortContainer}>
-              <CategorySort listId={listId} />
+            <div className={styles.header}>
+              <h1 className={styles.title}>{category?.name ?? ''}</h1>
+              <div className={styles.sort}>
+                <CategorySort listId={listId} />
+              </div>
             </div>
             {category && props.attributes && (
               <CList<TProduct>
@@ -54,7 +57,6 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
                 useQueryPagination
                 disableCaching
                 pageSize={20}
-                maxDomPages={2}
                 scrollContainerSelector={`.${layoutStyles.Layout}`}
                 firstBatch={props.products ? props.products : undefined}
                 loader={async (params) => {
@@ -67,6 +69,12 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
                   pagination: Pagination
                 }}
               />
+            )}
+            {category?.description && (
+              <div
+                className={styles.description}
+                dangerouslySetInnerHTML={{ __html: category.description }}
+              ></div>
             )}
           </div>
         </div>

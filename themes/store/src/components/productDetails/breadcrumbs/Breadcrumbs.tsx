@@ -1,4 +1,5 @@
 import { TProductCategory } from '@cromwell/core';
+import { Link } from '@cromwell/core-frontend';
 import { Breadcrumbs as MuiBreadcrumbs, Chip, emphasize, Theme, withStyles } from '@material-ui/core';
 import React from 'react';
 
@@ -12,20 +13,23 @@ export default function Breadcrumbs(props: {
         <MuiBreadcrumbs
             maxItems={4}
         >
-            <StyledBreadcrumb
-                component="a"
-                href="/"
-                label="Home"
-                icon={<HomeIcon fontSize="small" />}
-            />
+            <Link href="/">
+                <StyledBreadcrumb
+                    component="a"
+                    label="Home"
+                    icon={<HomeIcon fontSize="small" />}
+                />
+            </Link>
             {props.breadcrumbs?.map(crumb => {
                 return (
-                    <StyledBreadcrumb
-                        label={crumb.name}
-                        component="a"
-                        href={`/category/${crumb.slug}`}
+                    <Link
                         key={crumb.id}
-                    />
+                        href={`/category/${crumb.slug}`}>
+                        <StyledBreadcrumb
+                            label={crumb.name}
+                            component="a"
+                        />
+                    </Link>
                 )
             })}
         </MuiBreadcrumbs>

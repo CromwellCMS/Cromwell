@@ -26,6 +26,11 @@ export type TCromwellStore = {
     pageConfig?: TPageConfig;
     themeCustomConfig?: Record<string, any>;
 
+    /** 
+     * See `defaultPages` in TThemeConfig
+     */
+    defaultPages?: Record<TDefaultPageName, string>;
+
     /**
      * Internal. Common component storage. E.g. product cards to be reused by Plugins
      *  { [ComponentName]: (Class/function) }

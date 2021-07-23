@@ -49,6 +49,7 @@ export class Pagination extends React.Component<{
         } else if (props.scrollBoxRef.current) {
             this.scrollboxEl = props.scrollBoxRef.current;
         }
+
         if (this.scrollboxEl) {
             this.scrollboxEl.addEventListener('scroll', this.onScroll)
         }
