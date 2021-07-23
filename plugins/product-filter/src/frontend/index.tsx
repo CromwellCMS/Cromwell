@@ -1,9 +1,17 @@
-import { TAttributeValue, TFilteredProductList, TFrontendPluginProps, TProductFilter } from '@cromwell/core';
+import {
+    getStoreItem,
+    TAttributeValue,
+    TFilteredProductList,
+    TFrontendPluginProps,
+    TProductCategory,
+    TProductFilter,
+} from '@cromwell/core';
 import { getGraphQLClient, iconFromPath } from '@cromwell/core-frontend';
 import {
     Card,
     CardHeader,
     Checkbox,
+    Chip,
     Collapse,
     Divider,
     IconButton,
@@ -18,6 +26,7 @@ import {
     useTheme,
 } from '@material-ui/core';
 import clsx from 'clsx';
+import * as nextRouter from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
 
@@ -48,6 +57,8 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     const pcCollapsedByDefault = props.globalSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
     const mobileCollapsedByDefault = props.globalSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
     const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
+    const router = nextRouter?.useRouter?.();
+
     if (collapsedByDefault.current !== _collapsedByDefault) {
         collapsedByDefault.current = _collapsedByDefault;
         setCollapsedItems({});
@@ -109,20 +120,61 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         applyFilter();
     });
 
-    if (collapsedItems['price'] === undefined) {
-        collapsedItems['price'] = collapsedByDefault.current;
-    }
-    if (collapsedItems['search'] === undefined) {
-        collapsedItems['search'] = collapsedByDefault.current;
-    }
-    const isPriceExpanded = !collapsedItems['price'];
-    const isSearchExpanded = !collapsedItems['search'];
-
     const handleMobileOpen = () => {
         setIsMobileOpen(true);
     }
     const handleMobileClose = () => {
         setIsMobileOpen(false);
+    }
+
+    const handleCategoryClick = (category: TProductCategory) => () => {
+        const skip = props?.instanceSettings?.onCategoryClick?.(category);
+        if (skip) return;
+
+        if (!category?.slug && !category?.id || !router) return;
+        const categoryRoute = getStoreItem('defaultPages')?.category;
+        if (!categoryRoute) return;
+        const url = '/' + categoryRoute.replace('[slug]', category.slug ?? category.id);
+        router?.push(url);
+    }
+
+    const getFilterItem = (props: {
+        title: string;
+        key: string;
+        content: JSX.Element;
+    }) => {
+        if (collapsedItems[props.key] === undefined) {
+            collapsedItems[props.key] = collapsedByDefault.current;
+        }
+        const isExpanded = !collapsedItems[props.key];
+        return (
+            <Card className={classes.card}>
+                <div className={classes.headerWrapper}>
+                    <Typography gutterBottom style={{
+                        fontSize: '14px',
+                        margin: '0 0 0 15px'
+                    }}>{props.title}</Typography>
+                    <IconButton
+                        onClick={() => [
+                            setCollapsedItems((prev) => {
+                                const copy = Object.assign({}, prev);
+                                copy[props.key] = !copy[props.key];
+                                return copy
+                            })
+                        ]}
+                        className={clsx(classes.expand, {
+                            [classes.expandOpen]: isExpanded,
+                        })}
+                        aria-expanded={isExpanded}
+                    >
+                        <ExpandMoreIcon />
+                    </IconButton>
+                </div>
+                <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                    {props.content}
+                </Collapse>
+            </Card>
+        )
     }
 
     const filterContent = (
@@ -137,69 +189,65 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                     </IconButton>
                 </div>
             )}
-            <Card className={classes.card}>
-                <div className={classes.headerWrapper}>
-                    <Typography gutterBottom style={{
-                        fontSize: '14px',
-                        margin: '0 0 0 15px'
-                    }}>Search</Typography>
-                    <IconButton
-                        onClick={() => [
-                            setCollapsedItems((prev) => {
-                                const copy = Object.assign({}, prev);
-                                copy['search'] = !copy['search'];
-                                return copy
-                            })
-                        ]}
-                        className={clsx(classes.expand, {
-                            [classes.expandOpen]: isSearchExpanded,
-                        })}
-                        aria-expanded={isSearchExpanded}
-                    >
-                        <ExpandMoreIcon />
-                    </IconButton>
-                </div>
-                <Collapse in={isSearchExpanded} timeout="auto" unmountOnExit>
+            {getFilterItem({
+                title: 'Search',
+                key: 'search',
+                content: (
                     <TextField
                         style={{
-                            marginLeft: '15px'
+                            padding: '0 15px 15px 15px',
+                            width: '100%',
                         }}
                         placeholder="type to search..."
                         onChange={e => onSearchChange(e.target.value)}
                     />
-                </Collapse>
-            </Card>
-            <Card className={classes.card}>
-                <div className={classes.headerWrapper}>
-                    <Typography id="price-range-slider" gutterBottom style={{
-                        fontSize: '14px',
-                        margin: '0 0 0 15px'
-                    }}>Price</Typography>
-                    <IconButton
-                        onClick={() => [
-                            setCollapsedItems((prev) => {
-                                const copy = Object.assign({}, prev);
-                                copy['price'] = !copy['price'];
-                                return copy
-                            })
-                        ]}
-                        className={clsx(classes.expand, {
-                            [classes.expandOpen]: isPriceExpanded,
-                        })}
-                        aria-expanded={isPriceExpanded}
-                        aria-label="show more"
-                    >
-                        <ExpandMoreIcon />
-                    </IconButton>
-                </div>
-                <Collapse in={isPriceExpanded} timeout="auto" unmountOnExit>
+                )
+            })}
+            {props.data?.productCategory &&
+                (props.data.productCategory.parent || props.data.productCategory.children?.length) &&
+                getFilterItem({
+                    title: 'Categories',
+                    key: 'categories',
+                    content: (
+                        <div className={clsx(classes.categoryBox, classes.styledScrollBar, classes.list)}>
+                            {props.data.productCategory.parent && (
+                                <Chip className={classes.category}
+                                    label={props.data.productCategory.parent.name}
+                                    onClick={handleCategoryClick(props.data.productCategory.parent)} />
+                            )}
+                            {props.data.productCategory && (
+                                <Chip className={classes.category}
+                                    variant="outlined"
+                                    disabled
+                                    style={{ marginLeft: props.data.productCategory.parent ? '15px' : '' }}
+                                    label={props.data.productCategory.name}
+                                    onClick={handleCategoryClick(props.data.productCategory)} />
+                            )}
+                            {!!props.data.productCategory.children?.length && (
+                                <>
+                                    {props.data.productCategory.children.map(child => (
+                                        <Chip key={child.id}
+                                            className={classes.category}
+                                            style={{ marginLeft: ((props?.data?.productCategory?.parent ? 15 : 0) + 15) + 'px' }}
+                                            label={child.name}
+                                            onClick={handleCategoryClick(child)} />
+                                    ))}
+                                </>
+                            )}
+                        </div>
+                    )
+                })}
+            {getFilterItem({
+                title: 'Price',
+                key: 'price',
+                content: (
                     <Slider
                         onChange={onPriceRangeChange}
                         minPrice={minPrice}
                         maxPrice={maxPrice}
                     />
-                </Collapse>
-            </Card>
+                )
+            })}
             {attributes && (
                 attributes.map(attr => {
                     const checked: string[] | undefined = checkedAttrs[attr.key];
@@ -299,7 +347,6 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     );
 
     if (isMobile) {
-
         const onOpen = () => {
 
         }
@@ -326,9 +373,9 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                     </div>
                 </SwipeableDrawer>
             </div>
-        )
-
+        );
     }
+
     return filterContent;
 
 }

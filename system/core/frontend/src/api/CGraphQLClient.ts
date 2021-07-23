@@ -174,7 +174,7 @@ export class CGraphQLClient {
                 Object.values(this.onUnauthorizedCallbacks).forEach(cb => cb?.());
             }
 
-            throw new Error(e);
+            throw e;
         }
     }
 

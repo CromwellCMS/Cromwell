@@ -137,7 +137,8 @@ export const ProductActions = (props: {
                                     <Button
                                         onClick={attrProps.onClick}
                                         variant={attrProps.isChecked ? 'contained' : 'outlined'}
-                                        className={clsx(styles.attrValue, !isValid && styles.invalidAttrValue)}
+                                        className={clsx(styles.attrValue, !isValid && styles.invalidAttrValue,
+                                            attrProps.isChecked && styles.attrValueChecked)}
                                     >
                                         {attrProps.icon && (
                                             <div
