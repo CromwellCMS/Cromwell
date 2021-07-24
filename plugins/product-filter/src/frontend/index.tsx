@@ -155,13 +155,11 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                         margin: '0 0 0 15px'
                     }}>{props.title}</Typography>
                     <IconButton
-                        onClick={() => [
-                            setCollapsedItems((prev) => {
-                                const copy = Object.assign({}, prev);
-                                copy[props.key] = !copy[props.key];
-                                return copy
-                            })
-                        ]}
+                        onClick={() => setCollapsedItems((prev) => {
+                            const copy = Object.assign({}, prev);
+                            copy[props.key] = !copy[props.key];
+                            return copy
+                        })}
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: isExpanded,
                         })}
@@ -284,13 +282,11 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                                     subheader={`${numberOfChecked()}/${attr.values.length} selected`}
                                 />
                                 <IconButton
-                                    onClick={() => [
-                                        setCollapsedItems((prev) => {
-                                            const copy = Object.assign({}, prev);
-                                            copy[attr.key] = !copy[attr.key];
-                                            return copy
-                                        })
-                                    ]}
+                                    onClick={() => setCollapsedItems((prev) => {
+                                        const copy = Object.assign({}, prev);
+                                        copy[attr.key] = !copy[attr.key];
+                                        return copy
+                                    })}
                                     className={clsx(classes.expand, {
                                         [classes.expandOpen]: isExpanded,
                                     })}

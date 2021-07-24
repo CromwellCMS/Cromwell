@@ -1,7 +1,7 @@
 @import "../../styles/common.module.scss";
 
 .FileManager {
-    width: 900px;
+    width: 810px;
     height: 660px;
     display: flex;
     flex-direction: column;
@@ -15,15 +15,18 @@
         align-items: center;
         position: relative;
     }
+
     .header {
         @include paper;
         @include headerPart;
         padding: 5px;
         justify-content: space-between;
     }
+
     .headerLeft {
         @include headerPart;
     }
+
     .headerRight {
         @include headerPart;
     }
@@ -91,6 +94,7 @@
         align-items: center;
         justify-content: center;
     }
+
     .itemImage {
         max-height: 60px;
         max-width: 60px;
@@ -105,6 +109,7 @@
         opacity: 0;
         transition: 0.2s;
         background: #fff;
+
         &:hover {
             background: #fff;
         }
@@ -131,7 +136,7 @@
         margin-right: 10px;
     }
 
-    .preloader > div {
+    .preloader>div {
         box-shadow: 0 0 25px 2px rgba(91, 0, 82, 0.7);
         background: linear-gradient(144deg, #28006f 0%, #600155 100%);
         border-radius: 100%;

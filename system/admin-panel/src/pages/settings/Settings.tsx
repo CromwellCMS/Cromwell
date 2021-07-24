@@ -3,25 +3,38 @@ import { getCStore, getRestAPIClient } from '@cromwell/core-frontend';
 import {
     Badge,
     Button,
+    Checkbox,
+    Collapse,
     FormControl,
+    FormControlLabel,
     Grid,
     IconButton,
     InputLabel,
     MenuItem,
     Select,
     TextField,
-    FormControlLabel,
-    Checkbox,
     Tooltip,
 } from '@material-ui/core';
-import { Add as AddIcon, DeleteForever as DeleteForeverIcon, DragIndicator as DragIndicatorIcon } from '@material-ui/icons';
+import {
+    Add as AddIcon,
+    Code as CodeIcon,
+    DeleteForever as DeleteForeverIcon,
+    DragIndicator as DragIndicatorIcon,
+    Email as EmailIcon,
+    ExpandMore as ExpandMoreIcon,
+    ImportExport as ImportExportIcon,
+    MonetizationOn as MonetizationOnIcon,
+    Public as PublicIcon,
+    Store as StoreIcon,
+} from '@material-ui/icons';
+import clsx from 'clsx';
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { toast } from '../../components/toast/toast';
 import { languages } from '../../constants/languages';
-import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { timezones } from '../../constants/timezones';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import commonStyles from '../../styles/common.module.scss';
@@ -33,6 +46,7 @@ class SettingsPage extends React.Component<any, {
     settings: TCmsSettings | null;
     isLoading: boolean;
     exporting: boolean;
+    expandedItems: Record<string, boolean>;
 }> {
 
     constructor(props) {
@@ -42,6 +56,7 @@ class SettingsPage extends React.Component<any, {
             settings: null,
             isLoading: false,
             exporting: false,
+            expandedItems: {},
         }
     }
 
@@ -185,13 +200,55 @@ class SettingsPage extends React.Component<any, {
         this.forceUpdate();
     }
 
+    private makeCategory = (props: {
+        title: string;
+        content: JSX.Element;
+        icon: JSX.Element;
+    }) => {
+        const isExpanded = !!this.state.expandedItems[props.title];
+
+        return (
+            <div className={styles.category}>
+                <div className={styles.categoryHeaderWrapper}
+                    onClick={() => this.setState(prevState => {
+                        return {
+                            expandedItems: {
+                                ...prevState.expandedItems,
+                                [props.title]: !prevState.expandedItems[props.title],
+                            }
+                        }
+                    })}
+                >
+                    <IconButton
+                        className={clsx(styles.expand, {
+                            [styles.expandOpen]: isExpanded,
+                        })}
+                        aria-expanded={isExpanded}
+                    >
+                        <ExpandMoreIcon />
+                    </IconButton>
+                    <div className={styles.categoryIcon}>
+                        {props.icon}
+                    </div>
+                    <p className={styles.categoryTitle}>{props.title}</p>
+                </div>
+                <Collapse in={isExpanded} timeout="auto" unmountOnExit>
+                    <div className={styles.categoryContent}>
+                        <Grid container spacing={3} >
+                            {props.content}
+                        </Grid>
+                    </div>
+                </Collapse>
+            </div >
+        )
+    }
+
     render() {
         const { settings } = this.state;
         const currencies = settings?.currencies ?? [];
 
-
         return (
-            <div className={styles.SettingsPage}>
+            <div className={styles.SettingsPage} >
                 <div className={styles.header}>
                     <p className={commonStyles.pageTitle}>settings</p>
                     <Button
@@ -202,280 +259,308 @@ class SettingsPage extends React.Component<any, {
                     >Save</Button>
                 </div>
                 <div className={styles.list}>
-                    <Grid container spacing={3}>
-                        <Grid item xs={12} className={styles.subheader}  >
-                            <h3>General</h3>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <FormControl className={styles.field} fullWidth>
-                                <InputLabel>Timezone</InputLabel>
-                                <Select
-                                    fullWidth
-                                    value={settings?.timezone ?? 0}
-                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                                        this.changeSettings('timezone', parseInt(event.target.value as string));
-                                    }}
+                    {this.makeCategory({
+                        title: 'General',
+                        icon: <PublicIcon />,
+                        content: (
+                            <>
+                                <Grid item xs={12} sm={6}>
+                                    <FormControl className={styles.field} fullWidth>
+                                        <InputLabel>Timezone</InputLabel>
+                                        <Select
+                                            fullWidth
+                                            value={settings?.timezone ?? 0}
+                                            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                                                this.changeSettings('timezone', parseInt(event.target.value as string));
+                                            }}
+                                        >
+                                            {timezones.map(timezone => (
+                                                <MenuItem value={timezone.value} key={timezone.value}>{timezone.text}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <FormControl className={styles.field} fullWidth>
+                                        <InputLabel>Language</InputLabel>
+                                        <Select
+                                            disabled
+                                            fullWidth
+                                            className={styles.field}
+                                            value={settings?.language ?? 'en'}
+                                            onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
+                                                this.changeSettings('language', event.target.value);
+                                            }}
+                                        >
+                                            {languages.map(lang => (
+                                                <MenuItem value={lang.code} key={lang.code}>{lang.name} ({lang.nativeName})</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                </Grid>
+                                <Grid item xs={12} sm={6}>
+                                    <ImagePicker
+                                        label="Logo"
+                                        onChange={(val) => this.changeSettings('logo', val)}
+                                        value={settings?.logo}
+                                        className={styles.imageField}
+                                        backgroundSize='contain'
+                                        showRemove
+                                    />
+                                </Grid>
+                                <Grid item xs={12} sm={6}
+                                    style={{ display: 'flex', alignItems: 'flex-end' }}
                                 >
-                                    {timezones.map(timezone => (
-                                        <MenuItem value={timezone.value} key={timezone.value}>{timezone.text}</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <FormControl className={styles.field} fullWidth>
-                                <InputLabel>Language</InputLabel>
-                                <Select
-                                    disabled
-                                    fullWidth
-                                    className={styles.field}
-                                    value={settings?.language ?? 'en'}
-                                    onChange={(event: React.ChangeEvent<{ value: unknown }>) => {
-                                        this.changeSettings('language', event.target.value);
-                                    }}
-                                >
-                                    {languages.map(lang => (
-                                        <MenuItem value={lang.code} key={lang.code}>{lang.name} ({lang.nativeName})</MenuItem>
-                                    ))}
-                                </Select>
-                            </FormControl>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <ImagePicker
-                                label="Logo"
-                                onChange={(val) => this.changeSettings('logo', val)}
-                                value={settings?.logo}
-                                className={styles.imageField}
-                                backgroundSize='contain'
-                                showRemove
-                            />
-                        </Grid>
-                        <Grid item xs={12} sm={6}
-                            style={{ display: 'flex', alignItems: 'flex-end' }}
-                        >
-                            <ImagePicker
-                                label="Favicon"
-                                onChange={(val) => this.changeSettings('favicon', val)}
-                                value={settings?.favicon}
-                                className={styles.imageField}
-                                showRemove
-                            />
-                        </Grid>
-                        <Grid item xs={12} className={styles.subheader}  >
-                            <h3>Store settings</h3>
-                        </Grid>
-                        <Grid item xs={12} sm={6}>
-                            <TextField label="Standard shipping price"
-                                value={settings?.defaultShippingPrice ?? 0}
-                                className={styles.textField}
-                                fullWidth
-                                InputProps={{
-                                    inputComponent: NumberFormatCustom as any,
-                                }}
-                                onChange={this.handleTextFieldChange('defaultShippingPrice')}
-                            />
-                        </Grid>
-                        <Grid item xs={12} className={styles.subheader}  >
-                            <h3>Store currencies</h3>
-                        </Grid>
-                        <Grid item xs={12} >
-                            <ResponsiveGridLayout
-                                margin={[15, 15]}
-                                layouts={{
-                                    xs: currencies.map((currency, index) => {
-                                        return { i: currency.id, x: (index % 2), y: Math.floor(index / 2), w: 1, h: 1 }
-                                    }),
-                                    xxs: currencies.map((currency, index) => {
-                                        return { i: currency.id, x: 0, y: index, w: 1, h: 1 }
-                                    })
-                                }}
-                                breakpoints={{ xs: 480, xxs: 0 }}
-                                rowHeight={330}
-                                isResizable={false}
-                                cols={{ xs: 2, xxs: 1 }}
-                                draggableHandle='.draggableHandle'
-                                onLayoutChange={(layout) => {
-                                    const sortedCurrencies: TCurrency[] = [];
-                                    const sorted = [...layout].sort((a, b) => (a.x + a.y * 10) - (b.x + b.y * 10));
-                                    sorted.forEach(item => {
-                                        const curr = currencies.find(curr => curr.id === item.i);
-                                        if (curr) sortedCurrencies.push(curr);
-                                    });
-                                    this.changeSettings('currencies', sortedCurrencies)
-                                }}
-                            >
-                                {currencies.map((currency, index) => {
+                                    <ImagePicker
+                                        label="Favicon"
+                                        onChange={(val) => this.changeSettings('favicon', val)}
+                                        value={settings?.favicon}
+                                        className={styles.imageField}
+                                        showRemove
+                                    />
+                                </Grid>
+                            </>
+                        )
+                    })}
 
-                                    const onChange = (item) => {
-                                        this.setState(prev => {
-                                            const currs = [...prev.settings.currencies];
-                                            currs[index] = item;
-                                            return {
-                                                settings: {
-                                                    ...prev.settings,
-                                                    currencies: currs,
-                                                }
-                                            }
+                    {this.makeCategory({
+                        title: 'Store settings',
+                        icon: <StoreIcon />,
+                        content: (
+                            <>
+                                <Grid item xs={12} sm={6}>
+                                    <TextField label="Standard shipping price"
+                                        value={settings?.defaultShippingPrice ?? 0}
+                                        className={styles.textField}
+                                        fullWidth
+                                        InputProps={{
+                                            inputComponent: NumberFormatCustom as any,
+                                        }}
+                                        onChange={this.handleTextFieldChange('defaultShippingPrice')}
+                                    />
+                                </Grid>
+                            </>
+                        )
+                    })}
+
+                    {this.makeCategory({
+                        title: 'Store currencies',
+                        icon: <MonetizationOnIcon />,
+                        content: (
+                            <Grid item xs={12} >
+                                <ResponsiveGridLayout
+                                    margin={[15, 15]}
+                                    layouts={{
+                                        xs: currencies.map((currency, index) => {
+                                            return { i: currency.id, x: (index % 2), y: Math.floor(index / 2), w: 1, h: 1 }
+                                        }),
+                                        xxs: currencies.map((currency, index) => {
+                                            return { i: currency.id, x: 0, y: index, w: 1, h: 1 }
                                         })
-                                    }
+                                    }}
+                                    breakpoints={{ xs: 480, xxs: 0 }}
+                                    rowHeight={330}
+                                    isResizable={false}
+                                    cols={{ xs: 2, xxs: 1 }}
+                                    draggableHandle='.draggableHandle'
+                                    onLayoutChange={(layout) => {
+                                        const sortedCurrencies: TCurrency[] = [];
+                                        const sorted = [...layout].sort((a, b) => (a.x + a.y * 10) - (b.x + b.y * 10));
+                                        sorted.forEach(item => {
+                                            const curr = currencies.find(curr => curr.id === item.i);
+                                            if (curr) sortedCurrencies.push(curr);
+                                        });
+                                        this.changeSettings('currencies', sortedCurrencies)
+                                    }}
+                                >
+                                    {currencies.map((currency, index) => {
 
-                                    const handleTextFieldChange = (key: keyof TCurrency, type?: 'number' | 'string') =>
-                                        (event: React.ChangeEvent<{ value: string }>) => {
-                                            let val: string | number | undefined = event.target.value;
-                                            if (type === 'number') {
-                                                val = parseFloat(val);
-                                                if (isNaN(val)) val = undefined;
-                                            }
-                                            onChange({
-                                                ...currency,
-                                                [key]: val
+                                        const onChange = (item) => {
+                                            this.setState(prev => {
+                                                const currs = [...prev.settings.currencies];
+                                                currs[index] = item;
+                                                return {
+                                                    settings: {
+                                                        ...prev.settings,
+                                                        currencies: currs,
+                                                    }
+                                                }
                                             })
                                         }
 
-                                    const isPrimary = index === 0;
+                                        const handleTextFieldChange = (key: keyof TCurrency, type?: 'number' | 'string') =>
+                                            (event: React.ChangeEvent<{ value: string }>) => {
+                                                let val: string | number | undefined = event.target.value;
+                                                if (type === 'number') {
+                                                    val = parseFloat(val);
+                                                    if (isNaN(val)) val = undefined;
+                                                }
+                                                onChange({
+                                                    ...currency,
+                                                    [key]: val
+                                                })
+                                            }
 
-                                    return (
-                                        <div className={styles.currencyItem} key={currency.id}>
-                                            <div className={styles.currencyItemHeader}>
-                                                <div className={styles.currencyBadge}>
-                                                    <Badge color="secondary" badgeContent={isPrimary ? 'Primary' : null}>
-                                                        <div></div>
-                                                    </Badge>
+                                        const isPrimary = index === 0;
+
+                                        return (
+                                            <div className={styles.currencyItem} key={currency.id}>
+                                                <div className={styles.currencyItemHeader}>
+                                                    <div className={styles.currencyBadge}>
+                                                        <Badge color="secondary" badgeContent={isPrimary ? 'Primary' : null}>
+                                                            <div></div>
+                                                        </Badge>
+                                                    </div>
+                                                    <div>
+                                                        <IconButton onClick={() => this.handleDeleteCurrency(currency.tag)}>
+                                                            <DeleteForeverIcon />
+                                                        </IconButton>
+                                                        <IconButton style={{ cursor: 'move' }} className="draggableHandle">
+                                                            <DragIndicatorIcon />
+                                                        </IconButton>
+                                                    </div>
                                                 </div>
-                                                <div>
-                                                    <IconButton onClick={() => this.handleDeleteCurrency(currency.tag)}>
-                                                        <DeleteForeverIcon />
-                                                    </IconButton>
-                                                    <IconButton style={{ cursor: 'move' }} className="draggableHandle">
-                                                        <DragIndicatorIcon />
-                                                    </IconButton>
-                                                </div>
+                                                <TextField label="Tag"
+                                                    value={currency.tag ?? ''}
+                                                    className={styles.textField + ' draggableCancel'}
+                                                    fullWidth
+                                                    onChange={handleTextFieldChange('tag')}
+                                                />
+                                                <TextField label="Title"
+                                                    value={currency.title ?? ''}
+                                                    className={styles.textField + ' draggableCancel'}
+                                                    fullWidth
+                                                    onChange={handleTextFieldChange('title')}
+                                                />
+                                                <TextField label="Ratio"
+                                                    value={currency.ratio ?? ''}
+                                                    className={styles.textField + ' draggableCancel'}
+                                                    fullWidth
+                                                    type="number"
+                                                    onChange={handleTextFieldChange('ratio', 'number')}
+                                                />
+                                                <TextField label="Symbol"
+                                                    value={currency.symbol ?? ''}
+                                                    className={styles.textField + ' draggableCancel'}
+                                                    fullWidth
+                                                    onChange={handleTextFieldChange('symbol')}
+                                                />
                                             </div>
-                                            <TextField label="Tag"
-                                                value={currency.tag ?? ''}
-                                                className={styles.textField + ' draggableCancel'}
-                                                fullWidth
-                                                onChange={handleTextFieldChange('tag')}
-                                            />
-                                            <TextField label="Title"
-                                                value={currency.title ?? ''}
-                                                className={styles.textField + ' draggableCancel'}
-                                                fullWidth
-                                                onChange={handleTextFieldChange('title')}
-                                            />
-                                            <TextField label="Ratio"
-                                                value={currency.ratio ?? ''}
-                                                className={styles.textField + ' draggableCancel'}
-                                                fullWidth
-                                                type="number"
-                                                onChange={handleTextFieldChange('ratio', 'number')}
-                                            />
-                                            <TextField label="Symbol"
-                                                value={currency.symbol ?? ''}
-                                                className={styles.textField + ' draggableCancel'}
-                                                fullWidth
-                                                onChange={handleTextFieldChange('symbol')}
-                                            />
-                                        </div>
-                                    )
-                                })}
-                            </ResponsiveGridLayout>
-                            <Tooltip title="Add currency">
-                                <IconButton onClick={this.handleAddCurrency}>
-                                    <AddIcon />
-                                </IconButton>
-                            </Tooltip>
-                        </Grid>
-                        <Grid item xs={12} className={styles.subheader}  >
-                            <h3>E-mailing settings</h3>
-                        </Grid>
-                        <Grid item xs={6} >
-                            <TextField
-                                fullWidth
-                                label="Send e-mails from"
-                                value={settings?.sendFromEmail ?? ''}
-                                onChange={this.handleTextFieldChange('sendFromEmail')}
-                                className={styles.field}
-                            />
-                        </Grid>
-                        <Grid item xs={12} >
-                            <TextField
-                                fullWidth
-                                label="SMTP Connection String"
-                                value={settings?.smtpConnectionString ?? ''}
-                                onChange={this.handleTextFieldChange('smtpConnectionString')}
-                                className={styles.field}
-                            />
-                        </Grid>
-                        <Grid item xs={12} className={styles.subheader}  >
-                            <h3>Code injection</h3>
-                        </Grid>
-                        <Grid item xs={12} >
-                            <TextField
-                                fullWidth
-                                label="Head HTML"
-                                multiline
-                                rows={4}
-                                rowsMax={20}
-                                value={settings?.headHtml ?? ''}
-                                onChange={this.handleTextFieldChange('headHtml')}
-                                variant="outlined"
-                                className={styles.field}
-                            />
-                        </Grid>
-                        <Grid item xs={12} >
-                            <TextField
-                                fullWidth
-                                label="Footer HTML"
-                                multiline
-                                rows={4}
-                                value={settings?.footerHtml ?? ''}
-                                onChange={this.handleTextFieldChange('footerHtml')}
-                                variant="outlined"
-                                className={styles.field}
-                            />
-                        </Grid>
-                        <Grid item xs={12} className={styles.subheader}  >
-                            <h3>Migration</h3>
-                        </Grid>
-                        <Grid item xs={12} >
-                            <p>Pick tables to export:</p>
-                            <div className={styles.exportOptions}>
-                                {this.exportOptions.map(option => (
-                                    <FormControlLabel
-                                        key={option.key}
-                                        control={
-                                            <Checkbox
-                                                checked={option.checked}
-                                                onChange={() => this.toggleExportOption(option.key)}
-                                                name={option.title}
-                                                color="primary"
-                                            />
-                                        }
-                                        label={option.title}
-                                    />
-                                ))}
-                            </div>
-                            <Button
-                                disabled={this.state?.exporting}
-                                color="primary"
-                                variant="contained"
-                                size="small"
-                                className={styles.exportBtn}
-                                onClick={this.exportDB}
-                            >Export to Excel</Button>
-                            <p style={{ marginTop: '20px' }}>Import from Excel file(s):</p>
-                            <Button
-                                disabled={this.state?.exporting}
-                                color="primary"
-                                variant="contained"
-                                className={styles.exportBtn}
-                                size="small"
-                                onClick={this.importDB}
-                            >Import from Excel</Button>
-                        </Grid>
+                                        )
+                                    })}
+                                </ResponsiveGridLayout>
+                                <Tooltip title="Add currency">
+                                    <IconButton onClick={this.handleAddCurrency}>
+                                        <AddIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            </Grid>
+                        )
+                    })}
 
-                    </Grid>
+                    {this.makeCategory({
+                        title: 'Emailing settings',
+                        icon: <EmailIcon />,
+                        content: (
+                            <>
+                                <Grid item xs={12} sm={6} >
+                                    <TextField
+                                        fullWidth
+                                        label="Send e-mails from"
+                                        value={settings?.sendFromEmail ?? ''}
+                                        onChange={this.handleTextFieldChange('sendFromEmail')}
+                                        className={styles.field}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} >
+                                    <TextField
+                                        fullWidth
+                                        label="SMTP Connection String"
+                                        value={settings?.smtpConnectionString ?? ''}
+                                        onChange={this.handleTextFieldChange('smtpConnectionString')}
+                                        className={styles.field}
+                                    />
+                                </Grid>
+                            </>
+                        )
+                    })}
+
+                    {this.makeCategory({
+                        title: 'Code injection',
+                        icon: <CodeIcon />,
+                        content: (
+                            <>
+                                <Grid item xs={12} >
+                                    <TextField
+                                        fullWidth
+                                        label="Head HTML"
+                                        multiline
+                                        rows={4}
+                                        rowsMax={20}
+                                        value={settings?.headHtml ?? ''}
+                                        onChange={this.handleTextFieldChange('headHtml')}
+                                        variant="outlined"
+                                        className={styles.field}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} >
+                                    <TextField
+                                        fullWidth
+                                        label="Footer HTML"
+                                        multiline
+                                        rows={4}
+                                        value={settings?.footerHtml ?? ''}
+                                        onChange={this.handleTextFieldChange('footerHtml')}
+                                        variant="outlined"
+                                        className={styles.field}
+                                    />
+                                </Grid>
+                            </>
+                        )
+                    })}
+
+                    {this.makeCategory({
+                        title: 'Migration',
+                        icon: <ImportExportIcon />,
+                        content: (
+                            <Grid item xs={12} >
+                                <p>Pick tables to export:</p>
+                                <div className={styles.exportOptions}>
+                                    {this.exportOptions.map(option => (
+                                        <FormControlLabel
+                                            key={option.key}
+                                            control={
+                                                <Checkbox
+                                                    checked={option.checked}
+                                                    onChange={() => this.toggleExportOption(option.key)}
+                                                    name={option.title}
+                                                    color="primary"
+                                                />
+                                            }
+                                            label={option.title}
+                                        />
+                                    ))}
+                                </div>
+                                <Button
+                                    disabled={this.state?.exporting}
+                                    color="primary"
+                                    variant="contained"
+                                    size="small"
+                                    className={styles.exportBtn}
+                                    onClick={this.exportDB}
+                                >Export to Excel</Button>
+                                <p style={{ marginTop: '20px' }}>Import from Excel file(s):</p>
+                                <Button
+                                    disabled={this.state?.exporting}
+                                    color="primary"
+                                    variant="contained"
+                                    className={styles.exportBtn}
+                                    size="small"
+                                    onClick={this.importDB}
+                                >Import from Excel</Button>
+                            </Grid>
+                        )
+                    })}
                     <LoadingStatus isActive={this.state?.exporting} />
                 </div>
             </div>
