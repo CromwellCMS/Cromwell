@@ -8,6 +8,7 @@
     max-width: 900px;
     margin: 0 auto;
     width: 100%;
+    height: 100%;
 
     .header {
         @include paper;
@@ -18,13 +19,12 @@
     }
 
     .list {
-        @include paper;
         @include styledScrollBar;
         display: flex;
         flex-direction: column;
         height: 100%;
         overflow: auto;
-        padding: 15px;
+        padding: 5px 10px 5px 5px;
     }
 
     .field {
@@ -49,6 +49,41 @@
 
     div.textField {
         margin-bottom: 15px;
+    }
+
+    .category {
+        @include paper;
+        margin: 5px 0;
+    }
+
+    .categoryHeaderWrapper {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+    }
+
+    .categoryTitle {
+        font-size: 18px;
+        font-weight: 500;
+    }
+
+    .categoryIcon {
+        margin-right: 10px;
+        opacity: 0.7;
+    }
+
+    .categoryContent {
+        padding: 20px 20px 20px 55px;
+    }
+
+    .expand {
+        transform: rotate(0deg);
+        margin-right: 5px;
+        transition: transform 0.3s;
+    }
+
+    .expandOpen {
+        transform: rotate(180deg);
     }
 }
 

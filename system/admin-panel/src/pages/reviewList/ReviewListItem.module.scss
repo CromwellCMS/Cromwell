@@ -46,6 +46,7 @@
         text-overflow: ellipsis;
         white-space: nowrap;
     }
+
     .itemAuthor {
         font-size: 12px;
     }
@@ -54,6 +55,7 @@
         margin-bottom: 4px;
         font-weight: 500;
     }
+
     .itemCreate {
         font-size: 12px;
     }
@@ -69,7 +71,7 @@
 
     .createDate {
         font-size: 14px;
-        font-weight: 500;
+        // font-weight: 500;
         margin-bottom: 5px;
     }
 
@@ -78,14 +80,16 @@
     }
 
     .status {
-        font-size: 16px;
+        font-size: 14px;
         font-weight: 500;
         margin-bottom: 5px;
         display: flex;
         align-items: center;
 
-        > svg {
+        >svg {
             margin-right: 5px;
+            width: 16px;
+            height: 16px;
         }
     }
 

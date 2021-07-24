@@ -1,4 +1,4 @@
-import { TDeleteManyInput, sleep } from '@cromwell/core';
+import { TDeleteManyInput } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 
 import { store } from './store';
@@ -66,8 +66,14 @@ export const updateStatus = async () => {
     }
 }
 
-export const updateChecker = async () => {
-    await updateStatus();
-    await sleep(30);
+let isChecking = false;
+export const startUpdateChecker = () => {
+    if (isChecking) return;
+    isChecking = true;
     updateChecker();
+}
+
+const updateChecker = async () => {
+    await updateStatus();
+    requestAnimationFrame(() => setTimeout(updateChecker, 30000));
 }

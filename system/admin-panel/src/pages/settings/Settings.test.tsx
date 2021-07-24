@@ -30,6 +30,9 @@ describe('Settings page', () => {
     it("renders settings", async () => {
         render(<SettingsPage />);
 
+        const element = await screen.findByText('General');
+        element.click();
+
         await screen.findByText((text) => text.includes(languages[0].name));
     });
 

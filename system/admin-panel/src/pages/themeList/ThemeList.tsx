@@ -48,7 +48,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
 
     private themeUpdates: Record<string, TCCSVersion> = {};
     private themeUnderUpdate: Record<string, boolean> = {};
-    private updateInterval;
+    private pageRef = React.createRef<HTMLDivElement>();
 
     constructor(props) {
         super(props);
@@ -65,18 +65,22 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
         this.init();
     }
 
-    componentWillUnmount() {
-        if (this.updateInterval) clearInterval(this.updateInterval);
-    }
-
     private async init() {
         this.setState({ isLoading: true });
         await this.getThemeList();
         this.setState({ isLoading: false });
 
         await this.getThemeUpdates();
+        setTimeout(this.checkUpdates, 30000);
+    }
 
-        this.updateInterval = setInterval(this.getThemeList, 30000);
+    private checkUpdates = async () => {
+        if (this?.pageRef?.current) {
+            await this.getThemeList();
+            await this.getThemeUpdates();
+
+            requestAnimationFrame(() => setTimeout(this.checkUpdates, 30000));
+        }
     }
 
     private getThemeList = async () => {
@@ -274,7 +278,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
     render() {
         const { isLoading, packages, installedThemes, cmsConfig, isChangingTheme } = this.state;
         return (
-            <div className={styles.ThemeList}>
+            <div className={styles.ThemeList} ref={this.pageRef}>
                 <Button
                     className={styles.addBtn}
                     onClick={this.handleOpenMarket}
@@ -428,7 +432,7 @@ const UpdateModalContent = (props: {
             <Grid item className={styles.updateHeader} >
                 <h3 className={styles.updateTitle}>
                     <UpdateIcon style={{ marginRight: '7px' }} />
-            Update available</h3>
+                    Update available</h3>
                 <IconButton
                     style={{ marginRight: '-10px' }}
                     onClick={props.onClose}><CloseIcon /></IconButton>

@@ -1,7 +1,7 @@
 import { createStore } from 'react-redux-ts';
 import { TCromwellBlock, TThemeConfig, TCmsStatus } from '@cromwell/core';
 import { Draggable } from '../helpers/Draggable/Draggable';
-import { updateChecker } from './helpers';
+import { startUpdateChecker } from './helpers';
 
 export type TAppState = {
     selectedItems: Record<string, boolean>;
@@ -21,5 +21,5 @@ export type DispatchType = typeof store.dispatch;
 export type StoreAction = ReturnType<typeof store.dispatch>;
 
 setTimeout(() => {
-    updateChecker();
+    startUpdateChecker();
 })
