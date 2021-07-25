@@ -79,7 +79,6 @@ export class Pagination extends React.Component<{
             }
         });
         if (currPage && this.currentPage !== currPage) {
-            // console.log('currPage', currPage)
             this.currentPage = currPage;
             props.onPageScrolled(currPage);
             this.forceUpdate();

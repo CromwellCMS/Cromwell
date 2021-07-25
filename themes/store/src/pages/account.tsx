@@ -48,7 +48,7 @@ const Account = () => {
                 setUserData(data);
                 getOrders(data?.id);
             }
-        } catch (e) { console.log(e) }
+        } catch (e) { console.error(e) }
         setLoading(false);
 
         return data;

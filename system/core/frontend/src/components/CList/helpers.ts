@@ -12,7 +12,6 @@ export const getPageNumsAround = (currentPage: number, quantity: number, maxPage
     const fromEnd = currentPage + half > maxPageNum ? true : false;
     const startIndex = fromStart ? 1 : fromEnd ? (maxPageNum - quantity) : currentPage - half;
     const endIndex = fromStart ? quantity : fromEnd ? maxPageNum : currentPage + half;
-    // console.log('fromStart', fromStart, 'fromEnd', fromEnd, 'startIndex', startIndex, 'endIndex', endIndex)
     for (let i = startIndex; i <= endIndex; i++) {
         const num = i;
         if (num <= maxPageNum)

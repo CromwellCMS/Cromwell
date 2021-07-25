@@ -1,3 +1,4 @@
+@import "./common.module.scss";
 @import "./variables.scss";
 
 * {
@@ -72,4 +73,8 @@ a {
   .Toastify {
     font-size: 16px;
   }
+}
+
+div.MuiPaper-elevation8 {
+  @include paperElevated;
 }

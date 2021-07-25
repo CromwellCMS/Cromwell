@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 
 import { appState } from '../../../helpers/AppState';
 import { useForceUpdate } from '../../../helpers/forceUpdate';
+import commonStyles from '../../../styles/common.module.scss';
 import { AddIcon, AddShoppingCartIcon, EqualizerIcon, FavoriteIcon, RemoveIcon, ShoppingCartIcon } from '../../icons';
 import { toast } from '../../toast/toast';
 import styles from './ProductActions.module.scss';
@@ -168,7 +169,7 @@ export const ProductActions = (props: {
                     variant="contained"
                     color="primary"
                     size="large"
-                    className={styles.actionButton}
+                    className={clsx(styles.actionButton, commonStyles.button)}
                     startIcon={inCart ? <ShoppingCartIcon /> : <AddShoppingCartIcon />}
                 >{inCart ? sameQntInCart ? 'Open cart' : 'Update qty' : 'Add to cart'}</Button>
                 <div className={styles.amountPicker}>
@@ -208,7 +209,7 @@ export const ProductActions = (props: {
                     variant="outlined"
                     color="primary"
                     size="large"
-                    className={styles.actionButton}
+                    className={clsx(styles.actionButton, commonStyles.button)}
                     startIcon={<FavoriteIcon />}
                 >{inWishlist ? 'Open Wishlist' : 'Save'}</Button>
                 <Button
@@ -216,7 +217,7 @@ export const ProductActions = (props: {
                     variant="outlined"
                     color="primary"
                     size="large"
-                    className={styles.actionButton}
+                    className={clsx(styles.actionButton, commonStyles.button)}
                     startIcon={<EqualizerIcon />}
                 >{inCompare ? 'Open comparison list' : 'Compare'}</Button>
             </div>

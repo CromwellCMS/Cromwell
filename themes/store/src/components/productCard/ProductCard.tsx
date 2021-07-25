@@ -193,7 +193,7 @@ export const ProductCard = (props?: {
                     <Rating name="read-only" value={data?.rating?.average} precision={0.5} readOnly />
                     {((data?.rating?.reviewsNumber !== undefined && props?.variant === 'list' && data?.rating?.reviewsNumber && !isMobile) && (
                         <p className={styles.ratingCaption}>
-                            {data?.rating?.average ? data?.rating?.average.toFixed(2) : ''} based on {data?.rating?.reviewsNumber} reviews.</p>
+                            ({data?.rating?.average ? data?.rating?.average.toFixed(2) : ''}) {data?.rating?.reviewsNumber} reviews.</p>
                     )) || null}
                 </div>
             </div>

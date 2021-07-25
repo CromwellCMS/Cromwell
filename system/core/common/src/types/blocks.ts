@@ -54,9 +54,18 @@ export type TDataComponentProps<Data> = {
     component: React.ComponentType<Data>;
 }
 
+/**
+ * Basic props for Blocks. Used in JSX by Theme authors 
+ */
 export type TCromwellBlockProps<TContentBlock = React.Component> = {
     id: string;
     type?: TCromwellBlockType;
+    /** 
+     * Get instance of this CBlock. For example: 
+     * <CList blockRef={(block) => { this.listInst = block }} />
+     * ...
+     * this.listInst.getContentInstance().openPage(1);
+     */
     blockRef?: <T = TCromwellBlock<TContentBlock>>(block: T) => void;
     className?: string;
     onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => any;
@@ -79,6 +88,9 @@ export type TCommonComponentProps = {
 
 export type TCromwellBlockType = 'container' | 'plugin' | 'text' | 'HTML' | 'image' | 'gallery' | 'list' | 'link';
 
+/**
+ * Modification for a Block. Used in the Page builder to store user's changes. 
+ */
 export type TCromwellBlockData = {
     /**
      * Component's id, must be unique in a page.

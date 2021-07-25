@@ -11,10 +11,16 @@ function useForceUpdate() {
     return () => state[1](value => ++value);
 }
 
+let index = 0;
 const parserTransform: Transform = (node: DomElement) => {
+    index++;
     if (node.type === 'script') {
         if (node.children?.[0]?.data && node.children[0].data !== '')
-            return <script dangerouslySetInnerHTML={{ __html: node.children[0].data }} />
+            return <script key={index} dangerouslySetInnerHTML={{ __html: node.children[0].data }} />
+    }
+    if (node.type === 'style') {
+        if (node.children?.[0]?.data && node.children[0].data !== '')
+            return <style key={index} type="text/css" dangerouslySetInnerHTML={{ __html: node.children[0].data }} />
     }
 }
 
@@ -61,7 +67,6 @@ export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwe
         }
 
         const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;
-
         const Head = getModuleImporter()?.modules?.['next/head'];
 
         return (

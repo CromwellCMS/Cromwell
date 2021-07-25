@@ -5,7 +5,32 @@ import { getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
 export const getBreadcrumbs = async (product?: TProduct | null):
     Promise<TProductCategory[] | undefined> => {
     if (!product?.categories?.length) return;
+    const categories = product.categories;
     const client = getGraphQLClient();
+
+    const getNestedLevel = (category: TProductCategory, level = 0) => {
+        if (!category.parent?.id) return level;
+        for (const cat of categories) {
+            if (cat.id === category.parent.id) {
+                level++;
+                return getNestedLevel(cat, level);
+            }
+        }
+        return level;
+    }
+
+    let mostNestedLevel = 0;
+    let mostNested = product.categories[0];
+
+    product.categories.forEach(cat => {
+        if (cat.parent?.id) {
+            const level = getNestedLevel(cat);
+            if (level > mostNestedLevel) {
+                mostNestedLevel = level;
+                mostNested = cat;
+            }
+        }
+    });
 
     try {
         const parentCategories = await client.query({
@@ -31,7 +56,7 @@ export const getBreadcrumbs = async (product?: TProduct | null):
                 }
             `,
             variables: {
-                id: product.categories[0].id,
+                id: mostNested.id,
             },
         }, 'getProductCategoryById');
 
