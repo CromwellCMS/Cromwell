@@ -141,10 +141,12 @@ export const Header = () => {
                                         }}
                                     >
                                         <div>
-                                            <MenuItem className={styles.optionsItem}>
-                                                <AccountCircleOutlinedIcon />
-                                                <p>Your profile</p>
-                                            </MenuItem>
+                                            <Link href="/account">
+                                                <MenuItem className={styles.optionsItem}>
+                                                    <AccountCircleOutlinedIcon />
+                                                    <p>Your profile</p>
+                                                </MenuItem>
+                                            </Link>
                                             <MenuItem onClick={handleLogout} className={styles.optionsItem}>
                                                 <ExitToAppIcon />
                                                 <p>Log out</p>

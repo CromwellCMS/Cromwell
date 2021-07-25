@@ -33,10 +33,10 @@
 }
 
 .imageBlock {
-    width: 75%;
+    width: 65%;
 }
 .captionBlock {
-    width: 25%;
+    width: 35%;
     padding: 15px;
 }
 
@@ -51,6 +51,9 @@
 }
 .ratingCaption {
     margin-left: 10px;
+    color: #333;
+    text-decoration: underline;
+    cursor: pointer;
 }
 
 .priceBlock {
@@ -102,7 +105,6 @@
 
 .tabsBlock {
     position: relative;
-    margin-top: 20px;
     padding-right: 20px;
     width: 75%;
 }

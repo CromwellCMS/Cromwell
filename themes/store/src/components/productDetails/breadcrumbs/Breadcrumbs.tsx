@@ -11,7 +11,7 @@ export default function Breadcrumbs(props: {
 }) {
     return (
         <MuiBreadcrumbs
-            maxItems={4}
+            maxItems={5}
         >
             <Link href="/">
                 <StyledBreadcrumb

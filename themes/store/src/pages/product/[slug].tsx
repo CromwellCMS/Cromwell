@@ -1,16 +1,18 @@
 import { gql } from '@apollo/client';
-import { TAttribute, TCromwellPage, TGetStaticProps, TProduct, TProductCategory } from '@cromwell/core';
-import { CContainer, CText, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
+import { TAttribute, TCromwellPage, TGetStaticProps, TProduct, TProductCategory, TProductReview } from '@cromwell/core';
+import { CContainer, CList, CText, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
+import clsx from 'clsx';
 import React from 'react';
 
 import Layout from '../../components/layout/Layout';
-
-import { getBreadcrumbs } from '../../helpers/getBreadcrumbs';
-import ProductDetails from '../../components/productDetails/ProductDetails';
+import { Pagination } from '../../components/pagination/Pagination';
 import Breadcrumbs from '../../components/productDetails/breadcrumbs/Breadcrumbs';
+import ProductDetails from '../../components/productDetails/ProductDetails';
+import ReviewForm from '../../components/productDetails/reviewForm/ReviewForm';
+import { ReviewItem } from '../../components/productDetails/reviewItem/ReviewItem';
+import { getBreadcrumbs } from '../../helpers/getBreadcrumbs';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Product.module.scss';
-import clsx from 'clsx';
 
 export interface ProductProps {
     product?: TProduct | null;
@@ -19,6 +21,8 @@ export interface ProductProps {
 }
 
 const Product: TCromwellPage<ProductProps> = (props) => {
+    const client = getGraphQLClient();
+    const { product } = props ?? {};
     return (
         <Layout>
             <div className={clsx(commonStyles.content, styles.ProductPage)}>
@@ -37,6 +41,36 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                     }}
                 >Featured items</CText>
                 <CContainer id="Product_ProductShowcase" />
+                {product?.id && (
+                    <CContainer id="product_reviewsBlock" className={styles.reviewsBlock}>
+                        <h3 className={styles.reviewsBlockTitle}>Customer reviews</h3>
+                        <div
+                            className={styles.tab}
+                        >
+                            <CList<TProductReview>
+                                id={"ProductPage_ReviewList"}
+                                ListItem={(props) => <ReviewItem data={props.data} key={props.data?.id} />}
+                                usePagination
+                                useShowMoreButton
+                                disableCaching
+                                pageSize={10}
+                                loader={async (params) => {
+                                    return client.getFilteredProductReviews({
+                                        pagedParams: params,
+                                        filterParams: {
+                                            productId: product.id + '',
+                                            approved: true,
+                                        }
+                                    });
+                                }}
+                                elements={{
+                                    pagination: Pagination
+                                }}
+                            />
+                            <ReviewForm productId={product.id} />
+                        </div>
+                    </CContainer>
+                )}
             </div>
         </Layout>
     );
@@ -46,7 +80,6 @@ export default Product;
 
 export const getStaticProps: TGetStaticProps = async (context): Promise<ProductProps> => {
     const slug = context?.params?.slug ?? null;
-    // console.log('ProductThemePage::getStaticProps: pid', slug, 'context.params', context?.params)
     const client = getGraphQLClient();
 
     let product: TProduct | undefined = undefined;
@@ -57,10 +90,13 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<ProductP
                 fragment ProductListFragment on Product {
                     ...ProductFragment
                     categories(pagedParams: {
-                      pageSize: 1
+                      pageSize: 99
                     }) {
                       id
                       name
+                      parent {
+                          id
+                      }
                     }
                 }
             `, 'ProductListFragment');
@@ -82,6 +118,8 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<ProductP
 
     // Breadcrumbs
     const breadcrumbs = await getBreadcrumbs(product);
+
+    if (product?.categories) delete product.categories;
 
     return {
         product,

@@ -1,17 +1,13 @@
-import { getThemeCustomConfigProp, TCromwellBlock, TProductReview } from '@cromwell/core';
-import { CContainer, CGallery, CImage, CList, CText, getCStore, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { TCromwellBlock } from '@cromwell/core';
+import { CContainer, CGallery, CImage, CText, getCStore, TCList, cromwellIdToHTML } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import * as nextRouter from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
 import { ProductProps } from '../../pages/product/[slug]';
 import { LoadBox } from '../loadbox/Loadbox';
-import { Pagination } from '../pagination/Pagination';
-import { SwipeableTabs } from '../tabs/Tabs';
 import { ProductActions } from './actions/ProductActions';
 import styles from './ProductDetails.module.scss';
-import ReviewForm from './reviewForm/ReviewForm';
-import { ReviewItem } from './reviewItem/ReviewItem';
 
 export default function ProductDetails(props: {
     compact?: boolean;
@@ -27,8 +23,6 @@ export default function ProductDetails(props: {
     }
     const product = modifiedProductRef.current;
     const router = nextRouter?.useRouter?.();
-    const customTabs = getThemeCustomConfigProp('product/customTabs');
-    const client = getGraphQLClient();
 
     useEffect(() => {
         if (product) cstore.addToWatchedItems({ product });
@@ -41,6 +35,10 @@ export default function ProductDetails(props: {
             list.init();
         }
     }, [router?.asPath]);
+
+    const scrollToReviews = () => {
+        document.getElementById(cromwellIdToHTML('product_reviewsBlock'))?.scrollIntoView({ behavior: "smooth" });
+    }
 
     return (
         <CContainer id="product_01" className={styles.ProductDetails + (props.compact ? ' ' + styles.compact : '')}>
@@ -79,7 +77,8 @@ export default function ProductDetails(props: {
                                 },
                                 700: {
                                     ratio: 1,
-                                    visibleSlides: 2,
+                                    // visibleSlides: 2,
+                                    visibleSlides: 1,
                                     height: 600
                                 }
                             },
@@ -92,8 +91,8 @@ export default function ProductDetails(props: {
                         <div className={styles.ratingBlock}>
                             <Rating name="read-only" value={product?.rating?.average} precision={0.5} readOnly />
                             {product?.rating?.reviewsNumber ? (
-                                <p className={styles.ratingCaption}>
-                                    {product?.rating?.average ? product?.rating?.average.toFixed(2) : ''} based on {product?.rating?.reviewsNumber} reviews.</p>
+                                <a className={styles.ratingCaption} onClick={scrollToReviews}>
+                                    ({product?.rating?.average ? product?.rating?.average.toFixed(2) : ''}) {product?.rating?.reviewsNumber} reviews.</a>
                             ) : null}
                         </div>
                         <CContainer id="product_5" className={styles.priceBlock}>
@@ -116,62 +115,11 @@ export default function ProductDetails(props: {
 
                 <CContainer id="product_31" className={styles.tabsAndSidebar}>
                     <CContainer id="product_11" className={styles.tabsBlock}>
-                        <SwipeableTabs
-                            classes={{ header: styles.tabsHeader }}
-                            tabs={[
-                                {
-                                    label: 'Details',
-                                    node: (
-                                        <div className={styles.tab} >
-                                            <div className={styles.tabDescription}
-                                                dangerouslySetInnerHTML={(product?.description) ? { __html: product.description } : undefined}
-                                            ></div>
-                                        </div>
-                                    )
-                                },
-                                {
-                                    label: 'Reviews',
-                                    node: (
-                                        <div
-                                            className={styles.tab}
-                                        >
-                                            <CList<TProductReview>
-                                                blockRef={(block) => { reviewsRef.current = block as any }}
-                                                id={"ProductPage_ReviewList"}
-                                                ListItem={(props) => <ReviewItem data={props.data} key={props.data?.id} />}
-                                                usePagination
-                                                useShowMoreButton
-                                                disableCaching
-                                                pageSize={10}
-                                                maxDomPages={2}
-                                                // scrollContainerSelector={`.${layoutStyles.Layout}`}
-                                                loader={async (params) => {
-                                                    return client?.getFilteredProductReviews({
-                                                        pagedParams: params,
-                                                        filterParams: {
-                                                            productId: product.id + '',
-                                                            approved: true,
-                                                        }
-                                                    });
-                                                }}
-                                                elements={{
-                                                    pagination: Pagination
-                                                }}
-                                            />
-                                            <ReviewForm productId={product.id} />
-                                        </div>
-                                    )
-                                },
-                                ...((customTabs && Array.isArray(customTabs)) ? customTabs.map(t => ({
-                                    label: t.label,
-                                    node: (
-                                        <div
-                                            className={styles.tab}
-                                            dangerouslySetInnerHTML={(t.html) ? { __html: t.html } : undefined}>
-                                        </div>
-                                    )
-                                })) : [])
-                            ]} />
+                        <div className={styles.tab} >
+                            <div className={styles.tabDescription}
+                                dangerouslySetInnerHTML={(product?.description) ? { __html: product.description } : undefined}
+                            ></div>
+                        </div>
                     </CContainer>
                     {!props.compact && (
                         <CContainer id="product_8" className={styles.infoBlock}>

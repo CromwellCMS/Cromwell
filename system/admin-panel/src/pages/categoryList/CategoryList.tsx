@@ -258,7 +258,7 @@ const CategoryList = (props: TPropsType) => {
                     {displayType === 'list' && (
                         <TextField
                             className={styles.filterItem}
-                            placeholder="Category name"
+                            placeholder="Category name or id"
                             onChange={(event) => {
                                 filterInput.current.nameSearch = event.target.value;
                                 handleFilterInput();

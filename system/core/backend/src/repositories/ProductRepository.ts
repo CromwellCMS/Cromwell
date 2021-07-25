@@ -232,13 +232,14 @@ export class ProductRepository extends BaseRepository<Product> {
                 });
             }
 
-            // Search by product name
+            // Search by product name or sku or id
             if (filterParams.nameSearch && filterParams.nameSearch !== '') {
                 const likeStr = `%${filterParams.nameSearch}%`;
 
                 const brackets = new Brackets(subQb => {
                     subQb.where(`${this.metadata.tablePath}.name LIKE :likeStr`, { likeStr });
                     subQb.orWhere(`${this.metadata.tablePath}.sku LIKE :likeStr`, { likeStr });
+                    subQb.orWhere(`${this.metadata.tablePath}.id LIKE :likeStr`, { likeStr });
                 });
                 qb.andWhere(brackets);
             }

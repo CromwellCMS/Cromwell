@@ -19,7 +19,6 @@ interface CategoryProps {
 
 
 const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
-  // console.log('ProductThemePage props', props);
   const category = props.category;
   const client = getGraphQLClient();
   const listId = 'Category_ProductList';

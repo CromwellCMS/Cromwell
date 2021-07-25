@@ -75,7 +75,7 @@ const Post = (props) => {
                 }`, 'AdminPanelPostFragment'
             );
             if (post) setPostData(post);
-        } catch (e) { console.log(e) }
+        } catch (e) { console.error(e) }
         setIsloading(false);
         return post;
     }

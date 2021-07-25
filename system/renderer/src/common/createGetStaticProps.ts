@@ -41,7 +41,7 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         } = {};
 
         try {
-            rendererData = (await getRestAPIClient().batchRendererData(pageRoute)) ?? {};
+            rendererData = (await getRestAPIClient().batchRendererData(pageConfigName)) ?? {};
         } catch (e) {
             console.error(e);
         }
@@ -75,7 +75,6 @@ export const createGetStaticProps = (pageName: BasePageNames | string,
         }
 
         apiClient?.post(`cms/view-page`, pageStats, { disableLog: true }).catch(() => null);
-
         // console.log('getStaticProps for page: ' + pageName);
         // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 

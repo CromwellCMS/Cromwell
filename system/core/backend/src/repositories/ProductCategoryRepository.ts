@@ -6,6 +6,7 @@ import {
     getCustomRepository,
     SelectQueryBuilder,
     TreeRepository,
+    Brackets,
 } from 'typeorm';
 
 import { ProductCategoryFilterInput } from '../entities/filter/ProductCategoryFilterInput';
@@ -267,11 +268,15 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     }
 
     applyCategoryFilter(qb: SelectQueryBuilder<ProductCategory> | DeleteQueryBuilder<ProductCategory>, filterParams?: ProductCategoryFilterInput) {
-        // Search by category name
+        // Search by category name or id
         if (filterParams?.nameSearch && filterParams.nameSearch !== '') {
-            const nameSearch = `%${filterParams.nameSearch}%`;
-            const query = `${this.metadata.tablePath}.name LIKE :nameSearch`;
-            qb.andWhere(query, { nameSearch });
+            const likeStr = `%${filterParams.nameSearch}%`;
+
+            const brackets = new Brackets(subQb => {
+                subQb.where(`${this.metadata.tablePath}.name LIKE :likeStr`, { likeStr });
+                subQb.orWhere(`${this.metadata.tablePath}.id LIKE :likeStr`, { likeStr });
+            });
+            qb.andWhere(brackets);
         }
     }
 

@@ -506,7 +506,6 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         if (props.dataList) {
             this.parseFirstBatchArray(props.dataList);
         }
-        // console.log('BaseInfiniteLoader::render', this.minPageBound, this.maxPageBound, this.list)
 
         if (this.list.length === 0) {
             content = props.noDataLabel ? (

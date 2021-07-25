@@ -38,7 +38,7 @@ class ThemeEditState {
     themeConfig: TThemeConfig | null = null;
     pageInfos: TPageInfo[] | null = null;
     plugins: TPluginEntity[] | null = null;
-    editingPageInfo: TPageInfo | null = null;
+    editingPageInfo: TPageConfig | null = null;
     EditingPage: React.ComponentType<any> | null | undefined = null;
     isPageLoading: boolean = false;
     isPageListLoading: boolean = true;
@@ -119,14 +119,14 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
 
         this.setState({ isPageLoading: true });
         setStoreItem('pageConfig', undefined);
+        let pageConfig: TPageConfig | undefined;
         try {
             if (pageInfo.route && pageInfo.route !== '') {
-                const pageConfig: TPageConfig | undefined =
-                    await getRestAPIClient()?.getPageConfig(pageInfo.route);
+                pageConfig = await getRestAPIClient()?.getPageConfig(pageInfo.route);
                 setStoreItem('pageConfig', pageConfig);
             }
         } catch (e) {
-            console.error(e)
+            console.error(e);
         }
 
         try {
@@ -141,7 +141,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
 
             this.setState({
                 EditingPage: pageComp,
-                editingPageInfo: pageInfo,
+                editingPageInfo: pageConfig,
             });
         } catch (e) {
             console.error(e)

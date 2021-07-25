@@ -160,6 +160,14 @@ const OrderList = (props: TPropsType) => {
                     />
                     <TextField
                         className={styles.filterItem}
+                        placeholder="Order id"
+                        onChange={(event) => {
+                            filterInput.current.orderId = event.target.value;
+                            handleFilterInput();
+                        }}
+                    />
+                    <TextField
+                        className={styles.filterItem}
                         placeholder="Customer name"
                         onChange={(event) => {
                             filterInput.current.customerName = event.target.value;
@@ -176,9 +184,9 @@ const OrderList = (props: TPropsType) => {
                     />
                     <TextField
                         className={styles.filterItem}
-                        placeholder="Order id"
+                        placeholder="Customer email"
                         onChange={(event) => {
-                            filterInput.current.orderId = event.target.value;
+                            filterInput.current.customerEmail = event.target.value;
                             handleFilterInput();
                         }}
                     />
