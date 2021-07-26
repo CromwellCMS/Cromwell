@@ -428,8 +428,8 @@ export class CmsService {
                         ...cart.map(item => ({
                             price_data: {
                                 currency: currency?.toLowerCase() ?? 'usd',
-                                unit_amount: parseInt(store.convertPrice(item.product?.price ?? 0,
-                                    defaultCurrency, currency) + '') * 100,
+                                unit_amount_decimal: (parseFloat(store.convertPrice(item.product?.price ?? 0,
+                                    defaultCurrency, currency) + '') * 100) + '',
                                 product_data: {
                                     // images: item.product?.images,
                                     name: item.product?.name + '',
@@ -439,8 +439,8 @@ export class CmsService {
                         })), {
                             price_data: {
                                 currency: currency?.toLowerCase() ?? 'usd',
-                                unit_amount: parseInt(store.convertPrice(total?.shippingPrice ?? 0,
-                                    defaultCurrency, currency) + '') * 100,
+                                unit_amount_decimal: (parseFloat(store.convertPrice(total?.shippingPrice ?? 0,
+                                    defaultCurrency, currency) + '') * 100) + '',
                                 product_data: {
                                     name: 'shipping',
                                 },

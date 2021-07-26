@@ -202,7 +202,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
                 )
             })}
             {props.data?.productCategory &&
-                (props.data.productCategory.parent || props.data.productCategory.children?.length) &&
+                !!(props.data.productCategory.parent || props.data.productCategory.children?.length) &&
                 getFilterItem({
                     title: 'Categories',
                     key: 'categories',
