@@ -1,4 +1,4 @@
-import { TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
+import { TAttribute, TProduct, TStoreListItem, onStoreChange, removeOnStoreChange } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
 import { IconButton, Tooltip, useMediaQuery, useTheme } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
@@ -57,14 +57,23 @@ export const ProductCard = (props?: {
 
     useEffect(() => {
         onResize();
-        cstore.onCartUpdate(() => {
-            forceUpdate();
-        }, 'ProductActions');
 
-        cstore.onWishlistUpdate(() => {
-            if (inWishlist)
+        if (data?.id) {
+            const cbId = 'ProductActions' + data.id;
+            const onDataChange = () => {
                 forceUpdate();
-        }, 'ProductActions');
+            }
+
+            cstore.onCartUpdate(onDataChange, cbId);
+            cstore.onWishlistUpdate(onDataChange, cbId);
+            onStoreChange('currency', onDataChange);
+
+            return () => {
+                cstore.removeOnCartUpdate(cbId);
+                cstore.removeOnWishlistUpdate(cbId);
+                removeOnStoreChange('currency', onDataChange);
+            }
+        }
     }, []);
 
     const handleAddToCart = () => {

@@ -367,7 +367,9 @@ export type TOrderCore = {
     customerAddress?: string;
     customerComment?: string;
     shippingMethod?: string;
+    paymentMethod?: string;
     fromUrl?: string;
+    currency?: string;
 }
 
 export type TOrder = TOrderCore & TBasePageEntity;
@@ -383,8 +385,10 @@ export type TServerCreateOrder = {
     customerEmail?: string;
     customerAddress?: string;
     shippingMethod?: string;
+    paymentMethod?: string;
     customerComment?: string;
     fromUrl?: string;
+    currency?: string;
 }
 
 export type TOrderFilter = {
@@ -500,16 +504,10 @@ export type TCmsEntityCore = {
     footerHtml?: string;
     // < / >
 
-    // < Admin config >
     /**
-     * SMTP connection string to e-mail service provider
+     * Admin config
      */
-    smtpConnectionString?: string;
-    /**
-     * E-mail to send mails from
-     */
-    sendFromEmail?: string;
-    //  < / >
+    adminSettings?: TCmsAdminSettings;
 
     // < INTERNAL >
     /**
@@ -535,6 +533,24 @@ export type TCmsEntityCore = {
     // < / >
 }
 
+/**
+ * Admin (private) CMS settings
+ */
+export type TCmsAdminSettings = {
+    /**
+     * SMTP connection string to e-mail service provider
+     */
+    smtpConnectionString?: string;
+    /**
+     * E-mail to send mails from
+     */
+    sendFromEmail?: string;
+    /**
+     * [Stripe API key](https://stripe.com/docs/keys)
+     */
+    stripeApiKey?: string
+}
+
 export type TCmsEntityInput = {
     defaultPageSize?: number;
     currencies?: TCurrency[];
@@ -545,8 +561,7 @@ export type TCmsEntityInput = {
     headHtml?: string;
     footerHtml?: string;
     defaultShippingPrice?: number;
-    smtpConnectionString?: string;
-    sendFromEmail?: string;
+    adminSettings?: TCmsAdminSettings;
 }
 
 export type TServiceVersions = {

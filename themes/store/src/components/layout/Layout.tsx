@@ -1,12 +1,15 @@
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
-import React from 'react';
+import * as nextRouter from 'next/router';
+import React, { useEffect } from 'react';
+
 import { primaryColor } from '../../constants.js';
-import { Header } from '../header/Header';
+import { appState } from '../../helpers/AppState';
 import { Footer } from '../footer/Footer';
+import { Header } from '../header/Header';
 import { CartModal } from '../modals/cart/CartModal';
-import { WishlistModal } from '../modals/wishlist/WishlistModal';
-import { WatchedModal } from '../modals/watched/WatchedModal';
 import ProductQuickView from '../modals/productQuickView/ProductQuickView';
+import { WatchedModal } from '../modals/watched/WatchedModal';
+import { WishlistModal } from '../modals/wishlist/WishlistModal';
 import styles from './Layout.module.scss';
 
 type TProps = {
@@ -33,6 +36,18 @@ const theme = createMuiTheme({
 });
 
 export default function Layout(props: TProps | undefined) {
+    const router = nextRouter?.useRouter?.();
+
+    useEffect(() => {
+        if (appState.isCartOpen) appState.isCartOpen = false;
+        if (appState.isSigninOpen) appState.isSigninOpen = false;
+        if (appState.isCartOpen) appState.isCartOpen = false;
+        if (appState.isWishlistOpen) appState.isWishlistOpen = false;
+        if (appState.isCompareOpen) appState.isCompareOpen = false;
+        if (appState.isWatchedOpen) appState.isWatchedOpen = false;
+        if (appState.isQuickViewOpen) appState.isQuickViewOpen = false;
+    }, [router?.asPath]);
+
     return (
         <ThemeProvider theme={theme}>
             <div className={styles.Layout}>

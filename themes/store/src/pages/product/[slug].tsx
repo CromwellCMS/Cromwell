@@ -1,8 +1,17 @@
 import { gql } from '@apollo/client';
-import { TAttribute, TCromwellPage, TGetStaticProps, TProduct, TProductCategory, TProductReview } from '@cromwell/core';
-import { CContainer, CList, CText, getGraphQLClient, getGraphQLErrorInfo } from '@cromwell/core-frontend';
+import {
+    TAttribute,
+    TCromwellBlock,
+    TCromwellPage,
+    TGetStaticProps,
+    TProduct,
+    TProductCategory,
+    TProductReview,
+} from '@cromwell/core';
+import { CContainer, CList, CText, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
 import clsx from 'clsx';
-import React from 'react';
+import * as nextRouter from 'next/router';
+import React, { useEffect, useRef } from 'react';
 
 import Layout from '../../components/layout/Layout';
 import { Pagination } from '../../components/pagination/Pagination';
@@ -23,6 +32,16 @@ export interface ProductProps {
 const Product: TCromwellPage<ProductProps> = (props) => {
     const client = getGraphQLClient();
     const { product } = props ?? {};
+    const reviewsInst = useRef<TCromwellBlock<TCList> | undefined>();
+    const router = nextRouter?.useRouter?.();
+
+    useEffect(() => {
+        const list: TCList | undefined = reviewsInst.current?.getContentInstance();
+        if (list) {
+            list.updateData();
+        }
+    }, [router?.asPath]);
+
     return (
         <Layout>
             <div className={clsx(commonStyles.content, styles.ProductPage)}>
@@ -32,21 +51,20 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                     </div>
                 )}
                 <ProductDetails {...props} />
-                <CText
-                    id="product_showcase-title"
-                    style={{
-                        margin: '40px 20px 10px 20px',
-                        fontWeight: 600,
-                        fontSize: '26px'
-                    }}
-                >Featured items</CText>
-                <CContainer id="Product_ProductShowcase" />
+                <CContainer id="Product_ProductShowcase" >
+                    <CText
+                        id="product_showcase-title"
+                        style={{
+                            margin: '40px 20px 10px 20px',
+                            fontWeight: 600,
+                            fontSize: '26px'
+                        }}
+                    >Featured items</CText>
+                </CContainer>
                 {product?.id && (
                     <CContainer id="product_reviewsBlock" className={styles.reviewsBlock}>
                         <h3 className={styles.reviewsBlockTitle}>Customer reviews</h3>
-                        <div
-                            className={styles.tab}
-                        >
+                        <div className={styles.tab} >
                             <CList<TProductReview>
                                 id={"ProductPage_ReviewList"}
                                 ListItem={(props) => <ReviewItem data={props.data} key={props.data?.id} />}
@@ -54,6 +72,7 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                                 useShowMoreButton
                                 disableCaching
                                 pageSize={10}
+                                blockRef={(block) => reviewsInst.current = block}
                                 loader={async (params) => {
                                     return client.getFilteredProductReviews({
                                         pagedParams: params,

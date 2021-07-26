@@ -57,6 +57,8 @@ export class OrderRepository extends BaseRepository<Order> {
             allowedTags: []
         }) : undefined;
         order.shippingMethod = input.shippingMethod;
+        order.paymentMethod = input.paymentMethod;
+        order.currency = input.currency;
     }
 
     async createOrder(inputData: TOrderInput, id?: string): Promise<Order> {

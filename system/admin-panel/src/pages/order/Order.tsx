@@ -99,6 +99,8 @@ const OrderPage = () => {
                 customerAddress: data.customerAddress,
                 customerComment: data.customerComment,
                 shippingMethod: data.shippingMethod,
+                paymentMethod: data.paymentMethod,
+                currency: data.currency,
             }
             try {
                 await client?.updateOrder(data.id, inputData);

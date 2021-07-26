@@ -412,6 +412,15 @@ export class CRestAPIClient {
     }
 
     /**
+     * Calculate total price of a cart and creates a payment session via service provider
+     * @auth no
+     */
+    public createPaymentSession = async (input: TServerCreateOrder, options?: TRequestOptions)
+        : Promise<TOrder & { checkoutUrl?: string } | undefined> => {
+        return this.post(`v1/cms/create-payment-session`, input, options);
+    }
+
+    /**
      * Place a new order in the store
      * @auth no
      */

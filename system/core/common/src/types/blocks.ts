@@ -66,7 +66,7 @@ export type TCromwellBlockProps<TContentBlock = React.Component> = {
      * ...
      * this.listInst.getContentInstance().openPage(1);
      */
-    blockRef?: <T = TCromwellBlock<TContentBlock>>(block: T) => void;
+    blockRef?: (block: TCromwellBlock<TContentBlock>) => void;
     className?: string;
     onClick?: (event: React.MouseEvent<HTMLDivElement, MouseEvent>) => any;
     jsxParentId?: string;

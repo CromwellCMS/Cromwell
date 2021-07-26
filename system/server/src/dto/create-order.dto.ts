@@ -27,8 +27,14 @@ export class CreateOrderDto implements TOrderInput {
     shippingMethod?: string;
 
     @ApiProperty()
+    paymentMethod?: string;
+
+    @ApiProperty()
     customerComment?: string;
 
     @ApiProperty()
     fromUrl?: string;
+
+    @ApiProperty()
+    currency?: string;
 }

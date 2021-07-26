@@ -1,6 +1,7 @@
 import { TCmsEntityInput, TCurrency } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
+import { CmsAdminSettingsDto } from './cms-admin-settings.dto';
 import { CurrencyDto } from './currency.dto';
 
 export class CmsConfigUpdateDto implements TCmsEntityInput {
@@ -32,9 +33,6 @@ export class CmsConfigUpdateDto implements TCmsEntityInput {
     defaultShippingPrice?: number;
 
     @ApiProperty()
-    smtpConnectionString?: string;
-
-    @ApiProperty()
-    sendFromEmail?: string;
+    adminSettings?: CmsAdminSettingsDto;
 }
 

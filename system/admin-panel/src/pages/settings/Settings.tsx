@@ -1,4 +1,4 @@
-import { setStoreItem, TCmsSettings, TCurrency, TDBEntity } from '@cromwell/core';
+import { setStoreItem, TCmsSettings, TCurrency, TCmsAdminSettings, TDBEntity } from '@cromwell/core';
 import { getCStore, getRestAPIClient } from '@cromwell/core-frontend';
 import {
     Badge,
@@ -89,6 +89,20 @@ class SettingsPage extends React.Component<any, {
         })
     }
 
+    private changeAdminSettings = (key: keyof TCmsAdminSettings, value) => {
+        this.setState(prev => {
+            return {
+                settings: {
+                    ...prev.settings,
+                    adminSettings: {
+                        ...(prev.settings?.adminSettings ?? {}),
+                        [key]: value
+                    }
+                }
+            }
+        })
+    }
+
     private getConfig = async () => {
         this.setState({ isLoading: true });
         const client = getRestAPIClient();
@@ -119,8 +133,7 @@ class SettingsPage extends React.Component<any, {
                 headHtml: settings.headHtml,
                 footerHtml: settings.footerHtml,
                 defaultShippingPrice: settings.defaultShippingPrice,
-                smtpConnectionString: settings.smtpConnectionString,
-                sendFromEmail: settings.sendFromEmail,
+                adminSettings: settings.adminSettings,
             });
             toast.success?.('Settings saved');
             this.setState({ settings: newConfig });
@@ -137,6 +150,9 @@ class SettingsPage extends React.Component<any, {
         this.changeSettings(key, event.target.value);
     }
 
+    private handleAdminTextFieldChange = (key: keyof TCmsAdminSettings) => (event: React.ChangeEvent<{ value: string }>) => {
+        this.changeAdminSettings(key, event.target.value);
+    }
 
     private handleDeleteCurrency = (tag: string) => {
         const { settings } = this.state;
@@ -339,6 +355,15 @@ class SettingsPage extends React.Component<any, {
                                         onChange={this.handleTextFieldChange('defaultShippingPrice')}
                                     />
                                 </Grid>
+                                <Grid item xs={12} >
+                                    <TextField
+                                        fullWidth
+                                        label="Stripe API key"
+                                        value={settings?.adminSettings?.stripeApiKey ?? ''}
+                                        onChange={this.handleAdminTextFieldChange('stripeApiKey')}
+                                        className={styles.field}
+                                    />
+                                </Grid>
                             </>
                         )
                     })}
@@ -467,8 +492,8 @@ class SettingsPage extends React.Component<any, {
                                     <TextField
                                         fullWidth
                                         label="Send e-mails from"
-                                        value={settings?.sendFromEmail ?? ''}
-                                        onChange={this.handleTextFieldChange('sendFromEmail')}
+                                        value={settings?.adminSettings?.sendFromEmail ?? ''}
+                                        onChange={this.handleAdminTextFieldChange('sendFromEmail')}
                                         className={styles.field}
                                     />
                                 </Grid>
@@ -476,8 +501,8 @@ class SettingsPage extends React.Component<any, {
                                     <TextField
                                         fullWidth
                                         label="SMTP Connection String"
-                                        value={settings?.smtpConnectionString ?? ''}
-                                        onChange={this.handleTextFieldChange('smtpConnectionString')}
+                                        value={settings?.adminSettings?.smtpConnectionString ?? ''}
+                                        onChange={this.handleAdminTextFieldChange('smtpConnectionString')}
                                         className={styles.field}
                                     />
                                 </Grid>

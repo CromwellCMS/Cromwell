@@ -81,11 +81,19 @@ export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
     }
     const entity = await getCmsEntity();
 
-    const settings: TCmsSettings = Object.assign({}, cmsSettings,
-        config, JSON.parse(JSON.stringify(entity)), { currencies: entity.currencies });
+    const settings: TCmsSettings = Object.assign({},
+        cmsSettings,
+        config,
+        JSON.parse(JSON.stringify(entity)),
+        {
+            currencies: entity.currencies,
+            adminSettings: entity.adminSettings
+        }
+    );
 
     delete settings.defaultSettings;
     delete (settings as any)._currencies;
+    delete (settings as any)._adminSettings;
 
     setStoreItem('cmsSettings', settings);
     return settings;

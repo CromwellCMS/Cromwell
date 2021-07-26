@@ -370,6 +370,8 @@ export class MigrationService {
             customerAddress: ent.customerAddress,
             customerComment: ent.customerComment,
             shippingMethod: ent.shippingMethod,
+            paymentMethod: ent.paymentMethod,
+            currency: ent.currency,
         }));
 
         this.fillSheet(workbook, 'Orders', ordersSheet);
@@ -465,8 +467,7 @@ export class MigrationService {
             defaultShippingPrice: ent.defaultShippingPrice,
             headHtml: ent.headHtml,
             footerHtml: ent.footerHtml,
-            smtpConnectionString: ent.smtpConnectionString,
-            sendFromEmail: ent.sendFromEmail,
+            adminSettings: ent.adminSettings,
             version: ent.version,
             versions: ent.versions,
             installed: ent.installed,

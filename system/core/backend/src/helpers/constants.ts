@@ -60,6 +60,9 @@ export const defaultCmsConfig: TCmsConfig = {
         logo: "/themes/@cromwell/theme-store/shopping-cart.png",
         defaultPageSize: 15,
         defaultShippingPrice: 10,
+        adminSettings: {
+            stripeApiKey: 'sk_test_4eC39HqLyjWDarjtT1zdp7dc',
+        },
         currencies: [
             {
                 id: '1',

@@ -4,7 +4,6 @@
     margin: 20px 0;
     border-radius: 8px;
     overflow: hidden;
-    background-color: #fff;
 
     &.compact {
         box-shadow: none;
@@ -35,6 +34,7 @@
 .imageBlock {
     width: 65%;
 }
+
 .captionBlock {
     width: 35%;
     padding: 15px;
@@ -49,6 +49,7 @@
 .ratingBlock {
     display: flex;
 }
+
 .ratingCaption {
     margin-left: 10px;
     color: #333;
@@ -69,6 +70,7 @@
     margin-right: 10px;
     font-weight: 600;
 }
+
 .price {
     font-size: 26px;
     font-weight: 900;
@@ -79,11 +81,13 @@
     flex-direction: column;
     width: 25%;
 }
+
 .advantagesBlock {
     display: flex;
     flex-direction: column;
     overflow: hidden;
 }
+
 .advantageItem {
     display: flex;
     align-items: center;
@@ -91,14 +95,17 @@
     padding: 20px 15px;
     border-bottom: 1px solid #ddd;
 }
+
 .advantageItemHeader {
     font-weight: 400;
     font-size: 16px;
 }
+
 .advantageItemText {
     margin-left: 20px;
     flex-direction: column;
 }
+
 .infoBanner {
     margin-top: 20px;
 }
@@ -137,13 +144,16 @@ div.tabsHeader {
     .imageBlock {
         width: 60%;
     }
+
     .captionBlock {
         width: 40%;
     }
+
     .tabsBlock {
         padding-right: 0;
         width: 100%;
     }
+
     .infoBlock {
         display: none;
     }
@@ -153,13 +163,16 @@ div.tabsHeader {
     .imageBlock {
         width: 60%;
     }
+
     .captionBlock {
         width: 40%;
     }
+
     .tabsBlock {
         padding-right: 0;
         width: 60%;
     }
+
     .infoBlock {
         width: 40%;
     }
@@ -181,6 +194,7 @@ div.tabsHeader {
     .imageBlock {
         width: 100%;
     }
+
     .captionBlock {
         width: 100%;
     }

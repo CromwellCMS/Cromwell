@@ -8,12 +8,24 @@ import {
     ProductReviewRepository,
     Roles,
 } from '@cromwell/core-backend';
-import { Body, Controller, Get, Header, HttpException, HttpStatus, Post, Query, Req, UseGuards, Response } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    Header,
+    HttpException,
+    HttpStatus,
+    Post,
+    Query,
+    Req,
+    Response,
+    UseGuards,
+} from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
+import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join } from 'path';
-import { FastifyReply } from 'fastify';
 import { Container } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
@@ -23,16 +35,16 @@ import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { CmsStatsDto } from '../dto/cms-stats.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
+import { ExportOptionsDto } from '../dto/export-options.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { serverFireAction } from '../helpers/serverFireAction';
 import { CmsService } from '../services/cms.service';
+import { MigrationService } from '../services/migration.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
-import { MigrationService } from '../services/migration.service';
-import { ExportOptionsDto } from '../dto/export-options.dto';
 
 const logger = getLogger();
 
@@ -319,6 +331,23 @@ export class CmsController {
         if (!input) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
 
         return this.cmsService.calcOrderTotal(input);
+    }
+
+
+    @Post('create-payment-session')
+    @UseGuards(ThrottlerGuard)
+    @Throttle(5, 20)
+    @ApiOperation({
+        description: 'Creates new payment session',
+    })
+    @ApiBody({ type: CreateOrderDto })
+    @ApiResponse({
+        status: 200,
+        type: OrderTotalDto,
+    })
+    async createPaymentSession(@Body() input: CreateOrderDto): Promise<OrderTotalDto> {
+        if (!input) throw new HttpException('Order form is incomplete', HttpStatus.NOT_ACCEPTABLE);
+        return this.cmsService.createPaymentSession(input);
     }
 
 
