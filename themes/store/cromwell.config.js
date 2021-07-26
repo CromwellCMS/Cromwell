@@ -139,7 +139,7 @@ module.exports = {
                     "id": "Product_ProductShowcase_Plugin",
                     "parentId": "Product_ProductShowcase",
                     "style": { height: '440px' },
-                    "index": 1,
+                    "index": 2,
                     "isVirtual": true,
                     "plugin": {
                         "pluginName": "@cromwell/plugin-product-showcase"

@@ -1,4 +1,4 @@
-import { TCmsEntity, TCurrency } from '@cromwell/core';
+import { TCmsEntity, TCurrency, TCmsAdminSettings } from '@cromwell/core';
 import { Column, Entity } from 'typeorm';
 
 import { BasePageEntity } from './BasePageEntity';
@@ -66,4 +66,13 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
 
     @Column({ type: "boolean", nullable: true })
     isUpdating?: boolean = false;
+
+    public get adminSettings(): TCmsAdminSettings | undefined {
+        return this._adminSettings ? JSON.parse(this._adminSettings) : undefined;
+    }
+    public set adminSettings(data: TCmsAdminSettings | undefined) {
+        this._adminSettings = data ? JSON.stringify(data) : undefined;
+    }
+    @Column({ type: "text", nullable: true })
+    private _adminSettings?: string;
 }

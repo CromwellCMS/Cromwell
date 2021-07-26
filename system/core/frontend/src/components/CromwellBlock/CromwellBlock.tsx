@@ -95,6 +95,8 @@ export class CromwellBlock<TContentBlock = React.Component> extends
     private contextComponentDidUpdate: undefined | (() => void) = undefined;
 
     private didUpdate = async () => {
+        this.props.blockRef?.(this);
+
         if (this.movedblockRef.current) {
             this.movedblockRef.current.removeAttribute('class');
             this.movedblockRef.current.removeAttribute('id');

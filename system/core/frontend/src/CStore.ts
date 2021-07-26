@@ -149,6 +149,11 @@ export class CStore {
         return cbId;
     }
 
+    private removeOnListUpdated = (key: string, id: string) => {
+        if (!this.onListUpdatedCallbacks[key]) this.onListUpdatedCallbacks[key] = {};
+        delete this.onListUpdatedCallbacks[key][id];
+    }
+
     private removeFromList = (key: string, product: TStoreListItem): OperationResult => {
         const list = this.getList(key);
         const index = this.getIndexInList(key, product);
@@ -246,6 +251,10 @@ export class CStore {
         return this.addOnListUpdated(cartKey, cb, id);
     }
 
+    public removeOnCartUpdate = (id: string) => {
+        return this.removeOnListUpdated(cartKey, id);
+    }
+
 
 
     public getWishlist = () => {
@@ -269,6 +278,9 @@ export class CStore {
         return this.addOnListUpdated(wishlistKey, cb, id);
     }
 
+    public removeOnWishlistUpdate = (id: string) => {
+        return this.removeOnListUpdated(wishlistKey, id);
+    }
 
 
     public getCompare = () => {
@@ -292,6 +304,9 @@ export class CStore {
         return this.addOnListUpdated(compareKey, cb, id);
     }
 
+    public removeOnCompareUpdate = (id: string) => {
+        return this.removeOnListUpdated(compareKey, id);
+    }
 
 
     public getWatchedItems = () => {
@@ -311,8 +326,12 @@ export class CStore {
         return this.addToList(watchedKey, item);
     }
 
-    public onWathcedItemsUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
+    public onWatchedItemsUpdate = (cb: (cart: TStoreListItem[]) => any, id?: string): string => {
         return this.addOnListUpdated(watchedKey, cb, id);
+    }
+
+    public removeOnWatchedItemsUpdate = (id: string) => {
+        return this.removeOnListUpdated(watchedKey, id);
     }
 
     /**
@@ -481,7 +500,7 @@ export class CStore {
 
     // < CURRENCY >
 
-    private getDafaultCurrencyTag = (): string | undefined => {
+    public getDefaultCurrencyTag = (): string | undefined => {
         const cmsSettings = getStoreItem('cmsSettings');
         let defaultCurrency;
         if (cmsSettings && cmsSettings.currencies && Array.isArray(cmsSettings.currencies) &&
@@ -499,7 +518,7 @@ export class CStore {
         let priceStr = price + '';
         const cmsSettings = getStoreItem('cmsSettings');
         const currency = this.getActiveCurrencyTag();
-        const defaultCurrency = this.getDafaultCurrencyTag();
+        const defaultCurrency = this.getDefaultCurrencyTag();
 
         if (currency && defaultCurrency) {
             priceStr = this.convertPrice(price, defaultCurrency, currency) + '';
@@ -529,7 +548,7 @@ export class CStore {
         if (!currency) {
             let _currency: string | null | undefined = this.store.getItem(currencyKey);
             if (!_currency || _currency === "") {
-                _currency = this.getDafaultCurrencyTag();
+                _currency = this.getDefaultCurrencyTag();
             }
             if (_currency) {
                 setStoreItem('currency', _currency);

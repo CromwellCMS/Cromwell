@@ -1,5 +1,4 @@
-import { TCromwellBlock } from '@cromwell/core';
-import { CContainer, CGallery, CImage, CText, getCStore, TCList, cromwellIdToHTML } from '@cromwell/core-frontend';
+import { CContainer, CGallery, CImage, cromwellIdToHTML, CText, getCStore } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import * as nextRouter from 'next/router';
 import React, { useEffect, useRef } from 'react';
@@ -13,7 +12,6 @@ export default function ProductDetails(props: {
     compact?: boolean;
 } & ProductProps) {
     const productRef = useRef(props.product);
-    const reviewsRef = useRef<TCromwellBlock<TCList> | null | undefined>(null);
     const modifiedProductRef = useRef(props.product);
     const cstore = getCStore();
 
@@ -28,13 +26,6 @@ export default function ProductDetails(props: {
         if (product) cstore.addToWatchedItems({ product });
     }, [props.product]);
 
-    useEffect(() => {
-        const list = reviewsRef.current?.getContentInstance();
-        if (list) {
-            list.clearState();
-            list.init();
-        }
-    }, [router?.asPath]);
 
     const scrollToReviews = () => {
         document.getElementById(cromwellIdToHTML('product_reviewsBlock'))?.scrollIntoView({ behavior: "smooth" });

@@ -68,5 +68,13 @@ export class Order extends BasePageEntity implements TOrder {
 
     @Field(() => String, { nullable: true })
     @Column({ type: "varchar", nullable: true })
+    paymentMethod?: string;
+
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
     customerComment?: string;
+
+    @Field(() => String, { nullable: true })
+    @Column({ type: "varchar", nullable: true })
+    currency?: string;
 }

@@ -1,20 +1,17 @@
 import { TCmsSettings } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
+import { CmsAdminSettingsDto } from './cms-admin-settings.dto';
 import { CmsConfigDto } from './cms-config.dto';
 
 export class AdminCmsConfigDto extends CmsConfigDto {
     @ApiProperty()
-    smtpConnectionString?: string;
-
-    @ApiProperty()
-    sendFromEmail?: string;
+    adminSettings?: CmsAdminSettingsDto;
 
     parseConfig(config: TCmsSettings) {
         super.parseConfig(config);
 
-        this.smtpConnectionString = config.smtpConnectionString;
-        this.sendFromEmail = config.sendFromEmail;
+        this.adminSettings = config.adminSettings;
         return this;
     }
 

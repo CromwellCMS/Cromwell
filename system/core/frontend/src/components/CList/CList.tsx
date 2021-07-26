@@ -12,7 +12,7 @@ import { TCList, TCListProps, TListenerType } from './types';
 
 
 /** @noInheritDoc */
-export class CList<DataType, ListItemProps = any> extends React.PureComponent<TCListProps<DataType, ListItemProps> & TCromwellBlockProps> implements TCList<DataType, ListItemProps> {
+export class CList<DataType, ListItemProps = any> extends React.PureComponent<TCListProps<DataType, ListItemProps> & TCromwellBlockProps<TCList>> implements TCList<DataType, ListItemProps> {
 
     private dataList: DataType[][] = [];
     private list: {
@@ -40,7 +40,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
     private remoteRowCount: number = 0;
     private maxPage: number = 1;
     private maxDomPages: number = 10;
-    private pageStatuses: ('deffered' | 'loading' | 'fetched' | 'failed')[] = [];
+    private pageStatuses: ('deferred' | 'loading' | 'fetched' | 'failed')[] = [];
     private isPageLoading: boolean = false;
     private isLoading: boolean = false;
     private prevFirstBatch: DataType[];
@@ -57,9 +57,6 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         super(props);
         this.init();
     }
-
-    // componentDidMount() {
-    // }
 
     public getProps(): TCListProps<DataType, ListItemProps> {
         if (this.forcedProps) return this.forcedProps;
@@ -133,10 +130,6 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
                 this.fetchFirstBatch();
             }
         }
-
-        if (props.usePagination && this.paginationInst) {
-            this.paginationInst.init();
-        }
     }
 
     public updateData = async () => {
@@ -178,7 +171,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         if (this.pageSize) {
             this.maxPage = Math.ceil(this.remoteRowCount / this.pageSize);
             for (let i = 1; i <= this.maxPage; i++) {
-                this.pageStatuses[i] = 'deffered';
+                this.pageStatuses[i] = 'deferred';
             }
         }
 
@@ -297,7 +290,6 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         }
     }
 
-
     public openPage = async (pageNumber: number) => {
         const props = this.getProps();
         if (this.currentPageNum !== pageNumber) {
@@ -305,7 +297,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
             if (props.disableCaching) {
                 this.dataList = [];
                 this.pageStatuses = this.pageStatuses.map(s =>
-                    s === 'fetched' || s === 'failed' ? 'deffered' : s)
+                    s === 'fetched' || s === 'failed' ? 'deferred' : s)
             }
 
             this.minPageBound = pageNumber;
@@ -390,7 +382,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
             case 'loading': {
                 break;
             }
-            case 'deffered': {
+            case 'deferred': {
                 await this.loadData(pageNum);
                 hasLoaded = true;
                 break;
@@ -493,6 +485,15 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
         )
     }
 
+    private handleShowMoreClick = () => {
+        if (this.maxPage > this.maxPageBound) {
+            if (!this.isPageLoading) {
+                this.loadNextPage();
+                this.forceUpdate();
+            }
+        }
+    }
+
     public getPagedParams = () => this.pagedParams;
     public setPagedParams = (val: TPagedParams<DataType>) => this.pagedParams = val;
 
@@ -512,14 +513,6 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
                 <h3>{props.noDataLabel}</h3>
             ) : <></>;
             return this.wrapContent(content);
-        }
-        const handleShowMoreClick = () => {
-            if (this.maxPage > this.maxPageBound) {
-                if (!this.isPageLoading) {
-                    this.loadNextPage();
-                    this.forceUpdate();
-                }
-            }
         }
 
         content = (
@@ -557,14 +550,13 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
                 {props.useShowMoreButton && !this.isPageLoading && this.maxPage > this.maxPageBound && (
                     <div className={styles.showMoreBtnContainer}>
                         {props.elements?.showMore ? (
-                            <props.elements.showMore onClick={handleShowMoreClick} />
+                            <props.elements.showMore onClick={this.handleShowMoreClick} />
                         ) : (
                             <div
                                 className={styles.showMoreBtn}
-                                onClick={handleShowMoreClick}
+                                onClick={this.handleShowMoreClick}
                             >Show more</div>
                         )}
-
                     </div>
                 )}
                 {props.usePagination && (
@@ -572,7 +564,7 @@ export class CList<DataType, ListItemProps = any> extends React.PureComponent<TC
                         pageNums={this.list.map(p => p.pageNum)}
                         wrapperRef={this.wrapperRef}
                         scrollBoxRef={this.scrollBoxRef}
-                        inititalPage={this.currentPageNum}
+                        initialPage={this.currentPageNum}
                         maxPageNum={this.maxPage}
                         openPage={this.openPage}
                         onPageScrolled={this.onPageScrolled}

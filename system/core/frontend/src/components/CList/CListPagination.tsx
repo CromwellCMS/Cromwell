@@ -10,7 +10,7 @@ export class Pagination extends React.Component<{
     scrollBoxRef: React.RefObject<HTMLDivElement>;
     pageNums: number[];
     maxPageNum: number;
-    inititalPage: number;
+    initialPage: number;
     paginationButtonsNum?: number;
     openPage: (pageNum: number) => void;
     onPageScrolled: (currentPage: number) => void;
@@ -20,8 +20,8 @@ export class Pagination extends React.Component<{
     scrollContainerSelector?: string;
     setPaginationInst: (inst: Pagination) => void
 }> {
-    private currentPage: number = this.props.inititalPage;
-    private scrollboxEl: Element | undefined | null;
+    private currentPage: number = this.props.initialPage;
+    private scrollBoxEl: Element | undefined | null;
 
     constructor(props) {
         super(props);
@@ -29,34 +29,40 @@ export class Pagination extends React.Component<{
     }
 
     componentDidMount() {
-        this.init();
+        this.componentDidUpdate();
     }
 
-    public init() {
-        const props = this.props;
+    componentDidUpdate() {
+        const scrollBoxEl = this.getScrollBoxEl();
 
-        if (this.scrollboxEl) {
-            this.scrollboxEl.removeEventListener('scroll', this.onScroll);
+        if (scrollBoxEl !== this.scrollBoxEl) {
+            if (this.scrollBoxEl) {
+                this.scrollBoxEl.removeEventListener('scroll', this.onScroll);
+            }
+
+            if (scrollBoxEl) {
+                scrollBoxEl.addEventListener('scroll', this.onScroll)
+            }
+            this.scrollBoxEl = scrollBoxEl;
         }
 
+        this.onScroll();
+    }
+
+    private getScrollBoxEl = () => {
+        const props = this.props;
+        let scrollBoxEl: Element | null = null;
+
         if (props.scrollContainerSelector) {
-            this.scrollboxEl = null;
-            this.scrollboxEl = document.querySelector(props.scrollContainerSelector);
-            if (!this.scrollboxEl) {
+            scrollBoxEl = document.querySelector(props.scrollContainerSelector);
+            if (!scrollBoxEl) {
                 console.error('CList: scrollContainerSelector was passed but target element wan not found in DOM');
             }
 
         } else if (props.scrollBoxRef.current) {
-            this.scrollboxEl = props.scrollBoxRef.current;
+            scrollBoxEl = props.scrollBoxRef.current;
         }
-
-        if (this.scrollboxEl) {
-            this.scrollboxEl.addEventListener('scroll', this.onScroll)
-        }
-    }
-
-    componentDidUpdate() {
-        this.onScroll();
+        return scrollBoxEl;
     }
 
     private onScroll = () => {
@@ -71,8 +77,8 @@ export class Pagination extends React.Component<{
                 if (pageNode) {
                     const bounds = pageNode.getBoundingClientRect();
                     let topOffset = bounds.bottom;
-                    if (this.scrollboxEl) {
-                        topOffset -= this.scrollboxEl.getBoundingClientRect().top;
+                    if (this.scrollBoxEl) {
+                        topOffset -= this.scrollBoxEl.getBoundingClientRect().top;
                     }
                     if (!currPage && topOffset > 0) currPage = p;
                 }
@@ -84,6 +90,7 @@ export class Pagination extends React.Component<{
             this.forceUpdate();
         }
     }
+
     render() {
         const props = this.props;
 

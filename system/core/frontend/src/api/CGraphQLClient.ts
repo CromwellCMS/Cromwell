@@ -900,6 +900,8 @@ export class CGraphQLClient {
             customerAddress
             customerComment
             shippingMethod
+            paymentMethod
+            currency
         }
     `;
 

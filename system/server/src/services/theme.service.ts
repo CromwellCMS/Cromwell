@@ -222,8 +222,8 @@ export class ThemeService {
      * @param userMods 
      */
     public mergeMods(themeMods?: TCromwellBlockData[], userMods?: TCromwellBlockData[]): TCromwellBlockData[] {
-        const mods: TCromwellBlockData[] = (themeMods && Array.isArray(themeMods)) ? themeMods : [];
-        if (userMods && Array.isArray(userMods)) {
+        const mods: TCromwellBlockData[] = Array.isArray(themeMods) ? [...themeMods] : [];
+        if (Array.isArray(userMods)) {
             userMods.forEach(userMod => {
                 let hasOriginally = false;
                 mods.forEach((themeMod, i) => {
@@ -871,6 +871,7 @@ export class ThemeService {
             this.getPagesInfo(allConfigs),
         ]);
         const pluginsSettings = await this.getPluginsAtPage(pageRoute, pageConfig);
+
 
         return {
             pageConfig,

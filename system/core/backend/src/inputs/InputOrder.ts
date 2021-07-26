@@ -45,5 +45,11 @@ export class InputOrder extends BasePageInput implements TOrderInput {
     shippingMethod?: string;
 
     @Field(() => String, { nullable: true })
+    paymentMethod?: string;
+
+    @Field(() => String, { nullable: true })
     customerComment?: string;
+
+    @Field(() => String, { nullable: true })
+    currency?: string;
 }

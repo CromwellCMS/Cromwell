@@ -1,5 +1,6 @@
 import {
     getRandStr,
+    serviceLocator,
     setStoreItem,
     sleep,
     TCCSVersion,
@@ -42,6 +43,7 @@ import { format } from 'date-fns';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
 import stream from 'stream';
+import Stripe from 'stripe';
 import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository, getManager } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
@@ -257,8 +259,7 @@ export class CmsService {
         entity.headHtml = input.headHtml;
         entity.footerHtml = input.footerHtml;
         entity.defaultShippingPrice = input.defaultShippingPrice;
-        entity.smtpConnectionString = input.smtpConnectionString;
-        entity.sendFromEmail = input.sendFromEmail;
+        entity.adminSettings = input.adminSettings;
 
         await entity.save();
         const config = await getCmsSettings();
@@ -318,10 +319,16 @@ export class CmsService {
             customerAddress: input.customerAddress,
             customerComment: input.customerComment,
             shippingMethod: input.shippingMethod,
+            paymentMethod: input.paymentMethod,
             fromUrl: input.fromUrl,
+            currency: input.currency,
         }
 
         const fromUrl = input.fromUrl;
+        const cstore = getCStore(true);
+        if (createOrder.currency) {
+            cstore.setActiveCurrency(createOrder.currency);
+        }
 
         // < Send e-mail >
         try {
@@ -331,17 +338,17 @@ export class CmsService {
                     createDate: format(new Date(Date.now()), 'd MMMM yyyy'),
                     logoUrl: (settings?.logo) && fromUrl + '/' + settings.logo,
                     orderLink: (themeConfig?.defaultPages?.account) && fromUrl + '/' + themeConfig.defaultPages.account,
-                    totalPrice: getCStore().getPriceWithCurrency(orderTotal.orderTotalPrice),
+                    totalPrice: cstore.getPriceWithCurrency(orderTotal.orderTotalPrice),
                     unsubscribeUrl: fromUrl,
                     products: (cart ?? []).map(item => {
                         return {
                             link: (themeConfig?.defaultPages?.product && item?.product?.slug) &&
                                 fromUrl + '/' + themeConfig.defaultPages.product.replace('[slug]', item.product.slug),
                             title: `${item?.amount ? item.amount + ' x ' : ''}${item?.product?.name ?? ''}`,
-                            price: getCStore().getPriceWithCurrency((item.product?.price ?? 0) * (item.amount ?? 1)),
+                            price: cstore.getPriceWithCurrency((item.product?.price ?? 0) * (item.amount ?? 1)),
                         }
                     }),
-                    shippingPrice: getCStore().getPriceWithCurrency(orderTotal.shippingPrice),
+                    shippingPrice: cstore.getPriceWithCurrency(orderTotal.shippingPrice),
                 }
 
                 const compiledEmail = await getEmailTemplate('order.hbs', mailProps);
@@ -378,16 +385,82 @@ export class CmsService {
             getAttributes: () => getCustomRepository(AttributeRepository).getAttributes(),
         });
 
+        if (input.currency) {
+            cstore.setActiveCurrency(input.currency);
+        }
+
         cstore.saveCart(cart);
         await cstore.updateCart();
         const total = cstore.getCartTotal();
 
+        orderTotal.cart = cstore.getCart();
         orderTotal.cartOldTotalPrice = total.totalOld;
         orderTotal.cartTotalPrice = total.total ?? 0;
         orderTotal.totalQnt = total.amount;
         orderTotal.shippingPrice = settings?.defaultShippingPrice ?? 0;
         orderTotal.orderTotalPrice = (orderTotal?.cartTotalPrice ?? 0) + (orderTotal?.shippingPrice ?? 0);
         return orderTotal;
+    }
+
+    async createPaymentSession(input: CreateOrderDto): Promise<OrderTotalDto> {
+        const settings = await getCmsSettings();
+        const total = await this.calcOrderTotal(input);
+        const cart = total.cart?.filter(item => item?.product);
+
+        if (!cart?.length) throw new HttpException('Cart is invalid or empty', HttpStatus.BAD_REQUEST);
+
+        const stripeApiKey = settings?.adminSettings?.stripeApiKey;
+        if (stripeApiKey) {
+            const stripe = new Stripe(stripeApiKey, {
+                apiVersion: '2020-08-27',
+                timeout: 20 * 1000,
+            });
+
+            const store = getCStore();
+            const url = input?.fromUrl ?? serviceLocator.getFrontendUrl();
+            const defaultCurrency = store.getDefaultCurrencyTag() ?? 'usd';
+            const currency = input.currency ?? defaultCurrency;
+
+            try {
+                const session = await stripe.checkout.sessions.create({
+                    payment_method_types: ['card'],
+                    line_items: [
+                        ...cart.map(item => ({
+                            price_data: {
+                                currency: currency?.toLowerCase() ?? 'usd',
+                                unit_amount: parseInt(store.convertPrice(item.product?.price ?? 0,
+                                    defaultCurrency, currency) + '') * 100,
+                                product_data: {
+                                    // images: item.product?.images,
+                                    name: item.product?.name + '',
+                                },
+                            },
+                            quantity: item.amount ?? 1,
+                        })), {
+                            price_data: {
+                                currency: currency?.toLowerCase() ?? 'usd',
+                                unit_amount: parseInt(store.convertPrice(total?.shippingPrice ?? 0,
+                                    defaultCurrency, currency) + '') * 100,
+                                product_data: {
+                                    name: 'shipping',
+                                },
+                            },
+                            quantity: 1
+                        }
+                    ],
+                    mode: 'payment',
+                    success_url: `${url}/checkout?paymentStatus=success`,
+                    cancel_url: `${url}/checkout?paymentStatus=cancelled`,
+                });
+
+                total.checkoutUrl = session.url;
+
+            } catch (error) {
+                logger.error(error);
+            }
+        }
+
+        return total;
     }
 
     async getCmsStats(): Promise<CmsStatsDto> {
@@ -537,7 +610,7 @@ export class CmsService {
 
         status.notifications = [];
 
-        if (!settings?.smtpConnectionString) {
+        if (!settings?.adminSettings?.smtpConnectionString) {
             status.notifications.push({
                 type: 'warning',
                 message: 'Setup SMTP settings'

@@ -51,7 +51,7 @@ export const WatchedModal = observer(() => {
     }, [appState.isWatchedOpen]);
 
     useEffect(() => {
-        cstore.onWathcedItemsUpdate(() => {
+        cstore.onWatchedItemsUpdate(() => {
             const watched = cstore.getWatchedItems();
             setList(watched);
             forceUpdate();
