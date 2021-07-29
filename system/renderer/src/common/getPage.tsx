@@ -1,4 +1,4 @@
-import { BasePageNames, getStoreItem, setStoreItem, TCromwellPage, TCromwellPageCoreProps } from '@cromwell/core';
+import { getStoreItem, setStoreItem, TCromwellPage, TCromwellPageCoreProps, TDefaultPageName } from '@cromwell/core';
 import { CContainer, pageRootContainerId } from '@cromwell/core-frontend';
 import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 import { DomElement } from 'htmlparser2';
@@ -24,7 +24,7 @@ const parserTransform: Transform = (node: DomElement) => {
     }
 }
 
-export const getPage = (pageName: BasePageNames | string, PageComponent: TCromwellPage): TCromwellPage => {
+export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCromwellPage): TCromwellPage => {
     if (!PageComponent) throw new Error('getPage !PageComponent');
     if (!isValidElementType(PageComponent)) throw new Error('getPage PageComponent !isValidElementType');
 

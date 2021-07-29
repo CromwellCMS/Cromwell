@@ -1,6 +1,6 @@
 {
   "name": "@cromwell/server",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "main": "build/server.js",
   "files": [
     "build",
@@ -14,16 +14,16 @@
   "license": "MIT",
   "scripts": {
     "build": "node startup.js build",
-    "dev": "node startup.js dev -- --logLevel=all --env=dev",
+    "dev": "node startup.js dev -- --env=dev",
     "prod": "node startup.js prod",
     "watch": "npx rollup -cw",
     "test": "npx --no-install jest",
     "migration:generate": "npx typeorm migration:generate -o -f migrationConfig -n init"
   },
   "dependencies": {
-    "@cromwell/core": "1.1.9",
-    "@cromwell/core-backend": "1.0.11",
-    "@cromwell/core-frontend": "1.0.8",
+    "@cromwell/core": "1.1.10",
+    "@cromwell/core-backend": "1.0.12",
+    "@cromwell/core-frontend": "1.0.9",
     "@nestjs/common": "7.6.15",
     "@nestjs/core": "7.6.15",
     "@nestjs/graphql": "7.10.6",

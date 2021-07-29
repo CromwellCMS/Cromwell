@@ -12,6 +12,7 @@ import {
 import {
     buildDirName,
     configFileName,
+    GenericPlugin,
     getCmsModuleInfo,
     getCmsSettings,
     getLogger,
@@ -36,7 +37,6 @@ import { resolve } from 'path';
 import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
-import { GenericPlugin } from '../helpers/genericEntities';
 import { serverFireAction } from '../helpers/serverFireAction';
 import { childSendMessage } from '../helpers/serverManager';
 import {

@@ -2,7 +2,7 @@ import { TPackageJson } from '@cromwell/core';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 
-import { readCmsModules } from '../../src/helpers/readCmsModules';
+import { readCmsModules } from '../../src/helpers/cms-modules';
 import { mockWorkingDirectory } from '../helpers';
 
 describe('readCmsModules', () => {

@@ -25,7 +25,7 @@
         "test:utils": "cd system/utils && npm run test",
         "heroku-postbuild": "node ./startup.js build --no-install",
         "start": "node ./system/manager/src/utils/herokuStart.js",
-        "docker:start-dev-db": "docker run -p 3306:3306 --name mariadb --rm -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -e MYSQL_USER=cromwell -e MYSQL_PASSWORD=my_password mariadb:latest",
+        "docker:start-dev-mariadb": "docker run -p 3306:3306 --name mariadb --rm -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -e MYSQL_USER=cromwell -e MYSQL_PASSWORD=my_password mariadb:latest",
         "docker:build": "docker build -t cromwell:latest -f ./docker/cromwell/Dockerfile ./docker",
         "docker:build-maria": "docker build -t cromwell-mariadb:latest -f ./docker/cromwell-mariadb/Dockerfile ./docker",
         "docker:prune-builder": "docker builder prune -a"

@@ -1,4 +1,4 @@
-import { getStoreItem, logFor, TLogLevel } from '@cromwell/core';
+import { getStoreItem } from '@cromwell/core';
 import colorsdef from 'colors/safe';
 import * as winston from 'winston';
 

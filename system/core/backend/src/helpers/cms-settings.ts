@@ -1,7 +1,7 @@
 import { getStoreItem, setStoreItem, TCmsConfig, TCmsSettings } from '@cromwell/core';
 import fs from 'fs-extra';
 
-import { CmsEntity } from '../entities/Cms';
+import { CmsEntity } from '../models/entities/cms.entity';
 import { defaultCmsConfig } from './constants';
 import { getLogger } from './logger';
 import { getCMSConfigPath } from './paths';
@@ -68,10 +68,11 @@ export const getCmsEntity = async (): Promise<CmsEntity> => {
 }
 
 
-// Don't re-read cmsconfig.json but update info from DB
 export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
     const logger = getLogger();
     let config: TCmsConfig | undefined = undefined;
+
+    // Don't re-read cmsconfig.json but update info from DB
     const cmsSettings = getStoreItem('cmsSettings');
     if (!cmsSettings) config = await readCMSConfig();
 

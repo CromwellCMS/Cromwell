@@ -1,7 +1,6 @@
 import {
     getStoreItem,
     isServer,
-    logFor,
     serviceLocator,
     setStoreItem,
     TCCSVersion,
@@ -92,7 +91,7 @@ export class CRestAPIClient {
 
     /** @internal */
     private logError = (route: string, e?: any) => {
-        logFor('errors-only', `CRestAPIClient route: ${route}` + e, console.error)
+        console.error(`CRestAPIClient route: ${route}` + e);
     }
 
     /** @internal */

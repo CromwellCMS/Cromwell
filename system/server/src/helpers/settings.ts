@@ -44,11 +44,9 @@ export const loadEnv = (): TEnv => {
     }
 
     const envMode = cmsConfig?.env ?? (scriptName === 'dev') ? 'dev' : 'prod';
-    const logLevel = args.logLevel ?? envMode === 'dev' ? 'detailed' : 'errors-only';
 
     setStoreItem('environment', {
         mode: envMode,
-        logLevel
     });
 
     sEnv = {

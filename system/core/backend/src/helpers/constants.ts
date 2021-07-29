@@ -1,18 +1,18 @@
 import { TCmsConfig } from '@cromwell/core';
 
-import { Attribute } from '../entities/Attribute';
-import { CmsEntity } from '../entities/Cms';
-import { Order } from '../entities/Order';
-import { PageStats } from '../entities/PageStats';
-import { PluginEntity } from '../entities/Plugin';
-import { Post } from '../entities/Post';
-import { PostComment } from '../entities/PostComment';
-import { Product } from '../entities/Product';
-import { ProductCategory } from '../entities/ProductCategory';
-import { ProductReview } from '../entities/ProductReview';
-import { Tag } from '../entities/Tag';
-import { ThemeEntity } from '../entities/Theme';
-import { User } from '../entities/User';
+import { Attribute } from '../models/entities/attribute.entity';
+import { CmsEntity } from '../models/entities/cms.entity';
+import { Order } from '../models/entities/order.entity';
+import { PageStats } from '../models/entities/page-stats.entity';
+import { PluginEntity } from '../models/entities/plugin.entity';
+import { Post } from '../models/entities/post.entity';
+import { PostComment } from '../models/entities/post-comment.entity';
+import { Product } from '../models/entities/product.entity';
+import { ProductCategory } from '../models/entities/product-category.entity';
+import { ProductReview } from '../models/entities/product-review.entity';
+import { Tag } from '../models/entities/tag.entity';
+import { ThemeEntity } from '../models/entities/theme.entity';
+import { User } from '../models/entities/user.entity';
 
 
 export const ORMEntities = [

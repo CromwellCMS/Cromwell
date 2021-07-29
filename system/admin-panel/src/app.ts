@@ -109,7 +109,8 @@ import { store } from './redux/store';
         store.setStateProp({
             prop: 'activeTheme',
             payload: themeConfig,
-        })
+        });
+        setStoreItem('defaultPages', themeConfig?.defaultPages);
     }
 
     if (userInfo?.role) {

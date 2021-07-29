@@ -4,9 +4,7 @@ import {
     sleep,
     TCCSModuleShortInfo,
     TCCSVersion,
-    TCmsSettings,
     TCromwellBlockData,
-    TPackageCromwellConfig,
     TPageConfig,
     TPageInfo,
     TThemeConfig,
@@ -23,7 +21,10 @@ import {
     getModuleStaticDir,
     getNodeModuleDir,
     getPublicThemesDir,
+    getThemeConfigs,
     runShellCommand,
+    GenericTheme,
+    TAllThemeConfigs,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -35,7 +36,6 @@ import { getConnection, getCustomRepository } from 'typeorm';
 
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
-import { GenericTheme } from '../helpers/genericEntities';
 import { serverFireAction } from '../helpers/serverFireAction';
 import { childSendMessage } from '../helpers/serverManager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
@@ -44,12 +44,7 @@ import { PluginService } from './plugin.service';
 
 const logger = getLogger();
 
-type TAllConfigs = {
-    themeConfig: TThemeConfig | null;
-    userConfig: TThemeConfig | null;
-    cmsSettings: TCmsSettings | undefined;
-    themeInfo: TPackageCromwellConfig | null;
-}
+
 
 @Injectable()
 @Service()
@@ -169,53 +164,6 @@ export class ThemeService {
         return false;
     }
 
-
-    /**
-     * Asynchronously reads modifications in theme's original config from /themes 
-     * and user's config from /modifications.
-     * @param cb callback with both configs.
-     */
-    public async readConfigs(): Promise<TAllConfigs> {
-        let themeConfig: TThemeConfig | null = null,
-            userConfig: TThemeConfig | null = null,
-            themeInfo: TPackageCromwellConfig | null = null;
-
-        const cmsSettings = await getCmsSettings();
-        if (cmsSettings?.themeName) {
-
-            const theme = await this.findOne(cmsSettings.themeName);
-
-            if (!theme) {
-                logger.error(`Current theme ${cmsSettings?.themeName} was not registered in DB`);
-            }
-
-            try {
-                if (theme?.defaultSettings) themeConfig = JSON.parse(theme.defaultSettings);
-            } catch (e) {
-                getLogger(false).error(e);
-            }
-            try {
-                if (theme?.settings) userConfig = JSON.parse(theme.settings);
-            } catch (e) {
-                getLogger(false).error(e);
-            }
-
-            try {
-                if (theme?.moduleInfo) themeInfo = JSON.parse(theme.moduleInfo);
-            } catch (e) {
-                getLogger(false).error(e);
-            }
-        }
-
-        return {
-            themeConfig,
-            userConfig,
-            cmsSettings,
-            themeInfo
-        }
-    }
-
-
     /**
      * Will add and overwrite theme's original modifications by user's modifications
      * @param themeMods 
@@ -278,8 +226,8 @@ export class ThemeService {
      * @param pageRoute original route of the page in theme dir
      * @param cb callback to return modifications
      */
-    public async getPageConfig(pageRoute: string, allConfigs?: TAllConfigs): Promise<TPageConfig> {
-        if (!allConfigs) allConfigs = await this.readConfigs();
+    public async getPageConfig(pageRoute: string, allConfigs?: TAllThemeConfigs): Promise<TPageConfig> {
+        if (!allConfigs) allConfigs = await getThemeConfigs();
         const { themeConfig, userConfig } = allConfigs;
         // Read user's page config 
         const userPageConfig: TPageConfig | undefined = this.getPageConfigFromThemeConfig(userConfig, pageRoute);
@@ -331,7 +279,7 @@ export class ThemeService {
             return false;
         }
 
-        const config = await this.readConfigs();
+        const config = await getThemeConfigs();
         let userConfig = config.userConfig;
         const cmsSettings = config.cmsSettings;
 
@@ -433,9 +381,9 @@ export class ThemeService {
      * Asynchronously reads theme's and user's configs and merge all pages info with modifications 
      * @param cb cb to return pages info
      */
-    public async readAllPageConfigs(allConfigs?: TAllConfigs): Promise<TPageConfig[]> {
+    public async readAllPageConfigs(allConfigs?: TAllThemeConfigs): Promise<TPageConfig[]> {
         logger.log('themeController::readAllPageConfigs');
-        if (!allConfigs) allConfigs = await this.readConfigs();
+        if (!allConfigs) allConfigs = await getThemeConfigs();
         const { themeConfig, userConfig } = allConfigs;
 
         let pages: TPageConfig[] = [];
@@ -466,7 +414,7 @@ export class ThemeService {
         return pages;
     }
 
-    public async getPagesInfo(allConfigs?: TAllConfigs): Promise<TPageInfo[]> {
+    public async getPagesInfo(allConfigs?: TAllThemeConfigs): Promise<TPageInfo[]> {
         const out: TPageInfo[] = [];
 
         const pages = await this.readAllPageConfigs(allConfigs);
@@ -495,7 +443,7 @@ export class ThemeService {
         if (!page.isVirtual)
             throw new HttpException("Page cannot be deleted", HttpStatus.NOT_ACCEPTABLE);
 
-        const configs = await this.readConfigs();
+        const configs = await getThemeConfigs();
 
         if (configs.themeConfig?.pages) {
             configs.themeConfig.pages = configs.themeConfig.pages.filter(p => !p.isVirtual && !(p.route === page?.route && p.id === page?.id))
@@ -516,7 +464,7 @@ export class ThemeService {
         if (!page)
             throw new HttpException("Page was not found by pageRoute", HttpStatus.NOT_ACCEPTABLE);
 
-        const configs = await this.readConfigs();
+        const configs = await getThemeConfigs();
 
         if (configs.userConfig?.pages) {
             configs.userConfig.pages = configs.userConfig.pages.map(userPage => {
@@ -865,7 +813,7 @@ export class ThemeService {
     }
 
     public async getRendererData(pageRoute: string) {
-        const allConfigs = await this.readConfigs();
+        const allConfigs = await getThemeConfigs();
         const [pageConfig, pagesInfo] = await Promise.all([
             this.getPageConfig(pageRoute, allConfigs),
             this.getPagesInfo(allConfigs),

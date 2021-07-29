@@ -1,5 +1,6 @@
 import {
     getRandStr,
+    resolvePageRoute,
     serviceLocator,
     setStoreItem,
     sleep,
@@ -23,6 +24,7 @@ import {
     getLogger,
     getModulePackage,
     getNodeModuleDir,
+    getThemeConfigs,
     Order,
     OrderRepository,
     PageStats,
@@ -62,7 +64,6 @@ import { PluginService } from './plugin.service';
 import { ThemeService } from './theme.service';
 
 const logger = getLogger();
-
 
 @Injectable()
 @Service()
@@ -296,7 +297,7 @@ export class CmsService {
     async placeOrder(input: CreateOrderDto): Promise<TOrder | undefined> {
         const orderTotal = await this.calcOrderTotal(input);
         const settings = await getCmsSettings();
-        const { themeConfig } = await this.themeService.readConfigs();
+        const { themeConfig } = await getThemeConfigs();
         let cart: TStoreListItem[] | undefined;
         try {
             if (input.cart) cart = JSON.parse(input.cart);
@@ -331,8 +332,8 @@ export class CmsService {
         }
 
         // < Send e-mail >
+        setStoreItem('defaultPages', themeConfig?.defaultPages);
         try {
-
             if (input.customerEmail && fromUrl) {
                 const mailProps = {
                     createDate: format(new Date(Date.now()), 'd MMMM yyyy'),
@@ -342,8 +343,8 @@ export class CmsService {
                     unsubscribeUrl: fromUrl,
                     products: (cart ?? []).map(item => {
                         return {
-                            link: (themeConfig?.defaultPages?.product && item?.product?.slug) &&
-                                fromUrl + '/' + themeConfig.defaultPages.product.replace('[slug]', item.product.slug),
+                            link: (themeConfig?.defaultPages?.product && item?.product?.slug) ?
+                                resolvePageRoute('product', { slug: item.product.slug }) : '/',
                             title: `${item?.amount ? item.amount + ' x ' : ''}${item?.product?.name ?? ''}`,
                             price: cstore.getPriceWithCurrency((item.product?.price ?? 0) * (item.amount ?? 1)),
                         }
@@ -428,8 +429,8 @@ export class CmsService {
                         ...cart.map(item => ({
                             price_data: {
                                 currency: currency?.toLowerCase() ?? 'usd',
-                                unit_amount: parseInt(store.convertPrice(item.product?.price ?? 0,
-                                    defaultCurrency, currency) + '') * 100,
+                                unit_amount_decimal: (parseFloat(store.convertPrice(item.product?.price ?? 0,
+                                    defaultCurrency, currency) + '') * 100) + '',
                                 product_data: {
                                     // images: item.product?.images,
                                     name: item.product?.name + '',
@@ -439,8 +440,8 @@ export class CmsService {
                         })), {
                             price_data: {
                                 currency: currency?.toLowerCase() ?? 'usd',
-                                unit_amount: parseInt(store.convertPrice(total?.shippingPrice ?? 0,
-                                    defaultCurrency, currency) + '') * 100,
+                                unit_amount_decimal: (parseFloat(store.convertPrice(total?.shippingPrice ?? 0,
+                                    defaultCurrency, currency) + '') * 100) + '',
                                 product_data: {
                                     name: 'shipping',
                                 },
@@ -558,14 +559,13 @@ export class CmsService {
                 pageSize: 15
             }).getMany();
 
-            stats.topPageViews = viewsStats.map(stat => {
-                if (stat.pageRoute === 'index') stat.pageRoute = '/';
-                if (!stat.pageRoute.startsWith('/')) stat.pageRoute = '/' + stat.pageRoute;
+            stats.topPageViews = await Promise.all(viewsStats.map(async stat => {
+                stat.pageRoute = await resolvePageRoute(stat.pageRoute);
                 return {
                     pageRoute: stat.pageRoute,
                     views: stat.views,
                 }
-            })
+            }))
         }
 
         const getCustomers = async () => {

@@ -1,18 +1,4 @@
-import { getCmsSettings, getStoreItem } from './GlobalStore';
-import { TCmsConfig, TDBEntity, TGraphQLNode, TLogLevel } from './types/data';
-
-export enum BasePageNames {
-    Index = 'index',
-    Product = 'product',
-    Blog = 'blog',
-    ProductCategory = 'product_category'
-}
-export enum BasePagePaths {
-    Index = '/',
-    Product = '/product',
-    Blog = '/blog',
-    ProductCategory = '/category'
-}
+import { TDBEntity, TGraphQLNode } from './types/data';
 
 export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'PostComment' | 'CMS'>]: TGraphQLNode } = {
     Generic: {
@@ -114,77 +100,10 @@ export const GraphQLPaths: { [K in Exclude<TDBEntity, 'Theme' | 'Plugin' | 'Post
     },
 }
 
-export const isServer = (): boolean => (typeof window === 'undefined');
-// export const isServer = (): boolean => true;
-
-const getBaseUrl = (key: keyof TCmsConfig) => {
-    const cmsConfig = getCmsSettings();
-    if (!cmsConfig) {
-        console.error('core:serviceLocator: CmsConfig was not found in the global store!');
-        return undefined;
-    }
-    const port = cmsConfig[key] as string;
-
-    if (isServer()) {
-        if (!port) {
-            console.error('core:serviceLocator: !port for ' + key);
-            return undefined;
-        }
-        return `http://localhost:${port}`;
-    }
-
-    if (window.location.hostname === 'localhost') {
-        if (!port) {
-            console.error('core:serviceLocator: !port for ' + key);
-            return undefined;
-        }
-        return window.location.protocol + '//localhost:' + port;
-    }
-    else return window.location.protocol + '//' + window.location.host;
-}
-
-/**
- * Get base url of a CMS Service
- */
-export const serviceLocator = {
-    getMainApiUrl: () => {
-        return getBaseUrl('apiPort');
-    },
-    getApiWsUrl: () => {
-        return getBaseUrl('apiPort');
-    },
-    getFrontendUrl: () => {
-        return getBaseUrl('frontendPort');
-    },
-    getAdminPanelUrl: () => {
-        return getBaseUrl('adminPanelPort');
-    }
-};
-
 export enum ECommonComponentNames {
     ProductCard = 'ProductCard',
     PostCard = 'PostCard',
 }
 
-export const logLevels = ["none", "errors-only", "errors-warnings", "minimal", "detailed", "all"];
-
-export const logLevelMoreThan = (level: TLogLevel): boolean => {
-    const currentLevel = getStoreItem('environment')?.logLevel ?? "errors-only";
-    const currentLevelIdx = logLevels.indexOf(currentLevel);
-    const levelIdx = logLevels.indexOf(level);
-    if (currentLevelIdx >= 0 && levelIdx >= 0 && currentLevelIdx >= levelIdx) return true;
-    return false;
-}
-
-export const logFor = (level: TLogLevel, msg: string, func?: (msg: string) => any) => {
-    if (logLevelMoreThan(level)) typeof func === 'function' ? func(msg) : console.log(msg);
-}
-
-export const getRandStr = (lenght: number = 12) =>
-    Math.random().toString(36).substring(2, Math.floor(lenght / 2) + 2) +
-    Math.random().toString(36).substring(2, Math.ceil(lenght / 2) + 2);
-
-
 export const genericPageName = 'pages/[slug]';
 
-export const sleep = (time: number) => new Promise(done => setTimeout(done, time * 1000));

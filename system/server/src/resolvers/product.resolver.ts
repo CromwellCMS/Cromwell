@@ -21,6 +21,7 @@ import {
     ProductFilterInput,
     ProductRating,
     ProductRepository,
+    requestPage,
     UpdateProduct,
 } from '@cromwell/core-backend';
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
@@ -70,6 +71,7 @@ export class ProductResolver {
     async [createPath](@Arg("data") data: CreateProduct): Promise<Product> {
         const product = await this.repository.createProduct(data);
         serverFireAction('create_product', product);
+        requestPage('product', { slug: product.slug });
         return product;
     }
 
@@ -78,6 +80,7 @@ export class ProductResolver {
     async [updatePath](@Arg("id") id: string, @Arg("data") data: UpdateProduct): Promise<Product> {
         const product = await this.repository.updateProduct(id, data);
         serverFireAction('update_product', product);
+        requestPage('product', { slug: product.slug });
         return product;
     }
 

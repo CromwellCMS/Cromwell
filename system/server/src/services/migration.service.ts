@@ -18,6 +18,8 @@ import {
     AttributeRepository,
     BasePageEntity,
     CmsEntity,
+    GenericPlugin,
+    GenericTheme,
     getLogger,
     Order,
     OrderRepository,
@@ -38,11 +40,10 @@ import {
     UserRepository,
 } from '@cromwell/core-backend';
 import { Injectable } from '@nestjs/common';
+import cryptoRandomString from 'crypto-random-string';
 import { Container, Service } from 'typedi';
 import { getCustomRepository } from 'typeorm';
-import cryptoRandomString from 'crypto-random-string';
 
-import { GenericPlugin, GenericTheme } from '../helpers/genericEntities';
 import { CmsService } from './cms.service';
 
 @Injectable()

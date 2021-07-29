@@ -32,7 +32,10 @@ export default function ProductDetails(props: {
     }
 
     return (
-        <CContainer id="product_01" className={styles.ProductDetails + (props.compact ? ' ' + styles.compact : '')}>
+        <CContainer id="product_01"
+            className={styles.ProductDetails + (props.compact ? ' ' + styles.compact : '')}
+            style={{ backgroundColor: !props.compact ? '#fff' : undefined }}
+        >
             {(!product && router && router.isFallback) && (
                 <LoadBox />
             )}

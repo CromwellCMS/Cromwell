@@ -1,13 +1,12 @@
 import 'date-fns';
 
-import { TPost, TTag, serviceLocator } from '@cromwell/core';
+import { resolvePageRoute, serviceLocator, TPost, TTag } from '@cromwell/core';
 import DateFnsUtils from '@date-io/date-fns';
 import { IconButton, MenuItem, Popover, TextField } from '@material-ui/core';
 import { Close as CloseIcon, HighlightOffOutlined, Wallpaper as WallpaperIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
 import React, { useState } from 'react';
-import { store } from '../../redux/store';
 
 import { getFileManager } from '../../components/fileManager/helpers';
 import styles from './PostSettings.module.scss';
@@ -54,10 +53,9 @@ const PostSettings = (props: {
         props.onClose(newData);
     }
 
-    const themePostPage = store.getState()?.activeTheme?.defaultPages?.post;
     let pageFullUrl;
-    if (themePostPage && slug) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + '/' + themePostPage.replace('[slug]', slug ?? postData?.id ?? '');
+    if (slug) {
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('post', { slug: slug ?? postData.id });
     }
 
     return (
@@ -108,10 +106,10 @@ const PostSettings = (props: {
                                 style={{ backgroundImage: `url(${mainImage})` }}
                                 className={styles.mainImage}></div>
                         ) : (
-                                <WallpaperIcon
-                                    style={{ opacity: '0.7' }}
-                                />
-                            )}
+                            <WallpaperIcon
+                                style={{ opacity: '0.7' }}
+                            />
+                        )}
                     </MenuItem>
                     <p style={{ margin: '10px' }}>{mainImage ?? <span style={{ opacity: '0.7' }}>No image</span>}</p>
                     {mainImage && (

@@ -1,5 +1,7 @@
 import { setStoreItem } from '@cromwell/core';
 import {
+    GenericPlugin,
+    GenericTheme,
     getLogger,
     getModuleStaticDir,
     getPublicPluginsDir,
@@ -23,7 +25,6 @@ import { MockService } from '../services/mock.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 import { collectPlugins } from './collectPlugins';
-import { GenericPlugin, GenericTheme } from './genericEntities';
 import { loadEnv } from './settings';
 
 type Writeable<T> = { -readonly [P in keyof T]: T[P] };

@@ -1,5 +1,13 @@
 import { GraphQLPaths, TAuthRole, TPagedList, TTag } from '@cromwell/core';
-import { DeleteManyInput, InputTag, PagedParamsInput, PagedTag, Tag, TagRepository } from '@cromwell/core-backend';
+import {
+    DeleteManyInput,
+    InputTag,
+    PagedParamsInput,
+    PagedTag,
+    requestPage,
+    Tag,
+    TagRepository,
+} from '@cromwell/core-backend';
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
@@ -40,6 +48,7 @@ export class TagResolver {
     async [createPath](@Arg("data") data: InputTag): Promise<TTag> {
         const tag = await this.repository.createTag(data);
         serverFireAction('create_tag', tag);
+        requestPage('tag', { slug: tag.slug });
         return tag;
     }
 
@@ -48,6 +57,7 @@ export class TagResolver {
     async [updatePath](@Arg("id") id: string, @Arg("data") data: InputTag): Promise<TTag | undefined> {
         const tag = await this.repository.updateTag(id, data);
         serverFireAction('update_tag', tag);
+        requestPage('tag', { slug: tag.slug });
         return tag;
     }
 
