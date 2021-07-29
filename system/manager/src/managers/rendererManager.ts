@@ -1,4 +1,4 @@
-import { serviceLocator, sleep, TCmsSettings, TPageInfo } from '@cromwell/core';
+import { resolvePageRoute, serviceLocator, sleep, TCmsSettings, TPageInfo } from '@cromwell/core';
 import {
     buildDirName,
     getLogger,
@@ -270,10 +270,11 @@ const pollPages = async () => {
 
     const promises = infos.map(async (info) => {
         for (let i = 0; i < 2; i++) {
-            let pageRoute = info.route.replace('[slug]', 'test');
-            if (pageRoute === 'index') pageRoute = '';
+            const pageRoute = await resolvePageRoute(info.route, {
+                slug: 'test'
+            });
 
-            const pageUrl = serviceLocator.getFrontendUrl() + '/' + pageRoute;
+            const pageUrl = serviceLocator.getFrontendUrl() + pageRoute;
             try {
                 await fetch(pageUrl);
             } catch (e) {

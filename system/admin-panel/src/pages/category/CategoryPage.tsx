@@ -1,8 +1,9 @@
 import { gql } from '@apollo/client';
-import { serviceLocator, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
+import { resolvePageRoute, serviceLocator, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
+import { Quill as QuillType } from 'quill';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory, useParams } from 'react-router-dom';
 
@@ -11,8 +12,6 @@ import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { toast } from '../../components/toast/toast';
 import { categoryListPageInfo, categoryPageInfo } from '../../constants/PageInfos';
 import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
-import { Quill as QuillType } from 'quill';
-import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './CategoryPage.module.scss';
 
@@ -201,10 +200,9 @@ export default function CategoryPage(props) {
         )
     }
 
-    const themeCategoryPage = store.getState()?.activeTheme?.defaultPages?.category;
     let pageFullUrl;
-    if (themeCategoryPage && category) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + '/' + themeCategoryPage.replace('[slug]', category.slug ?? category.id ?? '');
+    if (category) {
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('category', { slug: category.slug ?? category.id });
     }
 
     return (

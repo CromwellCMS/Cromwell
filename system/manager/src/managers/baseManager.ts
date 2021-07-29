@@ -110,7 +110,6 @@ export const startSystem = async (options: TStartOptions) => {
 
     setStoreItem('environment', {
         mode: cmsconfig.env ?? isDevelopment ? 'dev' : 'prod',
-        logLevel: isDevelopment ? 'detailed' : 'errors-only'
     });
 
     await new Promise(resolve => loadCache(resolve));
@@ -170,7 +169,6 @@ export const startServiceByName = async (options: TStartOptions) => {
 
     setStoreItem('environment', {
         mode: cmsconfig.env ?? isDevelopment ? 'dev' : 'prod',
-        logLevel: isDevelopment ? 'detailed' : 'errors-only'
     });
 
     await checkConfigs();

@@ -97,7 +97,7 @@ describe('Order resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testUpdateOrder($id: String!, $data: InputOrder!) {
+              mutation testUpdateOrder($id: String!, $data: OrderInput!) {
                   ${path}(id: $id, data: $data) {
                       ...OrderFragment
                   }
@@ -144,7 +144,7 @@ describe('Order resolver', () => {
 
         const res = await server.executeOperation({
             query: gql`
-              mutation testCreateOrder($data: InputOrder!) {
+              mutation testCreateOrder($data: OrderInput!) {
                   ${path}(data: $data) {
                       ...OrderFragment
                   }

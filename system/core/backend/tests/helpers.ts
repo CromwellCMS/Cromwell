@@ -1,7 +1,8 @@
 import fs from 'fs-extra';
-import { join, resolve } from 'path';
-import { ORMEntities, defaultCmsConfig } from '../src/helpers/constants';
-import { ConnectionOptions, createConnection, getConnection, getCustomRepository } from 'typeorm';
+import { resolve } from 'path';
+import { ConnectionOptions, createConnection } from 'typeorm';
+
+import { ORMEntities } from '../src/helpers/constants';
 
 export const mockWorkingDirectory = async (name: string): Promise<string> => {
     const testDir = resolve(process.cwd(), '.cromwell/test', name);

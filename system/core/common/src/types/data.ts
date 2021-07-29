@@ -65,7 +65,6 @@ export type TCromwellStore = {
     environment?: {
         mode?: 'dev' | 'prod';
         isAdminPanel?: boolean;
-        logLevel?: TLogLevel;
     },
     /** Internal */
     apiClients?: {
@@ -307,8 +306,6 @@ export type TFrontendBundle = {
 export type TPluginInfo = {
     name: string;
 }
-
-export type TLogLevel = "none" | "errors-only" | "errors-warnings" | "minimal" | "detailed" | "all";
 
 /**
  * UI Notification service. In Admin panel it's react-toastify, for example.

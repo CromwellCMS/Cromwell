@@ -1,5 +1,6 @@
+import { GenericPluginResolver, GenericThemeResolver } from '@cromwell/core-backend';
+
 import { collectPlugins } from '../helpers/collectPlugins';
-import { GenericPluginResolver, GenericThemeResolver } from '../helpers/genericEntities';
 import { AttributeResolver } from '../resolvers/attribute.resolver';
 import { OrderResolver } from '../resolvers/order.resolver';
 import { PostResolver } from '../resolvers/post.resolver';

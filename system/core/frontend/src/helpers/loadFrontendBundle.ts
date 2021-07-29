@@ -1,4 +1,4 @@
-import { getStore, getStoreItem, isServer, logFor, setStoreItem, TFrontendBundle } from '@cromwell/core';
+import { getStore, getStoreItem, isServer, setStoreItem, TFrontendBundle } from '@cromwell/core';
 import loadableComponent from '@loadable/component';
 
 import { TDynamicLoader } from '../constants';
@@ -47,7 +47,7 @@ export const loadFrontendBundle = (
                     try {
                         comp = Function('CromwellStore', `return ${bundle.source}`)(getStore());
                     } catch (e) {
-                        logFor('errors-only', 'loadFrontendBundle: Failed to evaluate code of a bundle: ' + bundleName, console.error);
+                        console.error(`loadFrontendBundle: Failed to evaluate code of a bundle: ${bundleName}` + e);
                     }
                 }
 
@@ -56,7 +56,7 @@ export const loadFrontendBundle = (
                         const fsRequire = getStoreItem('fsRequire') as any;
                         comp = await fsRequire(bundle.cjsPath);
                     } catch (e) {
-                        logFor('errors-only', 'loadFrontendBundle: Failed to fsRequire bundle at: ' + bundle.cjsPath + e, console.error);
+                        console.error(`loadFrontendBundle: Failed to fsRequire bundle ${bundleName} at: ${bundle.cjsPath}` + e);
                         evalCode();
                     }
                 } else {

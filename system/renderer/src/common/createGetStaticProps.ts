@@ -1,8 +1,9 @@
 import {
-    BasePageNames,
+    resolvePageRoute,
     StaticPageContext,
     TCmsConfig,
     TCromwellPageCoreProps,
+    TDefaultPageName,
     TPageConfig,
     TPageInfo,
     TPageStats,
@@ -14,15 +15,17 @@ import { getThemeStaticProps } from './getThemeStaticProps';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
 
 
-export const createGetStaticProps = (pageName: BasePageNames | string,
+export const createGetStaticProps = (pageName: TDefaultPageName | string,
     pageGetStaticProps: ((context: StaticPageContext) => any) | undefined | null) => {
     return async function (context: StaticPageContext): Promise<
         { props: TCromwellPageCoreProps; revalidate?: number }> {
 
+        // Name to request a page config. Config will be the same for different slugs
+        // of a page except `pages/[slug]`, since they can be edited separately in Page Builder
         const pageConfigName = (pageName === 'pages/[slug]' && context?.params?.slug) ?
             `pages/${context.params.slug}` : pageName;
 
-        const pageRoute = context?.params?.slug ? pageName.replace('[slug]', context.params.slug + '') : pageName;
+        const pageRoute = resolvePageRoute(pageName, { slug: context?.params?.slug + '' });
         const apiClient = getRestAPIClient();
 
         // const timestamp = Date.now();

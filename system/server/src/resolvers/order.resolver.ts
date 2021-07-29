@@ -1,7 +1,7 @@
 import { GraphQLPaths, TAuthRole, TOrder, TPagedList } from '@cromwell/core';
 import {
     DeleteManyInput,
-    InputOrder,
+    OrderInput,
     TGraphQLContext,
     Order,
     OrderFilterInput,
@@ -77,7 +77,7 @@ export class OrderResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Order)
-    async [createPath](@Arg("data") data: InputOrder): Promise<Order> {
+    async [createPath](@Arg("data") data: OrderInput): Promise<Order> {
         const order = await this.repository.createOrder(data);
         serverFireAction('create_order', order);
         return order;
@@ -85,7 +85,7 @@ export class OrderResolver {
 
     @Authorized<TAuthRole>("administrator")
     @Mutation(() => Order)
-    async [updatePath](@Arg("id") id: string, @Arg("data") data: InputOrder): Promise<Order | undefined> {
+    async [updatePath](@Arg("id") id: string, @Arg("data") data: OrderInput): Promise<Order | undefined> {
         const order = await this.repository.updateOrder(id, data);
         serverFireAction('create_order', order);
         return order;

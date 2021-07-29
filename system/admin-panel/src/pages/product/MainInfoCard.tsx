@@ -1,4 +1,4 @@
-import { serviceLocator, TAttributeProductVariant, TProduct } from '@cromwell/core';
+import { resolvePageRoute, serviceLocator, TAttributeProductVariant, TProduct } from '@cromwell/core';
 import { TextField } from '@material-ui/core';
 import { Quill as QuillType } from 'quill';
 import React, { useEffect, useRef } from 'react';
@@ -7,7 +7,6 @@ import GalleryPicker from '../../components/galleryPicker/GalleryPicker';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import { getQuillHTML, initQuillEditor } from '../../helpers/quill';
-import { store } from '../../redux/store';
 import { editorId, TInfoCardRef } from './Product';
 import styles from './Product.module.scss';
 
@@ -88,10 +87,11 @@ const MainInfoCard = (props: {
 
     if (!product) return null;
 
-    const themeProductPage = store.getState()?.activeTheme?.defaultPages?.product;
     let pageFullUrl;
-    if (themeProductPage && (product as TProduct)?.slug) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + '/' + themeProductPage.replace('[slug]', (product as TProduct).slug);
+    if ((product as TProduct)?.slug) {
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('product', {
+            slug: (product as TProduct).slug ?? (product as TProduct).id,
+        });
     }
 
     return (

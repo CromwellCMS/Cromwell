@@ -1,5 +1,5 @@
 import {
-    getStoreItem,
+    resolvePageRoute,
     TAttributeValue,
     TFilteredProductList,
     TFrontendPluginProps,
@@ -132,9 +132,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         if (skip) return;
 
         if (!category?.slug && !category?.id || !router) return;
-        const categoryRoute = getStoreItem('defaultPages')?.category;
-        if (!categoryRoute) return;
-        const url = '/' + categoryRoute.replace('[slug]', category.slug ?? category.id);
+        const url = resolvePageRoute('category', { slug: category.slug ?? category.id });
         router?.push(url);
     }
 

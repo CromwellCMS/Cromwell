@@ -1,5 +1,5 @@
-import { GenericPlugin } from '@App/helpers/genericEntities';
 import { GraphQLPaths, TPluginEntityInput } from '@cromwell/core';
+import { GenericPlugin } from '@cromwell/core-backend';
 import { getGraphQLClient, TCGraphQLClient } from '@cromwell/core-frontend';
 import { ApolloServer, gql } from 'apollo-server';
 import { getCustomRepository } from 'typeorm';

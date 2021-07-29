@@ -909,8 +909,8 @@ export class CGraphQLClient {
     public getOrders = this.createGetMany<TOrder>('Order', this.OrderFragment, 'OrderFragment');
     public getOrderById = this.createGetById<TOrder>('Order', this.OrderFragment, 'OrderFragment');
     public getOrderBySlug = this.createGetBySlug<TOrder>('Order', this.OrderFragment, 'OrderFragment');
-    public updateOrder = this.createUpdateEntity<TOrder, TOrderInput>('Order', 'InputOrder', this.OrderFragment, 'OrderFragment')
-    public createOrder = this.createCreateEntity<TOrder, TOrderInput>('Order', 'InputOrder', this.OrderFragment, 'OrderFragment');
+    public updateOrder = this.createUpdateEntity<TOrder, TOrderInput>('Order', 'OrderInput', this.OrderFragment, 'OrderFragment')
+    public createOrder = this.createCreateEntity<TOrder, TOrderInput>('Order', 'OrderInput', this.OrderFragment, 'OrderFragment');
     public deleteOrder = this.createDeleteEntity('Order');
     public deleteManyOrders = this.createDeleteMany('Order');
     public deleteManyFilteredOrders = this.createDeleteManyFiltered<TOrderFilter>('Order', 'OrderFilterInput');

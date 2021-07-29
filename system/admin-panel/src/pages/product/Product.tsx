@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { serviceLocator, TAttribute, TProduct, TProductInput } from '@cromwell/core';
+import { resolvePageRoute, serviceLocator, TAttribute, TProduct, TProductInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, IconButton, Tab, Tabs, Tooltip } from '@material-ui/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
@@ -225,12 +225,10 @@ const ProductPage = () => {
         )
     }
 
-    const themeProductPage = store.getState()?.activeTheme?.defaultPages?.product;
     let pageFullUrl;
-    if (themeProductPage && product?.slug) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + '/' + themeProductPage.replace('[slug]', product.slug);
+    if (product?.slug) {
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('product', { slug: product.slug ?? product.id });
     }
-
 
     return (
         <div className={styles.Product}>

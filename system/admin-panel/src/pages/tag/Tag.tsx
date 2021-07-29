@@ -1,4 +1,4 @@
-import { serviceLocator, TTag, TTagInput } from '@cromwell/core';
+import { resolvePageRoute, serviceLocator, TTag, TTagInput } from '@cromwell/core';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button, Grid, IconButton, TextField, Tooltip } from '@material-ui/core';
 import { ArrowBack as ArrowBackIcon, OpenInNew as OpenInNewIcon } from '@material-ui/icons';
@@ -9,7 +9,6 @@ import { Link, useHistory, useParams } from 'react-router-dom';
 import ColorPicker from '../../components/colorPicker/ColorPicker';
 import { toast } from '../../components/toast/toast';
 import { tagListPageInfo, tagPageInfo } from '../../constants/PageInfos';
-import { store } from '../../redux/store';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Tag.module.scss';
 
@@ -109,10 +108,9 @@ const TagPage = () => {
         )
     }
 
-    const themeTagPage = store.getState()?.activeTheme?.defaultPages?.tag;
     let pageFullUrl;
-    if (themeTagPage && data) {
-        pageFullUrl = serviceLocator.getFrontendUrl() + '/' + themeTagPage.replace('[slug]', data.slug ?? data.id ?? '');
+    if (data) {
+        pageFullUrl = serviceLocator.getFrontendUrl() + resolvePageRoute('tag', { slug: data.slug ?? data.id });
     }
 
     return (

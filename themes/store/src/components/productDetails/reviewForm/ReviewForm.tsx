@@ -65,7 +65,7 @@ const ReviewForm = (props: {
     if (placedReview) {
         return (
             <div className={styles.reviewBox}>
-                <Alert severity="success">Thanks for posting review! It will appear on this page after approval by moderator</Alert>
+                <Alert severity="success">Thank you! Your review will appear on this page after approval by the website moderator</Alert>
             </div>
         )
     }

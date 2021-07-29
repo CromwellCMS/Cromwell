@@ -1,5 +1,12 @@
 import { TFrontendBundle, TPackageCromwellConfig, TPageConfig, TPageInfo, TThemeConfig } from '@cromwell/core';
-import { getCmsSettings, getLogger, getThemeAdminPanelBundleDir, JwtAuthGuard, Roles } from '@cromwell/core-backend';
+import {
+    getCmsSettings,
+    getLogger,
+    getThemeAdminPanelBundleDir,
+    getThemeConfigs,
+    JwtAuthGuard,
+    Roles,
+} from '@cromwell/core-backend';
 import { Body, Controller, Delete, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import fs from 'fs-extra';
@@ -188,7 +195,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getThemeConfig(): Promise<TThemeConfig | null> {
         logger.log('ThemeController::getThemeConfig');
-        const { themeConfig } = await this.themeService.readConfigs();
+        const { themeConfig } = await getThemeConfigs();
         return new ThemeConfigDto().parse(themeConfig);
     }
 
@@ -204,7 +211,7 @@ export class ThemeController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getThemeInfo(): Promise<TPackageCromwellConfig | null> {
         logger.log('ThemeController::getThemeInfo');
-        const { themeInfo } = await this.themeService.readConfigs();
+        const { themeInfo } = await getThemeConfigs();
 
         return themeInfo;
     }
@@ -220,7 +227,7 @@ export class ThemeController {
     async getCustomConfig(): Promise<Record<string, any>> {
         logger.log('ThemeController::getCustomConfig');
         let out: Record<string, any> = {};
-        const { themeConfig, userConfig } = await this.themeService.readConfigs();
+        const { themeConfig, userConfig } = await getThemeConfigs();
         out = Object.assign(out, themeConfig?.themeCustomConfig, userConfig?.themeCustomConfig);
         return out;
     }

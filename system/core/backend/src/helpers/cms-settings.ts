@@ -1,7 +1,7 @@
 import { getStoreItem, setStoreItem, TCmsConfig, TCmsSettings } from '@cromwell/core';
 import fs from 'fs-extra';
 
-import { CmsEntity } from '../entities/Cms';
+import { CmsEntity } from '../models/entities/cms.entity';
 import { defaultCmsConfig } from './constants';
 import { getLogger } from './logger';
 import { getCMSConfigPath } from './paths';

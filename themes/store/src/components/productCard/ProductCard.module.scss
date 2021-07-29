@@ -27,9 +27,11 @@
         // height: 300px;
         width: 100%;
     }
+
     .image {
         width: 100%;
         object-fit: contain;
+        border-radius: 6px 6px 0 0;
     }
 
     .caption {
@@ -50,15 +52,18 @@
         justify-content: space-between;
         align-items: center;
     }
+
     .priceBlock {
         display: flex;
         flex-wrap: wrap;
         font-size: 18px;
         margin: 6px 0;
     }
+
     .price {
         font-weight: 500;
     }
+
     .oldPrice {
         text-decoration: line-through;
         opacity: 0.7;
@@ -68,6 +73,7 @@
     .description {
         display: none;
     }
+
     .descriptionGradient {
         display: none;
     }
@@ -75,6 +81,7 @@
     .ratingBlock {
         display: flex;
     }
+
     .ratingCaption {
         margin-left: 10px;
     }
@@ -108,7 +115,8 @@
 
         .imageBlock {
             width: auto;
-            > a {
+
+            >a {
                 height: 100%;
             }
         }
@@ -116,6 +124,7 @@
         .image {
             height: 100%;
             width: auto;
+            border-radius: 6px 0 0 6px;
         }
 
         .caption {

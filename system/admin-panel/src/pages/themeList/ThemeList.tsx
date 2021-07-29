@@ -1,4 +1,4 @@
-import { TCCSVersion, TCmsSettings, TPackageCromwellConfig, TThemeEntity } from '@cromwell/core';
+import { setStoreItem, TCCSVersion, TCmsSettings, TPackageCromwellConfig, TThemeEntity } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
 import {
     Badge,
@@ -11,23 +11,19 @@ import {
     LinearProgress,
     Typography,
 } from '@material-ui/core';
-import {
-    Close as CloseIcon,
-    AddCircleOutline as AddCircleOutlineIcon,
-    Update as UpdateIcon
-} from '@material-ui/icons';
+import { AddCircleOutline as AddCircleOutlineIcon, Close as CloseIcon, Update as UpdateIcon } from '@material-ui/icons';
 import { Skeleton } from '@material-ui/lab';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import { askConfirmation } from '../../components/modal/Confirmation';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
+import MarketModal from '../../components/market/MarketModal';
+import { askConfirmation } from '../../components/modal/Confirmation';
 import Modal from '../../components/modal/Modal';
 import { toast } from '../../components/toast/toast';
-import { loadPlugins } from '../../helpers/loadPlugins';
 import { themeEditPageInfo, themeMarketPageInfo } from '../../constants/PageInfos';
+import { loadPlugins } from '../../helpers/loadPlugins';
 import { store } from '../../redux/store';
-import MarketModal from '../../components/market/MarketModal';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './ThemeList.module.scss';
 
@@ -159,6 +155,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
                     prop: 'activeTheme',
                     payload: themeConfig,
                 });
+                setStoreItem('defaultPages', themeConfig?.defaultPages);
             }
         } catch (error) {
             console.error(error);
