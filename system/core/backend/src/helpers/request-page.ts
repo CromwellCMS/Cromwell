@@ -11,8 +11,8 @@ let lastUsedTheme: string | undefined;
  * after data update.
  */
 export const requestPage = async (pageName: TDefaultPageName, routeOptions?: {
-    slug?: string
-    id?: string
+    slug?: string;
+    id?: string;
 }) => {
     // Update/load defaultPages first 
     const cmsSettings = getStoreItem('cmsSettings');

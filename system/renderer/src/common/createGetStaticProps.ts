@@ -14,7 +14,6 @@ import { getRestAPIClient } from '@cromwell/core-frontend';
 import { getThemeStaticProps } from './getThemeStaticProps';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
 
-
 export const createGetStaticProps = (pageName: TDefaultPageName | string,
     pageGetStaticProps: ((context: StaticPageContext) => any) | undefined | null) => {
     return async function (context: StaticPageContext): Promise<

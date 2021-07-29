@@ -1,7 +1,7 @@
 import { TCmsSettings, TPackageCromwellConfig, TThemeConfig, TThemeEntity } from '@cromwell/core';
 import { getCustomRepository } from 'typeorm';
 
-import { getCmsEntity } from './cms-settings';
+import { getCmsSettings } from './cms-settings';
 import { GenericTheme } from './generic-entities';
 import { getLogger } from './logger';
 
@@ -30,7 +30,7 @@ export const getThemeConfigs = async (): Promise<TAllThemeConfigs> => {
         userConfig: TThemeConfig | null = null,
         themeInfo: TPackageCromwellConfig | null = null;
 
-    const cmsSettings = await getCmsEntity();
+    const cmsSettings = await getCmsSettings();
     if (cmsSettings?.themeName) {
         let theme;
         try {

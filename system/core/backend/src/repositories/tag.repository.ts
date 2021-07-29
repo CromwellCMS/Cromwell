@@ -56,7 +56,7 @@ export class TagRepository extends BaseRepository<Tag> {
         return tag;
     }
 
-    async updateTag(id: string, inputData: TTagInput): Promise<Tag | undefined> {
+    async updateTag(id: string, inputData: TTagInput): Promise<Tag> {
         logger.log('TagRepository::updateTag id: ' + id);
 
         let tag = await this.findOne({
