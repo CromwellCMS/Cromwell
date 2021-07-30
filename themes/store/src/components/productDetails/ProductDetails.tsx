@@ -31,6 +31,8 @@ export default function ProductDetails(props: {
         document.getElementById(cromwellIdToHTML('product_reviewsBlock'))?.scrollIntoView({ behavior: "smooth" });
     }
 
+    const hasImages = !!product?.images?.length;
+
     return (
         <CContainer id="product_01"
             className={styles.ProductDetails + (props.compact ? ' ' + styles.compact : '')}
@@ -48,19 +50,19 @@ export default function ProductDetails(props: {
                 <CContainer id="product_0" className={styles.imageAndCaptionBlock}>
                     <CContainer id="product_2" className={styles.imageBlock}>
                         <CGallery id="product_1" gallery={{
-                            images: product.images ? product.images.map(i => {
+                            images: hasImages ? product.images?.map(i => {
                                 return {
                                     src: i
                                 }
-                            }) : [],
+                            }) : [{ src: '/themes/@cromwell/theme-store/no-photos.png' }],
                             loop: false,
-                            navigation: true,
-                            zoom: true,
-                            thumbs: {
+                            navigation: hasImages,
+                            zoom: hasImages,
+                            thumbs: hasImages ? {
                                 width: 80,
                                 height: 80,
-                            },
-                            fullscreen: true,
+                            } : false,
+                            fullscreen: hasImages,
                             backgroundSize: 'contain',
                             // width: 400,
                             // height: 400,

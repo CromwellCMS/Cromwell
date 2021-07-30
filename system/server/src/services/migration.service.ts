@@ -199,6 +199,7 @@ export class MigrationService {
             readTime: ent.readTime,
             tagIds: ent.tags?.map(tag => tag.id)?.join(','),
             published: ent.published,
+            featured: ent.featured,
             publishDate: ent.publishDate,
             commentIds: ent.comments?.map(comment => comment.id)?.join(','),
         }));

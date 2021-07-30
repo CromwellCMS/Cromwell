@@ -123,6 +123,8 @@ const devGenerate = async (themeName: string, options) => {
          import * as reactIs from 'react-is';
          import * as NextDocument from 'next/document';
          import * as NextRouter from 'next/router';
+         import * as NextImage from 'next/image';
+         import * as NextAmp from 'next/amp';
          import ReactHtmlParser from 'react-html-parser';
          import { getModuleImporter } from '@cromwell/utils/build/importer.js';
          import { isServer, getStore } from "@cromwell/core";
@@ -144,6 +146,8 @@ const devGenerate = async (themeName: string, options) => {
          ${cromwellStoreStatusesPath}['react-dom'] = 'default';
          ${cromwellStoreModulesPath}['next/link'] = NextLink;
          ${cromwellStoreModulesPath}['next/router'] = NextRouter;
+         ${cromwellStoreModulesPath}['next/image'] = NextImage;
+         ${cromwellStoreModulesPath}['next/amp'] = NextAmp;
          ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
          ${cromwellStoreModulesPath}['next/head'] = NextHead;
          ${cromwellStoreModulesPath}['@cromwell/core'] = cromwellCore;

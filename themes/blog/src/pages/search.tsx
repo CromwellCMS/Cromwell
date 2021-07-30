@@ -12,6 +12,7 @@ import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useRef, useState } from 'react';
+import { debounce } from 'throttle-debounce';
 
 import Layout from '../components/layout/Layout';
 import layoutStyles from '../components/layout/Layout.module.scss';
@@ -32,11 +33,13 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
     const forceUpdate = useForceUpdate();
+    const titleSearchId = "post-filter-search";
 
     const updateList = () => {
         const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.clearState();
         list?.init();
+        list?.updateData();
     }
 
     const handleChangeTags = (event: any, newValue?: (TTag | undefined | string)[]) => {
@@ -65,27 +68,40 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
         forceUpdate();
     }
 
+    const handleTitleInput = debounce(400, () => {
+        filterInput.current.titleSearch = (document.getElementById(titleSearchId) as HTMLInputElement)?.value ?? undefined;
+        updateList();
+    });
+
     return (
         <Layout>
             <div className={commonStyles.content}>
                 <div className={styles.filter}>
-                    <Autocomplete
-                        multiple
-                        freeSolo
-                        value={filterInput.current.tagIds?.map(id => props.tags?.find(tag => tag.id === id)) ?? []}
-                        className={styles.filterItem}
-                        options={props.tags ?? []}
-                        getOptionLabel={(option) => option?.name ?? ''}
-                        style={{ width: 300 }}
-                        onChange={handleChangeTags}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                variant="standard"
-                                placeholder="Tags"
-                            />
-                        )}
-                    />
+                    <div className={styles.filterLeft}>
+                        <TextField
+                            className={styles.filterItem}
+                            placeholder="Search by title"
+                            id={titleSearchId}
+                            onChange={handleTitleInput}
+                        />
+                        <Autocomplete
+                            multiple
+                            freeSolo
+                            value={filterInput.current.tagIds?.map(id => props.tags?.find(tag => tag.id === id)) ?? []}
+                            className={styles.filterItem}
+                            options={props.tags ?? []}
+                            getOptionLabel={(option) => option?.name ?? ''}
+                            style={{ width: 300 }}
+                            onChange={handleChangeTags}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="standard"
+                                    placeholder="Tags"
+                                />
+                            )}
+                        />
+                    </div>
                     <FormControl className={styles.filterItem}>
                         <InputLabel>Sort</InputLabel>
                         <Select
@@ -112,7 +128,6 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
                         useQueryPagination
                         disableCaching
                         pageSize={20}
-                        maxDomPages={2}
                         scrollContainerSelector={`.${layoutStyles.Layout}`}
                         firstBatch={props.posts}
                         loader={handleGetPosts}

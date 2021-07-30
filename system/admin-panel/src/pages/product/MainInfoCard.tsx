@@ -136,8 +136,8 @@ const MainInfoCard = (props: {
                     onChange={(val) => handleChange('images', val.map(s => s.src))}
                 />
             </div>
-            <div className={styles.descriptionEditor}>
-                <div style={{ maxHeight: '300px' }} id={editorId}></div>
+            <div className={styles.descriptionEditor} style={{ maxHeight: '300px' }}>
+                <div id={editorId}></div>
             </div>
             {props.isProductVariant !== true && (
                 <TextField label="Page URL" variant="outlined"

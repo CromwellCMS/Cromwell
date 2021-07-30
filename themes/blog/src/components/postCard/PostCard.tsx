@@ -1,12 +1,14 @@
 import { TPost, TTag } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
-import { AccountCircleIcon } from '../icons';
 import clsx from 'clsx';
 import { format } from 'date-fns';
+import * as NextImage from 'next/image';
 import React from 'react';
 
+import { AccountCircleIcon } from '../icons';
 import styles from './PostCard.module.scss';
 
+const Image = NextImage.default;
 
 export const PostCard = (props?: {
     data?: TPost;
@@ -17,14 +19,21 @@ export const PostCard = (props?: {
 }) => {
     const data = props?.data;
     const postLink = `/post/${data?.slug ?? data?.id}`;
+    const mainImage = data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png';
 
     return (
         <div className={clsx(styles.PostCard, styles._onHoverLinkContainer, props?.coverImage && styles.coverImage)}>
-            <div className={styles.imageBlock} >
+            <div className={styles.imageBlock}
+                style={{ height: props?.imageHeight }}
+            >
                 <Link href={postLink}>
-                    <a style={{ display: 'flex' }}><img className={styles.image}
-                        style={{ height: props?.imageHeight }}
-                        src={data?.mainImage ?? undefined} /></a>
+                    <a style={{ display: 'flex' }}>
+                        <Image
+                            objectFit="cover"
+                            layout="fill"
+                            src={mainImage}
+                        />
+                    </a>
                 </Link>
             </div>
             {props?.coverImage && (

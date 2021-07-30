@@ -71,6 +71,7 @@ const Post = (props) => {
                     }
                     mainImage
                     publishDate
+                    featured
                     tags {
                         id
                         slug
@@ -169,6 +170,7 @@ const Post = (props) => {
         mainImage: postData.mainImage,
         publishDate: postData.publishDate,
         published: postData.published,
+        featured: postData.featured,
         isEnabled: postData.isEnabled,
         tagIds: postData.tags?.map(tag => tag.id),
         authorId: postData?.author?.id ?? userInfo?.id,

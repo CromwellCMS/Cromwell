@@ -351,7 +351,7 @@ const CheckoutPage: TCromwellPage = () => {
                 <b>{cstore.getPriceWithCurrency(orderTotal?.cartTotalPrice)}</b>
             </div>
             <div className={styles.detailsRow}>
-                <p>Delivery:</p>
+                <p>Shipping:</p>
                 <b>{cstore.getPriceWithCurrency(orderTotal?.shippingPrice)}</b>
             </div>
             <div className={styles.detailsRow}>

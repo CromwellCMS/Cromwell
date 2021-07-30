@@ -320,7 +320,7 @@ export class CmsController {
     @UseGuards(ThrottlerGuard)
     @Throttle(4, 1)
     @ApiOperation({
-        description: 'Calculates cart total sum plu delivery costs',
+        description: 'Calculates cart total sum plus shipping costs',
     })
     @ApiBody({ type: CreateOrderDto })
     @ApiResponse({

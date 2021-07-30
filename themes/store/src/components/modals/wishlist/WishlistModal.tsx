@@ -78,7 +78,7 @@ export const WishlistModal = observer(() => {
                         {[...wishlist].reverse().map((it, i) => {
                             return (
                                 <ProductCard
-                                    className={styles.prductCard}
+                                    className={styles.productCard}
                                     attributes={attributes}
                                     key={i}
                                     data={it.product}

@@ -248,6 +248,131 @@ module.exports = {
             name: "checkout",
             title: "checkout page",
         },
+        {
+            id: "pages/shipping",
+            route: "pages/shipping",
+            name: "Shipping and Delivery",
+            title: "Shipping and Delivery",
+            isVirtual: true,
+            modifications: [
+                {
+                    "id": "shipping_content",
+                    "type": "HTML",
+                    "isVirtual": true,
+                    "parentId": "PagesGenericPage_content",
+                    "index": 0,
+                    "style": {
+                        "margin": "40px 0",
+                        "padding": "20px",
+                        "backgroundColor": "#fff",
+                        "borderRadius": "5px"
+                    },
+                    "html": {
+                        "innerHTML": "<h1>Shipping and Delivery</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>1.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>2.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>3.</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    }
+                },
+            ]
+        },
+        {
+            id: "pages/returns",
+            route: "pages/returns",
+            name: "Returns",
+            title: "Returns",
+            isVirtual: true,
+            modifications: [
+                {
+                    "id": "returns_content",
+                    "type": "HTML",
+                    "isVirtual": true,
+                    "parentId": "PagesGenericPage_content",
+                    "index": 0,
+                    "style": {
+                        "margin": "40px 0",
+                        "padding": "20px",
+                        "backgroundColor": "#fff",
+                        "borderRadius": "5px"
+                    },
+                    "html": {
+                        "innerHTML": "<h1>Returns</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>1.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>2.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>3.</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    }
+                },
+            ]
+        },
+        {
+            id: "pages/gift-cards",
+            route: "pages/gift-cards",
+            name: "Gift cards",
+            title: "Gift cards",
+            isVirtual: true,
+            modifications: [
+                {
+                    "id": "gift-cards_content",
+                    "type": "HTML",
+                    "isVirtual": true,
+                    "parentId": "PagesGenericPage_content",
+                    "index": 0,
+                    "style": {
+                        "margin": "40px 0",
+                        "padding": "20px",
+                        "backgroundColor": "#fff",
+                        "borderRadius": "5px"
+                    },
+                    "html": {
+                        "innerHTML": "<h1>Gift cards</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>1.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>2.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>3.</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    }
+                },
+            ]
+        },
+        {
+            id: "pages/news",
+            route: "pages/news",
+            name: "News",
+            title: "News",
+            isVirtual: true,
+            modifications: [
+                {
+                    "id": "news_content",
+                    "type": "HTML",
+                    "isVirtual": true,
+                    "parentId": "PagesGenericPage_content",
+                    "index": 0,
+                    "style": {
+                        "margin": "40px 0",
+                        "padding": "20px",
+                        "backgroundColor": "#fff",
+                        "borderRadius": "5px"
+                    },
+                    "html": {
+                        "innerHTML": "<h1>News</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>1.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>2.</strong>  Lorem ipsum dolor sit amet</p></li>\n<li><p><strong>3.</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    }
+                },
+            ]
+        },
+        {
+            id: "pages/contact-us",
+            route: "pages/contact-us",
+            name: "Contact us",
+            title: "Contact us",
+            isVirtual: true,
+            modifications: [
+                {
+                    "id": "contacts_content",
+                    "type": "HTML",
+                    "isVirtual": true,
+                    "parentId": "PagesGenericPage_content",
+                    "index": 0,
+                    "style": {
+                        "margin": "40px 0",
+                        "padding": "20px",
+                        "backgroundColor": "#fff",
+                        "borderRadius": "5px"
+                    },
+                    "html": {
+                        "innerHTML": "<h1>Contact Information</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>Email:</strong> contact@example.com</p></li>\n<li><p><strong>Phone:</strong> +1 (234) 567-89-00</p></li>\n<li><p><strong>Address:</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
+                    }
+                },
+            ]
+        }
     ],
     themeCustomConfig: {
         "product": {

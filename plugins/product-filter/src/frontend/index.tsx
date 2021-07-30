@@ -147,17 +147,18 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         const isExpanded = !collapsedItems[props.key];
         return (
             <Card className={classes.card}>
-                <div className={classes.headerWrapper}>
+                <div className={classes.headerWrapper}
+                    onClick={() => setCollapsedItems((prev) => {
+                        const copy = Object.assign({}, prev);
+                        copy[props.key] = !copy[props.key];
+                        return copy;
+                    })}
+                >
                     <Typography gutterBottom style={{
                         fontSize: '14px',
                         margin: '0 0 0 15px'
                     }}>{props.title}</Typography>
                     <IconButton
-                        onClick={() => setCollapsedItems((prev) => {
-                            const copy = Object.assign({}, prev);
-                            copy[props.key] = !copy[props.key];
-                            return copy
-                        })}
                         className={clsx(classes.expand, {
                             [classes.expandOpen]: isExpanded,
                         })}

@@ -21,6 +21,7 @@
     // box-shadow: 0 3px 5px 0 rgba(0,0,0,.05), 0 0 9px 0 rgba(0,0,0,.05);
     border-bottom: 1px solid #eee;
 }
+
 .topPanelContent {
     display: flex;
     justify-content: space-between;
@@ -32,11 +33,13 @@
 
 .leftBlock {
     display: flex;
+    align-items: center;
 }
 
 .currencyOption {
     display: flex;
     width: 100px;
+    margin-right: 20px;
 }
 
 .languageOption {
@@ -74,6 +77,7 @@
 .mainPanel {
     display: flex;
 }
+
 .mainPanelContent {
     display: flex;
     justify-content: space-between;
@@ -98,6 +102,7 @@
     align-items: flex-end;
     font-weight: 500;
 }
+
 .phoneActionTip {
     font-size: 0.7em;
 }
@@ -114,13 +119,16 @@ div.cart {
     cursor: pointer;
     background: url("/themes/@cromwell/theme-store/shopping-bag.png") no-repeat center / contain;
 }
+
 .cartExpandBlock {
     display: flex;
     flex-direction: column;
 }
+
 .cartExpandIcon {
     display: flex;
 }
+
 .itemsInCart {
     font-weight: 500;
     font-size: 0.7em;
@@ -142,6 +150,7 @@ div.cart {
     border-top: 1px solid #eee;
     border-bottom: 1px solid #eee;
 }
+
 .mainMenuContent {
     padding: 0;
     // border-bottom: 2px solid #333;
@@ -205,9 +214,11 @@ div.cart {
     font-size: 18px;
     margin: 6px 0;
 }
+
 .price {
     font-weight: 500;
 }
+
 .oldPrice {
     text-decoration: line-through;
     opacity: 0.7;
@@ -256,6 +267,7 @@ li.optionsItem {
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
+
     .topPanel,
     .mainPanel,
     .mainMenu {

@@ -55,13 +55,17 @@ module.exports = {
                     "isVirtual": true,
                     "parentId": "PagesGenericPage",
                     "index": 0,
+                    "style": {
+                        "padding": "20px",
+                        "backgroundColor": "#fff",
+                        "borderRadius": "5px"
+                    },
                     "html": {
                         "innerHTML": "<h1>Contact Information</h1>\n<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>\n<ul>\n<li><p><strong>Email:</strong> contact@example.com</p></li>\n<li><p><strong>Phone:</strong> +1 (234) 567-89-00</p></li>\n<li><p><strong>Address:</strong> Lorem ipsum dolor sit amet</p></li>\n</ul>"
                     }
                 },
                 {
                     "id": "PagesGenericPage",
-                    "className": "common-module_content__1ZF7i",
                     "type": "container",
                     "editorStyles": {
                         "maxWidth": 700,
@@ -110,7 +114,6 @@ module.exports = {
             }),
             commonjs(),
             json(),
-            // terser()
         ];
 
         return {
@@ -122,6 +125,12 @@ module.exports = {
             adminPanel: {
                 plugins: [
                     ...getDefaultPlugins(),
+                    terser({
+                        compress: {
+                            side_effects: false,
+                            negate_iife: false,
+                        }
+                    }),
                     postcss({
                         extract: false,
                         modules: true,

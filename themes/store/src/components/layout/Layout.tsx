@@ -10,6 +10,7 @@ import { CartModal } from '../modals/cart/CartModal';
 import ProductQuickView from '../modals/productQuickView/ProductQuickView';
 import { WatchedModal } from '../modals/watched/WatchedModal';
 import { WishlistModal } from '../modals/wishlist/WishlistModal';
+// import { CompareModal } from '../modals/compare/CompareModal';
 import styles from './Layout.module.scss';
 
 type TProps = {
@@ -54,6 +55,7 @@ export default function Layout(props: TProps | undefined) {
                 <Header />
                 <CartModal />
                 <WishlistModal />
+                {/* <CompareModal /> */}
                 <WatchedModal />
                 <ProductQuickView />
                 {props?.children}

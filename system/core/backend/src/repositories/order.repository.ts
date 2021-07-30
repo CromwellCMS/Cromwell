@@ -3,7 +3,7 @@ import sanitizeHtml from 'sanitize-html';
 import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
 
-import { OrderFilterInput } from '../models/filter/order.filter';
+import { OrderFilterInput } from '../models/filters/order.filter';
 import { Order } from '../models/entities/order.entity';
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';

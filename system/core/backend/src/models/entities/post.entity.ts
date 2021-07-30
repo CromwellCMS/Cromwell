@@ -58,4 +58,9 @@ export class Post extends BasePageEntity implements TPost {
         onDelete: "CASCADE"
     })
     comments?: TPostComment[];
+
+    @Field(type => Boolean, { nullable: true })
+    @Index()
+    @Column({ type: "boolean", nullable: true })
+    featured?: boolean | null;
 }

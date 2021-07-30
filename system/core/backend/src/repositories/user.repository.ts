@@ -2,7 +2,7 @@ import { TCreateUser, TDeleteManyInput, TPagedList, TPagedParams, TUpdateUser, T
 import bcrypt from 'bcrypt';
 import { DeleteQueryBuilder, EntityRepository, SelectQueryBuilder } from 'typeorm';
 
-import { UserFilterInput } from '../models/filter/user.filter';
+import { UserFilterInput } from '../models/filters/user.filter';
 import { User } from '../models/entities/user.entity';
 import { getLogger } from '../helpers/logger';
 import { validateEmail } from '../helpers/validation';

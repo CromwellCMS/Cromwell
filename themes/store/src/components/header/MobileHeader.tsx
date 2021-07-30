@@ -5,9 +5,11 @@ import Router from 'next/router';
 import React, { useState } from 'react';
 
 import { appState } from '../../helpers/AppState';
-import { CloseIcon, EqualizerIcon, FavoriteIcon, MenuIcon, ShoppingCartIcon, VisibilityIcon } from '../icons';
+import { CloseIcon, FavoriteIcon, MenuIcon, ShoppingCartIcon, VisibilityIcon } from '../icons';
 import { HeaderSearch } from './HeaderSearch';
 import styles from './MobileHeader.module.scss';
+
+// import { EqualizerIcon } from '../icons';
 
 let globalCloseMenu;
 Router?.events?.on('routeChangeStart', () => {
@@ -39,9 +41,9 @@ export const MobileHeader = () => {
     }
 
 
-    const handleOpenCompare = () => {
-        appState.isCompareOpen = true;
-    }
+    // const handleOpenCompare = () => {
+    //     appState.isCompareOpen = true;
+    // }
 
     return (
         <>
@@ -86,9 +88,9 @@ export const MobileHeader = () => {
                         <IconButton onClick={handleOpenWatched}>
                             <VisibilityIcon />
                         </IconButton>
-                        <IconButton onClick={handleOpenCompare}>
+                        {/* <IconButton onClick={handleOpenCompare}>
                             <EqualizerIcon />
-                        </IconButton>
+                        </IconButton> */}
                         <IconButton onClick={handleOpenWishlist}>
                             <FavoriteIcon />
                         </IconButton>

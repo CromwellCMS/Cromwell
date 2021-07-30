@@ -116,6 +116,7 @@ const PostList = (props: TPropsType) => {
                     mainImage
                     publishDate
                     published
+                    featured
                 }
             `,
             customFragmentName: 'PostListFragment',

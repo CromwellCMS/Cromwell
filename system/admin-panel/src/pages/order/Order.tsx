@@ -209,7 +209,7 @@ const OrderPage = () => {
                             className={styles.textField}
                             onChange={(e) => { handleInputChange('customerComment', e.target.value) }}
                         />
-                        <TextField label="Delivery price"
+                        <TextField label="Shipping price"
                             value={data?.shippingPrice ?? 0}
                             className={styles.textField}
                             onChange={(e) => {
@@ -239,7 +239,7 @@ const OrderPage = () => {
                 {!cartLoading && data && (
                     <>
                         <p>Cart total: <b>{cstore.getPriceWithCurrency(data.cartTotalPrice)}</b></p>
-                        <p>Delivery: <b>{cstore.getPriceWithCurrency(data.shippingPrice ?? 0)}</b></p>
+                        <p>Shipping: <b>{cstore.getPriceWithCurrency(data.shippingPrice ?? 0)}</b></p>
                         <p>{data.orderTotalPrice != orderTotalPriceRecalc ? 'Initial ' : ''}Order total: <b>{cstore.getPriceWithCurrency(data.orderTotalPrice ?? 0)}</b></p>
                         {data.orderTotalPrice != orderTotalPriceRecalc && (
                             <p>Order total: <b>{cstore.getPriceWithCurrency(orderTotalPriceRecalc)}</b></p>

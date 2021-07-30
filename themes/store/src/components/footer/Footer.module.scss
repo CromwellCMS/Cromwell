@@ -28,11 +28,13 @@
     margin-left: 40px;
     display: flex;
 }
+
 .subscribeInput {
     background-color: #fff;
     padding: 5px 10px;
     border-radius: 8px 0 0 8px;
 }
+
 button.subscribeBtn {
     border-radius: 0 8px 8px 0;
 }
@@ -55,6 +57,7 @@ button.subscribeBtn {
     font-weight: 500;
     margin-bottom: 10px;
 }
+
 .blockSubHeader {
     font-size: 16px;
     color: #fff;
@@ -64,6 +67,10 @@ button.subscribeBtn {
     font-size: 14px;
     color: #ccc;
     margin-bottom: 10px;
+
+    a {
+        color: #ccc;
+    }
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
@@ -78,6 +85,7 @@ button.subscribeBtn {
     .subscribeTitle {
         font-size: 24px;
     }
+
     .subscribeInputContainer {
         margin-left: 0;
     }

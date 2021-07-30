@@ -98,7 +98,6 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
                             useQueryPagination
                             disableCaching
                             pageSize={20}
-                            maxDomPages={2}
                             scrollContainerSelector={`.${layoutStyles.Layout}`}
                             firstBatch={props.posts}
                             loader={handleGetPosts}

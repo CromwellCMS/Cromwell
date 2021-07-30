@@ -219,6 +219,11 @@ export type TPost = {
      * Publish date
      */
     publishDate?: Date | null;
+    /**
+     * Is post featured?
+     */
+    featured?: boolean | null;
+
 } & TBasePageEntity;
 
 export type TPostInput = Omit<TPost, TDBAuxiliaryColumns | 'author' | 'tags'> & {
@@ -231,6 +236,7 @@ export type TPostFilter = {
     titleSearch?: string;
     tagIds?: string[];
     published?: boolean;
+    featured?: boolean | null;
 }
 
 export type TTag = TBasePageEntity & {

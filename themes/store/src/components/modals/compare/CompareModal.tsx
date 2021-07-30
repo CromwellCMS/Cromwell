@@ -12,15 +12,15 @@ import { CloseIcon } from '../../icons';
 import { LoadBox } from '../../loadbox/Loadbox';
 import { ProductCard } from '../../productCard/ProductCard';
 import Modal from '../baseModal/Modal';
-import styles from './WatchedModal.module.scss';
+import styles from './CompareModal.module.scss';
 
-export const WatchedModal = observer(() => {
+export const CompareModal = observer(() => {
     const forceUpdate = useForceUpdate();
     const handleClose = () => {
-        appState.isWatchedOpen = false;
+        appState.isCompareOpen = false;
     }
 
-    const [list, setList] = useState<TStoreListItem[]>([]);
+    const [compare, setCompare] = useState<TStoreListItem[]>([]);
     const [attributes, setAttributes] = useState<TAttribute[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const cstore = getCStore();
@@ -39,33 +39,33 @@ export const WatchedModal = observer(() => {
          * Since getCart method wll retrieve products from local storage and 
          * after a while products can be modified at the server, we need to refresh cart first  
          */
-        if (appState.isWatchedOpen) {
+        if (appState.isCompareOpen) {
             (async () => {
                 setIsLoading(true);
-                await Promise.all([cstore.updateWatchedItems(), updateAttributes()])
-                const watched = cstore.getWatchedItems()
-                setList(watched);
+                await Promise.all([cstore.updateComparisonList(), updateAttributes()])
+                const compare = cstore.getCompare()
+                setCompare(compare);
                 setIsLoading(false);
             })();
         }
-    }, [appState.isWatchedOpen]);
+    }, [appState.isCompareOpen]);
 
     useEffect(() => {
-        cstore.onWatchedItemsUpdate(() => {
-            const watched = cstore.getWatchedItems();
-            setList(watched);
+        cstore.onCompareUpdate(() => {
+            const compare = cstore.getCompare();
+            setCompare(compare);
             forceUpdate();
-        }, 'WatchedModal');
+        }, 'CompareModal');
     }, []);
 
     return (
         <Modal
             className={clsx(commonStyles.center)}
-            open={appState.isWatchedOpen}
+            open={appState.isCompareOpen}
             onClose={handleClose}
             blurSelector={"#CB_root"}
         >
-            <div className={clsx(styles.watchedModal)}>
+            <div className={clsx(styles.compareModal)}>
                 <IconButton onClick={handleClose} className={styles.closeBtn}>
                     <CloseIcon />
                 </IconButton>
@@ -73,20 +73,21 @@ export const WatchedModal = observer(() => {
                     <LoadBox />
                 )}
                 {!isLoading && (
-                    <div className={styles.watched}>
-                        <h3 className={styles.modalTitle}>Watched Items</h3>
-                        {[...list].reverse().map((it, i) => {
-                            return (
-                                <ProductCard
-                                    className={styles.productCard}
-                                    attributes={attributes}
-                                    key={i}
-                                    data={it.product}
-                                    variant='list'
-                                />
-                            )
-                        })}
-                    </div>
+                    <>
+                        <h3 className={styles.modalTitle}>Compare</h3>
+                        <div className={styles.compareList}>
+                            {[...compare].reverse().map((it, i) => {
+                                return (
+                                    <ProductCard
+                                        className={styles.productCard}
+                                        attributes={attributes}
+                                        key={i}
+                                        data={it.product}
+                                    />
+                                )
+                            })}
+                        </div>
+                    </>
                 )}
             </div>
         </Modal>

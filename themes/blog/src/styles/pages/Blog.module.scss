@@ -28,8 +28,16 @@
     align-items: center;
     justify-content: space-between;
 }
-.filterItem {
-    margin-right: 15px;
+
+.filterLeft {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+div.filterItem {
+    margin-right: 20px;
+    margin-bottom: 20px;
 }
 
 .title {

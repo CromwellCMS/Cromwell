@@ -6,7 +6,7 @@
     position: relative;
     z-index: 3;
     width: 100%;
-    max-width: 350px;
+    max-width: 300px;
     min-width: 170px;
     border-radius: 8px;
     transition-property: box-shadow, z-index;
@@ -23,9 +23,15 @@
         flex-direction: row;
         justify-content: center;
         align-items: center;
+        position: relative;
         border-radius: 8px 8px 0 0;
-        // height: 300px;
+        height: 200px;
         width: 100%;
+
+        a {
+            height: 100%;
+            width: 100%;
+        }
     }
 
     .image {
@@ -115,6 +121,7 @@
 
         .imageBlock {
             width: auto;
+            height: 260px;
 
             >a {
                 height: 100%;
@@ -133,10 +140,10 @@
     }
 }
 
-@media screen and (max-width: $mobileBreakpoint) {
-    .Product {
-        .imageBlock {
-            height: auto;
-        }
-    }
-}
+// @media screen and (max-width: $mobileBreakpoint) {
+//     .Product {
+//         .imageBlock {
+//             height: auto;
+//         }
+//     }
+// }

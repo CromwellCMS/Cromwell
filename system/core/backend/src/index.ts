@@ -43,12 +43,12 @@ export * from './models/paged/user.paged';
 export * from './models/paged/order.paged';
 export * from './models/paged/tag.paged';
 
-export * from './models/filter/product.filter';
-export * from './models/filter/post.filter';
-export * from './models/filter/product-category.filter';
-export * from './models/filter/order.filter';
-export * from './models/filter/user.filter';
-export * from './models/filter/product-review.filter';
+export * from './models/filters/product.filter';
+export * from './models/filters/post.filter';
+export * from './models/filters/product-category.filter';
+export * from './models/filters/order.filter';
+export * from './models/filters/user.filter';
+export * from './models/filters/product-review.filter';
 
 export * from './models/inputs/user.create';
 export * from './models/inputs/post.create';

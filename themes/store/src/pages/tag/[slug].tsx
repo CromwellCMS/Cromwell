@@ -31,7 +31,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
     const router = nextRouter?.useRouter?.();
-    
+
     const resetList = () => {
         const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.clearState();
@@ -98,7 +98,6 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
                             useQueryPagination
                             disableCaching
                             pageSize={20}
-                            maxDomPages={2}
                             scrollContainerSelector={`.${layoutStyles.Layout}`}
                             firstBatch={props.posts}
                             loader={handleGetPosts}

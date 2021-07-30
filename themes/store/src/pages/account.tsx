@@ -187,7 +187,7 @@ const Account = () => {
                                     collapsedByDefault={true} />
                             </div>
                             <div className={styles.detailsRow}>
-                                <p>Delivery:</p>
+                                <p>Shipping:</p>
                                 <b>{cstore.getPriceWithCurrency(order?.shippingPrice)}</b>
                             </div>
                             <div className={styles.detailsRow}>
