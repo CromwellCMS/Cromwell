@@ -9,7 +9,7 @@ import {
     Brackets,
 } from 'typeorm';
 
-import { ProductCategoryFilterInput } from '../models/filter/product-category.filter';
+import { ProductCategoryFilterInput } from '../models/filters/product-category.filter';
 import { ProductCategory } from '../models/entities/product-category.entity';
 import { getLogger } from '../helpers/logger';
 import { CreateProductCategory } from '../models/inputs/product-category.create';

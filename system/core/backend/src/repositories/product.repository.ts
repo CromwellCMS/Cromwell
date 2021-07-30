@@ -11,7 +11,7 @@ import {
 } from '@cromwell/core';
 import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
-import { ProductFilterInput } from '../models/filter/product.filter';
+import { ProductFilterInput } from '../models/filters/product.filter';
 import { PageStats } from '../models/entities/page-stats.entity';
 import { ProductReview } from '../models/entities/product-review.entity';
 import { Product } from '../models/entities/product.entity';

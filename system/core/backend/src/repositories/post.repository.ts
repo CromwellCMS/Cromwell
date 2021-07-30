@@ -3,7 +3,7 @@ import readingTime from 'reading-time';
 import sanitizeHtml from 'sanitize-html';
 import { EntityRepository, getCustomRepository, SelectQueryBuilder, Brackets } from 'typeorm';
 
-import { PostFilterInput } from '../models/filter/post.filter';
+import { PostFilterInput } from '../models/filters/post.filter';
 import { Post } from '../models/entities/post.entity';
 import { Tag } from '../models/entities/tag.entity';
 import { getLogger } from '../helpers/logger';

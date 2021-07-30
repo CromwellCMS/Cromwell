@@ -2,7 +2,7 @@ import { TDeleteManyInput, TPagedList, TPagedParams, TProductReview, TProductRev
 import sanitizeHtml from 'sanitize-html';
 import { Brackets, DeleteQueryBuilder, EntityRepository, getCustomRepository, SelectQueryBuilder } from 'typeorm';
 
-import { ProductReviewFilter } from '../models/filter/product-review.filter';
+import { ProductReviewFilter } from '../models/filters/product-review.filter';
 import { ProductReview } from '../models/entities/product-review.entity';
 import { getLogger } from '../helpers/logger';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
