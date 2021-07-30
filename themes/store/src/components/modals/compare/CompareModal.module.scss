@@ -1,6 +1,6 @@
 @import "../../../styles/common.module.scss";
 
-.watchedModal {
+.compareModal {
     height: 70vh;
     min-height: 500px;
     max-height: 100vh;
@@ -15,13 +15,14 @@
     border-radius: 10px;
     outline: none;
 
-    .watched {
+    .compareList {
         @include styledScrollBar;
         border-radius: 10px;
         width: 100%;
         height: 100%;
         overflow: auto;
         padding: 15px;
+        display: flex;
     }
 
     .closeBtn {
@@ -33,13 +34,13 @@
         border-radius: 100%;
     }
 
-    .checkoutBtn {
-        margin: 15px auto 0;
-    }
-
     .modalTitle {
         font-size: 24px;
         margin: 10px 15px 20px 15px;
+    }
+
+    .checkoutBtn {
+        margin: 15px auto 0;
     }
 
     .productCard {
@@ -48,7 +49,7 @@
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-    .watchedModal {
+    .compareModal {
         height: 90vh;
         width: 380px;
 

@@ -7,10 +7,11 @@ import React, { useEffect, useState } from 'react';
 import { appState } from '../../../helpers/AppState';
 import { useForceUpdate } from '../../../helpers/forceUpdate';
 import commonStyles from '../../../styles/common.module.scss';
-import { AddIcon, AddShoppingCartIcon, EqualizerIcon, FavoriteIcon, RemoveIcon, ShoppingCartIcon } from '../../icons';
+import { AddIcon, AddShoppingCartIcon, FavoriteIcon, RemoveIcon, ShoppingCartIcon } from '../../icons';
 import { toast } from '../../toast/toast';
 import styles from './ProductActions.module.scss';
 
+// import { EqualizerIcon } from '../icons';
 
 export const ProductActions = (props: {
     product: TProduct;
@@ -31,7 +32,7 @@ export const ProductActions = (props: {
     const inCart = cstore.isInCart(item);
     const sameQntInCart = cstore.hasSameQntInCart(item);
     const inWishlist = cstore.isInWishlist({ product });
-    const inCompare = cstore.isInCompare({ product });
+    // const inCompare = cstore.isInCompare({ product });
 
     useEffect(() => {
         cstore.onCartUpdate(() => {
@@ -93,26 +94,26 @@ export const ProductActions = (props: {
         }
     }
 
-    const handleAddToCompare = () => {
-        if (inCompare) {
-            appState.isCompareOpen = true;
-        } else {
-            const hasBeenAdded = cstore.addToCompare({ product });
-            if (hasBeenAdded) {
-                toast.success("Added! Click here to compare", {
-                    position: toast.POSITION.TOP_RIGHT,
-                    onClick: () => {
-                        appState.isCompareOpen = true;
-                    }
-                });
-            } else {
-                toast.warn("Product is already in your list!", {
-                    position: toast.POSITION.TOP_RIGHT
-                });
-            }
-            forceUpdate();
-        }
-    }
+    // const handleAddToCompare = () => {
+    //     if (inCompare) {
+    //         appState.isCompareOpen = true;
+    //     } else {
+    //         const hasBeenAdded = cstore.addToCompare({ product });
+    //         if (hasBeenAdded) {
+    //             toast.success("Added! Click here to compare", {
+    //                 position: toast.POSITION.TOP_RIGHT,
+    //                 onClick: () => {
+    //                     appState.isCompareOpen = true;
+    //                 }
+    //             });
+    //         } else {
+    //             toast.warn("Product is already in your list!", {
+    //                 position: toast.POSITION.TOP_RIGHT
+    //             });
+    //         }
+    //         forceUpdate();
+    //     }
+    // }
 
     return (
         <div className={styles.ProductActions}>
@@ -212,14 +213,14 @@ export const ProductActions = (props: {
                     className={clsx(styles.actionButton, commonStyles.button)}
                     startIcon={<FavoriteIcon />}
                 >{inWishlist ? 'Open Wishlist' : 'Save'}</Button>
-                <Button
+                {/* <Button
                     onClick={handleAddToCompare}
                     variant="outlined"
                     color="primary"
                     size="large"
                     className={clsx(styles.actionButton, commonStyles.button)}
                     startIcon={<EqualizerIcon />}
-                >{inCompare ? 'Open comparison list' : 'Compare'}</Button>
+                >{inCompare ? 'Open comparison list' : 'Compare'}</Button> */}
             </div>
 
         </div>

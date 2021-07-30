@@ -2,7 +2,7 @@
 @import "../../styles/common.module.scss";
 
 .Footer {
-    background: #111;
+    background: linear-gradient(144deg, #1b004b 0%, #34002e 100%);
     width: 100%;
     color: #fff;
 }
@@ -27,11 +27,13 @@
 .subscribeInputContainer {
     display: flex;
 }
+
 .subscribeInput {
     background-color: #fff;
     padding: 5px 10px;
     border-radius: 8px 0 0 8px;
 }
+
 button.subscribeBtn {
     border-radius: 0 8px 8px 0;
 }
@@ -54,6 +56,7 @@ button.subscribeBtn {
     font-weight: 500;
     margin-bottom: 10px;
 }
+
 .blockSubHeader {
     font-size: 16px;
     color: #fff;

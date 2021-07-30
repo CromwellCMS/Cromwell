@@ -9,6 +9,9 @@ export const useStyles = makeStyles(() =>
         },
         listItem: {
             margin: '0 10px',
+            '& div': {
+                margin: '0 auto',
+            }
         },
         popover: {
             pointerEvents: 'none',

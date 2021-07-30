@@ -8,13 +8,29 @@ import {
     TUser,
 } from '@cromwell/core';
 import { CContainer, CHTML, CPlugin, CText, getCStore, getRestAPIClient, Link } from '@cromwell/core-frontend';
-import { FormControl, ListItem, MenuItem, Popover, Select as MuiSelect, withStyles } from '@material-ui/core';
+import {
+    FormControl,
+    IconButton,
+    ListItem,
+    MenuItem,
+    Popover,
+    Select as MuiSelect,
+    Tooltip,
+    withStyles,
+} from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useEffect, useRef, useState } from 'react';
 
 import { appState } from '../../helpers/AppState';
 import commonStyles from '../../styles/common.module.scss';
-import { AccountCircleIcon, AccountCircleOutlinedIcon, ExitToAppIcon, ExpandMoreIcon } from '../icons';
+import {
+    AccountCircleIcon,
+    AccountCircleOutlinedIcon,
+    ExitToAppIcon,
+    ExpandMoreIcon,
+    FavoriteIcon,
+    VisibilityIcon,
+} from '../icons';
 import SingInModal from '../modals/signIn/SignIn';
 import styles from './Header.module.scss';
 import { HeaderSearch } from './HeaderSearch';
@@ -83,6 +99,14 @@ export const Header = () => {
         setStoreItem('userInfo', undefined);
     }
 
+    const handleOpenWishlist = () => {
+        appState.isWishlistOpen = true;
+    }
+
+    const handleOpenWatched = () => {
+        appState.isWatchedOpen = true;
+    }
+
     return (
         <CContainer global id="header_1" className={`${styles.Header} ${commonStyles.text}`}>
             <CContainer id="header_21" className={styles.topPanel}>
@@ -101,6 +125,18 @@ export const Header = () => {
                                 </Select>
                             </FormControl>
                         </CContainer>
+                        <CContainer id="header_51">
+                            <Tooltip title="Viewed items">
+                                <IconButton onClick={handleOpenWatched}>
+                                    <VisibilityIcon />
+                                </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Wishlist">
+                                <IconButton onClick={handleOpenWishlist}>
+                                    <FavoriteIcon />
+                                </IconButton>
+                            </Tooltip>
+                        </CContainer>
                         <CHTML id="header_02">
                             <div className={styles.languageOption}>
                             </div>
@@ -112,7 +148,7 @@ export const Header = () => {
                             <CText id="header_35">Welcome message</CText>
                         </CContainer>
                         <CContainer id="header_04" className={styles.topPanelLinks}>
-                            <CText id="header_31" href="/contact-us" className={clsx(commonStyles.link, styles.topPanelLink)}>Contact us</CText>
+                            <CText id="header_31" href="/pages/contact-us" className={clsx(commonStyles.link, styles.topPanelLink)}>Contact us</CText>
                             {!userInfo && (
                                 <CText id="header_32" onClick={() => setSingInOpen(true)} className={clsx(commonStyles.link, styles.topPanelLink)}>Sign in</CText>
                             )}

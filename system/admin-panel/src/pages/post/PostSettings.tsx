@@ -2,7 +2,7 @@ import 'date-fns';
 
 import { resolvePageRoute, serviceLocator, TPost, TTag } from '@cromwell/core';
 import DateFnsUtils from '@date-io/date-fns';
-import { IconButton, MenuItem, Popover, TextField } from '@material-ui/core';
+import { Checkbox, FormControlLabel, IconButton, MenuItem, Popover, TextField } from '@material-ui/core';
 import { Close as CloseIcon, HighlightOffOutlined, Wallpaper as WallpaperIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import { KeyboardDatePicker, MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -27,6 +27,7 @@ const PostSettings = (props: {
     const [slug, setSlug] = useState<string | undefined>(postData?.slug ?? null);
     const [tags, setTags] = useState<TTag[] | undefined>(postData?.tags ?? []);
     const [publishDate, setPublishDate] = useState<Date | undefined | null>(postData?.publishDate ?? null);
+    const [featured, setFeatured] = useState<boolean | undefined | null>(postData?.featured ?? null);
 
     const handleChangeImage = async () => {
         const photoPath = await getFileManager()?.getPhoto({
@@ -50,6 +51,7 @@ const PostSettings = (props: {
         newData.slug = slug;
         newData.tags = tags;
         newData.publishDate = publishDate;
+        newData.featured = featured;
         props.onClose(newData);
     }
 
@@ -148,6 +150,18 @@ const PostSettings = (props: {
                         }}
                     />
                 </MuiPickersUtilsProvider>
+                <FormControlLabel
+                    control={
+                        <Checkbox
+                            checked={featured}
+                            onChange={() => setFeatured(!featured)}
+                            color="primary"
+                        />
+                    }
+                    style={{ margin: '10px 0' }}
+                    className={styles.settingItem}
+                    label="Featured post"
+                />
                 <TextField
                     label="Meta title"
                     className={styles.settingItem}

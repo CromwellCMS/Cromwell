@@ -823,6 +823,7 @@ export class CGraphQLClient {
             content
             publishDate
             published
+            featured
       }
     `;
 

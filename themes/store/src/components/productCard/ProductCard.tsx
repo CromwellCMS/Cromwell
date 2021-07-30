@@ -1,17 +1,20 @@
-import { TAttribute, TProduct, TStoreListItem, onStoreChange, removeOnStoreChange } from '@cromwell/core';
+import { onStoreChange, removeOnStoreChange, TAttribute, TProduct, TStoreListItem } from '@cromwell/core';
 import { getCStore, Link } from '@cromwell/core-frontend';
 import { IconButton, Tooltip, useMediaQuery, useTheme } from '@material-ui/core';
 import { Rating } from '@material-ui/lab';
 import clsx from 'clsx';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { useResizeDetector } from 'react-resize-detector';
+import * as NextImage from 'next/image';
+import React, { useEffect, useRef } from 'react';
 
 import { appState } from '../../helpers/AppState';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import commonStyles from '../../styles/common.module.scss';
-import { AddShoppingCartIcon, EqualizerIcon, FavoriteBorderIcon, FavoriteIcon, ShoppingCartIcon } from '../icons';
+import { AddShoppingCartIcon, FavoriteBorderIcon, FavoriteIcon, ShoppingCartIcon } from '../icons';
 import { toast } from '../toast/toast';
 import styles from './ProductCard.module.scss';
+
+// import { EqualizerIcon } from '../icons';
+const Image = NextImage.default;
 
 export const ProductCard = (props?: {
     data?: TProduct;
@@ -23,7 +26,6 @@ export const ProductCard = (props?: {
     const forceUpdate = useForceUpdate();
     const productLink = `/product/${data?.slug ?? data?.id}`;
     const wrapperRef = useRef<HTMLDivElement>(null);
-    const [imageHeigth, setImageHeigth] = useState<number | null>(null);
     const cstore = getCStore();
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -36,28 +38,9 @@ export const ProductCard = (props?: {
     }
     const inCart = cstore.isInCart(item);
     const inWishlist = cstore.isInWishlist({ product });
-    const inCompare = cstore.isInCompare({ product });
-
-    const onResize = useCallback(() => {
-        // on resize logic
-        if (wrapperRef && wrapperRef.current) {
-            if (props?.variant === 'list') {
-                setImageHeigth(wrapperRef.current.offsetHeight);
-            }
-        }
-    }, []);
-
-    useResizeDetector({
-        handleHeight: false,
-        refreshMode: 'debounce',
-        refreshRate: 1000,
-        onResize,
-    });
-
+    // const inCompare = cstore.isInCompare({ product });
 
     useEffect(() => {
-        onResize();
-
         if (data?.id) {
             const cbId = 'ProductActions' + data.id;
             const onDataChange = () => {
@@ -132,36 +115,39 @@ export const ProductCard = (props?: {
         forceUpdate();
     }
 
-    const handleAddToCompare = () => {
-        if (inCompare) {
-            appState.isCompareOpen = true;
-        } else {
-            const hasBeenAdded = cstore.addToCompare({ product });
-            if (hasBeenAdded) {
-                toast.success("Added! Click here to compare", {
-                    position: toast.POSITION.TOP_RIGHT,
-                    onClick: () => {
-                        appState.isCompareOpen = true;
-                    }
-                });
-            } else {
-                toast.warn("Product is already in your list!", {
-                    position: toast.POSITION.TOP_RIGHT
-                });
-            }
-            forceUpdate();
-        }
-    }
+    // const handleAddToCompare = () => {
+    //     if (inCompare) {
+    //         appState.isCompareOpen = true;
+    //     } else {
+    //         const hasBeenAdded = cstore.addToCompare({ product });
+    //         if (hasBeenAdded) {
+    //             toast.success("Added! Click here to compare", {
+    //                 position: toast.POSITION.TOP_RIGHT,
+    //                 onClick: () => {
+    //                     appState.isCompareOpen = true;
+    //                 }
+    //             });
+    //         } else {
+    //             toast.warn("Product is already in your list!", {
+    //                 position: toast.POSITION.TOP_RIGHT
+    //             });
+    //         }
+    //         forceUpdate();
+    //     }
+    // }
+    const mainImage = data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png';
 
     return (
         <div className={clsx(styles.Product, commonStyles.onHoverLinkContainer,
             props?.className, (props?.variant === 'list' && !isMobile) ? styles.listVariant : null)}
             ref={wrapperRef}>
-            <div className={styles.imageBlock}
-                style={{ height: isMobile ? 'auto' : imageHeigth + 'px' }}
-            >
+            <div className={styles.imageBlock}>
                 <Link href={productLink}>
-                    <a><img className={styles.image} src={data?.mainImage} /></a>
+                    <a><Image
+                        objectFit="contain"
+                        layout="fill"
+                        src={mainImage}
+                    /></a>
                 </Link>
             </div>
             <div className={styles.caption}>
@@ -192,11 +178,11 @@ export const ProductCard = (props?: {
                     <Tooltip title="Add to wishlist">
                         <IconButton onClick={handleAddToWishlist}>{inWishlist ? <FavoriteIcon /> : <FavoriteBorderIcon />}</IconButton>
                     </Tooltip>
-                    <Tooltip title="Add to compare">
+                    {/* <Tooltip title="Add to compare">
                         <IconButton onClick={handleAddToCompare}>
                             <EqualizerIcon />
                         </IconButton>
-                    </Tooltip>
+                    </Tooltip> */}
                 </div>
                 <div className={styles.ratingBlock}>
                     <Rating name="read-only" value={data?.rating?.average} precision={0.5} readOnly />

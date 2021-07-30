@@ -41,6 +41,10 @@
     .checkoutBtn {
         margin: 15px auto 0;
     }
+
+    .productCard {
+        margin-bottom: 15px;
+    }
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
@@ -48,8 +52,9 @@
         height: 90vh;
         width: 380px;
 
-        .prductCard {
+        .productCard {
             margin: auto;
+            margin-bottom: 15px;
         }
     }
 }

@@ -32,6 +32,9 @@ export class CreatePost extends BasePageInput implements TPostInput {
   @Field(() => Boolean, { nullable: true })
   published: boolean;
 
+  @Field(() => Boolean, { nullable: true })
+  featured?: boolean;
+
   @Field(type => Date, { nullable: true })
   publishDate?: Date | null;
 }

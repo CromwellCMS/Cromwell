@@ -32,7 +32,8 @@
     font-weight: 500;
     color: #fff;
 }
-.desciption {
+
+.description {
     font-size: 22px;
     max-width: 700px;
     color: #fff;
@@ -45,6 +46,10 @@ div.coverImage {
     bottom: 0;
     left: 0;
     right: 0;
+
+    img {
+        height: 100%;
+    }
 }
 
 .postBigWrapper {
@@ -53,6 +58,7 @@ div.coverImage {
     margin-bottom: 15px;
     padding: 15px;
 }
+
 .postBigContent {
     // @include paperElevated;
     background-color: transparent;

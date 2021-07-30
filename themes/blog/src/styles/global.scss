@@ -1,3 +1,4 @@
+@import "./common.module.scss";
 @import "./variables.scss";
 
 * {
@@ -41,4 +42,8 @@ html, body, div, span, applet, object, iframe, h1, h2, h3, h4, h5, h6, p, blockq
 a {
   text-decoration: none;
   color: inherit;
+}
+
+div.MuiPaper-elevation8 {
+  @include paperElevated;
 }

@@ -88,7 +88,7 @@ Options of cmsconfig.json. Format: **optionName** `: type` (`defaultValue`) - de
     - **themeName** `: string` (`@cromwell/theme-store`) - NPM package name of an initial theme to use.
     - **logo** `: string` (`/themes/@cromwell/theme-store/shopping-cart.png`) - Path to web site logo in [public](/docs/overview/installation#working-directories) directory
     - **defaultPageSize** `: number` (`15`) - Page size to use by default in categories.
-    - **defaultShippingPrice** `: number` - Shipping price to use in standard shipment/delivery method. For now there's only this one method, but you will be able to add more in one of future updates. 
+    - **defaultShippingPrice** `: number` - Shipping price to use in standard shipping/delivery method. For now there's only this one method, but you will be able to add more in one of future updates. 
     - **currencies** `: Object[]` - Array of available currencies to use in the store. Currency object has following properties:
         - **id** `: string` - Unique id.
         - **tag** `: string` - Currency code such as "USD".

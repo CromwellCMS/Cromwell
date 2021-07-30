@@ -21,7 +21,6 @@ import { handleGetFilteredPosts } from '../helpers/getPosts';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/Blog.module.scss';
 
-
 interface BlogProps {
     posts?: TPagedList<TPost>;
     tags?: TTag[];
@@ -37,6 +36,7 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
         const list = getBlockInstance<TCList>(listId)?.getContentInstance();
         list?.clearState();
         list?.init();
+        list?.updateData();
     }
 
     const updateList = () => {
@@ -121,7 +121,6 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
                         useQueryPagination
                         disableCaching
                         pageSize={20}
-                        maxDomPages={2}
                         scrollContainerSelector={`.${layoutStyles.Layout}`}
                         firstBatch={props.posts}
                         loader={handleGetPosts}

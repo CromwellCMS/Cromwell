@@ -413,7 +413,7 @@ export class CStore {
         await this.updateList(wishlistKey);
     }
 
-    public updateComparisionList = async () => {
+    public updateComparisonList = async () => {
         await this.updateList(compareKey);
     }
 

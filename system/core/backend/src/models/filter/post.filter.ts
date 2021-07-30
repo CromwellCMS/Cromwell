@@ -15,4 +15,7 @@ export class PostFilterInput implements TPostFilter {
 
     @Field(type => Boolean, { nullable: true })
     published: boolean;
+
+    @Field(type => Boolean, { nullable: true })
+    featured: boolean;
 }

@@ -69,6 +69,7 @@ export class PostRepository extends BaseRepository<Post> {
         post.delta = input.delta;
         post.excerpt = input.excerpt;
         post.published = input.published;
+        post.featured = input.featured;
         post.authorId = input.authorId;
         post.publishDate = input.publishDate;
     }
@@ -148,6 +149,22 @@ export class PostRepository extends BaseRepository<Post> {
             }
         }
 
+        // Filter by featured
+        if (filterParams?.featured !== undefined && filterParams?.featured !== null) {
+
+            if (filterParams.featured === true) {
+                qb.andWhere(`${this.metadata.tablePath}.featured IS NOT NULL`);
+                qb.andWhere(`${this.metadata.tablePath}.featured != 0`);
+            }
+
+            if (filterParams.featured === false) {
+                const brackets = new Brackets(subQb => {
+                    subQb.where(`${this.metadata.tablePath}.featured = 0`);
+                    subQb.orWhere(`${this.metadata.tablePath}.featured IS NULL`);
+                });
+                qb.andWhere(brackets);
+            }
+        }
         return qb;
     }
 

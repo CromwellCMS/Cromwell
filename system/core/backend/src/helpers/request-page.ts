@@ -26,6 +26,6 @@ export const requestPage = async (pageName: TDefaultPageName, routeOptions?: {
     try {
         await fetch(pageRoute);
     } catch (error) {
-        getLogger().error(error);
+        getLogger(false).error(error);
     }
 }
