@@ -1,6 +1,6 @@
 import { TUser, TUserRole } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, Index } from 'typeorm';
+import { Column, Entity, getConnection, Index } from 'typeorm';
 
 import { BasePageEntity } from './base-page.entity';
 
@@ -43,10 +43,6 @@ export class User extends BasePageEntity implements TUser {
     @Column({ type: "varchar", nullable: false })
     password: string;
 
-    /**
-     * Stringified array of Refresh tokens. We create one token per client during log-in
-     * And then update them in this array on refresh Access token
-     */
     @Column({ type: "varchar", nullable: true, length: 500 })
     refreshToken?: string | null;
 
@@ -55,6 +51,6 @@ export class User extends BasePageEntity implements TUser {
     resetPasswordCode?: string | null;
 
     // A date when resetPasswordCode was generated
-    @Column({ type: "datetime", nullable: true })
+    @Column({ type: Date, nullable: true })
     resetPasswordDate?: Date | null;
 }

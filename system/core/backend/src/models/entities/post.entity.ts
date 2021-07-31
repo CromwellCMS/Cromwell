@@ -1,6 +1,6 @@
 import { TPost, TPostComment } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, getConnection, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
 import { BasePageEntity } from './base-page.entity';
 import { PostComment } from './post-comment.entity';
@@ -51,7 +51,7 @@ export class Post extends BasePageEntity implements TPost {
     published?: boolean | null;
 
     @Field(type => Date, { nullable: true })
-    @Column({ type: "datetime", nullable: true })
+    @Column({ type: Date, nullable: true })
     publishDate?: Date | null;
 
     @OneToMany(type => PostComment, comment => comment.post, {

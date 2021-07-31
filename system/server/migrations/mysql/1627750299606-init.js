@@ -1,7 +1,7 @@
 const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class init1627601031700 {
-    name = 'init1627601031700'
+module.exports = class init1627750299606 {
+    name = 'init1627750299606'
 
     async up(queryRunner) {
         await queryRunner.query("CREATE TABLE `crw_base_page_entity` (`id` int NOT NULL AUTO_INCREMENT, `slug` varchar(255) NULL, `pageTitle` varchar(255) NULL, `pageDescription` varchar(255) NULL, `createDate` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6), `updateDate` datetime(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6), `isEnabled` tinyint NULL DEFAULT 1, UNIQUE INDEX `IDX_33d156210ae42177f24eb55b52` (`slug`), PRIMARY KEY (`id`)) ENGINE=InnoDB");

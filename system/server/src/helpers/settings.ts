@@ -14,6 +14,7 @@ import cacache from 'cacache';
 import cryptoRandomString from 'crypto-random-string';
 import fs from 'fs-extra';
 import { resolve } from 'path';
+import { ConnectionOptions } from 'typeorm';
 import yargs from 'yargs-parser';
 
 import { TServerCommands } from './constants';
@@ -143,3 +144,9 @@ export const authSettings = {
 }
 
 export const bcryptSaltRounds = 10;
+
+export const getMigrationsDirName = (dbType: ConnectionOptions['type']) => {
+    if (dbType === 'sqlite') return 'migrations/sqlite';
+    if (dbType === 'mysql' || dbType === 'mariadb') return 'migrations/mysql';
+    if (dbType === 'postgres') return 'migrations/postgres';
+}

@@ -17,6 +17,8 @@ interface BlogProps {
 const IndexPage: TCromwellPage<BlogProps> = (props) => {
     const featuredPost1 = props.featuredPosts?.elements?.[0];
     const featuredPost2 = props.featuredPosts?.elements?.[1];
+    const otherPosts = (props.posts?.elements ?? []).filter(post =>
+        post.id !== featuredPost1?.id && post.id !== featuredPost2?.id)
 
     return (
         <Layout>
@@ -57,7 +59,7 @@ const IndexPage: TCromwellPage<BlogProps> = (props) => {
                 <CContainer id="main_7" className={commonStyles.content}>
                     <CText id="main_21" className={styles.latestText}>Latest posts</CText>
                     <div className={styles.postGrid}>
-                        {props.posts?.elements?.slice(2, 8)?.map(postData => (
+                        {otherPosts.map(postData => (
                             <div key={postData.id} className={blogStyles.postWrapper}>
                                 <PostCard data={postData} key={postData?.id} />
                             </div>

@@ -16,7 +16,7 @@ import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import { Container } from 'typedi';
-import { ConnectionOptions, createConnection, getConnection, getCustomRepository } from 'typeorm';
+import { ConnectionOptions, createConnection, getConnection, getCustomRepository, Logger } from 'typeorm';
 import { MysqlConnectionOptions } from 'typeorm/driver/mysql/MysqlConnectionOptions';
 import yargs from 'yargs-parser';
 
@@ -25,9 +25,9 @@ import { MockService } from '../services/mock.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
 import { collectPlugins } from './collectPlugins';
-import { loadEnv } from './settings';
+import { DeepWriteable, Writeable } from './constants';
+import { getMigrationsDirName, loadEnv } from './settings';
 
-type Writeable<T> = { -readonly [P in keyof T]: T[P] };
 const logger = getLogger();
 
 export const connectDatabase = async (ormConfigOverride?: Partial<Writeable<ConnectionOptions & MysqlConnectionOptions>>,
@@ -44,15 +44,31 @@ export const connectDatabase = async (ormConfigOverride?: Partial<Writeable<Conn
         entityPrefix: 'crw_',
         migrationsTableName: "crw_migrations",
         cli: {
-            migrationsDir: "migrations"
-        }
+            migrationsDir: "migrations/sqlite"
+        },
+        logging: ["error", "warn", "info", "migration"],
+        logger: {
+            logQuery: () => null,
+            logQueryError: logger.error,
+            logQuerySlow: logger.warn,
+            logSchemaBuild: logger.log,
+            logMigration: logger.info,
+            log: (level, message) => {
+                if (level === 'info') logger.info(message);
+                if (level === 'warn') logger.warn(message);
+                if (level === 'log') logger.log(message);
+            },
+        } as Logger,
     }
 
     let hasDatabasePath = false;
     const serverDir = getServerDir();
     if (cmsConfig?.orm?.database) hasDatabasePath = true;
 
-    let ormconfig: ConnectionOptions = Object.assign({}, defaultOrmConfig, ormConfigOverride, cmsConfig.orm)
+    let ormconfig: DeepWriteable<ConnectionOptions> = Object.assign({}, defaultOrmConfig, ormConfigOverride, cmsConfig.orm)
+
+    if (!ormconfig.cli) ormconfig.cli = {};
+    ormconfig.cli.migrationsDir = getMigrationsDirName(ormconfig.type);
 
     if (!ormconfig || !ormconfig.type) throw new Error('Invalid ormconfig');
     setStoreItem('dbInfo', {
@@ -60,7 +76,9 @@ export const connectDatabase = async (ormConfigOverride?: Partial<Writeable<Conn
     });
 
     // Adjust unset options for different DBs
-    const adjustedOptions: Partial<Writeable<ConnectionOptions & MysqlConnectionOptions>> = {};
+    const adjustedOptions: Partial<DeepWriteable<ConnectionOptions & MysqlConnectionOptions>> = {};
+    adjustedOptions.migrationsRun = true;
+    adjustedOptions.synchronize = false;
 
     if (ormconfig.type === 'sqlite') {
         if (env.envMode === 'dev') {
@@ -79,21 +97,20 @@ export const connectDatabase = async (ormConfigOverride?: Partial<Writeable<Conn
         }
     }
 
-    if (ormconfig.type === 'mysql' || ormconfig.type === 'mariadb' || ormconfig.type === 'postgres') {
-        adjustedOptions.migrationsRun = true;
-        adjustedOptions.synchronize = false;
+    if (ormconfig.type === 'mysql' || ormconfig.type === 'mariadb') {
+        adjustedOptions.timezone = '+0';
     }
 
-    if (ormconfig.type === 'mysql' || ormconfig.type === 'mariadb') {
+    if (ormconfig.type === 'postgres') {
         adjustedOptions.timezone = '+0';
     }
 
     ormconfig = Object.assign(adjustedOptions, ormconfig);
 
-    const pluginExports = await collectPlugins();
+    const pluginExports = await collectPlugins(true);
 
     const connectionOptions: ConnectionOptions = {
-        ...ormconfig,
+        ...(ormconfig as ConnectionOptions),
         entities: [
             ...ORMEntities,
             ...(pluginExports.entities ?? [] as any),
