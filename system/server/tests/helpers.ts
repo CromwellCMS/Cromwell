@@ -19,6 +19,9 @@ export const mockWorkingDirectory = async (name: string): Promise<string> => {
 
     const cmsConfig = await readCMSConfig();
     setStoreItem('cmsSettings', cmsConfig);
+    setStoreItem('environment', {
+        mode: 'dev',
+    });
 
     return testDir;
 }

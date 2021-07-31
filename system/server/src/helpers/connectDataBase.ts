@@ -83,6 +83,7 @@ export const connectDatabase = async (ormConfigOverride?: Partial<Writeable<Conn
     if (ormconfig.type === 'sqlite') {
         if (env.envMode === 'dev') {
             adjustedOptions.synchronize = true;
+            adjustedOptions.migrationsRun = false;
         }
 
         if (!hasDatabasePath) {

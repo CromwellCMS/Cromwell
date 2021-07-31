@@ -1,6 +1,6 @@
 import { TPost, TPostComment } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, getConnection, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
+import { Column, Entity, Index, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 
 import { BasePageEntity } from './base-page.entity';
 import { PostComment } from './post-comment.entity';

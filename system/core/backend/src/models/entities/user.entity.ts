@@ -1,6 +1,6 @@
 import { TUser, TUserRole } from '@cromwell/core';
 import { Field, ObjectType } from 'type-graphql';
-import { Column, Entity, getConnection, Index } from 'typeorm';
+import { Column, Entity, Index } from 'typeorm';
 
 import { BasePageEntity } from './base-page.entity';
 

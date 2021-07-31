@@ -23,7 +23,7 @@ export const setupResolver = async (name: string): Promise<ApolloServer> => {
         },
     });
 
-    await connectDatabase({ synchronize: true }, true);
+    await connectDatabase({ synchronize: true, migrationsRun: false }, true);
 
     let cmsSettings = getStoreItem('cmsSettings');
     if (!cmsSettings) cmsSettings = {};
