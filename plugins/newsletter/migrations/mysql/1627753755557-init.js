@@ -1,14 +1,13 @@
-import {MigrationInterface, QueryRunner} from "typeorm";
+const { MigrationInterface, QueryRunner } = require("typeorm");
 
-export class init1623451249312 implements MigrationInterface {
-    name = 'init1623451249312'
+module.exports = class init1627753755557 {
+    name = 'init1627753755557'
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
+    async up(queryRunner) {
         await queryRunner.query("CREATE TABLE `crw_plugin_newsletter__newsletter_form` (`id` int NOT NULL AUTO_INCREMENT, `email` varchar(255) NOT NULL, PRIMARY KEY (`id`)) ENGINE=InnoDB");
     }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
+    async down(queryRunner) {
         await queryRunner.query("DROP TABLE `crw_plugin_newsletter__newsletter_form`");
     }
-
 }

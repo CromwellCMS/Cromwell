@@ -339,17 +339,17 @@ export class CmsService {
                     createDate: format(new Date(Date.now()), 'd MMMM yyyy'),
                     logoUrl: (settings?.logo) && fromUrl + '/' + settings.logo,
                     orderLink: (themeConfig?.defaultPages?.account) && fromUrl + '/' + themeConfig.defaultPages.account,
-                    totalPrice: cstore.getPriceWithCurrency(orderTotal.orderTotalPrice),
+                    totalPrice: cstore.getPriceWithCurrency((orderTotal.orderTotalPrice ?? 0).toFixed(2)),
                     unsubscribeUrl: fromUrl,
                     products: (cart ?? []).map(item => {
                         return {
                             link: (themeConfig?.defaultPages?.product && item?.product?.slug) ?
                                 resolvePageRoute('product', { slug: item.product.slug }) : '/',
                             title: `${item?.amount ? item.amount + ' x ' : ''}${item?.product?.name ?? ''}`,
-                            price: cstore.getPriceWithCurrency((item.product?.price ?? 0) * (item.amount ?? 1)),
+                            price: cstore.getPriceWithCurrency(((item.product?.price ?? 0) * (item.amount ?? 1)).toFixed(2)),
                         }
                     }),
-                    shippingPrice: cstore.getPriceWithCurrency(orderTotal.shippingPrice),
+                    shippingPrice: cstore.getPriceWithCurrency((orderTotal.shippingPrice ?? 0).toFixed(2)),
                 }
 
                 const compiledEmail = await getEmailTemplate('order.hbs', mailProps);
@@ -430,7 +430,7 @@ export class CmsService {
                             price_data: {
                                 currency: currency?.toLowerCase() ?? 'usd',
                                 unit_amount_decimal: (parseFloat(store.convertPrice(item.product?.price ?? 0,
-                                    defaultCurrency, currency) + '') * 100) + '',
+                                    defaultCurrency, currency) + '') * 100).toFixed(2),
                                 product_data: {
                                     // images: item.product?.images,
                                     name: item.product?.name + '',
@@ -441,7 +441,7 @@ export class CmsService {
                             price_data: {
                                 currency: currency?.toLowerCase() ?? 'usd',
                                 unit_amount_decimal: (parseFloat(store.convertPrice(total?.shippingPrice ?? 0,
-                                    defaultCurrency, currency) + '') * 100) + '',
+                                    defaultCurrency, currency) + '') * 100).toFixed(2),
                                 product_data: {
                                     name: 'shipping',
                                 },

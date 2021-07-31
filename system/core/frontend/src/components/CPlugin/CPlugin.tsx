@@ -33,7 +33,7 @@ export class CPlugin extends React.Component<CPluginProps> {
 
                     if (!name) return <></>;
 
-                    const pluginConf = getStoreItem('plugins')?.[name]
+                    const pluginConf = getStoreItem('plugins')?.[name];
                     const pluginData = pluginConf?.data ?? {};
                     const settings = pluginConf?.settings ?? {};
 

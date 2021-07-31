@@ -33,7 +33,7 @@ import { debounce } from 'throttle-debounce';
 import { defaultSettings } from '../constants';
 import { TInstanceSettings, TProductFilterSettings } from '../types';
 import { Slider } from './components/slider';
-import { filterCList, TProductFilterData } from './service';
+import { filterCList, setListProps, TProductFilterData } from './service';
 import { useStyles } from './styles';
 
 const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>);
@@ -57,6 +57,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     const pcCollapsedByDefault = props.globalSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
     const mobileCollapsedByDefault = props.globalSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
     const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
+    const productListId = props.instanceSettings?.listId ?? props?.globalSettings?.listId;
     const router = nextRouter?.useRouter?.();
 
     if (collapsedByDefault.current !== _collapsedByDefault) {
@@ -79,12 +80,9 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         }
     }
 
-    const applyFilter = () => {
-        const productListId = props.instanceSettings?.listId ?? props?.globalSettings?.listId;
-        const productCategoryId = productCategory?.id;
+    const getFilterParams = (): TProductFilter => {
         const nameSearch = search.current;
-
-        const filterParams: TProductFilter = {
+        return {
             attributes: Object.keys(checkedAttrs).map(key => ({
                 key, values: checkedAttrs[key]
             })),
@@ -92,6 +90,12 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
             maxPrice: priceRange.current[1],
             nameSearch: (nameSearch && nameSearch !== '') ? nameSearch : undefined,
         }
+    }
+
+    setListProps(productListId, productCategory, client, getFilterParams(), updateFilterMeta);
+
+    const applyFilter = () => {
+        const filterParams = getFilterParams();
 
         props.instanceSettings?.onChange?.(filterParams);
 
@@ -99,12 +103,12 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
             // console.error('ProductFilter:applyFilter: !productListId', props?.settings)
             return;
         }
-        if (!productCategoryId) {
+        if (!productCategory?.id) {
             // console.error('ProductFilter:applyFilter: !productCategoryId', productCategory)
             return;
         }
 
-        filterCList(filterParams, productListId, productCategoryId, client, updateFilterMeta)
+        filterCList(filterParams, productListId, productCategory, client, updateFilterMeta)
     }
 
     useEffect(() => {

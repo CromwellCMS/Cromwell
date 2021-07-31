@@ -13,6 +13,7 @@ import {
 import { readCmsModules } from './cms-modules';
 
 export type TPluginInfo = {
+    pluginDir: string;
     pluginName: string;
     frontendPath?: string
     adminPanelPath?: string;
@@ -33,7 +34,8 @@ export const readPluginsExports = async (): Promise<TPluginInfo[]> => {
         if (!pluginDir) continue;
 
         const pluginInfo: TPluginInfo = {
-            pluginName: name
+            pluginName: name,
+            pluginDir,
         };
 
         const frontendPath = getPluginFrontendBundlePath(resolve(pluginDir, buildDirName));

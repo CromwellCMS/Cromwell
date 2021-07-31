@@ -23,7 +23,7 @@ export const setupController = async (name: string) => {
         },
     });
 
-    await connectDatabase({ synchronize: true }, true);
+    await connectDatabase({ synchronize: true, migrationsRun: false }, true);
 
     let cmsSettings = getStoreItem('cmsSettings');
     if (!cmsSettings) cmsSettings = {};

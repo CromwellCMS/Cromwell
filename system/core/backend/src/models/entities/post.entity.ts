@@ -51,7 +51,7 @@ export class Post extends BasePageEntity implements TPost {
     published?: boolean | null;
 
     @Field(type => Date, { nullable: true })
-    @Column({ type: "datetime", nullable: true })
+    @Column({ type: Date, nullable: true })
     publishDate?: Date | null;
 
     @OneToMany(type => PostComment, comment => comment.post, {

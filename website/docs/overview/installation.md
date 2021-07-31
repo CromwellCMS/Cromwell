@@ -160,8 +160,7 @@ And if there's no config provided CMS will create and use a new SQLite database 
 
 
 :::note
-** SQLite is not supported by us for production usage! ** You can still use it for preview or development but later you have to switch to MySQL/MariaDB/PostgreSQL. If you try to upgrade CMS to a new version with SQLite in future, system can possibly crash.  
-Read in the [next post](/docs/overview/configuration) how to connect a database.  
+It's recommended to use SQLite only in development. For production you have to switch to MySQL/MariaDB/PostgreSQL. Read in the [next post](/docs/overview/configuration) how to setup a database.  
 :::
 
 #### Working directories

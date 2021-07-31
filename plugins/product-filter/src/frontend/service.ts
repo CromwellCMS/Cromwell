@@ -20,6 +20,28 @@ export type TProductFilterData = {
     filterMeta?: TProductFilterMeta;
 }
 
+export const setListProps = (productListId?: string,
+    productCategory?: TProductCategory,
+    client?: TCGraphQLClient | undefined,
+    filterOptions?: TProductFilter,
+    cb?: (data: TFilteredProductList | undefined) => any
+) => {
+    if (!productListId || !productCategory || !filterOptions) return;
+    const list = getBlockInstance<TCList>(productListId)?.getContentInstance();
+    if (!list) return;
+
+    const listProps = Object.assign({}, list.getProps());
+    listProps.loader = async (pagedParams: TPagedParams<TProduct>): Promise<TFilteredProductList | undefined> => {
+        // const timestamp = Date.now();
+        const filtered = await getFiltered(client, productCategory?.id, pagedParams, filterOptions, cb);
+        // const timestamp2 = Date.now();
+        // console.log('ProductFilterResolver::getFilteredProducts time elapsed: ' + (timestamp2 - timestamp) + 'ms');
+        return filtered;
+    };
+    listProps.firstBatch = undefined;
+    list.setProps(listProps);
+}
+
 const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: string, pagedParams: TPagedParams<TProduct>,
     filterParams: TProductFilter, cb?: (data: TFilteredProductList | undefined) => void): Promise<TFilteredProductList | undefined> => {
 
@@ -61,21 +83,15 @@ const getFiltered = async (client: TCGraphQLClient | undefined, categoryId: stri
     return filteredList;
 }
 
-export const filterCList = (filterOptions: TProductFilter, productListId: string,
-    productCategoryId: string, client: TCGraphQLClient | undefined, cb: (data: TFilteredProductList | undefined) => void) => {
-
+export const filterCList = (filterOptions: TProductFilter,
+    productListId: string,
+    productCategory: TProductCategory,
+    client: TCGraphQLClient | undefined,
+    cb: (data: TFilteredProductList | undefined) => void
+) => {
     const list = getBlockInstance<TCList>(productListId)?.getContentInstance();
     if (list) {
-        const listProps = Object.assign({}, list.getProps());
-        listProps.loader = async (pagedParams: TPagedParams<TProduct>): Promise<TFilteredProductList | undefined> => {
-            // const timestamp = Date.now();
-            const filtered = await getFiltered(client, productCategoryId, pagedParams, filterOptions, cb);
-            // const timestamp2 = Date.now();
-            // console.log('ProductFilterResolver::getFilteredProducts time elapsed: ' + (timestamp2 - timestamp) + 'ms');
-            return filtered;
-        };
-        listProps.firstBatch = undefined;
-        list.setProps(listProps);
+        setListProps(productListId, productCategory, client, filterOptions, cb);
         list.clearState();
         list.init();
     }

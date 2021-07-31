@@ -127,12 +127,12 @@ export const Header = () => {
                         </CContainer>
                         <CContainer id="header_51">
                             <Tooltip title="Viewed items">
-                                <IconButton onClick={handleOpenWatched}>
+                                <IconButton onClick={handleOpenWatched} style={{ margin: '-12px 0' }}>
                                     <VisibilityIcon />
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title="Wishlist">
-                                <IconButton onClick={handleOpenWishlist}>
+                                <IconButton onClick={handleOpenWishlist} style={{ margin: '-12px 0' }}>
                                     <FavoriteIcon />
                                 </IconButton>
                             </Tooltip>

@@ -120,7 +120,8 @@
         }
 
         .imageBlock {
-            width: auto;
+            min-width: 260px;
+            width: 260px;
             height: 260px;
 
             >a {
