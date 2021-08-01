@@ -8,7 +8,7 @@
     "build"
   ],
   "keywords": [],
-  "author": "CromwellJS",
+  "author": "CromwellCMS",
   "license": "MIT",
   "scripts": {
     "build": "npx rollup -c",
@@ -69,7 +69,7 @@
     "rollup-plugin-ts-compiler": "^1.0.16",
     "ts-jest": "^26.5.0",
     "ts-node": "^9.1.1",
-    "typescript": "4.2.4",
+    "typescript": "4.3.5",
     "webpack-cli": "^3.3.12"
   }
 }

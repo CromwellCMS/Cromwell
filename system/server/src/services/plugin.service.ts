@@ -122,40 +122,6 @@ export class PluginService {
         return false;
     }
 
-    public async getPluginConfig(pluginName: string) {
-        const plugin = await this.findOne(pluginName);
-
-        if (!plugin) {
-            throw new HttpException('pluginName not found', HttpStatus.NOT_FOUND);
-        }
-
-        let defaultSettings;
-        let settings;
-        try {
-            if (plugin.defaultSettings) defaultSettings = JSON.parse(plugin.defaultSettings);
-        } catch (e) {
-            getLogger(false).error(e);
-        }
-        try {
-            if (plugin.settings) settings = JSON.parse(plugin.settings);
-        } catch (e) {
-            getLogger(false).error(e);
-        }
-
-        return Object.assign({}, defaultSettings, settings);
-    }
-
-    public async savePluginConfig(pluginName: string, input: any) {
-        const plugin = await this.findOne(pluginName);
-
-        if (!plugin) {
-            throw new HttpException(`Plugin ${pluginName} was not found`, HttpStatus.NOT_FOUND);
-        }
-
-        plugin.settings = typeof input === 'string' ? input : JSON.stringify(input);
-        await this.save(plugin);
-        return true;
-    }
 
     /**
      * Reads files of a plugin in frontend or admin directory.

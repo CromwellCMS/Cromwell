@@ -230,7 +230,7 @@ const ProductList = (props: TPropsType) => {
                         </div>
                         <CPlugin
                             plugin={{
-                                settings: {
+                                instanceSettings: {
                                     disableMobile: true,
                                     onChange: onFilterChange,
                                 }

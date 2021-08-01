@@ -41,7 +41,7 @@ export const getNodeModuleDir = async (moduleName: string) => {
     } catch (e) { }
 }
 
-export const getCMSConfigPath = () => resolve(process.cwd(), cmsConfigFileName);
+export const getCMSConfigPath = (dir?: string) => resolve(dir ?? process.cwd(), cmsConfigFileName);
 
 export const getCoreCommonDir = () => getNodeModuleDirSync('@cromwell/core');
 export const getCoreFrontendDir = () => getNodeModuleDirSync('@cromwell/core-backend');

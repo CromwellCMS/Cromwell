@@ -8,15 +8,15 @@ import { TSettings } from '../types';
 export function SettingsPage(props: TPluginSettingsProps<TSettings>) {
     const apiClient = getRestAPIClient();
     const [isLoading, setIsloading] = useState(false);
-    const { pluginName, globalSettings } = props;
-    const [size, setSize] = useState(globalSettings?.size ?? 20);
+    const { pluginName, pluginSettings } = props;
+    const [size, setSize] = useState(pluginSettings?.size ?? 20);
     const classes = useStyles();
 
     const handleSave = async () => {
         setIsloading(true);
-        if (globalSettings) {
-            globalSettings.size = size;
-            await apiClient?.savePluginSettings(pluginName, globalSettings);
+        if (pluginSettings) {
+            pluginSettings.size = size;
+            await apiClient?.savePluginSettings(pluginName, pluginSettings);
         }
         setIsloading(false);
     }

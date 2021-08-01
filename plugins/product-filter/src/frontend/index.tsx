@@ -31,7 +31,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
 
 import { defaultSettings } from '../constants';
-import { TInstanceSettings, TProductFilterSettings } from '../types';
+import { TInstanceSettings } from '../types';
 import { Slider } from './components/slider';
 import { filterCList, setListProps, TProductFilterData } from './service';
 import { useStyles } from './styles';
@@ -40,7 +40,7 @@ const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10
 const FilterListIcon = iconFromPath(<path d="M10 18h4v-2h-4v2zM3 6v2h18V6H3zm3 7h12v-2H6v2z"></path>);
 const CloseIcon = iconFromPath(<path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path>);
 
-const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductFilterSettings, TInstanceSettings>): JSX.Element => {
+const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TInstanceSettings>): JSX.Element => {
     const { attributes, productCategory, filterMeta } = props.data ?? {};
     const [checkedAttrs, setCheckedAttrs] = useState<Record<string, string[]>>({});
     const [collapsedItems, setCollapsedItems] = useState<Record<string, boolean>>({});
@@ -54,10 +54,10 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
     const client = getGraphQLClient();
     const theme = useTheme();
     const isMobile = !props.instanceSettings?.disableMobile && useMediaQuery(theme.breakpoints.down('xs'));
-    const pcCollapsedByDefault = props.globalSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
-    const mobileCollapsedByDefault = props.globalSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
+    const pcCollapsedByDefault = props.data?.pluginSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
+    const mobileCollapsedByDefault = props.data?.pluginSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
     const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
-    const productListId = props.instanceSettings?.listId ?? props?.globalSettings?.listId;
+    const productListId = props.instanceSettings?.listId ?? props.data?.pluginSettings?.listId;
     const router = nextRouter?.useRouter?.();
 
     if (collapsedByDefault.current !== _collapsedByDefault) {
@@ -349,7 +349,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TProductF
         const onOpen = () => {
 
         }
-        const mobileIconPosition = props.globalSettings?.mobileIconPosition ?? defaultSettings.mobileIconPosition;
+        const mobileIconPosition = props.data?.pluginSettings?.mobileIconPosition ?? defaultSettings.mobileIconPosition;
 
         return (
             <div>

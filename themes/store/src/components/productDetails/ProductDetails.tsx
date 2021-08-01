@@ -1,4 +1,4 @@
-import { CContainer, CGallery, CImage, cromwellIdToHTML, CText, getCStore } from '@cromwell/core-frontend';
+import { CContainer, CGallery, CImage, getBlockHtmlId, CText, getCStore } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import * as nextRouter from 'next/router';
 import React, { useEffect, useRef } from 'react';
@@ -28,7 +28,7 @@ export default function ProductDetails(props: {
 
 
     const scrollToReviews = () => {
-        document.getElementById(cromwellIdToHTML('product_reviewsBlock'))?.scrollIntoView({ behavior: "smooth" });
+        document.getElementById(getBlockHtmlId('product_reviewsBlock'))?.scrollIntoView({ behavior: "smooth" });
     }
 
     const hasImages = !!product?.images?.length;

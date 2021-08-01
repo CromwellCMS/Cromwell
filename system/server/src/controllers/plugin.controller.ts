@@ -1,5 +1,5 @@
-import { TFrontendBundle, TPluginConfig } from '@cromwell/core';
-import { getLogger, JwtAuthGuard, Roles } from '@cromwell/core-backend';
+import { TFrontendBundle } from '@cromwell/core';
+import { getLogger, getPluginSettings, JwtAuthGuard, Roles, savePluginSettings } from '@cromwell/core-backend';
 import { Body, Controller, Get, HttpException, HttpStatus, Post, Query, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -16,8 +16,9 @@ export class PluginController {
 
     constructor(private readonly pluginService: PluginService) { }
 
-
     @Get('settings')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator', 'guest')
     @ApiOperation({
         description: 'Returns JSON settings of a plugin by pluginName.',
         parameters: [{ name: 'pluginName', in: 'query', required: true }]
@@ -25,15 +26,17 @@ export class PluginController {
     @ApiResponse({
         status: 200,
     })
-    async getPluginConfig(@Query('pluginName') pluginName: string): Promise<TPluginConfig | undefined> {
-        logger.log('PluginController::getPluginConfig ' + pluginName);
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async getPluginSettings(@Query('pluginName') pluginName: string): Promise<any | undefined> {
+        logger.log('PluginController::getPluginSettings ' + pluginName);
 
         if (!pluginName || pluginName === '')
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        return this.pluginService.getPluginConfig(pluginName);
+        return getPluginSettings(pluginName);
     }
 
+    
     @Post('settings')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')
@@ -46,13 +49,13 @@ export class PluginController {
         type: Boolean
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async savePluginConfig(@Query('pluginName') pluginName: string, @Body() input): Promise<boolean> {
-        logger.log('PluginController::savePluginConfig');
+    async savePluginSettings(@Query('pluginName') pluginName: string, @Body() input): Promise<boolean> {
+        logger.log('PluginController::savePluginSettings');
 
         if (!pluginName || pluginName === '')
             throw new HttpException(`Invalid plugin name: ${pluginName}`, HttpStatus.NOT_ACCEPTABLE);
 
-        return this.pluginService.savePluginConfig(pluginName, input);
+        return savePluginSettings(pluginName, input);
     }
 
 
@@ -87,7 +90,6 @@ export class PluginController {
         status: 200,
         type: FrontendBundleDto
     })
-    @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getPluginAdminBundle(@Query('pluginName') pluginName: string): Promise<TFrontendBundle | undefined> {
         logger.log('PluginController::getPluginAdminBundle');
 

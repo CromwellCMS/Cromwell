@@ -12,12 +12,14 @@ import {
 } from '@cromwell/core';
 import { getGraphQLClient, getGraphQLErrorInfo, TCGraphQLClient, TCList } from '@cromwell/core-frontend';
 
+import { TProductFilterSettings } from '../types';
 
 export type TProductFilterData = {
     productCategory?: TProductCategory;
     slug?: string | string[] | null;
     attributes?: TAttribute[];
     filterMeta?: TProductFilterMeta;
+    pluginSettings?: TProductFilterSettings;
 }
 
 export const setListProps = (productListId?: string,
@@ -97,12 +99,13 @@ export const filterCList = (filterOptions: TProductFilter,
     }
 }
 
-let getLogger;
+let backend: typeof import('@cromwell/core-backend');
 
 export const getStaticProps: TGetStaticProps = async (context): Promise<TProductFilterData> => {
-    if (!getLogger) getLogger = require('@cromwell/core-backend').getLogger;
+    if (!backend) backend = require('@cromwell/core-backend');
 
-    const logger = getLogger();
+    const { pluginSettings } = context ?? {};
+    const logger = backend.getLogger();
     const slug = context?.params?.slug ?? null;
     const client = getGraphQLClient();
 
@@ -153,6 +156,7 @@ export const getStaticProps: TGetStaticProps = async (context): Promise<TProduct
         slug,
         productCategory,
         attributes,
-        filterMeta
+        filterMeta,
+        pluginSettings,
     }
 }

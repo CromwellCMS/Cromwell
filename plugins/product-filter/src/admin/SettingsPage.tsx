@@ -8,7 +8,7 @@ import { TProductFilterSettings } from '../types';
 import { useStyles } from './styles';
 
 export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>) {
-    const { pluginName, globalSettings: settings } = props;
+    const { pluginName, pluginSettings: settings } = props;
     const classes = useStyles();
     const [isLoading, setIsloading] = useState(false);
     const apiClient = getRestAPIClient();

@@ -8,7 +8,7 @@
     "startup.js"
   ],
   "keywords": [],
-  "author": "CromwellJS",
+  "author": "CromwellCMS",
   "license": "MIT",
   "scripts": {
     "build": "node startup.js build",
@@ -107,7 +107,7 @@
     "ts-jest": "^26.5.0",
     "ts-loader": "^7.0.5",
     "ts-node": "^9.1.1",
-    "typescript": "4.2.4",
+    "typescript": "4.3.5",
     "typescript-plugin-css-modules": "^2.7.0",
     "webpack": "5.11.1",
     "webpack-cli": "^3.3.12",

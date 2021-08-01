@@ -14,7 +14,6 @@ export type TCromwellStore = {
         data?: any;
         component?: any;
         code?: string;
-        settings?: any;
     }>;
     /**
      * Public CMS Settings 
@@ -163,6 +162,7 @@ export type TCmsConfig = {
     accessTokenExpirationTime?: number;
     refreshTokenExpirationTime?: number;
     cookieSecret?: string;
+    serviceSecret?: string;
 };
 
 /**
@@ -493,14 +493,13 @@ export type TCCSModuleInfo = {
 
 // PluginSettings
 export type TPluginSettingsProps<TSettings = any> = {
-    globalSettings?: TSettings;
+    pluginSettings?: TSettings;
     pluginName: string;
 }
 
-export type TFrontendPluginProps<TData = any, TGlobalSettings = any, TInstanceSettings = any> = {
+export type TFrontendPluginProps<TData = any, TInstanceSettings = any> = {
     data?: TData;
     pluginName: string;
-    globalSettings?: TGlobalSettings;
     instanceSettings?: TInstanceSettings;
 }
 

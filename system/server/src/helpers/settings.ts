@@ -66,26 +66,24 @@ export const checkConfigs = async () => {
     // Save them into file cache to not generate on every launch, otherwise it'll
     // cause log-out for all users
     const { cmsConfig } = loadEnv();
-    const isRandomSecret = !cmsConfig.accessTokenSecret;
 
-    if (isRandomSecret) {
-        const getSettings = async () => {
-            try {
-                const cachedData = await cacache.get(serverCachePath, 'auth_settings');
-                const cachedSettings: typeof authSettings = JSON.parse(cachedData.data.toString());
-                if (cachedSettings?.accessSecret) return cachedSettings;
-            } catch (error) { }
-        }
-
-        const cached = await getSettings();
-        if (!cached || !cached.accessSecret || !cached.refreshSecret || !cached.cookieSecret) {
-            await cacache.put(serverCachePath, 'auth_settings', JSON.stringify(authSettings));
-        } else {
-            authSettings.accessSecret = cached.accessSecret;
-            authSettings.refreshSecret = cached.refreshSecret;
-            authSettings.cookieSecret = cached.cookieSecret;
-        }
+    const getSettings = async () => {
+        try {
+            const cachedData = await cacache.get(serverCachePath, 'auth_settings');
+            const cachedSettings: typeof authSettings = JSON.parse(cachedData.data.toString());
+            if (cachedSettings?.accessSecret) return cachedSettings;
+        } catch (error) { }
     }
+
+    const cached = await getSettings();
+
+    if (!cmsConfig.accessTokenSecret) authSettings.accessSecret = cached?.accessSecret ?? authSettings.accessSecret;
+    if (!cmsConfig.refreshTokenSecret) authSettings.refreshSecret = cached?.refreshSecret ?? authSettings.refreshSecret;
+    if (!cmsConfig.cookieSecret) authSettings.cookieSecret = cached?.cookieSecret ?? authSettings.cookieSecret;
+    if (!cmsConfig.serviceSecret) authSettings.serviceSecret = cached?.serviceSecret ?? authSettings.serviceSecret;
+
+    await cacache.put(serverCachePath, 'auth_settings', JSON.stringify(authSettings));
+    await cacache.put(serverCachePath, 'service_secret', authSettings.serviceSecret);
 
 
     const mailsDir = resolve(getServerTempDir(), 'emails');
@@ -127,6 +125,7 @@ export const authSettings = {
     accessSecret: cmsConfig.accessTokenSecret ?? cryptoRandomString({ length: 8, type: 'ascii-printable' }),
     refreshSecret: cmsConfig.refreshTokenSecret ?? cryptoRandomString({ length: 8, type: 'ascii-printable' }),
     cookieSecret: cmsConfig.cookieSecret ?? cryptoRandomString({ length: 8, type: 'url-safe' }),
+    serviceSecret: cmsConfig.serviceSecret ?? cryptoRandomString({ length: 16, type: 'url-safe' }),
 
     /** 10 min by default */
     expirationAccessTime: cmsConfig.accessTokenExpirationTime ?? 600,

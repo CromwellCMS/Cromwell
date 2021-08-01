@@ -1,4 +1,4 @@
-import { TFrontendPluginProps } from '@cromwell/core';
+import { TFrontendPluginProps, TGetStaticProps } from '@cromwell/core';
 import { iconFromPath, Link } from '@cromwell/core-frontend';
 import { Collapse, IconButton, MenuItem, Popover, useMediaQuery, useTheme } from '@material-ui/core';
 import React, { useState } from 'react';
@@ -8,9 +8,9 @@ import { useStyles } from './styles';
 
 const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>);
 
-const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
+const MainMenu = (props: TFrontendPluginProps<TMainMenuSettings>) => {
     const classes = useStyles();
-    const items = props?.globalSettings?.items ?? [];
+    const items = props?.data?.items ?? [];
     const [activeItem, setActiveItem] = useState<string>('none');
     const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
     const theme = useTheme();
@@ -127,3 +127,7 @@ const MainMenu = (props: TFrontendPluginProps<null, TMainMenuSettings>) => {
 }
 
 export default MainMenu;
+
+export const getStaticProps: TGetStaticProps<TMainMenuSettings> = async (context): Promise<TMainMenuSettings | undefined> => {
+    return context.pluginSettings;
+}
