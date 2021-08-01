@@ -1,5 +1,4 @@
 import { TCromwellBlock, TCromwellBlockData, TCromwellBlockType, TPluginEntity } from '@cromwell/core';
-import { getBlockElementById } from '@cromwell/core-frontend';
 import { Grid, IconButton, MenuItem, Popover, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
@@ -8,7 +7,6 @@ import {
     Image as ImageIcon,
     PhotoLibrary as PhotoLibraryIcon,
     Power as PowerIcon,
-    Public as PublicIcon,
     Subject as SubjectIcon,
     Widgets as WidgetsIcon,
 } from '@material-ui/icons';
@@ -169,4 +167,4 @@ class BaseMenuComp extends React.Component<TPropsType, {
     }
 }
 
-export const BaseMenu = connect(mapStateToProps)(BaseMenuComp);
+export const BaseMenu: React.ComponentType<TBaseMenuProps> = connect(mapStateToProps)(BaseMenuComp);

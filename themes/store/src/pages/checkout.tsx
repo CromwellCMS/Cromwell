@@ -6,6 +6,7 @@ import {
     TCromwellPage,
     TOrder,
     TUser,
+    TPaymentSession,
     isServer,
 } from '@cromwell/core';
 import { getCStore, getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
@@ -63,7 +64,7 @@ const CheckoutPage: TCromwellPage = () => {
         name: userInfo?.fullName,
         phone: userInfo?.phone,
         address: userInfo?.address,
-        paymentMethod: 'card',
+        paymentMethod: undefined,
     });
     const cstore = getCStore();
     const forceUpdate = useForceUpdate();
@@ -71,8 +72,8 @@ const CheckoutPage: TCromwellPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [canValidate, setCanValidate] = useState(false);
     const [singInType, setSingInType] = useState<TFromType>('sign-in');
-    const [placedOrder, setPlacedOrder] = useState<TOrder & { checkoutUrl?: string } | null>(null);
-    const [orderTotal, setOrderTotal] = useState<TOrder & { checkoutUrl?: string } | null>(null);
+    const [placedOrder, setPlacedOrder] = useState<TOrder | null>(null);
+    const [orderTotal, setOrderTotal] = useState<TPaymentSession | null>(null);
 
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('xs'));
@@ -106,8 +107,10 @@ const CheckoutPage: TCromwellPage = () => {
         try {
             const total = await getRestAPIClient()?.createPaymentSession({
                 cart: JSON.stringify(cstore.getCart()),
-                fromUrl: window.location.origin,
                 currency: cstore.getActiveCurrencyTag(),
+                fromUrl: window.location.origin,
+                successUrl: `${window.location.origin}/checkout?paymentStatus=success`,
+                cancelUrl: `${window.location.origin}/checkout?paymentStatus=cancelled`,
             });
             if (total) setOrderTotal(total);
         } catch (error) {
@@ -199,11 +202,14 @@ const CheckoutPage: TCromwellPage = () => {
 
     const handlePay = async () => {
         if (!validateOrder()) return;
-        if (!orderTotal?.checkoutUrl) return;
+        if (!orderTotal?.paymentOptions?.length) return;
+        if (!form?.paymentMethod) return;
+        const paymentMethod = orderTotal.paymentOptions.find(option => option.name === form.paymentMethod);
+        if (!paymentMethod?.link) return;
 
         setIsLoading(true);
 
-        const popup = window.open(orderTotal.checkoutUrl, 'payment', `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=0,height=0,left=-1000,top=-1000`);
+        const popup = window.open(paymentMethod.link, 'payment', `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,width=0,height=0,left=-1000,top=-1000`);
 
         const success = await new Promise<boolean>(done => {
             (window as any).paySuccess = () => done(true);
@@ -365,10 +371,17 @@ const CheckoutPage: TCromwellPage = () => {
                     value={form.paymentMethod}
                     onChange={(event, value: string) => changeForm('paymentMethod', value)}
                 >
-                    <FormControlLabel value={'card'} control={<Radio color="primary" />}
-                        label="Pay with card / Google Pay"
-                        disabled={!orderTotal?.checkoutUrl}
-                    />
+                    {orderTotal?.paymentOptions?.map(option => {
+                        if (!option?.link || !option.name) return <></>;
+                        return (
+                            <FormControlLabel
+                                key={option.name}
+                                value={option.name}
+                                control={<Radio color="primary" />}
+                                label={option.name}
+                            />
+                        )
+                    })}
                     <FormControlLabel value={'later'} control={<Radio color="primary" />}
                         label="Pay later" />
                 </RadioGroup>
@@ -385,7 +398,7 @@ const CheckoutPage: TCromwellPage = () => {
                     >Place order</Button>
                 </div>
             )}
-            {form.paymentMethod === 'card' && orderTotal?.checkoutUrl && (
+            {form.paymentMethod && form.paymentMethod !== 'later' && (
                 <div className={styles.orderBtnWrapper}>
                     <Button variant="contained"
                         color="primary"

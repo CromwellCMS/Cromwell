@@ -21,6 +21,10 @@ const interopDefault = (lib, importName) => {
 import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 const importer = getModuleImporter();
 
+import * as admin from '../exports';
+importer.modules['@cromwell/admin-panel'] = interopDefault(admin, 'default');
+importer.importStatuses['@cromwell/admin-panel'] = 'default';
+
 import * as react from 'react';
 importer.modules['react'] = interopDefault(react, 'default');
 importer.importStatuses['react'] = 'default';

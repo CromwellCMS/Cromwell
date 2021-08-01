@@ -138,7 +138,7 @@ export class MockService {
         return true;
     }
 
-    public async mockProducts(): Promise<boolean> {
+    public async mockProducts(amount?: number): Promise<boolean> {
 
         const images = [
             '/themes/@cromwell/theme-store/product1.png',
@@ -155,8 +155,8 @@ export class MockService {
 
         const cats = await this.productCategoryRepo.find();
 
-        const times = 250;
         const promises: Promise<TProduct>[] = [];
+        const times = amount ?? 50;
 
         for (let i = 0; i < times; i++) {
             const mainImage = getRandImg();
@@ -231,10 +231,11 @@ export class MockService {
     }
 
 
-    public async mockCategories(): Promise<boolean> {
+    public async mockCategories(amount?: number): Promise<boolean> {
 
-        const categoriesMock: TProductCategoryInput[] = []
-        for (let i = 0; i < 6; i++) {
+        const categoriesMock: TProductCategoryInput[] = [];
+        const firstLevelAmount = Math.floor((amount ?? 30) / 6);
+        for (let i = 0; i < firstLevelAmount; i++) {
             const name = this.getRandomName();
             categoriesMock.push({
                 name,
@@ -242,7 +243,7 @@ export class MockService {
             })
         }
 
-        const maxSubcatNum = 5;
+        const maxSubcatNum = Math.floor((amount ?? 30) / 10);
 
         for (const cat of categoriesMock) {
             const catEntity = await this.productCategoryRepo.createProductCategory(cat);
@@ -306,12 +307,15 @@ export class MockService {
 
 
     public async mockReviews() {
-
         const products = await this.productRepo.find();
         const promises: Promise<TProductReview>[] = [];
+
         for (const prod of products) {
+            if (Math.random() < 0.3) continue;
             this.shuffleArray(this.reviewsMock);
-            const reviewsNum = Math.floor(Math.random() * this.reviewsMock.length)
+            let reviewsNum = Math.floor(Math.random() * this.reviewsMock.length);
+            if (reviewsNum > 5) reviewsNum = 5;
+
             for (let i = 0; i < reviewsNum && i < this.reviewsMock.length; i++) {
                 const review: TProductReviewInput = {
                     ...this.reviewsMock[i],
@@ -367,7 +371,7 @@ export class MockService {
         return true;
     }
 
-    public async mockPosts() {
+    public async mockPosts(amount?: number) {
 
         const users = await this.userRepo.find({
             where: {
@@ -388,7 +392,7 @@ export class MockService {
 
         const promises: Promise<TPost>[] = [];
 
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < (amount ?? 15); i++) {
 
             const tagIds: string[] = (await this.tagRepo.getAll()).map(tag => tag.id);
 
@@ -411,7 +415,7 @@ export class MockService {
         return true;
     }
 
-    public async mockOrders() {
+    public async mockOrders(amount?: number) {
 
         const mockedOrders: TOrderInput[] = [
             {
@@ -492,8 +496,8 @@ export class MockService {
             const dateFrom = new Date(Date.now());
             dateFrom.setUTCDate(dateFrom.getUTCDate() - i);
 
-            // 15 - 50 orders a day
-            for (let j = 0; j < Math.ceil(Math.random() * 45) + 15; j++) {
+            // 0 - amount orders a day
+            for (let j = 0; j < Math.ceil(Math.random() * (amount ?? 28) / 14); j++) {
                 const createOrder = async () => {
                     const order = await this.orderRepo.createOrder({
                         ...(this.shuffleArray([...mockedOrders])[0])
@@ -510,10 +514,9 @@ export class MockService {
     }
 
 
-    public async mockTags() {
-
+    public async mockTags(amount?: number) {
         const promises: Promise<TTag | void>[] = [];
-        for (let i = 0; i < 20; i++) {
+        for (let i = 0; i < (amount ?? 10); i++) {
             promises.push(this.tagRepo.createTag({
                 name: this.getRandomName().split(' ')[0]
             }).then(it => it).catch((e) => { console.error(e); }));

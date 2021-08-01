@@ -7,7 +7,7 @@ import PluginNewsletterResolver from './resolvers/PluginNewsletterResolver';
 // registerAction({
 //     pluginName: "@cromwell/plugin-newsletter",
 //     actionName: 'update_post',
-//     action: (payload) => {
+//     action: async (payload) => {
 //          getLogger().warn('Update post: ' + JSON.stringify(payload));
 //     }
 // })

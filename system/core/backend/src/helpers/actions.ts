@@ -4,11 +4,15 @@ import { ActionTypes, ActionNames } from './types';
 
 const actions: Record<string, Record<string, ((payload) => any)>> = {};
 
-export const registerAction = <T extends ActionNames, TPayload = ActionTypes[T]>(options: {
-    pluginName: string;
-    actionName: T | string;
-    action: (payload: TPayload) => any;
-}) => {
+export const registerAction = <
+    T extends ActionNames = ActionNames,
+    TPayload = (ActionTypes[T])['payload'],
+    TOutput = (ActionTypes[T])['output']>
+    (options: {
+        pluginName: string;
+        actionName: T;
+        action: (payload: TPayload) => Promise<TOutput>;
+    }) => {
     const logger = getLogger();
     const { pluginName, actionName, action } = options ?? {};
     if (!pluginName || !actionName || !action) {
@@ -20,10 +24,15 @@ export const registerAction = <T extends ActionNames, TPayload = ActionTypes[T]>
     actions[actionName][pluginName] = action;
 }
 
-export const fireAction = async <T extends ActionNames, TPayload = ActionTypes[T]>(options: {
-    actionName: T | string;
-    payload?: TPayload;
-}): Promise<Record<string, any>> => {
+export const fireAction = async <
+    T extends ActionNames,
+    TPayload = ActionTypes[T]['payload'],
+    TOutput = (ActionTypes[T])['output']>(
+        options: {
+            actionName: T | string;
+            payload?: TPayload;
+        }): Promise<Record<string, TOutput>> => {
+
     const logger = getLogger();
     const { payload, actionName } = options ?? {};
     if (!actionName) {

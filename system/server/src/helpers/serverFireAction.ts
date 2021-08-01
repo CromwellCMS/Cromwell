@@ -2,9 +2,10 @@ import { ActionNames, ActionTypes, fireAction, getLogger } from '@cromwell/core-
 
 const logger = getLogger();
 
-export const serverFireAction = async <T extends ActionNames>(actionName: T, payload?: ActionTypes[T]) => {
+export const serverFireAction = async <T extends ActionNames>(actionName: T,
+    payload?: ActionTypes[T]['payload']) => {
     try {
-        await fireAction({
+        return await fireAction({
             actionName: actionName,
             payload: payload,
         });

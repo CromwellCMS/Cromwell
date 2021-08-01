@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { LoadingStatus, PluginSettingsLayout } from '@cromwell/admin-panel';
 import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
@@ -6,15 +7,15 @@ import React, { useState } from 'react';
 import { NewsletterForm } from '../types';
 import { useStyles } from './styles';
 
-export function SettingsPage() {
+export function SettingsPage(props) {
     const classes = useStyles();
-    const [isLoading, setIsloading] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     const exportData = async () => {
         if (isLoading) return;
-
-        setIsloading(true);
+        setIsLoading(true);
         const client = getGraphQLClient();
+
         try {
             const data = await client?.query({
                 query: gql`
@@ -32,18 +33,22 @@ export function SettingsPage() {
         } catch (e) {
             console.error('Newsletter::exportData error: ', e)
         }
-        setIsloading(false);
+        setIsLoading(false);
     }
 
     return (
-        <div className={`${classes.paper} ${classes.content}`}>
-            <h1 style={{ marginBottom: '10px' }}>Newsletter plugin</h1>
-
-            <Button variant="contained" color="primary"
-                className={classes.saveBtn}
-                disabled={isLoading}
-                onClick={exportData}>Export data</Button>
-        </div>
+        <PluginSettingsLayout {...props} disableSave>
+            {() => (
+                <>
+                    <p>Export all subscribers into CSV file</p>
+                    <Button variant="contained" color="primary"
+                        className={classes.saveBtn}
+                        disabled={isLoading}
+                        onClick={exportData}>Export data</Button>
+                    <LoadingStatus isActive={isLoading} />
+                </>
+            )}
+        </PluginSettingsLayout>
     )
 }
 
