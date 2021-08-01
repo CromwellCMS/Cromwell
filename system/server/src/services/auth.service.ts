@@ -351,11 +351,25 @@ export class AuthService {
 
     async processRequest(request: TRequestWithUser, response: FastifyReply): Promise<TAuthUserInfo | null> {
         try {
+            const authHeader = String(request?.headers?.['authorization'] ?? '');
+
+            if (authHeader.startsWith('Service ')) {
+                // Access by secret token from other services such as Renderer
+                const serviceSecret = authHeader.substring(8, authHeader.length);
+                if (serviceSecret === authSettings.serviceSecret) {
+                    request.user = {
+                        id: 'service',
+                        email: 'service',
+                        role: 'administrator',
+                    }
+                    return request.user;
+                }
+            }
+
             let accessToken = request?.cookies?.[authSettings.accessTokenCookieName];
             const refreshToken = request?.cookies?.[authSettings.refreshTokenCookieName];
 
             if (!accessToken) {
-                const authHeader = String(request?.headers?.['authorization'] ?? '');
                 if (authHeader.startsWith('Bearer ')) {
                     accessToken = authHeader.substring(7, authHeader.length);
                 }

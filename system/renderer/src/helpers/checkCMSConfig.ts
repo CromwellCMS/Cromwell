@@ -2,10 +2,10 @@ import { isServer, setStoreItem } from '@cromwell/core';
 
 let normalizePath;
 let nodeRequire;
-let fs;
+let fs: typeof import('fs-extra');
 let requireFromString;
-let coreBackend;
-let pathResolve;
+let coreBackend: typeof import('@cromwell/core-backend');
+let pathResolve: (typeof import('path'))['resolve'];
 let hasRequired = false;
 
 const checkBackendModules = () => {
@@ -24,7 +24,12 @@ export const checkCMSConfig = (): void => {
     if (!isServer()) return undefined;
     checkBackendModules();
 
-    const config = coreBackend.readCMSConfigSync();
+    let cmsConfigPath = coreBackend.getCMSConfigPath();
+    if (!fs.pathExistsSync(cmsConfigPath)) {
+        cmsConfigPath = coreBackend.getCMSConfigPath(pathResolve(process.cwd(), '../../'));
+    }
+
+    const config = coreBackend.readCMSConfigSync(cmsConfigPath);
     setStoreItem('cmsSettings', config);
 }
 
@@ -42,7 +47,7 @@ export const getPluginCjsPath = async (pluginName: string): Promise<{
     if (cjsPath) cjsPath = normalizePath(cjsPath);
     if (cjsPath && !(await fs.pathExists(cjsPath))) return undefined;
 
-    let metaPath = coreBackend.getPluginFrontendMetaPath(buildDir);
+    let metaPath: string | undefined = coreBackend.getPluginFrontendMetaPath(buildDir);
     if (!(await fs.pathExists(metaPath))) metaPath = undefined;
 
     return {

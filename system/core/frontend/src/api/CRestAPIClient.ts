@@ -15,7 +15,6 @@ import {
     TPackageCromwellConfig,
     TPageConfig,
     TPageInfo,
-    TPluginConfig,
     TProductReview,
     TProductReviewInput,
     TServerCreateOrder,
@@ -24,8 +23,6 @@ import {
 } from '@cromwell/core';
 
 import { fetch } from '../helpers/isomorphicFetch';
-
-export type TPluginsModifications = TPluginConfig & { [x: string]: any };
 
 export type TErrorInfo = {
     statusCode: number;
@@ -47,6 +44,10 @@ export type TRequestOptions = {
      * Disable error logging
      */
     disableLog?: boolean;
+    /**
+     * Add headers
+     */
+    headers?: Record<string, string>;
 }
 
 /**
@@ -63,6 +64,41 @@ export class CRestAPIClient {
         const serverUrl = serviceLocator.getMainApiUrl();
         if (!serverUrl) throw new Error('CRestAPIClient: Failed to find base API URL');
         return `${serverUrl}/api`;
+    }
+
+    /** @internal */
+    private serviceSecret;
+
+    /** @internal */
+    constructor() {
+        this.init()
+    }
+
+    /** @internal */
+    private async init() {
+
+        if (isServer()) {
+            try {
+                // If backend, try to find service secret key to make 
+                // authorized requests to the API server.
+                const nodeRequire = (name: string) => eval(`require('${name}');`);
+                const cacache = nodeRequire('cacache');
+                const { resolve } = nodeRequire('path');
+                const backend: typeof import('@cromwell/core-backend') = nodeRequire('@cromwell/core-backend');
+
+                let cmsConfig = getStoreItem('cmsSettings');
+                if (!cmsConfig) cmsConfig = {};
+                if (!cmsConfig.serviceSecret) {
+                    try {
+                        const serverCachePath = resolve(backend.getServerTempDir(), 'cache');
+                        cmsConfig.serviceSecret = (await cacache?.get(serverCachePath, 'service_secret'))?.data?.toString?.();
+                    } catch (error) { }
+                }
+                this.serviceSecret = cmsConfig?.serviceSecret;
+            } catch (error) {
+                console.error(error);
+            }
+        }
     }
 
     /** @internal */
@@ -119,7 +155,11 @@ export class CRestAPIClient {
                 method: options?.method ?? 'get',
                 credentials: 'include',
                 body: typeof input === 'string' ? input : input ? JSON.stringify(input) : undefined,
-                headers: { 'Content-Type': 'application/json' },
+                headers: Object.assign(
+                    { 'Content-Type': 'application/json' },
+                    options?.headers,
+                    this.serviceSecret && { 'Authorization': `Service ${this.serviceSecret}` },
+                ),
             });
             const dataParsed = await res.json();
             [data, errorInfo] = await this.handleError(res, dataParsed, route, options?.disableLog);
@@ -583,9 +623,13 @@ export class CRestAPIClient {
 
     /**
      * Get all used Plugins at specified page of currently active Theme
-     * @auth no
+     * @auth admin
      */
-    public getPluginsAtPage = async (pageRoute: string, options?: TRequestOptions): Promise<Record<string, TPluginsModifications> | undefined> => {
+    public getPluginsAtPage = async (pageRoute: string, options?: TRequestOptions): Promise<{
+        pluginName: string;
+        version?: string;
+        instanceSettings: any;
+    }[] | undefined> => {
         return this.get(`v1/theme/plugins?pageRoute=${pageRoute}`, options);
     }
 
@@ -642,7 +686,10 @@ export class CRestAPIClient {
         return this.get(`v1/theme/page-bundle?pageRoute=${pageRoute}`, options);
     }
 
-    /** @internal */
+    /** 
+     * @internal 
+     * @auth admin
+     */
     public batchRendererData = async (pageRoute: string, options?: TRequestOptions): Promise<any> => {
         return this.get(`v1/theme/renderer?pageRoute=${pageRoute}`, options);
     }

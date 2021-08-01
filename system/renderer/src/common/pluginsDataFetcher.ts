@@ -14,25 +14,27 @@ const cachedPlugins: Record<string, {
  * @param pageName 
  * @param context - StaticPageContext of Page
  */
-export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, context: StaticPageContext, pluginsData?: {
-    pluginName: string;
-    version?: string;
-    settings: any;
-}[]) => {
+export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, context: StaticPageContext,
+    pluginsData?: {
+        pluginName: string;
+        version?: string;
+        globalSettings?: any;
+    }[]) => {
     const plugins: Record<string, {
         data?: any;
-        settings?: any;
     }> = {};
 
     if (!pluginsData) return plugins;
 
-    const promises = pluginsData.map(async data => {
-        const { pluginName, settings, version } = data;
+    const uniquePlugins = [...new Set(pluginsData.map(plugin => plugin.pluginName))]
+        .map(name => pluginsData.find(plugin => plugin.pluginName === name)) as typeof pluginsData;
+
+    const promises = uniquePlugins.map(async data => {
+        const { pluginName, globalSettings, version } = data;
         const pluginContext = Object.assign({}, context);
-        pluginContext.pluginsConfig = data.settings;
+        pluginContext.pluginSettings = globalSettings;
 
         if (!plugins[pluginName]) plugins[pluginName] = {};
-        plugins[pluginName].settings = settings;
 
         let plugin: any;
 
@@ -93,6 +95,6 @@ export const pluginsDataFetcher = async (pageName: TDefaultPageName | string, co
         console.error(error);
     }
 
-    return  plugins;
+    return plugins;
 }
 

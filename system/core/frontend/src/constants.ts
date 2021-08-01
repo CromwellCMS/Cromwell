@@ -9,18 +9,18 @@ import {
 import loadable from '@loadable/component';
 import React, { ComponentType } from 'react';
 
-export const CromwellBlockCSSclass = 'CB';
-export const cromwellIdToHTML = (id: string): string => `CB_${id}`;
-export const cromwellIdFromHTML = (htmlId: string): string => htmlId.replace(/^CB_/, '');
-export const blockTypeToClassname = (type: TCromwellBlockType) => `CB_T_${type}`
-export const cromwellBlockTypeFromClassname = (classname: string): TCromwellBlockType | null => {
-    if (/CB_T_/.test(classname)) {
-        return classname.replace(/.*CB_T_/, '').split(' ')[0] as TCromwellBlockType;
+export const blockCssClass = 'CB';
+export const getBlockHtmlId = (id: string): string => `CB_${id}`;
+export const getBlockIdFromHtml = (htmlId: string): string => htmlId.replace(/^CB_/, '');
+export const getBlockHtmlType = (type: TCromwellBlockType) => `CB_T_${type}`
+export const getBlockTypeFromHtml = (className: string): TCromwellBlockType | null => {
+    if (/CB_T_/.test(className)) {
+        return className.replace(/.*CB_T_/, '').split(' ')[0] as TCromwellBlockType;
     }
     else return null
 
 }
-export const cromwellBlockPluginNameToClassname = (name: string) => `CB_P_${name}`;
+export const getHtmlPluginBlockName = (name: string) => `CB_P_${name}`;
 
 export const getBlockById = (blockId?: string): TCromwellBlock | undefined | null => {
     const instances = getStoreItem('blockInstances');
@@ -37,13 +37,13 @@ export const getBlockDataById = (blockId: string): TCromwellBlockData | undefine
 }
 
 export const getBlockData = (block: HTMLElement | Element | Node | ParentNode): TCromwellBlockData | undefined => {
-    const id = (block as HTMLElement)?.id ? cromwellIdFromHTML((block as HTMLElement).id) : undefined;
+    const id = (block as HTMLElement)?.id ? getBlockIdFromHtml((block as HTMLElement).id) : undefined;
     if (id) return getBlockDataById(id);
 }
 
 export const getBlockElementById = (id?: string): HTMLElement | undefined | null => {
     if (id) {
-        const idStr = cromwellIdToHTML(id);
+        const idStr = getBlockHtmlId(id);
         return document.getElementById(idStr);
     }
 }

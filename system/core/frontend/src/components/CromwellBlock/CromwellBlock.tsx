@@ -12,10 +12,10 @@ import React, { Component, useEffect } from 'react';
 
 import {
     BlockContentConsumer,
-    blockTypeToClassname,
-    CromwellBlockCSSclass,
-    cromwellBlockPluginNameToClassname,
-    cromwellIdToHTML,
+    getBlockHtmlType,
+    blockCssClass,
+    getHtmlPluginBlockName,
+    getBlockHtmlId,
     getDynamicLoader,
 } from '../../constants';
 import { useForceUpdate } from '../../helpers/forceUpdate';
@@ -36,7 +36,7 @@ export class CromwellBlock<TContentBlock = React.Component> extends
     private childBlocks: TCromwellBlockData[] = [];
     private hasBeenMoved?: boolean = false;
     private blockRef = React.createRef<HTMLDivElement>();
-    private movedblockRef = React.createRef<HTMLDivElement>();
+    private movedBlockRef = React.createRef<HTMLDivElement>();
     private childResolvers: Record<string, ((block: TCromwellBlock) => void) | undefined> = {};
     private childPromises: Record<string, (Promise<TCromwellBlock>) | undefined> = {};
     private rerenderResolver?: (() => void | undefined);
@@ -97,10 +97,10 @@ export class CromwellBlock<TContentBlock = React.Component> extends
     private didUpdate = async () => {
         this.props.blockRef?.(this);
 
-        if (this.movedblockRef.current) {
-            this.movedblockRef.current.removeAttribute('class');
-            this.movedblockRef.current.removeAttribute('id');
-            this.movedblockRef.current.style.display = 'none';
+        if (this.movedBlockRef.current) {
+            this.movedBlockRef.current.removeAttribute('class');
+            this.movedBlockRef.current.removeAttribute('id');
+            this.movedBlockRef.current.style.display = 'none';
         }
 
         if (this.rerenderResolver) {
@@ -140,7 +140,7 @@ export class CromwellBlock<TContentBlock = React.Component> extends
 
         if (this.props.type) this.data = { id: this.props.id, type: this.props.type };
 
-        this.htmlId = cromwellIdToHTML(this.props.id);
+        this.htmlId = getBlockHtmlId(this.props.id);
 
         this.childBlocks = [];
         const pageConfig = getStoreItem('pageConfig');
@@ -298,11 +298,11 @@ export class CromwellBlock<TContentBlock = React.Component> extends
             return <></>;
         }
 
-        const elementClassName = CromwellBlockCSSclass
-            + (this.data && this.data.type ? ' ' + blockTypeToClassname(this.data.type) : '')
+        const elementClassName = blockCssClass
+            + (this.data && this.data.type ? ' ' + getBlockHtmlType(this.data.type) : '')
             + (this.props.className ? ` ${this.props.className}` : '')
             + (this.data && this.data.type && this.data.type === 'plugin' && this.data.plugin && this.data.plugin.pluginName
-                ? ` ${cromwellBlockPluginNameToClassname(this.data.plugin.pluginName)}` : '')
+                ? ` ${getHtmlPluginBlockName(this.data.plugin.pluginName)}` : '')
             + (className ? ' ' + className : '');
 
 
@@ -310,7 +310,7 @@ export class CromwellBlock<TContentBlock = React.Component> extends
 
         let blockStyles: React.CSSProperties = {};
 
-        // Interpretaion of PageBuilder's UI styles
+        // Interpretation of PageBuilder's UI styles
         const eSt = data?.editorStyles;
         if (eSt) {
             if (eSt.align) {
@@ -384,7 +384,7 @@ export class CromwellBlock<TContentBlock = React.Component> extends
             // For some reason React copies properties of this block to next one if we return <></> or null here
             // Test case: jsx container with 2 jsx elements and 4 virtual. First 2 virtual blocks will have 
             // id and className copied from 2 jsx, content might be messed up from both blocks
-            return <div ref={this.movedblockRef} key={this.htmlId + '_stub'} style={{ display: 'none' }}></div>;
+            return <div ref={this.movedBlockRef} key={this.htmlId + '_stub'} style={{ display: 'none' }}></div>;
         }
         return <React.Fragment key={this.htmlId + '_render'}>{this.consumerRender()}</React.Fragment>
     }

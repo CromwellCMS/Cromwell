@@ -18,9 +18,9 @@ const getEnvConfig = () => {
 /**
  * Read CMS config from file in [project root]/cmsconfig.json, saves it into the store and returns
  */
-export const readCMSConfigSync = (): TCmsConfig => {
+export const readCMSConfigSync = (path?: string): TCmsConfig => {
     const logger = getLogger();
-    const configPath = getCMSConfigPath();
+    const configPath = path ?? getCMSConfigPath();
     let customConfig;
     if (fs.pathExistsSync(configPath)) {
         try {
@@ -36,9 +36,9 @@ export const readCMSConfigSync = (): TCmsConfig => {
 /**
  * Read CMS config from file in [project root]/cmsconfig.json, saves it into the store and returns
  */
-export const readCMSConfig = async (): Promise<TCmsConfig> => {
+export const readCMSConfig = async (path?: string): Promise<TCmsConfig> => {
     const logger = getLogger();
-    const configPath = getCMSConfigPath();
+    const configPath = path ?? getCMSConfigPath();
     let customConfig;
     if (await fs.pathExists(configPath)) {
         try {

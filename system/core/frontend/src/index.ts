@@ -12,11 +12,11 @@ export { ProductAttributes } from './components/ProductAttributes/ProductAttribu
 export { LoadBox } from './components/loadBox/Loadbox';
 export * from './components/AdminPanelWidget/AdminPanelWidgetPlace';
 export {
-    cromwellIdToHTML,
-    cromwellIdFromHTML,
-    blockTypeToClassname,
-    cromwellBlockTypeFromClassname,
-    cromwellBlockPluginNameToClassname,
+    getBlockHtmlId,
+    getBlockIdFromHtml,
+    getBlockHtmlType,
+    getBlockTypeFromHtml,
+    getHtmlPluginBlockName,
     getBlockDataById,
     isAdminPanel,
     BlockContentProvider,
@@ -25,10 +25,10 @@ export {
     getBlockElementById,
     pageRootContainerId,
     awaitImporter,
-    CromwellBlockCSSclass,
+    blockCssClass,
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo, getGraphQLErrorInfo } from './api/CGraphQLClient';
-export { getRestAPIClient, TCRestAPIClient, TErrorInfo, TPluginsModifications, TRequestOptions } from './api/CRestAPIClient';
+export { getRestAPIClient, TCRestAPIClient, TErrorInfo, TRequestOptions } from './api/CRestAPIClient';
 export * from './api/CentralServerClient';
 export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore } from './CStore';

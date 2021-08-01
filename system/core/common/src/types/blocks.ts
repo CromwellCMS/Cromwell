@@ -5,16 +5,15 @@ import { TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette } from
 import { TPost, TProduct } from './entities';
 
 type ParsedUrlQuery = NodeJS.Dict<string | string[]>;
-export type StaticPageContext<Q extends ParsedUrlQuery = ParsedUrlQuery> = {
+export type StaticPageContext<TPluginSettings = any, Q extends ParsedUrlQuery = ParsedUrlQuery> = {
+    pluginSettings?: TPluginSettings;
     params?: Q;
     preview?: boolean;
     previewData?: any;
-    pluginsConfig?: Record<string, any>;
 }
 export type TGetStaticProps<
-    P extends { [key: string]: any } = { [key: string]: any },
-    Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: StaticPageContext<Q>) => Promise<P>;
-
+    TPluginSettings = any,
+    Q extends ParsedUrlQuery = ParsedUrlQuery> = (ctx: StaticPageContext<TPluginSettings, Q>) => Promise<any>;
 
 export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
@@ -22,7 +21,6 @@ export type TCromwellPageCoreProps = {
     plugins?: Record<string, {
         data?: any;
         code?: string;
-        settings?: any;
     }>;
     childStaticProps?: Record<string, any> | null;
     pageConfig?: TPageConfig | null;
@@ -147,7 +145,7 @@ export type TCromwellBlockData = {
         pluginName?: string;
 
         /** Plugin's local settings */
-        settings?: Record<string, any>;
+        instanceSettings?: Record<string, any>;
     };
 
     /** For "image" block */

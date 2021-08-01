@@ -17,6 +17,7 @@ export * from './helpers/generic-entities';
 export * from './helpers/theme-config';
 export * from './helpers/request-page';
 export * from './helpers/base-queries';
+export * from './helpers/plugin-settings';
 
 export * from './models/entities/product.entity';
 export * from './models/entities/base-page.entity';

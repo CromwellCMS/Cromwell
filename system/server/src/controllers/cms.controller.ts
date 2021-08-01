@@ -79,6 +79,7 @@ export class CmsController {
         return new CmsConfigDto().parseConfig(config);
     }
 
+
     @Get('admin-config')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator', 'guest')
@@ -457,7 +458,7 @@ export class CmsController {
 
     @Post('export-db')
     @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
+    @Roles('administrator', 'guest')
     @ApiOperation({
         description: `Exports DB into Excel file`,
     })

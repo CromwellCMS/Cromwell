@@ -74,6 +74,8 @@ export class ThemeController {
 
 
     @Delete('page')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: `Deletes virtual page in both configs`,
         parameters: [{ name: 'pageRoute', in: 'query', required: true }]
@@ -91,7 +93,10 @@ export class ThemeController {
         return await this.themeService.deletePage(pageRoute);
     }
 
+
     @Get('page/reset')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: `Deletes user config of a page`,
         parameters: [{ name: 'pageRoute', in: 'query', required: true }]
@@ -101,7 +106,7 @@ export class ThemeController {
         type: PageConfigDto
     })
     async resetPage(@Query('pageRoute') pageRoute: string): Promise<boolean | null> {
-        logger.log('ThemeController::deletePage');
+        logger.log('ThemeController::resetPage');
 
         if (!pageRoute || pageRoute === '')
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
@@ -111,6 +116,8 @@ export class ThemeController {
 
 
     @Get('plugins')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: `Returns plugins' configs at specified Page by pageRoute in query param. Output contains theme's original modifications overwritten by user's modifications.`,
         parameters: [{ name: 'pageRoute', in: 'query', required: true }]
@@ -282,6 +289,8 @@ export class ThemeController {
 
 
     @Get('renderer')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
     @ApiOperation({
         description: `Gather all data for Renderer service required to render a page`,
         parameters: [{ name: 'pageRoute', in: 'query', required: true }]
@@ -290,7 +299,7 @@ export class ThemeController {
         status: 200,
     })
     async getRendererData(@Query('pageRoute') pageRoute: string) {
-        logger.log('ThemeController::deletePage');
+        logger.log('ThemeController::getRendererData');
         if (!pageRoute || pageRoute === '')
             throw new HttpException('Page route is not valid: ' + pageRoute, HttpStatus.NOT_ACCEPTABLE);
 

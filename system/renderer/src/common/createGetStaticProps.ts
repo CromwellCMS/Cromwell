@@ -34,7 +34,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
             pluginsSettings?: {
                 pluginName: string;
                 version?: string;
-                settings: any;
+                globalSettings?: any;
             }[];
             themeConfig?: TThemeConfig;
             cmsSettings?: TCmsConfig;

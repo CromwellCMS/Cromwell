@@ -13,6 +13,7 @@ import {
 } from '@cromwell/core';
 import {
     configFileName,
+    GenericTheme,
     getCmsEntity,
     getCmsModuleInfo,
     getCmsSettings,
@@ -23,8 +24,8 @@ import {
     getPublicThemesDir,
     getThemeConfigs,
     runShellCommand,
-    GenericTheme,
     TAllThemeConfigs,
+    getPluginSettings,
 } from '@cromwell/core-backend';
 import { getCentralServerClient } from '@cromwell/core-frontend';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
@@ -382,7 +383,7 @@ export class ThemeService {
      * @param cb cb to return pages info
      */
     public async readAllPageConfigs(allConfigs?: TAllThemeConfigs): Promise<TPageConfig[]> {
-        logger.log('themeController::readAllPageConfigs');
+        logger.log('ThemeController::readAllPageConfigs');
         if (!allConfigs) allConfigs = await getThemeConfigs();
         const { themeConfig, userConfig } = allConfigs;
 
@@ -483,7 +484,8 @@ export class ThemeService {
         const out: {
             pluginName: string;
             version?: string;
-            settings: any;
+            instanceSettings: any;
+            globalSettings: any;
         }[] = [];
 
         if (!pageConfig) pageConfig = await this.getPageConfig(pageRoute);
@@ -497,14 +499,11 @@ export class ThemeService {
                     const plugin = await this.pluginService.findOne(pluginName);
                     if (!plugin) return;
 
-                    const pluginDBConfig = await this.pluginService.getPluginConfig(pluginName);
-                    const settings = Object.assign({}, (pluginDBConfig ?? {}),
-                        mod?.plugin?.settings);
-
                     out.push({
                         pluginName,
                         version: plugin.version,
-                        settings,
+                        instanceSettings: mod?.plugin?.instanceSettings,
+                        globalSettings: await getPluginSettings(pluginName),
                     })
                 } catch (e) {
                     logger.error('Failed to parse plugin settings of ' + pluginName + e)
@@ -819,7 +818,6 @@ export class ThemeService {
             this.getPagesInfo(allConfigs),
         ]);
         const pluginsSettings = await this.getPluginsAtPage(pageRoute, pageConfig);
-
 
         return {
             pageConfig,

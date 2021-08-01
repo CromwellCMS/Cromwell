@@ -9,7 +9,7 @@
     "startup.js"
   ],
   "keywords": [],
-  "author": "CromwellJS",
+  "author": "CromwellCMS",
   "license": "MIT",
   "scripts": {
     "build": "npx rollup -c",
@@ -59,7 +59,7 @@
     "eslint": "^7.25.0",
     "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-ts-compiler": "^1.0.16",
-    "typescript": "4.2.4"
+    "typescript": "4.3.5"
   },
   "startupDependencies": {
     "colors": "^1.4.0",

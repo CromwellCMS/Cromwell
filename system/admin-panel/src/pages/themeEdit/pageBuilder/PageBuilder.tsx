@@ -11,12 +11,12 @@ import {
 } from '@cromwell/core';
 import {
     BlockContentProvider,
-    blockTypeToClassname,
+    blockCssClass,
     CContainer,
-    CromwellBlockCSSclass,
     getBlockById,
     getBlockData,
     getBlockElementById,
+    getBlockHtmlType,
     pageRootContainerId,
 } from '@cromwell/core-frontend';
 import React from 'react';
@@ -78,8 +78,8 @@ export class PageBuilder extends React.Component<{
 
     private async init() {
         this.draggable = new Draggable({
-            draggableSelector: `.${CromwellBlockCSSclass}`,
-            containerSelector: `.${blockTypeToClassname('container')}`,
+            draggableSelector: `.${blockCssClass}`,
+            containerSelector: `.${getBlockHtmlType('container')}`,
             rootElement: this.editorWindowRef.current,
             disableInsert: true,
             canInsertBlock: this.canInsertBlock,

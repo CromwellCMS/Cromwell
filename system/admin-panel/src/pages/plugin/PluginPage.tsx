@@ -1,8 +1,9 @@
-import { getStoreItem, setStoreItem } from '@cromwell/core';
 import { AdminPanelWidgetPlace, getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
 import React, { useEffect, useState } from 'react';
 
 import styles from './PluginPage.module.scss';
+
+const pluginsSettings: Record<string, any> = {}
 
 const PluginPage = (props) => {
     const urlParams = new URLSearchParams(props?.location?.search);
@@ -15,10 +16,7 @@ const PluginPage = (props) => {
             try {
                 const settings: any = await apiClient?.getPluginSettings(pluginName);
                 if (settings) {
-                    const pluginsSettings = getStoreItem('plugins') ?? {};
-                    if (!pluginsSettings[pluginName]) pluginsSettings[pluginName] = {}
-                    pluginsSettings[pluginName].settings = settings;
-                    setStoreItem('plugins', pluginsSettings);
+                    pluginsSettings[pluginName] = settings;
                 }
             } catch (e) {
                 console.error(e);
@@ -36,7 +34,7 @@ const PluginPage = (props) => {
                 pluginName={pluginName}
                 widgetProps={{
                     pluginName,
-                    globalSettings: getStoreItem('plugins')?.[pluginName]?.settings ?? {}
+                    pluginSettings: pluginsSettings[pluginName] ?? {}
                 }}
             />
         </div>

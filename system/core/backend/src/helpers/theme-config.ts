@@ -6,7 +6,7 @@ import { GenericTheme } from './generic-entities';
 import { getLogger } from './logger';
 
 
-const findTheme = (themeName: string): Promise<TThemeEntity | undefined> => {
+export const findTheme = (themeName: string): Promise<TThemeEntity | undefined> => {
     const themeRepo = getCustomRepository(GenericTheme.repository);
     return themeRepo.findOne({
         where: {

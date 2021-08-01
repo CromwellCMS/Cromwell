@@ -35,7 +35,6 @@ export class CPlugin extends React.Component<CPluginProps> {
 
                     const pluginConf = getStoreItem('plugins')?.[name];
                     const pluginData = pluginConf?.data ?? {};
-                    const settings = pluginConf?.settings ?? {};
 
                     let PluginComponent: React.ComponentType<TFrontendPluginProps> | undefined = component;
                     if (name && !component) {
@@ -56,8 +55,7 @@ export class CPlugin extends React.Component<CPluginProps> {
                             <PluginComponent
                                 data={pluginData}
                                 pluginName={name}
-                                globalSettings={settings}
-                                instanceSettings={data?.plugin?.settings ?? props.plugin?.settings}
+                                instanceSettings={data?.plugin?.instanceSettings ?? props.plugin?.instanceSettings}
                             />
                         </ErrorBoundary>
                     );

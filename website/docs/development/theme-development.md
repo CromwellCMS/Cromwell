@@ -5,7 +5,7 @@ sidebar_position: 1
 # Theme development
 
 Cromwell CMS follows principles of headless CMS where API server runs separately from its frontend server. So basically you can create any type of frontend and host it wherever you like. But in this scenario you need to manage and deploy this frontend by yourself.  
-To simply the workflow Cromwell CMS provides another option - build Themes that are managed and work with the CMS core. CMS users can easily install Themes from official market right in their Admin panel GUI, make active, delete them, change layout in the Theme Editor as long as Themes follow guidelines we are going to show.  
+To simply the workflow Cromwell CMS has its theming engine. Users can easily install Themes from the official market right in their Admin panel GUI, make active, delete them, change layout in the Theme Editor as long as Themes follow guidelines we are going to show.  
 
 Cromwell CMS Theme is a Next.js app. Theme development is basically Next.js development. If you are not familiar with Next.js, [you should definitely start with it first](https://nextjs.org/docs/getting-started).   
 
@@ -19,9 +19,9 @@ npx @cromwell/cli create --type theme my-theme-name
 
 ## Project structure
 
-- **`cromwell.config.js`** - [Config file for your Theme/Plugin.](/docs/development/module-config)  
+- **`cromwell.config.js`** - [Optional config file for your Theme/Plugin.](/docs/development/module-config)  
 - **`src/pages`** - Directory for Next.js pages. By default there's `index.tsx` created by CLI. You can rename it to .jsx if you don't want to work with TypeScript (which is discouraged).
-- **`static`** - Directory for static files (images). Files from this directory will be copied into `public` directory of the CMS, from where they will be served by our server to the frontend. You can access your Theme files through the following pattern: `/themes/${packageName}/${pathInStaticDir}`.  
+- **`static`** - Directory for static files (images). After installation of this Theme by end user files from `static` directory will be copied into `public` directory of the CMS, from where they will be served to the frontend. In your code you can access static files of your Theme through the following pattern: `/themes/${packageName}/${pathInStaticDir}`.  
 Image example:  `<img src="/themes/@cromwell/theme-store/free_shipping.png" />`
 
 
@@ -65,14 +65,14 @@ This is a multipurpose phase that happens before we run Webpack compiler of Next
 
 2. Cromwell CMS needs to generate meta info files on your source code. In order to parse your files, we need to transpile them into plain JavaScript first.
 
-3. We need to generate Admin panel bundles. That adds ability for each page to be opened and modified in Admin panel Theme Editor. Pre-build phase generates one bundle per [configured page](#configure-pages) in cromwell.config.js. By default these bundles generated only in production build mode (for performance reasons), but if you want to do the same in watch mode, you need to add `--admin`/`-a` argument to the command: `npx crw b -w -a` 
+3. We need to generate Admin panel page bundles. That adds ability for each page to be opened and modified in Admin panel Theme Editor. Pre-build phase generates one bundle per [configured page](#configure-pages) in cromwell.config.js. By default these bundles generated only in production build mode (for performance reasons), but if you want to do the same in watch mode, you need to add `--admin`/`-a` argument to the command: `npx crw b -w -a` 
 
 4. We make your Frontend dependencies available to re-use for Plugins. See [Frontend dependencies](#todo) page for details.
 
 
 ## Customize bundler
 
-We use [Rollup](https://rollupjs.org) for the pre-build phase. Which means you need to change Rollup config if you want to customize your build. The purpose of the phase is to build plain JavaScript, so you won't need to customize Next.js Webpack config.  
+We use [Rollup](https://rollupjs.org) for the pre-build phase. Which means you need to change Rollup config if you want to customize your build. The purpose of the phase is to build plain JavaScript, so you won't need to customize Next.js's Webpack config.  
 
 By default CMS build command can transpile React and handle CSS/SASS (by passing stylesheets to Next.js).  
 After generating Theme template with Cromwell CLI, you will also have TypeScript compiler in the build config.
@@ -142,11 +142,11 @@ You can apply some custom configurations to your pages in `cromwell.config.js`. 
 - **`id`** - Unique id of the page. Required. We need it to recognize pages, since `route` can be changed for [Generic pages](#generic-pages).
 - **`route`** - Page's route. Required. Usually it has the same value as Next.js file-routing. For example, if you have created file: `info/contacts.tsx`, then your page will be served at `info/contacts` by Next.js, so `route` value will be `info/contacts`. If your page is dynamic, for example `product/[slug].tsx`, then value is `product/[slug]`. There's one exception with the Home page, we use `index` value for it.
 - **`name`** - Name of the page displayed in Theme Editor sidebar.
-- **`title`** - Meta title (SEO). Cromwell CMS will automatically import Head component from `next/head` for the title to work in frontend. But you also can use `next/head` in your code. Note that `title` from the config overrides title in your React component.
+- **`title`** - Meta title (SEO). Cromwell CMS will automatically import Head component from `next/head` package for the title to work in frontend. But you also can use `next/head` in your code. Note that `title` from the page config overrides title in your React component.
 - **`description`** - Meta description (SEO).
 - **`headHtml`** - Custom HTML injected in the head. After Pre-build phase your pages will be wrapped by our root component to make these injections. 
 - **`footerHtml`** - Custom HTML injected at the end of the page.
-- **`adminPanelProps`** - Props to pass to the page in Admin panel Page builder. For example, if you have interface dependent on data, you want to pass some mocked data the page, so it will be fully displayed and user will ba able to edit all available blocks.
+- **`adminPanelProps`** - Props to pass to the page in Admin panel Page builder. For example, if your interface depends on data, you want to pass some mocked data the page, so it will be fully displayed and user will be able to edit all available blocks.
 - **`modifications`** - Modifications of Blocks. Part of Page builder system. All custom modifications for Blocks (such as dragging, styling) are stored as JSON configs in `modifications`. There are two types of them: author's and user's. Author's modifications stored in `cromwell.config.js` under this property. User's modifications stored in database.  
 In actual usage your modification from the config will be merged and overwritten by user's modification from DB. 
 When you are making a Theme you can copy modifications from DB into this property. 
@@ -167,15 +167,14 @@ It is not necessary to add configs for your pages, and you can start development
 
 ### Default pages
 
-`cromwell.config.js` has `defaultPages` property that tells Admin panel where to find your pages. For example, in a product page of Admin panel at the top right menu you can see icon with tooltip "open product page in the new tab". The icon opens same product in frontend page of an active Theme. Since it's possible for Theme author to place product page anywhere, you need to specify its route in the `defaultPages` for Admin panel links to work.  
+`cromwell.config.js` has `defaultPages` property that tells Admin panel where to find your pages. For example, in a product page of Admin panel at the top right menu you can see icon with tooltip "open product page in the new tab". The icon opens same product in frontend page of an active Theme. Since it's possible for Theme author to place product page under any route, you need to specify its route in the `defaultPages` for Admin panel links to work.  
 
 All available Default pages with route examples:
 ```json
 {
-  "index": "index",
   "category": "category/[slug]",
   "product": "product/[slug]",
-  "post": "blog/[slug]",
+  "post": "post/[slug]",
   "tag": "tag/[slug]",
   "pages": "pages/[slug]",
   "account": "account",
@@ -190,7 +189,7 @@ So in your page you can add a container:
 ```tsx
 <CContainer id="some-plugin-container"></CContainer>
 ```
-And add Plugin to the `modifications` of a page: 
+And add Plugin to the `modifications` of a [page config](#page-config-properties): 
 ```json
 {
   "type": "plugin",
@@ -198,7 +197,7 @@ And add Plugin to the `modifications` of a page:
   "parentId": "some-plugin-container",
   "isVirtual": true,
   "plugin": {
-    "pluginName": "some-plugin-name"
+    "pluginName": "some-plugin-package-name"
   }
 }
 ```
@@ -207,19 +206,19 @@ And add Plugin to the `modifications` of a page:
 
 User can create a new page in the Theme Editor. Since there's no way to add Next.js pages at runtime, this feature achieved via adding a dynamic page at `pages/[slug]` route. If your Theme doesn't export component at `src/pages/pages/[slug].(jsx|tsx)`, then it will be generated internally at pre-build phase, but you're encouraged to create it yourself, since probably you want to have it the same layout as in other pages.  
 
-Theme author also can create a page in the config. Just add a page config with route: `pages/you-name` and modifications to display some content.  
+Theme author also can create a generic page in the Theme config. Just add a page config with the route: `pages/your-page-name` and put modifications to display some content.  
 
-The difference of generic pages from other pages that they can have a different page config for a specified slug, while, for example, `/product/[slug]` page will have the same config for every slug.
+The difference of generic pages from other pages that they can have a different page config for a specified slug, while, for example, `/product/[slug]` page will have the same config for every provided slug.
 
 
 ## Publish
 
 Any Theme or Plugin is an NPM package. That's how Cromwell CMS recognizes and manages them. If you want to share your Theme/Plugin you need to publish it as NPM package.
 
-First configure info that will be displayed in Admin panel. Open `package.json` > `cromwell` property > modify fields: `title`, `image`, `excerpt`, `description`, `author`. [More about `package.json` config](/docs/development/module-config#package-json)  
+First configure info that will be displayed in Admin panel. Open `package.json` > `cromwell` property > modify fields: `title`, `image`, `excerpt`, `description`, `author`. [More about `package.json` config](/docs/development/module-config)  
 
 Check that all needed directories are included in your npm package. They should be set as "files" in your package.json:
-```json
+```json title="package.json"
 "files": [
   "build",
   "static",
@@ -230,16 +229,26 @@ Do not include `.cromwell` and `public` directories, these are CMS runtime direc
 
 Make sure you have successfully built your Theme/Plugin.  
 For a Theme `./build` directory should contain `.next` and if there any Admin panel pages - `theme/admin`.  
-For a Plugin `./build` directory should reflect `src` 3 main directories.  
+For a Plugin `./build` directory should reflect `src` 3 main directories. 
+Your Theme/Plugin also should work locally at http://localhost:4016/
 
 Publish your package to the npm registry:
 ```bash
 npm publish --access public
 ```
 
+### Publish in the Cromwell CMS market
+
+For your Theme/Plugin to appear in the Admin panel market at `/admin/#/theme-market` page, we need to add it in our central database. For now there's no automatic process and all new Modules checked manually (to ensure build correctness and acceptable code quality), so please reach us for publication at cromwellcms@gmail.com.  
+Publication is free.
+
 ## Install
 
-You can install your Theme/Plugin in existing/running project, or create a new basic project:
+You can install your Theme/Plugin from the CMS market in the GUI of Admin panel or from npm registry in the terminal.
+
+### Install from npm registry
+
+Install in existing/running project, or create a new basic project:
 ```bash
 npx @cromwell/cli create my-website
 ```
@@ -249,4 +258,4 @@ Install your Theme:
 npm i my-theme-name -S
 ```
 
-You don't have to restart CMS, your Theme will be found and displayed in the Admin panel. Now you need to set it active.  
+You don't have to restart CMS, your Theme will be found and displayed in the Admin panel. Now you can set it as active to see at the frontend.  
