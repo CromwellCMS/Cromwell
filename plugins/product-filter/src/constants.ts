@@ -11,5 +11,5 @@ export const defaultSettings: Required<TProductFilterSettings> = {
         left: 10
     },
     collapsedByDefault: false,
-    mobileCollapsedByDefault: true,
+    mobileCollapsedByDefault: false,
 }

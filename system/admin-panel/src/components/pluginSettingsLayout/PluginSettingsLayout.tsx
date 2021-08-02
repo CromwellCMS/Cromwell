@@ -16,6 +16,7 @@ export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsPr
             pluginSettings: TSettings | undefined;
             setPluginSettings: (settings: TSettings) => void;
             changeSetting: <T extends keyof TSettings>(key: T, value: TSettings[T]) => void;
+            saveSettings: () => Promise<void>;
         }) => JSX.Element;
         disableSave?: boolean;
         loading?: boolean;
@@ -72,7 +73,12 @@ export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsPr
                         >Save</Button>
                     </div>
                     <div className={styles.main}>
-                        {props.children({ pluginSettings, setPluginSettings, changeSetting })}
+                        {props.children({
+                            pluginSettings,
+                            setPluginSettings,
+                            changeSetting,
+                            saveSettings: handleSave
+                        })}
                     </div>
                 </div>
             )}

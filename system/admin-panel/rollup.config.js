@@ -33,6 +33,11 @@ const buildDir = 'build';
 fs.ensureDirSync(resolve(__dirname, buildDir));
 
 const sharedState = {};
+const compilerOptions = {
+    declaration: true,
+    declarationMap: true,
+    declarationDir: resolve(__dirname, buildDir, 'types')
+};
 
 export default [
     {
@@ -49,6 +54,7 @@ export default [
         plugins: [
             typescript({
                 sharedState,
+                compilerOptions,
                 monorepo: true,
             }),
             json(),
@@ -72,6 +78,7 @@ export default [
         plugins: [
             typescript({
                 sharedState,
+                compilerOptions,
                 monorepo: true,
             }),
             json(),

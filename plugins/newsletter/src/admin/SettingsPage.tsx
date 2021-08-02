@@ -40,7 +40,7 @@ export function SettingsPage(props) {
         <PluginSettingsLayout {...props} disableSave>
             {() => (
                 <>
-                    <p>Export all subscribers into CSV file</p>
+                    <p>Export all subscribed emails into CSV file</p>
                     <Button variant="contained" color="primary"
                         className={classes.saveBtn}
                         disabled={isLoading}

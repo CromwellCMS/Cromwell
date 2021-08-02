@@ -136,7 +136,7 @@ export default function Sidebar() {
                             horizontal: 'right',
                         }}
                     >
-                        <div>
+                        <div onClick={() => setOptionsOpen(false)}>
                             <Link to={`${userPageInfo.baseRoute}/${userInfo?.id}`}>
                                 <MenuItem className={styles.optionsItem}>
                                     <AccountCircleOutlinedIcon />

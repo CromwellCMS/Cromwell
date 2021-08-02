@@ -30,7 +30,6 @@ registerAction({
             return;
         }
 
-
         const output: { name: string; link?: string | null } = {
             name: 'Pay with card / Google Pay (Stripe)'
         }

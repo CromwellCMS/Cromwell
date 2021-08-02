@@ -123,7 +123,7 @@ const Item = (props: {
                         onChange={(e) => { handleChange('html', e.target.value) }}
                     />
                     <div className={classes.sublinksList}>
-                        <h3>Sublinks</h3>
+                        <h3 className={classes.sublinksTitle}>Sublinks</h3>
                         {item.sublinks && item.sublinks.map((sl, slIndex) => {
                             return (
                                 <div className={`${classes.sublinkItem} ${classes.paper}`} >

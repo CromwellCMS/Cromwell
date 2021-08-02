@@ -20,11 +20,11 @@ export type TBackendModule = {
     migrations?: unknown[];
 }
 
-// { [ActionName] : PayloadType }
 export type Action<PayloadType, OutputType = any> = {
     payload: PayloadType;
     output: OutputType;
 }
+
 export type ActionTypes = {
     install_plugin: Action<{ pluginName: string; }>;
     update_plugin: Action<{ pluginName: string; }>;

@@ -27,11 +27,11 @@ export const registerAction = <
 export const fireAction = async <
     T extends ActionNames,
     TPayload = ActionTypes[T]['payload'],
-    TOutput = (ActionTypes[T])['output']>(
-        options: {
-            actionName: T | string;
-            payload?: TPayload;
-        }): Promise<Record<string, TOutput>> => {
+    TOutput = (ActionTypes[T])['output']>
+    (options: {
+        actionName: T | string;
+        payload?: TPayload;
+    }): Promise<Record<string, TOutput>> => {
 
     const logger = getLogger();
     const { payload, actionName } = options ?? {};

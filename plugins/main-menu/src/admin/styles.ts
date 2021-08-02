@@ -66,6 +66,10 @@ export const useStyles = makeStyles((theme: Theme) =>
             display: 'flex',
             justifyContent: 'space-between'
         },
+        sublinksTitle: {
+            fontSize: '15px',
+            fontWeight: 400
+        },
         subField: {
             width: '40%',
             margin: '0 10px'

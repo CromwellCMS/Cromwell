@@ -1,34 +1,13 @@
-import { closeConnection, connectDatabase } from '@App/helpers/connectDataBase';
+import { closeConnection } from '@App/helpers/connectDataBase';
 import { getResolvers } from '@App/helpers/getResolvers';
-import { getStoreItem, setStoreItem } from '@cromwell/core';
 import { TGraphQLContext } from '@cromwell/core-backend';
 import { ApolloServer } from 'apollo-server';
-import fs from 'fs-extra';
-import { resolve } from 'path';
 import { buildSchema } from 'type-graphql';
 
-import { mockWorkingDirectory } from './helpers';
+import { setupConnection } from './helpers';
 
 export const setupResolver = async (name: string): Promise<ApolloServer> => {
-    const testDir = await mockWorkingDirectory(name);
-
-    await fs.outputJSON(resolve(testDir, 'package.json'), {
-        "name": "@cromwell/test",
-        "version": "1.0.0",
-        "cromwell": {
-            "themes": [
-                "@cromwell/theme-store",
-                "@cromwell/theme-blog"
-            ]
-        },
-    });
-
-    await connectDatabase({ synchronize: true, migrationsRun: false }, true);
-
-    let cmsSettings = getStoreItem('cmsSettings');
-    if (!cmsSettings) cmsSettings = {};
-    cmsSettings.installed = false;
-    setStoreItem('cmsSettings', cmsSettings);
+    await setupConnection(name);
 
     const schema = await buildSchema({
         resolvers: [...(await getResolvers())] as any,

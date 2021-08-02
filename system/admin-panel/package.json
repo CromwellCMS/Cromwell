@@ -1,12 +1,11 @@
 {
   "name": "@cromwell/admin-panel",
   "version": "1.1.2",
-  "module": "src/exports.ts",
-  "types": "src/exports.ts",
+  "module": "build/types/exports.d.ts",
+  "types": "build/types/exports.d.ts",
   "files": [
     "build",
     "static",
-    "src",
     "startup.js"
   ],
   "keywords": [],

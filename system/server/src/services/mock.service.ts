@@ -232,9 +232,9 @@ export class MockService {
 
 
     public async mockCategories(amount?: number): Promise<boolean> {
-
+        const maxAmount = amount ?? 40;
         const categoriesMock: TProductCategoryInput[] = [];
-        const firstLevelAmount = Math.floor((amount ?? 30) / 6);
+        const firstLevelAmount = Math.floor((maxAmount) / 6);
         for (let i = 0; i < firstLevelAmount; i++) {
             const name = this.getRandomName();
             categoriesMock.push({
@@ -243,12 +243,15 @@ export class MockService {
             })
         }
 
-        const maxSubcatNum = Math.floor((amount ?? 30) / 10);
+        const maxSubcatNum = Math.floor(maxAmount / 10 + 1);
+        let created = 0
 
         for (const cat of categoriesMock) {
             const catEntity = await this.productCategoryRepo.createProductCategory(cat);
+            created++;
+            if (created > maxAmount) return true;
 
-            const subCatsNum = Math.floor(Math.random() * maxSubcatNum);
+            const subCatsNum = Math.floor(Math.random() * maxSubcatNum * 2 + 1);
             for (let j = 0; j < subCatsNum; j++) {
                 const name = this.getRandomName();
                 const subcatIput1 = {
@@ -257,6 +260,8 @@ export class MockService {
                     parentId: catEntity.id
                 } as TProductCategoryInput;
                 const subcatLevel1 = await this.productCategoryRepo.createProductCategory(subcatIput1);
+                created++;
+                if (created > maxAmount) return true;
 
                 const subCatsNum2 = Math.floor(Math.random() * maxSubcatNum);
                 for (let k = 0; k < subCatsNum2; k++) {
@@ -267,6 +272,8 @@ export class MockService {
                         parentId: subcatLevel1.id
                     } as TProductCategoryInput;
                     const subcatLevel2 = await this.productCategoryRepo.createProductCategory(subcatIput2);
+                    created++;
+                    if (created > maxAmount) return true;
 
                     const subCatsNum3 = Math.floor(Math.random() * maxSubcatNum);
                     for (let m = 0; m < subCatsNum3; m++) {
@@ -277,6 +284,8 @@ export class MockService {
                             parentId: subcatLevel2.id
                         } as TProductCategoryInput;
                         await this.productCategoryRepo.createProductCategory(subcatIput3);
+                        created++;
+                        if (created > maxAmount) return true;
                     }
                 }
             }
@@ -306,9 +315,12 @@ export class MockService {
     }
 
 
-    public async mockReviews() {
+    public async mockReviews(amount?: number) {
         const products = await this.productRepo.find();
         const promises: Promise<TProductReview>[] = [];
+
+        const maxAmount = amount ?? 100;
+        let mockedAmount = 0;
 
         for (const prod of products) {
             if (Math.random() < 0.3) continue;
@@ -323,10 +335,14 @@ export class MockService {
                     approved: Math.random() > 0.3,
                 }
                 promises.push(this.productReviewRepo.createProductReview(review));
-            }
-        }
-        await Promise.all(promises);
 
+                mockedAmount++;
+                if (mockedAmount > maxAmount) break;
+            }
+            if (mockedAmount > maxAmount) break;
+        }
+
+        await Promise.all(promises);
         return true;
     }
 
