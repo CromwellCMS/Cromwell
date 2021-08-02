@@ -1,80 +1,61 @@
-import { getStoreItem, TPluginSettingsProps } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, Checkbox, FormControlLabel, TextField } from '@material-ui/core';
-import React, { useState } from 'react';
+import { PluginSettingsLayout } from '@cromwell/admin-panel';
+import { TPluginSettingsProps } from '@cromwell/core';
+import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
+import React from 'react';
 
 import { defaultSettings } from '../constants';
 import { TProductFilterSettings } from '../types';
-import { useStyles } from './styles';
 
 export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>) {
-    const { pluginName, pluginSettings: settings } = props;
-    const classes = useStyles();
-    const [isLoading, setIsloading] = useState(false);
-    const apiClient = getRestAPIClient();
-
-    const mobileIconPosition = settings?.mobileIconPosition ?? defaultSettings.mobileIconPosition;
-    const [iconTop, setIconTop] = useState<number>(mobileIconPosition.top);
-    const [iconLeft, setIconLeft] = useState<number>(mobileIconPosition.left);
-    const [collapsedByDefault, setcollapsedByDefault] = useState<boolean>(settings?.collapsedByDefault ?? defaultSettings.collapsedByDefault);
-    const [mobileCollapsedByDefault, setmobileCollapsedByDefault] = useState<boolean>(settings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault);
-
-    const handleSave = async () => {
-        setIsloading(true);
-        const _settings = settings ?? {};
-
-        const _mobileIconPosition = {
-            top: iconTop,
-            left: iconLeft
-        }
-        _settings.mobileIconPosition = _mobileIconPosition;
-        _settings.collapsedByDefault = collapsedByDefault;
-        _settings.mobileCollapsedByDefault = mobileCollapsedByDefault;
-
-        try {
-            await apiClient?.savePluginSettings(pluginName, _settings);
-            getStoreItem('notifier')?.success?.('Saved!');
-
-        } catch (e) {
-            console.error(e);
-            getStoreItem('notifier')?.error?.('Failed to save');
-        }
-        setIsloading(false);
-    }
-
     return (
-        <div className={`${classes.paper} ${classes.content}`}>
-            <h1 style={{ marginBottom: '10px' }}>Product filter plugin</h1>
-            <h3 style={{ marginBottom: '10px', marginTop: '10px' }}>Mobile icon position (in pixels):</h3>
-            <TextField label="Top" value={iconTop} style={{ marginBottom: '10px' }}
-                onChange={e => setIconTop(parseInt(e.target.value))} />
-            <TextField label="Left" value={iconLeft} style={{ marginBottom: '10px' }}
-                onChange={e => setIconLeft(parseInt(e.target.value))} />
-            <h3 style={{ marginBottom: '10px', marginTop: '10px' }}>Options visibility</h3>
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={collapsedByDefault}
-                        onChange={() => setcollapsedByDefault(!collapsedByDefault)}
-                        color="primary"
-                    />
-                }
-                label="All options collapsed by default at desktop screen"
-            />
-            <FormControlLabel
-                control={
-                    <Checkbox
-                        checked={mobileCollapsedByDefault}
-                        onChange={() => setmobileCollapsedByDefault(!mobileCollapsedByDefault)}
-                        color="primary"
-                    />
-                }
-                label="All options collapsed by default at mobile screen"
-            />
-            <Button variant="contained" color="primary"
-                className={classes.saveBtn}
-                size="large"
-                onClick={handleSave}>Save</Button>
-        </div>
+        <PluginSettingsLayout<TProductFilterSettings> {...props}>
+            {({ pluginSettings, changeSetting }) => {
+                const mobileIconPosition = pluginSettings?.mobileIconPosition ?? defaultSettings.mobileIconPosition;
+                const collapsedByDefault = pluginSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault;
+                const mobileCollapsedByDefault = pluginSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
+                return (
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <h3 style={{ marginBottom: '15px' }}>Mobile icon position (in pixels):</h3>
+                        <TextField label="Top"
+                            value={mobileIconPosition.top}
+                            style={{ marginBottom: '15px', marginRight: '15px', maxWidth: '150px' }}
+                            onChange={e => changeSetting('mobileIconPosition', {
+                                ...mobileIconPosition,
+                                top: parseInt(e.target.value)
+                            })}
+                        />
+                        <TextField label="Left"
+                            value={mobileIconPosition.left}
+                            style={{ marginBottom: '15px', maxWidth: '150px' }}
+                            onChange={e => changeSetting('mobileIconPosition', {
+                                ...mobileIconPosition,
+                                left: parseInt(e.target.value)
+                            })}
+                        />
+                        <h3 style={{ marginBottom: '10px', marginTop: '10px' }}>Options visibility</h3>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={collapsedByDefault}
+                                    onChange={() => changeSetting('collapsedByDefault', !collapsedByDefault)}
+                                    color="primary"
+                                />
+                            }
+                            label="All options collapsed by default at desktop screen"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={mobileCollapsedByDefault}
+                                    onChange={() => changeSetting('mobileCollapsedByDefault', !mobileCollapsedByDefault)}
+                                    color="primary"
+                                />
+                            }
+                            label="All options collapsed by default at mobile screen"
+                        />
+                    </div>
+                )
+            }}
+        </PluginSettingsLayout>
     )
 }

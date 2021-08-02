@@ -382,21 +382,6 @@ export type TOrder = TOrderCore & TBasePageEntity;
 
 export type TOrderInput = TOrderCore & TBasePageEntityInput;
 
-export type TServerCreateOrder = {
-    status?: string;
-    userId?: string;
-    cart?: string;
-    customerName?: string;
-    customerPhone?: string;
-    customerEmail?: string;
-    customerAddress?: string;
-    shippingMethod?: string;
-    paymentMethod?: string;
-    customerComment?: string;
-    fromUrl?: string;
-    currency?: string;
-}
-
 export type TOrderFilter = {
     status?: string;
     customerName?: string;
@@ -405,6 +390,15 @@ export type TOrderFilter = {
     orderId?: string;
     dateFrom?: string;
     dateTo?: string;
+}
+
+export type TPaymentSession = TOrderCore & {
+    paymentOptions?: {
+        name?: string;
+        link?: string;
+    }[];
+    successUrl?: string;
+    cancelUrl?: string;
 }
 
 
@@ -551,10 +545,6 @@ export type TCmsAdminSettings = {
      * E-mail to send mails from
      */
     sendFromEmail?: string;
-    /**
-     * [Stripe API key](https://stripe.com/docs/keys)
-     */
-    stripeApiKey?: string
 }
 
 export type TCmsEntityInput = {

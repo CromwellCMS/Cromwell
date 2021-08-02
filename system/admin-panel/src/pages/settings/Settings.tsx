@@ -355,15 +355,6 @@ class SettingsPage extends React.Component<any, {
                                         onChange={this.handleTextFieldChange('defaultShippingPrice')}
                                     />
                                 </Grid>
-                                <Grid item xs={12} >
-                                    <TextField
-                                        fullWidth
-                                        label="Stripe API key"
-                                        value={settings?.adminSettings?.stripeApiKey ?? ''}
-                                        onChange={this.handleAdminTextFieldChange('stripeApiKey')}
-                                        className={styles.field}
-                                    />
-                                </Grid>
                             </>
                         )
                     })}

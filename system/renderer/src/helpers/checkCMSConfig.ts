@@ -30,6 +30,27 @@ export const checkCMSConfig = (): void => {
     }
 
     const config = coreBackend.readCMSConfigSync(cmsConfigPath);
+
+    if (!config.serviceSecret) {
+        (async () => {
+            try {
+                let serverCachePath = pathResolve(coreBackend.getServerTempDir(), 'cache');
+                if (!fs.pathExistsSync(serverCachePath)) {
+                    serverCachePath = pathResolve(
+                        coreBackend.getServerTempDir(pathResolve(process.cwd(), '../../')),
+                        'cache');
+                }
+
+                if (fs.pathExistsSync(serverCachePath)) {
+                    const cacache = nodeRequire('cacache');
+                    config.serviceSecret = (await cacache?.get(serverCachePath, 'service_secret'))?.data?.toString?.();
+                }
+
+            } catch (error) { }
+        })()
+
+    }
+
     setStoreItem('cmsSettings', config);
 }
 

@@ -12,12 +12,13 @@ import {
     TDBEntity,
     TFrontendBundle,
     TOrder,
+    TOrderInput,
     TPackageCromwellConfig,
     TPageConfig,
     TPageInfo,
+    TPaymentSession,
     TProductReview,
     TProductReviewInput,
-    TServerCreateOrder,
     TThemeConfig,
     TUser,
 } from '@cromwell/core';
@@ -81,15 +82,15 @@ export class CRestAPIClient {
             try {
                 // If backend, try to find service secret key to make 
                 // authorized requests to the API server.
-                const nodeRequire = (name: string) => eval(`require('${name}');`);
-                const cacache = nodeRequire('cacache');
-                const { resolve } = nodeRequire('path');
-                const backend: typeof import('@cromwell/core-backend') = nodeRequire('@cromwell/core-backend');
-
                 let cmsConfig = getStoreItem('cmsSettings');
                 if (!cmsConfig) cmsConfig = {};
+
                 if (!cmsConfig.serviceSecret) {
                     try {
+                        const nodeRequire = (name: string) => eval(`require('${name}');`);
+                        const backend: typeof import('@cromwell/core-backend') = nodeRequire('@cromwell/core-backend');
+                        const { resolve } = nodeRequire('path');
+                        const cacache = nodeRequire('cacache');
                         const serverCachePath = resolve(backend.getServerTempDir(), 'cache');
                         cmsConfig.serviceSecret = (await cacache?.get(serverCachePath, 'service_secret'))?.data?.toString?.();
                     } catch (error) { }
@@ -446,7 +447,7 @@ export class CRestAPIClient {
      * Calculate total price of a cart 
      * @auth no
      */
-    public getOrderTotal = async (input: TServerCreateOrder, options?: TRequestOptions): Promise<TOrder | undefined> => {
+    public getOrderTotal = async (input: TOrderInput, options?: TRequestOptions): Promise<TOrder | undefined> => {
         return this.post(`v1/cms/get-order-total`, input, options);
     }
 
@@ -454,8 +455,7 @@ export class CRestAPIClient {
      * Calculate total price of a cart and creates a payment session via service provider
      * @auth no
      */
-    public createPaymentSession = async (input: TServerCreateOrder, options?: TRequestOptions)
-        : Promise<TOrder & { checkoutUrl?: string } | undefined> => {
+    public createPaymentSession = async (input: TPaymentSession, options?: TRequestOptions): Promise<TPaymentSession | undefined> => {
         return this.post(`v1/cms/create-payment-session`, input, options);
     }
 
@@ -463,7 +463,7 @@ export class CRestAPIClient {
      * Place a new order in the store
      * @auth no
      */
-    public placeOrder = async (input: TServerCreateOrder, options?: TRequestOptions): Promise<TOrder | undefined> => {
+    public placeOrder = async (input: TOrderInput, options?: TRequestOptions): Promise<TOrder | undefined> => {
         return this.post(`v1/cms/place-order`, input, options);
     }
 

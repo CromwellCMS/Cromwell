@@ -1,6 +1,6 @@
-import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks';
-import { TCmsEntityCore, TProduct, TUser, TServiceVersions } from './entities';
 import { ConnectionOptions } from 'typeorm';
+import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks';
+import { TCmsEntityCore, TPluginEntity, TProduct, TServiceVersions, TUser } from './entities';
 
 /**
  * Global store mostly for internal usage.
@@ -494,6 +494,7 @@ export type TCCSModuleInfo = {
 // PluginSettings
 export type TPluginSettingsProps<TSettings = any> = {
     pluginSettings?: TSettings;
+    pluginInfo?: TPackageCromwellConfig;
     pluginName: string;
 }
 

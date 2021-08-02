@@ -1,7 +1,6 @@
-import React from 'react';
-import { CircularProgress } from '@material-ui/core';
-import { createStyles, makeStyles, Theme } from '@material-ui/core';
 import { throbber } from '@cromwell/core-frontend';
+import React from 'react';
+
 import styles from './LoadBox.module.scss';
 
 interface LoadBoxProps {

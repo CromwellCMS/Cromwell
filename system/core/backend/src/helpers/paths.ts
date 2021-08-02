@@ -11,7 +11,7 @@ export const buildDirName = `build`;
 export const configFileName = `${cmsName}.config.js`;
 export const cmsConfigFileName = 'cmsconfig.json';
 
-export const getTempDir = () => resolve(process.cwd(), tempDirName);
+export const getTempDir = (dir?: string) => resolve(dir ?? process.cwd(), tempDirName);
 
 export const resolvePackageJsonPath = (moduleName: string): string | undefined => {
     return require.resolve(`${moduleName}/package.json`, {
@@ -110,7 +110,7 @@ export const getServerBuildProxyPath = () => {
     const serverDir = getServerDir();
     if (serverDir) return resolve(serverDir, 'build/proxy.js');
 }
-export const getServerTempDir = () => resolve(getTempDir(), 'server');
+export const getServerTempDir = (dir?: string) => resolve(getTempDir(dir), 'server');
 export const getServerTempEmailsDir = () => resolve(getServerTempDir(), 'emails');
 export const getServerDefaultEmailsDir = () => {
     const serverDir = getServerDir();

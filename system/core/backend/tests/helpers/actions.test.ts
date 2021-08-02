@@ -8,7 +8,7 @@ describe('actions', () => {
         registerAction<any>({
             actionName: 'custom_action',
             pluginName: 'test_plugin',
-            action: () => {
+            action: async () => {
                 return testValue;
             }
         });

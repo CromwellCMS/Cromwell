@@ -7,7 +7,4 @@ export class CmsAdminSettingsDto implements TCmsAdminSettings {
 
     @ApiProperty()
     sendFromEmail?: string;
-
-    @ApiProperty()
-    stripeApiKey?: string
 }

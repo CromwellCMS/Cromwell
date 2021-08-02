@@ -1,7 +1,7 @@
+import { serverFireAction } from '../helpers/serverFireAction';
 import {
     getRandStr,
     resolvePageRoute,
-    serviceLocator,
     setStoreItem,
     sleep,
     TCCSVersion,
@@ -45,7 +45,6 @@ import { format } from 'date-fns';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
 import stream from 'stream';
-import Stripe from 'stripe';
 import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository, getManager } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
@@ -60,6 +59,7 @@ import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { childSendMessage } from '../helpers/serverManager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
+import { MockService } from './mock.service';
 import { PluginService } from './plugin.service';
 import { ThemeService } from './theme.service';
 
@@ -75,6 +75,10 @@ export class CmsService {
 
     private get themeService() {
         return Container.get(ThemeService);
+    }
+
+    private get mockService() {
+        return Container.get(MockService);
     }
 
     constructor() {
@@ -196,6 +200,8 @@ export class CmsService {
         if (settings) {
             setStoreItem('cmsSettings', settings)
         }
+
+        await this.mockService.mockAll();
 
         return true;
     }
@@ -371,6 +377,10 @@ export class CmsService {
 
     async calcOrderTotal(input: CreateOrderDto): Promise<OrderTotalDto> {
         const orderTotal = new OrderTotalDto();
+        orderTotal.successUrl = input.successUrl;
+        orderTotal.cancelUrl = input.cancelUrl;
+        orderTotal.fromUrl = input.fromUrl;
+
         let cart: TStoreListItem[] | undefined;
         try {
             if (input.cart) cart = JSON.parse(input.cart);
@@ -404,63 +414,13 @@ export class CmsService {
     }
 
     async createPaymentSession(input: CreateOrderDto): Promise<OrderTotalDto> {
-        const settings = await getCmsSettings();
         const total = await this.calcOrderTotal(input);
-        const cart = total.cart?.filter(item => item?.product);
+        total.cart = total.cart?.filter(item => item?.product);
 
-        if (!cart?.length) throw new HttpException('Cart is invalid or empty', HttpStatus.BAD_REQUEST);
+        if (!total.cart?.length) throw new HttpException('Cart is invalid or empty', HttpStatus.BAD_REQUEST);
 
-        const stripeApiKey = settings?.adminSettings?.stripeApiKey;
-        if (stripeApiKey) {
-            const stripe = new Stripe(stripeApiKey, {
-                apiVersion: '2020-08-27',
-                timeout: 20 * 1000,
-            });
-
-            const store = getCStore();
-            const url = input?.fromUrl ?? serviceLocator.getFrontendUrl();
-            const defaultCurrency = store.getDefaultCurrencyTag() ?? 'usd';
-            const currency = input.currency ?? defaultCurrency;
-
-            try {
-                const session = await stripe.checkout.sessions.create({
-                    payment_method_types: ['card'],
-                    line_items: [
-                        ...cart.map(item => ({
-                            price_data: {
-                                currency: currency?.toLowerCase() ?? 'usd',
-                                unit_amount_decimal: (parseFloat(store.convertPrice(item.product?.price ?? 0,
-                                    defaultCurrency, currency) + '') * 100).toFixed(2),
-                                product_data: {
-                                    // images: item.product?.images,
-                                    name: item.product?.name + '',
-                                },
-                            },
-                            quantity: item.amount ?? 1,
-                        })), {
-                            price_data: {
-                                currency: currency?.toLowerCase() ?? 'usd',
-                                unit_amount_decimal: (parseFloat(store.convertPrice(total?.shippingPrice ?? 0,
-                                    defaultCurrency, currency) + '') * 100).toFixed(2),
-                                product_data: {
-                                    name: 'shipping',
-                                },
-                            },
-                            quantity: 1
-                        }
-                    ],
-                    mode: 'payment',
-                    success_url: `${url}/checkout?paymentStatus=success`,
-                    cancel_url: `${url}/checkout?paymentStatus=cancelled`,
-                });
-
-                total.checkoutUrl = session.url;
-
-            } catch (error) {
-                logger.error(error);
-            }
-        }
-
+        const payments = await serverFireAction('create_payment', total);
+        total.paymentOptions = Object.values(payments ?? {});
         return total;
     }
 

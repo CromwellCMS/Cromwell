@@ -26,6 +26,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
         itemList: {
             width: '100%',
+            padding: '0 10px',
         },
         card: {
             margin: '15px 0'
@@ -40,7 +41,7 @@ export const useStyles = makeStyles((theme: Theme) =>
         },
         cardTitle: {
             margin: '0 15px',
-            fontSize: '20px',
+            fontSize: '16px',
             fontWeight: 400
         },
         cardContent: {
@@ -64,6 +65,10 @@ export const useStyles = makeStyles((theme: Theme) =>
             padding: '15px 10px',
             display: 'flex',
             justifyContent: 'space-between'
+        },
+        sublinksTitle: {
+            fontSize: '15px',
+            fontWeight: 400
         },
         subField: {
             width: '40%',

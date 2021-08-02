@@ -510,19 +510,30 @@ export class CStore {
         return defaultCurrency;
     }
 
-    /** Returns merged price with sign of active (picked by user or default) currency */
-    public getPriceWithCurrency = (price: any): string => {
+    /** Returns string of a price converted to active currency */
+    public getPrice = (price: any): string => {
         if (price === undefined || price === null)
             return '';
         //return 'Not available';
         let priceStr = price + '';
-        const cmsSettings = getStoreItem('cmsSettings');
         const currency = this.getActiveCurrencyTag();
         const defaultCurrency = this.getDefaultCurrencyTag();
 
         if (currency && defaultCurrency) {
             priceStr = this.convertPrice(price, defaultCurrency, currency) + '';
+        }
+        return priceStr;
+    }
 
+    /** Returns merged price with sign of active (picked by user or default) currency */
+    public getPriceWithCurrency = (price: any): string => {
+        let priceStr = this.getPrice(price);
+
+        const cmsSettings = getStoreItem('cmsSettings');
+        const currency = this.getActiveCurrencyTag();
+        const defaultCurrency = this.getDefaultCurrencyTag();
+
+        if (currency && defaultCurrency) {
             const currencySymbol = cmsSettings?.currencies?.find(curr => curr.tag === currency)?.symbol;
             if (currencySymbol) priceStr = currencySymbol + priceStr;
         }

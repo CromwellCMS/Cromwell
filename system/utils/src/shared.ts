@@ -29,7 +29,7 @@ export const getNodeModuleVersion = (moduleName: string, importFromPath?: string
     return modulePackageJson?.version;
 }
 
-export const getNodeModuleNameWithVersion = (moduleName: string, importFromPath?: string): string | undefined => {
+export const getNodeModuleNameWithVersion = (moduleName: string): string | undefined => {
     const ver = getNodeModuleVersion(moduleName);
     if (ver) return `${moduleName}@${ver}`;
 }
@@ -448,6 +448,7 @@ export const tempPckgName = '@cromwell/temp-bundler';
 export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     "@apollo/client",
     "@cromwell/core",
+    "@cromwell/admin-panel",
     {
         "name": "@cromwell/core-frontend",
         "externals": [

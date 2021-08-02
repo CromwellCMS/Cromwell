@@ -1,19 +1,9 @@
+import { PluginSettingsLayout } from '@cromwell/admin-panel';
 import { TPluginSettingsProps } from '@cromwell/core';
-import { getRestAPIClient, iconFromPath } from '@cromwell/core-frontend';
-import {
-    Button,
-    CardActionArea,
-    CardActions,
-    CircularProgress,
-    Collapse,
-    createStyles,
-    IconButton,
-    makeStyles,
-    MenuItem,
-    TextField,
-} from '@material-ui/core';
+import { iconFromPath } from '@cromwell/core-frontend';
+import { CardActionArea, CardActions, Collapse, IconButton, MenuItem, TextField } from '@material-ui/core';
 import clsx from 'clsx';
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 
 import { TMainMenuItem, TMainMenuSettings } from '../types';
 import { useStyles } from './styles';
@@ -23,55 +13,33 @@ const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10
 const AddIcon = iconFromPath(<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>);
 
 export function SettingsPage(props: TPluginSettingsProps<TMainMenuSettings>) {
-    const apiClient = getRestAPIClient();
     const classes = useStyles();
-    const [isLoading, setIsloading] = useState(false);
     const forceUpdate = useForceUpdate();
-    const { pluginName, pluginSettings } = props;
-    const items = useRef<TMainMenuItem[]>(pluginSettings?.items ?? []);
-
-    const handleSave = async () => {
-        setIsloading(true);
-        if (pluginSettings) {
-            pluginSettings.items = items.current;
-            await apiClient?.savePluginSettings(pluginName, pluginSettings);
-        }
-        setIsloading(false);
-    }
 
     return (
-        <div className={classes.mainMenu}>
-
-            {isLoading ? (
-                <LoadBox />
-            ) : (
+        <PluginSettingsLayout<TMainMenuSettings> {...props}>
+            {({ pluginSettings, changeSetting }) => (
                 <>
-                    <h1 style={{ marginBottom: '20px' }}>Main menu plugin</h1>
                     <h2>Menu items</h2>
                     <div className={classes.itemList}>
-                        {items.current.map((data, i) => {
-                            return <Item i={i} updateList={forceUpdate} items={items.current} />
+                        {pluginSettings?.items?.map((data, i) => {
+                            return <Item i={i} updateList={forceUpdate} items={pluginSettings.items} />
                         })}
                     </div>
                     <div className={`${classes.card} ${classes.paper}`}>
                         <MenuItem
                             className={classes.addBtn}
-                            onClick={() => { items.current.push({ title: '' }); forceUpdate(); }}>
+                            onClick={() => changeSetting('items',
+                                [...(pluginSettings?.items ?? []), { title: '' }]
+                            )}>
                             <AddIcon />
                         </MenuItem>
                     </div>
-                    <Button variant="contained" color="primary"
-                        className={classes.saveBtn}
-                        size="large"
-                        onClick={handleSave}>
-                        Save
-                    </Button>
                 </>
             )}
-        </div>
+        </PluginSettingsLayout>
     )
 }
-
 
 function useForceUpdate() {
     const state = useState(0);
@@ -81,7 +49,7 @@ function useForceUpdate() {
 const Item = (props: {
     i: number;
     updateList: () => void;
-    items: TMainMenuItem[];
+    items?: TMainMenuItem[];
 }
 ) => {
     const forceUpdate = useForceUpdate();
@@ -90,11 +58,12 @@ const Item = (props: {
     const handleExpandClick = () => {
         setExpanded(!expanded);
     };
-    const item = props.items[props.i];
+    const item = props.items?.[props.i];
     const handleChange = (prop: keyof TMainMenuItem, val: string) => {
         (item as any)[prop] = val;
         forceUpdate();
     }
+    if (!item) return null;
 
     return (
         <div className={`${classes.card} ${classes.paper}`}>
@@ -115,7 +84,7 @@ const Item = (props: {
                     </IconButton>
                     <IconButton onClick={(e) => {
                         e.stopPropagation();
-                        props.items.splice(props.i, 1);
+                        props.items?.splice(props.i, 1);
                         props.updateList();
                     }}>
                         <HighlightOffIcon />
@@ -154,7 +123,7 @@ const Item = (props: {
                         onChange={(e) => { handleChange('html', e.target.value) }}
                     />
                     <div className={classes.sublinksList}>
-                        <h3>Sublinks</h3>
+                        <h3 className={classes.sublinksTitle}>Sublinks</h3>
                         {item.sublinks && item.sublinks.map((sl, slIndex) => {
                             return (
                                 <div className={`${classes.sublinkItem} ${classes.paper}`} >
@@ -192,27 +161,6 @@ const Item = (props: {
                     </div>
                 </div>
             </Collapse>
-        </div>
-    )
-}
-
-
-const useStylesLoadBox = makeStyles(() =>
-    createStyles({
-        LoadBox: {
-            height: '100%',
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-        }
-    }),
-);
-const LoadBox = (props: { size?: number }) => {
-    const classes = useStylesLoadBox();
-    return (
-        <div className={classes.LoadBox} >
-            <CircularProgress size={(props.size ? props.size : 150)} />
         </div>
     )
 }

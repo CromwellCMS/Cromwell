@@ -82,10 +82,11 @@ Options of cmsconfig.json. Format: **optionName** `: type` (`defaultValue`) - de
   - Swagger UI at http://localhost:4016/api/v1/api-docs/; 
   - "synchronize": true by default for SQLite in ConnectionOptions. Can be overwritten in `orm` property;
   - /api/v1/mock REST API routes for mocking data in Swagger UI.
-- **accessTokenSecret** `: string` - Authentication in Cromwell CMS works via access/refresh JSON Web Token (JWT) method. You can provide a secret that will be used to sign tokens, otherwise the CMS will generate a random secret.
+- **accessTokenSecret** `: string` - Authentication in Cromwell CMS works via access/refresh JSON Web Token (JWT) method. You can manually provide a secret that will be used to sign tokens, otherwise the CMS will generate a random secret.
 - **refreshTokenSecret** `: string` - Same as accessTokenSecret, but for refresh JWT.
 - **accessTokenExpirationTime** `: number` (`600`) - Time in seconds after which access token will be considered as expired.
 - **refreshTokenExpirationTime** `: number` (`1296000`) - Same as accessTokenExpirationTime, but for refresh JWT.
+- **serviceSecret** `: string` - Secret key used for interservice communications. Usually it generated automatically, but if for example, you host Next.js server on one dedicated server and API server on another, you must set manually the same serviceSecret key on both machines, otherwise requests from Next.js server will be unauthorized and rejected.
 - **defaultSettings** `: Object` - Default values used to initialize database settings of the CMS on first launch.
     - **installed** `: boolean` (`false`) - If false, open installation window on admin panel visit until installation finished. Important to note that when there's "installed: false" in DB, all routes will be unprotected by authorization, which means anyone can open admin panel, configure new admin account or make any changes on other pages.
     - **themeName** `: string` (`@cromwell/theme-store`) - NPM package name of an initial theme to use.

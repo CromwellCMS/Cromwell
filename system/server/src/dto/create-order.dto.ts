@@ -1,7 +1,7 @@
-import { TOrderInput } from '@cromwell/core';
+import { TPaymentSession } from '@cromwell/core';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateOrderDto implements TOrderInput {
+export class CreateOrderDto implements TPaymentSession {
     @ApiProperty()
     status?: string;
 
@@ -37,4 +37,10 @@ export class CreateOrderDto implements TOrderInput {
 
     @ApiProperty()
     currency?: string;
+
+    @ApiProperty()
+    successUrl?: string;
+
+    @ApiProperty()
+    cancelUrl?: string;
 }

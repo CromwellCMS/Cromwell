@@ -1,56 +1,41 @@
+import { PluginSettingsLayout } from '@cromwell/admin-panel';
 import { TPluginSettingsProps } from '@cromwell/core';
-import { getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
-import { Button, createStyles, makeStyles, TextField } from '@material-ui/core';
-import React, { useState } from 'react';
+import { createStyles, makeStyles, TextField } from '@material-ui/core';
+import React from 'react';
 
 import { TSettings } from '../types';
 
 export function SettingsPage(props: TPluginSettingsProps<TSettings>) {
-    const apiClient = getRestAPIClient();
-    const [isLoading, setIsloading] = useState(false);
-    const { pluginName, pluginSettings } = props;
-    const [size, setSize] = useState(pluginSettings?.size ?? 20);
     const classes = useStyles();
 
-    const handleSave = async () => {
-        setIsloading(true);
-        if (pluginSettings) {
-            pluginSettings.size = size;
-            await apiClient?.savePluginSettings(pluginName, pluginSettings);
-        }
-        setIsloading(false);
-    }
-
-    const handleChangeValue = (event: any) => {
-        const valInt = parseInt(event.target.value);
-        if (!isNaN(valInt)) {
-            setSize(valInt)
-        }
-    }
-
     return (
-        <div className={`${classes.content} ${classes.paper}`}>
-            <h1 style={{ marginBottom: '20px' }}>Product Showcase plugin</h1>
-            <p>If used on Product page, displays products from same categories.</p>
-            <p>Displays random products on other pages.</p>
-            {isLoading ? (
-                <LoadBox />
-            ) : (
-                <div >
-                    <TextField
-                        label={'Items in carousel'}
-                        className={classes.item}
-                        value={size}
-                        onChange={handleChangeValue}
-                    />
-                    <Button variant="contained" color="primary"
-                        className={classes.item}
-                        size="large"
-                        onClick={handleSave}
-                    >Save</Button>
-                </div>
-            )}
-        </div>
+        <PluginSettingsLayout<TSettings> {...props}>
+            {({ pluginSettings, changeSetting }) => {
+                const size = pluginSettings?.size ?? 20;
+
+                const handleChangeSize = (event: any) => {
+                    const valInt = parseInt(event.target.value);
+                    if (!isNaN(valInt)) {
+                        changeSetting('size', valInt)
+                    }
+                }
+
+                return (
+                    <>
+                        <p>If used on Product page, displays products from same categories.</p>
+                        <p>Displays random products on other pages.</p>
+                        <div>
+                            <TextField
+                                label={'Items in carousel'}
+                                className={classes.item}
+                                value={size}
+                                onChange={handleChangeSize}
+                            />
+                        </div>
+                    </>
+                )
+            }}
+        </PluginSettingsLayout>
     )
 }
 
