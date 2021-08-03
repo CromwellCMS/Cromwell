@@ -633,13 +633,19 @@ export class ThemeService {
         try {
             return await getCentralServerClient().checkThemeUpdate(
                 name, pckg?.version ?? '0', isBeta);
-        } catch (error) { }
+        } catch (error) {
+            if (error.statusCode === 404) return;
+            getLogger(false).error(error);
+        }
     }
 
     async getThemeLatest(name: string): Promise<TCCSModuleShortInfo | undefined> {
         try {
             return await getCentralServerClient().getThemeInfo(name);
-        } catch (error) { }
+        } catch (error) {
+            if (error.statusCode === 404) return;
+            getLogger(false).error(error);
+        }
     }
 
 

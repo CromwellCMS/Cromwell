@@ -9,7 +9,7 @@ export class PageStats extends BaseEntity implements TPageStats {
     @Column({ type: "varchar" })
     pageRoute: string;
 
-    @Column({ type: "integer", nullable: true })
+    @Column({ type: "varchar", nullable: true })
     pageName?: string;
 
     @Column({ type: "varchar", nullable: true })

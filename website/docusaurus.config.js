@@ -37,10 +37,10 @@ module.exports = {
           activeBasePath: 'never',
         },
         {
-          to: '/docs/tutorials/theme-development',
-          label: 'Tutorials',
+          to: '/docs/development/theme-development',
+          label: 'Development',
           position: 'left',
-          activeBasePath: 'docs/tutorials',
+          activeBasePath: 'docs/development',
         },
         { to: '/blog', label: 'Blog', position: 'left' },
         {
@@ -58,7 +58,7 @@ module.exports = {
           items: [
             {
               label: 'Tutorial',
-              to: '/docs/intro',
+              to: '/docs/overview/intro',
             },
           ],
         },

@@ -1,5 +1,5 @@
 import { getLogger } from '@cromwell/core-backend';
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query } from '@nestjs/common';
 import { ApiBearerAuth, ApiForbiddenResponse, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { MockService } from '../services/mock.service';
@@ -27,37 +27,41 @@ export class MockController {
     }
 
     @Get('products')
-    @ApiOperation({ description: 'Delete all products and mock new' })
+    @ApiOperation({
+        description: `Mock new products`,
+        parameters: [{ name: 'amount', in: 'query', required: false }]
+    })
     @ApiResponse({
         status: 200,
         type: Boolean,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async mockProducts(): Promise<boolean> {
-
+    async mockProducts(@Query('amount') amount: number): Promise<boolean> {
         logger.log('MockController::mockProducts');
-
-        return this.mockService.mockProducts();
+        amount = parseInt(amount + '');
+        return this.mockService.mockProducts(!isNaN(amount) ? amount : undefined);
     }
 
 
     @Get('categories')
-    @ApiOperation({ description: 'Delete all categories and mock new' })
+    @ApiOperation({
+        description: `Mock new categories`,
+        parameters: [{ name: 'amount', in: 'query', required: false }]
+    })
     @ApiResponse({
         status: 200,
         type: Boolean,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async mockCategories(): Promise<boolean> {
-
+    async mockCategories(@Query('amount') amount: number): Promise<boolean> {
         logger.log('MockController::mockCategories');
-
-        return this.mockService.mockCategories();
+        amount = parseInt(amount + '');
+        return this.mockService.mockCategories(!isNaN(amount) ? amount : undefined);
     }
 
 
     @Get('attributes')
-    @ApiOperation({ description: 'Delete all attributes and mock new' })
+    @ApiOperation({ description: 'Mock new attributes' })
     @ApiResponse({
         status: 200,
         type: Boolean,
@@ -72,21 +76,24 @@ export class MockController {
 
 
     @Get('reviews')
-    @ApiOperation({ description: 'Delete all product reviews and mock new' })
+    @ApiOperation({
+        description: `Mock new product reviews`,
+        parameters: [{ name: 'amount', in: 'query', required: false }]
+    })
     @ApiResponse({
         status: 200,
         type: Boolean,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async mockReviews(): Promise<boolean> {
+    async mockReviews(@Query('amount') amount: number): Promise<boolean> {
         logger.log('MockController::mockReviews');
-
-        return this.mockService.mockReviews();
+        amount = parseInt(amount + '');
+        return this.mockService.mockReviews(!isNaN(amount) ? amount : undefined);
     }
 
 
     @Get('users')
-    @ApiOperation({ description: 'Delete all users and mock new' })
+    @ApiOperation({ description: 'Mock new users' })
     @ApiResponse({
         status: 200,
         type: Boolean,
@@ -98,47 +105,54 @@ export class MockController {
         return this.mockService.mockUsers();
     }
 
+
     @Get('tags')
-    @ApiOperation({ description: 'Delete all posts and mock new' })
+    @ApiOperation({
+        description: `Mock new tags`,
+        parameters: [{ name: 'amount', in: 'query', required: false }]
+    })
     @ApiResponse({
         status: 200,
         type: Boolean,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async mockTags(): Promise<boolean> {
+    async mockTags(@Query('amount') amount: number): Promise<boolean> {
         logger.log('MockController::mockTags');
-
-        return this.mockService.mockTags();
+        amount = parseInt(amount + '');
+        return this.mockService.mockTags(!isNaN(amount) ? amount : undefined);
     }
 
 
     @Get('posts')
-    @ApiOperation({ description: 'Delete all posts and mock new' })
+    @ApiOperation({
+        description: `Mock new posts`,
+        parameters: [{ name: 'amount', in: 'query', required: false }]
+    })
     @ApiResponse({
         status: 200,
         type: Boolean,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async mockPosts(): Promise<boolean> {
+    async mockPosts(@Query('amount') amount: number): Promise<boolean> {
         logger.log('MockController::mockPosts');
-
-        return this.mockService.mockPosts();
+        amount = parseInt(amount + '');
+        return this.mockService.mockPosts(!isNaN(amount) ? amount : undefined);
     }
 
 
     @Get('orders')
-    @ApiOperation({ description: 'Delete all store orders and mock new' })
+    @ApiOperation({
+        description: `Mock new orders`,
+        parameters: [{ name: 'amount', in: 'query', required: false }]
+    })
     @ApiResponse({
         status: 200,
         type: Boolean,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async mockOrders(): Promise<boolean> {
+    async mockOrders(@Query('amount') amount: number): Promise<boolean> {
         logger.log('MockController::mockOrders');
-
-        return this.mockService.mockOrders();
+        amount = parseInt(amount + '');
+        return this.mockService.mockOrders(!isNaN(amount) ? amount : undefined);
     }
-
-
-
 }

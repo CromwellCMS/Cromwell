@@ -1,7 +1,7 @@
 const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class init1627964293543 {
-    name = 'init1627964293543'
+module.exports = class init1627970410174 {
+    name = 'init1627970410174'
 
     async up(queryRunner) {
         await queryRunner.query(`CREATE TABLE "crw_base_page_entity" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), CONSTRAINT "UQ_33d156210ae42177f24eb55b524" UNIQUE ("slug"))`);
@@ -13,7 +13,7 @@ module.exports = class init1627964293543 {
         await queryRunner.query(`CREATE INDEX "IDX_a71afe78a44fdebe245d06c0fb" ON "crw_order" ("customerName") `);
         await queryRunner.query(`CREATE INDEX "IDX_8bb01ee9a429f70390bbedbaf6" ON "crw_order" ("customerPhone") `);
         await queryRunner.query(`CREATE INDEX "IDX_0d115ee42c627f4c5f5ea6d12a" ON "crw_order" ("customerEmail") `);
-        await queryRunner.query(`CREATE TABLE "crw_page_stats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "pageRoute" varchar NOT NULL, "pageName" integer, "pageId" varchar, "views" integer)`);
+        await queryRunner.query(`CREATE TABLE "crw_page_stats" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "pageRoute" varchar NOT NULL, "pageName" varchar, "pageId" varchar, "views" integer)`);
         await queryRunner.query(`CREATE TABLE "crw_plugin" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "name" varchar NOT NULL, "version" varchar, "title" varchar, "isInstalled" boolean NOT NULL, "hasAdminBundle" boolean, "settings" text, "defaultSettings" text, "moduleInfo" text, "isUpdating" boolean, CONSTRAINT "UQ_067de3d2c7d9e0e6fc733c7ba59" UNIQUE ("slug"))`);
         await queryRunner.query(`CREATE TABLE "crw_post_comment" ("id" integer PRIMARY KEY AUTOINCREMENT NOT NULL, "slug" varchar, "pageTitle" varchar, "pageDescription" varchar, "createDate" datetime NOT NULL DEFAULT (datetime('now')), "updateDate" datetime NOT NULL DEFAULT (datetime('now')), "isEnabled" boolean DEFAULT (1), "postId" integer NOT NULL, "title" varchar, "comment" text, "userEmail" varchar, "userName" varchar, "userId" varchar, "approved" boolean, CONSTRAINT "UQ_0c41e89299843ea6cd5bb1e10b3" UNIQUE ("slug"))`);
         await queryRunner.query(`CREATE INDEX "IDX_787534d5ddf971c1b85d99c88c" ON "crw_post_comment" ("postId") `);

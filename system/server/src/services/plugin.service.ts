@@ -187,14 +187,20 @@ export class PluginService {
         try {
             return await getCentralServerClient().checkPluginUpdate(
                 pluginName, pckg?.version ?? '0', isBeta);
-        } catch (error) { }
+        } catch (error) {
+            if (error.statusCode === 404) return;
+            getLogger(false).error(error);
+        }
     }
 
     async getPluginLatest(pluginName: string): Promise<TCCSModuleShortInfo | undefined> {
         try {
             return await getCentralServerClient().getPluginInfo(
                 pluginName);
-        } catch (error) { }
+        } catch (error) {
+            if (error.statusCode === 404) return;
+            getLogger(false).error(error);
+        }
     }
 
     async handlePluginUpdate(pluginName: string): Promise<boolean> {

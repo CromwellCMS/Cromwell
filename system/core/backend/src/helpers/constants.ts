@@ -50,7 +50,7 @@ export const defaultCmsConfig: TCmsConfig = {
     apiPort: 4016,
     adminPanelPort: 4064,
     frontendPort: 4128,
-    centralServerUrl: 'http://165.22.20.48',
+    centralServerUrl: 'https://api.cromwellcms.com',
     useWatch: true,
     accessTokenExpirationTime: 600,
     refreshTokenExpirationTime: 1296000,
