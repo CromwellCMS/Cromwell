@@ -6,136 +6,210 @@
 
 ## Hierarchy
 
-* [*BasePageInput*](backend.basepageinput.md)
+- [`BasePageInput`](backend.BasePageInput.md)
 
-  ↳ **PluginInput**
+  ↳ **`PluginInput`**
 
 ## Implements
 
-* *TPluginEntityInput*
+- `TPluginEntityInput`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.plugininput.md#constructor)
+- [constructor](backend.PluginInput.md#constructor)
 
 ### Properties
 
-- [defaultSettings](backend.plugininput.md#defaultsettings)
-- [hasAdminBundle](backend.plugininput.md#hasadminbundle)
-- [isEnabled](backend.plugininput.md#isenabled)
-- [isInstalled](backend.plugininput.md#isinstalled)
-- [moduleInfo](backend.plugininput.md#moduleinfo)
-- [name](backend.plugininput.md#name)
-- [pageDescription](backend.plugininput.md#pagedescription)
-- [pageTitle](backend.plugininput.md#pagetitle)
-- [settings](backend.plugininput.md#settings)
-- [slug](backend.plugininput.md#slug)
-- [title](backend.plugininput.md#title)
+- [defaultSettings](backend.PluginInput.md#defaultsettings)
+- [hasAdminBundle](backend.PluginInput.md#hasadminbundle)
+- [isEnabled](backend.PluginInput.md#isenabled)
+- [isInstalled](backend.PluginInput.md#isinstalled)
+- [moduleInfo](backend.PluginInput.md#moduleinfo)
+- [name](backend.PluginInput.md#name)
+- [pageDescription](backend.PluginInput.md#pagedescription)
+- [pageTitle](backend.PluginInput.md#pagetitle)
+- [settings](backend.PluginInput.md#settings)
+- [slug](backend.PluginInput.md#slug)
+- [title](backend.PluginInput.md#title)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PluginInput**(): *PluginInput*
+• **new PluginInput**()
 
-**Returns:** *PluginInput*
+#### Inherited from
 
-Inherited from: [BasePageInput](backend.basepageinput.md)
+[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
 
 ## Properties
 
 ### defaultSettings
 
-• `Optional` **defaultSettings**: *undefined* \| *string*
+• `Optional` **defaultSettings**: `string`
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:25](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PluginInput.ts#L25)
+#### Implementation of
+
+TPluginEntityInput.defaultSettings
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/plugin.input.ts:25](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/plugin.input.ts#L25)
 
 ___
 
 ### hasAdminBundle
 
-• `Optional` **hasAdminBundle**: *undefined* \| *boolean*
+• `Optional` **hasAdminBundle**: `boolean`
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:19](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PluginInput.ts#L19)
+#### Implementation of
+
+TPluginEntityInput.hasAdminBundle
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/plugin.input.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/plugin.input.ts#L19)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
+TPluginEntityInput.isEnabled
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L16)
 
 ___
 
 ### isInstalled
 
-• **isInstalled**: *boolean*
+• **isInstalled**: `boolean`
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PluginInput.ts#L16)
+#### Implementation of
+
+TPluginEntityInput.isInstalled
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/plugin.input.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/plugin.input.ts#L16)
 
 ___
 
 ### moduleInfo
 
-• `Optional` **moduleInfo**: *undefined* \| *string*
+• `Optional` **moduleInfo**: `string`
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PluginInput.ts#L28)
+#### Implementation of
+
+TPluginEntityInput.moduleInfo
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/plugin.input.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/plugin.input.ts#L28)
 
 ___
 
 ### name
 
-• **name**: *string*
+• **name**: `string`
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:10](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PluginInput.ts#L10)
+#### Implementation of
+
+TPluginEntityInput.name
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/plugin.input.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/plugin.input.ts#L10)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
+TPluginEntityInput.pageDescription
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L13)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
+TPluginEntityInput.pageTitle
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L10)
 
 ___
 
 ### settings
 
-• `Optional` **settings**: *undefined* \| *string*
+• `Optional` **settings**: `string`
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:22](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PluginInput.ts#L22)
+#### Implementation of
+
+TPluginEntityInput.settings
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/plugin.input.ts:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/plugin.input.ts#L22)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)
+TPluginEntityInput.slug
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L7)
 
 ___
 
 ### title
 
-• `Optional` **title**: *undefined* \| *string*
+• `Optional` **title**: `string`
 
-Defined in: [system/core/backend/src/inputs/PluginInput.ts:13](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PluginInput.ts#L13)
+#### Implementation of
+
+TPluginEntityInput.title
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/plugin.input.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/plugin.input.ts#L13)

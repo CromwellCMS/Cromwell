@@ -6,208 +6,311 @@
 
 ## Hierarchy
 
-* [*BasePageEntity*](backend.basepageentity.md)
+- [`BasePageEntity`](backend.BasePageEntity.md)
 
-  ↳ **User**
+  ↳ **`User`**
 
 ## Implements
 
-* *TUser*
+- `TUser`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.user.md#constructor)
+- [constructor](backend.User.md#constructor)
 
 ### Properties
 
-- [address](backend.user.md#address)
-- [avatar](backend.user.md#avatar)
-- [bio](backend.user.md#bio)
-- [createDate](backend.user.md#createdate)
-- [email](backend.user.md#email)
-- [fullName](backend.user.md#fullname)
-- [id](backend.user.md#id)
-- [isEnabled](backend.user.md#isenabled)
-- [pageDescription](backend.user.md#pagedescription)
-- [pageTitle](backend.user.md#pagetitle)
-- [password](backend.user.md#password)
-- [phone](backend.user.md#phone)
-- [refreshToken](backend.user.md#refreshtoken)
-- [resetPasswordCode](backend.user.md#resetpasswordcode)
-- [resetPasswordDate](backend.user.md#resetpassworddate)
-- [role](backend.user.md#role)
-- [slug](backend.user.md#slug)
-- [updateDate](backend.user.md#updatedate)
+- [address](backend.User.md#address)
+- [avatar](backend.User.md#avatar)
+- [bio](backend.User.md#bio)
+- [createDate](backend.User.md#createdate)
+- [email](backend.User.md#email)
+- [fullName](backend.User.md#fullname)
+- [id](backend.User.md#id)
+- [isEnabled](backend.User.md#isenabled)
+- [pageDescription](backend.User.md#pagedescription)
+- [pageTitle](backend.User.md#pagetitle)
+- [password](backend.User.md#password)
+- [phone](backend.User.md#phone)
+- [refreshToken](backend.User.md#refreshtoken)
+- [resetPasswordCode](backend.User.md#resetpasswordcode)
+- [resetPasswordDate](backend.User.md#resetpassworddate)
+- [role](backend.User.md#role)
+- [slug](backend.User.md#slug)
+- [updateDate](backend.User.md#updatedate)
 
 ## Constructors
 
 ### constructor
 
-\+ **new User**(): [*User*](backend.user.md)
+• **new User**()
 
-**Returns:** [*User*](backend.user.md)
+#### Inherited from
 
-Inherited from: [BasePageEntity](backend.basepageentity.md)
+[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
 
 ## Properties
 
 ### address
 
-• `Optional` **address**: *undefined* \| *string*
+• `Optional` **address**: `string`
 
-Defined in: [system/core/backend/src/entities/User.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L36)
+#### Implementation of
+
+TUser.address
+
+#### Defined in
+
+[system/core/backend/src/models/entities/user.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L35)
 
 ___
 
 ### avatar
 
-• `Optional` **avatar**: *undefined* \| *string*
+• `Optional` **avatar**: `string`
 
-Defined in: [system/core/backend/src/entities/User.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L23)
+#### Implementation of
+
+TUser.avatar
+
+#### Defined in
+
+[system/core/backend/src/models/entities/user.entity.ts:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L22)
 
 ___
 
 ### bio
 
-• `Optional` **bio**: *undefined* \| *string*
+• `Optional` **bio**: `string`
 
-Defined in: [system/core/backend/src/entities/User.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L27)
+#### Implementation of
+
+TUser.bio
+
+#### Defined in
+
+[system/core/backend/src/models/entities/user.entity.ts:26](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L26)
 
 ___
 
 ### createDate
 
-• **createDate**: Date
+• **createDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
+TUser.createDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
 
 ___
 
 ### email
 
-• **email**: *string*
+• **email**: `string`
 
-Defined in: [system/core/backend/src/entities/User.ts:19](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L19)
+#### Implementation of
+
+TUser.email
+
+#### Defined in
+
+[system/core/backend/src/models/entities/user.entity.ts:18](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L18)
 
 ___
 
 ### fullName
 
-• **fullName**: *string*
+• **fullName**: `string`
 
-Defined in: [system/core/backend/src/entities/User.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L15)
+#### Implementation of
+
+TUser.fullName
+
+#### Defined in
+
+[system/core/backend/src/models/entities/user.entity.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L14)
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
+TUser.id
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
+TUser.isEnabled
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
+TUser.pageDescription
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
+TUser.pageTitle
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
 
 ___
 
 ### password
 
-• **password**: *string*
+• **password**: `string`
 
-Defined in: [system/core/backend/src/entities/User.ts:44](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L44)
+#### Defined in
+
+[system/core/backend/src/models/entities/user.entity.ts:43](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L43)
 
 ___
 
 ### phone
 
-• `Optional` **phone**: *undefined* \| *string*
+• `Optional` **phone**: `string`
 
-Defined in: [system/core/backend/src/entities/User.ts:41](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L41)
+#### Implementation of
+
+TUser.phone
+
+#### Defined in
+
+[system/core/backend/src/models/entities/user.entity.ts:40](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L40)
 
 ___
 
 ### refreshToken
 
-• `Optional` **refreshToken**: *undefined* \| *null* \| *string*
+• `Optional` **refreshToken**: ``null`` \| `string`
 
-Stringified array of Refresh tokens. We create one token per client during log-in
-And then update them in this array on refresh Access token
+#### Defined in
 
-Defined in: [system/core/backend/src/entities/User.ts:51](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L51)
+[system/core/backend/src/models/entities/user.entity.ts:46](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L46)
 
 ___
 
 ### resetPasswordCode
 
-• `Optional` **resetPasswordCode**: *undefined* \| *null* \| *string*
+• `Optional` **resetPasswordCode**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/User.ts:55](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L55)
+#### Defined in
+
+[system/core/backend/src/models/entities/user.entity.ts:50](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L50)
 
 ___
 
 ### resetPasswordDate
 
-• `Optional` **resetPasswordDate**: *undefined* \| *null* \| Date
+• `Optional` **resetPasswordDate**: ``null`` \| `Date`
 
-Defined in: [system/core/backend/src/entities/User.ts:59](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L59)
+#### Defined in
+
+[system/core/backend/src/models/entities/user.entity.ts:54](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L54)
 
 ___
 
 ### role
 
-• `Optional` **role**: *undefined* \| *administrator* \| *author* \| *customer* \| *guest*
+• `Optional` **role**: `TUserRole`
 
-Defined in: [system/core/backend/src/entities/User.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/User.ts#L32)
+#### Implementation of
+
+TUser.role
+
+#### Defined in
+
+[system/core/backend/src/models/entities/user.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/user.entity.ts#L31)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
+TUser.slug
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
 
 ___
 
 ### updateDate
 
-• **updateDate**: Date
+• **updateDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
+TUser.updateDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)

@@ -6,109 +6,107 @@
 
 ## Hierarchy
 
-* **BasePageInput**
+- **`BasePageInput`**
 
-  ↳ *AttributeInput*
+  ↳ [`AttributeInput`](backend.AttributeInput.md)
 
-  ↳ *CreatePost*
+  ↳ [`OrderInput`](backend.OrderInput.md)
 
-  ↳ *CreateProduct*
+  ↳ [`PluginInput`](backend.PluginInput.md)
 
-  ↳ *CreateProductCategory*
+  ↳ [`CreatePost`](backend.CreatePost.md)
 
-  ↳ *CreateUser*
+  ↳ [`UpdatePost`](backend.UpdatePost.md)
 
-  ↳ *InputOrder*
+  ↳ [`CreateProductCategory`](backend.CreateProductCategory.md)
 
-  ↳ *InputTag*
+  ↳ [`UpdateProductCategory`](backend.UpdateProductCategory.md)
 
-  ↳ *PluginInput*
+  ↳ [`CreateProduct`](backend.CreateProduct.md)
 
-  ↳ *UpdatePost*
+  ↳ [`UpdateProduct`](backend.UpdateProduct.md)
 
-  ↳ *UpdateProduct*
+  ↳ [`InputTag`](backend.InputTag.md)
 
-  ↳ *UpdateProductCategory*
+  ↳ [`CreateUser`](backend.CreateUser.md)
 
-  ↳ *UpdateUser*
-
-  ↳ [*CreateUser*](backend.createuser.md)
-
-  ↳ [*CreatePost*](backend.createpost.md)
-
-  ↳ [*CreateProduct*](backend.createproduct.md)
-
-  ↳ [*CreateProductCategory*](backend.createproductcategory.md)
-
-  ↳ [*UpdatePost*](backend.updatepost.md)
-
-  ↳ [*UpdateProduct*](backend.updateproduct.md)
-
-  ↳ [*UpdateProductCategory*](backend.updateproductcategory.md)
-
-  ↳ [*UpdateUser*](backend.updateuser.md)
-
-  ↳ [*AttributeInput*](backend.attributeinput.md)
-
-  ↳ [*InputOrder*](backend.inputorder.md)
-
-  ↳ [*InputTag*](backend.inputtag.md)
-
-  ↳ [*PluginInput*](backend.plugininput.md)
+  ↳ [`UpdateUser`](backend.UpdateUser.md)
 
 ## Implements
 
-* *TBasePageEntityInput*
+- `TBasePageEntityInput`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.basepageinput.md#constructor)
+- [constructor](backend.BasePageInput.md#constructor)
 
 ### Properties
 
-- [isEnabled](backend.basepageinput.md#isenabled)
-- [pageDescription](backend.basepageinput.md#pagedescription)
-- [pageTitle](backend.basepageinput.md#pagetitle)
-- [slug](backend.basepageinput.md#slug)
+- [isEnabled](backend.BasePageInput.md#isenabled)
+- [pageDescription](backend.BasePageInput.md#pagedescription)
+- [pageTitle](backend.BasePageInput.md#pagetitle)
+- [slug](backend.BasePageInput.md#slug)
 
 ## Constructors
 
 ### constructor
 
-\+ **new BasePageInput**(): [*BasePageInput*](backend.basepageinput.md)
-
-**Returns:** [*BasePageInput*](backend.basepageinput.md)
+• **new BasePageInput**()
 
 ## Properties
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
+#### Implementation of
+
+TBasePageEntityInput.isEnabled
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L16)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
+#### Implementation of
+
+TBasePageEntityInput.pageDescription
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L13)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
+#### Implementation of
+
+TBasePageEntityInput.pageTitle
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L10)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)
+#### Implementation of
+
+TBasePageEntityInput.slug
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L7)

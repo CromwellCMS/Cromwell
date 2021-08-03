@@ -6,252 +6,386 @@
 
 ## Hierarchy
 
-* [*BasePageEntity*](backend.basepageentity.md)
+- [`BasePageEntity`](backend.BasePageEntity.md)
 
-  ↳ **Product**
+  ↳ **`Product`**
 
 ## Implements
 
-* *TProduct*
+- `TProduct`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.product.md#constructor)
+- [constructor](backend.Product.md#constructor)
 
 ### Properties
 
-- [averageRating](backend.product.md#averagerating)
-- [categories](backend.product.md#categories)
-- [createDate](backend.product.md#createdate)
-- [description](backend.product.md#description)
-- [descriptionDelta](backend.product.md#descriptiondelta)
-- [id](backend.product.md#id)
-- [images](backend.product.md#images)
-- [isEnabled](backend.product.md#isenabled)
-- [mainImage](backend.product.md#mainimage)
-- [name](backend.product.md#name)
-- [oldPrice](backend.product.md#oldprice)
-- [pageDescription](backend.product.md#pagedescription)
-- [pageTitle](backend.product.md#pagetitle)
-- [price](backend.product.md#price)
-- [reviews](backend.product.md#reviews)
-- [reviewsCount](backend.product.md#reviewscount)
-- [sku](backend.product.md#sku)
-- [slug](backend.product.md#slug)
-- [updateDate](backend.product.md#updatedate)
-- [views](backend.product.md#views)
+- [averageRating](backend.Product.md#averagerating)
+- [categories](backend.Product.md#categories)
+- [createDate](backend.Product.md#createdate)
+- [description](backend.Product.md#description)
+- [descriptionDelta](backend.Product.md#descriptiondelta)
+- [id](backend.Product.md#id)
+- [images](backend.Product.md#images)
+- [isEnabled](backend.Product.md#isenabled)
+- [mainImage](backend.Product.md#mainimage)
+- [name](backend.Product.md#name)
+- [oldPrice](backend.Product.md#oldprice)
+- [pageDescription](backend.Product.md#pagedescription)
+- [pageTitle](backend.Product.md#pagetitle)
+- [price](backend.Product.md#price)
+- [reviews](backend.Product.md#reviews)
+- [reviewsCount](backend.Product.md#reviewscount)
+- [sku](backend.Product.md#sku)
+- [slug](backend.Product.md#slug)
+- [updateDate](backend.Product.md#updatedate)
+- [views](backend.Product.md#views)
 
 ### Accessors
 
-- [attributes](backend.product.md#attributes)
+- [attributes](backend.Product.md#attributes)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Product**(): [*Product*](backend.product.md)
+• **new Product**()
 
-**Returns:** [*Product*](backend.product.md)
+#### Inherited from
 
-Inherited from: [BasePageEntity](backend.basepageentity.md)
+[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
 
 ## Properties
 
 ### averageRating
 
-• `Optional` **averageRating**: *undefined* \| *number*
+• `Optional` **averageRating**: `number`
 
 ! Not real columns, workaround to make SELECT count reviews:
 https://github.com/CromwellCMS/Cromwell/blob/9eb541b1be060f792abbf4f7133071099a8633f2/system/core/backend/src/repositories/ProductRepository.ts#L39-L45
 
-Defined in: [system/core/backend/src/entities/Product.ts:80](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L80)
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:79](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L79)
 
 ___
 
 ### categories
 
-• `Optional` **categories**: *undefined* \| TProductCategory[]
+• `Optional` **categories**: `TProductCategory`[]
 
-Defined in: [system/core/backend/src/entities/Product.ts:22](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L22)
+#### Implementation of
+
+TProduct.categories
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:21](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L21)
 
 ___
 
 ### createDate
 
-• **createDate**: Date
+• **createDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
+TProduct.createDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
 
 ___
 
 ### description
 
-• `Optional` **description**: *undefined* \| *string*
+• `Optional` **description**: `string`
 
-Defined in: [system/core/backend/src/entities/Product.ts:48](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L48)
+#### Implementation of
+
+TProduct.description
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:47](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L47)
 
 ___
 
 ### descriptionDelta
 
-• `Optional` **descriptionDelta**: *undefined* \| *string*
+• `Optional` **descriptionDelta**: `string`
 
-Defined in: [system/core/backend/src/entities/Product.ts:52](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L52)
+#### Implementation of
+
+TProduct.descriptionDelta
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:51](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L51)
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
+TProduct.id
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
 
 ___
 
 ### images
 
-• `Optional` **images**: *undefined* \| *string*[]
+• `Optional` **images**: `string`[]
 
-Defined in: [system/core/backend/src/entities/Product.ts:44](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L44)
+#### Implementation of
+
+TProduct.images
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:43](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L43)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
+TProduct.isEnabled
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
 
 ___
 
 ### mainImage
 
-• `Optional` **mainImage**: *undefined* \| *string*
+• `Optional` **mainImage**: `string`
 
-Defined in: [system/core/backend/src/entities/Product.ts:40](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L40)
+#### Implementation of
+
+TProduct.mainImage
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:39](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L39)
 
 ___
 
 ### name
 
-• `Optional` **name**: *undefined* \| *string*
+• `Optional` **name**: `string`
 
-Defined in: [system/core/backend/src/entities/Product.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L18)
+#### Implementation of
+
+TProduct.name
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L17)
 
 ___
 
 ### oldPrice
 
-• `Optional` **oldPrice**: *undefined* \| *number*
+• `Optional` **oldPrice**: `number`
 
-Defined in: [system/core/backend/src/entities/Product.ts:31](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L31)
+#### Implementation of
+
+TProduct.oldPrice
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:30](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L30)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
+TProduct.pageDescription
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
+TProduct.pageTitle
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
 
 ___
 
 ### price
 
-• `Optional` **price**: *undefined* \| *number*
+• `Optional` **price**: `number`
 
-Defined in: [system/core/backend/src/entities/Product.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L27)
+#### Implementation of
+
+TProduct.price
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:26](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L26)
 
 ___
 
 ### reviews
 
-• `Optional` **reviews**: *undefined* \| TProductReview[]
+• `Optional` **reviews**: `TProductReview`[]
 
-Defined in: [system/core/backend/src/entities/Product.ts:57](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L57)
+#### Implementation of
+
+TProduct.reviews
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:56](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L56)
 
 ___
 
 ### reviewsCount
 
-• `Optional` **reviewsCount**: *undefined* \| *number*
+• `Optional` **reviewsCount**: `number`
 
-Defined in: [system/core/backend/src/entities/Product.ts:83](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L83)
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:82](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L82)
 
 ___
 
 ### sku
 
-• `Optional` **sku**: *undefined* \| *string*
+• `Optional` **sku**: `string`
 
-Defined in: [system/core/backend/src/entities/Product.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L36)
+#### Implementation of
+
+TProduct.sku
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L35)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
+TProduct.slug
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
 
 ___
 
 ### updateDate
 
-• **updateDate**: Date
+• **updateDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
+TProduct.updateDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
 
 ___
 
 ### views
 
-• `Optional` **views**: *undefined* \| *number*
+• `Optional` **views**: `number`
 
-Defined in: [system/core/backend/src/entities/Product.ts:73](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L73)
+#### Implementation of
+
+TProduct.views
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:72](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L72)
 
 ## Accessors
 
 ### attributes
 
-• get **attributes**(): *undefined* \| [*AttributeInstance*](backend.attributeinstance.md)[]
+• `get` **attributes**(): `undefined` \| [`AttributeInstance`](backend.AttributeInstance.md)[]
 
-**Returns:** *undefined* \| [*AttributeInstance*](backend.attributeinstance.md)[]
+#### Returns
 
-Defined in: [system/core/backend/src/entities/Product.ts:60](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L60)
+`undefined` \| [`AttributeInstance`](backend.AttributeInstance.md)[]
 
-• set **attributes**(`data`: *undefined* \| [*AttributeInstance*](backend.attributeinstance.md)[]): *void*
+#### Defined in
 
-#### Parameters:
+[system/core/backend/src/models/entities/product.entity.ts:59](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L59)
 
-Name | Type |
-:------ | :------ |
-`data` | *undefined* \| [*AttributeInstance*](backend.attributeinstance.md)[] |
+• `set` **attributes**(`data`): `void`
 
-**Returns:** *void*
+#### Parameters
 
-Defined in: [system/core/backend/src/entities/Product.ts:64](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Product.ts#L64)
+| Name | Type |
+| :------ | :------ |
+| `data` | `undefined` \| [`AttributeInstance`](backend.AttributeInstance.md)[] |
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product.entity.ts:63](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product.entity.ts#L63)

@@ -44,7 +44,6 @@ class CarouselStoreSetterRaw extends React.Component<CarouselInjectedProps & {
 /** @internal */
 const CarouselStoreSetter = WithStore(CarouselStoreSetterRaw) as any as React.ComponentType<{ setStore: (store: CarouselStoreInterface) => any; }>;
 
-/** @noInheritDoc */
 export class CGallery extends React.Component<TCGalleryProps> {
 
     private gallerySettings?: TGallerySettings;

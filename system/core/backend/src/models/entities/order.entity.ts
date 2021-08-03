@@ -6,7 +6,6 @@ import { BasePageEntity } from './base-page.entity';
 
 @Entity()
 @ObjectType()
-/** @noInheritDoc */
 export class Order extends BasePageEntity implements TOrder {
 
     @Field(() => String, { nullable: true })

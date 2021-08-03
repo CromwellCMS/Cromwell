@@ -6,59 +6,75 @@
 
 ## Hierarchy
 
-* *Component*<CImageProps\>
+- `Component`<`CImageProps`\>
 
-  ↳ **CImage**
+  ↳ **`CImage`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](frontend.cimage.md#constructor)
+- [constructor](frontend.CImage.md#constructor)
 
 ### Methods
 
-- [render](frontend.cimage.md#render)
+- [render](frontend.CImage.md#render)
 
 ## Constructors
 
 ### constructor
 
-\+ **new CImage**(`props`: *Readonly*<CImageProps\>): [*CImage*](frontend.cimage.md)
+• **new CImage**(`props`)
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | *Readonly*<CImageProps\> |
+| Name | Type |
+| :------ | :------ |
+| `props` | `Readonly`<`CImageProps`\> |
 
-**Returns:** [*CImage*](frontend.cimage.md)
+#### Inherited from
 
-Defined in: node_modules/@types/react/index.d.ts:483
+React.Component<CImageProps\>.constructor
 
-\+ **new CImage**(`props`: CImageProps, `context?`: *any*): [*CImage*](frontend.cimage.md)
+#### Defined in
 
-**`deprecated`** 
+node_modules/@types/react/index.d.ts:485
+
+• **new CImage**(`props`, `context?`)
+
+**`deprecated`**
 
 **`see`** https://reactjs.org/docs/legacy-context.html
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | CImageProps |
-`context?` | *any* |
+| Name | Type |
+| :------ | :------ |
+| `props` | `CImageProps` |
+| `context?` | `any` |
 
-**Returns:** [*CImage*](frontend.cimage.md)
+#### Inherited from
 
-Defined in: node_modules/@types/react/index.d.ts:485
+React.Component<CImageProps\>.constructor
+
+#### Defined in
+
+node_modules/@types/react/index.d.ts:490
 
 ## Methods
 
 ### render
 
-▸ **render**(): *Element*
+▸ **render**(): `Element`
 
-**Returns:** *Element*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CImage/CImage.tsx:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CImage/CImage.tsx#L20)
+`Element`
+
+#### Overrides
+
+React.Component.render
+
+#### Defined in
+
+[system/core/frontend/src/components/CImage/CImage.tsx:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CImage/CImage.tsx#L19)

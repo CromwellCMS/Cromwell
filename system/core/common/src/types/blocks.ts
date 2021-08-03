@@ -31,6 +31,7 @@ export type TCromwellPageCoreProps = {
     themeFooterHtml?: string | null;
     palette?: TPalette | null;
     defaultPages?: Record<TDefaultPageName, string>;
+    pageConfigName?: string;
 }
 
 export type TCromwellBlock<TContentBlock = React.Component> = React.Component<TCromwellBlockProps<TContentBlock>> & {

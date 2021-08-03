@@ -6,59 +6,75 @@
 
 ## Hierarchy
 
-* *Component*<CTextProps\>
+- `Component`<`CTextProps`\>
 
-  ↳ **CText**
+  ↳ **`CText`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](frontend.ctext.md#constructor)
+- [constructor](frontend.CText.md#constructor)
 
 ### Methods
 
-- [render](frontend.ctext.md#render)
+- [render](frontend.CText.md#render)
 
 ## Constructors
 
 ### constructor
 
-\+ **new CText**(`props`: *Readonly*<CTextProps\>): [*CText*](frontend.ctext.md)
+• **new CText**(`props`)
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | *Readonly*<CTextProps\> |
+| Name | Type |
+| :------ | :------ |
+| `props` | `Readonly`<`CTextProps`\> |
 
-**Returns:** [*CText*](frontend.ctext.md)
+#### Inherited from
 
-Defined in: node_modules/@types/react/index.d.ts:483
+React.Component<CTextProps\>.constructor
 
-\+ **new CText**(`props`: CTextProps, `context?`: *any*): [*CText*](frontend.ctext.md)
+#### Defined in
 
-**`deprecated`** 
+node_modules/@types/react/index.d.ts:485
+
+• **new CText**(`props`, `context?`)
+
+**`deprecated`**
 
 **`see`** https://reactjs.org/docs/legacy-context.html
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | CTextProps |
-`context?` | *any* |
+| Name | Type |
+| :------ | :------ |
+| `props` | `CTextProps` |
+| `context?` | `any` |
 
-**Returns:** [*CText*](frontend.ctext.md)
+#### Inherited from
 
-Defined in: node_modules/@types/react/index.d.ts:485
+React.Component<CTextProps\>.constructor
+
+#### Defined in
+
+node_modules/@types/react/index.d.ts:490
 
 ## Methods
 
 ### render
 
-▸ **render**(): *Element*
+▸ **render**(): `Element`
 
-**Returns:** *Element*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CText/CText.tsx:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CText/CText.tsx#L15)
+`Element`
+
+#### Overrides
+
+React.Component.render
+
+#### Defined in
+
+[system/core/frontend/src/components/CText/CText.tsx:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CText/CText.tsx#L14)

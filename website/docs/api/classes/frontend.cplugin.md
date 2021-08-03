@@ -6,59 +6,75 @@
 
 ## Hierarchy
 
-* *Component*<CPluginProps\>
+- `Component`<`CPluginProps`\>
 
-  ↳ **CPlugin**
+  ↳ **`CPlugin`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](frontend.cplugin.md#constructor)
+- [constructor](frontend.CPlugin.md#constructor)
 
 ### Methods
 
-- [render](frontend.cplugin.md#render)
+- [render](frontend.CPlugin.md#render)
 
 ## Constructors
 
 ### constructor
 
-\+ **new CPlugin**(`props`: *Readonly*<CPluginProps\>): [*CPlugin*](frontend.cplugin.md)
+• **new CPlugin**(`props`)
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | *Readonly*<CPluginProps\> |
+| Name | Type |
+| :------ | :------ |
+| `props` | `Readonly`<`CPluginProps`\> |
 
-**Returns:** [*CPlugin*](frontend.cplugin.md)
+#### Inherited from
 
-Defined in: node_modules/@types/react/index.d.ts:483
+React.Component<CPluginProps\>.constructor
 
-\+ **new CPlugin**(`props`: CPluginProps, `context?`: *any*): [*CPlugin*](frontend.cplugin.md)
+#### Defined in
 
-**`deprecated`** 
+node_modules/@types/react/index.d.ts:485
+
+• **new CPlugin**(`props`, `context?`)
+
+**`deprecated`**
 
 **`see`** https://reactjs.org/docs/legacy-context.html
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | CPluginProps |
-`context?` | *any* |
+| Name | Type |
+| :------ | :------ |
+| `props` | `CPluginProps` |
+| `context?` | `any` |
 
-**Returns:** [*CPlugin*](frontend.cplugin.md)
+#### Inherited from
 
-Defined in: node_modules/@types/react/index.d.ts:485
+React.Component<CPluginProps\>.constructor
+
+#### Defined in
+
+node_modules/@types/react/index.d.ts:490
 
 ## Methods
 
 ### render
 
-▸ **render**(): *Element*
+▸ **render**(): `Element`
 
-**Returns:** *Element*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CPlugin/CPlugin.tsx:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CPlugin/CPlugin.tsx#L23)
+`Element`
+
+#### Overrides
+
+React.Component.render
+
+#### Defined in
+
+[system/core/frontend/src/components/CPlugin/CPlugin.tsx:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CPlugin/CPlugin.tsx#L22)

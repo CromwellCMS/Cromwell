@@ -6,57 +6,79 @@
 
 ## Implements
 
-* *TPagedMeta*
+- `TPagedMeta`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.pagedmeta.md#constructor)
+- [constructor](backend.PagedMeta.md#constructor)
 
 ### Properties
 
-- [pageNumber](backend.pagedmeta.md#pagenumber)
-- [pageSize](backend.pagedmeta.md#pagesize)
-- [totalElements](backend.pagedmeta.md#totalelements)
-- [totalPages](backend.pagedmeta.md#totalpages)
+- [pageNumber](backend.PagedMeta.md#pagenumber)
+- [pageSize](backend.PagedMeta.md#pagesize)
+- [totalElements](backend.PagedMeta.md#totalelements)
+- [totalPages](backend.PagedMeta.md#totalpages)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PagedMeta**(): [*PagedMeta*](backend.pagedmeta.md)
-
-**Returns:** [*PagedMeta*](backend.pagedmeta.md)
+• **new PagedMeta**()
 
 ## Properties
 
 ### pageNumber
 
-• `Optional` **pageNumber**: *undefined* \| *number*
+• `Optional` **pageNumber**: `number`
 
-Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:7](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedMeta.ts#L7)
+#### Implementation of
+
+TPagedMeta.pageNumber
+
+#### Defined in
+
+[system/core/backend/src/models/paged/meta.paged.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/meta.paged.ts#L7)
 
 ___
 
 ### pageSize
 
-• `Optional` **pageSize**: *undefined* \| *number*
+• `Optional` **pageSize**: `number`
 
-Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:10](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedMeta.ts#L10)
+#### Implementation of
+
+TPagedMeta.pageSize
+
+#### Defined in
+
+[system/core/backend/src/models/paged/meta.paged.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/meta.paged.ts#L10)
 
 ___
 
 ### totalElements
 
-• `Optional` **totalElements**: *undefined* \| *number*
+• `Optional` **totalElements**: `number`
 
-Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedMeta.ts#L16)
+#### Implementation of
+
+TPagedMeta.totalElements
+
+#### Defined in
+
+[system/core/backend/src/models/paged/meta.paged.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/meta.paged.ts#L16)
 
 ___
 
 ### totalPages
 
-• `Optional` **totalPages**: *undefined* \| *number*
+• `Optional` **totalPages**: `number`
 
-Defined in: [system/core/backend/src/entities/paged/PagedMeta.ts:13](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedMeta.ts#L13)
+#### Implementation of
+
+TPagedMeta.totalPages
+
+#### Defined in
+
+[system/core/backend/src/models/paged/meta.paged.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/meta.paged.ts#L13)

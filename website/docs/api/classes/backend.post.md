@@ -6,205 +6,334 @@
 
 ## Hierarchy
 
-* [*BasePageEntity*](backend.basepageentity.md)
+- [`BasePageEntity`](backend.BasePageEntity.md)
 
-  ↳ **Post**
+  ↳ **`Post`**
 
 ## Implements
 
-* *TPost*
+- `TPost`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.post.md#constructor)
+- [constructor](backend.Post.md#constructor)
 
 ### Properties
 
-- [authorId](backend.post.md#authorid)
-- [comments](backend.post.md#comments)
-- [content](backend.post.md#content)
-- [createDate](backend.post.md#createdate)
-- [delta](backend.post.md#delta)
-- [excerpt](backend.post.md#excerpt)
-- [id](backend.post.md#id)
-- [isEnabled](backend.post.md#isenabled)
-- [mainImage](backend.post.md#mainimage)
-- [pageDescription](backend.post.md#pagedescription)
-- [pageTitle](backend.post.md#pagetitle)
-- [publishDate](backend.post.md#publishdate)
-- [published](backend.post.md#published)
-- [readTime](backend.post.md#readtime)
-- [slug](backend.post.md#slug)
-- [tags](backend.post.md#tags)
-- [title](backend.post.md#title)
-- [updateDate](backend.post.md#updatedate)
+- [authorId](backend.Post.md#authorid)
+- [comments](backend.Post.md#comments)
+- [content](backend.Post.md#content)
+- [createDate](backend.Post.md#createdate)
+- [delta](backend.Post.md#delta)
+- [excerpt](backend.Post.md#excerpt)
+- [featured](backend.Post.md#featured)
+- [id](backend.Post.md#id)
+- [isEnabled](backend.Post.md#isenabled)
+- [mainImage](backend.Post.md#mainimage)
+- [pageDescription](backend.Post.md#pagedescription)
+- [pageTitle](backend.Post.md#pagetitle)
+- [publishDate](backend.Post.md#publishdate)
+- [published](backend.Post.md#published)
+- [readTime](backend.Post.md#readtime)
+- [slug](backend.Post.md#slug)
+- [tags](backend.Post.md#tags)
+- [title](backend.Post.md#title)
+- [updateDate](backend.Post.md#updatedate)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Post**(): [*Post*](backend.post.md)
+• **new Post**()
 
-**Returns:** [*Post*](backend.post.md)
+#### Inherited from
 
-Inherited from: [BasePageEntity](backend.basepageentity.md)
+[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
 
 ## Properties
 
 ### authorId
 
-• **authorId**: *string*
+• **authorId**: `string`
 
-Defined in: [system/core/backend/src/entities/Post.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L21)
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L20)
 
 ___
 
 ### comments
 
-• `Optional` **comments**: *undefined* \| TPostComment[]
+• `Optional` **comments**: `TPostComment`[]
 
-Defined in: [system/core/backend/src/entities/Post.ts:60](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L60)
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:59](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L59)
 
 ___
 
 ### content
 
-• `Optional` **content**: *undefined* \| *null* \| *string*
+• `Optional` **content**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/Post.ts:25](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L25)
+#### Implementation of
+
+TPost.content
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L24)
 
 ___
 
 ### createDate
 
-• **createDate**: Date
+• **createDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
+TPost.createDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
 
 ___
 
 ### delta
 
-• `Optional` **delta**: *undefined* \| *null* \| *string*
+• `Optional` **delta**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/Post.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L29)
+#### Implementation of
+
+TPost.delta
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L28)
 
 ___
 
 ### excerpt
 
-• `Optional` **excerpt**: *undefined* \| *null* \| *string*
+• `Optional` **excerpt**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/Post.ts:33](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L33)
+#### Implementation of
+
+TPost.excerpt
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L32)
+
+___
+
+### featured
+
+• `Optional` **featured**: ``null`` \| `boolean`
+
+#### Implementation of
+
+TPost.featured
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:64](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L64)
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
+TPost.id
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
+TPost.isEnabled
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
 
 ___
 
 ### mainImage
 
-• `Optional` **mainImage**: *undefined* \| *null* \| *string*
+• `Optional` **mainImage**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/Post.ts:37](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L37)
+#### Implementation of
+
+TPost.mainImage
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L36)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
+TPost.pageDescription
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
+TPost.pageTitle
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
 
 ___
 
 ### publishDate
 
-• `Optional` **publishDate**: *undefined* \| *null* \| Date
+• `Optional` **publishDate**: ``null`` \| `Date`
 
-Defined in: [system/core/backend/src/entities/Post.ts:55](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L55)
+#### Implementation of
+
+TPost.publishDate
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:54](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L54)
 
 ___
 
 ### published
 
-• `Optional` **published**: *undefined* \| *null* \| *boolean*
+• `Optional` **published**: ``null`` \| `boolean`
 
-Defined in: [system/core/backend/src/entities/Post.ts:51](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L51)
+#### Implementation of
+
+TPost.published
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:50](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L50)
 
 ___
 
 ### readTime
 
-• `Optional` **readTime**: *undefined* \| *null* \| *string*
+• `Optional` **readTime**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/Post.ts:41](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L41)
+#### Implementation of
+
+TPost.readTime
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:40](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L40)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
+TPost.slug
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
 
 ___
 
 ### tags
 
-• `Optional` **tags**: *undefined* \| *null* \| [*Tag*](backend.tag.md)[]
+• `Optional` **tags**: ``null`` \| [`Tag`](backend.Tag.md)[]
 
-Defined in: [system/core/backend/src/entities/Post.ts:46](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L46)
+#### Implementation of
+
+TPost.tags
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:45](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L45)
 
 ___
 
 ### title
 
-• `Optional` **title**: *undefined* \| *null* \| *string*
+• `Optional` **title**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/Post.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Post.ts#L17)
+#### Implementation of
+
+TPost.title
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post.entity.ts#L16)
 
 ___
 
 ### updateDate
 
-• **updateDate**: Date
+• **updateDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
+TPost.updateDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)

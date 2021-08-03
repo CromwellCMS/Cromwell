@@ -6,39 +6,49 @@
 
 ## Implements
 
-* *TAttributeValue*
+- `TAttributeValue`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.attributevalueinput.md#constructor)
+- [constructor](backend.AttributeValueInput.md#constructor)
 
 ### Properties
 
-- [icon](backend.attributevalueinput.md#icon)
-- [value](backend.attributevalueinput.md#value)
+- [icon](backend.AttributeValueInput.md#icon)
+- [value](backend.AttributeValueInput.md#value)
 
 ## Constructors
 
 ### constructor
 
-\+ **new AttributeValueInput**(): *AttributeValueInput*
-
-**Returns:** *AttributeValueInput*
+• **new AttributeValueInput**()
 
 ## Properties
 
 ### icon
 
-• `Optional` **icon**: *undefined* \| *string*
+• `Optional` **icon**: `string`
 
-Defined in: [system/core/backend/src/inputs/AttributeInput.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/AttributeInput.ts#L30)
+#### Implementation of
+
+TAttributeValue.icon
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/attribute.input.ts:30](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/attribute.input.ts#L30)
 
 ___
 
 ### value
 
-• **value**: *string*
+• **value**: `string`
 
-Defined in: [system/core/backend/src/inputs/AttributeInput.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/AttributeInput.ts#L27)
+#### Implementation of
+
+TAttributeValue.value
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/attribute.input.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/attribute.input.ts#L27)

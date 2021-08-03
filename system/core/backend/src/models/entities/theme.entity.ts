@@ -5,7 +5,6 @@ import { BasePageEntity } from './base-page.entity';
 
 @Entity('theme')
 @ObjectType('Theme')
-/** @noInheritDoc */
 export class ThemeEntity extends BasePageEntity implements TThemeEntity {
 
     @Field()

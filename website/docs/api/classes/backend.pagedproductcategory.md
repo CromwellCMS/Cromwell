@@ -6,39 +6,49 @@
 
 ## Implements
 
-* *TPagedList*<TProductCategory\>
+- `TPagedList`<`TProductCategory`\>
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.pagedproductcategory.md#constructor)
+- [constructor](backend.PagedProductCategory.md#constructor)
 
 ### Properties
 
-- [elements](backend.pagedproductcategory.md#elements)
-- [pagedMeta](backend.pagedproductcategory.md#pagedmeta)
+- [elements](backend.PagedProductCategory.md#elements)
+- [pagedMeta](backend.PagedProductCategory.md#pagedmeta)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PagedProductCategory**(): [*PagedProductCategory*](backend.pagedproductcategory.md)
-
-**Returns:** [*PagedProductCategory*](backend.pagedproductcategory.md)
+• **new PagedProductCategory**()
 
 ## Properties
 
 ### elements
 
-• `Optional` **elements**: *undefined* \| TProductCategory[]
+• `Optional` **elements**: `TProductCategory`[]
 
-Defined in: [system/core/backend/src/entities/paged/PagedProductCategory.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedProductCategory.ts#L12)
+#### Implementation of
+
+TPagedList.elements
+
+#### Defined in
+
+[system/core/backend/src/models/paged/product-category.paged.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/product-category.paged.ts#L12)
 
 ___
 
 ### pagedMeta
 
-• `Optional` **pagedMeta**: *undefined* \| [*PagedMeta*](backend.pagedmeta.md)
+• `Optional` **pagedMeta**: [`PagedMeta`](backend.PagedMeta.md)
 
-Defined in: [system/core/backend/src/entities/paged/PagedProductCategory.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedProductCategory.ts#L9)
+#### Implementation of
+
+TPagedList.pagedMeta
+
+#### Defined in
+
+[system/core/backend/src/models/paged/product-category.paged.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/product-category.paged.ts#L9)

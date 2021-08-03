@@ -6,318 +6,402 @@
 
 ## Hierarchy
 
-* *BaseRepository*<[*Tag*](backend.tag.md)\>
+- [`BaseRepository`](backend.BaseRepository.md)<[`Tag`](backend.Tag.md)\>
 
-  ↳ **TagRepository**
+  ↳ **`TagRepository`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.tagrepository.md#constructor)
+- [constructor](backend.TagRepository.md#constructor)
 
 ### Methods
 
-- [applyDeleteMany](backend.tagrepository.md#applydeletemany)
-- [createEntity](backend.tagrepository.md#createentity)
-- [createTag](backend.tagrepository.md#createtag)
-- [deleteEntity](backend.tagrepository.md#deleteentity)
-- [deleteMany](backend.tagrepository.md#deletemany)
-- [deleteTag](backend.tagrepository.md#deletetag)
-- [getAll](backend.tagrepository.md#getall)
-- [getById](backend.tagrepository.md#getbyid)
-- [getBySlug](backend.tagrepository.md#getbyslug)
-- [getPaged](backend.tagrepository.md#getpaged)
-- [getTagById](backend.tagrepository.md#gettagbyid)
-- [getTagBySlug](backend.tagrepository.md#gettagbyslug)
-- [getTags](backend.tagrepository.md#gettags)
-- [getTagsByIds](backend.tagrepository.md#gettagsbyids)
-- [updateEntity](backend.tagrepository.md#updateentity)
-- [updateTag](backend.tagrepository.md#updatetag)
+- [applyDeleteMany](backend.TagRepository.md#applydeletemany)
+- [createEntity](backend.TagRepository.md#createentity)
+- [createTag](backend.TagRepository.md#createtag)
+- [deleteEntity](backend.TagRepository.md#deleteentity)
+- [deleteMany](backend.TagRepository.md#deletemany)
+- [deleteTag](backend.TagRepository.md#deletetag)
+- [getAll](backend.TagRepository.md#getall)
+- [getById](backend.TagRepository.md#getbyid)
+- [getBySlug](backend.TagRepository.md#getbyslug)
+- [getPaged](backend.TagRepository.md#getpaged)
+- [getTagById](backend.TagRepository.md#gettagbyid)
+- [getTagBySlug](backend.TagRepository.md#gettagbyslug)
+- [getTags](backend.TagRepository.md#gettags)
+- [getTagsByIds](backend.TagRepository.md#gettagsbyids)
+- [updateEntity](backend.TagRepository.md#updateentity)
+- [updateTag](backend.TagRepository.md#updatetag)
 
 ## Constructors
 
 ### constructor
 
-\+ **new TagRepository**(): *TagRepository*
+• **new TagRepository**()
 
-**Returns:** *TagRepository*
+#### Overrides
 
-Inherited from: BaseRepository
+[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
 
-Defined in: [system/core/backend/src/repositories/TagRepository.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/TagRepository.ts#L12)
+#### Defined in
+
+[system/core/backend/src/repositories/tag.repository.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/tag.repository.ts#L14)
 
 ## Methods
 
 ### applyDeleteMany
 
-▸ **applyDeleteMany**(`qb`: *SelectQueryBuilder*<[*Tag*](backend.tag.md)\> \| *DeleteQueryBuilder*<[*Tag*](backend.tag.md)\>, `input`: TDeleteManyInput): *Promise*<void\>
+▸ **applyDeleteMany**(`qb`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<[*Tag*](backend.tag.md)\> \| *DeleteQueryBuilder*<[*Tag*](backend.tag.md)\> |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<[`Tag`](backend.Tag.md)\> \| `DeleteQueryBuilder`<[`Tag`](backend.Tag.md)\> |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`void`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L87)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
 
 ___
 
 ### createEntity
 
-▸ **createEntity**(`input`: [*Tag*](backend.tag.md), `id?`: *string*): *Promise*<[*Tag*](backend.tag.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`Tag`](backend.Tag.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | [*Tag*](backend.tag.md) |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `input` | [`Tag`](backend.Tag.md) |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*Tag*](backend.tag.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Tag`](backend.Tag.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L49)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
 
 ___
 
 ### createTag
 
-▸ **createTag**(`inputData`: TTagInput, `id?`: *string*): *Promise*<[*Tag*](backend.tag.md)\>
+▸ **createTag**(`inputData`, `id?`): `Promise`<[`Tag`](backend.Tag.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`inputData` | TTagInput |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `inputData` | `TTagInput` |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*Tag*](backend.tag.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/TagRepository.ts:47](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/TagRepository.ts#L47)
+`Promise`<[`Tag`](backend.Tag.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/tag.repository.ts:47](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/tag.repository.ts#L47)
 
 ___
 
 ### deleteEntity
 
-▸ **deleteEntity**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteEntity**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L76)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
 
 ___
 
 ### deleteMany
 
-▸ **deleteMany**(`input`: TDeleteManyInput): *Promise*<boolean\>
+▸ **deleteMany**(`input`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L97)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
 
 ___
 
 ### deleteTag
 
-▸ **deleteTag**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteTag**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/TagRepository.ts:74](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/TagRepository.ts#L74)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/tag.repository.ts:74](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/tag.repository.ts#L74)
 
 ___
 
 ### getAll
 
-▸ **getAll**(): *Promise*<[*Tag*](backend.tag.md)[]\>
+▸ **getAll**(): `Promise`<[`Tag`](backend.Tag.md)[]\>
 
-**Returns:** *Promise*<[*Tag*](backend.tag.md)[]\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Tag`](backend.Tag.md)[]\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L24)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
 
 ___
 
 ### getById
 
-▸ **getById**(`id`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*Tag*](backend.tag.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*Tag*](backend.tag.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L29)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
 
 ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*Tag*](backend.tag.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*Tag*](backend.tag.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L39)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
 
 ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`: *TPagedParams*<[*Tag*](backend.tag.md)\>): *Promise*<TPagedList<[*Tag*](backend.tag.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Tag`](backend.Tag.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<[*Tag*](backend.tag.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<[`Tag`](backend.Tag.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*Tag*](backend.tag.md)\>\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`TPagedList`<[`Tag`](backend.Tag.md)\>\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L18)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
 
 ___
 
 ### getTagById
 
-▸ **getTagById**(`id`: *string*): *Promise*<undefined \| [*Tag*](backend.tag.md)\>
+▸ **getTagById**(`id`): `Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<undefined \| [*Tag*](backend.tag.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/TagRepository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/TagRepository.ts#L23)
+`Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/tag.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/tag.repository.ts#L23)
 
 ___
 
 ### getTagBySlug
 
-▸ **getTagBySlug**(`slug`: *string*): *Promise*<undefined \| [*Tag*](backend.tag.md)\>
+▸ **getTagBySlug**(`slug`): `Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
 
-**Returns:** *Promise*<undefined \| [*Tag*](backend.tag.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/TagRepository.ts:33](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/TagRepository.ts#L33)
+`Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/tag.repository.ts:33](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/tag.repository.ts#L33)
 
 ___
 
 ### getTags
 
-▸ **getTags**(`params?`: *TPagedParams*<TTag\>): *Promise*<TPagedList<[*Tag*](backend.tag.md)\>\>
+▸ **getTags**(`params?`): `Promise`<`TPagedList`<[`Tag`](backend.Tag.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<TTag\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<`TTag`\> |
 
-**Returns:** *Promise*<TPagedList<[*Tag*](backend.tag.md)\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/TagRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/TagRepository.ts#L18)
+`Promise`<`TPagedList`<[`Tag`](backend.Tag.md)\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/tag.repository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/tag.repository.ts#L18)
 
 ___
 
 ### getTagsByIds
 
-▸ **getTagsByIds**(`ids`: *string*[]): *Promise*<[*Tag*](backend.tag.md)[]\>
+▸ **getTagsByIds**(`ids`): `Promise`<[`Tag`](backend.Tag.md)[]\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`ids` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `ids` | `string`[] |
 
-**Returns:** *Promise*<[*Tag*](backend.tag.md)[]\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/TagRepository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/TagRepository.ts#L28)
+`Promise`<[`Tag`](backend.Tag.md)[]\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/tag.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/tag.repository.ts#L28)
 
 ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`: *string*, `input`: [*Tag*](backend.tag.md)): *Promise*<[*Tag*](backend.tag.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`Tag`](backend.Tag.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`input` | [*Tag*](backend.tag.md) |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `input` | [`Tag`](backend.Tag.md) |
 
-**Returns:** *Promise*<[*Tag*](backend.tag.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Tag`](backend.Tag.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L61)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)
 
 ___
 
 ### updateTag
 
-▸ **updateTag**(`id`: *string*, `inputData`: TTagInput): *Promise*<undefined \| [*Tag*](backend.tag.md)\>
+▸ **updateTag**(`id`, `inputData`): `Promise`<[`Tag`](backend.Tag.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`inputData` | TTagInput |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `inputData` | `TTagInput` |
 
-**Returns:** *Promise*<undefined \| [*Tag*](backend.tag.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/TagRepository.ts:59](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/TagRepository.ts#L59)
+`Promise`<[`Tag`](backend.Tag.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/tag.repository.ts:59](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/tag.repository.ts#L59)

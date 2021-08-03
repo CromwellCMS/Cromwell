@@ -6,136 +6,210 @@
 
 ## Hierarchy
 
-* [*BasePageInput*](backend.basepageinput.md)
+- [`BasePageInput`](backend.BasePageInput.md)
 
-  ↳ **UpdateUser**
+  ↳ **`UpdateUser`**
 
 ## Implements
 
-* *TUpdateUser*
+- `TUpdateUser`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.updateuser.md#constructor)
+- [constructor](backend.UpdateUser.md#constructor)
 
 ### Properties
 
-- [address](backend.updateuser.md#address)
-- [avatar](backend.updateuser.md#avatar)
-- [bio](backend.updateuser.md#bio)
-- [email](backend.updateuser.md#email)
-- [fullName](backend.updateuser.md#fullname)
-- [isEnabled](backend.updateuser.md#isenabled)
-- [pageDescription](backend.updateuser.md#pagedescription)
-- [pageTitle](backend.updateuser.md#pagetitle)
-- [phone](backend.updateuser.md#phone)
-- [role](backend.updateuser.md#role)
-- [slug](backend.updateuser.md#slug)
+- [address](backend.UpdateUser.md#address)
+- [avatar](backend.UpdateUser.md#avatar)
+- [bio](backend.UpdateUser.md#bio)
+- [email](backend.UpdateUser.md#email)
+- [fullName](backend.UpdateUser.md#fullname)
+- [isEnabled](backend.UpdateUser.md#isenabled)
+- [pageDescription](backend.UpdateUser.md#pagedescription)
+- [pageTitle](backend.UpdateUser.md#pagetitle)
+- [phone](backend.UpdateUser.md#phone)
+- [role](backend.UpdateUser.md#role)
+- [slug](backend.UpdateUser.md#slug)
 
 ## Constructors
 
 ### constructor
 
-\+ **new UpdateUser**(): *UpdateUser*
+• **new UpdateUser**()
 
-**Returns:** *UpdateUser*
+#### Inherited from
 
-Inherited from: [BasePageInput](backend.basepageinput.md)
+[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
 
 ## Properties
 
 ### address
 
-• `Optional` **address**: *undefined* \| *string*
+• `Optional` **address**: `string`
 
-Defined in: [system/core/backend/src/inputs/UpdateUser.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateUser.ts#L18)
+#### Implementation of
+
+TUpdateUser.address
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.update.ts:18](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.update.ts#L18)
 
 ___
 
 ### avatar
 
-• `Optional` **avatar**: *undefined* \| *string*
+• `Optional` **avatar**: `string`
 
-Defined in: [system/core/backend/src/inputs/UpdateUser.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateUser.ts#L15)
+#### Implementation of
+
+TUpdateUser.avatar
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.update.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.update.ts#L15)
 
 ___
 
 ### bio
 
-• `Optional` **bio**: *undefined* \| *string*
+• `Optional` **bio**: `string`
 
-Defined in: [system/core/backend/src/inputs/UpdateUser.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateUser.ts#L24)
+#### Implementation of
+
+TUpdateUser.bio
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.update.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.update.ts#L24)
 
 ___
 
 ### email
 
-• **email**: *string*
+• **email**: `string`
 
-Defined in: [system/core/backend/src/inputs/UpdateUser.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateUser.ts#L12)
+#### Implementation of
+
+TUpdateUser.email
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.update.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.update.ts#L12)
 
 ___
 
 ### fullName
 
-• **fullName**: *string*
+• **fullName**: `string`
 
-Defined in: [system/core/backend/src/inputs/UpdateUser.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateUser.ts#L9)
+#### Implementation of
+
+TUpdateUser.fullName
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.update.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.update.ts#L9)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
+TUpdateUser.isEnabled
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L16)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
+TUpdateUser.pageDescription
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L13)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
+TUpdateUser.pageTitle
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L10)
 
 ___
 
 ### phone
 
-• `Optional` **phone**: *undefined* \| *string*
+• `Optional` **phone**: `string`
 
-Defined in: [system/core/backend/src/inputs/UpdateUser.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateUser.ts#L21)
+#### Implementation of
+
+TUpdateUser.phone
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.update.ts:21](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.update.ts#L21)
 
 ___
 
 ### role
 
-• `Optional` **role**: *undefined* \| *administrator* \| *author* \| *customer* \| *guest*
+• `Optional` **role**: `TUserRole`
 
-Defined in: [system/core/backend/src/inputs/UpdateUser.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/UpdateUser.ts#L27)
+#### Implementation of
+
+TUpdateUser.role
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.update.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.update.ts#L27)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)
+TUpdateUser.slug
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L7)

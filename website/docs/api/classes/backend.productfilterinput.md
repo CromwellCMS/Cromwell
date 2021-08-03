@@ -6,57 +6,79 @@
 
 ## Implements
 
-* *TProductFilter*
+- `TProductFilter`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.productfilterinput.md#constructor)
+- [constructor](backend.ProductFilterInput.md#constructor)
 
 ### Properties
 
-- [attributes](backend.productfilterinput.md#attributes)
-- [maxPrice](backend.productfilterinput.md#maxprice)
-- [minPrice](backend.productfilterinput.md#minprice)
-- [nameSearch](backend.productfilterinput.md#namesearch)
+- [attributes](backend.ProductFilterInput.md#attributes)
+- [maxPrice](backend.ProductFilterInput.md#maxprice)
+- [minPrice](backend.ProductFilterInput.md#minprice)
+- [nameSearch](backend.ProductFilterInput.md#namesearch)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ProductFilterInput**(): [*ProductFilterInput*](backend.productfilterinput.md)
-
-**Returns:** [*ProductFilterInput*](backend.productfilterinput.md)
+• **new ProductFilterInput**()
 
 ## Properties
 
 ### attributes
 
-• `Optional` **attributes**: *undefined* \| [*ProductFilterAttributes*](backend.productfilterattributes.md)[]
+• `Optional` **attributes**: [`ProductFilterAttributes`](backend.ProductFilterAttributes.md)[]
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductFilterInput.ts#L24)
+#### Implementation of
+
+TProductFilter.attributes
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:49](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L49)
 
 ___
 
 ### maxPrice
 
-• `Optional` **maxPrice**: *undefined* \| *number*
+• `Optional` **maxPrice**: `number`
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductFilterInput.ts#L21)
+#### Implementation of
+
+TProductFilter.maxPrice
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:46](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L46)
 
 ___
 
 ### minPrice
 
-• `Optional` **minPrice**: *undefined* \| *number*
+• `Optional` **minPrice**: `number`
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductFilterInput.ts#L18)
+#### Implementation of
+
+TProductFilter.minPrice
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:43](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L43)
 
 ___
 
 ### nameSearch
 
-• `Optional` **nameSearch**: *undefined* \| *string*
+• `Optional` **nameSearch**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductFilterInput.ts#L27)
+#### Implementation of
+
+TProductFilter.nameSearch
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:52](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L52)

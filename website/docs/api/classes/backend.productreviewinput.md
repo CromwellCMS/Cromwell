@@ -6,84 +6,124 @@
 
 ## Implements
 
-* *TProductReviewInput*
+- `TProductReviewInput`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.productreviewinput.md#constructor)
+- [constructor](backend.ProductReviewInput.md#constructor)
 
 ### Properties
 
-- [approved](backend.productreviewinput.md#approved)
-- [description](backend.productreviewinput.md#description)
-- [productId](backend.productreviewinput.md#productid)
-- [rating](backend.productreviewinput.md#rating)
-- [title](backend.productreviewinput.md#title)
-- [userId](backend.productreviewinput.md#userid)
-- [userName](backend.productreviewinput.md#username)
+- [approved](backend.ProductReviewInput.md#approved)
+- [description](backend.ProductReviewInput.md#description)
+- [productId](backend.ProductReviewInput.md#productid)
+- [rating](backend.ProductReviewInput.md#rating)
+- [title](backend.ProductReviewInput.md#title)
+- [userId](backend.ProductReviewInput.md#userid)
+- [userName](backend.ProductReviewInput.md#username)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ProductReviewInput**(): *ProductReviewInput*
-
-**Returns:** *ProductReviewInput*
+• **new ProductReviewInput**()
 
 ## Properties
 
 ### approved
 
-• `Optional` **approved**: *undefined* \| *boolean*
+• `Optional` **approved**: `boolean`
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:26](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/ProductReviewInput.ts#L26)
+#### Implementation of
+
+TProductReviewInput.approved
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-review.input.ts:26](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-review.input.ts#L26)
 
 ___
 
 ### description
 
-• `Optional` **description**: *undefined* \| *string*
+• `Optional` **description**: `string`
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/ProductReviewInput.ts#L14)
+#### Implementation of
+
+TProductReviewInput.description
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-review.input.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-review.input.ts#L14)
 
 ___
 
 ### productId
 
-• **productId**: *string*
+• **productId**: `string`
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/ProductReviewInput.ts#L8)
+#### Implementation of
+
+TProductReviewInput.productId
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-review.input.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-review.input.ts#L8)
 
 ___
 
 ### rating
 
-• `Optional` **rating**: *undefined* \| *number*
+• `Optional` **rating**: `number`
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/ProductReviewInput.ts#L17)
+#### Implementation of
+
+TProductReviewInput.rating
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-review.input.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-review.input.ts#L17)
 
 ___
 
 ### title
 
-• `Optional` **title**: *undefined* \| *string*
+• `Optional` **title**: `string`
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/ProductReviewInput.ts#L11)
+#### Implementation of
+
+TProductReviewInput.title
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-review.input.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-review.input.ts#L11)
 
 ___
 
 ### userId
 
-• `Optional` **userId**: *undefined* \| *string*
+• `Optional` **userId**: `string`
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/ProductReviewInput.ts#L23)
+#### Implementation of
+
+TProductReviewInput.userId
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-review.input.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-review.input.ts#L23)
 
 ___
 
 ### userName
 
-• `Optional` **userName**: *undefined* \| *string*
+• `Optional` **userName**: `string`
 
-Defined in: [system/core/backend/src/inputs/ProductReviewInput.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/ProductReviewInput.ts#L20)
+#### Implementation of
+
+TProductReviewInput.userName
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-review.input.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-review.input.ts#L20)

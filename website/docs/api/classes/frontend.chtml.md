@@ -6,59 +6,75 @@
 
 ## Hierarchy
 
-* *Component*<CHTMLProps\>
+- `Component`<`CHTMLProps`\>
 
-  ↳ **CHTML**
+  ↳ **`CHTML`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](frontend.chtml.md#constructor)
+- [constructor](frontend.CHTML.md#constructor)
 
 ### Methods
 
-- [render](frontend.chtml.md#render)
+- [render](frontend.CHTML.md#render)
 
 ## Constructors
 
 ### constructor
 
-\+ **new CHTML**(`props`: *Readonly*<CHTMLProps\>): [*CHTML*](frontend.chtml.md)
+• **new CHTML**(`props`)
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | *Readonly*<CHTMLProps\> |
+| Name | Type |
+| :------ | :------ |
+| `props` | `Readonly`<`CHTMLProps`\> |
 
-**Returns:** [*CHTML*](frontend.chtml.md)
+#### Inherited from
 
-Defined in: node_modules/@types/react/index.d.ts:483
+React.Component<CHTMLProps\>.constructor
 
-\+ **new CHTML**(`props`: CHTMLProps, `context?`: *any*): [*CHTML*](frontend.chtml.md)
+#### Defined in
 
-**`deprecated`** 
+node_modules/@types/react/index.d.ts:485
+
+• **new CHTML**(`props`, `context?`)
+
+**`deprecated`**
 
 **`see`** https://reactjs.org/docs/legacy-context.html
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | CHTMLProps |
-`context?` | *any* |
+| Name | Type |
+| :------ | :------ |
+| `props` | `CHTMLProps` |
+| `context?` | `any` |
 
-**Returns:** [*CHTML*](frontend.chtml.md)
+#### Inherited from
 
-Defined in: node_modules/@types/react/index.d.ts:485
+React.Component<CHTMLProps\>.constructor
+
+#### Defined in
+
+node_modules/@types/react/index.d.ts:490
 
 ## Methods
 
 ### render
 
-▸ **render**(): *Element*
+▸ **render**(): `Element`
 
-**Returns:** *Element*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CHTML/CHTML.tsx:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CHTML/CHTML.tsx#L11)
+`Element`
+
+#### Overrides
+
+React.Component.render
+
+#### Defined in
+
+[system/core/frontend/src/components/CHTML/CHTML.tsx:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CHTML/CHTML.tsx#L10)

@@ -1,5 +1,5 @@
 {
-    "out": "website/docs/api",
+    "out": "./docs/api",
     "exclude": [
         "*.(spec|test).ts",
         "*.(spec|test).tsx",
@@ -10,13 +10,14 @@
         "**/.cromwell/*",
         "**/frontend/src/declarations"
     ],
+    "gitRevision": "master",
     "externalPattern": "**/node_modules/**",
     "excludePrivate": true,
     "excludeInternal": true,
     "excludeExternals": true,
     "external-modulemap": ".*system\/core\/([^\/]+)\/.*",
     "entryPoints": [
-        "system/core"
+        "../system/core"
     ],
-    "tsconfig": "website/apiTsconfig.json"
+    "tsconfig": "./apiTsconfig.json"
 }

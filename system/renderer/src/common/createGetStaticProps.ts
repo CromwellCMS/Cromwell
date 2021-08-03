@@ -1,12 +1,10 @@
 import {
-    resolvePageRoute,
     StaticPageContext,
     TCmsConfig,
     TCromwellPageCoreProps,
     TDefaultPageName,
     TPageConfig,
     TPageInfo,
-    TPageStats,
     TThemeConfig,
 } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
@@ -20,15 +18,13 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
         { props: TCromwellPageCoreProps; revalidate?: number }> {
 
         // Name to request a page config. Config will be the same for different slugs
-        // of a page except `pages/[slug]`, since they can be edited separately in Page Builder
+        // of a page. There's an exception: generic pages - `pages/[slug]`, 
+        // since they can be edited separately in Page Builder
         const pageConfigName = (pageName === 'pages/[slug]' && context?.params?.slug) ?
             `pages/${context.params.slug}` : pageName;
 
-        const pageRoute = resolvePageRoute(pageName, { slug: context?.params?.slug + '' });
-        const apiClient = getRestAPIClient();
-
+        // const pageRoute = resolvePageRoute(pageName, { slug: context?.params?.slug + '' });
         // const timestamp = Date.now();
-
         let rendererData: {
             pageConfig?: TPageConfig;
             pluginsSettings?: {
@@ -57,26 +53,6 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
         ]);
 
         // const timestamp2 = Date.now();
-
-        const pageStats: TPageStats = {
-            pageRoute
-        }
-        if (context?.params?.slug && themeConfig?.defaultPages) {
-            if (pageName === themeConfig.defaultPages.product) {
-                pageStats.productSlug = String(context.params.slug);
-            }
-            if (pageName === themeConfig.defaultPages.category) {
-                pageStats.categorySlug = String(context.params.slug);
-            }
-            if (pageName === themeConfig.defaultPages.tag) {
-                pageStats.tagSlug = String(context.params.slug);
-            }
-            if (pageName === themeConfig.defaultPages.post) {
-                pageStats.postSlug = String(context.params.slug);
-            }
-        }
-
-        apiClient?.post(`cms/view-page`, pageStats, { disableLog: true }).catch(() => null);
         // console.log('getStaticProps for page: ' + pageName);
         // console.log('time elapsed: ' + (timestamp2 - timestamp) + 'ms');
 
@@ -87,6 +63,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
             cmsSettings,
             themeCustomConfig,
             pagesInfo,
+            pageConfigName,
             defaultPages: themeConfig?.defaultPages,
             themeHeadHtml: themeConfig?.headHtml,
             themeFooterHtml: themeConfig?.footerHtml,

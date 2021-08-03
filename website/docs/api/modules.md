@@ -9,4 +9,3 @@
 - [backend](modules/backend.md)
 - [common](modules/common.md)
 - [frontend](modules/frontend.md)
-- [frontend/src/declarations](modules/frontend_src_declarations.md)

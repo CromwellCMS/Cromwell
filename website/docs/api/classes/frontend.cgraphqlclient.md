@@ -10,2019 +10,2255 @@ CGraphQLClient - CromwellCMS GraphQL API Client
 
 ### Properties
 
-- [AttributeFragment](frontend.cgraphqlclient.md#attributefragment)
-- [OrderFragment](frontend.cgraphqlclient.md#orderfragment)
-- [PagedMetaFragment](frontend.cgraphqlclient.md#pagedmetafragment)
-- [PluginFragment](frontend.cgraphqlclient.md#pluginfragment)
-- [PostFragment](frontend.cgraphqlclient.md#postfragment)
-- [ProductCategoryFragment](frontend.cgraphqlclient.md#productcategoryfragment)
-- [ProductFragment](frontend.cgraphqlclient.md#productfragment)
-- [ProductReviewFragment](frontend.cgraphqlclient.md#productreviewfragment)
-- [TagFragment](frontend.cgraphqlclient.md#tagfragment)
-- [ThemeFragment](frontend.cgraphqlclient.md#themefragment)
-- [UserFragment](frontend.cgraphqlclient.md#userfragment)
-- [createAttribute](frontend.cgraphqlclient.md#createattribute)
-- [createOrder](frontend.cgraphqlclient.md#createorder)
-- [createPost](frontend.cgraphqlclient.md#createpost)
-- [createProduct](frontend.cgraphqlclient.md#createproduct)
-- [createProductCategory](frontend.cgraphqlclient.md#createproductcategory)
-- [createProductReview](frontend.cgraphqlclient.md#createproductreview)
-- [createTag](frontend.cgraphqlclient.md#createtag)
-- [createUser](frontend.cgraphqlclient.md#createuser)
-- [deleteAttribute](frontend.cgraphqlclient.md#deleteattribute)
-- [deleteManyFilteredOrders](frontend.cgraphqlclient.md#deletemanyfilteredorders)
-- [deleteManyFilteredPosts](frontend.cgraphqlclient.md#deletemanyfilteredposts)
-- [deleteManyFilteredProductCategories](frontend.cgraphqlclient.md#deletemanyfilteredproductcategories)
-- [deleteManyFilteredProductReviews](frontend.cgraphqlclient.md#deletemanyfilteredproductreviews)
-- [deleteManyFilteredProducts](frontend.cgraphqlclient.md#deletemanyfilteredproducts)
-- [deleteManyFilteredUsers](frontend.cgraphqlclient.md#deletemanyfilteredusers)
-- [deleteManyOrders](frontend.cgraphqlclient.md#deletemanyorders)
-- [deleteManyPosts](frontend.cgraphqlclient.md#deletemanyposts)
-- [deleteManyProductCategories](frontend.cgraphqlclient.md#deletemanyproductcategories)
-- [deleteManyProductReviews](frontend.cgraphqlclient.md#deletemanyproductreviews)
-- [deleteManyProducts](frontend.cgraphqlclient.md#deletemanyproducts)
-- [deleteManyTags](frontend.cgraphqlclient.md#deletemanytags)
-- [deleteManyUsers](frontend.cgraphqlclient.md#deletemanyusers)
-- [deleteOrder](frontend.cgraphqlclient.md#deleteorder)
-- [deletePost](frontend.cgraphqlclient.md#deletepost)
-- [deleteProduct](frontend.cgraphqlclient.md#deleteproduct)
-- [deleteProductCategory](frontend.cgraphqlclient.md#deleteproductcategory)
-- [deleteProductReview](frontend.cgraphqlclient.md#deleteproductreview)
-- [deleteTag](frontend.cgraphqlclient.md#deletetag)
-- [deleteUser](frontend.cgraphqlclient.md#deleteuser)
-- [getAttributeById](frontend.cgraphqlclient.md#getattributebyid)
-- [getFilteredOrders](frontend.cgraphqlclient.md#getfilteredorders)
-- [getFilteredPosts](frontend.cgraphqlclient.md#getfilteredposts)
-- [getFilteredProductCategories](frontend.cgraphqlclient.md#getfilteredproductcategories)
-- [getFilteredProductReviews](frontend.cgraphqlclient.md#getfilteredproductreviews)
-- [getFilteredUsers](frontend.cgraphqlclient.md#getfilteredusers)
-- [getOrderById](frontend.cgraphqlclient.md#getorderbyid)
-- [getOrderBySlug](frontend.cgraphqlclient.md#getorderbyslug)
-- [getOrders](frontend.cgraphqlclient.md#getorders)
-- [getPostById](frontend.cgraphqlclient.md#getpostbyid)
-- [getPostBySlug](frontend.cgraphqlclient.md#getpostbyslug)
-- [getPosts](frontend.cgraphqlclient.md#getposts)
-- [getProductById](frontend.cgraphqlclient.md#getproductbyid)
-- [getProductBySlug](frontend.cgraphqlclient.md#getproductbyslug)
-- [getProductCategories](frontend.cgraphqlclient.md#getproductcategories)
-- [getProductCategoryById](frontend.cgraphqlclient.md#getproductcategorybyid)
-- [getProductCategoryBySlug](frontend.cgraphqlclient.md#getproductcategorybyslug)
-- [getProductReviewById](frontend.cgraphqlclient.md#getproductreviewbyid)
-- [getProductReviews](frontend.cgraphqlclient.md#getproductreviews)
-- [getProducts](frontend.cgraphqlclient.md#getproducts)
-- [getTagById](frontend.cgraphqlclient.md#gettagbyid)
-- [getTagBySlug](frontend.cgraphqlclient.md#gettagbyslug)
-- [getTags](frontend.cgraphqlclient.md#gettags)
-- [getUserById](frontend.cgraphqlclient.md#getuserbyid)
-- [getUserBySlug](frontend.cgraphqlclient.md#getuserbyslug)
-- [getUsers](frontend.cgraphqlclient.md#getusers)
-- [updateAttribute](frontend.cgraphqlclient.md#updateattribute)
-- [updateOrder](frontend.cgraphqlclient.md#updateorder)
-- [updatePost](frontend.cgraphqlclient.md#updatepost)
-- [updateProduct](frontend.cgraphqlclient.md#updateproduct)
-- [updateProductCategory](frontend.cgraphqlclient.md#updateproductcategory)
-- [updateProductReview](frontend.cgraphqlclient.md#updateproductreview)
-- [updateTag](frontend.cgraphqlclient.md#updatetag)
-- [updateUser](frontend.cgraphqlclient.md#updateuser)
+- [AttributeFragment](frontend.CGraphQLClient.md#attributefragment)
+- [OrderFragment](frontend.CGraphQLClient.md#orderfragment)
+- [PagedMetaFragment](frontend.CGraphQLClient.md#pagedmetafragment)
+- [PluginFragment](frontend.CGraphQLClient.md#pluginfragment)
+- [PostFragment](frontend.CGraphQLClient.md#postfragment)
+- [ProductCategoryFragment](frontend.CGraphQLClient.md#productcategoryfragment)
+- [ProductFragment](frontend.CGraphQLClient.md#productfragment)
+- [ProductReviewFragment](frontend.CGraphQLClient.md#productreviewfragment)
+- [TagFragment](frontend.CGraphQLClient.md#tagfragment)
+- [ThemeFragment](frontend.CGraphQLClient.md#themefragment)
+- [UserFragment](frontend.CGraphQLClient.md#userfragment)
+- [createAttribute](frontend.CGraphQLClient.md#createattribute)
+- [createOrder](frontend.CGraphQLClient.md#createorder)
+- [createPost](frontend.CGraphQLClient.md#createpost)
+- [createProduct](frontend.CGraphQLClient.md#createproduct)
+- [createProductCategory](frontend.CGraphQLClient.md#createproductcategory)
+- [createProductReview](frontend.CGraphQLClient.md#createproductreview)
+- [createTag](frontend.CGraphQLClient.md#createtag)
+- [createUser](frontend.CGraphQLClient.md#createuser)
+- [deleteAttribute](frontend.CGraphQLClient.md#deleteattribute)
+- [deleteManyFilteredOrders](frontend.CGraphQLClient.md#deletemanyfilteredorders)
+- [deleteManyFilteredPosts](frontend.CGraphQLClient.md#deletemanyfilteredposts)
+- [deleteManyFilteredProductCategories](frontend.CGraphQLClient.md#deletemanyfilteredproductcategories)
+- [deleteManyFilteredProductReviews](frontend.CGraphQLClient.md#deletemanyfilteredproductreviews)
+- [deleteManyFilteredProducts](frontend.CGraphQLClient.md#deletemanyfilteredproducts)
+- [deleteManyFilteredUsers](frontend.CGraphQLClient.md#deletemanyfilteredusers)
+- [deleteManyOrders](frontend.CGraphQLClient.md#deletemanyorders)
+- [deleteManyPosts](frontend.CGraphQLClient.md#deletemanyposts)
+- [deleteManyProductCategories](frontend.CGraphQLClient.md#deletemanyproductcategories)
+- [deleteManyProductReviews](frontend.CGraphQLClient.md#deletemanyproductreviews)
+- [deleteManyProducts](frontend.CGraphQLClient.md#deletemanyproducts)
+- [deleteManyTags](frontend.CGraphQLClient.md#deletemanytags)
+- [deleteManyUsers](frontend.CGraphQLClient.md#deletemanyusers)
+- [deleteOrder](frontend.CGraphQLClient.md#deleteorder)
+- [deletePost](frontend.CGraphQLClient.md#deletepost)
+- [deleteProduct](frontend.CGraphQLClient.md#deleteproduct)
+- [deleteProductCategory](frontend.CGraphQLClient.md#deleteproductcategory)
+- [deleteProductReview](frontend.CGraphQLClient.md#deleteproductreview)
+- [deleteTag](frontend.CGraphQLClient.md#deletetag)
+- [deleteUser](frontend.CGraphQLClient.md#deleteuser)
+- [getAttributeById](frontend.CGraphQLClient.md#getattributebyid)
+- [getFilteredOrders](frontend.CGraphQLClient.md#getfilteredorders)
+- [getFilteredPosts](frontend.CGraphQLClient.md#getfilteredposts)
+- [getFilteredProductCategories](frontend.CGraphQLClient.md#getfilteredproductcategories)
+- [getFilteredProductReviews](frontend.CGraphQLClient.md#getfilteredproductreviews)
+- [getFilteredUsers](frontend.CGraphQLClient.md#getfilteredusers)
+- [getOrderById](frontend.CGraphQLClient.md#getorderbyid)
+- [getOrderBySlug](frontend.CGraphQLClient.md#getorderbyslug)
+- [getOrders](frontend.CGraphQLClient.md#getorders)
+- [getPostById](frontend.CGraphQLClient.md#getpostbyid)
+- [getPostBySlug](frontend.CGraphQLClient.md#getpostbyslug)
+- [getPosts](frontend.CGraphQLClient.md#getposts)
+- [getProductById](frontend.CGraphQLClient.md#getproductbyid)
+- [getProductBySlug](frontend.CGraphQLClient.md#getproductbyslug)
+- [getProductCategories](frontend.CGraphQLClient.md#getproductcategories)
+- [getProductCategoryById](frontend.CGraphQLClient.md#getproductcategorybyid)
+- [getProductCategoryBySlug](frontend.CGraphQLClient.md#getproductcategorybyslug)
+- [getProductReviewById](frontend.CGraphQLClient.md#getproductreviewbyid)
+- [getProductReviews](frontend.CGraphQLClient.md#getproductreviews)
+- [getProducts](frontend.CGraphQLClient.md#getproducts)
+- [getTagById](frontend.CGraphQLClient.md#gettagbyid)
+- [getTagBySlug](frontend.CGraphQLClient.md#gettagbyslug)
+- [getTags](frontend.CGraphQLClient.md#gettags)
+- [getUserById](frontend.CGraphQLClient.md#getuserbyid)
+- [getUserBySlug](frontend.CGraphQLClient.md#getuserbyslug)
+- [getUsers](frontend.CGraphQLClient.md#getusers)
+- [updateAttribute](frontend.CGraphQLClient.md#updateattribute)
+- [updateOrder](frontend.CGraphQLClient.md#updateorder)
+- [updatePost](frontend.CGraphQLClient.md#updatepost)
+- [updateProduct](frontend.CGraphQLClient.md#updateproduct)
+- [updateProductCategory](frontend.CGraphQLClient.md#updateproductcategory)
+- [updateProductReview](frontend.CGraphQLClient.md#updateproductreview)
+- [updateTag](frontend.CGraphQLClient.md#updatetag)
+- [updateUser](frontend.CGraphQLClient.md#updateuser)
 
 ### Methods
 
-- [createEntity](frontend.cgraphqlclient.md#createentity)
-- [getAllEntities](frontend.cgraphqlclient.md#getallentities)
-- [getAttributes](frontend.cgraphqlclient.md#getattributes)
-- [getEntityById](frontend.cgraphqlclient.md#getentitybyid)
-- [getFilteredProducts](frontend.cgraphqlclient.md#getfilteredproducts)
-- [getProductsFromCategory](frontend.cgraphqlclient.md#getproductsfromcategory)
-- [getRootCategories](frontend.cgraphqlclient.md#getrootcategories)
-- [mutate](frontend.cgraphqlclient.md#mutate)
-- [onError](frontend.cgraphqlclient.md#onerror)
-- [onUnauthorized](frontend.cgraphqlclient.md#onunauthorized)
-- [query](frontend.cgraphqlclient.md#query)
-- [removeOnError](frontend.cgraphqlclient.md#removeonerror)
-- [removeOnUnauthorized](frontend.cgraphqlclient.md#removeonunauthorized)
-- [updateEntity](frontend.cgraphqlclient.md#updateentity)
+- [createEntity](frontend.CGraphQLClient.md#createentity)
+- [getAllEntities](frontend.CGraphQLClient.md#getallentities)
+- [getAttributes](frontend.CGraphQLClient.md#getattributes)
+- [getEntityById](frontend.CGraphQLClient.md#getentitybyid)
+- [getFilteredProducts](frontend.CGraphQLClient.md#getfilteredproducts)
+- [getOrdersOfUser](frontend.CGraphQLClient.md#getordersofuser)
+- [getProductsFromCategory](frontend.CGraphQLClient.md#getproductsfromcategory)
+- [getRootCategories](frontend.CGraphQLClient.md#getrootcategories)
+- [mutate](frontend.CGraphQLClient.md#mutate)
+- [onError](frontend.CGraphQLClient.md#onerror)
+- [onUnauthorized](frontend.CGraphQLClient.md#onunauthorized)
+- [query](frontend.CGraphQLClient.md#query)
+- [removeOnError](frontend.CGraphQLClient.md#removeonerror)
+- [removeOnUnauthorized](frontend.CGraphQLClient.md#removeonunauthorized)
+- [updateEntity](frontend.CGraphQLClient.md#updateentity)
 
 ## Properties
 
 ### AttributeFragment
 
-• **AttributeFragment**: DocumentNode
+• **AttributeFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:711](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L711)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:727](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L727)
 
 ___
 
 ### OrderFragment
 
-• **OrderFragment**: DocumentNode
+• **OrderFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:866](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L866)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:883](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L883)
 
 ___
 
 ### PagedMetaFragment
 
-• **PagedMetaFragment**: DocumentNode
+• **PagedMetaFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:210](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L210)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:226](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L226)
 
 ___
 
 ### PluginFragment
 
-• **PluginFragment**: DocumentNode
+• **PluginFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:934](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L934)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:982](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L982)
 
 ___
 
 ### PostFragment
 
-• **PostFragment**: DocumentNode
+• **PostFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:783](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L783)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:799](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L799)
 
 ___
 
 ### ProductCategoryFragment
 
-• **ProductCategoryFragment**: DocumentNode
+• **ProductCategoryFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:650](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L650)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:666](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L666)
 
 ___
 
 ### ProductFragment
 
-• **ProductFragment**: DocumentNode
+• **ProductFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:532](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L532)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:548](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L548)
 
 ___
 
 ### ProductReviewFragment
 
-• **ProductReviewFragment**: DocumentNode
+• **ProductReviewFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:753](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L753)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:769](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L769)
 
 ___
 
 ### TagFragment
 
-• **TagFragment**: DocumentNode
+• **TagFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:906](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L906)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:954](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L954)
 
 ___
 
 ### ThemeFragment
 
-• **ThemeFragment**: DocumentNode
+• **ThemeFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:956](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L956)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:1004](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L1004)
 
 ___
 
 ### UserFragment
 
-• **UserFragment**: DocumentNode
+• **UserFragment**: `DocumentNode`
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:832](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L832)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:849](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L849)
 
 ___
 
 ### createAttribute
 
-• **createAttribute**: (`data`: TAttributeInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TAttribute\>
+• **createAttribute**: (`data`: `TAttributeInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TAttribute`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`data`: TAttributeInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TAttribute\>
+▸ (`data`, `customFragment?`, `customFragmentName?`): `Promise`<`TAttribute`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`data` | TAttributeInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `data` | `TAttributeInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TAttribute\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+`Promise`<`TAttribute`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:731](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L731)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:747](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L747)
 
 ___
 
 ### createOrder
 
-• **createOrder**: (`data`: TOrderInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TOrder\>
+• **createOrder**: (`data`: `TOrderInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TOrder`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`data`: TOrderInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TOrder\>
+▸ (`data`, `customFragment?`, `customFragmentName?`): `Promise`<`TOrder`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`data` | TOrderInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `data` | `TOrderInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TOrder\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+`Promise`<`TOrder`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:895](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L895)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:914](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L914)
 
 ___
 
 ### createPost
 
-• **createPost**: (`data`: TPostInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TPost\>
+• **createPost**: (`data`: `TPostInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TPost`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`data`: TPostInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TPost\>
+▸ (`data`, `customFragment?`, `customFragmentName?`): `Promise`<`TPost`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`data` | TPostInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `data` | `TPostInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TPost\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+`Promise`<`TPost`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:817](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L817)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:834](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L834)
 
 ___
 
 ### createProduct
 
-• **createProduct**: (`data`: TProductInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TProduct\>
+• **createProduct**: (`data`: `TProductInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TProduct`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`data`: TProductInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TProduct\>
+▸ (`data`, `customFragment?`, `customFragmentName?`): `Promise`<`TProduct`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`data` | TProductInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `data` | `TProductInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TProduct\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+`Promise`<`TProduct`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:575](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L575)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:591](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L591)
 
 ___
 
 ### createProductCategory
 
-• **createProductCategory**: (`data`: TProductCategoryInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TProductCategory\>
+• **createProductCategory**: (`data`: `TProductCategoryInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TProductCategory`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`data`: TProductCategoryInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TProductCategory\>
+▸ (`data`, `customFragment?`, `customFragmentName?`): `Promise`<`TProductCategory`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`data` | TProductCategoryInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `data` | `TProductCategoryInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TProductCategory\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+`Promise`<`TProductCategory`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:677](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L677)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:693](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L693)
 
 ___
 
 ### createProductReview
 
-• **createProductReview**: (`data`: TProductReviewInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TProductReview\>
+• **createProductReview**: (`data`: `TProductReviewInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TProductReview`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`data`: TProductReviewInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TProductReview\>
+▸ (`data`, `customFragment?`, `customFragmentName?`): `Promise`<`TProductReview`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`data` | TProductReviewInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `data` | `TProductReviewInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TProductReview\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+`Promise`<`TProductReview`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:772](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L772)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:788](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L788)
 
 ___
 
 ### createTag
 
-• **createTag**: (`data`: TTagInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TTag\>
+• **createTag**: (`data`: `TTagInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TTag`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`data`: TTagInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TTag\>
+▸ (`data`, `customFragment?`, `customFragmentName?`): `Promise`<`TTag`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`data` | TTagInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `data` | `TTagInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TTag\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+`Promise`<`TTag`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:927](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L927)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:975](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L975)
 
 ___
 
 ### createUser
 
-• **createUser**: (`data`: TCreateUser, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TUser\>
+• **createUser**: (`data`: `TCreateUser`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TUser`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`data`: TCreateUser, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TUser\>
+▸ (`data`, `customFragment?`, `customFragmentName?`): `Promise`<`TUser`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`data` | TCreateUser |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `data` | `TCreateUser` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TUser\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:327](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L327)
+`Promise`<`TUser`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:855](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L855)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:872](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L872)
 
 ___
 
 ### deleteAttribute
 
-• **deleteAttribute**: (`id`: *string*) => *Promise*<any\>
+• **deleteAttribute**: (`id`: `string`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*): *Promise*<any\>
+▸ (`id`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:732](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L732)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:748](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L748)
 
 ___
 
 ### deleteManyFilteredOrders
 
-• **deleteManyFilteredOrders**: (`input`: TDeleteManyInput, `filterParams?`: TOrderFilter) => *Promise*<any\>
+• **deleteManyFilteredOrders**: (`input`: `TDeleteManyInput`, `filterParams?`: `TOrderFilter`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput, `filterParams?`: TOrderFilter): *Promise*<any\>
+▸ (`input`, `filterParams?`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | TOrderFilter |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | `TOrderFilter` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:898](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L898)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:917](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L917)
 
 ___
 
 ### deleteManyFilteredPosts
 
-• **deleteManyFilteredPosts**: (`input`: TDeleteManyInput, `filterParams?`: TPostFilter) => *Promise*<any\>
+• **deleteManyFilteredPosts**: (`input`: `TDeleteManyInput`, `filterParams?`: `TPostFilter`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput, `filterParams?`: TPostFilter): *Promise*<any\>
+▸ (`input`, `filterParams?`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | TPostFilter |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | `TPostFilter` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:820](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L820)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:837](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L837)
 
 ___
 
 ### deleteManyFilteredProductCategories
 
-• **deleteManyFilteredProductCategories**: (`input`: TDeleteManyInput, `filterParams?`: TProductCategoryFilter) => *Promise*<any\>
+• **deleteManyFilteredProductCategories**: (`input`: `TDeleteManyInput`, `filterParams?`: `TProductCategoryFilter`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput, `filterParams?`: TProductCategoryFilter): *Promise*<any\>
+▸ (`input`, `filterParams?`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | TProductCategoryFilter |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | `TProductCategoryFilter` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:680](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L680)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:696](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L696)
 
 ___
 
 ### deleteManyFilteredProductReviews
 
-• **deleteManyFilteredProductReviews**: (`input`: TDeleteManyInput, `filterParams?`: TProductReviewFilter) => *Promise*<any\>
+• **deleteManyFilteredProductReviews**: (`input`: `TDeleteManyInput`, `filterParams?`: `TProductReviewFilter`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput, `filterParams?`: TProductReviewFilter): *Promise*<any\>
+▸ (`input`, `filterParams?`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | TProductReviewFilter |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | `TProductReviewFilter` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:775](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L775)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:791](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L791)
 
 ___
 
 ### deleteManyFilteredProducts
 
-• **deleteManyFilteredProducts**: (`input`: TDeleteManyInput, `filterParams?`: TProductFilter) => *Promise*<any\>
+• **deleteManyFilteredProducts**: (`input`: `TDeleteManyInput`, `filterParams?`: `TProductFilter`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput, `filterParams?`: TProductFilter): *Promise*<any\>
+▸ (`input`, `filterParams?`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | TProductFilter |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | `TProductFilter` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:578](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L578)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:594](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L594)
 
 ___
 
 ### deleteManyFilteredUsers
 
-• **deleteManyFilteredUsers**: (`input`: TDeleteManyInput, `filterParams?`: TUserFilter) => *Promise*<any\>
+• **deleteManyFilteredUsers**: (`input`: `TDeleteManyInput`, `filterParams?`: `TUserFilter`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput, `filterParams?`: TUserFilter): *Promise*<any\>
+▸ (`input`, `filterParams?`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | TUserFilter |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | `TUserFilter` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:385](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L385)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:858](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L858)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:875](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L875)
 
 ___
 
 ### deleteManyOrders
 
-• **deleteManyOrders**: (`input`: TDeleteManyInput) => *Promise*<any\>
+• **deleteManyOrders**: (`input`: `TDeleteManyInput`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput): *Promise*<any\>
+▸ (`input`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:897](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L897)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:916](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L916)
 
 ___
 
 ### deleteManyPosts
 
-• **deleteManyPosts**: (`input`: TDeleteManyInput) => *Promise*<any\>
+• **deleteManyPosts**: (`input`: `TDeleteManyInput`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput): *Promise*<any\>
+▸ (`input`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:819](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L819)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:836](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L836)
 
 ___
 
 ### deleteManyProductCategories
 
-• **deleteManyProductCategories**: (`input`: TDeleteManyInput) => *Promise*<any\>
+• **deleteManyProductCategories**: (`input`: `TDeleteManyInput`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput): *Promise*<any\>
+▸ (`input`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:679](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L679)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:695](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L695)
 
 ___
 
 ### deleteManyProductReviews
 
-• **deleteManyProductReviews**: (`input`: TDeleteManyInput) => *Promise*<any\>
+• **deleteManyProductReviews**: (`input`: `TDeleteManyInput`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput): *Promise*<any\>
+▸ (`input`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:774](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L774)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:790](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L790)
 
 ___
 
 ### deleteManyProducts
 
-• **deleteManyProducts**: (`input`: TDeleteManyInput) => *Promise*<any\>
+• **deleteManyProducts**: (`input`: `TDeleteManyInput`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput): *Promise*<any\>
+▸ (`input`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:577](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L577)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:593](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L593)
 
 ___
 
 ### deleteManyTags
 
-• **deleteManyTags**: (`input`: TDeleteManyInput) => *Promise*<any\>
+• **deleteManyTags**: (`input`: `TDeleteManyInput`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput): *Promise*<any\>
+▸ (`input`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:929](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L929)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:977](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L977)
 
 ___
 
 ### deleteManyUsers
 
-• **deleteManyUsers**: (`input`: TDeleteManyInput) => *Promise*<any\>
+• **deleteManyUsers**: (`input`: `TDeleteManyInput`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`input`: TDeleteManyInput): *Promise*<any\>
+▸ (`input`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L368)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:857](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L857)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:874](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L874)
 
 ___
 
 ### deleteOrder
 
-• **deleteOrder**: (`id`: *string*) => *Promise*<any\>
+• **deleteOrder**: (`id`: `string`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*): *Promise*<any\>
+▸ (`id`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:896](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L896)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:915](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L915)
 
 ___
 
 ### deletePost
 
-• **deletePost**: (`id`: *string*) => *Promise*<any\>
+• **deletePost**: (`id`: `string`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*): *Promise*<any\>
+▸ (`id`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:818](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L818)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:835](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L835)
 
 ___
 
 ### deleteProduct
 
-• **deleteProduct**: (`id`: *string*) => *Promise*<any\>
+• **deleteProduct**: (`id`: `string`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*): *Promise*<any\>
+▸ (`id`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:576](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L576)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:592](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L592)
 
 ___
 
 ### deleteProductCategory
 
-• **deleteProductCategory**: (`id`: *string*) => *Promise*<any\>
+• **deleteProductCategory**: (`id`: `string`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*): *Promise*<any\>
+▸ (`id`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:678](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L678)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:694](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L694)
 
 ___
 
 ### deleteProductReview
 
-• **deleteProductReview**: (`id`: *string*) => *Promise*<any\>
+• **deleteProductReview**: (`id`: `string`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*): *Promise*<any\>
+▸ (`id`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:773](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L773)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:789](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L789)
 
 ___
 
 ### deleteTag
 
-• **deleteTag**: (`id`: *string*) => *Promise*<any\>
+• **deleteTag**: (`id`: `string`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*): *Promise*<any\>
+▸ (`id`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:928](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L928)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:976](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L976)
 
 ___
 
 ### deleteUser
 
-• **deleteUser**: (`id`: *string*) => *Promise*<any\>
+• **deleteUser**: (`id`: `string`) => `Promise`<`any`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*): *Promise*<any\>
+▸ (`id`): `Promise`<`any`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<any\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:351](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L351)
+`Promise`<`any`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:856](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L856)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:873](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L873)
 
 ___
 
 ### getAttributeById
 
-• **getAttributeById**: (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TAttribute\>
+• **getAttributeById**: (`id`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TAttribute`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TAttribute\>
+▸ (`id`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TAttribute`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TAttribute\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+`Promise`<`undefined` \| `TAttribute`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:729](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L729)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:745](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L745)
 
 ___
 
 ### getFilteredOrders
 
-• **getFilteredOrders**: (`options`: { `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TOrderFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TOrder\>  }) => *Promise*<TPagedList<TOrder\>\>
+• **getFilteredOrders**: (`options`: { `customFragment?`: `DocumentNode` ; `customFragmentName?`: `string` ; `filterParams?`: `TOrderFilter` ; `pagedParams?`: `TPagedParams`<`TOrder`\>  }) => `Promise`<`TPagedList`<`TOrder`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`options`: { `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TOrderFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TOrder\>  }): *Promise*<TPagedList<TOrder\>\>
+▸ (`options`): `Promise`<`TPagedList`<`TOrder`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`options` | *object* |
-`options.customFragment?` | *undefined* \| DocumentNode |
-`options.customFragmentName?` | *undefined* \| *string* |
-`options.filterParams?` | *undefined* \| TOrderFilter |
-`options.pagedParams?` | *undefined* \| *TPagedParams*<TOrder\> |
+| Name | Type |
+| :------ | :------ |
+| `options` | `Object` |
+| `options.customFragment?` | `DocumentNode` |
+| `options.customFragmentName?` | `string` |
+| `options.filterParams?` | `TOrderFilter` |
+| `options.pagedParams?` | `TPagedParams`<`TOrder`\> |
 
-**Returns:** *Promise*<TPagedList<TOrder\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L404)
+`Promise`<`TPagedList`<`TOrder`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:899](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L899)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:918](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L918)
 
 ___
 
 ### getFilteredPosts
 
-• **getFilteredPosts**: (`options`: { `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TPostFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TPost\>  }) => *Promise*<TPagedList<TPost\>\>
+• **getFilteredPosts**: (`options`: { `customFragment?`: `DocumentNode` ; `customFragmentName?`: `string` ; `filterParams?`: `TPostFilter` ; `pagedParams?`: `TPagedParams`<`TPost`\>  }) => `Promise`<`TPagedList`<`TPost`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`options`: { `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TPostFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TPost\>  }): *Promise*<TPagedList<TPost\>\>
+▸ (`options`): `Promise`<`TPagedList`<`TPost`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`options` | *object* |
-`options.customFragment?` | *undefined* \| DocumentNode |
-`options.customFragmentName?` | *undefined* \| *string* |
-`options.filterParams?` | *undefined* \| TPostFilter |
-`options.pagedParams?` | *undefined* \| *TPagedParams*<TPost\> |
+| Name | Type |
+| :------ | :------ |
+| `options` | `Object` |
+| `options.customFragment?` | `DocumentNode` |
+| `options.customFragmentName?` | `string` |
+| `options.filterParams?` | `TPostFilter` |
+| `options.pagedParams?` | `TPagedParams`<`TPost`\> |
 
-**Returns:** *Promise*<TPagedList<TPost\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L404)
+`Promise`<`TPagedList`<`TPost`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:821](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L821)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:838](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L838)
 
 ___
 
 ### getFilteredProductCategories
 
-• **getFilteredProductCategories**: (`options`: { `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TProductCategoryFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TProductCategory\>  }) => *Promise*<TPagedList<TProductCategory\>\>
+• **getFilteredProductCategories**: (`options`: { `customFragment?`: `DocumentNode` ; `customFragmentName?`: `string` ; `filterParams?`: `TProductCategoryFilter` ; `pagedParams?`: `TPagedParams`<`TProductCategory`\>  }) => `Promise`<`TPagedList`<`TProductCategory`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`options`: { `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TProductCategoryFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TProductCategory\>  }): *Promise*<TPagedList<TProductCategory\>\>
+▸ (`options`): `Promise`<`TPagedList`<`TProductCategory`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`options` | *object* |
-`options.customFragment?` | *undefined* \| DocumentNode |
-`options.customFragmentName?` | *undefined* \| *string* |
-`options.filterParams?` | *undefined* \| TProductCategoryFilter |
-`options.pagedParams?` | *undefined* \| *TPagedParams*<TProductCategory\> |
+| Name | Type |
+| :------ | :------ |
+| `options` | `Object` |
+| `options.customFragment?` | `DocumentNode` |
+| `options.customFragmentName?` | `string` |
+| `options.filterParams?` | `TProductCategoryFilter` |
+| `options.pagedParams?` | `TPagedParams`<`TProductCategory`\> |
 
-**Returns:** *Promise*<TPagedList<TProductCategory\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L404)
+`Promise`<`TPagedList`<`TProductCategory`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:681](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L681)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:697](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L697)
 
 ___
 
 ### getFilteredProductReviews
 
-• **getFilteredProductReviews**: (`options`: { `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TProductReviewFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TProductReview\>  }) => *Promise*<TPagedList<TProductReview\>\>
+• **getFilteredProductReviews**: (`options`: { `customFragment?`: `DocumentNode` ; `customFragmentName?`: `string` ; `filterParams?`: `TProductReviewFilter` ; `pagedParams?`: `TPagedParams`<`TProductReview`\>  }) => `Promise`<`TPagedList`<`TProductReview`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`options`: { `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TProductReviewFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TProductReview\>  }): *Promise*<TPagedList<TProductReview\>\>
+▸ (`options`): `Promise`<`TPagedList`<`TProductReview`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`options` | *object* |
-`options.customFragment?` | *undefined* \| DocumentNode |
-`options.customFragmentName?` | *undefined* \| *string* |
-`options.filterParams?` | *undefined* \| TProductReviewFilter |
-`options.pagedParams?` | *undefined* \| *TPagedParams*<TProductReview\> |
+| Name | Type |
+| :------ | :------ |
+| `options` | `Object` |
+| `options.customFragment?` | `DocumentNode` |
+| `options.customFragmentName?` | `string` |
+| `options.filterParams?` | `TProductReviewFilter` |
+| `options.pagedParams?` | `TPagedParams`<`TProductReview`\> |
 
-**Returns:** *Promise*<TPagedList<TProductReview\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L404)
+`Promise`<`TPagedList`<`TProductReview`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:776](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L776)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:792](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L792)
 
 ___
 
 ### getFilteredUsers
 
-• **getFilteredUsers**: (`options`: { `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TUserFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TUser\>  }) => *Promise*<TPagedList<TUser\>\>
+• **getFilteredUsers**: (`options`: { `customFragment?`: `DocumentNode` ; `customFragmentName?`: `string` ; `filterParams?`: `TUserFilter` ; `pagedParams?`: `TPagedParams`<`TUser`\>  }) => `Promise`<`TPagedList`<`TUser`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`options`: { `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TUserFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TUser\>  }): *Promise*<TPagedList<TUser\>\>
+▸ (`options`): `Promise`<`TPagedList`<`TUser`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`options` | *object* |
-`options.customFragment?` | *undefined* \| DocumentNode |
-`options.customFragmentName?` | *undefined* \| *string* |
-`options.filterParams?` | *undefined* \| TUserFilter |
-`options.pagedParams?` | *undefined* \| *TPagedParams*<TUser\> |
+| Name | Type |
+| :------ | :------ |
+| `options` | `Object` |
+| `options.customFragment?` | `DocumentNode` |
+| `options.customFragmentName?` | `string` |
+| `options.filterParams?` | `TUserFilter` |
+| `options.pagedParams?` | `TPagedParams`<`TUser`\> |
 
-**Returns:** *Promise*<TPagedList<TUser\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:404](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L404)
+`Promise`<`TPagedList`<`TUser`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:859](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L859)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:876](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L876)
 
 ___
 
 ### getOrderById
 
-• **getOrderById**: (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TOrder\>
+• **getOrderById**: (`id`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TOrder`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TOrder\>
+▸ (`id`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TOrder`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TOrder\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+`Promise`<`undefined` \| `TOrder`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:892](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L892)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:911](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L911)
 
 ___
 
 ### getOrderBySlug
 
-• **getOrderBySlug**: (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TOrder\>
+• **getOrderBySlug**: (`slug`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TOrder`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TOrder\>
+▸ (`slug`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TOrder`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TOrder\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+`Promise`<`undefined` \| `TOrder`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:893](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L893)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:912](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L912)
 
 ___
 
 ### getOrders
 
-• **getOrders**: (`pagedParams?`: *TPagedParams*<TOrder\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TPagedList<TOrder\>\>
+• **getOrders**: (`pagedParams?`: `TPagedParams`<`TOrder`\>, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TPagedList`<`TOrder`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`pagedParams?`: *TPagedParams*<TOrder\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TPagedList<TOrder\>\>
+▸ (`pagedParams?`, `customFragment?`, `customFragmentName?`): `Promise`<`TPagedList`<`TOrder`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *TPagedParams*<TOrder\> |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | `TPagedParams`<`TOrder`\> |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TPagedList<TOrder\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+`Promise`<`TPagedList`<`TOrder`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:891](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L891)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:910](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L910)
 
 ___
 
 ### getPostById
 
-• **getPostById**: (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TPost\>
+• **getPostById**: (`id`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TPost`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TPost\>
+▸ (`id`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TPost`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TPost\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+`Promise`<`undefined` \| `TPost`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:814](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L814)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:831](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L831)
 
 ___
 
 ### getPostBySlug
 
-• **getPostBySlug**: (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TPost\>
+• **getPostBySlug**: (`slug`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TPost`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TPost\>
+▸ (`slug`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TPost`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TPost\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+`Promise`<`undefined` \| `TPost`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:815](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L815)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:832](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L832)
 
 ___
 
 ### getPosts
 
-• **getPosts**: (`pagedParams?`: *TPagedParams*<TPost\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TPagedList<TPost\>\>
+• **getPosts**: (`pagedParams?`: `TPagedParams`<`TPost`\>, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TPagedList`<`TPost`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`pagedParams?`: *TPagedParams*<TPost\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TPagedList<TPost\>\>
+▸ (`pagedParams?`, `customFragment?`, `customFragmentName?`): `Promise`<`TPagedList`<`TPost`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *TPagedParams*<TPost\> |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | `TPagedParams`<`TPost`\> |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TPagedList<TPost\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+`Promise`<`TPagedList`<`TPost`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:813](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L813)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:830](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L830)
 
 ___
 
 ### getProductById
 
-• **getProductById**: (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TProduct\>
+• **getProductById**: (`id`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TProduct`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TProduct\>
+▸ (`id`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TProduct`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TProduct\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+`Promise`<`undefined` \| `TProduct`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:572](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L572)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:588](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L588)
 
 ___
 
 ### getProductBySlug
 
-• **getProductBySlug**: (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TProduct\>
+• **getProductBySlug**: (`slug`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TProduct`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TProduct\>
+▸ (`slug`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TProduct`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TProduct\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+`Promise`<`undefined` \| `TProduct`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:573](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L573)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:589](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L589)
 
 ___
 
 ### getProductCategories
 
-• **getProductCategories**: (`pagedParams?`: *TPagedParams*<TProductCategory\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TPagedList<TProductCategory\>\>
+• **getProductCategories**: (`pagedParams?`: `TPagedParams`<`TProductCategory`\>, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TPagedList`<`TProductCategory`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`pagedParams?`: *TPagedParams*<TProductCategory\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TPagedList<TProductCategory\>\>
+▸ (`pagedParams?`, `customFragment?`, `customFragmentName?`): `Promise`<`TPagedList`<`TProductCategory`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *TPagedParams*<TProductCategory\> |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | `TPagedParams`<`TProductCategory`\> |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TPagedList<TProductCategory\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+`Promise`<`TPagedList`<`TProductCategory`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:673](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L673)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:689](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L689)
 
 ___
 
 ### getProductCategoryById
 
-• **getProductCategoryById**: (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TProductCategory\>
+• **getProductCategoryById**: (`id`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TProductCategory`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TProductCategory\>
+▸ (`id`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TProductCategory`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TProductCategory\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+`Promise`<`undefined` \| `TProductCategory`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:674](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L674)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:690](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L690)
 
 ___
 
 ### getProductCategoryBySlug
 
-• **getProductCategoryBySlug**: (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TProductCategory\>
+• **getProductCategoryBySlug**: (`slug`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TProductCategory`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TProductCategory\>
+▸ (`slug`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TProductCategory`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TProductCategory\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+`Promise`<`undefined` \| `TProductCategory`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:675](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L675)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:691](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L691)
 
 ___
 
 ### getProductReviewById
 
-• **getProductReviewById**: (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TProductReview\>
+• **getProductReviewById**: (`id`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TProductReview`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TProductReview\>
+▸ (`id`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TProductReview`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TProductReview\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+`Promise`<`undefined` \| `TProductReview`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:770](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L770)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:786](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L786)
 
 ___
 
 ### getProductReviews
 
-• **getProductReviews**: (`pagedParams?`: *TPagedParams*<TProductReview\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TPagedList<TProductReview\>\>
+• **getProductReviews**: (`pagedParams?`: `TPagedParams`<`TProductReview`\>, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TPagedList`<`TProductReview`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`pagedParams?`: *TPagedParams*<TProductReview\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TPagedList<TProductReview\>\>
+▸ (`pagedParams?`, `customFragment?`, `customFragmentName?`): `Promise`<`TPagedList`<`TProductReview`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *TPagedParams*<TProductReview\> |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | `TPagedParams`<`TProductReview`\> |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TPagedList<TProductReview\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+`Promise`<`TPagedList`<`TProductReview`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:769](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L769)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:785](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L785)
 
 ___
 
 ### getProducts
 
-• **getProducts**: (`pagedParams?`: *TPagedParams*<TProduct\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TPagedList<TProduct\>\>
+• **getProducts**: (`pagedParams?`: `TPagedParams`<`TProduct`\>, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TPagedList`<`TProduct`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`pagedParams?`: *TPagedParams*<TProduct\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TPagedList<TProduct\>\>
+▸ (`pagedParams?`, `customFragment?`, `customFragmentName?`): `Promise`<`TPagedList`<`TProduct`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *TPagedParams*<TProduct\> |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | `TPagedParams`<`TProduct`\> |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TPagedList<TProduct\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+`Promise`<`TPagedList`<`TProduct`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:571](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L571)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:587](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L587)
 
 ___
 
 ### getTagById
 
-• **getTagById**: (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TTag\>
+• **getTagById**: (`id`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TTag`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TTag\>
+▸ (`id`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TTag`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TTag\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+`Promise`<`undefined` \| `TTag`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:924](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L924)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:972](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L972)
 
 ___
 
 ### getTagBySlug
 
-• **getTagBySlug**: (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TTag\>
+• **getTagBySlug**: (`slug`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TTag`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TTag\>
+▸ (`slug`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TTag`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TTag\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+`Promise`<`undefined` \| `TTag`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:925](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L925)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:973](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L973)
 
 ___
 
 ### getTags
 
-• **getTags**: (`pagedParams?`: *TPagedParams*<TTag\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TPagedList<TTag\>\>
+• **getTags**: (`pagedParams?`: `TPagedParams`<`TTag`\>, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TPagedList`<`TTag`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`pagedParams?`: *TPagedParams*<TTag\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TPagedList<TTag\>\>
+▸ (`pagedParams?`, `customFragment?`, `customFragmentName?`): `Promise`<`TPagedList`<`TTag`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *TPagedParams*<TTag\> |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | `TPagedParams`<`TTag`\> |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TPagedList<TTag\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+`Promise`<`TPagedList`<`TTag`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:923](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L923)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:971](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L971)
 
 ___
 
 ### getUserById
 
-• **getUserById**: (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TUser\>
+• **getUserById**: (`id`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TUser`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TUser\>
+▸ (`id`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TUser`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TUser\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L253)
+`Promise`<`undefined` \| `TUser`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:852](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L852)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:869](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L869)
 
 ___
 
 ### getUserBySlug
 
-• **getUserBySlug**: (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<undefined \| TUser\>
+• **getUserBySlug**: (`slug`: `string`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`undefined` \| `TUser`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`slug`: *string*, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TUser\>
+▸ (`slug`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TUser`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TUser\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L277)
+`Promise`<`undefined` \| `TUser`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:853](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L853)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:870](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L870)
 
 ___
 
 ### getUsers
 
-• **getUsers**: (`pagedParams?`: *TPagedParams*<TUser\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TPagedList<TUser\>\>
+• **getUsers**: (`pagedParams?`: `TPagedParams`<`TUser`\>, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TPagedList`<`TUser`\>\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`pagedParams?`: *TPagedParams*<TUser\>, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TPagedList<TUser\>\>
+▸ (`pagedParams?`, `customFragment?`, `customFragmentName?`): `Promise`<`TPagedList`<`TUser`\>\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *TPagedParams*<TUser\> |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | `TPagedParams`<`TUser`\> |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TPagedList<TUser\>\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L222)
+`Promise`<`TPagedList`<`TUser`\>\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:851](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L851)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:868](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L868)
 
 ___
 
 ### updateAttribute
 
-• **updateAttribute**: (`id`: *string*, `data`: TAttributeInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TAttribute\>
+• **updateAttribute**: (`id`: `string`, `data`: `TAttributeInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TAttribute`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `data`: TAttributeInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TAttribute\>
+▸ (`id`, `data`, `customFragment?`, `customFragmentName?`): `Promise`<`TAttribute`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`data` | TAttributeInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `data` | `TAttributeInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TAttribute\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+`Promise`<`TAttribute`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:730](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L730)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:746](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L746)
 
 ___
 
 ### updateOrder
 
-• **updateOrder**: (`id`: *string*, `data`: TOrderInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TOrder\>
+• **updateOrder**: (`id`: `string`, `data`: `TOrderInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TOrder`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `data`: TOrderInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TOrder\>
+▸ (`id`, `data`, `customFragment?`, `customFragmentName?`): `Promise`<`TOrder`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`data` | TOrderInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `data` | `TOrderInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TOrder\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+`Promise`<`TOrder`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:894](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L894)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:913](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L913)
 
 ___
 
 ### updatePost
 
-• **updatePost**: (`id`: *string*, `data`: TPostInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TPost\>
+• **updatePost**: (`id`: `string`, `data`: `TPostInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TPost`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `data`: TPostInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TPost\>
+▸ (`id`, `data`, `customFragment?`, `customFragmentName?`): `Promise`<`TPost`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`data` | TPostInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `data` | `TPostInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TPost\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+`Promise`<`TPost`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:816](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L816)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:833](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L833)
 
 ___
 
 ### updateProduct
 
-• **updateProduct**: (`id`: *string*, `data`: TProductInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TProduct\>
+• **updateProduct**: (`id`: `string`, `data`: `TProductInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TProduct`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `data`: TProductInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TProduct\>
+▸ (`id`, `data`, `customFragment?`, `customFragmentName?`): `Promise`<`TProduct`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`data` | TProductInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `data` | `TProductInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TProduct\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+`Promise`<`TProduct`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:574](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L574)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:590](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L590)
 
 ___
 
 ### updateProductCategory
 
-• **updateProductCategory**: (`id`: *string*, `data`: TProductCategoryInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TProductCategory\>
+• **updateProductCategory**: (`id`: `string`, `data`: `TProductCategoryInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TProductCategory`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `data`: TProductCategoryInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TProductCategory\>
+▸ (`id`, `data`, `customFragment?`, `customFragmentName?`): `Promise`<`TProductCategory`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`data` | TProductCategoryInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `data` | `TProductCategoryInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TProductCategory\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+`Promise`<`TProductCategory`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:676](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L676)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:692](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L692)
 
 ___
 
 ### updateProductReview
 
-• **updateProductReview**: (`id`: *string*, `data`: TProductReviewInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TProductReview\>
+• **updateProductReview**: (`id`: `string`, `data`: `TProductReviewInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TProductReview`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `data`: TProductReviewInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TProductReview\>
+▸ (`id`, `data`, `customFragment?`, `customFragmentName?`): `Promise`<`TProductReview`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`data` | TProductReviewInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `data` | `TProductReviewInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TProductReview\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+`Promise`<`TProductReview`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:771](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L771)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:787](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L787)
 
 ___
 
 ### updateTag
 
-• **updateTag**: (`id`: *string*, `data`: TTagInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TTag\>
+• **updateTag**: (`id`: `string`, `data`: `TTagInput`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TTag`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `data`: TTagInput, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TTag\>
+▸ (`id`, `data`, `customFragment?`, `customFragmentName?`): `Promise`<`TTag`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`data` | TTagInput |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `data` | `TTagInput` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TTag\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+`Promise`<`TTag`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:926](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L926)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:974](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L974)
 
 ___
 
 ### updateUser
 
-• **updateUser**: (`id`: *string*, `data`: TUpdateUser, `customFragment?`: DocumentNode, `customFragmentName?`: *string*) => *Promise*<TUser\>
+• **updateUser**: (`id`: `string`, `data`: `TUpdateUser`, `customFragment?`: `DocumentNode`, `customFragmentName?`: `string`) => `Promise`<`TUser`\>
 
-#### Type declaration:
+#### Type declaration
 
-▸ (`id`: *string*, `data`: TUpdateUser, `customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<TUser\>
+▸ (`id`, `data`, `customFragment?`, `customFragmentName?`): `Promise`<`TUser`\>
 
-#### Parameters:
+##### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`data` | TUpdateUser |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `data` | `TUpdateUser` |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<TUser\>
+##### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:301](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L301)
+`Promise`<`TUser`\>
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:854](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L854)
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:871](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L871)
 
 ## Methods
 
 ### createEntity
 
-▸ **createEntity**<EntityType, EntityInputType\>(`entityName`: *string*, `entityInputName`: *string*, `fragment`: DocumentNode, `fragmentName`: *string*, `data`: EntityInputType): *Promise*<undefined \| EntityType\>
+▸ **createEntity**<`EntityType`, `EntityInputType`\>(`entityName`, `entityInputName`, `fragment`, `fragmentName`, `data`): `Promise`<`undefined` \| `EntityType`\>
 
 Create a record by id of a generic entity
 
 **`auth`** admin
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`EntityType` |
-`EntityInputType` |
+| Name |
+| :------ |
+| `EntityType` |
+| `EntityInputType` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`entityName` | *string* |
-`entityInputName` | *string* |
-`fragment` | DocumentNode |
-`fragmentName` | *string* |
-`data` | EntityInputType |
+| Name | Type |
+| :------ | :------ |
+| `entityName` | `string` |
+| `entityInputName` | `string` |
+| `fragment` | `DocumentNode` |
+| `fragmentName` | `string` |
+| `data` | `EntityInputType` |
 
-**Returns:** *Promise*<undefined \| EntityType\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:509](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L509)
+`Promise`<`undefined` \| `EntityType`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:525](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L525)
 
 ___
 
 ### getAllEntities
 
-▸ **getAllEntities**<EntityType\>(`entityName`: *string*, `fragment`: DocumentNode, `fragmentName`: *string*): *Promise*<EntityType[]\>
+▸ **getAllEntities**<`EntityType`\>(`entityName`, `fragment`, `fragmentName`): `Promise`<`EntityType`[]\>
 
 Get all records of a generic entity
 
 **`auth`** admin
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`EntityType` |
+| Name |
+| :------ |
+| `EntityType` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`entityName` | *string* |
-`fragment` | DocumentNode |
-`fragmentName` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `entityName` | `string` |
+| `fragment` | `DocumentNode` |
+| `fragmentName` | `string` |
 
-**Returns:** *Promise*<EntityType[]\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:446](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L446)
+`Promise`<`EntityType`[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:462](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L462)
 
 ___
 
 ### getAttributes
 
-▸ **getAttributes**(): *Promise*<undefined \| TAttribute[]\>
+▸ **getAttributes**(): `Promise`<`undefined` \| `TAttribute`[]\>
 
-**Returns:** *Promise*<undefined \| TAttribute[]\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:734](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L734)
+`Promise`<`undefined` \| `TAttribute`[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:750](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L750)
 
 ___
 
 ### getEntityById
 
-▸ **getEntityById**<EntityType\>(`entityName`: *string*, `fragment`: DocumentNode, `fragmentName`: *string*, `entityId`: *string*): *Promise*<undefined \| EntityType\>
+▸ **getEntityById**<`EntityType`\>(`entityName`, `fragment`, `fragmentName`, `entityId`): `Promise`<`undefined` \| `EntityType`\>
 
 Get a record by id of a generic entity
 
 **`auth`** admin
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`EntityType` |
+| Name |
+| :------ |
+| `EntityType` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`entityName` | *string* |
-`fragment` | DocumentNode |
-`fragmentName` | *string* |
-`entityId` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `entityName` | `string` |
+| `fragment` | `DocumentNode` |
+| `fragmentName` | `string` |
+| `entityId` | `string` |
 
-**Returns:** *Promise*<undefined \| EntityType\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:464](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L464)
+`Promise`<`undefined` \| `EntityType`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:480](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L480)
 
 ___
 
 ### getFilteredProducts
 
-▸ **getFilteredProducts**(`__namedParameters`: { `categoryId?`: *undefined* \| *string* ; `customFragment?`: *undefined* \| DocumentNode ; `customFragmentName?`: *undefined* \| *string* ; `filterParams?`: *undefined* \| TProductFilter ; `pagedParams?`: *undefined* \| *TPagedParams*<TProduct\>  }): *Promise*<TFilteredProductList\>
+▸ **getFilteredProducts**(`__namedParameters`): `Promise`<`TFilteredProductList`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`__namedParameters` | *object* |
-`__namedParameters.categoryId?` | *undefined* \| *string* |
-`__namedParameters.customFragment?` | *undefined* \| DocumentNode |
-`__namedParameters.customFragmentName?` | *undefined* \| *string* |
-`__namedParameters.filterParams?` | *undefined* \| TProductFilter |
-`__namedParameters.pagedParams?` | *undefined* \| *TPagedParams*<TProduct\> |
+| Name | Type |
+| :------ | :------ |
+| `__namedParameters` | `Object` |
+| `__namedParameters.categoryId?` | `string` |
+| `__namedParameters.customFragment?` | `DocumentNode` |
+| `__namedParameters.customFragmentName?` | `string` |
+| `__namedParameters.filterParams?` | `TProductFilter` |
+| `__namedParameters.pagedParams?` | `TPagedParams`<`TProduct`\> |
 
-**Returns:** *Promise*<TFilteredProductList\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:605](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L605)
+`Promise`<`TFilteredProductList`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:621](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L621)
+
+___
+
+### getOrdersOfUser
+
+▸ **getOrdersOfUser**(`userId`, `pagedParams`, `customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TPagedList`<`TOrder`\>\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `userId` | `string` |
+| `pagedParams` | `TPagedParams`<`TOrder`\> |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
+
+#### Returns
+
+`Promise`<`undefined` \| `TPagedList`<`TOrder`\>\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:921](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L921)
 
 ___
 
 ### getProductsFromCategory
 
-▸ **getProductsFromCategory**(`categoryId`: *string*, `pagedParams?`: *TPagedParams*<TProduct\>): *Promise*<TPagedList<TProduct\>\>
+▸ **getProductsFromCategory**(`categoryId`, `pagedParams?`): `Promise`<`TPagedList`<`TProduct`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`categoryId` | *string* |
-`pagedParams?` | *TPagedParams*<TProduct\> |
+| Name | Type |
+| :------ | :------ |
+| `categoryId` | `string` |
+| `pagedParams?` | `TPagedParams`<`TProduct`\> |
 
-**Returns:** *Promise*<TPagedList<TProduct\>\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:581](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L581)
+`Promise`<`TPagedList`<`TProduct`\>\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:597](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L597)
 
 ___
 
 ### getRootCategories
 
-▸ **getRootCategories**(`customFragment?`: DocumentNode, `customFragmentName?`: *string*): *Promise*<undefined \| TPagedList<TProductCategory\>\>
+▸ **getRootCategories**(`customFragment?`, `customFragmentName?`): `Promise`<`undefined` \| `TPagedList`<`TProductCategory`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`customFragment?` | DocumentNode |
-`customFragmentName?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `customFragment?` | `DocumentNode` |
+| `customFragmentName?` | `string` |
 
-**Returns:** *Promise*<undefined \| TPagedList<TProductCategory\>\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:683](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L683)
+`Promise`<`undefined` \| `TPagedList`<`TProductCategory`\>\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:699](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L699)
 
 ___
 
 ### mutate
 
-▸ **mutate**<T\>(`options`: *MutationOptions*<{ [key: string]: *any*;  }, OperationVariables\>, `path`: *string*): *Promise*<T\>
+▸ **mutate**<`T`\>(`options`, `path`): `Promise`<`T`\>
 
-#### Type parameters:
+#### Type parameters
 
-Name | Default |
-:------ | :------ |
-`T` | *any* |
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options` | *MutationOptions*<{ [key: string]: *any*;  }, OperationVariables\> |
-`path` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `options` | `MutationOptions`<`Object`, `OperationVariables`\> |
+| `path` | `string` |
 
-**Returns:** *Promise*<T\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:134](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L134)
+`Promise`<`T`\>
 
-▸ **mutate**<T\>(`options`: *MutationOptions*<{ [key: string]: *any*;  }, OperationVariables\>): *Promise*<Promise<FetchResult<unknown, Record<string, any\>, Record<string, any\>\>\>\>
+#### Defined in
 
-#### Type parameters:
+[system/core/frontend/src/api/CGraphQLClient.ts:150](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L150)
 
-Name | Default |
-:------ | :------ |
-`T` | *any* |
+▸ **mutate**<`T`\>(`options`): `Promise`<`Promise`<`FetchResult`<`unknown`, `Record`<`string`, `any`\>, `Record`<`string`, `any`\>\>\>\>
 
-#### Parameters:
+#### Type parameters
 
-Name | Type |
-:------ | :------ |
-`options` | *MutationOptions*<{ [key: string]: *any*;  }, OperationVariables\> |
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
 
-**Returns:** *Promise*<Promise<FetchResult<unknown, Record<string, any\>, Record<string, any\>\>\>\>
+#### Parameters
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:135](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L135)
+| Name | Type |
+| :------ | :------ |
+| `options` | `MutationOptions`<`Object`, `OperationVariables`\> |
+
+#### Returns
+
+`Promise`<`Promise`<`FetchResult`<`unknown`, `Record`<`string`, `any`\>, `Record`<`string`, `any`\>\>\>\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:151](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L151)
 
 ___
 
 ### onError
 
-▸ **onError**(`cb`: (`message`: *string*) => *any*, `id?`: *string*): *void*
+▸ **onError**(`cb`, `id?`): `void`
 
 Add on error callback. Triggers if any of methods of this
 client get any type of error
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`cb` | (`message`: *string*) => *any* |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `cb` | (`message`: [`TGraphQLErrorInfo`](../modules/frontend.md#tgraphqlerrorinfo)) => `any` |
+| `id?` | `string` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:198](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L198)
+`void`
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:214](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L214)
 
 ___
 
 ### onUnauthorized
 
-▸ **onUnauthorized**(`callback`: () => *any*, `id?`: *string*): *void*
+▸ **onUnauthorized**(`callback`, `id?`): `void`
 
 Add on unauthorized error callback. Triggers if any of methods of this
 client get unauthorized error
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`callback` | () => *any* |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `callback` | () => `any` |
+| `id?` | `string` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:182](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L182)
+`void`
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:198](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L198)
 
 ___
 
 ### query
 
-▸ **query**<T\>(`options`: *QueryOptions*<OperationVariables, any\>, `path`: *string*): *Promise*<T\>
+▸ **query**<`T`\>(`options`, `path`): `Promise`<`T`\>
 
-#### Type parameters:
+#### Type parameters
 
-Name | Default |
-:------ | :------ |
-`T` | *any* |
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options` | *QueryOptions*<OperationVariables, any\> |
-`path` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `options` | `QueryOptions`<`OperationVariables`, `any`\> |
+| `path` | `string` |
 
-**Returns:** *Promise*<T\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:117](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L117)
+`Promise`<`T`\>
 
-▸ **query**<T\>(`options`: *QueryOptions*<OperationVariables, any\>): *Promise*<ApolloQueryResult<T\>\>
+#### Defined in
 
-#### Type parameters:
+[system/core/frontend/src/api/CGraphQLClient.ts:133](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L133)
 
-Name | Default |
-:------ | :------ |
-`T` | *any* |
+▸ **query**<`T`\>(`options`): `Promise`<`ApolloQueryResult`<`T`\>\>
 
-#### Parameters:
+#### Type parameters
 
-Name | Type |
-:------ | :------ |
-`options` | *QueryOptions*<OperationVariables, any\> |
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
 
-**Returns:** *Promise*<ApolloQueryResult<T\>\>
+#### Parameters
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:118](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L118)
+| Name | Type |
+| :------ | :------ |
+| `options` | `QueryOptions`<`OperationVariables`, `any`\> |
+
+#### Returns
+
+`Promise`<`ApolloQueryResult`<`T`\>\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:134](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L134)
 
 ___
 
 ### removeOnError
 
-▸ **removeOnError**(`id`: *string*): *void*
+▸ **removeOnError**(`id`): `void`
 
 Remove on error callback
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:206](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L206)
+`void`
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:222](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L222)
 
 ___
 
 ### removeOnUnauthorized
 
-▸ **removeOnUnauthorized**(`id`: *string*): *void*
+▸ **removeOnUnauthorized**(`id`): `void`
 
 Remove on unauthorized error callback
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:190](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L190)
+`void`
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:206](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L206)
 
 ___
 
 ### updateEntity
 
-▸ **updateEntity**<EntityType, EntityInputType\>(`entityName`: *string*, `entityInputName`: *string*, `fragment`: DocumentNode, `fragmentName`: *string*, `entityId`: *string*, `data`: EntityInputType): *Promise*<undefined \| EntityType\>
+▸ **updateEntity**<`EntityType`, `EntityInputType`\>(`entityName`, `entityInputName`, `fragment`, `fragmentName`, `entityId`, `data`): `Promise`<`undefined` \| `EntityType`\>
 
 Update a record of a generic entity
 
 **`auth`** admin
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`EntityType` |
-`EntityInputType` |
+| Name |
+| :------ |
+| `EntityType` |
+| `EntityInputType` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`entityName` | *string* |
-`entityInputName` | *string* |
-`fragment` | DocumentNode |
-`fragmentName` | *string* |
-`entityId` | *string* |
-`data` | EntityInputType |
+| Name | Type |
+| :------ | :------ |
+| `entityName` | `string` |
+| `entityInputName` | `string` |
+| `fragment` | `DocumentNode` |
+| `fragmentName` | `string` |
+| `entityId` | `string` |
+| `data` | `EntityInputType` |
 
-**Returns:** *Promise*<undefined \| EntityType\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CGraphQLClient.ts:486](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CGraphQLClient.ts#L486)
+`Promise`<`undefined` \| `EntityType`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CGraphQLClient.ts:502](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CGraphQLClient.ts#L502)

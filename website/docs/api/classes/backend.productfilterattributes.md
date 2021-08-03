@@ -6,39 +6,49 @@
 
 ## Implements
 
-* *TProductFilterAttribute*
+- `TProductFilterAttribute`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.productfilterattributes.md#constructor)
+- [constructor](backend.ProductFilterAttributes.md#constructor)
 
 ### Properties
 
-- [key](backend.productfilterattributes.md#key)
-- [values](backend.productfilterattributes.md#values)
+- [key](backend.ProductFilterAttributes.md#key)
+- [values](backend.ProductFilterAttributes.md#values)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ProductFilterAttributes**(): [*ProductFilterAttributes*](backend.productfilterattributes.md)
-
-**Returns:** [*ProductFilterAttributes*](backend.productfilterattributes.md)
+• **new ProductFilterAttributes**()
 
 ## Properties
 
 ### key
 
-• **key**: *string*
+• **key**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductFilterInput.ts#L8)
+#### Implementation of
+
+TProductFilterAttribute.key
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:33](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L33)
 
 ___
 
 ### values
 
-• **values**: *string*[]
+• **values**: `string`[]
 
-Defined in: [system/core/backend/src/entities/filter/ProductFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductFilterInput.ts#L11)
+#### Implementation of
+
+TProductFilterAttribute.values
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:36](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L36)

@@ -6,197 +6,255 @@
 
 ## Type parameters
 
-Name | Default |
-:------ | :------ |
-`EntityType` | - |
-`EntityInputType` | EntityType |
+| Name | Type |
+| :------ | :------ |
+| `EntityType` | `EntityType` |
+| `EntityInputType` | `EntityType` |
 
 ## Hierarchy
 
-* *Repository*<EntityType\>
+- `Repository`<`EntityType`\>
 
-  ↳ **BaseRepository**
+  ↳ **`BaseRepository`**
+
+  ↳↳ [`AttributeRepository`](backend.AttributeRepository.md)
+
+  ↳↳ [`OrderRepository`](backend.OrderRepository.md)
+
+  ↳↳ [`PageStatsRepository`](backend.PageStatsRepository.md)
+
+  ↳↳ [`PluginRepository`](backend.PluginRepository.md)
+
+  ↳↳ [`PostRepository`](backend.PostRepository.md)
+
+  ↳↳ [`ProductReviewRepository`](backend.ProductReviewRepository.md)
+
+  ↳↳ [`ProductRepository`](backend.ProductRepository.md)
+
+  ↳↳ [`TagRepository`](backend.TagRepository.md)
+
+  ↳↳ [`UserRepository`](backend.UserRepository.md)
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.baserepository.md#constructor)
+- [constructor](backend.BaseRepository.md#constructor)
 
 ### Methods
 
-- [applyDeleteMany](backend.baserepository.md#applydeletemany)
-- [createEntity](backend.baserepository.md#createentity)
-- [deleteEntity](backend.baserepository.md#deleteentity)
-- [deleteMany](backend.baserepository.md#deletemany)
-- [getAll](backend.baserepository.md#getall)
-- [getById](backend.baserepository.md#getbyid)
-- [getBySlug](backend.baserepository.md#getbyslug)
-- [getPaged](backend.baserepository.md#getpaged)
-- [updateEntity](backend.baserepository.md#updateentity)
+- [applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+- [createEntity](backend.BaseRepository.md#createentity)
+- [deleteEntity](backend.BaseRepository.md#deleteentity)
+- [deleteMany](backend.BaseRepository.md#deletemany)
+- [getAll](backend.BaseRepository.md#getall)
+- [getById](backend.BaseRepository.md#getbyid)
+- [getBySlug](backend.BaseRepository.md#getbyslug)
+- [getPaged](backend.BaseRepository.md#getpaged)
+- [updateEntity](backend.BaseRepository.md#updateentity)
 
 ## Constructors
 
 ### constructor
 
-\+ **new BaseRepository**<EntityType, EntityInputType\>(`EntityClass`: (...`args`: *any*[]) => EntityType & { `id?`: *undefined* \| *string*  }): *BaseRepository*<EntityType, EntityInputType\>
+• **new BaseRepository**<`EntityType`, `EntityInputType`\>(`EntityClass`)
 
-#### Type parameters:
+#### Type parameters
 
-Name | Default |
-:------ | :------ |
-`EntityType` | - |
-`EntityInputType` | EntityType |
+| Name | Type |
+| :------ | :------ |
+| `EntityType` | `EntityType` |
+| `EntityInputType` | `EntityType` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`EntityClass` | (...`args`: *any*[]) => EntityType & { `id?`: *undefined* \| *string*  } |
+| Name | Type |
+| :------ | :------ |
+| `EntityClass` | (...`args`: `any`[]) => `EntityType` & { `id?`: `string`  } |
 
-**Returns:** *BaseRepository*<EntityType, EntityInputType\>
+#### Overrides
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:10](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L10)
+Repository&lt;EntityType\&gt;.constructor
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L11)
 
 ## Methods
 
 ### applyDeleteMany
 
-▸ **applyDeleteMany**(`qb`: *SelectQueryBuilder*<EntityType\> \| *DeleteQueryBuilder*<EntityType\>, `input`: TDeleteManyInput): *Promise*<void\>
+▸ **applyDeleteMany**(`qb`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<EntityType\> \| *DeleteQueryBuilder*<EntityType\> |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<`EntityType`\> \| `DeleteQueryBuilder`<`EntityType`\> |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L87)
+`Promise`<`void`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
 
 ___
 
 ### createEntity
 
-▸ **createEntity**(`input`: EntityInputType, `id?`: *string*): *Promise*<EntityType\>
+▸ **createEntity**(`input`, `id?`): `Promise`<`EntityType`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | EntityInputType |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `input` | `EntityInputType` |
+| `id?` | `string` |
 
-**Returns:** *Promise*<EntityType\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L49)
+`Promise`<`EntityType`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
 
 ___
 
 ### deleteEntity
 
-▸ **deleteEntity**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteEntity**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L76)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
 
 ___
 
 ### deleteMany
 
-▸ **deleteMany**(`input`: TDeleteManyInput): *Promise*<boolean\>
+▸ **deleteMany**(`input`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L97)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
 
 ___
 
 ### getAll
 
-▸ **getAll**(): *Promise*<EntityType[]\>
+▸ **getAll**(): `Promise`<`EntityType`[]\>
 
-**Returns:** *Promise*<EntityType[]\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L24)
+`Promise`<`EntityType`[]\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
 
 ___
 
 ### getById
 
-▸ **getById**(`id`: *string*, `relations?`: *string*[]): *Promise*<undefined \| EntityType\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| `EntityType`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| EntityType\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L29)
+`Promise`<`undefined` \| `EntityType`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
 
 ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`: *string*, `relations?`: *string*[]): *Promise*<undefined \| EntityType\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| `EntityType`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| EntityType\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L39)
+`Promise`<`undefined` \| `EntityType`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
 
 ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`: *TPagedParams*<EntityType\>): *Promise*<TPagedList<EntityType\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<`EntityType`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<EntityType\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<`EntityType`\> |
 
-**Returns:** *Promise*<TPagedList<EntityType\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L18)
+`Promise`<`TPagedList`<`EntityType`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
 
 ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`: *string*, `input`: EntityInputType): *Promise*<EntityType\>
+▸ **updateEntity**(`id`, `input`): `Promise`<`EntityType`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`input` | EntityInputType |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `input` | `EntityInputType` |
 
-**Returns:** *Promise*<EntityType\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L61)
+`Promise`<`EntityType`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)

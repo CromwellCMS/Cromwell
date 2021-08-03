@@ -6,232 +6,402 @@
 
 ## Hierarchy
 
-* [*BasePageEntity*](backend.basepageentity.md)
+- [`BasePageEntity`](backend.BasePageEntity.md)
 
-  ↳ **Order**
+  ↳ **`Order`**
 
 ## Implements
 
-* *TOrder*
+- `TOrder`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.order.md#constructor)
+- [constructor](backend.Order.md#constructor)
 
 ### Properties
 
-- [cart](backend.order.md#cart)
-- [cartOldTotalPrice](backend.order.md#cartoldtotalprice)
-- [cartTotalPrice](backend.order.md#carttotalprice)
-- [createDate](backend.order.md#createdate)
-- [customerAddress](backend.order.md#customeraddress)
-- [customerComment](backend.order.md#customercomment)
-- [customerEmail](backend.order.md#customeremail)
-- [customerName](backend.order.md#customername)
-- [customerPhone](backend.order.md#customerphone)
-- [id](backend.order.md#id)
-- [isEnabled](backend.order.md#isenabled)
-- [orderTotalPrice](backend.order.md#ordertotalprice)
-- [pageDescription](backend.order.md#pagedescription)
-- [pageTitle](backend.order.md#pagetitle)
-- [shippingMethod](backend.order.md#shippingmethod)
-- [shippingPrice](backend.order.md#shippingprice)
-- [slug](backend.order.md#slug)
-- [status](backend.order.md#status)
-- [totalQnt](backend.order.md#totalqnt)
-- [updateDate](backend.order.md#updatedate)
-- [userId](backend.order.md#userid)
+- [cart](backend.Order.md#cart)
+- [cartOldTotalPrice](backend.Order.md#cartoldtotalprice)
+- [cartTotalPrice](backend.Order.md#carttotalprice)
+- [createDate](backend.Order.md#createdate)
+- [currency](backend.Order.md#currency)
+- [customerAddress](backend.Order.md#customeraddress)
+- [customerComment](backend.Order.md#customercomment)
+- [customerEmail](backend.Order.md#customeremail)
+- [customerName](backend.Order.md#customername)
+- [customerPhone](backend.Order.md#customerphone)
+- [id](backend.Order.md#id)
+- [isEnabled](backend.Order.md#isenabled)
+- [orderTotalPrice](backend.Order.md#ordertotalprice)
+- [pageDescription](backend.Order.md#pagedescription)
+- [pageTitle](backend.Order.md#pagetitle)
+- [paymentMethod](backend.Order.md#paymentmethod)
+- [shippingMethod](backend.Order.md#shippingmethod)
+- [shippingPrice](backend.Order.md#shippingprice)
+- [slug](backend.Order.md#slug)
+- [status](backend.Order.md#status)
+- [totalQnt](backend.Order.md#totalqnt)
+- [updateDate](backend.Order.md#updatedate)
+- [userId](backend.Order.md#userid)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Order**(): [*Order*](backend.order.md)
+• **new Order**()
 
-**Returns:** [*Order*](backend.order.md)
+#### Inherited from
 
-Inherited from: [BasePageEntity](backend.basepageentity.md)
+[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
 
 ## Properties
 
 ### cart
 
-• `Optional` **cart**: *undefined* \| *string*
+• `Optional` **cart**: `string`
 
-Defined in: [system/core/backend/src/entities/Order.ts:19](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L19)
+#### Implementation of
+
+TOrder.cart
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:18](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L18)
 
 ___
 
 ### cartOldTotalPrice
 
-• `Optional` **cartOldTotalPrice**: *undefined* \| *number*
+• `Optional` **cartOldTotalPrice**: `number`
 
-Defined in: [system/core/backend/src/entities/Order.ts:31](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L31)
+#### Implementation of
+
+TOrder.cartOldTotalPrice
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:30](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L30)
 
 ___
 
 ### cartTotalPrice
 
-• `Optional` **cartTotalPrice**: *undefined* \| *number*
+• `Optional` **cartTotalPrice**: `number`
 
-Defined in: [system/core/backend/src/entities/Order.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L27)
+#### Implementation of
+
+TOrder.cartTotalPrice
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:26](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L26)
 
 ___
 
 ### createDate
 
-• **createDate**: Date
+• **createDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
+TOrder.createDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
+
+___
+
+### currency
+
+• `Optional` **currency**: `string`
+
+#### Implementation of
+
+TOrder.currency
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:78](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L78)
 
 ___
 
 ### customerAddress
 
-• `Optional` **customerAddress**: *undefined* \| *string*
+• `Optional` **customerAddress**: `string`
 
-Defined in: [system/core/backend/src/entities/Order.ts:63](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L63)
+#### Implementation of
+
+TOrder.customerAddress
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:62](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L62)
 
 ___
 
 ### customerComment
 
-• `Optional` **customerComment**: *undefined* \| *string*
+• `Optional` **customerComment**: `string`
 
-Defined in: [system/core/backend/src/entities/Order.ts:71](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L71)
+#### Implementation of
+
+TOrder.customerComment
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:74](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L74)
 
 ___
 
 ### customerEmail
 
-• `Optional` **customerEmail**: *undefined* \| *string*
+• `Optional` **customerEmail**: `string`
 
-Defined in: [system/core/backend/src/entities/Order.ts:59](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L59)
+#### Implementation of
+
+TOrder.customerEmail
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:58](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L58)
 
 ___
 
 ### customerName
 
-• `Optional` **customerName**: *undefined* \| *string*
+• `Optional` **customerName**: `string`
 
-Defined in: [system/core/backend/src/entities/Order.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L49)
+#### Implementation of
+
+TOrder.customerName
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L48)
 
 ___
 
 ### customerPhone
 
-• `Optional` **customerPhone**: *undefined* \| *string*
+• `Optional` **customerPhone**: `string`
 
-Defined in: [system/core/backend/src/entities/Order.ts:54](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L54)
+#### Implementation of
+
+TOrder.customerPhone
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:53](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L53)
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
+TOrder.id
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
+TOrder.isEnabled
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
 
 ___
 
 ### orderTotalPrice
 
-• `Optional` **orderTotalPrice**: *undefined* \| *number*
+• `Optional` **orderTotalPrice**: `number`
 
-Defined in: [system/core/backend/src/entities/Order.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L23)
+#### Implementation of
+
+TOrder.orderTotalPrice
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L22)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
+TOrder.pageDescription
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
+TOrder.pageTitle
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
+
+___
+
+### paymentMethod
+
+• `Optional` **paymentMethod**: `string`
+
+#### Implementation of
+
+TOrder.paymentMethod
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:70](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L70)
 
 ___
 
 ### shippingMethod
 
-• `Optional` **shippingMethod**: *undefined* \| *string*
+• `Optional` **shippingMethod**: `string`
 
-Defined in: [system/core/backend/src/entities/Order.ts:67](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L67)
+#### Implementation of
+
+TOrder.shippingMethod
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:66](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L66)
 
 ___
 
 ### shippingPrice
 
-• `Optional` **shippingPrice**: *undefined* \| *number*
+• `Optional` **shippingPrice**: `number`
 
-Defined in: [system/core/backend/src/entities/Order.ts:35](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L35)
+#### Implementation of
+
+TOrder.shippingPrice
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L34)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
+TOrder.slug
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
 
 ___
 
 ### status
 
-• `Optional` **status**: *undefined* \| *string*
+• `Optional` **status**: `string`
 
-Defined in: [system/core/backend/src/entities/Order.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L15)
+#### Implementation of
+
+TOrder.status
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L14)
 
 ___
 
 ### totalQnt
 
-• `Optional` **totalQnt**: *undefined* \| *number*
+• `Optional` **totalQnt**: `number`
 
-Defined in: [system/core/backend/src/entities/Order.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L39)
+#### Implementation of
+
+TOrder.totalQnt
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L38)
 
 ___
 
 ### updateDate
 
-• **updateDate**: Date
+• **updateDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
+TOrder.updateDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
 
 ___
 
 ### userId
 
-• `Optional` **userId**: *undefined* \| *string*
+• `Optional` **userId**: `string`
 
-Defined in: [system/core/backend/src/entities/Order.ts:44](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Order.ts#L44)
+#### Implementation of
+
+TOrder.userId
+
+#### Defined in
+
+[system/core/backend/src/models/entities/order.entity.ts:43](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/order.entity.ts#L43)

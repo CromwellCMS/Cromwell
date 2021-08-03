@@ -6,99 +6,100 @@
 
 ## Hierarchy
 
-* *BaseEntity*
+- `BaseEntity`
 
-  ↳ **PageStats**
+  ↳ **`PageStats`**
 
 ## Implements
 
-* *TPageStats*
+- `TPageStats`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.pagestats.md#constructor)
+- [constructor](backend.PageStats.md#constructor)
 
 ### Properties
 
-- [categorySlug](backend.pagestats.md#categoryslug)
-- [id](backend.pagestats.md#id)
-- [pageId](backend.pagestats.md#pageid)
-- [pageRoute](backend.pagestats.md#pageroute)
-- [postSlug](backend.pagestats.md#postslug)
-- [productSlug](backend.pagestats.md#productslug)
-- [tagSlug](backend.pagestats.md#tagslug)
-- [views](backend.pagestats.md#views)
+- [id](backend.PageStats.md#id)
+- [pageId](backend.PageStats.md#pageid)
+- [pageName](backend.PageStats.md#pagename)
+- [pageRoute](backend.PageStats.md#pageroute)
+- [views](backend.PageStats.md#views)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PageStats**(): [*PageStats*](backend.pagestats.md)
+• **new PageStats**()
 
-**Returns:** [*PageStats*](backend.pagestats.md)
+#### Inherited from
+
+BaseEntity.constructor
 
 ## Properties
 
-### categorySlug
-
-• `Optional` **categorySlug**: *undefined* \| *string*
-
-Defined in: [system/core/backend/src/entities/PageStats.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PageStats.ts#L21)
-
-___
-
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PageStats.ts#L9)
+#### Defined in
+
+[system/core/backend/src/models/entities/page-stats.entity.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/page-stats.entity.ts#L7)
 
 ___
 
 ### pageId
 
-• `Optional` **pageId**: *undefined* \| *string*
+• `Optional` **pageId**: `string`
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PageStats.ts#L30)
+#### Implementation of
+
+TPageStats.pageId
+
+#### Defined in
+
+[system/core/backend/src/models/entities/page-stats.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/page-stats.entity.ts#L16)
+
+___
+
+### pageName
+
+• `Optional` **pageName**: `string`
+
+#### Implementation of
+
+TPageStats.pageName
+
+#### Defined in
+
+[system/core/backend/src/models/entities/page-stats.entity.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/page-stats.entity.ts#L13)
 
 ___
 
 ### pageRoute
 
-• **pageRoute**: *string*
+• **pageRoute**: `string`
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PageStats.ts#L12)
+#### Implementation of
 
-___
+TPageStats.pageRoute
 
-### postSlug
+#### Defined in
 
-• `Optional` **postSlug**: *undefined* \| *string*
-
-Defined in: [system/core/backend/src/entities/PageStats.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PageStats.ts#L24)
-
-___
-
-### productSlug
-
-• `Optional` **productSlug**: *undefined* \| *string*
-
-Defined in: [system/core/backend/src/entities/PageStats.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PageStats.ts#L18)
-
-___
-
-### tagSlug
-
-• `Optional` **tagSlug**: *undefined* \| *string*
-
-Defined in: [system/core/backend/src/entities/PageStats.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PageStats.ts#L27)
+[system/core/backend/src/models/entities/page-stats.entity.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/page-stats.entity.ts#L10)
 
 ___
 
 ### views
 
-• **views**: *number*
+• **views**: `number`
 
-Defined in: [system/core/backend/src/entities/PageStats.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PageStats.ts#L15)
+#### Implementation of
+
+TPageStats.views
+
+#### Defined in
+
+[system/core/backend/src/models/entities/page-stats.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/page-stats.entity.ts#L19)

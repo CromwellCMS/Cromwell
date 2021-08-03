@@ -6,59 +6,75 @@
 
 ## Hierarchy
 
-* *Component*<[*TCGalleryProps*](../modules/frontend.md#tcgalleryprops)\>
+- `Component`<[`TCGalleryProps`](../modules/frontend.md#tcgalleryprops)\>
 
-  ↳ **CGallery**
+  ↳ **`CGallery`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](frontend.cgallery.md#constructor)
+- [constructor](frontend.CGallery.md#constructor)
 
 ### Methods
 
-- [render](frontend.cgallery.md#render)
+- [render](frontend.CGallery.md#render)
 
 ## Constructors
 
 ### constructor
 
-\+ **new CGallery**(`props`: *Readonly*<[*TCGalleryProps*](../modules/frontend.md#tcgalleryprops)\>): [*CGallery*](frontend.cgallery.md)
+• **new CGallery**(`props`)
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | *Readonly*<[*TCGalleryProps*](../modules/frontend.md#tcgalleryprops)\> |
+| Name | Type |
+| :------ | :------ |
+| `props` | `Readonly`<[`TCGalleryProps`](../modules/frontend.md#tcgalleryprops)\> |
 
-**Returns:** [*CGallery*](frontend.cgallery.md)
+#### Inherited from
 
-Defined in: node_modules/@types/react/index.d.ts:483
+React.Component<TCGalleryProps\>.constructor
 
-\+ **new CGallery**(`props`: [*TCGalleryProps*](../modules/frontend.md#tcgalleryprops), `context?`: *any*): [*CGallery*](frontend.cgallery.md)
+#### Defined in
 
-**`deprecated`** 
+node_modules/@types/react/index.d.ts:485
+
+• **new CGallery**(`props`, `context?`)
+
+**`deprecated`**
 
 **`see`** https://reactjs.org/docs/legacy-context.html
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | [*TCGalleryProps*](../modules/frontend.md#tcgalleryprops) |
-`context?` | *any* |
+| Name | Type |
+| :------ | :------ |
+| `props` | [`TCGalleryProps`](../modules/frontend.md#tcgalleryprops) |
+| `context?` | `any` |
 
-**Returns:** [*CGallery*](frontend.cgallery.md)
+#### Inherited from
 
-Defined in: node_modules/@types/react/index.d.ts:485
+React.Component<TCGalleryProps\>.constructor
+
+#### Defined in
+
+node_modules/@types/react/index.d.ts:490
 
 ## Methods
 
 ### render
 
-▸ **render**(): *Element*
+▸ **render**(): `Element`
 
-**Returns:** *Element*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CGallery/CGallery.tsx:256](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CGallery/CGallery.tsx#L256)
+`Element`
+
+#### Overrides
+
+React.Component.render
+
+#### Defined in
+
+[system/core/frontend/src/components/CGallery/CGallery.tsx:255](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CGallery/CGallery.tsx#L255)

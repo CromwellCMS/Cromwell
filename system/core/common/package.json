@@ -2,8 +2,8 @@
   "name": "@cromwell/core",
   "version": "1.1.10",
   "main": "dist/index.js",
-  "module": "es",
-  "types": "es",
+  "module": "es/_index.js",
+  "types": "es/_index.d.ts",
   "files": [
     "/dist",
     "/es"

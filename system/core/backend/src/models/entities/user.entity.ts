@@ -6,7 +6,6 @@ import { BasePageEntity } from './base-page.entity';
 
 @Entity()
 @ObjectType()
-/** @noInheritDoc */
 export class User extends BasePageEntity implements TUser {
 
     @Field(() => String, { nullable: true })

@@ -1,8 +1,6 @@
 import React from 'react';
 
-/**
- * @noInheritDoc
- */
+/** @internal */
 export class WidgetErrorBoundary extends React.Component<{ widgetName: string }, { hasError: boolean, errorMessage: string }> {
     constructor(props) {
         super(props);

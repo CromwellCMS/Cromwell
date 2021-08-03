@@ -1,6 +1,7 @@
 import { ConnectionOptions } from 'typeorm';
+
 import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks';
-import { TCmsEntityCore, TPluginEntity, TProduct, TServiceVersions, TUser } from './entities';
+import { TCmsEntityCore, TProduct, TServiceVersions, TUser } from './entities';
 
 /**
  * Global store mostly for internal usage.
@@ -402,13 +403,10 @@ export type TCmsStats = {
 }
 
 export type TPageStats = {
-    pageRoute?: string;
-    views?: number;
-    productSlug?: string;
-    categorySlug?: string;
-    postSlug?: string;
-    tagSlug?: string;
     pageId?: string;
+    pageRoute?: string;
+    pageName?: string;
+    views?: number;
 }
 
 export type TSalePerDay = {

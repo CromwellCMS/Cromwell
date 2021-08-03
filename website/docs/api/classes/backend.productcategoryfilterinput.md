@@ -6,30 +6,34 @@
 
 ## Implements
 
-* *TProductCategoryFilter*
+- `TProductCategoryFilter`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.productcategoryfilterinput.md#constructor)
+- [constructor](backend.ProductCategoryFilterInput.md#constructor)
 
 ### Properties
 
-- [nameSearch](backend.productcategoryfilterinput.md#namesearch)
+- [nameSearch](backend.ProductCategoryFilterInput.md#namesearch)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ProductCategoryFilterInput**(): [*ProductCategoryFilterInput*](backend.productcategoryfilterinput.md)
-
-**Returns:** [*ProductCategoryFilterInput*](backend.productcategoryfilterinput.md)
+• **new ProductCategoryFilterInput**()
 
 ## Properties
 
 ### nameSearch
 
-• **nameSearch**: *string*
+• **nameSearch**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/ProductCategoryFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductCategoryFilterInput.ts#L8)
+#### Implementation of
+
+TProductCategoryFilter.nameSearch
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product-category.filter.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product-category.filter.ts#L8)

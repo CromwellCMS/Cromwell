@@ -6,480 +6,600 @@
 
 ## Hierarchy
 
-* *BaseRepository*<[*Product*](backend.product.md)\>
+- [`BaseRepository`](backend.BaseRepository.md)<[`Product`](backend.Product.md)\>
 
-  ↳ **ProductRepository**
+  ↳ **`ProductRepository`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.productrepository.md#constructor)
+- [constructor](backend.ProductRepository.md#constructor)
 
 ### Methods
 
-- [applyAndGetPagedProducts](backend.productrepository.md#applyandgetpagedproducts)
-- [applyDeleteMany](backend.productrepository.md#applydeletemany)
-- [applyGetProductRating](backend.productrepository.md#applygetproductrating)
-- [applyGetProductViews](backend.productrepository.md#applygetproductviews)
-- [applyProductFilter](backend.productrepository.md#applyproductfilter)
-- [createEntity](backend.productrepository.md#createentity)
-- [createProduct](backend.productrepository.md#createproduct)
-- [deleteEntity](backend.productrepository.md#deleteentity)
-- [deleteMany](backend.productrepository.md#deletemany)
-- [deleteManyFilteredProducts](backend.productrepository.md#deletemanyfilteredproducts)
-- [deleteProduct](backend.productrepository.md#deleteproduct)
-- [getAll](backend.productrepository.md#getall)
-- [getById](backend.productrepository.md#getbyid)
-- [getBySlug](backend.productrepository.md#getbyslug)
-- [getFilteredProducts](backend.productrepository.md#getfilteredproducts)
-- [getPaged](backend.productrepository.md#getpaged)
-- [getProductById](backend.productrepository.md#getproductbyid)
-- [getProductBySlug](backend.productrepository.md#getproductbyslug)
-- [getProductRating](backend.productrepository.md#getproductrating)
-- [getProducts](backend.productrepository.md#getproducts)
-- [getProductsFromCategory](backend.productrepository.md#getproductsfromcategory)
-- [getReviewsOfProduct](backend.productrepository.md#getreviewsofproduct)
-- [handleProductInput](backend.productrepository.md#handleproductinput)
-- [updateEntity](backend.productrepository.md#updateentity)
-- [updateProduct](backend.productrepository.md#updateproduct)
+- [applyAndGetPagedProducts](backend.ProductRepository.md#applyandgetpagedproducts)
+- [applyDeleteMany](backend.ProductRepository.md#applydeletemany)
+- [applyGetProductRating](backend.ProductRepository.md#applygetproductrating)
+- [applyGetProductViews](backend.ProductRepository.md#applygetproductviews)
+- [applyProductFilter](backend.ProductRepository.md#applyproductfilter)
+- [createEntity](backend.ProductRepository.md#createentity)
+- [createProduct](backend.ProductRepository.md#createproduct)
+- [deleteEntity](backend.ProductRepository.md#deleteentity)
+- [deleteMany](backend.ProductRepository.md#deletemany)
+- [deleteManyFilteredProducts](backend.ProductRepository.md#deletemanyfilteredproducts)
+- [deleteProduct](backend.ProductRepository.md#deleteproduct)
+- [getAll](backend.ProductRepository.md#getall)
+- [getById](backend.ProductRepository.md#getbyid)
+- [getBySlug](backend.ProductRepository.md#getbyslug)
+- [getFilteredProducts](backend.ProductRepository.md#getfilteredproducts)
+- [getPaged](backend.ProductRepository.md#getpaged)
+- [getProductById](backend.ProductRepository.md#getproductbyid)
+- [getProductBySlug](backend.ProductRepository.md#getproductbyslug)
+- [getProductRating](backend.ProductRepository.md#getproductrating)
+- [getProducts](backend.ProductRepository.md#getproducts)
+- [getProductsFromCategory](backend.ProductRepository.md#getproductsfromcategory)
+- [getReviewsOfProduct](backend.ProductRepository.md#getreviewsofproduct)
+- [handleProductInput](backend.ProductRepository.md#handleproductinput)
+- [updateEntity](backend.ProductRepository.md#updateentity)
+- [updateProduct](backend.ProductRepository.md#updateproduct)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ProductRepository**(): *ProductRepository*
+• **new ProductRepository**()
 
-**Returns:** *ProductRepository*
+#### Overrides
 
-Inherited from: BaseRepository
+[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:35](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L35)
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L35)
 
 ## Methods
 
 ### applyAndGetPagedProducts
 
-▸ **applyAndGetPagedProducts**(`qb`: *SelectQueryBuilder*<TProduct\>, `params?`: *TPagedParams*<TProduct\>): *Promise*<TPagedList<TProduct\>\>
+▸ **applyAndGetPagedProducts**(`qb`, `params?`): `Promise`<`TPagedList`<`TProduct`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<TProduct\> |
-`params?` | *TPagedParams*<TProduct\> |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<`TProduct`\> |
+| `params?` | `TPagedParams`<`TProduct`\> |
 
-**Returns:** *Promise*<TPagedList<TProduct\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:55](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L55)
+`Promise`<`TPagedList`<`TProduct`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:53](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L53)
 
 ___
 
 ### applyDeleteMany
 
-▸ **applyDeleteMany**(`qb`: *SelectQueryBuilder*<[*Product*](backend.product.md)\> \| *DeleteQueryBuilder*<[*Product*](backend.product.md)\>, `input`: TDeleteManyInput): *Promise*<void\>
+▸ **applyDeleteMany**(`qb`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<[*Product*](backend.product.md)\> \| *DeleteQueryBuilder*<[*Product*](backend.product.md)\> |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<[`Product`](backend.Product.md)\> \| `DeleteQueryBuilder`<[`Product`](backend.Product.md)\> |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`void`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L87)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
 
 ___
 
 ### applyGetProductRating
 
-▸ **applyGetProductRating**(`qb`: *SelectQueryBuilder*<TProduct\>): *void*
+▸ **applyGetProductRating**(`qb`): `void`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<TProduct\> |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<`TProduct`\> |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:41](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L41)
+`void`
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L39)
 
 ___
 
 ### applyGetProductViews
 
-▸ **applyGetProductViews**(`qb`: *SelectQueryBuilder*<TProduct\>): *void*
+▸ **applyGetProductViews**(`qb`): `void`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<TProduct\> |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<`TProduct`\> |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L49)
+`void`
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:47](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L47)
 
 ___
 
 ### applyProductFilter
 
-▸ **applyProductFilter**(`qb`: *SelectQueryBuilder*<[*Product*](backend.product.md)\> \| *DeleteQueryBuilder*<[*Product*](backend.product.md)\>, `filterParams?`: [*ProductFilterInput*](backend.productfilterinput.md), `categoryId?`: *string*): *void*
+▸ **applyProductFilter**(`qb`, `filterParams?`, `categoryId?`): `void`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<[*Product*](backend.product.md)\> \| *DeleteQueryBuilder*<[*Product*](backend.product.md)\> |
-`filterParams?` | [*ProductFilterInput*](backend.productfilterinput.md) |
-`categoryId?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<[`Product`](backend.Product.md)\> \| `DeleteQueryBuilder`<[`Product`](backend.Product.md)\> |
+| `filterParams?` | [`ProductFilterInput`](backend.ProductFilterInput.md) |
+| `categoryId?` | `string` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:203](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L203)
+`void`
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:201](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L201)
 
 ___
 
 ### createEntity
 
-▸ **createEntity**(`input`: [*Product*](backend.product.md), `id?`: *string*): *Promise*<[*Product*](backend.product.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`Product`](backend.Product.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | [*Product*](backend.product.md) |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `input` | [`Product`](backend.Product.md) |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*Product*](backend.product.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Product`](backend.Product.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L49)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
 
 ___
 
 ### createProduct
 
-▸ **createProduct**(`createProduct`: TProductInput, `id?`: *string*): *Promise*<[*Product*](backend.product.md)\>
+▸ **createProduct**(`createProduct`, `id?`): `Promise`<[`Product`](backend.Product.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`createProduct` | TProductInput |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `createProduct` | `TProductInput` |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*Product*](backend.product.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:124](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L124)
+`Promise`<[`Product`](backend.Product.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:122](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L122)
 
 ___
 
 ### deleteEntity
 
-▸ **deleteEntity**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteEntity**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L76)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
 
 ___
 
 ### deleteMany
 
-▸ **deleteMany**(`input`: TDeleteManyInput): *Promise*<boolean\>
+▸ **deleteMany**(`input`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L97)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
 
 ___
 
 ### deleteManyFilteredProducts
 
-▸ **deleteManyFilteredProducts**(`input`: TDeleteManyInput, `filterParams?`: [*ProductFilterInput*](backend.productfilterinput.md)): *Promise*<undefined \| boolean\>
+▸ **deleteManyFilteredProducts**(`input`, `filterParams?`): `Promise`<`undefined` \| `boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | [*ProductFilterInput*](backend.productfilterinput.md) |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | [`ProductFilterInput`](backend.ProductFilterInput.md) |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:301](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L301)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:304](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L304)
 
 ___
 
 ### deleteProduct
 
-▸ **deleteProduct**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteProduct**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:157](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L157)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:155](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L155)
 
 ___
 
 ### getAll
 
-▸ **getAll**(): *Promise*<[*Product*](backend.product.md)[]\>
+▸ **getAll**(): `Promise`<[`Product`](backend.Product.md)[]\>
 
-**Returns:** *Promise*<[*Product*](backend.product.md)[]\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Product`](backend.Product.md)[]\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L24)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
 
 ___
 
 ### getById
 
-▸ **getById**(`id`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*Product*](backend.product.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Product`](backend.Product.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*Product*](backend.product.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`Product`](backend.Product.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L29)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
 
 ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*Product*](backend.product.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Product`](backend.Product.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*Product*](backend.product.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`Product`](backend.Product.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L39)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
 
 ___
 
 ### getFilteredProducts
 
-▸ **getFilteredProducts**(`pagedParams?`: *PagedParamsInput*<TProduct\>, `filterParams?`: [*ProductFilterInput*](backend.productfilterinput.md), `categoryId?`: *string*): *Promise*<TFilteredProductList\>
+▸ **getFilteredProducts**(`pagedParams?`, `filterParams?`, `categoryId?`): `Promise`<`TFilteredProductList`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *PagedParamsInput*<TProduct\> |
-`filterParams?` | [*ProductFilterInput*](backend.productfilterinput.md) |
-`categoryId?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<`TProduct`\> |
+| `filterParams?` | [`ProductFilterInput`](backend.ProductFilterInput.md) |
+| `categoryId?` | `string` |
 
-**Returns:** *Promise*<TFilteredProductList\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:254](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L254)
+`Promise`<`TFilteredProductList`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:257](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L257)
 
 ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`: *TPagedParams*<[*Product*](backend.product.md)\>): *Promise*<TPagedList<[*Product*](backend.product.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Product`](backend.Product.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<[*Product*](backend.product.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<[`Product`](backend.Product.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*Product*](backend.product.md)\>\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`TPagedList`<[`Product`](backend.Product.md)\>\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L18)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
 
 ___
 
 ### getProductById
 
-▸ **getProductById**(`id`: *string*): *Promise*<undefined \| [*Product*](backend.product.md)\>
+▸ **getProductById**(`id`): `Promise`<`undefined` \| [`Product`](backend.Product.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<undefined \| [*Product*](backend.product.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L76)
+`Promise`<`undefined` \| [`Product`](backend.Product.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:74](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L74)
 
 ___
 
 ### getProductBySlug
 
-▸ **getProductBySlug**(`slug`: *string*): *Promise*<undefined \| [*Product*](backend.product.md)\>
+▸ **getProductBySlug**(`slug`): `Promise`<`undefined` \| [`Product`](backend.Product.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
 
-**Returns:** *Promise*<undefined \| [*Product*](backend.product.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:84](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L84)
+`Promise`<`undefined` \| [`Product`](backend.Product.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:82](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L82)
 
 ___
 
 ### getProductRating
 
-▸ **getProductRating**(`productId`: *string*): *Promise*<TProductRating\>
+▸ **getProductRating**(`productId`): `Promise`<`TProductRating`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`productId` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `productId` | `string` |
 
-**Returns:** *Promise*<TProductRating\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:187](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L187)
+`Promise`<`TProductRating`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:185](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L185)
 
 ___
 
 ### getProducts
 
-▸ **getProducts**(`params?`: *TPagedParams*<TProduct\>): *Promise*<TPagedList<TProduct\>\>
+▸ **getProducts**(`params?`): `Promise`<`TPagedList`<`TProduct`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<TProduct\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<`TProduct`\> |
 
-**Returns:** *Promise*<TPagedList<TProduct\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:70](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L70)
+`Promise`<`TPagedList`<`TProduct`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:68](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L68)
 
 ___
 
 ### getProductsFromCategory
 
-▸ **getProductsFromCategory**(`categoryId`: *string*, `params?`: *TPagedParams*<TProduct\>): *Promise*<TPagedList<TProduct\>\>
+▸ **getProductsFromCategory**(`categoryId`, `params?`): `Promise`<`TPagedList`<`TProduct`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`categoryId` | *string* |
-`params?` | *TPagedParams*<TProduct\> |
+| Name | Type |
+| :------ | :------ |
+| `categoryId` | `string` |
+| `params?` | `TPagedParams`<`TProduct`\> |
 
-**Returns:** *Promise*<TPagedList<TProduct\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:170](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L170)
+`Promise`<`TPagedList`<`TProduct`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:168](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L168)
 
 ___
 
 ### getReviewsOfProduct
 
-▸ **getReviewsOfProduct**(`productId`: *string*, `params?`: *TPagedParams*<TProductReview\>): *Promise*<TPagedList<TProductReview\>\>
+▸ **getReviewsOfProduct**(`productId`, `params?`): `Promise`<`TPagedList`<`TProductReview`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`productId` | *string* |
-`params?` | *TPagedParams*<TProductReview\> |
+| Name | Type |
+| :------ | :------ |
+| `productId` | `string` |
+| `params?` | `TPagedParams`<`TProductReview`\> |
 
-**Returns:** *Promise*<TPagedList<TProductReview\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:178](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L178)
+`Promise`<`TPagedList`<`TProductReview`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:176](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L176)
 
 ___
 
 ### handleProductInput
 
-▸ **handleProductInput**(`product`: [*Product*](backend.product.md), `input`: TProductInput): *Promise*<void\>
+▸ **handleProductInput**(`product`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`product` | [*Product*](backend.product.md) |
-`input` | TProductInput |
+| Name | Type |
+| :------ | :------ |
+| `product` | [`Product`](backend.Product.md) |
+| `input` | `TProductInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:92](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L92)
+`Promise`<`void`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:90](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L90)
 
 ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`: *string*, `input`: [*Product*](backend.product.md)): *Promise*<[*Product*](backend.product.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`Product`](backend.Product.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`input` | [*Product*](backend.product.md) |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `input` | [`Product`](backend.Product.md) |
 
-**Returns:** *Promise*<[*Product*](backend.product.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Product`](backend.Product.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L61)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)
 
 ___
 
 ### updateProduct
 
-▸ **updateProduct**(`id`: *string*, `updateProduct`: TProductInput): *Promise*<[*Product*](backend.product.md)\>
+▸ **updateProduct**(`id`, `updateProduct`): `Promise`<[`Product`](backend.Product.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`updateProduct` | TProductInput |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `updateProduct` | `TProductInput` |
 
-**Returns:** *Promise*<[*Product*](backend.product.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductRepository.ts:139](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductRepository.ts#L139)
+`Promise`<[`Product`](backend.Product.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product.repository.ts:137](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L137)

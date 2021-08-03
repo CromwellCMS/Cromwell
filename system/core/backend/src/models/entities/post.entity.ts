@@ -8,7 +8,6 @@ import { Tag } from './tag.entity';
 
 @Entity()
 @ObjectType()
-/** @noInheritDoc */
 export class Post extends BasePageEntity implements TPost {
 
     @Field(type => String, { nullable: true })

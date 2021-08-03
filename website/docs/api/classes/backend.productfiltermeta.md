@@ -6,39 +6,49 @@
 
 ## Implements
 
-* *TProductFilterMeta*
+- `TProductFilterMeta`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.productfiltermeta.md#constructor)
+- [constructor](backend.ProductFilterMeta.md#constructor)
 
 ### Properties
 
-- [maxPrice](backend.productfiltermeta.md#maxprice)
-- [minPrice](backend.productfiltermeta.md#minprice)
+- [maxPrice](backend.ProductFilterMeta.md#maxprice)
+- [minPrice](backend.ProductFilterMeta.md#minprice)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ProductFilterMeta**(): [*ProductFilterMeta*](backend.productfiltermeta.md)
-
-**Returns:** [*ProductFilterMeta*](backend.productfiltermeta.md)
+• **new ProductFilterMeta**()
 
 ## Properties
 
 ### maxPrice
 
-• `Optional` **maxPrice**: *undefined* \| *number*
+• `Optional` **maxPrice**: `number`
 
-Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/FilteredProduct.ts#L12)
+#### Implementation of
+
+TProductFilterMeta.maxPrice
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L13)
 
 ___
 
 ### minPrice
 
-• `Optional` **minPrice**: *undefined* \| *number*
+• `Optional` **minPrice**: `number`
 
-Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/FilteredProduct.ts#L9)
+#### Implementation of
+
+TProductFilterMeta.minPrice
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L10)

@@ -6,84 +6,124 @@
 
 ## Implements
 
-* *TOrderFilter*
+- `TOrderFilter`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.orderfilterinput.md#constructor)
+- [constructor](backend.OrderFilterInput.md#constructor)
 
 ### Properties
 
-- [customerEmail](backend.orderfilterinput.md#customeremail)
-- [customerName](backend.orderfilterinput.md#customername)
-- [customerPhone](backend.orderfilterinput.md#customerphone)
-- [dateFrom](backend.orderfilterinput.md#datefrom)
-- [dateTo](backend.orderfilterinput.md#dateto)
-- [orderId](backend.orderfilterinput.md#orderid)
-- [status](backend.orderfilterinput.md#status)
+- [customerEmail](backend.OrderFilterInput.md#customeremail)
+- [customerName](backend.OrderFilterInput.md#customername)
+- [customerPhone](backend.OrderFilterInput.md#customerphone)
+- [dateFrom](backend.OrderFilterInput.md#datefrom)
+- [dateTo](backend.OrderFilterInput.md#dateto)
+- [orderId](backend.OrderFilterInput.md#orderid)
+- [status](backend.OrderFilterInput.md#status)
 
 ## Constructors
 
 ### constructor
 
-\+ **new OrderFilterInput**(): [*OrderFilterInput*](backend.orderfilterinput.md)
-
-**Returns:** [*OrderFilterInput*](backend.orderfilterinput.md)
+• **new OrderFilterInput**()
 
 ## Properties
 
 ### customerEmail
 
-• `Optional` **customerEmail**: *undefined* \| *string*
+• `Optional` **customerEmail**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/OrderFilterInput.ts#L17)
+#### Implementation of
+
+TOrderFilter.customerEmail
+
+#### Defined in
+
+[system/core/backend/src/models/filters/order.filter.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/order.filter.ts#L17)
 
 ___
 
 ### customerName
 
-• `Optional` **customerName**: *undefined* \| *string*
+• `Optional` **customerName**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/OrderFilterInput.ts#L11)
+#### Implementation of
+
+TOrderFilter.customerName
+
+#### Defined in
+
+[system/core/backend/src/models/filters/order.filter.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/order.filter.ts#L11)
 
 ___
 
 ### customerPhone
 
-• `Optional` **customerPhone**: *undefined* \| *string*
+• `Optional` **customerPhone**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/OrderFilterInput.ts#L14)
+#### Implementation of
+
+TOrderFilter.customerPhone
+
+#### Defined in
+
+[system/core/backend/src/models/filters/order.filter.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/order.filter.ts#L14)
 
 ___
 
 ### dateFrom
 
-• `Optional` **dateFrom**: *undefined* \| *string*
+• `Optional` **dateFrom**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/OrderFilterInput.ts#L23)
+#### Implementation of
+
+TOrderFilter.dateFrom
+
+#### Defined in
+
+[system/core/backend/src/models/filters/order.filter.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/order.filter.ts#L23)
 
 ___
 
 ### dateTo
 
-• `Optional` **dateTo**: *undefined* \| *string*
+• `Optional` **dateTo**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:26](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/OrderFilterInput.ts#L26)
+#### Implementation of
+
+TOrderFilter.dateTo
+
+#### Defined in
+
+[system/core/backend/src/models/filters/order.filter.ts:26](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/order.filter.ts#L26)
 
 ___
 
 ### orderId
 
-• `Optional` **orderId**: *undefined* \| *string*
+• `Optional` **orderId**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/OrderFilterInput.ts#L20)
+#### Implementation of
+
+TOrderFilter.orderId
+
+#### Defined in
+
+[system/core/backend/src/models/filters/order.filter.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/order.filter.ts#L20)
 
 ___
 
 ### status
 
-• `Optional` **status**: *undefined* \| *string*
+• `Optional` **status**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/OrderFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/OrderFilterInput.ts#L8)
+#### Implementation of
+
+TOrderFilter.status
+
+#### Defined in
+
+[system/core/backend/src/models/filters/order.filter.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/order.filter.ts#L8)

@@ -6,39 +6,49 @@
 
 ## Implements
 
-* *TAttributeInstanceValue*
+- `TAttributeInstanceValue`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.attributeinstancevalue.md#constructor)
+- [constructor](backend.AttributeInstanceValue.md#constructor)
 
 ### Properties
 
-- [productVariant](backend.attributeinstancevalue.md#productvariant)
-- [value](backend.attributeinstancevalue.md#value)
+- [productVariant](backend.AttributeInstanceValue.md#productvariant)
+- [value](backend.AttributeInstanceValue.md#value)
 
 ## Constructors
 
 ### constructor
 
-\+ **new AttributeInstanceValue**(): [*AttributeInstanceValue*](backend.attributeinstancevalue.md)
-
-**Returns:** [*AttributeInstanceValue*](backend.attributeinstancevalue.md)
+• **new AttributeInstanceValue**()
 
 ## Properties
 
 ### productVariant
 
-• `Optional` **productVariant**: *undefined* \| [*AttributeProductVariant*](backend.attributeproductvariant.md)
+• `Optional` **productVariant**: [`AttributeProductVariant`](backend.AttributeProductVariant.md)
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L39)
+#### Implementation of
+
+TAttributeInstanceValue.productVariant
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute-instance.entity.ts:39](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute-instance.entity.ts#L39)
 
 ___
 
 ### value
 
-• **value**: *string*
+• **value**: `string`
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L36)
+#### Implementation of
+
+TAttributeInstanceValue.value
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute-instance.entity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute-instance.entity.ts#L36)

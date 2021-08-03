@@ -1,37 +1,34 @@
-import typescript from 'rollup-plugin-ts-compiler';
-import nodeResolve from "@rollup/plugin-node-resolve";
 import commonjs from '@rollup/plugin-commonjs';
-import autoprefixer from 'autoprefixer';
-import { resolve, isAbsolute } from 'path';
-import autoExternal from 'rollup-plugin-auto-external';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import { isAbsolute, resolve } from 'path';
 import postcss from 'rollup-plugin-postcss';
-import { terser } from 'rollup-plugin-terser';
-import pkg from './package.json';
+import typescript from 'rollup-plugin-ts-compiler';
+// import { terser } from 'rollup-plugin-terser';
 
 const external = id => {
     return !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id);
 }
 
-const input = resolve(__dirname, 'src/index.ts');
+const input = resolve(__dirname, 'src/_index.ts');
 // const external = ['next/link', 'next/head', 'next/dynamic', 'next/document', "tslib"];
 
 const getOutput = (format = 'esm') => {
     if (format === 'esm') {
-        return { dir: resolve(__dirname, pkg.module), format, sourcemap: true, };
+        return { dir: resolve(__dirname, 'es'), format, sourcemap: true, };
     }
-    return { file: resolve(__dirname, pkg.main), format };
+    return { file: resolve(__dirname, 'dist/index.js'), format };
 };
 
 const sharedState = {};
 
-const getPlugins = (format = 'esm') => {
+const getPlugins = () => {
     return [
         typescript({
             sharedState,
             compilerOptions: {
                 declaration: true,
                 declarationMap: true,
-                declarationDir: resolve(__dirname, pkg.module)
+                declarationDir: resolve(__dirname, 'es')
             },
             monorepo: true,
         }),
@@ -52,7 +49,7 @@ export default [
     {
         input,
         output: getOutput('cjs'),
-        plugins: getPlugins('cjs'),
+        plugins: getPlugins(),
         external,
         watch: {
             clearScreen: false,
@@ -67,7 +64,7 @@ export default [
     {
         input,
         output: getOutput('esm'),
-        plugins: getPlugins('esm'),
+        plugins: getPlugins(),
         external,
         watch: {
             clearScreen: false,

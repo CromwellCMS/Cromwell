@@ -18,7 +18,6 @@ type CPluginProps = {
 } & TCromwellBlockProps;
 
 
-/** @noInheritDoc */
 export class CPlugin extends React.Component<CPluginProps> {
     render() {
         const props = this.props;

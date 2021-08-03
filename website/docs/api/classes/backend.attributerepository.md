@@ -6,302 +6,382 @@
 
 ## Hierarchy
 
-* *BaseRepository*<[*Attribute*](backend.attribute.md)\>
+- [`BaseRepository`](backend.BaseRepository.md)<[`Attribute`](backend.Attribute.md)\>
 
-  ↳ **AttributeRepository**
+  ↳ **`AttributeRepository`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.attributerepository.md#constructor)
+- [constructor](backend.AttributeRepository.md#constructor)
 
 ### Methods
 
-- [applyDeleteMany](backend.attributerepository.md#applydeletemany)
-- [createAttribute](backend.attributerepository.md#createattribute)
-- [createEntity](backend.attributerepository.md#createentity)
-- [deleteAttribute](backend.attributerepository.md#deleteattribute)
-- [deleteEntity](backend.attributerepository.md#deleteentity)
-- [deleteMany](backend.attributerepository.md#deletemany)
-- [getAll](backend.attributerepository.md#getall)
-- [getAttribute](backend.attributerepository.md#getattribute)
-- [getAttributes](backend.attributerepository.md#getattributes)
-- [getById](backend.attributerepository.md#getbyid)
-- [getBySlug](backend.attributerepository.md#getbyslug)
-- [getPaged](backend.attributerepository.md#getpaged)
-- [handleAttributeInput](backend.attributerepository.md#handleattributeinput)
-- [updateAttribute](backend.attributerepository.md#updateattribute)
-- [updateEntity](backend.attributerepository.md#updateentity)
+- [applyDeleteMany](backend.AttributeRepository.md#applydeletemany)
+- [createAttribute](backend.AttributeRepository.md#createattribute)
+- [createEntity](backend.AttributeRepository.md#createentity)
+- [deleteAttribute](backend.AttributeRepository.md#deleteattribute)
+- [deleteEntity](backend.AttributeRepository.md#deleteentity)
+- [deleteMany](backend.AttributeRepository.md#deletemany)
+- [getAll](backend.AttributeRepository.md#getall)
+- [getAttribute](backend.AttributeRepository.md#getattribute)
+- [getAttributes](backend.AttributeRepository.md#getattributes)
+- [getById](backend.AttributeRepository.md#getbyid)
+- [getBySlug](backend.AttributeRepository.md#getbyslug)
+- [getPaged](backend.AttributeRepository.md#getpaged)
+- [handleAttributeInput](backend.AttributeRepository.md#handleattributeinput)
+- [updateAttribute](backend.AttributeRepository.md#updateattribute)
+- [updateEntity](backend.AttributeRepository.md#updateentity)
 
 ## Constructors
 
 ### constructor
 
-\+ **new AttributeRepository**(`EntityClass`: (...`args`: *any*[]) => [*Attribute*](backend.attribute.md) & { `id?`: *undefined* \| *string*  }): *AttributeRepository*
+• **new AttributeRepository**(`EntityClass`)
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`EntityClass` | (...`args`: *any*[]) => [*Attribute*](backend.attribute.md) & { `id?`: *undefined* \| *string*  } |
+| Name | Type |
+| :------ | :------ |
+| `EntityClass` | (...`args`: `any`[]) => [`Attribute`](backend.Attribute.md) & { `id?`: `string`  } |
 
-**Returns:** *AttributeRepository*
+#### Inherited from
 
-Inherited from: BaseRepository
+[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:10](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L10)
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L11)
 
 ## Methods
 
 ### applyDeleteMany
 
-▸ **applyDeleteMany**(`qb`: *SelectQueryBuilder*<[*Attribute*](backend.attribute.md)\> \| *DeleteQueryBuilder*<[*Attribute*](backend.attribute.md)\>, `input`: TDeleteManyInput): *Promise*<void\>
+▸ **applyDeleteMany**(`qb`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<[*Attribute*](backend.attribute.md)\> \| *DeleteQueryBuilder*<[*Attribute*](backend.attribute.md)\> |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<[`Attribute`](backend.Attribute.md)\> \| `DeleteQueryBuilder`<[`Attribute`](backend.Attribute.md)\> |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`void`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L87)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
 
 ___
 
 ### createAttribute
 
-▸ **createAttribute**(`createAttribute`: TAttributeInput, `id?`: *string*): *Promise*<TAttribute\>
+▸ **createAttribute**(`createAttribute`, `id?`): `Promise`<`TAttribute`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`createAttribute` | TAttributeInput |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `createAttribute` | `TAttributeInput` |
+| `id?` | `string` |
 
-**Returns:** *Promise*<TAttribute\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/AttributeRepository.ts:34](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/AttributeRepository.ts#L34)
+`Promise`<`TAttribute`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/attribute.repository.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/attribute.repository.ts#L34)
 
 ___
 
 ### createEntity
 
-▸ **createEntity**(`input`: [*Attribute*](backend.attribute.md), `id?`: *string*): *Promise*<[*Attribute*](backend.attribute.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`Attribute`](backend.Attribute.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | [*Attribute*](backend.attribute.md) |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `input` | [`Attribute`](backend.Attribute.md) |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*Attribute*](backend.attribute.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Attribute`](backend.Attribute.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L49)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
 
 ___
 
 ### deleteAttribute
 
-▸ **deleteAttribute**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteAttribute**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/AttributeRepository.ts:62](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/AttributeRepository.ts#L62)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/attribute.repository.ts:62](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/attribute.repository.ts#L62)
 
 ___
 
 ### deleteEntity
 
-▸ **deleteEntity**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteEntity**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L76)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
 
 ___
 
 ### deleteMany
 
-▸ **deleteMany**(`input`: TDeleteManyInput): *Promise*<boolean\>
+▸ **deleteMany**(`input`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L97)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
 
 ___
 
 ### getAll
 
-▸ **getAll**(): *Promise*<[*Attribute*](backend.attribute.md)[]\>
+▸ **getAll**(): `Promise`<[`Attribute`](backend.Attribute.md)[]\>
 
-**Returns:** *Promise*<[*Attribute*](backend.attribute.md)[]\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Attribute`](backend.Attribute.md)[]\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L24)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
 
 ___
 
 ### getAttribute
 
-▸ **getAttribute**(`id`: *string*): *Promise*<undefined \| [*Attribute*](backend.attribute.md)\>
+▸ **getAttribute**(`id`): `Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<undefined \| [*Attribute*](backend.attribute.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/AttributeRepository.ts:19](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/AttributeRepository.ts#L19)
+`Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/attribute.repository.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/attribute.repository.ts#L19)
 
 ___
 
 ### getAttributes
 
-▸ **getAttributes**(): *Promise*<[*Attribute*](backend.attribute.md)[]\>
+▸ **getAttributes**(): `Promise`<[`Attribute`](backend.Attribute.md)[]\>
 
-**Returns:** *Promise*<[*Attribute*](backend.attribute.md)[]\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/AttributeRepository.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/AttributeRepository.ts#L14)
+`Promise`<[`Attribute`](backend.Attribute.md)[]\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/attribute.repository.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/attribute.repository.ts#L14)
 
 ___
 
 ### getById
 
-▸ **getById**(`id`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*Attribute*](backend.attribute.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*Attribute*](backend.attribute.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L29)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
 
 ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*Attribute*](backend.attribute.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*Attribute*](backend.attribute.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L39)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
 
 ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`: *TPagedParams*<[*Attribute*](backend.attribute.md)\>): *Promise*<TPagedList<[*Attribute*](backend.attribute.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Attribute`](backend.Attribute.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<[*Attribute*](backend.attribute.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<[`Attribute`](backend.Attribute.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*Attribute*](backend.attribute.md)\>\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`TPagedList`<[`Attribute`](backend.Attribute.md)\>\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L18)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
 
 ___
 
 ### handleAttributeInput
 
-▸ **handleAttributeInput**(`attribute`: [*Attribute*](backend.attribute.md), `input`: TAttributeInput): *Promise*<void\>
+▸ **handleAttributeInput**(`attribute`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`attribute` | [*Attribute*](backend.attribute.md) |
-`input` | TAttributeInput |
+| Name | Type |
+| :------ | :------ |
+| `attribute` | [`Attribute`](backend.Attribute.md) |
+| `input` | `TAttributeInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/AttributeRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/AttributeRepository.ts#L24)
+`Promise`<`void`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/attribute.repository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/attribute.repository.ts#L24)
 
 ___
 
 ### updateAttribute
 
-▸ **updateAttribute**(`id`: *string*, `updateAttribute`: TAttributeInput): *Promise*<[*Attribute*](backend.attribute.md)\>
+▸ **updateAttribute**(`id`, `updateAttribute`): `Promise`<[`Attribute`](backend.Attribute.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`updateAttribute` | TAttributeInput |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `updateAttribute` | `TAttributeInput` |
 
-**Returns:** *Promise*<[*Attribute*](backend.attribute.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/AttributeRepository.ts:47](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/AttributeRepository.ts#L47)
+`Promise`<[`Attribute`](backend.Attribute.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/attribute.repository.ts:47](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/attribute.repository.ts#L47)
 
 ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`: *string*, `input`: [*Attribute*](backend.attribute.md)): *Promise*<[*Attribute*](backend.attribute.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`Attribute`](backend.Attribute.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`input` | [*Attribute*](backend.attribute.md) |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `input` | [`Attribute`](backend.Attribute.md) |
 
-**Returns:** *Promise*<[*Attribute*](backend.attribute.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Attribute`](backend.Attribute.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L61)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)

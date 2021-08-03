@@ -2,15 +2,14 @@ import { resolve } from 'path';
 import autoExternal from 'rollup-plugin-auto-external';
 import { terser } from 'rollup-plugin-terser';
 import typescript from 'rollup-plugin-ts-compiler';
-import pkg from './package.json';
 
-const input = resolve(__dirname, 'src/index.ts');
+const input = resolve(__dirname, 'src/_index.ts');
 const external = ["tslib"];
 const getOutput = (format = 'esm') => {
     if (format === 'esm') {
-        return { dir: resolve(__dirname, pkg.module), format, sourcemap: true, };
+        return { dir: resolve(__dirname, 'es'), format, sourcemap: true, };
     }
-    return { file: resolve(__dirname, pkg.main), format };
+    return { file: resolve(__dirname, 'dist/index.js'), format };
 };
 const sharedState = {};
 
@@ -21,7 +20,7 @@ const getPlugins = () => {
             compilerOptions: {
                 declaration: true,
                 declarationMap: true,
-                declarationDir: resolve(__dirname, pkg.module)
+                declarationDir: resolve(__dirname, 'es')
             },
             monorepo: true,
         }),

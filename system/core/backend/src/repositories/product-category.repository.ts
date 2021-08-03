@@ -21,7 +21,6 @@ import { ProductRepository } from './product.repository';
 const logger = getLogger();
 
 @EntityRepository(ProductCategory)
-/** @noInheritDoc */
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async getProductCategories(params: TPagedParams<TProductCategory>): Promise<TPagedList<TProductCategory>> {

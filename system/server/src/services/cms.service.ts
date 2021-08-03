@@ -277,24 +277,24 @@ export class CmsService {
     async viewPage(input: PageStatsDto) {
         if (!input?.pageRoute || input.pageRoute === '') return;
 
-        const page = await getManager().findOne(PageStats, {
-            where: {
-                pageRoute: input.pageRoute
-            }
-        });
+        let page: PageStats | undefined;
+        try {
+            page = await getManager().findOne(PageStats, {
+                where: {
+                    pageRoute: input.pageRoute
+                }
+            });
+        } catch (error) { }
+
         if (page) {
             if (!page.views) page.views = 0;
             page.views++;
             await page.save();
+
         } else {
             const newPage = new PageStats();
             newPage.pageRoute = input.pageRoute;
-
-            newPage.productSlug = input.productSlug;
-            newPage.categorySlug = input.categorySlug;
-            newPage.postSlug = input.postSlug;
-            newPage.tagSlug = input.tagSlug;
-
+            newPage.pageName = input.pageName;
             newPage.views = 1;
             await newPage.save();
         }

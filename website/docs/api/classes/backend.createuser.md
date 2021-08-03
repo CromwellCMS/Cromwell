@@ -6,145 +6,225 @@
 
 ## Hierarchy
 
-* [*BasePageInput*](backend.basepageinput.md)
+- [`BasePageInput`](backend.BasePageInput.md)
 
-  ↳ **CreateUser**
+  ↳ **`CreateUser`**
 
 ## Implements
 
-* *TCreateUser*
+- `TCreateUser`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.createuser.md#constructor)
+- [constructor](backend.CreateUser.md#constructor)
 
 ### Properties
 
-- [address](backend.createuser.md#address)
-- [avatar](backend.createuser.md#avatar)
-- [bio](backend.createuser.md#bio)
-- [email](backend.createuser.md#email)
-- [fullName](backend.createuser.md#fullname)
-- [isEnabled](backend.createuser.md#isenabled)
-- [pageDescription](backend.createuser.md#pagedescription)
-- [pageTitle](backend.createuser.md#pagetitle)
-- [password](backend.createuser.md#password)
-- [phone](backend.createuser.md#phone)
-- [role](backend.createuser.md#role)
-- [slug](backend.createuser.md#slug)
+- [address](backend.CreateUser.md#address)
+- [avatar](backend.CreateUser.md#avatar)
+- [bio](backend.CreateUser.md#bio)
+- [email](backend.CreateUser.md#email)
+- [fullName](backend.CreateUser.md#fullname)
+- [isEnabled](backend.CreateUser.md#isenabled)
+- [pageDescription](backend.CreateUser.md#pagedescription)
+- [pageTitle](backend.CreateUser.md#pagetitle)
+- [password](backend.CreateUser.md#password)
+- [phone](backend.CreateUser.md#phone)
+- [role](backend.CreateUser.md#role)
+- [slug](backend.CreateUser.md#slug)
 
 ## Constructors
 
 ### constructor
 
-\+ **new CreateUser**(): *CreateUser*
+• **new CreateUser**()
 
-**Returns:** *CreateUser*
+#### Inherited from
 
-Inherited from: [BasePageInput](backend.basepageinput.md)
+[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
 
 ## Properties
 
 ### address
 
-• `Optional` **address**: *undefined* \| *string*
+• `Optional` **address**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateUser.ts:22](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateUser.ts#L22)
+#### Implementation of
+
+TCreateUser.address
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.create.ts:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.create.ts#L22)
 
 ___
 
 ### avatar
 
-• `Optional` **avatar**: *undefined* \| *string*
+• `Optional` **avatar**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateUser.ts:19](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateUser.ts#L19)
+#### Implementation of
+
+TCreateUser.avatar
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.create.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.create.ts#L19)
 
 ___
 
 ### bio
 
-• `Optional` **bio**: *undefined* \| *string*
+• `Optional` **bio**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateUser.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateUser.ts#L28)
+#### Implementation of
+
+TCreateUser.bio
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.create.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.create.ts#L28)
 
 ___
 
 ### email
 
-• **email**: *string*
+• **email**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateUser.ts:13](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateUser.ts#L13)
+#### Implementation of
+
+TCreateUser.email
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.create.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.create.ts#L13)
 
 ___
 
 ### fullName
 
-• **fullName**: *string*
+• **fullName**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateUser.ts:10](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateUser.ts#L10)
+#### Implementation of
+
+TCreateUser.fullName
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.create.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.create.ts#L10)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
+TCreateUser.isEnabled
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L16)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
+TCreateUser.pageDescription
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L13)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
+TCreateUser.pageTitle
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L10)
 
 ___
 
 ### password
 
-• **password**: *string*
+• **password**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateUser.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateUser.ts#L16)
+#### Implementation of
+
+TCreateUser.password
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.create.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.create.ts#L16)
 
 ___
 
 ### phone
 
-• `Optional` **phone**: *undefined* \| *string*
+• `Optional` **phone**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateUser.ts:25](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateUser.ts#L25)
+#### Implementation of
+
+TCreateUser.phone
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.create.ts:25](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.create.ts#L25)
 
 ___
 
 ### role
 
-• `Optional` **role**: *undefined* \| *administrator* \| *author* \| *customer* \| *guest*
+• `Optional` **role**: `TUserRole`
 
-Defined in: [system/core/backend/src/inputs/CreateUser.ts:31](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateUser.ts#L31)
+#### Implementation of
+
+TCreateUser.role
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/user.create.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/user.create.ts#L31)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)
+TCreateUser.slug
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L7)

@@ -6,69 +6,91 @@
 
 ## Type parameters
 
-Name |
-:------ |
-`T` |
+| Name |
+| :------ |
+| `T` |
 
 ## Implements
 
-* *TPagedParams*<T\>
+- `TPagedParams`<`T`\>
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.pagedparamsinput.md#constructor)
+- [constructor](backend.PagedParamsInput.md#constructor)
 
 ### Properties
 
-- [order](backend.pagedparamsinput.md#order)
-- [orderBy](backend.pagedparamsinput.md#orderby)
-- [pageNumber](backend.pagedparamsinput.md#pagenumber)
-- [pageSize](backend.pagedparamsinput.md#pagesize)
+- [order](backend.PagedParamsInput.md#order)
+- [orderBy](backend.PagedParamsInput.md#orderby)
+- [pageNumber](backend.PagedParamsInput.md#pagenumber)
+- [pageSize](backend.PagedParamsInput.md#pagesize)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PagedParamsInput**<T\>(): *PagedParamsInput*<T\>
+• **new PagedParamsInput**<`T`\>()
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`T` |
-
-**Returns:** *PagedParamsInput*<T\>
+| Name |
+| :------ |
+| `T` |
 
 ## Properties
 
 ### order
 
-• **order**: *ASC* \| *DESC*
+• **order**: ``"ASC"`` \| ``"DESC"``
 
-Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PagedParamsInput.ts#L17)
+#### Implementation of
+
+TPagedParams.order
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/paged-params.input.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/paged-params.input.ts#L17)
 
 ___
 
 ### orderBy
 
-• **orderBy**: keyof T
+• **orderBy**: keyof `T`
 
-Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PagedParamsInput.ts#L14)
+#### Implementation of
+
+TPagedParams.orderBy
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/paged-params.input.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/paged-params.input.ts#L14)
 
 ___
 
 ### pageNumber
 
-• **pageNumber**: *number*
+• **pageNumber**: `number`
 
-Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PagedParamsInput.ts#L8)
+#### Implementation of
+
+TPagedParams.pageNumber
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/paged-params.input.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/paged-params.input.ts#L8)
 
 ___
 
 ### pageSize
 
-• **pageSize**: *number*
+• **pageSize**: `number`
 
-Defined in: [system/core/backend/src/inputs/PagedParamsInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/PagedParamsInput.ts#L11)
+#### Implementation of
+
+TPagedParams.pageSize
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/paged-params.input.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/paged-params.input.ts#L11)
