@@ -6,279 +6,341 @@
 
 ## Hierarchy
 
-* *TreeRepository*<[*ProductCategory*](backend.productcategory.md)\>
+- `TreeRepository`<[`ProductCategory`](backend.ProductCategory.md)\>
 
-  ↳ **ProductCategoryRepository**
+  ↳ **`ProductCategoryRepository`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.productcategoryrepository.md#constructor)
+- [constructor](backend.ProductCategoryRepository.md#constructor)
 
 ### Methods
 
-- [applyCategoryFilter](backend.productcategoryrepository.md#applycategoryfilter)
-- [createProductCategory](backend.productcategoryrepository.md#createproductcategory)
-- [deleteManyCategories](backend.productcategoryrepository.md#deletemanycategories)
-- [deleteProductCategory](backend.productcategoryrepository.md#deleteproductcategory)
-- [getCategoriesOfProduct](backend.productcategoryrepository.md#getcategoriesofproduct)
-- [getChildCategories](backend.productcategoryrepository.md#getchildcategories)
-- [getFilteredCategories](backend.productcategoryrepository.md#getfilteredcategories)
-- [getParentCategory](backend.productcategoryrepository.md#getparentcategory)
-- [getProductCategories](backend.productcategoryrepository.md#getproductcategories)
-- [getProductCategoriesById](backend.productcategoryrepository.md#getproductcategoriesbyid)
-- [getProductCategoryById](backend.productcategoryrepository.md#getproductcategorybyid)
-- [getProductCategoryBySlug](backend.productcategoryrepository.md#getproductcategorybyslug)
-- [getRootCategories](backend.productcategoryrepository.md#getrootcategories)
-- [handleProductCategoryInput](backend.productcategoryrepository.md#handleproductcategoryinput)
-- [updateProductCategory](backend.productcategoryrepository.md#updateproductcategory)
+- [applyCategoryFilter](backend.ProductCategoryRepository.md#applycategoryfilter)
+- [createProductCategory](backend.ProductCategoryRepository.md#createproductcategory)
+- [deleteManyCategories](backend.ProductCategoryRepository.md#deletemanycategories)
+- [deleteProductCategory](backend.ProductCategoryRepository.md#deleteproductcategory)
+- [getCategoriesOfProduct](backend.ProductCategoryRepository.md#getcategoriesofproduct)
+- [getChildCategories](backend.ProductCategoryRepository.md#getchildcategories)
+- [getFilteredCategories](backend.ProductCategoryRepository.md#getfilteredcategories)
+- [getParentCategory](backend.ProductCategoryRepository.md#getparentcategory)
+- [getProductCategories](backend.ProductCategoryRepository.md#getproductcategories)
+- [getProductCategoriesById](backend.ProductCategoryRepository.md#getproductcategoriesbyid)
+- [getProductCategoryById](backend.ProductCategoryRepository.md#getproductcategorybyid)
+- [getProductCategoryBySlug](backend.ProductCategoryRepository.md#getproductcategorybyslug)
+- [getRootCategories](backend.ProductCategoryRepository.md#getrootcategories)
+- [handleProductCategoryInput](backend.ProductCategoryRepository.md#handleproductcategoryinput)
+- [updateProductCategory](backend.ProductCategoryRepository.md#updateproductcategory)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ProductCategoryRepository**(): *ProductCategoryRepository*
+• **new ProductCategoryRepository**()
 
-**Returns:** *ProductCategoryRepository*
+#### Inherited from
+
+TreeRepository<ProductCategory\>.constructor
 
 ## Methods
 
 ### applyCategoryFilter
 
-▸ **applyCategoryFilter**(`qb`: *SelectQueryBuilder*<[*ProductCategory*](backend.productcategory.md)\> \| *DeleteQueryBuilder*<[*ProductCategory*](backend.productcategory.md)\>, `filterParams?`: [*ProductCategoryFilterInput*](backend.productcategoryfilterinput.md)): *void*
+▸ **applyCategoryFilter**(`qb`, `filterParams?`): `void`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<[*ProductCategory*](backend.productcategory.md)\> \| *DeleteQueryBuilder*<[*ProductCategory*](backend.productcategory.md)\> |
-`filterParams?` | [*ProductCategoryFilterInput*](backend.productcategoryfilterinput.md) |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<[`ProductCategory`](backend.ProductCategory.md)\> \| `DeleteQueryBuilder`<[`ProductCategory`](backend.ProductCategory.md)\> |
+| `filterParams?` | [`ProductCategoryFilterInput`](backend.ProductCategoryFilterInput.md) |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:269](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L269)
+`void`
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:269](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L269)
 
 ___
 
 ### createProductCategory
 
-▸ **createProductCategory**(`createProductCategory`: *CreateProductCategory*, `id?`: *string*): *Promise*<[*ProductCategory*](backend.productcategory.md)\>
+▸ **createProductCategory**(`createProductCategory`, `id?`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`createProductCategory` | *CreateProductCategory* |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `createProductCategory` | [`CreateProductCategory`](backend.CreateProductCategory.md) |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:144](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L144)
+`Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:144](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L144)
 
 ___
 
 ### deleteManyCategories
 
-▸ **deleteManyCategories**(`input`: TDeleteManyInput, `filterParams?`: [*ProductCategoryFilterInput*](backend.productcategoryfilterinput.md)): *Promise*<boolean\>
+▸ **deleteManyCategories**(`input`, `filterParams?`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | [*ProductCategoryFilterInput*](backend.productcategoryfilterinput.md) |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | [`ProductCategoryFilterInput`](backend.ProductCategoryFilterInput.md) |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:210](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L210)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:210](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L210)
 
 ___
 
 ### deleteProductCategory
 
-▸ **deleteProductCategory**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteProductCategory**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:169](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L169)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:169](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L169)
 
 ___
 
 ### getCategoriesOfProduct
 
-▸ **getCategoriesOfProduct**(`productId`: *string*, `params?`: *TPagedParams*<TProductCategory\>): *Promise*<TProductCategory[]\>
+▸ **getCategoriesOfProduct**(`productId`, `params?`): `Promise`<`TProductCategory`[]\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`productId` | *string* |
-`params?` | *TPagedParams*<TProductCategory\> |
+| Name | Type |
+| :------ | :------ |
+| `productId` | `string` |
+| `params?` | `TPagedParams`<`TProductCategory`\> |
 
-**Returns:** *Promise*<TProductCategory[]\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:232](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L232)
+`Promise`<`TProductCategory`[]\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:232](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L232)
 
 ___
 
 ### getChildCategories
 
-▸ **getChildCategories**(`category`: [*ProductCategory*](backend.productcategory.md)): *Promise*<[*ProductCategory*](backend.productcategory.md)[]\>
+▸ **getChildCategories**(`category`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)[]\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`category` | [*ProductCategory*](backend.productcategory.md) |
+| Name | Type |
+| :------ | :------ |
+| `category` | [`ProductCategory`](backend.ProductCategory.md) |
 
-**Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)[]\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:242](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L242)
+`Promise`<[`ProductCategory`](backend.ProductCategory.md)[]\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:242](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L242)
 
 ___
 
 ### getFilteredCategories
 
-▸ **getFilteredCategories**(`pagedParams?`: *PagedParamsInput*<[*ProductCategory*](backend.productcategory.md)\>, `filterParams?`: [*ProductCategoryFilterInput*](backend.productcategoryfilterinput.md)): *Promise*<TPagedList<TProductCategory\>\>
+▸ **getFilteredCategories**(`pagedParams?`, `filterParams?`): `Promise`<`TPagedList`<`TProductCategory`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *PagedParamsInput*<[*ProductCategory*](backend.productcategory.md)\> |
-`filterParams?` | [*ProductCategoryFilterInput*](backend.productcategoryfilterinput.md) |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<[`ProductCategory`](backend.ProductCategory.md)\> |
+| `filterParams?` | [`ProductCategoryFilterInput`](backend.ProductCategoryFilterInput.md) |
 
-**Returns:** *Promise*<TPagedList<TProductCategory\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:278](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L278)
+`Promise`<`TPagedList`<`TProductCategory`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:282](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L282)
 
 ___
 
 ### getParentCategory
 
-▸ **getParentCategory**(`category`: [*ProductCategory*](backend.productcategory.md)): *Promise*<undefined \| *null* \| [*ProductCategory*](backend.productcategory.md)\>
+▸ **getParentCategory**(`category`): `Promise`<`undefined` \| ``null`` \| [`ProductCategory`](backend.ProductCategory.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`category` | [*ProductCategory*](backend.productcategory.md) |
+| Name | Type |
+| :------ | :------ |
+| `category` | [`ProductCategory`](backend.ProductCategory.md) |
 
-**Returns:** *Promise*<undefined \| *null* \| [*ProductCategory*](backend.productcategory.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:247](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L247)
+`Promise`<`undefined` \| ``null`` \| [`ProductCategory`](backend.ProductCategory.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:247](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L247)
 
 ___
 
 ### getProductCategories
 
-▸ **getProductCategories**(`params`: *TPagedParams*<TProductCategory\>): *Promise*<TPagedList<TProductCategory\>\>
+▸ **getProductCategories**(`params`): `Promise`<`TPagedList`<`TProductCategory`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params` | *TPagedParams*<TProductCategory\> |
+| Name | Type |
+| :------ | :------ |
+| `params` | `TPagedParams`<`TProductCategory`\> |
 
-**Returns:** *Promise*<TPagedList<TProductCategory\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:26](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L26)
+`Promise`<`TPagedList`<`TProductCategory`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:26](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L26)
 
 ___
 
 ### getProductCategoriesById
 
-▸ **getProductCategoriesById**(`ids`: *string*[]): *Promise*<[*ProductCategory*](backend.productcategory.md)[]\>
+▸ **getProductCategoriesById**(`ids`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)[]\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`ids` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `ids` | `string`[] |
 
-**Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)[]\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:33](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L33)
+`Promise`<[`ProductCategory`](backend.ProductCategory.md)[]\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:33](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L33)
 
 ___
 
 ### getProductCategoryById
 
-▸ **getProductCategoryById**(`id`: *string*): *Promise*<[*ProductCategory*](backend.productcategory.md)\>
+▸ **getProductCategoryById**(`id`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L38)
+`Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L38)
 
 ___
 
 ### getProductCategoryBySlug
 
-▸ **getProductCategoryBySlug**(`slug`: *string*): *Promise*<[*ProductCategory*](backend.productcategory.md)\>
+▸ **getProductCategoryBySlug**(`slug`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
 
-**Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:47](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L47)
+`Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:47](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L47)
 
 ___
 
 ### getRootCategories
 
-▸ **getRootCategories**(): *Promise*<TPagedList<[*ProductCategory*](backend.productcategory.md)\>\>
+▸ **getRootCategories**(): `Promise`<`TPagedList`<[`ProductCategory`](backend.ProductCategory.md)\>\>
 
-**Returns:** *Promise*<TPagedList<[*ProductCategory*](backend.productcategory.md)\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:252](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L252)
+`Promise`<`TPagedList`<[`ProductCategory`](backend.ProductCategory.md)\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:252](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L252)
 
 ___
 
 ### handleProductCategoryInput
 
-▸ **handleProductCategoryInput**(`productCategory`: [*ProductCategory*](backend.productcategory.md), `input`: TProductCategoryInput): *Promise*<void\>
+▸ **handleProductCategoryInput**(`productCategory`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`productCategory` | [*ProductCategory*](backend.productcategory.md) |
-`input` | TProductCategoryInput |
+| Name | Type |
+| :------ | :------ |
+| `productCategory` | [`ProductCategory`](backend.ProductCategory.md) |
+| `input` | `TProductCategoryInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:56](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L56)
+`Promise`<`void`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:56](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L56)
 
 ___
 
 ### updateProductCategory
 
-▸ **updateProductCategory**(`id`: *string*, `updateProductCategory`: *UpdateProductCategory*): *Promise*<[*ProductCategory*](backend.productcategory.md)\>
+▸ **updateProductCategory**(`id`, `updateProductCategory`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`updateProductCategory` | *UpdateProductCategory* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `updateProductCategory` | [`UpdateProductCategory`](backend.UpdateProductCategory.md) |
 
-**Returns:** *Promise*<[*ProductCategory*](backend.productcategory.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductCategoryRepository.ts:157](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductCategoryRepository.ts#L157)
+`Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-category.repository.ts:157](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-category.repository.ts#L157)

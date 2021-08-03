@@ -6,118 +6,180 @@
 
 ## Hierarchy
 
-* [*BasePageInput*](backend.basepageinput.md)
+- [`BasePageInput`](backend.BasePageInput.md)
 
-  ↳ **CreateProductCategory**
+  ↳ **`CreateProductCategory`**
 
 ## Implements
 
-* *TProductCategoryInput*
+- `TProductCategoryInput`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.createproductcategory.md#constructor)
+- [constructor](backend.CreateProductCategory.md#constructor)
 
 ### Properties
 
-- [description](backend.createproductcategory.md#description)
-- [descriptionDelta](backend.createproductcategory.md#descriptiondelta)
-- [isEnabled](backend.createproductcategory.md#isenabled)
-- [mainImage](backend.createproductcategory.md#mainimage)
-- [name](backend.createproductcategory.md#name)
-- [pageDescription](backend.createproductcategory.md#pagedescription)
-- [pageTitle](backend.createproductcategory.md#pagetitle)
-- [parentId](backend.createproductcategory.md#parentid)
-- [slug](backend.createproductcategory.md#slug)
+- [description](backend.CreateProductCategory.md#description)
+- [descriptionDelta](backend.CreateProductCategory.md#descriptiondelta)
+- [isEnabled](backend.CreateProductCategory.md#isenabled)
+- [mainImage](backend.CreateProductCategory.md#mainimage)
+- [name](backend.CreateProductCategory.md#name)
+- [pageDescription](backend.CreateProductCategory.md#pagedescription)
+- [pageTitle](backend.CreateProductCategory.md#pagetitle)
+- [parentId](backend.CreateProductCategory.md#parentid)
+- [slug](backend.CreateProductCategory.md#slug)
 
 ## Constructors
 
 ### constructor
 
-\+ **new CreateProductCategory**(): *CreateProductCategory*
+• **new CreateProductCategory**()
 
-**Returns:** *CreateProductCategory*
+#### Inherited from
 
-Inherited from: [BasePageInput](backend.basepageinput.md)
+[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
 
 ## Properties
 
 ### description
 
-• `Optional` **description**: *undefined* \| *string*
+• `Optional` **description**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProductCategory.ts#L14)
+#### Implementation of
+
+TProductCategoryInput.description
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-category.create.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-category.create.ts#L14)
 
 ___
 
 ### descriptionDelta
 
-• `Optional` **descriptionDelta**: *undefined* \| *string*
+• `Optional` **descriptionDelta**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProductCategory.ts#L17)
+#### Implementation of
+
+TProductCategoryInput.descriptionDelta
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-category.create.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-category.create.ts#L17)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
+TProductCategoryInput.isEnabled
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L16)
 
 ___
 
 ### mainImage
 
-• `Optional` **mainImage**: *undefined* \| *string*
+• `Optional` **mainImage**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProductCategory.ts#L11)
+#### Implementation of
+
+TProductCategoryInput.mainImage
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-category.create.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-category.create.ts#L11)
 
 ___
 
 ### name
 
-• **name**: *string*
+• **name**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProductCategory.ts#L8)
+#### Implementation of
+
+TProductCategoryInput.name
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-category.create.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-category.create.ts#L8)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
+TProductCategoryInput.pageDescription
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L13)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
+TProductCategoryInput.pageTitle
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L10)
 
 ___
 
 ### parentId
 
-• `Optional` **parentId**: *undefined* \| *string*
+• `Optional` **parentId**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateProductCategory.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProductCategory.ts#L20)
+#### Implementation of
+
+TProductCategoryInput.parentId
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product-category.create.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product-category.create.ts#L20)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)
+TProductCategoryInput.slug
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L7)

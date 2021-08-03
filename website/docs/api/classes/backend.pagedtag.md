@@ -6,39 +6,49 @@
 
 ## Implements
 
-* *TPagedList*<TTag\>
+- `TPagedList`<`TTag`\>
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.pagedtag.md#constructor)
+- [constructor](backend.PagedTag.md#constructor)
 
 ### Properties
 
-- [elements](backend.pagedtag.md#elements)
-- [pagedMeta](backend.pagedtag.md#pagedmeta)
+- [elements](backend.PagedTag.md#elements)
+- [pagedMeta](backend.PagedTag.md#pagedmeta)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PagedTag**(): [*PagedTag*](backend.pagedtag.md)
-
-**Returns:** [*PagedTag*](backend.pagedtag.md)
+• **new PagedTag**()
 
 ## Properties
 
 ### elements
 
-• `Optional` **elements**: *undefined* \| [*Tag*](backend.tag.md)[]
+• `Optional` **elements**: [`Tag`](backend.Tag.md)[]
 
-Defined in: [system/core/backend/src/entities/paged/PagedTag.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedTag.ts#L12)
+#### Implementation of
+
+TPagedList.elements
+
+#### Defined in
+
+[system/core/backend/src/models/paged/tag.paged.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/tag.paged.ts#L12)
 
 ___
 
 ### pagedMeta
 
-• `Optional` **pagedMeta**: *undefined* \| [*PagedMeta*](backend.pagedmeta.md)
+• `Optional` **pagedMeta**: [`PagedMeta`](backend.PagedMeta.md)
 
-Defined in: [system/core/backend/src/entities/paged/PagedTag.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedTag.ts#L9)
+#### Implementation of
+
+TPagedList.pagedMeta
+
+#### Defined in
+
+[system/core/backend/src/models/paged/tag.paged.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/tag.paged.ts#L9)

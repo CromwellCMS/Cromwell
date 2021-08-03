@@ -6,39 +6,49 @@
 
 ## Implements
 
-* *TPagedList*<TOrder\>
+- `TPagedList`<`TOrder`\>
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.pagedorder.md#constructor)
+- [constructor](backend.PagedOrder.md#constructor)
 
 ### Properties
 
-- [elements](backend.pagedorder.md#elements)
-- [pagedMeta](backend.pagedorder.md#pagedmeta)
+- [elements](backend.PagedOrder.md#elements)
+- [pagedMeta](backend.PagedOrder.md#pagedmeta)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PagedOrder**(): [*PagedOrder*](backend.pagedorder.md)
-
-**Returns:** [*PagedOrder*](backend.pagedorder.md)
+• **new PagedOrder**()
 
 ## Properties
 
 ### elements
 
-• `Optional` **elements**: *undefined* \| [*Order*](backend.order.md)[]
+• `Optional` **elements**: [`Order`](backend.Order.md)[]
 
-Defined in: [system/core/backend/src/entities/paged/PagedOrder.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedOrder.ts#L12)
+#### Implementation of
+
+TPagedList.elements
+
+#### Defined in
+
+[system/core/backend/src/models/paged/order.paged.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/order.paged.ts#L12)
 
 ___
 
 ### pagedMeta
 
-• `Optional` **pagedMeta**: *undefined* \| [*PagedMeta*](backend.pagedmeta.md)
+• `Optional` **pagedMeta**: [`PagedMeta`](backend.PagedMeta.md)
 
-Defined in: [system/core/backend/src/entities/paged/PagedOrder.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedOrder.ts#L9)
+#### Implementation of
+
+TPagedList.pagedMeta
+
+#### Defined in
+
+[system/core/backend/src/models/paged/order.paged.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/order.paged.ts#L9)

@@ -73,6 +73,7 @@ export const getSalesValuePerDayOption = (echarts, sales: TSalePerDay[]) => {
         xAxis: [
             {
                 type: 'category',
+                boundaryGap: false,
                 data: sales.map(sale => format(new Date(sale.date), 'eee')).reverse(),
                 axisTick: {
                     alignWithLabel: true

@@ -6,407 +6,511 @@
 
 ## Hierarchy
 
-* *BaseRepository*<[*User*](backend.user.md)\>
+- [`BaseRepository`](backend.BaseRepository.md)<[`User`](backend.User.md)\>
 
-  ↳ **UserRepository**
+  ↳ **`UserRepository`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.userrepository.md#constructor)
+- [constructor](backend.UserRepository.md#constructor)
 
 ### Methods
 
-- [applyDeleteMany](backend.userrepository.md#applydeletemany)
-- [applyUserFilter](backend.userrepository.md#applyuserfilter)
-- [createEntity](backend.userrepository.md#createentity)
-- [createUser](backend.userrepository.md#createuser)
-- [deleteEntity](backend.userrepository.md#deleteentity)
-- [deleteMany](backend.userrepository.md#deletemany)
-- [deleteManyFilteredUsers](backend.userrepository.md#deletemanyfilteredusers)
-- [deleteUser](backend.userrepository.md#deleteuser)
-- [getAll](backend.userrepository.md#getall)
-- [getById](backend.userrepository.md#getbyid)
-- [getBySlug](backend.userrepository.md#getbyslug)
-- [getFilteredUsers](backend.userrepository.md#getfilteredusers)
-- [getPaged](backend.userrepository.md#getpaged)
-- [getUserByEmail](backend.userrepository.md#getuserbyemail)
-- [getUserById](backend.userrepository.md#getuserbyid)
-- [getUserBySlug](backend.userrepository.md#getuserbyslug)
-- [getUsers](backend.userrepository.md#getusers)
-- [handleUserInput](backend.userrepository.md#handleuserinput)
-- [hashPassword](backend.userrepository.md#hashpassword)
-- [updateEntity](backend.userrepository.md#updateentity)
-- [updateUser](backend.userrepository.md#updateuser)
+- [applyDeleteMany](backend.UserRepository.md#applydeletemany)
+- [applyUserFilter](backend.UserRepository.md#applyuserfilter)
+- [createEntity](backend.UserRepository.md#createentity)
+- [createUser](backend.UserRepository.md#createuser)
+- [deleteEntity](backend.UserRepository.md#deleteentity)
+- [deleteMany](backend.UserRepository.md#deletemany)
+- [deleteManyFilteredUsers](backend.UserRepository.md#deletemanyfilteredusers)
+- [deleteUser](backend.UserRepository.md#deleteuser)
+- [getAll](backend.UserRepository.md#getall)
+- [getById](backend.UserRepository.md#getbyid)
+- [getBySlug](backend.UserRepository.md#getbyslug)
+- [getFilteredUsers](backend.UserRepository.md#getfilteredusers)
+- [getPaged](backend.UserRepository.md#getpaged)
+- [getUserByEmail](backend.UserRepository.md#getuserbyemail)
+- [getUserById](backend.UserRepository.md#getuserbyid)
+- [getUserBySlug](backend.UserRepository.md#getuserbyslug)
+- [getUsers](backend.UserRepository.md#getusers)
+- [handleUserInput](backend.UserRepository.md#handleuserinput)
+- [hashPassword](backend.UserRepository.md#hashpassword)
+- [updateEntity](backend.UserRepository.md#updateentity)
+- [updateUser](backend.UserRepository.md#updateuser)
 
 ## Constructors
 
 ### constructor
 
-\+ **new UserRepository**(): *UserRepository*
+• **new UserRepository**()
 
-**Returns:** *UserRepository*
+#### Overrides
 
-Inherited from: BaseRepository
+[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L17)
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L19)
 
 ## Methods
 
 ### applyDeleteMany
 
-▸ **applyDeleteMany**(`qb`: *SelectQueryBuilder*<[*User*](backend.user.md)\> \| *DeleteQueryBuilder*<[*User*](backend.user.md)\>, `input`: TDeleteManyInput): *Promise*<void\>
+▸ **applyDeleteMany**(`qb`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<[*User*](backend.user.md)\> \| *DeleteQueryBuilder*<[*User*](backend.user.md)\> |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<[`User`](backend.User.md)\> \| `DeleteQueryBuilder`<[`User`](backend.User.md)\> |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`void`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L87)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
 
 ___
 
 ### applyUserFilter
 
-▸ **applyUserFilter**(`qb`: *SelectQueryBuilder*<TUser\> \| *DeleteQueryBuilder*<TUser\>, `filterParams?`: [*UserFilterInput*](backend.userfilterinput.md)): *void*
+▸ **applyUserFilter**(`qb`, `filterParams?`): `void`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<TUser\> \| *DeleteQueryBuilder*<TUser\> |
-`filterParams?` | [*UserFilterInput*](backend.userfilterinput.md) |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<`TUser`\> \| `DeleteQueryBuilder`<`TUser`\> |
+| `filterParams?` | [`UserFilterInput`](backend.UserFilterInput.md) |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:121](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L121)
+`void`
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:121](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L121)
 
 ___
 
 ### createEntity
 
-▸ **createEntity**(`input`: [*User*](backend.user.md), `id?`: *string*): *Promise*<[*User*](backend.user.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`User`](backend.User.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | [*User*](backend.user.md) |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `input` | [`User`](backend.User.md) |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*User*](backend.user.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`User`](backend.User.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L49)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
 
 ___
 
 ### createUser
 
-▸ **createUser**(`createUser`: TCreateUser, `id?`: *string*): *Promise*<[*User*](backend.user.md)\>
+▸ **createUser**(`createUser`, `id?`): `Promise`<[`User`](backend.User.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`createUser` | TCreateUser |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `createUser` | `TCreateUser` |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*User*](backend.user.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:62](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L62)
+`Promise`<[`User`](backend.User.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:62](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L62)
 
 ___
 
 ### deleteEntity
 
-▸ **deleteEntity**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteEntity**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L76)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
 
 ___
 
 ### deleteMany
 
-▸ **deleteMany**(`input`: TDeleteManyInput): *Promise*<boolean\>
+▸ **deleteMany**(`input`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L97)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
 
 ___
 
 ### deleteManyFilteredUsers
 
-▸ **deleteManyFilteredUsers**(`input`: TDeleteManyInput, `filterParams?`: [*UserFilterInput*](backend.userfilterinput.md)): *Promise*<undefined \| boolean\>
+▸ **deleteManyFilteredUsers**(`input`, `filterParams?`): `Promise`<`undefined` \| `boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | [*UserFilterInput*](backend.userfilterinput.md) |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | [`UserFilterInput`](backend.UserFilterInput.md) |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:164](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L164)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:164](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L164)
 
 ___
 
 ### deleteUser
 
-▸ **deleteUser**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteUser**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:108](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L108)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:108](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L108)
 
 ___
 
 ### getAll
 
-▸ **getAll**(): *Promise*<[*User*](backend.user.md)[]\>
+▸ **getAll**(): `Promise`<[`User`](backend.User.md)[]\>
 
-**Returns:** *Promise*<[*User*](backend.user.md)[]\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`User`](backend.User.md)[]\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L24)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
 
 ___
 
 ### getById
 
-▸ **getById**(`id`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*User*](backend.user.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`User`](backend.User.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*User*](backend.user.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`User`](backend.User.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L29)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
 
 ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*User*](backend.user.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`User`](backend.User.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*User*](backend.user.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`User`](backend.User.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L39)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
 
 ___
 
 ### getFilteredUsers
 
-▸ **getFilteredUsers**(`pagedParams?`: *PagedParamsInput*<TUser\>, `filterParams?`: [*UserFilterInput*](backend.userfilterinput.md)): *Promise*<TPagedList<TUser\>\>
+▸ **getFilteredUsers**(`pagedParams?`, `filterParams?`): `Promise`<`TPagedList`<`TUser`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *PagedParamsInput*<TUser\> |
-`filterParams?` | [*UserFilterInput*](backend.userfilterinput.md) |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<`TUser`\> |
+| `filterParams?` | [`UserFilterInput`](backend.UserFilterInput.md) |
 
-**Returns:** *Promise*<TPagedList<TUser\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:157](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L157)
+`Promise`<`TPagedList`<`TUser`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:157](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L157)
 
 ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`: *TPagedParams*<[*User*](backend.user.md)\>): *Promise*<TPagedList<[*User*](backend.user.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`User`](backend.User.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<[*User*](backend.user.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<[`User`](backend.User.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*User*](backend.user.md)\>\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`TPagedList`<[`User`](backend.User.md)\>\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L18)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
 
 ___
 
 ### getUserByEmail
 
-▸ **getUserByEmail**(`email`: *string*): *Promise*<undefined \| [*User*](backend.user.md)\>
+▸ **getUserByEmail**(`email`): `Promise`<`undefined` \| [`User`](backend.User.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`email` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `email` | `string` |
 
-**Returns:** *Promise*<undefined \| [*User*](backend.user.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:33](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L33)
+`Promise`<`undefined` \| [`User`](backend.User.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:33](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L33)
 
 ___
 
 ### getUserById
 
-▸ **getUserById**(`id`: *string*): *Promise*<undefined \| [*User*](backend.user.md)\>
+▸ **getUserById**(`id`): `Promise`<`undefined` \| [`User`](backend.User.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<undefined \| [*User*](backend.user.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L28)
+`Promise`<`undefined` \| [`User`](backend.User.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L28)
 
 ___
 
 ### getUserBySlug
 
-▸ **getUserBySlug**(`slug`: *string*): *Promise*<undefined \| [*User*](backend.user.md)\>
+▸ **getUserBySlug**(`slug`): `Promise`<`undefined` \| [`User`](backend.User.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
 
-**Returns:** *Promise*<undefined \| [*User*](backend.user.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:43](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L43)
+`Promise`<`undefined` \| [`User`](backend.User.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:43](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L43)
 
 ___
 
 ### getUsers
 
-▸ **getUsers**(`params?`: *TPagedParams*<[*User*](backend.user.md)\>): *Promise*<TPagedList<[*User*](backend.user.md)\>\>
+▸ **getUsers**(`params?`): `Promise`<`TPagedList`<[`User`](backend.User.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<[*User*](backend.user.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<[`User`](backend.User.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*User*](backend.user.md)\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L23)
+`Promise`<`TPagedList`<[`User`](backend.User.md)\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L23)
 
 ___
 
 ### handleUserInput
 
-▸ **handleUserInput**(`user`: [*User*](backend.user.md), `userInput`: TUpdateUser): *Promise*<void\>
+▸ **handleUserInput**(`user`, `userInput`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`user` | [*User*](backend.user.md) |
-`userInput` | TUpdateUser |
+| Name | Type |
+| :------ | :------ |
+| `user` | [`User`](backend.User.md) |
+| `userInput` | `TUpdateUser` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L48)
+`Promise`<`void`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L48)
 
 ___
 
 ### hashPassword
 
-▸ **hashPassword**(`password`: *string*): *Promise*<string\>
+▸ **hashPassword**(`password`): `Promise`<`string`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`password` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `password` | `string` |
 
-**Returns:** *Promise*<string\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:88](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L88)
+`Promise`<`string`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:88](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L88)
 
 ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`: *string*, `input`: [*User*](backend.user.md)): *Promise*<[*User*](backend.user.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`User`](backend.User.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`input` | [*User*](backend.user.md) |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `input` | [`User`](backend.User.md) |
 
-**Returns:** *Promise*<[*User*](backend.user.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`User`](backend.User.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L61)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)
 
 ___
 
 ### updateUser
 
-▸ **updateUser**(`id`: *string*, `updateUser`: TUpdateUser): *Promise*<[*User*](backend.user.md)\>
+▸ **updateUser**(`id`, `updateUser`): `Promise`<[`User`](backend.User.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`updateUser` | TUpdateUser |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `updateUser` | `TUpdateUser` |
 
-**Returns:** *Promise*<[*User*](backend.user.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/UserRepository.ts:92](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/UserRepository.ts#L92)
+`Promise`<[`User`](backend.User.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/user.repository.ts:92](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/user.repository.ts#L92)

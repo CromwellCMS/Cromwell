@@ -6,168 +6,256 @@
 
 ## Hierarchy
 
-* [*BasePageEntity*](backend.basepageentity.md)
+- [`BasePageEntity`](backend.BasePageEntity.md)
 
-  ↳ **Attribute**
+  ↳ **`Attribute`**
 
 ## Implements
 
-* *TAttribute*
+- `TAttribute`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.attribute.md#constructor)
+- [constructor](backend.Attribute.md#constructor)
 
 ### Properties
 
-- [createDate](backend.attribute.md#createdate)
-- [icon](backend.attribute.md#icon)
-- [id](backend.attribute.md#id)
-- [isEnabled](backend.attribute.md#isenabled)
-- [key](backend.attribute.md#key)
-- [pageDescription](backend.attribute.md#pagedescription)
-- [pageTitle](backend.attribute.md#pagetitle)
-- [required](backend.attribute.md#required)
-- [slug](backend.attribute.md#slug)
-- [type](backend.attribute.md#type)
-- [updateDate](backend.attribute.md#updatedate)
+- [createDate](backend.Attribute.md#createdate)
+- [icon](backend.Attribute.md#icon)
+- [id](backend.Attribute.md#id)
+- [isEnabled](backend.Attribute.md#isenabled)
+- [key](backend.Attribute.md#key)
+- [pageDescription](backend.Attribute.md#pagedescription)
+- [pageTitle](backend.Attribute.md#pagetitle)
+- [required](backend.Attribute.md#required)
+- [slug](backend.Attribute.md#slug)
+- [type](backend.Attribute.md#type)
+- [updateDate](backend.Attribute.md#updatedate)
 
 ### Accessors
 
-- [values](backend.attribute.md#values)
+- [values](backend.Attribute.md#values)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Attribute**(): [*Attribute*](backend.attribute.md)
+• **new Attribute**()
 
-**Returns:** [*Attribute*](backend.attribute.md)
+#### Inherited from
 
-Inherited from: [BasePageEntity](backend.basepageentity.md)
+[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
 
 ## Properties
 
 ### createDate
 
-• **createDate**: Date
+• **createDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
+TAttribute.createDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
 
 ___
 
 ### icon
 
-• `Optional` **icon**: *undefined* \| *string*
+• `Optional` **icon**: `string`
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:43](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L43)
+#### Implementation of
+
+TAttribute.icon
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute.entity.ts:43](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute.entity.ts#L43)
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
+TAttribute.id
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
+TAttribute.isEnabled
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
 
 ___
 
 ### key
 
-• **key**: *string*
+• **key**: `string`
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L23)
+#### Implementation of
+
+TAttribute.key
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute.entity.ts#L23)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
+TAttribute.pageDescription
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
+TAttribute.pageTitle
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
 
 ___
 
 ### required
 
-• `Optional` **required**: *undefined* \| *boolean*
+• `Optional` **required**: `boolean`
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:47](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L47)
+#### Implementation of
+
+TAttribute.required
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute.entity.ts:47](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute.entity.ts#L47)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
+TAttribute.slug
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
 
 ___
 
 ### type
 
-• **type**: *radio* \| *checkbox*
+• **type**: ``"radio"`` \| ``"checkbox"``
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L39)
+#### Implementation of
+
+TAttribute.type
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute.entity.ts:39](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute.entity.ts#L39)
 
 ___
 
 ### updateDate
 
-• **updateDate**: Date
+• **updateDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
+TAttribute.updateDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
 
 ## Accessors
 
 ### values
 
-• get **values**(): [*AttributeValue*](backend.attributevalue.md)[]
+• `get` **values**(): [`AttributeValue`](backend.AttributeValue.md)[]
 
-**Returns:** [*AttributeValue*](backend.attributevalue.md)[]
+#### Returns
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:26](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L26)
+[`AttributeValue`](backend.AttributeValue.md)[]
 
-• set **values**(`data`: [*AttributeValue*](backend.attributevalue.md)[]): *void*
+#### Defined in
 
-#### Parameters:
+[system/core/backend/src/models/entities/attribute.entity.ts:26](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute.entity.ts#L26)
 
-Name | Type |
-:------ | :------ |
-`data` | [*AttributeValue*](backend.attributevalue.md)[] |
+• `set` **values**(`data`): `void`
 
-**Returns:** *void*
+#### Parameters
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L30)
+| Name | Type |
+| :------ | :------ |
+| `data` | [`AttributeValue`](backend.AttributeValue.md)[] |
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute.entity.ts:30](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute.entity.ts#L30)

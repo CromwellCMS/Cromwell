@@ -35,7 +35,11 @@ const LoginPage = () => {
             }, { disableLog: true });
             checkAuth(true);
         } catch (e) {
-            toast.error('Incorrect email or password');
+            if (e.statusCode === 0) {
+                toast.error('Could not connect to the Server');
+            } else {
+                toast.error('Incorrect email or password');
+            }
             console.error(e);
         }
         setLoading(false);

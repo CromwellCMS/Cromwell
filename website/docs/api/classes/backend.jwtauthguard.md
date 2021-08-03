@@ -6,46 +6,54 @@
 
 ## Implements
 
-* *CanActivate*
+- `CanActivate`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.jwtauthguard.md#constructor)
+- [constructor](backend.JwtAuthGuard.md#constructor)
 
 ### Methods
 
-- [canActivate](backend.jwtauthguard.md#canactivate)
+- [canActivate](backend.JwtAuthGuard.md#canactivate)
 
 ## Constructors
 
 ### constructor
 
-\+ **new JwtAuthGuard**(`reflector`: *Reflector*): [*JwtAuthGuard*](backend.jwtauthguard.md)
+• **new JwtAuthGuard**(`reflector`)
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`reflector` | *Reflector* |
+| Name | Type |
+| :------ | :------ |
+| `reflector` | `Reflector` |
 
-**Returns:** [*JwtAuthGuard*](backend.jwtauthguard.md)
+#### Defined in
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:37](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/helpers/auth-guards.ts#L37)
+[system/core/backend/src/helpers/auth-guards.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/auth-guards.ts#L38)
 
 ## Methods
 
 ### canActivate
 
-▸ **canActivate**(`context`: ExecutionContext): *Promise*<boolean\>
+▸ **canActivate**(`context`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`context` | ExecutionContext |
+| Name | Type |
+| :------ | :------ |
+| `context` | `ExecutionContext` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/helpers/auth-guards.ts:40](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/helpers/auth-guards.ts#L40)
+`Promise`<`boolean`\>
+
+#### Implementation of
+
+CanActivate.canActivate
+
+#### Defined in
+
+[system/core/backend/src/helpers/auth-guards.ts:40](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/auth-guards.ts#L40)

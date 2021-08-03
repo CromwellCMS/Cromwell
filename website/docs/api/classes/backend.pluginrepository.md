@@ -6,323 +6,407 @@
 
 ## Hierarchy
 
-* *BaseRepository*<[*PluginEntity*](backend.pluginentity.md)\>
+- [`BaseRepository`](backend.BaseRepository.md)<[`PluginEntity`](backend.PluginEntity.md)\>
 
-  ↳ **PluginRepository**
+  ↳ **`PluginRepository`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.pluginrepository.md#constructor)
+- [constructor](backend.PluginRepository.md#constructor)
 
 ### Methods
 
-- [applyDeleteMany](backend.pluginrepository.md#applydeletemany)
-- [createEntity](backend.pluginrepository.md#createentity)
-- [createPlugin](backend.pluginrepository.md#createplugin)
-- [deleteEntity](backend.pluginrepository.md#deleteentity)
-- [deleteMany](backend.pluginrepository.md#deletemany)
-- [deletePlugin](backend.pluginrepository.md#deleteplugin)
-- [getAll](backend.pluginrepository.md#getall)
-- [getById](backend.pluginrepository.md#getbyid)
-- [getBySlug](backend.pluginrepository.md#getbyslug)
-- [getPaged](backend.pluginrepository.md#getpaged)
-- [getPluginById](backend.pluginrepository.md#getpluginbyid)
-- [getPluginBySlug](backend.pluginrepository.md#getpluginbyslug)
-- [getPluginSettings](backend.pluginrepository.md#getpluginsettings)
-- [getPlugins](backend.pluginrepository.md#getplugins)
-- [updateEntity](backend.pluginrepository.md#updateentity)
-- [updatePlugin](backend.pluginrepository.md#updateplugin)
+- [applyDeleteMany](backend.PluginRepository.md#applydeletemany)
+- [createEntity](backend.PluginRepository.md#createentity)
+- [createPlugin](backend.PluginRepository.md#createplugin)
+- [deleteEntity](backend.PluginRepository.md#deleteentity)
+- [deleteMany](backend.PluginRepository.md#deletemany)
+- [deletePlugin](backend.PluginRepository.md#deleteplugin)
+- [getAll](backend.PluginRepository.md#getall)
+- [getById](backend.PluginRepository.md#getbyid)
+- [getBySlug](backend.PluginRepository.md#getbyslug)
+- [getPaged](backend.PluginRepository.md#getpaged)
+- [getPluginById](backend.PluginRepository.md#getpluginbyid)
+- [getPluginBySlug](backend.PluginRepository.md#getpluginbyslug)
+- [getPluginSettings](backend.PluginRepository.md#getpluginsettings)
+- [getPlugins](backend.PluginRepository.md#getplugins)
+- [updateEntity](backend.PluginRepository.md#updateentity)
+- [updatePlugin](backend.PluginRepository.md#updateplugin)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PluginRepository**(): *PluginRepository*
+• **new PluginRepository**()
 
-**Returns:** *PluginRepository*
+#### Overrides
 
-Inherited from: BaseRepository
+[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
 
-Defined in: [system/core/backend/src/repositories/PluginRepository.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PluginRepository.ts#L12)
+#### Defined in
+
+[system/core/backend/src/repositories/plugin.repository.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/plugin.repository.ts#L14)
 
 ## Methods
 
 ### applyDeleteMany
 
-▸ **applyDeleteMany**(`qb`: *SelectQueryBuilder*<[*PluginEntity*](backend.pluginentity.md)\> \| *DeleteQueryBuilder*<[*PluginEntity*](backend.pluginentity.md)\>, `input`: TDeleteManyInput): *Promise*<void\>
+▸ **applyDeleteMany**(`qb`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<[*PluginEntity*](backend.pluginentity.md)\> \| *DeleteQueryBuilder*<[*PluginEntity*](backend.pluginentity.md)\> |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<[`PluginEntity`](backend.PluginEntity.md)\> \| `DeleteQueryBuilder`<[`PluginEntity`](backend.PluginEntity.md)\> |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`void`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L87)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
 
 ___
 
 ### createEntity
 
-▸ **createEntity**(`input`: [*PluginEntity*](backend.pluginentity.md), `id?`: *string*): *Promise*<[*PluginEntity*](backend.pluginentity.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | [*PluginEntity*](backend.pluginentity.md) |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `input` | [`PluginEntity`](backend.PluginEntity.md) |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*PluginEntity*](backend.pluginentity.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L49)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
 
 ___
 
 ### createPlugin
 
-▸ **createPlugin**(`createPlugin`: TPluginEntityInput): *Promise*<[*PluginEntity*](backend.pluginentity.md)\>
+▸ **createPlugin**(`createPlugin`): `Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`createPlugin` | TPluginEntityInput |
+| Name | Type |
+| :------ | :------ |
+| `createPlugin` | `TPluginEntityInput` |
 
-**Returns:** *Promise*<[*PluginEntity*](backend.pluginentity.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PluginRepository.ts:45](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PluginRepository.ts#L45)
+`Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/plugin.repository.ts:45](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/plugin.repository.ts#L45)
 
 ___
 
 ### deleteEntity
 
-▸ **deleteEntity**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteEntity**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L76)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
 
 ___
 
 ### deleteMany
 
-▸ **deleteMany**(`input`: TDeleteManyInput): *Promise*<boolean\>
+▸ **deleteMany**(`input`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L97)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
 
 ___
 
 ### deletePlugin
 
-▸ **deletePlugin**(`id`: *string*): *Promise*<boolean\>
+▸ **deletePlugin**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PluginRepository.ts:71](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PluginRepository.ts#L71)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/plugin.repository.ts:71](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/plugin.repository.ts#L71)
 
 ___
 
 ### getAll
 
-▸ **getAll**(): *Promise*<[*PluginEntity*](backend.pluginentity.md)[]\>
+▸ **getAll**(): `Promise`<[`PluginEntity`](backend.PluginEntity.md)[]\>
 
-**Returns:** *Promise*<[*PluginEntity*](backend.pluginentity.md)[]\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`PluginEntity`](backend.PluginEntity.md)[]\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L24)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
 
 ___
 
 ### getById
 
-▸ **getById**(`id`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*PluginEntity*](backend.pluginentity.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*PluginEntity*](backend.pluginentity.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L29)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
 
 ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*PluginEntity*](backend.pluginentity.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*PluginEntity*](backend.pluginentity.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L39)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
 
 ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`: *TPagedParams*<[*PluginEntity*](backend.pluginentity.md)\>): *Promise*<TPagedList<[*PluginEntity*](backend.pluginentity.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`PluginEntity`](backend.PluginEntity.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<[*PluginEntity*](backend.pluginentity.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<[`PluginEntity`](backend.PluginEntity.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*PluginEntity*](backend.pluginentity.md)\>\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`TPagedList`<[`PluginEntity`](backend.PluginEntity.md)\>\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L18)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
 
 ___
 
 ### getPluginById
 
-▸ **getPluginById**(`id`: *string*): *Promise*<undefined \| [*PluginEntity*](backend.pluginentity.md)\>
+▸ **getPluginById**(`id`): `Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<undefined \| [*PluginEntity*](backend.pluginentity.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PluginRepository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PluginRepository.ts#L23)
+`Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/plugin.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/plugin.repository.ts#L23)
 
 ___
 
 ### getPluginBySlug
 
-▸ **getPluginBySlug**(`slug`: *string*): *Promise*<undefined \| [*PluginEntity*](backend.pluginentity.md)\>
+▸ **getPluginBySlug**(`slug`): `Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
 
-**Returns:** *Promise*<undefined \| [*PluginEntity*](backend.pluginentity.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PluginRepository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PluginRepository.ts#L28)
+`Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/plugin.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/plugin.repository.ts#L28)
 
 ___
 
 ### getPluginSettings
 
-▸ **getPluginSettings**<T\>(`pluginName`: *string*): *Promise*<undefined \| T\>
+▸ **getPluginSettings**<`T`\>(`pluginName`): `Promise`<`undefined` \| `T`\>
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`T` |
+| Name |
+| :------ |
+| `T` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pluginName` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `pluginName` | `string` |
 
-**Returns:** *Promise*<undefined \| T\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PluginRepository.ts:83](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PluginRepository.ts#L83)
+`Promise`<`undefined` \| `T`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/plugin.repository.ts:83](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/plugin.repository.ts#L83)
 
 ___
 
 ### getPlugins
 
-▸ **getPlugins**(`params`: *TPagedParams*<[*PluginEntity*](backend.pluginentity.md)\>): *Promise*<TPagedList<[*PluginEntity*](backend.pluginentity.md)\>\>
+▸ **getPlugins**(`params`): `Promise`<`TPagedList`<[`PluginEntity`](backend.PluginEntity.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params` | *TPagedParams*<[*PluginEntity*](backend.pluginentity.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params` | `TPagedParams`<[`PluginEntity`](backend.PluginEntity.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*PluginEntity*](backend.pluginentity.md)\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PluginRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PluginRepository.ts#L18)
+`Promise`<`TPagedList`<[`PluginEntity`](backend.PluginEntity.md)\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/plugin.repository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/plugin.repository.ts#L18)
 
 ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`: *string*, `input`: [*PluginEntity*](backend.pluginentity.md)): *Promise*<[*PluginEntity*](backend.pluginentity.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`input` | [*PluginEntity*](backend.pluginentity.md) |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `input` | [`PluginEntity`](backend.PluginEntity.md) |
 
-**Returns:** *Promise*<[*PluginEntity*](backend.pluginentity.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L61)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)
 
 ___
 
 ### updatePlugin
 
-▸ **updatePlugin**(`id`: *string*, `updatePlugin`: TPluginEntityInput): *Promise*<[*PluginEntity*](backend.pluginentity.md)\>
+▸ **updatePlugin**(`id`, `updatePlugin`): `Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`updatePlugin` | TPluginEntityInput |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `updatePlugin` | `TPluginEntityInput` |
 
-**Returns:** *Promise*<[*PluginEntity*](backend.pluginentity.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PluginRepository.ts:57](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PluginRepository.ts#L57)
+`Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/plugin.repository.ts:57](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/plugin.repository.ts#L57)

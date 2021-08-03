@@ -6,187 +6,297 @@
 
 ## Hierarchy
 
-* [*BasePageEntity*](backend.basepageentity.md)
+- [`BasePageEntity`](backend.BasePageEntity.md)
 
-  ↳ **ThemeEntity**
+  ↳ **`ThemeEntity`**
 
 ## Implements
 
-* *TThemeEntity*
+- `TThemeEntity`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.themeentity.md#constructor)
+- [constructor](backend.ThemeEntity.md#constructor)
 
 ### Properties
 
-- [createDate](backend.themeentity.md#createdate)
-- [defaultSettings](backend.themeentity.md#defaultsettings)
-- [hasAdminBundle](backend.themeentity.md#hasadminbundle)
-- [id](backend.themeentity.md#id)
-- [isEnabled](backend.themeentity.md#isenabled)
-- [isInstalled](backend.themeentity.md#isinstalled)
-- [isUpdating](backend.themeentity.md#isupdating)
-- [moduleInfo](backend.themeentity.md#moduleinfo)
-- [name](backend.themeentity.md#name)
-- [pageDescription](backend.themeentity.md#pagedescription)
-- [pageTitle](backend.themeentity.md#pagetitle)
-- [settings](backend.themeentity.md#settings)
-- [slug](backend.themeentity.md#slug)
-- [title](backend.themeentity.md#title)
-- [updateDate](backend.themeentity.md#updatedate)
-- [version](backend.themeentity.md#version)
+- [createDate](backend.ThemeEntity.md#createdate)
+- [defaultSettings](backend.ThemeEntity.md#defaultsettings)
+- [hasAdminBundle](backend.ThemeEntity.md#hasadminbundle)
+- [id](backend.ThemeEntity.md#id)
+- [isEnabled](backend.ThemeEntity.md#isenabled)
+- [isInstalled](backend.ThemeEntity.md#isinstalled)
+- [isUpdating](backend.ThemeEntity.md#isupdating)
+- [moduleInfo](backend.ThemeEntity.md#moduleinfo)
+- [name](backend.ThemeEntity.md#name)
+- [pageDescription](backend.ThemeEntity.md#pagedescription)
+- [pageTitle](backend.ThemeEntity.md#pagetitle)
+- [settings](backend.ThemeEntity.md#settings)
+- [slug](backend.ThemeEntity.md#slug)
+- [title](backend.ThemeEntity.md#title)
+- [updateDate](backend.ThemeEntity.md#updatedate)
+- [version](backend.ThemeEntity.md#version)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ThemeEntity**(): [*ThemeEntity*](backend.themeentity.md)
+• **new ThemeEntity**()
 
-**Returns:** [*ThemeEntity*](backend.themeentity.md)
+#### Inherited from
 
-Inherited from: [BasePageEntity](backend.basepageentity.md)
+[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
 
 ## Properties
 
 ### createDate
 
-• **createDate**: Date
+• **createDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
+TThemeEntity.createDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
 
 ___
 
 ### defaultSettings
 
-• `Optional` **defaultSettings**: *undefined* \| *string*
+• `Optional` **defaultSettings**: `string`
 
-Defined in: [system/core/backend/src/entities/Theme.ts:37](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Theme.ts#L37)
+#### Implementation of
+
+TThemeEntity.defaultSettings
+
+#### Defined in
+
+[system/core/backend/src/models/entities/theme.entity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/theme.entity.ts#L36)
 
 ___
 
 ### hasAdminBundle
 
-• `Optional` **hasAdminBundle**: *undefined* \| *boolean*
+• `Optional` **hasAdminBundle**: `boolean`
 
-Defined in: [system/core/backend/src/entities/Theme.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Theme.ts#L29)
+#### Implementation of
+
+TThemeEntity.hasAdminBundle
+
+#### Defined in
+
+[system/core/backend/src/models/entities/theme.entity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/theme.entity.ts#L28)
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
+TThemeEntity.id
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
+TThemeEntity.isEnabled
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
 
 ___
 
 ### isInstalled
 
-• **isInstalled**: *boolean*
+• **isInstalled**: `boolean`
 
-Defined in: [system/core/backend/src/entities/Theme.ts:25](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Theme.ts#L25)
+#### Implementation of
+
+TThemeEntity.isInstalled
+
+#### Defined in
+
+[system/core/backend/src/models/entities/theme.entity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/theme.entity.ts#L24)
 
 ___
 
 ### isUpdating
 
-• `Optional` **isUpdating**: *undefined* \| *boolean*= false
+• `Optional` **isUpdating**: `boolean` = `false`
 
-Defined in: [system/core/backend/src/entities/Theme.ts:45](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Theme.ts#L45)
+#### Implementation of
+
+TThemeEntity.isUpdating
+
+#### Defined in
+
+[system/core/backend/src/models/entities/theme.entity.ts:44](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/theme.entity.ts#L44)
 
 ___
 
 ### moduleInfo
 
-• `Optional` **moduleInfo**: *undefined* \| *string*
+• `Optional` **moduleInfo**: `string`
 
-Defined in: [system/core/backend/src/entities/Theme.ts:41](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Theme.ts#L41)
+#### Implementation of
+
+TThemeEntity.moduleInfo
+
+#### Defined in
+
+[system/core/backend/src/models/entities/theme.entity.ts:40](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/theme.entity.ts#L40)
 
 ___
 
 ### name
 
-• **name**: *string*
+• **name**: `string`
 
-Defined in: [system/core/backend/src/entities/Theme.ts:13](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Theme.ts#L13)
+#### Implementation of
+
+TThemeEntity.name
+
+#### Defined in
+
+[system/core/backend/src/models/entities/theme.entity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/theme.entity.ts#L12)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
+TThemeEntity.pageDescription
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
+TThemeEntity.pageTitle
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
 
 ___
 
 ### settings
 
-• `Optional` **settings**: *undefined* \| *string*
+• `Optional` **settings**: `string`
 
-Defined in: [system/core/backend/src/entities/Theme.ts:33](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Theme.ts#L33)
+#### Implementation of
+
+TThemeEntity.settings
+
+#### Defined in
+
+[system/core/backend/src/models/entities/theme.entity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/theme.entity.ts#L32)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
+TThemeEntity.slug
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
 
 ___
 
 ### title
 
-• `Optional` **title**: *undefined* \| *string*
+• `Optional` **title**: `string`
 
-Defined in: [system/core/backend/src/entities/Theme.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Theme.ts#L21)
+#### Implementation of
+
+TThemeEntity.title
+
+#### Defined in
+
+[system/core/backend/src/models/entities/theme.entity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/theme.entity.ts#L20)
 
 ___
 
 ### updateDate
 
-• **updateDate**: Date
+• **updateDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
+TThemeEntity.updateDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
 
 ___
 
 ### version
 
-• `Optional` **version**: *undefined* \| *string*
+• `Optional` **version**: `string`
 
-Defined in: [system/core/backend/src/entities/Theme.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Theme.ts#L17)
+#### Implementation of
+
+TThemeEntity.version
+
+#### Defined in
+
+[system/core/backend/src/models/entities/theme.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/theme.entity.ts#L16)

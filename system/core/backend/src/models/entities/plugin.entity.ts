@@ -5,7 +5,6 @@ import { BasePageEntity } from './base-page.entity';
 
 @Entity('plugin')
 @ObjectType('Plugin')
-/** @noInheritDoc */
 export class PluginEntity extends BasePageEntity implements TPluginEntity {
 
     @Field()

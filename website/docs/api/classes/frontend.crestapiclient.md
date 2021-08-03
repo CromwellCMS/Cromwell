@@ -8,1345 +8,1599 @@ CRestAPIClient - CromwellCMS REST API Client
 
 ## Table of contents
 
-### Constructors
-
-- [constructor](frontend.crestapiclient.md#constructor)
-
 ### Methods
 
-- [activatePlugin](frontend.crestapiclient.md#activateplugin)
-- [activateTheme](frontend.crestapiclient.md#activatetheme)
-- [changeTheme](frontend.crestapiclient.md#changetheme)
-- [createPublicDir](frontend.crestapiclient.md#createpublicdir)
-- [delete](frontend.crestapiclient.md#delete)
-- [deletePage](frontend.crestapiclient.md#deletepage)
-- [deletePlugin](frontend.crestapiclient.md#deleteplugin)
-- [deleteTheme](frontend.crestapiclient.md#deletetheme)
-- [exportDB](frontend.crestapiclient.md#exportdb)
-- [fetch](frontend.crestapiclient.md#fetch)
-- [forgotPassword](frontend.crestapiclient.md#forgotpassword)
-- [get](frontend.crestapiclient.md#get)
-- [getAdminCmsSettings](frontend.crestapiclient.md#getadmincmssettings)
-- [getBaseUrl](frontend.crestapiclient.md#getbaseurl)
-- [getCmsSettings](frontend.crestapiclient.md#getcmssettings)
-- [getCmsSettingsAndSave](frontend.crestapiclient.md#getcmssettingsandsave)
-- [getCmsStats](frontend.crestapiclient.md#getcmsstats)
-- [getCmsStatus](frontend.crestapiclient.md#getcmsstatus)
-- [getOrderTotal](frontend.crestapiclient.md#getordertotal)
-- [getPageConfig](frontend.crestapiclient.md#getpageconfig)
-- [getPageConfigs](frontend.crestapiclient.md#getpageconfigs)
-- [getPagesInfo](frontend.crestapiclient.md#getpagesinfo)
-- [getPluginAdminBundle](frontend.crestapiclient.md#getpluginadminbundle)
-- [getPluginFrontendBundle](frontend.crestapiclient.md#getpluginfrontendbundle)
-- [getPluginList](frontend.crestapiclient.md#getpluginlist)
-- [getPluginNames](frontend.crestapiclient.md#getpluginnames)
-- [getPluginSettings](frontend.crestapiclient.md#getpluginsettings)
-- [getPluginUpdate](frontend.crestapiclient.md#getpluginupdate)
-- [getPluginsAtPage](frontend.crestapiclient.md#getpluginsatpage)
-- [getThemeConfig](frontend.crestapiclient.md#getthemeconfig)
-- [getThemeInfo](frontend.crestapiclient.md#getthemeinfo)
-- [getThemePageBundle](frontend.crestapiclient.md#getthemepagebundle)
-- [getThemeUpdate](frontend.crestapiclient.md#getthemeupdate)
-- [getThemesInfo](frontend.crestapiclient.md#getthemesinfo)
-- [getUserInfo](frontend.crestapiclient.md#getuserinfo)
-- [importDB](frontend.crestapiclient.md#importdb)
-- [installPlugin](frontend.crestapiclient.md#installplugin)
-- [installTheme](frontend.crestapiclient.md#installtheme)
-- [launchCmsUpdate](frontend.crestapiclient.md#launchcmsupdate)
-- [logOut](frontend.crestapiclient.md#logout)
-- [login](frontend.crestapiclient.md#login)
-- [onError](frontend.crestapiclient.md#onerror)
-- [onUnauthorized](frontend.crestapiclient.md#onunauthorized)
-- [placeOrder](frontend.crestapiclient.md#placeorder)
-- [placeProductReview](frontend.crestapiclient.md#placeproductreview)
-- [post](frontend.crestapiclient.md#post)
-- [put](frontend.crestapiclient.md#put)
-- [readPublicDir](frontend.crestapiclient.md#readpublicdir)
-- [removeOnError](frontend.crestapiclient.md#removeonerror)
-- [removeOnUnauthorized](frontend.crestapiclient.md#removeonunauthorized)
-- [removePublicDir](frontend.crestapiclient.md#removepublicdir)
-- [resetPage](frontend.crestapiclient.md#resetpage)
-- [resetPassword](frontend.crestapiclient.md#resetpassword)
-- [savePageConfig](frontend.crestapiclient.md#savepageconfig)
-- [savePluginSettings](frontend.crestapiclient.md#savepluginsettings)
-- [signUp](frontend.crestapiclient.md#signup)
-- [updateCmsConfig](frontend.crestapiclient.md#updatecmsconfig)
-- [updatePlugin](frontend.crestapiclient.md#updateplugin)
-- [updateTheme](frontend.crestapiclient.md#updatetheme)
-- [uploadPublicFiles](frontend.crestapiclient.md#uploadpublicfiles)
-
-## Constructors
-
-### constructor
-
-\+ **new CRestAPIClient**(): [*CRestAPIClient*](frontend.crestapiclient.md)
-
-**Returns:** [*CRestAPIClient*](frontend.crestapiclient.md)
+- [activatePlugin](frontend.CRestAPIClient.md#activateplugin)
+- [activateTheme](frontend.CRestAPIClient.md#activatetheme)
+- [changeTheme](frontend.CRestAPIClient.md#changetheme)
+- [createPaymentSession](frontend.CRestAPIClient.md#createpaymentsession)
+- [createPublicDir](frontend.CRestAPIClient.md#createpublicdir)
+- [delete](frontend.CRestAPIClient.md#delete)
+- [deletePage](frontend.CRestAPIClient.md#deletepage)
+- [deletePlugin](frontend.CRestAPIClient.md#deleteplugin)
+- [deleteTheme](frontend.CRestAPIClient.md#deletetheme)
+- [exportDB](frontend.CRestAPIClient.md#exportdb)
+- [fetch](frontend.CRestAPIClient.md#fetch)
+- [forgotPassword](frontend.CRestAPIClient.md#forgotpassword)
+- [get](frontend.CRestAPIClient.md#get)
+- [getAdminCmsSettings](frontend.CRestAPIClient.md#getadmincmssettings)
+- [getBaseUrl](frontend.CRestAPIClient.md#getbaseurl)
+- [getCmsSettings](frontend.CRestAPIClient.md#getcmssettings)
+- [getCmsSettingsAndSave](frontend.CRestAPIClient.md#getcmssettingsandsave)
+- [getCmsStats](frontend.CRestAPIClient.md#getcmsstats)
+- [getCmsStatus](frontend.CRestAPIClient.md#getcmsstatus)
+- [getOrderTotal](frontend.CRestAPIClient.md#getordertotal)
+- [getPageConfig](frontend.CRestAPIClient.md#getpageconfig)
+- [getPageConfigs](frontend.CRestAPIClient.md#getpageconfigs)
+- [getPagesInfo](frontend.CRestAPIClient.md#getpagesinfo)
+- [getPluginAdminBundle](frontend.CRestAPIClient.md#getpluginadminbundle)
+- [getPluginFrontendBundle](frontend.CRestAPIClient.md#getpluginfrontendbundle)
+- [getPluginList](frontend.CRestAPIClient.md#getpluginlist)
+- [getPluginNames](frontend.CRestAPIClient.md#getpluginnames)
+- [getPluginSettings](frontend.CRestAPIClient.md#getpluginsettings)
+- [getPluginUpdate](frontend.CRestAPIClient.md#getpluginupdate)
+- [getPluginsAtPage](frontend.CRestAPIClient.md#getpluginsatpage)
+- [getThemeConfig](frontend.CRestAPIClient.md#getthemeconfig)
+- [getThemeInfo](frontend.CRestAPIClient.md#getthemeinfo)
+- [getThemePageBundle](frontend.CRestAPIClient.md#getthemepagebundle)
+- [getThemeUpdate](frontend.CRestAPIClient.md#getthemeupdate)
+- [getThemesInfo](frontend.CRestAPIClient.md#getthemesinfo)
+- [getUserInfo](frontend.CRestAPIClient.md#getuserinfo)
+- [importDB](frontend.CRestAPIClient.md#importdb)
+- [installPlugin](frontend.CRestAPIClient.md#installplugin)
+- [installTheme](frontend.CRestAPIClient.md#installtheme)
+- [launchCmsUpdate](frontend.CRestAPIClient.md#launchcmsupdate)
+- [logOut](frontend.CRestAPIClient.md#logout)
+- [login](frontend.CRestAPIClient.md#login)
+- [onError](frontend.CRestAPIClient.md#onerror)
+- [onUnauthorized](frontend.CRestAPIClient.md#onunauthorized)
+- [placeOrder](frontend.CRestAPIClient.md#placeorder)
+- [placeProductReview](frontend.CRestAPIClient.md#placeproductreview)
+- [post](frontend.CRestAPIClient.md#post)
+- [put](frontend.CRestAPIClient.md#put)
+- [readPublicDir](frontend.CRestAPIClient.md#readpublicdir)
+- [removeOnError](frontend.CRestAPIClient.md#removeonerror)
+- [removeOnUnauthorized](frontend.CRestAPIClient.md#removeonunauthorized)
+- [removePublicDir](frontend.CRestAPIClient.md#removepublicdir)
+- [resetPage](frontend.CRestAPIClient.md#resetpage)
+- [resetPassword](frontend.CRestAPIClient.md#resetpassword)
+- [savePageConfig](frontend.CRestAPIClient.md#savepageconfig)
+- [savePluginSettings](frontend.CRestAPIClient.md#savepluginsettings)
+- [signUp](frontend.CRestAPIClient.md#signup)
+- [updateCmsConfig](frontend.CRestAPIClient.md#updatecmsconfig)
+- [updatePlugin](frontend.CRestAPIClient.md#updateplugin)
+- [updateTheme](frontend.CRestAPIClient.md#updatetheme)
+- [uploadPublicFiles](frontend.CRestAPIClient.md#uploadpublicfiles)
 
 ## Methods
 
 ### activatePlugin
 
-▸ **activatePlugin**(`pluginName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<boolean\>
+▸ **activatePlugin**(`pluginName`, `options?`): `Promise`<`boolean`\>
 
 Active disabled Plugin
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pluginName` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `pluginName` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:392](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L392)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:432](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L432)
 
 ___
 
 ### activateTheme
 
-▸ **activateTheme**(`themeName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<boolean\>
+▸ **activateTheme**(`themeName`, `options?`): `Promise`<`boolean`\>
 
 Active disabled Theme
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`themeName` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `themeName` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:383](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L383)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:423](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L423)
 
 ___
 
 ### changeTheme
 
-▸ **changeTheme**(`themeName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<boolean\>
+▸ **changeTheme**(`themeName`, `options?`): `Promise`<`boolean`\>
 
 Set active Theme
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`themeName` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `themeName` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:401](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L401)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:441](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L441)
+
+___
+
+### createPaymentSession
+
+▸ **createPaymentSession**(`input`, `options?`): `Promise`<`undefined` \| `TPaymentSession`\>
+
+Calculate total price of a cart and creates a payment session via service provider
+
+**`auth`** no
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `input` | `TPaymentSession` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
+
+#### Returns
+
+`Promise`<`undefined` \| `TPaymentSession`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:458](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L458)
 
 ___
 
 ### createPublicDir
 
-▸ **createPublicDir**(`dirName`: *string*, `inPath?`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| *null* \| string[]\>
+▸ **createPublicDir**(`dirName`, `inPath?`, `options?`): `Promise`<`undefined` \| ``null`` \| `string`[]\>
 
 Crates a public directory by specified path
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`dirName` | *string* |
-`inPath?` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `dirName` | `string` |
+| `inPath?` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| *null* \| string[]\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:320](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L320)
+`Promise`<`undefined` \| ``null`` \| `string`[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:360](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L360)
 
 ___
 
 ### delete
 
-▸ **delete**<T\>(`route`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| T\>
+▸ **delete**<`T`\>(`route`, `options?`): `Promise`<`undefined` \| `T`\>
 
 Makes DELETE request to specified route
 
 **`auth`** no
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`T` |
+| Name |
+| :------ |
+| `T` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`route` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `route` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| T\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:168](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L168)
+`Promise`<`undefined` \| `T`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:208](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L208)
 
 ___
 
 ### deletePage
 
-▸ **deletePage**(`pageRoute`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **deletePage**(`pageRoute`, `options?`): `Promise`<`undefined` \| `boolean`\>
 
 Delete generic page of currently active Theme
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pageRoute` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `pageRoute` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:564](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L564)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:612](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L612)
 
 ___
 
 ### deletePlugin
 
-▸ **deletePlugin**(`pluginName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **deletePlugin**(`pluginName`, `options?`): `Promise`<`undefined` \| `boolean`\>
 
 Delete (uninstall) Plugin
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`pluginName` | *string* | npm package name of Plugin   |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pluginName` | `string` | npm package name of Plugin |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:679](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L679)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:734](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L734)
 
 ___
 
 ### deleteTheme
 
-▸ **deleteTheme**(`themeName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **deleteTheme**(`themeName`, `options?`): `Promise`<`undefined` \| `boolean`\>
 
 Delete (uninstall) Theme
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`themeName` | *string* | npm package name of a Theme   |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `themeName` | `string` | npm package name of a Theme |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:539](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L539)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:587](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L587)
 
 ___
 
 ### exportDB
 
-▸ **exportDB**(`tables?`: (*Attribute* \| *Plugin* \| *Theme* \| *Post* \| *PostComment* \| *Tag* \| *Product* \| *ProductCategory* \| *ProductReview* \| *Order* \| *User* \| *Generic* \| *CMS*)[], `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<void\>
+▸ **exportDB**(`tables?`, `options?`): `Promise`<`void`\>
 
 Export database into Excel (.xlsx) file.
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`tables?` | (*Attribute* \| *Plugin* \| *Theme* \| *Post* \| *PostComment* \| *Tag* \| *Product* \| *ProductCategory* \| *ProductReview* \| *Order* \| *User* \| *Generic* \| *CMS*)[] | specify tables to export or export all if not provided    |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `tables?` | (``"Theme"`` \| ``"Plugin"`` \| ``"Attribute"`` \| ``"Post"`` \| ``"PostComment"`` \| ``"Tag"`` \| ``"Product"`` \| ``"ProductCategory"`` \| ``"ProductReview"`` \| ``"Order"`` \| ``"User"`` \| ``"Generic"`` \| ``"CMS"``)[] | specify tables to export or export all if not provided |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:459](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L459)
+`Promise`<`void`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:507](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L507)
 
 ___
 
 ### fetch
 
-▸ **fetch**<T\>(`route`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| T\>
+▸ **fetch**<`T`\>(`route`, `options?`): `Promise`<`undefined` \| `T`\>
 
 Make a custom request to a specified route
 
 **`auth`** no
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`T` |
+| Name |
+| :------ |
+| `T` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`route` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `route` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| T\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:113](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L113)
+`Promise`<`undefined` \| `T`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:149](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L149)
 
 ___
 
 ### forgotPassword
 
-▸ **forgotPassword**(`credentials`: { `email`: *string*  }, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **forgotPassword**(`credentials`, `options?`): `Promise`<`undefined` \| `boolean`\>
 
 Initiate reset password transaction. Will send a code to user's email
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`credentials` | *object* |
-`credentials.email` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `credentials` | `Object` |
+| `credentials.email` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:229](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L229)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:269](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L269)
 
 ___
 
 ### get
 
-▸ **get**<T\>(`route`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| T\>
+▸ **get**<`T`\>(`route`, `options?`): `Promise`<`undefined` \| `T`\>
 
 Makes GET request to specified route
 
 **`auth`** no
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`T` |
+| Name |
+| :------ |
+| `T` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`route` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `route` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| T\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:148](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L148)
+`Promise`<`undefined` \| `T`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:188](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L188)
 
 ___
 
 ### getAdminCmsSettings
 
-▸ **getAdminCmsSettings**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TCmsSettings\>
+▸ **getAdminCmsSettings**(`options?`): `Promise`<`undefined` \| `TCmsSettings`\>
 
 Get admin CMS settings
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TCmsSettings\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:292](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L292)
+`Promise`<`undefined` \| `TCmsSettings`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:332](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L332)
 
 ___
 
 ### getBaseUrl
 
-▸ **getBaseUrl**(): *string*
+▸ **getBaseUrl**(): `string`
 
-**Returns:** *string*
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:63](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L63)
+`string`
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:64](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L64)
 
 ___
 
 ### getCmsSettings
 
-▸ **getCmsSettings**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TCmsSettings\>
+▸ **getCmsSettings**(`options?`): `Promise`<`undefined` \| `TCmsSettings`\>
 
 Get public CMS settings
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TCmsSettings\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:284](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L284)
+`Promise`<`undefined` \| `TCmsSettings`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:324](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L324)
 
 ___
 
 ### getCmsSettingsAndSave
 
-▸ **getCmsSettingsAndSave**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TCmsSettings\>
+▸ **getCmsSettingsAndSave**(`options?`): `Promise`<`undefined` \| `TCmsSettings`\>
 
 Get public CMS settings and save into the store
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TCmsSettings\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:300](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L300)
+`Promise`<`undefined` \| `TCmsSettings`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:340](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L340)
 
 ___
 
 ### getCmsStats
 
-▸ **getCmsStats**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TCmsStats\>
+▸ **getCmsStats**(`options?`): `Promise`<`undefined` \| `TCmsStats`\>
 
 Get CMS recent statistics, for Admin panel home page
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TCmsStats\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:434](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L434)
+`Promise`<`undefined` \| `TCmsStats`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:482](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L482)
 
 ___
 
 ### getCmsStatus
 
-▸ **getCmsStatus**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TCmsStatus\>
+▸ **getCmsStatus**(`options?`): `Promise`<`undefined` \| `TCmsStatus`\>
 
 Get CMS updates info
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TCmsStatus\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:442](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L442)
+`Promise`<`undefined` \| `TCmsStatus`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:490](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L490)
 
 ___
 
 ### getOrderTotal
 
-▸ **getOrderTotal**(`input`: TServerCreateOrder, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TOrder\>
+▸ **getOrderTotal**(`input`, `options?`): `Promise`<`undefined` \| `TOrder`\>
 
 Calculate total price of a cart
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TServerCreateOrder |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TOrderInput` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TOrder\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:410](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L410)
+`Promise`<`undefined` \| `TOrder`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:450](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L450)
 
 ___
 
 ### getPageConfig
 
-▸ **getPageConfig**(`pageRoute`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TPageConfig\>
+▸ **getPageConfig**(`pageRoute`, `options?`): `Promise`<`undefined` \| `TPageConfig`\>
 
 Get page config by page route of currently active Theme
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pageRoute` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `pageRoute` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TPageConfig\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:547](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L547)
+`Promise`<`undefined` \| `TPageConfig`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:595](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L595)
 
 ___
 
 ### getPageConfigs
 
-▸ **getPageConfigs**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TPageConfig[]\>
+▸ **getPageConfigs**(`options?`): `Promise`<`undefined` \| `TPageConfig`[]\>
 
 Get all page config of currently active Theme
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TPageConfig[]\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:604](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L604)
+`Promise`<`undefined` \| `TPageConfig`[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:656](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L656)
 
 ___
 
 ### getPagesInfo
 
-▸ **getPagesInfo**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TPageInfo[]\>
+▸ **getPagesInfo**(`options?`): `Promise`<`undefined` \| `TPageInfo`[]\>
 
 Get all pages info of currently active Theme
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TPageInfo[]\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:596](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L596)
+`Promise`<`undefined` \| `TPageInfo`[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:648](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L648)
 
 ___
 
 ### getPluginAdminBundle
 
-▸ **getPluginAdminBundle**(`pluginName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TFrontendBundle\>
+▸ **getPluginAdminBundle**(`pluginName`, `options?`): `Promise`<`undefined` \| `TFrontendBundle`\>
 
 Get admin panel bundle of Plugin
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`pluginName` | *string* | npm package name of Plugin   |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pluginName` | `string` | npm package name of Plugin |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<undefined \| TFrontendBundle\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:716](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L716)
+`Promise`<`undefined` \| `TFrontendBundle`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:771](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L771)
 
 ___
 
 ### getPluginFrontendBundle
 
-▸ **getPluginFrontendBundle**(`pluginName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TFrontendBundle\>
+▸ **getPluginFrontendBundle**(`pluginName`, `options?`): `Promise`<`undefined` \| `TFrontendBundle`\>
 
 Get frontend bundle of Plugin
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`pluginName` | *string* | npm package name of Plugin   |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pluginName` | `string` | npm package name of Plugin |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<undefined \| TFrontendBundle\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:707](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L707)
+`Promise`<`undefined` \| `TFrontendBundle`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:762](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L762)
 
 ___
 
 ### getPluginList
 
-▸ **getPluginList**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TPackageCromwellConfig[]\>
+▸ **getPluginList**(`options?`): `Promise`<`undefined` \| `TPackageCromwellConfig`[]\>
 
 List all installed Plugins
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TPackageCromwellConfig[]\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:362](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L362)
+`Promise`<`undefined` \| `TPackageCromwellConfig`[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:402](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L402)
 
 ___
 
 ### getPluginNames
 
-▸ **getPluginNames**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| string[]\>
+▸ **getPluginNames**(`options?`): `Promise`<`undefined` \| `string`[]\>
 
 Get all used Plugins in currently active Theme
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| string[]\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:588](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L588)
+`Promise`<`undefined` \| `string`[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:640](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L640)
 
 ___
 
 ### getPluginSettings
 
-▸ **getPluginSettings**(`pluginName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<any\>
+▸ **getPluginSettings**(`pluginName`, `options?`): `Promise`<`any`\>
 
 Get settings of Plugin
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`pluginName` | *string* | npm package name of Plugin   |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pluginName` | `string` | npm package name of Plugin |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<any\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:688](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L688)
+`Promise`<`any`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:743](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L743)
 
 ___
 
 ### getPluginUpdate
 
-▸ **getPluginUpdate**(`pluginName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TCCSVersion\>
+▸ **getPluginUpdate**(`pluginName`, `options?`): `Promise`<`undefined` \| `TCCSVersion`\>
 
 Get available update info for Plugin
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`pluginName` | *string* | npm package name of Plugin   |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pluginName` | `string` | npm package name of Plugin |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<undefined \| TCCSVersion\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:652](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L652)
+`Promise`<`undefined` \| `TCCSVersion`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:707](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L707)
 
 ___
 
 ### getPluginsAtPage
 
-▸ **getPluginsAtPage**(`pageRoute`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| Record<string, [*TPluginsModifications*](../modules/frontend.md#tpluginsmodifications)\>\>
+▸ **getPluginsAtPage**(`pageRoute`, `options?`): `Promise`<`undefined` \| { `instanceSettings`: `any` ; `pluginName`: `string` ; `version?`: `string`  }[]\>
 
 Get all used Plugins at specified page of currently active Theme
 
-**`auth`** no
+**`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pageRoute` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `pageRoute` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| Record<string, [*TPluginsModifications*](../modules/frontend.md#tpluginsmodifications)\>\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:580](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L580)
+`Promise`<`undefined` \| { `instanceSettings`: `any` ; `pluginName`: `string` ; `version?`: `string`  }[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:628](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L628)
 
 ___
 
 ### getThemeConfig
 
-▸ **getThemeConfig**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TThemeConfig\>
+▸ **getThemeConfig**(`options?`): `Promise`<`undefined` \| `TThemeConfig`\>
 
 Get theme config of currently active Theme
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TThemeConfig\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:620](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L620)
+`Promise`<`undefined` \| `TThemeConfig`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:672](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L672)
 
 ___
 
 ### getThemeInfo
 
-▸ **getThemeInfo**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TPackageCromwellConfig\>
+▸ **getThemeInfo**(`options?`): `Promise`<`undefined` \| `TPackageCromwellConfig`\>
 
 Get theme info of currently active Theme
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TPackageCromwellConfig\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:612](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L612)
+`Promise`<`undefined` \| `TPackageCromwellConfig`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:664](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L664)
 
 ___
 
 ### getThemePageBundle
 
-▸ **getThemePageBundle**(`pageRoute`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TFrontendBundle\>
+▸ **getThemePageBundle**(`pageRoute`, `options?`): `Promise`<`undefined` \| `TFrontendBundle`\>
 
 Get Admin panel page bundle by specified route of currently active Theme
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pageRoute` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `pageRoute` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TFrontendBundle\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:633](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L633)
+`Promise`<`undefined` \| `TFrontendBundle`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:685](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L685)
 
 ___
 
 ### getThemeUpdate
 
-▸ **getThemeUpdate**(`themeName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TCCSVersion\>
+▸ **getThemeUpdate**(`themeName`, `options?`): `Promise`<`undefined` \| `TCCSVersion`\>
 
 Check if Theme has available update
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`themeName` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `themeName` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TCCSVersion\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:513](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L513)
+`Promise`<`undefined` \| `TCCSVersion`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:561](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L561)
 
 ___
 
 ### getThemesInfo
 
-▸ **getThemesInfo**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TPackageCromwellConfig[]\>
+▸ **getThemesInfo**(`options?`): `Promise`<`undefined` \| `TPackageCromwellConfig`[]\>
 
 Get info about currently used Theme
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TPackageCromwellConfig[]\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:354](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L354)
+`Promise`<`undefined` \| `TPackageCromwellConfig`[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:394](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L394)
 
 ___
 
 ### getUserInfo
 
-▸ **getUserInfo**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TUser\>
+▸ **getUserInfo**(`options?`): `Promise`<`undefined` \| `TUser`\>
 
 Returns currently logged user profile
 
 **`auth`** any
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TUser\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:213](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L213)
+`Promise`<`undefined` \| `TUser`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L253)
 
 ___
 
 ### importDB
 
-▸ **importDB**(`files`: File[], `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| *null* \| boolean\>
+▸ **importDB**(`files`, `options?`): `Promise`<`undefined` \| ``null`` \| `boolean`\>
 
 Import database from Excel (.xlsx) file/files
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`files` | File[] |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `files` | `File`[] |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| *null* \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:485](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L485)
+`Promise`<`undefined` \| ``null`` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:533](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L533)
 
 ___
 
 ### installPlugin
 
-▸ **installPlugin**(`pluginName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **installPlugin**(`pluginName`, `options?`): `Promise`<`undefined` \| `boolean`\>
 
 Install a new Plugin
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`pluginName` | *string* | npm package name of Plugin   |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pluginName` | `string` | npm package name of Plugin |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:670](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L670)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:725](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L725)
 
 ___
 
 ### installTheme
 
-▸ **installTheme**(`themeName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **installTheme**(`themeName`, `options?`): `Promise`<`undefined` \| `boolean`\>
 
 Install a new Theme
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`themeName` | *string* | npm package name of a Theme   |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `themeName` | `string` | npm package name of a Theme |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:530](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L530)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:578](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L578)
 
 ___
 
 ### launchCmsUpdate
 
-▸ **launchCmsUpdate**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **launchCmsUpdate**(`options?`): `Promise`<`undefined` \| `boolean`\>
 
 Launch CMS update
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:450](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L450)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:498](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L498)
 
 ___
 
 ### logOut
 
-▸ **logOut**(`options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<unknown\>
+▸ **logOut**(`options?`): `Promise`<`unknown`\>
 
 Logs user out via cookies
 
 **`auth`** any
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<unknown\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:204](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L204)
+`Promise`<`unknown`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:244](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L244)
 
 ___
 
 ### login
 
-▸ **login**(`credentials`: { `email`: *string* ; `password`: *string*  }, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TUser\>
+▸ **login**(`credentials`, `options?`): `Promise`<`undefined` \| `TUser`\>
 
 Logs user in via cookies
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`credentials` | *object* |
-`credentials.email` | *string* |
-`credentials.password` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `credentials` | `Object` |
+| `credentials.email` | `string` |
+| `credentials.password` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TUser\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:193](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L193)
+`Promise`<`undefined` \| `TUser`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:233](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L233)
 
 ___
 
 ### onError
 
-▸ **onError**(`cb`: (`info`: [*TErrorInfo*](../modules/frontend.md#terrorinfo)) => *any*, `id?`: *string*): *void*
+▸ **onError**(`cb`, `id?`): `void`
 
 Add on error callback. Triggers if any of methods of this
 client get any type of error
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`cb` | (`info`: [*TErrorInfo*](../modules/frontend.md#terrorinfo)) => *any* |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `cb` | (`info`: [`TErrorInfo`](../modules/frontend.md#terrorinfo)) => `any` |
+| `id?` | `string` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:265](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L265)
+`void`
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:305](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L305)
 
 ___
 
 ### onUnauthorized
 
-▸ **onUnauthorized**(`callback`: (`route`: *string*) => *any*, `id?`: *string*): *void*
+▸ **onUnauthorized**(`callback`, `id?`): `void`
 
 Add on unauthorized error callback. Triggers if any of methods of this
 client get unauthorized error
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`callback` | (`route`: *string*) => *any* |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `callback` | (`route`: `string`) => `any` |
+| `id?` | `string` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:249](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L249)
+`void`
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:289](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L289)
 
 ___
 
 ### placeOrder
 
-▸ **placeOrder**(`input`: TServerCreateOrder, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TOrder\>
+▸ **placeOrder**(`input`, `options?`): `Promise`<`undefined` \| `TOrder`\>
 
 Place a new order in the store
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TServerCreateOrder |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TOrderInput` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TOrder\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:418](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L418)
+`Promise`<`undefined` \| `TOrder`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:466](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L466)
 
 ___
 
 ### placeProductReview
 
-▸ **placeProductReview**(`input`: TProductReviewInput, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TProductReview\>
+▸ **placeProductReview**(`input`, `options?`): `Promise`<`undefined` \| `TProductReview`\>
 
 Place a review about some product
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TProductReviewInput |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TProductReviewInput` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TProductReview\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:426](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L426)
+`Promise`<`undefined` \| `TProductReview`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:474](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L474)
 
 ___
 
 ### post
 
-▸ **post**<T\>(`route`: *string*, `input?`: *any*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| T\>
+▸ **post**<`T`\>(`route`, `input?`, `options?`): `Promise`<`undefined` \| `T`\>
 
 Makes POST request to specified route
 
 **`auth`** no
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`T` |
+| Name |
+| :------ |
+| `T` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`route` | *string* |
-`input?` | *any* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `route` | `string` |
+| `input?` | `any` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| T\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:156](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L156)
+`Promise`<`undefined` \| `T`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:196](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L196)
 
 ___
 
 ### put
 
-▸ **put**<T\>(`route`: *string*, `input?`: *any*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| T\>
+▸ **put**<`T`\>(`route`, `input?`, `options?`): `Promise`<`undefined` \| `T`\>
 
 Makes PUT request to specified route
 
 **`auth`** no
 
-#### Type parameters:
+#### Type parameters
 
-Name |
-:------ |
-`T` |
+| Name |
+| :------ |
+| `T` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`route` | *string* |
-`input?` | *any* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `route` | `string` |
+| `input?` | `any` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| T\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:179](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L179)
+`Promise`<`undefined` \| `T`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:219](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L219)
 
 ___
 
 ### readPublicDir
 
-▸ **readPublicDir**(`path?`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| *null* \| string[]\>
+▸ **readPublicDir**(`path?`, `options?`): `Promise`<`undefined` \| ``null`` \| `string`[]\>
 
 List files in a public directory by specified path
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`path?` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `path?` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| *null* \| string[]\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:312](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L312)
+`Promise`<`undefined` \| ``null`` \| `string`[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:352](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L352)
 
 ___
 
 ### removeOnError
 
-▸ **removeOnError**(`id`: *string*): *void*
+▸ **removeOnError**(`id`): `void`
 
 Remove on error callback
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:273](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L273)
+`void`
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:313](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L313)
 
 ___
 
 ### removeOnUnauthorized
 
-▸ **removeOnUnauthorized**(`id`: *string*): *void*
+▸ **removeOnUnauthorized**(`id`): `void`
 
 Remove on unauthorized error callback
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:257](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L257)
+`void`
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:297](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L297)
 
 ___
 
 ### removePublicDir
 
-▸ **removePublicDir**(`dirName`: *string*, `inPath?`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| *null* \| string[]\>
+▸ **removePublicDir**(`dirName`, `inPath?`, `options?`): `Promise`<`undefined` \| ``null`` \| `string`[]\>
 
 Removes a public directory by specified path
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`dirName` | *string* |
-`inPath?` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `dirName` | `string` |
+| `inPath?` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| *null* \| string[]\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:328](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L328)
+`Promise`<`undefined` \| ``null`` \| `string`[]\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L368)
 
 ___
 
 ### resetPage
 
-▸ **resetPage**(`pageRoute`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **resetPage**(`pageRoute`, `options?`): `Promise`<`undefined` \| `boolean`\>
 
 Remove all user's modifications for specified page of currently active Theme
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pageRoute` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `pageRoute` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:572](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L572)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:620](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L620)
 
 ___
 
 ### resetPassword
 
-▸ **resetPassword**(`credentials`: { `code`: *string* ; `email`: *string* ; `newPassword`: *string*  }, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **resetPassword**(`credentials`, `options?`): `Promise`<`undefined` \| `boolean`\>
 
 Finish reset password transaction. Set a new password
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`credentials` | *object* |
-`credentials.code` | *string* |
-`credentials.email` | *string* |
-`credentials.newPassword` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `credentials` | `Object` |
+| `credentials.code` | `string` |
+| `credentials.email` | `string` |
+| `credentials.newPassword` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:237](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L237)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L277)
 
 ___
 
 ### savePageConfig
 
-▸ **savePageConfig**(`config`: TPageConfig, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<boolean\>
+▸ **savePageConfig**(`config`, `options?`): `Promise`<`boolean`\>
 
 Update page config by page route of currently active Theme
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`config` | TPageConfig |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `config` | `TPageConfig` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:555](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L555)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:603](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L603)
 
 ___
 
 ### savePluginSettings
 
-▸ **savePluginSettings**(`pluginName`: *string*, `settings`: *any*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<boolean\>
+▸ **savePluginSettings**(`pluginName`, `settings`, `options?`): `Promise`<`boolean`\>
 
 Save settings for Plugin
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`pluginName` | *string* | npm package name of Plugin   |
-`settings` | *any* | - |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pluginName` | `string` | npm package name of Plugin |
+| `settings` | `any` | - |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:697](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L697)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:752](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L752)
 
 ___
 
 ### signUp
 
-▸ **signUp**(`credentials`: TCreateUser, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TUser\>
+▸ **signUp**(`credentials`, `options?`): `Promise`<`undefined` \| `TUser`\>
 
 Sign up a new user
 
 **`auth`** no
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`credentials` | TCreateUser |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `credentials` | `TCreateUser` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TUser\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:221](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L221)
+`Promise`<`undefined` \| `TUser`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:261](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L261)
 
 ___
 
 ### updateCmsConfig
 
-▸ **updateCmsConfig**(`input`: TCmsEntityInput, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| TCmsSettings\>
+▸ **updateCmsConfig**(`input`, `options?`): `Promise`<`undefined` \| `TCmsSettings`\>
 
 Update CMS config
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TCmsEntityInput |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TCmsEntityInput` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| TCmsSettings\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:375](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L375)
+`Promise`<`undefined` \| `TCmsSettings`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:415](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L415)
 
 ___
 
 ### updatePlugin
 
-▸ **updatePlugin**(`pluginName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **updatePlugin**(`pluginName`, `options?`): `Promise`<`undefined` \| `boolean`\>
 
 Launch Plugin update
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type | Description |
-:------ | :------ | :------ |
-`pluginName` | *string* | npm package name of Plugin   |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) | - |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `pluginName` | `string` | npm package name of Plugin |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) | - |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:661](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L661)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:716](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L716)
 
 ___
 
 ### updateTheme
 
-▸ **updateTheme**(`themeName`: *string*, `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| boolean\>
+▸ **updateTheme**(`themeName`, `options?`): `Promise`<`undefined` \| `boolean`\>
 
 Launch Theme update
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`themeName` | *string* |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `themeName` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:521](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L521)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:569](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L569)
 
 ___
 
 ### uploadPublicFiles
 
-▸ **uploadPublicFiles**(`inPath`: *string*, `files`: File[], `options?`: [*TRequestOptions*](../modules/frontend.md#trequestoptions)): *Promise*<undefined \| *null* \| boolean\>
+▸ **uploadPublicFiles**(`inPath`, `files`, `options?`): `Promise`<`undefined` \| ``null`` \| `boolean`\>
 
 Upload files in specified public directory
 
 **`auth`** admin
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`inPath` | *string* |
-`files` | File[] |
-`options?` | [*TRequestOptions*](../modules/frontend.md#trequestoptions) |
+| Name | Type |
+| :------ | :------ |
+| `inPath` | `string` |
+| `files` | `File`[] |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
-**Returns:** *Promise*<undefined \| *null* \| boolean\>
+#### Returns
 
-Defined in: [system/core/frontend/src/api/CRestAPIClient.ts:336](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/api/CRestAPIClient.ts#L336)
+`Promise`<`undefined` \| ``null`` \| `boolean`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:376](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L376)

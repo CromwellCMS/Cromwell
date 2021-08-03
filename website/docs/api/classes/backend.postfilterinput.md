@@ -6,57 +6,94 @@
 
 ## Implements
 
-* *TPostFilter*
+- `TPostFilter`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.postfilterinput.md#constructor)
+- [constructor](backend.PostFilterInput.md#constructor)
 
 ### Properties
 
-- [authorId](backend.postfilterinput.md#authorid)
-- [published](backend.postfilterinput.md#published)
-- [tagIds](backend.postfilterinput.md#tagids)
-- [titleSearch](backend.postfilterinput.md#titlesearch)
+- [authorId](backend.PostFilterInput.md#authorid)
+- [featured](backend.PostFilterInput.md#featured)
+- [published](backend.PostFilterInput.md#published)
+- [tagIds](backend.PostFilterInput.md#tagids)
+- [titleSearch](backend.PostFilterInput.md#titlesearch)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PostFilterInput**(): [*PostFilterInput*](backend.postfilterinput.md)
-
-**Returns:** [*PostFilterInput*](backend.postfilterinput.md)
+• **new PostFilterInput**()
 
 ## Properties
 
 ### authorId
 
-• **authorId**: *string*
+• **authorId**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/PostFilterInput.ts#L8)
+#### Implementation of
+
+TPostFilter.authorId
+
+#### Defined in
+
+[system/core/backend/src/models/filters/post.filter.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/post.filter.ts#L8)
+
+___
+
+### featured
+
+• **featured**: `boolean`
+
+#### Implementation of
+
+TPostFilter.featured
+
+#### Defined in
+
+[system/core/backend/src/models/filters/post.filter.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/post.filter.ts#L20)
 
 ___
 
 ### published
 
-• **published**: *boolean*
+• **published**: `boolean`
 
-Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/PostFilterInput.ts#L17)
+#### Implementation of
+
+TPostFilter.published
+
+#### Defined in
+
+[system/core/backend/src/models/filters/post.filter.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/post.filter.ts#L17)
 
 ___
 
 ### tagIds
 
-• `Optional` **tagIds**: *undefined* \| *string*[]
+• `Optional` **tagIds**: `string`[]
 
-Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/PostFilterInput.ts#L14)
+#### Implementation of
+
+TPostFilter.tagIds
+
+#### Defined in
+
+[system/core/backend/src/models/filters/post.filter.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/post.filter.ts#L14)
 
 ___
 
 ### titleSearch
 
-• **titleSearch**: *string*
+• **titleSearch**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/PostFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/PostFilterInput.ts#L11)
+#### Implementation of
+
+TPostFilter.titleSearch
+
+#### Defined in
+
+[system/core/backend/src/models/filters/post.filter.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/post.filter.ts#L11)

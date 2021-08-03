@@ -6,57 +6,79 @@
 
 ## Implements
 
-* *TProductReviewFilter*
+- `TProductReviewFilter`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.productreviewfilter.md#constructor)
+- [constructor](backend.ProductReviewFilter.md#constructor)
 
 ### Properties
 
-- [approved](backend.productreviewfilter.md#approved)
-- [productId](backend.productreviewfilter.md#productid)
-- [userId](backend.productreviewfilter.md#userid)
-- [userName](backend.productreviewfilter.md#username)
+- [approved](backend.ProductReviewFilter.md#approved)
+- [productId](backend.ProductReviewFilter.md#productid)
+- [userId](backend.ProductReviewFilter.md#userid)
+- [userName](backend.ProductReviewFilter.md#username)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ProductReviewFilter**(): [*ProductReviewFilter*](backend.productreviewfilter.md)
-
-**Returns:** [*ProductReviewFilter*](backend.productreviewfilter.md)
+• **new ProductReviewFilter**()
 
 ## Properties
 
 ### approved
 
-• `Optional` **approved**: *undefined* \| *boolean*
+• `Optional` **approved**: `boolean`
 
-Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L17)
+#### Implementation of
+
+TProductReviewFilter.approved
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product-review.filter.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product-review.filter.ts#L17)
 
 ___
 
 ### productId
 
-• `Optional` **productId**: *undefined* \| *string*
+• `Optional` **productId**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L8)
+#### Implementation of
+
+TProductReviewFilter.productId
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product-review.filter.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product-review.filter.ts#L8)
 
 ___
 
 ### userId
 
-• `Optional` **userId**: *undefined* \| *string*
+• `Optional` **userId**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L14)
+#### Implementation of
+
+TProductReviewFilter.userId
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product-review.filter.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product-review.filter.ts#L14)
 
 ___
 
 ### userName
 
-• `Optional` **userName**: *undefined* \| *string*
+• `Optional` **userName**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/ProductReviewFilter.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/ProductReviewFilter.ts#L11)
+#### Implementation of
+
+TProductReviewFilter.userName
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product-review.filter.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product-review.filter.ts#L11)

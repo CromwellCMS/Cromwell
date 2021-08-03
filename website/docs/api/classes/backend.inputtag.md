@@ -6,109 +6,165 @@
 
 ## Hierarchy
 
-* [*BasePageInput*](backend.basepageinput.md)
+- [`BasePageInput`](backend.BasePageInput.md)
 
-  ↳ **InputTag**
+  ↳ **`InputTag`**
 
 ## Implements
 
-* *TTagInput*
+- `TTagInput`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.inputtag.md#constructor)
+- [constructor](backend.InputTag.md#constructor)
 
 ### Properties
 
-- [color](backend.inputtag.md#color)
-- [description](backend.inputtag.md#description)
-- [image](backend.inputtag.md#image)
-- [isEnabled](backend.inputtag.md#isenabled)
-- [name](backend.inputtag.md#name)
-- [pageDescription](backend.inputtag.md#pagedescription)
-- [pageTitle](backend.inputtag.md#pagetitle)
-- [slug](backend.inputtag.md#slug)
+- [color](backend.InputTag.md#color)
+- [description](backend.InputTag.md#description)
+- [image](backend.InputTag.md#image)
+- [isEnabled](backend.InputTag.md#isenabled)
+- [name](backend.InputTag.md#name)
+- [pageDescription](backend.InputTag.md#pagedescription)
+- [pageTitle](backend.InputTag.md#pagetitle)
+- [slug](backend.InputTag.md#slug)
 
 ## Constructors
 
 ### constructor
 
-\+ **new InputTag**(): *InputTag*
+• **new InputTag**()
 
-**Returns:** *InputTag*
+#### Inherited from
 
-Inherited from: [BasePageInput](backend.basepageinput.md)
+[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
 
 ## Properties
 
 ### color
 
-• `Optional` **color**: *undefined* \| *string*
+• `Optional` **color**: `string`
 
-Defined in: [system/core/backend/src/inputs/InputTag.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/InputTag.ts#L11)
+#### Implementation of
+
+TTagInput.color
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/tag.input.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/tag.input.ts#L11)
 
 ___
 
 ### description
 
-• `Optional` **description**: *undefined* \| *string*
+• `Optional` **description**: `string`
 
-Defined in: [system/core/backend/src/inputs/InputTag.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/InputTag.ts#L17)
+#### Implementation of
+
+TTagInput.description
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/tag.input.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/tag.input.ts#L17)
 
 ___
 
 ### image
 
-• `Optional` **image**: *undefined* \| *string*
+• `Optional` **image**: `string`
 
-Defined in: [system/core/backend/src/inputs/InputTag.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/InputTag.ts#L14)
+#### Implementation of
+
+TTagInput.image
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/tag.input.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/tag.input.ts#L14)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
+TTagInput.isEnabled
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L16)
 
 ___
 
 ### name
 
-• **name**: *string*
+• **name**: `string`
 
-Defined in: [system/core/backend/src/inputs/InputTag.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/InputTag.ts#L8)
+#### Implementation of
+
+TTagInput.name
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/tag.input.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/tag.input.ts#L8)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
+TTagInput.pageDescription
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L13)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
+TTagInput.pageTitle
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L10)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)
+TTagInput.slug
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L7)

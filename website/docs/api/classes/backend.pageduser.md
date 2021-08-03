@@ -6,39 +6,49 @@
 
 ## Implements
 
-* *TPagedList*<TUser\>
+- `TPagedList`<`TUser`\>
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.pageduser.md#constructor)
+- [constructor](backend.PagedUser.md#constructor)
 
 ### Properties
 
-- [elements](backend.pageduser.md#elements)
-- [pagedMeta](backend.pageduser.md#pagedmeta)
+- [elements](backend.PagedUser.md#elements)
+- [pagedMeta](backend.PagedUser.md#pagedmeta)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PagedUser**(): [*PagedUser*](backend.pageduser.md)
-
-**Returns:** [*PagedUser*](backend.pageduser.md)
+• **new PagedUser**()
 
 ## Properties
 
 ### elements
 
-• `Optional` **elements**: *undefined* \| [*User*](backend.user.md)[]
+• `Optional` **elements**: [`User`](backend.User.md)[]
 
-Defined in: [system/core/backend/src/entities/paged/PagedUser.ts:13](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedUser.ts#L13)
+#### Implementation of
+
+TPagedList.elements
+
+#### Defined in
+
+[system/core/backend/src/models/paged/user.paged.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/user.paged.ts#L13)
 
 ___
 
 ### pagedMeta
 
-• `Optional` **pagedMeta**: *undefined* \| [*PagedMeta*](backend.pagedmeta.md)
+• `Optional` **pagedMeta**: [`PagedMeta`](backend.PagedMeta.md)
 
-Defined in: [system/core/backend/src/entities/paged/PagedUser.ts:10](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedUser.ts#L10)
+#### Implementation of
+
+TPagedList.pagedMeta
+
+#### Defined in
+
+[system/core/backend/src/models/paged/user.paged.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/user.paged.ts#L10)

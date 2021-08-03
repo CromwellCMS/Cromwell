@@ -7,7 +7,6 @@ export type CContainerProps = {
     children?: React.ReactNode;
 } & TCromwellBlockProps;
 
-/** @noInheritDoc */
 export class CContainer extends React.Component<CContainerProps> {
     render() {
         const { children, ...rest } = this.props;

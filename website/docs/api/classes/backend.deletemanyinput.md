@@ -6,39 +6,49 @@
 
 ## Implements
 
-* *TDeleteManyInput*
+- `TDeleteManyInput`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.deletemanyinput.md#constructor)
+- [constructor](backend.DeleteManyInput.md#constructor)
 
 ### Properties
 
-- [all](backend.deletemanyinput.md#all)
-- [ids](backend.deletemanyinput.md#ids)
+- [all](backend.DeleteManyInput.md#all)
+- [ids](backend.DeleteManyInput.md#ids)
 
 ## Constructors
 
 ### constructor
 
-\+ **new DeleteManyInput**(): *DeleteManyInput*
-
-**Returns:** *DeleteManyInput*
+• **new DeleteManyInput**()
 
 ## Properties
 
 ### all
 
-• `Optional` **all**: *undefined* \| *boolean*
+• `Optional` **all**: `boolean`
 
-Defined in: [system/core/backend/src/inputs/DeleteManyInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/DeleteManyInput.ts#L11)
+#### Implementation of
+
+TDeleteManyInput.all
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/delete-many.input.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/delete-many.input.ts#L11)
 
 ___
 
 ### ids
 
-• **ids**: *string*[]
+• **ids**: `string`[]
 
-Defined in: [system/core/backend/src/inputs/DeleteManyInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/DeleteManyInput.ts#L8)
+#### Implementation of
+
+TDeleteManyInput.ids
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/delete-many.input.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/delete-many.input.ts#L8)

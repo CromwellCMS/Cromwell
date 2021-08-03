@@ -6,138 +6,158 @@
 
 ## Hierarchy
 
-* *BaseEntity*
+- `BaseEntity`
 
-  ↳ **BasePageEntity**
+  ↳ **`BasePageEntity`**
 
-  ↳↳ [*Attribute*](backend.attribute.md)
+  ↳↳ [`Attribute`](backend.Attribute.md)
 
-  ↳↳ [*CmsEntity*](backend.cmsentity.md)
+  ↳↳ [`CmsEntity`](backend.CmsEntity.md)
 
-  ↳↳ [*Order*](backend.order.md)
+  ↳↳ [`Order`](backend.Order.md)
 
-  ↳↳ [*PluginEntity*](backend.pluginentity.md)
+  ↳↳ [`PluginEntity`](backend.PluginEntity.md)
 
-  ↳↳ [*Post*](backend.post.md)
+  ↳↳ [`PostComment`](backend.PostComment.md)
 
-  ↳↳ [*PostComment*](backend.postcomment.md)
+  ↳↳ [`Post`](backend.Post.md)
 
-  ↳↳ [*Product*](backend.product.md)
+  ↳↳ [`ProductCategory`](backend.ProductCategory.md)
 
-  ↳↳ [*ProductCategory*](backend.productcategory.md)
+  ↳↳ [`ProductReview`](backend.ProductReview.md)
 
-  ↳↳ [*ProductReview*](backend.productreview.md)
+  ↳↳ [`Product`](backend.Product.md)
 
-  ↳↳ [*Tag*](backend.tag.md)
+  ↳↳ [`Tag`](backend.Tag.md)
 
-  ↳↳ [*ThemeEntity*](backend.themeentity.md)
+  ↳↳ [`ThemeEntity`](backend.ThemeEntity.md)
 
-  ↳↳ [*User*](backend.user.md)
-
-  ↳↳ *Product*
-
-  ↳↳ *ProductCategory*
-
-  ↳↳ *Post*
-
-  ↳↳ *User*
-
-  ↳↳ *Attribute*
-
-  ↳↳ *ProductReview*
-
-  ↳↳ *PluginEntity*
-
-  ↳↳ *ThemeEntity*
-
-  ↳↳ *CmsEntity*
-
-  ↳↳ *Order*
-
-  ↳↳ *Tag*
-
-  ↳↳ *PostComment*
+  ↳↳ [`User`](backend.User.md)
 
 ## Implements
 
-* *TBasePageEntity*
+- `TBasePageEntity`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.basepageentity.md#constructor)
+- [constructor](backend.BasePageEntity.md#constructor)
 
 ### Properties
 
-- [createDate](backend.basepageentity.md#createdate)
-- [id](backend.basepageentity.md#id)
-- [isEnabled](backend.basepageentity.md#isenabled)
-- [pageDescription](backend.basepageentity.md#pagedescription)
-- [pageTitle](backend.basepageentity.md#pagetitle)
-- [slug](backend.basepageentity.md#slug)
-- [updateDate](backend.basepageentity.md#updatedate)
+- [createDate](backend.BasePageEntity.md#createdate)
+- [id](backend.BasePageEntity.md#id)
+- [isEnabled](backend.BasePageEntity.md#isenabled)
+- [pageDescription](backend.BasePageEntity.md#pagedescription)
+- [pageTitle](backend.BasePageEntity.md#pagetitle)
+- [slug](backend.BasePageEntity.md#slug)
+- [updateDate](backend.BasePageEntity.md#updatedate)
 
 ## Constructors
 
 ### constructor
 
-\+ **new BasePageEntity**(): [*BasePageEntity*](backend.basepageentity.md)
+• **new BasePageEntity**()
 
-**Returns:** [*BasePageEntity*](backend.basepageentity.md)
+#### Inherited from
+
+BaseEntity.constructor
 
 ## Properties
 
 ### createDate
 
-• **createDate**: Date
+• **createDate**: `Date`
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
+#### Implementation of
+
+TBasePageEntity.createDate
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
+#### Implementation of
+
+TBasePageEntity.id
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
+#### Implementation of
+
+TBasePageEntity.isEnabled
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
+#### Implementation of
+
+TBasePageEntity.pageDescription
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
+#### Implementation of
+
+TBasePageEntity.pageTitle
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
+#### Implementation of
+
+TBasePageEntity.slug
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
 
 ___
 
 ### updateDate
 
-• **updateDate**: Date
+• **updateDate**: `Date`
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
+#### Implementation of
+
+TBasePageEntity.updateDate
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)

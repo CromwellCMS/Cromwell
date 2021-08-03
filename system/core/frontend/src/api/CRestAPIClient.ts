@@ -139,7 +139,7 @@ export class CRestAPIClient {
         if (!options?.disableLog)
             this.logError(route, `Request failed, status: ${errorInfo.statusCode}. ${errorInfo.message}`);
 
-        throw new Error(JSON.stringify(errorInfo));
+        throw Object.assign(new Error(), errorInfo);
     }
 
     /**

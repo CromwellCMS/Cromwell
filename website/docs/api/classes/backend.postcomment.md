@@ -6,178 +6,278 @@
 
 ## Hierarchy
 
-* [*BasePageEntity*](backend.basepageentity.md)
+- [`BasePageEntity`](backend.BasePageEntity.md)
 
-  ↳ **PostComment**
+  ↳ **`PostComment`**
 
 ## Implements
 
-* *TPostComment*
+- `TPostComment`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.postcomment.md#constructor)
+- [constructor](backend.PostComment.md#constructor)
 
 ### Properties
 
-- [approved](backend.postcomment.md#approved)
-- [comment](backend.postcomment.md#comment)
-- [createDate](backend.postcomment.md#createdate)
-- [id](backend.postcomment.md#id)
-- [isEnabled](backend.postcomment.md#isenabled)
-- [pageDescription](backend.postcomment.md#pagedescription)
-- [pageTitle](backend.postcomment.md#pagetitle)
-- [post](backend.postcomment.md#post)
-- [postId](backend.postcomment.md#postid)
-- [slug](backend.postcomment.md#slug)
-- [title](backend.postcomment.md#title)
-- [updateDate](backend.postcomment.md#updatedate)
-- [userEmail](backend.postcomment.md#useremail)
-- [userId](backend.postcomment.md#userid)
-- [userName](backend.postcomment.md#username)
+- [approved](backend.PostComment.md#approved)
+- [comment](backend.PostComment.md#comment)
+- [createDate](backend.PostComment.md#createdate)
+- [id](backend.PostComment.md#id)
+- [isEnabled](backend.PostComment.md#isenabled)
+- [pageDescription](backend.PostComment.md#pagedescription)
+- [pageTitle](backend.PostComment.md#pagetitle)
+- [post](backend.PostComment.md#post)
+- [postId](backend.PostComment.md#postid)
+- [slug](backend.PostComment.md#slug)
+- [title](backend.PostComment.md#title)
+- [updateDate](backend.PostComment.md#updatedate)
+- [userEmail](backend.PostComment.md#useremail)
+- [userId](backend.PostComment.md#userid)
+- [userName](backend.PostComment.md#username)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PostComment**(): [*PostComment*](backend.postcomment.md)
+• **new PostComment**()
 
-**Returns:** [*PostComment*](backend.postcomment.md)
+#### Inherited from
 
-Inherited from: [BasePageEntity](backend.basepageentity.md)
+[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
 
 ## Properties
 
 ### approved
 
-• `Optional` **approved**: *undefined* \| *boolean*
+• `Optional` **approved**: `boolean`
 
-Defined in: [system/core/backend/src/entities/PostComment.ts:48](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PostComment.ts#L48)
+#### Implementation of
+
+TPostComment.approved
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post-comment.entity.ts:47](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post-comment.entity.ts#L47)
 
 ___
 
 ### comment
 
-• `Optional` **comment**: *undefined* \| *string*
+• `Optional` **comment**: `string`
 
-Defined in: [system/core/backend/src/entities/PostComment.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PostComment.ts#L30)
+#### Implementation of
+
+TPostComment.comment
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post-comment.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post-comment.entity.ts#L29)
 
 ___
 
 ### createDate
 
-• **createDate**: Date
+• **createDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
+TPostComment.createDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
+TPostComment.id
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
+TPostComment.isEnabled
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
+TPostComment.pageDescription
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
+TPostComment.pageTitle
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
 
 ___
 
 ### post
 
-• **post**: [*Post*](backend.post.md)
+• **post**: [`Post`](backend.Post.md)
 
-Defined in: [system/core/backend/src/entities/PostComment.ts:22](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PostComment.ts#L22)
+#### Defined in
+
+[system/core/backend/src/models/entities/post-comment.entity.ts:21](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post-comment.entity.ts#L21)
 
 ___
 
 ### postId
 
-• **postId**: *string*
+• **postId**: `string`
 
-Defined in: [system/core/backend/src/entities/PostComment.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PostComment.ts#L16)
+#### Implementation of
+
+TPostComment.postId
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post-comment.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post-comment.entity.ts#L15)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
+TPostComment.slug
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
 
 ___
 
 ### title
 
-• `Optional` **title**: *undefined* \| *string*
+• `Optional` **title**: `string`
 
-Defined in: [system/core/backend/src/entities/PostComment.ts:26](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PostComment.ts#L26)
+#### Implementation of
+
+TPostComment.title
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post-comment.entity.ts:25](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post-comment.entity.ts#L25)
 
 ___
 
 ### updateDate
 
-• **updateDate**: Date
+• **updateDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
+TPostComment.updateDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
 
 ___
 
 ### userEmail
 
-• `Optional` **userEmail**: *undefined* \| *string*
+• `Optional` **userEmail**: `string`
 
-Defined in: [system/core/backend/src/entities/PostComment.ts:35](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PostComment.ts#L35)
+#### Implementation of
+
+TPostComment.userEmail
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post-comment.entity.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post-comment.entity.ts#L34)
 
 ___
 
 ### userId
 
-• `Optional` **userId**: *undefined* \| *string*
+• `Optional` **userId**: `string`
 
-Defined in: [system/core/backend/src/entities/PostComment.ts:44](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PostComment.ts#L44)
+#### Implementation of
+
+TPostComment.userId
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post-comment.entity.ts:43](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post-comment.entity.ts#L43)
 
 ___
 
 ### userName
 
-• `Optional` **userName**: *undefined* \| *string*
+• `Optional` **userName**: `string`
 
-Defined in: [system/core/backend/src/entities/PostComment.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/PostComment.ts#L39)
+#### Implementation of
+
+TPostComment.userName
+
+#### Defined in
+
+[system/core/backend/src/models/entities/post-comment.entity.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/post-comment.entity.ts#L38)

@@ -6,7 +6,6 @@ import { getLogger } from '../helpers/logger';
 
 const logger = getLogger();
 
-/** @noInheritDoc */
 export class BaseRepository<EntityType, EntityInputType = EntityType> extends Repository<EntityType> {
 
     constructor(

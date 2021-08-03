@@ -8,21 +8,25 @@
 
 ### Enumeration members
 
-- [PostCard](common.ecommoncomponentnames.md#postcard)
-- [ProductCard](common.ecommoncomponentnames.md#productcard)
+- [PostCard](common.ECommonComponentNames.md#postcard)
+- [ProductCard](common.ECommonComponentNames.md#productcard)
 
 ## Enumeration members
 
 ### PostCard
 
-• **PostCard**: = "PostCard"
+• **PostCard** = `"PostCard"`
 
-Defined in: [system/core/common/src/constants.ts:165](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/common/src/constants.ts#L165)
+#### Defined in
+
+[system/core/common/src/constants.ts:105](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L105)
 
 ___
 
 ### ProductCard
 
-• **ProductCard**: = "ProductCard"
+• **ProductCard** = `"ProductCard"`
 
-Defined in: [system/core/common/src/constants.ts:164](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/common/src/constants.ts#L164)
+#### Defined in
+
+[system/core/common/src/constants.ts:104](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L104)

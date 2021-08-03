@@ -8,7 +8,6 @@ import { Product } from './product.entity';
 @Entity()
 @Tree("closure-table")
 @ObjectType()
-/** @noInheritDoc */
 export class ProductCategory extends BasePageEntity implements TProductCategory {
     @Field(() => String)
     @Column({ type: "varchar" })

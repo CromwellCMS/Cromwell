@@ -6,93 +6,139 @@
 
 ## Implements
 
-* *TAttributeProductVariant*
+- `TAttributeProductVariant`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.attributeproductvariant.md#constructor)
+- [constructor](backend.AttributeProductVariant.md#constructor)
 
 ### Properties
 
-- [description](backend.attributeproductvariant.md#description)
-- [descriptionDelta](backend.attributeproductvariant.md#descriptiondelta)
-- [images](backend.attributeproductvariant.md#images)
-- [mainImage](backend.attributeproductvariant.md#mainimage)
-- [name](backend.attributeproductvariant.md#name)
-- [oldPrice](backend.attributeproductvariant.md#oldprice)
-- [price](backend.attributeproductvariant.md#price)
-- [sku](backend.attributeproductvariant.md#sku)
+- [description](backend.AttributeProductVariant.md#description)
+- [descriptionDelta](backend.AttributeProductVariant.md#descriptiondelta)
+- [images](backend.AttributeProductVariant.md#images)
+- [mainImage](backend.AttributeProductVariant.md#mainimage)
+- [name](backend.AttributeProductVariant.md#name)
+- [oldPrice](backend.AttributeProductVariant.md#oldprice)
+- [price](backend.AttributeProductVariant.md#price)
+- [sku](backend.AttributeProductVariant.md#sku)
 
 ## Constructors
 
 ### constructor
 
-\+ **new AttributeProductVariant**(): [*AttributeProductVariant*](backend.attributeproductvariant.md)
-
-**Returns:** [*AttributeProductVariant*](backend.attributeproductvariant.md)
+• **new AttributeProductVariant**()
 
 ## Properties
 
 ### description
 
-• `Optional` **description**: *undefined* \| *string*
+• `Optional` **description**: `string`
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:26](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L26)
+#### Implementation of
+
+TAttributeProductVariant.description
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute-instance.entity.ts:26](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute-instance.entity.ts#L26)
 
 ___
 
 ### descriptionDelta
 
-• `Optional` **descriptionDelta**: *undefined* \| *string*
+• `Optional` **descriptionDelta**: `string`
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L29)
+#### Implementation of
+
+TAttributeProductVariant.descriptionDelta
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute-instance.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute-instance.entity.ts#L29)
 
 ___
 
 ### images
 
-• `Optional` **images**: *undefined* \| *string*[]
+• `Optional` **images**: `string`[]
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L23)
+#### Implementation of
+
+TAttributeProductVariant.images
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute-instance.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute-instance.entity.ts#L23)
 
 ___
 
 ### mainImage
 
-• `Optional` **mainImage**: *undefined* \| *string*
+• `Optional` **mainImage**: `string`
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L20)
+#### Implementation of
+
+TAttributeProductVariant.mainImage
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute-instance.entity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute-instance.entity.ts#L20)
 
 ___
 
 ### name
 
-• `Optional` **name**: *undefined* \| *string*
+• `Optional` **name**: `string`
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L8)
+#### Implementation of
+
+TAttributeProductVariant.name
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute-instance.entity.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute-instance.entity.ts#L8)
 
 ___
 
 ### oldPrice
 
-• `Optional` **oldPrice**: *undefined* \| *number*
+• `Optional` **oldPrice**: `number`
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L14)
+#### Implementation of
+
+TAttributeProductVariant.oldPrice
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute-instance.entity.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute-instance.entity.ts#L14)
 
 ___
 
 ### price
 
-• `Optional` **price**: *undefined* \| *number*
+• `Optional` **price**: `number`
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L11)
+#### Implementation of
+
+TAttributeProductVariant.price
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute-instance.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute-instance.entity.ts#L11)
 
 ___
 
 ### sku
 
-• `Optional` **sku**: *undefined* \| *string*
+• `Optional` **sku**: `string`
 
-Defined in: [system/core/backend/src/entities/AttributeInstance.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/AttributeInstance.ts#L17)
+#### Implementation of
+
+TAttributeProductVariant.sku
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute-instance.entity.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute-instance.entity.ts#L17)

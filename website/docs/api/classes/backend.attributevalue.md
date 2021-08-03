@@ -6,48 +6,60 @@
 
 ## Implements
 
-* *TAttributeValue*
+- `TAttributeValue`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.attributevalue.md#constructor)
+- [constructor](backend.AttributeValue.md#constructor)
 
 ### Properties
 
-- [icon](backend.attributevalue.md#icon)
-- [title](backend.attributevalue.md#title)
-- [value](backend.attributevalue.md#value)
+- [icon](backend.AttributeValue.md#icon)
+- [title](backend.AttributeValue.md#title)
+- [value](backend.AttributeValue.md#value)
 
 ## Constructors
 
 ### constructor
 
-\+ **new AttributeValue**(): [*AttributeValue*](backend.attributevalue.md)
-
-**Returns:** [*AttributeValue*](backend.attributevalue.md)
+• **new AttributeValue**()
 
 ## Properties
 
 ### icon
 
-• `Optional` **icon**: *undefined* \| *string*
+• `Optional` **icon**: `string`
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L15)
+#### Implementation of
+
+TAttributeValue.icon
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute.entity.ts#L15)
 
 ___
 
 ### title
 
-• `Optional` **title**: *undefined* \| *string*
+• `Optional` **title**: `string`
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L12)
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute.entity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute.entity.ts#L12)
 
 ___
 
 ### value
 
-• **value**: *string*
+• **value**: `string`
 
-Defined in: [system/core/backend/src/entities/Attribute.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Attribute.ts#L9)
+#### Implementation of
+
+TAttributeValue.value
+
+#### Defined in
+
+[system/core/backend/src/models/entities/attribute.entity.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/attribute.entity.ts#L9)

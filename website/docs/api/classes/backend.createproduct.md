@@ -6,163 +6,255 @@
 
 ## Hierarchy
 
-* [*BasePageInput*](backend.basepageinput.md)
+- [`BasePageInput`](backend.BasePageInput.md)
 
-  ↳ **CreateProduct**
+  ↳ **`CreateProduct`**
 
 ## Implements
 
-* *TProductInput*
+- `TProductInput`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.createproduct.md#constructor)
+- [constructor](backend.CreateProduct.md#constructor)
 
 ### Properties
 
-- [attributes](backend.createproduct.md#attributes)
-- [categoryIds](backend.createproduct.md#categoryids)
-- [description](backend.createproduct.md#description)
-- [descriptionDelta](backend.createproduct.md#descriptiondelta)
-- [images](backend.createproduct.md#images)
-- [isEnabled](backend.createproduct.md#isenabled)
-- [mainImage](backend.createproduct.md#mainimage)
-- [name](backend.createproduct.md#name)
-- [oldPrice](backend.createproduct.md#oldprice)
-- [pageDescription](backend.createproduct.md#pagedescription)
-- [pageTitle](backend.createproduct.md#pagetitle)
-- [price](backend.createproduct.md#price)
-- [sku](backend.createproduct.md#sku)
-- [slug](backend.createproduct.md#slug)
+- [attributes](backend.CreateProduct.md#attributes)
+- [categoryIds](backend.CreateProduct.md#categoryids)
+- [description](backend.CreateProduct.md#description)
+- [descriptionDelta](backend.CreateProduct.md#descriptiondelta)
+- [images](backend.CreateProduct.md#images)
+- [isEnabled](backend.CreateProduct.md#isenabled)
+- [mainImage](backend.CreateProduct.md#mainimage)
+- [name](backend.CreateProduct.md#name)
+- [oldPrice](backend.CreateProduct.md#oldprice)
+- [pageDescription](backend.CreateProduct.md#pagedescription)
+- [pageTitle](backend.CreateProduct.md#pagetitle)
+- [price](backend.CreateProduct.md#price)
+- [sku](backend.CreateProduct.md#sku)
+- [slug](backend.CreateProduct.md#slug)
 
 ## Constructors
 
 ### constructor
 
-\+ **new CreateProduct**(): *CreateProduct*
+• **new CreateProduct**()
 
-**Returns:** *CreateProduct*
+#### Inherited from
 
-Inherited from: [BasePageInput](backend.basepageinput.md)
+[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
 
 ## Properties
 
 ### attributes
 
-• `Optional` **attributes**: *undefined* \| [*AttributeInstance*](backend.attributeinstance.md)[]
+• `Optional` **attributes**: [`AttributeInstance`](backend.AttributeInstance.md)[]
 
-Defined in: [system/core/backend/src/inputs/CreateProduct.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProduct.ts#L36)
+#### Implementation of
+
+TProductInput.attributes
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product.create.ts:36](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product.create.ts#L36)
 
 ___
 
 ### categoryIds
 
-• **categoryIds**: *string*[]
+• **categoryIds**: `string`[]
 
-Defined in: [system/core/backend/src/inputs/CreateProduct.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProduct.ts#L12)
+#### Implementation of
+
+TProductInput.categoryIds
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product.create.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product.create.ts#L12)
 
 ___
 
 ### description
 
-• `Optional` **description**: *undefined* \| *string*
+• `Optional` **description**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateProduct.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProduct.ts#L30)
+#### Implementation of
+
+TProductInput.description
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product.create.ts:30](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product.create.ts#L30)
 
 ___
 
 ### descriptionDelta
 
-• `Optional` **descriptionDelta**: *undefined* \| *string*
+• `Optional` **descriptionDelta**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateProduct.ts:33](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProduct.ts#L33)
+#### Implementation of
+
+TProductInput.descriptionDelta
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product.create.ts:33](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product.create.ts#L33)
 
 ___
 
 ### images
 
-• **images**: *string*[]
+• **images**: `string`[]
 
-Defined in: [system/core/backend/src/inputs/CreateProduct.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProduct.ts#L27)
+#### Implementation of
+
+TProductInput.images
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product.create.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product.create.ts#L27)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
+TProductInput.isEnabled
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L16)
 
 ___
 
 ### mainImage
 
-• **mainImage**: *string*
+• **mainImage**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateProduct.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProduct.ts#L24)
+#### Implementation of
+
+TProductInput.mainImage
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product.create.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product.create.ts#L24)
 
 ___
 
 ### name
 
-• **name**: *string*
+• **name**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateProduct.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProduct.ts#L9)
+#### Implementation of
+
+TProductInput.name
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product.create.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product.create.ts#L9)
 
 ___
 
 ### oldPrice
 
-• `Optional` **oldPrice**: *undefined* \| *number*
+• `Optional` **oldPrice**: `number`
 
-Defined in: [system/core/backend/src/inputs/CreateProduct.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProduct.ts#L18)
+#### Implementation of
+
+TProductInput.oldPrice
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product.create.ts:18](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product.create.ts#L18)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
+TProductInput.pageDescription
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L13)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
+TProductInput.pageTitle
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L10)
 
 ___
 
 ### price
 
-• **price**: *number*
+• **price**: `number`
 
-Defined in: [system/core/backend/src/inputs/CreateProduct.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProduct.ts#L15)
+#### Implementation of
+
+TProductInput.price
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product.create.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product.create.ts#L15)
 
 ___
 
 ### sku
 
-• `Optional` **sku**: *undefined* \| *string*
+• `Optional` **sku**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreateProduct.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreateProduct.ts#L21)
+#### Implementation of
+
+TProductInput.sku
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/product.create.ts:21](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/product.create.ts#L21)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)
+TProductInput.slug
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L7)

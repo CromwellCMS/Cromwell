@@ -15,7 +15,6 @@ type CImageProps = {
     height?: number | string;
 } & TCromwellBlockProps;
 
-/** @noInheritDoc */
 export class CImage extends React.Component<CImageProps> {
     render() {
         const props = this.props;

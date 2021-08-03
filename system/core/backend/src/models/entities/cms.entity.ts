@@ -4,7 +4,6 @@ import { Column, Entity } from 'typeorm';
 import { BasePageEntity } from './base-page.entity';
 
 @Entity('cms')
-/** @noInheritDoc */
 export class CmsEntity extends BasePageEntity implements TCmsEntity {
 
     @Column()

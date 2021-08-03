@@ -6,163 +6,270 @@
 
 ## Hierarchy
 
-* [*BasePageInput*](backend.basepageinput.md)
+- [`BasePageInput`](backend.BasePageInput.md)
 
-  ↳ **CreatePost**
+  ↳ **`CreatePost`**
 
 ## Implements
 
-* *TPostInput*
+- `TPostInput`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.createpost.md#constructor)
+- [constructor](backend.CreatePost.md#constructor)
 
 ### Properties
 
-- [authorId](backend.createpost.md#authorid)
-- [content](backend.createpost.md#content)
-- [delta](backend.createpost.md#delta)
-- [excerpt](backend.createpost.md#excerpt)
-- [isEnabled](backend.createpost.md#isenabled)
-- [mainImage](backend.createpost.md#mainimage)
-- [pageDescription](backend.createpost.md#pagedescription)
-- [pageTitle](backend.createpost.md#pagetitle)
-- [publishDate](backend.createpost.md#publishdate)
-- [published](backend.createpost.md#published)
-- [readTime](backend.createpost.md#readtime)
-- [slug](backend.createpost.md#slug)
-- [tagIds](backend.createpost.md#tagids)
-- [title](backend.createpost.md#title)
+- [authorId](backend.CreatePost.md#authorid)
+- [content](backend.CreatePost.md#content)
+- [delta](backend.CreatePost.md#delta)
+- [excerpt](backend.CreatePost.md#excerpt)
+- [featured](backend.CreatePost.md#featured)
+- [isEnabled](backend.CreatePost.md#isenabled)
+- [mainImage](backend.CreatePost.md#mainimage)
+- [pageDescription](backend.CreatePost.md#pagedescription)
+- [pageTitle](backend.CreatePost.md#pagetitle)
+- [publishDate](backend.CreatePost.md#publishdate)
+- [published](backend.CreatePost.md#published)
+- [readTime](backend.CreatePost.md#readtime)
+- [slug](backend.CreatePost.md#slug)
+- [tagIds](backend.CreatePost.md#tagids)
+- [title](backend.CreatePost.md#title)
 
 ## Constructors
 
 ### constructor
 
-\+ **new CreatePost**(): *CreatePost*
+• **new CreatePost**()
 
-**Returns:** *CreatePost*
+#### Inherited from
 
-Inherited from: [BasePageInput](backend.basepageinput.md)
+[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
 
 ## Properties
 
 ### authorId
 
-• **authorId**: *string*
+• **authorId**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreatePost.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreatePost.ts#L12)
+#### Implementation of
+
+TPostInput.authorId
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L12)
 
 ___
 
 ### content
 
-• **content**: *string*
+• **content**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreatePost.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreatePost.ts#L24)
+#### Implementation of
+
+TPostInput.content
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L24)
 
 ___
 
 ### delta
 
-• **delta**: *string*
+• **delta**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreatePost.ts:27](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreatePost.ts#L27)
+#### Implementation of
+
+TPostInput.delta
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L27)
 
 ___
 
 ### excerpt
 
-• `Optional` **excerpt**: *undefined* \| *null* \| *string*
+• `Optional` **excerpt**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/inputs/CreatePost.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreatePost.ts#L30)
+#### Implementation of
+
+TPostInput.excerpt
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:30](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L30)
+
+___
+
+### featured
+
+• `Optional` **featured**: `boolean`
+
+#### Implementation of
+
+TPostInput.featured
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:36](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L36)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
+TPostInput.isEnabled
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L16)
 
 ___
 
 ### mainImage
 
-• `Optional` **mainImage**: *undefined* \| *string*
+• `Optional` **mainImage**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreatePost.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreatePost.ts#L15)
+#### Implementation of
+
+TPostInput.mainImage
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L15)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
+TPostInput.pageDescription
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L13)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
+TPostInput.pageTitle
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L10)
 
 ___
 
 ### publishDate
 
-• `Optional` **publishDate**: *undefined* \| *null* \| Date
+• `Optional` **publishDate**: ``null`` \| `Date`
 
-Defined in: [system/core/backend/src/inputs/CreatePost.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreatePost.ts#L36)
+#### Implementation of
+
+TPostInput.publishDate
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:39](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L39)
 
 ___
 
 ### published
 
-• **published**: *boolean*
+• **published**: `boolean`
 
-Defined in: [system/core/backend/src/inputs/CreatePost.ts:33](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreatePost.ts#L33)
+#### Implementation of
+
+TPostInput.published
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:33](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L33)
 
 ___
 
 ### readTime
 
-• `Optional` **readTime**: *undefined* \| *null* \| *string*
+• `Optional` **readTime**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/inputs/CreatePost.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreatePost.ts#L18)
+#### Implementation of
+
+TPostInput.readTime
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:18](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L18)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)
+TPostInput.slug
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L7)
 
 ___
 
 ### tagIds
 
-• `Optional` **tagIds**: *undefined* \| *null* \| *string*[]
+• `Optional` **tagIds**: ``null`` \| `string`[]
 
-Defined in: [system/core/backend/src/inputs/CreatePost.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreatePost.ts#L21)
+#### Implementation of
+
+TPostInput.tagIds
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:21](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L21)
 
 ___
 
 ### title
 
-• **title**: *string*
+• **title**: `string`
 
-Defined in: [system/core/backend/src/inputs/CreatePost.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/CreatePost.ts#L9)
+#### Implementation of
+
+TPostInput.title
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/post.create.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/post.create.ts#L9)

@@ -6,362 +6,454 @@
 
 ## Hierarchy
 
-* *BaseRepository*<[*ProductReview*](backend.productreview.md)\>
+- [`BaseRepository`](backend.BaseRepository.md)<[`ProductReview`](backend.ProductReview.md)\>
 
-  ↳ **ProductReviewRepository**
+  ↳ **`ProductReviewRepository`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.productreviewrepository.md#constructor)
+- [constructor](backend.ProductReviewRepository.md#constructor)
 
 ### Methods
 
-- [applyDeleteMany](backend.productreviewrepository.md#applydeletemany)
-- [applyProductReviewFilter](backend.productreviewrepository.md#applyproductreviewfilter)
-- [createEntity](backend.productreviewrepository.md#createentity)
-- [createProductReview](backend.productreviewrepository.md#createproductreview)
-- [deleteEntity](backend.productreviewrepository.md#deleteentity)
-- [deleteMany](backend.productreviewrepository.md#deletemany)
-- [deleteManyFilteredProductReviews](backend.productreviewrepository.md#deletemanyfilteredproductreviews)
-- [deleteProductReview](backend.productreviewrepository.md#deleteproductreview)
-- [getAll](backend.productreviewrepository.md#getall)
-- [getById](backend.productreviewrepository.md#getbyid)
-- [getBySlug](backend.productreviewrepository.md#getbyslug)
-- [getFilteredProductReviews](backend.productreviewrepository.md#getfilteredproductreviews)
-- [getPaged](backend.productreviewrepository.md#getpaged)
-- [getProductReview](backend.productreviewrepository.md#getproductreview)
-- [getProductReviews](backend.productreviewrepository.md#getproductreviews)
-- [handleProductReviewInput](backend.productreviewrepository.md#handleproductreviewinput)
-- [updateEntity](backend.productreviewrepository.md#updateentity)
-- [updateProductReview](backend.productreviewrepository.md#updateproductreview)
+- [applyDeleteMany](backend.ProductReviewRepository.md#applydeletemany)
+- [applyProductReviewFilter](backend.ProductReviewRepository.md#applyproductreviewfilter)
+- [createEntity](backend.ProductReviewRepository.md#createentity)
+- [createProductReview](backend.ProductReviewRepository.md#createproductreview)
+- [deleteEntity](backend.ProductReviewRepository.md#deleteentity)
+- [deleteMany](backend.ProductReviewRepository.md#deletemany)
+- [deleteManyFilteredProductReviews](backend.ProductReviewRepository.md#deletemanyfilteredproductreviews)
+- [deleteProductReview](backend.ProductReviewRepository.md#deleteproductreview)
+- [getAll](backend.ProductReviewRepository.md#getall)
+- [getById](backend.ProductReviewRepository.md#getbyid)
+- [getBySlug](backend.ProductReviewRepository.md#getbyslug)
+- [getFilteredProductReviews](backend.ProductReviewRepository.md#getfilteredproductreviews)
+- [getPaged](backend.ProductReviewRepository.md#getpaged)
+- [getProductReview](backend.ProductReviewRepository.md#getproductreview)
+- [getProductReviews](backend.ProductReviewRepository.md#getproductreviews)
+- [handleProductReviewInput](backend.ProductReviewRepository.md#handleproductreviewinput)
+- [updateEntity](backend.ProductReviewRepository.md#updateentity)
+- [updateProductReview](backend.ProductReviewRepository.md#updateproductreview)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ProductReviewRepository**(`EntityClass`: (...`args`: *any*[]) => [*ProductReview*](backend.productreview.md) & { `id?`: *undefined* \| *string*  }): *ProductReviewRepository*
+• **new ProductReviewRepository**(`EntityClass`)
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`EntityClass` | (...`args`: *any*[]) => [*ProductReview*](backend.productreview.md) & { `id?`: *undefined* \| *string*  } |
+| Name | Type |
+| :------ | :------ |
+| `EntityClass` | (...`args`: `any`[]) => [`ProductReview`](backend.ProductReview.md) & { `id?`: `string`  } |
 
-**Returns:** *ProductReviewRepository*
+#### Inherited from
 
-Inherited from: BaseRepository
+[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:10](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L10)
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L11)
 
 ## Methods
 
 ### applyDeleteMany
 
-▸ **applyDeleteMany**(`qb`: *SelectQueryBuilder*<[*ProductReview*](backend.productreview.md)\> \| *DeleteQueryBuilder*<[*ProductReview*](backend.productreview.md)\>, `input`: TDeleteManyInput): *Promise*<void\>
+▸ **applyDeleteMany**(`qb`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<[*ProductReview*](backend.productreview.md)\> \| *DeleteQueryBuilder*<[*ProductReview*](backend.productreview.md)\> |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<[`ProductReview`](backend.ProductReview.md)\> \| `DeleteQueryBuilder`<[`ProductReview`](backend.ProductReview.md)\> |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`void`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L87)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
 
 ___
 
 ### applyProductReviewFilter
 
-▸ **applyProductReviewFilter**(`qb`: *SelectQueryBuilder*<TProductReview\> \| *DeleteQueryBuilder*<TProductReview\>, `filterParams?`: [*ProductReviewFilter*](backend.productreviewfilter.md)): *void*
+▸ **applyProductReviewFilter**(`qb`, `filterParams?`): `void`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<TProductReview\> \| *DeleteQueryBuilder*<TProductReview\> |
-`filterParams?` | [*ProductReviewFilter*](backend.productreviewfilter.md) |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<`TProductReview`\> \| `DeleteQueryBuilder`<`TProductReview`\> |
+| `filterParams?` | [`ProductReviewFilter`](backend.ProductReviewFilter.md) |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductReviewRepository.ts:93](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductReviewRepository.ts#L93)
+`void`
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-review.repository.ts:93](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-review.repository.ts#L93)
 
 ___
 
 ### createEntity
 
-▸ **createEntity**(`input`: [*ProductReview*](backend.productreview.md), `id?`: *string*): *Promise*<[*ProductReview*](backend.productreview.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`ProductReview`](backend.ProductReview.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | [*ProductReview*](backend.productreview.md) |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `input` | [`ProductReview`](backend.ProductReview.md) |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*ProductReview*](backend.productreview.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`ProductReview`](backend.ProductReview.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L49)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
 
 ___
 
 ### createProductReview
 
-▸ **createProductReview**(`createProductReview`: TProductReviewInput, `id?`: *string*): *Promise*<TProductReview\>
+▸ **createProductReview**(`createProductReview`, `id?`): `Promise`<`TProductReview`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`createProductReview` | TProductReviewInput |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `createProductReview` | `TProductReviewInput` |
+| `id?` | `string` |
 
-**Returns:** *Promise*<TProductReview\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductReviewRepository.ts:54](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductReviewRepository.ts#L54)
+`Promise`<`TProductReview`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-review.repository.ts:54](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-review.repository.ts#L54)
 
 ___
 
 ### deleteEntity
 
-▸ **deleteEntity**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteEntity**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L76)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
 
 ___
 
 ### deleteMany
 
-▸ **deleteMany**(`input`: TDeleteManyInput): *Promise*<boolean\>
+▸ **deleteMany**(`input`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L97)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
 
 ___
 
 ### deleteManyFilteredProductReviews
 
-▸ **deleteManyFilteredProductReviews**(`input`: TDeleteManyInput, `filterParams?`: [*ProductReviewFilter*](backend.productreviewfilter.md)): *Promise*<undefined \| boolean\>
+▸ **deleteManyFilteredProductReviews**(`input`, `filterParams?`): `Promise`<`undefined` \| `boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | [*ProductReviewFilter*](backend.productreviewfilter.md) |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | [`ProductReviewFilter`](backend.ProductReviewFilter.md) |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductReviewRepository.ts:142](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductReviewRepository.ts#L142)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-review.repository.ts:142](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-review.repository.ts#L142)
 
 ___
 
 ### deleteProductReview
 
-▸ **deleteProductReview**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteProductReview**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductReviewRepository.ts:82](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductReviewRepository.ts#L82)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-review.repository.ts:82](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-review.repository.ts#L82)
 
 ___
 
 ### getAll
 
-▸ **getAll**(): *Promise*<[*ProductReview*](backend.productreview.md)[]\>
+▸ **getAll**(): `Promise`<[`ProductReview`](backend.ProductReview.md)[]\>
 
-**Returns:** *Promise*<[*ProductReview*](backend.productreview.md)[]\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`ProductReview`](backend.ProductReview.md)[]\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L24)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
 
 ___
 
 ### getById
 
-▸ **getById**(`id`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*ProductReview*](backend.productreview.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`ProductReview`](backend.ProductReview.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*ProductReview*](backend.productreview.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`ProductReview`](backend.ProductReview.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L29)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
 
 ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*ProductReview*](backend.productreview.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`ProductReview`](backend.ProductReview.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*ProductReview*](backend.productreview.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`ProductReview`](backend.ProductReview.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L39)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
 
 ___
 
 ### getFilteredProductReviews
 
-▸ **getFilteredProductReviews**(`pagedParams?`: *PagedParamsInput*<TProductReview\>, `filterParams?`: [*ProductReviewFilter*](backend.productreviewfilter.md)): *Promise*<TPagedList<TProductReview\>\>
+▸ **getFilteredProductReviews**(`pagedParams?`, `filterParams?`): `Promise`<`TPagedList`<`TProductReview`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *PagedParamsInput*<TProductReview\> |
-`filterParams?` | [*ProductReviewFilter*](backend.productreviewfilter.md) |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<`TProductReview`\> |
+| `filterParams?` | [`ProductReviewFilter`](backend.ProductReviewFilter.md) |
 
-**Returns:** *Promise*<TPagedList<TProductReview\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductReviewRepository.ts:134](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductReviewRepository.ts#L134)
+`Promise`<`TPagedList`<`TProductReview`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-review.repository.ts:134](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-review.repository.ts#L134)
 
 ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`: *TPagedParams*<[*ProductReview*](backend.productreview.md)\>): *Promise*<TPagedList<[*ProductReview*](backend.productreview.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`ProductReview`](backend.ProductReview.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<[*ProductReview*](backend.productreview.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<[`ProductReview`](backend.ProductReview.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*ProductReview*](backend.productreview.md)\>\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`TPagedList`<[`ProductReview`](backend.ProductReview.md)\>\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L18)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
 
 ___
 
 ### getProductReview
 
-▸ **getProductReview**(`id`: *string*): *Promise*<[*ProductReview*](backend.productreview.md)\>
+▸ **getProductReview**(`id`): `Promise`<[`ProductReview`](backend.ProductReview.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<[*ProductReview*](backend.productreview.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductReviewRepository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductReviewRepository.ts#L23)
+`Promise`<[`ProductReview`](backend.ProductReview.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-review.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-review.repository.ts#L23)
 
 ___
 
 ### getProductReviews
 
-▸ **getProductReviews**(`params`: *TPagedParams*<TProductReview\>): *Promise*<TPagedList<TProductReview\>\>
+▸ **getProductReviews**(`params`): `Promise`<`TPagedList`<`TProductReview`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params` | *TPagedParams*<TProductReview\> |
+| Name | Type |
+| :------ | :------ |
+| `params` | `TPagedParams`<`TProductReview`\> |
 
-**Returns:** *Promise*<TPagedList<TProductReview\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductReviewRepository.ts:19](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductReviewRepository.ts#L19)
+`Promise`<`TPagedList`<`TProductReview`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-review.repository.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-review.repository.ts#L19)
 
 ___
 
 ### handleProductReviewInput
 
-▸ **handleProductReviewInput**(`productReview`: [*ProductReview*](backend.productreview.md), `input`: TProductReviewInput): *Promise*<void\>
+▸ **handleProductReviewInput**(`productReview`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`productReview` | [*ProductReview*](backend.productreview.md) |
-`input` | TProductReviewInput |
+| Name | Type |
+| :------ | :------ |
+| `productReview` | [`ProductReview`](backend.ProductReview.md) |
+| `input` | `TProductReviewInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductReviewRepository.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductReviewRepository.ts#L32)
+`Promise`<`void`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-review.repository.ts:32](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-review.repository.ts#L32)
 
 ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`: *string*, `input`: [*ProductReview*](backend.productreview.md)): *Promise*<[*ProductReview*](backend.productreview.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`ProductReview`](backend.ProductReview.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`input` | [*ProductReview*](backend.productreview.md) |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `input` | [`ProductReview`](backend.ProductReview.md) |
 
-**Returns:** *Promise*<[*ProductReview*](backend.productreview.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`ProductReview`](backend.ProductReview.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L61)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)
 
 ___
 
 ### updateProductReview
 
-▸ **updateProductReview**(`id`: *string*, `updateProductReview`: TProductReviewInput): *Promise*<[*ProductReview*](backend.productreview.md)\>
+▸ **updateProductReview**(`id`, `updateProductReview`): `Promise`<[`ProductReview`](backend.ProductReview.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`updateProductReview` | TProductReviewInput |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `updateProductReview` | `TProductReviewInput` |
 
-**Returns:** *Promise*<[*ProductReview*](backend.productreview.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/ProductReviewRepository.ts:67](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/ProductReviewRepository.ts#L67)
+`Promise`<[`ProductReview`](backend.ProductReview.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/product-review.repository.ts:67](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product-review.repository.ts#L67)

@@ -6,151 +6,237 @@
 
 ## Hierarchy
 
-* [*BasePageEntity*](backend.basepageentity.md)
+- [`BasePageEntity`](backend.BasePageEntity.md)
 
-  ↳ **Tag**
+  ↳ **`Tag`**
 
 ## Implements
 
-* *TTag*
+- `TTag`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.tag.md#constructor)
+- [constructor](backend.Tag.md#constructor)
 
 ### Properties
 
-- [color](backend.tag.md#color)
-- [createDate](backend.tag.md#createdate)
-- [description](backend.tag.md#description)
-- [descriptionDelta](backend.tag.md#descriptiondelta)
-- [id](backend.tag.md#id)
-- [image](backend.tag.md#image)
-- [isEnabled](backend.tag.md#isenabled)
-- [name](backend.tag.md#name)
-- [pageDescription](backend.tag.md#pagedescription)
-- [pageTitle](backend.tag.md#pagetitle)
-- [slug](backend.tag.md#slug)
-- [updateDate](backend.tag.md#updatedate)
+- [color](backend.Tag.md#color)
+- [createDate](backend.Tag.md#createdate)
+- [description](backend.Tag.md#description)
+- [descriptionDelta](backend.Tag.md#descriptiondelta)
+- [id](backend.Tag.md#id)
+- [image](backend.Tag.md#image)
+- [isEnabled](backend.Tag.md#isenabled)
+- [name](backend.Tag.md#name)
+- [pageDescription](backend.Tag.md#pagedescription)
+- [pageTitle](backend.Tag.md#pagetitle)
+- [slug](backend.Tag.md#slug)
+- [updateDate](backend.Tag.md#updatedate)
 
 ## Constructors
 
 ### constructor
 
-\+ **new Tag**(): [*Tag*](backend.tag.md)
+• **new Tag**()
 
-**Returns:** [*Tag*](backend.tag.md)
+#### Inherited from
 
-Inherited from: [BasePageEntity](backend.basepageentity.md)
+[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
 
 ## Properties
 
 ### color
 
-• `Optional` **color**: *undefined* \| *null* \| *string*
+• `Optional` **color**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/Tag.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Tag.ts#L17)
+#### Implementation of
+
+TTag.color
+
+#### Defined in
+
+[system/core/backend/src/models/entities/tag.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/tag.entity.ts#L16)
 
 ___
 
 ### createDate
 
-• **createDate**: Date
+• **createDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
+TTag.createDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
 
 ___
 
 ### description
 
-• `Optional` **description**: *undefined* \| *null* \| *string*
+• `Optional` **description**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/Tag.ts:25](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Tag.ts#L25)
+#### Implementation of
+
+TTag.description
+
+#### Defined in
+
+[system/core/backend/src/models/entities/tag.entity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/tag.entity.ts#L24)
 
 ___
 
 ### descriptionDelta
 
-• `Optional` **descriptionDelta**: *undefined* \| *null* \| *string*
+• `Optional` **descriptionDelta**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/Tag.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Tag.ts#L29)
+#### Implementation of
+
+TTag.descriptionDelta
+
+#### Defined in
+
+[system/core/backend/src/models/entities/tag.entity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/tag.entity.ts#L28)
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
+TTag.id
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
 
 ___
 
 ### image
 
-• `Optional` **image**: *undefined* \| *null* \| *string*
+• `Optional` **image**: ``null`` \| `string`
 
-Defined in: [system/core/backend/src/entities/Tag.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Tag.ts#L21)
+#### Implementation of
+
+TTag.image
+
+#### Defined in
+
+[system/core/backend/src/models/entities/tag.entity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/tag.entity.ts#L20)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
+TTag.isEnabled
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
 
 ___
 
 ### name
 
-• **name**: *string*
+• **name**: `string`
 
-Defined in: [system/core/backend/src/entities/Tag.ts:13](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/Tag.ts#L13)
+#### Implementation of
+
+TTag.name
+
+#### Defined in
+
+[system/core/backend/src/models/entities/tag.entity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/tag.entity.ts#L12)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
+TTag.pageDescription
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
+TTag.pageTitle
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
+TTag.slug
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
 
 ___
 
 ### updateDate
 
-• **updateDate**: Date
+• **updateDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
+TTag.updateDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)

@@ -15,12 +15,14 @@
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
-    "generate:api": "cd ../ && npx typedoc --options website/typedoc.json"
+    "generate:api": "cd ../ && npx typedoc --options website/typedoc.json",
+    "win:clean-api-docs": "rmdir /q /s docs\\api"
   },
   "dependencies": {
     "@cromwell/core-backend": "1.0.12",
     "@cromwell/core-frontend": "1.0.9",
     "@docusaurus/core": "2.0.0-beta.0",
+    "@docusaurus/theme-search-algolia": "2.0.0-beta.4",
     "@docusaurus/preset-classic": "2.0.0-beta.0",
     "@material-ui/core": "4.11.2",
     "@material-ui/icons": "4.11.2",
@@ -32,9 +34,8 @@
     "file-loader": "^6.2.0",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "typedoc": "0.20.23",
-    "typedoc-plugin-markdown": "3.6.0",
-    "typedoc-plugin-no-inherit": "1.2.0",
+    "typedoc": "0.21.5",
+    "typedoc-plugin-markdown": "3.10.4",
     "url-loader": "^4.1.1"
   },
   "devDependencies": {

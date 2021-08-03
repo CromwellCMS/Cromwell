@@ -1,7 +1,14 @@
-import { getStoreItem, setStoreItem, TCromwellPage, TCromwellPageCoreProps, TDefaultPageName } from '@cromwell/core';
-import { CContainer, pageRootContainerId } from '@cromwell/core-frontend';
+import {
+    getStoreItem,
+    isServer,
+    setStoreItem,
+    TCromwellPage,
+    TCromwellPageCoreProps,
+    TDefaultPageName,
+    TPageStats,
+} from '@cromwell/core';
+import { CContainer, getRestAPIClient, pageRootContainerId } from '@cromwell/core-frontend';
 import { getModuleImporter } from '@cromwell/utils/build/importer.js';
-import { DomElement } from 'htmlparser2';
 import React, { useRef, useState } from 'react';
 import ReactHtmlParser, { Transform } from 'react-html-parser';
 import { isValidElementType } from 'react-is';
@@ -12,7 +19,7 @@ function useForceUpdate() {
 }
 
 let index = 0;
-const parserTransform: Transform = (node: DomElement) => {
+const parserTransform: Transform = (node) => {
     index++;
     if (node.type === 'script') {
         if (node.children?.[0]?.data && node.children[0].data !== '')
@@ -34,7 +41,7 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         const { plugins, pageConfig, themeCustomConfig,
             childStaticProps, cmsSettings, themeHeadHtml,
             themeFooterHtml, pagesInfo,
-            palette, defaultPages } = props;
+            palette, defaultPages, pageConfigName } = props;
 
         const forcedChildStaticProps = useRef(null);
         if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
@@ -64,6 +71,15 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
             if (pageConfig.description && pageConfig.description !== "") {
                 description = pageConfig.description;
             }
+        }
+
+        if (!isServer()) {
+            const apiClient = getRestAPIClient();
+            const pageStats: TPageStats = {
+                pageRoute: window.location.pathname + window.location.search,
+                pageName: pageConfigName,
+            }
+            apiClient?.post(`v1/cms/view-page`, pageStats, { disableLog: true }).catch(() => null);
         }
 
         const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;

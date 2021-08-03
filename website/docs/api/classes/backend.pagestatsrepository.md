@@ -6,197 +6,253 @@
 
 ## Hierarchy
 
-* *BaseRepository*<[*PageStats*](backend.pagestats.md)\>
+- [`BaseRepository`](backend.BaseRepository.md)<[`PageStats`](backend.PageStats.md)\>
 
-  ↳ **PageStatsRepository**
+  ↳ **`PageStatsRepository`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.pagestatsrepository.md#constructor)
+- [constructor](backend.PageStatsRepository.md#constructor)
 
 ### Methods
 
-- [applyDeleteMany](backend.pagestatsrepository.md#applydeletemany)
-- [createEntity](backend.pagestatsrepository.md#createentity)
-- [deleteEntity](backend.pagestatsrepository.md#deleteentity)
-- [deleteMany](backend.pagestatsrepository.md#deletemany)
-- [getAll](backend.pagestatsrepository.md#getall)
-- [getById](backend.pagestatsrepository.md#getbyid)
-- [getBySlug](backend.pagestatsrepository.md#getbyslug)
-- [getPaged](backend.pagestatsrepository.md#getpaged)
-- [updateEntity](backend.pagestatsrepository.md#updateentity)
+- [applyDeleteMany](backend.PageStatsRepository.md#applydeletemany)
+- [createEntity](backend.PageStatsRepository.md#createentity)
+- [deleteEntity](backend.PageStatsRepository.md#deleteentity)
+- [deleteMany](backend.PageStatsRepository.md#deletemany)
+- [getAll](backend.PageStatsRepository.md#getall)
+- [getById](backend.PageStatsRepository.md#getbyid)
+- [getBySlug](backend.PageStatsRepository.md#getbyslug)
+- [getPaged](backend.PageStatsRepository.md#getpaged)
+- [updateEntity](backend.PageStatsRepository.md#updateentity)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PageStatsRepository**(): *PageStatsRepository*
+• **new PageStatsRepository**()
 
-**Returns:** *PageStatsRepository*
+#### Overrides
 
-Inherited from: BaseRepository
+[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
 
-Defined in: [system/core/backend/src/repositories/PageStatsRepository.ts:7](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PageStatsRepository.ts#L7)
+#### Defined in
+
+[system/core/backend/src/repositories/page-stats.repository.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/page-stats.repository.ts#L9)
 
 ## Methods
 
 ### applyDeleteMany
 
-▸ **applyDeleteMany**(`qb`: *SelectQueryBuilder*<[*PageStats*](backend.pagestats.md)\> \| *DeleteQueryBuilder*<[*PageStats*](backend.pagestats.md)\>, `input`: TDeleteManyInput): *Promise*<void\>
+▸ **applyDeleteMany**(`qb`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<[*PageStats*](backend.pagestats.md)\> \| *DeleteQueryBuilder*<[*PageStats*](backend.pagestats.md)\> |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<[`PageStats`](backend.PageStats.md)\> \| `DeleteQueryBuilder`<[`PageStats`](backend.PageStats.md)\> |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`void`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L87)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
 
 ___
 
 ### createEntity
 
-▸ **createEntity**(`input`: [*PageStats*](backend.pagestats.md), `id?`: *string*): *Promise*<[*PageStats*](backend.pagestats.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`PageStats`](backend.PageStats.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | [*PageStats*](backend.pagestats.md) |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `input` | [`PageStats`](backend.PageStats.md) |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*PageStats*](backend.pagestats.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`PageStats`](backend.PageStats.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L49)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
 
 ___
 
 ### deleteEntity
 
-▸ **deleteEntity**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteEntity**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L76)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
 
 ___
 
 ### deleteMany
 
-▸ **deleteMany**(`input`: TDeleteManyInput): *Promise*<boolean\>
+▸ **deleteMany**(`input`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L97)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
 
 ___
 
 ### getAll
 
-▸ **getAll**(): *Promise*<[*PageStats*](backend.pagestats.md)[]\>
+▸ **getAll**(): `Promise`<[`PageStats`](backend.PageStats.md)[]\>
 
-**Returns:** *Promise*<[*PageStats*](backend.pagestats.md)[]\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`PageStats`](backend.PageStats.md)[]\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L24)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
 
 ___
 
 ### getById
 
-▸ **getById**(`id`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*PageStats*](backend.pagestats.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`PageStats`](backend.PageStats.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*PageStats*](backend.pagestats.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`PageStats`](backend.PageStats.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L29)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
 
 ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*PageStats*](backend.pagestats.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`PageStats`](backend.PageStats.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*PageStats*](backend.pagestats.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`PageStats`](backend.PageStats.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L39)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
 
 ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`: *TPagedParams*<[*PageStats*](backend.pagestats.md)\>): *Promise*<TPagedList<[*PageStats*](backend.pagestats.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`PageStats`](backend.PageStats.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<[*PageStats*](backend.pagestats.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<[`PageStats`](backend.PageStats.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*PageStats*](backend.pagestats.md)\>\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`TPagedList`<[`PageStats`](backend.PageStats.md)\>\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L18)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
 
 ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`: *string*, `input`: [*PageStats*](backend.pagestats.md)): *Promise*<[*PageStats*](backend.pagestats.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`PageStats`](backend.PageStats.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`input` | [*PageStats*](backend.pagestats.md) |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `input` | [`PageStats`](backend.PageStats.md) |
 
-**Returns:** *Promise*<[*PageStats*](backend.pagestats.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`PageStats`](backend.PageStats.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L61)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)

@@ -6,372 +6,468 @@
 
 ## Hierarchy
 
-* *BaseRepository*<[*Post*](backend.post.md)\>
+- [`BaseRepository`](backend.BaseRepository.md)<[`Post`](backend.Post.md)\>
 
-  ↳ **PostRepository**
+  ↳ **`PostRepository`**
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.postrepository.md#constructor)
+- [constructor](backend.PostRepository.md#constructor)
 
 ### Methods
 
-- [applyDeleteMany](backend.postrepository.md#applydeletemany)
-- [applyPostFilter](backend.postrepository.md#applypostfilter)
-- [createEntity](backend.postrepository.md#createentity)
-- [createPost](backend.postrepository.md#createpost)
-- [deleteEntity](backend.postrepository.md#deleteentity)
-- [deleteMany](backend.postrepository.md#deletemany)
-- [deleteManyFilteredPosts](backend.postrepository.md#deletemanyfilteredposts)
-- [deletePost](backend.postrepository.md#deletepost)
-- [getAll](backend.postrepository.md#getall)
-- [getById](backend.postrepository.md#getbyid)
-- [getBySlug](backend.postrepository.md#getbyslug)
-- [getFilteredPosts](backend.postrepository.md#getfilteredposts)
-- [getPaged](backend.postrepository.md#getpaged)
-- [getPostById](backend.postrepository.md#getpostbyid)
-- [getPostBySlug](backend.postrepository.md#getpostbyslug)
-- [getPosts](backend.postrepository.md#getposts)
-- [getTagsOfPost](backend.postrepository.md#gettagsofpost)
-- [updateEntity](backend.postrepository.md#updateentity)
-- [updatePost](backend.postrepository.md#updatepost)
+- [applyDeleteMany](backend.PostRepository.md#applydeletemany)
+- [applyPostFilter](backend.PostRepository.md#applypostfilter)
+- [createEntity](backend.PostRepository.md#createentity)
+- [createPost](backend.PostRepository.md#createpost)
+- [deleteEntity](backend.PostRepository.md#deleteentity)
+- [deleteMany](backend.PostRepository.md#deletemany)
+- [deleteManyFilteredPosts](backend.PostRepository.md#deletemanyfilteredposts)
+- [deletePost](backend.PostRepository.md#deletepost)
+- [getAll](backend.PostRepository.md#getall)
+- [getById](backend.PostRepository.md#getbyid)
+- [getBySlug](backend.PostRepository.md#getbyslug)
+- [getFilteredPosts](backend.PostRepository.md#getfilteredposts)
+- [getPaged](backend.PostRepository.md#getpaged)
+- [getPostById](backend.PostRepository.md#getpostbyid)
+- [getPostBySlug](backend.PostRepository.md#getpostbyslug)
+- [getPosts](backend.PostRepository.md#getposts)
+- [getTagsOfPost](backend.PostRepository.md#gettagsofpost)
+- [updateEntity](backend.PostRepository.md#updateentity)
+- [updatePost](backend.PostRepository.md#updatepost)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PostRepository**(): *PostRepository*
+• **new PostRepository**()
 
-**Returns:** *PostRepository*
+#### Overrides
 
-Inherited from: BaseRepository
+[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:19](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L19)
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:21](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L21)
 
 ## Methods
 
 ### applyDeleteMany
 
-▸ **applyDeleteMany**(`qb`: *SelectQueryBuilder*<[*Post*](backend.post.md)\> \| *DeleteQueryBuilder*<[*Post*](backend.post.md)\>, `input`: TDeleteManyInput): *Promise*<void\>
+▸ **applyDeleteMany**(`qb`, `input`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<[*Post*](backend.post.md)\> \| *DeleteQueryBuilder*<[*Post*](backend.post.md)\> |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<[`Post`](backend.Post.md)\> \| `DeleteQueryBuilder`<[`Post`](backend.Post.md)\> |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`void`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:87](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L87)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
 
 ___
 
 ### applyPostFilter
 
-▸ **applyPostFilter**(`qb`: *SelectQueryBuilder*<TPost\>, `filterParams?`: [*PostFilterInput*](backend.postfilterinput.md)): *SelectQueryBuilder*<TPost\>
+▸ **applyPostFilter**(`qb`, `filterParams?`): `SelectQueryBuilder`<`TPost`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`qb` | *SelectQueryBuilder*<TPost\> |
-`filterParams?` | [*PostFilterInput*](backend.postfilterinput.md) |
+| Name | Type |
+| :------ | :------ |
+| `qb` | `SelectQueryBuilder`<`TPost`\> |
+| `filterParams?` | [`PostFilterInput`](backend.PostFilterInput.md) |
 
-**Returns:** *SelectQueryBuilder*<TPost\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:115](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L115)
+`SelectQueryBuilder`<`TPost`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:116](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L116)
 
 ___
 
 ### createEntity
 
-▸ **createEntity**(`input`: [*Post*](backend.post.md), `id?`: *string*): *Promise*<[*Post*](backend.post.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`Post`](backend.Post.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | [*Post*](backend.post.md) |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `input` | [`Post`](backend.Post.md) |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*Post*](backend.post.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Post`](backend.Post.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L49)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
 
 ___
 
 ### createPost
 
-▸ **createPost**(`createPost`: TPostInput, `id?`: *string*): *Promise*<[*Post*](backend.post.md)\>
+▸ **createPost**(`createPost`, `id?`): `Promise`<[`Post`](backend.Post.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`createPost` | TPostInput |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `createPost` | `TPostInput` |
+| `id?` | `string` |
 
-**Returns:** *Promise*<[*Post*](backend.post.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L76)
+`Promise`<[`Post`](backend.Post.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:77](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L77)
 
 ___
 
 ### deleteEntity
 
-▸ **deleteEntity**(`id`: *string*): *Promise*<boolean\>
+▸ **deleteEntity**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L76)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
 
 ___
 
 ### deleteMany
 
-▸ **deleteMany**(`input`: TDeleteManyInput): *Promise*<boolean\>
+▸ **deleteMany**(`input`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`boolean`\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L97)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
 
 ___
 
 ### deleteManyFilteredPosts
 
-▸ **deleteManyFilteredPosts**(`input`: TDeleteManyInput, `filterParams?`: [*PostFilterInput*](backend.postfilterinput.md)): *Promise*<undefined \| boolean\>
+▸ **deleteManyFilteredPosts**(`input`, `filterParams?`): `Promise`<`undefined` \| `boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`input` | TDeleteManyInput |
-`filterParams?` | [*PostFilterInput*](backend.postfilterinput.md) |
+| Name | Type |
+| :------ | :------ |
+| `input` | `TDeleteManyInput` |
+| `filterParams?` | [`PostFilterInput`](backend.PostFilterInput.md) |
 
-**Returns:** *Promise*<undefined \| boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:161](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L161)
+`Promise`<`undefined` \| `boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:178](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L178)
 
 ___
 
 ### deletePost
 
-▸ **deletePost**(`id`: *string*): *Promise*<boolean\>
+▸ **deletePost**(`id`): `Promise`<`boolean`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<boolean\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:103](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L103)
+`Promise`<`boolean`\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:104](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L104)
 
 ___
 
 ### getAll
 
-▸ **getAll**(): *Promise*<[*Post*](backend.post.md)[]\>
+▸ **getAll**(): `Promise`<[`Post`](backend.Post.md)[]\>
 
-**Returns:** *Promise*<[*Post*](backend.post.md)[]\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Post`](backend.Post.md)[]\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L24)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
 
 ___
 
 ### getById
 
-▸ **getById**(`id`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*Post*](backend.post.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Post`](backend.Post.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*Post*](backend.post.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`Post`](backend.Post.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L29)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
 
 ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`: *string*, `relations?`: *string*[]): *Promise*<undefined \| [*Post*](backend.post.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Post`](backend.Post.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
-`relations?` | *string*[] |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
+| `relations?` | `string`[] |
 
-**Returns:** *Promise*<undefined \| [*Post*](backend.post.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`undefined` \| [`Post`](backend.Post.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:39](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L39)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
 
 ___
 
 ### getFilteredPosts
 
-▸ **getFilteredPosts**(`pagedParams?`: *PagedParamsInput*<[*Post*](backend.post.md)\>, `filterParams?`: [*PostFilterInput*](backend.postfilterinput.md)): *Promise*<TPagedList<TPost\>\>
+▸ **getFilteredPosts**(`pagedParams?`, `filterParams?`): `Promise`<`TPagedList`<`TPost`\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pagedParams?` | *PagedParamsInput*<[*Post*](backend.post.md)\> |
-`filterParams?` | [*PostFilterInput*](backend.postfilterinput.md) |
+| Name | Type |
+| :------ | :------ |
+| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<[`Post`](backend.Post.md)\> |
+| `filterParams?` | [`PostFilterInput`](backend.PostFilterInput.md) |
 
-**Returns:** *Promise*<TPagedList<TPost\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:154](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L154)
+`Promise`<`TPagedList`<`TPost`\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:171](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L171)
 
 ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`: *TPagedParams*<[*Post*](backend.post.md)\>): *Promise*<TPagedList<[*Post*](backend.post.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Post`](backend.Post.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params?` | *TPagedParams*<[*Post*](backend.post.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params?` | `TPagedParams`<[`Post`](backend.Post.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*Post*](backend.post.md)\>\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<`TPagedList`<[`Post`](backend.Post.md)\>\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L18)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
 
 ___
 
 ### getPostById
 
-▸ **getPostById**(`id`: *string*): *Promise*<undefined \| [*Post*](backend.post.md)\>
+▸ **getPostById**(`id`): `Promise`<`undefined` \| [`Post`](backend.Post.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
 
-**Returns:** *Promise*<undefined \| [*Post*](backend.post.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L30)
+`Promise`<`undefined` \| [`Post`](backend.Post.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:30](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L30)
 
 ___
 
 ### getPostBySlug
 
-▸ **getPostBySlug**(`slug`: *string*): *Promise*<undefined \| [*Post*](backend.post.md)\>
+▸ **getPostBySlug**(`slug`): `Promise`<`undefined` \| [`Post`](backend.Post.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`slug` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `slug` | `string` |
 
-**Returns:** *Promise*<undefined \| [*Post*](backend.post.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:35](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L35)
+`Promise`<`undefined` \| [`Post`](backend.Post.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L35)
 
 ___
 
 ### getPosts
 
-▸ **getPosts**(`params`: *TPagedParams*<[*Post*](backend.post.md)\>): *Promise*<TPagedList<[*Post*](backend.post.md)\>\>
+▸ **getPosts**(`params`): `Promise`<`TPagedList`<[`Post`](backend.Post.md)\>\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`params` | *TPagedParams*<[*Post*](backend.post.md)\> |
+| Name | Type |
+| :------ | :------ |
+| `params` | `TPagedParams`<[`Post`](backend.Post.md)\> |
 
-**Returns:** *Promise*<TPagedList<[*Post*](backend.post.md)\>\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:25](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L25)
+`Promise`<`TPagedList`<[`Post`](backend.Post.md)\>\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:25](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L25)
 
 ___
 
 ### getTagsOfPost
 
-▸ **getTagsOfPost**(`postId`: *string*): *Promise*<undefined \| *null* \| [*Tag*](backend.tag.md)[]\>
+▸ **getTagsOfPost**(`postId`): `Promise`<`undefined` \| ``null`` \| [`Tag`](backend.Tag.md)[]\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`postId` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `postId` | `string` |
 
-**Returns:** *Promise*<undefined \| *null* \| [*Tag*](backend.tag.md)[]\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:179](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L179)
+`Promise`<`undefined` \| ``null`` \| [`Tag`](backend.Tag.md)[]\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:196](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L196)
 
 ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`: *string*, `input`: [*Post*](backend.post.md)): *Promise*<[*Post*](backend.post.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`Post`](backend.Post.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`input` | [*Post*](backend.post.md) |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `input` | [`Post`](backend.Post.md) |
 
-**Returns:** *Promise*<[*Post*](backend.post.md)\>
+#### Returns
 
-Inherited from: BaseRepository
+`Promise`<[`Post`](backend.Post.md)\>
 
-Defined in: [system/core/backend/src/repositories/BaseRepository.ts:61](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/BaseRepository.ts#L61)
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)
 
 ___
 
 ### updatePost
 
-▸ **updatePost**(`id`: *string*, `updatePost`: TPostInput): *Promise*<[*Post*](backend.post.md)\>
+▸ **updatePost**(`id`, `updatePost`): `Promise`<[`Post`](backend.Post.md)\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`id` | *string* |
-`updatePost` | TPostInput |
+| Name | Type |
+| :------ | :------ |
+| `id` | `string` |
+| `updatePost` | `TPostInput` |
 
-**Returns:** *Promise*<[*Post*](backend.post.md)\>
+#### Returns
 
-Defined in: [system/core/backend/src/repositories/PostRepository.ts:88](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/repositories/PostRepository.ts#L88)
+`Promise`<[`Post`](backend.Post.md)\>
+
+#### Defined in
+
+[system/core/backend/src/repositories/post.repository.ts:89](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/post.repository.ts#L89)

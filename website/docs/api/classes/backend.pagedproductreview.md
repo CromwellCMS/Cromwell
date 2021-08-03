@@ -6,39 +6,49 @@
 
 ## Implements
 
-* *TPagedList*<TProductReview\>
+- `TPagedList`<`TProductReview`\>
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.pagedproductreview.md#constructor)
+- [constructor](backend.PagedProductReview.md#constructor)
 
 ### Properties
 
-- [elements](backend.pagedproductreview.md#elements)
-- [pagedMeta](backend.pagedproductreview.md#pagedmeta)
+- [elements](backend.PagedProductReview.md#elements)
+- [pagedMeta](backend.PagedProductReview.md#pagedmeta)
 
 ## Constructors
 
 ### constructor
 
-\+ **new PagedProductReview**(): [*PagedProductReview*](backend.pagedproductreview.md)
-
-**Returns:** [*PagedProductReview*](backend.pagedproductreview.md)
+• **new PagedProductReview**()
 
 ## Properties
 
 ### elements
 
-• `Optional` **elements**: *undefined* \| [*ProductReview*](backend.productreview.md)[]
+• `Optional` **elements**: [`ProductReview`](backend.ProductReview.md)[]
 
-Defined in: [system/core/backend/src/entities/paged/PagedProductReview.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedProductReview.ts#L12)
+#### Implementation of
+
+TPagedList.elements
+
+#### Defined in
+
+[system/core/backend/src/models/paged/product-review.paged.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/product-review.paged.ts#L12)
 
 ___
 
 ### pagedMeta
 
-• `Optional` **pagedMeta**: *undefined* \| [*PagedMeta*](backend.pagedmeta.md)
+• `Optional` **pagedMeta**: [`PagedMeta`](backend.PagedMeta.md)
 
-Defined in: [system/core/backend/src/entities/paged/PagedProductReview.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/paged/PagedProductReview.ts#L9)
+#### Implementation of
+
+TPagedList.pagedMeta
+
+#### Defined in
+
+[system/core/backend/src/models/paged/product-review.paged.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/paged/product-review.paged.ts#L9)

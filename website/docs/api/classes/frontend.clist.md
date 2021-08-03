@@ -6,302 +6,369 @@
 
 ## Type parameters
 
-Name | Default |
-:------ | :------ |
-`DataType` | - |
-`ListItemProps` | *any* |
+| Name | Type |
+| :------ | :------ |
+| `DataType` | `DataType` |
+| `ListItemProps` | `any` |
 
 ## Hierarchy
 
-* *PureComponent*<[*TCListProps*](../modules/frontend.md#tclistprops)<DataType, ListItemProps\> & TCromwellBlockProps\>
+- `PureComponent`<[`TCListProps`](../modules/frontend.md#tclistprops)<`DataType`, `ListItemProps`\> & `TCromwellBlockProps`<[`TCList`](../modules/frontend.md#tclist)\>\>
 
-  ↳ **CList**
+  ↳ **`CList`**
 
 ## Implements
 
-* [*TCList*](../modules/frontend.md#tclist)<DataType, ListItemProps\>
+- [`TCList`](../modules/frontend.md#tclist)<`DataType`, `ListItemProps`\>
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](frontend.clist.md#constructor)
-
-### Accessors
-
-- [currentPageNum](frontend.clist.md#currentpagenum)
-- [pageSize](frontend.clist.md#pagesize)
+- [constructor](frontend.CList.md#constructor)
 
 ### Methods
 
-- [addListener](frontend.clist.md#addlistener)
-- [clearState](frontend.clist.md#clearstate)
-- [componentDidUpdate](frontend.clist.md#componentdidupdate)
-- [componentWillUnmount](frontend.clist.md#componentwillunmount)
-- [getPagedParams](frontend.clist.md#getpagedparams)
-- [getProps](frontend.clist.md#getprops)
-- [getScrollboxEl](frontend.clist.md#getscrollboxel)
-- [init](frontend.clist.md#init)
-- [onPageScrolled](frontend.clist.md#onpagescrolled)
-- [openPage](frontend.clist.md#openpage)
-- [render](frontend.clist.md#render)
-- [setOverlay](frontend.clist.md#setoverlay)
-- [setPagedParams](frontend.clist.md#setpagedparams)
-- [setProps](frontend.clist.md#setprops)
-- [updateData](frontend.clist.md#updatedata)
+- [addListener](frontend.CList.md#addlistener)
+- [clearState](frontend.CList.md#clearstate)
+- [componentDidUpdate](frontend.CList.md#componentdidupdate)
+- [componentWillUnmount](frontend.CList.md#componentwillunmount)
+- [getPagedParams](frontend.CList.md#getpagedparams)
+- [getProps](frontend.CList.md#getprops)
+- [getScrollboxEl](frontend.CList.md#getscrollboxel)
+- [init](frontend.CList.md#init)
+- [onPageScrolled](frontend.CList.md#onpagescrolled)
+- [openPage](frontend.CList.md#openpage)
+- [render](frontend.CList.md#render)
+- [setOverlay](frontend.CList.md#setoverlay)
+- [setPagedParams](frontend.CList.md#setpagedparams)
+- [setProps](frontend.CList.md#setprops)
+- [updateData](frontend.CList.md#updatedata)
 
 ## Constructors
 
 ### constructor
 
-\+ **new CList**<DataType, ListItemProps\>(`props`: [*TCListProps*](../modules/frontend.md#tclistprops)<DataType, ListItemProps\>): [*CList*](frontend.clist.md)<DataType, ListItemProps\>
+• **new CList**<`DataType`, `ListItemProps`\>(`props`)
 
-#### Type parameters:
+#### Type parameters
 
-Name | Default |
-:------ | :------ |
-`DataType` | - |
-`ListItemProps` | *any* |
+| Name | Type |
+| :------ | :------ |
+| `DataType` | `DataType` |
+| `ListItemProps` | `any` |
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | [*TCListProps*](../modules/frontend.md#tclistprops)<DataType, ListItemProps\> |
+| Name | Type |
+| :------ | :------ |
+| `props` | [`TCListProps`](../modules/frontend.md#tclistprops)<`DataType`, `ListItemProps`\> |
 
-**Returns:** [*CList*](frontend.clist.md)<DataType, ListItemProps\>
+#### Overrides
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:54](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L54)
+React.PureComponent&lt;TCListProps&lt;DataType, ListItemProps\&gt; &amp; TCromwellBlockProps&lt;TCList\&gt;\&gt;.constructor
 
-## Accessors
+#### Defined in
 
-### currentPageNum
-
-• get **currentPageNum**(): *number*
-
-**Returns:** *number*
-
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:26](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L26)
-
-• set **currentPageNum**(`val`: *number*): *void*
-
-#### Parameters:
-
-Name | Type |
-:------ | :------ |
-`val` | *number* |
-
-**Returns:** *void*
-
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:29](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L29)
-
-___
-
-### pageSize
-
-• get **pageSize**(): *undefined* \| *number*
-
-**Returns:** *undefined* \| *number*
-
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L32)
-
-• set **pageSize**(`val`: *undefined* \| *number*): *void*
-
-#### Parameters:
-
-Name | Type |
-:------ | :------ |
-`val` | *undefined* \| *number* |
-
-**Returns:** *void*
-
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:35](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L35)
+[system/core/frontend/src/components/CList/CList.tsx:55](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L55)
 
 ## Methods
 
 ### addListener
 
-▸ **addListener**(`type`: *componentDidUpdate*, `cb`: () => *void*, `id?`: *string*): *void*
+▸ **addListener**(`type`, `cb`, `id?`): `void`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`type` | *componentDidUpdate* |
-`cb` | () => *void* |
-`id?` | *string* |
+| Name | Type |
+| :------ | :------ |
+| `type` | ``"componentDidUpdate"`` |
+| `cb` | () => `void` |
+| `id?` | `string` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:97](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L97)
+`void`
+
+#### Implementation of
+
+TCList.addListener
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:93](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L93)
 
 ___
 
 ### clearState
 
-▸ **clearState**(): *void*
+▸ **clearState**(): `void`
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:274](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L274)
+`void`
+
+#### Implementation of
+
+TCList.clearState
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:266](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L266)
 
 ___
 
 ### componentDidUpdate
 
-▸ **componentDidUpdate**(): *void*
+▸ **componentDidUpdate**(): `void`
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:73](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L73)
+`void`
+
+#### Overrides
+
+React.PureComponent.componentDidUpdate
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:69](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L69)
 
 ___
 
 ### componentWillUnmount
 
-▸ **componentWillUnmount**(): *void*
+▸ **componentWillUnmount**(): `void`
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:93](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L93)
+`void`
+
+#### Overrides
+
+React.PureComponent.componentWillUnmount
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:89](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L89)
 
 ___
 
 ### getPagedParams
 
-▸ **getPagedParams**(): *TPagedParams*<DataType\>
+▸ **getPagedParams**(): `TPagedParams`<`DataType`\>
 
-**Returns:** *TPagedParams*<DataType\>
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:494](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L494)
+`TPagedParams`<`DataType`\>
+
+#### Implementation of
+
+TCList.getPagedParams
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:496](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L496)
 
 ___
 
 ### getProps
 
-▸ **getProps**(): [*TCListProps*](../modules/frontend.md#tclistprops)<DataType, ListItemProps\>
+▸ **getProps**(): [`TCListProps`](../modules/frontend.md#tclistprops)<`DataType`, `ListItemProps`\>
 
-**Returns:** [*TCListProps*](../modules/frontend.md#tclistprops)<DataType, ListItemProps\>
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:64](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L64)
+[`TCListProps`](../modules/frontend.md#tclistprops)<`DataType`, `ListItemProps`\>
+
+#### Implementation of
+
+TCList.getProps
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L60)
 
 ___
 
 ### getScrollboxEl
 
-▸ **getScrollboxEl**(): *null* \| HTMLDivElement
+▸ **getScrollboxEl**(): ``null`` \| `HTMLDivElement`
 
-**Returns:** *null* \| HTMLDivElement
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:464](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L464)
+``null`` \| `HTMLDivElement`
+
+#### Implementation of
+
+TCList.getScrollboxEl
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:457](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L457)
 
 ___
 
 ### init
 
-▸ **init**(): *void*
+▸ **init**(): `void`
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:113](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L113)
+`void`
+
+#### Implementation of
+
+TCList.init
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:109](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L109)
 
 ___
 
 ### onPageScrolled
 
-▸ **onPageScrolled**(`pageNumber`: *number*): *void*
+▸ **onPageScrolled**(`pageNumber`): `void`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pageNumber` | *number* |
+| Name | Type |
+| :------ | :------ |
+| `pageNumber` | `number` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:290](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L290)
+`void`
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:282](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L282)
 
 ___
 
 ### openPage
 
-▸ **openPage**(`pageNumber`: *number*): *Promise*<void\>
+▸ **openPage**(`pageNumber`): `Promise`<`void`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`pageNumber` | *number* |
+| Name | Type |
+| :------ | :------ |
+| `pageNumber` | `number` |
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:301](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L301)
+`Promise`<`void`\>
+
+#### Implementation of
+
+TCList.openPage
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:292](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L292)
 
 ___
 
 ### render
 
-▸ **render**(): *Element*
+▸ **render**(): `Element`
 
-**Returns:** *Element*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:497](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L497)
+`Element`
+
+#### Overrides
+
+React.PureComponent.render
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:499](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L499)
 
 ___
 
 ### setOverlay
 
-▸ **setOverlay**(`isLoading`: *boolean*, `force?`: *boolean*): *void*
+▸ **setOverlay**(`isLoading`, `force?`): `void`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`isLoading` | *boolean* |
-`force?` | *boolean* |
+| Name | Type |
+| :------ | :------ |
+| `isLoading` | `boolean` |
+| `force?` | `boolean` |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:403](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L403)
+`void`
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:394](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L394)
 
 ___
 
 ### setPagedParams
 
-▸ **setPagedParams**(`val`: *TPagedParams*<DataType\>): *TPagedParams*<DataType\>
+▸ **setPagedParams**(`val`): `TPagedParams`<`DataType`\>
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`val` | *TPagedParams*<DataType\> |
+| Name | Type |
+| :------ | :------ |
+| `val` | `TPagedParams`<`DataType`\> |
 
-**Returns:** *TPagedParams*<DataType\>
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:495](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L495)
+`TPagedParams`<`DataType`\>
+
+#### Implementation of
+
+TCList.setPagedParams
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:497](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L497)
 
 ___
 
 ### setProps
 
-▸ **setProps**(`props`: *null* \| [*TCListProps*](../modules/frontend.md#tclistprops)<DataType, ListItemProps\>): *void*
+▸ **setProps**(`props`): `void`
 
-#### Parameters:
+#### Parameters
 
-Name | Type |
-:------ | :------ |
-`props` | *null* \| [*TCListProps*](../modules/frontend.md#tclistprops)<DataType, ListItemProps\> |
+| Name | Type |
+| :------ | :------ |
+| `props` | ``null`` \| [`TCListProps`](../modules/frontend.md#tclistprops)<`DataType`, `ListItemProps`\> |
 
-**Returns:** *void*
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:69](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L69)
+`void`
+
+#### Implementation of
+
+TCList.setProps
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:65](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L65)
 
 ___
 
 ### updateData
 
-▸ **updateData**(): *Promise*<void\>
+▸ **updateData**(): `Promise`<`void`\>
 
-**Returns:** *Promise*<void\>
+#### Returns
 
-Defined in: [system/core/frontend/src/components/CList/CList.tsx:142](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/frontend/src/components/CList/CList.tsx#L142)
+`Promise`<`void`\>
+
+#### Implementation of
+
+TCList.updateData
+
+#### Defined in
+
+[system/core/frontend/src/components/CList/CList.tsx:134](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CList/CList.tsx#L134)

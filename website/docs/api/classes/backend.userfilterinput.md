@@ -6,66 +6,94 @@
 
 ## Implements
 
-* *TUserFilter*
+- `TUserFilter`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.userfilterinput.md#constructor)
+- [constructor](backend.UserFilterInput.md#constructor)
 
 ### Properties
 
-- [address](backend.userfilterinput.md#address)
-- [email](backend.userfilterinput.md#email)
-- [fullName](backend.userfilterinput.md#fullname)
-- [phone](backend.userfilterinput.md#phone)
-- [role](backend.userfilterinput.md#role)
+- [address](backend.UserFilterInput.md#address)
+- [email](backend.UserFilterInput.md#email)
+- [fullName](backend.UserFilterInput.md#fullname)
+- [phone](backend.UserFilterInput.md#phone)
+- [role](backend.UserFilterInput.md#role)
 
 ## Constructors
 
 ### constructor
 
-\+ **new UserFilterInput**(): [*UserFilterInput*](backend.userfilterinput.md)
-
-**Returns:** [*UserFilterInput*](backend.userfilterinput.md)
+• **new UserFilterInput**()
 
 ## Properties
 
 ### address
 
-• `Optional` **address**: *undefined* \| *string*
+• `Optional` **address**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/UserFilterInput.ts#L17)
+#### Implementation of
+
+TUserFilter.address
+
+#### Defined in
+
+[system/core/backend/src/models/filters/user.filter.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/user.filter.ts#L17)
 
 ___
 
 ### email
 
-• `Optional` **email**: *undefined* \| *string*
+• `Optional` **email**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/UserFilterInput.ts#L11)
+#### Implementation of
+
+TUserFilter.email
+
+#### Defined in
+
+[system/core/backend/src/models/filters/user.filter.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/user.filter.ts#L11)
 
 ___
 
 ### fullName
 
-• `Optional` **fullName**: *undefined* \| *string*
+• `Optional` **fullName**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/UserFilterInput.ts#L8)
+#### Implementation of
+
+TUserFilter.fullName
+
+#### Defined in
+
+[system/core/backend/src/models/filters/user.filter.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/user.filter.ts#L8)
 
 ___
 
 ### phone
 
-• `Optional` **phone**: *undefined* \| *string*
+• `Optional` **phone**: `string`
 
-Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/UserFilterInput.ts#L14)
+#### Implementation of
+
+TUserFilter.phone
+
+#### Defined in
+
+[system/core/backend/src/models/filters/user.filter.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/user.filter.ts#L14)
 
 ___
 
 ### role
 
-• `Optional` **role**: *undefined* \| *administrator* \| *author* \| *customer* \| *guest*
+• `Optional` **role**: `TUserRole`
 
-Defined in: [system/core/backend/src/entities/filter/UserFilterInput.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/UserFilterInput.ts#L20)
+#### Implementation of
+
+TUserFilter.role
+
+#### Defined in
+
+[system/core/backend/src/models/filters/user.filter.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/user.filter.ts#L20)

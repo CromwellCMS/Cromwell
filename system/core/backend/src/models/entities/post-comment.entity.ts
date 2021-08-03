@@ -7,7 +7,6 @@ import { Post } from './post.entity';
 
 @Entity()
 @ObjectType()
-/** @noInheritDoc */
 export class PostComment extends BasePageEntity implements TPostComment {
 
     @Field(type => String, { nullable: true })

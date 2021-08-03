@@ -10,16 +10,7 @@ export class PageStatsDto implements TPageStats {
     views?: number;
 
     @ApiProperty()
-    productSlug?: string;
-
-    @ApiProperty()
-    categorySlug?: string;
-
-    @ApiProperty()
-    postSlug?: string;
-
-    @ApiProperty()
-    tagSlug?: string;
+    pageName?: string;
 }
 
 

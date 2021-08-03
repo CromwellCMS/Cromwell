@@ -6,48 +6,64 @@
 
 ## Implements
 
-* *TFilteredProductList*
+- `TFilteredProductList`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.filteredproduct.md#constructor)
+- [constructor](backend.FilteredProduct.md#constructor)
 
 ### Properties
 
-- [elements](backend.filteredproduct.md#elements)
-- [filterMeta](backend.filteredproduct.md#filtermeta)
-- [pagedMeta](backend.filteredproduct.md#pagedmeta)
+- [elements](backend.FilteredProduct.md#elements)
+- [filterMeta](backend.FilteredProduct.md#filtermeta)
+- [pagedMeta](backend.FilteredProduct.md#pagedmeta)
 
 ## Constructors
 
 ### constructor
 
-\+ **new FilteredProduct**(): [*FilteredProduct*](backend.filteredproduct.md)
-
-**Returns:** [*FilteredProduct*](backend.filteredproduct.md)
+• **new FilteredProduct**()
 
 ## Properties
 
 ### elements
 
-• `Optional` **elements**: *undefined* \| [*Product*](backend.product.md)[]
+• `Optional` **elements**: [`Product`](backend.Product.md)[]
 
-Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:21](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/FilteredProduct.ts#L21)
+#### Implementation of
+
+TFilteredProductList.elements
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L22)
 
 ___
 
 ### filterMeta
 
-• **filterMeta**: TProductFilterMeta
+• **filterMeta**: `TProductFilterMeta`
 
-Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/FilteredProduct.ts#L24)
+#### Implementation of
+
+TFilteredProductList.filterMeta
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:25](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L25)
 
 ___
 
 ### pagedMeta
 
-• `Optional` **pagedMeta**: *undefined* \| [*PagedMeta*](backend.pagedmeta.md)
+• `Optional` **pagedMeta**: [`PagedMeta`](backend.PagedMeta.md)
 
-Defined in: [system/core/backend/src/entities/filter/FilteredProduct.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/filter/FilteredProduct.ts#L18)
+#### Implementation of
+
+TFilteredProductList.pagedMeta
+
+#### Defined in
+
+[system/core/backend/src/models/filters/product.filter.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/filters/product.filter.ts#L19)

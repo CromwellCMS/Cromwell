@@ -6,118 +6,180 @@
 
 ## Hierarchy
 
-* [*BasePageInput*](backend.basepageinput.md)
+- [`BasePageInput`](backend.BasePageInput.md)
 
-  ↳ **AttributeInput**
+  ↳ **`AttributeInput`**
 
 ## Implements
 
-* *TAttributeInput*
+- `TAttributeInput`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.attributeinput.md#constructor)
+- [constructor](backend.AttributeInput.md#constructor)
 
 ### Properties
 
-- [icon](backend.attributeinput.md#icon)
-- [isEnabled](backend.attributeinput.md#isenabled)
-- [key](backend.attributeinput.md#key)
-- [pageDescription](backend.attributeinput.md#pagedescription)
-- [pageTitle](backend.attributeinput.md#pagetitle)
-- [required](backend.attributeinput.md#required)
-- [slug](backend.attributeinput.md#slug)
-- [type](backend.attributeinput.md#type)
-- [values](backend.attributeinput.md#values)
+- [icon](backend.AttributeInput.md#icon)
+- [isEnabled](backend.AttributeInput.md#isenabled)
+- [key](backend.AttributeInput.md#key)
+- [pageDescription](backend.AttributeInput.md#pagedescription)
+- [pageTitle](backend.AttributeInput.md#pagetitle)
+- [required](backend.AttributeInput.md#required)
+- [slug](backend.AttributeInput.md#slug)
+- [type](backend.AttributeInput.md#type)
+- [values](backend.AttributeInput.md#values)
 
 ## Constructors
 
 ### constructor
 
-\+ **new AttributeInput**(): *AttributeInput*
+• **new AttributeInput**()
 
-**Returns:** *AttributeInput*
+#### Inherited from
 
-Inherited from: [BasePageInput](backend.basepageinput.md)
+[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
 
 ## Properties
 
 ### icon
 
-• `Optional` **icon**: *undefined* \| *string*
+• `Optional` **icon**: `string`
 
-Defined in: [system/core/backend/src/inputs/AttributeInput.ts:17](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/AttributeInput.ts#L17)
+#### Implementation of
+
+TAttributeInput.icon
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/attribute.input.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/attribute.input.ts#L17)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[isEnabled](backend.basepageinput.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:18](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L18)
+TAttributeInput.isEnabled
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L16)
 
 ___
 
 ### key
 
-• **key**: *string*
+• **key**: `string`
 
-Defined in: [system/core/backend/src/inputs/AttributeInput.ts:8](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/AttributeInput.ts#L8)
+#### Implementation of
+
+TAttributeInput.key
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/attribute.input.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/attribute.input.ts#L8)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageDescription](backend.basepageinput.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:15](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L15)
+TAttributeInput.pageDescription
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L13)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[pageTitle](backend.basepageinput.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L12)
+TAttributeInput.pageTitle
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L10)
 
 ___
 
 ### required
 
-• `Optional` **required**: *undefined* \| *boolean*
+• `Optional` **required**: `boolean`
 
-Defined in: [system/core/backend/src/inputs/AttributeInput.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/AttributeInput.ts#L20)
+#### Implementation of
+
+TAttributeInput.required
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/attribute.input.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/attribute.input.ts#L20)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageInput](backend.basepageinput.md).[slug](backend.basepageinput.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/inputs/BasePageInput.ts:9](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/BasePageInput.ts#L9)
+TAttributeInput.slug
+
+#### Inherited from
+
+[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/base-page.input.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/base-page.input.ts#L7)
 
 ___
 
 ### type
 
-• **type**: *radio* \| *checkbox*
+• **type**: ``"radio"`` \| ``"checkbox"``
 
-Defined in: [system/core/backend/src/inputs/AttributeInput.ts:14](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/AttributeInput.ts#L14)
+#### Implementation of
+
+TAttributeInput.type
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/attribute.input.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/attribute.input.ts#L14)
 
 ___
 
 ### values
 
-• **values**: *AttributeValueInput*[]
+• **values**: [`AttributeValueInput`](backend.AttributeValueInput.md)[]
 
-Defined in: [system/core/backend/src/inputs/AttributeInput.ts:11](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/inputs/AttributeInput.ts#L11)
+#### Implementation of
+
+TAttributeInput.values
+
+#### Defined in
+
+[system/core/backend/src/models/inputs/attribute.input.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/inputs/attribute.input.ts#L11)

@@ -6,187 +6,293 @@
 
 ## Hierarchy
 
-* [*BasePageEntity*](backend.basepageentity.md)
+- [`BasePageEntity`](backend.BasePageEntity.md)
 
-  ↳ **ProductReview**
+  ↳ **`ProductReview`**
 
 ## Implements
 
-* *TProductReview*
+- `TProductReview`
 
 ## Table of contents
 
 ### Constructors
 
-- [constructor](backend.productreview.md#constructor)
+- [constructor](backend.ProductReview.md#constructor)
 
 ### Properties
 
-- [approved](backend.productreview.md#approved)
-- [createDate](backend.productreview.md#createdate)
-- [description](backend.productreview.md#description)
-- [id](backend.productreview.md#id)
-- [isEnabled](backend.productreview.md#isenabled)
-- [pageDescription](backend.productreview.md#pagedescription)
-- [pageTitle](backend.productreview.md#pagetitle)
-- [product](backend.productreview.md#product)
-- [productId](backend.productreview.md#productid)
-- [rating](backend.productreview.md#rating)
-- [slug](backend.productreview.md#slug)
-- [title](backend.productreview.md#title)
-- [updateDate](backend.productreview.md#updatedate)
-- [userEmail](backend.productreview.md#useremail)
-- [userId](backend.productreview.md#userid)
-- [userName](backend.productreview.md#username)
+- [approved](backend.ProductReview.md#approved)
+- [createDate](backend.ProductReview.md#createdate)
+- [description](backend.ProductReview.md#description)
+- [id](backend.ProductReview.md#id)
+- [isEnabled](backend.ProductReview.md#isenabled)
+- [pageDescription](backend.ProductReview.md#pagedescription)
+- [pageTitle](backend.ProductReview.md#pagetitle)
+- [product](backend.ProductReview.md#product)
+- [productId](backend.ProductReview.md#productid)
+- [rating](backend.ProductReview.md#rating)
+- [slug](backend.ProductReview.md#slug)
+- [title](backend.ProductReview.md#title)
+- [updateDate](backend.ProductReview.md#updatedate)
+- [userEmail](backend.ProductReview.md#useremail)
+- [userId](backend.ProductReview.md#userid)
+- [userName](backend.ProductReview.md#username)
 
 ## Constructors
 
 ### constructor
 
-\+ **new ProductReview**(): [*ProductReview*](backend.productreview.md)
+• **new ProductReview**()
 
-**Returns:** [*ProductReview*](backend.productreview.md)
+#### Inherited from
 
-Inherited from: [BasePageEntity](backend.basepageentity.md)
+[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
 
 ## Properties
 
 ### approved
 
-• `Optional` **approved**: *undefined* \| *boolean*
+• `Optional` **approved**: `boolean`
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:54](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L54)
+#### Implementation of
+
+TProductReview.approved
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product-review.entity.ts:53](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-review.entity.ts#L53)
 
 ___
 
 ### createDate
 
-• **createDate**: Date
+• **createDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[createDate](backend.basepageentity.md#createdate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L28)
+TProductReview.createDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
 
 ___
 
 ### description
 
-• `Optional` **description**: *undefined* \| *string*
+• `Optional` **description**: `string`
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:30](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L30)
+#### Implementation of
+
+TProductReview.description
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product-review.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-review.entity.ts#L29)
 
 ___
 
 ### id
 
-• **id**: *string*
+• **id**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[id](backend.basepageentity.md#id)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L12)
+TProductReview.id
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
 
 ___
 
 ### isEnabled
 
-• `Optional` **isEnabled**: *undefined* \| *boolean*
+• `Optional` **isEnabled**: `boolean`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[isEnabled](backend.basepageentity.md#isenabled)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L36)
+TProductReview.isEnabled
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
 
 ___
 
 ### pageDescription
 
-• `Optional` **pageDescription**: *undefined* \| *string*
+• `Optional` **pageDescription**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageDescription](backend.basepageentity.md#pagedescription)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L24)
+TProductReview.pageDescription
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
 
 ___
 
 ### pageTitle
 
-• `Optional` **pageTitle**: *undefined* \| *string*
+• `Optional` **pageTitle**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[pageTitle](backend.basepageentity.md#pagetitle)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L20)
+TProductReview.pageTitle
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
 
 ___
 
 ### product
 
-• **product**: [*Product*](backend.product.md)
+• **product**: [`Product`](backend.Product.md)
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:22](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L22)
+#### Defined in
+
+[system/core/backend/src/models/entities/product-review.entity.ts:21](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-review.entity.ts#L21)
 
 ___
 
 ### productId
 
-• **productId**: *string*
+• **productId**: `string`
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L16)
+#### Implementation of
+
+TProductReview.productId
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product-review.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-review.entity.ts#L15)
 
 ___
 
 ### rating
 
-• `Optional` **rating**: *undefined* \| *number*
+• `Optional` **rating**: `number`
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:35](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L35)
+#### Implementation of
+
+TProductReview.rating
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product-review.entity.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-review.entity.ts#L34)
 
 ___
 
 ### slug
 
-• `Optional` **slug**: *undefined* \| *string*
+• `Optional` **slug**: `string`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[slug](backend.basepageentity.md#slug)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L16)
+TProductReview.slug
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
 
 ___
 
 ### title
 
-• `Optional` **title**: *undefined* \| *string*
+• `Optional` **title**: `string`
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:26](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L26)
+#### Implementation of
+
+TProductReview.title
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product-review.entity.ts:25](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-review.entity.ts#L25)
 
 ___
 
 ### updateDate
 
-• **updateDate**: Date
+• **updateDate**: `Date`
 
-Inherited from: [BasePageEntity](backend.basepageentity.md).[updateDate](backend.basepageentity.md#updatedate)
+#### Implementation of
 
-Defined in: [system/core/backend/src/entities/BasePageEntity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/BasePageEntity.ts#L32)
+TProductReview.updateDate
+
+#### Inherited from
+
+[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+
+#### Defined in
+
+[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
 
 ___
 
 ### userEmail
 
-• `Optional` **userEmail**: *undefined* \| *string*
+• `Optional` **userEmail**: `string`
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:40](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L40)
+#### Implementation of
+
+TProductReview.userEmail
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product-review.entity.ts:39](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-review.entity.ts#L39)
 
 ___
 
 ### userId
 
-• `Optional` **userId**: *undefined* \| *string*
+• `Optional` **userId**: `string`
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:49](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L49)
+#### Implementation of
+
+TProductReview.userId
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product-review.entity.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-review.entity.ts#L48)
 
 ___
 
 ### userName
 
-• `Optional` **userName**: *undefined* \| *string*
+• `Optional` **userName**: `string`
 
-Defined in: [system/core/backend/src/entities/ProductReview.ts:44](https://github.com/CromwellCMS/Cromwell/blob/8568c07/system/core/backend/src/entities/ProductReview.ts#L44)
+#### Implementation of
+
+TProductReview.userName
+
+#### Defined in
+
+[system/core/backend/src/models/entities/product-review.entity.ts:43](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-review.entity.ts#L43)
