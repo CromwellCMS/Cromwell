@@ -8,7 +8,7 @@ import React from 'react';
 import { AccountCircleIcon } from '../icons';
 import styles from './PostCard.module.scss';
 
-const Image = NextImage.default;
+const Image = NextImage?.default;
 
 export const PostCard = (props?: {
     data?: TPost;
@@ -20,7 +20,6 @@ export const PostCard = (props?: {
     const data = props?.data;
     const postLink = `/post/${data?.slug ?? data?.id}`;
     const mainImage = data?.mainImage ?? '/themes/@cromwell/theme-store/no-photos.png';
-
     return (
         <div className={clsx(styles.PostCard, styles._onHoverLinkContainer, props?.coverImage && styles.coverImage)}>
             <div className={styles.imageBlock}
@@ -28,11 +27,13 @@ export const PostCard = (props?: {
             >
                 <Link href={postLink}>
                     <a style={{ display: 'flex' }}>
-                        <Image
-                            objectFit="cover"
-                            layout="fill"
-                            src={mainImage}
-                        />
+                        {Image && (
+                            <Image
+                                objectFit="cover"
+                                layout="fill"
+                                src={mainImage}
+                            />
+                        )}
                     </a>
                 </Link>
             </div>
