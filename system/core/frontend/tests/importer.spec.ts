@@ -1,12 +1,10 @@
-import { bundledModulesDirName, moduleNodeBuildFileName, moduleMetaInfoFileName } from '@App/constants';
-import { getModuleImporter } from '@App/importer';
-import { getBundledModulesDir } from '@App/shared';
-import { TPackageJson } from '@cromwell/core';
-import { getPublicDir } from '@cromwell/core-backend';
+import { bundledModulesDirName, moduleMetaInfoFileName, moduleNodeBuildFileName, TPackageJson } from '@cromwell/core';
+import { getBundledModulesDir, getPublicDir } from '@cromwell/core-backend';
 import * as fs from 'fs-extra';
 import { join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 
+import { getModuleImporter } from '../src/helpers/importer';
 import { mockWorkingDirectory, tearDown } from './helpers';
 
 const testDir = mockWorkingDirectory('importer');

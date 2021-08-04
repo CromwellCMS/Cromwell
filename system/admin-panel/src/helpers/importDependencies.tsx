@@ -20,7 +20,7 @@ const interopDefault = (lib, importName) => {
     return lib;
 }
 
-import { getModuleImporter } from '@cromwell/utils/build/importer.js';
+import { getModuleImporter } from '@cromwell/core-frontend';
 const importer = getModuleImporter();
 
 import * as admin from '../exports';

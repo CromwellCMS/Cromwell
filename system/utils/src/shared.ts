@@ -1,20 +1,15 @@
 import { TCromwellaConfig, TFrontendDependency, TPackageJson } from '@cromwell/core';
-import { getNodeModuleDir, getTempDir, readCmsModules } from '@cromwell/core-backend';
+import { getNodeModuleDir, readCmsModules } from '@cromwell/core-backend';
 import { each as asyncEach } from 'async';
 import colorsdef from 'colors/safe';
 import fs from 'fs-extra';
 import glob from 'glob';
 import importFrom from 'import-from';
-import path, { isAbsolute, resolve } from 'path';
+import path, { resolve } from 'path';
 
-import { bundledModulesDirName } from './constants';
 import { TDependency, TGetDeps, THoistedDeps, TLocalSymlink, TModuleInfo, TNonHoisted, TPackage } from './types';
 
 const colors: any = colorsdef;
-
-export const isExternalForm = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id) && !id.startsWith('$$');
-
-export const getBundledModulesDir = () => resolve(getTempDir(), bundledModulesDirName);
 
 export const getNodeModuleVersion = (moduleName: string, importFromPath?: string): string | undefined => {
     const pckgImportName = `${moduleName}/package.json`;

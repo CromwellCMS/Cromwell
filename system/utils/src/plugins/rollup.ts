@@ -22,6 +22,7 @@ import {
     getThemePagesMetaPath,
     getThemePagesVirtualPath,
     getThemeTempRollupBuildDir,
+    isExternalForm,
     pluginAdminBundlePath,
     pluginFrontendBundlePath,
     pluginFrontendCjsPath,
@@ -49,7 +50,6 @@ import {
     getNodeModuleVersion,
     globPackages,
     interopDefaultContent,
-    isExternalForm,
     parseFrontendDeps,
 } from '../shared';
 import externalGlobals from './rollup-globals';
@@ -291,7 +291,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
             options.plugins.push(scssExternalPlugin());
 
-            if (!options.plugins.find(plugin => plugin.name === '@rollup/plugin-babel' || plugin.name === 'babel'))
+            if (!options.plugins.find(plugin => typeof plugin === 'object' && plugin?.name === '@rollup/plugin-babel' ||
+                typeof plugin === 'object' && plugin?.name === 'babel'))
                 options.plugins.push(babel({
                     extensions: ['.js', '.jsx', '.ts', '.tsx'],
                     babelHelpers: 'bundled',
@@ -307,7 +308,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                 pagesDir,
             }));
 
-            if (!options.plugins.find(plugin => plugin.name === '@rollup/plugin-node-resolve' || plugin.name === 'node-resolve'))
+            if (!options.plugins.find(plugin => typeof plugin === 'object' && plugin?.name === '@rollup/plugin-node-resolve'
+                || typeof plugin === 'object' && plugin?.name === 'node-resolve'))
                 options.plugins.push(nodeResolve({
                     extensions: ['.js', '.jsx', '.ts', '.tsx'],
                 }));
@@ -329,7 +331,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                         [optionsInput]: `import pageComp from '${pagePath.srcFullPath}';export default pageComp;`
                     }));
 
-                    if (!adminOptions.plugins.find(plugin => plugin.name === '@rollup/plugin-babel' || plugin.name === 'babel'))
+                    if (!adminOptions.plugins.find(plugin => typeof plugin === 'object' && plugin?.name === '@rollup/plugin-babel'
+                        || typeof plugin === 'object' && plugin?.name === 'babel'))
                         adminOptions.plugins.push(babel({
                             extensions: ['.js', '.jsx', '.ts', '.tsx'],
                             babelHelpers: 'bundled',
@@ -344,7 +347,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                         pagesDir,
                     }));
 
-                    if (!adminOptions.plugins.find(plugin => plugin.name === '@rollup/plugin-node-resolve' || plugin.name === 'node-resolve'))
+                    if (!adminOptions.plugins.find(plugin => typeof plugin === 'object' && plugin?.name === '@rollup/plugin-node-resolve'
+                        || typeof plugin === 'object' && plugin?.name === 'node-resolve'))
                         adminOptions.plugins.push(nodeResolve({
                             extensions: ['.js', '.jsx', '.ts', '.tsx'],
                         }));

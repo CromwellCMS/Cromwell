@@ -1,6 +1,7 @@
-import { genericPageName, getRandStr, setStoreItem, sleep, TScriptMetaInfo } from '@cromwell/core';
+import { bundledModulesDirName, genericPageName, getRandStr, setStoreItem, sleep, TScriptMetaInfo } from '@cromwell/core';
 import {
     configFileName,
+    getBundledModulesDir,
     getCmsModuleConfig,
     getLogger,
     getModulePackage,
@@ -12,7 +13,7 @@ import {
     getThemeBuildDir,
     readCMSConfig,
 } from '@cromwell/core-backend';
-import { bundledModulesDirName, downloader, getBundledModulesDir } from '@cromwell/utils';
+import { downloader } from '@cromwell/utils';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
@@ -167,7 +168,7 @@ const devGenerate = async (themeName: string, options) => {
         }
 
         const pageImports = `
-         import { getModuleImporter } from '@cromwell/utils/build/importer.js';
+         import { getModuleImporter } from '@cromwell/core-frontend';
          import { getStore } from "@cromwell/core";
          import { checkCMSConfig } from 'build/renderer';
          ${pageInfo.name !== '_document' ? `

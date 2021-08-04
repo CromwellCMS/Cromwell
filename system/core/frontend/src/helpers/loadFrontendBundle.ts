@@ -1,9 +1,9 @@
 import { getStore, getStoreItem, isServer, setStoreItem, TFrontendBundle } from '@cromwell/core';
-import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 import loadableComponent from '@loadable/component';
 import { isValidElementType } from 'react-is';
 
 import { TDynamicLoader } from '../constants';
+import { getModuleImporter } from './importer';
 
 const pendingComponents: Record<string, any> = {};
 

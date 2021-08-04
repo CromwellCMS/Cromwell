@@ -34,6 +34,7 @@ export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore } from './CStore';
 export { iconFromPath } from './helpers/iconFromPath';
 export { loadFrontendBundle, getLoadableFrontendBundle } from './helpers/loadFrontendBundle';
+export { getModuleImporter } from './helpers/importer';
 export { fetch } from './helpers/isomorphicFetch';
 export * from './helpers/registerWidget';
 export * from './helpers/contentGetters';
