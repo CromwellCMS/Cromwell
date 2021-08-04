@@ -28,7 +28,6 @@ export class CPlugin extends React.Component<CPluginProps> {
                 content={(data, blockRef, setContentInstance) => {
                     setContentInstance(this);
                     const name = data?.plugin?.pluginName ?? pluginName;
-
                     if (!name) return <></>;
 
                     const pluginConf = getStoreItem('plugins')?.[name];

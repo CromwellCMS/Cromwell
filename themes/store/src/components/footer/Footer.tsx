@@ -14,7 +14,7 @@ export const Footer = () => {
                         <CText id="footer_07">Don&apos;t miss our special offers and sales!</CText>
                     </CContainer>
                     <CContainer className={styles.subscribeInputContainer} id="footer_05">
-                        <CPlugin id="footer_06_Newsletter" pluginName={"@cromwell/plugin-newsletter"} />
+                        <CPlugin id="footer_16_Newsletter" pluginName={"@cromwell/plugin-newsletter"} />
                     </CContainer>
                 </CContainer>
                 <CContainer className={styles.linksSection} id="footer_08">
@@ -36,7 +36,7 @@ export const Footer = () => {
                     <CContainer className={styles.linksBlock} id="footer_22">
                         <CText className={styles.blockHeader} id="footer_23">About us</CText>
                         <CText className={styles.blockLink} href="/blog" id="footer_26">Blog</CText>
-                        <CText className={styles.blockLink} href="/pages/news" id="footer_26">News</CText>
+                        <CText className={styles.blockLink} href="/pages/news" id="footer_27">News</CText>
                     </CContainer>
                 </CContainer>
             </CContainer>

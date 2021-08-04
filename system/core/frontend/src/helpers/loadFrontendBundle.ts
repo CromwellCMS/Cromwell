@@ -1,5 +1,7 @@
 import { getStore, getStoreItem, isServer, setStoreItem, TFrontendBundle } from '@cromwell/core';
+import { getModuleImporter } from '@cromwell/utils/build/importer.js';
 import loadableComponent from '@loadable/component';
+import { isValidElementType } from 'react-is';
 
 import { TDynamicLoader } from '../constants';
 
@@ -12,10 +14,7 @@ export const loadFrontendBundle = async (
     const components = getStoreItem('components') ?? {};
     setStoreItem('components', components);
 
-    const savedComp = components[bundleName];
-    if (savedComp) {
-        return (savedComp as any)?.default ?? savedComp;
-    }
+    if (components[bundleName]) return components[bundleName];
 
     let bundle: TFrontendBundle | null | undefined;
     try {
@@ -26,9 +25,9 @@ export const loadFrontendBundle = async (
     let comp: any;
 
     if (!bundle?.source) return;
+
     if (bundle?.meta) {
-        const nodeModules = getStoreItem('nodeModules');
-        await nodeModules?.importScriptExternals?.(bundle.meta);
+        await getModuleImporter().importScriptExternals(bundle.meta);
     }
 
     if (isServer()) {
@@ -53,11 +52,6 @@ export const loadFrontendBundle = async (
         } else {
             evalCode();
         }
-
-        if (comp) {
-            components[bundleName] = comp;
-        }
-
     } else {
         // Browser-side
         const source = `
@@ -74,11 +68,19 @@ export const loadFrontendBundle = async (
             document.head.appendChild(domScript);
         });
 
-        const components = getStoreItem('components');
         comp = components?.[bundleName];
     }
 
-    return comp?.default ?? comp;
+    comp = comp?.default ?? comp;
+
+    if (comp && isValidElementType(comp)) {
+        components[bundleName] = comp as any;
+    } else {
+        delete components[bundleName];
+        comp = undefined;
+    }
+
+    return comp;
 }
 
 export const getLoadableFrontendBundle = (
@@ -95,6 +97,9 @@ export const getLoadableFrontendBundle = (
 
     const loadableComp = loadableFunc?.(async () => {
         const comp = await loadFrontendBundle(bundleName, loader);
+
+        if (!comp) delete pendingComponents[bundleName];
+
         return comp ?? fallbackComponent ?? (() => null);
 
     }, dynamicLoaderProps) ?? fallbackComponent ?? (() => null);

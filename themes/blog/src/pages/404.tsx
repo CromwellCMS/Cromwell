@@ -1,16 +1,17 @@
+import { CContainer, CText } from '@cromwell/core-frontend';
 import React from 'react';
 
-import styles from '../styles/common.module.scss';
 import Layout from '../components/layout/Layout';
+import styles from '../styles/common.module.scss';
 
 const Custom404 = () => {
     return (
         <Layout>
-            <div className={styles.content}>
-                <div className={styles.notFound}>
-                    <h1>404 - Page Not Found</h1>
-                </div>
-            </div>
+            <CContainer className={styles.content} id="404-1">
+                <CContainer className={styles.notFound} id="404-2">
+                    <CText element="h1" id="404-4">404 - Page Not Found</CText>
+                </CContainer>
+            </CContainer>
         </Layout>
     );
 }

@@ -209,6 +209,18 @@ const OrderPage = () => {
                             className={styles.textField}
                             onChange={(e) => { handleInputChange('customerComment', e.target.value) }}
                         />
+                        <TextField label="Payment method"
+                            disabled
+                            value={data?.paymentMethod}
+                            fullWidth
+                            className={styles.textField}
+                        />
+                        <TextField label="Shipping method"
+                            disabled
+                            value={data?.shippingMethod}
+                            fullWidth
+                            className={styles.textField}
+                        />
                         <TextField label="Shipping price"
                             value={data?.shippingPrice ?? 0}
                             className={styles.textField}

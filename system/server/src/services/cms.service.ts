@@ -380,6 +380,7 @@ export class CmsService {
         orderTotal.successUrl = input.successUrl;
         orderTotal.cancelUrl = input.cancelUrl;
         orderTotal.fromUrl = input.fromUrl;
+        orderTotal.currency = input.currency;
 
         let cart: TStoreListItem[] | undefined;
         try {

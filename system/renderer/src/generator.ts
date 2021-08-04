@@ -116,28 +116,34 @@ const devGenerate = async (themeName: string, options) => {
             const pckgHash = getRandStr(4);
             const pckgNameStripped = pckgName.replace(/\W/g, '_');
 
-            if (externals[depName].includes('default')) {
-                importExtStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${pckgName}';`;
-                importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = ${pckgNameStripped}_${pckgHash};`;
-                importExtStr += `\n${cromwellStoreStatusesPath}['${pckgName}'] = 'default';`;
+            // Import all externals entirely, using `import * as lib from 'lib';`
+            importExtStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${pckgName}';`;
+            importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = ${pckgNameStripped}_${pckgHash};`;
+            importExtStr += `\n${cromwellStoreStatusesPath}['${pckgName}'] = 'default';`;
 
-            } else {
-                let namedImports = '';
-                externals[depName].forEach(named => {
-                    namedImports += `${named} as ${named}_${pckgHash}, `;
-                })
-                importExtStr += `\nimport { ${namedImports} } from '${pckgName}';`;
-
-                importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = {};`;
-                externals[depName].forEach(ext => {
-                    importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}']['${ext}'] = ${ext}_${pckgHash};`;
-                })
-            }
+            // // Another version. Make named imports and try to import only parts of libs
+            // // Has a problem that these half-imported libs can be overwritten in browser
+            // // when some Plugin requests missing chunks. Importer will try to merge new chunks
+            // // and old imports, but it may lead to unexpected behavior. 
+            // if (externals[depName].includes('default')) {
+            //     importExtStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${pckgName}';`;
+            //     importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = ${pckgNameStripped}_${pckgHash};`;
+            //     importExtStr += `\n${cromwellStoreStatusesPath}['${pckgName}'] = 'default';`;
+            // } else {
+            //     let namedImports = '';
+            //     externals[depName].forEach(named => {
+            //         namedImports += `${named} as ${named}_${pckgHash}, `;
+            //     })
+            //     importExtStr += `\nimport { ${namedImports} } from '${pckgName}';`;
+            //     importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = {};`;
+            //     externals[depName].forEach(ext => {
+            //         importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}']['${ext}'] = ${ext}_${pckgHash};`;
+            //     })
+            // }
         });
 
-
         let importDefaultStr = '';
-        // Make default imports.
+        // Make imports for standard always-packaged externals.
         defaultImported.forEach(depName => {
             const pckgHash = getRandStr(4);
             const pckgNameStripped = depName.replace(/\W/g, '_');
@@ -145,8 +151,9 @@ const devGenerate = async (themeName: string, options) => {
             importDefaultStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${depName}';`;
             importDefaultStr += `\n${cromwellStoreModulesPath}['${depName}'] = ${pckgNameStripped}_${pckgHash};`;
             importDefaultStr += `\n${cromwellStoreStatusesPath}['${depName}'] = 'default';`;
-        })
+        });
 
+        // Add global CSS into _app
         let globalCssImports = '';
         if (pageInfo.name === '_app' && themeConfig?.globalCss && pageRelativePath &&
             themeConfig.globalCss?.length > 0) {
@@ -161,7 +168,7 @@ const devGenerate = async (themeName: string, options) => {
 
         const pageImports = `
          import { getModuleImporter } from '@cromwell/utils/build/importer.js';
-         import { isServer, getStore } from "@cromwell/core";
+         import { getStore } from "@cromwell/core";
          import { checkCMSConfig } from 'build/renderer';
          ${pageInfo.name !== '_document' ? `
          import { getPage, createGetStaticPaths, createGetStaticProps } from 'build/renderer';
@@ -169,7 +176,7 @@ const devGenerate = async (themeName: string, options) => {
  
          checkCMSConfig();
          
-         const importer = getModuleImporter();
+         getModuleImporter();
          const CromwellStore = getStore();
  
          ${importDefaultStr}

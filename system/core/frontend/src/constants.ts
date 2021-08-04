@@ -57,8 +57,7 @@ export const { Consumer: BlockContentConsumer, Provider: BlockContentProvider } 
 // will be excluded and @loadable/component used instead
 export type TDynamicLoader = ((func: (() => Promise<ComponentType>), options?: any) => ComponentType);
 export const getDynamicLoader: () => TDynamicLoader
-    = () => getStore().nodeModules?.modules?.['next/dynamic']?.default ??
-        getStore().nodeModules?.modules?.['next/dynamic'] ?? loadable;
+    = () => getStore().nodeModules?.modules?.['next/dynamic']?.default ?? loadable;
 
 export const pageRootContainerId = 'root';
 

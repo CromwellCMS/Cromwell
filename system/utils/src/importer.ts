@@ -29,13 +29,22 @@ const checkStore = (): Required<TCromwellNodeModules> => {
     if (!Cromwell.moduleExternals) Cromwell.moduleExternals = {};
     if (!Cromwell.scriptStatuses) Cromwell.scriptStatuses = {};
 
+    const checkLib = (store, libName) => {
+        if (!store[libName]) {
+            store[libName] = {
+                libName,
+            };
+        }
+    }
+
 
     if (!Cromwell.modules) Cromwell.modules = new Proxy({}, {
         get(obj, prop) {
+            // checkLib(obj, prop);
             return obj[prop];
         },
         set(obj, prop, value) {
-            if (!obj[prop]) obj[prop] = {};
+            checkLib(obj, prop);
 
             if (typeof value === 'object' && !value['default']) {
                 value = {
@@ -43,8 +52,12 @@ const checkStore = (): Required<TCromwellNodeModules> => {
                     default: obj[prop]['default'] ?? obj[prop],
                 }
             }
+            // console.log('Set lib: ' + String(prop), obj[prop], 'new value: ', value);
             if (typeof value === 'object') {
                 obj[prop] = Object.assign(obj[prop], value);
+            } else if (typeof value === 'function') {
+                obj[prop] = value;
+                value.default = value;
             } else {
                 obj[prop] = Object.assign(obj[prop], {
                     default: value
@@ -57,9 +70,8 @@ const checkStore = (): Required<TCromwellNodeModules> => {
     return Cromwell as Required<TCromwellNodeModules>;
 }
 
-export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModules => {
+export const getModuleImporter = (serverPublicDir?: string): Required<TCromwellNodeModules> => {
     let Cromwell = checkStore();
-
     Cromwell.setPrefix = (prefix) => Cromwell.prefix = prefix;
 
     const canShowInfo = false;
@@ -189,10 +201,6 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
             // Module has been requested for the first time. Load main importer script of the module.
             if (!Cromwell.importStatuses[moduleName]) {
                 if (isDefaultImport) isLibImport = true;
-                if (Cromwell.modules?.[moduleName]) {
-                    // Module has been async imported in some other importer or was bundled intentionally that way with reference in global store.
-                    return true;
-                }
 
                 const scriptId = `${moduleName}@${moduleVer}-main-module-importer`;
                 if (document.getElementById(scriptId)) return true;
@@ -221,13 +229,6 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                     }
                 } catch (e) {
                     console.error('Cromwell:importer: Failed to load meta info about importer of the module: ' + moduleName, e);
-                }
-
-
-
-                if (Cromwell.modules?.[moduleName]) {
-                    // Module has been async imported in some other importer or was bundled intentionally that way with reference in global store.
-                    return true;
                 }
 
                 const filePath = isLibImport ? importerEntireLibFilepath : importerFilepath;
@@ -351,6 +352,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
     if (!Cromwell.importScriptExternals) Cromwell.importScriptExternals = async (metaInfo: TScriptMetaInfo | undefined): Promise<boolean> => {
         Cromwell = checkStore();
         Cromwell.hasBeenExecuted = true;
+        if (canShowInfo) console.log('Cromwell:importScriptExternals: ' + metaInfo?.name, metaInfo);
         const externals = metaInfo?.externalDependencies;
         if (!metaInfo || !externals) return false;
 

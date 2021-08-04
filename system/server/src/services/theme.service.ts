@@ -536,10 +536,6 @@ export class ThemeService {
 
         if (!themePckg?.version || !themePath) throw new HttpException('Failed to find package.json of the theme ' + themeName, HttpStatus.INTERNAL_SERVER_ERROR);
 
-
-        // @TODO Execute install script
-
-
         // Read module info from package.json
         const moduleInfo = await getCmsModuleInfo(themeName);
         delete moduleInfo?.frontendDependencies;

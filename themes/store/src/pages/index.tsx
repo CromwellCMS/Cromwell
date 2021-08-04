@@ -9,7 +9,7 @@ import styles from '../styles/pages/Index.module.scss';
 const Index: TCromwellPage = () => {
     return (
         <Layout>
-            <div className={styles.IndexPage}>
+            <CContainer className={styles.IndexPage} id="main_-1">
                 <CContainer id="main_00">
                     <CGallery id="main_gallery_01" className={styles.mainBannerGallery} />
                 </CContainer>
@@ -65,7 +65,7 @@ const Index: TCromwellPage = () => {
                         </CContainer>
                     </CContainer>
                 </CContainer>
-            </div>
+            </CContainer>
         </Layout>
     );
 }

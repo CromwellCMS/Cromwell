@@ -1,6 +1,6 @@
 import { CContainer, CGallery, CImage, getBlockHtmlId, CText, getCStore } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
-import * as nextRouter from 'next/router';
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
 import { ProductProps } from '../../pages/product/[slug]';
@@ -20,7 +20,7 @@ export default function ProductDetails(props: {
         modifiedProductRef.current = props.product;
     }
     const product = modifiedProductRef.current;
-    const router = nextRouter?.useRouter?.();
+    const router = useRouter?.();
 
     useEffect(() => {
         if (product) cstore.addToWatchedItems({ product });

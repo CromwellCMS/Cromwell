@@ -1,8 +1,8 @@
 import 'quill/dist/quill.snow.css';
 
 import { TCromwellPage, TGetStaticProps, TPost } from '@cromwell/core';
-import { getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
-import * as nextRouter from 'next/router';
+import { CContainer, getGraphQLClient, Link, LoadBox } from '@cromwell/core-frontend';
+import { useRouter } from 'next/router';
 import React from 'react';
 
 import Layout from '../../components/layout/Layout';
@@ -17,17 +17,17 @@ interface BlogPostProps {
 
 const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
     const { post } = props;
-    const router = nextRouter?.useRouter?.();
+    const router = useRouter?.();
 
     return (
         <Layout>
-            <div className={styles.BlogPost}>
-                <div className={commonStyles.content}>
+            <CContainer className={styles.BlogPost} id="blog-1">
+                <CContainer className={commonStyles.content} id="blog-2">
                     {post?.mainImage && (
                         <img className={styles.mainImage} src={post.mainImage} />
                     )}
-                </div>
-                <div className={styles.postContent}>
+                </CContainer>
+                <CContainer className={styles.postContent} id="blog-3">
                     {(!post && router && router.isFallback) && (
                         <LoadBox />
                     )}
@@ -60,9 +60,8 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
                             __html: post?.content
                         }}></div>
                     )}
-                </div>
-            </div>
-
+                </CContainer>
+            </CContainer>
         </Layout>
     );
 }

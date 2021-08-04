@@ -6,7 +6,7 @@ import styles from './Footer.module.scss';
 
 export default function Footer() {
     return (
-        <CContainer className={`${styles.Footer} ${commonStyles.text}`} id="footer_01">
+        <CContainer global className={`${styles.Footer} ${commonStyles.text}`} id="footer_01">
             <CContainer className={commonStyles.content} id="footer_02">
                 <CContainer className={styles.aboutSection} id="footer_08">
                     <CContainer className={styles.linksBlock} id="footer_09">
@@ -16,7 +16,7 @@ export default function Footer() {
                         <CText className={styles.blockHeader} id="footer_23">About us</CText>
                         <CText href="/pages/contacts" className={styles.blockLink} id="footer_27">Contacts</CText>
                         <CText href="/post/join-us" className={styles.blockLink} id="footer_26">Join Us</CText>
-                        <CText href="/search" className={styles.blockLink} id="footer_26">Search posts</CText>
+                        <CText href="/search" className={styles.blockLink} id="footer_28">Search posts</CText>
                     </CContainer>
                     <CContainer className={styles.linksBlock} id="footer_17">
                         <CText className={styles.blockHeader} id="footer_07">Join our newsletter!</CText>

@@ -1,3 +1,5 @@
+import React from 'react';
+
 const interopDefault = (lib, importName) => {
     if (lib && typeof lib === 'object' && 'default' in lib) {
 
@@ -216,3 +218,12 @@ importer.importStatuses['pure-react-carousel'] = 'default';
 import * as _apollo_client_0s3z from '@apollo/client';
 importer.modules['@apollo/client'] = interopDefault(_apollo_client_0s3z, 'default');
 importer.importStatuses['@apollo/client'] = 'default';
+
+
+importer.modules['next/document'] = {};
+importer.modules['next/router'] = {};
+importer.modules['next/amp'] = {};
+importer.modules['next/dynamic'] = loadableComponent;
+importer.modules['next/link'] = {};
+importer.modules['next/head'] = {};
+importer.modules['next/image'] = (props) => <img src={props?.src?.src ?? props?.src} />;
