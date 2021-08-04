@@ -10,6 +10,7 @@ const config: Config.InitialOptions = {
     // silent: false,
     testRegex: "/(tests|src)/.*\\.(test|spec)\\.[jt]sx?$",
     /** for circle ci free plan */
+    testTimeout: 10000,
     maxWorkers: 1,
     maxConcurrency: 1,
     globals: {

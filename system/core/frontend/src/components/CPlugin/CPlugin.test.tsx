@@ -1,6 +1,6 @@
 jest.mock('../../helpers/loadFrontendBundle', () => {
     return {
-        loadFrontendBundle: () => (props) => {
+        getLoadableFrontendBundle: () => (props) => {
             return (
                 <p>{props.pluginName}</p>
             )

@@ -37,7 +37,7 @@ describe('importer', () => {
         if (!await fs.pathExists(publicBuildLink))
             await symlinkDir(buildDir, publicBuildLink);
 
-        const importer = getModuleImporter();
+        const importer = getModuleImporter(undefined, true);
 
         const success = await importer?.importModule?.(moduleFullName);
         expect(success).toBeTruthy();
@@ -66,7 +66,7 @@ describe('importer', () => {
         if (!await fs.pathExists(publicBuildLink))
             await symlinkDir(buildDir, publicBuildLink);
 
-        const importer = getModuleImporter();
+        const importer = getModuleImporter(undefined, true);
 
         const success = await importer?.importScriptExternals?.({
             name: '_tets1_',

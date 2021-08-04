@@ -1,13 +1,16 @@
 import {
     bundledModulesDirName,
+    getStore,
+    isServer,
     moduleLibBuildFileName,
     moduleMainBuildFileName,
     moduleMetaInfoFileName,
     moduleNodeBuildFileName,
     TCromwellNodeModules,
     TScriptMetaInfo,
-    getStore, isServer
 } from '@cromwell/core';
+
+import { fetch } from './isomorphicFetch';
 
 /**
  * Bundled node modules (Frontend dependencies) loading script 
@@ -27,9 +30,11 @@ export class Importer implements Required<TCromwellNodeModules> {
     private normalizePath: any;
     private nodeRequire: any;
     private resolve: any;
-
+    private isServerSide = false;
 
     constructor() {
+        this.isServerSide = isServer();
+
         const checkLib = (store, libName) => {
             if (!store[libName]) {
                 store[libName] = {
@@ -70,7 +75,7 @@ export class Importer implements Required<TCromwellNodeModules> {
 
     public setPrefix = (prefix) => this.prefix = prefix;
     public setServerPublicDir = (dir) => this.serverPublicDir = dir;
-
+    public setIsServerSide = (isServerSide) => this.isServerSide = isServerSide;
 
     /**
      * Import single module with its dependencies
@@ -100,7 +105,7 @@ export class Importer implements Required<TCromwellNodeModules> {
         }
         if (canShowInfo) console.log('moduleName', moduleName, 'moduleVer', moduleVer)
 
-        if (isServer()) {
+        if (this.isServerSide) {
             try {
                 return this.serverImport({
                     moduleName,
@@ -421,7 +426,7 @@ export class Importer implements Required<TCromwellNodeModules> {
                 }
             });
             try {
-                if (!isServer()) {
+                if (!this.isServerSide) {
                     success = await Promise.all(promises);
                 }
             } catch (e) {
@@ -443,13 +448,17 @@ export class Importer implements Required<TCromwellNodeModules> {
     }
 }
 
-export const getModuleImporter = (serverPublicDir?: string): Importer => {
+export const getModuleImporter = (serverPublicDir?: string, serverSide?: boolean): Importer => {
     const store = getStore();
-    if (!store.nodeModules) store.nodeModules = new Importer();
+    const importer: Importer = store.nodeModules as Importer ?? new Importer();
+    if (!store.nodeModules) store.nodeModules = importer;
 
     if (serverPublicDir) {
-        (store.nodeModules as Importer)?.setServerPublicDir(serverPublicDir);
+        importer.setServerPublicDir(serverPublicDir);
+    }
+    if (typeof serverSide === 'boolean') {
+        importer.setIsServerSide(serverSide);
     }
 
-    return store.nodeModules as Importer;
+    return importer;
 }

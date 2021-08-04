@@ -6,13 +6,15 @@ let lastUsedFunc;
  */
 export const fetch = (...args) => {
     if (!lastUsedFunc) {
-        if (isServer()) {
+        if (!isServer() && window.fetch) {
+            lastUsedFunc = window.fetch;
+        } else {
             try {
                 lastUsedFunc = eval(`require('node-fetch');`);
             } catch (e) { }
             if (!lastUsedFunc) lastUsedFunc = getStore()?.nodeModules?.modules?.['node-fetch']?.default;
             if (!lastUsedFunc) throw new Error('@cromwell/core-frontend: Failed to require node-fetch');
-        } else lastUsedFunc = window.fetch;
+        }
     }
     return lastUsedFunc(...args);
 }
