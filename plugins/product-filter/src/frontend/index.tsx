@@ -26,7 +26,7 @@ import {
     useTheme,
 } from '@material-ui/core';
 import clsx from 'clsx';
-import * as nextRouter from 'next/router';
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { debounce } from 'throttle-debounce';
 
@@ -58,7 +58,7 @@ const ProductFilter = (props: TFrontendPluginProps<TProductFilterData, TInstance
     const mobileCollapsedByDefault = props.data?.pluginSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
     const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
     const productListId = props.instanceSettings?.listId ?? props.data?.pluginSettings?.listId;
-    const router = nextRouter?.useRouter?.();
+    const router = useRouter?.();
 
     if (collapsedByDefault.current !== _collapsedByDefault) {
         collapsedByDefault.current = _collapsedByDefault;

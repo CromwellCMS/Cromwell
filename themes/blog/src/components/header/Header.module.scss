@@ -14,6 +14,7 @@
         margin-bottom: -2px;
         border-bottom: 3px solid transparent;
     }
+
     a:hover {
         border-bottom: 2px solid $primary;
     }
@@ -24,10 +25,11 @@ header.appBar {
     box-shadow: none;
     @include paper;
 
-    > div {
+    >div {
         padding: 0;
     }
 }
+
 .dummyToolbar {
     height: 64px;
 }
@@ -38,6 +40,7 @@ header.appBar {
     // box-shadow: 0 3px 5px 0 rgba(0,0,0,.05), 0 0 9px 0 rgba(0,0,0,.05);
     border-bottom: 1px solid #eee;
 }
+
 .topPanelContent {
     display: flex;
     justify-content: space-between;
@@ -73,10 +76,6 @@ header.appBar {
     margin: 0 10px;
 }
 
-.topPanelLink a {
-    // color: #333;
-}
-
 .formControl {
     margin: 0;
 }
@@ -92,6 +91,7 @@ header.appBar {
 .mainPanel {
     display: flex;
 }
+
 .headerContent {
     display: flex;
     justify-content: space-between;
@@ -102,9 +102,9 @@ header.appBar {
 .logoWrapper {
     display: flex;
     align-items: center;
-    padding: 10px 0;
     margin-right: 15px;
 }
+
 .logo {
     height: 50px;
     cursor: pointer;
@@ -123,16 +123,19 @@ header.appBar {
     align-items: flex-end;
     font-weight: 500;
 }
+
 .phoneActionTip {
     font-size: 0.7em;
 }
 
 .mainMenu {
     position: relative;
+    margin-right: 15px;
 }
 
 .searchContent {
     @include paperElevated;
+    @include styledScrollBar;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -209,6 +212,7 @@ header.appBar {
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
+
     .mainMenu,
     .search {
         display: none;

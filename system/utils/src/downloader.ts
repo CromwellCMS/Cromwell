@@ -1,5 +1,5 @@
-import { TFrontendDependency, TScriptMetaInfo } from '@cromwell/core';
-import { getLogger } from '@cromwell/core-backend';
+import { moduleMetaInfoFileName, TFrontendDependency, TScriptMetaInfo } from '@cromwell/core';
+import { getBundledModulesDir, getLogger } from '@cromwell/core-backend';
 import colorsdef from 'colors/safe';
 import extractZip from 'extract-zip';
 import fs from 'fs-extra';
@@ -9,14 +9,7 @@ import { resolve } from 'path';
 import readline from 'readline';
 import { promisify } from 'util';
 
-import { moduleMetaInfoFileName } from './constants';
-import {
-    collectFrontendDependencies,
-    collectPackagesInfo,
-    getBundledModulesDir,
-    globPackages,
-    parseFrontendDeps,
-} from './shared';
+import { collectFrontendDependencies, collectPackagesInfo, globPackages, parseFrontendDeps } from './shared';
 import { TPackage } from './types';
 
 const streamPipeline = promisify(require('stream').pipeline);

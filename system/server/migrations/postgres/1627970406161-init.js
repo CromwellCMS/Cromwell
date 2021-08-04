@@ -1,7 +1,7 @@
 const { MigrationInterface, QueryRunner } = require("typeorm");
 
-module.exports = class init1627964288039 {
-    name = 'init1627964288039'
+module.exports = class init1627970406161 {
+    name = 'init1627970406161'
 
     async up(queryRunner) {
         await queryRunner.query(`CREATE TABLE "crw_base_page_entity" ("id" SERIAL NOT NULL, "slug" character varying, "pageTitle" character varying, "pageDescription" character varying, "createDate" TIMESTAMP NOT NULL DEFAULT now(), "updateDate" TIMESTAMP NOT NULL DEFAULT now(), "isEnabled" boolean DEFAULT true, CONSTRAINT "UQ_33d156210ae42177f24eb55b524" UNIQUE ("slug"), CONSTRAINT "PK_f90bc99c36e17ac27bea436a529" PRIMARY KEY ("id"))`);
@@ -13,7 +13,7 @@ module.exports = class init1627964288039 {
         await queryRunner.query(`CREATE INDEX "IDX_a71afe78a44fdebe245d06c0fb" ON "crw_order" ("customerName") `);
         await queryRunner.query(`CREATE INDEX "IDX_8bb01ee9a429f70390bbedbaf6" ON "crw_order" ("customerPhone") `);
         await queryRunner.query(`CREATE INDEX "IDX_0d115ee42c627f4c5f5ea6d12a" ON "crw_order" ("customerEmail") `);
-        await queryRunner.query(`CREATE TABLE "crw_page_stats" ("id" SERIAL NOT NULL, "pageRoute" character varying NOT NULL, "pageName" integer, "pageId" character varying, "views" integer, CONSTRAINT "PK_f774ad09d3d69ddbdef96705010" PRIMARY KEY ("id"))`);
+        await queryRunner.query(`CREATE TABLE "crw_page_stats" ("id" SERIAL NOT NULL, "pageRoute" character varying NOT NULL, "pageName" character varying, "pageId" character varying, "views" integer, CONSTRAINT "PK_f774ad09d3d69ddbdef96705010" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "crw_plugin" ("id" SERIAL NOT NULL, "slug" character varying, "pageTitle" character varying, "pageDescription" character varying, "createDate" TIMESTAMP NOT NULL DEFAULT now(), "updateDate" TIMESTAMP NOT NULL DEFAULT now(), "isEnabled" boolean DEFAULT true, "name" character varying NOT NULL, "version" character varying, "title" character varying, "isInstalled" boolean NOT NULL, "hasAdminBundle" boolean, "settings" text, "defaultSettings" text, "moduleInfo" text, "isUpdating" boolean, CONSTRAINT "UQ_067de3d2c7d9e0e6fc733c7ba59" UNIQUE ("slug"), CONSTRAINT "PK_89a31be444f5f741a1d247f6275" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "crw_post_comment" ("id" SERIAL NOT NULL, "slug" character varying, "pageTitle" character varying, "pageDescription" character varying, "createDate" TIMESTAMP NOT NULL DEFAULT now(), "updateDate" TIMESTAMP NOT NULL DEFAULT now(), "isEnabled" boolean DEFAULT true, "postId" integer NOT NULL, "title" character varying, "comment" text, "userEmail" character varying, "userName" character varying, "userId" character varying, "approved" boolean, CONSTRAINT "UQ_0c41e89299843ea6cd5bb1e10b3" UNIQUE ("slug"), CONSTRAINT "PK_29b13761ab698fe448554a3e38b" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE INDEX "IDX_787534d5ddf971c1b85d99c88c" ON "crw_post_comment" ("postId") `);

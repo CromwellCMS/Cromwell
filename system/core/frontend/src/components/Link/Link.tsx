@@ -1,4 +1,5 @@
 import { getStore } from '@cromwell/core';
+import { isValidElementType } from 'react-is';
 import React from 'react';
 
 type TLinkProps = {
@@ -7,9 +8,9 @@ type TLinkProps = {
 }
 
 export const Link = (props: TLinkProps) => {
-    const NextLink = getStore().nodeModules?.modules?.['next/link'];
+    const NextLink = getStore().nodeModules?.modules?.['next/link']?.default;
 
-    if (NextLink) {
+    if (NextLink && isValidElementType(NextLink)) {
         return (
             <NextLink
                 href={props.href}

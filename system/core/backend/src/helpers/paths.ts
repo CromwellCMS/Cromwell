@@ -1,7 +1,7 @@
-import { TModuleConfig, TPackageCromwellConfig, TPackageJson } from '@cromwell/core';
+import { bundledModulesDirName, TModuleConfig, TPackageCromwellConfig, TPackageJson } from '@cromwell/core';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
-import { dirname, isAbsolute, resolve, join } from 'path';
+import { dirname, isAbsolute, join, resolve } from 'path';
 
 import { getLogger } from './logger';
 
@@ -216,6 +216,8 @@ export const getPluginAdminCjsPath = (distDir: string) => resolve(distDir, plugi
 export const getPluginBackendPath = (distDir: string) => resolve(distDir, 'backend/index.js');
 export const getThemePagesMetaPath = (distDir: string) => resolve(distDir, 'pages_meta.json');
 export const getThemePagesVirtualPath = (distDir: string) => resolve(distDir, '__virtual.js');
+export const isExternalForm = id => !id.startsWith('\0') && !id.startsWith('.') && !id.startsWith('/') && !isAbsolute(id) && !id.startsWith('$$');
+export const getBundledModulesDir = () => resolve(getTempDir(), bundledModulesDirName);
 
 export const getPublicDir = () => resolve(process.cwd(), 'public');
 export const getPublicPluginsDir = () => resolve(getPublicDir(), 'plugins');

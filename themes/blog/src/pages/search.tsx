@@ -8,7 +8,7 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { CContainer, CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useRef, useState } from 'react';
@@ -75,8 +75,8 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
 
     return (
         <Layout>
-            <div className={commonStyles.content}>
-                <div className={styles.filter}>
+            <CContainer className={commonStyles.content} id="search_01">
+                <CContainer className={styles.filter} id="search_02">
                     <div className={styles.filterLeft}>
                         <TextField
                             className={styles.filterItem}
@@ -114,8 +114,8 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
                             ))}
                         </Select>
                     </FormControl>
-                </div>
-                <div style={{ marginBottom: '20px' }}>
+                </CContainer>
+                <CContainer style={{ marginBottom: '20px' }} id="search_03">
                     <CList<TPost>
                         id={listId}
                         ListItem={(props) => (
@@ -138,8 +138,8 @@ const SearchPage: TCromwellPage<BlogProps> = (props) => {
                             pagination: Pagination
                         }}
                     />
-                </div>
-            </div>
+                </CContainer>
+            </CContainer>
         </Layout>
     );
 }

@@ -39,7 +39,7 @@ function analyzeImport(node, importBindings: Map<string, string>, code: MagicStr
 
 function makeGlobalName(prop, name) {
     if (prop === "default") {
-        return name;
+        return `${name}.default`;
     }
     return `${name}.${prop}`;
 }
@@ -50,7 +50,7 @@ function writeSpecLocal(code, root, spec, name, tempNames) {
     // https://github.com/eight04/rollup-plugin-external-globals/issues/19
     const localName = `_global_${makeLegalIdentifier(name)}`;
     if (!tempNames.has(localName)) {
-        code.appendRight(root.start, `const ${localName} = ${name};\n`);
+        code.appendRight(root.start, `var ${localName} = ${name};\n`);
         tempNames.add(localName);
     }
     if (spec.local.name === localName) {

@@ -1,4 +1,4 @@
-import { serviceLocator, setStoreItem } from '@cromwell/core';
+import { bundledModulesDirName, serviceLocator, setStoreItem } from '@cromwell/core';
 import {
     adminPanelMessages,
     getAdminPanelServiceBuildDir,
@@ -6,10 +6,11 @@ import {
     getAdminPanelTempDir,
     getAdminPanelWebPublicDir,
     getAdminPanelWebServiceBuildDir,
+    getBundledModulesDir,
     getPublicDir,
     readCMSConfigSync,
 } from '@cromwell/core-backend';
-import { bundledModulesDirName, downloader, getBundledModulesDir } from '@cromwell/utils';
+import { downloader } from '@cromwell/utils';
 import compress from 'compression';
 import fastify from 'fastify';
 import fastifyStatic from 'fastify-static';

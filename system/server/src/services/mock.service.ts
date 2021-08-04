@@ -513,7 +513,7 @@ export class MockService {
             dateFrom.setUTCDate(dateFrom.getUTCDate() - i);
 
             // 0 - amount orders a day
-            for (let j = 0; j < Math.ceil(Math.random() * (amount ?? 28) / 14); j++) {
+            for (let j = 0; j < Math.ceil(Math.random() * (amount ?? 56) / 14); j++) {
                 const createOrder = async () => {
                     const order = await this.orderRepo.createOrder({
                         ...(this.shuffleArray([...mockedOrders])[0])

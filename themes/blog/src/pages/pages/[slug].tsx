@@ -1,13 +1,13 @@
 import { TCromwellPage } from '@cromwell/core';
 import { CContainer } from '@cromwell/core-frontend';
-import React, { useEffect, useRef, useState } from 'react';
+import React from 'react';
 
 import Layout from '../../components/layout/Layout';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Pages.module.scss';
 
 
-const PagesGenericPage: TCromwellPage = (props) => {
+const PagesGenericPage: TCromwellPage = () => {
     return (
         <Layout>
             <CContainer className={styles.Pages} id="PagesGenericPage">

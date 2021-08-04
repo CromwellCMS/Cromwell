@@ -13,10 +13,10 @@ export class CentralServerClient {
         return getStoreItem('cmsSettings')?.centralServerUrl;
     }
 
-    private handleError = async (responce: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
-        if (responce.status >= 400) {
+    private handleError = async (response: Response, data: any, route: string, disableLog?: boolean): Promise<[any, TErrorInfo | null]> => {
+        if (response.status >= 400) {
             const errorInfo: TErrorInfo = {
-                statusCode: responce.status,
+                statusCode: response.status,
                 message: data?.message,
                 route,
                 disableLog,
@@ -52,7 +52,7 @@ export class CentralServerClient {
         }
 
         if (errorInfo) {
-            throw new Error(JSON.stringify(errorInfo));
+            throw Object.assign(new Error(), errorInfo);
         }
 
         return data;

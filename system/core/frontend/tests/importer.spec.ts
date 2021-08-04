@@ -1,12 +1,10 @@
-import { bundledModulesDirName, moduleNodeBuildFileName, moduleMetaInfoFileName } from '@App/constants';
-import { getModuleImporter } from '@App/importer';
-import { getBundledModulesDir } from '@App/shared';
-import { TPackageJson } from '@cromwell/core';
-import { getPublicDir } from '@cromwell/core-backend';
+import { bundledModulesDirName, moduleMetaInfoFileName, moduleNodeBuildFileName, TPackageJson } from '@cromwell/core';
+import { getBundledModulesDir, getPublicDir } from '@cromwell/core-backend';
 import * as fs from 'fs-extra';
 import { join, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 
+import { getModuleImporter } from '../src/helpers/importer';
 import { mockWorkingDirectory, tearDown } from './helpers';
 
 const testDir = mockWorkingDirectory('importer');
@@ -39,7 +37,7 @@ describe('importer', () => {
         if (!await fs.pathExists(publicBuildLink))
             await symlinkDir(buildDir, publicBuildLink);
 
-        const importer = getModuleImporter();
+        const importer = getModuleImporter(undefined, true);
 
         const success = await importer?.importModule?.(moduleFullName);
         expect(success).toBeTruthy();
@@ -68,7 +66,7 @@ describe('importer', () => {
         if (!await fs.pathExists(publicBuildLink))
             await symlinkDir(buildDir, publicBuildLink);
 
-        const importer = getModuleImporter();
+        const importer = getModuleImporter(undefined, true);
 
         const success = await importer?.importScriptExternals?.({
             name: '_tets1_',

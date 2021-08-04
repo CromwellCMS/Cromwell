@@ -1,11 +1,9 @@
 import { ServerStyleSheets } from '@material-ui/core';
 import { DocumentContext } from 'next/document';
-import * as NextDocument from 'next/document';
+import NextDocument from 'next/document';
 import React from 'react';
 
-const Document = NextDocument.default;
-
-export default class MyDocument extends Document {
+export default class MyDocument extends NextDocument {
 
     static async getInitialProps(ctx: DocumentContext) {
 
@@ -19,7 +17,7 @@ export default class MyDocument extends Document {
                         sheet.collect(<App {...props} />),
                 })
 
-            const initialProps = await Document.getInitialProps(ctx);
+            const initialProps = await NextDocument.getInitialProps(ctx);
 
             return {
                 ...initialProps,

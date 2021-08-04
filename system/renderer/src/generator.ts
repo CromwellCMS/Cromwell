@@ -1,6 +1,7 @@
-import { genericPageName, setStoreItem, sleep } from '@cromwell/core';
+import { bundledModulesDirName, genericPageName, getRandStr, setStoreItem, sleep, TScriptMetaInfo } from '@cromwell/core';
 import {
     configFileName,
+    getBundledModulesDir,
     getCmsModuleConfig,
     getLogger,
     getModulePackage,
@@ -12,7 +13,7 @@ import {
     getThemeBuildDir,
     readCMSConfig,
 } from '@cromwell/core-backend';
-import { bundledModulesDirName, downloader, getBundledModulesDir } from '@cromwell/utils';
+import { downloader } from '@cromwell/utils';
 import fs from 'fs-extra';
 import normalizePath from 'normalize-path';
 import { dirname, resolve } from 'path';
@@ -82,6 +83,15 @@ const devGenerate = async (themeName: string, options) => {
 
     for (const pageInfo of themeExports.pagesInfo) {
 
+        const pageDynamicImportName = pageInfo.compName + '_DynamicPage';
+        const cromwellStoreModulesPath = `CromwellStore.nodeModules.modules`;
+        const cromwellStoreStatusesPath = `CromwellStore.nodeModules.importStatuses`;
+
+        const defaultImported = ['react', 'react-dom', 'next/dynamic', 'next/link', 'next/head', '@cromwell/core',
+            '@cromwell/core-frontend', 'react-is', 'next/document', 'next/router',
+            'next/image', 'next/amp', 'react-html-parser'
+        ]
+
         const pageRelativePath: string | undefined = pageInfo.path ? normalizePath(pageInfo.path).replace(
             normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk) : undefined;
 
@@ -91,10 +101,60 @@ const devGenerate = async (themeName: string, options) => {
                 normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
         }
 
-        // let metaInfoRelativePath;
-        // if (pageInfo.metaInfoPath) metaInfoRelativePath = normalizePath(
-        //     pageInfo.metaInfoPath).replace(normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
+        // Make imports for used externals based on metaInfo file.
+        const metaInfo: TScriptMetaInfo = pageInfo.metaInfoPath ? fs.readJSONSync(pageInfo.metaInfoPath) : {};
+        const externals = metaInfo?.externalDependencies ?? {};
 
+        let importExtStr = '';
+
+        Object.keys(externals).forEach(depName => {
+            const pckgChunks = depName.split('@');
+            pckgChunks.pop(); // pckgVersion
+            const pckgName = pckgChunks.join('@');
+
+            if (defaultImported.includes(pckgName)) return;
+
+            const pckgHash = getRandStr(4);
+            const pckgNameStripped = pckgName.replace(/\W/g, '_');
+
+            // Import all externals entirely, using `import * as lib from 'lib';`
+            importExtStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${pckgName}';`;
+            importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = ${pckgNameStripped}_${pckgHash};`;
+            importExtStr += `\n${cromwellStoreStatusesPath}['${pckgName}'] = 'default';`;
+
+            // // Another version. Make named imports and try to import only parts of libs
+            // // Has a problem that these half-imported libs can be overwritten in browser
+            // // when some Plugin requests missing chunks. Importer will try to merge new chunks
+            // // and old imports, but it may lead to unexpected behavior. 
+            // if (externals[depName].includes('default')) {
+            //     importExtStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${pckgName}';`;
+            //     importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = ${pckgNameStripped}_${pckgHash};`;
+            //     importExtStr += `\n${cromwellStoreStatusesPath}['${pckgName}'] = 'default';`;
+            // } else {
+            //     let namedImports = '';
+            //     externals[depName].forEach(named => {
+            //         namedImports += `${named} as ${named}_${pckgHash}, `;
+            //     })
+            //     importExtStr += `\nimport { ${namedImports} } from '${pckgName}';`;
+            //     importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = {};`;
+            //     externals[depName].forEach(ext => {
+            //         importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}']['${ext}'] = ${ext}_${pckgHash};`;
+            //     })
+            // }
+        });
+
+        let importDefaultStr = '';
+        // Make imports for standard always-packaged externals.
+        defaultImported.forEach(depName => {
+            const pckgHash = getRandStr(4);
+            const pckgNameStripped = depName.replace(/\W/g, '_');
+
+            importDefaultStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${depName}';`;
+            importDefaultStr += `\n${cromwellStoreModulesPath}['${depName}'] = ${pckgNameStripped}_${pckgHash};`;
+            importDefaultStr += `\n${cromwellStoreStatusesPath}['${depName}'] = 'default';`;
+        });
+
+        // Add global CSS into _app
         let globalCssImports = '';
         if (pageInfo.name === '_app' && themeConfig?.globalCss && pageRelativePath &&
             themeConfig.globalCss?.length > 0) {
@@ -107,112 +167,33 @@ const devGenerate = async (themeName: string, options) => {
             })
         }
 
-        const pageDynamicImportName = pageInfo.compName + '_DynamicPage';
-
-        const cromwellStoreModulesPath = `CromwellStore.nodeModules.modules`;
-        const cromwellStoreStatusesPath = `CromwellStore.nodeModules.importStatuses`;
-
         const pageImports = `
-         import React from 'react';
-         import ReactDOM from 'react-dom';
-         import dynamic from 'next/dynamic';
-         import NextLink from 'next/link';
-         import NextHead from 'next/head';
-         import * as cromwellCore from '@cromwell/core';
-         import * as cromwellCoreFrontend from '@cromwell/core-frontend';
-         import * as reactIs from 'react-is';
-         import * as NextDocument from 'next/document';
-         import * as NextRouter from 'next/router';
-         import * as NextImage from 'next/image';
-         import * as NextAmp from 'next/amp';
-         import ReactHtmlParser from 'react-html-parser';
-         import { getModuleImporter } from '@cromwell/utils/build/importer.js';
-         import { isServer, getStore } from "@cromwell/core";
+         import { getModuleImporter } from '@cromwell/core-frontend';
+         import { getStore } from "@cromwell/core";
          import { checkCMSConfig } from 'build/renderer';
          ${pageInfo.name !== '_document' ? `
          import { getPage, createGetStaticPaths, createGetStaticProps } from 'build/renderer';
          ` : ''}
-         ${pageInfo.metaInfoPath ? `
-         import metaInfo from '${pageInfo.metaInfoPath}';
-         ` : ''}
  
          checkCMSConfig();
          
-         const importer = getModuleImporter();
+         getModuleImporter();
          const CromwellStore = getStore();
-         ${cromwellStoreModulesPath}['react'] = React;
-         ${cromwellStoreStatusesPath}['react'] = 'default';
-         ${cromwellStoreModulesPath}['react-dom'] = ReactDOM;
-         ${cromwellStoreStatusesPath}['react-dom'] = 'default';
-         ${cromwellStoreModulesPath}['next/link'] = NextLink;
-         ${cromwellStoreModulesPath}['next/router'] = NextRouter;
-         ${cromwellStoreModulesPath}['next/image'] = NextImage;
-         ${cromwellStoreModulesPath}['next/amp'] = NextAmp;
-         ${cromwellStoreModulesPath}['next/dynamic'] = dynamic;
-         ${cromwellStoreModulesPath}['next/head'] = NextHead;
-         ${cromwellStoreModulesPath}['@cromwell/core'] = cromwellCore;
-         ${cromwellStoreStatusesPath}['@cromwell/core'] = 'default';
-         ${cromwellStoreModulesPath}['@cromwell/core-frontend'] = cromwellCoreFrontend;
-         ${cromwellStoreStatusesPath}['@cromwell/core-frontend'] = 'default';
-         ${cromwellStoreModulesPath}['react-is'] = reactIs;
-         ${cromwellStoreStatusesPath}['react-is'] = 'default';
-         ${cromwellStoreModulesPath}['react-html-parser'] = ReactHtmlParser;
-         ${cromwellStoreStatusesPath}['react-html-parser'] = 'default';
-         ${cromwellStoreModulesPath}['next/document'] = NextDocument;
-         ${cromwellStoreStatusesPath}['next/document'] = 'default';
  
-         ${pageInfo.metaInfoPath ? `
-         if (isServer()) {
-             importer.importScriptExternals(metaInfo);
-         }
-         ` : ''} `;
+         ${importDefaultStr}
+         ${importExtStr}
+         `;
 
         let pageContent = `
          ${globalCssImports}
          ${pageImports}
- 
-         const ${pageDynamicImportName} = dynamic(async () => {
- 
-             ${depsBundlePath ? `
-             if (!importer.hasBeenExecuted) {
-                 await import('${depsBundlePath}');
-             }
-             ` : ''}
- 
-             ${pageInfo.metaInfoPath ? `
-             await importer.importScriptExternals(metaInfo);
-             ` : ''}
-    
 
-             ${pageRelativePath ? `
-             const pagePromise = import('${pageRelativePath}');
-             const pageComp = await pagePromise;
- 
-             ${disableSSR ? `
-             const browserGetStaticProps = createGetStaticProps('${pageInfo.name}', pageComp ? pageComp.getStaticProps : null);
-             setTimeout(async () => {
-                 if (isServer()) return;
-                 try {
-                     const props = await browserGetStaticProps();
-                     console.log('browserGetStaticProps', props);
-                     const forceUpdatePage = getStoreItem('forceUpdatePage');
-                     forceUpdatePage(props.childStaticProps);
-                     // forceUpdatePage();
-                 } catch (e) {
-                     console.log('browserGetStaticProps', e)
-                 }
-             }, 3000)
-             ` : ''}
- 
-             return getPage('${pageInfo.name}', pageComp.default);
-             
-             ` :
+         ${depsBundlePath ? `
+         import '${depsBundlePath}';
+         ` : ''}
 
-                `
-            return (() => null);
-            `}
-         });
- 
+
+         import ${pageDynamicImportName} from '${pageRelativePath}';
  
          ${!disableSSR && pageRelativePath ? `
          const pageServerModule = require('${pageRelativePath}');
@@ -233,7 +214,7 @@ const devGenerate = async (themeName: string, options) => {
         };
          ` : ''}
  
-         export default ${pageDynamicImportName};
+         export default getPage('${pageInfo.name}', ${pageDynamicImportName});
          `;
 
         if (!pageInfo.path && pageInfo.fileContent) {

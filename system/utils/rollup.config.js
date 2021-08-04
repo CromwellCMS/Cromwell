@@ -1,4 +1,3 @@
-import commonjs from "@rollup/plugin-commonjs";
 import typescript from "rollup-plugin-ts-compiler";
 import packageJson from './package.json';
 import { resolve } from 'path';
@@ -23,25 +22,6 @@ const external = id => {
 const buildDir = 'build';
 
 const options = [
-    {
-        input: resolve(__dirname, "src/browser.ts"),
-        output: [
-            {
-                file: resolve(__dirname, buildDir, 'browser/importer.js'),
-                format: "iife",
-            }
-        ],
-        plugins: [
-            typescript({
-                compilerOptions: {
-                    module: 'ESNext',
-                    target: 'ES5'
-                },
-                monorepo: true,
-            }),
-            commonjs(),
-        ]
-    },
     {
         preserveModules: true,
         input: resolve(__dirname, "src/exports.ts"),

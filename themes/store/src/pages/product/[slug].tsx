@@ -10,7 +10,7 @@ import {
 } from '@cromwell/core';
 import { CContainer, CList, CText, getGraphQLClient, getGraphQLErrorInfo, TCList } from '@cromwell/core-frontend';
 import clsx from 'clsx';
-import * as nextRouter from 'next/router';
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
 
 import Layout from '../../components/layout/Layout';
@@ -33,7 +33,7 @@ const Product: TCromwellPage<ProductProps> = (props) => {
     const client = getGraphQLClient();
     const { product } = props ?? {};
     const reviewsInst = useRef<TCromwellBlock<TCList> | undefined>();
-    const router = nextRouter?.useRouter?.();
+    const router = useRouter?.();
 
     useEffect(() => {
         const list: TCList | undefined = reviewsInst.current?.getContentInstance();
@@ -44,7 +44,7 @@ const Product: TCromwellPage<ProductProps> = (props) => {
 
     return (
         <Layout>
-            <div className={clsx(commonStyles.content, styles.ProductPage)}>
+            <CContainer className={clsx(commonStyles.content, styles.ProductPage)} id="product-1">
                 {!!props.breadcrumbs?.length && (
                     <div className={styles.breadcrumbs}>
                         <Breadcrumbs breadcrumbs={props.breadcrumbs} />
@@ -90,7 +90,7 @@ const Product: TCromwellPage<ProductProps> = (props) => {
                         </div>
                     </CContainer>
                 )}
-            </div>
+            </CContainer>
         </Layout>
     );
 }

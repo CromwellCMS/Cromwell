@@ -8,10 +8,10 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CList, getGraphQLClient, LoadBox, TCList } from '@cromwell/core-frontend';
+import { CContainer, CList, getGraphQLClient, LoadBox, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
+import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
-import * as nextRouter from 'next/router';
 
 import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
@@ -30,7 +30,7 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
     const filterInput = useRef<TPostFilter>({});
     const listId = 'Blog_list_01';
     const publishSort = useRef<"ASC" | "DESC">('DESC');
-    const router = nextRouter?.useRouter?.();
+    const router = useRouter?.();
 
     const updateList = () => {
         const list = getBlockInstance<TCList>(listId)?.getContentInstance();
@@ -64,8 +64,8 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
 
     return (
         <Layout>
-            <div className={commonStyles.content}>
-                <div className={styles.filter}>
+            <CContainer className={commonStyles.content} id="tag_01">
+                <CContainer className={styles.filter} id="tag_02">
                     <div>
                         <h1 className={styles.title}>{props.tag?.name ?? ''}</h1>
                     </div>
@@ -81,8 +81,8 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
                             ))}
                         </Select>
                     </FormControl>
-                </div>
-                <div style={{ marginBottom: '20px' }}>
+                </CContainer>
+                <CContainer style={{ marginBottom: '20px' }} id="tag_03">
                     {(router?.isFallback) ? (
                         <LoadBox />
                     ) : (
@@ -109,8 +109,8 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
                             }}
                         />
                     )}
-                </div>
-            </div>
+                </CContainer>
+            </CContainer>
         </Layout>
     );
 }

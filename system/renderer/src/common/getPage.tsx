@@ -8,7 +8,7 @@ import {
     TPageStats,
 } from '@cromwell/core';
 import { CContainer, getRestAPIClient, pageRootContainerId } from '@cromwell/core-frontend';
-import { getModuleImporter } from '@cromwell/utils/build/importer.js';
+import { getModuleImporter } from '@cromwell/core-frontend';
 import React, { useRef, useState } from 'react';
 import ReactHtmlParser, { Transform } from 'react-html-parser';
 import { isValidElementType } from 'react-is';
@@ -83,7 +83,7 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         }
 
         const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;
-        const Head = getModuleImporter()?.modules?.['next/head'];
+        const Head = getModuleImporter()?.modules?.['next/head']?.default;
 
         return (
             <>

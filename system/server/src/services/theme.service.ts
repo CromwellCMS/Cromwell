@@ -536,10 +536,6 @@ export class ThemeService {
 
         if (!themePckg?.version || !themePath) throw new HttpException('Failed to find package.json of the theme ' + themeName, HttpStatus.INTERNAL_SERVER_ERROR);
 
-
-        // @TODO Execute install script
-
-
         // Read module info from package.json
         const moduleInfo = await getCmsModuleInfo(themeName);
         delete moduleInfo?.frontendDependencies;
@@ -633,13 +629,19 @@ export class ThemeService {
         try {
             return await getCentralServerClient().checkThemeUpdate(
                 name, pckg?.version ?? '0', isBeta);
-        } catch (error) { }
+        } catch (error) {
+            if (error.statusCode === 404) return;
+            getLogger(false).error(error);
+        }
     }
 
     async getThemeLatest(name: string): Promise<TCCSModuleShortInfo | undefined> {
         try {
             return await getCentralServerClient().getThemeInfo(name);
-        } catch (error) { }
+        } catch (error) {
+            if (error.statusCode === 404) return;
+            getLogger(false).error(error);
+        }
     }
 
 

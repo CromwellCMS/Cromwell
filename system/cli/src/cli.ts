@@ -1,8 +1,9 @@
-import { TServiceNames } from '@cromwell/cms';
 import { spawn } from 'child_process';
 import yargs from 'yargs/yargs';
 
 import { createTask } from './tasks/create';
+
+export type TServiceNames = 'renderer' | 'r' | 'server' | 's' | 'adminPanel' | 'a' | 'nginx' | 'n';
 
 const args = yargs(process.argv.slice(2))
     // START

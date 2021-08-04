@@ -145,6 +145,7 @@ const products = await getCustomRepository(ProductRepository).getProducts();
 - [getAdminPanelTempDir](backend.md#getadminpaneltempdir)
 - [getAdminPanelWebPublicDir](backend.md#getadminpanelwebpublicdir)
 - [getAdminPanelWebServiceBuildDir](backend.md#getadminpanelwebservicebuilddir)
+- [getBundledModulesDir](backend.md#getbundledmodulesdir)
 - [getCMSConfigPath](backend.md#getcmsconfigpath)
 - [getCmsEntity](backend.md#getcmsentity)
 - [getCmsModuleConfig](backend.md#getcmsmoduleconfig)
@@ -207,6 +208,7 @@ const products = await getCustomRepository(ProductRepository).getProducts();
 - [getUtilsTempDir](backend.md#getutilstempdir)
 - [graphQlAuthChecker](backend.md#graphqlauthchecker)
 - [handleBaseInput](backend.md#handlebaseinput)
+- [isExternalForm](backend.md#isexternalform)
 - [readCMSConfig](backend.md#readcmsconfig)
 - [readCMSConfigSync](backend.md#readcmsconfigsync)
 - [readCmsModules](backend.md#readcmsmodules)
@@ -1007,6 +1009,20 @@ ___
 
 ___
 
+### getBundledModulesDir
+
+▸ `Const` **getBundledModulesDir**(): `string`
+
+#### Returns
+
+`string`
+
+#### Defined in
+
+[system/core/backend/src/helpers/paths.ts:220](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L220)
+
+___
+
 ### getCMSConfigPath
 
 ▸ `Const` **getCMSConfigPath**(`dir?`): `string`
@@ -1277,7 +1293,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:229](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L229)
+[system/core/backend/src/helpers/paths.ts:231](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L231)
 
 ___
 
@@ -1519,7 +1535,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:220](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L220)
+[system/core/backend/src/helpers/paths.ts:222](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L222)
 
 ___
 
@@ -1533,7 +1549,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:221](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L221)
+[system/core/backend/src/helpers/paths.ts:223](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L223)
 
 ___
 
@@ -1547,7 +1563,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:222](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L222)
+[system/core/backend/src/helpers/paths.ts:224](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L224)
 
 ___
 
@@ -2082,6 +2098,26 @@ ___
 
 ___
 
+### isExternalForm
+
+▸ `Const` **isExternalForm**(`id`): `boolean`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `id` | `any` |
+
+#### Returns
+
+`boolean`
+
+#### Defined in
+
+[system/core/backend/src/helpers/paths.ts:219](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L219)
+
+___
+
 ### readCMSConfig
 
 ▸ `Const` **readCMSConfig**(`path?`): `Promise`<`TCmsConfig`\>
@@ -2156,7 +2192,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:224](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L224)
+[system/core/backend/src/helpers/paths.ts:226](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L226)
 
 ___
 

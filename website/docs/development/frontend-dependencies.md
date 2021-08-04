@@ -75,11 +75,10 @@ As we stated before bundled node modules are chunked, so we can load only things
 In order for browser-imports to work we need to load manifest file to know what chunk to request for imports used in our app. While it's possible to make a couple-Kb chunk for each of 5000 icons from `@material-ui/icons`, the manifest for all of them will be more than 500kb. Which is clearly will be much more that size of icons we are going to use from it. In this case it makes sense to avoid using Frontend dependency and include icons in source code as we did in [default @cromwell/theme-store](https://github.com/CromwellCMS/Cromwell/blob/master/themes/store/src/components/icons.tsx)  
 
 
-## Too many requests
+## Bundled dependencies
 
-With web applications having in total hundreds dependencies we start facing a problem when on load our app is making hundreds of requests for Frontend dependencies. That's obviously doesn't perform well. 
-
-To solve the problem Themes can bundle Frontend dependencies and still allow them to be reusable for Plugins. These Frontend dependencies will be loaded initially, without subsequent requests, so they go in package.json's cromwell info under `firstLoadedDependencies` property:
+If some Theme's dependent Plugins makes too many requests, it may have an impact on performance. To optimize it, you can specify what node_modules to bundle with Theme as Frontend dependencies 
+Just list them in package.json's cromwell info under `firstLoadedDependencies` property:
 ```json title="package.json"
 {
   "name": "your-plugin-name",
@@ -91,9 +90,6 @@ To solve the problem Themes can bundle Frontend dependencies and still allow the
     ],
     "firstLoadedDependencies": [
       "@material-ui/core",
-      "@material-ui/styles",
-      "@material-ui/utils",
-      "@material-ui/system",
       "jss",
       "jss-plugin-global",
       "jss-plugin-nested",
@@ -102,5 +98,5 @@ To solve the problem Themes can bundle Frontend dependencies and still allow the
   }
 }
 ```
-As you can see we list dependencies of "@material-ui/core" as well, so they will also be reusable. Otherwise if some other Plugin depends on "jss", it will be imported again, so you'll have two "jss" libraries in your app. 
+It also can help to make sub-dependencies re-usable. 
 Make sure these dependencies are actually used at the frontend, and not from devDependencies.

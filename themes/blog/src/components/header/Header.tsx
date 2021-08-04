@@ -1,5 +1,5 @@
 import { getCmsSettings } from '@cromwell/core';
-import { CPlugin, Link } from '@cromwell/core-frontend';
+import { CContainer, CPlugin, Link } from '@cromwell/core-frontend';
 import { AppBar, IconButton, Slide, SwipeableDrawer, Toolbar, useScrollTrigger } from '@material-ui/core';
 import React, { useState } from 'react';
 
@@ -19,7 +19,7 @@ const Header = () => {
     }
 
     return (
-        <>
+        <CContainer global id="header-01">
             <Toolbar className={styles.dummyToolbar} />
             <HideOnScroll>
                 <AppBar
@@ -27,27 +27,27 @@ const Header = () => {
                     color="transparent"
                 >
                     <Toolbar>
-                        <div className={`${styles.Header} ${commonStyles.text}`}>
-                            <div className={`${commonStyles.content} ${styles.headerContent}`}>
-                                <div className={styles.logoWrapper}>
+                        <CContainer className={`${styles.Header} ${commonStyles.text}`} id="header-02">
+                            <CContainer className={`${commonStyles.content} ${styles.headerContent}`} id="header-03">
+                                <CContainer className={styles.logoWrapper} id="header-06">
                                     <Link href="/">
                                         <img className={styles.logo} src={cmsConfig?.logo} alt="logo" />
                                     </Link>
-                                </div>
+                                </CContainer>
                                 <CPlugin
                                     className={styles.mainMenu}
                                     id="header_main_menu"
                                     pluginName={"@cromwell/plugin-main-menu"} />
-                                <div className={styles.search}>
+                                <CContainer className={styles.search} id="header-04">
                                     <HeaderSearch />
-                                </div>
-                                <div className={styles.mobileActions}>
+                                </CContainer>
+                                <CContainer className={styles.mobileActions} id="header-05">
                                     <IconButton onClick={handleOpenMenu}>
                                         <MenuIcon color="#111" />
                                     </IconButton>
-                                </div>
-                            </div>
-                        </div>
+                                </CContainer>
+                            </CContainer>
+                        </CContainer>
                     </Toolbar>
                 </AppBar>
             </HideOnScroll>
@@ -73,7 +73,7 @@ const Header = () => {
                     </div>
                 </div>
             </SwipeableDrawer>
-        </>
+        </CContainer>
     )
 }
 

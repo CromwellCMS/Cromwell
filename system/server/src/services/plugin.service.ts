@@ -187,14 +187,20 @@ export class PluginService {
         try {
             return await getCentralServerClient().checkPluginUpdate(
                 pluginName, pckg?.version ?? '0', isBeta);
-        } catch (error) { }
+        } catch (error) {
+            if (error.statusCode === 404) return;
+            getLogger(false).error(error);
+        }
     }
 
     async getPluginLatest(pluginName: string): Promise<TCCSModuleShortInfo | undefined> {
         try {
             return await getCentralServerClient().getPluginInfo(
                 pluginName);
-        } catch (error) { }
+        } catch (error) {
+            if (error.statusCode === 404) return;
+            getLogger(false).error(error);
+        }
     }
 
     async handlePluginUpdate(pluginName: string): Promise<boolean> {
@@ -347,9 +353,6 @@ export class PluginService {
         const pluginPckg = await getModulePackage(pluginName);
 
         if (!pluginPckg?.version || !pluginPath) throw new HttpException('Failed to find package.json of the plugin ' + pluginName, HttpStatus.INTERNAL_SERVER_ERROR);
-
-
-        // @TODO Execute install script
 
         // Read module info from package.json
         const moduleInfo = await getCmsModuleInfo(pluginName);

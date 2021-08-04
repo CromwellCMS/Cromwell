@@ -1,7 +1,6 @@
 import { downloader } from '@App/downloader';
-import { moduleArchiveFileName, moduleLibBuildFileName, moduleMetaInfoFileName } from '@App/constants';
-import { getBundledModulesDir } from '@App/shared';
-import { TPackageJson } from '@cromwell/core';
+import { moduleArchiveFileName, moduleLibBuildFileName, moduleMetaInfoFileName, TPackageJson } from '@cromwell/core';
+import { getBundledModulesDir } from '@cromwell/core-backend';
 import * as fs from 'fs-extra';
 import { join, resolve } from 'path';
 

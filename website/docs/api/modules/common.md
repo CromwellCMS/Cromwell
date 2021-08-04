@@ -144,7 +144,19 @@ const settings: TCmsSettings | undefined = getStoreItem('cmsSettings');
 ### Variables
 
 - [GraphQLPaths](common.md#graphqlpaths)
+- [bundledModulesDirName](common.md#bundledmodulesdirname)
 - [genericPageName](common.md#genericpagename)
+- [moduleArchiveFileName](common.md#modulearchivefilename)
+- [moduleBundleInfoFileName](common.md#modulebundleinfofilename)
+- [moduleChunksBuildDirChunk](common.md#modulechunksbuilddirchunk)
+- [moduleExportsDirChunk](common.md#moduleexportsdirchunk)
+- [moduleGeneratedFileName](common.md#modulegeneratedfilename)
+- [moduleLibBuildFileName](common.md#modulelibbuildfilename)
+- [moduleMainBuildFileName](common.md#modulemainbuildfilename)
+- [moduleMetaInfoFileName](common.md#modulemetainfofilename)
+- [moduleNodeBuildFileName](common.md#modulenodebuildfilename)
+- [moduleNodeGeneratedFileName](common.md#modulenodegeneratedfilename)
+- [moduleOneChunkGeneratedFileName](common.md#moduleonechunkgeneratedfilename)
 - [serviceLocator](common.md#servicelocator)
 
 ### Functions
@@ -2280,6 +2292,16 @@ ___
 
 ___
 
+### bundledModulesDirName
+
+• `Const` **bundledModulesDirName**: ``"bundled-modules"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:116](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L116)
+
+___
+
 ### genericPageName
 
 • `Const` **genericPageName**: ``"pages/[slug]"``
@@ -2287,6 +2309,116 @@ ___
 #### Defined in
 
 [system/core/common/src/constants.ts:108](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L108)
+
+___
+
+### moduleArchiveFileName
+
+• `Const` **moduleArchiveFileName**: ``"module.zip"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:115](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L115)
+
+___
+
+### moduleBundleInfoFileName
+
+• `Const` **moduleBundleInfoFileName**: ``"bundle.info.json"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:114](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L114)
+
+___
+
+### moduleChunksBuildDirChunk
+
+• `Const` **moduleChunksBuildDirChunk**: ``"chunks"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:121](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L121)
+
+___
+
+### moduleExportsDirChunk
+
+• `Const` **moduleExportsDirChunk**: ``"generated"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:120](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L120)
+
+___
+
+### moduleGeneratedFileName
+
+• `Const` **moduleGeneratedFileName**: ``"generated.js"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:117](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L117)
+
+___
+
+### moduleLibBuildFileName
+
+• `Const` **moduleLibBuildFileName**: ``"lib.bundle.js"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:111](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L111)
+
+___
+
+### moduleMainBuildFileName
+
+• `Const` **moduleMainBuildFileName**: ``"main.bundle.js"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:110](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L110)
+
+___
+
+### moduleMetaInfoFileName
+
+• `Const` **moduleMetaInfoFileName**: ``"meta.json"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:113](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L113)
+
+___
+
+### moduleNodeBuildFileName
+
+• `Const` **moduleNodeBuildFileName**: ``"node.bundle.js"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:112](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L112)
+
+___
+
+### moduleNodeGeneratedFileName
+
+• `Const` **moduleNodeGeneratedFileName**: ``"generated.node.js"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:119](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L119)
+
+___
+
+### moduleOneChunkGeneratedFileName
+
+• `Const` **moduleOneChunkGeneratedFileName**: ``"generated.lib.js"``
+
+#### Defined in
+
+[system/core/common/src/constants.ts:118](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/constants.ts#L118)
 
 ___
 

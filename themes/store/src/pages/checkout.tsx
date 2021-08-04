@@ -9,7 +9,7 @@ import {
     TPaymentSession,
     isServer,
 } from '@cromwell/core';
-import { getCStore, getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
+import { CContainer, getCStore, getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
 import {
     Button,
     FormControl,
@@ -57,7 +57,7 @@ const CheckoutPage: TCromwellPage = () => {
         phone?: string;
         address?: string;
         comment?: string;
-        shippingMethod?: number;
+        shippingMethod?: string;
         paymentMethod?: string;
     }>({
         email: userInfo?.email,
@@ -65,6 +65,7 @@ const CheckoutPage: TCromwellPage = () => {
         phone: userInfo?.phone,
         address: userInfo?.address,
         paymentMethod: undefined,
+        shippingMethod: 'Standard shipping',
     });
     const cstore = getCStore();
     const forceUpdate = useForceUpdate();
@@ -179,6 +180,8 @@ const CheckoutPage: TCromwellPage = () => {
                 cart: JSON.stringify(cstore.getCart()),
                 fromUrl: window.location.origin,
                 currency: cstore.getActiveCurrencyTag(),
+                shippingMethod: form.shippingMethod,
+                paymentMethod: form.paymentMethod,
             });
         } catch (e) {
             console.error(e);
@@ -232,28 +235,28 @@ const CheckoutPage: TCromwellPage = () => {
     const wrapContent = (content: JSX.Element | JSX.Element[]) => {
         return (
             <Layout>
-                <div className={commonStyles.content}>
-                    <div className={styles.CheckoutPage} style={{ filter: isLoading ? 'blur(2px)' : 'none' }}>
+                <CContainer className={commonStyles.content} id="checkout-1">
+                    <CContainer className={styles.CheckoutPage} style={{ filter: isLoading ? 'blur(2px)' : 'none' }} id="checkout-2">
                         {isLoading && (
                             <div className={styles.loadBox}><LoadBox /></div>
                         )}
                         {content}
-                    </div>
-                </div>
+                    </CContainer>
+                </CContainer>
             </Layout>
         )
     }
 
     if (placedOrder) {
         return wrapContent(
-            <div className={styles.placedOrderContent}>
+            <CContainer className={styles.placedOrderContent} id="checkout-3">
                 <Alert severity="success">Your order has been placed! Order ID: {placedOrder?.id}</Alert>
-            </div>
+            </CContainer>
         );
     }
 
     return wrapContent(<>
-        <div className={styles.inputZone}>
+        <CContainer className={styles.inputZone} id="checkout-4">
             <h1 className={styles.pageTitle}>Checkout</h1>
             {!userInfo && (
                 <div className={styles.signInBlock}>
@@ -342,10 +345,10 @@ const CheckoutPage: TCromwellPage = () => {
             <h2 className={styles.subHeader}>Shipping Methods</h2>
             <FormControl component="fieldset" className={styles.shippingMethods}>
                 <RadioGroup
-                    value={form.shippingMethod ?? 0}
-                    onChange={(event, value: string) => changeForm('shippingMethod', parseInt(value))}
+                    value={form.shippingMethod}
+                    onChange={(event, value: string) => changeForm('shippingMethod', value)}
                 >
-                    <FormControlLabel value={0} control={<Radio color="primary" />}
+                    <FormControlLabel value={'Standard shipping'} control={<Radio color="primary" />}
                         label={`Standard shipping: ${cstore.getPriceWithCurrency(orderTotal?.shippingPrice)}`} />
                 </RadioGroup>
             </FormControl>
@@ -409,10 +412,10 @@ const CheckoutPage: TCromwellPage = () => {
                     >Pay</Button>
                 </div>
             )}
-        </div>
-        <div className={styles.cartZone}>
+        </CContainer>
+        <CContainer className={styles.cartZone} id="checkout-5">
             <CartProductList collapsedByDefault={isMobile} />
-        </div>
+        </CContainer>
     </>);
 }
 

@@ -22,6 +22,7 @@ import {
     getThemePagesMetaPath,
     getThemePagesVirtualPath,
     getThemeTempRollupBuildDir,
+    isExternalForm,
     pluginAdminBundlePath,
     pluginFrontendBundlePath,
     pluginFrontendCjsPath,
@@ -49,7 +50,6 @@ import {
     getNodeModuleVersion,
     globPackages,
     interopDefaultContent,
-    isExternalForm,
     parseFrontendDeps,
 } from '../shared';
 import externalGlobals from './rollup-globals';
@@ -291,12 +291,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
 
             options.plugins.push(scssExternalPlugin());
 
-            if (!options.plugins.find(plugin => plugin.name === '@rollup/plugin-node-resolve' || plugin.name === 'node-resolve'))
-                options.plugins.push(nodeResolve({
-                    extensions: ['.js', '.jsx', '.ts', '.tsx'],
-                }));
-
-            if (!options.plugins.find(plugin => plugin.name === '@rollup/plugin-babel' || plugin.name === 'babel'))
+            if (!options.plugins.find(plugin => typeof plugin === 'object' && plugin?.name === '@rollup/plugin-babel' ||
+                typeof plugin === 'object' && plugin?.name === 'babel'))
                 options.plugins.push(babel({
                     extensions: ['.js', '.jsx', '.ts', '.tsx'],
                     babelHelpers: 'bundled',
@@ -311,6 +307,12 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                 type: 'themePages',
                 pagesDir,
             }));
+
+            if (!options.plugins.find(plugin => typeof plugin === 'object' && plugin?.name === '@rollup/plugin-node-resolve'
+                || typeof plugin === 'object' && plugin?.name === 'node-resolve'))
+                options.plugins.push(nodeResolve({
+                    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                }));
 
             outOptions.push(options);
 
@@ -329,12 +331,8 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                         [optionsInput]: `import pageComp from '${pagePath.srcFullPath}';export default pageComp;`
                     }));
 
-                    if (!adminOptions.plugins.find(plugin => plugin.name === '@rollup/plugin-node-resolve' || plugin.name === 'node-resolve'))
-                        adminOptions.plugins.push(nodeResolve({
-                            extensions: ['.js', '.jsx', '.ts', '.tsx'],
-                        }));
-
-                    if (!adminOptions.plugins.find(plugin => plugin.name === '@rollup/plugin-babel' || plugin.name === 'babel'))
+                    if (!adminOptions.plugins.find(plugin => typeof plugin === 'object' && plugin?.name === '@rollup/plugin-babel'
+                        || typeof plugin === 'object' && plugin?.name === 'babel'))
                         adminOptions.plugins.push(babel({
                             extensions: ['.js', '.jsx', '.ts', '.tsx'],
                             babelHelpers: 'bundled',
@@ -348,6 +346,12 @@ export const rollupConfigWrapper = async (moduleInfo: TPackageCromwellConfig, mo
                         type: 'themeAdminPanel',
                         pagesDir,
                     }));
+
+                    if (!adminOptions.plugins.find(plugin => typeof plugin === 'object' && plugin?.name === '@rollup/plugin-node-resolve'
+                        || typeof plugin === 'object' && plugin?.name === 'node-resolve'))
+                        adminOptions.plugins.push(nodeResolve({
+                            extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                        }));
 
                     const pageStrippedName = 'page_' + (pagePath?.pageName?.replace(/\W/g, '_') ?? strippedName);
 
@@ -479,6 +483,11 @@ export const rollupPluginCromwellFrontend = async (settings?: {
             if (!options.plugins) options.plugins = [];
 
             options.plugins.push(externalGlobals((id: string) => {
+                if (settings?.moduleInfo?.type === 'theme' && settings?.pagesMetaInfo?.paths) {
+                    // Disable for Theme pages
+                    return;
+                }
+
                 const extStr = `${cromwellStoreModulesPath}["${id}"]`;
                 if (id.startsWith('next/')) {
                     return extStr;
@@ -489,12 +498,17 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                 include: '**/*.+(ts|tsx|js|jsx)',
                 createVars: true,
             }));
+
             return options;
         },
         resolveId(source) {
             if (settings?.moduleInfo?.type === 'theme' && settings?.pagesMetaInfo?.paths) {
                 // If bundle frontend pages (not AdminPanel) mark css as external to leave it to Next.js Webpack
                 if (/\.s?css$/.test(source)) {
+                    return { id: source, external: true };
+                }
+
+                if (isExternalForm(source)) {
                     return { id: source, external: true };
                 }
             }
@@ -506,7 +520,6 @@ export const rollupPluginCromwellFrontend = async (settings?: {
 
             if (isExternalForm(source)) {
                 // Other node_modules...
-
                 if (packageJson.cromwell?.bundledDependencies?.includes(source)) {
                     // Bundled by Rollup by for Themes and Plugins
                     return { id: require.resolve(source), external: false };
@@ -571,6 +584,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                     }
                 }
             });
+
             return null;
         };
 

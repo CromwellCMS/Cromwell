@@ -1,5 +1,5 @@
 import { createMuiTheme, ThemeProvider } from '@material-ui/core';
-import * as nextRouter from 'next/router';
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import { primaryColor } from '../../constants.js';
@@ -37,7 +37,7 @@ const theme = createMuiTheme({
 });
 
 export default function Layout(props: TProps | undefined) {
-    const router = nextRouter?.useRouter?.();
+    const router = useRouter?.();
 
     useEffect(() => {
         if (appState.isCartOpen) appState.isCartOpen = false;

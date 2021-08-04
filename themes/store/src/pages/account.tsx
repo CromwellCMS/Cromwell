@@ -1,16 +1,16 @@
 import { setStoreItem, TOrder, TStoreListItem, TUpdateUser, TUser } from '@cromwell/core';
-import { getGraphQLClient, getCStore, getRestAPIClient } from '@cromwell/core-frontend';
+import { CContainer, CText, getCStore, getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, Grid, TextField } from '@material-ui/core';
+import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
 
 import Layout from '../components/layout/Layout';
-import { CartProductList } from '../components/productList/CartProductList';
-import SignInModal, { TFromType } from '../components/modals/signIn/SignIn';
 import { LoadBox } from '../components/loadbox/Loadbox';
+import SignInModal, { TFromType } from '../components/modals/signIn/SignIn';
+import { CartProductList } from '../components/productList/CartProductList';
 import { toast } from '../components/toast/toast';
 import commonStyles from '../styles/common.module.scss';
 import styles from '../styles/pages/account.module.scss';
-import clsx from 'clsx';
 
 
 const Account = () => {
@@ -123,7 +123,7 @@ const Account = () => {
     }
 
     const loggedContent = (
-        <div className={styles.fields}>
+        <CContainer className={styles.fields} id="checkout-1">
             <Grid container item spacing={3} className={styles.contactInfo}>
                 <Grid item xs={12} sm={12}>
                     <h2 className={styles.subheader}>Contact information</h2>
@@ -198,20 +198,20 @@ const Account = () => {
                     )
                 })}
             </div>
-        </div>
+        </CContainer>
     );
 
     return (
         <Layout>
-            <div className={clsx(commonStyles.content, styles.AccountPage)}>
+            <CContainer className={clsx(commonStyles.content, styles.AccountPage)} id="checkout-2">
                 {loading && (
                     <LoadBox />
                 )}
                 {(!loading && userData) && loggedContent}
                 {(!loading && !userData) && (
-                    <div style={{ padding: '20px 15px' }}>
-                        <h2 className={styles.subheader}>Log in</h2>
-                        <div className={styles.signInBlock}>
+                    <CContainer style={{ padding: '20px 15px' }} id="checkout-3">
+                        <CText className={styles.subheader} id="checkout-4" element="h2">Log in</CText>
+                        <CContainer className={styles.signInBlock} id="checkout-5">
                             <Button variant="outlined"
                                 color="primary"
                                 size="small"
@@ -232,10 +232,10 @@ const Account = () => {
                                     onSignIn={handleSignIn}
                                 />
                             )}
-                        </div>
-                    </div>
+                        </CContainer>
+                    </CContainer>
                 )}
-            </div>
+            </CContainer>
         </Layout>
     );
 }

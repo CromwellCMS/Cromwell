@@ -8,7 +8,7 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { CContainer, CList, getGraphQLClient, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { Autocomplete } from '@material-ui/lab';
 import React, { useEffect, useRef, useState } from 'react';
@@ -76,8 +76,8 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
 
     return (
         <Layout>
-            <div className={commonStyles.content}>
-                <div className={styles.filter}>
+            <CContainer className={commonStyles.content} id="blog-1">
+                <CContainer className={styles.filter} id="blog-2">
                     <Autocomplete
                         multiple
                         freeSolo
@@ -107,8 +107,8 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
                             ))}
                         </Select>
                     </FormControl>
-                </div>
-                <div style={{ marginBottom: '20px' }}>
+                </CContainer>
+                <CContainer style={{ marginBottom: '20px' }} id="blog-3">
                     <CList<TPost>
                         id={listId}
                         ListItem={(props) => (
@@ -131,8 +131,8 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
                             pagination: Pagination
                         }}
                     />
-                </div>
-            </div>
+                </CContainer>
+            </CContainer>
         </Layout>
     );
 }

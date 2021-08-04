@@ -2,10 +2,11 @@ import { setStoreItem } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
 import { Button, IconButton, InputAdornment, TextField, withStyles } from '@material-ui/core';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import ImagePicker from '../../components/imagePicker/ImagePicker';
+import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import { toast } from '../../components/toast/toast';
 import styles from './Welcome.module.scss';
 
@@ -143,6 +144,7 @@ export default function WelcomePage() {
                     >Create</Button>
                 </div>
             </div>
+            <LoadingStatus isActive={loading} />
         </div>
     );
 }

@@ -158,6 +158,7 @@ div.cart {
 
 .searchContent {
     @include paperElevated;
+    @include styledScrollBar;
     display: flex;
     flex-direction: column;
     align-items: center;
