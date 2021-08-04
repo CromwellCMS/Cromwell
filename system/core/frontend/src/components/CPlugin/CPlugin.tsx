@@ -22,7 +22,6 @@ export class CPlugin extends React.Component<CPluginProps> {
     render() {
         const props = this.props;
         const { pluginName, component, ...rest } = props;
-
         return (
             <CromwellBlock {...rest} type='plugin'
                 plugin={{ pluginName: pluginName }}

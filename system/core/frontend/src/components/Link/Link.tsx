@@ -7,7 +7,8 @@ type TLinkProps = {
 }
 
 export const Link = (props: TLinkProps) => {
-    const NextLink = getStore().nodeModules?.modules?.['next/link'];
+    const NextLink = getStore().nodeModules?.modules?.['next/link']?.default ??
+        getStore().nodeModules?.modules?.['next/link'];
 
     if (NextLink) {
         return (

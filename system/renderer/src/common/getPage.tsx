@@ -83,7 +83,7 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         }
 
         const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;
-        const Head = getModuleImporter()?.modules?.['next/head'];
+        const Head = getModuleImporter()?.modules?.['next/head']?.default;
 
         return (
             <>

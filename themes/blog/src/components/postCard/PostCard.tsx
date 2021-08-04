@@ -2,13 +2,11 @@ import { TPost, TTag } from '@cromwell/core';
 import { Link } from '@cromwell/core-frontend';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import * as NextImage from 'next/image';
+import Image from 'next/image';
 import React from 'react';
 
 import { AccountCircleIcon } from '../icons';
 import styles from './PostCard.module.scss';
-
-const Image = NextImage.default;
 
 export const PostCard = (props?: {
     data?: TPost;

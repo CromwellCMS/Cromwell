@@ -5,7 +5,6 @@
 // export { rollupPluginCromwellFrontend } from './plugins/rollup';
 export { getModuleImporter } from './importer';
 export { rollupConfigWrapper, rollupPluginCromwellFrontend } from './plugins/rollup';
-export { CromwellWebpackPlugin } from './plugins/webpack';
 export {
     getNodeModuleVersion, getNodeModuleNameWithVersion,
     getBundledModulesDir, parseFrontendDeps, defaultFrontendDeps

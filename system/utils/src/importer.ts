@@ -19,15 +19,46 @@ const getStore = () => {
     }
 }
 
-export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModules => {
+const checkStore = (): Required<TCromwellNodeModules> => {
     const CromwellStore: any = getStore();
     if (!CromwellStore.nodeModules) CromwellStore.nodeModules = {};
     const Cromwell: TCromwellNodeModules = CromwellStore.nodeModules;
 
     if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
     if (!Cromwell.imports) Cromwell.imports = {};
-    if (!Cromwell.modules) Cromwell.modules = {};
     if (!Cromwell.moduleExternals) Cromwell.moduleExternals = {};
+    if (!Cromwell.scriptStatuses) Cromwell.scriptStatuses = {};
+
+
+    if (!Cromwell.modules) Cromwell.modules = new Proxy({}, {
+        get(obj, prop) {
+            return obj[prop];
+        },
+        set(obj, prop, value) {
+            if (!obj[prop]) obj[prop] = {};
+
+            if (typeof value === 'object' && !value['default']) {
+                value = {
+                    ...value,
+                    default: obj[prop]['default'] ?? obj[prop],
+                }
+            }
+            if (typeof value === 'object') {
+                obj[prop] = Object.assign(obj[prop], value);
+            } else {
+                obj[prop] = Object.assign(obj[prop], {
+                    default: value
+                });
+            }
+            return true;
+        }
+    });
+
+    return Cromwell as Required<TCromwellNodeModules>;
+}
+
+export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModules => {
+    let Cromwell = checkStore();
 
     Cromwell.setPrefix = (prefix) => Cromwell.prefix = prefix;
 
@@ -38,6 +69,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
     let resolve;
 
     if (!Cromwell.importModule) Cromwell.importModule = (moduleName, namedExports = ['default']): Promise<boolean> | boolean => {
+        Cromwell = checkStore();
         Cromwell.hasBeenExecuted = true;
         if (canShowInfo) console.log('Cromwell:importer: importModule ' + moduleName + ' named: ' + namedExports);
         let isDefaultImport = false;
@@ -46,11 +78,6 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
             namedExports = ['default'];
             isDefaultImport = true;
         }
-
-        if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
-        if (!Cromwell.imports) Cromwell.imports = {};
-        if (!Cromwell.modules) Cromwell.modules = {};
-        if (!Cromwell.moduleExternals) Cromwell.moduleExternals = {};
 
         const metaFilepath = `${Cromwell.prefix ? `${Cromwell.prefix}/` : ''}${bundledModulesDirName}/${moduleName}/${moduleMetaInfoFileName}`;
         const importerFilepath = `${Cromwell.prefix ? `/${Cromwell.prefix}` : ''}/${bundledModulesDirName}/${moduleName}/${moduleMainBuildFileName}`;
@@ -67,9 +94,8 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
         // Server-side. Sync, require()
         const serverImport = () => {
-            if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
+            Cromwell = checkStore();
             if (Cromwell.importStatuses[moduleName]) return true;
-            if (!Cromwell.modules) Cromwell.modules = {};
 
             if (!normalizePath) normalizePath = eval(`require('normalize-path');`);
             if (!nodeRequire) nodeRequire = (name) => eval(`require('${normalizePath(name)}');`);
@@ -128,8 +154,7 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
 
         // Browser-side. Async, fetch
         const browserImport = async (): Promise<boolean> => {
-            if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
-            if (!Cromwell.imports) Cromwell.imports = {};
+            Cromwell = checkStore();
 
             const useImporter = async (namedExport: string): Promise<boolean> => {
                 if (!Cromwell?.imports?.[moduleName]?.[namedExport]) {
@@ -175,9 +200,6 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
                 let onLoad;
                 const importPromise = new Promise<"failed" | "ready" | "default">(done => onLoad = done);
                 Cromwell.importStatuses[moduleName] = importPromise;
-
-                if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
-                if (!Cromwell.imports) Cromwell.imports = {};
 
                 // Load meta and externals if it has any
 
@@ -273,8 +295,6 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
             // check if this module is being imported by another async request
             // await for another and then start
             const importWithCheck = async () => {
-                if (!Cromwell.importStatuses) Cromwell.importStatuses = {};
-
                 if (typeof Cromwell?.importStatuses?.[moduleName] === 'object') {
                     if (canShowInfo) console.log('awaiting... ' + moduleName);
                     const status = await Cromwell.importStatuses[moduleName];
@@ -329,11 +349,10 @@ export const getModuleImporter = (serverPublicDir?: string): TCromwellNodeModule
     }
 
     if (!Cromwell.importScriptExternals) Cromwell.importScriptExternals = async (metaInfo: TScriptMetaInfo | undefined): Promise<boolean> => {
+        Cromwell = checkStore();
         Cromwell.hasBeenExecuted = true;
         const externals = metaInfo?.externalDependencies;
         if (!metaInfo || !externals) return false;
-
-        if (!Cromwell.scriptStatuses) Cromwell.scriptStatuses = {};
 
         if (metaInfo.name && typeof Cromwell.scriptStatuses[metaInfo.name] === 'object') {
             await Cromwell.scriptStatuses[metaInfo.name];

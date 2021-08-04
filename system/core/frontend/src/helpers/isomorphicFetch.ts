@@ -10,7 +10,7 @@ export const fetch = (...args) => {
             try {
                 lastUsedFunc = eval(`require('node-fetch');`);
             } catch (e) { }
-            if (!lastUsedFunc) lastUsedFunc = getStore()?.nodeModules?.modules?.['node-fetch'];
+            if (!lastUsedFunc) lastUsedFunc = getStore()?.nodeModules?.modules?.['node-fetch']?.default ?? getStore()?.nodeModules?.modules?.['node-fetch'];
             if (!lastUsedFunc) throw new Error('@cromwell/core-frontend: Failed to require node-fetch');
         } else lastUsedFunc = window.fetch;
     }

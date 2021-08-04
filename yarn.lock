@@ -1386,6 +1386,13 @@
     exec-sh "^0.3.2"
     minimist "^1.2.0"
 
+"@cromwell/plugin-product-filter@1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@cromwell/plugin-product-filter/-/plugin-product-filter-1.0.2.tgz#fd0b1c1893dd734587358914b94838adf7dfa4b3"
+  integrity sha512-qrPUaplnffkQApL6wMTNrTWBhMfLATVOp7ZXJaZfJgqKrknLV7CvTxv7u+gYLPW6b+JfvFp1rRg/ZqBBKG6eBg==
+  dependencies:
+    "@material-ui/core" "4.11.2"
+
 "@dabh/diagnostics@^2.0.2":
   version "2.0.2"
   resolved "https://registry.yarnpkg.com/@dabh/diagnostics/-/diagnostics-2.0.2.tgz#290d08f7b381b8f94607dc8f471a12c675f9db31"
@@ -19163,6 +19170,13 @@ sass@^1.26.11, sass@^1.26.5:
   dependencies:
     chokidar ">=3.0.0 <4.0.0"
 
+sass@^1.35.1:
+  version "1.37.3"
+  resolved "https://registry.yarnpkg.com/sass/-/sass-1.37.3.tgz#d6ec47690f190c77c0bacd0e4eeb1b403c5850ec"
+  integrity sha512-6rHg+pRK74lxbDM9xfhQ3So9vikEOTmJvRcjZEWVvH7u/oNXsye6LjL9Ed5mxvMwauw77ZtKX5b8fH6CICAsew==
+  dependencies:
+    chokidar ">=3.0.0 <4.0.0"
+
 sax@>=0.6.0, sax@^1.2.4, sax@~1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
@@ -21181,11 +21195,6 @@ typedoc-plugin-markdown@3.10.4:
   dependencies:
     handlebars "^4.7.7"
 
-typedoc-plugin-no-inherit@1.3.0:
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/typedoc-plugin-no-inherit/-/typedoc-plugin-no-inherit-1.3.0.tgz#8fd3b01d7fe48767bd827f933ff53e00f90005c0"
-  integrity sha512-Om4yu8sDHkHWi6FcOYUbg6fv2jh7kS51xbuZ/zs4VEtO5bJwTkO8FlzRUyDrTA3puxvF9XcoottntD0mpEgULg==
-
 typedoc@0.21.5:
   version "0.21.5"
   resolved "https://registry.yarnpkg.com/typedoc/-/typedoc-0.21.5.tgz#45643618ede5c3d75e2040b964d05fcffed7ca58"
@@ -21241,7 +21250,7 @@ typescript-plugin-css-modules@^2.7.0:
     stylus "^0.54.7"
     tsconfig-paths "^3.9.0"
 
-typescript@4.3.5:
+typescript@4.3.5, typescript@^4.3.4:
   version "4.3.5"
   resolved "https://registry.yarnpkg.com/typescript/-/typescript-4.3.5.tgz#4d1c37cc16e893973c45a06886b7113234f119f4"
   integrity sha512-DqQgihaQ9cUrskJo9kIyW/+g0Vxsk8cDtZ52a3NGh0YNTfpUSArXSohyUGnvbPazEPLu398C0UxmKSOrPumUzA==
