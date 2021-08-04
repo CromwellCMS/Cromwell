@@ -4,7 +4,7 @@ import { isValidElementType } from 'react-is';
 
 import { getRestAPIClient } from '../../api/CRestAPIClient';
 import { getDynamicLoader } from '../../constants';
-import { loadFrontendBundle } from '../../helpers/loadFrontendBundle';
+import { getLoadableFrontendBundle } from '../../helpers/loadFrontendBundle';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
 
 /** @internal */
@@ -40,7 +40,7 @@ export class CPlugin extends React.Component<CPluginProps> {
                         const loader = (getStoreItem('environment')?.isAdminPanel && props.adminPanel !== false) ?
                             restAPIClient?.getPluginAdminBundle : restAPIClient?.getPluginFrontendBundle;
 
-                        PluginComponent = loadFrontendBundle(
+                        PluginComponent = getLoadableFrontendBundle(
                             name,
                             async () => loader?.(name),
                             getDynamicLoader(),

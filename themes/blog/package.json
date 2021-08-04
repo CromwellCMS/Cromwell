@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build": "npx --no-install cromwell b",
-    "watch": "npx --no-install cromwell b -w"
+    "watch": "npx --no-install cromwell b -w -a"
   },
   "dependencies": {
     "@material-ui/core": "4.11.2",
