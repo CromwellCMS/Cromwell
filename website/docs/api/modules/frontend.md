@@ -34,6 +34,7 @@ const products = await getGraphQLClient().getProducts();
 - [CStore](../classes/frontend.CStore.md)
 - [CText](../classes/frontend.CText.md)
 - [CentralServerClient](../classes/frontend.CentralServerClient.md)
+- [Importer](../classes/frontend.Importer.md)
 
 ### Type aliases
 
@@ -89,6 +90,8 @@ const products = await getGraphQLClient().getProducts();
 - [getGraphQLClient](frontend.md#getgraphqlclient)
 - [getGraphQLErrorInfo](frontend.md#getgraphqlerrorinfo)
 - [getHtmlPluginBlockName](frontend.md#gethtmlpluginblockname)
+- [getLoadableFrontendBundle](frontend.md#getloadablefrontendbundle)
+- [getModuleImporter](frontend.md#getmoduleimporter)
 - [getNamedWidgetForPlace](frontend.md#getnamedwidgetforplace)
 - [getPluginStaticUrl](frontend.md#getpluginstaticurl)
 - [getRestAPIClient](frontend.md#getrestapiclient)
@@ -593,7 +596,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/components/Link/Link.tsx:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/Link/Link.tsx#L9)
+[system/core/frontend/src/components/Link/Link.tsx:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/Link/Link.tsx#L10)
 
 ___
 
@@ -956,6 +959,51 @@ ___
 
 ___
 
+### getLoadableFrontendBundle
+
+▸ `Const` **getLoadableFrontendBundle**(`bundleName`, `loader`, `loadable?`, `fallbackComponent?`, `dynamicLoaderProps?`): `ComponentType`<`Object`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `bundleName` | `string` |
+| `loader` | () => `Promise`<`undefined` \| ``null`` \| `TFrontendBundle`\> |
+| `loadable?` | [`TDynamicLoader`](frontend.md#tdynamicloader) |
+| `fallbackComponent?` | `ComponentType`<`Object`\> |
+| `dynamicLoaderProps?` | `Record`<`string`, `any`\> |
+
+#### Returns
+
+`ComponentType`<`Object`\>
+
+#### Defined in
+
+[system/core/frontend/src/helpers/loadFrontendBundle.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/helpers/loadFrontendBundle.ts#L86)
+
+___
+
+### getModuleImporter
+
+▸ `Const` **getModuleImporter**(`serverPublicDir?`, `serverSide?`): [`Importer`](../classes/frontend.Importer.md)
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `serverPublicDir?` | `string` |
+| `serverSide?` | `boolean` |
+
+#### Returns
+
+[`Importer`](../classes/frontend.Importer.md)
+
+#### Defined in
+
+[system/core/frontend/src/helpers/importer.ts:451](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/helpers/importer.ts#L451)
+
+___
+
 ### getNamedWidgetForPlace
 
 ▸ `Const` **getNamedWidgetForPlace**<`T`\>(`widgetName`, `widgetProps`, `pluginName`): ``null`` \| `Element`
@@ -1109,7 +1157,7 @@ ___
 
 ### loadFrontendBundle
 
-▸ `Const` **loadFrontendBundle**(`bundleName`, `loader`, `loadable?`, `fallbackComponent?`, `dynamicLoaderProps?`): `ComponentType`<`Object`\>
+▸ `Const` **loadFrontendBundle**(`bundleName`, `loader`): `Promise`<`any`\>
 
 #### Parameters
 
@@ -1117,17 +1165,14 @@ ___
 | :------ | :------ |
 | `bundleName` | `string` |
 | `loader` | () => `Promise`<`undefined` \| ``null`` \| `TFrontendBundle`\> |
-| `loadable?` | [`TDynamicLoader`](frontend.md#tdynamicloader) |
-| `fallbackComponent?` | `ComponentType`<`Object`\> |
-| `dynamicLoaderProps?` | `Record`<`string`, `any`\> |
 
 #### Returns
 
-`ComponentType`<`Object`\>
+`Promise`<`any`\>
 
 #### Defined in
 
-[system/core/frontend/src/helpers/loadFrontendBundle.ts:7](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/helpers/loadFrontendBundle.ts#L7)
+[system/core/frontend/src/helpers/loadFrontendBundle.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/helpers/loadFrontendBundle.ts#L10)
 
 ___
 

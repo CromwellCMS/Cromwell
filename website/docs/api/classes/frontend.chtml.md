@@ -77,4 +77,4 @@ React.Component.render
 
 #### Defined in
 
-[system/core/frontend/src/components/CHTML/CHTML.tsx:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CHTML/CHTML.tsx#L10)
+[system/core/frontend/src/components/CHTML/CHTML.tsx:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/components/CHTML/CHTML.tsx#L23)
