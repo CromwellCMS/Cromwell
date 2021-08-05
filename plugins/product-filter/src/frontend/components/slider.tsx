@@ -10,7 +10,7 @@ const getPriceText = (value: number) => {
 }
 
 function useForceUpdate() {
-    const [value, setValue] = useState(0);
+    const [, setValue] = useState(0);
     return () => setValue(value => ++value);
 }
 
@@ -41,6 +41,18 @@ export const Slider = (props: {
         forceUpdate();
     };
 
+    const marks = [{
+        value: props.minPrice,
+        label: getPriceText(props.minPrice),
+    }]
+
+    if (props.minPrice !== props.maxPrice) {
+        marks.push({
+            value: props.maxPrice,
+            label: getPriceText(props.maxPrice),
+        })
+    }
+
     return (
         <div style={{ padding: '0 25px' }}>
             <StyledSlider
@@ -51,15 +63,7 @@ export const Slider = (props: {
                 getAriaValueText={getPriceText}
                 min={props.minPrice}
                 max={props.maxPrice}
-                marks={[
-                    {
-                        value: props.minPrice,
-                        label: getPriceText(props.minPrice),
-                    }, {
-                        value: props.maxPrice,
-                        label: getPriceText(props.maxPrice),
-                    },
-                ]}
+                marks={marks}
             />
         </div>
     )

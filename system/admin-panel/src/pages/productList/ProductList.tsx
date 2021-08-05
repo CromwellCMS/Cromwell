@@ -1,6 +1,15 @@
 import { gql } from '@apollo/client';
-import { getBlockInstance, getStoreItem, setStoreItem, TPagedParams, TProduct, TProductFilter } from '@cromwell/core';
+import {
+    getBlockInstance,
+    getStoreItem,
+    setStoreItem,
+    TFilteredProductList,
+    TPagedParams,
+    TProduct,
+    TProductFilter,
+} from '@cromwell/core';
 import { CList, CPlugin, getGraphQLClient, TCList } from '@cromwell/core-frontend';
+import { IFrontendFilter, TInstanceSettings } from '@cromwell/plugin-product-filter/build/types/types';
 import { Checkbox, Drawer, IconButton, Tooltip } from '@material-ui/core';
 import {
     AddCircle as AddCircleIcon,
@@ -57,6 +66,8 @@ const ProductList = (props: TPropsType) => {
     const filterPluginName = '@cromwell/plugin-product-filter';
     const [showFilter, setShowFilter] = useState(false);
     const headerRef = useRef<HTMLDivElement | null>(null);
+    const filterInstRef = useRef<IFrontendFilter | null>(null);
+    const productsRef = useRef<TFilteredProductList | null>(null);
 
     useEffect(() => {
         resetSelected();
@@ -85,6 +96,10 @@ const ProductList = (props: TPropsType) => {
         resetList();
     }
 
+    const onFilterMount = () => {
+        filterInstRef.current?.updateFilterMeta(productsRef.current);
+    }
+
     const handleGetProducts = async (params: TPagedParams<TProduct>) => {
         const products = await client?.getFilteredProducts({
             pagedParams: {
@@ -106,6 +121,9 @@ const ProductList = (props: TPropsType) => {
             customFragmentName: 'ProductListFragment',
             filterParams: filterInput.current,
         });
+        productsRef.current = products;
+        filterInstRef.current?.updateFilterMeta(products);
+
         if (products?.pagedMeta?.totalElements) {
             totalElements.current = products.pagedMeta?.totalElements;
         }
@@ -233,7 +251,9 @@ const ProductList = (props: TPropsType) => {
                                 instanceSettings: {
                                     disableMobile: true,
                                     onChange: onFilterChange,
-                                }
+                                    getInstance: (inst) => { filterInstRef.current = inst },
+                                    onMount: onFilterMount,
+                                } as TInstanceSettings
                             }}
                             adminPanel={false}
                             pluginName={filterPluginName}

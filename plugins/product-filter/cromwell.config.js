@@ -6,10 +6,17 @@ module.exports = {
         const commonjs = require('@rollup/plugin-commonjs');
         const typescript = require('rollup-plugin-ts-compiler');
         const { terser } = require('rollup-plugin-terser');
+        const { resolve } = require('path');
         return {
             main: {
                 plugins: [
-                    typescript(),
+                    typescript({
+                        compilerOptions: {
+                            declaration: true,
+                            declarationDir: resolve(__dirname, 'build/types')
+                        },
+                        monorepo: true,
+                    }),
                     commonjs(),
                     terser({
                         compress: {
@@ -17,17 +24,6 @@ module.exports = {
                             negate_iife: false,
                         }
                     }),
-                ]
-            },
-            backend: {
-                plugins: [
-                    typescript({
-                        compilerOptions: {
-                            target: 'ES2019'
-                        },
-                        monorepo: true,
-                    }),
-                    commonjs(),
                 ]
             },
         }
