@@ -119,3 +119,15 @@ export const moduleOneChunkGeneratedFileName = 'generated.lib.js';
 export const moduleNodeGeneratedFileName = 'generated.node.js';
 export const moduleExportsDirChunk = 'generated';
 export const moduleChunksBuildDirChunk = 'chunks';
+
+export const systemPackages = [
+    '@cromwell/core',
+    '@cromwell/admin-panel',
+    '@cromwell/cli',
+    '@cromwell/core-backend',
+    '@cromwell/core-frontend',
+    '@cromwell/cms',
+    '@cromwell/renderer',
+    '@cromwell/server',
+    '@cromwell/utils',
+] as const;

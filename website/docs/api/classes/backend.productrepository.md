@@ -16,6 +16,10 @@
 
 - [constructor](backend.ProductRepository.md#constructor)
 
+### Properties
+
+- [dbType](backend.ProductRepository.md#dbtype)
+
 ### Methods
 
 - [applyAndGetPagedProducts](backend.ProductRepository.md#applyandgetpagedproducts)
@@ -40,7 +44,10 @@
 - [getProducts](backend.ProductRepository.md#getproducts)
 - [getProductsFromCategory](backend.ProductRepository.md#getproductsfromcategory)
 - [getReviewsOfProduct](backend.ProductRepository.md#getreviewsofproduct)
+- [getSqlBoolStr](backend.ProductRepository.md#getsqlboolstr)
+- [getSqlLike](backend.ProductRepository.md#getsqllike)
 - [handleProductInput](backend.ProductRepository.md#handleproductinput)
+- [quote](backend.ProductRepository.md#quote)
 - [updateEntity](backend.ProductRepository.md#updateentity)
 - [updateProduct](backend.ProductRepository.md#updateproduct)
 
@@ -57,6 +64,20 @@
 #### Defined in
 
 [system/core/backend/src/repositories/product.repository.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L35)
+
+## Properties
+
+### dbType
+
+• **dbType**: ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"``
+
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[dbType](backend.BaseRepository.md#dbtype)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L11)
 
 ## Methods
 
@@ -77,7 +98,7 @@
 
 #### Defined in
 
-[system/core/backend/src/repositories/product.repository.ts:53](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L53)
+[system/core/backend/src/repositories/product.repository.ts:55](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L55)
 
 ___
 
@@ -102,7 +123,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
+[system/core/backend/src/repositories/base.repository.ts:94](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L94)
 
 ___
 
@@ -142,7 +163,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/product.repository.ts:47](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L47)
+[system/core/backend/src/repositories/product.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L48)
 
 ___
 
@@ -189,7 +210,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
+[system/core/backend/src/repositories/base.repository.ts:56](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L56)
 
 ___
 
@@ -234,7 +255,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
+[system/core/backend/src/repositories/base.repository.ts:83](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L83)
 
 ___
 
@@ -258,7 +279,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
+[system/core/backend/src/repositories/base.repository.ts:110](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L110)
 
 ___
 
@@ -279,7 +300,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/product.repository.ts:304](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L304)
+[system/core/backend/src/repositories/product.repository.ts:308](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L308)
 
 ___
 
@@ -317,7 +338,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
+[system/core/backend/src/repositories/base.repository.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L31)
 
 ___
 
@@ -342,7 +363,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
+[system/core/backend/src/repositories/base.repository.ts:36](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L36)
 
 ___
 
@@ -367,7 +388,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
+[system/core/backend/src/repositories/base.repository.ts:46](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L46)
 
 ___
 
@@ -389,7 +410,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/product.repository.ts:257](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L257)
+[system/core/backend/src/repositories/product.repository.ts:261](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L261)
 
 ___
 
@@ -413,7 +434,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
+[system/core/backend/src/repositories/base.repository.ts:25](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L25)
 
 ___
 
@@ -433,7 +454,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/product.repository.ts:74](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L74)
+[system/core/backend/src/repositories/product.repository.ts:76](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L76)
 
 ___
 
@@ -453,7 +474,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/product.repository.ts:82](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L82)
+[system/core/backend/src/repositories/product.repository.ts:83](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L83)
 
 ___
 
@@ -493,7 +514,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/product.repository.ts:68](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L68)
+[system/core/backend/src/repositories/product.repository.ts:70](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L70)
 
 ___
 
@@ -539,6 +560,48 @@ ___
 
 ___
 
+### getSqlBoolStr
+
+▸ **getSqlBoolStr**(`b`): ``"true"`` \| ``"false"`` \| ``"1"`` \| ``"0"``
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `b` | `boolean` |
+
+#### Returns
+
+``"true"`` \| ``"false"`` \| ``"1"`` \| ``"0"``
+
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:21](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L21)
+
+___
+
+### getSqlLike
+
+▸ **getSqlLike**(): ``"ILIKE"`` \| ``"LIKE"``
+
+#### Returns
+
+``"ILIKE"`` \| ``"LIKE"``
+
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getSqlLike](backend.BaseRepository.md#getsqllike)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L22)
+
+___
+
 ### handleProductInput
 
 ▸ **handleProductInput**(`product`, `input`): `Promise`<`void`\>
@@ -557,6 +620,30 @@ ___
 #### Defined in
 
 [system/core/backend/src/repositories/product.repository.ts:90](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/product.repository.ts#L90)
+
+___
+
+### quote
+
+▸ **quote**(`str`): `string`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `str` | `string` |
+
+#### Returns
+
+`string`
+
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[quote](backend.BaseRepository.md#quote)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
 
 ___
 
@@ -581,7 +668,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)
+[system/core/backend/src/repositories/base.repository.ts:68](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L68)
 
 ___
 

@@ -64,10 +64,10 @@ CRestAPIClient - CromwellCMS REST API Client
 - [removePublicDir](frontend.CRestAPIClient.md#removepublicdir)
 - [resetPage](frontend.CRestAPIClient.md#resetpage)
 - [resetPassword](frontend.CRestAPIClient.md#resetpassword)
+- [saveCmsSettings](frontend.CRestAPIClient.md#savecmssettings)
 - [savePageConfig](frontend.CRestAPIClient.md#savepageconfig)
 - [savePluginSettings](frontend.CRestAPIClient.md#savepluginsettings)
 - [signUp](frontend.CRestAPIClient.md#signup)
-- [updateCmsConfig](frontend.CRestAPIClient.md#updatecmsconfig)
 - [updatePlugin](frontend.CRestAPIClient.md#updateplugin)
 - [updateTheme](frontend.CRestAPIClient.md#updatetheme)
 - [uploadPublicFiles](frontend.CRestAPIClient.md#uploadpublicfiles)
@@ -196,13 +196,13 @@ Crates a public directory by specified path
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:360](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L360)
+[system/core/frontend/src/api/CRestAPIClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L368)
 
 ___
 
 ### delete
 
-▸ **delete**<`T`\>(`route`, `options?`): `Promise`<`undefined` \| `T`\>
+▸ **delete**<`T`\>(`route`, `options?`): `Promise`<`T`\>
 
 Makes DELETE request to specified route
 
@@ -210,9 +210,9 @@ Makes DELETE request to specified route
 
 #### Type parameters
 
-| Name |
-| :------ |
-| `T` |
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
 
 #### Parameters
 
@@ -223,7 +223,7 @@ Makes DELETE request to specified route
 
 #### Returns
 
-`Promise`<`undefined` \| `T`\>
+`Promise`<`T`\>
 
 #### Defined in
 
@@ -333,7 +333,7 @@ ___
 
 ### fetch
 
-▸ **fetch**<`T`\>(`route`, `options?`): `Promise`<`undefined` \| `T`\>
+▸ **fetch**<`T`\>(`route`, `options?`): `Promise`<`T`\>
 
 Make a custom request to a specified route
 
@@ -341,9 +341,9 @@ Make a custom request to a specified route
 
 #### Type parameters
 
-| Name |
-| :------ |
-| `T` |
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
 
 #### Parameters
 
@@ -354,7 +354,7 @@ Make a custom request to a specified route
 
 #### Returns
 
-`Promise`<`undefined` \| `T`\>
+`Promise`<`T`\>
 
 #### Defined in
 
@@ -390,7 +390,7 @@ ___
 
 ### get
 
-▸ **get**<`T`\>(`route`, `options?`): `Promise`<`undefined` \| `T`\>
+▸ **get**<`T`\>(`route`, `options?`): `Promise`<`T`\>
 
 Makes GET request to specified route
 
@@ -398,9 +398,9 @@ Makes GET request to specified route
 
 #### Type parameters
 
-| Name |
-| :------ |
-| `T` |
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
 
 #### Parameters
 
@@ -411,7 +411,7 @@ Makes GET request to specified route
 
 #### Returns
 
-`Promise`<`undefined` \| `T`\>
+`Promise`<`T`\>
 
 #### Defined in
 
@@ -421,7 +421,7 @@ ___
 
 ### getAdminCmsSettings
 
-▸ **getAdminCmsSettings**(`options?`): `Promise`<`undefined` \| `TCmsSettings`\>
+▸ **getAdminCmsSettings**(`options?`): `Promise`<`TCmsConfig` & `TCmsPublicSettings` & `TCmsAdminSettings` & `TCmsInternalSettings` & { `cmsInfo?`: `TCmsInfo`  }\>
 
 Get admin CMS settings
 
@@ -435,7 +435,7 @@ Get admin CMS settings
 
 #### Returns
 
-`Promise`<`undefined` \| `TCmsSettings`\>
+`Promise`<`TCmsConfig` & `TCmsPublicSettings` & `TCmsAdminSettings` & `TCmsInternalSettings` & { `cmsInfo?`: `TCmsInfo`  }\>
 
 #### Defined in
 
@@ -459,7 +459,7 @@ ___
 
 ### getCmsSettings
 
-▸ **getCmsSettings**(`options?`): `Promise`<`undefined` \| `TCmsSettings`\>
+▸ **getCmsSettings**(`options?`): `Promise`<`TCmsSettings`\>
 
 Get public CMS settings
 
@@ -473,7 +473,7 @@ Get public CMS settings
 
 #### Returns
 
-`Promise`<`undefined` \| `TCmsSettings`\>
+`Promise`<`TCmsSettings`\>
 
 #### Defined in
 
@@ -721,7 +721,7 @@ List all installed Plugins
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:402](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L402)
+[system/core/frontend/src/api/CRestAPIClient.ts:410](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L410)
 
 ___
 
@@ -942,7 +942,7 @@ Get info about currently used Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:394](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L394)
+[system/core/frontend/src/api/CRestAPIClient.ts:402](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L402)
 
 ___
 
@@ -1071,7 +1071,7 @@ ___
 
 ### logOut
 
-▸ **logOut**(`options?`): `Promise`<`unknown`\>
+▸ **logOut**(`options?`): `Promise`<`any`\>
 
 Logs user out via cookies
 
@@ -1085,7 +1085,7 @@ Logs user out via cookies
 
 #### Returns
 
-`Promise`<`unknown`\>
+`Promise`<`any`\>
 
 #### Defined in
 
@@ -1220,7 +1220,7 @@ ___
 
 ### post
 
-▸ **post**<`T`\>(`route`, `input?`, `options?`): `Promise`<`undefined` \| `T`\>
+▸ **post**<`T`\>(`route`, `input?`, `options?`): `Promise`<`T`\>
 
 Makes POST request to specified route
 
@@ -1228,9 +1228,9 @@ Makes POST request to specified route
 
 #### Type parameters
 
-| Name |
-| :------ |
-| `T` |
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
 
 #### Parameters
 
@@ -1242,7 +1242,7 @@ Makes POST request to specified route
 
 #### Returns
 
-`Promise`<`undefined` \| `T`\>
+`Promise`<`T`\>
 
 #### Defined in
 
@@ -1252,7 +1252,7 @@ ___
 
 ### put
 
-▸ **put**<`T`\>(`route`, `input?`, `options?`): `Promise`<`undefined` \| `T`\>
+▸ **put**<`T`\>(`route`, `input?`, `options?`): `Promise`<`T`\>
 
 Makes PUT request to specified route
 
@@ -1260,9 +1260,9 @@ Makes PUT request to specified route
 
 #### Type parameters
 
-| Name |
-| :------ |
-| `T` |
+| Name | Type |
+| :------ | :------ |
+| `T` | `any` |
 
 #### Parameters
 
@@ -1274,7 +1274,7 @@ Makes PUT request to specified route
 
 #### Returns
 
-`Promise`<`undefined` \| `T`\>
+`Promise`<`T`\>
 
 #### Defined in
 
@@ -1303,7 +1303,7 @@ List files in a public directory by specified path
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:352](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L352)
+[system/core/frontend/src/api/CRestAPIClient.ts:360](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L360)
 
 ___
 
@@ -1373,7 +1373,7 @@ Removes a public directory by specified path
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L368)
+[system/core/frontend/src/api/CRestAPIClient.ts:376](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L376)
 
 ___
 
@@ -1427,6 +1427,31 @@ Finish reset password transaction. Set a new password
 #### Defined in
 
 [system/core/frontend/src/api/CRestAPIClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L277)
+
+___
+
+### saveCmsSettings
+
+▸ **saveCmsSettings**(`input`, `options?`): `Promise`<`undefined` \| `TCmsSettings`\>
+
+Update CMS settings
+
+**`auth`** admin
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `input` | `TCmsSettings` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
+
+#### Returns
+
+`Promise`<`undefined` \| `TCmsSettings`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CRestAPIClient.ts:352](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L352)
 
 ___
 
@@ -1506,31 +1531,6 @@ Sign up a new user
 
 ___
 
-### updateCmsConfig
-
-▸ **updateCmsConfig**(`input`, `options?`): `Promise`<`undefined` \| `TCmsSettings`\>
-
-Update CMS config
-
-**`auth`** admin
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `input` | `TCmsEntityInput` |
-| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
-
-#### Returns
-
-`Promise`<`undefined` \| `TCmsSettings`\>
-
-#### Defined in
-
-[system/core/frontend/src/api/CRestAPIClient.ts:415](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L415)
-
-___
-
 ### updatePlugin
 
 ▸ **updatePlugin**(`pluginName`, `options?`): `Promise`<`undefined` \| `boolean`\>
@@ -1603,4 +1603,4 @@ Upload files in specified public directory
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:376](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L376)
+[system/core/frontend/src/api/CRestAPIClient.ts:384](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L384)

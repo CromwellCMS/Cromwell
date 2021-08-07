@@ -119,6 +119,24 @@
     margin: 10px 0;
 }
 
+.cmsVersion {
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+    color: #666;
+    font-size: 12px;
+    margin-top: 15px;
+}
+
+.cmsInfo {
+    @include paper;
+    padding: 20px;
+
+    > p {
+        margin: 8px 0;
+    }
+}
+
 @media screen and (max-width: $mobileBreakpoint) {
 
     // mobile

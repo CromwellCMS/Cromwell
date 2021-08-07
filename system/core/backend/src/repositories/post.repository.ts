@@ -122,13 +122,13 @@ export class PostRepository extends BaseRepository<Post> {
         // Search by title
         if (filterParams?.titleSearch && filterParams.titleSearch !== '') {
             const titleSearch = `%${filterParams.titleSearch}%`;
-            const query = `${this.metadata.tablePath}.title LIKE :titleSearch`;
+            const query = `${this.metadata.tablePath}.title ${this.getSqlLike()} :titleSearch`;
             qb.andWhere(query, { titleSearch });
         }
 
         if (filterParams?.authorId && filterParams.authorId !== '') {
             const authorId = filterParams.authorId;
-            const query = `${this.metadata.tablePath}.authorId = :authorId`;
+            const query = `${this.metadata.tablePath}.${this.quote('authorId')} = :authorId`;
             qb.andWhere(query, { authorId });
         }
 
@@ -136,13 +136,12 @@ export class PostRepository extends BaseRepository<Post> {
         if (filterParams?.published !== undefined && filterParams?.published !== null) {
 
             if (filterParams.published === true) {
-                qb.andWhere(`${this.metadata.tablePath}.published IS NOT NULL`);
-                qb.andWhere(`${this.metadata.tablePath}.published != 0`);
+                qb.andWhere(`${this.metadata.tablePath}.published = ${this.getSqlBoolStr(true)}`);
             }
 
             if (filterParams.published === false) {
                 const brackets = new Brackets(subQb => {
-                    subQb.where(`${this.metadata.tablePath}.published = 0`);
+                    subQb.where(`${this.metadata.tablePath}.published = ${this.getSqlBoolStr(false)}`);
                     subQb.orWhere(`${this.metadata.tablePath}.published IS NULL`);
                 });
                 qb.andWhere(brackets);
@@ -153,13 +152,12 @@ export class PostRepository extends BaseRepository<Post> {
         if (filterParams?.featured !== undefined && filterParams?.featured !== null) {
 
             if (filterParams.featured === true) {
-                qb.andWhere(`${this.metadata.tablePath}.featured IS NOT NULL`);
-                qb.andWhere(`${this.metadata.tablePath}.featured != 0`);
+                qb.andWhere(`${this.metadata.tablePath}.featured = ${this.getSqlBoolStr(true)}`);
             }
 
             if (filterParams.featured === false) {
                 const brackets = new Brackets(subQb => {
-                    subQb.where(`${this.metadata.tablePath}.featured = 0`);
+                    subQb.where(`${this.metadata.tablePath}.featured = ${this.getSqlBoolStr(false)}`);
                     subQb.orWhere(`${this.metadata.tablePath}.featured IS NULL`);
                 });
                 qb.andWhere(brackets);
@@ -176,14 +174,14 @@ export class PostRepository extends BaseRepository<Post> {
     }
 
     async deleteManyFilteredPosts(input: TDeleteManyInput, filterParams?: PostFilterInput): Promise<boolean | undefined> {
-        // Select first, because JOIN with DELETE is not supported by Typeorm (such a shame), we need it fot post filter with tags (see above). 
+        // Select first, because JOIN with DELETE is not supported by Typeorm (such a shame), 
+        // we need it for post filter with tags (see above). 
         const qb = this.createQueryBuilder(this.metadata.tablePath).select(['id']);
         this.applyPostFilter(qb, filterParams);
         this.applyDeleteMany(qb, input);
         const ids: { id: string | number }[] = await qb.execute();
-        const deleteQb = this.createQueryBuilder(this.metadata.tablePath)
-            .delete().from<Post>(this.metadata.tablePath);
 
+        const deleteQb = this.createQueryBuilder(this.metadata.tablePath).delete();
         this.applyDeleteMany(deleteQb, {
             all: false,
             ids: ids.map(id => id?.id + ''),

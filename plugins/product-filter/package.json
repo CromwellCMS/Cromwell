@@ -2,9 +2,11 @@
   "name": "@cromwell/plugin-product-filter",
   "version": "1.0.9",
   "description": "",
+  "types": "build/types",
   "files": [
     "build",
     "static",
+    "types",
     "cromwell.config.js"
   ],
   "author": "CromwellCMS",

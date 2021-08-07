@@ -1,4 +1,4 @@
-import { TCromwellaConfig, TFrontendDependency, TPackageJson } from '@cromwell/core';
+import { systemPackages, TCromwellaConfig, TFrontendDependency, TPackageJson } from '@cromwell/core';
 import { getNodeModuleDir, readCmsModules } from '@cromwell/core-backend';
 import { each as asyncEach } from 'async';
 import colorsdef from 'colors/safe';
@@ -491,15 +491,5 @@ export const defaultFrontendDeps: (string | TFrontendDependency)[] = [
     },
 ];
 
-export const systemPackages = [
-    '@cromwell/core',
-    '@cromwell/admin-panel',
-    '@cromwell/cli',
-    '@cromwell/core-backend',
-    '@cromwell/core-frontend',
-    '@cromwell/cms',
-    '@cromwell/renderer',
-    '@cromwell/server',
-    '@cromwell/utils',
-]
+
 

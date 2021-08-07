@@ -1,5 +1,5 @@
 import { getRandStr, getStoreItem, TBasePageEntity, TBasePageEntityInput, TPagedList, TPagedParams } from '@cromwell/core';
-import { getManager, SelectQueryBuilder } from 'typeorm';
+import { getManager, SelectQueryBuilder, ConnectionOptions } from 'typeorm';
 
 import { BasePageEntity } from '../models/entities/base-page.entity';
 
@@ -33,7 +33,7 @@ export const applyGetPaged = <T>(qb: SelectQueryBuilder<T>, sortByTableName?: st
  */
 export const applyGetManyFromOne = <T>(qb: SelectQueryBuilder<T>, firstEntityName: string,
     firstEntityProp: keyof T, secondEntityName: string, secondEntityId: string): SelectQueryBuilder<T> => {
-    return qb.innerJoinAndSelect(`${firstEntityName}.${firstEntityProp}`,
+    return qb.innerJoin(`${firstEntityName}.${firstEntityProp}`,
         secondEntityName, `${secondEntityName}.id = :entityId`,
         { entityId: secondEntityId });
 }
@@ -98,4 +98,22 @@ export const checkEntitySlug = async <T extends BasePageEntity>(entity: T, Entit
         await entity.save();
 
     return entity;
+}
+
+
+export const getSqlBoolStr = (dbType: ConnectionOptions['type'], b: boolean) => {
+    if (dbType === 'postgres') {
+        return b ? 'true' : 'false';
+    }
+    return b ? '1' : '0';
+}
+
+export const getSqlLike = (dbType: ConnectionOptions['type']) => {
+    if (dbType === 'postgres') return 'ILIKE';
+    return 'LIKE';
+}
+
+export const wrapInQuotes = (dbType: ConnectionOptions['type'], str: string) => {
+    if (dbType === 'postgres') return `"${str}"`;
+    return '`' + str + '`';
 }

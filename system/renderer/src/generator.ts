@@ -34,7 +34,7 @@ export const generator = async (options: {
     const config = await readCMSConfig();
     if (config) setStoreItem('cmsSettings', config);
 
-    const themeName = targetThemeName ?? config?.defaultSettings?.themeName;
+    const themeName = targetThemeName ?? config?.defaultSettings?.publicSettings?.themeName;
     if (!themeName) {
         logger.error('No theme name provided');
         return;

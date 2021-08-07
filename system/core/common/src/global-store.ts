@@ -4,6 +4,7 @@ import { ECommonComponentNames } from './constants';
 import { isServer } from './helpers';
 import { TCommonComponentProps, TCromwellBlock } from './types/blocks';
 import { TCmsSettings, TCromwellStore } from './types/data';
+import { TCmsRedirect } from './types/entities';
 
 const initialStore: TCromwellStore = {}
 
@@ -111,4 +112,22 @@ export const getBlockInstance = <TContentBlock = React.Component>(blockId: strin
     if (blockInstances) {
         return blockInstances[blockId] as any;
     }
+}
+
+export const registerRedirect = (ruleName: string, redirect: TCmsRedirect) => {
+    let redirects = getStoreItem('redirects');
+    if (!redirects) {
+        redirects = {};
+        setStoreItem('redirects', redirects);
+    }
+    redirects[ruleName] = redirect;
+}
+
+export const registerRewrite = (ruleName: string, rewrite: TCmsRedirect) => {
+    let rewrites = getStoreItem('rewrites');
+    if (!rewrites) {
+        rewrites = {};
+        setStoreItem('rewrites', rewrites);
+    }
+    rewrites[ruleName] = rewrite;
 }

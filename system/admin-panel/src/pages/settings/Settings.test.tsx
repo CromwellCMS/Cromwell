@@ -14,7 +14,7 @@ jest.mock('@cromwell/core-frontend', () => {
             return {
                 getCmsSettings: jest.fn().mockImplementation(() => testData),
                 getAdminCmsSettings: jest.fn().mockImplementation(() => testData),
-                updateCmsConfig: jest.fn().mockImplementation(() => true),
+                saveCmsSettings: jest.fn().mockImplementation(() => true),
             }
         },
         getCStore: () => ({

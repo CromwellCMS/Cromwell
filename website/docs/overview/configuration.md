@@ -71,7 +71,7 @@ Remove all DB_* environment variables and add the volume:
 
 
 ## Config options
-Options of cmsconfig.json. Format: **optionName** `: type` (`defaultValue`) - description.
+Options of `cmsconfig.json`. Format: **optionName** `: type` (`defaultValue`) - description.
 
 - **orm:** `: ConnectionOptions` - Options passed to TypeORM to create a new connection. [See in TypeORM docs](https://typeorm.io/#/connection-options).
 - **apiPort** `: number`  (`4016`)  - Port to use for API and Proxy server. On this port will also be proxied admin panel and Next.js server.

@@ -1,5 +1,6 @@
 import { TOrder, TPackageCromwellConfig, TProductReview } from '@cromwell/core';
 import {
+    getCmsInfo,
     getCmsSettings,
     getLogger,
     getPublicDir,
@@ -31,7 +32,6 @@ import { getCustomRepository } from 'typeorm';
 
 import { AdminCmsConfigDto } from '../dto/admin-cms-config.dto';
 import { CmsConfigDto } from '../dto/cms-config.dto';
-import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { CmsStatsDto } from '../dto/cms-stats.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
@@ -89,13 +89,32 @@ export class CmsController {
         type: AdminCmsConfigDto,
     })
     @ApiForbiddenResponse({ description: 'Forbidden.' })
-    async getPrivateConfig(): Promise<AdminCmsConfigDto | undefined> {
+    async getAdminConfig(): Promise<AdminCmsConfigDto | undefined> {
         // logger.log('CmsController::getPrivateConfig');
         const config = await getCmsSettings();
+        const info = await getCmsInfo()
         if (!config) {
             throw new HttpException('CmsController::getPrivateConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        return new AdminCmsConfigDto().parseConfig(config);
+        const dto = new AdminCmsConfigDto().parseConfig(config);
+        dto.cmsInfo = info;
+        return dto;
+    }
+
+
+    @Post('admin-config')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({
+        description: 'Updates CMS config',
+    })
+    @ApiBody({ type: AdminCmsConfigDto })
+    @ApiResponse({
+        status: 200,
+        type: AdminCmsConfigDto,
+    })
+    async updateCmsSettings(@Body() input: AdminCmsConfigDto): Promise<AdminCmsConfigDto | undefined> {
+        return this.cmsService.updateCmsSettings(input);
     }
 
 
@@ -235,22 +254,6 @@ export class CmsController {
             throw new HttpException('CmsController::setUp CMS already installed', HttpStatus.BAD_REQUEST);
 
         return await this.cmsService.installCms();
-    }
-
-
-    @Post('update-config')
-    @UseGuards(JwtAuthGuard)
-    @Roles('administrator')
-    @ApiOperation({
-        description: 'Updates CMS config',
-    })
-    @ApiBody({ type: CmsConfigUpdateDto })
-    @ApiResponse({
-        status: 200,
-        type: AdminCmsConfigDto,
-    })
-    async updateCmsConfig(@Body() input: CmsConfigUpdateDto): Promise<AdminCmsConfigDto | undefined> {
-        return this.cmsService.updateCmsConfig(input);
     }
 
 

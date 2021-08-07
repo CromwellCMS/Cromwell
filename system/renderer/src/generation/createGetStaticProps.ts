@@ -1,4 +1,5 @@
 import {
+    setStoreItem,
     StaticPageContext,
     TCmsConfig,
     TCromwellPageCoreProps,
@@ -46,6 +47,8 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
 
         const { pageConfig, themeConfig, cmsSettings,
             themeCustomConfig, pagesInfo, pluginsSettings } = rendererData;
+
+        if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
 
         const [childStaticProps, plugins] = await Promise.all([
             getThemeStaticProps(pageName, pageGetStaticProps, context),

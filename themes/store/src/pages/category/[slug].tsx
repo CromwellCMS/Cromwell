@@ -34,12 +34,16 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
     const listId = 'Category_ProductList';
     const router = useRouter?.();
     const listInst = useRef<TCromwellBlock<TCList> | undefined>();
+    const prevPath = useRef<string | undefined>();
 
     useEffect(() => {
-        const list: TCList | undefined = listInst.current?.getContentInstance();
-        if (list) {
-            list.updateData();
+        if (prevPath.current) {
+            const list: TCList | undefined = listInst.current?.getContentInstance();
+            if (list) {
+                list.updateData();
+            }
         }
+        prevPath.current = router?.asPath;
     }, [router?.asPath]);
 
     return (

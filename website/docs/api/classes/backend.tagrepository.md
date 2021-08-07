@@ -16,6 +16,10 @@
 
 - [constructor](backend.TagRepository.md#constructor)
 
+### Properties
+
+- [dbType](backend.TagRepository.md#dbtype)
+
 ### Methods
 
 - [applyDeleteMany](backend.TagRepository.md#applydeletemany)
@@ -28,10 +32,13 @@
 - [getById](backend.TagRepository.md#getbyid)
 - [getBySlug](backend.TagRepository.md#getbyslug)
 - [getPaged](backend.TagRepository.md#getpaged)
+- [getSqlBoolStr](backend.TagRepository.md#getsqlboolstr)
+- [getSqlLike](backend.TagRepository.md#getsqllike)
 - [getTagById](backend.TagRepository.md#gettagbyid)
 - [getTagBySlug](backend.TagRepository.md#gettagbyslug)
 - [getTags](backend.TagRepository.md#gettags)
 - [getTagsByIds](backend.TagRepository.md#gettagsbyids)
+- [quote](backend.TagRepository.md#quote)
 - [updateEntity](backend.TagRepository.md#updateentity)
 - [updateTag](backend.TagRepository.md#updatetag)
 
@@ -48,6 +55,20 @@
 #### Defined in
 
 [system/core/backend/src/repositories/tag.repository.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/tag.repository.ts#L14)
+
+## Properties
+
+### dbType
+
+• **dbType**: ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"``
+
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[dbType](backend.BaseRepository.md#dbtype)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L11)
 
 ## Methods
 
@@ -72,7 +93,7 @@
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L86)
+[system/core/backend/src/repositories/base.repository.ts:94](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L94)
 
 ___
 
@@ -97,7 +118,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:48](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L48)
+[system/core/backend/src/repositories/base.repository.ts:56](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L56)
 
 ___
 
@@ -142,7 +163,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:75](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L75)
+[system/core/backend/src/repositories/base.repository.ts:83](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L83)
 
 ___
 
@@ -166,7 +187,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L96)
+[system/core/backend/src/repositories/base.repository.ts:110](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L110)
 
 ___
 
@@ -204,7 +225,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
+[system/core/backend/src/repositories/base.repository.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L31)
 
 ___
 
@@ -229,7 +250,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L28)
+[system/core/backend/src/repositories/base.repository.ts:36](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L36)
 
 ___
 
@@ -254,7 +275,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L38)
+[system/core/backend/src/repositories/base.repository.ts:46](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L46)
 
 ___
 
@@ -278,7 +299,49 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:17](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L17)
+[system/core/backend/src/repositories/base.repository.ts:25](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L25)
+
+___
+
+### getSqlBoolStr
+
+▸ **getSqlBoolStr**(`b`): ``"true"`` \| ``"false"`` \| ``"1"`` \| ``"0"``
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `b` | `boolean` |
+
+#### Returns
+
+``"true"`` \| ``"false"`` \| ``"1"`` \| ``"0"``
+
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:21](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L21)
+
+___
+
+### getSqlLike
+
+▸ **getSqlLike**(): ``"ILIKE"`` \| ``"LIKE"``
+
+#### Returns
+
+``"ILIKE"`` \| ``"LIKE"``
+
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[getSqlLike](backend.BaseRepository.md#getsqllike)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L22)
 
 ___
 
@@ -362,6 +425,30 @@ ___
 
 ___
 
+### quote
+
+▸ **quote**(`str`): `string`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `str` | `string` |
+
+#### Returns
+
+`string`
+
+#### Inherited from
+
+[BaseRepository](backend.BaseRepository.md).[quote](backend.BaseRepository.md#quote)
+
+#### Defined in
+
+[system/core/backend/src/repositories/base.repository.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L23)
+
+___
+
 ### updateEntity
 
 ▸ **updateEntity**(`id`, `input`): `Promise`<[`Tag`](backend.Tag.md)\>
@@ -383,7 +470,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/base.repository.ts:60](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L60)
+[system/core/backend/src/repositories/base.repository.ts:68](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/base.repository.ts#L68)
 
 ___
 

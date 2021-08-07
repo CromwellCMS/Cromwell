@@ -22,35 +22,19 @@
 
 ### Properties
 
-- [beta](backend.CmsEntity.md#beta)
 - [createDate](backend.CmsEntity.md#createdate)
-- [defaultPageSize](backend.CmsEntity.md#defaultpagesize)
-- [defaultShippingPrice](backend.CmsEntity.md#defaultshippingprice)
-- [favicon](backend.CmsEntity.md#favicon)
-- [footerHtml](backend.CmsEntity.md#footerhtml)
-- [headHtml](backend.CmsEntity.md#headhtml)
 - [id](backend.CmsEntity.md#id)
-- [installed](backend.CmsEntity.md#installed)
 - [isEnabled](backend.CmsEntity.md#isenabled)
-- [isUpdating](backend.CmsEntity.md#isupdating)
-- [language](backend.CmsEntity.md#language)
-- [logo](backend.CmsEntity.md#logo)
 - [pageDescription](backend.CmsEntity.md#pagedescription)
 - [pageTitle](backend.CmsEntity.md#pagetitle)
-- [protocol](backend.CmsEntity.md#protocol)
-- [sendFromEmail](backend.CmsEntity.md#sendfromemail)
 - [slug](backend.CmsEntity.md#slug)
-- [smtpConnectionString](backend.CmsEntity.md#smtpconnectionstring)
-- [themeName](backend.CmsEntity.md#themename)
-- [timezone](backend.CmsEntity.md#timezone)
 - [updateDate](backend.CmsEntity.md#updatedate)
-- [version](backend.CmsEntity.md#version)
-- [versions](backend.CmsEntity.md#versions)
 
 ### Accessors
 
 - [adminSettings](backend.CmsEntity.md#adminsettings)
-- [currencies](backend.CmsEntity.md#currencies)
+- [internalSettings](backend.CmsEntity.md#internalsettings)
+- [publicSettings](backend.CmsEntity.md#publicsettings)
 
 ## Constructors
 
@@ -63,20 +47,6 @@
 [BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
 
 ## Properties
-
-### beta
-
-• `Optional` **beta**: `boolean`
-
-#### Implementation of
-
-TCmsEntity.beta
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:58](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L58)
-
-___
 
 ### createDate
 
@@ -93,76 +63,6 @@ TCmsEntity.createDate
 #### Defined in
 
 [system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
-
-___
-
-### defaultPageSize
-
-• `Optional` **defaultPageSize**: `number`
-
-#### Implementation of
-
-TCmsEntity.defaultPageSize
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L16)
-
-___
-
-### defaultShippingPrice
-
-• `Optional` **defaultShippingPrice**: `number`
-
-#### Implementation of
-
-TCmsEntity.defaultShippingPrice
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:37](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L37)
-
-___
-
-### favicon
-
-• `Optional` **favicon**: `string`
-
-#### Implementation of
-
-TCmsEntity.favicon
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:25](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L25)
-
-___
-
-### footerHtml
-
-• `Optional` **footerHtml**: `string`
-
-#### Implementation of
-
-TCmsEntity.footerHtml
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L34)
-
-___
-
-### headHtml
-
-• `Optional` **headHtml**: `string`
-
-#### Implementation of
-
-TCmsEntity.headHtml
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L31)
 
 ___
 
@@ -184,20 +84,6 @@ TCmsEntity.id
 
 ___
 
-### installed
-
-• `Optional` **installed**: `boolean`
-
-#### Implementation of
-
-TCmsEntity.installed
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:55](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L55)
-
-___
-
 ### isEnabled
 
 • `Optional` **isEnabled**: `boolean`
@@ -213,48 +99,6 @@ TCmsEntity.isEnabled
 #### Defined in
 
 [system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
-
-___
-
-### isUpdating
-
-• `Optional` **isUpdating**: `boolean` = `false`
-
-#### Implementation of
-
-TCmsEntity.isUpdating
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:67](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L67)
-
-___
-
-### language
-
-• `Optional` **language**: `string`
-
-#### Implementation of
-
-TCmsEntity.language
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L22)
-
-___
-
-### logo
-
-• `Optional` **logo**: `string`
-
-#### Implementation of
-
-TCmsEntity.logo
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L28)
 
 ___
 
@@ -294,26 +138,6 @@ TCmsEntity.pageTitle
 
 ___
 
-### protocol
-
-• `Optional` **protocol**: ``"http"`` \| ``"https"``
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:13](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L13)
-
-___
-
-### sendFromEmail
-
-• `Optional` **sendFromEmail**: `string`
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:64](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L64)
-
-___
-
 ### slug
 
 • `Optional` **slug**: `string`
@@ -329,44 +153,6 @@ TCmsEntity.slug
 #### Defined in
 
 [system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
-
-___
-
-### smtpConnectionString
-
-• `Optional` **smtpConnectionString**: `string`
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:61](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L61)
-
-___
-
-### themeName
-
-• `Optional` **themeName**: `string`
-
-#### Implementation of
-
-TCmsEntity.themeName
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:10](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L10)
-
-___
-
-### timezone
-
-• `Optional` **timezone**: `number`
-
-#### Implementation of
-
-TCmsEntity.timezone
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L19)
 
 ___
 
@@ -386,34 +172,6 @@ TCmsEntity.updateDate
 
 [system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
 
-___
-
-### version
-
-• `Optional` **version**: `string`
-
-#### Implementation of
-
-TCmsEntity.version
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:49](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L49)
-
-___
-
-### versions
-
-• `Optional` **versions**: `string`
-
-#### Implementation of
-
-TCmsEntity.versions
-
-#### Defined in
-
-[system/core/backend/src/models/entities/cms.entity.ts:52](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L52)
-
 ## Accessors
 
 ### adminSettings
@@ -426,7 +184,7 @@ TCmsEntity.versions
 
 #### Defined in
 
-[system/core/backend/src/models/entities/cms.entity.ts:69](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L69)
+[system/core/backend/src/models/entities/cms.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L19)
 
 • `set` **adminSettings**(`data`): `void`
 
@@ -442,29 +200,29 @@ TCmsEntity.versions
 
 #### Defined in
 
-[system/core/backend/src/models/entities/cms.entity.ts:72](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L72)
+[system/core/backend/src/models/entities/cms.entity.ts:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L22)
 
 ___
 
-### currencies
+### internalSettings
 
-• `get` **currencies**(): `undefined` \| `TCurrency`[]
+• `get` **internalSettings**(): `undefined` \| `TCmsInternalSettings`
 
 #### Returns
 
-`undefined` \| `TCurrency`[]
+`undefined` \| `TCmsInternalSettings`
 
 #### Defined in
 
-[system/core/backend/src/models/entities/cms.entity.ts:39](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L39)
+[system/core/backend/src/models/entities/cms.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L29)
 
-• `set` **currencies**(`data`): `void`
+• `set` **internalSettings**(`data`): `void`
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `data` | `undefined` \| `TCurrency`[] |
+| `data` | `undefined` \| `TCmsInternalSettings` |
 
 #### Returns
 
@@ -472,4 +230,34 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/models/entities/cms.entity.ts:42](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L42)
+[system/core/backend/src/models/entities/cms.entity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L32)
+
+___
+
+### publicSettings
+
+• `get` **publicSettings**(): `undefined` \| `TCmsPublicSettings`
+
+#### Returns
+
+`undefined` \| `TCmsPublicSettings`
+
+#### Defined in
+
+[system/core/backend/src/models/entities/cms.entity.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L9)
+
+• `set` **publicSettings**(`data`): `void`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `data` | `undefined` \| `TCmsPublicSettings` |
+
+#### Returns
+
+`void`
+
+#### Defined in
+
+[system/core/backend/src/models/entities/cms.entity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/cms.entity.ts#L12)

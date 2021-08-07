@@ -1,4 +1,4 @@
-import { TCmsEntity, TCurrency, TCmsAdminSettings } from '@cromwell/core';
+import { TCmsAdminSettings, TCmsEntity, TCmsInternalSettings, TCmsPublicSettings } from '@cromwell/core';
 import { Column, Entity } from 'typeorm';
 
 import { BasePageEntity } from './base-page.entity';
@@ -6,65 +6,15 @@ import { BasePageEntity } from './base-page.entity';
 @Entity('cms')
 export class CmsEntity extends BasePageEntity implements TCmsEntity {
 
-    @Column()
-    themeName?: string;
-
-    @Column({ type: "varchar", nullable: true })
-    protocol?: "http" | "https";
-
-    @Column({ type: "integer", nullable: true })
-    defaultPageSize?: number;
-
-    @Column({ type: "integer", nullable: true })
-    timezone?: number;
-
-    @Column({ type: "varchar", nullable: true })
-    language?: string;
-
-    @Column({ type: "varchar", nullable: true, length: 300 })
-    favicon?: string;
-
-    @Column({ type: "varchar", nullable: true, length: 300 })
-    logo?: string;
-
-    @Column({ type: 'text', nullable: true })
-    headHtml?: string;
-
-    @Column({ type: 'text', nullable: true })
-    footerHtml?: string;
-
-    @Column({ type: "float", nullable: true })
-    defaultShippingPrice?: number;
-
-    public get currencies(): TCurrency[] | undefined {
-        return this._currencies ? JSON.parse(this._currencies) : undefined;
+    public get publicSettings(): TCmsPublicSettings | undefined {
+        return this._publicSettings ? JSON.parse(this._publicSettings) : undefined;
     }
-    public set currencies(data: TCurrency[] | undefined) {
-        this._currencies = data ? JSON.stringify(data) : undefined;
+    public set publicSettings(data: TCmsPublicSettings | undefined) {
+        this._publicSettings = data ? JSON.stringify(data) : undefined;
     }
     @Column({ type: "text", nullable: true })
-    private _currencies?: string;
+    private _publicSettings?: string;
 
-    @Column({ type: "varchar", nullable: true })
-    version?: string;
-
-    @Column({ type: "varchar", nullable: true, length: 2000 })
-    versions?: string;
-
-    @Column({ type: "boolean", nullable: true })
-    installed?: boolean;
-
-    @Column({ type: "boolean", nullable: true })
-    beta?: boolean;
-
-    @Column({ type: "varchar", nullable: true, length: 400 })
-    smtpConnectionString?: string;
-
-    @Column({ type: "varchar", nullable: true })
-    sendFromEmail?: string;
-
-    @Column({ type: "boolean", nullable: true })
-    isUpdating?: boolean = false;
 
     public get adminSettings(): TCmsAdminSettings | undefined {
         return this._adminSettings ? JSON.parse(this._adminSettings) : undefined;
@@ -74,4 +24,14 @@ export class CmsEntity extends BasePageEntity implements TCmsEntity {
     }
     @Column({ type: "text", nullable: true })
     private _adminSettings?: string;
+
+
+    public get internalSettings(): TCmsInternalSettings | undefined {
+        return this._internalSettings ? JSON.parse(this._internalSettings) : undefined;
+    }
+    public set internalSettings(data: TCmsInternalSettings | undefined) {
+        this._internalSettings = data ? JSON.stringify(data) : undefined;
+    }
+    @Column({ type: "text", nullable: true })
+    private _internalSettings?: string;
 }

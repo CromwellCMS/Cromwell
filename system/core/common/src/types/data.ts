@@ -1,7 +1,17 @@
 import { ConnectionOptions } from 'typeorm';
 
+import { systemPackages } from '../constants';
 import { TCommonComponentProps, TCromwellBlock, TCromwellBlockData } from './blocks';
-import { TCmsEntityCore, TProduct, TServiceVersions, TUser } from './entities';
+import {
+    TCmsAdminSettings,
+    TCmsEntityCore,
+    TCmsInternalSettings,
+    TCmsPublicSettings,
+    TCmsRedirect,
+    TProduct,
+    TServiceVersions,
+    TUser,
+} from './entities';
 
 /**
  * Global store mostly for internal usage.
@@ -79,6 +89,15 @@ export type TCromwellStore = {
     theme?: TCMSTheme;
     userInfo?: TUser;
     storeChangeCallbacks?: Record<string, ((prop) => any)[]>;
+    /**
+     * HTTP Redirects for Next.js server 
+     */
+    redirects?: Record<string, TCmsRedirect>;
+
+    /**
+     * HTTP rewrites for Next.js server
+     */
+    rewrites?: Record<string, TCmsRedirect>;
 }
 
 
@@ -164,12 +183,14 @@ export type TCmsConfig = {
     refreshTokenExpirationTime?: number;
     cookieSecret?: string;
     serviceSecret?: string;
+    redirects?: TCmsRedirect[];
+    rewrites?: TCmsRedirect[];
 };
 
 /**
  * Merged info form cmsconfig.json and settings from DB
  */
-export type TCmsSettings = TCmsConfig & TCmsEntityCore;
+export type TCmsSettings = TCmsConfig & TCmsPublicSettings & TCmsAdminSettings & TCmsInternalSettings;
 
 export type TRollupConfig = {
     main: Record<string, any>;
@@ -509,4 +530,8 @@ export type TCMSTheme = {
 
 export type TDBInfo = {
     dbType?: string;
+}
+
+export type TCmsInfo = {
+    packages: Partial<Record<typeof systemPackages[number], string>>;
 }

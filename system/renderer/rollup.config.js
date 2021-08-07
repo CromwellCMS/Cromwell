@@ -1,9 +1,6 @@
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
-import nodeResolve from '@rollup/plugin-node-resolve';
-// import typescript from 'rollup-plugin-ts-compiler';
-import typescript2 from '@rollup/plugin-typescript';
-
+import typescript from 'rollup-plugin-ts-compiler';
 import packageJson from './package.json';
 
 const { resolve } = require('path');
@@ -26,16 +23,16 @@ const external = id => {
 
 const buildDir = 'build';
 
-// const typescriptOptions = {
-//     compilerOptions: {
-//         module: 'ESNext',
-//         declaration: true,
-//         declarationMap: true,
-//         declarationDir: resolve(__dirname, buildDir)
-//     },
-//     sharedState: {},
-//     monorepo: true,
-// }
+const typescriptOptions = {
+    compilerOptions: {
+        module: 'ESNext',
+        declaration: true,
+        declarationMap: true,
+        declarationDir: resolve(__dirname, buildDir)
+    },
+    sharedState: {},
+    monorepo: true,
+}
 
 export default [
     {
@@ -50,14 +47,9 @@ export default [
         ],
         external,
         plugins: [
-            // typescript(typescriptOptions),
-            typescript2(),
-            nodeResolve({
-                preferBuiltins: false
-            }),
+            typescript(typescriptOptions),
             commonjs(),
             json(),
-            // terser()
         ]
     },
     {
@@ -70,13 +62,22 @@ export default [
         ],
         external,
         plugins: [
-            // typescript(typescriptOptions),
-            typescript2(),
-            nodeResolve({
-                preferBuiltins: false
-            }),
+            typescript(typescriptOptions),
             commonjs(),
-            // terser(),
+        ]
+    },
+    {
+        input: resolve(__dirname, "src/server.ts"),
+        output: [
+            {
+                file: resolve(__dirname, buildDir, 'server.js'),
+                format: "cjs",
+            }
+        ],
+        external,
+        plugins: [
+            typescript(typescriptOptions),
+            commonjs(),
         ]
     },
 ];

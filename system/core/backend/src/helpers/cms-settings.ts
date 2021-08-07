@@ -1,10 +1,10 @@
-import { getStoreItem, setStoreItem, TCmsConfig, TCmsSettings } from '@cromwell/core';
+import { getStoreItem, setStoreItem, systemPackages, TCmsConfig, TCmsInfo, TCmsSettings } from '@cromwell/core';
 import fs from 'fs-extra';
 
 import { CmsEntity } from '../models/entities/cms.entity';
 import { defaultCmsConfig } from './constants';
 import { getLogger } from './logger';
-import { getCMSConfigPath } from './paths';
+import { getCMSConfigPath, getModulePackage } from './paths';
 
 const getEnvConfig = () => {
     return JSON.parse(JSON.stringify({
@@ -61,41 +61,56 @@ export const getCmsEntity = async (): Promise<CmsEntity> => {
     // Probably CMS was launched for the first time and no settings persist in DB.
     // Create settings record
     const config = await readCMSConfig();
-    const { versions, ...defaultSettings } = config?.defaultSettings ?? {};
-    const newEntity = Object.assign(new CmsEntity(), defaultSettings);
+    const newEntity = Object.assign(new CmsEntity(), config?.defaultSettings);
     await newEntity.save();
     return newEntity;
 }
 
 
+let cmsConfig: TCmsConfig | undefined = undefined;
+
 export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
-    const logger = getLogger();
-    let config: TCmsConfig | undefined = undefined;
+    // Read cmsconfig.json only once 
+    if (!cmsConfig) cmsConfig = await readCMSConfig();
 
-    // Don't re-read cmsconfig.json but update info from DB
-    const cmsSettings = getStoreItem('cmsSettings');
-    if (!cmsSettings) config = await readCMSConfig();
-
-    if (!cmsSettings && !config) {
-        logger.error('getCmsSettings: Failed to read CMS config', 'Error');
-        return;
-    }
+    // Update info from DB on each call
     const entity = await getCmsEntity();
 
     const settings: TCmsSettings = Object.assign({},
-        cmsSettings,
-        config,
-        JSON.parse(JSON.stringify(entity)),
+        cmsConfig,
         {
-            currencies: entity.currencies,
-            adminSettings: entity.adminSettings
+            ...(entity.publicSettings ?? {}),
+            ...(entity.adminSettings ?? {}),
+            ...(entity.internalSettings ?? {}),
+        },
+        {
+            redirects: [
+                ...((entity.publicSettings ?? {})?.redirects ?? []),
+                ...(cmsConfig?.redirects ?? []),
+            ],
+            rewrites: [
+                ...((entity.publicSettings ?? {})?.rewrites ?? []),
+                ...(cmsConfig?.rewrites ?? []),
+            ]
         }
     );
-
     delete settings.defaultSettings;
-    delete (settings as any)._currencies;
-    delete (settings as any)._adminSettings;
 
     setStoreItem('cmsSettings', settings);
     return settings;
+}
+
+export const getCmsInfo = async (): Promise<TCmsInfo> => {
+    const info = {
+        packages: {}
+    };
+
+    for (const pckgName of systemPackages) {
+        const pckg = await getModulePackage(pckgName);
+        if (pckg?.name) {
+            info.packages[pckg.name] = pckg.version;
+        }
+    }
+
+    return info;
 }

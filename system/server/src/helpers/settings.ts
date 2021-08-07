@@ -105,15 +105,21 @@ export const checkCmsVersion = async () => {
         try {
             const remoteInfo = await getCentralServerClient().getVersionByPackage(cmsPckg.version);
             if (remoteInfo) {
-                cmsEntity.version = remoteInfo.version;
+                cmsEntity.internalSettings = {
+                    ...(cmsEntity.internalSettings ?? {}),
+                    version: remoteInfo.version
+                }
                 await cmsEntity.save();
             }
         } catch (error) {
             logger.error(error);
         }
 
-        if (!cmsEntity.version) {
-            cmsEntity.version = cmsPckg.version;
+        if (!cmsEntity?.internalSettings?.version) {
+            cmsEntity.internalSettings = {
+                ...(cmsEntity.internalSettings ?? {}),
+                version: cmsPckg.version
+            }
             await cmsEntity.save();
         }
     }
