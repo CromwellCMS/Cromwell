@@ -116,7 +116,7 @@ export class OrderRepository extends BaseRepository<Order> {
         // Search by customerName
         if (filterParams?.customerName && filterParams.customerName !== '') {
             const customerNameSearch = `%${filterParams.customerName}%`;
-            const query = `${this.metadata.tablePath}.customerName LIKE :customerNameSearch`;
+            const query = `${this.metadata.tablePath}.${this.quote('customerName')} ${this.getSqlLike()} :customerNameSearch`;
             qb.andWhere(query, { customerNameSearch });
         }
 
@@ -124,14 +124,14 @@ export class OrderRepository extends BaseRepository<Order> {
         if (filterParams?.customerPhone && filterParams.customerPhone !== '') {
             const customerPhone = filterParams.customerPhone.replace(/\W/g, '');
             const customerPhoneSearch = `%${customerPhone}%`;
-            const query = `${this.metadata.tablePath}.customerPhone LIKE :customerPhoneSearch`;
+            const query = `${this.metadata.tablePath}.${this.quote('customerPhone')} ${this.getSqlLike()} :customerPhoneSearch`;
             qb.andWhere(query, { customerPhoneSearch });
         }
 
         // Search by customerEmail
         if (filterParams?.customerEmail && filterParams.customerEmail !== '') {
             const customerEmailSearch = `%${filterParams.customerEmail}%`;
-            const query = `${this.metadata.tablePath}.customerEmail LIKE :customerEmailSearch`;
+            const query = `${this.metadata.tablePath}.${this.quote('customerEmail')} ${this.getSqlLike()} :customerEmailSearch`;
             qb.andWhere(query, { customerEmailSearch });
         }
 
@@ -140,7 +140,7 @@ export class OrderRepository extends BaseRepository<Order> {
             const dateFrom = new Date(Date.parse(filterParams.dateFrom));
             const dateTo = new Date(filterParams.dateTo ? Date.parse(filterParams.dateTo) : Date.now());
 
-            const query = `${this.metadata.tablePath}.createDate BETWEEN :dateFrom AND :dateTo`;
+            const query = `${this.metadata.tablePath}.${this.quote('createDate')} BETWEEN :dateFrom AND :dateTo`;
             qb.andWhere(query, {
                 dateFrom: DateUtils.mixedDateToDatetimeString(dateFrom),
                 dateTo: DateUtils.mixedDateToDatetimeString(dateTo),
@@ -152,28 +152,23 @@ export class OrderRepository extends BaseRepository<Order> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyOrderFilter(qb, filterParams);
+        logger.warn(qb.getQueryAndParameters())
         return await getPaged<TOrder>(qb, this.metadata.tablePath, pagedParams);
     }
 
 
     async deleteManyFilteredOrders(input: TDeleteManyInput, filterParams?: OrderFilterInput): Promise<boolean | undefined> {
-        const qb = this.createQueryBuilder()
-            .delete().from<Order>(this.metadata.tablePath);
-
+        const qb = this.createQueryBuilder(this.metadata.tablePath).delete();
         this.applyOrderFilter(qb, filterParams);
         this.applyDeleteMany(qb, input);
-        try {
-            await qb.execute();
-        } catch (e) {
-            logger.error(e)
-        }
+        await qb.execute();
         return true;
     }
 
     async getOrdersOfUser(userId: string, pagedParams?: PagedParamsInput<TOrder>): Promise<TPagedList<TOrder>> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
-        qb.where(`${this.metadata.tablePath}.userId = :userId`, {
+        qb.where(`${this.metadata.tablePath}.${this.quote('userId')} = :userId`, {
             userId,
         });
         return await getPaged<TOrder>(qb, this.metadata.tablePath, pagedParams);

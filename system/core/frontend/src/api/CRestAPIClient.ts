@@ -4,7 +4,7 @@ import {
     serviceLocator,
     setStoreItem,
     TCCSVersion,
-    TCmsEntityInput,
+    TCmsInfo,
     TCmsSettings,
     TCmsStats,
     TCmsStatus,
@@ -146,7 +146,7 @@ export class CRestAPIClient {
      * Make a custom request to a specified route
      * @auth no
      */
-    public fetch = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
+    public fetch = async <T = any>(route: string, options?: TRequestOptions): Promise<T> => {
         const baseUrl = this.getBaseUrl();
         const input = options?.input;
         let data;
@@ -185,7 +185,7 @@ export class CRestAPIClient {
      * Makes GET request to specified route
      * @auth no
      */
-    public get = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
+    public get = async <T = any>(route: string, options?: TRequestOptions): Promise<T> => {
         return this.fetch(route, options);
     }
 
@@ -193,7 +193,7 @@ export class CRestAPIClient {
      * Makes POST request to specified route
      * @auth no
      */
-    public post = async <T>(route: string, input?: any, options?: TRequestOptions): Promise<T | undefined> => {
+    public post = async <T = any>(route: string, input?: any, options?: TRequestOptions): Promise<T> => {
         return this.fetch(route, {
             method: 'post',
             input,
@@ -205,7 +205,7 @@ export class CRestAPIClient {
      * Makes DELETE request to specified route
      * @auth no
      */
-    public delete = async <T>(route: string, options?: TRequestOptions): Promise<T | undefined> => {
+    public delete = async <T = any>(route: string, options?: TRequestOptions): Promise<T> => {
         return this.fetch(route, {
             method: 'delete',
             ...(options ?? {}),
@@ -216,7 +216,7 @@ export class CRestAPIClient {
      * Makes PUT request to specified route
      * @auth no
      */
-    public put = async <T>(route: string, input?: any, options?: TRequestOptions): Promise<T | undefined> => {
+    public put = async <T = any>(route: string, input?: any, options?: TRequestOptions): Promise<T> => {
         return this.fetch(route, {
             method: 'put',
             input,
@@ -321,7 +321,7 @@ export class CRestAPIClient {
      * Get public CMS settings
      * @auth no
      */
-    public getCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
+    public getCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings> => {
         return this.get(`v1/cms/config`, options);
     }
 
@@ -329,7 +329,7 @@ export class CRestAPIClient {
      * Get admin CMS settings
      * @auth admin
      */
-    public getAdminCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
+    public getAdminCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings & { cmsInfo?: TCmsInfo }> => {
         return this.get(`v1/cms/admin-config`, options);
     }
 
@@ -343,6 +343,14 @@ export class CRestAPIClient {
             setStoreItem('cmsSettings', config);
             return config;
         }
+    }
+
+    /**
+     * Update CMS settings
+     * @auth admin
+     */
+    public saveCmsSettings = async (input: TCmsSettings, options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
+        return this.post(`v1/cms/admin-config`, input, options);
     }
 
     /**
@@ -406,14 +414,6 @@ export class CRestAPIClient {
     /** @internal */
     public setUpCms = async (options?: TRequestOptions): Promise<boolean | undefined> => {
         return this.post(`v1/cms/set-up`, {}, options);
-    }
-
-    /**
-     * Update CMS config
-     * @auth admin
-     */
-    public updateCmsConfig = async (input: TCmsEntityInput, options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
-        return this.post(`v1/cms/update-config`, input, options);
     }
 
     /**

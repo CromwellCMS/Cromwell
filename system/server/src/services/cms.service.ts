@@ -51,7 +51,6 @@ import { DateUtils } from 'typeorm/util/DateUtils';
 import * as util from 'util';
 
 import { AdminCmsConfigDto } from '../dto/admin-cms-config.dto';
-import { CmsConfigUpdateDto } from '../dto/cms-config.update.dto';
 import { CmsStatsDto, SalePerDayDto } from '../dto/cms-stats.dto';
 import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
@@ -101,20 +100,26 @@ export class CmsService {
         }
     }
 
-    private async setIsUpdating(updating: boolean) {
+    private async setIsUpdating(isUpdating: boolean) {
         const entity = await getCmsEntity();
-        entity.isUpdating = updating;
+        entity.internalSettings = {
+            ...(entity.internalSettings ?? {}),
+            isUpdating,
+        }
         await entity.save();
     }
 
     private async getIsUpdating() {
-        return (await getCmsEntity()).isUpdating;
+        return (await getCmsEntity())?.internalSettings?.isUpdating;
     }
 
     public async setThemeName(themeName: string) {
         const entity = await getCmsEntity();
         if (entity) {
-            entity.themeName = themeName;
+            entity.publicSettings = {
+                ...(entity.publicSettings ?? {}),
+                themeName,
+            }
             await entity.save();
             return true;
         }
@@ -188,12 +193,15 @@ export class CmsService {
 
     public async installCms() {
         const cmsEntity = await getCmsEntity();
-        if (cmsEntity.installed) {
+        if (cmsEntity?.internalSettings?.installed) {
             logger.error('CMS already installed');
             throw new HttpException('CMS already installed', HttpStatus.FORBIDDEN);
         }
 
-        cmsEntity.installed = true;
+        cmsEntity.internalSettings = {
+            ...(cmsEntity.internalSettings ?? {}),
+            installed: true,
+        }
         await cmsEntity.save();
 
         const settings = await getCmsSettings();
@@ -245,7 +253,7 @@ export class CmsService {
         return out;
     }
 
-    public async updateCmsConfig(input: CmsConfigUpdateDto): Promise<AdminCmsConfigDto | undefined> {
+    public async updateCmsSettings(input: AdminCmsConfigDto): Promise<AdminCmsConfigDto | undefined> {
         const entity = await getCmsEntity();
         if (!entity) throw new Error('!entity');
 
@@ -257,16 +265,22 @@ export class CmsService {
             }
         }
 
-        entity.defaultPageSize = input.defaultPageSize;
-        entity.currencies = input.currencies;
-        entity.timezone = input.timezone;
-        entity.language = input.language;
-        entity.favicon = input.favicon;
-        entity.logo = input.logo;
-        entity.headHtml = input.headHtml;
-        entity.footerHtml = input.footerHtml;
-        entity.defaultShippingPrice = input.defaultShippingPrice;
-        entity.adminSettings = input.adminSettings;
+        entity.publicSettings = {
+            defaultPageSize: input.defaultPageSize,
+            currencies: input.currencies,
+            timezone: input.timezone,
+            language: input.language,
+            favicon: input.favicon,
+            logo: input.logo,
+            headHtml: input.headHtml,
+            footerHtml: input.footerHtml,
+            defaultShippingPrice: input.defaultShippingPrice,
+        }
+
+        entity.adminSettings = {
+            sendFromEmail: input.sendFromEmail,
+            smtpConnectionString: input.smtpConnectionString,
+        }
 
         await entity.save();
         const config = await getCmsSettings();
@@ -571,7 +585,7 @@ export class CmsService {
 
         status.notifications = [];
 
-        if (!settings?.adminSettings?.smtpConnectionString) {
+        if (!settings?.smtpConnectionString) {
             status.notifications.push({
                 type: 'warning',
                 message: 'Setup SMTP settings'
@@ -628,7 +642,11 @@ export class CmsService {
 
 
         const cmsEntity = await getCmsEntity();
-        cmsEntity.version = availableUpdate.version;
+        cmsEntity.internalSettings = {
+            ...(cmsEntity.internalSettings ?? {}),
+            version: availableUpdate.version,
+        }
+
         await cmsEntity.save();
         await getCmsSettings();
 

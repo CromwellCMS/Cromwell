@@ -35,7 +35,7 @@ export const sendEmail = async (addresses: string[], subject: string, htmlConten
     const cmsSettings = await getCmsSettings();
     const logger = getLogger();
 
-    const { sendFromEmail, smtpConnectionString } = cmsSettings?.adminSettings ?? {};
+    const { sendFromEmail, smtpConnectionString } = cmsSettings ?? {};
 
     const sendFrom = (sendFromEmail && sendFromEmail !== '') ? sendFromEmail : 'Service@CromwellCMS.com';
     const messageContent = {

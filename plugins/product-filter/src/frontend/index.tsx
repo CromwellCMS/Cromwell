@@ -15,6 +15,7 @@ import {
     Collapse,
     Divider,
     IconButton,
+    Theme,
     List,
     ListItem,
     ListItemIcon,
@@ -50,7 +51,8 @@ type FilterState = {
 }
 
 type FilterProps = WithStyles<ReturnType<typeof getStyles>, true> & {
-    router: NextRouter
+    router: NextRouter;
+    isMobile?: boolean;
 } & TFrontendPluginProps<TProductFilterData, TInstanceSettings>;
 
 class ProductFilter extends React.Component<FilterProps, FilterState> implements IFrontendFilter {
@@ -78,8 +80,8 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     }
 
     private handleSetAttribute = (key: string, checks: string[]) => {
-        const newCheckedAttrs: Record<string, string[]> = JSON.parse(JSON.stringify(this.checkedAttrs));
-        newCheckedAttrs[key] = checks;
+        this.checkedAttrs = JSON.parse(JSON.stringify(this.checkedAttrs));
+        this.checkedAttrs[key] = checks;
         this.forceUpdate();
         this.applyFilter();
     }
@@ -196,11 +198,11 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     }
 
     render() {
-        const { classes, theme, instanceSettings } = this.props;
+        const { classes, instanceSettings } = this.props;
         const { attributes, productCategory, pluginSettings } = this.props.data ?? {};
         const { isMobileOpen, minPrice, maxPrice, collapsedItems } = this.state;
 
-        const isMobile = !instanceSettings?.disableMobile && useMediaQuery(theme.breakpoints.down('xs'));
+        const isMobile = !instanceSettings?.disableMobile && this.props.isMobile;
         const pcCollapsedByDefault = pluginSettings?.collapsedByDefault ?? defaultSettings.collapsedByDefault
         const mobileCollapsedByDefault = pluginSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
         const _collapsedByDefault = isMobile ? mobileCollapsedByDefault : pcCollapsedByDefault;
@@ -417,14 +419,28 @@ class ProductFilter extends React.Component<FilterProps, FilterState> implements
     }
 }
 
-let styledComp: any = withStyles(
-    getStyles, { withTheme: true }
-)(ProductFilter);
-
-if (withRouter) {
-    styledComp = withRouter(styledComp);
+const withMediaQuery = (queries: Record<string, ((theme: Theme) => string)> = {}) => Component => props => {
+    const mediaProps = {}
+    Object.keys(queries).forEach(qName => {
+        mediaProps[qName] = useMediaQuery(queries[qName], {
+            defaultMatches: true,
+        })
+    })
+    return <Component {...mediaProps} {...props} />
 }
 
-export default styledComp;
+let hocComp: any = withMediaQuery({
+    'isMobile': theme => theme.breakpoints.down('xs'),
+})(ProductFilter);
+
+hocComp = withStyles(
+    getStyles, { withTheme: true }
+)(hocComp);
+
+if (withRouter) {
+    hocComp = withRouter(hocComp);
+}
+
+export default hocComp;
 
 export { getStaticProps } from './service'

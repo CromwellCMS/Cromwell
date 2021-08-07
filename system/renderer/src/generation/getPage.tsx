@@ -7,16 +7,15 @@ import {
     TDefaultPageName,
     TPageStats,
 } from '@cromwell/core';
-import { CContainer, getRestAPIClient, pageRootContainerId } from '@cromwell/core-frontend';
-import { getModuleImporter } from '@cromwell/core-frontend';
-import React, { useRef, useState } from 'react';
+import { CContainer, getModuleImporter, getRestAPIClient, pageRootContainerId } from '@cromwell/core-frontend';
+import React, { useRef } from 'react';
 import ReactHtmlParser, { Transform } from 'react-html-parser';
 import { isValidElementType } from 'react-is';
 
-function useForceUpdate() {
-    const state = useState(0);
-    return () => state[1](value => ++value);
-}
+import { useForceUpdate } from '../helpers/helpers';
+import { usePatchForRedirects } from '../helpers/redirects';
+
+
 
 let index = 0;
 const parserTransform: Transform = (node) => {
@@ -62,6 +61,9 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
             forceUpdate();
         }
         setStoreItem('forceUpdatePage', forceUpdatePage);
+
+        usePatchForRedirects();
+
         let title;
         let description;
         if (pageConfig) {

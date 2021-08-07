@@ -128,28 +128,28 @@ export class UserRepository extends BaseRepository<User> {
         // Search by fullName
         if (filterParams?.fullName && filterParams.fullName !== '') {
             const fullNameSearch = `%${filterParams.fullName}%`;
-            const query = `${this.metadata.tablePath}.fullName LIKE :fullNameSearch`;
+            const query = `${this.metadata.tablePath}.${this.quote('fullName')} ${this.getSqlLike()} :fullNameSearch`;
             qb.andWhere(query, { fullNameSearch });
         }
 
         // Search by email
         if (filterParams?.email && filterParams.email !== '') {
             const emailSearch = `%${filterParams.email}%`;
-            const query = `${this.metadata.tablePath}.email LIKE :emailSearch`;
+            const query = `${this.metadata.tablePath}.email ${this.getSqlLike()} :emailSearch`;
             qb.andWhere(query, { emailSearch });
         }
 
         // Search by phone
         if (filterParams?.phone && filterParams.phone !== '') {
             const phoneSearch = `%${filterParams.phone}%`;
-            const query = `${this.metadata.tablePath}.phone LIKE :phoneSearch`;
+            const query = `${this.metadata.tablePath}.phone ${this.getSqlLike()} :phoneSearch`;
             qb.andWhere(query, { phoneSearch });
         }
 
         // Search by address
         if (filterParams?.address && filterParams.address !== '') {
             const addressSearch = `%${filterParams.address}%`;
-            const query = `${this.metadata.tablePath}.address LIKE :addressSearch`;
+            const query = `${this.metadata.tablePath}.address ${this.getSqlLike()} :addressSearch`;
             qb.andWhere(query, { addressSearch });
         }
     }
@@ -167,11 +167,7 @@ export class UserRepository extends BaseRepository<User> {
 
         this.applyUserFilter(qb, filterParams);
         this.applyDeleteMany(qb, input);
-        try {
-            await qb.execute();
-        } catch (e) {
-            logger.error(e)
-        }
+        await qb.execute();
         return true;
     }
 

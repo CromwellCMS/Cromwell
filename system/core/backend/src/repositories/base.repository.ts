@@ -1,18 +1,26 @@
-import { TPagedList, TPagedParams, TDeleteManyInput } from '@cromwell/core';
-import { DeleteQueryBuilder, Repository, SelectQueryBuilder } from 'typeorm';
+import { getStoreItem, TDeleteManyInput, TPagedList, TPagedParams } from '@cromwell/core';
+import { ConnectionOptions, DeleteQueryBuilder, getConnection, Repository, SelectQueryBuilder } from 'typeorm';
 
-import { getPaged } from '../helpers/base-queries';
+import { getPaged, getSqlBoolStr, getSqlLike, wrapInQuotes } from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
 
 const logger = getLogger();
 
 export class BaseRepository<EntityType, EntityInputType = EntityType> extends Repository<EntityType> {
 
+    public dbType: ConnectionOptions['type'];
+
     constructor(
         private EntityClass: new (...args: any[]) => EntityType & { id?: string }
     ) {
         super();
+        this.dbType = getStoreItem('dbInfo')?.dbType as ConnectionOptions['type']
+            ?? getConnection().options.type;
     }
+
+    getSqlBoolStr = (b: boolean) => getSqlBoolStr(this.dbType, b);
+    getSqlLike = () => getSqlLike(this.dbType);
+    quote = (str: string) => wrapInQuotes(this.dbType, str);
 
     async getPaged(params?: TPagedParams<EntityType>): Promise<TPagedList<EntityType>> {
         logger.log('BaseRepository::getPaged');
@@ -85,11 +93,17 @@ export class BaseRepository<EntityType, EntityInputType = EntityType> extends Re
 
     async applyDeleteMany(qb: SelectQueryBuilder<EntityType> | DeleteQueryBuilder<EntityType>, input: TDeleteManyInput) {
         if (input.all) {
-            if (input.ids && input.ids.length > 0) {
+            if (input.ids?.length) {
                 qb.andWhere(`${this.metadata.tablePath}.id NOT IN (:...ids)`, { ids: input.ids ?? [] })
+            } else {
+                // no WHERE needed
             }
         } else {
-            qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
+            if (input.ids?.length) {
+                qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
+            } else {
+                throw new Error(`applyDeleteMany: You have to specify ids to delete for ${this.metadata.tablePath}`);
+            }
         }
     }
 

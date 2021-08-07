@@ -44,5 +44,3 @@ export const resolvePageRoute = (pageName: string | TDefaultPageName, routeOptio
 
     return pageRoute;
 }
-
-

@@ -17,7 +17,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
     private productRepo = getCustomRepository(ProductRepository);
     async getProductReviews(params: TPagedParams<TProductReview>): Promise<TPagedList<TProductReview>> {
-        return getPaged(this.createQueryBuilder(), this.metadata.tablePath, params);
+        return getPaged(this.createQueryBuilder(this.metadata.tablePath), this.metadata.tablePath, params);
     }
 
     async getProductReview(id: string): Promise<ProductReview> {
@@ -95,17 +95,13 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
         if (filterParams?.approved !== undefined && filterParams?.approved !== null) {
 
             if (filterParams.approved) {
-                const query = `${this.metadata.tablePath}.approved = :approvedSearch`;
-                qb.andWhere(query, { approvedSearch: filterParams.approved });
+                qb.andWhere(`${this.metadata.tablePath}.approved = ${this.getSqlBoolStr(true)}`);
             }
 
             if (filterParams?.approved === false) {
                 const brackets = new Brackets(subQb => {
-                    const query = `${this.metadata.tablePath}.approved = :approvedSearch`;
-                    subQb.where(query, { approvedSearch: filterParams.approved });
-
-                    const query2 = `${this.metadata.tablePath}.approved IS NULL`;
-                    subQb.orWhere(query2);
+                    subQb.where(`${this.metadata.tablePath}.approved = ${this.getSqlBoolStr(false)}`);
+                    subQb.orWhere(`${this.metadata.tablePath}.approved IS NULL`);
                 });
                 qb.andWhere(brackets);
             }
@@ -113,20 +109,20 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
         // Search by productId
         if (filterParams?.productId && filterParams.productId !== '') {
-            const query = `${this.metadata.tablePath}.productId = :productId`;
+            const query = `${this.metadata.tablePath}.${this.quote('productId')} = :productId`;
             qb.andWhere(query, { productId: filterParams.productId });
         }
 
         // Search by userId
         if (filterParams?.userId && filterParams.userId !== '') {
-            const query = `${this.metadata.tablePath}.userId = :userId`;
+            const query = `${this.metadata.tablePath}.${this.quote('userId')} = :userId`;
             qb.andWhere(query, { userId: filterParams.userId });
         }
 
         // Search by userName
         if (filterParams?.userName && filterParams.userName !== '') {
             const userNameSearch = `%${filterParams.userName}%`;
-            const query = `${this.metadata.tablePath}.userName LIKE :userNameSearch`;
+            const query = `${this.metadata.tablePath}.${this.quote('userName')} ${this.getSqlLike()} :userNameSearch`;
             qb.andWhere(query, { userNameSearch });
         }
     }
@@ -145,11 +141,7 @@ export class ProductReviewRepository extends BaseRepository<ProductReview> {
 
         this.applyProductReviewFilter(qb, filterParams);
         this.applyDeleteMany(qb, input);
-        try {
-            await qb.execute();
-        } catch (e) {
-            logger.error(e)
-        }
+        await qb.execute();
         return true;
     }
 

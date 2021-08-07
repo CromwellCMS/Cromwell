@@ -516,11 +516,14 @@ export class ThemeService {
     }
 
     public async setActive(themeName: string): Promise<boolean> {
-        const cms = await getCmsEntity();
-        if (!cms) throw new HttpException('!cms entity', HttpStatus.INTERNAL_SERVER_ERROR);
+        const entity = await getCmsEntity();
+        if (!entity) throw new HttpException('!cms entity', HttpStatus.INTERNAL_SERVER_ERROR);
 
-        cms.themeName = themeName;
-        await cms.save();
+        entity.publicSettings = {
+            ...(entity.publicSettings ?? {}),
+            themeName,
+        }
+        await entity.save();
         await restartService('renderer');
 
         const cmsSettings = getStoreItem('cmsSettings');

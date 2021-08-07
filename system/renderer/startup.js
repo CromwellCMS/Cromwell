@@ -88,42 +88,25 @@ const main = () => {
     }
 
     const start = async () => {
-        let proc;
         try {
             await gen();
             const port = args.port || config.frontendPort;
             const tempDir = getRendererTempDir();
+            const startNextServer = require(resolve(buildDir, 'server.js')).startNextServer;
 
-            proc = spawn(`npx --no-install next start -p ${port}`, [],
-                { shell: true, stdio: 'pipe', cwd: tempDir, env: npmRunPath.env() });
+            const success = await startNextServer({
+                port,
+                dir: tempDir,
+                dev: false,
+            });
+
+            if (success) process.send(rendererMessages.onStartMessage);
+            else process.send(rendererMessages.onStartErrorMessage);
+
         } catch (e) {
             if (process.send) process.send(rendererMessages.onStartErrorMessage);
             logger.error(e);
         }
-
-        // @TODO: Make it somehow accept Next.js server's "on ready" event. Just a timeout for now...
-        if (proc && proc.stdout) proc.stdout.once('data', () => {
-            setTimeout(() => {
-                if (process.send) process.send(rendererMessages.onStartMessage);
-            }, 10);
-        });
-
-        if (proc && proc.stderr) proc.stderr.once('data', () => {
-            if (process.send) process.send(rendererMessages.onStartErrorMessage);
-        });
-
-
-        if (proc.stderr && proc.stderr.on) {
-            proc.stderr.on('data', (data) => {
-                logger.log(data.toString ? data.toString() : data);
-            });
-        }
-        if (proc.stdout && proc.stdout.on) {
-            proc.stdout.on('data', (data) => {
-                logger.log(data.toString ? data.toString() : data);
-            });
-        }
-
     }
 
 
@@ -141,9 +124,13 @@ const main = () => {
             await gen();
             const port = args.port || 4256;
             const tempDir = getRendererTempDevDir();
+            const startNextServer = require(resolve(buildDir, 'server.js')).startNextServer;
 
-            spawn(`next dev -p ${port}`, [],
-                { shell: true, stdio: 'inherit', cwd: tempDir, env: npmRunPath.env() });
+            await startNextServer({
+                port,
+                dir: tempDir,
+                dev: true,
+            });
         })();
         return;
     }

@@ -459,21 +459,9 @@ export class MigrationService {
             id: ent.id,
             createDate: ent.createDate,
             updateDate: ent.updateDate,
-            themeName: ent.themeName,
-            defaultPageSize: ent.defaultPageSize,
-            currencies: JSON.stringify(ent.currencies),
-            timezone: ent.timezone,
-            language: ent.language,
-            favicon: ent.favicon,
-            logo: ent.logo,
-            defaultShippingPrice: ent.defaultShippingPrice,
-            headHtml: ent.headHtml,
-            footerHtml: ent.footerHtml,
+            publicSettings: ent.publicSettings,
             adminSettings: ent.adminSettings,
-            version: ent.version,
-            versions: ent.versions,
-            installed: ent.installed,
-            beta: ent.beta,
+            internalSettings: ent.internalSettings,
         }));
 
         this.fillSheet(workbook, 'CMS settings', cmsSheet);
@@ -686,7 +674,7 @@ export class MigrationService {
         const inputs = this.readSheet(workbook, 'CMS settings');
         if (!inputs?.[0]) return;
         try {
-            await this.cmsService.updateCmsConfig(inputs[0]);
+            await this.cmsService.updateCmsSettings(inputs[0]);
         } catch (error) {
             getLogger().error(error);
         }

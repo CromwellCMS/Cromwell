@@ -1,4 +1,4 @@
-import { setStoreItem, TCmsSettings, TCurrency, TCmsAdminSettings, TDBEntity } from '@cromwell/core';
+import { setStoreItem, TCmsInfo, TCmsSettings, TCurrency, TDBEntity } from '@cromwell/core';
 import { getCStore, getRestAPIClient } from '@cromwell/core-frontend';
 import {
     Badge,
@@ -33,6 +33,7 @@ import { Responsive, WidthProvider } from 'react-grid-layout';
 
 import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
+import Modal from '../../components/modal/Modal';
 import { toast } from '../../components/toast/toast';
 import { languages } from '../../constants/languages';
 import { timezones } from '../../constants/timezones';
@@ -43,9 +44,10 @@ import styles from './Settings.module.scss';
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 class SettingsPage extends React.Component<any, {
-    settings: TCmsSettings | null;
+    settings: TCmsSettings & { cmsInfo?: TCmsInfo; } | null;
     isLoading: boolean;
     exporting: boolean;
+    cmsInfoOpen: boolean;
     expandedItems: Record<string, boolean>;
 }> {
 
@@ -56,6 +58,7 @@ class SettingsPage extends React.Component<any, {
             settings: null,
             isLoading: false,
             exporting: false,
+            cmsInfoOpen: false,
             expandedItems: {},
         }
     }
@@ -89,19 +92,6 @@ class SettingsPage extends React.Component<any, {
         })
     }
 
-    private changeAdminSettings = (key: keyof TCmsAdminSettings, value) => {
-        this.setState(prev => {
-            return {
-                settings: {
-                    ...prev.settings,
-                    adminSettings: {
-                        ...(prev.settings?.adminSettings ?? {}),
-                        [key]: value
-                    }
-                }
-            }
-        })
-    }
 
     private getConfig = async () => {
         this.setState({ isLoading: true });
@@ -123,7 +113,7 @@ class SettingsPage extends React.Component<any, {
         const cstore = getCStore();
 
         try {
-            const newConfig = await client.updateCmsConfig({
+            const newConfig = await client.saveCmsSettings({
                 defaultPageSize: settings.defaultPageSize,
                 currencies: settings.currencies,
                 timezone: settings.timezone,
@@ -133,7 +123,8 @@ class SettingsPage extends React.Component<any, {
                 headHtml: settings.headHtml,
                 footerHtml: settings.footerHtml,
                 defaultShippingPrice: settings.defaultShippingPrice,
-                adminSettings: settings.adminSettings,
+                sendFromEmail: settings.sendFromEmail,
+                smtpConnectionString: settings.smtpConnectionString,
             });
             toast.success?.('Settings saved');
             this.setState({ settings: newConfig });
@@ -148,10 +139,6 @@ class SettingsPage extends React.Component<any, {
 
     private handleTextFieldChange = (key: keyof TCmsSettings) => (event: React.ChangeEvent<{ value: string }>) => {
         this.changeSettings(key, event.target.value);
-    }
-
-    private handleAdminTextFieldChange = (key: keyof TCmsAdminSettings) => (event: React.ChangeEvent<{ value: string }>) => {
-        this.changeAdminSettings(key, event.target.value);
     }
 
     private handleDeleteCurrency = (tag: string) => {
@@ -483,8 +470,8 @@ class SettingsPage extends React.Component<any, {
                                     <TextField
                                         fullWidth
                                         label="Send e-mails from"
-                                        value={settings?.adminSettings?.sendFromEmail ?? ''}
-                                        onChange={this.handleAdminTextFieldChange('sendFromEmail')}
+                                        value={settings?.sendFromEmail ?? ''}
+                                        onChange={this.handleTextFieldChange('sendFromEmail')}
                                         className={styles.field}
                                     />
                                 </Grid>
@@ -492,8 +479,8 @@ class SettingsPage extends React.Component<any, {
                                     <TextField
                                         fullWidth
                                         label="SMTP Connection String"
-                                        value={settings?.adminSettings?.smtpConnectionString ?? ''}
-                                        onChange={this.handleAdminTextFieldChange('smtpConnectionString')}
+                                        value={settings?.smtpConnectionString ?? ''}
+                                        onChange={this.handleTextFieldChange('smtpConnectionString')}
                                         className={styles.field}
                                     />
                                 </Grid>
@@ -577,8 +564,25 @@ class SettingsPage extends React.Component<any, {
                             </Grid>
                         )
                     })}
-                    <LoadingStatus isActive={this.state?.exporting} />
+                    <p className={styles.cmsVersion}
+                        onClick={() => this.setState({ cmsInfoOpen: true })}
+                    >Cromwell CMS v.{settings?.cmsInfo?.packages['@cromwell/cms']}</p>
                 </div>
+                <Modal
+                    open={this.state.cmsInfoOpen}
+                    blurSelector="#root"
+                    className={commonStyles.center}
+                    onClose={() => this.setState({ cmsInfoOpen: false })}
+                >
+                    <div className={styles.cmsInfo}>
+                        <h4>System packages</h4>
+                        {Object.entries(settings?.cmsInfo?.packages ?? {})
+                            .sort((a, b) => a[0] < b[0] ? -1 : 1).map(pckg => (
+                                <p key={pckg[0]}>{pckg[0]}: v.{pckg[1]}</p>
+                            ))}
+                    </div>
+                </Modal>
+                <LoadingStatus isActive={this.state?.exporting} />
             </div>
         )
     }

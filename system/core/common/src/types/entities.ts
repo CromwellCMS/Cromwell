@@ -464,10 +464,29 @@ export type TPluginEntityInput = TPluginEntityCore & TBasePageEntityInput;
  * DB CMS entity
  */
 export type TCmsEntityCore = {
-    // < Public config >
     /**
-     * Package name of currently used theme
+     * Pubic settings. Available from REST API endpoint without authentication.
      */
+    publicSettings?: TCmsPublicSettings;
+
+    /**
+     * Admin settings. Available from REST API endpoint with administrator role authorization
+     */
+    adminSettings?: TCmsAdminSettings;
+
+    /**
+     * Internal settings.
+     */
+    internalSettings?: TCmsInternalSettings;
+}
+
+/**
+ * Public CMS settings
+ */
+export type TCmsPublicSettings = {
+    /**
+    * Package name of currently used theme
+    */
     themeName?: string;
     /**
      * Page size to use in lists, eg. at Product Category page
@@ -502,35 +521,16 @@ export type TCmsEntityCore = {
      */
     headHtml?: string;
     footerHtml?: string;
-    // < / >
 
     /**
-     * Admin config
+     * HTTP Redirects for Next.js server 
      */
-    adminSettings?: TCmsAdminSettings;
+    redirects?: TCmsRedirect[];
 
-    // < INTERNAL >
     /**
-     * Internal. CMS version, used for updates
+     * HTTP rewrites for Next.js server
      */
-    version?: string;
-    /**
-     * Internal. https://github.com/CromwellCMS/Cromwell/blob/55046c48d9da0a44e4b11e7918c73876fcd1cfc1/system/manager/src/managers/baseManager.ts#L194:L206
-     */
-    versions?: TServiceVersions | string;
-    /**
-     * Internal. If false or not set, will launch installation at first Admin Panel visit.
-     */
-    installed?: boolean;
-    /**
-     * Internal. Recieve unstable beta-updates
-     */
-    beta?: boolean;
-    /**
-     * Internal. Is currently under update
-     */
-    isUpdating?: boolean;
-    // < / >
+    rewrites?: TCmsRedirect[];
 }
 
 /**
@@ -547,17 +547,30 @@ export type TCmsAdminSettings = {
     sendFromEmail?: string;
 }
 
-export type TCmsEntityInput = {
-    defaultPageSize?: number;
-    currencies?: TCurrency[];
-    timezone?: number;
-    language?: string;
-    favicon?: string;
-    logo?: string;
-    headHtml?: string;
-    footerHtml?: string;
-    defaultShippingPrice?: number;
-    adminSettings?: TCmsAdminSettings;
+/**
+ * Internal CMS settings
+ */
+export type TCmsInternalSettings = {
+    /**
+    * Internal. CMS version, used for updates
+    */
+    version?: string;
+    /**
+     * Internal. https://github.com/CromwellCMS/Cromwell/blob/55046c48d9da0a44e4b11e7918c73876fcd1cfc1/system/manager/src/managers/baseManager.ts#L194:L206
+     */
+    versions?: TServiceVersions;
+    /**
+     * Internal. If false or not set, will launch installation at first Admin Panel visit.
+     */
+    installed?: boolean;
+    /**
+     * Internal. Recieve unstable beta-updates
+     */
+    beta?: boolean;
+    /**
+     * Internal. Is currently under update
+     */
+    isUpdating?: boolean;
 }
 
 export type TServiceVersions = {
@@ -584,3 +597,14 @@ export type TDeleteManyInput = {
     ids: string[];
     all?: boolean;
 }
+
+export type TCmsRedirectObject = {
+    from?: string;
+    to?: string;
+    permanent?: boolean;
+    statusCode?: number;
+}
+
+export type TCmsRedirectFunction = (pathname: string, search?: string | null) => TCmsRedirectObject | undefined | void;
+
+export type TCmsRedirect = TCmsRedirectObject | TCmsRedirectFunction;

@@ -55,41 +55,45 @@ export const defaultCmsConfig: TCmsConfig = {
     accessTokenExpirationTime: 600,
     refreshTokenExpirationTime: 1296000,
     defaultSettings: {
-        installed: false,
-        themeName: "@cromwell/theme-store",
-        logo: "/themes/@cromwell/theme-store/shopping-cart.png",
-        defaultPageSize: 15,
-        defaultShippingPrice: 10,
-        currencies: [
-            {
-                id: '1',
-                "tag": "USD",
-                "title": "US Dollar",
-                "symbol": "$",
-                "ratio": 1
-            },
-            {
-                id: '2',
-                "tag": "EUR",
-                "title": "Euro",
-                "symbol": "€",
-                "ratio": 0.8
-            },
-            {
-                id: '3',
-                "tag": "GBP",
-                "title": "British pound",
-                "symbol": "£",
-                "ratio": 0.72
-            },
-            {
-                id: '4',
-                "tag": "CNY",
-                "title": "Chinese Yuan",
-                "symbol": '¥',
-                "ratio": 6.40
-            }
-        ]
+        internalSettings: {
+            installed: false,
+        },
+        publicSettings: {
+            themeName: "@cromwell/theme-store",
+            logo: "/themes/@cromwell/theme-store/shopping-cart.png",
+            defaultPageSize: 15,
+            defaultShippingPrice: 10,
+            currencies: [
+                {
+                    id: '1',
+                    "tag": "USD",
+                    "title": "US Dollar",
+                    "symbol": "$",
+                    "ratio": 1
+                },
+                {
+                    id: '2',
+                    "tag": "EUR",
+                    "title": "Euro",
+                    "symbol": "€",
+                    "ratio": 0.8
+                },
+                {
+                    id: '3',
+                    "tag": "GBP",
+                    "title": "British pound",
+                    "symbol": "£",
+                    "ratio": 0.72
+                },
+                {
+                    id: '4',
+                    "tag": "CNY",
+                    "title": "Chinese Yuan",
+                    "symbol": '¥',
+                    "ratio": 6.40
+                }
+            ]
+        }
     }
 }
 

@@ -20,6 +20,7 @@ import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import yargs from 'yargs-parser';
+import { getRestAPIClient } from '../../core/frontend/es/_index';
 
 
 const start = async () => {
@@ -29,6 +30,9 @@ const start = async () => {
     }
     const cmsConfig = readCMSConfigSync();
     setStoreItem('cmsSettings', cmsConfig);
+
+    const cmsSettings = await getRestAPIClient().getCmsSettings() ?? cmsConfig;
+    setStoreItem('cmsSettings', cmsSettings);
 
     const env = process.argv[2];
 
@@ -64,7 +68,7 @@ const start = async () => {
         await symlinkDir(bundledModulesDir, bundledLocalLink);
     }
 
-    const port = cmsConfig.adminPanelPort ?? 4064;
+    const port = cmsSettings.adminPanelPort ?? 4064;
 
     const app = fastify();
     await app.register(middie);
@@ -122,7 +126,7 @@ const start = async () => {
             <title>Cromwell CMS Admin Panel</title>
             <script>
             CromwellStore = {
-                cmsSettings: ${JSON.stringify(cmsConfig)},
+                cmsSettings: ${JSON.stringify(cmsSettings)},
                 environment: {
                     isAdminPanel: true,
                     mode: '${isDevelopment ? 'dev' : 'prod'}'

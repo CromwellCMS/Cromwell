@@ -40,14 +40,16 @@ export class ProductRepository extends BaseRepository<Product> {
         const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
         qb.addSelect(`AVG(${reviewTable}.${String(ratingKey)})`, this.metadata.tablePath + '_' + averageKey)
             .addSelect(`COUNT(${reviewTable}.id)`, this.metadata.tablePath + '_' + reviewsCountKey)
-            .leftJoin(ProductReview, reviewTable, `${reviewTable}.productId = ${this.metadata.tablePath}.id `)
+            .leftJoin(ProductReview, reviewTable,
+                `${reviewTable}.${this.quote('productId')} = ${this.metadata.tablePath}.id `)
             .groupBy(`${this.metadata.tablePath}.id`);
     }
 
     applyGetProductViews(qb: SelectQueryBuilder<TProduct>) {
         const statsTable = getCustomRepository(PageStatsRepository).metadata.tablePath;
         qb.addSelect(`${statsTable}.views`, this.metadata.tablePath + '_' + 'views')
-            .leftJoin(PageStats, statsTable, `${statsTable}.productSlug = ${this.metadata.tablePath}.slug`)
+            .leftJoin(PageStats, statsTable,
+                `${statsTable}.${this.quote('productSlug')} = ${this.metadata.tablePath}.slug`)
     }
 
     async applyAndGetPagedProducts(qb: SelectQueryBuilder<TProduct>, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
@@ -73,18 +75,16 @@ export class ProductRepository extends BaseRepository<Product> {
 
     async getProductById(id: string): Promise<Product | undefined> {
         logger.log('ProductRepository::getProductById id: ' + id);
-        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        const qb = this.createQueryBuilder(this.metadata.tablePath).select();
         this.applyGetProductRating(qb);
-        return qb.where(`${this.metadata.tablePath}.id = :id`, { id })
-            .getOne();
+        return qb.where(`${this.metadata.tablePath}.id = :id`, { id }).getOne();
     }
 
     async getProductBySlug(slug: string): Promise<Product | undefined> {
         logger.log('ProductRepository::getProductBySlug slug: ' + slug);
-        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        const qb = this.createQueryBuilder(this.metadata.tablePath).select();
         this.applyGetProductRating(qb);
-        return qb.where(`${this.metadata.tablePath}.slug = :slug`, { slug })
-            .getOne();
+        return qb.where(`${this.metadata.tablePath}.slug = :slug`, { slug }).getOne();
     }
 
     async handleProductInput(product: Product, input: TProductInput) {
@@ -168,7 +168,7 @@ export class ProductRepository extends BaseRepository<Product> {
     async getProductsFromCategory(categoryId: string, params?: TPagedParams<TProduct>): Promise<TPagedList<TProduct>> {
         logger.log('ProductRepository::getProductsFromCategory id: ' + categoryId);
         const categoryTable = getCustomRepository(ProductCategoryRepository).metadata.tablePath;
-        const qb = this.createQueryBuilder(this.metadata.tablePath);
+        const qb = this.createQueryBuilder(this.metadata.tablePath).select();
         applyGetManyFromOne(qb, this.metadata.tablePath, 'categories', categoryTable, categoryId);
         return this.applyAndGetPagedProducts(qb, params);
     }
@@ -177,7 +177,7 @@ export class ProductRepository extends BaseRepository<Product> {
         logger.log('ProductRepository::getReviewsOfProduct id: ' + productId);
         const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
 
-        const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable);
+        const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable).select();
         applyGetManyFromOne(qb, reviewTable, 'product', this.metadata.tablePath, productId);
         return getPaged(qb, reviewTable, params)
     }
@@ -185,10 +185,10 @@ export class ProductRepository extends BaseRepository<Product> {
     async getProductRating(productId: string): Promise<TProductRating> {
         logger.log('ProductRepository::getProductRating id: ' + productId);
         const reviewTable = getCustomRepository(ProductReviewRepository).metadata.tablePath;
-        const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable);
+        const qb = getCustomRepository(ProductReviewRepository).createQueryBuilder(reviewTable).select();
         applyGetManyFromOne(qb, reviewTable, 'product', this.metadata.tablePath, productId);
 
-        const reviewsNumberKey: keyof TProductRating = 'reviewsNumber';
+        const reviewsNumberKey: keyof TProductRating = 'reviewsNumber'
         const averageKey: keyof TProductRating = 'average';
         const ratingKey: keyof TProductReview = 'rating';
         qb.select('COUNT()', reviewsNumberKey);
@@ -216,7 +216,7 @@ export class ProductRepository extends BaseRepository<Product> {
                             attr.values.forEach(val => {
                                 const likeStr = `%{"key":"${attr.key}","values":[%{"value":"${val}"%]}%`;
                                 const valKey = `${attr.key}_${val}`;
-                                const query = `${this.metadata.tablePath}.attributesJSON LIKE :${valKey}`;
+                                const query = `${this.metadata.tablePath}.${this.quote('attributesJSON')} LIKE :${valKey}`;
                                 if (isFirstVal) {
                                     isFirstVal = false;
                                     subQb.where(query, { [valKey]: likeStr });
@@ -232,12 +232,16 @@ export class ProductRepository extends BaseRepository<Product> {
 
             // Search by product name or sku or id
             if (filterParams.nameSearch && filterParams.nameSearch !== '') {
-                const likeStr = `%${filterParams.nameSearch}%`;
+                const nameLikeStr = `%${filterParams.nameSearch}%`;
 
                 const brackets = new Brackets(subQb => {
-                    subQb.where(`${this.metadata.tablePath}.name LIKE :likeStr`, { likeStr });
-                    subQb.orWhere(`${this.metadata.tablePath}.sku LIKE :likeStr`, { likeStr });
-                    subQb.orWhere(`${this.metadata.tablePath}.id LIKE :likeStr`, { likeStr });
+                    subQb.where(`${this.metadata.tablePath}.name ${this.getSqlLike()} :nameLikeStr`, { nameLikeStr });
+                    subQb.orWhere(`${this.metadata.tablePath}.sku ${this.getSqlLike()} :nameLikeStr`, { nameLikeStr });
+
+                    if (!isNaN(parseInt(filterParams.nameSearch + '')))
+                        subQb.orWhere(`${this.metadata.tablePath}.id = :idSearch`, {
+                            idSearch: filterParams.nameSearch
+                        });
                 });
                 qb.andWhere(brackets);
             }
@@ -259,7 +263,7 @@ export class ProductRepository extends BaseRepository<Product> {
         const timestamp = Date.now();
 
         const getQb = (shouldApplyPriceFilter = true): SelectQueryBuilder<Product> => {
-            const qb = this.createQueryBuilder(this.metadata.tablePath);
+            const qb = this.createQueryBuilder(this.metadata.tablePath).select();
 
             this.applyProductFilter(qb, shouldApplyPriceFilter ? filterParams : {
                 ...filterParams,
@@ -302,8 +306,7 @@ export class ProductRepository extends BaseRepository<Product> {
     }
 
     async deleteManyFilteredProducts(input: TDeleteManyInput, filterParams?: ProductFilterInput): Promise<boolean | undefined> {
-        const qb = this.createQueryBuilder()
-            .delete().from<Product>(this.metadata.tablePath);
+        const qb = this.createQueryBuilder(this.metadata.tablePath).delete();
 
         this.applyProductFilter(qb, filterParams);
         this.applyDeleteMany(qb, input);

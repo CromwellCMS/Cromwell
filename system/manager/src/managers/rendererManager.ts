@@ -56,8 +56,8 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
         logger.error(`Failed to get cmsSettings from API server. Renderer will be launched with default theme`);
     }
 
-    const themeName = cmsSettings?.themeName ?? cmsSettings?.defaultSettings?.themeName ??
-        cmsConfig?.defaultSettings?.themeName;
+    const themeName = cmsSettings?.themeName ?? cmsSettings?.defaultSettings?.publicSettings?.themeName ??
+        cmsConfig?.defaultSettings?.publicSettings?.themeName;
 
     if (!themeName) {
         logger.error(`Failed to find active theme name`);

@@ -1,27 +1,56 @@
-import { TDeleteManyInput, TPagedList, TPagedParams, TProductCategory, TProductCategoryInput } from '@cromwell/core';
 import {
+    getStoreItem,
+    TDeleteManyInput,
+    TPagedList,
+    TPagedParams,
+    TProductCategory,
+    TProductCategoryInput,
+} from '@cromwell/core';
+import {
+    Brackets,
+    ConnectionOptions,
     DeleteQueryBuilder,
     EntityRepository,
     getConnection,
     getCustomRepository,
     SelectQueryBuilder,
     TreeRepository,
-    Brackets,
 } from 'typeorm';
 
-import { ProductCategoryFilterInput } from '../models/filters/product-category.filter';
-import { ProductCategory } from '../models/entities/product-category.entity';
+import {
+    applyGetManyFromOne,
+    applyGetPaged,
+    checkEntitySlug,
+    getPaged,
+    getSqlBoolStr,
+    getSqlLike,
+    handleBaseInput,
+    wrapInQuotes,
+} from '../helpers/base-queries';
 import { getLogger } from '../helpers/logger';
-import { CreateProductCategory } from '../models/inputs/product-category.create';
+import { ProductCategory } from '../models/entities/product-category.entity';
+import { ProductCategoryFilterInput } from '../models/filters/product-category.filter';
 import { PagedParamsInput } from '../models/inputs/paged-params.input';
+import { CreateProductCategory } from '../models/inputs/product-category.create';
 import { UpdateProductCategory } from '../models/inputs/product-category.update';
-import { applyGetManyFromOne, applyGetPaged, checkEntitySlug, getPaged, handleBaseInput } from '../helpers/base-queries';
 import { ProductRepository } from './product.repository';
 
 const logger = getLogger();
 
 @EntityRepository(ProductCategory)
 export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
+
+    public dbType: ConnectionOptions['type'];
+
+    constructor() {
+        super();
+        this.dbType = getStoreItem('dbInfo')?.dbType as ConnectionOptions['type']
+            ?? getConnection().options.type;
+    }
+
+    getSqlBoolStr = (b: boolean) => getSqlBoolStr(this.dbType, b);
+    getSqlLike = () => getSqlLike(this.dbType);
+    quote = (str: string) => wrapInQuotes(this.dbType, str);
 
     async getProductCategories(params: TPagedParams<TProductCategory>): Promise<TPagedList<TProductCategory>> {
         logger.log('ProductCategoryRepository::getProductCategories');
@@ -65,7 +94,6 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
         const closureTableName = this.metadata.closureJunctionTable.tablePath;
         const ancestorReferencedColumn = this.metadata.closureJunctionTable.ancestorColumns[0].referencedColumn?.databasePath as string;
-        const descendanReferencedColumn = this.metadata.closureJunctionTable.descendantColumns[0].referencedColumn?.databasePath;
         const parentPropertyName = this.metadata.treeParentRelation?.propertyName as string;
 
         let newParent: ProductCategory | undefined | null = input.parentId ? await this.getProductCategoryById(input.parentId) : undefined;
@@ -76,7 +104,7 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
                 .select([descendantColumn, ancestorColumn])
                 .from(closureTableName, closureTableName)
                 .where(`${descendantColumn} = :descendantId`, { descendantId: productCategory[ancestorReferencedColumn] })
-                .andWhere(`${ancestorColumn} <> :descendantId`)
+                .andWhere(`${ancestorColumn} != :descendantId`)
                 .execute();
             currentParentId = currentParent?.[0]?.[ancestorColumn];
         } catch (e) {
@@ -213,18 +241,22 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         if (filterParams) this.applyCategoryFilter(qb, filterParams);
 
         if (input.all) {
-            qb.andWhere(`${this.metadata.tablePath}.id NOT IN (:...ids)`, { ids: input.ids ?? [] })
+            if (input.ids?.length) {
+                qb.andWhere(`${this.metadata.tablePath}.id NOT IN (:...ids)`, { ids: input.ids ?? [] })
+            } else {
+                // no WHERE needed
+            }
         } else {
-            qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
+            if (input.ids?.length) {
+                qb.andWhere(`${this.metadata.tablePath}.id IN (:...ids)`, { ids: input.ids ?? [] })
+            } else {
+                throw new Error(`applyDeleteMany: You have to specify ids to delete for ${this.metadata.tablePath}`);
+            }
         }
 
         const categories = await qb.execute();
         for (const category of categories) {
-            try {
-                await this.deleteProductCategory(category?.id);
-            } catch (e) {
-                logger.error(e);
-            }
+            await this.deleteProductCategory(category?.id);
         }
         return true;
     }
@@ -251,11 +283,14 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
 
     async getRootCategories(): Promise<TPagedList<ProductCategory>> {
         const parentColumn = this.metadata.treeParentRelation?.joinColumns[0].databaseName;
+        const qb = this.createQueryBuilder(this.metadata.tablePath).select();
+        if (parentColumn) {
+            qb.where(`${this.metadata.tablePath}.${this.quote(parentColumn)} IS NULL`);
+        }
+
         const [rootCategories, total] = await Promise.all([
-            this.createQueryBuilder().select().where(
-                `${parentColumn} IS NULL`
-            ).getMany(),
-            this.createQueryBuilder().getCount(),
+            qb.getMany(),
+            qb.getCount(),
         ]);
 
         return {
@@ -272,8 +307,12 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
             const likeStr = `%${filterParams.nameSearch}%`;
 
             const brackets = new Brackets(subQb => {
-                subQb.where(`${this.metadata.tablePath}.name LIKE :likeStr`, { likeStr });
-                subQb.orWhere(`${this.metadata.tablePath}.id LIKE :likeStr`, { likeStr });
+                subQb.where(`${this.metadata.tablePath}.name ${this.getSqlLike()} :likeStr`, { likeStr });
+
+                if (!isNaN(parseInt(filterParams.nameSearch + '')))
+                    subQb.orWhere(`${this.metadata.tablePath}.id = :idSearch`, {
+                        idSearch: filterParams.nameSearch
+                    });
             });
             qb.andWhere(brackets);
         }
