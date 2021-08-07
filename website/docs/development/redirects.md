@@ -36,7 +36,7 @@ You can add redirects or rewrites in `cmsconfig.json` file:
 ```
 
 #### Redirect's logic
-After accessing (opening) "/category/1" page, user will be redirected to "/category/2" page. Search engines will receive 301 http code if `"permanent": true` or 307 if `"permanent": false`, or you can provide your status code (to use 308 for example), see type declaration. User's browser history will be replaced.  
+After accessing (opening) "/category/1" page, user will be redirected to "/category/2" page. Search engines will receive 301 http code if `"permanent": true` or 307 if `"permanent": false`, or you can provide your status code (to use 308 for example), [see TCmsRedirectObject in declarations](../api/modules/common.md#tcmsredirectobject). User's browser history will be replaced.  
 
 #### Rewrite's logic
 When user visits "/about-us", even if there's no page defined by an active Theme, user will see "/post/1" page. Be careful with rewrites, they can make the same content to be available under two different routes (which is bad for SEO). In example above the content of "/post/1" page will be served under two routes. So additionally you may want to hide original page by adding another rewrite to 404 page:  

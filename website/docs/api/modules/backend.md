@@ -148,6 +148,7 @@ const products = await getCustomRepository(ProductRepository).getProducts();
 - [getBundledModulesDir](backend.md#getbundledmodulesdir)
 - [getCMSConfigPath](backend.md#getcmsconfigpath)
 - [getCmsEntity](backend.md#getcmsentity)
+- [getCmsInfo](backend.md#getcmsinfo)
 - [getCmsModuleConfig](backend.md#getcmsmoduleconfig)
 - [getCmsModuleInfo](backend.md#getcmsmoduleinfo)
 - [getCmsSettings](backend.md#getcmssettings)
@@ -189,6 +190,8 @@ const products = await getCustomRepository(ProductRepository).getProducts();
 - [getServerStartupPath](backend.md#getserverstartuppath)
 - [getServerTempDir](backend.md#getservertempdir)
 - [getServerTempEmailsDir](backend.md#getservertempemailsdir)
+- [getSqlBoolStr](backend.md#getsqlboolstr)
+- [getSqlLike](backend.md#getsqllike)
 - [getTempDir](backend.md#gettempdir)
 - [getThemeAdminPanelBundleDir](backend.md#getthemeadminpanelbundledir)
 - [getThemeAdminPanelDir](backend.md#getthemeadminpaneldir)
@@ -222,6 +225,7 @@ const products = await getCustomRepository(ProductRepository).getProducts();
 - [savePluginSettings](backend.md#savepluginsettings)
 - [sendEmail](backend.md#sendemail)
 - [validateEmail](backend.md#validateemail)
+- [wrapInQuotes](backend.md#wrapinquotes)
 
 ## Type aliases
 
@@ -574,7 +578,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/constants.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/constants.ts#L96)
+[system/core/backend/src/helpers/constants.ts:100](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/constants.ts#L100)
 
 ___
 
@@ -1057,6 +1061,20 @@ ___
 
 ___
 
+### getCmsInfo
+
+▸ `Const` **getCmsInfo**(): `Promise`<`TCmsInfo`\>
+
+#### Returns
+
+`Promise`<`TCmsInfo`\>
+
+#### Defined in
+
+[system/core/backend/src/helpers/cms-settings.ts:103](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/cms-settings.ts#L103)
+
+___
+
 ### getCmsModuleConfig
 
 ▸ `Const` **getCmsModuleConfig**(`moduleName?`): `Promise`<`undefined` \| `TModuleConfig`\>
@@ -1107,7 +1125,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/cms-settings.ts:71](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/cms-settings.ts#L71)
+[system/core/backend/src/helpers/cms-settings.ts:72](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/cms-settings.ts#L72)
 
 ___
 
@@ -1755,6 +1773,47 @@ ___
 
 ___
 
+### getSqlBoolStr
+
+▸ `Const` **getSqlBoolStr**(`dbType`, `b`): ``"true"`` \| ``"false"`` \| ``"1"`` \| ``"0"``
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `dbType` | ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"`` |
+| `b` | `boolean` |
+
+#### Returns
+
+``"true"`` \| ``"false"`` \| ``"1"`` \| ``"0"``
+
+#### Defined in
+
+[system/core/backend/src/helpers/base-queries.ts:104](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/base-queries.ts#L104)
+
+___
+
+### getSqlLike
+
+▸ `Const` **getSqlLike**(`dbType`): ``"ILIKE"`` \| ``"LIKE"``
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `dbType` | ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"`` |
+
+#### Returns
+
+``"ILIKE"`` \| ``"LIKE"``
+
+#### Defined in
+
+[system/core/backend/src/helpers/base-queries.ts:111](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/base-queries.ts#L111)
+
+___
+
 ### getTempDir
 
 ▸ `Const` **getTempDir**(`dir?`): `string`
@@ -2388,3 +2447,24 @@ ___
 #### Defined in
 
 [system/core/backend/src/helpers/validation.ts:1](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/validation.ts#L1)
+
+___
+
+### wrapInQuotes
+
+▸ `Const` **wrapInQuotes**(`dbType`, `str`): `string`
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `dbType` | ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"`` |
+| `str` | `string` |
+
+#### Returns
+
+`string`
+
+#### Defined in
+
+[system/core/backend/src/helpers/base-queries.ts:116](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/base-queries.ts#L116)
