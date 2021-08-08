@@ -1,8 +1,9 @@
 import { Field, ID, ObjectType } from 'type-graphql';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
 import { NewsletterForm } from '../../types';
 
-@Entity()
+@Entity('PluginNewsletter_NewsletterForm')
 @ObjectType('PluginNewsletter_NewsletterForm')
 class PluginNewsletter_NewsletterForm implements NewsletterForm {
 

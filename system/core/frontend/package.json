@@ -1,6 +1,9 @@
 {
   "name": "@cromwell/core-frontend",
   "version": "1.0.9",
+  "description": "",
+  "license": "MIT",
+  "author": "CromwellCMS",
   "main": "dist/index.js",
   "module": "es/_index.js",
   "types": "es/_index.d.ts",
@@ -8,12 +11,13 @@
     "/dist",
     "/es"
   ],
-  "author": "CromwellCMS",
-  "license": "MIT",
   "scripts": {
     "build": "npx rollup -c",
-    "watch": "npx rollup -cw",
-    "test": "npx --no-install jest"
+    "test": "npx --no-install jest",
+    "watch": "npx rollup -cw"
+  },
+  "resolutions": {
+    "webpack": "5.11.1"
   },
   "dependencies": {
     "@apollo/client": "3.2.1",
@@ -73,9 +77,5 @@
   },
   "peerDependencies": {
     "next": "11.0.1"
-  },
-  "description": "",
-  "resolutions": {
-    "webpack": "5.11.1"
   }
 }

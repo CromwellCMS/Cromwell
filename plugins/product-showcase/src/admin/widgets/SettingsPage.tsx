@@ -3,7 +3,7 @@ import { TPluginSettingsProps } from '@cromwell/core';
 import { createStyles, makeStyles, TextField } from '@material-ui/core';
 import React from 'react';
 
-import { TSettings } from '../types';
+import { TSettings } from '../../types';
 
 export function SettingsPage(props: TPluginSettingsProps<TSettings>) {
     const classes = useStyles();

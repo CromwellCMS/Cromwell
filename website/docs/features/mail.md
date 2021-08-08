@@ -24,8 +24,8 @@ Navigate to [`.cromwell/server/emails`](/docs/overview/installation#working-dire
 - `order.hbs` - For new order placement
 - `forgot-password.hbs` - Email with secret code when user starts reset-password transaction.
 
-The CMS use [Handlebars](https://handlebarsjs.com/guide/) as templating engine. You can edit CMS templates as you like, just keep Handlebars variables to insert data.
+The CMS uses [Handlebars](https://handlebarsjs.com/guide/) as templating engine. You can edit CMS templates as you like, just keep Handlebars variables to insert data.
 
 :::important
-Make a backup of your custom template. When you run CMS update, it may replace your templates with new ones. Your templates may become incompatible if some variables change in original template. 
+Make a backup of your custom template. When you run CMS update, it may possibly replace your templates with new ones. Your templates may become incompatible if some variables change in original template. Even though we'll try not change them or change as less as possible, this possibility still exists for now. In the future we'll work out more convenient way for such updates.
 :::

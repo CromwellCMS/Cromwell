@@ -1,6 +1,6 @@
 import { registerWidget } from '@cromwell/core-frontend';
-import { SettingsPage } from './SettingsPage';
-import { Dashboard } from './Dashboard';
+import { SettingsPage } from './widgets/SettingsPage';
+import { Dashboard } from './widgets/Dashboard';
 
 registerWidget({
     pluginName: '@cromwell/plugin-newsletter',

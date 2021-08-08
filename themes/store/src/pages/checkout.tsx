@@ -1,13 +1,14 @@
 import {
     getStoreItem,
+    isServer,
     onStoreChange,
     removeOnStoreChange,
     setStoreItem,
     TCromwellPage,
     TOrder,
-    TUser,
     TPaymentSession,
-    isServer,
+    TStoreListItem,
+    TUser,
 } from '@cromwell/core';
 import { CContainer, getCStore, getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
 import {
@@ -414,7 +415,7 @@ const CheckoutPage: TCromwellPage = () => {
             )}
         </CContainer>
         <CContainer className={styles.cartZone} id="checkout-5">
-            <CartProductList collapsedByDefault={isMobile} />
+            <CartProductList collapsedByDefault={isMobile} cart={orderTotal?.cart as TStoreListItem[]} />
         </CContainer>
     </>);
 }

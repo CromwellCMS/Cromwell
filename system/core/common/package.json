@@ -1,6 +1,9 @@
 {
   "name": "@cromwell/core",
   "version": "1.1.10",
+  "description": "",
+  "license": "MIT",
+  "author": "CromwellCMS",
   "main": "dist/index.js",
   "module": "es/_index.js",
   "types": "es/_index.d.ts",
@@ -8,11 +11,12 @@
     "/dist",
     "/es"
   ],
-  "author": "CromwellCMS",
-  "license": "MIT",
   "scripts": {
     "build": "npx rollup -c",
     "watch": "npx rollup -cw"
+  },
+  "resolutions": {
+    "webpack": "5.11.1"
   },
   "dependencies": {
     "react": "17.0.1",
@@ -35,9 +39,5 @@
   },
   "peerDependencies": {
     "next": "11.0.1"
-  },
-  "description": "",
-  "resolutions": {
-    "webpack": "5.11.1"
   }
 }

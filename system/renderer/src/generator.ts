@@ -3,6 +3,7 @@ import {
     configFileName,
     getBundledModulesDir,
     getCmsModuleConfig,
+    getCmsModuleInfo,
     getLogger,
     getModulePackage,
     getNodeModuleDir,
@@ -60,6 +61,7 @@ const devGenerate = async (themeName: string, options) => {
     const themeConfig = await getCmsModuleConfig(themeName);
     const pagesLocalDir = resolve(tempDir, 'pages');
     const themeDir = await getNodeModuleDir(themeName);
+    const themePackageInfo = await getCmsModuleInfo(themeName);
 
     await linkFiles(tempDir, themeName, options);
 
@@ -101,7 +103,8 @@ const devGenerate = async (themeName: string, options) => {
                 normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
         }
 
-        // Make imports for used externals based on metaInfo file.
+        // Make Frontend dependencies. Add imports for used externals based on metaInfo file 
+        // so that they will be available to re-use by plugins.
         const metaInfo: TScriptMetaInfo = pageInfo.metaInfoPath ? fs.readJSONSync(pageInfo.metaInfoPath) : {};
         const externals = metaInfo?.externalDependencies ?? {};
 
@@ -113,6 +116,8 @@ const devGenerate = async (themeName: string, options) => {
             const pckgName = pckgChunks.join('@');
 
             if (defaultImported.includes(pckgName)) return;
+            if (!themePackageInfo?.frontendDependencies?.length) return;
+            if (!themePackageInfo.frontendDependencies.includes(pckgName)) return;
 
             const pckgHash = getRandStr(4);
             const pckgNameStripped = pckgName.replace(/\W/g, '_');

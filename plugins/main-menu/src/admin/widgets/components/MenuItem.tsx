@@ -1,52 +1,15 @@
-import { PluginSettingsLayout } from '@cromwell/admin-panel';
-import { TPluginSettingsProps } from '@cromwell/core';
-import { iconFromPath } from '@cromwell/core-frontend';
 import { CardActionArea, CardActions, Collapse, IconButton, MenuItem, TextField } from '@material-ui/core';
 import clsx from 'clsx';
-import React, { useState } from 'react';
+import React from 'react';
 
-import { TMainMenuItem, TMainMenuSettings } from '../types';
-import { useStyles } from './styles';
+import { useForceUpdate } from '../../../helpers';
+import { TMainMenuItem } from '../../../types';
+import { AddIcon, ExpandMoreIcon, HighlightOffIcon } from '../../icons';
+import { useStyles } from '../../styles';
 
-const HighlightOffIcon = iconFromPath(<path d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path>);
-const ExpandMoreIcon = iconFromPath(<path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"></path>);
-const AddIcon = iconFromPath(<path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"></path>);
 
-export function SettingsPage(props: TPluginSettingsProps<TMainMenuSettings>) {
-    const classes = useStyles();
-    const forceUpdate = useForceUpdate();
 
-    return (
-        <PluginSettingsLayout<TMainMenuSettings> {...props}>
-            {({ pluginSettings, changeSetting }) => (
-                <>
-                    <h2>Menu items</h2>
-                    <div className={classes.itemList}>
-                        {pluginSettings?.items?.map((data, i) => {
-                            return <Item i={i} updateList={forceUpdate} items={pluginSettings.items} />
-                        })}
-                    </div>
-                    <div className={`${classes.card} ${classes.paper}`}>
-                        <MenuItem
-                            className={classes.addBtn}
-                            onClick={() => changeSetting('items',
-                                [...(pluginSettings?.items ?? []), { title: '' }]
-                            )}>
-                            <AddIcon />
-                        </MenuItem>
-                    </div>
-                </>
-            )}
-        </PluginSettingsLayout>
-    )
-}
-
-function useForceUpdate() {
-    const state = useState(0);
-    return () => state[1](value => ++value);
-}
-
-const Item = (props: {
+export const Item = (props: {
     i: number;
     updateList: () => void;
     items?: TMainMenuItem[];

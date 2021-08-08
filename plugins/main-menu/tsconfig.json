@@ -9,7 +9,6 @@
             "es2017"
         ],
         "jsx": "react",
-        "allowJs": false,
         "strict": true,
         "esModuleInterop": true,
         "experimentalDecorators": true,

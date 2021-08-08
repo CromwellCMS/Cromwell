@@ -2,6 +2,8 @@
   "name": "@cromwell/plugin-product-filter",
   "version": "1.0.9",
   "description": "",
+  "license": "MIT",
+  "author": "CromwellCMS",
   "types": "build/types",
   "files": [
     "build",
@@ -9,23 +11,35 @@
     "types",
     "cromwell.config.js"
   ],
-  "author": "CromwellCMS",
-  "license": "MIT",
   "scripts": {
     "build": "npx --no-install cromwell b",
+    "test": "cd tests && npx --no-install jest",
     "watch": "npx --no-install cromwell b -w"
-  },
-  "cromwell": {
-    "type": "plugin",
-    "title": "Product filter",
-    "description": "Adds customizable product filter in a category page",
-    "icon": "static/icon_funnel.png",
-    "frontendDependencies": [
-      "@material-ui/core"
-    ]
   },
   "dependencies": {
     "@material-ui/core": "4.11.2"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^13.0.2",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@testing-library/dom": "^7.29.4",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.1",
+    "@types/jest": "^26.0.20",
+    "@types/node": "14.0.13",
+    "@types/react": "16.9.36",
+    "@types/react-dom": "16.9.8",
+    "@types/testing-library__jest-dom": "^5.9.5",
+    "@types/testing-library__react": "^10.2.0",
+    "@types/throttle-debounce": "^2.1.0",
+    "jest": "^26.6.3",
+    "rollup": "^2.28.2",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-ts-compiler": "^1.0.16",
+    "ts-jest": "^26.5.0",
+    "ts-node": "^9.1.1",
+    "typescript": "4.3.5"
   },
   "peerDependencies": {
     "@apollo/client": "3.2.1",
@@ -45,16 +59,13 @@
     "type-graphql": "1.1.1",
     "typeorm": "0.2.32"
   },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^13.0.2",
-    "@rollup/plugin-node-resolve": "^8.4.0",
-    "@types/node": "14.0.13",
-    "@types/react": "16.9.36",
-    "@types/react-dom": "16.9.8",
-    "@types/throttle-debounce": "^2.1.0",
-    "rollup": "^2.28.2",
-    "rollup-plugin-auto-external": "^2.0.0",
-    "rollup-plugin-ts-compiler": "^1.0.16",
-    "typescript": "4.3.5"
+  "cromwell": {
+    "type": "plugin",
+    "title": "Product filter",
+    "description": "Adds customizable product filter in a category page",
+    "icon": "static/icon_funnel.png",
+    "frontendDependencies": [
+      "@material-ui/core"
+    ]
   }
 }

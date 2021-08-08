@@ -56,7 +56,7 @@ export type TCListProps<DataType, ListItemProps> = {
     pageSize?: number;
 
     /** First batch / page. Can be used with "loader". Supposed to be used in SSR to prerender page  */
-    firstBatch?: TPagedList<DataType>;
+    firstBatch?: TPagedList<DataType> | null;
 
     /** Max pages to render at screen. 10 by default */
     maxDomPages?: number;

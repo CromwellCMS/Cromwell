@@ -7,7 +7,7 @@ sidebar_position: 5
 Redirects/rewrites are often used in content maintenance of a website or for SEO purposes. If you worked with Wordpress you may know this feature from Yoast plugin or from configurations in .htaccess file. In Cromwell CMS there's no .htaccess file, in production usage we rely on Nginx web server, so these settings can be configured in `nginx.conf` which we already mentioned in [installation guide](../overview/installation).  
 But it also much useful to have such configuration available in the CMS, for example, if you want to make your own plugin similar to Yoast.
 
-Redirects/rewrites may be tricky to implement in React/Next.js applications. After first page load navigation handled by `'next/link'` and `'next/router'` packages in the browser. New URLs are pushed to the browser's history and pages then re-rendered. All this happens without any involvement of Next.js server which means redirects/rewrites should be handled not only by the server (on first page request), but also by application in the browser.   
+Redirects/rewrites may be tricky to implement in React/Next.js applications. After first page load navigation handled by `'next/link'` and `'next/router'` packages in the browser. New URLs are pushed to the browser's history and pages then re-rendered. All this happens without involvement of Next.js server which means redirects/rewrites should be handled not only by the server (on first page request), but also by application in the browser.   
 Next.js natively supports redirects/rewrites, but with one limitation: they should be specified in `next.config.js` file and they are only applied on application build. Theme authors can possibly use that (though it's not recommended in Cromwell CMS), but there's no way to change redirects/rewrites dynamically (in Admin panel for example). Well, there's another limited option to use redirects in server's `getStaticProps`, but with no support for rewrites.  
 
 With all that considered we implemented our own redirection mechanism in Cromwell CMS. Internally it works using Next.js custom server plus some patches on `'next/router'` package. Externally it provides a simple API to use this mechanism.  
@@ -93,5 +93,5 @@ registerRewrite('my-plugin-name-rewrite', (pathname, search) => {
 ```
 
 registerRedirect / registerRewrite accept:
-- **ruleName**` :string` - Unique name (id) of your redirect/rewrite rule. Make sure to use your own Plugin name to avoid collisions with other Plugins.
-- **redirect**` :TCmsRedirect` - Redirect/rewrite object config as in `cmsconfig.json` example, or a function as in example above. The function will be executed against each request at the server and for each route change at the frontend. 
+- **ruleName**`:string` - Unique name (id) of your redirect/rewrite rule. Make sure to use your own Plugin name to avoid collisions with other Plugins.
+- **redirect**[`:TCmsRedirect`](../api/modules/common.md#tcmsredirect) - Redirect/rewrite object config as in `cmsconfig.json` example, or a function as in example above. The function will be executed against each request at the server and for each route change at the frontend. 

@@ -2,7 +2,7 @@ import { getPluginStaticUrl, getRestAPIClient, WidgetTypes } from '@cromwell/cor
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 
-import { useStyles } from './styles';
+import { useStyles } from '../styles';
 
 export const Dashboard = (props: WidgetTypes['Dashboard']) => {
     const [newsletterCount, setNewsletterCount] = useState('')

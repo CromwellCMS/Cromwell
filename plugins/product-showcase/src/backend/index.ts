@@ -1,6 +1,6 @@
-import { TBackendModule, registerAction, getLogger } from '@cromwell/core-backend';
+import { TBackendModule } from '@cromwell/core-backend';
 
-import ProductShowcaseResolver from './resolvers/ProductShowcaseResolver';
+import ProductShowcaseResolver from './resolvers/product-showcase.resolver';
 
 
 const backendModule: TBackendModule = {
