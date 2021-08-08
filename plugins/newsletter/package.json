@@ -2,39 +2,51 @@
   "name": "@cromwell/plugin-newsletter",
   "version": "1.0.8",
   "description": "",
+  "license": "MIT",
+  "author": "CromwellCMS",
   "files": [
     "build",
     "static",
     "migrations",
     "cromwell.config.js"
   ],
-  "author": "CromwellCMS",
-  "license": "MIT",
   "scripts": {
     "build": "npx --no-install cromwell b",
-    "watch": "npx --no-install cromwell b -w",
-    "test": "cd tests && npx --no-install jest",
     "docker:start-dev-mariadb": "docker run --rm -d -p 3306:3306 --name crw-mariadb -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -e MYSQL_USER=cromwell -e MYSQL_PASSWORD=my_password mariadb:latest",
     "docker:start-dev-postgres": "docker run --rm -d -p 5432:5432 --name crw-postgres -e POSTGRES_DB=cromwell -e POSTGRES_USER=cromwell -e POSTGRES_PASSWORD=my_password postgres",
+    "migration:generate:all": "npm run migration:generate:mysql --name=%npm_config_name% && npm run migration:generate:postgres --name=%npm_config_name% && npm run migration:generate:sqlite --name=%npm_config_name%",
+    "migration:generate:all-example": "npm run migration:generate:all --name=init",
     "migration:generate:mysql": "npx typeorm migration:generate -o -f migration-mysql -n %npm_config_name%",
     "migration:generate:postgres": "npx typeorm migration:generate -o -f migration-postgres -n %npm_config_name%",
     "migration:generate:sqlite": "npx typeorm migration:generate -o -f migration-sqlite -n %npm_config_name%",
-    "migration:generate:all": "npm run migration:generate:mysql --name=%npm_config_name% && npm run migration:generate:postgres --name=%npm_config_name% && npm run migration:generate:sqlite --name=%npm_config_name%",
-    "migration:generate:all-example": "npm run migration:generate:all --name=init"
-  },
-  "cromwell": {
-    "type": "plugin",
-    "title": "Newsletter",
-    "description": "Provides a way for web-site visitors to leave their e-mails for newsletter subscription. E-mails can be CSV exported in Admin panel",
-    "icon": "static/icon_email.png",
-    "frontendDependencies": [
-      "@material-ui/core",
-      "@material-ui/lab"
-    ]
+    "test": "cd tests && npx --no-install jest",
+    "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
     "@material-ui/core": "4.11.2",
     "@material-ui/lab": "4.0.0-alpha.57"
+  },
+  "devDependencies": {
+    "@nestjs/testing": "^7.6.11",
+    "@rollup/plugin-commonjs": "^13.0.2",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@testing-library/dom": "^7.29.4",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.1",
+    "@types/jest": "^26.0.20",
+    "@types/node": "14.0.13",
+    "@types/react": "16.9.36",
+    "@types/react-dom": "16.9.8",
+    "@types/testing-library__jest-dom": "^5.9.5",
+    "@types/testing-library__react": "^10.2.0",
+    "jest": "^26.6.3",
+    "rollup": "^2.28.2",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-ts-compiler": "^1.0.16",
+    "ts-jest": "^26.5.0",
+    "ts-node": "^9.1.1",
+    "typescript": "4.3.5"
   },
   "peerDependencies": {
     "@apollo/client": "3.2.1",
@@ -51,30 +63,18 @@
     "graphql": "15.3.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
-    "typeorm": "0.2.32",
     "tslib": "2.1.0",
-    "type-graphql": "1.1.1"
+    "type-graphql": "1.1.1",
+    "typeorm": "0.2.32"
   },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^13.0.2",
-    "@rollup/plugin-node-resolve": "^8.4.0",
-    "@types/node": "14.0.13",
-    "@types/react": "16.9.36",
-    "@types/react-dom": "16.9.8",
-    "@nestjs/testing": "^7.6.11",
-    "rollup": "^2.28.2",
-    "rollup-plugin-auto-external": "^2.0.0",
-    "rollup-plugin-ts-compiler": "^1.0.16",
-    "typescript": "4.3.5",
-    "@testing-library/dom": "^7.29.4",
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.7.1",
-    "@types/jest": "^26.0.20",
-    "ts-node": "^9.1.1",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.0",
-    "@types/testing-library__jest-dom": "^5.9.5",
-    "@types/testing-library__react": "^10.2.0"
+  "cromwell": {
+    "type": "plugin",
+    "title": "Newsletter",
+    "description": "Provides a way for web-site visitors to leave their e-mails for newsletter subscription. E-mails can be CSV exported in Admin panel",
+    "icon": "static/icon_email.png",
+    "frontendDependencies": [
+      "@material-ui/core",
+      "@material-ui/lab"
+    ]
   }
 }

@@ -1,19 +1,19 @@
 {
   "name": "@cromwell/utils",
   "version": "1.0.14",
+  "keywords": [],
+  "license": "MIT",
+  "author": "CromwellCMS",
   "main": "build/exports.js",
   "module": "build/exports.js",
   "types": "build/exports.d.ts",
   "files": [
     "build"
   ],
-  "keywords": [],
-  "author": "CromwellCMS",
-  "license": "MIT",
   "scripts": {
     "build": "npx rollup -c",
-    "watch": "npx rollup -cw",
-    "test": "npx --no-install jest"
+    "test": "npx --no-install jest",
+    "watch": "npx rollup -cw"
   },
   "dependencies": {
     "@babel/preset-react": "^7.13.13",

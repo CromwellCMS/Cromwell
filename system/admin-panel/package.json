@@ -1,6 +1,9 @@
 {
   "name": "@cromwell/admin-panel",
   "version": "1.1.2",
+  "keywords": [],
+  "license": "MIT",
+  "author": "CromwellCMS",
   "main": "startup.js",
   "types": "build/types/exports.d.ts",
   "files": [
@@ -8,17 +11,29 @@
     "static",
     "startup.js"
   ],
-  "keywords": [],
-  "author": "CromwellCMS",
-  "license": "MIT",
   "scripts": {
     "build": "node startup.js build",
-    "dev": "node startup.js dev",
-    "watch:server": "npx rollup -cw",
     "build:server": "npx rollup -c",
+    "dev": "node startup.js dev",
     "prod": "node startup.js prod",
     "test": "npx --no-install jest",
-    "test:watch": "npx --no-install jest --watch"
+    "test:watch": "npx --no-install jest --watch",
+    "watch:server": "npx rollup -cw"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
   },
   "dependencies": {
     "@cromwell/core": "1.1.10",
@@ -114,9 +129,6 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-middleware": "^5.0.0",
     "webpack-hot-middleware": "^2.25.0"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "cromwell": {
     "frontendDependencies": [
@@ -300,18 +312,6 @@
           }
         ]
       }
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
     ]
   }
 }

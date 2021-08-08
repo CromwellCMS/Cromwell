@@ -1,20 +1,24 @@
 {
   "name": "@cromwell/renderer",
   "version": "1.1.5",
-  "main": "buld/renderer.js",
+  "description": "",
+  "license": "MIT",
   "author": "CromwellCMS",
+  "main": "buld/renderer.js",
   "files": [
     "build",
     "startup.js"
   ],
-  "license": "MIT",
   "scripts": {
+    "build": "node startup.js build",
     "buildService": "node startup.js buildService",
     "dev": "node startup.js dev",
-    "build": "node startup.js build",
+    "gen": "node startup.js gen",
     "start": "node startup.js prod",
-    "watch": "npx rollup -cw",
-    "gen": "node startup.js gen"
+    "watch": "npx rollup -cw"
+  },
+  "resolutions": {
+    "webpack": "5.11.1"
   },
   "dependencies": {
     "@cromwell/core": "1.1.10",
@@ -66,9 +70,5 @@
     "@cromwell/core-frontend": "1.0.0",
     "react-is": "17.0.1",
     "react-html-parser": "2.0.2"
-  },
-  "description": "",
-  "resolutions": {
-    "webpack": "5.11.1"
   }
 }

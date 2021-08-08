@@ -10,13 +10,25 @@
     "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
     "serve": "docusaurus serve",
+    "clear": "docusaurus clear",
+    "deploy": "docusaurus deploy",
+    "swizzle": "docusaurus swizzle",
     "write-translations": "docusaurus write-translations",
     "generate:api": "cd ../ && npx typedoc --options website/typedoc.json",
     "win:clean-api-docs": "rmdir /q /s docs\\api"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "dependencies": {
     "@cromwell/core-backend": "1.0.12",
@@ -46,17 +58,5 @@
     "@types/react-dom": "16.9.8",
     "@types/react-helmet": "^6.1.1",
     "@types/react-router-dom": "^5.1.5"
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   }
 }

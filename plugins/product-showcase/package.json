@@ -2,29 +2,42 @@
   "name": "@cromwell/plugin-product-showcase",
   "version": "1.0.8",
   "description": "",
+  "license": "MIT",
+  "author": "CromwellCMS",
   "files": [
     "build",
     "static",
     "cromwell.config.js"
   ],
-  "author": "CromwellCMS",
-  "license": "MIT",
   "scripts": {
     "build": "npx --no-install cromwell b",
-    "watch": "npx --no-install cromwell b -w",
-    "test": "cd tests && npx --no-install jest"
-  },
-  "cromwell": {
-    "type": "plugin",
-    "title": "Product showcase",
-    "description": "Adds a carousel with products. On a product page will fetch products from same categories, on other pages - most recent products",
-    "icon": "static/icon_showcase.png",
-    "frontendDependencies": [
-      "@material-ui/core"
-    ]
+    "test": "cd tests && npx --no-install jest",
+    "watch": "npx --no-install cromwell b -w"
   },
   "dependencies": {
     "@material-ui/core": "4.11.2"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^13.0.2",
+    "@rollup/plugin-node-resolve": "^8.4.0",
+    "@testing-library/dom": "^7.29.4",
+    "@testing-library/jest-dom": "^5.11.9",
+    "@testing-library/react": "^11.2.5",
+    "@testing-library/user-event": "^12.7.1",
+    "@types/jest": "^26.0.20",
+    "@types/node": "14.0.13",
+    "@types/react": "16.9.36",
+    "@types/react-dom": "16.9.8",
+    "@types/testing-library__jest-dom": "^5.9.5",
+    "@types/testing-library__react": "^10.2.0",
+    "jest": "^26.6.3",
+    "rollup": "^2.28.2",
+    "rollup-plugin-auto-external": "^2.0.0",
+    "rollup-plugin-postcss": "^3.1.8",
+    "rollup-plugin-ts-compiler": "^1.0.16",
+    "ts-jest": "^26.5.0",
+    "ts-node": "^9.1.1",
+    "typescript": "4.3.5"
   },
   "peerDependencies": {
     "@apollo/client": "3.2.1",
@@ -41,26 +54,13 @@
     "type-graphql": "1.1.1",
     "typeorm": "0.2.32"
   },
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^13.0.2",
-    "@rollup/plugin-node-resolve": "^8.4.0",
-    "@types/node": "14.0.13",
-    "@types/react": "16.9.36",
-    "@types/react-dom": "16.9.8",
-    "rollup": "^2.28.2",
-    "rollup-plugin-auto-external": "^2.0.0",
-    "rollup-plugin-postcss": "^3.1.8",
-    "rollup-plugin-ts-compiler": "^1.0.16",
-    "typescript": "4.3.5",
-    "@testing-library/dom": "^7.29.4",
-    "@testing-library/jest-dom": "^5.11.9",
-    "@testing-library/react": "^11.2.5",
-    "@testing-library/user-event": "^12.7.1",
-    "@types/jest": "^26.0.20",
-    "ts-node": "^9.1.1",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.0",
-    "@types/testing-library__jest-dom": "^5.9.5",
-    "@types/testing-library__react": "^10.2.0"
+  "cromwell": {
+    "type": "plugin",
+    "title": "Product showcase",
+    "description": "Adds a carousel with products. On a product page will fetch products from same categories, on other pages - most recent products",
+    "icon": "static/icon_showcase.png",
+    "frontendDependencies": [
+      "@material-ui/core"
+    ]
   }
 }

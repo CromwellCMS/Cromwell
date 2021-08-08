@@ -1,26 +1,30 @@
 {
   "name": "@cromwell/cli",
   "version": "1.0.11",
+  "keywords": [],
+  "license": "MIT",
+  "author": "CromwellCMS",
   "main": "build/cli.js",
+  "bin": {
+    "cromwell": "./bin/cromwell",
+    "crw": "./bin/cromwell"
+  },
   "files": [
     "build",
     "bin",
     "startup.js"
   ],
-  "keywords": [],
-  "author": "CromwellCMS",
-  "license": "MIT",
+  "scripts": {
+    "build": "npx rollup -c",
+    "buildService": "node startup.js buildService",
+    "test": "npx --no-install jest",
+    "watch": "npx rollup -cw"
+  },
   "dependencies": {
     "fs-extra": "10.0.0",
     "github-directory-downloader": "^1.3.4",
     "read-package-json-fast": "^2.0.1",
     "yargs": "^16.2.0"
-  },
-  "scripts": {
-    "build": "npx rollup -c",
-    "watch": "npx rollup -cw",
-    "test": "npx --no-install jest",
-    "buildService": "node startup.js buildService"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^13.0.2",
@@ -41,9 +45,5 @@
   "peerDependencies": {
     "@cromwell/cms": "1.0.0",
     "@cromwell/utils": "1.0.0"
-  },
-  "bin": {
-    "cromwell": "./bin/cromwell",
-    "crw": "./bin/cromwell"
   }
 }
