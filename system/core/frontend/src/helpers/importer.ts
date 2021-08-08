@@ -228,14 +228,12 @@ export class Importer implements Required<TCromwellNodeModules> {
                 console.error(`loading:!Cromwell.imports[moduleName][namedExport]: import {${namedExport}} from ${moduleName}`);
                 return false;
             }
-            if (this.imports && this.imports[moduleName]) {
-                try {
-                    await this.imports[moduleName][namedExport]();
-                    return true;
-                } catch (error) {
-                    console.error(`Cromwell:importer: An error occurred while loading the library: import { ${namedExport} } from '${moduleName}'`, error);
-                    return false;
-                }
+            try {
+                await this.imports[moduleName][namedExport]();
+                return true;
+            } catch (error) {
+                console.error(`Cromwell:importer: An error occurred while loading the library: import { ${namedExport} } from '${moduleName}'`, error);
+                return false;
             }
             return false;
         }

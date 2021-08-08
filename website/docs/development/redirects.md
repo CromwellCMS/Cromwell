@@ -47,6 +47,8 @@ When user visits "/about-us", even if there's no page defined by an active Theme
 }
 ```
 
+After adding configuration in the cmsconfig.json, you need to restart your CMS. That's often not something you want, so next option allows us to add the same setting without restart.
+
 ## In CMS settings
 
 Authors of Plugins can save redirects/rewrites into the database as CMS settings:
@@ -95,3 +97,5 @@ registerRewrite('my-plugin-name-rewrite', (pathname, search) => {
 registerRedirect / registerRewrite accept:
 - **ruleName**`:string` - Unique name (id) of your redirect/rewrite rule. Make sure to use your own Plugin name to avoid collisions with other Plugins.
 - **redirect**[`:TCmsRedirect`](../api/modules/common.md#tcmsredirect) - Redirect/rewrite object config as in `cmsconfig.json` example, or a function as in example above. The function will be executed against each request at the server and for each route change at the frontend. 
+
+The rule will be applied after Plugin install/update. 

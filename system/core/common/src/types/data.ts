@@ -202,11 +202,17 @@ export type TRollupConfig = {
 }
 
 /**
- * Theme module config, part of cromwell.config.js
+ * Base config for Theme / Plugin in cromwell.config.js
  */
-export type TThemeConfig = {
+export type TBaseModuleConfig = {
     /** Configs for Rollup */
     rollupConfig?: () => TRollupConfig | Promise<TRollupConfig>;
+}
+
+/**
+ * Theme module config, part of cromwell.config.js
+ */
+export type TThemeConfig = TBaseModuleConfig & {
     /** Next.js config that usually exported from next.config.js */
     nextConfig?: () => any;
     /** Colors to use */
@@ -226,6 +232,19 @@ export type TThemeConfig = {
     /** Modifications to apply on all pages */
     globalModifications?: TCromwellBlockData[];
 }
+
+/**
+ * Plugin module config, part of cromwell.config.js
+ */
+export type TPluginConfig = TBaseModuleConfig & {
+    adminInputFile?: string
+    frontendInputFile?: string
+    frontendModule?: string;
+    backend?: string;
+    defaultSettings?: any;
+}
+
+export type TModuleConfig = TThemeConfig & TPluginConfig;
 
 export type TDefaultPageName = 'index' | 'category' | 'product' | 'post' | 'tag' | 'pages' | 'account' | 'checkout' | 'blog';
 
@@ -266,21 +285,6 @@ export type TPageConfig = TPageInfo & {
     /** Custom HTML to add to the end of the page */
     footerHtml?: string;
 }
-
-/**
- * Plugin module config, part of cromwell.config.js
- */
-export type TPluginConfig = {
-    /** Options for Rollup */
-    rollupConfig?: () => TRollupConfig | Promise<TRollupConfig>;
-    adminInputFile?: string
-    frontendInputFile?: string
-    frontendModule?: string;
-    backend?: string;
-    defaultSettings?: any;
-}
-
-export type TModuleConfig = TThemeConfig & TPluginConfig;
 
 /**
  * Internal. Store for reusable Frontend dependencies.
@@ -359,6 +363,8 @@ export type TPackageCromwellConfig = {
     name?: string;
     version?: string;
     type?: 'plugin' | 'theme';
+    /** Minimal CMS version since when this module available to install */
+    minCmsVersion?: string;
     title?: string;
     author?: string;
     authorLink?: string;

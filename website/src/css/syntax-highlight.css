@@ -28,6 +28,7 @@ code[class*="language-"] *::selection {
 }
 
 @media print {
+
     pre[class*="language-"],
     code[class*="language-"] {
         text-shadow: none;
@@ -41,7 +42,7 @@ pre[class*="language-"] {
     background: #1e1e1e;
 }
 
-:not(pre) > code[class*="language-"] {
+:not(pre)>code[class*="language-"] {
     padding: 0.1em 0.3em;
     border-radius: 0.3em;
     color: #db4c69;
@@ -275,7 +276,7 @@ pre[data-line] {
     position: relative;
 }
 
-pre[class*="language-"] > code[class*="language-"] {
+pre[class*="language-"]>code[class*="language-"] {
     position: relative;
     z-index: 1;
 }
@@ -298,41 +299,33 @@ pre[class*="language-"] > code[class*="language-"] {
     color: #569cd6;
 }
 
-.tag.punctuation + .token.template-string.template-punctuation {
+.tag.punctuation+.token.template-string.template-punctuation {
     display: none;
 }
 
-.tag.punctuation + .template-string.template-punctuation + .template-string.string {
+.tag.punctuation+.template-string.template-punctuation+.template-string.string {
     color: #d4d4d4;
 }
 
-.tag.punctuation
-    + .template-string.template-punctuation
-    + .template-string.string
-    ~ .token.template-string.template-punctuation {
+.tag.punctuation+.template-string.template-punctuation+.template-string.string~.token.template-string.template-punctuation {
     display: none;
 }
 
-.keyword.module ~ .token.punctuation ~ .token.plain,
-.keyword.module + .token.plain {
+.keyword.module~.token.punctuation~.token.plain,
+.keyword.module+.token.plain {
     color: #9cdcfe;
 }
 
-.token-line > .token.plain:first-child + .token.keyword + .token.plain {
+.token-line>.token.plain:first-child+.token.keyword+.token.plain {
     color: #9cdcfe;
 }
 
 /* Dumb Typescript type highlighting: `const temp: TypeToHighlight`  */
-.token-line
-    > .token.plain:first-child
-    + .token.keyword
-    + .token.plain
-    + .token.operator
-    + .token.plain
-    + .token.function-variable {
+.token-line>.token.plain:first-child+.token.keyword+.token.plain+.token.operator+.token.plain+.token.function-variable {
     color: #4ec9b0;
 }
-.token-line > .token.plain:first-child + .token.keyword + .token.plain + .token.operator + .token.plain {
+
+.token-line>.token.plain:first-child+.token.keyword+.token.plain+.token.operator+.token.plain {
     color: #4ec9b0;
 }
 
@@ -340,8 +333,8 @@ pre[class*="language-"] > code[class*="language-"] {
     color: #888;
 }
 
-.tsx .token-line > .token.plain:first-child,
-.ts .token-line > .token.plain:first-child {
+.tsx .token-line>.token.plain:first-child,
+.ts .token-line>.token.plain:first-child {
     color: #9cdcfe;
 }
 
@@ -349,24 +342,13 @@ pre[class*="language-"] > code[class*="language-"] {
     color: #4ec9b0;
 }
 
-.token.punctuation + .token.parameter + .parameter.operator + .token.parameter,
-.token.punctuation
-    + .token.parameter
-    + .parameter.operator
-    + .token.parameter
-    + .parameter.operator
-    + .token.parameter {
+.token.punctuation+.token.parameter+.parameter.operator+.token.parameter,
+.token.punctuation+.token.parameter+.parameter.operator+.token.parameter+.parameter.operator+.token.parameter {
     color: #4ec9b0;
 }
 
-.token.punctuation + .token.parameter + .parameter.operator + .token.parameter + .parameter.operator,
-.token.punctuation
-    + .token.parameter
-    + .parameter.operator
-    + .token.parameter
-    + .parameter.operator
-    + .token.parameter
-    + .parameter.operator {
+.token.punctuation+.token.parameter+.parameter.operator+.token.parameter+.parameter.operator,
+.token.punctuation+.token.parameter+.parameter.operator+.token.parameter+.parameter.operator+.token.parameter+.parameter.operator {
     color: #d4d4d4;
 }
 
@@ -380,18 +362,19 @@ pre[class*="language-"] > code[class*="language-"] {
     color: #9cdcfe;
 }
 
-.tag.punctuation + .token.plain {
+.tag.punctuation+.token.plain {
     color: #d4d4d4;
 }
 
 .token.imports {
     color: #9cdcfe;
 }
+
 .token.imports.punctuation {
     color: #d4d4d4;
 }
 
-.generic.class-name.operator, .generic.punctuation {
+.generic.class-name.operator,
+.generic.punctuation {
     color: #d4d4d4;
 }
-

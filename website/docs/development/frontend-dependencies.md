@@ -4,7 +4,7 @@ sidebar_position: 4
 
 # Frontend Dependencies
 
-## Issue with dependencies
+## Motivation
 
 A website can have dozens of Plugins and each of them can have many heavy dependencies (node_modules), especially in modern React development. There are two main problems:
 
@@ -17,7 +17,7 @@ Frontend dependencies are pre-bundled node_modules that Plugins and Themes can i
 
 ## How to use
 
-There's no difference in source code, so you can use node_modules as usual:
+There's no difference in your source code, so you can use node_modules as usual:
 ```ts
 import { TextField } from '@material-ui/core';
 import React from 'react';
@@ -40,7 +40,7 @@ You need to declare Frontend dependencies in your package.json and add it to "de
 }
 ```
 
-Transformation happens when you run Cromwell CMS bundler via `npx cromwell build`. Bundler points Frontend dependencies to the global store (for all Plugins to reuse) and generates meta info files. When the CMS needs to display a Plugin, it reads its meta info file, loads and executes Frontend dependencies first, then executes code of the Plugin.  
+Transformation happens when you run Cromwell CMS bundler via `npx cromwell build`. Bundler will point imports to the global store in the code (for all Plugins to reuse) and generates additional meta info files. When the CMS needs to display a Plugin, it reads its meta info file, loads and executes Frontend dependencies first, then executes code of the Plugin.  
 
 Note that you don't have to include React because it used by the CMS core, so it is a Default Frontend dependency.
 Default Frontend dependencies are always bundled with Themes, and they are initially available in the global store to use. There's the list of such dependencies: @apollo/client, @cromwell/core, @cromwell/core-frontend, @loadable/component, react, react-dom, react-html-parser, react-is, tslib, react-resize-detector, pure-react-carousel, react-image-lightbox  
@@ -66,14 +66,13 @@ Basically we want to use a new version, or ot least same version for all Plugins
 Plugin/Theme authors must check version of their dependencies and CMS releases. If Frontend dependency has been updated with a new CMS release, then author has to update it in his package and make a new release.   
 Plugins should be backward-compatible. New features appeared in a release of Frontend dependency should be checked before use, so Plugin won't crash with an old version.
 
-When making a new Plugin you probably don't want to support all previous versions of Frontend dependencies, so you can set (min CMS version in your cmsconfig.json)[/#todo]
+When making a new Plugin you probably don't want to support all previous versions of Frontend dependencies, so you can set [minimal CMS version. See minCmsVersion in package.json info](./module-config#packagejson-info). In case if a user with older CMS version will try to install your plugin, he will be notified that he must update his CMS first to use your Plugin.
 
 
 ## Big modules
 
 As we stated before bundled node modules are chunked, so we can load only things we need. It works well on medium-size modules such as `@material-ui/core`, but not well with big such as `@material-ui/icons` which has more than 5000 exports.
-In order for browser-imports to work we need to load manifest file to know what chunk to request for imports used in our app. While it's possible to make a couple-Kb chunk for each of 5000 icons from `@material-ui/icons`, the manifest for all of them will be more than 500kb. Which is clearly will be much more that size of icons we are going to use from it. In this case it makes sense to avoid using Frontend dependency and include icons in source code as we did in [default @cromwell/theme-store](https://github.com/CromwellCMS/Cromwell/blob/master/themes/store/src/components/icons.tsx)  
-
+In order for browser-imports to work Webpack has to generate a manifest to know what chunk to request for imports used in our app. While it's possible to make a couple-Kb chunk for each of 5000 icons from `@material-ui/icons`, the manifest for all of them will be more than 500kb. Which is clearly will be much more than size of icons we are going to ever use from it. In this case it makes sense to avoid using Frontend dependency and include icons in source code as we did in [default @cromwell/theme-store](https://github.com/CromwellCMS/Cromwell/blob/master/themes/store/src/components/icons.tsx). 
 
 ## Bundled dependencies
 

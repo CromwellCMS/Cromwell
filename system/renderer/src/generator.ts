@@ -21,6 +21,7 @@ import { dirname, resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 
 import { readThemeExports } from './helpers/readThemeExports';
+import { jsOperators } from './helpers/helpers';
 
 const localThemeBuildDurChunk = 'theme';
 const disableSSR = false;
@@ -84,10 +85,8 @@ const devGenerate = async (themeName: string, options) => {
     }
 
     for (const pageInfo of themeExports.pagesInfo) {
-
-        const pageDynamicImportName = pageInfo.compName + '_DynamicPage';
-        const cromwellStoreModulesPath = `CromwellStore.nodeModules.modules`;
-        const cromwellStoreStatusesPath = `CromwellStore.nodeModules.importStatuses`;
+        const cromwellStoreModulesPath = `importer.modules`;
+        const cromwellStoreStatusesPath = `importer.importStatuses`;
 
         const defaultImported = ['react', 'react-dom', 'next/dynamic', 'next/link', 'next/head', '@cromwell/core',
             '@cromwell/core-frontend', 'react-is', 'next/document', 'next/router',
@@ -103,14 +102,15 @@ const devGenerate = async (themeName: string, options) => {
                 normalizePath(themeExports.themeBuildDir), localThemeBuildDurChunk);
         }
 
-        // Make Frontend dependencies. Add imports for used externals based on metaInfo file 
-        // so that they will be available to re-use by plugins.
+        // Expose used dependencies as Frontend dependencies based on metaInfo file 
+        // so that they will be available to re-use by Plugins.
         const metaInfo: TScriptMetaInfo = pageInfo.metaInfoPath ? fs.readJSONSync(pageInfo.metaInfoPath) : {};
         const externals = metaInfo?.externalDependencies ?? {};
 
         let importExtStr = '';
 
         Object.keys(externals).forEach(depName => {
+            importExtStr += '\n';
             const pckgChunks = depName.split('@');
             pckgChunks.pop(); // pckgVersion
             const pckgName = pckgChunks.join('@');
@@ -118,35 +118,57 @@ const devGenerate = async (themeName: string, options) => {
             if (defaultImported.includes(pckgName)) return;
             if (!themePackageInfo?.frontendDependencies?.length) return;
             if (!themePackageInfo.frontendDependencies.includes(pckgName)) return;
+            if (themePackageInfo.bundledDependencies?.includes(pckgName)) return;
+            if (themePackageInfo.firstLoadedDependencies?.includes(pckgName)) return;
 
             const pckgHash = getRandStr(4);
             const pckgNameStripped = pckgName.replace(/\W/g, '_');
 
-            // Import all externals entirely, using `import * as lib from 'lib';`
-            importExtStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${pckgName}';`;
-            importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = ${pckgNameStripped}_${pckgHash};`;
-            importExtStr += `\n${cromwellStoreStatusesPath}['${pckgName}'] = 'default';`;
+            if (externals[depName].includes('default')) {
+                // Simple case. Import external entirely, using `import * as lib from 'lib';`
+                importExtStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${pckgName}';`;
+                importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = ${pckgNameStripped}_${pckgHash};`;
+                importExtStr += `\n${cromwellStoreStatusesPath}['${pckgName}'] = 'default';`;
+            } else {
+                // Make used imports be instantly available inside a Frontend dependency
+                let namedImports = '';
+                externals[depName].forEach(named => {
+                    namedImports += `${named} as ${named}_${pckgHash}, `;
+                });
+                importExtStr += `\nimport { ${namedImports} } from '${pckgName}';`;
+                importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = {};`;
+                externals[depName].forEach(ext => {
+                    importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}']['${ext}'] = ${ext}_${pckgHash};`;
+                });
 
-            // // Another version. Make named imports and try to import only parts of libs
-            // // Has a problem that these half-imported libs can be overwritten in browser
-            // // when some Plugin requests missing chunks. Importer will try to merge new chunks
-            // // and old imports, but it may lead to unexpected behavior. 
-            // if (externals[depName].includes('default')) {
-            //     importExtStr += `\nimport * as ${pckgNameStripped}_${pckgHash} from '${pckgName}';`;
-            //     importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = ${pckgNameStripped}_${pckgHash};`;
-            //     importExtStr += `\n${cromwellStoreStatusesPath}['${pckgName}'] = 'default';`;
-            // } else {
-            //     let namedImports = '';
-            //     externals[depName].forEach(named => {
-            //         namedImports += `${named} as ${named}_${pckgHash}, `;
-            //     })
-            //     importExtStr += `\nimport { ${namedImports} } from '${pckgName}';`;
-            //     importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}'] = {};`;
-            //     externals[depName].forEach(ext => {
-            //         importExtStr += `\n${cromwellStoreModulesPath}['${pckgName}']['${ext}'] = ${ext}_${pckgHash};`;
-            //     })
-            // }
+                // Make all other exports of external to be available to load additionally into the Frontend dependency
+                let allExports: string[] = [];
+                try {
+                    const pckg = require(pckgName);
+                    allExports = Object.keys(pckg);
+                } catch (error) {
+                    console.error(`Failed to require() package: ${pckgName} during generation of Frontend dependencies`, error);
+                }
+                importExtStr += `\nif (!importer.imports['${pckgName}']) importer.imports['${pckgName}'] = {};\n`;
+                allExports.forEach(otherExport => {
+                    if (jsOperators.includes(otherExport)) return;
+                    // Generate chunk
+                    const otherExportStripped = otherExport.replace(/\W/g, '_') + getRandStr(5);
+                    const exportChunkName = `${pckgNameStripped}_${otherExport.replace(/\W/g, '_')}.js`;
+                    const chunkPath = resolve(tempDir, 'chunks', exportChunkName);
+                    fs.outputFileSync(chunkPath, `import {${otherExport}} from '${pckgName}'; export default ${otherExport};`)
+
+                    importExtStr += `\nconst load_${otherExportStripped} = async () => { \n`;
+                    importExtStr += `   const chunk = await import('${normalizePath(chunkPath)}');\n`;
+                    importExtStr += `   ${cromwellStoreModulesPath}['${pckgName}']['${otherExport}'] = chunk.default || chunk; }`;
+
+                    importExtStr += `\nimporter.imports['${pckgName}']['${otherExport}'] = load_${otherExportStripped};`
+                    importExtStr += `\nimporter.importStatuses['${pckgName}'] = 'ready';`
+                });
+                importExtStr += `\nimporter.imports['${pckgName}']['default'] = async () => { const chunk = await import('${pckgName}'); ${cromwellStoreModulesPath}['${pckgName}']['default'] = chunk.default || chunk; };`
+            }
         });
+
 
         let importDefaultStr = '';
         // Make imports for standard always-packaged externals.
@@ -174,7 +196,6 @@ const devGenerate = async (themeName: string, options) => {
 
         const pageImports = `
          import { getModuleImporter } from '@cromwell/core-frontend';
-         import { getStore } from "@cromwell/core";
          import { checkCMSConfig } from 'build/renderer';
          ${pageInfo.name !== '_document' ? `
          import { getPage, createGetStaticPaths, createGetStaticProps } from 'build/renderer';
@@ -182,8 +203,7 @@ const devGenerate = async (themeName: string, options) => {
  
          checkCMSConfig();
          
-         getModuleImporter();
-         const CromwellStore = getStore();
+         const importer = getModuleImporter();
  
          ${importDefaultStr}
          ${importExtStr}
@@ -197,8 +217,7 @@ const devGenerate = async (themeName: string, options) => {
          import '${depsBundlePath}';
          ` : ''}
 
-
-         import ${pageDynamicImportName} from '${pageRelativePath}';
+         import ${pageInfo.compName} from '${pageRelativePath}';
  
          ${!disableSSR && pageRelativePath ? `
          const pageServerModule = require('${pageRelativePath}');
@@ -219,7 +238,7 @@ const devGenerate = async (themeName: string, options) => {
         };
          ` : ''}
  
-         export default getPage('${pageInfo.name}', ${pageDynamicImportName});
+         export default getPage('${pageInfo.name}', ${pageInfo.compName});
          `;
 
         if (!pageInfo.path && pageInfo.fileContent) {
