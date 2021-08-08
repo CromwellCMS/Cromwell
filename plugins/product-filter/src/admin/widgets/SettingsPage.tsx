@@ -1,10 +1,10 @@
-import { PluginSettingsLayout } from '@cromwell/admin-panel';
+import { PluginSettingsLayout, TextFieldWithTooltip } from '@cromwell/admin-panel';
 import { TPluginSettingsProps } from '@cromwell/core';
 import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 import React from 'react';
 
-import { defaultSettings } from '../constants';
-import { TProductFilterSettings } from '../types';
+import { defaultSettings } from '../../constants';
+import { TProductFilterSettings } from '../../types';
 
 export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>) {
     return (
@@ -15,6 +15,12 @@ export function SettingsPage(props: TPluginSettingsProps<TProductFilterSettings>
                 const mobileCollapsedByDefault = pluginSettings?.mobileCollapsedByDefault ?? defaultSettings.mobileCollapsedByDefault;
                 return (
                     <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <TextFieldWithTooltip label="List ID"
+                            tooltipText="ID of a CList component on the page. See in the source code of a Theme or ask its author"
+                            value={pluginSettings?.listId ?? ''}
+                            style={{ marginBottom: '15px', marginRight: '15px', maxWidth: '150px' }}
+                            onChange={e => changeSetting('listId', e.target.value)}
+                        />
                         <h3 style={{ marginBottom: '15px' }}>Mobile icon position (in pixels):</h3>
                         <TextField label="Top"
                             value={mobileIconPosition.top}

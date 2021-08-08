@@ -1,16 +1,8 @@
-import { TBackendModule, registerAction, getLogger } from '@cromwell/core-backend';
+import { TBackendModule } from '@cromwell/core-backend';
 
-import PluginNewsletterController from './controllers/PluginNewsletterController';
-import PluginNewsletter from './entities/PluginNewsletter';
-import PluginNewsletterResolver from './resolvers/PluginNewsletterResolver';
-
-// registerAction({
-//     pluginName: "@cromwell/plugin-newsletter",
-//     actionName: 'update_post',
-//     action: async (payload) => {
-//          getLogger().warn('Update post: ' + JSON.stringify(payload));
-//     }
-// })
+import PluginNewsletterController from './controllers/plugin-newsletter.controller';
+import PluginNewsletter from './entities/newsletter-form.entity';
+import PluginNewsletterResolver from './resolvers/plugin-newsletter.resolver';
 
 const backendModule: TBackendModule = {
     controllers: [PluginNewsletterController],

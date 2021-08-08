@@ -4,8 +4,8 @@ import { getGraphQLClient } from '@cromwell/core-frontend';
 import { Button } from '@material-ui/core';
 import React, { useState } from 'react';
 
-import { NewsletterForm } from '../types';
-import { useStyles } from './styles';
+import { NewsletterForm } from '../../types';
+import { useStyles } from '../styles';
 
 export function SettingsPage(props) {
     const classes = useStyles();
@@ -38,16 +38,12 @@ export function SettingsPage(props) {
 
     return (
         <PluginSettingsLayout {...props} disableSave>
-            {() => (
-                <>
-                    <p>Export all subscribed emails into CSV file</p>
-                    <Button variant="contained" color="primary"
-                        className={classes.saveBtn}
-                        disabled={isLoading}
-                        onClick={exportData}>Export data</Button>
-                    <LoadingStatus isActive={isLoading} />
-                </>
-            )}
+            <p>Export all subscribed emails into CSV file</p>
+            <Button variant="contained" color="primary"
+                className={classes.saveBtn}
+                disabled={isLoading}
+                onClick={exportData}>Export data</Button>
+            <LoadingStatus isActive={isLoading} />
         </PluginSettingsLayout>
     )
 }

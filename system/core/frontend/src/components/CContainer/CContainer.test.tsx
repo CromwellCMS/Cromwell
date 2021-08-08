@@ -10,6 +10,4 @@ describe('CContainer', () => {
 
         await screen.findByText('_test1_');
     });
-
-
 })

@@ -12,14 +12,15 @@ import { pluginListPageInfo } from '../../constants/PageInfos';
 
 export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsProps<TSettings>
     & {
-        children: (options: {
+        children: React.ReactNode | ((options: {
             pluginSettings: TSettings | undefined;
             setPluginSettings: (settings: TSettings) => void;
             changeSetting: <T extends keyof TSettings>(key: T, value: TSettings[T]) => void;
             saveSettings: () => Promise<void>;
-        }) => JSX.Element;
+        }) => JSX.Element);
         disableSave?: boolean;
         loading?: boolean;
+        onSave?: (pluginSettings: TSettings) => any | Promise<any>;
     }) {
     const [isLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
@@ -37,6 +38,7 @@ export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsPr
         setIsSaving(true);
         try {
             await apiClient?.savePluginSettings(props.pluginName, pluginSettings);
+            await props.onSave?.(pluginSettings);
             toast.success('Settings saved');
         } catch (error) {
             console.error(error);
@@ -73,12 +75,12 @@ export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsPr
                         >Save</Button>
                     </div>
                     <div className={styles.main}>
-                        {props.children({
+                        {typeof props.children === 'function' ? props.children({
                             pluginSettings,
                             setPluginSettings,
                             changeSetting,
                             saveSettings: handleSave
-                        })}
+                        }) : props.children ? props.children : null}
                     </div>
                 </div>
             )}

@@ -1,11 +1,21 @@
 import { JwtAuthGuard, Roles, TRequestWithUser } from '@cromwell/core-backend';
-import { Body, Controller, Post, UseGuards, Get, Request, UnauthorizedException } from '@nestjs/common';
+import {
+    Body,
+    Controller,
+    Get,
+    HttpException,
+    HttpStatus,
+    Post,
+    Request,
+    UnauthorizedException,
+    UseGuards,
+} from '@nestjs/common';
 import { ApiBody, ApiForbiddenResponse, ApiOperation, ApiProperty, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { IsNotEmpty } from 'class-validator';
 import { getManager } from 'typeorm';
 
-import PluginNewsletter from '../entities/PluginNewsletter';
+import PluginNewsletter from '../entities/newsletter-form.entity';
 
 
 class PluginNewsletterSubscription {
@@ -32,7 +42,7 @@ class PluginNewsletterController {
     async placeSubscription(@Body() input: PluginNewsletterSubscription): Promise<boolean | undefined> {
         const email = input?.email;
         if (!email || !/\S+@\S+\.\S+/.test(email)) {
-            return false;
+            throw new HttpException(`Invalid email`, HttpStatus.NOT_ACCEPTABLE);
         }
 
         const already = await getManager().findOne(PluginNewsletter, {

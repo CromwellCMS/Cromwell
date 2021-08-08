@@ -47,10 +47,6 @@
     "@types/react-helmet": "^6.1.1",
     "@types/react-router-dom": "^5.1.5"
   },
-  "resolutions": {
-    "prism-react-renderer": "1.1.1",
-    "prismjs": "1.23.0"
-  },
   "browserslist": {
     "production": [
       ">0.5%",

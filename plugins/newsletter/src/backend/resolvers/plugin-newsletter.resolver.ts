@@ -4,7 +4,7 @@ import { UnauthorizedException } from '@nestjs/common';
 import { Authorized, Ctx, Query, Resolver } from 'type-graphql';
 import { getManager } from 'typeorm';
 
-import PluginNewsletter from '../entities/PluginNewsletter';
+import PluginNewsletter from '../entities/newsletter-form.entity';
 
 
 @Resolver(PluginNewsletter)
