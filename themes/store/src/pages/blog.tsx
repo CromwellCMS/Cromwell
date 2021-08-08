@@ -39,13 +39,13 @@ const BlogPage: TCromwellPage<BlogProps> = (props) => {
         list?.updateData();
     }
 
-    const updateList = () => {
-        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
-        list?.updateData();
-    }
+    // const updateList = () => {
+    //     const list = getBlockInstance<TCList>(listId)?.getContentInstance();
+    //     list?.updateData();
+    // }
 
     useEffect(() => {
-        updateList();
+        // updateList();
     }, []);
 
     const handleChangeTags = (event: any, newValue?: (TTag | undefined | string)[]) => {

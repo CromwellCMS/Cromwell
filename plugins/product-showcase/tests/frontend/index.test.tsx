@@ -3,7 +3,7 @@ import React from 'react';
 
 jest.mock('@cromwell/core-frontend', () => {
     return {
-        CGallery: props => props.gallery.slides,
+        CGallery: props => props.gallery?.slides ?? null,
         Link: props => props.children,
     }
 });

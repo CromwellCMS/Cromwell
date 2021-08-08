@@ -6,7 +6,7 @@ const config: Config.InitialOptions = {
     moduleNameMapper: {
         "\\.s?css$": "identity-obj-proxy",
     },
-    silent: false,
+    // silent: false,
     testRegex: "/(tests|src)/.*\\.(test|spec)\\.[jt]sx?$",
     /** for circle ci free plan */
     testTimeout: 10000,

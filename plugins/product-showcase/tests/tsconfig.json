@@ -22,11 +22,6 @@
             "node",
             "jest",
         ],
-        "paths": {
-            "@admin/*": [
-                "../src/admin/*"
-            ],
-        },
     },
     "include": [
         "../**/*.ts",

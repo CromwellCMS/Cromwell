@@ -38,13 +38,13 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
         list?.init();
     }
 
-    const updateList = () => {
-        const list = getBlockInstance<TCList>(listId)?.getContentInstance();
-        list?.updateData();
-    }
+    // const updateList = () => {
+    //     const list = getBlockInstance<TCList>(listId)?.getContentInstance();
+    //     list?.updateData();
+    // }
 
     useEffect(() => {
-        updateList();
+        // updateList();
     });
 
     const handleGetPosts = async (params: TPagedParams<TPost>): Promise<TPagedList<TPost> | undefined> => {

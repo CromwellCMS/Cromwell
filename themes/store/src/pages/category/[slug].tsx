@@ -59,7 +59,7 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
                             <CategorySort listId={listId} />
                         </div>
                     </CContainer>
-                    {category && props.attributes && (
+                    {category && (
                         <CList<TProduct>
                             id={listId}
                             blockRef={(block) => listInst.current = block}
@@ -81,7 +81,7 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
                             disableCaching
                             pageSize={20}
                             scrollContainerSelector={`.${layoutStyles.Layout}`}
-                            firstBatch={props.products ? props.products : undefined}
+                            firstBatch={props.products}
                             loader={async (params) => {
                                 return client?.getProductsFromCategory(category.id, params)
                             }}

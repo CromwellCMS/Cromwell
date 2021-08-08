@@ -19,7 +19,7 @@ jest.mock('@cromwell/core-backend', () => {
     }
 });
 
-import { createPayment } from '../../src/backend/actions/createPayment';
+import { createPayment } from '../../src/backend/actions/create-payment.action';
 
 
 describe('createPayment action', () => {

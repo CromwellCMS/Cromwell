@@ -508,6 +508,7 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                     return { id: source, external: true };
                 }
 
+                // All node_modules are external to leave them to next.js
                 if (isExternalForm(source)) {
                     return { id: source, external: true };
                 }
