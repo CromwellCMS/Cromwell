@@ -62,6 +62,8 @@
   "cromwell": {
     "type": "plugin",
     "title": "Product filter",
+    "author": "CromwellCMS",
+    "image": "https://i.ibb.co/t8MwwwG/plugin-filter-image.png",
     "description": "Adds customizable product filter in a category page",
     "icon": "static/icon_funnel.png",
     "frontendDependencies": [

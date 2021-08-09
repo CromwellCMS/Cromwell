@@ -3,6 +3,9 @@
     width: 700px;
     margin: 0 auto;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
 }
 
 .title {
@@ -25,4 +28,6 @@
     padding: 10px;
     display: inline-block;
     border-radius: 10px;
+    width: auto;
+    margin-bottom: 15px;
 }

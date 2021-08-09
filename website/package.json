@@ -27,6 +27,7 @@
     "@strictsoftware/typedoc-plugin-monorepo": "0.4.2",
     "@svgr/webpack": "^5.5.0",
     "clsx": "^1.1.1",
+    "compare-versions": "^3.6.0",
     "file-loader": "^6.2.0",
     "prism-react-renderer": "^1.2.1",
     "react": "^17.0.1",

@@ -27,6 +27,7 @@ All available properties:
 - **title** - Title of Module to display in Admin panel
 - **excerpt** - Short description about your Module. For example, used in Themes page in Theme cards
 - **description** - Full description about your Module. For example, used when user opens info about Theme.
+- **link** - Link to Plugin's website.
 - **author** - Name of author of Module
 - **authorLink** - Link to the author's website
 - **icon** - Path to an icon, relative to the project root: "static/my-icon.png". For example, used in Plugins page of Admin panel.

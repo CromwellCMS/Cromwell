@@ -226,7 +226,7 @@ ___
 | `dataList?` | `DataType`[] | Array of data to create components for each piece and virtualize. Won't work with "loader" prop |
 | `disableCaching?` | `boolean` | Disable caching of loaded pages from "loader" prop when open a new page by pagination. Caching is working by default |
 | `elements?` | [`TElements`](frontend.md#telements) | - |
-| `firstBatch?` | `TPagedList`<`DataType`\> | First batch / page. Can be used with "loader". Supposed to be used in SSR to prerender page |
+| `firstBatch?` | `TPagedList`<`DataType`\> \| ``null`` | First batch / page. Can be used with "loader". Supposed to be used in SSR to prerender page |
 | `id` | `string` | CromwellBlock id |
 | `isLoading?` | `boolean` | Force to show preloader instead of a list |
 | `listItemProps?` | `ListItemProps` | Prop object to pass for each component in a list |
@@ -879,7 +879,7 @@ Get CentralServerClient instance from global store (singleton)
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:200](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L200)
+[system/core/frontend/src/api/CentralServerClient.ts:209](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L209)
 
 ___
 
@@ -1000,7 +1000,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/helpers/importer.ts:451](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/helpers/importer.ts#L451)
+[system/core/frontend/src/helpers/importer.ts:449](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/helpers/importer.ts#L449)
 
 ___
 

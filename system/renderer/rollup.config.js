@@ -1,25 +1,9 @@
+import { isExternalForm } from '@cromwell/core-backend';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import typescript from 'rollup-plugin-ts-compiler';
-import packageJson from './package.json';
 
 const { resolve } = require('path');
-
-const external = id => {
-    const exts = ['tslib', 'util', 'path'];
-
-    if (id.includes('.cromwell/imports') || id.includes('cromwell/plugins')
-        || id.includes('cromwell/themes'))
-        return true;
-
-    for (const ext of exts) if (id === ext) return true;
-
-    for (const pack of Object.keys(packageJson.dependencies)) {
-        if (id === pack) {
-            return true;
-        }
-    }
-}
 
 const buildDir = 'build';
 
@@ -45,7 +29,7 @@ export default [
                 format: "esm",
             }
         ],
-        external,
+        external: isExternalForm,
         plugins: [
             typescript(typescriptOptions),
             commonjs(),
@@ -60,7 +44,7 @@ export default [
                 format: "cjs",
             }
         ],
-        external,
+        external: isExternalForm,
         plugins: [
             typescript(typescriptOptions),
             commonjs(),
@@ -74,7 +58,7 @@ export default [
                 format: "cjs",
             }
         ],
-        external,
+        external: isExternalForm,
         plugins: [
             typescript(typescriptOptions),
             commonjs(),

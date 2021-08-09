@@ -60,6 +60,8 @@
   "cromwell": {
     "type": "plugin",
     "title": "Main menu",
+    "author": "CromwellCMS",
+    "image": "https://i.ibb.co/KstxKCJ/plugin-menu-image.png",
     "description": "Adds a navigation menu for web-site header or sidebar",
     "icon": "static/icon_menu.png",
     "frontendDependencies": [

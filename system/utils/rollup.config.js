@@ -1,23 +1,8 @@
 import typescript from "rollup-plugin-ts-compiler";
-import packageJson from './package.json';
 import { resolve } from 'path';
 import fs from 'fs-extra';
 import json from '@rollup/plugin-json';
-
-const external = id => {
-    const exts = ['util', 'path', 'colors/safe', 'webpack', 'webpack/lib/ExternalModuleFactoryPlugin'];
-    for (const ext of exts) if (id === ext) return true;
-    for (const pack of Object.keys(packageJson.dependencies)) {
-        if (id === pack) {
-            return true;
-        }
-    }
-    for (const pack of Object.keys(packageJson.devDependencies)) {
-        if (id === pack) {
-            return true;
-        }
-    }
-}
+import { isExternalForm } from '@cromwell/core-backend';
 
 const buildDir = 'build';
 
@@ -31,7 +16,7 @@ const options = [
                 format: "cjs",
             }
         ],
-        external,
+        external: isExternalForm,
         plugins: [
             typescript({
                 compilerOptions: {
@@ -57,7 +42,7 @@ if (fs.pathExistsSync(bundlerPath)) {
                 format: "cjs",
             }
         ],
-        external,
+        external: isExternalForm,
         plugins: [
             typescript({
                 compilerOptions: {

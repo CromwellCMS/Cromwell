@@ -1,32 +1,10 @@
+import { isExternalForm } from '@cromwell/core-backend';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import fs from 'fs-extra';
 import { resolve } from 'path';
 import typescript from 'rollup-plugin-ts-compiler';
-import packageJson from './package.json';
-
-const external = id => {
-    const exts = ['tslib', 'util', 'path'];
-
-    for (const ext of exts) if (id === ext) return true;
-
-    if (id.includes('.cromwell/imports') || id.includes('cromwell/plugins')
-        || id.includes('cromwell/themes'))
-        return true;
-
-    for (const pack of Object.keys(packageJson.dependencies)) {
-        if (id === pack) {
-            return true;
-        }
-    }
-
-    for (const pack of Object.keys(packageJson.devDependencies)) {
-        if (id === pack) {
-            return true;
-        }
-    }
-}
 
 const buildDir = 'build';
 
@@ -38,6 +16,11 @@ const compilerOptions = {
     declarationMap: true,
     declarationDir: resolve(__dirname, buildDir, 'types')
 };
+const tsOptions = {
+    monorepo: true,
+    compilerOptions,
+    sharedState,
+}
 
 export default [
     {
@@ -50,13 +33,9 @@ export default [
                 format: "cjs",
             }
         ],
-        external,
+        external: isExternalForm,
         plugins: [
-            typescript({
-                sharedState,
-                compilerOptions,
-                monorepo: true,
-            }),
+            typescript(tsOptions),
             json(),
             nodeResolve({
                 preferBuiltins: false
@@ -74,13 +53,9 @@ export default [
                 format: "cjs",
             }
         ],
-        external,
+        external: isExternalForm,
         plugins: [
-            typescript({
-                sharedState,
-                compilerOptions,
-                monorepo: true,
-            }),
+            typescript(tsOptions),
             json(),
             nodeResolve({
                 preferBuiltins: false

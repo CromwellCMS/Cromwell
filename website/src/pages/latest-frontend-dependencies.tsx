@@ -4,6 +4,7 @@ import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
 import Layout from '@theme/Layout';
 import React, { useEffect, useState } from 'react';
+import compareVersions from 'compare-versions';
 
 import styles from './latest-frontend-dependencies.module.css';
 
@@ -12,27 +13,47 @@ export default function FrontendDependencies() {
     const client = getCentralServerClient();
 
     const [expanded, setExpanded] = React.useState(false);
-    const handleExpandClick = () => {
-        setExpanded(!expanded);
-    };
-
+    const [cmsVersions, setCmsVersions] = React.useState<string[]>([]);
+    const [pickedVersion, setPickedVersion] = React.useState<string | undefined>();
     const [dependencies, setDependencies] = useState<{
         name: string;
         version: string;
     }[]>([]);
 
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+    };
+
     useEffect(() => {
         (async () => {
-            const deps = await client.getFrontendDependenciesList();
-            setDependencies(Object.keys(deps?.latestVersions ?? {}).map(pckg => ({
-                name: pckg,
-                version: (deps?.latestVersions ?? {})[pckg],
-            })))
+            const versions = (await client.getFrontendDependenciesBindings())
+                .filter(compareVersions.validate)
+                .sort(compareVersions).reverse();
+
+            setCmsVersions(versions);
+            const latest = versions[0];
+            setPickedVersion(latest);
+
+            await getDependencies(latest);
         })();
     }, []);
 
 
+    const getDependencies = async (version: string) => {
+        const deps = await client.getFrontendDependenciesList(version);
+        setDependencies(Object.keys(deps?.latestVersions ?? {}).map(pckg => ({
+            name: pckg,
+            version: (deps?.latestVersions ?? {})[pckg],
+        })))
+    }
+
     const getDepName = (option) => `${option.name}: "${option.version}"`;
+
+    const changeCmsVersion = async (version: string) => {
+        setPickedVersion(version);
+        setDependencies([]);
+        await getDependencies(version);
+    }
 
     return (
         <Layout
@@ -41,15 +62,32 @@ export default function FrontendDependencies() {
         >
             <div className={styles.content}>
                 <h1 className={styles.title}>Latest Frontend dependencies</h1>
-                <div
-                    className={styles.searchBox}
-                >
+                <div className={styles.searchBox} >
                     <Autocomplete
                         id="cms-versions"
+                        options={cmsVersions ?? ['']}
+                        value={pickedVersion ?? ''}
+                        onChange={(event, value) => changeCmsVersion(value)}
+                        getOptionLabel={ver => ver}
+                        style={{ width: 300 }}
+                        renderInput={(params) =>
+                            <TextField {...params}
+                                label="Pick CMS version"
+                                variant="outlined"
+                            />}
+                    />
+                </div>
+                <div className={styles.searchBox}>
+                    <Autocomplete
+                        id="dependencies-versions"
                         options={dependencies}
                         getOptionLabel={getDepName}
                         style={{ width: 300 }}
-                        renderInput={(params) => <TextField {...params} label="Search..." variant="outlined" />}
+                        renderInput={(params) =>
+                            <TextField {...params}
+                                label="Search dependencies..."
+                                variant="outlined"
+                            />}
                     />
                 </div>
                 <div className={styles.listHeader} onClick={handleExpandClick}>

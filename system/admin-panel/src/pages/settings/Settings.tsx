@@ -28,6 +28,7 @@ import {
     Store as StoreIcon,
 } from '@material-ui/icons';
 import clsx from 'clsx';
+import { HelpOutline as HelpOutlineIcon } from '@material-ui/icons';
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
@@ -207,6 +208,7 @@ class SettingsPage extends React.Component<any, {
         title: string;
         content: JSX.Element;
         icon: JSX.Element;
+        link?: string;
     }) => {
         const isExpanded = !!this.state.expandedItems[props.title];
 
@@ -222,18 +224,30 @@ class SettingsPage extends React.Component<any, {
                         }
                     })}
                 >
-                    <IconButton
-                        className={clsx(styles.expand, {
-                            [styles.expandOpen]: isExpanded,
-                        })}
-                        aria-expanded={isExpanded}
-                    >
-                        <ExpandMoreIcon />
-                    </IconButton>
-                    <div className={styles.categoryIcon}>
-                        {props.icon}
+                    <div className={styles.categoryLeft}>
+                        <IconButton
+                            className={clsx(styles.expand, {
+                                [styles.expandOpen]: isExpanded,
+                            })}
+                            aria-expanded={isExpanded}
+                        >
+                            <ExpandMoreIcon />
+                        </IconButton>
+                        <div className={styles.categoryIcon}>
+                            {props.icon}
+                        </div>
+                        <p className={styles.categoryTitle}>{props.title}</p>
                     </div>
-                    <p className={styles.categoryTitle}>{props.title}</p>
+                    <div>
+                        {props.link && (
+                            <Tooltip title="Documentation">
+                                <IconButton
+                                    onClick={() => window.open(props.link, '_blank')}>
+                                    <HelpOutlineIcon />
+                                </IconButton>
+                            </Tooltip>
+                        )}
+                    </div>
                 </div>
                 <Collapse in={isExpanded} timeout="auto" unmountOnExit>
                     <div className={styles.categoryContent}>
@@ -463,6 +477,7 @@ class SettingsPage extends React.Component<any, {
 
                     {this.makeCategory({
                         title: 'Emailing settings',
+                        link: 'https://cromwellcms.com/docs/features/mail',
                         icon: <EmailIcon />,
                         content: (
                             <>
@@ -525,6 +540,7 @@ class SettingsPage extends React.Component<any, {
                     {this.makeCategory({
                         title: 'Migration',
                         icon: <ImportExportIcon />,
+                        link: 'https://cromwellcms.com/docs/features/migration',
                         content: (
                             <Grid item xs={12} >
                                 <p>Pick tables to export:</p>
@@ -575,10 +591,10 @@ class SettingsPage extends React.Component<any, {
                     onClose={() => this.setState({ cmsInfoOpen: false })}
                 >
                     <div className={styles.cmsInfo}>
-                        <h4>System packages</h4>
+                        <h4 className={styles.cmsInfoHeader}>System packages</h4>
                         {Object.entries(settings?.cmsInfo?.packages ?? {})
                             .sort((a, b) => a[0] < b[0] ? -1 : 1).map(pckg => (
-                                <p key={pckg[0]}>{pckg[0]}: v.{pckg[1]}</p>
+                                <p key={pckg[0]}>{pckg[0]}: {pckg[1]}</p>
                             ))}
                     </div>
                 </Modal>

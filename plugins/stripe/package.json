@@ -48,6 +48,7 @@
     "type": "plugin",
     "icon": "static/stripe-icon.png",
     "title": "Stripe integration",
+    "link": "https://cromwellcms.com/docs/features/payments",
     "excerpt": "Integration of Stripe payments into your online store",
     "description": "Integration of Stripe payments into your online store",
     "author": "CromwellCMS"

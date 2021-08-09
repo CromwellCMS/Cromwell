@@ -7,8 +7,8 @@ module.exports = {
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/logo_icon_white.png',
-  organizationName: 'CromwellCMS',
-  projectName: 'CromwellCMS',
+  organizationName: 'Cromwell CMS',
+  projectName: 'Cromwell CMS',
   themeConfig: {
     prism: {
       theme: {
@@ -29,7 +29,7 @@ module.exports = {
     navbar: {
       title: 'Cromwell CMS',
       logo: {
-        alt: 'CromwellCMS Logo',
+        alt: 'Cromwell CMS Logo',
         src: 'img/logo_icon.png',
         srcDark: 'img/logo_icon_white.png',
       },
@@ -71,7 +71,7 @@ module.exports = {
           items: [
             {
               label: 'Discord',
-              href: 'https://github.com/CromwellCMS/Cromwell/issues'
+              href: 'https://github.com/CromwellCMS/Cromwell'
             },
             {
               label: 'Issues',
@@ -97,7 +97,7 @@ module.exports = {
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} CromwellCMS`,
+      copyright: `Copyright © ${new Date().getFullYear()} Cromwell CMS`,
     },
   },
   presets: [

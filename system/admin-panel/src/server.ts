@@ -10,6 +10,7 @@ import {
     getPublicDir,
     readCMSConfigSync,
 } from '@cromwell/core-backend';
+import { getRestAPIClient } from '@cromwell/core-frontend';
 import { downloader } from '@cromwell/utils';
 import compress from 'compression';
 import fastify from 'fastify';
@@ -20,7 +21,6 @@ import normalizePath from 'normalize-path';
 import { resolve } from 'path';
 import symlinkDir from 'symlink-dir';
 import yargs from 'yargs-parser';
-import { getRestAPIClient } from '../../core/frontend/es/_index';
 
 
 const start = async () => {

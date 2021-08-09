@@ -5,6 +5,7 @@ import {
     AddCircleOutline as AddCircleOutlineIcon,
     Close as CloseIcon,
     Delete as DeleteIcon,
+    InfoOutlined as InfoIcon,
     LibraryAdd as LibraryAddIcon,
     Settings as SettingsIcon,
     Update as UpdateIcon,
@@ -12,13 +13,14 @@ import {
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
-import Modal from '../../components/modal/Modal';
+import MarketModal from '../../components/market/MarketModal';
 import { askConfirmation } from '../../components/modal/Confirmation';
+import Modal from '../../components/modal/Modal';
 import { SkeletonPreloader } from '../../components/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
-import { pluginPageInfo, pluginMarketPageInfo } from '../../constants/PageInfos';
+import { pluginMarketPageInfo, pluginPageInfo } from '../../constants/PageInfos';
+import { loadPlugin, loadPlugins } from '../../helpers/loadPlugins';
 import commonStyles from '../../styles/common.module.scss';
-import { loadPlugins, loadPlugin } from '../../helpers/loadPlugins';
 import styles from './PluginList.module.scss';
 
 
@@ -26,6 +28,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
     isLoading: boolean;
     pluginPackages: TPackageCromwellConfig[];
     installedPlugins: TPluginEntity[];
+    openedPlugin?: TPackageCromwellConfig;
     updateModalInfo?: {
         update: TCCSVersion;
         plugin: TPluginEntity;
@@ -262,6 +265,13 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                             </Grid>
                         </div>
                         <div className={styles.actions}>
+                            <Tooltip title="Info">
+                                <IconButton
+                                    disabled={isUnderUpdate}
+                                    onClick={() => this.setState({ openedPlugin: info })}>
+                                    <InfoIcon />
+                                </IconButton>
+                            </Tooltip>
                             {availableUpdate && !isUnderUpdate && pluginEntity && (
                                 <Tooltip title="Update">
                                     <IconButton onClick={() => this.startUpdate(pluginEntity)}>
@@ -315,6 +325,20 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
                         onStartUpdate={this.startUpdate}
                         onClose={() => this.setState({ updateModalInfo: null })}
                     />
+                </Modal>
+                <Modal
+                    open={!!this.state.openedPlugin}
+                    blurSelector="#root"
+                    className={commonStyles.center}
+                    onClose={() => this.setState({ openedPlugin: undefined })}
+                >
+                    {this.state?.openedPlugin && (
+                        <MarketModal
+                            installedModules={this.state?.installedPlugins ?? []}
+                            data={this.state.openedPlugin}
+                            noInstall
+                        />
+                    )}
                 </Modal>
             </div>
         )

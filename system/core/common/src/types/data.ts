@@ -366,6 +366,7 @@ export type TPackageCromwellConfig = {
     /** Minimal CMS version since when this module available to install */
     minCmsVersion?: string;
     title?: string;
+    link?: string;
     author?: string;
     authorLink?: string;
     excerpt?: string;
@@ -503,8 +504,9 @@ export type TCCSModuleInfo = {
     packageVersion: string;
     betaVersion: string;
     betaPackageVersion: string;
+    link?: string;
     author: string;
-    authorLink: string;
+    authorLink?: string;
     slug?: string;
     title?: string;
     description?: string;

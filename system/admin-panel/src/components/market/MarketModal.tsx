@@ -1,13 +1,14 @@
 import { TCCSModuleInfo, TPackageCromwellConfig } from '@cromwell/core';
 import { CGallery } from '@cromwell/core-frontend';
-import { Badge, Button, Typography } from '@material-ui/core';
+import { Badge, Button, Typography, Tooltip, IconButton } from '@material-ui/core';
 import React, { useState } from 'react';
+import { HelpOutline as HelpOutlineIcon } from '@material-ui/icons';
 
 import styles from './MarketModal.module.scss';
 
 export default function MarketModal(props: {
     data: TCCSModuleInfo | TPackageCromwellConfig;
-    installedModules: TPackageCromwellConfig[];
+    installedModules?: TPackageCromwellConfig[];
     noInstall?: boolean;
     install?: (info: TCCSModuleInfo | TPackageCromwellConfig) => Promise<boolean>;
 }) {
@@ -36,6 +37,14 @@ export default function MarketModal(props: {
                     <p className={styles.version}>{data?.version ?? ''} by {data?.author ?? ''}</p>
                 </div>
                 <div>
+                    {data?.link && (
+                        <Tooltip title="Documentation">
+                            <IconButton
+                                onClick={() => window.open(data.link, '_blank')}>
+                                <HelpOutlineIcon />
+                            </IconButton>
+                        </Tooltip>
+                    )}
                     {!props.noInstall && (
                         <Button
                             disabled={installed || installing}
