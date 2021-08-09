@@ -1,18 +1,15 @@
 
 /** @type {import('@docusaurus/types').DocusaurusConfig} */
 module.exports = {
-  title: 'My Site',
+  title: 'Cromwell CMS',
   url: 'https://cromwellcms.com',
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/logo_icon_white.png',
-  organizationName: 'CromwellCMS',
-  projectName: 'CromwellCMS',
+  organizationName: 'Cromwell CMS',
+  projectName: 'Cromwell CMS',
   themeConfig: {
-    colorMode: {
-      defaultMode: 'dark',
-    },
     prism: {
       theme: {
         "plain": {
@@ -21,11 +18,18 @@ module.exports = {
         },
         "styles": []
       },
+      darkTheme: {
+        "plain": {
+          "color": "#d4d4d4",
+          "backgroundColor": "#1e1e1e"
+        },
+        "styles": []
+      }
     },
     navbar: {
-      title: 'My Site',
+      title: 'Cromwell CMS',
       logo: {
-        alt: 'CromwellCMS Logo',
+        alt: 'Cromwell CMS Logo',
         src: 'img/logo_icon.png',
         srcDark: 'img/logo_icon_white.png',
       },
@@ -67,7 +71,7 @@ module.exports = {
           items: [
             {
               label: 'Discord',
-              href: 'https://github.com/CromwellCMS/Cromwell/issues'
+              href: 'https://github.com/CromwellCMS/Cromwell'
             },
             {
               label: 'Issues',
@@ -86,10 +90,14 @@ module.exports = {
               label: 'GitHub',
               href: 'https://github.com/CromwellCMS/Cromwell',
             },
+            {
+              label: 'Contacts',
+              href: '/contacts'
+            }
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} CromwellCMS`,
+      copyright: `Copyright © ${new Date().getFullYear()} Cromwell CMS`,
     },
   },
   presets: [
@@ -98,6 +106,7 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          // editUrl: 'https://github.com/CromwellCMS/Cromwell/edit/master/website/blog/',
           sidebarItemsGenerator: async function ({
             defaultSidebarItemsGenerator,
             ...args
@@ -203,17 +212,16 @@ module.exports = {
               return item;
             });
           },
-          // editUrl: 'https://github.com/CromwellCMS/Cromwell/edit/master/website/docs/',
         },
         blog: {
           showReadingTime: true,
-          // editUrl: 'https://github.com/CromwellCMS/Cromwell/edit/master/website/blog/',
+          // editUrl: 'https://github.com/CromwellCMS/Cromwell/edit/master/website/docs/',
         },
         theme: {
           customCss: [
-            require.resolve('./src/css/custom.css'),
             require.resolve('./src/css/syntax-highlight.css'),
-          ]
+            require.resolve('./src/css/custom.css'),
+          ],
         },
       },
     ],

@@ -229,7 +229,7 @@ export class CGallery extends React.Component<TCGalleryProps> {
         return (
             <>
                 {galleryJsx}
-                {gallerySettings?.thumbs && gallerySettings?.images?.length && (
+                {!!(gallerySettings?.thumbs && gallerySettings?.images?.length) && (
                     <Thumbs
                         thumbsId={this.thumbsId}
                         gallerySettings={gallerySettings}

@@ -1,22 +1,31 @@
-const prismIncludeLanguages = (PrismObject) => {
+/**
+ * Copyright (c) Facebook, Inc. and its affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+import ExecutionEnvironment from '@docusaurus/ExecutionEnvironment';
+import siteConfig from '@generated/docusaurus.config';
 
-  if (typeof window !== 'undefined') {
+const prismIncludeLanguages = (PrismObject) => {
+  if (ExecutionEnvironment.canUseDOM) {
+    const {
+      themeConfig: { prism: { additionalLanguages = [] } = {} },
+    } = siteConfig;
     window.Prism = PrismObject;
+    additionalLanguages.forEach((lang) => {
+      require(`prismjs/components/prism-${lang}`); // eslint-disable-line
+    });
 
     require(`prismjs/components/prism-bash`);
     require("prismjs/plugins/command-line/prism-command-line")
     require("prismjs/plugins/command-line/prism-command-line.css")
 
-    delete PrismObject.languages.javascript;
-    delete PrismObject.languages.typescript;
     delete PrismObject.languages.jsx;
+    delete PrismObject.languages.typescript;
     delete PrismObject.languages.tsx;
-
-    require(`prismjs/components/prism-javascript`);
-    // require(`prismjs/components/prism-js-extras`);
-
+    require(`prismjs/components/prism-js-extras`);
     require('prismjs/components/prism-typescript');
-
 
     (function (Prism) {
       // Taken from prism-js-extras, changed for typescript
@@ -114,7 +123,6 @@ const prismIncludeLanguages = (PrismObject) => {
         }
       });
     }(PrismObject));
-
 
     require(`prismjs/components/prism-jsx`);
     require(`prismjs/components/prism-tsx`);

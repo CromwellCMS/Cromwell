@@ -37,6 +37,7 @@ const settings: TCmsSettings | undefined = getStoreItem('cmsSettings');
 - [TAttributeProductVariant](common.md#tattributeproductvariant)
 - [TAttributeValue](common.md#tattributevalue)
 - [TAuthRole](common.md#tauthrole)
+- [TBaseModuleConfig](common.md#tbasemoduleconfig)
 - [TBasePageEntity](common.md#tbasepageentity)
 - [TBasePageEntityInput](common.md#tbasepageentityinput)
 - [TBlockContentProvider](common.md#tblockcontentprovider)
@@ -239,7 +240,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:401](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L401)
+[system/core/common/src/types/data.ts:408](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L408)
 
 ___
 
@@ -349,6 +350,24 @@ ___
 
 ___
 
+### TBaseModuleConfig
+
+Ƭ **TBaseModuleConfig**: `Object`
+
+Base config for Theme / Plugin in cromwell.config.js
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `rollupConfig?` | () => [`TRollupConfig`](common.md#trollupconfig) \| `Promise`<[`TRollupConfig`](common.md#trollupconfig)\> |
+
+#### Defined in
+
+[system/core/common/src/types/data.ts:207](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L207)
+
+___
+
 ### TBasePageEntity
 
 Ƭ **TBasePageEntity**: `Object`
@@ -408,7 +427,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `author` | `string` |
-| `authorLink` | `string` |
+| `authorLink?` | `string` |
 | `betaPackageVersion` | `string` |
 | `betaVersion` | `string` |
 | `createdAt` | `Date` |
@@ -417,6 +436,7 @@ ___
 | `icon?` | `string` |
 | `image?` | `string` |
 | `images?` | `string`[] |
+| `link?` | `string` |
 | `name` | `string` |
 | `packageName` | `string` |
 | `packageVersion` | `string` |
@@ -428,7 +448,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:491](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L491)
+[system/core/common/src/types/data.ts:498](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L498)
 
 ___
 
@@ -447,7 +467,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:484](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L484)
+[system/core/common/src/types/data.ts:491](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L491)
 
 ___
 
@@ -475,7 +495,7 @@ CCS - Cromwell Central Server
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:471](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L471)
+[system/core/common/src/types/data.ts:478](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L478)
 
 ___
 
@@ -492,7 +512,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:526](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L526)
+[system/core/common/src/types/data.ts:534](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L534)
 
 ___
 
@@ -594,7 +614,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:535](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L535)
+[system/core/common/src/types/data.ts:543](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L543)
 
 ___
 
@@ -735,7 +755,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:414](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L414)
+[system/core/common/src/types/data.ts:421](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L421)
 
 ___
 
@@ -755,7 +775,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:439](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L439)
+[system/core/common/src/types/data.ts:446](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L446)
 
 ___
 
@@ -924,7 +944,7 @@ Internal. Store for reusable Frontend dependencies.
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:288](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L288)
+[system/core/common/src/types/data.ts:292](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L292)
 
 ___
 
@@ -945,7 +965,7 @@ UI Notification service. In Admin panel it's react-toastify, for example.
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:335](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L335)
+[system/core/common/src/types/data.ts:339](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L339)
 
 ___
 
@@ -1049,7 +1069,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:379](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L379)
+[system/core/common/src/types/data.ts:386](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L386)
 
 ___
 
@@ -1105,7 +1125,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:531](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L531)
+[system/core/common/src/types/data.ts:539](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L539)
 
 ___
 
@@ -1138,7 +1158,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:230](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L230)
+[system/core/common/src/types/data.ts:249](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L249)
 
 ___
 
@@ -1173,7 +1193,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:395](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L395)
+[system/core/common/src/types/data.ts:402](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L402)
 
 ___
 
@@ -1201,7 +1221,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:322](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L322)
+[system/core/common/src/types/data.ts:326](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L326)
 
 ___
 
@@ -1224,7 +1244,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:384](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L384)
+[system/core/common/src/types/data.ts:391](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L391)
 
 ___
 
@@ -1249,7 +1269,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:520](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L520)
+[system/core/common/src/types/data.ts:528](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L528)
 
 ___
 
@@ -1382,7 +1402,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:283](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L283)
+[system/core/common/src/types/data.ts:247](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L247)
 
 ___
 
@@ -1401,7 +1421,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:459](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L459)
+[system/core/common/src/types/data.ts:466](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L466)
 
 ___
 
@@ -1489,30 +1509,32 @@ Module info in package.json under "cromwell" property
 
 #### Type declaration
 
-| Name | Type |
-| :------ | :------ |
-| `author?` | `string` |
-| `authorLink?` | `string` |
-| `bundledDependencies?` | `string`[] |
-| `description?` | `string` |
-| `excerpt?` | `string` |
-| `firstLoadedDependencies?` | `string`[] |
-| `frontendDependencies?` | (`string` \| [`TFrontendDependency`](common.md#tfrontenddependency))[] |
-| `icon?` | `string` |
-| `image?` | `string` |
-| `images?` | `string`[] |
-| `name?` | `string` |
-| `packageName?` | `string` |
-| `plugins?` | `string`[] |
-| `tags?` | `string`[] |
-| `themes?` | `string`[] |
-| `title?` | `string` |
-| `type?` | ``"plugin"`` \| ``"theme"`` |
-| `version?` | `string` |
+| Name | Type | Description |
+| :------ | :------ | :------ |
+| `author?` | `string` | - |
+| `authorLink?` | `string` | - |
+| `bundledDependencies?` | `string`[] | - |
+| `description?` | `string` | - |
+| `excerpt?` | `string` | - |
+| `firstLoadedDependencies?` | `string`[] | - |
+| `frontendDependencies?` | (`string` \| [`TFrontendDependency`](common.md#tfrontenddependency))[] | - |
+| `icon?` | `string` | - |
+| `image?` | `string` | - |
+| `images?` | `string`[] | - |
+| `link?` | `string` | - |
+| `minCmsVersion?` | `string` | Minimal CMS version since when this module available to install |
+| `name?` | `string` | - |
+| `packageName?` | `string` | - |
+| `plugins?` | `string`[] | - |
+| `tags?` | `string`[] | - |
+| `themes?` | `string`[] | - |
+| `title?` | `string` | - |
+| `type?` | ``"plugin"`` \| ``"theme"`` | - |
+| `version?` | `string` | - |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:358](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L358)
+[system/core/common/src/types/data.ts:362](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L362)
 
 ___
 
@@ -1536,7 +1558,7 @@ package.json definition with cromwell info
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:345](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L345)
+[system/core/common/src/types/data.ts:349](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L349)
 
 ___
 
@@ -1546,7 +1568,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:260](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L260)
+[system/core/common/src/types/data.ts:279](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L279)
 
 ___
 
@@ -1567,7 +1589,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:237](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L237)
+[system/core/common/src/types/data.ts:256](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L256)
 
 ___
 
@@ -1586,7 +1608,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:426](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L426)
+[system/core/common/src/types/data.ts:433](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L433)
 
 ___
 
@@ -1672,7 +1694,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:308](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L308)
+[system/core/common/src/types/data.ts:312](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L312)
 
 ___
 
@@ -1689,7 +1711,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:232](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L232)
+[system/core/common/src/types/data.ts:251](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L251)
 
 ___
 
@@ -1705,24 +1727,13 @@ ___
 
 ### TPluginConfig
 
-Ƭ **TPluginConfig**: `Object`
+Ƭ **TPluginConfig**: [`TBaseModuleConfig`](common.md#tbasemoduleconfig) & { `adminInputFile?`: `string` ; `backend?`: `string` ; `defaultSettings?`: `any` ; `frontendInputFile?`: `string` ; `frontendModule?`: `string`  }
 
 Plugin module config, part of cromwell.config.js
 
-#### Type declaration
-
-| Name | Type |
-| :------ | :------ |
-| `adminInputFile?` | `string` |
-| `backend?` | `string` |
-| `defaultSettings?` | `any` |
-| `frontendInputFile?` | `string` |
-| `frontendModule?` | `string` |
-| `rollupConfig?` | () => [`TRollupConfig`](common.md#trollupconfig) \| `Promise`<[`TRollupConfig`](common.md#trollupconfig)\> |
-
 #### Defined in
 
-[system/core/common/src/types/data.ts:273](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L273)
+[system/core/common/src/types/data.ts:239](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L239)
 
 ___
 
@@ -1784,7 +1795,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:328](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L328)
+[system/core/common/src/types/data.ts:332](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L332)
 
 ___
 
@@ -1808,7 +1819,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:514](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L514)
+[system/core/common/src/types/data.ts:522](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L522)
 
 ___
 
@@ -2149,7 +2160,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:433](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L433)
+[system/core/common/src/types/data.ts:440](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L440)
 
 ___
 
@@ -2167,7 +2178,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:301](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L301)
+[system/core/common/src/types/data.ts:305](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L305)
 
 ___
 
@@ -2204,7 +2215,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:408](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L408)
+[system/core/common/src/types/data.ts:415](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L415)
 
 ___
 
@@ -2230,28 +2241,13 @@ ___
 
 ### TThemeConfig
 
-Ƭ **TThemeConfig**: `Object`
+Ƭ **TThemeConfig**: [`TBaseModuleConfig`](common.md#tbasemoduleconfig) & { `defaultPages?`: `Record`<[`TDefaultPageName`](common.md#tdefaultpagename), `string`\> ; `footerHtml?`: `string` ; `globalCss?`: `string`[] ; `globalModifications?`: [`TCromwellBlockData`](common.md#tcromwellblockdata)[] ; `headHtml?`: `string` ; `pages?`: [`TPageConfig`](common.md#tpageconfig)[] ; `palette?`: [`TPalette`](common.md#tpalette) ; `themeCustomConfig?`: `Record`<`string`, `any`\> ; `nextConfig?`: () => `any`  }
 
 Theme module config, part of cromwell.config.js
 
-#### Type declaration
-
-| Name | Type | Description |
-| :------ | :------ | :------ |
-| `defaultPages?` | `Record`<[`TDefaultPageName`](common.md#tdefaultpagename), `string`\> | Mapping of default CMS pages to theme's components. Such as { category: "category/[slug]" } |
-| `footerHtml?` | `string` | Custom HTML to add to the end of every page |
-| `globalCss?` | `string`[] | Global CSS files to import from node_modules |
-| `globalModifications?` | [`TCromwellBlockData`](common.md#tcromwellblockdata)[] | Modifications to apply on all pages |
-| `headHtml?` | `string` | Custom HTML to add into head of every page |
-| `pages?` | [`TPageConfig`](common.md#tpageconfig)[] | Pages' description and modifications |
-| `palette?` | [`TPalette`](common.md#tpalette) | Colors to use |
-| `themeCustomConfig?` | `Record`<`string`, `any`\> | Custom config that will be available at every page in the Store inside pageConfig props |
-| `nextConfig?` | () => `any` | - |
-| `rollupConfig?` | () => [`TRollupConfig`](common.md#trollupconfig) \| `Promise`<[`TRollupConfig`](common.md#trollupconfig)\> | - |
-
 #### Defined in
 
-[system/core/common/src/types/data.ts:207](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L207)
+[system/core/common/src/types/data.ts:215](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L215)
 
 ___
 
@@ -2321,7 +2317,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:447](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L447)
+[system/core/common/src/types/data.ts:454](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L454)
 
 ___
 

@@ -1,14 +1,17 @@
 import { TPluginSettingsProps } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
-import { Button, IconButton } from '@material-ui/core';
+import { Button, IconButton, Tooltip } from '@material-ui/core';
+import { ArrowBack, InfoOutlined as InfoIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
-import { toast } from '../../components/toast/toast';
 import { Link } from 'react-router-dom';
-import { ArrowBack } from '@material-ui/icons';
 
-import LoadBox from '../loadBox/LoadBox';
-import styles from './PluginSettingsLayout.module.scss';
+import { toast } from '../../components/toast/toast';
 import { pluginListPageInfo } from '../../constants/PageInfos';
+import commonStyles from '../../styles/common.module.scss';
+import LoadBox from '../loadBox/LoadBox';
+import MarketModal from '../market/MarketModal';
+import Modal from '../modal/Modal';
+import styles from './PluginSettingsLayout.module.scss';
 
 export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsProps<TSettings>
     & {
@@ -24,8 +27,10 @@ export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsPr
     }) {
     const [isLoading] = useState(false);
     const [isSaving, setIsSaving] = useState(false);
+    const [infoOpen, setInfoOpen] = useState(false);
     const [pluginSettings, setPluginSettings] = useState(props.pluginSettings ?? {} as TSettings);
     const apiClient = getRestAPIClient();
+
 
     const changeSetting = <T extends keyof TSettings>(key: T, value: TSettings[T]) => {
         setPluginSettings(prev => ({
@@ -47,6 +52,10 @@ export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsPr
         setIsSaving(false);
     }
 
+    const toggleOpenInfo = () => {
+        setInfoOpen(!infoOpen);
+    }
+
     return (
         <div className={styles.PluginSettingsLayout}>
             {isLoading || props.loading ? (
@@ -54,25 +63,40 @@ export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsPr
             ) : (
                 <div className={styles.content}>
                     <div className={styles.header}>
-                        <Link to={pluginListPageInfo.route}>
-                            <IconButton >
-                                <ArrowBack />
-                            </IconButton>
-                        </Link>
-                        <div className={styles.headerLeft}>
-                            {props.pluginInfo?.icon && (
-                                <div className={styles.icon}
-                                    style={{ backgroundImage: `url("data:image/png;base64,${props.pluginInfo.icon}")` }}
-                                ></div>
-                            )}
-                            <p className={styles.title}>{props.pluginInfo?.title ?? ''}</p>
-                            <p className={styles.version}>v.{props.pluginInfo?.version ?? ''}</p>
+                        <div style={{ display: 'flex' }}>
+                            <Link to={pluginListPageInfo.route}>
+                                <IconButton
+                                    style={{ marginRight: '10px' }}
+                                >
+                                    <ArrowBack />
+                                </IconButton>
+                            </Link>
+                            <div className={styles.headerLeft}>
+                                {props.pluginInfo?.icon && (
+                                    <div className={styles.icon}
+                                        style={{ backgroundImage: `url("data:image/png;base64,${props.pluginInfo.icon}")` }}
+                                    ></div>
+                                )}
+                                <p className={styles.title}>{props.pluginInfo?.title ?? ''}</p>
+                                <p className={styles.version}>v.{props.pluginInfo?.version ?? ''}</p>
+                            </div>
                         </div>
-                        <Button variant="contained" color="primary"
-                            className={styles.saveBtn}
-                            onClick={handleSave}
-                            disabled={isSaving || props.disableSave}
-                        >Save</Button>
+                        <div >
+                            {props.pluginInfo && (
+                                <Tooltip title="Info">
+                                    <IconButton
+                                        style={{ marginRight: '10px' }}
+                                        onClick={toggleOpenInfo}>
+                                        <InfoIcon />
+                                    </IconButton>
+                                </Tooltip>
+                            )}
+                            <Button variant="contained" color="primary"
+                                className={styles.saveBtn}
+                                onClick={handleSave}
+                                disabled={isSaving || props.disableSave}
+                            >Save</Button>
+                        </div>
                     </div>
                     <div className={styles.main}>
                         {typeof props.children === 'function' ? props.children({
@@ -82,6 +106,19 @@ export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsPr
                             saveSettings: handleSave
                         }) : props.children ? props.children : null}
                     </div>
+                    <Modal
+                        open={infoOpen}
+                        blurSelector="#root"
+                        className={commonStyles.center}
+                        onClose={toggleOpenInfo}
+                    >
+                        {infoOpen && props.pluginInfo && (
+                            <MarketModal
+                                data={props.pluginInfo}
+                                noInstall
+                            />
+                        )}
+                    </Modal>
                 </div>
             )}
         </div >

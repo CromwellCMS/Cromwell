@@ -521,10 +521,6 @@ export const rollupPluginCromwellFrontend = async (settings?: {
 
             if (isExternalForm(source)) {
                 // Other node_modules...
-                if (packageJson.cromwell?.bundledDependencies?.includes(source)) {
-                    // Bundled by Rollup by for Themes and Plugins
-                    return { id: require.resolve(source), external: false };
-                }
 
                 if (source.startsWith('next/')) {
                     // Leave Next.js modules external for the next step 
@@ -536,8 +532,8 @@ export const rollupPluginCromwellFrontend = async (settings?: {
                     return { id: require.resolve(source), external: false };
                 }
 
-                throw new Error(`Found used node_module: ${source} that wasn't declared in package.json 
-                            in frontendDependencies or bundledDependencies. Read more in docs: {@TODO: link}`);
+                // Bundled by Rollup by for Themes and Plugins
+                return { id: require.resolve(source), external: false };
             }
 
             return null;

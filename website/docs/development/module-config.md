@@ -2,7 +2,7 @@
 sidebar_position: 3
 ---
 
-# CMS Module configuration
+# Module configuration
 
 CMS Module is either Theme or Plugin. They both use similar configuration files.
 
@@ -27,11 +27,13 @@ All available properties:
 - **title** - Title of Module to display in Admin panel
 - **excerpt** - Short description about your Module. For example, used in Themes page in Theme cards
 - **description** - Full description about your Module. For example, used when user opens info about Theme.
+- **link** - Link to Plugin's website.
 - **author** - Name of author of Module
 - **authorLink** - Link to the author's website
 - **icon** - Path to an icon, relative to the project root: "static/my-icon.png". For example, used in Plugins page of Admin panel.
 - **image** - Path to main image of Module. Used in Theme card at Themes page. 
-- **images** - Array of paths to additional images. Used when user opens Theme info in pop-up. 
+- **images** - Array of paths to additional images. Used when user opens Theme info in pop-up.
+- **minCmsVersion** - Minimal CMS version since when this module available to install. Exact npm package semver version.
 - **frontendDependencies** - [Frontend dependencies](/docs/development/frontend-dependencies)
 - **firstLoadedDependencies** - [Bundled Frontend dependencies](/docs/development/frontend-dependencies#too-many-requests)
 

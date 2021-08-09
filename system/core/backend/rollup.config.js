@@ -1,6 +1,5 @@
 import { resolve } from 'path';
 import autoExternal from 'rollup-plugin-auto-external';
-import { terser } from 'rollup-plugin-terser';
 import typescript from 'rollup-plugin-ts-compiler';
 
 const input = resolve(__dirname, 'src/_index.ts');

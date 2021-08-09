@@ -44,28 +44,24 @@ export default function NewsletterPlugin(): JSX.Element {
                 <div>
                     <CustomAlert severity="success">Thank you for subscription!</CustomAlert>
                 </div>
-            ) : (
-                    <>
-                        <Tooltip open={canValidate && !validateEmail(email)}
-                            title="Invalid e-mail"
-                            // title={
-                            //     <CustomAlert severity="warning">Invalid e-mail</CustomAlert>
-                            // }
-                            arrow>
-                            <InputBase className={classes.subscribeInput}
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </Tooltip>
-                        <Button
-                            onClick={submit}
-                            variant="contained"
-                            color="primary"
-                            className={classes.subscribeBtn}>Subscribe!</Button>
-                    </>
-                )
-            }
-
+            ) : (<>
+                <Tooltip open={canValidate && !validateEmail(email)}
+                    title="Invalid e-mail"
+                    // title={
+                    //     <CustomAlert severity="warning">Invalid e-mail</CustomAlert>
+                    // }
+                    arrow>
+                    <InputBase className={classes.subscribeInput}
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </Tooltip>
+                <Button
+                    onClick={submit}
+                    variant="contained"
+                    color="primary"
+                    className={classes.subscribeBtn}>Subscribe!</Button>
+            </>)}
         </div >
     )
 }

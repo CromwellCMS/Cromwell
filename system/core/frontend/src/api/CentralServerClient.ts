@@ -123,9 +123,18 @@ export class CentralServerClient {
         return this.get('cms/all-versions');
     }
 
-    async getFrontendDependenciesList() {
+    async getFrontendDependenciesBindings() {
+        const files = await (await this.makeRequestToGitHub(
+            'https://api.github.com/repos/CromwellCMS/bundled-modules/git/trees/master?recursive=1'
+        )).json();
+        return files.tree.filter(file =>
+            file.path.startsWith('versions/') && file.path.endsWith('.json'))
+            .map(file => file.path.replace('.json', '').replace('versions/', ''));
+    }
+
+    async getFrontendDependenciesList(version: string) {
         return await (await this.makeRequestToGitHub(
-            'https://raw.githubusercontent.com/CromwellCMS/bundled-modules/master/list.json'
+            `https://raw.githubusercontent.com/CromwellCMS/bundled-modules/master/versions/${version}.json`
         )).json();
     }
 

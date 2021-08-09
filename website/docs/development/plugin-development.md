@@ -47,7 +47,7 @@ import React from 'react';
 function SettingsPage(props: TPluginSettingsProps) {
   return (
     <div>
-      <h1>Hello Cromwell CMS Admin Panel!</h1>
+      <h1>`Hello Cromwell CMS Admin Panel!`</h1>
       <p>{props.pluginName}</p>
     </div>
   )

@@ -25,6 +25,7 @@ API used to check local CMS updates.
 - [getBaseUrl](frontend.CentralServerClient.md#getbaseurl)
 - [getCmsFullInfo](frontend.CentralServerClient.md#getcmsfullinfo)
 - [getCmsInfo](frontend.CentralServerClient.md#getcmsinfo)
+- [getFrontendDependenciesBindings](frontend.CentralServerClient.md#getfrontenddependenciesbindings)
 - [getFrontendDependenciesList](frontend.CentralServerClient.md#getfrontenddependencieslist)
 - [getPluginAllVersions](frontend.CentralServerClient.md#getpluginallversions)
 - [getPluginFullInfo](frontend.CentralServerClient.md#getpluginfullinfo)
@@ -85,7 +86,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:159](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L159)
+[system/core/frontend/src/api/CentralServerClient.ts:168](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L168)
 
 ___
 
@@ -107,7 +108,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:189](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L189)
+[system/core/frontend/src/api/CentralServerClient.ts:198](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L198)
 
 ___
 
@@ -221,9 +222,9 @@ ___
 
 ___
 
-### getFrontendDependenciesList
+### getFrontendDependenciesBindings
 
-▸ **getFrontendDependenciesList**(): `Promise`<`any`\>
+▸ **getFrontendDependenciesBindings**(): `Promise`<`any`\>
 
 #### Returns
 
@@ -232,6 +233,26 @@ ___
 #### Defined in
 
 [system/core/frontend/src/api/CentralServerClient.ts:126](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L126)
+
+___
+
+### getFrontendDependenciesList
+
+▸ **getFrontendDependenciesList**(`version`): `Promise`<`any`\>
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `version` | `string` |
+
+#### Returns
+
+`Promise`<`any`\>
+
+#### Defined in
+
+[system/core/frontend/src/api/CentralServerClient.ts:135](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L135)
 
 ___
 
@@ -251,7 +272,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:155](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L155)
+[system/core/frontend/src/api/CentralServerClient.ts:164](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L164)
 
 ___
 
@@ -271,7 +292,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:151](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L151)
+[system/core/frontend/src/api/CentralServerClient.ts:160](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L160)
 
 ___
 
@@ -291,7 +312,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:138](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L138)
+[system/core/frontend/src/api/CentralServerClient.ts:147](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L147)
 
 ___
 
@@ -313,7 +334,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:142](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L142)
+[system/core/frontend/src/api/CentralServerClient.ts:151](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L151)
 
 ___
 
@@ -333,7 +354,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:185](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L185)
+[system/core/frontend/src/api/CentralServerClient.ts:194](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L194)
 
 ___
 
@@ -353,7 +374,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:181](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L181)
+[system/core/frontend/src/api/CentralServerClient.ts:190](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L190)
 
 ___
 
@@ -373,7 +394,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:168](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L168)
+[system/core/frontend/src/api/CentralServerClient.ts:177](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L177)
 
 ___
 
@@ -395,7 +416,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CentralServerClient.ts:172](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L172)
+[system/core/frontend/src/api/CentralServerClient.ts:181](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CentralServerClient.ts#L181)
 
 ___
 
