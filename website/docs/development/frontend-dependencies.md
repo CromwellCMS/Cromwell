@@ -4,6 +4,8 @@ sidebar_position: 4
 
 # Frontend Dependencies
 
+[Latest Frontend dependencies](/latest-frontend-dependencies)
+
 ## Motivation
 
 A website can have dozens of Plugins and each of them can have many heavy dependencies (node_modules), especially in modern React development. There are two main problems:

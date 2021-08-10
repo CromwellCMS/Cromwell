@@ -70,7 +70,7 @@
   "cromwell": {
     "type": "plugin",
     "title": "Newsletter",
-    "author": "CromwellCMS",
+    "author": "Cromwell CMS",
     "image": "https://i.ibb.co/C2B4NB1/plugin-newsletter-image.png",
     "description": "Provides a way for web-site visitors to leave their e-mails for newsletter subscription. E-mails can be CSV exported in Admin panel",
     "icon": "static/icon_email.png",

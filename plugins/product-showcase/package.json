@@ -57,7 +57,7 @@
   "cromwell": {
     "type": "plugin",
     "title": "Product showcase",
-    "author": "CromwellCMS",
+    "author": "Cromwell CMS",
     "image": "https://i.ibb.co/bLPZmqz/plugin-showcase-image.png",
     "description": "Adds a carousel with products. On a product page will fetch products from same categories, on other pages - most recent products",
     "icon": "static/icon_showcase.png",

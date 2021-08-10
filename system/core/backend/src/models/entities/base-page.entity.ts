@@ -1,12 +1,13 @@
-import { Entity, BaseEntity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
+import { Entity, BaseEntity, Index, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { Field, ID, ObjectType } from "type-graphql";
 import { TBasePageEntity } from '@cromwell/core';
 
 @Entity()
 @ObjectType()
 export class BasePageEntity extends BaseEntity implements TBasePageEntity {
-    
+
     @Field(() => ID)
+    @Index()
     @PrimaryGeneratedColumn()
     id: string;
 
@@ -23,10 +24,12 @@ export class BasePageEntity extends BaseEntity implements TBasePageEntity {
     pageDescription?: string;
 
     @Field(() => Date)
+    @Index()
     @CreateDateColumn()
     createDate: Date;
 
     @Field(() => Date)
+    @Index()
     @UpdateDateColumn()
     updateDate: Date;
 

@@ -15,15 +15,15 @@
   ],
   "scripts": {
     "build": "node startup.js build",
+    "watch": "npx rollup -cw",
+    "prod": "node startup.js prod",
+    "test": "npx --no-install jest",
     "dev": "node startup.js dev -- --env=dev",
-    "migration:generate:all": "npm run migration:generate:mysql --name=%npm_config_name% && npm run migration:generate:postgres --name=%npm_config_name% && npm run migration:generate:sqlite --name=%npm_config_name%",
-    "migration:generate:all-example": "npm run migration:generate:all --name=init",
     "migration:generate:mysql": "npx typeorm migration:generate -o -f migration-mysql -n %npm_config_name%",
     "migration:generate:postgres": "npx typeorm migration:generate -o -f migration-postgres -n %npm_config_name%",
     "migration:generate:sqlite": "npx typeorm migration:generate -o -f migration-sqlite -n %npm_config_name%",
-    "prod": "node startup.js prod",
-    "test": "npx --no-install jest",
-    "watch": "npx rollup -cw"
+    "migration:generate:all": "npm run migration:generate:mysql --name=%npm_config_name% && npm run migration:generate:postgres --name=%npm_config_name% && npm run migration:generate:sqlite --name=%npm_config_name%",
+    "migration:generate:all-example": "npm run migration:generate:all --name=init"
   },
   "dependencies": {
     "@cromwell/core": "1.1.10",
