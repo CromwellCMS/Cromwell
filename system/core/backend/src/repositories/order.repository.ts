@@ -152,7 +152,6 @@ export class OrderRepository extends BaseRepository<Order> {
         const qb = this.createQueryBuilder(this.metadata.tablePath);
         qb.select();
         this.applyOrderFilter(qb, filterParams);
-        logger.warn(qb.getQueryAndParameters())
         return await getPaged<TOrder>(qb, this.metadata.tablePath, pagedParams);
     }
 

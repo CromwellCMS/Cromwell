@@ -155,10 +155,15 @@ export class MockService {
 
         const cats = await this.productCategoryRepo.find();
 
-        const promises: Promise<TProduct>[] = [];
+        let promises: Promise<TProduct>[] = [];
         const times = amount ?? 50;
 
         for (let i = 0; i < times; i++) {
+            if (promises.length > 200) {
+                await Promise.all(promises);
+                promises = [];
+            }
+
             const mainImage = getRandImg();
             const price = Math.round(Math.random() * 1000)
             const oldPrice = Math.random() > 0.5 ? Math.round(price / Math.random()) : undefined;
@@ -317,12 +322,17 @@ export class MockService {
 
     public async mockReviews(amount?: number) {
         const products = await this.productRepo.find();
-        const promises: Promise<TProductReview>[] = [];
+        let promises: Promise<TProductReview>[] = [];
 
         const maxAmount = amount ?? 100;
         let mockedAmount = 0;
 
         for (const prod of products) {
+            if (promises.length > 200) {
+                await Promise.all(promises);
+                promises = [];
+            }
+
             if (Math.random() < 0.3) continue;
             this.shuffleArray(this.reviewsMock);
             let reviewsNum = Math.floor(Math.random() * this.reviewsMock.length);
@@ -406,9 +416,13 @@ export class MockService {
         const postQuillDelta = '{"ops":[{"insert":"Lorem ipsum dolor sit amet"},{"attributes":{"header":2},"insert":"\\n"},{"insert":"\\nLorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed viverra tellus in hac habitasse platea dictumst vestibulum rhoncus. Ac tortor dignissim convallis aenean et tortor. In iaculis nunc sed augue. Tristique senectus et netus et malesuada fames ac turpis. Fermentum leo vel orci porta non pulvinar neque. In fermentum posuere urna nec tincidunt praesent semper. Massa eget egestas purus viverra. \\nNunc eget lorem dolor sed viverra ipsum nunc aliquet. Praesent semper feugiat nibh sed pulvinar proin. Aliquet porttitor lacus luctus accumsan tortor posuere ac ut consequat. Tortor dignissim convallis aenean et tortor at risus. Sit amet tellus cras adipiscing enim eu turpis. Turpis tincidunt id aliquet risus feugiat. "},{"attributes":{"blockquote":true},"insert":"\\n"},{"insert":"\\nEt odio pellentesque diam volutpat. Imperdiet nulla malesuada pellentesque elit. Libero nunc consequat interdum varius sit amet mattis vulputate enim.\\n\\n"},{"attributes":{"bold":true},"insert":"Integer vitae justo eget magna fermentum iaculis eu. "},{"attributes":{"list":"bullet"},"insert":"\\n"},{"attributes":{"italic":true},"insert":"Fringilla urna porttitor rhoncus dolor. Sapien et ligula ullamcorper malesuada. "},{"attributes":{"list":"bullet"},"insert":"\\n"},{"attributes":{"underline":true},"insert":"Urna nec tincidunt praesent semper feugiat nibh. "},{"attributes":{"list":"bullet"},"insert":"\\n"},{"attributes":{"strike":true},"insert":"Est pellentesque elit ullamcorper dignissim cras tincidunt lobortis. "},{"attributes":{"list":"bullet"},"insert":"\\n"},{"insert":"\\n\\nUrna porttitor rhoncus dolor purus non enim. "},{"attributes":{"header":2},"insert":"\\n"},{"insert":"\\nArcu dui vivamus arcu felis bibendum ut tristique. Tempor orci eu lobortis elementum nibh tellus molestie nunc. Mi proin sed libero enim. Elit pellentesque habitant morbi tristique senectus et netus. Tincidunt eget nullam non nisi est sit amet facilisis. Ipsum dolor sit amet consectetur adipiscing. Fermentum posuere urna nec tincidunt praesent semper feugiat nibh. Turpis egestas integer eget aliquet nibh praesent tristique magna sit. Nibh praesent tristique magna sit amet purus. \\n\\n\\nPulvinar neque laoreet suspendisse interdum consectetur libero id. "},{"attributes":{"header":3},"insert":"\\n"},{"insert":"\\nElit eget gravida cum sociis natoque penatibus et. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi. Varius quam quisque id diam vel quam elementum pulvinar etiam. Lorem ipsum dolor sit amet consectetur adipiscing elit. Potenti nullam ac tortor vitae purus faucibus. Mattis nunc sed blandit libero volutpat. Facilisi nullam vehicula ipsum a. "},{"attributes":{"align":"center"},"insert":"\\n"}]}';
         const postContent = '<div class="editor_jY3Vp ql-container ql-snow ql-disabled" id="editor"><div class="ql-editor" data-gramm="false" contenteditable="false"><h2>Lorem ipsum dolor sit amet</h2><p><br></p><p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Sed viverra tellus in hac habitasse platea dictumst vestibulum rhoncus. Ac tortor dignissim convallis aenean et tortor. In iaculis nunc sed augue. Tristique senectus et netus et malesuada fames ac turpis. Fermentum leo vel orci porta non pulvinar neque. In fermentum posuere urna nec tincidunt praesent semper. Massa eget egestas purus viverra. </p><blockquote>Nunc eget lorem dolor sed viverra ipsum nunc aliquet. Praesent semper feugiat nibh sed pulvinar proin. Aliquet porttitor lacus luctus accumsan tortor posuere ac ut consequat. Tortor dignissim convallis aenean et tortor at risus. Sit amet tellus cras adipiscing enim eu turpis. Turpis tincidunt id aliquet risus feugiat. </blockquote><p><br></p><p>Et odio pellentesque diam volutpat. Imperdiet nulla malesuada pellentesque elit. Libero nunc consequat interdum varius sit amet mattis vulputate enim.</p><p><br></p><ul><li><strong>Integer vitae justo eget magna fermentum iaculis eu. </strong></li><li><em>Fringilla urna porttitor rhoncus dolor. Sapien et ligula ullamcorper malesuada. </em></li><li><u>Urna nec tincidunt praesent semper feugiat nibh. </u></li><li><s>Est pellentesque elit ullamcorper dignissim cras tincidunt lobortis. </s></li></ul><p><br></p><p><br></p><h2>Urna porttitor rhoncus dolor purus non enim. </h2><p><br></p><p>Arcu dui vivamus arcu felis bibendum ut tristique. Tempor orci eu lobortis elementum nibh tellus molestie nunc. Mi proin sed libero enim. Elit pellentesque habitant morbi tristique senectus et netus. Tincidunt eget nullam non nisi est sit amet facilisis. Ipsum dolor sit amet consectetur adipiscing. Fermentum posuere urna nec tincidunt praesent semper feugiat nibh. Turpis egestas integer eget aliquet nibh praesent tristique magna sit. Nibh praesent tristique magna sit amet purus. </p><p><br></p><p><br></p><h3>Pulvinar neque laoreet suspendisse interdum consectetur libero id. </h3><p><br></p><p class="ql-align-center">Elit eget gravida cum sociis natoque penatibus et. Nunc faucibus a pellentesque sit amet porttitor eget dolor morbi. Varius quam quisque id diam vel quam elementum pulvinar etiam. Lorem ipsum dolor sit amet consectetur adipiscing elit. Potenti nullam ac tortor vitae purus faucibus. Mattis nunc sed blandit libero volutpat. Facilisi nullam vehicula ipsum a. </p></div><div class="ql-clipboard" contenteditable="true" tabindex="-1"></div><div class="ql-tooltip ql-hidden"><a class="ql-preview" rel="noopener noreferrer" target="_blank" href="about:blank"></a><input type="text" data-formula="e=mc^2" data-link="https://quilljs.com" data-video="Embed URL"><a class="ql-action"></a><a class="ql-remove"></a></div></div>';
 
-        const promises: Promise<TPost>[] = [];
+        let promises: Promise<TPost>[] = [];
 
         for (let i = 0; i < (amount ?? 15); i++) {
+            if (promises.length > 200) {
+                await Promise.all(promises);
+                promises = [];
+            }
 
             const tagIds: string[] = (await this.tagRepo.getAll()).map(tag => tag.id);
 
@@ -506,7 +520,7 @@ export class MockService {
             },
         ];
 
-        const promises: Promise<any>[] = [];
+        let promises: Promise<any>[] = [];
         // 14 days
         for (let i = 0; i < 14; i++) {
             const dateFrom = new Date(Date.now());
@@ -514,6 +528,11 @@ export class MockService {
 
             // 0 - amount orders a day
             for (let j = 0; j < Math.ceil(Math.random() * (amount ?? 56) / 14); j++) {
+                if (promises.length > 200) {
+                    await Promise.all(promises);
+                    promises = [];
+                }
+
                 const createOrder = async () => {
                     const order = await this.orderRepo.createOrder({
                         ...(this.shuffleArray([...mockedOrders])[0])
@@ -531,8 +550,14 @@ export class MockService {
 
 
     public async mockTags(amount?: number) {
-        const promises: Promise<TTag | void>[] = [];
+        let promises: Promise<TTag | void>[] = [];
+
         for (let i = 0; i < (amount ?? 10); i++) {
+            if (promises.length > 200) {
+                await Promise.all(promises);
+                promises = [];
+            }
+
             promises.push(this.tagRepo.createTag({
                 name: this.getRandomName().split(' ')[0]
             }).then(it => it).catch((e) => { console.error(e); }));
@@ -541,3 +566,5 @@ export class MockService {
         return true;
     }
 }
+
+

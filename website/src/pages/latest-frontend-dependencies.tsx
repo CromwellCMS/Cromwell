@@ -1,7 +1,8 @@
 import { getCentralServerClient } from '@cromwell/core-frontend';
-import { Collapse, IconButton, TextField } from '@material-ui/core';
+import { Collapse, IconButton, TextField, CircularProgress } from '@material-ui/core';
 import { ExpandMore as ExpandMoreIcon } from '@material-ui/icons';
 import { Autocomplete } from '@material-ui/lab';
+import Link from '@docusaurus/Link';
 import Layout from '@theme/Layout';
 import React, { useEffect, useState } from 'react';
 import compareVersions from 'compare-versions';
@@ -13,6 +14,7 @@ export default function FrontendDependencies() {
     const client = getCentralServerClient();
 
     const [expanded, setExpanded] = React.useState(false);
+    const [versionsLoading, setVersionsLoading] = React.useState(false);
     const [cmsVersions, setCmsVersions] = React.useState<string[]>([]);
     const [pickedVersion, setPickedVersion] = React.useState<string | undefined>();
     const [dependencies, setDependencies] = useState<{
@@ -26,6 +28,7 @@ export default function FrontendDependencies() {
 
     useEffect(() => {
         (async () => {
+            setVersionsLoading(true);
             const versions = (await client.getFrontendDependenciesBindings())
                 .filter(compareVersions.validate)
                 .sort(compareVersions).reverse();
@@ -40,11 +43,13 @@ export default function FrontendDependencies() {
 
 
     const getDependencies = async (version: string) => {
+        setVersionsLoading(true);
         const deps = await client.getFrontendDependenciesList(version);
         setDependencies(Object.keys(deps?.latestVersions ?? {}).map(pckg => ({
             name: pckg,
             version: (deps?.latestVersions ?? {})[pckg],
-        })))
+        })));
+        setVersionsLoading(false);
     }
 
     const getDepName = (option) => `${option.name}: "${option.version}"`;
@@ -62,6 +67,9 @@ export default function FrontendDependencies() {
         >
             <div className={styles.content}>
                 <h1 className={styles.title}>Latest Frontend dependencies</h1>
+                <Link
+                    style={{ marginBottom: '25px' }}
+                    href="/docs/development/frontend-dependencies">Documentation</Link>
                 <div className={styles.searchBox} >
                     <Autocomplete
                         id="cms-versions"
@@ -78,17 +86,21 @@ export default function FrontendDependencies() {
                     />
                 </div>
                 <div className={styles.searchBox}>
-                    <Autocomplete
-                        id="dependencies-versions"
-                        options={dependencies}
-                        getOptionLabel={getDepName}
-                        style={{ width: 300 }}
-                        renderInput={(params) =>
-                            <TextField {...params}
-                                label="Search dependencies..."
-                                variant="outlined"
-                            />}
-                    />
+                    {versionsLoading ? (
+                        <CircularProgress />
+                    ) : (
+                        <Autocomplete
+                            id="dependencies-versions"
+                            options={dependencies}
+                            getOptionLabel={getDepName}
+                            style={{ width: 300 }}
+                            renderInput={(params) =>
+                                <TextField {...params}
+                                    label="Search dependencies..."
+                                    variant="outlined"
+                                />}
+                        />
+                    )}
                 </div>
                 <div className={styles.listHeader} onClick={handleExpandClick}>
                     <h3 className={styles.expandTitle}>Expand all</h3>

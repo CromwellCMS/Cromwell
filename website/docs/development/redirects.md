@@ -69,11 +69,11 @@ import { getRestAPIClient } from '@cromwell/core-frontend';
 
 ## Dynamically in Plugins
 
-Another and the most powerful option is to register dynamic redirect/rewrite. You can add it in the [frontend bundle of your Plugin](./plugin-development#frontend):
+Another and the most powerful option is to register dynamic redirect/rewrite rule. You can add it in the [frontend bundle of your Plugin](./plugin-development#frontend):
 ```ts
 import { registerRedirect, registerRewrite } from '@cromwell/core';
 
-registerRedirect('my-plugin-name-redirect', (pathname, search) => {
+registerRedirect('my-plugin-name-redirect-rule', (pathname, search) => {
   // 307 redirect for only one page
   if (pathname === '/post/1') return {
     to: '/post/2',
@@ -86,7 +86,7 @@ registerRedirect('my-plugin-name-redirect', (pathname, search) => {
   }
 });
 
-registerRewrite('my-plugin-name-rewrite', (pathname, search) => {
+registerRewrite('my-plugin-name-rewrite-rule', (pathname, search) => {
   // Replace page at '/about-us' by '/post/1'
   if (pathname === '/about-us') return {
     from: '/post/1',
