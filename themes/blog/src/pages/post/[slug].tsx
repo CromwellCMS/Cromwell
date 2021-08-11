@@ -8,6 +8,7 @@ import React from 'react';
 import Layout from '../../components/layout/Layout';
 import { PostInfo } from '../../components/postCard/PostCard';
 import postStyles from '../../components/postCard/PostCard.module.scss';
+import { getHead } from '../../helpers/getHead';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/BlogPost.module.scss';
 
@@ -20,6 +21,11 @@ const BlogPostPage: TCromwellPage<BlogPostProps> = (props) => {
 
     return (
         <Layout>
+            {getHead({
+                documentContext: props.documentContext,
+                image: post?.mainImage,
+                data: post,
+            })}
             <CContainer className={styles.BlogPost} id="post_01">
                 <CContainer className={commonStyles.content} id="post_02">
                     {post?.mainImage && (

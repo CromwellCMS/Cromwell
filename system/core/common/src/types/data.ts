@@ -166,6 +166,7 @@ export type TPagedMeta = {
  */
 export type TCmsConfig = {
     domain?: string;
+    url?: string;
     orm?: ConnectionOptions;
     apiPort?: number;
     adminPanelPort?: number;

@@ -77,19 +77,20 @@ export const getCmsSettings = async (): Promise<TCmsSettings | undefined> => {
     const entity = await getCmsEntity();
 
     const settings: TCmsSettings = Object.assign({},
-        cmsConfig,
         {
             ...(entity.publicSettings ?? {}),
             ...(entity.adminSettings ?? {}),
             ...(entity.internalSettings ?? {}),
         },
+        cmsConfig,
         {
+            themeName: entity?.publicSettings?.themeName ?? cmsConfig.defaultSettings?.publicSettings?.themeName,
             redirects: [
-                ...((entity.publicSettings ?? {})?.redirects ?? []),
+                ...(entity.publicSettings?.redirects ?? []),
                 ...(cmsConfig?.redirects ?? []),
             ],
             rewrites: [
-                ...((entity.publicSettings ?? {})?.rewrites ?? []),
+                ...(entity.publicSettings?.rewrites ?? []),
                 ...(cmsConfig?.rewrites ?? []),
             ]
         }

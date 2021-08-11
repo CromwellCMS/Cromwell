@@ -316,8 +316,8 @@ To simplify creation of such migrations, there's the suggested workflow:
 "scripts": {
   "build": "npx cromwell b",
   "watch": "npx cromwell b -w",
-  "docker:start-dev-mariadb": "docker run --rm -d -p 3306:3306 --name crw-mariadb -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -e MYSQL_USER=cromwell -e MYSQL_PASSWORD=my_password mariadb:latest",
-  "docker:start-dev-postgres": "docker run --rm -d -p 5432:5432 --name crw-postgres -e POSTGRES_DB=cromwell -e POSTGRES_USER=cromwell -e POSTGRES_PASSWORD=my_password postgres",
+  "docker:start-dev-mariadb": "docker run -d -p 3306:3306 --name crw-mariadb -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -e MYSQL_USER=cromwell -e MYSQL_PASSWORD=my_password mariadb:latest",
+  "docker:start-dev-postgres": "docker run -d -p 5432:5432 --name crw-postgres -e POSTGRES_DB=cromwell -e POSTGRES_USER=cromwell -e POSTGRES_PASSWORD=my_password postgres",
   "migration:generate:mysql": "npx typeorm migration:generate -o -f migration-mysql -n %npm_config_name%",
   "migration:generate:postgres": "npx typeorm migration:generate -o -f migration-postgres -n %npm_config_name%",
   "migration:generate:sqlite": "npx typeorm migration:generate -o -f migration-sqlite -n %npm_config_name%",

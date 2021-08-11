@@ -1,9 +1,9 @@
-import { closeConnection } from '@App/helpers/connectDataBase';
-import { AppModule } from '@App/modules/app.module';
 import { INestApplication } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
 
+import { closeConnection } from '../src/helpers/connectDataBase';
+import { AppModule } from '../src/modules/app.module';
 import { setupConnection } from './helpers';
 
 export const setupController = async (name: string) => {

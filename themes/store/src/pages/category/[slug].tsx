@@ -17,6 +17,7 @@ import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
 import { Pagination } from '../../components/pagination/Pagination';
 import { ProductCard } from '../../components/productCard/ProductCard';
+import { getHead } from '../../helpers/getHead';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Category.module.scss';
 
@@ -48,6 +49,11 @@ const ProductCategory: TCromwellPage<CategoryProps> = (props) => {
 
     return (
         <Layout>
+            {getHead({
+                documentContext: props.documentContext,
+                image: category?.mainImage,
+                data: category,
+            })}
             <CContainer id="category_1" className={clsx(commonStyles.content, styles.content)}>
                 <CContainer id="category_3" className={styles.sidebar}>
                     <CContainer id="Category_ProductFilter" />

@@ -1,10 +1,11 @@
-import { serverFireAction } from '../helpers/serverFireAction';
 import {
+    findRedirect,
     getRandStr,
     resolvePageRoute,
     setStoreItem,
     sleep,
     TCCSVersion,
+    TDefaultPageName,
     TOrder,
     TOrderInput,
     TPackageCromwellConfig,
@@ -16,26 +17,33 @@ import {
 import {
     applyGetPaged,
     AttributeRepository,
+    BasePageEntity,
     cmsPackageName,
     getCmsEntity,
+    getCmsInfo,
     getCmsModuleInfo,
     getCmsSettings,
     getEmailTemplate,
     getLogger,
     getModulePackage,
     getNodeModuleDir,
+    getPublicDir,
+    getServerDir,
     getThemeConfigs,
     Order,
     OrderRepository,
     PageStats,
     PageStatsRepository,
+    PostRepository,
     Product,
+    ProductCategoryRepository,
     ProductRepository,
     ProductReview,
     ProductReviewRepository,
     readCmsModules,
     runShellCommand,
     sendEmail,
+    TagRepository,
     User,
     UserRepository,
 } from '@cromwell/core-backend';
@@ -46,7 +54,7 @@ import fs from 'fs-extra';
 import { join, resolve } from 'path';
 import stream from 'stream';
 import { Container, Service } from 'typedi';
-import { getConnection, getCustomRepository, getManager } from 'typeorm';
+import { getConnection, getCustomRepository, getManager, Repository } from 'typeorm';
 import { DateUtils } from 'typeorm/util/DateUtils';
 import * as util from 'util';
 
@@ -56,6 +64,8 @@ import { CmsStatusDto } from '../dto/cms-status.dto';
 import { CreateOrderDto } from '../dto/create-order.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
+import { SetupDto } from '../dto/setup.dto';
+import { serverFireAction } from '../helpers/serverFireAction';
 import { childSendMessage } from '../helpers/serverManager';
 import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
 import { MockService } from './mock.service';
@@ -98,6 +108,9 @@ export class CmsService {
                 }
             }, 60000);
         }
+
+        // Schedule sitemap re-build once in a day
+        setInterval(() => this.buildSitemap, 1000 * 60 * 60 * 24);
     }
 
     private async setIsUpdating(isUpdating: boolean) {
@@ -191,7 +204,10 @@ export class CmsService {
         }
     }
 
-    public async installCms() {
+    public async installCms(input: SetupDto) {
+        if (!input.url)
+            throw new HttpException('URL is not provided', HttpStatus.UNPROCESSABLE_ENTITY);
+
         const cmsEntity = await getCmsEntity();
         if (cmsEntity?.internalSettings?.installed) {
             logger.error('CMS already installed');
@@ -202,6 +218,11 @@ export class CmsService {
             ...(cmsEntity.internalSettings ?? {}),
             installed: true,
         }
+
+        cmsEntity.publicSettings = {
+            ...(cmsEntity.publicSettings ?? {}),
+            url: input.url,
+        }
         await cmsEntity.save();
 
         const settings = await getCmsSettings();
@@ -211,6 +232,91 @@ export class CmsService {
 
         await this.mockService.mockAll();
 
+        const serverDir = getServerDir();
+        const publicDir = getPublicDir();
+        if (!serverDir || !publicDir) return false;
+
+        const robotsSource = resolve(serverDir, 'static/robots.txt');
+        let robotsContent = await (await fs.readFile(robotsSource)).toString();
+        robotsContent += `\n\nSitemap: ${input.url}/default_sitemap.xml`;
+        await fs.outputFile(resolve(publicDir, 'robots.txt'), robotsContent, {
+            encoding: 'UTF-8'
+        });
+
+        return true;
+    }
+
+    public async buildSitemap() {
+        const settings = await getCmsSettings();
+        if (!settings?.url) throw new HttpException("CmsService::buildSitemap: could not find website's URL", HttpStatus.INTERNAL_SERVER_ERROR);
+        const configs = await getThemeConfigs();
+        setStoreItem('defaultPages', configs.themeConfig?.defaultPages);
+
+        const urls: string[] = [];
+        let content = '';
+
+        const addPage = (route: string, updDate: Date) => {
+            if (!route.startsWith('/')) route = '/' + route;
+            const redirect = findRedirect(route);
+            if (redirect?.type === 'redirect' && redirect.to) {
+                route = redirect.to;
+            }
+
+            if (redirect?.type === 'rewrite' && redirect.from === '/404') return;
+
+            if (!route.startsWith('http')) {
+                route = settings.url + route;
+            }
+
+            if (urls.includes(route)) return;
+            urls.push(route);
+
+            content +=
+                `  <url>
+    <loc>${route}</loc>
+    <lastmod>${format(updDate, 'yyyy-MM-dd')}</lastmod>
+  </url>\n`;
+        }
+
+        configs.themeConfig?.pages?.forEach(page => {
+            if (!page.route || page.route.includes('[slug]') ||
+                page.route.includes('[id]') || page.route === 'index'
+                || page.route === '404') return;
+
+            addPage(
+                page.route,
+                new Date(Date.now())
+            );
+        })
+
+        const outputEntity = async (repo: Repository<any>, pageName: TDefaultPageName) => {
+            const entities: BasePageEntity[] = await repo.find({
+                select: ['slug', 'id', 'updateDate', 'createDate'],
+            });
+
+            entities.forEach(ent => {
+                const updDate = ent.updateDate ?? ent.createDate;
+                addPage(
+                    resolvePageRoute(pageName, { slug: ent.slug ?? ent.id }),
+                    updDate
+                );
+            });
+
+        }
+
+        await outputEntity(getCustomRepository(PostRepository), 'post');
+        await outputEntity(getCustomRepository(ProductRepository), 'product');
+        await outputEntity(getCustomRepository(ProductCategoryRepository), 'category');
+        await outputEntity(getCustomRepository(TagRepository), 'tag');
+
+        content = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${content}
+</urlset>`;
+
+        await fs.outputFile(resolve(getPublicDir(), 'default_sitemap.xml'), content, {
+            encoding: 'UTF-8'
+        });
         return true;
     }
 
@@ -253,7 +359,25 @@ export class CmsService {
         return out;
     }
 
-    public async updateCmsSettings(input: AdminCmsConfigDto): Promise<AdminCmsConfigDto | undefined> {
+    public async getAdminConfig() {
+        const config = await getCmsSettings();
+        const info = await getCmsInfo();
+        if (!config) {
+            throw new HttpException('CmsController::getPrivateConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        const dto = new AdminCmsConfigDto().parseConfig(config);
+        dto.cmsInfo = info;
+        try {
+            const robotsPath = resolve(getPublicDir(), 'robots.txt');
+            if (await fs.pathExists(robotsPath))
+                dto.robotsContent = (await fs.readFile(robotsPath)).toString();
+        } catch (error) {
+            logger.error(error);
+        }
+        return dto;
+    }
+
+    public async updateCmsSettings(input: AdminCmsConfigDto): Promise<AdminCmsConfigDto> {
         const entity = await getCmsEntity();
         if (!entity) throw new Error('!entity');
 
@@ -266,6 +390,7 @@ export class CmsService {
         }
 
         entity.publicSettings = {
+            url: input.url,
             defaultPageSize: input.defaultPageSize,
             currencies: input.currencies,
             timezone: input.timezone,
@@ -283,9 +408,16 @@ export class CmsService {
         }
 
         await entity.save();
+
+        if (input.robotsContent) {
+            await fs.outputFile(resolve(getPublicDir(), 'robots.txt'), input.robotsContent, {
+                encoding: 'UTF-8'
+            });
+        }
+
         const config = await getCmsSettings();
-        if (config)
-            return new AdminCmsConfigDto().parseConfig(config);
+        if (!config) throw new HttpException('!config', HttpStatus.INTERNAL_SERVER_ERROR);
+        return new AdminCmsConfigDto().parseConfig(config);
     }
 
     async viewPage(input: PageStatsDto) {

@@ -1,4 +1,5 @@
 import { NextPage } from 'next';
+import { DocumentContext } from 'next/document';
 import React from 'react';
 
 import { TCmsSettings, TDefaultPageName, TPageConfig, TPageInfo, TPalette } from './data';
@@ -18,6 +19,7 @@ export type TGetStaticProps<
 export type TCromwellPage<Props = any | undefined> = NextPage<Props & TCromwellPageCoreProps>;
 
 export type TCromwellPageCoreProps = {
+    documentContext?: CrwDocumentContextType;
     plugins?: Record<string, {
         data?: any;
         code?: string;
@@ -32,6 +34,11 @@ export type TCromwellPageCoreProps = {
     palette?: TPalette | null;
     defaultPages?: Record<TDefaultPageName, string>;
     pageConfigName?: string;
+}
+
+export type CrwDocumentContextType = Partial<DocumentContext> & {
+    fullUrl?: string;
+    origin?: string;
 }
 
 export type TCromwellBlock<TContentBlock = React.Component> = React.Component<TCromwellBlockProps<TContentBlock>> & {

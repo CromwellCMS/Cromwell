@@ -52,7 +52,9 @@ export default function WelcomePage() {
         }
 
         try {
-            await apiClient.setUpCms();
+            await apiClient.setUpCms({
+                url: window.location.origin,
+            });
 
             await apiClient.login({
                 email: emailInput,

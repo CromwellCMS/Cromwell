@@ -26,6 +26,8 @@ import {
     MonetizationOn as MonetizationOnIcon,
     Public as PublicIcon,
     Store as StoreIcon,
+    Search as SearchIcon,
+    OpenInNew as OpenInNewIcon,
 } from '@material-ui/icons';
 import clsx from 'clsx';
 import { HelpOutline as HelpOutlineIcon } from '@material-ui/icons';
@@ -44,10 +46,16 @@ import styles from './Settings.module.scss';
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
+type TAdminCmsSettings = TCmsSettings & {
+    cmsInfo?: TCmsInfo;
+    robotsContent?: string;
+}
+
 class SettingsPage extends React.Component<any, {
-    settings: TCmsSettings & { cmsInfo?: TCmsInfo; } | null;
+    settings: TAdminCmsSettings | null;
     isLoading: boolean;
     exporting: boolean;
+    buildingSitemap: boolean;
     cmsInfoOpen: boolean;
     expandedItems: Record<string, boolean>;
 }> {
@@ -60,6 +68,7 @@ class SettingsPage extends React.Component<any, {
             isLoading: false,
             exporting: false,
             cmsInfoOpen: false,
+            buildingSitemap: false,
             expandedItems: {},
         }
     }
@@ -82,7 +91,7 @@ class SettingsPage extends React.Component<any, {
         this.getConfig();
     }
 
-    private changeSettings = (key: keyof TCmsSettings, value) => {
+    private changeSettings = (key: keyof TAdminCmsSettings, value) => {
         this.setState(prev => {
             return {
                 settings: {
@@ -115,6 +124,8 @@ class SettingsPage extends React.Component<any, {
 
         try {
             const newConfig = await client.saveCmsSettings({
+                url: settings.url,
+                robotsContent: settings.robotsContent,
                 defaultPageSize: settings.defaultPageSize,
                 currencies: settings.currencies,
                 timezone: settings.timezone,
@@ -138,7 +149,7 @@ class SettingsPage extends React.Component<any, {
         this.setState({ isLoading: false });
     }
 
-    private handleTextFieldChange = (key: keyof TCmsSettings) => (event: React.ChangeEvent<{ value: string }>) => {
+    private handleTextFieldChange = (key: keyof TAdminCmsSettings) => (event: React.ChangeEvent<{ value: string }>) => {
         this.changeSettings(key, event.target.value);
     }
 
@@ -202,6 +213,18 @@ class SettingsPage extends React.Component<any, {
         const option = this.exportOptions.find(opt => opt.key === key);
         if (option) option.checked = !option.checked;
         this.forceUpdate();
+    }
+
+    private buildSitemap = async () => {
+        this.setState({ buildingSitemap: true });
+        try {
+            await getRestAPIClient().buildSitemap();
+            toast.success('Sitemap has been rebuilt');
+        } catch (e) {
+            toast.error('Failed to rebuild Sitemap');
+            console.error(e)
+        }
+        this.setState({ buildingSitemap: false });
     }
 
     private makeCategory = (props: {
@@ -281,6 +304,16 @@ class SettingsPage extends React.Component<any, {
                         icon: <PublicIcon />,
                         content: (
                             <>
+                                <Grid item xs={12} sm={6}>
+                                    <FormControl className={styles.field} fullWidth>
+                                        <TextField label="Website URL"
+                                            value={settings?.url ?? ''}
+                                            className={styles.textField}
+                                            fullWidth
+                                            onChange={this.handleTextFieldChange('url')}
+                                        />
+                                    </FormControl>
+                                </Grid>
                                 <Grid item xs={12} sm={6}>
                                     <FormControl className={styles.field} fullWidth>
                                         <InputLabel>Timezone</InputLabel>
@@ -513,7 +546,6 @@ class SettingsPage extends React.Component<any, {
                                         fullWidth
                                         label="Head HTML"
                                         multiline
-                                        rows={4}
                                         rowsMax={20}
                                         value={settings?.headHtml ?? ''}
                                         onChange={this.handleTextFieldChange('headHtml')}
@@ -526,7 +558,7 @@ class SettingsPage extends React.Component<any, {
                                         fullWidth
                                         label="Footer HTML"
                                         multiline
-                                        rows={4}
+                                        rowsMax={20}
                                         value={settings?.footerHtml ?? ''}
                                         onChange={this.handleTextFieldChange('footerHtml')}
                                         variant="outlined"
@@ -580,6 +612,47 @@ class SettingsPage extends React.Component<any, {
                             </Grid>
                         )
                     })}
+
+
+                    {this.makeCategory({
+                        title: 'SEO',
+                        icon: <SearchIcon />,
+                        content: (
+                            <>
+                                <Grid item xs={12} >
+                                    <TextField
+                                        multiline
+                                        rowsMax={8}
+                                        fullWidth
+                                        variant="outlined"
+                                        label="robots.txt"
+                                        value={settings?.robotsContent}
+                                        onChange={(e) => this.changeSettings('robotsContent', e.target.value)}
+                                    />
+
+                                </Grid>
+                                <Grid item xs={12} >
+                                    <div>
+                                        <Button
+                                            disabled={this.state?.buildingSitemap}
+                                            color="primary"
+                                            variant="contained"
+                                            className={styles.exportBtn}
+                                            size="small"
+                                            onClick={this.buildSitemap}
+                                        >Rebuild Sitemap</Button>
+                                        <Tooltip title="Open Sitemap">
+                                            <IconButton
+                                                style={{ marginLeft: '10px' }}
+                                                onClick={() => window.open('/default_sitemap.xml', '_blank')}>
+                                                <OpenInNewIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    </div>
+                                </Grid>
+                            </>
+                        )
+                    })}
                     <p className={styles.cmsVersion}
                         onClick={() => this.setState({ cmsInfoOpen: true })}
                     >Cromwell CMS v.{settings?.cmsInfo?.packages['@cromwell/cms']}</p>
@@ -598,7 +671,7 @@ class SettingsPage extends React.Component<any, {
                             ))}
                     </div>
                 </Modal>
-                <LoadingStatus isActive={this.state?.exporting} />
+                <LoadingStatus isActive={this.state?.exporting || this.state?.buildingSitemap} />
             </div>
         )
     }

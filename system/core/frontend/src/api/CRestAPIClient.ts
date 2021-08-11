@@ -329,7 +329,10 @@ export class CRestAPIClient {
      * Get admin CMS settings
      * @auth admin
      */
-    public getAdminCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings & { cmsInfo?: TCmsInfo }> => {
+    public getAdminCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings & {
+        cmsInfo?: TCmsInfo;
+        robotsContent?: string;
+    }> => {
         return this.get(`v1/cms/admin-config`, options);
     }
 
@@ -349,7 +352,9 @@ export class CRestAPIClient {
      * Update CMS settings
      * @auth admin
      */
-    public saveCmsSettings = async (input: TCmsSettings, options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
+    public saveCmsSettings = async (input: TCmsSettings & {
+        robotsContent?: string;
+    }, options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
         return this.post(`v1/cms/admin-config`, input, options);
     }
 
@@ -412,8 +417,10 @@ export class CRestAPIClient {
     }
 
     /** @internal */
-    public setUpCms = async (options?: TRequestOptions): Promise<boolean | undefined> => {
-        return this.post(`v1/cms/set-up`, {}, options);
+    public setUpCms = async (input: {
+        url: string;
+    }, options?: TRequestOptions): Promise<boolean | undefined> => {
+        return this.post(`v1/cms/set-up`, input, options);
     }
 
     /**
@@ -547,6 +554,14 @@ export class CRestAPIClient {
             this.throwError(errorInfo, url, options);
         }
         return data;
+    }
+
+    /**
+     * Build sitemap at /default_sitemap.xml
+     * @auth admin
+     */
+    public buildSitemap = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
+        return this.get(`v1/cms/build-sitemap`, options);
     }
 
     // < / CMS >

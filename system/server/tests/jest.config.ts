@@ -3,11 +3,8 @@ import type { Config } from '@jest/types';
 const config: Config.InitialOptions = {
   preset: 'ts-jest',
   testEnvironment: 'node',
-  moduleNameMapper: {
-    '@App/(.*)': '<rootDir>/src/$1'
-  },
-  // silent: false,
-  testRegex: "/tests/.*\\.(test|spec)\\.[jt]sx?$",
+  silent: false,
+  testRegex: "/.*\\.(test|spec)\\.[jt]sx?$",
   /** for circle ci free plan */
   maxWorkers: 1,
   maxConcurrency: 1,
@@ -15,8 +12,9 @@ const config: Config.InitialOptions = {
     "ts-jest": {
     }
   },
-  globalTeardown: "<rootDir>/tests/teardown.ts",
-  setupFilesAfterEnv: ["<rootDir>/tests/setup.ts"],
+  globalTeardown: "<rootDir>/teardown.ts",
+  globalSetup: "<rootDir>/setup.ts",
+  setupFilesAfterEnv: ["<rootDir>/setup-files.ts"],
 };
 
 export default config;

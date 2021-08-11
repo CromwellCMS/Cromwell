@@ -17,11 +17,6 @@
       "node",
       "jest",
     ],
-    "paths": {
-      "@App/*": [
-        "src/*"
-      ],
-    },
   },
   "exclude": [
     "node_modules",

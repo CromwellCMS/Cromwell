@@ -23,11 +23,6 @@
       "node",
       "@testing-library/jest-dom"
     ],
-    "paths": {
-      "@App/*": [
-        "src/*"
-      ]
-    },
   },
   "exclude": [
     "node_modules",

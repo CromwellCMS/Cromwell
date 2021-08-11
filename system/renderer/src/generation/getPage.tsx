@@ -8,39 +8,40 @@ import {
     TPageStats,
 } from '@cromwell/core';
 import { CContainer, getModuleImporter, getRestAPIClient, pageRootContainerId } from '@cromwell/core-frontend';
+import { NextRouter, withRouter } from 'next/router';
 import React, { useRef } from 'react';
-import ReactHtmlParser, { Transform } from 'react-html-parser';
+import ReactHtmlParser from 'react-html-parser';
 import { isValidElementType } from 'react-is';
 
+import { CrwDocumentContext, patchDocument } from '../helpers/document';
 import { useForceUpdate } from '../helpers/helpers';
+import { parserTransform } from '../helpers/parserTransform';
 import { usePatchForRedirects } from '../helpers/redirects';
 
-
-
-let index = 0;
-const parserTransform: Transform = (node) => {
-    index++;
-    if (node.type === 'script') {
-        if (node.children?.[0]?.data && node.children[0].data !== '')
-            return <script key={index} dangerouslySetInnerHTML={{ __html: node.children[0].data }} />
-    }
-    if (node.type === 'style') {
-        if (node.children?.[0]?.data && node.children[0].data !== '')
-            return <style key={index} type="text/css" dangerouslySetInnerHTML={{ __html: node.children[0].data }} />
-    }
+type PageProps = Partial<TCromwellPageCoreProps> & {
+    router: NextRouter;
 }
 
 export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCromwellPage): TCromwellPage => {
     if (!PageComponent) throw new Error('getPage !PageComponent');
     if (!isValidElementType(PageComponent)) throw new Error('getPage PageComponent !isValidElementType');
 
+    patchDocument();
     if (pageName === '_app') return PageComponent;
 
-    return function (props: Partial<TCromwellPageCoreProps>): JSX.Element {
+    const pageComp = (props: PageProps): JSX.Element => {
         const { plugins, pageConfig, themeCustomConfig,
             childStaticProps, cmsSettings, themeHeadHtml,
-            themeFooterHtml, pagesInfo,
+            themeFooterHtml, pagesInfo, documentContext,
             palette, defaultPages, pageConfigName } = props;
+
+        if (!isServer() && documentContext) {
+            if (!documentContext.fullUrl)
+                documentContext.fullUrl = window.location.href;
+
+            if (!documentContext.origin)
+                documentContext.origin = window.location.origin;
+        }
 
         const forcedChildStaticProps = useRef(null);
         if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
@@ -102,10 +103,27 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
                     {themeHeadHtml && ReactHtmlParser(themeHeadHtml, { transform: parserTransform })}
                     {cmsSettings?.headHtml && ReactHtmlParser(cmsSettings.headHtml, { transform: parserTransform })}
                     {pageConfig?.headHtml && ReactHtmlParser(pageConfig?.headHtml, { transform: parserTransform })}
-                    {title && <title>{title}</title>}
-                    {description && <meta property="og:description" content={description} key="description" />}
+                    {title && title !== '' && (
+                        <>
+                            <title>{title}</title>
+                            <meta property="og:title" content={title} />
+                        </>
+                    )}
+                    {description && description !== '' && (
+                        <>
+                            <meta property="description" content={description} />
+                            <meta property="og:description" content={description} />
+                        </>
+                    )}
                 </Head>
             </>
         )
     }
+
+
+    const HocComp = withRouter(pageComp);
+
+    return (props: PageProps) => (<CrwDocumentContext.Consumer>
+        {value => <HocComp {...props} documentContext={value} />}
+    </CrwDocumentContext.Consumer>)
 }

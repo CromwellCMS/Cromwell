@@ -115,7 +115,6 @@ module.exports = {
             id: "category/[slug]",
             route: "category/[slug]",
             name: "Product category",
-            title: "Product category page",
             modifications: [
                 {
                     "type": "plugin",
@@ -132,7 +131,6 @@ module.exports = {
             id: "product/[slug]",
             route: "product/[slug]",
             name: "Product",
-            title: "Product page",
             modifications: [
                 {
                     "type": "plugin",
@@ -222,7 +220,6 @@ module.exports = {
             id: "blog/[slug]",
             route: "blog/[slug]",
             name: "Blog post",
-            title: "Blog post page",
         },
         {
             id: "blog",
@@ -234,7 +231,6 @@ module.exports = {
             id: "tag/[slug]",
             route: "tag/[slug]",
             name: "Blog tags",
-            title: "Blog tags page",
         },
         {
             id: "404",
@@ -374,16 +370,6 @@ module.exports = {
             ]
         }
     ],
-    themeCustomConfig: {
-        "product": {
-            "customTabs": [
-                {
-                    "label": "Custom tab",
-                    "html": "<div><p>Custom tab</p></div>"
-                }
-            ]
-        }
-    },
     globalModifications: [
         {
             "type": "plugin",

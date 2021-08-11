@@ -25,14 +25,12 @@ module.exports = {
             id: "post/[slug]",
             route: "post/[slug]",
             name: "Post",
-            title: "Post page",
             modifications: []
         },
         {
             id: "tag/[slug]",
             route: "tag/[slug]",
             name: "Tag",
-            title: "Tag page",
             modifications: []
         },
         {
@@ -86,14 +84,6 @@ module.exports = {
             }
         }
     ],
-    plugins: {
-        "ProductShowcase": {
-            "options": {}
-        },
-        "ProductShowcaseDemo": {
-            "options": {}
-        }
-    },
     rollupConfig: () => {
         const commonjs = require('@rollup/plugin-commonjs');
         const json = require('@rollup/plugin-json');
