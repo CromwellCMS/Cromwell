@@ -13,6 +13,9 @@ export class AdminCmsConfigDto extends CmsConfigDto {
     @ApiProperty()
     cmsInfo?: TCmsInfo;
 
+    @ApiProperty()
+    robotsContent?: string;
+
     parseConfig(config: TCmsSettings) {
         super.parseConfig(config);
 

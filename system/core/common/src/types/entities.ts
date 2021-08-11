@@ -485,6 +485,10 @@ export type TCmsEntityCore = {
  */
 export type TCmsPublicSettings = {
     /**
+     * Website's URL
+     */
+    url?: string;
+    /**
     * Package name of currently used theme
     */
     themeName?: string;

@@ -20,6 +20,7 @@ import ProductDetails from '../../components/productDetails/ProductDetails';
 import ReviewForm from '../../components/productDetails/reviewForm/ReviewForm';
 import { ReviewItem } from '../../components/productDetails/reviewItem/ReviewItem';
 import { getBreadcrumbs } from '../../helpers/getBreadcrumbs';
+import { getHead } from '../../helpers/getHead';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Product.module.scss';
 
@@ -44,6 +45,11 @@ const Product: TCromwellPage<ProductProps> = (props) => {
 
     return (
         <Layout>
+            {getHead({
+                documentContext: props.documentContext,
+                image: product?.mainImage,
+                data: product,
+            })}
             <CContainer className={clsx(commonStyles.content, styles.ProductPage)} id="product-1">
                 {!!props.breadcrumbs?.length && (
                     <div className={styles.breadcrumbs}>

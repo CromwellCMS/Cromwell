@@ -1,6 +1,5 @@
 import { TOrder, TPackageCromwellConfig, TProductReview } from '@cromwell/core';
 import {
-    getCmsInfo,
     getCmsSettings,
     getLogger,
     getPublicDir,
@@ -39,6 +38,7 @@ import { ExportOptionsDto } from '../dto/export-options.dto';
 import { ModuleInfoDto } from '../dto/module-info.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
+import { SetupDto } from '../dto/setup.dto';
 import { publicSystemDirs } from '../helpers/constants';
 import { serverFireAction } from '../helpers/serverFireAction';
 import { CmsService } from '../services/cms.service';
@@ -91,14 +91,7 @@ export class CmsController {
     @ApiForbiddenResponse({ description: 'Forbidden.' })
     async getAdminConfig(): Promise<AdminCmsConfigDto | undefined> {
         // logger.log('CmsController::getPrivateConfig');
-        const config = await getCmsSettings();
-        const info = await getCmsInfo()
-        if (!config) {
-            throw new HttpException('CmsController::getPrivateConfig Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        const dto = new AdminCmsConfigDto().parseConfig(config);
-        dto.cmsInfo = info;
-        return dto;
+        return this.cmsService.getAdminConfig();
     }
 
 
@@ -241,10 +234,11 @@ export class CmsController {
     @Post('set-up')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')
+    @ApiBody({ type: SetupDto })
     @ApiOperation({
         description: 'Configure CMS after first launch',
     })
-    async setUp() {
+    async setUp(@Body() input: SetupDto) {
         const config = await getCmsSettings();
         if (!config) {
             throw new HttpException('CmsController::setUp Failed to read CMS Config', HttpStatus.INTERNAL_SERVER_ERROR);
@@ -253,7 +247,7 @@ export class CmsController {
         if (config.installed)
             throw new HttpException('CmsController::setUp CMS already installed', HttpStatus.BAD_REQUEST);
 
-        return await this.cmsService.installCms();
+        return await this.cmsService.installCms(input);
     }
 
 
@@ -498,5 +492,19 @@ export class CmsController {
             logger.error(error);
             throw new HttpException(String(error), HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
+
+
+    @Get('build-sitemap')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator')
+    @ApiOperation({ description: 'Builds sitemap at /default_sitemap.xml' })
+    @ApiResponse({
+        status: 200,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async buildSitemap() {
+        logger.log('CmsController::buildSitemap');
+        return this.cmsService.buildSitemap();
     }
 }

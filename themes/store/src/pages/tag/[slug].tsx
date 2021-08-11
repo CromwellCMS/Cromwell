@@ -8,7 +8,7 @@ import {
     TPostFilter,
     TTag,
 } from '@cromwell/core';
-import { CList, getGraphQLClient, LoadBox, TCList, CContainer } from '@cromwell/core-frontend';
+import { CContainer, CList, getGraphQLClient, LoadBox, TCList } from '@cromwell/core-frontend';
 import { FormControl, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef } from 'react';
@@ -17,6 +17,7 @@ import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
 import { Pagination } from '../../components/pagination/Pagination';
 import { PostCard } from '../../components/postCard/PostCard';
+import { getHead } from '../../helpers/getHead';
 import { handleGetFilteredPosts } from '../../helpers/getPosts';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Blog.module.scss';
@@ -26,6 +27,7 @@ interface BlogProps {
     posts?: TPagedList<TPost>;
     tag?: TTag;
 }
+
 const TagPage: TCromwellPage<BlogProps> = (props) => {
     const filterInput = useRef<TPostFilter>({});
     const listId = 'Blog_list_01';
@@ -64,6 +66,11 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
 
     return (
         <Layout>
+            {getHead({
+                documentContext: props.documentContext,
+                image: props.tag?.image,
+                data: props.tag,
+            })}
             <CContainer className={commonStyles.content} id="tag-1">
                 <CContainer className={styles.filter} id="tag-2">
                     <div>

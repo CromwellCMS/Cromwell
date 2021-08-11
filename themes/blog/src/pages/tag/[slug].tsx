@@ -17,6 +17,7 @@ import Layout from '../../components/layout/Layout';
 import layoutStyles from '../../components/layout/Layout.module.scss';
 import { Pagination } from '../../components/pagination/Pagination';
 import { PostCard } from '../../components/postCard/PostCard';
+import { getHead } from '../../helpers/getHead';
 import { handleGetFilteredPosts } from '../../helpers/getPosts';
 import commonStyles from '../../styles/common.module.scss';
 import styles from '../../styles/pages/Blog.module.scss';
@@ -64,6 +65,11 @@ const TagPage: TCromwellPage<BlogProps> = (props) => {
 
     return (
         <Layout>
+            {getHead({
+                documentContext: props.documentContext,
+                image: props?.tag?.image,
+                data: props?.tag,
+            })}
             <CContainer className={commonStyles.content} id="tag_01">
                 <CContainer className={styles.filter} id="tag_02">
                     <div>

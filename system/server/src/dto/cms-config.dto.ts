@@ -4,6 +4,9 @@ import { CurrencyDto } from './currency.dto';
 
 export class CmsConfigDto implements TCmsSettings {
     @ApiProperty()
+    url?: string;
+
+    @ApiProperty()
     domain?: string;
 
     @ApiProperty()
@@ -65,6 +68,7 @@ export class CmsConfigDto implements TCmsSettings {
 
     parseConfig(config: TCmsSettings) {
         this.domain = config.domain;
+        this.url = config.url;
         this.apiPort = config.apiPort;
         this.centralServerUrl = config.centralServerUrl;
         this.adminPanelPort = config.adminPanelPort;

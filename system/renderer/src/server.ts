@@ -1,9 +1,8 @@
+import { findRedirect } from '@cromwell/core';
 import { getLogger } from '@cromwell/core-backend';
 import { createServer } from 'http';
 import next from 'next';
 import { parse } from 'url';
-
-import { findRedirect } from './helpers/redirects';
 
 const logger = getLogger();
 
@@ -21,7 +20,7 @@ export const startNextServer = async (options?: {
     await app.prepare();
 
     const server = createServer((req, res) => {
-        const parsedUrl = parse(req.url!, true)
+        const parsedUrl = parse(req.url!, true);
         const { pathname, search } = parsedUrl;
 
         if (!pathname) {

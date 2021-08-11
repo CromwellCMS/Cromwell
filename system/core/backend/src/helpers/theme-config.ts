@@ -31,34 +31,36 @@ export const getThemeConfigs = async (): Promise<TAllThemeConfigs> => {
         themeInfo: TPackageCromwellConfig | null = null;
 
     const cmsSettings = await getCmsSettings();
-    if (cmsSettings?.themeName) {
-        let theme;
-        try {
-            theme = await findTheme(cmsSettings.themeName);
-        } catch (error) {
-            getLogger().error(error);
-        }
+    if (!cmsSettings?.themeName) {
+        throw new Error('getThemeConfigs: !cmsSettings?.themeName')
+    }
 
-        if (!theme) {
-            getLogger().error(`Current theme ${cmsSettings?.themeName} was not registered in DB`);
-        }
+    let theme;
+    try {
+        theme = await findTheme(cmsSettings.themeName);
+    } catch (error) {
+        getLogger().error(error);
+    }
 
-        try {
-            if (theme?.defaultSettings) themeConfig = JSON.parse(theme.defaultSettings);
-        } catch (e) {
-            getLogger(false).error(e);
-        }
-        try {
-            if (theme?.settings) userConfig = JSON.parse(theme.settings);
-        } catch (e) {
-            getLogger(false).error(e);
-        }
+    if (!theme) {
+        getLogger().error(`Current theme ${cmsSettings?.themeName} was not registered in DB`);
+    }
 
-        try {
-            if (theme?.moduleInfo) themeInfo = JSON.parse(theme.moduleInfo);
-        } catch (e) {
-            getLogger(false).error(e);
-        }
+    try {
+        if (theme?.defaultSettings) themeConfig = JSON.parse(theme.defaultSettings);
+    } catch (e) {
+        getLogger(false).error(e);
+    }
+    try {
+        if (theme?.settings) userConfig = JSON.parse(theme.settings);
+    } catch (e) {
+        getLogger(false).error(e);
+    }
+
+    try {
+        if (theme?.moduleInfo) themeInfo = JSON.parse(theme.moduleInfo);
+    } catch (e) {
+        getLogger(false).error(e);
     }
 
     return {

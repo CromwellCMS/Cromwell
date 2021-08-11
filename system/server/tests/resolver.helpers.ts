@@ -1,9 +1,9 @@
-import { closeConnection } from '@App/helpers/connectDataBase';
-import { getResolvers } from '@App/helpers/getResolvers';
 import { TGraphQLContext } from '@cromwell/core-backend';
 import { ApolloServer } from 'apollo-server';
 import { buildSchema } from 'type-graphql';
 
+import { closeConnection } from '../src/helpers/connectDataBase';
+import { getResolvers } from '../src/helpers/getResolvers';
 import { setupConnection } from './helpers';
 
 export const setupResolver = async (name: string): Promise<ApolloServer> => {
