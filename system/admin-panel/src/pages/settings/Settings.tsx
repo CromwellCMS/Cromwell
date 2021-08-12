@@ -613,10 +613,10 @@ class SettingsPage extends React.Component<any, {
                         )
                     })}
 
-
                     {this.makeCategory({
                         title: 'SEO',
                         icon: <SearchIcon />,
+                        link: 'https://cromwellcms.com/docs/features/seo',
                         content: (
                             <>
                                 <Grid item xs={12} >
@@ -669,6 +669,8 @@ class SettingsPage extends React.Component<any, {
                             .sort((a, b) => a[0] < b[0] ? -1 : 1).map(pckg => (
                                 <p key={pckg[0]}>{pckg[0]}: {pckg[1]}</p>
                             ))}
+                        <h4 className={styles.cmsInfoHeader}>Attribution</h4>
+                        <div id="icons_attribution" className={styles.iconsCredits} >Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a>, <a href="https://icon54.com/" title="Pixel perfect"> Pixel perfect</a>, <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
                     </div>
                 </Modal>
                 <LoadingStatus isActive={this.state?.exporting || this.state?.buildingSitemap} />

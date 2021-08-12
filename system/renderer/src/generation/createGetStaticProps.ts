@@ -7,6 +7,7 @@ import {
     TPageConfig,
     TPageInfo,
     TThemeConfig,
+    resolvePageRoute,
 } from '@cromwell/core';
 import { getRestAPIClient } from '@cromwell/core-frontend';
 
@@ -49,6 +50,8 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
             themeCustomConfig, pagesInfo, pluginsSettings } = rendererData;
 
         if (cmsSettings) setStoreItem('cmsSettings', cmsSettings);
+        if (themeConfig?.defaultPages) setStoreItem('defaultPages', themeConfig?.defaultPages);
+        const resolvedPageRoute = resolvePageRoute(pageConfigName, { slug: context?.params?.slug as string })
 
         const [childStaticProps, plugins] = await Promise.all([
             getThemeStaticProps(pageName, pageGetStaticProps, context),
@@ -67,6 +70,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
             themeCustomConfig,
             pagesInfo,
             pageConfigName,
+            resolvedPageRoute,
             defaultPages: themeConfig?.defaultPages,
             themeHeadHtml: themeConfig?.headHtml,
             themeFooterHtml: themeConfig?.footerHtml,

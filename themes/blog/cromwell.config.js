@@ -73,6 +73,30 @@ module.exports = {
                     }
                 }
             ]
+        },
+        {
+            id: "pages/attribution",
+            route: "pages/attribution",
+            name: "Attribution",
+            isVirtual: true,
+            modifications: [
+                {
+                    "id": "contacts_content",
+                    "type": "HTML",
+                    "isVirtual": true,
+                    "parentId": "PagesGenericPage_content",
+                    "index": 0,
+                    "style": {
+                        "margin": "40px 0",
+                        "padding": "20px",
+                        "backgroundColor": "#fff",
+                        "borderRadius": "5px"
+                    },
+                    "html": {
+                        "innerHTML": "<h1>Attribution</h1><div id=\"icons_attribution\" style={{ fontSize: '12px' }}>Icons made by <a href=\"http://www.freepik.com/\" title=\"Freepik\">Freepik</a> from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\"> www.flaticon.com</a></div>"
+                    }
+                },
+            ]
         }
     ],
     globalModifications: [

@@ -15,7 +15,7 @@ import { isValidElementType } from 'react-is';
 
 import { CrwDocumentContext, patchDocument } from '../helpers/document';
 import { useForceUpdate } from '../helpers/helpers';
-import { parserTransform } from '../helpers/parserTransform';
+import { cleanParseContext, getParserTransform } from '../helpers/parserTransform';
 import { usePatchForRedirects } from '../helpers/redirects';
 
 type PageProps = Partial<TCromwellPageCoreProps> & {
@@ -33,7 +33,8 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         const { plugins, pageConfig, themeCustomConfig,
             childStaticProps, cmsSettings, themeHeadHtml,
             themeFooterHtml, pagesInfo, documentContext,
-            palette, defaultPages, pageConfigName } = props;
+            palette, defaultPages, pageConfigName,
+            resolvedPageRoute } = props;
 
         if (!isServer() && documentContext) {
             if (!documentContext.fullUrl)
@@ -87,8 +88,10 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
 
         const pageCompProps = forcedChildStaticProps.current ?? childStaticProps;
         const Head = getModuleImporter()?.modules?.['next/head']?.default;
+        const pageId = documentContext?.fullUrl ?? resolvedPageRoute as string;
+        const parserTransform = getParserTransform(pageId);
 
-        return (
+        const content = (
             <>
                 <Head>
                     <meta charSet="utf-8" />
@@ -102,7 +105,6 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
                 <Head>
                     {themeHeadHtml && ReactHtmlParser(themeHeadHtml, { transform: parserTransform })}
                     {cmsSettings?.headHtml && ReactHtmlParser(cmsSettings.headHtml, { transform: parserTransform })}
-                    {pageConfig?.headHtml && ReactHtmlParser(pageConfig?.headHtml, { transform: parserTransform })}
                     {title && title !== '' && (
                         <>
                             <title>{title}</title>
@@ -115,9 +117,12 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
                             <meta property="og:description" content={description} />
                         </>
                     )}
+                    {pageConfig?.headHtml && ReactHtmlParser(pageConfig?.headHtml, { transform: parserTransform })}
                 </Head>
             </>
-        )
+        );
+        cleanParseContext(pageId);
+        return content;
     }
 
 

@@ -368,6 +368,30 @@ module.exports = {
                     }
                 },
             ]
+        },
+        {
+            id: "pages/attribution",
+            route: "pages/attribution",
+            name: "Attribution",
+            isVirtual: true,
+            modifications: [
+                {
+                    "id": "contacts_content",
+                    "type": "HTML",
+                    "isVirtual": true,
+                    "parentId": "PagesGenericPage_content",
+                    "index": 0,
+                    "style": {
+                        "margin": "40px 0",
+                        "padding": "20px",
+                        "backgroundColor": "#fff",
+                        "borderRadius": "5px"
+                    },
+                    "html": {
+                        "innerHTML": "<h1>Attribution</h1><div id=\"icons_attribution\" style={{ fontSize: '12px' }}>Icons made by <a href=\"http://www.freepik.com/\" title=\"Freepik\">Freepik</a>, <a href=\"https://www.flaticon.com/authors/kiranshastry\" title=\"Kiranshastry\">Kiranshastry</a>, <a href=\"https://www.flaticon.com/authors/roundicons\" title=\"Roundicons\">Roundicons</a>, <a href=\"https://www.flaticon.com/authors/monkik\" title=\"monkik\">monkik</a>, <a href=\"https://www.flaticon.com/authors/itim2101\" title=\"itim2101\">itim2101</a>, <a href=\"https://creativemarket.com/eucalyp\" title=\"Eucalyp\">Eucalyp</a>  from <a href=\"https://www.flaticon.com/\" title=\"Flaticon\"> www.flaticon.com</a>; <a href=\"https://www.vecteezy.com/free-vector/banner-cdr\">Banner Cdr Vectors by Vecteezy</a>; <a href=\"https://www.vecteezy.com/free-vector/banner\">Banner Vectors by Vecteezy</a></div>"
+                    }
+                },
+            ]
         }
     ],
     globalModifications: [

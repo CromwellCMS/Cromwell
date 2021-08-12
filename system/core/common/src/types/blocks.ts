@@ -34,6 +34,7 @@ export type TCromwellPageCoreProps = {
     palette?: TPalette | null;
     defaultPages?: Record<TDefaultPageName, string>;
     pageConfigName?: string;
+    resolvedPageRoute?: string;
 }
 
 export type CrwDocumentContextType = Partial<DocumentContext> & {

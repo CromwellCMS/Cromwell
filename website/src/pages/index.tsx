@@ -5,7 +5,6 @@ import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import styles from './index.module.css';
 
-
 export default function Home() {
   const { siteConfig } = useDocusaurusContext();
   return (
@@ -13,7 +12,7 @@ export default function Home() {
       title={`Hello from ${siteConfig.title}`}
       description="Description will go into a meta tag in <head />">
       <h1>Cromwell CMS</h1>
-      <p>It&apos;s time to make blazing-fast websites with ease</p>
+      <p>It&apos;s time for everyone to make blazing-fast websites</p>
     </Layout>
   );
 }
