@@ -37,6 +37,7 @@ export const Footer = () => {
                         <CText className={styles.blockHeader} id="footer_23">About us</CText>
                         <CText className={styles.blockLink} href="/blog" id="footer_26">Blog</CText>
                         <CText className={styles.blockLink} href="/pages/news" id="footer_27">News</CText>
+                        <CText className={styles.blockLink} href="/pages/attribution" id="footer_41">Attribution</CText>
                     </CContainer>
                 </CContainer>
             </CContainer>

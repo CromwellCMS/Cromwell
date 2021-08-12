@@ -11,6 +11,7 @@ export default function Footer() {
                 <CContainer className={styles.aboutSection} id="footer_08">
                     <CContainer className={styles.linksBlock} id="footer_09">
                         <CText className={styles.blockLink} id="footer_12">© Copyright 2021</CText>
+                        <CText href="/pages/attribution" className={styles.blockLink} id="footer_31">Attribution</CText>
                     </CContainer>
                     <CContainer className={styles.linksBlock} id="footer_22">
                         <CText className={styles.blockHeader} id="footer_23">About us</CText>
