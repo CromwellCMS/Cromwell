@@ -134,30 +134,6 @@
     margin-top: 15px;
 }
 
-.cmsInfo {
-    @include paper;
-    padding: 20px;
-
-    > p {
-        margin: 8px 0;
-    }
-}
-
-.cmsInfoHeader {
-    font-size: 20px;
-    font-weight: 500;
-    margin: 15px 0;
-}
-
-.iconsCredits {
-    font-size: 12px;
-    display: flex;
-
-    a {
-        color: $primaryColor;
-        margin: 0 2px;
-    }
-}
 
 @media screen and (max-width: $mobileBreakpoint) {
     // mobile

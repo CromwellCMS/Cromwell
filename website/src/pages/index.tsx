@@ -11,8 +11,11 @@ export default function Home() {
     <Layout
       title={`Hello from ${siteConfig.title}`}
       description="Description will go into a meta tag in <head />">
-      <h1>Cromwell CMS</h1>
-      <p>It&apos;s time for everyone to make blazing-fast websites</p>
+      <div className={styles.content}>
+        <h1 className={styles.header}>Cromwell CMS</h1>
+        <p className={styles.subheader}>It&apos;s time for everyone to make blazing-fast websites</p>
+        <p className={styles.subheader}>Easy to setup and maintain, Cromwell CMS brings bleeding-edge techs for you and your customers</p>
+      </div>
     </Layout>
   );
 }

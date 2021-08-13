@@ -16,9 +16,9 @@ describe('CMS Controller', () => {
         testDir = state.testDir;
     });
 
-    it(`/GET config`, () => {
+    it(`/GET settings`, () => {
         return request(server)
-            .get('/v1/cms/config')
+            .get('/v1/cms/settings')
             .expect(200)
             .then(response => {
                 const { apiPort, themeName } = response.body as TCmsSettings;

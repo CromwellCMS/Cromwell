@@ -4,6 +4,7 @@ export type TState = {
     isLoading: boolean;
     isSelecting: boolean;
     isCreatingFolder: boolean;
+    hasLoadingStatus: boolean;
 }
 
 export interface IFileManager {

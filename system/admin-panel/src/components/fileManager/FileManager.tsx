@@ -1,34 +1,34 @@
 import { isServer } from '@cromwell/core';
-import { getRestAPIClient, CList } from '@cromwell/core-frontend';
-import { Button, IconButton, MenuItem, TextField, Tooltip, Breadcrumbs } from '@material-ui/core';
+import { CList, getRestAPIClient } from '@cromwell/core-frontend';
+import { Breadcrumbs, Button, IconButton, TextField, Tooltip } from '@material-ui/core';
 import {
     ArrowBack as ArrowBackIcon,
+    ArrowDownward as ArrowDownwardIcon,
     ArrowForward as ArrowForwardIcon,
     Cancel as CancelIcon,
     CheckCircleOutline as CheckCircleOutlineIcon,
     CreateNewFolder as CreateNewFolderIcon,
     DeleteForever as DeleteForeverIcon,
-    Description as DescriptionIcon,
-    FolderOpen as FolderOpenIcon,
-    Publish as PublishIcon,
-    ZoomIn as ZoomInIcon,
-    NavigateNext as NavigateNextIcon,
     Home as HomeIcon,
+    NavigateNext as NavigateNextIcon,
+    Publish as PublishIcon,
 } from '@material-ui/icons';
 import React from 'react';
-import LazyLoad from 'react-lazy-load';
 
 import LoadBox from '../loadBox/LoadBox';
-import Pagination from '../pagination/Pagination';
+import { LoadingStatus } from '../loadBox/LoadingStatus';
 import Modal from '../modal/Modal';
+import Pagination from '../pagination/Pagination';
+import { toast } from '../toast/toast';
+import { FileItem } from './FileItem';
 import styles from './FileManager.module.scss';
 import { IFileManager, TItemType, TState } from './types';
+
 
 class FileManager extends React.Component<any, TState> implements IFileManager {
 
     private filePromise: Promise<string | undefined> | null = null;
     private fileResolver: (fileName?: string) => void;
-
     private currentPath: string | null = '/';
     private previousPaths: string[] = [];
     private nextPaths: string[] = [];
@@ -38,10 +38,10 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
     private selectButton: React.RefObject<HTMLButtonElement> = React.createRef();
     private createFolderBtn: React.RefObject<HTMLButtonElement> = React.createRef();
     private deleteItemBtn: React.RefObject<HTMLButtonElement> = React.createRef();
+    private downloadItemBtn: React.RefObject<HTMLButtonElement> = React.createRef();
     private createFolderWindow: React.RefObject<HTMLDivElement> = React.createRef();
     private selectedItem: HTMLLIElement | null = null;
     private selectedFileName: string | null = null;
-
 
     constructor(props) {
         super(props);
@@ -51,6 +51,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
             isLoading: false,
             isSelecting: false,
             isCreatingFolder: false,
+            hasLoadingStatus: false,
         };
 
         if (!isServer()) window.CromwellFileManager = this;
@@ -161,6 +162,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
         this.selectedFileName = null;
         if (this.selectButton.current) this.selectButton.current.style.opacity = '0.5';
         if (this.deleteItemBtn.current) this.deleteItemBtn.current.style.opacity = '0.5';
+        if (this.downloadItemBtn.current) this.downloadItemBtn.current.style.opacity = '0.5';
     }
 
     private onItemClick = (itemName: string) => () => {
@@ -201,6 +203,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
             this.selectButton.current.style.opacity = '1';
 
         if (this.deleteItemBtn.current) this.deleteItemBtn.current.style.opacity = '1';
+        if (this.downloadItemBtn.current) this.downloadItemBtn.current.style.opacity = '1';
     }
 
     private normalize = (path: string) => {
@@ -265,6 +268,19 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
             } catch (e) {
                 console.error(e)
             }
+        }
+    }
+
+    private handleDownloadItem = async () => {
+        if (this.selectedItem && this.selectedFileName) {
+            this.setState({ hasLoadingStatus: true });
+            try {
+                await getRestAPIClient()?.downloadPublicFile(this.selectedFileName, this.currentPath)
+            } catch (e) {
+                toast.error(e);
+                console.error(e);
+            }
+            this.setState({ hasLoadingStatus: false });
         }
     }
 
@@ -366,6 +382,15 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                                 <DeleteForeverIcon />
                             </IconButton>
                         </Tooltip>
+                        <Tooltip title="Download file">
+                            <IconButton className={styles.action}
+                                ref={this.downloadItemBtn}
+                                style={{ opacity: '0.5' }}
+                                onClick={this.handleDownloadItem}
+                            >
+                                <ArrowDownwardIcon />
+                            </IconButton>
+                        </Tooltip>
                     </div>
                     <div className={styles.headerRight}>
                         {this.state.isSelecting && (
@@ -407,7 +432,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                         <CList
                             className={styles.list}
                             cssClasses={{ page: styles.content }}
-                            id="filemanager_list"
+                            id="FileManager_List"
                             dataList={this.currentItems}
                             ListItem={FileItem}
                             pageSize={21}
@@ -446,6 +471,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
                 <div style={{ display: 'none' }}>
                     <input type="file" id="hidden-file-upload-input" multiple />
                 </div>
+                <LoadingStatus isActive={this.state?.hasLoadingStatus} />
             </Modal>
         );
     }
@@ -453,70 +479,3 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
 }
 
 export default FileManager;
-
-
-export type TFileItemProps = {
-    data: string;
-    listItemProps: ListItemProps;
-}
-
-export type ListItemProps = {
-    selectedFileName?: string;
-    currentPath?: string;
-    getItemType: (fileName: string) => TItemType;
-    normalize: (fileName: string) => string;
-    onItemClick: (itemName: string) => (event: React.MouseEvent<HTMLLIElement, MouseEvent>) => void;
-    openPreview: (fileName: string) => void;
-}
-
-
-const FileItem = (props: TFileItemProps) => {
-    const item = props.data;
-    const {
-        currentPath,
-        getItemType,
-        normalize,
-        onItemClick,
-        openPreview,
-        selectedFileName,
-    } = props.listItemProps;
-    const itemType: TItemType = getItemType(item);
-    let ItemIcon;
-    const isSelected = selectedFileName === item;
-
-    if (itemType === 'file') {
-        ItemIcon = <DescriptionIcon className={styles.itemIcon} />;
-    }
-    if (itemType === 'image') {
-        ItemIcon = (<div className={styles.itemImageContainer}>
-            <LazyLoad height={60} offsetVertical={60} className={styles.itemImageContainer}>
-                <img className={styles.itemImage}
-                    src={normalize(`/${currentPath}/${item}`)} />
-            </LazyLoad>
-        </div>);
-    }
-    if (itemType === 'folder') {
-        ItemIcon = <FolderOpenIcon className={styles.itemIcon} />;
-    }
-
-    return (
-        <MenuItem className={`${styles.item} ${isSelected ? styles.selectedItem : ''}`}
-            onClick={onItemClick(item)}
-            id={'item__' + item}
-            key={item}
-        >
-            {itemType === 'image' && (
-                <IconButton className={styles.zoomItemBtn}
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        openPreview(item);
-                    }}
-                >
-                    <ZoomInIcon />
-                </IconButton>
-            )}
-            {ItemIcon}
-            <p>{item}</p>
-        </MenuItem>
-    )
-}

@@ -22,27 +22,28 @@ import {
     DragIndicator as DragIndicatorIcon,
     Email as EmailIcon,
     ExpandMore as ExpandMoreIcon,
+    HelpOutline as HelpOutlineIcon,
     ImportExport as ImportExportIcon,
     MonetizationOn as MonetizationOnIcon,
-    Public as PublicIcon,
-    Store as StoreIcon,
-    Search as SearchIcon,
     OpenInNew as OpenInNewIcon,
+    Public as PublicIcon,
+    Search as SearchIcon,
+    Store as StoreIcon,
 } from '@material-ui/icons';
 import clsx from 'clsx';
-import { HelpOutline as HelpOutlineIcon } from '@material-ui/icons';
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 
+import CmsInfo from '../../components/cmsInfo/CmsInfo';
 import ImagePicker from '../../components/imagePicker/ImagePicker';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
-import Modal from '../../components/modal/Modal';
 import { toast } from '../../components/toast/toast';
 import { languages } from '../../constants/languages';
 import { timezones } from '../../constants/timezones';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import commonStyles from '../../styles/common.module.scss';
 import styles from './Settings.module.scss';
+
 
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
@@ -108,8 +109,11 @@ class SettingsPage extends React.Component<any, {
         const client = getRestAPIClient();
         try {
             const settings = await client.getAdminCmsSettings();
-            if (!Array.isArray(settings.currencies)) settings.currencies = [];
-            if (settings) this.setState({ settings });
+            if (settings) {
+                if (!Array.isArray(settings.currencies)) settings.currencies = [];
+                this.setState({ settings });
+                setStoreItem('cmsSettings', settings)
+            }
         } catch (e) {
             console.error(e);
         }
@@ -657,22 +661,10 @@ class SettingsPage extends React.Component<any, {
                         onClick={() => this.setState({ cmsInfoOpen: true })}
                     >Cromwell CMS v.{settings?.cmsInfo?.packages['@cromwell/cms']}</p>
                 </div>
-                <Modal
+                <CmsInfo
                     open={this.state.cmsInfoOpen}
-                    blurSelector="#root"
-                    className={commonStyles.center}
                     onClose={() => this.setState({ cmsInfoOpen: false })}
-                >
-                    <div className={styles.cmsInfo}>
-                        <h4 className={styles.cmsInfoHeader}>System packages</h4>
-                        {Object.entries(settings?.cmsInfo?.packages ?? {})
-                            .sort((a, b) => a[0] < b[0] ? -1 : 1).map(pckg => (
-                                <p key={pckg[0]}>{pckg[0]}: {pckg[1]}</p>
-                            ))}
-                        <h4 className={styles.cmsInfoHeader}>Attribution</h4>
-                        <div id="icons_attribution" className={styles.iconsCredits} >Icons made by <a href="http://www.freepik.com/" title="Freepik">Freepik</a>, <a href="https://icon54.com/" title="Pixel perfect"> Pixel perfect</a>, <a href="https://www.flaticon.com/authors/smashicons" title="Smashicons">Smashicons</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a></div>
-                    </div>
-                </Modal>
+                />
                 <LoadingStatus isActive={this.state?.exporting || this.state?.buildingSitemap} />
             </div>
         )

@@ -7,7 +7,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { onStoreChange, setStoreItem } from '@cromwell/core';
+import { onStoreChange, setStoreItem, TUser } from '@cromwell/core';
 import { getGraphQLClient, getRestAPIClient, TErrorInfo } from '@cromwell/core-frontend';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -36,16 +36,21 @@ import { store } from './redux/store';
         userInfo,
         themeConfig
     ] = await Promise.all([
-        request(restClient?.getCmsSettingsAndSave({ disableLog: true })),
+        request(restClient?.getCmsSettings({ disableLog: true })),
         request(restClient?.getUserInfo({ disableLog: true })),
         request(restClient?.getThemeConfig({ disableLog: true })),
     ]);
+
+    if (settings) {
+        setStoreItem('cmsSettings', settings);
+    }
 
     // Redirect to /setup page if not installed
     if (settings && !settings.installed) {
         isInstalled = false;
         if (!window.location.hash.includes(welcomePageInfo.route)) {
             window.location.href = '/admin/#' + welcomePageInfo.route;
+            return;
             // window.location.reload();
         }
     }
@@ -63,6 +68,7 @@ import { store } from './redux/store';
         if (!userInfo?.id) {
             if (!window.location.hash.includes(loginPageInfo.route)) {
                 window.location.href = '/admin/#' + loginPageInfo.route;
+                return;
                 // window.location.reload();
             }
         }
@@ -93,12 +99,14 @@ import { store } from './redux/store';
     if (isInstalled) {
         if (window.location.hash.includes(welcomePageInfo.route)) {
             window.location.href = '/admin/#' + loginPageInfo.route;
+            return;
         }
 
         // Redirect to /login page if not authorized
         if (!userInfo) {
             if (!window.location.hash.includes(loginPageInfo.route)) {
                 window.location.href = '/admin/#' + loginPageInfo.route;
+                return;
                 // window.location.reload();
             }
         }
@@ -113,13 +121,26 @@ import { store } from './redux/store';
         setStoreItem('defaultPages', themeConfig?.defaultPages);
     }
 
+    const onUserLogged = async (info: TUser) => {
+        if (info?.role) {
+            setTimeout(() => loadPlugins({ onlyNew: true }), 50);
+
+            try {
+                const settings = await restClient.getAdminCmsSettings();
+                if (settings) {
+                    setStoreItem('cmsSettings', settings)
+                }
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    }
+
     if (userInfo?.role) {
-        setTimeout(() => loadPlugins({ onlyNew: true }), 50);
+        onUserLogged(userInfo);
     } else {
         onStoreChange('userInfo', (info) => {
-            if (info?.role) {
-                setTimeout(() => loadPlugins({ onlyNew: true }), 50);
-            }
+            onUserLogged(info);
         });
     }
 
