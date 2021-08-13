@@ -19,7 +19,7 @@ export const LoadingStatus = (props: { isActive: boolean }) => {
         // open loader
         if (toastId.current) toast.dismiss(toastId.current);
 
-        toastId.current = toast(({ closeToast }) =>
+        toastId.current = toast(() =>
             <div
                 className={styles.LoadingStatus}
             ><Loadbox size={44} /></div>, {

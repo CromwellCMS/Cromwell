@@ -17,12 +17,16 @@ import {
     Close as CloseIcon,
     ExitToApp as ExitToAppIcon,
     HelpOutline as HelpOutlineIcon,
+    PermMediaOutlined as PermMediaOutlinedIcon,
+    InfoOutlined as InfoOutlinedIcon,
     Menu as MenuIcon,
     MoreVertOutlined as MoreVertOutlinedIcon,
 } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
+import { getFileManager } from '../fileManager/helpers';
 
+import CmsInfo from '../cmsInfo/CmsInfo';
 import { getLinkByInfo, loginPageInfo, pageInfos, sideBarLinks, userPageInfo } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';
 import NotificationCenter from '../notificationCenter/NotificationCenter';
@@ -36,6 +40,7 @@ export default function Sidebar() {
     const [optionsOpen, setOptionsOpen] = useState<boolean>(false);
     const [activeId, setActiveId] = useState<string | null>(currentLink?.id ?? null);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const [cmsInfoOpen, setCmsInfoOpen] = useState(false);
     const popperAnchorEl = useRef<HTMLDivElement | null>(null);
     const history = useHistory?.();
     const forceUpdate = useForceUpdate();
@@ -75,6 +80,18 @@ export default function Sidebar() {
 
     const handleOptionsToggle = () => {
         setOptionsOpen(!optionsOpen);
+    }
+
+    const openFileManager = () => {
+        getFileManager()?.getPhoto({ initialFileLocation: '' });
+    }
+
+    const openCmsInfo = () => {
+        setCmsInfoOpen(true);
+    }
+
+    const openDocs = () => {
+        window.open('https://cromwellcms.com/docs/overview/intro', '_blank')
     }
 
     // check for diabled sidebar
@@ -143,9 +160,17 @@ export default function Sidebar() {
                                     <p>Your profile</p>
                                 </MenuItem>
                             </Link>
-                            <MenuItem className={styles.optionsItem}>
+                            <MenuItem className={styles.optionsItem} onClick={openFileManager}>
+                                <PermMediaOutlinedIcon />
+                                <p>Media</p>
+                            </MenuItem>
+                            <MenuItem className={styles.optionsItem} onClick={openCmsInfo}>
+                                <InfoOutlinedIcon />
+                                <p>CMS specs</p>
+                            </MenuItem>
+                            <MenuItem className={styles.optionsItem} onClick={openDocs}>
                                 <HelpOutlineIcon />
-                                <p>Support center</p>
+                                <p>Documentation</p>
                             </MenuItem>
                             <MenuItem onClick={handleLogout} className={styles.optionsItem}>
                                 <ExitToAppIcon />
@@ -190,6 +215,10 @@ export default function Sidebar() {
                     <div className={styles.drawer}>{sidebarContent}</div>
                 </SwipeableDrawer>
             </div>
+            <CmsInfo
+                open={cmsInfoOpen}
+                onClose={() => setCmsInfoOpen(false)}
+            />
             <div className={styles.desktopContent}>{sidebarContent}</div>
         </div>
     )

@@ -63,7 +63,7 @@ export class CmsController {
         private readonly migrationService: MigrationService,
     ) { }
 
-    @Get('config')
+    @Get('settings')
     @ApiOperation({ description: 'Returns public CMS settings from DB and cmsconfig.json' })
     @ApiResponse({
         status: 200,
@@ -80,7 +80,7 @@ export class CmsController {
     }
 
 
-    @Get('admin-config')
+    @Get('admin-settings')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator', 'guest')
     @ApiOperation({ description: 'Returns admin CMS settings from DB and cmsconfig.json' })
@@ -95,7 +95,7 @@ export class CmsController {
     }
 
 
-    @Post('admin-config')
+    @Post('admin-settings')
     @UseGuards(JwtAuthGuard)
     @Roles('administrator')
     @ApiOperation({
@@ -228,6 +228,43 @@ export class CmsController {
 
         await this.cmsService.uploadFile(req, fullPath)
         return 'true';
+    }
+
+
+    @Get('download-public-file')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator', 'guest')
+    @ApiOperation({
+        description: 'Downloads a file from specified subfolder of "public" files',
+        parameters: [
+            { name: 'inPath', in: 'query' },
+            { name: 'fileName', in: 'query' }]
+    })
+    @ApiResponse({
+        status: 200,
+    })
+    @ApiForbiddenResponse({ description: 'Forbidden.' })
+    async downloadFile(@Query('inPath') inPath: string, @Query('fileName') fileName: string,
+        @Req() req: any, @Response() response: FastifyReply) {
+        logger.log('CmsController::downloadFile');
+        const fullPath = join(getPublicDir(), inPath ?? '', fileName);
+
+        if (! await fs.pathExists(fullPath)) {
+            response.code(404).send({ message: 'File not found' });
+            return;
+        }
+        if (!(await fs.lstat(fullPath)).isFile()) {
+            response.code(423).send({ message: 'Not a file' });
+            return;
+        }
+
+        try {
+            const readStream = fs.createReadStream(fullPath);
+            response.type('text/html').send(readStream);
+        } catch (error) {
+            logger.error(error);
+            response.code(500).send({ message: error + '' });
+        }
     }
 
 

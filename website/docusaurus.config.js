@@ -61,8 +61,16 @@ module.exports = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
+              label: 'Overview',
               to: '/docs/overview/intro',
+            },
+            {
+              label: 'Features',
+              to: '/docs/features/features',
+            },
+            {
+              label: 'Development',
+              to: '/docs/development/theme-development',
             },
           ],
         },

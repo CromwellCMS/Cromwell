@@ -4,7 +4,6 @@ import {
     serviceLocator,
     setStoreItem,
     TCCSVersion,
-    TCmsInfo,
     TCmsSettings,
     TCmsStats,
     TCmsStatus,
@@ -322,7 +321,7 @@ export class CRestAPIClient {
      * @auth no
      */
     public getCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings> => {
-        return this.get(`v1/cms/config`, options);
+        return this.get(`v1/cms/settings`, options);
     }
 
     /**
@@ -330,22 +329,9 @@ export class CRestAPIClient {
      * @auth admin
      */
     public getAdminCmsSettings = async (options?: TRequestOptions): Promise<TCmsSettings & {
-        cmsInfo?: TCmsInfo;
         robotsContent?: string;
     }> => {
-        return this.get(`v1/cms/admin-config`, options);
-    }
-
-    /**
-     * Get public CMS settings and save into the store
-     * @auth no
-     */
-    public getCmsSettingsAndSave = async (options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
-        const config = await this.getCmsSettings(options);
-        if (config) {
-            setStoreItem('cmsSettings', config);
-            return config;
-        }
+        return this.get(`v1/cms/admin-settings`, options);
     }
 
     /**
@@ -355,7 +341,7 @@ export class CRestAPIClient {
     public saveCmsSettings = async (input: TCmsSettings & {
         robotsContent?: string;
     }, options?: TRequestOptions): Promise<TCmsSettings | undefined> => {
-        return this.post(`v1/cms/admin-config`, input, options);
+        return this.post(`v1/cms/admin-settings`, input, options);
     }
 
     /**
@@ -372,6 +358,30 @@ export class CRestAPIClient {
      */
     public createPublicDir = (dirName: string, inPath?: string, options?: TRequestOptions): Promise<string[] | null | undefined> => {
         return this.get(`v1/cms/create-public-dir?inPath=${inPath ?? '/'}&dirName=${dirName}`, options);
+    }
+
+    /**
+    * Download a public file
+    * @auth admin
+    */
+    public downloadPublicFile = async (fileName: string, inPath?: string, options?: TRequestOptions) => {
+        const url = `${this.getBaseUrl()}/v1/cms/download-public-file?inPath=${inPath ?? '/'}&fileName=${fileName}`;
+        const response = await fetch(url, {
+            method: 'GET',
+            credentials: 'include',
+            ...(options ?? {}),
+        });
+        const [data, errorInfo] = await this.handleError(response, await response.blob(), url, options?.disableLog);
+        if (errorInfo) {
+            this.throwError(errorInfo, url, options);
+        }
+
+        const a = document.createElement('a');
+        a.href = window.URL.createObjectURL(data);
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
     }
 
     /**

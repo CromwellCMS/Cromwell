@@ -186,6 +186,7 @@ export type TCmsConfig = {
     serviceSecret?: string;
     redirects?: TCmsRedirect[];
     rewrites?: TCmsRedirect[];
+    cmsInfo?: TCmsInfo;
 };
 
 /**

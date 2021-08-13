@@ -82,7 +82,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
     private getThemeList = async () => {
         try {
             const client = getRestAPIClient();
-            const updatedConfig = await client?.getCmsSettingsAndSave();
+            const updatedConfig = await client?.getCmsSettings();
             this.setState({ cmsConfig: updatedConfig })
 
             // Get info by parsing directory 
