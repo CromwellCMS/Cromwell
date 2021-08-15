@@ -9,7 +9,7 @@ const testData = {
 jest.mock('@cromwell/core-frontend', () => {
     return {
         ...jest.requireActual('@cromwell/core-frontend'),
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 createPaymentSession: () => ({
                     orderTotalPrice: 10,

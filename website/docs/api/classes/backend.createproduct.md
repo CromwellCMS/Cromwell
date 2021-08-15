@@ -18,24 +18,24 @@
 
 ### Constructors
 
-- [constructor](backend.CreateProduct.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [attributes](backend.CreateProduct.md#attributes)
-- [categoryIds](backend.CreateProduct.md#categoryids)
-- [description](backend.CreateProduct.md#description)
-- [descriptionDelta](backend.CreateProduct.md#descriptiondelta)
-- [images](backend.CreateProduct.md#images)
-- [isEnabled](backend.CreateProduct.md#isenabled)
-- [mainImage](backend.CreateProduct.md#mainimage)
-- [name](backend.CreateProduct.md#name)
-- [oldPrice](backend.CreateProduct.md#oldprice)
-- [pageDescription](backend.CreateProduct.md#pagedescription)
-- [pageTitle](backend.CreateProduct.md#pagetitle)
-- [price](backend.CreateProduct.md#price)
-- [sku](backend.CreateProduct.md#sku)
-- [slug](backend.CreateProduct.md#slug)
+- [attributes](#attributes)
+- [categoryIds](#categoryids)
+- [description](#description)
+- [descriptionDelta](#descriptiondelta)
+- [images](#images)
+- [isEnabled](#isenabled)
+- [mainImage](#mainimage)
+- [name](#name)
+- [oldPrice](#oldprice)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [price](#price)
+- [sku](#sku)
+- [slug](#slug)
 
 ## Constructors
 

@@ -14,11 +14,11 @@
 
 ### Constructors
 
-- [constructor](frontend.CImage.md#constructor)
+- [constructor](#constructor)
 
 ### Methods
 
-- [render](frontend.CImage.md#render)
+- [render](#render)
 
 ## Constructors
 

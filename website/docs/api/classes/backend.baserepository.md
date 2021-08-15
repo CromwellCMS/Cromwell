@@ -39,26 +39,26 @@
 
 ### Constructors
 
-- [constructor](backend.BaseRepository.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [dbType](backend.BaseRepository.md#dbtype)
+- [dbType](#dbtype)
 
 ### Methods
 
-- [applyDeleteMany](backend.BaseRepository.md#applydeletemany)
-- [createEntity](backend.BaseRepository.md#createentity)
-- [deleteEntity](backend.BaseRepository.md#deleteentity)
-- [deleteMany](backend.BaseRepository.md#deletemany)
-- [getAll](backend.BaseRepository.md#getall)
-- [getById](backend.BaseRepository.md#getbyid)
-- [getBySlug](backend.BaseRepository.md#getbyslug)
-- [getPaged](backend.BaseRepository.md#getpaged)
-- [getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
-- [getSqlLike](backend.BaseRepository.md#getsqllike)
-- [quote](backend.BaseRepository.md#quote)
-- [updateEntity](backend.BaseRepository.md#updateentity)
+- [applyDeleteMany](#applydeletemany)
+- [createEntity](#createentity)
+- [deleteEntity](#deleteentity)
+- [deleteMany](#deletemany)
+- [getAll](#getall)
+- [getById](#getbyid)
+- [getBySlug](#getbyslug)
+- [getPaged](#getpaged)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [quote](#quote)
+- [updateEntity](#updateentity)
 
 ## Constructors
 

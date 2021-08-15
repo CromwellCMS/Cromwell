@@ -1,76 +1,77 @@
-[@cromwell/root](../README.md) / [Exports](../modules.md) / [frontend](../modules/frontend.md) / CRestAPIClient
+[@cromwell/root](../README.md) / [Exports](../modules.md) / [frontend](../modules/frontend.md) / CRestApiClient
 
-# Class: CRestAPIClient
+# Class: CRestApiClient
 
-[frontend](../modules/frontend.md).CRestAPIClient
+[frontend](../modules/frontend.md).CRestApiClient
 
-CRestAPIClient - CromwellCMS REST API Client
+CRestApiClient - CromwellCMS REST API Client
 
 ## Table of contents
 
 ### Methods
 
-- [activatePlugin](frontend.CRestAPIClient.md#activateplugin)
-- [activateTheme](frontend.CRestAPIClient.md#activatetheme)
-- [changeTheme](frontend.CRestAPIClient.md#changetheme)
-- [createPaymentSession](frontend.CRestAPIClient.md#createpaymentsession)
-- [createPublicDir](frontend.CRestAPIClient.md#createpublicdir)
-- [delete](frontend.CRestAPIClient.md#delete)
-- [deletePage](frontend.CRestAPIClient.md#deletepage)
-- [deletePlugin](frontend.CRestAPIClient.md#deleteplugin)
-- [deleteTheme](frontend.CRestAPIClient.md#deletetheme)
-- [exportDB](frontend.CRestAPIClient.md#exportdb)
-- [fetch](frontend.CRestAPIClient.md#fetch)
-- [forgotPassword](frontend.CRestAPIClient.md#forgotpassword)
-- [get](frontend.CRestAPIClient.md#get)
-- [getAdminCmsSettings](frontend.CRestAPIClient.md#getadmincmssettings)
-- [getBaseUrl](frontend.CRestAPIClient.md#getbaseurl)
-- [getCmsSettings](frontend.CRestAPIClient.md#getcmssettings)
-- [getCmsSettingsAndSave](frontend.CRestAPIClient.md#getcmssettingsandsave)
-- [getCmsStats](frontend.CRestAPIClient.md#getcmsstats)
-- [getCmsStatus](frontend.CRestAPIClient.md#getcmsstatus)
-- [getOrderTotal](frontend.CRestAPIClient.md#getordertotal)
-- [getPageConfig](frontend.CRestAPIClient.md#getpageconfig)
-- [getPageConfigs](frontend.CRestAPIClient.md#getpageconfigs)
-- [getPagesInfo](frontend.CRestAPIClient.md#getpagesinfo)
-- [getPluginAdminBundle](frontend.CRestAPIClient.md#getpluginadminbundle)
-- [getPluginFrontendBundle](frontend.CRestAPIClient.md#getpluginfrontendbundle)
-- [getPluginList](frontend.CRestAPIClient.md#getpluginlist)
-- [getPluginNames](frontend.CRestAPIClient.md#getpluginnames)
-- [getPluginSettings](frontend.CRestAPIClient.md#getpluginsettings)
-- [getPluginUpdate](frontend.CRestAPIClient.md#getpluginupdate)
-- [getPluginsAtPage](frontend.CRestAPIClient.md#getpluginsatpage)
-- [getThemeConfig](frontend.CRestAPIClient.md#getthemeconfig)
-- [getThemeInfo](frontend.CRestAPIClient.md#getthemeinfo)
-- [getThemePageBundle](frontend.CRestAPIClient.md#getthemepagebundle)
-- [getThemeUpdate](frontend.CRestAPIClient.md#getthemeupdate)
-- [getThemesInfo](frontend.CRestAPIClient.md#getthemesinfo)
-- [getUserInfo](frontend.CRestAPIClient.md#getuserinfo)
-- [importDB](frontend.CRestAPIClient.md#importdb)
-- [installPlugin](frontend.CRestAPIClient.md#installplugin)
-- [installTheme](frontend.CRestAPIClient.md#installtheme)
-- [launchCmsUpdate](frontend.CRestAPIClient.md#launchcmsupdate)
-- [logOut](frontend.CRestAPIClient.md#logout)
-- [login](frontend.CRestAPIClient.md#login)
-- [onError](frontend.CRestAPIClient.md#onerror)
-- [onUnauthorized](frontend.CRestAPIClient.md#onunauthorized)
-- [placeOrder](frontend.CRestAPIClient.md#placeorder)
-- [placeProductReview](frontend.CRestAPIClient.md#placeproductreview)
-- [post](frontend.CRestAPIClient.md#post)
-- [put](frontend.CRestAPIClient.md#put)
-- [readPublicDir](frontend.CRestAPIClient.md#readpublicdir)
-- [removeOnError](frontend.CRestAPIClient.md#removeonerror)
-- [removeOnUnauthorized](frontend.CRestAPIClient.md#removeonunauthorized)
-- [removePublicDir](frontend.CRestAPIClient.md#removepublicdir)
-- [resetPage](frontend.CRestAPIClient.md#resetpage)
-- [resetPassword](frontend.CRestAPIClient.md#resetpassword)
-- [saveCmsSettings](frontend.CRestAPIClient.md#savecmssettings)
-- [savePageConfig](frontend.CRestAPIClient.md#savepageconfig)
-- [savePluginSettings](frontend.CRestAPIClient.md#savepluginsettings)
-- [signUp](frontend.CRestAPIClient.md#signup)
-- [updatePlugin](frontend.CRestAPIClient.md#updateplugin)
-- [updateTheme](frontend.CRestAPIClient.md#updatetheme)
-- [uploadPublicFiles](frontend.CRestAPIClient.md#uploadpublicfiles)
+- [activatePlugin](#activateplugin)
+- [activateTheme](#activatetheme)
+- [buildSitemap](#buildsitemap)
+- [changeTheme](#changetheme)
+- [createPaymentSession](#createpaymentsession)
+- [createPublicDir](#createpublicdir)
+- [delete](#delete)
+- [deletePage](#deletepage)
+- [deletePlugin](#deleteplugin)
+- [deleteTheme](#deletetheme)
+- [downloadPublicFile](#downloadpublicfile)
+- [exportDB](#exportdb)
+- [fetch](#fetch)
+- [forgotPassword](#forgotpassword)
+- [get](#get)
+- [getAdminCmsSettings](#getadmincmssettings)
+- [getBaseUrl](#getbaseurl)
+- [getCmsSettings](#getcmssettings)
+- [getCmsStats](#getcmsstats)
+- [getCmsStatus](#getcmsstatus)
+- [getOrderTotal](#getordertotal)
+- [getPageConfig](#getpageconfig)
+- [getPageConfigs](#getpageconfigs)
+- [getPagesInfo](#getpagesinfo)
+- [getPluginAdminBundle](#getpluginadminbundle)
+- [getPluginFrontendBundle](#getpluginfrontendbundle)
+- [getPluginList](#getpluginlist)
+- [getPluginNames](#getpluginnames)
+- [getPluginSettings](#getpluginsettings)
+- [getPluginUpdate](#getpluginupdate)
+- [getPluginsAtPage](#getpluginsatpage)
+- [getThemeConfig](#getthemeconfig)
+- [getThemeInfo](#getthemeinfo)
+- [getThemePageBundle](#getthemepagebundle)
+- [getThemeUpdate](#getthemeupdate)
+- [getThemesInfo](#getthemesinfo)
+- [getUserInfo](#getuserinfo)
+- [importDB](#importdb)
+- [installPlugin](#installplugin)
+- [installTheme](#installtheme)
+- [launchCmsUpdate](#launchcmsupdate)
+- [logOut](#logout)
+- [login](#login)
+- [onError](#onerror)
+- [onUnauthorized](#onunauthorized)
+- [placeOrder](#placeorder)
+- [placeProductReview](#placeproductreview)
+- [post](#post)
+- [put](#put)
+- [readPublicDir](#readpublicdir)
+- [removeOnError](#removeonerror)
+- [removeOnUnauthorized](#removeonunauthorized)
+- [removePublicDir](#removepublicdir)
+- [resetPage](#resetpage)
+- [resetPassword](#resetpassword)
+- [saveCmsSettings](#savecmssettings)
+- [savePageConfig](#savepageconfig)
+- [savePluginSettings](#savepluginsettings)
+- [signUp](#signup)
+- [updatePlugin](#updateplugin)
+- [updateTheme](#updatetheme)
+- [uploadPublicFiles](#uploadpublicfiles)
 
 ## Methods
 
@@ -95,7 +96,7 @@ Active disabled Plugin
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:432](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L432)
+system/core/frontend/src/api/CRestApiClient.ts:449
 
 ___
 
@@ -120,7 +121,31 @@ Active disabled Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:423](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L423)
+system/core/frontend/src/api/CRestApiClient.ts:440
+
+___
+
+### buildSitemap
+
+▸ **buildSitemap**(`options?`): `Promise`<`undefined` \| `TCmsSettings`\>
+
+Build sitemap at /default_sitemap.xml
+
+**`auth`** admin
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
+
+#### Returns
+
+`Promise`<`undefined` \| `TCmsSettings`\>
+
+#### Defined in
+
+system/core/frontend/src/api/CRestApiClient.ts:573
 
 ___
 
@@ -145,7 +170,7 @@ Set active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:441](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L441)
+system/core/frontend/src/api/CRestApiClient.ts:458
 
 ___
 
@@ -170,7 +195,7 @@ Calculate total price of a cart and creates a payment session via service provid
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:458](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L458)
+system/core/frontend/src/api/CRestApiClient.ts:475
 
 ___
 
@@ -196,7 +221,7 @@ Crates a public directory by specified path
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:368](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L368)
+system/core/frontend/src/api/CRestApiClient.ts:359
 
 ___
 
@@ -227,7 +252,7 @@ Makes DELETE request to specified route
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:208](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L208)
+system/core/frontend/src/api/CRestApiClient.ts:207
 
 ___
 
@@ -252,7 +277,7 @@ Delete generic page of currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:612](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L612)
+system/core/frontend/src/api/CRestApiClient.ts:637
 
 ___
 
@@ -277,7 +302,7 @@ Delete (uninstall) Plugin
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:734](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L734)
+system/core/frontend/src/api/CRestApiClient.ts:759
 
 ___
 
@@ -302,7 +327,33 @@ Delete (uninstall) Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:587](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L587)
+system/core/frontend/src/api/CRestApiClient.ts:612
+
+___
+
+### downloadPublicFile
+
+▸ **downloadPublicFile**(`fileName`, `inPath?`, `options?`): `Promise`<`void`\>
+
+Download a public file
+
+**`auth`** admin
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `fileName` | `string` |
+| `inPath?` | `string` |
+| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
+
+#### Returns
+
+`Promise`<`void`\>
+
+#### Defined in
+
+system/core/frontend/src/api/CRestApiClient.ts:367
 
 ___
 
@@ -327,7 +378,7 @@ Export database into Excel (.xlsx) file.
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:507](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L507)
+system/core/frontend/src/api/CRestApiClient.ts:524
 
 ___
 
@@ -358,7 +409,7 @@ Make a custom request to a specified route
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:149](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L149)
+system/core/frontend/src/api/CRestApiClient.ts:148
 
 ___
 
@@ -384,7 +435,7 @@ Initiate reset password transaction. Will send a code to user's email
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:269](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L269)
+system/core/frontend/src/api/CRestApiClient.ts:268
 
 ___
 
@@ -415,13 +466,13 @@ Makes GET request to specified route
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:188](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L188)
+system/core/frontend/src/api/CRestApiClient.ts:187
 
 ___
 
 ### getAdminCmsSettings
 
-▸ **getAdminCmsSettings**(`options?`): `Promise`<`TCmsConfig` & `TCmsPublicSettings` & `TCmsAdminSettings` & `TCmsInternalSettings` & { `cmsInfo?`: `TCmsInfo`  }\>
+▸ **getAdminCmsSettings**(`options?`): `Promise`<`TCmsConfig` & `TCmsPublicSettings` & `TCmsAdminSettings` & `TCmsInternalSettings` & { `robotsContent?`: `string`  }\>
 
 Get admin CMS settings
 
@@ -435,11 +486,11 @@ Get admin CMS settings
 
 #### Returns
 
-`Promise`<`TCmsConfig` & `TCmsPublicSettings` & `TCmsAdminSettings` & `TCmsInternalSettings` & { `cmsInfo?`: `TCmsInfo`  }\>
+`Promise`<`TCmsConfig` & `TCmsPublicSettings` & `TCmsAdminSettings` & `TCmsInternalSettings` & { `robotsContent?`: `string`  }\>
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:332](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L332)
+system/core/frontend/src/api/CRestApiClient.ts:331
 
 ___
 
@@ -453,7 +504,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:64](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L64)
+system/core/frontend/src/api/CRestApiClient.ts:63
 
 ___
 
@@ -477,31 +528,7 @@ Get public CMS settings
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:324](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L324)
-
-___
-
-### getCmsSettingsAndSave
-
-▸ **getCmsSettingsAndSave**(`options?`): `Promise`<`undefined` \| `TCmsSettings`\>
-
-Get public CMS settings and save into the store
-
-**`auth`** no
-
-#### Parameters
-
-| Name | Type |
-| :------ | :------ |
-| `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
-
-#### Returns
-
-`Promise`<`undefined` \| `TCmsSettings`\>
-
-#### Defined in
-
-[system/core/frontend/src/api/CRestAPIClient.ts:340](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L340)
+system/core/frontend/src/api/CRestApiClient.ts:323
 
 ___
 
@@ -525,7 +552,7 @@ Get CMS recent statistics, for Admin panel home page
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:482](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L482)
+system/core/frontend/src/api/CRestApiClient.ts:499
 
 ___
 
@@ -549,7 +576,7 @@ Get CMS updates info
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:490](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L490)
+system/core/frontend/src/api/CRestApiClient.ts:507
 
 ___
 
@@ -574,7 +601,7 @@ Calculate total price of a cart
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:450](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L450)
+system/core/frontend/src/api/CRestApiClient.ts:467
 
 ___
 
@@ -599,7 +626,7 @@ Get page config by page route of currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:595](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L595)
+system/core/frontend/src/api/CRestApiClient.ts:620
 
 ___
 
@@ -623,7 +650,7 @@ Get all page config of currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:656](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L656)
+system/core/frontend/src/api/CRestApiClient.ts:681
 
 ___
 
@@ -647,7 +674,7 @@ Get all pages info of currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:648](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L648)
+system/core/frontend/src/api/CRestApiClient.ts:673
 
 ___
 
@@ -672,7 +699,7 @@ Get admin panel bundle of Plugin
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:771](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L771)
+system/core/frontend/src/api/CRestApiClient.ts:796
 
 ___
 
@@ -697,7 +724,7 @@ Get frontend bundle of Plugin
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:762](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L762)
+system/core/frontend/src/api/CRestApiClient.ts:787
 
 ___
 
@@ -721,7 +748,7 @@ List all installed Plugins
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:410](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L410)
+system/core/frontend/src/api/CRestApiClient.ts:425
 
 ___
 
@@ -745,7 +772,7 @@ Get all used Plugins in currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:640](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L640)
+system/core/frontend/src/api/CRestApiClient.ts:665
 
 ___
 
@@ -770,7 +797,7 @@ Get settings of Plugin
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:743](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L743)
+system/core/frontend/src/api/CRestApiClient.ts:768
 
 ___
 
@@ -795,7 +822,7 @@ Get available update info for Plugin
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:707](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L707)
+system/core/frontend/src/api/CRestApiClient.ts:732
 
 ___
 
@@ -820,7 +847,7 @@ Get all used Plugins at specified page of currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:628](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L628)
+system/core/frontend/src/api/CRestApiClient.ts:653
 
 ___
 
@@ -844,7 +871,7 @@ Get theme config of currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:672](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L672)
+system/core/frontend/src/api/CRestApiClient.ts:697
 
 ___
 
@@ -868,7 +895,7 @@ Get theme info of currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:664](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L664)
+system/core/frontend/src/api/CRestApiClient.ts:689
 
 ___
 
@@ -893,7 +920,7 @@ Get Admin panel page bundle by specified route of currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:685](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L685)
+system/core/frontend/src/api/CRestApiClient.ts:710
 
 ___
 
@@ -918,7 +945,7 @@ Check if Theme has available update
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:561](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L561)
+system/core/frontend/src/api/CRestApiClient.ts:586
 
 ___
 
@@ -942,7 +969,7 @@ Get info about currently used Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:402](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L402)
+system/core/frontend/src/api/CRestApiClient.ts:417
 
 ___
 
@@ -966,7 +993,7 @@ Returns currently logged user profile
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:253](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L253)
+system/core/frontend/src/api/CRestApiClient.ts:252
 
 ___
 
@@ -991,7 +1018,7 @@ Import database from Excel (.xlsx) file/files
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:533](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L533)
+system/core/frontend/src/api/CRestApiClient.ts:550
 
 ___
 
@@ -1016,7 +1043,7 @@ Install a new Plugin
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:725](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L725)
+system/core/frontend/src/api/CRestApiClient.ts:750
 
 ___
 
@@ -1041,7 +1068,7 @@ Install a new Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:578](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L578)
+system/core/frontend/src/api/CRestApiClient.ts:603
 
 ___
 
@@ -1065,7 +1092,7 @@ Launch CMS update
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:498](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L498)
+system/core/frontend/src/api/CRestApiClient.ts:515
 
 ___
 
@@ -1089,7 +1116,7 @@ Logs user out via cookies
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:244](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L244)
+system/core/frontend/src/api/CRestApiClient.ts:243
 
 ___
 
@@ -1116,7 +1143,7 @@ Logs user in via cookies
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:233](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L233)
+system/core/frontend/src/api/CRestApiClient.ts:232
 
 ___
 
@@ -1140,7 +1167,7 @@ client get any type of error
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:305](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L305)
+system/core/frontend/src/api/CRestApiClient.ts:304
 
 ___
 
@@ -1164,7 +1191,7 @@ client get unauthorized error
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:289](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L289)
+system/core/frontend/src/api/CRestApiClient.ts:288
 
 ___
 
@@ -1189,7 +1216,7 @@ Place a new order in the store
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:466](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L466)
+system/core/frontend/src/api/CRestApiClient.ts:483
 
 ___
 
@@ -1214,7 +1241,7 @@ Place a review about some product
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:474](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L474)
+system/core/frontend/src/api/CRestApiClient.ts:491
 
 ___
 
@@ -1246,7 +1273,7 @@ Makes POST request to specified route
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:196](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L196)
+system/core/frontend/src/api/CRestApiClient.ts:195
 
 ___
 
@@ -1278,7 +1305,7 @@ Makes PUT request to specified route
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:219](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L219)
+system/core/frontend/src/api/CRestApiClient.ts:218
 
 ___
 
@@ -1303,7 +1330,7 @@ List files in a public directory by specified path
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:360](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L360)
+system/core/frontend/src/api/CRestApiClient.ts:351
 
 ___
 
@@ -1325,7 +1352,7 @@ Remove on error callback
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:313](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L313)
+system/core/frontend/src/api/CRestApiClient.ts:312
 
 ___
 
@@ -1347,7 +1374,7 @@ Remove on unauthorized error callback
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:297](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L297)
+system/core/frontend/src/api/CRestApiClient.ts:296
 
 ___
 
@@ -1373,7 +1400,7 @@ Removes a public directory by specified path
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:376](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L376)
+system/core/frontend/src/api/CRestApiClient.ts:391
 
 ___
 
@@ -1398,7 +1425,7 @@ Remove all user's modifications for specified page of currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:620](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L620)
+system/core/frontend/src/api/CRestApiClient.ts:645
 
 ___
 
@@ -1426,7 +1453,7 @@ Finish reset password transaction. Set a new password
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:277](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L277)
+system/core/frontend/src/api/CRestApiClient.ts:276
 
 ___
 
@@ -1442,7 +1469,7 @@ Update CMS settings
 
 | Name | Type |
 | :------ | :------ |
-| `input` | `TCmsSettings` |
+| `input` | `TCmsConfig` & `TCmsPublicSettings` & `TCmsAdminSettings` & `TCmsInternalSettings` & { `robotsContent?`: `string`  } |
 | `options?` | [`TRequestOptions`](../modules/frontend.md#trequestoptions) |
 
 #### Returns
@@ -1451,7 +1478,7 @@ Update CMS settings
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:352](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L352)
+system/core/frontend/src/api/CRestApiClient.ts:341
 
 ___
 
@@ -1476,7 +1503,7 @@ Update page config by page route of currently active Theme
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:603](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L603)
+system/core/frontend/src/api/CRestApiClient.ts:628
 
 ___
 
@@ -1502,7 +1529,7 @@ Save settings for Plugin
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:752](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L752)
+system/core/frontend/src/api/CRestApiClient.ts:777
 
 ___
 
@@ -1527,7 +1554,7 @@ Sign up a new user
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:261](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L261)
+system/core/frontend/src/api/CRestApiClient.ts:260
 
 ___
 
@@ -1552,7 +1579,7 @@ Launch Plugin update
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:716](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L716)
+system/core/frontend/src/api/CRestApiClient.ts:741
 
 ___
 
@@ -1577,7 +1604,7 @@ Launch Theme update
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:569](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L569)
+system/core/frontend/src/api/CRestApiClient.ts:594
 
 ___
 
@@ -1603,4 +1630,4 @@ Upload files in specified public directory
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:384](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L384)
+system/core/frontend/src/api/CRestApiClient.ts:399

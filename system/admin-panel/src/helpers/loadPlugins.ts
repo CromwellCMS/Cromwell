@@ -1,11 +1,11 @@
 import { TPluginEntity } from '@cromwell/core';
-import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
+import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
 
 const loadedPlugins: string[] = [];
 
 export const loadPlugin = async (pluginName) => {
     try {
-        const bundle = await getRestAPIClient().getPluginAdminBundle(pluginName, { disableLog: true });
+        const bundle = await getRestApiClient().getPluginAdminBundle(pluginName, { disableLog: true });
         const success = await new Promise(done => {
             const sourceBlob = new Blob([bundle.source], { type: 'text/javascript' });
             const objectURL = URL.createObjectURL(sourceBlob);

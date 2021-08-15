@@ -48,7 +48,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 getFilteredUsers: jest.fn().mockImplementation(() => testData)
             }
         },
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getCmsStatus: () => null,
             }

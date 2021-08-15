@@ -18,22 +18,22 @@
 
 ### Constructors
 
-- [constructor](backend.CreateUser.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [address](backend.CreateUser.md#address)
-- [avatar](backend.CreateUser.md#avatar)
-- [bio](backend.CreateUser.md#bio)
-- [email](backend.CreateUser.md#email)
-- [fullName](backend.CreateUser.md#fullname)
-- [isEnabled](backend.CreateUser.md#isenabled)
-- [pageDescription](backend.CreateUser.md#pagedescription)
-- [pageTitle](backend.CreateUser.md#pagetitle)
-- [password](backend.CreateUser.md#password)
-- [phone](backend.CreateUser.md#phone)
-- [role](backend.CreateUser.md#role)
-- [slug](backend.CreateUser.md#slug)
+- [address](#address)
+- [avatar](#avatar)
+- [bio](#bio)
+- [email](#email)
+- [fullName](#fullname)
+- [isEnabled](#isenabled)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [password](#password)
+- [phone](#phone)
+- [role](#role)
+- [slug](#slug)
 
 ## Constructors
 

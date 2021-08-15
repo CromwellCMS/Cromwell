@@ -1,5 +1,5 @@
 import { setStoreItem } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { Button, IconButton, InputAdornment, TextField } from '@material-ui/core';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
 import React, { useEffect, useState } from 'react';
@@ -11,7 +11,7 @@ import styles from './LoginPage.module.scss';
 export type TFromType = 'sign-in' | 'sign-up' | 'forgot-pass' | 'reset-pass';
 
 const LoginPage = () => {
-    const apiClient = getRestAPIClient();
+    const apiClient = getRestApiClient();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [emailInput, setEmailInput] = useState('');

@@ -1,5 +1,5 @@
 import { getBlockInstance, TCCSModuleInfo, TPackageCromwellConfig } from '@cromwell/core';
-import { CList, getCentralServerClient, getRestAPIClient, TCList } from '@cromwell/core-frontend';
+import { CList, getCentralServerClient, getRestApiClient, TCList } from '@cromwell/core-frontend';
 import { Grid, TextField } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import React, { Component } from 'react';
@@ -44,7 +44,7 @@ export default class PluginMarket extends Component<Partial<RouteComponentProps>
 
     private getPluginList = async () => {
         try {
-            const pluginInfos = await getRestAPIClient()?.getPluginList();
+            const pluginInfos = await getRestApiClient()?.getPluginList();
             if (pluginInfos && Array.isArray(pluginInfos)) {
                 this.setState({
                     installedPlugins: pluginInfos,
@@ -66,7 +66,7 @@ export default class PluginMarket extends Component<Partial<RouteComponentProps>
     public installPlugin = async (info: TCCSModuleInfo | TPackageCromwellConfig): Promise<boolean> => {
         let success = false;
         try {
-            success = await getRestAPIClient().installPlugin(info.name);
+            success = await getRestApiClient().installPlugin(info.name);
         } catch (error) {
             console.error(error);
         }

@@ -12,12 +12,12 @@
 
 ### Constructors
 
-- [constructor](backend.DeleteManyInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [all](backend.DeleteManyInput.md#all)
-- [ids](backend.DeleteManyInput.md#ids)
+- [all](#all)
+- [ids](#ids)
 
 ## Constructors
 

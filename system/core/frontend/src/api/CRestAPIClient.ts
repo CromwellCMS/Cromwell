@@ -51,9 +51,9 @@ export type TRequestOptions = {
 }
 
 /**
- * CRestAPIClient - CromwellCMS REST API Client
+ * CRestApiClient - CromwellCMS REST API Client
  */
-export class CRestAPIClient {
+export class CRestApiClient {
 
     /** @internal */
     private onUnauthorizedCallbacks: Record<string, ((route: string) => any)> = {};
@@ -62,7 +62,7 @@ export class CRestAPIClient {
     private onErrorCallbacks: Record<string, ((info: TErrorInfo) => any)> = {};
     public getBaseUrl = () => {
         const serverUrl = serviceLocator.getMainApiUrl();
-        if (!serverUrl) throw new Error('CRestAPIClient: Failed to find base API URL');
+        if (!serverUrl) throw new Error('CRestApiClient: Failed to find base API URL');
         return `${serverUrl}/api`;
     }
 
@@ -127,7 +127,7 @@ export class CRestAPIClient {
 
     /** @internal */
     private logError = (route: string, e?: any) => {
-        console.error(`CRestAPIClient route: ${route}` + e);
+        console.error(`CRestApiClient route: ${route}` + e);
     }
 
     /** @internal */
@@ -802,17 +802,17 @@ export class CRestAPIClient {
 }
 
 /**
- * Get CRestAPIClient instance from global store (singleton)
+ * Get CRestApiClient instance from global store (singleton)
  */
-export const getRestAPIClient = (): CRestAPIClient => {
+export const getRestApiClient = (): CRestApiClient => {
     let clients = getStoreItem('apiClients');
     if (clients?.restAPIClient) return clients.restAPIClient;
 
-    const newClient = new CRestAPIClient();
+    const newClient = new CRestApiClient();
     if (!clients) clients = {};
     clients.restAPIClient = newClient;
     setStoreItem('apiClients', clients);
     return newClient;
 }
 
-export type TCRestAPIClient = typeof CRestAPIClient;
+export type TCRestApiClient = typeof CRestApiClient;

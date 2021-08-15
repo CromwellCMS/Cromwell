@@ -50,7 +50,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 getTags: jest.fn().mockImplementation(() => []),
             }
         },
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getCmsStatus: () => null,
             }

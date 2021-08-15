@@ -14,36 +14,36 @@
 
 ### Constructors
 
-- [constructor](backend.OrderRepository.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [dbType](backend.OrderRepository.md#dbtype)
+- [dbType](#dbtype)
 
 ### Methods
 
-- [applyDeleteMany](backend.OrderRepository.md#applydeletemany)
-- [applyOrderFilter](backend.OrderRepository.md#applyorderfilter)
-- [createEntity](backend.OrderRepository.md#createentity)
-- [createOrder](backend.OrderRepository.md#createorder)
-- [deleteEntity](backend.OrderRepository.md#deleteentity)
-- [deleteMany](backend.OrderRepository.md#deletemany)
-- [deleteManyFilteredOrders](backend.OrderRepository.md#deletemanyfilteredorders)
-- [deleteOrder](backend.OrderRepository.md#deleteorder)
-- [getAll](backend.OrderRepository.md#getall)
-- [getById](backend.OrderRepository.md#getbyid)
-- [getBySlug](backend.OrderRepository.md#getbyslug)
-- [getFilteredOrders](backend.OrderRepository.md#getfilteredorders)
-- [getOrderById](backend.OrderRepository.md#getorderbyid)
-- [getOrderBySlug](backend.OrderRepository.md#getorderbyslug)
-- [getOrders](backend.OrderRepository.md#getorders)
-- [getOrdersOfUser](backend.OrderRepository.md#getordersofuser)
-- [getPaged](backend.OrderRepository.md#getpaged)
-- [getSqlBoolStr](backend.OrderRepository.md#getsqlboolstr)
-- [getSqlLike](backend.OrderRepository.md#getsqllike)
-- [quote](backend.OrderRepository.md#quote)
-- [updateEntity](backend.OrderRepository.md#updateentity)
-- [updateOrder](backend.OrderRepository.md#updateorder)
+- [applyDeleteMany](#applydeletemany)
+- [applyOrderFilter](#applyorderfilter)
+- [createEntity](#createentity)
+- [createOrder](#createorder)
+- [deleteEntity](#deleteentity)
+- [deleteMany](#deletemany)
+- [deleteManyFilteredOrders](#deletemanyfilteredorders)
+- [deleteOrder](#deleteorder)
+- [getAll](#getall)
+- [getById](#getbyid)
+- [getBySlug](#getbyslug)
+- [getFilteredOrders](#getfilteredorders)
+- [getOrderById](#getorderbyid)
+- [getOrderBySlug](#getorderbyslug)
+- [getOrders](#getorders)
+- [getOrdersOfUser](#getordersofuser)
+- [getPaged](#getpaged)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [quote](#quote)
+- [updateEntity](#updateentity)
+- [updateOrder](#updateorder)
 
 ## Constructors
 
@@ -232,7 +232,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/order.repository.ts:160](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/order.repository.ts#L160)
+[system/core/backend/src/repositories/order.repository.ts:159](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/order.repository.ts#L159)
 
 ___
 
@@ -422,7 +422,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/repositories/order.repository.ts:168](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/order.repository.ts#L168)
+[system/core/backend/src/repositories/order.repository.ts:167](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/repositories/order.repository.ts#L167)
 
 ___
 

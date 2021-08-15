@@ -31,7 +31,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 updateTag: jest.fn().mockImplementation(() => testData),
             }
         },
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getCmsStatus: () => null,
             }

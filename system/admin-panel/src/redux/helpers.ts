@@ -1,5 +1,5 @@
 import { TDeleteManyInput } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 
 import { store } from './store';
 
@@ -54,7 +54,7 @@ export const getSelectedInput = (): TDeleteManyInput => {
 
 export const updateStatus = async () => {
     try {
-        const status = await getRestAPIClient().getCmsStatus({ disableLog: true });
+        const status = await getRestApiClient().getCmsStatus({ disableLog: true });
         if (status) {
             store.setStateProp({
                 prop: 'status',

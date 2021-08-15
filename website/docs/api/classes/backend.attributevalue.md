@@ -12,13 +12,13 @@
 
 ### Constructors
 
-- [constructor](backend.AttributeValue.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [icon](backend.AttributeValue.md#icon)
-- [title](backend.AttributeValue.md#title)
-- [value](backend.AttributeValue.md#value)
+- [icon](#icon)
+- [title](#title)
+- [value](#value)
 
 ## Constructors
 

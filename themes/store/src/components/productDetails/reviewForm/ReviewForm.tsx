@@ -1,5 +1,5 @@
 import { getStoreItem, onStoreChange, removeOnStoreChange, TProductReview, TUser } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { Button, TextField, Tooltip } from '@material-ui/core';
 import { Alert, Rating } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
@@ -43,7 +43,7 @@ const ReviewForm = (props: {
         let reviewRes;
         setIsLoading(true);
         try {
-            reviewRes = await getRestAPIClient()?.placeProductReview({
+            reviewRes = await getRestApiClient()?.placeProductReview({
                 productId: props.productId,
                 title,
                 description,

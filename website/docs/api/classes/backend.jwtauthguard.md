@@ -12,11 +12,11 @@
 
 ### Constructors
 
-- [constructor](backend.JwtAuthGuard.md#constructor)
+- [constructor](#constructor)
 
 ### Methods
 
-- [canActivate](backend.JwtAuthGuard.md#canactivate)
+- [canActivate](#canactivate)
 
 ## Constructors
 

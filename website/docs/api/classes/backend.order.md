@@ -18,33 +18,33 @@
 
 ### Constructors
 
-- [constructor](backend.Order.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [cart](backend.Order.md#cart)
-- [cartOldTotalPrice](backend.Order.md#cartoldtotalprice)
-- [cartTotalPrice](backend.Order.md#carttotalprice)
-- [createDate](backend.Order.md#createdate)
-- [currency](backend.Order.md#currency)
-- [customerAddress](backend.Order.md#customeraddress)
-- [customerComment](backend.Order.md#customercomment)
-- [customerEmail](backend.Order.md#customeremail)
-- [customerName](backend.Order.md#customername)
-- [customerPhone](backend.Order.md#customerphone)
-- [id](backend.Order.md#id)
-- [isEnabled](backend.Order.md#isenabled)
-- [orderTotalPrice](backend.Order.md#ordertotalprice)
-- [pageDescription](backend.Order.md#pagedescription)
-- [pageTitle](backend.Order.md#pagetitle)
-- [paymentMethod](backend.Order.md#paymentmethod)
-- [shippingMethod](backend.Order.md#shippingmethod)
-- [shippingPrice](backend.Order.md#shippingprice)
-- [slug](backend.Order.md#slug)
-- [status](backend.Order.md#status)
-- [totalQnt](backend.Order.md#totalqnt)
-- [updateDate](backend.Order.md#updatedate)
-- [userId](backend.Order.md#userid)
+- [cart](#cart)
+- [cartOldTotalPrice](#cartoldtotalprice)
+- [cartTotalPrice](#carttotalprice)
+- [createDate](#createdate)
+- [currency](#currency)
+- [customerAddress](#customeraddress)
+- [customerComment](#customercomment)
+- [customerEmail](#customeremail)
+- [customerName](#customername)
+- [customerPhone](#customerphone)
+- [id](#id)
+- [isEnabled](#isenabled)
+- [orderTotalPrice](#ordertotalprice)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [paymentMethod](#paymentmethod)
+- [shippingMethod](#shippingmethod)
+- [shippingPrice](#shippingprice)
+- [slug](#slug)
+- [status](#status)
+- [totalQnt](#totalqnt)
+- [updateDate](#updatedate)
+- [userId](#userid)
 
 ## Constructors
 
@@ -114,7 +114,7 @@ TOrder.createDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
+[system/core/backend/src/models/entities/base-page.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L29)
 
 ___
 
@@ -216,7 +216,7 @@ TOrder.id
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
+[system/core/backend/src/models/entities/base-page.entity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L12)
 
 ___
 
@@ -234,7 +234,7 @@ TOrder.isEnabled
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
+[system/core/backend/src/models/entities/base-page.entity.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L38)
 
 ___
 
@@ -266,7 +266,7 @@ TOrder.pageDescription
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
+[system/core/backend/src/models/entities/base-page.entity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L24)
 
 ___
 
@@ -284,7 +284,7 @@ TOrder.pageTitle
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
+[system/core/backend/src/models/entities/base-page.entity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L20)
 
 ___
 
@@ -344,7 +344,7 @@ TOrder.slug
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
+[system/core/backend/src/models/entities/base-page.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L16)
 
 ___
 
@@ -390,7 +390,7 @@ TOrder.updateDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
+[system/core/backend/src/models/entities/base-page.entity.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L34)
 
 ___
 

@@ -14,36 +14,36 @@
 
 ### Constructors
 
-- [constructor](backend.PostRepository.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [dbType](backend.PostRepository.md#dbtype)
+- [dbType](#dbtype)
 
 ### Methods
 
-- [applyDeleteMany](backend.PostRepository.md#applydeletemany)
-- [applyPostFilter](backend.PostRepository.md#applypostfilter)
-- [createEntity](backend.PostRepository.md#createentity)
-- [createPost](backend.PostRepository.md#createpost)
-- [deleteEntity](backend.PostRepository.md#deleteentity)
-- [deleteMany](backend.PostRepository.md#deletemany)
-- [deleteManyFilteredPosts](backend.PostRepository.md#deletemanyfilteredposts)
-- [deletePost](backend.PostRepository.md#deletepost)
-- [getAll](backend.PostRepository.md#getall)
-- [getById](backend.PostRepository.md#getbyid)
-- [getBySlug](backend.PostRepository.md#getbyslug)
-- [getFilteredPosts](backend.PostRepository.md#getfilteredposts)
-- [getPaged](backend.PostRepository.md#getpaged)
-- [getPostById](backend.PostRepository.md#getpostbyid)
-- [getPostBySlug](backend.PostRepository.md#getpostbyslug)
-- [getPosts](backend.PostRepository.md#getposts)
-- [getSqlBoolStr](backend.PostRepository.md#getsqlboolstr)
-- [getSqlLike](backend.PostRepository.md#getsqllike)
-- [getTagsOfPost](backend.PostRepository.md#gettagsofpost)
-- [quote](backend.PostRepository.md#quote)
-- [updateEntity](backend.PostRepository.md#updateentity)
-- [updatePost](backend.PostRepository.md#updatepost)
+- [applyDeleteMany](#applydeletemany)
+- [applyPostFilter](#applypostfilter)
+- [createEntity](#createentity)
+- [createPost](#createpost)
+- [deleteEntity](#deleteentity)
+- [deleteMany](#deletemany)
+- [deleteManyFilteredPosts](#deletemanyfilteredposts)
+- [deletePost](#deletepost)
+- [getAll](#getall)
+- [getById](#getbyid)
+- [getBySlug](#getbyslug)
+- [getFilteredPosts](#getfilteredposts)
+- [getPaged](#getpaged)
+- [getPostById](#getpostbyid)
+- [getPostBySlug](#getpostbyslug)
+- [getPosts](#getposts)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [getTagsOfPost](#gettagsofpost)
+- [quote](#quote)
+- [updateEntity](#updateentity)
+- [updatePost](#updatepost)
 
 ## Constructors
 

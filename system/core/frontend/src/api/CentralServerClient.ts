@@ -1,6 +1,6 @@
 import { fetch } from '../helpers/isomorphicFetch';
 import { getStoreItem, TCCSVersion, TCCSModuleShortInfo, TCCSModuleInfo, TPagedParams, TPagedList } from '@cromwell/core';
-import { TErrorInfo, TRequestOptions } from './CRestAPIClient'
+import { TErrorInfo, TRequestOptions } from './CRestApiClient'
 
 /**
  * CentralServerClient - CromwellCMS Central Server API Client

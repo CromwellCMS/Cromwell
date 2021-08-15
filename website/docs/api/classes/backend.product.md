@@ -18,34 +18,34 @@
 
 ### Constructors
 
-- [constructor](backend.Product.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [averageRating](backend.Product.md#averagerating)
-- [categories](backend.Product.md#categories)
-- [createDate](backend.Product.md#createdate)
-- [description](backend.Product.md#description)
-- [descriptionDelta](backend.Product.md#descriptiondelta)
-- [id](backend.Product.md#id)
-- [images](backend.Product.md#images)
-- [isEnabled](backend.Product.md#isenabled)
-- [mainImage](backend.Product.md#mainimage)
-- [name](backend.Product.md#name)
-- [oldPrice](backend.Product.md#oldprice)
-- [pageDescription](backend.Product.md#pagedescription)
-- [pageTitle](backend.Product.md#pagetitle)
-- [price](backend.Product.md#price)
-- [reviews](backend.Product.md#reviews)
-- [reviewsCount](backend.Product.md#reviewscount)
-- [sku](backend.Product.md#sku)
-- [slug](backend.Product.md#slug)
-- [updateDate](backend.Product.md#updatedate)
-- [views](backend.Product.md#views)
+- [averageRating](#averagerating)
+- [categories](#categories)
+- [createDate](#createdate)
+- [description](#description)
+- [descriptionDelta](#descriptiondelta)
+- [id](#id)
+- [images](#images)
+- [isEnabled](#isenabled)
+- [mainImage](#mainimage)
+- [name](#name)
+- [oldPrice](#oldprice)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [price](#price)
+- [reviews](#reviews)
+- [reviewsCount](#reviewscount)
+- [sku](#sku)
+- [slug](#slug)
+- [updateDate](#updatedate)
+- [views](#views)
 
 ### Accessors
 
-- [attributes](backend.Product.md#attributes)
+- [attributes](#attributes)
 
 ## Constructors
 
@@ -100,7 +100,7 @@ TProduct.createDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
+[system/core/backend/src/models/entities/base-page.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L29)
 
 ___
 
@@ -146,7 +146,7 @@ TProduct.id
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
+[system/core/backend/src/models/entities/base-page.entity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L12)
 
 ___
 
@@ -178,7 +178,7 @@ TProduct.isEnabled
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
+[system/core/backend/src/models/entities/base-page.entity.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L38)
 
 ___
 
@@ -238,7 +238,7 @@ TProduct.pageDescription
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
+[system/core/backend/src/models/entities/base-page.entity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L24)
 
 ___
 
@@ -256,7 +256,7 @@ TProduct.pageTitle
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
+[system/core/backend/src/models/entities/base-page.entity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L20)
 
 ___
 
@@ -326,7 +326,7 @@ TProduct.slug
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
+[system/core/backend/src/models/entities/base-page.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L16)
 
 ___
 
@@ -344,7 +344,7 @@ TProduct.updateDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
+[system/core/backend/src/models/entities/base-page.entity.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L34)
 
 ___
 

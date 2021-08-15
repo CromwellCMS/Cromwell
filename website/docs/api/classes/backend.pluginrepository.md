@@ -14,33 +14,33 @@
 
 ### Constructors
 
-- [constructor](backend.PluginRepository.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [dbType](backend.PluginRepository.md#dbtype)
+- [dbType](#dbtype)
 
 ### Methods
 
-- [applyDeleteMany](backend.PluginRepository.md#applydeletemany)
-- [createEntity](backend.PluginRepository.md#createentity)
-- [createPlugin](backend.PluginRepository.md#createplugin)
-- [deleteEntity](backend.PluginRepository.md#deleteentity)
-- [deleteMany](backend.PluginRepository.md#deletemany)
-- [deletePlugin](backend.PluginRepository.md#deleteplugin)
-- [getAll](backend.PluginRepository.md#getall)
-- [getById](backend.PluginRepository.md#getbyid)
-- [getBySlug](backend.PluginRepository.md#getbyslug)
-- [getPaged](backend.PluginRepository.md#getpaged)
-- [getPluginById](backend.PluginRepository.md#getpluginbyid)
-- [getPluginBySlug](backend.PluginRepository.md#getpluginbyslug)
-- [getPluginSettings](backend.PluginRepository.md#getpluginsettings)
-- [getPlugins](backend.PluginRepository.md#getplugins)
-- [getSqlBoolStr](backend.PluginRepository.md#getsqlboolstr)
-- [getSqlLike](backend.PluginRepository.md#getsqllike)
-- [quote](backend.PluginRepository.md#quote)
-- [updateEntity](backend.PluginRepository.md#updateentity)
-- [updatePlugin](backend.PluginRepository.md#updateplugin)
+- [applyDeleteMany](#applydeletemany)
+- [createEntity](#createentity)
+- [createPlugin](#createplugin)
+- [deleteEntity](#deleteentity)
+- [deleteMany](#deletemany)
+- [deletePlugin](#deleteplugin)
+- [getAll](#getall)
+- [getById](#getbyid)
+- [getBySlug](#getbyslug)
+- [getPaged](#getpaged)
+- [getPluginById](#getpluginbyid)
+- [getPluginBySlug](#getpluginbyslug)
+- [getPluginSettings](#getpluginsettings)
+- [getPlugins](#getplugins)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [quote](#quote)
+- [updateEntity](#updateentity)
+- [updatePlugin](#updateplugin)
 
 ## Constructors
 

@@ -1,4 +1,4 @@
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { Grid, IconButton, LinearProgress, Popover, Tooltip } from '@material-ui/core';
 import {
     NotificationImportant as NotificationImportantIcon,
@@ -28,7 +28,7 @@ type TPropsType = PropsType<PropsType, { color?: string },
 function NotificationCenter(props: TPropsType) {
     const [open, setopen] = useState(false);
     const popperAnchorEl = useRef<HTMLDivElement | null>(null);
-    const client = getRestAPIClient();
+    const client = getRestApiClient();
 
     let NotificationIcon = NotificationsNoneIcon;
     let tipText = '';

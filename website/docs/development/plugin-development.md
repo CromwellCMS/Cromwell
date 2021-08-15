@@ -91,7 +91,7 @@ To save/load data you can use frontend API client:
 
 ```tsx title="src/admin/index.tsx"
 import { TPluginSettingsProps } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import React from 'react';
 
 type MySettingsType = {
@@ -100,11 +100,11 @@ type MySettingsType = {
 
 function SettingsPage(props: TPluginSettingsProps<MySettingsType>) {
   (async () => {
-    await getRestAPIClient().savePluginSettings('your-plugin-name', {
+    await getRestApiClient().savePluginSettings('your-plugin-name', {
       someSettingsProp: 'test1'
     });
 
-    const settings: MySettingsType = await getRestAPIClient().getPluginSettings('your-plugin-name');
+    const settings: MySettingsType = await getRestApiClient().getPluginSettings('your-plugin-name');
     console.log(settings.someSettingsProp); // "test1" 
   })();
 

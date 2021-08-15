@@ -18,21 +18,21 @@
 
 ### Constructors
 
-- [constructor](backend.PluginInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [defaultSettings](backend.PluginInput.md#defaultsettings)
-- [hasAdminBundle](backend.PluginInput.md#hasadminbundle)
-- [isEnabled](backend.PluginInput.md#isenabled)
-- [isInstalled](backend.PluginInput.md#isinstalled)
-- [moduleInfo](backend.PluginInput.md#moduleinfo)
-- [name](backend.PluginInput.md#name)
-- [pageDescription](backend.PluginInput.md#pagedescription)
-- [pageTitle](backend.PluginInput.md#pagetitle)
-- [settings](backend.PluginInput.md#settings)
-- [slug](backend.PluginInput.md#slug)
-- [title](backend.PluginInput.md#title)
+- [defaultSettings](#defaultsettings)
+- [hasAdminBundle](#hasadminbundle)
+- [isEnabled](#isenabled)
+- [isInstalled](#isinstalled)
+- [moduleInfo](#moduleinfo)
+- [name](#name)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [settings](#settings)
+- [slug](#slug)
+- [title](#title)
 
 ## Constructors
 

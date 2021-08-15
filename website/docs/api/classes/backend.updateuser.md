@@ -18,21 +18,21 @@
 
 ### Constructors
 
-- [constructor](backend.UpdateUser.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [address](backend.UpdateUser.md#address)
-- [avatar](backend.UpdateUser.md#avatar)
-- [bio](backend.UpdateUser.md#bio)
-- [email](backend.UpdateUser.md#email)
-- [fullName](backend.UpdateUser.md#fullname)
-- [isEnabled](backend.UpdateUser.md#isenabled)
-- [pageDescription](backend.UpdateUser.md#pagedescription)
-- [pageTitle](backend.UpdateUser.md#pagetitle)
-- [phone](backend.UpdateUser.md#phone)
-- [role](backend.UpdateUser.md#role)
-- [slug](backend.UpdateUser.md#slug)
+- [address](#address)
+- [avatar](#avatar)
+- [bio](#bio)
+- [email](#email)
+- [fullName](#fullname)
+- [isEnabled](#isenabled)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [phone](#phone)
+- [role](#role)
+- [slug](#slug)
 
 ## Constructors
 

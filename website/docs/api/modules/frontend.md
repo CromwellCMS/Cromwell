@@ -30,7 +30,7 @@ const products = await getGraphQLClient().getProducts();
 - [CImage](../classes/frontend.CImage.md)
 - [CList](../classes/frontend.CList.md)
 - [CPlugin](../classes/frontend.CPlugin.md)
-- [CRestAPIClient](../classes/frontend.CRestAPIClient.md)
+- [CRestApiClient](../classes/frontend.CRestApiClient.md)
 - [CStore](../classes/frontend.CStore.md)
 - [CText](../classes/frontend.CText.md)
 - [CentralServerClient](../classes/frontend.CentralServerClient.md)
@@ -38,71 +38,71 @@ const products = await getGraphQLClient().getProducts();
 
 ### Type aliases
 
-- [CContainerProps](frontend.md#ccontainerprops)
-- [OperationResult](frontend.md#operationresult)
-- [TApiClient](frontend.md#tapiclient)
-- [TCGalleryProps](frontend.md#tcgalleryprops)
-- [TCGraphQLClient](frontend.md#tcgraphqlclient)
-- [TCList](frontend.md#tclist)
-- [TCListProps](frontend.md#tclistprops)
-- [TCRestAPIClient](frontend.md#tcrestapiclient)
-- [TCssClasses](frontend.md#tcssclasses)
-- [TDynamicLoader](frontend.md#tdynamicloader)
-- [TElements](frontend.md#telements)
-- [TErrorInfo](frontend.md#terrorinfo)
-- [TGraphQLErrorInfo](frontend.md#tgraphqlerrorinfo)
-- [TItemComponentProps](frontend.md#titemcomponentprops)
-- [TListenerType](frontend.md#tlistenertype)
-- [TPaginationProps](frontend.md#tpaginationprops)
-- [TRequestOptions](frontend.md#trequestoptions)
-- [WidgetNames](frontend.md#widgetnames)
-- [WidgetTypes](frontend.md#widgettypes)
-- [Widget\_DashboardProps](frontend.md#widget_dashboardprops)
-- [Widget\_EntityActions](frontend.md#widget_entityactions)
-- [Widget\_PostActions](frontend.md#widget_postactions)
+- [CContainerProps](#ccontainerprops)
+- [OperationResult](#operationresult)
+- [TApiClient](#tapiclient)
+- [TCGalleryProps](#tcgalleryprops)
+- [TCGraphQLClient](#tcgraphqlclient)
+- [TCList](#tclist)
+- [TCListProps](#tclistprops)
+- [TCRestApiClient](#tcrestapiclient)
+- [TCssClasses](#tcssclasses)
+- [TDynamicLoader](#tdynamicloader)
+- [TElements](#telements)
+- [TErrorInfo](#terrorinfo)
+- [TGraphQLErrorInfo](#tgraphqlerrorinfo)
+- [TItemComponentProps](#titemcomponentprops)
+- [TListenerType](#tlistenertype)
+- [TPaginationProps](#tpaginationprops)
+- [TRequestOptions](#trequestoptions)
+- [WidgetNames](#widgetnames)
+- [WidgetTypes](#widgettypes)
+- [Widget\_DashboardProps](#widget_dashboardprops)
+- [Widget\_EntityActions](#widget_entityactions)
+- [Widget\_PostActions](#widget_postactions)
 
 ### Variables
 
-- [BlockContentConsumer](frontend.md#blockcontentconsumer)
-- [BlockContentProvider](frontend.md#blockcontentprovider)
-- [blockCssClass](frontend.md#blockcssclass)
-- [pageRootContainerId](frontend.md#pagerootcontainerid)
+- [BlockContentConsumer](#blockcontentconsumer)
+- [BlockContentProvider](#blockcontentprovider)
+- [blockCssClass](#blockcssclass)
+- [pageRootContainerId](#pagerootcontainerid)
 
 ### Functions
 
-- [AdminPanelWidgetPlace](frontend.md#adminpanelwidgetplace)
-- [Link](frontend.md#link)
-- [LoadBox](frontend.md#loadbox)
-- [ProductAttributes](frontend.md#productattributes)
-- [awaitImporter](frontend.md#awaitimporter)
-- [fetch](frontend.md#fetch)
-- [getBlockById](frontend.md#getblockbyid)
-- [getBlockData](frontend.md#getblockdata)
-- [getBlockDataById](frontend.md#getblockdatabyid)
-- [getBlockElementById](frontend.md#getblockelementbyid)
-- [getBlockHtmlId](frontend.md#getblockhtmlid)
-- [getBlockHtmlType](frontend.md#getblockhtmltype)
-- [getBlockIdFromHtml](frontend.md#getblockidfromhtml)
-- [getBlockTypeFromHtml](frontend.md#getblocktypefromhtml)
-- [getCStore](frontend.md#getcstore)
-- [getCentralServerClient](frontend.md#getcentralserverclient)
-- [getDynamicLoader](frontend.md#getdynamicloader)
-- [getGraphQLClient](frontend.md#getgraphqlclient)
-- [getGraphQLErrorInfo](frontend.md#getgraphqlerrorinfo)
-- [getHtmlPluginBlockName](frontend.md#gethtmlpluginblockname)
-- [getLoadableFrontendBundle](frontend.md#getloadablefrontendbundle)
-- [getModuleImporter](frontend.md#getmoduleimporter)
-- [getNamedWidgetForPlace](frontend.md#getnamedwidgetforplace)
-- [getPluginStaticUrl](frontend.md#getpluginstaticurl)
-- [getRestAPIClient](frontend.md#getrestapiclient)
-- [getWidgets](frontend.md#getwidgets)
-- [getWidgetsForPlace](frontend.md#getwidgetsforplace)
-- [iconFromPath](frontend.md#iconfrompath)
-- [isAdminPanel](frontend.md#isadminpanel)
-- [loadFrontendBundle](frontend.md#loadfrontendbundle)
-- [onWidgetRegister](frontend.md#onwidgetregister)
-- [registerWidget](frontend.md#registerwidget)
-- [useForceUpdate](frontend.md#useforceupdate)
+- [AdminPanelWidgetPlace](#adminpanelwidgetplace)
+- [Link](#link)
+- [LoadBox](#loadbox)
+- [ProductAttributes](#productattributes)
+- [awaitImporter](#awaitimporter)
+- [fetch](#fetch)
+- [getBlockById](#getblockbyid)
+- [getBlockData](#getblockdata)
+- [getBlockDataById](#getblockdatabyid)
+- [getBlockElementById](#getblockelementbyid)
+- [getBlockHtmlId](#getblockhtmlid)
+- [getBlockHtmlType](#getblockhtmltype)
+- [getBlockIdFromHtml](#getblockidfromhtml)
+- [getBlockTypeFromHtml](#getblocktypefromhtml)
+- [getCStore](#getcstore)
+- [getCentralServerClient](#getcentralserverclient)
+- [getDynamicLoader](#getdynamicloader)
+- [getGraphQLClient](#getgraphqlclient)
+- [getGraphQLErrorInfo](#getgraphqlerrorinfo)
+- [getHtmlPluginBlockName](#gethtmlpluginblockname)
+- [getLoadableFrontendBundle](#getloadablefrontendbundle)
+- [getModuleImporter](#getmoduleimporter)
+- [getNamedWidgetForPlace](#getnamedwidgetforplace)
+- [getPluginStaticUrl](#getpluginstaticurl)
+- [getRestApiClient](#getrestapiclient)
+- [getWidgets](#getwidgets)
+- [getWidgetsForPlace](#getwidgetsforplace)
+- [iconFromPath](#iconfrompath)
+- [isAdminPanel](#isadminpanel)
+- [loadFrontendBundle](#loadfrontendbundle)
+- [onWidgetRegister](#onwidgetregister)
+- [registerWidget](#registerwidget)
+- [useForceUpdate](#useforceupdate)
 
 ## Type aliases
 
@@ -191,12 +191,12 @@ Public API of CList instance
 | `addListener` | (`type`: ``"componentDidUpdate"``, `cb`: () => `void`) => `void` |
 | `clearState` | () => `void` |
 | `getPagedParams` | () => `TPagedParams`<`DataType`\> |
-| `getProps` | () => [`TCListProps`](frontend.md#tclistprops)<`DataType`, `ListItemProps`\> |
+| `getProps` | () => [`TCListProps`](#tclistprops)<`DataType`, `ListItemProps`\> |
 | `getScrollboxEl` | () => ``null`` \| `HTMLDivElement` |
 | `init` | () => `void` |
 | `openPage` | (`pageNumber`: `number`) => `void` |
 | `setPagedParams` | (`val`: `TPagedParams`<`DataType`\>) => `void` |
-| `setProps` | (`props`: ``null`` \| [`TCListProps`](frontend.md#tclistprops)<`DataType`, `ListItemProps`\>) => `void` |
+| `setProps` | (`props`: ``null`` \| [`TCListProps`](#tclistprops)<`DataType`, `ListItemProps`\>) => `void` |
 | `updateData` | () => `Promise`<`void`\> |
 
 #### Defined in
@@ -220,12 +220,12 @@ ___
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `ListItem` | `React.ComponentType`<[`TItemComponentProps`](frontend.md#titemcomponentprops)<`DataType`, `ListItemProps`\>\> | Component that will display items |
+| `ListItem` | `React.ComponentType`<[`TItemComponentProps`](#titemcomponentprops)<`DataType`, `ListItemProps`\>\> | Component that will display items |
 | `className?` | `string` | HTML Class attribute for wrapper container |
-| `cssClasses?` | [`TCssClasses`](frontend.md#tcssclasses) | - |
+| `cssClasses?` | [`TCssClasses`](#tcssclasses) | - |
 | `dataList?` | `DataType`[] | Array of data to create components for each piece and virtualize. Won't work with "loader" prop |
 | `disableCaching?` | `boolean` | Disable caching of loaded pages from "loader" prop when open a new page by pagination. Caching is working by default |
-| `elements?` | [`TElements`](frontend.md#telements) | - |
+| `elements?` | [`TElements`](#telements) | - |
 | `firstBatch?` | `TPagedList`<`DataType`\> \| ``null`` | First batch / page. Can be used with "loader". Supposed to be used in SSR to prerender page |
 | `id` | `string` | CromwellBlock id |
 | `isLoading?` | `boolean` | Force to show preloader instead of a list |
@@ -249,13 +249,13 @@ ___
 
 ___
 
-### TCRestAPIClient
+### TCRestApiClient
 
-Ƭ **TCRestAPIClient**: typeof [`CRestAPIClient`](../classes/frontend.CRestAPIClient.md)
+Ƭ **TCRestApiClient**: typeof [`CRestApiClient`](../classes/frontend.CRestApiClient.md)
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:793](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L793)
+system/core/frontend/src/api/CRestApiClient.ts:818
 
 ___
 
@@ -318,7 +318,7 @@ ___
 | `arrowLast?` | `React.ReactNode` | - |
 | `arrowLeft?` | `React.ReactNode` | - |
 | `arrowRight?` | `React.ReactNode` | - |
-| `pagination?` | `React.ComponentType`<[`TPaginationProps`](frontend.md#tpaginationprops)\> | - |
+| `pagination?` | `React.ComponentType`<[`TPaginationProps`](#tpaginationprops)\> | - |
 | `preloader?` | `React.ReactNode` | Preloader to show during first data request |
 | `showMore?` | `React.ComponentType`<`Object`\> | - |
 
@@ -343,7 +343,7 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:28](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L28)
+system/core/frontend/src/api/CRestApiClient.ts:27
 
 ___
 
@@ -433,13 +433,13 @@ ___
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L35)
+system/core/frontend/src/api/CRestApiClient.ts:34
 
 ___
 
 ### WidgetNames
 
-Ƭ **WidgetNames**: keyof [`WidgetTypes`](frontend.md#widgettypes)
+Ƭ **WidgetNames**: keyof [`WidgetTypes`](#widgettypes)
 
 #### Defined in
 
@@ -455,13 +455,13 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `CategoryActions` | [`Widget_EntityActions`](frontend.md#widget_entityactions)<`TProductCategory`\> |
-| `Dashboard` | [`Widget_DashboardProps`](frontend.md#widget_dashboardprops) |
-| `OrderActions` | [`Widget_EntityActions`](frontend.md#widget_entityactions)<`TOrder`\> |
+| `CategoryActions` | [`Widget_EntityActions`](#widget_entityactions)<`TProductCategory`\> |
+| `Dashboard` | [`Widget_DashboardProps`](#widget_dashboardprops) |
+| `OrderActions` | [`Widget_EntityActions`](#widget_entityactions)<`TOrder`\> |
 | `PluginSettings` | `TPluginSettingsProps` |
-| `PostActions` | [`Widget_PostActions`](frontend.md#widget_postactions) |
-| `ProductActions` | [`Widget_EntityActions`](frontend.md#widget_entityactions)<`TProduct`\> |
-| `TagActions` | [`Widget_EntityActions`](frontend.md#widget_entityactions)<`TTag`\> |
+| `PostActions` | [`Widget_PostActions`](#widget_postactions) |
+| `ProductActions` | [`Widget_EntityActions`](#widget_entityactions)<`TProduct`\> |
+| `TagActions` | [`Widget_EntityActions`](#widget_entityactions)<`TTag`\> |
 
 #### Defined in
 
@@ -511,7 +511,7 @@ ___
 
 ### Widget\_PostActions
 
-Ƭ **Widget\_PostActions**: [`Widget_EntityActions`](frontend.md#widget_entityactions)<`TPost`\> & { `quillInstance`: `any`  }
+Ƭ **Widget\_PostActions**: [`Widget_EntityActions`](#widget_entityactions)<`TPost`\> & { `quillInstance`: `any`  }
 
 #### Defined in
 
@@ -559,7 +559,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends keyof [`WidgetTypes`](frontend.md#widgettypes) |
+| `T` | extends keyof [`WidgetTypes`](#widgettypes) |
 
 #### Parameters
 
@@ -568,7 +568,7 @@ ___
 | `props` | `Object` |
 | `props.pluginName?` | `string` |
 | `props.widgetName` | `T` |
-| `props.widgetProps` | [`WidgetTypes`](frontend.md#widgettypes)[`T`] |
+| `props.widgetProps` | [`WidgetTypes`](#widgettypes)[`T`] |
 
 #### Returns
 
@@ -855,7 +855,7 @@ Get CStore instance from global store (singleton)
 | Name | Type | Description |
 | :------ | :------ | :------ |
 | `local?` | `boolean` | if true, create and return a new instance, false by default |
-| `apiClient?` | [`TApiClient`](frontend.md#tapiclient) | provide custom apiClient instance |
+| `apiClient?` | [`TApiClient`](#tapiclient) | provide custom apiClient instance |
 
 #### Returns
 
@@ -885,11 +885,11 @@ ___
 
 ### getDynamicLoader
 
-▸ `Const` **getDynamicLoader**(): [`TDynamicLoader`](frontend.md#tdynamicloader)
+▸ `Const` **getDynamicLoader**(): [`TDynamicLoader`](#tdynamicloader)
 
 #### Returns
 
-[`TDynamicLoader`](frontend.md#tdynamicloader)
+[`TDynamicLoader`](#tdynamicloader)
 
 #### Defined in
 
@@ -921,7 +921,7 @@ ___
 
 ### getGraphQLErrorInfo
 
-▸ `Const` **getGraphQLErrorInfo**(`error`): [`TGraphQLErrorInfo`](frontend.md#tgraphqlerrorinfo)
+▸ `Const` **getGraphQLErrorInfo**(`error`): [`TGraphQLErrorInfo`](#tgraphqlerrorinfo)
 
 #### Parameters
 
@@ -931,7 +931,7 @@ ___
 
 #### Returns
 
-[`TGraphQLErrorInfo`](frontend.md#tgraphqlerrorinfo)
+[`TGraphQLErrorInfo`](#tgraphqlerrorinfo)
 
 #### Defined in
 
@@ -969,7 +969,7 @@ ___
 | :------ | :------ |
 | `bundleName` | `string` |
 | `loader` | () => `Promise`<`undefined` \| ``null`` \| `TFrontendBundle`\> |
-| `loadable?` | [`TDynamicLoader`](frontend.md#tdynamicloader) |
+| `loadable?` | [`TDynamicLoader`](#tdynamicloader) |
 | `fallbackComponent?` | `ComponentType`<`Object`\> |
 | `dynamicLoaderProps?` | `Record`<`string`, `any`\> |
 
@@ -1012,14 +1012,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends keyof [`WidgetTypes`](frontend.md#widgettypes) |
+| `T` | extends keyof [`WidgetTypes`](#widgettypes) |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `widgetName` | `T` |
-| `widgetProps` | [`WidgetTypes`](frontend.md#widgettypes)[`T`] |
+| `widgetProps` | [`WidgetTypes`](#widgettypes)[`T`] |
 | `pluginName` | `string` |
 
 #### Returns
@@ -1052,31 +1052,31 @@ ___
 
 ___
 
-### getRestAPIClient
+### getRestApiClient
 
-▸ `Const` **getRestAPIClient**(): [`CRestAPIClient`](../classes/frontend.CRestAPIClient.md)
+▸ `Const` **getRestApiClient**(): [`CRestApiClient`](../classes/frontend.CRestApiClient.md)
 
-Get CRestAPIClient instance from global store (singleton)
+Get CRestApiClient instance from global store (singleton)
 
 #### Returns
 
-[`CRestAPIClient`](../classes/frontend.CRestAPIClient.md)
+[`CRestApiClient`](../classes/frontend.CRestApiClient.md)
 
 #### Defined in
 
-[system/core/frontend/src/api/CRestAPIClient.ts:782](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestAPIClient.ts#L782)
+system/core/frontend/src/api/CRestApiClient.ts:807
 
 ___
 
 ### getWidgets
 
-▸ `Const` **getWidgets**<`T`\>(`widgetName`): `Record`<`string`, `ComponentType`<[`WidgetTypes`](frontend.md#widgettypes)[`T`]\>\>
+▸ `Const` **getWidgets**<`T`\>(`widgetName`): `Record`<`string`, `ComponentType`<[`WidgetTypes`](#widgettypes)[`T`]\>\>
 
 #### Type parameters
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends keyof [`WidgetTypes`](frontend.md#widgettypes) |
+| `T` | extends keyof [`WidgetTypes`](#widgettypes) |
 
 #### Parameters
 
@@ -1086,7 +1086,7 @@ ___
 
 #### Returns
 
-`Record`<`string`, `ComponentType`<[`WidgetTypes`](frontend.md#widgettypes)[`T`]\>\>
+`Record`<`string`, `ComponentType`<[`WidgetTypes`](#widgettypes)[`T`]\>\>
 
 #### Defined in
 
@@ -1102,14 +1102,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends keyof [`WidgetTypes`](frontend.md#widgettypes) |
+| `T` | extends keyof [`WidgetTypes`](#widgettypes) |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `widgetName` | `T` |
-| `widgetProps` | [`WidgetTypes`](frontend.md#widgettypes)[`T`] |
+| `widgetProps` | [`WidgetTypes`](#widgettypes)[`T`] |
 
 #### Returns
 
@@ -1184,14 +1184,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends keyof [`WidgetTypes`](frontend.md#widgettypes) |
+| `T` | extends keyof [`WidgetTypes`](#widgettypes) |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `widgetName` | `T` |
-| `callback` | (`pluginName`: `string`, `component`: `ComponentType`<[`WidgetTypes`](frontend.md#widgettypes)[`T`]\>) => `any` |
+| `callback` | (`pluginName`: `string`, `component`: `ComponentType`<[`WidgetTypes`](#widgettypes)[`T`]\>) => `any` |
 
 #### Returns
 
@@ -1211,14 +1211,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends keyof [`WidgetTypes`](frontend.md#widgettypes) |
+| `T` | extends keyof [`WidgetTypes`](#widgettypes) |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `options` | `Object` |
-| `options.component` | `ComponentType`<[`WidgetTypes`](frontend.md#widgettypes)[`T`]\> |
+| `options.component` | `ComponentType`<[`WidgetTypes`](#widgettypes)[`T`]\> |
 | `options.pluginName` | `string` |
 | `options.widgetName` | `T` |
 

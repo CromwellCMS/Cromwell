@@ -18,25 +18,25 @@
 
 ### Constructors
 
-- [constructor](backend.UpdatePost.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [authorId](backend.UpdatePost.md#authorid)
-- [content](backend.UpdatePost.md#content)
-- [delta](backend.UpdatePost.md#delta)
-- [excerpt](backend.UpdatePost.md#excerpt)
-- [featured](backend.UpdatePost.md#featured)
-- [isEnabled](backend.UpdatePost.md#isenabled)
-- [mainImage](backend.UpdatePost.md#mainimage)
-- [pageDescription](backend.UpdatePost.md#pagedescription)
-- [pageTitle](backend.UpdatePost.md#pagetitle)
-- [publishDate](backend.UpdatePost.md#publishdate)
-- [published](backend.UpdatePost.md#published)
-- [readTime](backend.UpdatePost.md#readtime)
-- [slug](backend.UpdatePost.md#slug)
-- [tagIds](backend.UpdatePost.md#tagids)
-- [title](backend.UpdatePost.md#title)
+- [authorId](#authorid)
+- [content](#content)
+- [delta](#delta)
+- [excerpt](#excerpt)
+- [featured](#featured)
+- [isEnabled](#isenabled)
+- [mainImage](#mainimage)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [publishDate](#publishdate)
+- [published](#published)
+- [readTime](#readtime)
+- [slug](#slug)
+- [tagIds](#tagids)
+- [title](#title)
 
 ## Constructors
 

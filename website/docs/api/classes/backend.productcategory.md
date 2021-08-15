@@ -18,24 +18,24 @@
 
 ### Constructors
 
-- [constructor](backend.ProductCategory.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [children](backend.ProductCategory.md#children)
-- [createDate](backend.ProductCategory.md#createdate)
-- [description](backend.ProductCategory.md#description)
-- [descriptionDelta](backend.ProductCategory.md#descriptiondelta)
-- [id](backend.ProductCategory.md#id)
-- [isEnabled](backend.ProductCategory.md#isenabled)
-- [mainImage](backend.ProductCategory.md#mainimage)
-- [name](backend.ProductCategory.md#name)
-- [pageDescription](backend.ProductCategory.md#pagedescription)
-- [pageTitle](backend.ProductCategory.md#pagetitle)
-- [parent](backend.ProductCategory.md#parent)
-- [products](backend.ProductCategory.md#products)
-- [slug](backend.ProductCategory.md#slug)
-- [updateDate](backend.ProductCategory.md#updatedate)
+- [children](#children)
+- [createDate](#createdate)
+- [description](#description)
+- [descriptionDelta](#descriptiondelta)
+- [id](#id)
+- [isEnabled](#isenabled)
+- [mainImage](#mainimage)
+- [name](#name)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [parent](#parent)
+- [products](#products)
+- [slug](#slug)
+- [updateDate](#updatedate)
 
 ## Constructors
 
@@ -51,7 +51,7 @@
 
 ### children
 
-• `Optional` **children**: [`ProductCategory`](backend.ProductCategory.md)[]
+• `Optional` **children**: [`ProductCategory`][]
 
 #### Implementation of
 
@@ -77,7 +77,7 @@ TProductCategory.createDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
+[system/core/backend/src/models/entities/base-page.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L29)
 
 ___
 
@@ -123,7 +123,7 @@ TProductCategory.id
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
+[system/core/backend/src/models/entities/base-page.entity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L12)
 
 ___
 
@@ -141,7 +141,7 @@ TProductCategory.isEnabled
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
+[system/core/backend/src/models/entities/base-page.entity.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L38)
 
 ___
 
@@ -187,7 +187,7 @@ TProductCategory.pageDescription
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
+[system/core/backend/src/models/entities/base-page.entity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L24)
 
 ___
 
@@ -205,13 +205,13 @@ TProductCategory.pageTitle
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
+[system/core/backend/src/models/entities/base-page.entity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L20)
 
 ___
 
 ### parent
 
-• `Optional` **parent**: ``null`` \| [`ProductCategory`](backend.ProductCategory.md)
+• `Optional` **parent**: ``null`` \| [`ProductCategory`]
 
 #### Implementation of
 
@@ -251,7 +251,7 @@ TProductCategory.slug
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
+[system/core/backend/src/models/entities/base-page.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L16)
 
 ___
 
@@ -269,4 +269,4 @@ TProductCategory.updateDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
+[system/core/backend/src/models/entities/base-page.entity.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L34)

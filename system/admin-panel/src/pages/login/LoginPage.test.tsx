@@ -9,7 +9,7 @@ const testData: TUser = {
 }
 jest.mock('@cromwell/core-frontend', () => {
     return {
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 login: jest.fn().mockImplementation(() => true),
                 getUserInfo: jest.fn().mockImplementation(() => testData),

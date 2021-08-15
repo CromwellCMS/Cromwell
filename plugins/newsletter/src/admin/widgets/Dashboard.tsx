@@ -1,4 +1,4 @@
-import { getPluginStaticUrl, getRestAPIClient, WidgetTypes } from '@cromwell/core-frontend';
+import { getPluginStaticUrl, getRestApiClient, WidgetTypes } from '@cromwell/core-frontend';
 import React, { useState } from 'react';
 import { useEffect } from 'react';
 
@@ -22,7 +22,7 @@ export const Dashboard = (props: WidgetTypes['Dashboard']) => {
     }, []);
 
     const getStats = async () => {
-        const client = getRestAPIClient();
+        const client = getRestApiClient();
         const data = await client.get<string>('plugin-newsletter/stats');
         setNewsletterCount(data ?? '')
     }

@@ -36,7 +36,7 @@ module.exports = {
       items: [
         {
           to: '/docs/overview/intro',
-          label: 'Docs',
+          label: 'Installation',
           position: 'left',
           activeBasePath: 'never',
         },
@@ -58,7 +58,7 @@ module.exports = {
       style: 'dark',
       links: [
         {
-          title: 'Docs',
+          title: 'Documentation',
           items: [
             {
               label: 'Overview',
@@ -71,6 +71,10 @@ module.exports = {
             {
               label: 'Development',
               to: '/docs/development/theme-development',
+            },
+            {
+              label: 'Frontend dependencies',
+              to: '/latest-frontend-dependencies',
             },
           ],
         },
@@ -101,6 +105,10 @@ module.exports = {
             {
               label: 'Contacts',
               href: '/contacts'
+            },
+            {
+              label: 'Funding',
+              href: '/funding'
             }
           ],
         },

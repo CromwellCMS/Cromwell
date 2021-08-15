@@ -1,5 +1,5 @@
 import { TPluginSettingsProps } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { Button, IconButton, Tooltip } from '@material-ui/core';
 import { ArrowBack, InfoOutlined as InfoIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
@@ -29,7 +29,7 @@ export default function PluginSettingsLayout<TSettings>(props: TPluginSettingsPr
     const [isSaving, setIsSaving] = useState(false);
     const [infoOpen, setInfoOpen] = useState(false);
     const [pluginSettings, setPluginSettings] = useState(props.pluginSettings ?? {} as TSettings);
-    const apiClient = getRestAPIClient();
+    const apiClient = getRestApiClient();
 
 
     const changeSetting = <T extends keyof TSettings>(key: T, value: TSettings[T]) => {

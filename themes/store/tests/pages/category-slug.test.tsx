@@ -6,7 +6,7 @@ jest.mock('@cromwell/core-frontend', () => {
     return {
         ...jest.requireActual('@cromwell/core-frontend'),
         CGallery: props => props.gallery?.slides ?? null,
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {}
         },
         getGraphQLClient: () => {

@@ -10,7 +10,7 @@ const testData: TCmsSettings = {
 
 jest.mock('@cromwell/core-frontend', () => {
     return {
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getCmsSettings: jest.fn().mockImplementation(() => testData),
                 getAdminCmsSettings: jest.fn().mockImplementation(() => testData),

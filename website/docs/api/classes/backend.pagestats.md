@@ -18,15 +18,15 @@
 
 ### Constructors
 
-- [constructor](backend.PageStats.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [id](backend.PageStats.md#id)
-- [pageId](backend.PageStats.md#pageid)
-- [pageName](backend.PageStats.md#pagename)
-- [pageRoute](backend.PageStats.md#pageroute)
-- [views](backend.PageStats.md#views)
+- [id](#id)
+- [pageId](#pageid)
+- [pageName](#pagename)
+- [pageRoute](#pageroute)
+- [views](#views)
 
 ## Constructors
 

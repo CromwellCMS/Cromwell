@@ -28,7 +28,7 @@ export {
     blockCssClass,
 } from './constants';
 export { getGraphQLClient, TCGraphQLClient, TGraphQLErrorInfo, getGraphQLErrorInfo } from './api/CGraphQLClient';
-export { getRestAPIClient, TCRestAPIClient, TErrorInfo, TRequestOptions } from './api/CRestAPIClient';
+export { getRestApiClient, TCRestApiClient, TErrorInfo, TRequestOptions } from './api/CRestApiClient';
 export * from './api/CentralServerClient';
 export { getWebSocketClient } from './api/CWebSocketClient';
 export { getCStore } from './CStore';

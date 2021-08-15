@@ -40,14 +40,14 @@
 
 ### Constructors
 
-- [constructor](backend.BasePageInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [isEnabled](backend.BasePageInput.md#isenabled)
-- [pageDescription](backend.BasePageInput.md#pagedescription)
-- [pageTitle](backend.BasePageInput.md#pagetitle)
-- [slug](backend.BasePageInput.md#slug)
+- [isEnabled](#isenabled)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [slug](#slug)
 
 ## Constructors
 

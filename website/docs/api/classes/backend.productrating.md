@@ -12,12 +12,12 @@
 
 ### Constructors
 
-- [constructor](backend.ProductRating.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [average](backend.ProductRating.md#average)
-- [reviewsNumber](backend.ProductRating.md#reviewsnumber)
+- [average](#average)
+- [reviewsNumber](#reviewsnumber)
 
 ## Constructors
 

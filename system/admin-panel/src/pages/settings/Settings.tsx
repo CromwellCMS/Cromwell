@@ -1,5 +1,5 @@
 import { setStoreItem, TCmsInfo, TCmsSettings, TCurrency, TDBEntity } from '@cromwell/core';
-import { getCStore, getRestAPIClient } from '@cromwell/core-frontend';
+import { getCStore, getRestApiClient } from '@cromwell/core-frontend';
 import {
     Badge,
     Button,
@@ -106,7 +106,7 @@ class SettingsPage extends React.Component<any, {
 
     private getConfig = async () => {
         this.setState({ isLoading: true });
-        const client = getRestAPIClient();
+        const client = getRestApiClient();
         try {
             const settings = await client.getAdminCmsSettings();
             if (settings) {
@@ -122,7 +122,7 @@ class SettingsPage extends React.Component<any, {
 
     private saveConfig = async () => {
         const { settings } = this.state;
-        const client = getRestAPIClient();
+        const client = getRestApiClient();
         this.setState({ isLoading: true });
         const cstore = getCStore();
 
@@ -189,7 +189,7 @@ class SettingsPage extends React.Component<any, {
             this.setState({ exporting: true });
 
             try {
-                await getRestAPIClient()?.importDB(files);
+                await getRestApiClient()?.importDB(files);
                 toast.success?.('Successfully imported');
             } catch (e) {
                 console.error(e);
@@ -204,7 +204,7 @@ class SettingsPage extends React.Component<any, {
     private exportDB = async () => {
         this.setState({ exporting: true });
         try {
-            await getRestAPIClient().exportDB(
+            await getRestApiClient().exportDB(
                 this.exportOptions.filter(opt => opt.checked).map(opt => opt.key)
             );
         } catch (e) {
@@ -222,7 +222,7 @@ class SettingsPage extends React.Component<any, {
     private buildSitemap = async () => {
         this.setState({ buildingSitemap: true });
         try {
-            await getRestAPIClient().buildSitemap();
+            await getRestApiClient().buildSitemap();
             toast.success('Sitemap has been rebuilt');
         } catch (e) {
             toast.error('Failed to rebuild Sitemap');

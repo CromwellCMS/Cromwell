@@ -12,14 +12,14 @@
 
 ### Constructors
 
-- [constructor](backend.ProductReviewFilter.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [approved](backend.ProductReviewFilter.md#approved)
-- [productId](backend.ProductReviewFilter.md#productid)
-- [userId](backend.ProductReviewFilter.md#userid)
-- [userName](backend.ProductReviewFilter.md#username)
+- [approved](#approved)
+- [productId](#productid)
+- [userId](#userid)
+- [userName](#username)
 
 ## Constructors
 

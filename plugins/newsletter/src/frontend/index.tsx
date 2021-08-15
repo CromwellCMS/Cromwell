@@ -1,4 +1,4 @@
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { Button, InputBase, Tooltip } from '@material-ui/core';
 import { Alert, AlertProps } from '@material-ui/lab';
 import React, { useState } from 'react';
@@ -24,7 +24,7 @@ export default function NewsletterPlugin(): JSX.Element {
     const submit = async () => {
         if (!validateEmail(email)) return;
 
-        const client = getRestAPIClient();
+        const client = getRestApiClient();
         try {
             const response = await client.post('plugin-newsletter/subscribe', {
                 email

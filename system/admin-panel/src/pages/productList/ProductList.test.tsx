@@ -46,7 +46,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 getAttributes: jest.fn().mockImplementation(async () => []),
             }
         },
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getCmsStatus: jest.fn().mockImplementation(async () => ({})),
             }

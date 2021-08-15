@@ -12,12 +12,12 @@
 
 ### Constructors
 
-- [constructor](backend.PagedPost.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [elements](backend.PagedPost.md#elements)
-- [pagedMeta](backend.PagedPost.md#pagedmeta)
+- [elements](#elements)
+- [pagedMeta](#pagedmeta)
 
 ## Constructors
 

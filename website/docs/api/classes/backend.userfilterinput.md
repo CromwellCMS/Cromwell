@@ -12,15 +12,15 @@
 
 ### Constructors
 
-- [constructor](backend.UserFilterInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [address](backend.UserFilterInput.md#address)
-- [email](backend.UserFilterInput.md#email)
-- [fullName](backend.UserFilterInput.md#fullname)
-- [phone](backend.UserFilterInput.md#phone)
-- [role](backend.UserFilterInput.md#role)
+- [address](#address)
+- [email](#email)
+- [fullName](#fullname)
+- [phone](#phone)
+- [role](#role)
 
 ## Constructors
 

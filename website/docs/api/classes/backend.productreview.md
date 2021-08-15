@@ -18,26 +18,26 @@
 
 ### Constructors
 
-- [constructor](backend.ProductReview.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [approved](backend.ProductReview.md#approved)
-- [createDate](backend.ProductReview.md#createdate)
-- [description](backend.ProductReview.md#description)
-- [id](backend.ProductReview.md#id)
-- [isEnabled](backend.ProductReview.md#isenabled)
-- [pageDescription](backend.ProductReview.md#pagedescription)
-- [pageTitle](backend.ProductReview.md#pagetitle)
-- [product](backend.ProductReview.md#product)
-- [productId](backend.ProductReview.md#productid)
-- [rating](backend.ProductReview.md#rating)
-- [slug](backend.ProductReview.md#slug)
-- [title](backend.ProductReview.md#title)
-- [updateDate](backend.ProductReview.md#updatedate)
-- [userEmail](backend.ProductReview.md#useremail)
-- [userId](backend.ProductReview.md#userid)
-- [userName](backend.ProductReview.md#username)
+- [approved](#approved)
+- [createDate](#createdate)
+- [description](#description)
+- [id](#id)
+- [isEnabled](#isenabled)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [product](#product)
+- [productId](#productid)
+- [rating](#rating)
+- [slug](#slug)
+- [title](#title)
+- [updateDate](#updatedate)
+- [userEmail](#useremail)
+- [userId](#userid)
+- [userName](#username)
 
 ## Constructors
 
@@ -79,7 +79,7 @@ TProductReview.createDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
+[system/core/backend/src/models/entities/base-page.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L29)
 
 ___
 
@@ -111,7 +111,7 @@ TProductReview.id
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
+[system/core/backend/src/models/entities/base-page.entity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L12)
 
 ___
 
@@ -129,7 +129,7 @@ TProductReview.isEnabled
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
+[system/core/backend/src/models/entities/base-page.entity.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L38)
 
 ___
 
@@ -147,7 +147,7 @@ TProductReview.pageDescription
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
+[system/core/backend/src/models/entities/base-page.entity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L24)
 
 ___
 
@@ -165,7 +165,7 @@ TProductReview.pageTitle
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
+[system/core/backend/src/models/entities/base-page.entity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L20)
 
 ___
 
@@ -221,7 +221,7 @@ TProductReview.slug
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
+[system/core/backend/src/models/entities/base-page.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L16)
 
 ___
 
@@ -253,7 +253,7 @@ TProductReview.updateDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
+[system/core/backend/src/models/entities/base-page.entity.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L34)
 
 ___
 

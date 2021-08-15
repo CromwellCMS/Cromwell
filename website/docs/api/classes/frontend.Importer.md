@@ -14,26 +14,26 @@ Bundled node modules (Frontend dependencies) loading script
 
 ### Constructors
 
-- [constructor](frontend.Importer.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [canShowInfo](frontend.Importer.md#canshowinfo)
-- [hasBeenExecuted](frontend.Importer.md#hasbeenexecuted)
-- [importStatuses](frontend.Importer.md#importstatuses)
-- [imports](frontend.Importer.md#imports)
-- [moduleExternals](frontend.Importer.md#moduleexternals)
-- [modules](frontend.Importer.md#modules)
-- [prefix](frontend.Importer.md#prefix)
-- [scriptStatuses](frontend.Importer.md#scriptstatuses)
+- [canShowInfo](#canshowinfo)
+- [hasBeenExecuted](#hasbeenexecuted)
+- [importStatuses](#importstatuses)
+- [imports](#imports)
+- [moduleExternals](#moduleexternals)
+- [modules](#modules)
+- [prefix](#prefix)
+- [scriptStatuses](#scriptstatuses)
 
 ### Methods
 
-- [importModule](frontend.Importer.md#importmodule)
-- [importScriptExternals](frontend.Importer.md#importscriptexternals)
-- [setIsServerSide](frontend.Importer.md#setisserverside)
-- [setPrefix](frontend.Importer.md#setprefix)
-- [setServerPublicDir](frontend.Importer.md#setserverpublicdir)
+- [importModule](#importmodule)
+- [importScriptExternals](#importscriptexternals)
+- [setIsServerSide](#setisserverside)
+- [setPrefix](#setprefix)
+- [setServerPublicDir](#setserverpublicdir)
 
 ## Constructors
 

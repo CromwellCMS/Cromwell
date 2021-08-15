@@ -12,12 +12,12 @@
 
 ### Constructors
 
-- [constructor](backend.ProductFilterMeta.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [maxPrice](backend.ProductFilterMeta.md#maxprice)
-- [minPrice](backend.ProductFilterMeta.md#minprice)
+- [maxPrice](#maxprice)
+- [minPrice](#minprice)
 
 ## Constructors
 

@@ -1,5 +1,5 @@
 import { TCCSVersion, TPackageCromwellConfig, TPluginEntity } from '@cromwell/core';
-import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
+import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
 import { Button, Grid, IconButton, LinearProgress, Tooltip } from '@material-ui/core';
 import {
     AddCircleOutline as AddCircleOutlineIcon,
@@ -74,7 +74,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
 
     private getPluginList = async () => {
         try {
-            const pluginInfos = await getRestAPIClient()?.getPluginList();
+            const pluginInfos = await getRestApiClient()?.getPluginList();
             if (pluginInfos && Array.isArray(pluginInfos)) {
                 this.setState({
                     pluginPackages: pluginInfos,
@@ -108,7 +108,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
         for (const plugin of this.state.pluginPackages) {
             this.pluginUpdates[plugin.name] = undefined;
             try {
-                const update = await getRestAPIClient().getPluginUpdate(plugin.name);
+                const update = await getRestApiClient().getPluginUpdate(plugin.name);
                 if (update) {
                     this.pluginUpdates[plugin.name] = update;
                 }
@@ -137,7 +137,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
         this.setState({ updateModalInfo: null });
 
         try {
-            await getRestAPIClient().deletePlugin(pluginName);
+            await getRestApiClient().deletePlugin(pluginName);
 
             try {
                 await this.getPluginList();
@@ -161,7 +161,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
         this.setState({ isLoading: true });
         let success = false;
         try {
-            success = await getRestAPIClient()?.activatePlugin(pluginName);
+            success = await getRestApiClient()?.activatePlugin(pluginName);
             await this.getPluginList();
         } catch (e) {
             console.error(e);
@@ -196,7 +196,7 @@ class PluginList extends React.Component<Partial<RouteComponentProps>, {
         this.setState({ updateModalInfo: null });
         let success;
         try {
-            success = await getRestAPIClient().updatePlugin(plugin.name);
+            success = await getRestApiClient().updatePlugin(plugin.name);
         } catch (error) {
             console.error(error)
         }

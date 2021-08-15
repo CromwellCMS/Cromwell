@@ -8,8 +8,8 @@
 
 ### Enumeration members
 
-- [PostCard](common.ECommonComponentNames.md#postcard)
-- [ProductCard](common.ECommonComponentNames.md#productcard)
+- [PostCard](#postcard)
+- [ProductCard](#productcard)
 
 ## Enumeration members
 

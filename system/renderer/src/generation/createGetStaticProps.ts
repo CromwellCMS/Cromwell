@@ -9,7 +9,7 @@ import {
     TThemeConfig,
     resolvePageRoute,
 } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 
 import { getThemeStaticProps } from './getThemeStaticProps';
 import { pluginsDataFetcher } from './pluginsDataFetcher';
@@ -41,7 +41,7 @@ export const createGetStaticProps = (pageName: TDefaultPageName | string,
         } = {};
 
         try {
-            rendererData = (await getRestAPIClient().batchRendererData(pageConfigName)) ?? {};
+            rendererData = (await getRestApiClient().batchRendererData(pageConfigName)) ?? {};
         } catch (e) {
             console.error(e);
         }

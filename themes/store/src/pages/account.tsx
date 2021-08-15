@@ -1,5 +1,5 @@
 import { setStoreItem, TOrder, TStoreListItem, TUpdateUser, TUser } from '@cromwell/core';
-import { CContainer, CText, getCStore, getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
+import { CContainer, CText, getCStore, getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
 import { Button, Grid, TextField } from '@material-ui/core';
 import clsx from 'clsx';
 import React, { useEffect, useState } from 'react';
@@ -43,7 +43,7 @@ const Account = () => {
         let data: TUser | undefined;
         setLoading(true);
         try {
-            data = await getRestAPIClient().getUserInfo();
+            data = await getRestApiClient().getUserInfo();
             if (data?.id) {
                 setUserData(data);
                 getOrders(data?.id);

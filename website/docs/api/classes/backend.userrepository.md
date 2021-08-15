@@ -14,38 +14,38 @@
 
 ### Constructors
 
-- [constructor](backend.UserRepository.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [dbType](backend.UserRepository.md#dbtype)
+- [dbType](#dbtype)
 
 ### Methods
 
-- [applyDeleteMany](backend.UserRepository.md#applydeletemany)
-- [applyUserFilter](backend.UserRepository.md#applyuserfilter)
-- [createEntity](backend.UserRepository.md#createentity)
-- [createUser](backend.UserRepository.md#createuser)
-- [deleteEntity](backend.UserRepository.md#deleteentity)
-- [deleteMany](backend.UserRepository.md#deletemany)
-- [deleteManyFilteredUsers](backend.UserRepository.md#deletemanyfilteredusers)
-- [deleteUser](backend.UserRepository.md#deleteuser)
-- [getAll](backend.UserRepository.md#getall)
-- [getById](backend.UserRepository.md#getbyid)
-- [getBySlug](backend.UserRepository.md#getbyslug)
-- [getFilteredUsers](backend.UserRepository.md#getfilteredusers)
-- [getPaged](backend.UserRepository.md#getpaged)
-- [getSqlBoolStr](backend.UserRepository.md#getsqlboolstr)
-- [getSqlLike](backend.UserRepository.md#getsqllike)
-- [getUserByEmail](backend.UserRepository.md#getuserbyemail)
-- [getUserById](backend.UserRepository.md#getuserbyid)
-- [getUserBySlug](backend.UserRepository.md#getuserbyslug)
-- [getUsers](backend.UserRepository.md#getusers)
-- [handleUserInput](backend.UserRepository.md#handleuserinput)
-- [hashPassword](backend.UserRepository.md#hashpassword)
-- [quote](backend.UserRepository.md#quote)
-- [updateEntity](backend.UserRepository.md#updateentity)
-- [updateUser](backend.UserRepository.md#updateuser)
+- [applyDeleteMany](#applydeletemany)
+- [applyUserFilter](#applyuserfilter)
+- [createEntity](#createentity)
+- [createUser](#createuser)
+- [deleteEntity](#deleteentity)
+- [deleteMany](#deletemany)
+- [deleteManyFilteredUsers](#deletemanyfilteredusers)
+- [deleteUser](#deleteuser)
+- [getAll](#getall)
+- [getById](#getbyid)
+- [getBySlug](#getbyslug)
+- [getFilteredUsers](#getfilteredusers)
+- [getPaged](#getpaged)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [getUserByEmail](#getuserbyemail)
+- [getUserById](#getuserbyid)
+- [getUserBySlug](#getuserbyslug)
+- [getUsers](#getusers)
+- [handleUserInput](#handleuserinput)
+- [hashPassword](#hashpassword)
+- [quote](#quote)
+- [updateEntity](#updateentity)
+- [updateUser](#updateuser)
 
 ## Constructors
 

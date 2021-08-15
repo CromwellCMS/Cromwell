@@ -12,12 +12,12 @@
 
 ### Constructors
 
-- [constructor](backend.AttributeInstance.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [key](backend.AttributeInstance.md#key)
-- [values](backend.AttributeInstance.md#values)
+- [key](#key)
+- [values](#values)
 
 ## Constructors
 

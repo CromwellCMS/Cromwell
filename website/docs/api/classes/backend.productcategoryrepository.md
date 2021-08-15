@@ -14,32 +14,32 @@
 
 ### Constructors
 
-- [constructor](backend.ProductCategoryRepository.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [dbType](backend.ProductCategoryRepository.md#dbtype)
+- [dbType](#dbtype)
 
 ### Methods
 
-- [applyCategoryFilter](backend.ProductCategoryRepository.md#applycategoryfilter)
-- [createProductCategory](backend.ProductCategoryRepository.md#createproductcategory)
-- [deleteManyCategories](backend.ProductCategoryRepository.md#deletemanycategories)
-- [deleteProductCategory](backend.ProductCategoryRepository.md#deleteproductcategory)
-- [getCategoriesOfProduct](backend.ProductCategoryRepository.md#getcategoriesofproduct)
-- [getChildCategories](backend.ProductCategoryRepository.md#getchildcategories)
-- [getFilteredCategories](backend.ProductCategoryRepository.md#getfilteredcategories)
-- [getParentCategory](backend.ProductCategoryRepository.md#getparentcategory)
-- [getProductCategories](backend.ProductCategoryRepository.md#getproductcategories)
-- [getProductCategoriesById](backend.ProductCategoryRepository.md#getproductcategoriesbyid)
-- [getProductCategoryById](backend.ProductCategoryRepository.md#getproductcategorybyid)
-- [getProductCategoryBySlug](backend.ProductCategoryRepository.md#getproductcategorybyslug)
-- [getRootCategories](backend.ProductCategoryRepository.md#getrootcategories)
-- [getSqlBoolStr](backend.ProductCategoryRepository.md#getsqlboolstr)
-- [getSqlLike](backend.ProductCategoryRepository.md#getsqllike)
-- [handleProductCategoryInput](backend.ProductCategoryRepository.md#handleproductcategoryinput)
-- [quote](backend.ProductCategoryRepository.md#quote)
-- [updateProductCategory](backend.ProductCategoryRepository.md#updateproductcategory)
+- [applyCategoryFilter](#applycategoryfilter)
+- [createProductCategory](#createproductcategory)
+- [deleteManyCategories](#deletemanycategories)
+- [deleteProductCategory](#deleteproductcategory)
+- [getCategoriesOfProduct](#getcategoriesofproduct)
+- [getChildCategories](#getchildcategories)
+- [getFilteredCategories](#getfilteredcategories)
+- [getParentCategory](#getparentcategory)
+- [getProductCategories](#getproductcategories)
+- [getProductCategoriesById](#getproductcategoriesbyid)
+- [getProductCategoryById](#getproductcategorybyid)
+- [getProductCategoryBySlug](#getproductcategorybyslug)
+- [getRootCategories](#getrootcategories)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [handleProductCategoryInput](#handleproductcategoryinput)
+- [quote](#quote)
+- [updateProductCategory](#updateproductcategory)
 
 ## Constructors
 

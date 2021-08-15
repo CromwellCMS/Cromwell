@@ -9,7 +9,7 @@ import {
     TPluginEntity,
     TThemeConfig,
 } from '@cromwell/core';
-import { getGraphQLClient, getRestAPIClient, loadFrontendBundle } from '@cromwell/core-frontend';
+import { getGraphQLClient, getRestApiClient, loadFrontendBundle } from '@cromwell/core-frontend';
 import { Button, IconButton, MenuItem, Popover, Tab, Tabs, Tooltip } from '@material-ui/core';
 import {
     AddCircle as AddCircleIcon,
@@ -80,7 +80,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
     }
 
     private loadInitialInfo = async () => {
-        const infos = await getRestAPIClient()?.getPagesInfo();
+        const infos = await getRestApiClient()?.getPagesInfo();
 
         // Get info from DB
         const graphQLClient = getGraphQLClient();
@@ -96,8 +96,8 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
         if (infos) this.setState({ pageInfos: infos });
 
         try {
-            // const themeInfo = await getRestAPIClient()?.getThemeInfo();
-            const themeConfig = await getRestAPIClient()?.getThemeConfig();
+            // const themeInfo = await getRestApiClient()?.getThemeInfo();
+            const themeConfig = await getRestApiClient()?.getThemeConfig();
 
             const theme = getStoreItem('theme') ?? {};
             if (themeConfig?.palette) theme.palette = themeConfig.palette;
@@ -105,7 +105,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
 
             this.setState({ themeConfig });
 
-            const themeCustomConfig = await getRestAPIClient()?.getThemeCustomConfig();
+            const themeCustomConfig = await getRestApiClient()?.getThemeCustomConfig();
             setStoreItem('themeCustomConfig', themeCustomConfig);
         } catch (e) {
             console.error(e)
@@ -122,7 +122,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
         let pageConfig: TPageConfig | undefined;
         try {
             if (pageInfo.route && pageInfo.route !== '') {
-                pageConfig = await getRestAPIClient()?.getPageConfig(pageInfo.route);
+                pageConfig = await getRestApiClient()?.getPageConfig(pageInfo.route);
                 setStoreItem('pageConfig', pageConfig);
             }
         } catch (e) {
@@ -136,7 +136,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                 (this.state.themeConfig?.defaultPages?.pages ?? genericPageName) : pageInfo.route;
             const pageComp = await loadFrontendBundle(
                 pageCompPath,
-                () => getRestAPIClient()?.getThemePageBundle(pageCompPath),
+                () => getRestApiClient()?.getThemePageBundle(pageCompPath),
             );
 
             this.setState({
@@ -183,7 +183,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
                 modifications,
             };
 
-            const client = getRestAPIClient();
+            const client = getRestApiClient();
             this.setState({ loadingStatus: true });
 
             let success;
@@ -194,7 +194,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
             }
 
             try {
-                const infos = await getRestAPIClient()?.getPagesInfo();
+                const infos = await getRestApiClient()?.getPagesInfo();
                 if (infos) this.setState({ pageInfos: infos });
             } catch (error) {
                 console.error(error);
@@ -222,7 +222,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
         if (this.state.editingPageInfo?.route) {
             let success;
             try {
-                success = await getRestAPIClient()?.deletePage(this.state.editingPageInfo.route);
+                success = await getRestApiClient()?.deletePage(this.state.editingPageInfo.route);
             } catch (error) {
                 console.error(error);
             }
@@ -248,7 +248,7 @@ export default class ThemeEdit extends React.Component<Partial<RouteComponentPro
         if (this.state.editingPageInfo?.route) {
             let success;
             try {
-                success = await getRestAPIClient()?.resetPage(this.state.editingPageInfo.route);
+                success = await getRestApiClient()?.resetPage(this.state.editingPageInfo.route);
             } catch (error) {
                 console.error(error);
             }

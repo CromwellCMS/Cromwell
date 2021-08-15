@@ -14,11 +14,11 @@
 
 ### Constructors
 
-- [constructor](frontend.CContainer.md#constructor)
+- [constructor](#constructor)
 
 ### Methods
 
-- [render](frontend.CContainer.md#render)
+- [render](#render)
 
 ## Constructors
 

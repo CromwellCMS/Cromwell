@@ -1,5 +1,5 @@
 import { ECommonComponentNames, getStoreItem, isServer, saveCommonComponent, setStoreItem } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { AppProps } from 'next/app';
 import * as React from 'react';
 import ReactDOM from 'react-dom';
@@ -27,7 +27,7 @@ function App(props: AppProps) {
         getUser();
 
         if (!isServer()) {
-            getRestAPIClient()?.onError((info) => {
+            getRestApiClient()?.onError((info) => {
                 if (info.statusCode === 429) {
                     toast.error('Too many requests. Try again later');
                 }
@@ -39,7 +39,7 @@ function App(props: AppProps) {
         const userInfo = getStoreItem('userInfo');
         if (!userInfo) {
             try {
-                const user = await getRestAPIClient()?.getUserInfo();
+                const user = await getRestApiClient()?.getUserInfo();
                 if (user) {
                     setStoreItem('userInfo', user);
                 }

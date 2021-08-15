@@ -7,7 +7,7 @@ import {
     TCurrency,
     TUser,
 } from '@cromwell/core';
-import { CContainer, CHTML, CPlugin, CText, getCStore, getRestAPIClient, Link } from '@cromwell/core-frontend';
+import { CContainer, CHTML, CPlugin, CText, getCStore, getRestApiClient, Link } from '@cromwell/core-frontend';
 import {
     FormControl,
     IconButton,
@@ -92,7 +92,7 @@ export const Header = () => {
     const handleLogout = async () => {
         setUserOptionsOpen(false);
         try {
-            await getRestAPIClient()?.logOut();
+            await getRestApiClient()?.logOut();
         } catch (e) {
             console.error(e);
         }

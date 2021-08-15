@@ -14,11 +14,11 @@
 
 ### Constructors
 
-- [constructor](frontend.CText.md#constructor)
+- [constructor](#constructor)
 
 ### Methods
 
-- [render](frontend.CText.md#render)
+- [render](#render)
 
 ## Constructors
 
