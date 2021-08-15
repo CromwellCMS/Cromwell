@@ -1,5 +1,5 @@
 import { getBlockInstance, TCCSModuleInfo, TPackageCromwellConfig } from '@cromwell/core';
-import { CList, getCentralServerClient, getRestAPIClient, TCList } from '@cromwell/core-frontend';
+import { CList, getCentralServerClient, getRestApiClient, TCList } from '@cromwell/core-frontend';
 import { Grid, TextField } from '@material-ui/core';
 import { Skeleton } from '@material-ui/lab';
 import React, { Component } from 'react';
@@ -44,7 +44,7 @@ export default class ThemeMarket extends Component<Partial<RouteComponentProps>,
 
     private getThemeList = async () => {
         try {
-            const infos = await getRestAPIClient()?.getThemesInfo();
+            const infos = await getRestApiClient()?.getThemesInfo();
             if (infos && Array.isArray(infos)) {
                 this.setState({
                     installedThemes: infos,
@@ -66,7 +66,7 @@ export default class ThemeMarket extends Component<Partial<RouteComponentProps>,
     public installTheme = async (info: TCCSModuleInfo | TPackageCromwellConfig): Promise<boolean> => {
         let success = false;
         try {
-            success = await getRestAPIClient().installTheme(info.name);
+            success = await getRestApiClient().installTheme(info.name);
         } catch (error) {
             console.error(error);
         }

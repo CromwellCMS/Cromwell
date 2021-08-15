@@ -12,17 +12,17 @@
 
 ### Constructors
 
-- [constructor](backend.ProductReviewInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [approved](backend.ProductReviewInput.md#approved)
-- [description](backend.ProductReviewInput.md#description)
-- [productId](backend.ProductReviewInput.md#productid)
-- [rating](backend.ProductReviewInput.md#rating)
-- [title](backend.ProductReviewInput.md#title)
-- [userId](backend.ProductReviewInput.md#userid)
-- [userName](backend.ProductReviewInput.md#username)
+- [approved](#approved)
+- [description](#description)
+- [productId](#productid)
+- [rating](#rating)
+- [title](#title)
+- [userId](#userid)
+- [userName](#username)
 
 ## Constructors
 

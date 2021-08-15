@@ -3,7 +3,6 @@
   "version": "1.0.1",
   "private": true,
   "scripts": {
-    "docusaurus": "docusaurus",
     "start": "docusaurus start",
     "build": "docusaurus build",
     "swizzle": "docusaurus swizzle",
@@ -12,7 +11,7 @@
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
-    "generate:api": "cd ../ && npx typedoc --options website/typedoc.json",
+    "generate:api": "node api-generator/generate.js",
     "win:clean-api-docs": "rmdir /q /s docs\\api"
   },
   "dependencies": {

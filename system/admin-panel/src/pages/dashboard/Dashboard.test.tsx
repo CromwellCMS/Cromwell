@@ -20,7 +20,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 getProductReviews: jest.fn().mockImplementation(() => undefined),
             }
         },
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getCmsStats: jest.fn().mockImplementation(() => testData),
                 getCmsStatus: () => null,

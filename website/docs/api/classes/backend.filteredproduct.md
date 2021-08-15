@@ -12,13 +12,13 @@
 
 ### Constructors
 
-- [constructor](backend.FilteredProduct.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [elements](backend.FilteredProduct.md#elements)
-- [filterMeta](backend.FilteredProduct.md#filtermeta)
-- [pagedMeta](backend.FilteredProduct.md#pagedmeta)
+- [elements](#elements)
+- [filterMeta](#filtermeta)
+- [pagedMeta](#pagedmeta)
 
 ## Constructors
 

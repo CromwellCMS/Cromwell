@@ -18,19 +18,19 @@
 
 ### Constructors
 
-- [constructor](backend.CreateProductCategory.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [description](backend.CreateProductCategory.md#description)
-- [descriptionDelta](backend.CreateProductCategory.md#descriptiondelta)
-- [isEnabled](backend.CreateProductCategory.md#isenabled)
-- [mainImage](backend.CreateProductCategory.md#mainimage)
-- [name](backend.CreateProductCategory.md#name)
-- [pageDescription](backend.CreateProductCategory.md#pagedescription)
-- [pageTitle](backend.CreateProductCategory.md#pagetitle)
-- [parentId](backend.CreateProductCategory.md#parentid)
-- [slug](backend.CreateProductCategory.md#slug)
+- [description](#description)
+- [descriptionDelta](#descriptiondelta)
+- [isEnabled](#isenabled)
+- [mainImage](#mainimage)
+- [name](#name)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [parentId](#parentid)
+- [slug](#slug)
 
 ## Constructors
 

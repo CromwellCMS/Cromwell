@@ -1,5 +1,5 @@
 import { setStoreItem } from '@cromwell/core';
-import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
+import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
 import { Button, IconButton, InputAdornment, TextField, withStyles } from '@material-ui/core';
 import { Visibility as VisibilityIcon, VisibilityOff as VisibilityOffIcon } from '@material-ui/icons';
 import React, { useState } from 'react';
@@ -12,7 +12,7 @@ import styles from './Welcome.module.scss';
 
 
 export default function WelcomePage() {
-    const apiClient = getRestAPIClient();
+    const apiClient = getRestApiClient();
     const graphQLClient = getGraphQLClient();
     const history = useHistory();
     const [showPassword, setShowPassword] = useState(false);

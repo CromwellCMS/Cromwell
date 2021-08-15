@@ -15,7 +15,7 @@ const testDataAll: TPackageCromwellConfig[] = [
 
 jest.mock('@cromwell/core-frontend', () => {
     return {
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getThemesInfo: jest.fn().mockImplementation(async () => testDataAll),
             }

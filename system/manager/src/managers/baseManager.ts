@@ -8,7 +8,7 @@ import {
     getModulePackage,
     readCMSConfig,
 } from '@cromwell/core-backend';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { ChildProcess, fork, spawn } from 'child_process';
 import isRunning from 'is-running';
 import { resolve } from 'path';
@@ -248,7 +248,7 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
     let currentVersion: number | null | undefined = null;
 
     try {
-        const remoteSettings = await getRestAPIClient()?.getCmsSettings({ disableLog: true });
+        const remoteSettings = await getRestApiClient()?.getCmsSettings({ disableLog: true });
         if (remoteSettings) {
             const remoteVersion = extractServiceVersion(remoteSettings, serviceName);
             currentVersion = remoteVersion;
@@ -262,7 +262,7 @@ export const startWatchService = async (serviceName: keyof TServiceVersions, onV
     const watchService = async (serviceName: keyof TServiceVersions) => {
         const currentSettings = getStoreItem('cmsSettings');
         try {
-            const remoteSettings = await getRestAPIClient()?.getCmsSettings({ disableLog: true });
+            const remoteSettings = await getRestApiClient()?.getCmsSettings({ disableLog: true });
             const remoteVersion = extractServiceVersion(remoteSettings, serviceName);
 
             if (currentVersion !== null && remoteVersion && remoteVersion !== currentVersion) {

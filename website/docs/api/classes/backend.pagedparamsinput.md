@@ -18,14 +18,14 @@
 
 ### Constructors
 
-- [constructor](backend.PagedParamsInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [order](backend.PagedParamsInput.md#order)
-- [orderBy](backend.PagedParamsInput.md#orderby)
-- [pageNumber](backend.PagedParamsInput.md#pagenumber)
-- [pageSize](backend.PagedParamsInput.md#pagesize)
+- [order](#order)
+- [orderBy](#orderby)
+- [pageNumber](#pagenumber)
+- [pageSize](#pagesize)
 
 ## Constructors
 

@@ -12,17 +12,17 @@
 
 ### Constructors
 
-- [constructor](backend.OrderFilterInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [customerEmail](backend.OrderFilterInput.md#customeremail)
-- [customerName](backend.OrderFilterInput.md#customername)
-- [customerPhone](backend.OrderFilterInput.md#customerphone)
-- [dateFrom](backend.OrderFilterInput.md#datefrom)
-- [dateTo](backend.OrderFilterInput.md#dateto)
-- [orderId](backend.OrderFilterInput.md#orderid)
-- [status](backend.OrderFilterInput.md#status)
+- [customerEmail](#customeremail)
+- [customerName](#customername)
+- [customerPhone](#customerphone)
+- [dateFrom](#datefrom)
+- [dateTo](#dateto)
+- [orderId](#orderid)
+- [status](#status)
 
 ## Constructors
 

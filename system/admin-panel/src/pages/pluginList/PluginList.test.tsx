@@ -29,7 +29,7 @@ jest.mock('@cromwell/core-frontend', () => {
                 getAllEntities: jest.fn().mockImplementation(async () => testDataDB),
             }
         },
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getPluginList: jest.fn().mockImplementation(async () => testDataAll),
                 activatePlugin,

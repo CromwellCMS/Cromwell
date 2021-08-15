@@ -12,12 +12,12 @@
 
 ### Constructors
 
-- [constructor](backend.AttributeValueInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [icon](backend.AttributeValueInput.md#icon)
-- [value](backend.AttributeValueInput.md#value)
+- [icon](#icon)
+- [value](#value)
 
 ## Constructors
 

@@ -14,33 +14,33 @@
 
 ### Constructors
 
-- [constructor](backend.TagRepository.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [dbType](backend.TagRepository.md#dbtype)
+- [dbType](#dbtype)
 
 ### Methods
 
-- [applyDeleteMany](backend.TagRepository.md#applydeletemany)
-- [createEntity](backend.TagRepository.md#createentity)
-- [createTag](backend.TagRepository.md#createtag)
-- [deleteEntity](backend.TagRepository.md#deleteentity)
-- [deleteMany](backend.TagRepository.md#deletemany)
-- [deleteTag](backend.TagRepository.md#deletetag)
-- [getAll](backend.TagRepository.md#getall)
-- [getById](backend.TagRepository.md#getbyid)
-- [getBySlug](backend.TagRepository.md#getbyslug)
-- [getPaged](backend.TagRepository.md#getpaged)
-- [getSqlBoolStr](backend.TagRepository.md#getsqlboolstr)
-- [getSqlLike](backend.TagRepository.md#getsqllike)
-- [getTagById](backend.TagRepository.md#gettagbyid)
-- [getTagBySlug](backend.TagRepository.md#gettagbyslug)
-- [getTags](backend.TagRepository.md#gettags)
-- [getTagsByIds](backend.TagRepository.md#gettagsbyids)
-- [quote](backend.TagRepository.md#quote)
-- [updateEntity](backend.TagRepository.md#updateentity)
-- [updateTag](backend.TagRepository.md#updatetag)
+- [applyDeleteMany](#applydeletemany)
+- [createEntity](#createentity)
+- [createTag](#createtag)
+- [deleteEntity](#deleteentity)
+- [deleteMany](#deletemany)
+- [deleteTag](#deletetag)
+- [getAll](#getall)
+- [getById](#getbyid)
+- [getBySlug](#getbyslug)
+- [getPaged](#getpaged)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [getTagById](#gettagbyid)
+- [getTagBySlug](#gettagbyslug)
+- [getTags](#gettags)
+- [getTagsByIds](#gettagsbyids)
+- [quote](#quote)
+- [updateEntity](#updateentity)
+- [updateTag](#updatetag)
 
 ## Constructors
 

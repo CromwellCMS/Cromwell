@@ -12,12 +12,12 @@
 
 ### Constructors
 
-- [constructor](backend.PagedOrder.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [elements](backend.PagedOrder.md#elements)
-- [pagedMeta](backend.PagedOrder.md#pagedmeta)
+- [elements](#elements)
+- [pagedMeta](#pagedmeta)
 
 ## Constructors
 

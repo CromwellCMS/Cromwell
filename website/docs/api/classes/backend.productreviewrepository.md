@@ -14,35 +14,35 @@
 
 ### Constructors
 
-- [constructor](backend.ProductReviewRepository.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [dbType](backend.ProductReviewRepository.md#dbtype)
+- [dbType](#dbtype)
 
 ### Methods
 
-- [applyDeleteMany](backend.ProductReviewRepository.md#applydeletemany)
-- [applyProductReviewFilter](backend.ProductReviewRepository.md#applyproductreviewfilter)
-- [createEntity](backend.ProductReviewRepository.md#createentity)
-- [createProductReview](backend.ProductReviewRepository.md#createproductreview)
-- [deleteEntity](backend.ProductReviewRepository.md#deleteentity)
-- [deleteMany](backend.ProductReviewRepository.md#deletemany)
-- [deleteManyFilteredProductReviews](backend.ProductReviewRepository.md#deletemanyfilteredproductreviews)
-- [deleteProductReview](backend.ProductReviewRepository.md#deleteproductreview)
-- [getAll](backend.ProductReviewRepository.md#getall)
-- [getById](backend.ProductReviewRepository.md#getbyid)
-- [getBySlug](backend.ProductReviewRepository.md#getbyslug)
-- [getFilteredProductReviews](backend.ProductReviewRepository.md#getfilteredproductreviews)
-- [getPaged](backend.ProductReviewRepository.md#getpaged)
-- [getProductReview](backend.ProductReviewRepository.md#getproductreview)
-- [getProductReviews](backend.ProductReviewRepository.md#getproductreviews)
-- [getSqlBoolStr](backend.ProductReviewRepository.md#getsqlboolstr)
-- [getSqlLike](backend.ProductReviewRepository.md#getsqllike)
-- [handleProductReviewInput](backend.ProductReviewRepository.md#handleproductreviewinput)
-- [quote](backend.ProductReviewRepository.md#quote)
-- [updateEntity](backend.ProductReviewRepository.md#updateentity)
-- [updateProductReview](backend.ProductReviewRepository.md#updateproductreview)
+- [applyDeleteMany](#applydeletemany)
+- [applyProductReviewFilter](#applyproductreviewfilter)
+- [createEntity](#createentity)
+- [createProductReview](#createproductreview)
+- [deleteEntity](#deleteentity)
+- [deleteMany](#deletemany)
+- [deleteManyFilteredProductReviews](#deletemanyfilteredproductreviews)
+- [deleteProductReview](#deleteproductreview)
+- [getAll](#getall)
+- [getById](#getbyid)
+- [getBySlug](#getbyslug)
+- [getFilteredProductReviews](#getfilteredproductreviews)
+- [getPaged](#getpaged)
+- [getProductReview](#getproductreview)
+- [getProductReviews](#getproductreviews)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [handleProductReviewInput](#handleproductreviewinput)
+- [quote](#quote)
+- [updateEntity](#updateentity)
+- [updateProductReview](#updateproductreview)
 
 ## Constructors
 

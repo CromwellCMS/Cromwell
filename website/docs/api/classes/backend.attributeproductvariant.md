@@ -12,18 +12,18 @@
 
 ### Constructors
 
-- [constructor](backend.AttributeProductVariant.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [description](backend.AttributeProductVariant.md#description)
-- [descriptionDelta](backend.AttributeProductVariant.md#descriptiondelta)
-- [images](backend.AttributeProductVariant.md#images)
-- [mainImage](backend.AttributeProductVariant.md#mainimage)
-- [name](backend.AttributeProductVariant.md#name)
-- [oldPrice](backend.AttributeProductVariant.md#oldprice)
-- [price](backend.AttributeProductVariant.md#price)
-- [sku](backend.AttributeProductVariant.md#sku)
+- [description](#description)
+- [descriptionDelta](#descriptiondelta)
+- [images](#images)
+- [mainImage](#mainimage)
+- [name](#name)
+- [oldPrice](#oldprice)
+- [price](#price)
+- [sku](#sku)
 
 ## Constructors
 

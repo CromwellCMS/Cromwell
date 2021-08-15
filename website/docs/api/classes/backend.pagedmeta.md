@@ -12,14 +12,14 @@
 
 ### Constructors
 
-- [constructor](backend.PagedMeta.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [pageNumber](backend.PagedMeta.md#pagenumber)
-- [pageSize](backend.PagedMeta.md#pagesize)
-- [totalElements](backend.PagedMeta.md#totalelements)
-- [totalPages](backend.PagedMeta.md#totalpages)
+- [pageNumber](#pagenumber)
+- [pageSize](#pagesize)
+- [totalElements](#totalelements)
+- [totalPages](#totalpages)
 
 ## Constructors
 

@@ -5,7 +5,7 @@ const settings = {
 };
 jest.mock('@cromwell/core-frontend', () => {
     return {
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getPluginSettings: jest.fn().mockImplementation(() => settings)
             }

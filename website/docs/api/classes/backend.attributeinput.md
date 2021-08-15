@@ -18,19 +18,19 @@
 
 ### Constructors
 
-- [constructor](backend.AttributeInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [icon](backend.AttributeInput.md#icon)
-- [isEnabled](backend.AttributeInput.md#isenabled)
-- [key](backend.AttributeInput.md#key)
-- [pageDescription](backend.AttributeInput.md#pagedescription)
-- [pageTitle](backend.AttributeInput.md#pagetitle)
-- [required](backend.AttributeInput.md#required)
-- [slug](backend.AttributeInput.md#slug)
-- [type](backend.AttributeInput.md#type)
-- [values](backend.AttributeInput.md#values)
+- [icon](#icon)
+- [isEnabled](#isenabled)
+- [key](#key)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [required](#required)
+- [slug](#slug)
+- [type](#type)
+- [values](#values)
 
 ## Constructors
 

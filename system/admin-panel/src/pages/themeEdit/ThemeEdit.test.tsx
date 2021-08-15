@@ -25,7 +25,7 @@ const testPageConfig: TPageConfig = {
 
 jest.mock('@cromwell/core-frontend', () => {
     return {
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getPagesInfo: jest.fn().mockImplementation(async () => pagesInfo),
                 getPageConfig: jest.fn().mockImplementation(async () => testPageConfig),

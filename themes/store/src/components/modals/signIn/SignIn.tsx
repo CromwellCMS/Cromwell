@@ -1,5 +1,5 @@
 import { TUser } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { Button, IconButton, InputAdornment, Tab, Tabs, TextField } from '@material-ui/core';
 import React, { useState } from 'react';
 
@@ -18,7 +18,7 @@ export default function SingIn(props: {
     onClose: () => any;
     onSignIn: (user: TUser) => any;
 }) {
-    const apiClient = getRestAPIClient();
+    const apiClient = getRestApiClient();
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [emailInput, setEmailInput] = useState('');

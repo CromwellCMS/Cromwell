@@ -2,7 +2,7 @@ import { getStoreItem, TCromwellBlockProps, TFrontendPluginProps } from '@cromwe
 import React from 'react';
 import { isValidElementType } from 'react-is';
 
-import { getRestAPIClient } from '../../api/CRestAPIClient';
+import { getRestApiClient } from '../../api/CRestApiClient';
 import { getDynamicLoader } from '../../constants';
 import { getLoadableFrontendBundle } from '../../helpers/loadFrontendBundle';
 import { CromwellBlock } from '../CromwellBlock/CromwellBlock';
@@ -35,7 +35,7 @@ export class CPlugin extends React.Component<CPluginProps> {
 
                     let PluginComponent: React.ComponentType<TFrontendPluginProps> | undefined = component;
                     if (name && !component) {
-                        const restAPIClient = getRestAPIClient();
+                        const restAPIClient = getRestApiClient();
                         const loader = (getStoreItem('environment')?.isAdminPanel && props.adminPanel !== false) ?
                             restAPIClient?.getPluginAdminBundle : restAPIClient?.getPluginFrontendBundle;
 

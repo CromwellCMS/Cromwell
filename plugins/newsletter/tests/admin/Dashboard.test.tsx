@@ -4,7 +4,7 @@ import React from 'react';
 
 jest.mock('@cromwell/core-frontend', () => {
     return {
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 get: () => 5,
             }

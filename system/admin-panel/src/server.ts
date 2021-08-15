@@ -10,7 +10,7 @@ import {
     getPublicDir,
     readCMSConfigSync,
 } from '@cromwell/core-backend';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import { downloader } from '@cromwell/utils';
 import compress from 'compression';
 import fastify from 'fastify';
@@ -31,7 +31,7 @@ const start = async () => {
     const cmsConfig = readCMSConfigSync();
     setStoreItem('cmsSettings', cmsConfig);
 
-    const cmsSettings = await getRestAPIClient().getCmsSettings() ?? cmsConfig;
+    const cmsSettings = await getRestApiClient().getCmsSettings() ?? cmsConfig;
     setStoreItem('cmsSettings', cmsSettings);
 
     const env = process.argv[2];

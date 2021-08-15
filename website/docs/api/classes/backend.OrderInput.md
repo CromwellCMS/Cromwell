@@ -18,30 +18,30 @@
 
 ### Constructors
 
-- [constructor](backend.OrderInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [cart](backend.OrderInput.md#cart)
-- [cartOldTotalPrice](backend.OrderInput.md#cartoldtotalprice)
-- [cartTotalPrice](backend.OrderInput.md#carttotalprice)
-- [currency](backend.OrderInput.md#currency)
-- [customerAddress](backend.OrderInput.md#customeraddress)
-- [customerComment](backend.OrderInput.md#customercomment)
-- [customerEmail](backend.OrderInput.md#customeremail)
-- [customerName](backend.OrderInput.md#customername)
-- [customerPhone](backend.OrderInput.md#customerphone)
-- [isEnabled](backend.OrderInput.md#isenabled)
-- [orderTotalPrice](backend.OrderInput.md#ordertotalprice)
-- [pageDescription](backend.OrderInput.md#pagedescription)
-- [pageTitle](backend.OrderInput.md#pagetitle)
-- [paymentMethod](backend.OrderInput.md#paymentmethod)
-- [shippingMethod](backend.OrderInput.md#shippingmethod)
-- [shippingPrice](backend.OrderInput.md#shippingprice)
-- [slug](backend.OrderInput.md#slug)
-- [status](backend.OrderInput.md#status)
-- [totalQnt](backend.OrderInput.md#totalqnt)
-- [userId](backend.OrderInput.md#userid)
+- [cart](#cart)
+- [cartOldTotalPrice](#cartoldtotalprice)
+- [cartTotalPrice](#carttotalprice)
+- [currency](#currency)
+- [customerAddress](#customeraddress)
+- [customerComment](#customercomment)
+- [customerEmail](#customeremail)
+- [customerName](#customername)
+- [customerPhone](#customerphone)
+- [isEnabled](#isenabled)
+- [orderTotalPrice](#ordertotalprice)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [paymentMethod](#paymentmethod)
+- [shippingMethod](#shippingmethod)
+- [shippingPrice](#shippingprice)
+- [slug](#slug)
+- [status](#status)
+- [totalQnt](#totalqnt)
+- [userId](#userid)
 
 ## Constructors
 

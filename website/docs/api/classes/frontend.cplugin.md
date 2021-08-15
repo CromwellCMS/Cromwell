@@ -14,11 +14,11 @@
 
 ### Constructors
 
-- [constructor](frontend.CPlugin.md#constructor)
+- [constructor](#constructor)
 
 ### Methods
 
-- [render](frontend.CPlugin.md#render)
+- [render](#render)
 
 ## Constructors
 

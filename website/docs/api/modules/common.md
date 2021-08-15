@@ -27,167 +27,179 @@ const settings: TCmsSettings | undefined = getStoreItem('cmsSettings');
 
 ### Type aliases
 
-- [GraphQLPathsType](common.md#graphqlpathstype)
-- [StaticPageContext](common.md#staticpagecontext)
-- [TAdditionalExports](common.md#tadditionalexports)
-- [TAttribute](common.md#tattribute)
-- [TAttributeInput](common.md#tattributeinput)
-- [TAttributeInstance](common.md#tattributeinstance)
-- [TAttributeInstanceValue](common.md#tattributeinstancevalue)
-- [TAttributeProductVariant](common.md#tattributeproductvariant)
-- [TAttributeValue](common.md#tattributevalue)
-- [TAuthRole](common.md#tauthrole)
-- [TBaseModuleConfig](common.md#tbasemoduleconfig)
-- [TBasePageEntity](common.md#tbasepageentity)
-- [TBasePageEntityInput](common.md#tbasepageentityinput)
-- [TBlockContentProvider](common.md#tblockcontentprovider)
-- [TCCSModuleInfo](common.md#tccsmoduleinfo)
-- [TCCSModuleShortInfo](common.md#tccsmoduleshortinfo)
-- [TCCSVersion](common.md#tccsversion)
-- [TCMSTheme](common.md#tcmstheme)
-- [TCmsAdminSettings](common.md#tcmsadminsettings)
-- [TCmsConfig](common.md#tcmsconfig)
-- [TCmsEntity](common.md#tcmsentity)
-- [TCmsEntityCore](common.md#tcmsentitycore)
-- [TCmsInfo](common.md#tcmsinfo)
-- [TCmsInternalSettings](common.md#tcmsinternalsettings)
-- [TCmsPublicSettings](common.md#tcmspublicsettings)
-- [TCmsRedirect](common.md#tcmsredirect)
-- [TCmsRedirectFunction](common.md#tcmsredirectfunction)
-- [TCmsRedirectObject](common.md#tcmsredirectobject)
-- [TCmsSettings](common.md#tcmssettings)
-- [TCmsStats](common.md#tcmsstats)
-- [TCmsStatus](common.md#tcmsstatus)
-- [TCommonComponentProps](common.md#tcommoncomponentprops)
-- [TContentComponentProps](common.md#tcontentcomponentprops)
-- [TCreateUser](common.md#tcreateuser)
-- [TCromwellBlock](common.md#tcromwellblock)
-- [TCromwellBlockData](common.md#tcromwellblockdata)
-- [TCromwellBlockProps](common.md#tcromwellblockprops)
-- [TCromwellBlockType](common.md#tcromwellblocktype)
-- [TCromwellNodeModules](common.md#tcromwellnodemodules)
-- [TCromwellNotify](common.md#tcromwellnotify)
-- [TCromwellPage](common.md#tcromwellpage)
-- [TCromwellPageCoreProps](common.md#tcromwellpagecoreprops)
-- [TCromwellStore](common.md#tcromwellstore)
-- [TCromwellaConfig](common.md#tcromwellaconfig)
-- [TCurrency](common.md#tcurrency)
-- [TDBAuxiliaryColumns](common.md#tdbauxiliarycolumns)
-- [TDBEntity](common.md#tdbentity)
-- [TDBInfo](common.md#tdbinfo)
-- [TDataComponentProps](common.md#tdatacomponentprops)
-- [TDefaultPageName](common.md#tdefaultpagename)
-- [TDeleteManyInput](common.md#tdeletemanyinput)
-- [TExternal](common.md#texternal)
-- [TFilteredProductList](common.md#tfilteredproductlist)
-- [TFrontendBundle](common.md#tfrontendbundle)
-- [TFrontendDependency](common.md#tfrontenddependency)
-- [TFrontendPluginProps](common.md#tfrontendpluginprops)
-- [TGallerySettings](common.md#tgallerysettings)
-- [TGetStaticProps](common.md#tgetstaticprops)
-- [TGraphQLNode](common.md#tgraphqlnode)
-- [TImageSettings](common.md#timagesettings)
-- [TModuleConfig](common.md#tmoduleconfig)
-- [TNotification](common.md#tnotification)
-- [TOrder](common.md#torder)
-- [TOrderCore](common.md#tordercore)
-- [TOrderFilter](common.md#torderfilter)
-- [TOrderInput](common.md#torderinput)
-- [TPackageCromwellConfig](common.md#tpackagecromwellconfig)
-- [TPackageJson](common.md#tpackagejson)
-- [TPageConfig](common.md#tpageconfig)
-- [TPageInfo](common.md#tpageinfo)
-- [TPageStats](common.md#tpagestats)
-- [TPagedList](common.md#tpagedlist)
-- [TPagedMeta](common.md#tpagedmeta)
-- [TPagedParams](common.md#tpagedparams)
-- [TPagesMetaInfo](common.md#tpagesmetainfo)
-- [TPalette](common.md#tpalette)
-- [TPaymentSession](common.md#tpaymentsession)
-- [TPluginConfig](common.md#tpluginconfig)
-- [TPluginEntity](common.md#tpluginentity)
-- [TPluginEntityCore](common.md#tpluginentitycore)
-- [TPluginEntityInput](common.md#tpluginentityinput)
-- [TPluginInfo](common.md#tplugininfo)
-- [TPluginSettingsProps](common.md#tpluginsettingsprops)
-- [TPost](common.md#tpost)
-- [TPostComment](common.md#tpostcomment)
-- [TPostCommentCore](common.md#tpostcommentcore)
-- [TPostCommentInput](common.md#tpostcommentinput)
-- [TPostFilter](common.md#tpostfilter)
-- [TPostInput](common.md#tpostinput)
-- [TProduct](common.md#tproduct)
-- [TProductCategory](common.md#tproductcategory)
-- [TProductCategoryCore](common.md#tproductcategorycore)
-- [TProductCategoryFilter](common.md#tproductcategoryfilter)
-- [TProductCategoryInput](common.md#tproductcategoryinput)
-- [TProductFilter](common.md#tproductfilter)
-- [TProductFilterAttribute](common.md#tproductfilterattribute)
-- [TProductFilterMeta](common.md#tproductfiltermeta)
-- [TProductInput](common.md#tproductinput)
-- [TProductRating](common.md#tproductrating)
-- [TProductReview](common.md#tproductreview)
-- [TProductReviewCore](common.md#tproductreviewcore)
-- [TProductReviewFilter](common.md#tproductreviewfilter)
-- [TProductReviewInput](common.md#tproductreviewinput)
-- [TRollupConfig](common.md#trollupconfig)
-- [TSalePerDay](common.md#tsaleperday)
-- [TScriptMetaInfo](common.md#tscriptmetainfo)
-- [TServiceVersions](common.md#tserviceversions)
-- [TStoreListItem](common.md#tstorelistitem)
-- [TTag](common.md#ttag)
-- [TTagInput](common.md#ttaginput)
-- [TThemeConfig](common.md#tthemeconfig)
-- [TThemeEntity](common.md#tthemeentity)
-- [TThemeEntityCore](common.md#tthemeentitycore)
-- [TThemeEntityInput](common.md#tthemeentityinput)
-- [TUpdateInfo](common.md#tupdateinfo)
-- [TUpdateUser](common.md#tupdateuser)
-- [TUser](common.md#tuser)
-- [TUserFilter](common.md#tuserfilter)
-- [TUserRole](common.md#tuserrole)
+- [CrwDocumentContextType](#crwdocumentcontexttype)
+- [GraphQLPathsType](#graphqlpathstype)
+- [StaticPageContext](#staticpagecontext)
+- [TAdditionalExports](#tadditionalexports)
+- [TAttribute](#tattribute)
+- [TAttributeInput](#tattributeinput)
+- [TAttributeInstance](#tattributeinstance)
+- [TAttributeInstanceValue](#tattributeinstancevalue)
+- [TAttributeProductVariant](#tattributeproductvariant)
+- [TAttributeValue](#tattributevalue)
+- [TAuthRole](#tauthrole)
+- [TBaseModuleConfig](#tbasemoduleconfig)
+- [TBasePageEntity](#tbasepageentity)
+- [TBasePageEntityInput](#tbasepageentityinput)
+- [TBlockContentProvider](#tblockcontentprovider)
+- [TCCSModuleInfo](#tccsmoduleinfo)
+- [TCCSModuleShortInfo](#tccsmoduleshortinfo)
+- [TCCSVersion](#tccsversion)
+- [TCMSTheme](#tcmstheme)
+- [TCmsAdminSettings](#tcmsadminsettings)
+- [TCmsConfig](#tcmsconfig)
+- [TCmsEntity](#tcmsentity)
+- [TCmsEntityCore](#tcmsentitycore)
+- [TCmsInfo](#tcmsinfo)
+- [TCmsInternalSettings](#tcmsinternalsettings)
+- [TCmsPublicSettings](#tcmspublicsettings)
+- [TCmsRedirect](#tcmsredirect)
+- [TCmsRedirectFunction](#tcmsredirectfunction)
+- [TCmsRedirectObject](#tcmsredirectobject)
+- [TCmsSettings](#tcmssettings)
+- [TCmsStats](#tcmsstats)
+- [TCmsStatus](#tcmsstatus)
+- [TCommonComponentProps](#tcommoncomponentprops)
+- [TContentComponentProps](#tcontentcomponentprops)
+- [TCreateUser](#tcreateuser)
+- [TCromwellBlock](#tcromwellblock)
+- [TCromwellBlockData](#tcromwellblockdata)
+- [TCromwellBlockProps](#tcromwellblockprops)
+- [TCromwellBlockType](#tcromwellblocktype)
+- [TCromwellNodeModules](#tcromwellnodemodules)
+- [TCromwellNotify](#tcromwellnotify)
+- [TCromwellPage](#tcromwellpage)
+- [TCromwellPageCoreProps](#tcromwellpagecoreprops)
+- [TCromwellStore](#tcromwellstore)
+- [TCromwellaConfig](#tcromwellaconfig)
+- [TCurrency](#tcurrency)
+- [TDBAuxiliaryColumns](#tdbauxiliarycolumns)
+- [TDBEntity](#tdbentity)
+- [TDBInfo](#tdbinfo)
+- [TDataComponentProps](#tdatacomponentprops)
+- [TDefaultPageName](#tdefaultpagename)
+- [TDeleteManyInput](#tdeletemanyinput)
+- [TExternal](#texternal)
+- [TFilteredProductList](#tfilteredproductlist)
+- [TFrontendBundle](#tfrontendbundle)
+- [TFrontendDependency](#tfrontenddependency)
+- [TFrontendPluginProps](#tfrontendpluginprops)
+- [TGallerySettings](#tgallerysettings)
+- [TGetStaticProps](#tgetstaticprops)
+- [TGraphQLNode](#tgraphqlnode)
+- [TImageSettings](#timagesettings)
+- [TModuleConfig](#tmoduleconfig)
+- [TNotification](#tnotification)
+- [TOrder](#torder)
+- [TOrderCore](#tordercore)
+- [TOrderFilter](#torderfilter)
+- [TOrderInput](#torderinput)
+- [TPackageCromwellConfig](#tpackagecromwellconfig)
+- [TPackageJson](#tpackagejson)
+- [TPageConfig](#tpageconfig)
+- [TPageInfo](#tpageinfo)
+- [TPageStats](#tpagestats)
+- [TPagedList](#tpagedlist)
+- [TPagedMeta](#tpagedmeta)
+- [TPagedParams](#tpagedparams)
+- [TPagesMetaInfo](#tpagesmetainfo)
+- [TPalette](#tpalette)
+- [TPaymentSession](#tpaymentsession)
+- [TPluginConfig](#tpluginconfig)
+- [TPluginEntity](#tpluginentity)
+- [TPluginEntityCore](#tpluginentitycore)
+- [TPluginEntityInput](#tpluginentityinput)
+- [TPluginInfo](#tplugininfo)
+- [TPluginSettingsProps](#tpluginsettingsprops)
+- [TPost](#tpost)
+- [TPostComment](#tpostcomment)
+- [TPostCommentCore](#tpostcommentcore)
+- [TPostCommentInput](#tpostcommentinput)
+- [TPostFilter](#tpostfilter)
+- [TPostInput](#tpostinput)
+- [TProduct](#tproduct)
+- [TProductCategory](#tproductcategory)
+- [TProductCategoryCore](#tproductcategorycore)
+- [TProductCategoryFilter](#tproductcategoryfilter)
+- [TProductCategoryInput](#tproductcategoryinput)
+- [TProductFilter](#tproductfilter)
+- [TProductFilterAttribute](#tproductfilterattribute)
+- [TProductFilterMeta](#tproductfiltermeta)
+- [TProductInput](#tproductinput)
+- [TProductRating](#tproductrating)
+- [TProductReview](#tproductreview)
+- [TProductReviewCore](#tproductreviewcore)
+- [TProductReviewFilter](#tproductreviewfilter)
+- [TProductReviewInput](#tproductreviewinput)
+- [TRollupConfig](#trollupconfig)
+- [TSalePerDay](#tsaleperday)
+- [TScriptMetaInfo](#tscriptmetainfo)
+- [TServiceVersions](#tserviceversions)
+- [TStoreListItem](#tstorelistitem)
+- [TTag](#ttag)
+- [TTagInput](#ttaginput)
+- [TThemeConfig](#tthemeconfig)
+- [TThemeEntity](#tthemeentity)
+- [TThemeEntityCore](#tthemeentitycore)
+- [TThemeEntityInput](#tthemeentityinput)
+- [TUpdateInfo](#tupdateinfo)
+- [TUpdateUser](#tupdateuser)
+- [TUser](#tuser)
+- [TUserFilter](#tuserfilter)
+- [TUserRole](#tuserrole)
 
 ### Variables
 
-- [GraphQLPaths](common.md#graphqlpaths)
-- [bundledModulesDirName](common.md#bundledmodulesdirname)
-- [genericPageName](common.md#genericpagename)
-- [moduleArchiveFileName](common.md#modulearchivefilename)
-- [moduleBundleInfoFileName](common.md#modulebundleinfofilename)
-- [moduleChunksBuildDirChunk](common.md#modulechunksbuilddirchunk)
-- [moduleExportsDirChunk](common.md#moduleexportsdirchunk)
-- [moduleGeneratedFileName](common.md#modulegeneratedfilename)
-- [moduleLibBuildFileName](common.md#modulelibbuildfilename)
-- [moduleMainBuildFileName](common.md#modulemainbuildfilename)
-- [moduleMetaInfoFileName](common.md#modulemetainfofilename)
-- [moduleNodeBuildFileName](common.md#modulenodebuildfilename)
-- [moduleNodeGeneratedFileName](common.md#modulenodegeneratedfilename)
-- [moduleOneChunkGeneratedFileName](common.md#moduleonechunkgeneratedfilename)
-- [serviceLocator](common.md#servicelocator)
-- [systemPackages](common.md#systempackages)
+- [GraphQLPaths](#graphqlpaths)
+- [bundledModulesDirName](#bundledmodulesdirname)
+- [genericPageName](#genericpagename)
+- [moduleArchiveFileName](#modulearchivefilename)
+- [moduleBundleInfoFileName](#modulebundleinfofilename)
+- [moduleChunksBuildDirChunk](#modulechunksbuilddirchunk)
+- [moduleExportsDirChunk](#moduleexportsdirchunk)
+- [moduleGeneratedFileName](#modulegeneratedfilename)
+- [moduleLibBuildFileName](#modulelibbuildfilename)
+- [moduleMainBuildFileName](#modulemainbuildfilename)
+- [moduleMetaInfoFileName](#modulemetainfofilename)
+- [moduleNodeBuildFileName](#modulenodebuildfilename)
+- [moduleNodeGeneratedFileName](#modulenodegeneratedfilename)
+- [moduleOneChunkGeneratedFileName](#moduleonechunkgeneratedfilename)
+- [serviceLocator](#servicelocator)
+- [systemPackages](#systempackages)
 
 ### Functions
 
-- [getBlockInstance](common.md#getblockinstance)
-- [getCmsSettings](common.md#getcmssettings)
-- [getCommonComponent](common.md#getcommoncomponent)
-- [getPageCustomConfig](common.md#getpagecustomconfig)
-- [getRandStr](common.md#getrandstr)
-- [getStore](common.md#getstore)
-- [getStoreItem](common.md#getstoreitem)
-- [getThemeCustomConfig](common.md#getthemecustomconfig)
-- [getThemeCustomConfigProp](common.md#getthemecustomconfigprop)
-- [isServer](common.md#isserver)
-- [onStoreChange](common.md#onstorechange)
-- [registerRedirect](common.md#registerredirect)
-- [registerRewrite](common.md#registerrewrite)
-- [removeOnStoreChange](common.md#removeonstorechange)
-- [resolvePageRoute](common.md#resolvepageroute)
-- [saveCommonComponent](common.md#savecommoncomponent)
-- [setStoreItem](common.md#setstoreitem)
-- [sleep](common.md#sleep)
+- [findRedirect](#findredirect)
+- [getBlockInstance](#getblockinstance)
+- [getCmsSettings](#getcmssettings)
+- [getCommonComponent](#getcommoncomponent)
+- [getPageCustomConfig](#getpagecustomconfig)
+- [getRandStr](#getrandstr)
+- [getStore](#getstore)
+- [getStoreItem](#getstoreitem)
+- [getThemeCustomConfig](#getthemecustomconfig)
+- [getThemeCustomConfigProp](#getthemecustomconfigprop)
+- [isServer](#isserver)
+- [onStoreChange](#onstorechange)
+- [registerRedirect](#registerredirect)
+- [registerRewrite](#registerrewrite)
+- [removeOnStoreChange](#removeonstorechange)
+- [resolvePageRoute](#resolvepageroute)
+- [saveCommonComponent](#savecommoncomponent)
+- [setStoreItem](#setstoreitem)
+- [sleep](#sleep)
 
 ## Type aliases
+
+### CrwDocumentContextType
+
+Ƭ **CrwDocumentContextType**: `Partial`<`DocumentContext`\> & { `fullUrl?`: `string` ; `origin?`: `string`  }
+
+#### Defined in
+
+[system/core/common/src/types/blocks.ts:40](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L40)
+
+___
 
 ### GraphQLPathsType
 
@@ -221,7 +233,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:8](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L8)
+[system/core/common/src/types/blocks.ts:9](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L9)
 
 ___
 
@@ -240,13 +252,13 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:408](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L408)
+[system/core/common/src/types/data.ts:410](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L410)
 
 ___
 
 ### TAttribute
 
-Ƭ **TAttribute**: [`TBasePageEntity`](common.md#tbasepageentity) & { `icon?`: `string` ; `key`: `string` ; `required?`: `boolean` ; `type`: ``"radio"`` \| ``"checkbox"`` ; `values`: [`TAttributeValue`](common.md#tattributevalue)[]  }
+Ƭ **TAttribute**: [`TBasePageEntity`](#tbasepageentity) & { `icon?`: `string` ; `key`: `string` ; `required?`: `boolean` ; `type`: ``"radio"`` \| ``"checkbox"`` ; `values`: [`TAttributeValue`](#tattributevalue)[]  }
 
 Attribute
 
@@ -258,7 +270,7 @@ ___
 
 ### TAttributeInput
 
-Ƭ **TAttributeInput**: `Omit`<[`TAttribute`](common.md#tattribute), [`TDBAuxiliaryColumns`](common.md#tdbauxiliarycolumns)\>
+Ƭ **TAttributeInput**: `Omit`<[`TAttribute`](#tattribute), [`TDBAuxiliaryColumns`](#tdbauxiliarycolumns)\>
 
 #### Defined in
 
@@ -275,7 +287,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `key` | `string` |
-| `values` | [`TAttributeInstanceValue`](common.md#tattributeinstancevalue)[] |
+| `values` | [`TAttributeInstanceValue`](#tattributeinstancevalue)[] |
 
 #### Defined in
 
@@ -291,7 +303,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `productVariant?` | [`TAttributeProductVariant`](common.md#tattributeproductvariant) |
+| `productVariant?` | [`TAttributeProductVariant`](#tattributeproductvariant) |
 | `value` | `string` |
 
 #### Defined in
@@ -342,7 +354,7 @@ ___
 
 ### TAuthRole
 
-Ƭ **TAuthRole**: [`TUserRole`](common.md#tuserrole) \| ``"self"`` \| ``"all"``
+Ƭ **TAuthRole**: [`TUserRole`](#tuserrole) \| ``"self"`` \| ``"all"``
 
 #### Defined in
 
@@ -360,11 +372,11 @@ Base config for Theme / Plugin in cromwell.config.js
 
 | Name | Type |
 | :------ | :------ |
-| `rollupConfig?` | () => [`TRollupConfig`](common.md#trollupconfig) \| `Promise`<[`TRollupConfig`](common.md#trollupconfig)\> |
+| `rollupConfig?` | () => [`TRollupConfig`](#trollupconfig) \| `Promise`<[`TRollupConfig`](#trollupconfig)\> |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:207](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L207)
+[system/core/common/src/types/data.ts:209](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L209)
 
 ___
 
@@ -392,7 +404,7 @@ ___
 
 ### TBasePageEntityInput
 
-Ƭ **TBasePageEntityInput**: `Omit`<[`TBasePageEntity`](common.md#tbasepageentity), [`TDBAuxiliaryColumns`](common.md#tdbauxiliarycolumns)\>
+Ƭ **TBasePageEntityInput**: `Omit`<[`TBasePageEntity`](#tbasepageentity), [`TDBAuxiliaryColumns`](#tdbauxiliarycolumns)\>
 
 #### Defined in
 
@@ -410,11 +422,11 @@ ___
 | :------ | :------ | :------ |
 | `blockClass?` | `string` | Additional CSS class to apply for block wrapper |
 | `componentDidUpdate?` | () => `void` | - |
-| `getter` | (`block`: [`TCromwellBlock`](common.md#tcromwellblock)<`Component`<`Object`, `Object`, `any`\>\>) => `ReactNode` | - |
+| `getter` | (`block`: [`TCromwellBlock`](#tcromwellblock)<`Component`<`Object`, `Object`, `any`\>\>) => `ReactNode` | - |
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:240](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L240)
+[system/core/common/src/types/blocks.ts:248](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L248)
 
 ___
 
@@ -448,7 +460,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:498](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L498)
+[system/core/common/src/types/data.ts:500](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L500)
 
 ___
 
@@ -467,7 +479,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:491](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L491)
+[system/core/common/src/types/data.ts:493](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L493)
 
 ___
 
@@ -490,12 +502,12 @@ CCS - Cromwell Central Server
 | `name` | `string` |
 | `onlyManualUpdate?` | `boolean` |
 | `packageVersion` | `string` |
-| `restartServices` | keyof [`TServiceVersions`](common.md#tserviceversions)[] |
+| `restartServices` | keyof [`TServiceVersions`](#tserviceversions)[] |
 | `version` | `string` |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:478](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L478)
+[system/core/common/src/types/data.ts:480](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L480)
 
 ___
 
@@ -508,11 +520,11 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `mode?` | ``"default"`` \| ``"dark"`` |
-| `palette?` | [`TPalette`](common.md#tpalette) |
+| `palette?` | [`TPalette`](#tpalette) |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:534](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L534)
+[system/core/common/src/types/data.ts:536](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L536)
 
 ___
 
@@ -531,7 +543,7 @@ Admin (private) CMS settings
 
 #### Defined in
 
-[system/core/common/src/types/entities.ts:539](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L539)
+[system/core/common/src/types/entities.ts:543](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L543)
 
 ___
 
@@ -550,19 +562,21 @@ cmsconfig.json
 | `adminPanelPort?` | `number` |
 | `apiPort?` | `number` |
 | `centralServerUrl?` | `string` |
+| `cmsInfo?` | [`TCmsInfo`](#tcmsinfo) |
 | `cookieSecret?` | `string` |
-| `defaultSettings?` | [`TCmsEntityCore`](common.md#tcmsentitycore) |
+| `defaultSettings?` | [`TCmsEntityCore`](#tcmsentitycore) |
 | `domain?` | `string` |
 | `env?` | ``"dev"`` \| ``"prod"`` |
 | `frontendPort?` | `number` |
 | `managerPort?` | `number` |
 | `orm?` | `ConnectionOptions` |
 | `pm?` | ``"yarn"`` \| ``"cromwella"`` |
-| `redirects?` | [`TCmsRedirect`](common.md#tcmsredirect)[] |
+| `redirects?` | [`TCmsRedirect`](#tcmsredirect)[] |
 | `refreshTokenExpirationTime?` | `number` |
 | `refreshTokenSecret?` | `string` |
-| `rewrites?` | [`TCmsRedirect`](common.md#tcmsredirect)[] |
+| `rewrites?` | [`TCmsRedirect`](#tcmsredirect)[] |
 | `serviceSecret?` | `string` |
+| `url?` | `string` |
 | `useWatch?` | `boolean` |
 | `watchPoll?` | `number` |
 
@@ -574,11 +588,11 @@ ___
 
 ### TCmsEntity
 
-Ƭ **TCmsEntity**: [`TCmsEntityCore`](common.md#tcmsentitycore) & [`TBasePageEntity`](common.md#tbasepageentity)
+Ƭ **TCmsEntity**: [`TCmsEntityCore`](#tcmsentitycore) & [`TBasePageEntity`](#tbasepageentity)
 
 #### Defined in
 
-[system/core/common/src/types/entities.ts:583](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L583)
+[system/core/common/src/types/entities.ts:587](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L587)
 
 ___
 
@@ -592,9 +606,9 @@ DB CMS entity
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `adminSettings?` | [`TCmsAdminSettings`](common.md#tcmsadminsettings) | Admin settings. Available from REST API endpoint with administrator role authorization |
-| `internalSettings?` | [`TCmsInternalSettings`](common.md#tcmsinternalsettings) | Internal settings. |
-| `publicSettings?` | [`TCmsPublicSettings`](common.md#tcmspublicsettings) | Pubic settings. Available from REST API endpoint without authentication. |
+| `adminSettings?` | [`TCmsAdminSettings`](#tcmsadminsettings) | Admin settings. Available from REST API endpoint with administrator role authorization |
+| `internalSettings?` | [`TCmsInternalSettings`](#tcmsinternalsettings) | Internal settings. |
+| `publicSettings?` | [`TCmsPublicSettings`](#tcmspublicsettings) | Pubic settings. Available from REST API endpoint without authentication. |
 
 #### Defined in
 
@@ -610,11 +624,11 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `packages` | `Partial`<`Record`<typeof [`systemPackages`](common.md#systempackages)[`number`], `string`\>\> |
+| `packages` | `Partial`<`Record`<typeof [`systemPackages`](#systempackages)[`number`], `string`\>\> |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:543](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L543)
+[system/core/common/src/types/data.ts:545](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L545)
 
 ___
 
@@ -632,11 +646,11 @@ Internal CMS settings
 | `installed?` | `boolean` | Internal. If false or not set, will launch installation at first Admin Panel visit. |
 | `isUpdating?` | `boolean` | Internal. Is currently under update |
 | `version?` | `string` | Internal. CMS version, used for updates |
-| `versions?` | [`TServiceVersions`](common.md#tserviceversions) | Internal. https://github.com/CromwellCMS/Cromwell/blob/55046c48d9da0a44e4b11e7918c73876fcd1cfc1/system/manager/src/managers/baseManager.ts#L194:L206 |
+| `versions?` | [`TServiceVersions`](#tserviceversions) | Internal. https://github.com/CromwellCMS/Cromwell/blob/55046c48d9da0a44e4b11e7918c73876fcd1cfc1/system/manager/src/managers/baseManager.ts#L194:L206 |
 
 #### Defined in
 
-[system/core/common/src/types/entities.ts:553](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L553)
+[system/core/common/src/types/entities.ts:557](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L557)
 
 ___
 
@@ -650,7 +664,7 @@ Public CMS settings
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `currencies?` | [`TCurrency`](common.md#tcurrency)[] | Available currencies in the store and rates between them to convert |
+| `currencies?` | [`TCurrency`](#tcurrency)[] | Available currencies in the store and rates between them to convert |
 | `defaultPageSize?` | `number` | Page size to use in lists, eg. at Product Category page |
 | `defaultShippingPrice?` | `number` | Standard shipping price if no shipment methods specified |
 | `favicon?` | `string` | Website favicon |
@@ -658,10 +672,11 @@ Public CMS settings
 | `headHtml?` | `string` | Custom HTML code injection |
 | `language?` | `string` | Default language |
 | `logo?` | `string` | Website logo |
-| `redirects?` | [`TCmsRedirect`](common.md#tcmsredirect)[] | HTTP Redirects for Next.js server |
-| `rewrites?` | [`TCmsRedirect`](common.md#tcmsredirect)[] | HTTP rewrites for Next.js server |
+| `redirects?` | [`TCmsRedirect`](#tcmsredirect)[] | HTTP Redirects for Next.js server |
+| `rewrites?` | [`TCmsRedirect`](#tcmsredirect)[] | HTTP rewrites for Next.js server |
 | `themeName?` | `string` | Package name of currently used theme |
 | `timezone?` | `number` | Default timezone in GMT, number +- |
+| `url?` | `string` | Website's URL |
 
 #### Defined in
 
@@ -671,21 +686,21 @@ ___
 
 ### TCmsRedirect
 
-Ƭ **TCmsRedirect**: [`TCmsRedirectObject`](common.md#tcmsredirectobject) \| [`TCmsRedirectFunction`](common.md#tcmsredirectfunction)
+Ƭ **TCmsRedirect**: [`TCmsRedirectObject`](#tcmsredirectobject) \| [`TCmsRedirectFunction`](#tcmsredirectfunction)
 
 #### Defined in
 
-[system/core/common/src/types/entities.ts:610](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L610)
+[system/core/common/src/types/entities.ts:614](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L614)
 
 ___
 
 ### TCmsRedirectFunction
 
-Ƭ **TCmsRedirectFunction**: (`pathname`: `string`, `search?`: `string` \| ``null``) => [`TCmsRedirectObject`](common.md#tcmsredirectobject) \| `undefined` \| `void`
+Ƭ **TCmsRedirectFunction**: (`pathname`: `string`, `search?`: `string` \| ``null``) => [`TCmsRedirectObject`](#tcmsredirectobject) \| `undefined` \| `void`
 
 #### Type declaration
 
-▸ (`pathname`, `search?`): [`TCmsRedirectObject`](common.md#tcmsredirectobject) \| `undefined` \| `void`
+▸ (`pathname`, `search?`): [`TCmsRedirectObject`](#tcmsredirectobject) \| `undefined` \| `void`
 
 ##### Parameters
 
@@ -696,11 +711,11 @@ ___
 
 ##### Returns
 
-[`TCmsRedirectObject`](common.md#tcmsredirectobject) \| `undefined` \| `void`
+[`TCmsRedirectObject`](#tcmsredirectobject) \| `undefined` \| `void`
 
 #### Defined in
 
-[system/core/common/src/types/entities.ts:608](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L608)
+[system/core/common/src/types/entities.ts:612](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L612)
 
 ___
 
@@ -719,19 +734,19 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/entities.ts:601](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L601)
+[system/core/common/src/types/entities.ts:605](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L605)
 
 ___
 
 ### TCmsSettings
 
-Ƭ **TCmsSettings**: [`TCmsConfig`](common.md#tcmsconfig) & [`TCmsPublicSettings`](common.md#tcmspublicsettings) & [`TCmsAdminSettings`](common.md#tcmsadminsettings) & [`TCmsInternalSettings`](common.md#tcmsinternalsettings)
+Ƭ **TCmsSettings**: [`TCmsConfig`](#tcmsconfig) & [`TCmsPublicSettings`](#tcmspublicsettings) & [`TCmsAdminSettings`](#tcmsadminsettings) & [`TCmsInternalSettings`](#tcmsinternalsettings)
 
 Merged info form cmsconfig.json and settings from DB
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:193](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L193)
+[system/core/common/src/types/data.ts:195](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L195)
 
 ___
 
@@ -749,13 +764,13 @@ ___
 | `pageViews` | `number` |
 | `pages` | `number` |
 | `reviews` | `number` |
-| `salesPerDay` | [`TSalePerDay`](common.md#tsaleperday)[] |
+| `salesPerDay` | [`TSalePerDay`](#tsaleperday)[] |
 | `salesValue` | `number` |
-| `topPageViews` | [`TPageStats`](common.md#tpagestats)[] |
+| `topPageViews` | [`TPageStats`](#tpagestats)[] |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:421](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L421)
+[system/core/common/src/types/data.ts:423](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L423)
 
 ___
 
@@ -769,13 +784,13 @@ ___
 | :------ | :------ |
 | `currentVersion?` | `string` |
 | `isUpdating?` | `boolean` |
-| `notifications?` | [`TNotification`](common.md#tnotification)[] |
+| `notifications?` | [`TNotification`](#tnotification)[] |
 | `updateAvailable` | `boolean` |
-| `updateInfo?` | [`TUpdateInfo`](common.md#tupdateinfo) |
+| `updateInfo?` | [`TUpdateInfo`](#tupdateinfo) |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:446](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L446)
+[system/core/common/src/types/data.ts:448](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L448)
 
 ___
 
@@ -787,11 +802,11 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `data?` | [`TProduct`](common.md#tproduct) \| [`TPost`](common.md#tpost) \| `any` |
+| `data?` | [`TProduct`](#tproduct) \| [`TPost`](#tpost) \| `any` |
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:84](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L84)
+[system/core/common/src/types/blocks.ts:92](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L92)
 
 ___
 
@@ -804,18 +819,18 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `children?` | `React.ReactNode` |
-| `config?` | [`TCromwellBlockData`](common.md#tcromwellblockdata) |
+| `config?` | [`TCromwellBlockData`](#tcromwellblockdata) |
 | `id` | `string` |
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:78](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L78)
+[system/core/common/src/types/blocks.ts:86](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L86)
 
 ___
 
 ### TCreateUser
 
-Ƭ **TCreateUser**: `Omit`<[`TUser`](common.md#tuser), [`TDBAuxiliaryColumns`](common.md#tdbauxiliarycolumns)\> & { `password?`: `string`  }
+Ƭ **TCreateUser**: `Omit`<[`TUser`](#tuser), [`TDBAuxiliaryColumns`](#tdbauxiliarycolumns)\> & { `password?`: `string`  }
 
 #### Defined in
 
@@ -825,7 +840,7 @@ ___
 
 ### TCromwellBlock
 
-Ƭ **TCromwellBlock**<`TContentBlock`\>: `React.Component`<[`TCromwellBlockProps`](common.md#tcromwellblockprops)<`TContentBlock`\>\> & { `addDidUpdateListener`: (`id`: `string`, `func`: () => `void`) => `void` ; `consumerRender`: (`jsxParentId?`: `string`) => ``null`` \| `Element` ; `contentRender`: (`getContent?`: ``null`` \| (`block`: [`TCromwellBlock`](common.md#tcromwellblock)<`Component`<`Object`, `Object`, `any`\>\>) => `ReactNode`) => `ReactNode` ; `getBlockRef`: () => `RefObject`<`HTMLDivElement`\> ; `getContentInstance`: () => `undefined` \| `Component`<`Object`, `Object`, `any`\> & `TContentBlock` ; `getData`: () => `undefined` \| [`TCromwellBlockData`](common.md#tcromwellblockdata) ; `getDefaultContent`: () => `ReactNode` ; `movedCompForceUpdate?`: () => `void` ; `notifyChildRegistered`: (`childInst`: [`TCromwellBlock`](common.md#tcromwellblock)<`any`\>) => `void` ; `rerender`: () => `void` \| `Promise`<`void`\> ; `setContentInstance`: (`contentInstance`: `Component`<`Object`, `Object`, `any`\> & `TContentBlock`) => `void`  }
+Ƭ **TCromwellBlock**<`TContentBlock`\>: `React.Component`<[`TCromwellBlockProps`](#tcromwellblockprops)<`TContentBlock`\>\> & { `addDidUpdateListener`: (`id`: `string`, `func`: () => `void`) => `void` ; `consumerRender`: (`jsxParentId?`: `string`) => ``null`` \| `Element` ; `contentRender`: (`getContent?`: ``null`` \| (`block`: [`TCromwellBlock`](#tcromwellblock)<`Component`<`Object`, `Object`, `any`\>\>) => `ReactNode`) => `ReactNode` ; `getBlockRef`: () => `RefObject`<`HTMLDivElement`\> ; `getContentInstance`: () => `undefined` \| `Component`<`Object`, `Object`, `any`\> & `TContentBlock` ; `getData`: () => `undefined` \| [`TCromwellBlockData`](#tcromwellblockdata) ; `getDefaultContent`: () => `ReactNode` ; `movedCompForceUpdate?`: () => `void` ; `notifyChildRegistered`: (`childInst`: [`TCromwellBlock`](#tcromwellblock)<`any`\>) => `void` ; `rerender`: () => `void` \| `Promise`<`void`\> ; `setContentInstance`: (`contentInstance`: `Component`<`Object`, `Object`, `any`\> & `TContentBlock`) => `void`  }
 
 #### Type parameters
 
@@ -835,7 +850,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:37](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L37)
+[system/core/common/src/types/blocks.ts:45](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L45)
 
 ___
 
@@ -856,7 +871,7 @@ Modification for a Block. Used in the Page builder to store user's changes.
 | `editorStyles.offsetLeft?` | `number` | - |
 | `editorStyles.offsetRight?` | `number` | - |
 | `editorStyles.offsetTop?` | `number` | - |
-| `gallery?` | [`TGallerySettings`](common.md#tgallerysettings) | For gallery block |
+| `gallery?` | [`TGallerySettings`](#tgallerysettings) | For gallery block |
 | `global?` | `boolean` | Persist on all pages, all inner modifications will be saved as global |
 | `html?` | `Object` | For "HTML" block |
 | `html.innerHTML?` | `string` | - |
@@ -885,17 +900,17 @@ Modification for a Block. Used in the Page builder to store user's changes.
 | `text.content?` | `string` | - |
 | `text.href?` | `string` | - |
 | `text.textElementType?` | keyof `React.ReactHTML` | - |
-| `type?` | [`TCromwellBlockType`](common.md#tcromwellblocktype) | Component's type |
+| `type?` | [`TCromwellBlockType`](#tcromwellblocktype) | Component's type |
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:93](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L93)
+[system/core/common/src/types/blocks.ts:101](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L101)
 
 ___
 
 ### TCromwellBlockProps
 
-Ƭ **TCromwellBlockProps**<`TContentBlock`\>: { `className?`: `string` ; `id`: `string` ; `jsxParentId?`: `string` ; `type?`: [`TCromwellBlockType`](common.md#tcromwellblocktype) ; `blockRef?`: (`block`: [`TCromwellBlock`](common.md#tcromwellblock)<`TContentBlock`\>) => `void` ; `content?`: (`data`: `undefined` \| [`TCromwellBlockData`](common.md#tcromwellblockdata), `blockRef`: `RefObject`<`HTMLDivElement`\>, `setContentInstance`: (`contentInstance`: `Component`<`Object`, `Object`, `any`\> & `TContentBlock`) => `void`) => `ReactNode` ; `onClick?`: (`event`: `MouseEvent`<`HTMLDivElement`, `MouseEvent`\>) => `any`  } & [`TCromwellBlockData`](common.md#tcromwellblockdata)
+Ƭ **TCromwellBlockProps**<`TContentBlock`\>: { `className?`: `string` ; `id`: `string` ; `jsxParentId?`: `string` ; `type?`: [`TCromwellBlockType`](#tcromwellblocktype) ; `blockRef?`: (`block`: [`TCromwellBlock`](#tcromwellblock)<`TContentBlock`\>) => `void` ; `content?`: (`data`: `undefined` \| [`TCromwellBlockData`](#tcromwellblockdata), `blockRef`: `RefObject`<`HTMLDivElement`\>, `setContentInstance`: (`contentInstance`: `Component`<`Object`, `Object`, `any`\> & `TContentBlock`) => `void`) => `ReactNode` ; `onClick?`: (`event`: `MouseEvent`<`HTMLDivElement`, `MouseEvent`\>) => `any`  } & [`TCromwellBlockData`](#tcromwellblockdata)
 
 Basic props for Blocks. Used in JSX by Theme authors
 
@@ -907,7 +922,7 @@ Basic props for Blocks. Used in JSX by Theme authors
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:59](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L59)
+[system/core/common/src/types/blocks.ts:67](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L67)
 
 ___
 
@@ -917,7 +932,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:88](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L88)
+[system/core/common/src/types/blocks.ts:96](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L96)
 
 ___
 
@@ -939,12 +954,12 @@ Internal. Store for reusable Frontend dependencies.
 | `prefix?` | `string` |
 | `scriptStatuses?` | `Record`<`string`, ``"failed"`` \| ``"ready"`` \| `Promise`<``"failed"`` \| ``"ready"``\>\> |
 | `importModule?` | (`moduleName`: `string`, `namedExports?`: `string`[]) => `boolean` \| `Promise`<`boolean`\> |
-| `importScriptExternals?` | (`metaInfo`: [`TScriptMetaInfo`](common.md#tscriptmetainfo)) => `Promise`<`boolean`\> |
+| `importScriptExternals?` | (`metaInfo`: [`TScriptMetaInfo`](#tscriptmetainfo)) => `Promise`<`boolean`\> |
 | `setPrefix?` | (`prefix`: `string`) => `void` |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:292](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L292)
+[system/core/common/src/types/data.ts:294](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L294)
 
 ___
 
@@ -965,13 +980,13 @@ UI Notification service. In Admin panel it's react-toastify, for example.
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:339](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L339)
+[system/core/common/src/types/data.ts:341](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L341)
 
 ___
 
 ### TCromwellPage
 
-Ƭ **TCromwellPage**<`Props`\>: `NextPage`<`Props` & [`TCromwellPageCoreProps`](common.md#tcromwellpagecoreprops)\>
+Ƭ **TCromwellPage**<`Props`\>: `NextPage`<`Props` & [`TCromwellPageCoreProps`](#tcromwellpagecoreprops)\>
 
 #### Type parameters
 
@@ -981,7 +996,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:18](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L18)
+[system/core/common/src/types/blocks.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L19)
 
 ___
 
@@ -994,20 +1009,22 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `childStaticProps?` | `Record`<`string`, `any`\> \| ``null`` |
-| `cmsSettings?` | [`TCmsSettings`](common.md#tcmssettings) \| ``null`` |
-| `defaultPages?` | `Record`<[`TDefaultPageName`](common.md#tdefaultpagename), `string`\> |
-| `pageConfig?` | [`TPageConfig`](common.md#tpageconfig) \| ``null`` |
+| `cmsSettings?` | [`TCmsSettings`](#tcmssettings) \| ``null`` |
+| `defaultPages?` | `Record`<[`TDefaultPageName`](#tdefaultpagename), `string`\> |
+| `documentContext?` | [`CrwDocumentContextType`](#crwdocumentcontexttype) |
+| `pageConfig?` | [`TPageConfig`](#tpageconfig) \| ``null`` |
 | `pageConfigName?` | `string` |
-| `pagesInfo?` | [`TPageInfo`](common.md#tpageinfo)[] \| ``null`` |
-| `palette?` | [`TPalette`](common.md#tpalette) \| ``null`` |
+| `pagesInfo?` | [`TPageInfo`](#tpageinfo)[] \| ``null`` |
+| `palette?` | [`TPalette`](#tpalette) \| ``null`` |
 | `plugins?` | `Record`<`string`, `Object`\> |
+| `resolvedPageRoute?` | `string` |
 | `themeCustomConfig?` | `Record`<`string`, `any`\> \| ``null`` |
 | `themeFooterHtml?` | `string` \| ``null`` |
 | `themeHeadHtml?` | `string` \| ``null`` |
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L20)
+[system/core/common/src/types/blocks.ts:21](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L21)
 
 ___
 
@@ -1025,27 +1042,27 @@ If you need Redux interactivity, use onStoreChange.
 | `apiClients?` | `Object` | Internal |
 | `apiClients.graphQLClient?` | `any` | - |
 | `apiClients.restAPIClient?` | `any` | - |
-| `blockInstances?` | `Record`<`string`, [`TCromwellBlock`](common.md#tcromwellblock) \| `undefined`\> | Internal. References to all instances of Cromwell Blocks at the page { [CromwellBlockId]: Instance} |
-| `cmsSettings?` | [`TCmsSettings`](common.md#tcmssettings) | Public CMS Settings |
-| `components?` | `Record`<`string`, `React.ComponentType`<[`TCommonComponentProps`](common.md#tcommoncomponentprops) & { [x: string]: `any`;  }\>\> | Internal. Common component storage. E.g. product cards to be reused by Plugins  { [ComponentName]: (Class/function) } |
+| `blockInstances?` | `Record`<`string`, [`TCromwellBlock`](#tcromwellblock) \| `undefined`\> | Internal. References to all instances of Cromwell Blocks at the page { [CromwellBlockId]: Instance} |
+| `cmsSettings?` | [`TCmsSettings`](#tcmssettings) | Public CMS Settings |
+| `components?` | `Record`<`string`, `React.ComponentType`<[`TCommonComponentProps`](#tcommoncomponentprops) & { [x: string]: `any`;  }\>\> | Internal. Common component storage. E.g. product cards to be reused by Plugins  { [ComponentName]: (Class/function) } |
 | `cstore?` | `any` | - |
 | `currency?` | `string` | Active currency |
-| `dbInfo?` | [`TDBInfo`](common.md#tdbinfo) | Info about current DB for backend usage |
-| `defaultPages?` | `Record`<[`TDefaultPageName`](common.md#tdefaultpagename), `string`\> | See `defaultPages` in TThemeConfig |
+| `dbInfo?` | [`TDBInfo`](#tdbinfo) | Info about current DB for backend usage |
+| `defaultPages?` | `Record`<[`TDefaultPageName`](#tdefaultpagename), `string`\> | See `defaultPages` in TThemeConfig |
 | `environment?` | `Object` | - |
 | `environment.isAdminPanel?` | `boolean` | - |
 | `environment.mode?` | ``"dev"`` \| ``"prod"`` | - |
-| `nodeModules?` | [`TCromwellNodeModules`](common.md#tcromwellnodemodules) | - |
-| `notifier?` | [`TCromwellNotify`](common.md#tcromwellnotify) | - |
-| `pageConfig?` | [`TPageConfig`](common.md#tpageconfig) | Config of currently opened Theme's page |
-| `pagesInfo?` | [`TPageInfo`](common.md#tpageinfo)[] | Short pages info of current Theme |
+| `nodeModules?` | [`TCromwellNodeModules`](#tcromwellnodemodules) | - |
+| `notifier?` | [`TCromwellNotify`](#tcromwellnotify) | - |
+| `pageConfig?` | [`TPageConfig`](#tpageconfig) | Config of currently opened Theme's page |
+| `pagesInfo?` | [`TPageInfo`](#tpageinfo)[] | Short pages info of current Theme |
 | `plugins?` | `Record`<`string`, `Object`\> | Internal. Plugins data |
-| `redirects?` | `Record`<`string`, [`TCmsRedirect`](common.md#tcmsredirect)\> | HTTP Redirects for Next.js server |
-| `rewrites?` | `Record`<`string`, [`TCmsRedirect`](common.md#tcmsredirect)\> | HTTP rewrites for Next.js server |
+| `redirects?` | `Record`<`string`, [`TCmsRedirect`](#tcmsredirect)\> | HTTP Redirects for Next.js server |
+| `rewrites?` | `Record`<`string`, [`TCmsRedirect`](#tcmsredirect)\> | HTTP rewrites for Next.js server |
 | `storeChangeCallbacks?` | `Record`<`string`, (`prop`: `any`) => `any`[]\> | - |
-| `theme?` | [`TCMSTheme`](common.md#tcmstheme) | - |
+| `theme?` | [`TCMSTheme`](#tcmstheme) | - |
 | `themeCustomConfig?` | `Record`<`string`, `any`\> | - |
-| `userInfo?` | [`TUser`](common.md#tuser) | - |
+| `userInfo?` | [`TUser`](#tuser) | - |
 | `webSocketClient?` | `any` | - |
 | `forceUpdatePage?` | () => `void` | - |
 | `fsRequire?` | (`path`: `string`) => `Promise`<`any`\> | - |
@@ -1064,12 +1081,12 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `frontendDependencies?` | (`string` \| [`TFrontendDependency`](common.md#tfrontenddependency))[] |
+| `frontendDependencies?` | (`string` \| [`TFrontendDependency`](#tfrontenddependency))[] |
 | `packages` | `string`[] |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:386](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L386)
+[system/core/common/src/types/data.ts:388](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L388)
 
 ___
 
@@ -1089,7 +1106,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/entities.ts:586](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L586)
+[system/core/common/src/types/entities.ts:590](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L590)
 
 ___
 
@@ -1125,7 +1142,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:539](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L539)
+[system/core/common/src/types/data.ts:541](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L541)
 
 ___
 
@@ -1148,7 +1165,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:51](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L51)
+[system/core/common/src/types/blocks.ts:59](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L59)
 
 ___
 
@@ -1158,7 +1175,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:249](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L249)
+[system/core/common/src/types/data.ts:251](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L251)
 
 ___
 
@@ -1175,7 +1192,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/entities.ts:596](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L596)
+[system/core/common/src/types/entities.ts:600](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L600)
 
 ___
 
@@ -1193,13 +1210,13 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:402](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L402)
+[system/core/common/src/types/data.ts:404](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L404)
 
 ___
 
 ### TFilteredProductList
 
-Ƭ **TFilteredProductList**: [`TPagedList`](common.md#tpagedlist)<[`TProduct`](common.md#tproduct)\> & { `filterMeta`: [`TProductFilterMeta`](common.md#tproductfiltermeta)  }
+Ƭ **TFilteredProductList**: [`TPagedList`](#tpagedlist)<[`TProduct`](#tproduct)\> & { `filterMeta`: [`TProductFilterMeta`](#tproductfiltermeta)  }
 
 #### Defined in
 
@@ -1216,12 +1233,12 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `cjsPath?` | `string` |
-| `meta?` | [`TScriptMetaInfo`](common.md#tscriptmetainfo) |
+| `meta?` | [`TScriptMetaInfo`](#tscriptmetainfo) |
 | `source?` | `string` |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:326](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L326)
+[system/core/common/src/types/data.ts:328](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L328)
 
 ___
 
@@ -1233,18 +1250,18 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `addExports?` | [`TAdditionalExports`](common.md#tadditionalexports)[] |
+| `addExports?` | [`TAdditionalExports`](#tadditionalexports)[] |
 | `builtins?` | `string`[] |
 | `bundledCss?` | `string`[] |
 | `excludeExports?` | `string`[] |
-| `externals?` | [`TExternal`](common.md#texternal)[] |
+| `externals?` | [`TExternal`](#texternal)[] |
 | `ignore?` | `string`[] |
 | `name` | `string` |
 | `version?` | `string` |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:391](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L391)
+[system/core/common/src/types/data.ts:393](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L393)
 
 ___
 
@@ -1269,7 +1286,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:528](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L528)
+[system/core/common/src/types/data.ts:530](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L530)
 
 ___
 
@@ -1294,7 +1311,7 @@ ___
 | `effect?` | ``"slide"`` \| ``"fade"`` \| ``"cube"`` \| ``"coverflow"`` \| ``"flip"`` | - |
 | `fullscreen?` | `boolean` | - |
 | `height?` | `number` | - |
-| `images?` | [`TImageSettings`](common.md#timagesettings)[] | - |
+| `images?` | [`TImageSettings`](#timagesettings)[] | - |
 | `interval?` | `number` | - |
 | `lazy?` | `boolean` | - |
 | `loop?` | `boolean` | - |
@@ -1302,7 +1319,7 @@ ___
 | `orientation?` | ``"horizontal"`` \| ``"vertical"`` | - |
 | `pagination?` | `boolean` | - |
 | `ratio?` | `number` | ratio = width / height |
-| `responsive?` | `Record`<`number`, [`TGallerySettings`](common.md#tgallerysettings)\> | - |
+| `responsive?` | `Record`<`number`, [`TGallerySettings`](#tgallerysettings)\> | - |
 | `slideMaxWidth?` | `number` | - |
 | `slideMinWidth?` | `number` | - |
 | `slides?` | `React.ReactNode`[] | - |
@@ -1315,13 +1332,13 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:196](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L196)
+[system/core/common/src/types/blocks.ts:204](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L204)
 
 ___
 
 ### TGetStaticProps
 
-Ƭ **TGetStaticProps**<`TPluginSettings`, `Q`\>: (`ctx`: [`StaticPageContext`](common.md#staticpagecontext)<`TPluginSettings`, `Q`\>) => `Promise`<`any`\>
+Ƭ **TGetStaticProps**<`TPluginSettings`, `Q`\>: (`ctx`: [`StaticPageContext`](#staticpagecontext)<`TPluginSettings`, `Q`\>) => `Promise`<`any`\>
 
 #### Type parameters
 
@@ -1338,7 +1355,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `ctx` | [`StaticPageContext`](common.md#staticpagecontext)<`TPluginSettings`, `Q`\> |
+| `ctx` | [`StaticPageContext`](#staticpagecontext)<`TPluginSettings`, `Q`\> |
 
 ##### Returns
 
@@ -1346,7 +1363,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L14)
+[system/core/common/src/types/blocks.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L15)
 
 ___
 
@@ -1392,17 +1409,17 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/blocks.ts:188](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L188)
+[system/core/common/src/types/blocks.ts:196](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/blocks.ts#L196)
 
 ___
 
 ### TModuleConfig
 
-Ƭ **TModuleConfig**: [`TThemeConfig`](common.md#tthemeconfig) & [`TPluginConfig`](common.md#tpluginconfig)
+Ƭ **TModuleConfig**: [`TThemeConfig`](#tthemeconfig) & [`TPluginConfig`](#tpluginconfig)
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:247](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L247)
+[system/core/common/src/types/data.ts:249](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L249)
 
 ___
 
@@ -1421,13 +1438,13 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:466](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L466)
+[system/core/common/src/types/data.ts:468](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L468)
 
 ___
 
 ### TOrder
 
-Ƭ **TOrder**: [`TOrderCore`](common.md#tordercore) & [`TBasePageEntity`](common.md#tbasepageentity)
+Ƭ **TOrder**: [`TOrderCore`](#tordercore) & [`TBasePageEntity`](#tbasepageentity)
 
 #### Defined in
 
@@ -1445,7 +1462,7 @@ Store order
 
 | Name | Type |
 | :------ | :------ |
-| `cart?` | `string` \| [`TStoreListItem`](common.md#tstorelistitem)[] |
+| `cart?` | `string` \| [`TStoreListItem`](#tstorelistitem)[] |
 | `cartOldTotalPrice?` | `number` |
 | `cartTotalPrice?` | `number` |
 | `currency?` | `string` |
@@ -1493,7 +1510,7 @@ ___
 
 ### TOrderInput
 
-Ƭ **TOrderInput**: [`TOrderCore`](common.md#tordercore) & [`TBasePageEntityInput`](common.md#tbasepageentityinput)
+Ƭ **TOrderInput**: [`TOrderCore`](#tordercore) & [`TBasePageEntityInput`](#tbasepageentityinput)
 
 #### Defined in
 
@@ -1517,7 +1534,7 @@ Module info in package.json under "cromwell" property
 | `description?` | `string` | - |
 | `excerpt?` | `string` | - |
 | `firstLoadedDependencies?` | `string`[] | - |
-| `frontendDependencies?` | (`string` \| [`TFrontendDependency`](common.md#tfrontenddependency))[] | - |
+| `frontendDependencies?` | (`string` \| [`TFrontendDependency`](#tfrontenddependency))[] | - |
 | `icon?` | `string` | - |
 | `image?` | `string` | - |
 | `images?` | `string`[] | - |
@@ -1534,7 +1551,7 @@ Module info in package.json under "cromwell" property
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:362](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L362)
+[system/core/common/src/types/data.ts:364](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L364)
 
 ___
 
@@ -1548,7 +1565,7 @@ package.json definition with cromwell info
 
 | Name | Type |
 | :------ | :------ |
-| `cromwell?` | [`TPackageCromwellConfig`](common.md#tpackagecromwellconfig) |
+| `cromwell?` | [`TPackageCromwellConfig`](#tpackagecromwellconfig) |
 | `dependencies?` | `Record`<`string`, `string`\> |
 | `devDependencies?` | `Record`<`string`, `string`\> |
 | `module?` | `string` |
@@ -1558,17 +1575,17 @@ package.json definition with cromwell info
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:349](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L349)
+[system/core/common/src/types/data.ts:351](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L351)
 
 ___
 
 ### TPageConfig
 
-Ƭ **TPageConfig**: [`TPageInfo`](common.md#tpageinfo) & { `adminPanelProps?`: `any` ; `footerHtml?`: `string` ; `headHtml?`: `string` ; `modifications`: [`TCromwellBlockData`](common.md#tcromwellblockdata)[] ; `pageCustomConfig?`: `Record`<`string`, `any`\>  }
+Ƭ **TPageConfig**: [`TPageInfo`](#tpageinfo) & { `adminPanelProps?`: `any` ; `footerHtml?`: `string` ; `headHtml?`: `string` ; `modifications`: [`TCromwellBlockData`](#tcromwellblockdata)[] ; `pageCustomConfig?`: `Record`<`string`, `any`\>  }
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:279](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L279)
+[system/core/common/src/types/data.ts:281](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L281)
 
 ___
 
@@ -1589,7 +1606,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:256](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L256)
+[system/core/common/src/types/data.ts:258](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L258)
 
 ___
 
@@ -1608,7 +1625,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:433](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L433)
+[system/core/common/src/types/data.ts:435](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L435)
 
 ___
 
@@ -1627,7 +1644,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `elements?` | `Entity`[] |
-| `pagedMeta?` | [`TPagedMeta`](common.md#tpagedmeta) |
+| `pagedMeta?` | [`TPagedMeta`](#tpagedmeta) |
 
 #### Defined in
 
@@ -1694,7 +1711,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:312](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L312)
+[system/core/common/src/types/data.ts:314](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L314)
 
 ___
 
@@ -1711,13 +1728,13 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:251](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L251)
+[system/core/common/src/types/data.ts:253](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L253)
 
 ___
 
 ### TPaymentSession
 
-Ƭ **TPaymentSession**: [`TOrderCore`](common.md#tordercore) & { `cancelUrl?`: `string` ; `paymentOptions?`: { `link?`: `string` ; `name?`: `string`  }[] ; `successUrl?`: `string`  }
+Ƭ **TPaymentSession**: [`TOrderCore`](#tordercore) & { `cancelUrl?`: `string` ; `paymentOptions?`: { `link?`: `string` ; `name?`: `string`  }[] ; `successUrl?`: `string`  }
 
 #### Defined in
 
@@ -1727,19 +1744,19 @@ ___
 
 ### TPluginConfig
 
-Ƭ **TPluginConfig**: [`TBaseModuleConfig`](common.md#tbasemoduleconfig) & { `adminInputFile?`: `string` ; `backend?`: `string` ; `defaultSettings?`: `any` ; `frontendInputFile?`: `string` ; `frontendModule?`: `string`  }
+Ƭ **TPluginConfig**: [`TBaseModuleConfig`](#tbasemoduleconfig) & { `adminInputFile?`: `string` ; `backend?`: `string` ; `defaultSettings?`: `any` ; `frontendInputFile?`: `string` ; `frontendModule?`: `string`  }
 
 Plugin module config, part of cromwell.config.js
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:239](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L239)
+[system/core/common/src/types/data.ts:241](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L241)
 
 ___
 
 ### TPluginEntity
 
-Ƭ **TPluginEntity**: [`TPluginEntityCore`](common.md#tpluginentitycore) & [`TBasePageEntity`](common.md#tbasepageentity)
+Ƭ **TPluginEntity**: [`TPluginEntityCore`](#tpluginentitycore) & [`TBasePageEntity`](#tbasepageentity)
 
 #### Defined in
 
@@ -1775,7 +1792,7 @@ ___
 
 ### TPluginEntityInput
 
-Ƭ **TPluginEntityInput**: [`TPluginEntityCore`](common.md#tpluginentitycore) & [`TBasePageEntityInput`](common.md#tbasepageentityinput)
+Ƭ **TPluginEntityInput**: [`TPluginEntityCore`](#tpluginentitycore) & [`TBasePageEntityInput`](#tbasepageentityinput)
 
 #### Defined in
 
@@ -1795,7 +1812,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:332](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L332)
+[system/core/common/src/types/data.ts:334](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L334)
 
 ___
 
@@ -1813,19 +1830,19 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `pluginInfo?` | [`TPackageCromwellConfig`](common.md#tpackagecromwellconfig) |
+| `pluginInfo?` | [`TPackageCromwellConfig`](#tpackagecromwellconfig) |
 | `pluginName` | `string` |
 | `pluginSettings?` | `TSettings` |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:522](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L522)
+[system/core/common/src/types/data.ts:524](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L524)
 
 ___
 
 ### TPost
 
-Ƭ **TPost**: { `author?`: [`TUser`](common.md#tuser) ; `content?`: `string` \| ``null`` ; `delta?`: `string` \| ``null`` ; `excerpt?`: `string` \| ``null`` ; `featured?`: `boolean` \| ``null`` ; `mainImage?`: `string` \| ``null`` ; `publishDate?`: `Date` \| ``null`` ; `published?`: `boolean` \| ``null`` ; `readTime?`: `string` \| ``null`` ; `tags?`: [`TTag`](common.md#ttag)[] \| ``null`` ; `title?`: `string` \| ``null``  } & [`TBasePageEntity`](common.md#tbasepageentity)
+Ƭ **TPost**: { `author?`: [`TUser`](#tuser) ; `content?`: `string` \| ``null`` ; `delta?`: `string` \| ``null`` ; `excerpt?`: `string` \| ``null`` ; `featured?`: `boolean` \| ``null`` ; `mainImage?`: `string` \| ``null`` ; `publishDate?`: `Date` \| ``null`` ; `published?`: `boolean` \| ``null`` ; `readTime?`: `string` \| ``null`` ; `tags?`: [`TTag`](#ttag)[] \| ``null`` ; `title?`: `string` \| ``null``  } & [`TBasePageEntity`](#tbasepageentity)
 
 POST
 
@@ -1837,7 +1854,7 @@ ___
 
 ### TPostComment
 
-Ƭ **TPostComment**: [`TPostCommentCore`](common.md#tpostcommentcore) & [`TBasePageEntity`](common.md#tbasepageentity)
+Ƭ **TPostComment**: [`TPostCommentCore`](#tpostcommentcore) & [`TBasePageEntity`](#tbasepageentity)
 
 #### Defined in
 
@@ -1871,7 +1888,7 @@ ___
 
 ### TPostCommentInput
 
-Ƭ **TPostCommentInput**: [`TPostCommentCore`](common.md#tpostcommentcore) & [`TBasePageEntityInput`](common.md#tbasepageentityinput)
+Ƭ **TPostCommentInput**: [`TPostCommentCore`](#tpostcommentcore) & [`TBasePageEntityInput`](#tbasepageentityinput)
 
 #### Defined in
 
@@ -1901,7 +1918,7 @@ ___
 
 ### TPostInput
 
-Ƭ **TPostInput**: `Omit`<[`TPost`](common.md#tpost), [`TDBAuxiliaryColumns`](common.md#tdbauxiliarycolumns) \| ``"author"`` \| ``"tags"``\> & { `authorId`: `string` ; `tagIds?`: `string`[] \| ``null``  }
+Ƭ **TPostInput**: `Omit`<[`TPost`](#tpost), [`TDBAuxiliaryColumns`](#tdbauxiliarycolumns) \| ``"author"`` \| ``"tags"``\> & { `authorId`: `string` ; `tagIds?`: `string`[] \| ``null``  }
 
 #### Defined in
 
@@ -1911,7 +1928,7 @@ ___
 
 ### TProduct
 
-Ƭ **TProduct**: [`TBasePageEntity`](common.md#tbasepageentity) & { `attributes?`: [`TAttributeInstance`](common.md#tattributeinstance)[] ; `categories?`: [`TProductCategory`](common.md#tproductcategory)[] ; `description?`: `string` ; `descriptionDelta?`: `string` ; `images?`: `string`[] ; `mainImage?`: `string` ; `name?`: `string` ; `oldPrice?`: `number` ; `price?`: `number` ; `rating?`: [`TProductRating`](common.md#tproductrating) ; `reviews?`: [`TProductReview`](common.md#tproductreview)[] ; `sku?`: `string` ; `views?`: `number`  }
+Ƭ **TProduct**: [`TBasePageEntity`](#tbasepageentity) & { `attributes?`: [`TAttributeInstance`](#tattributeinstance)[] ; `categories?`: [`TProductCategory`](#tproductcategory)[] ; `description?`: `string` ; `descriptionDelta?`: `string` ; `images?`: `string`[] ; `mainImage?`: `string` ; `name?`: `string` ; `oldPrice?`: `number` ; `price?`: `number` ; `rating?`: [`TProductRating`](#tproductrating) ; `reviews?`: [`TProductReview`](#tproductreview)[] ; `sku?`: `string` ; `views?`: `number`  }
 
 PRODUCT
 
@@ -1923,7 +1940,7 @@ ___
 
 ### TProductCategory
 
-Ƭ **TProductCategory**: [`TProductCategoryCore`](common.md#tproductcategorycore) & [`TBasePageEntity`](common.md#tbasepageentity)
+Ƭ **TProductCategory**: [`TProductCategoryCore`](#tproductcategorycore) & [`TBasePageEntity`](#tbasepageentity)
 
 #### Defined in
 
@@ -1941,13 +1958,13 @@ ProductCategory
 
 | Name | Type | Description |
 | :------ | :------ | :------ |
-| `children?` | [`TProductCategory`](common.md#tproductcategory)[] | DB children |
+| `children?` | [`TProductCategory`](#tproductcategory)[] | DB children |
 | `description?` | `string` | Description (HTML allowed) |
 | `descriptionDelta?` | `string` | Description in Quill format |
 | `mainImage?` | `string` | Href of main image |
 | `name` | `string` | Name of the category (h1) |
-| `parent?` | [`TProductCategory`](common.md#tproductcategory) \| ``null`` | DB parent |
-| `products?` | [`TPagedList`](common.md#tpagedlist)<[`TProduct`](common.md#tproduct)\> | Products in category |
+| `parent?` | [`TProductCategory`](#tproductcategory) \| ``null`` | DB parent |
+| `products?` | [`TPagedList`](#tpagedlist)<[`TProduct`](#tproduct)\> | Products in category |
 
 #### Defined in
 
@@ -1973,7 +1990,7 @@ ___
 
 ### TProductCategoryInput
 
-Ƭ **TProductCategoryInput**: [`TBasePageEntityInput`](common.md#tbasepageentityinput) & `Omit`<[`TProductCategoryCore`](common.md#tproductcategorycore), ``"children"`` \| ``"parent"`` \| ``"products"``\> & { `parentId?`: `string`  }
+Ƭ **TProductCategoryInput**: [`TBasePageEntityInput`](#tbasepageentityinput) & `Omit`<[`TProductCategoryCore`](#tproductcategorycore), ``"children"`` \| ``"parent"`` \| ``"products"``\> & { `parentId?`: `string`  }
 
 #### Defined in
 
@@ -1989,7 +2006,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `attributes?` | [`TProductFilterAttribute`](common.md#tproductfilterattribute)[] |
+| `attributes?` | [`TProductFilterAttribute`](#tproductfilterattribute)[] |
 | `maxPrice?` | `number` |
 | `minPrice?` | `number` |
 | `nameSearch?` | `string` |
@@ -2036,7 +2053,7 @@ ___
 
 ### TProductInput
 
-Ƭ **TProductInput**: `Omit`<[`TProduct`](common.md#tproduct), [`TDBAuxiliaryColumns`](common.md#tdbauxiliarycolumns) \| ``"categories"`` \| ``"rating"`` \| ``"reviews"``\> & { `categoryIds?`: `string`[]  }
+Ƭ **TProductInput**: `Omit`<[`TProduct`](#tproduct), [`TDBAuxiliaryColumns`](#tdbauxiliarycolumns) \| ``"categories"`` \| ``"rating"`` \| ``"reviews"``\> & { `categoryIds?`: `string`[]  }
 
 #### Defined in
 
@@ -2063,7 +2080,7 @@ ___
 
 ### TProductReview
 
-Ƭ **TProductReview**: [`TProductReviewCore`](common.md#tproductreviewcore) & [`TBasePageEntity`](common.md#tbasepageentity)
+Ƭ **TProductReview**: [`TProductReviewCore`](#tproductreviewcore) & [`TBasePageEntity`](#tbasepageentity)
 
 #### Defined in
 
@@ -2117,7 +2134,7 @@ ___
 
 ### TProductReviewInput
 
-Ƭ **TProductReviewInput**: [`TProductReviewCore`](common.md#tproductreviewcore) & [`TBasePageEntityInput`](common.md#tbasepageentityinput)
+Ƭ **TProductReviewInput**: [`TProductReviewCore`](#tproductreviewcore) & [`TBasePageEntityInput`](#tbasepageentityinput)
 
 #### Defined in
 
@@ -2142,7 +2159,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:195](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L195)
+[system/core/common/src/types/data.ts:197](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L197)
 
 ___
 
@@ -2160,7 +2177,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:440](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L440)
+[system/core/common/src/types/data.ts:442](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L442)
 
 ___
 
@@ -2178,7 +2195,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:305](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L305)
+[system/core/common/src/types/data.ts:307](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L307)
 
 ___
 
@@ -2197,7 +2214,7 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/entities.ts:576](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L576)
+[system/core/common/src/types/entities.ts:580](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/entities.ts#L580)
 
 ___
 
@@ -2211,17 +2228,17 @@ ___
 | :------ | :------ |
 | `amount?` | `number` |
 | `pickedAttributes?` | `Record`<`string`, `string`[]\> |
-| `product?` | [`TProduct`](common.md#tproduct) |
+| `product?` | [`TProduct`](#tproduct) |
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:415](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L415)
+[system/core/common/src/types/data.ts:417](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L417)
 
 ___
 
 ### TTag
 
-Ƭ **TTag**: [`TBasePageEntity`](common.md#tbasepageentity) & { `color?`: `string` \| ``null`` ; `description?`: `string` \| ``null`` ; `descriptionDelta?`: `string` \| ``null`` ; `image?`: `string` \| ``null`` ; `name`: `string`  }
+Ƭ **TTag**: [`TBasePageEntity`](#tbasepageentity) & { `color?`: `string` \| ``null`` ; `description?`: `string` \| ``null`` ; `descriptionDelta?`: `string` \| ``null`` ; `image?`: `string` \| ``null`` ; `name`: `string`  }
 
 #### Defined in
 
@@ -2231,7 +2248,7 @@ ___
 
 ### TTagInput
 
-Ƭ **TTagInput**: `Omit`<[`TTag`](common.md#ttag), [`TDBAuxiliaryColumns`](common.md#tdbauxiliarycolumns)\>
+Ƭ **TTagInput**: `Omit`<[`TTag`](#ttag), [`TDBAuxiliaryColumns`](#tdbauxiliarycolumns)\>
 
 #### Defined in
 
@@ -2241,19 +2258,19 @@ ___
 
 ### TThemeConfig
 
-Ƭ **TThemeConfig**: [`TBaseModuleConfig`](common.md#tbasemoduleconfig) & { `defaultPages?`: `Record`<[`TDefaultPageName`](common.md#tdefaultpagename), `string`\> ; `footerHtml?`: `string` ; `globalCss?`: `string`[] ; `globalModifications?`: [`TCromwellBlockData`](common.md#tcromwellblockdata)[] ; `headHtml?`: `string` ; `pages?`: [`TPageConfig`](common.md#tpageconfig)[] ; `palette?`: [`TPalette`](common.md#tpalette) ; `themeCustomConfig?`: `Record`<`string`, `any`\> ; `nextConfig?`: () => `any`  }
+Ƭ **TThemeConfig**: [`TBaseModuleConfig`](#tbasemoduleconfig) & { `defaultPages?`: `Record`<[`TDefaultPageName`](#tdefaultpagename), `string`\> ; `footerHtml?`: `string` ; `globalCss?`: `string`[] ; `globalModifications?`: [`TCromwellBlockData`](#tcromwellblockdata)[] ; `headHtml?`: `string` ; `pages?`: [`TPageConfig`](#tpageconfig)[] ; `palette?`: [`TPalette`](#tpalette) ; `themeCustomConfig?`: `Record`<`string`, `any`\> ; `nextConfig?`: () => `any`  }
 
 Theme module config, part of cromwell.config.js
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:215](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L215)
+[system/core/common/src/types/data.ts:217](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L217)
 
 ___
 
 ### TThemeEntity
 
-Ƭ **TThemeEntity**: [`TThemeEntityCore`](common.md#tthemeentitycore) & [`TBasePageEntity`](common.md#tbasepageentity)
+Ƭ **TThemeEntity**: [`TThemeEntityCore`](#tthemeentitycore) & [`TBasePageEntity`](#tbasepageentity)
 
 #### Defined in
 
@@ -2289,7 +2306,7 @@ ___
 
 ### TThemeEntityInput
 
-Ƭ **TThemeEntityInput**: [`TThemeEntityCore`](common.md#tthemeentitycore) & [`TBasePageEntityInput`](common.md#tbasepageentityinput)
+Ƭ **TThemeEntityInput**: [`TThemeEntityCore`](#tthemeentitycore) & [`TBasePageEntityInput`](#tbasepageentityinput)
 
 #### Defined in
 
@@ -2317,13 +2334,13 @@ ___
 
 #### Defined in
 
-[system/core/common/src/types/data.ts:454](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L454)
+[system/core/common/src/types/data.ts:456](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L456)
 
 ___
 
 ### TUpdateUser
 
-Ƭ **TUpdateUser**: `Omit`<[`TUser`](common.md#tuser), [`TDBAuxiliaryColumns`](common.md#tdbauxiliarycolumns)\>
+Ƭ **TUpdateUser**: `Omit`<[`TUser`](#tuser), [`TDBAuxiliaryColumns`](#tdbauxiliarycolumns)\>
 
 #### Defined in
 
@@ -2333,7 +2350,7 @@ ___
 
 ### TUser
 
-Ƭ **TUser**: [`TBasePageEntity`](common.md#tbasepageentity) & { `address?`: `string` ; `avatar?`: `string` ; `bio?`: `string` ; `email`: `string` ; `fullName`: `string` ; `phone?`: `string` ; `role?`: [`TUserRole`](common.md#tuserrole)  }
+Ƭ **TUser**: [`TBasePageEntity`](#tbasepageentity) & { `address?`: `string` ; `avatar?`: `string` ; `bio?`: `string` ; `email`: `string` ; `fullName`: `string` ; `phone?`: `string` ; `role?`: [`TUserRole`](#tuserrole)  }
 
 USER / AUTHOR
 
@@ -2355,7 +2372,7 @@ ___
 | `email?` | `string` |
 | `fullName?` | `string` |
 | `phone?` | `string` |
-| `role?` | [`TUserRole`](common.md#tuserrole) |
+| `role?` | [`TUserRole`](#tuserrole) |
 
 #### Defined in
 
@@ -2544,9 +2561,30 @@ ___
 
 ## Functions
 
+### findRedirect
+
+▸ `Const` **findRedirect**(`pathname`, `search?`): `undefined` \| [`TCmsRedirectObject`](#tcmsredirectobject) & { `type`: ``"redirect"`` \| ``"rewrite"``  }
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `pathname` | `string` |
+| `search?` | ``null`` \| `string` |
+
+#### Returns
+
+`undefined` \| [`TCmsRedirectObject`](#tcmsredirectobject) & { `type`: ``"redirect"`` \| ``"rewrite"``  }
+
+#### Defined in
+
+[system/core/common/src/redirects.ts:4](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/redirects.ts#L4)
+
+___
+
 ### getBlockInstance
 
-▸ `Const` **getBlockInstance**<`TContentBlock`\>(`blockId`): `undefined` \| [`TCromwellBlock`](common.md#tcromwellblock)<`TContentBlock`\>
+▸ `Const` **getBlockInstance**<`TContentBlock`\>(`blockId`): `undefined` \| [`TCromwellBlock`](#tcromwellblock)<`TContentBlock`\>
 
 #### Type parameters
 
@@ -2562,7 +2600,7 @@ ___
 
 #### Returns
 
-`undefined` \| [`TCromwellBlock`](common.md#tcromwellblock)<`TContentBlock`\>
+`undefined` \| [`TCromwellBlock`](#tcromwellblock)<`TContentBlock`\>
 
 #### Defined in
 
@@ -2572,11 +2610,11 @@ ___
 
 ### getCmsSettings
 
-▸ `Const` **getCmsSettings**(): `undefined` \| [`TCmsSettings`](common.md#tcmssettings)
+▸ `Const` **getCmsSettings**(): `undefined` \| [`TCmsSettings`](#tcmssettings)
 
 #### Returns
 
-`undefined` \| [`TCmsSettings`](common.md#tcmssettings)
+`undefined` \| [`TCmsSettings`](#tcmssettings)
 
 #### Defined in
 
@@ -2586,7 +2624,7 @@ ___
 
 ### getCommonComponent
 
-▸ `Const` **getCommonComponent**(`componentName`): `undefined` \| `ComponentType`<[`TCommonComponentProps`](common.md#tcommoncomponentprops) & `Record`<`string`, `any`\>\>
+▸ `Const` **getCommonComponent**(`componentName`): `undefined` \| `ComponentType`<[`TCommonComponentProps`](#tcommoncomponentprops) & `Record`<`string`, `any`\>\>
 
 #### Parameters
 
@@ -2596,7 +2634,7 @@ ___
 
 #### Returns
 
-`undefined` \| `ComponentType`<[`TCommonComponentProps`](common.md#tcommoncomponentprops) & `Record`<`string`, `any`\>\>
+`undefined` \| `ComponentType`<[`TCommonComponentProps`](#tcommoncomponentprops) & `Record`<`string`, `any`\>\>
 
 #### Defined in
 
@@ -2640,11 +2678,11 @@ ___
 
 ### getStore
 
-▸ `Const` **getStore**(): [`TCromwellStore`](common.md#tcromwellstore)
+▸ `Const` **getStore**(): [`TCromwellStore`](#tcromwellstore)
 
 #### Returns
 
-[`TCromwellStore`](common.md#tcromwellstore)
+[`TCromwellStore`](#tcromwellstore)
 
 #### Defined in
 
@@ -2654,13 +2692,13 @@ ___
 
 ### getStoreItem
 
-▸ `Const` **getStoreItem**<`K`\>(`itemName`): [`TCromwellStore`](common.md#tcromwellstore)[`K`]
+▸ `Const` **getStoreItem**<`K`\>(`itemName`): [`TCromwellStore`](#tcromwellstore)[`K`]
 
 #### Type parameters
 
 | Name | Type |
 | :------ | :------ |
-| `K` | extends keyof [`TCromwellStore`](common.md#tcromwellstore) |
+| `K` | extends keyof [`TCromwellStore`](#tcromwellstore) |
 
 #### Parameters
 
@@ -2670,7 +2708,7 @@ ___
 
 #### Returns
 
-[`TCromwellStore`](common.md#tcromwellstore)[`K`]
+[`TCromwellStore`](#tcromwellstore)[`K`]
 
 #### Defined in
 
@@ -2734,14 +2772,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `K` | extends keyof [`TCromwellStore`](common.md#tcromwellstore) |
+| `K` | extends keyof [`TCromwellStore`](#tcromwellstore) |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `itemName` | `K` |
-| `callback` | (`itemValue`: [`TCromwellStore`](common.md#tcromwellstore)[`K`]) => `any` |
+| `callback` | (`itemValue`: [`TCromwellStore`](#tcromwellstore)[`K`]) => `any` |
 
 #### Returns
 
@@ -2762,7 +2800,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `ruleName` | `string` |
-| `redirect` | [`TCmsRedirect`](common.md#tcmsredirect) |
+| `redirect` | [`TCmsRedirect`](#tcmsredirect) |
 
 #### Returns
 
@@ -2783,7 +2821,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `ruleName` | `string` |
-| `rewrite` | [`TCmsRedirect`](common.md#tcmsredirect) |
+| `rewrite` | [`TCmsRedirect`](#tcmsredirect) |
 
 #### Returns
 
@@ -2803,14 +2841,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `K` | extends keyof [`TCromwellStore`](common.md#tcromwellstore) |
+| `K` | extends keyof [`TCromwellStore`](#tcromwellstore) |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `itemName` | `K` |
-| `callback` | (`itemValue`: [`TCromwellStore`](common.md#tcromwellstore)[`K`]) => `any` |
+| `callback` | (`itemValue`: [`TCromwellStore`](#tcromwellstore)[`K`]) => `any` |
 
 #### Returns
 
@@ -2856,7 +2894,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `componentName` | `string` |
-| `component` | `ComponentType`<[`TCommonComponentProps`](common.md#tcommoncomponentprops)\> |
+| `component` | `ComponentType`<[`TCommonComponentProps`](#tcommoncomponentprops)\> |
 
 #### Returns
 
@@ -2876,14 +2914,14 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `K` | extends keyof [`TCromwellStore`](common.md#tcromwellstore) |
+| `K` | extends keyof [`TCromwellStore`](#tcromwellstore) |
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `itemName` | `K` |
-| `item` | [`TCromwellStore`](common.md#tcromwellstore)[`K`] |
+| `item` | [`TCromwellStore`](#tcromwellstore)[`K`] |
 
 #### Returns
 

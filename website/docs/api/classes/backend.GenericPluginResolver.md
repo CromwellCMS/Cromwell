@@ -14,7 +14,7 @@
 
 ### Constructors
 
-- [constructor](backend.GenericPluginResolver.md#constructor)
+- [constructor](#constructor)
 
 ## Constructors
 

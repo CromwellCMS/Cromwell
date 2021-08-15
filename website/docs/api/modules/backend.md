@@ -95,137 +95,137 @@ const products = await getCustomRepository(ProductRepository).getProducts();
 
 ### Type aliases
 
-- [Action](backend.md#action)
-- [ActionNames](backend.md#actionnames)
-- [ActionTypes](backend.md#actiontypes)
-- [TAllThemeConfigs](backend.md#tallthemeconfigs)
-- [TAuthUserInfo](backend.md#tauthuserinfo)
-- [TBackendModule](backend.md#tbackendmodule)
-- [TGraphQLContext](backend.md#tgraphqlcontext)
-- [TPluginInfo](backend.md#tplugininfo)
-- [TRequestWithUser](backend.md#trequestwithuser)
-- [TTokenInfo](backend.md#ttokeninfo)
-- [TTokenPayload](backend.md#ttokenpayload)
+- [Action](#action)
+- [ActionNames](#actionnames)
+- [ActionTypes](#actiontypes)
+- [TAllThemeConfigs](#tallthemeconfigs)
+- [TAuthUserInfo](#tauthuserinfo)
+- [TBackendModule](#tbackendmodule)
+- [TGraphQLContext](#tgraphqlcontext)
+- [TPluginInfo](#tplugininfo)
+- [TRequestWithUser](#trequestwithuser)
+- [TTokenInfo](#ttokeninfo)
+- [TTokenPayload](#ttokenpayload)
 
 ### Variables
 
-- [GenericCms](backend.md#genericcms)
-- [GenericPlugin](backend.md#genericplugin)
-- [GenericTheme](backend.md#generictheme)
-- [ORMEntities](backend.md#ormentities)
-- [adminPanelMessages](backend.md#adminpanelmessages)
-- [buildDirName](backend.md#builddirname)
-- [cmsConfigFileName](backend.md#cmsconfigfilename)
-- [cmsName](backend.md#cmsname)
-- [cmsPackageName](backend.md#cmspackagename)
-- [configFileName](backend.md#configfilename)
-- [defaultCmsConfig](backend.md#defaultcmsconfig)
-- [pluginAdminBundlePath](backend.md#pluginadminbundlepath)
-- [pluginAdminCjsPath](backend.md#pluginadmincjspath)
-- [pluginFrontendBundlePath](backend.md#pluginfrontendbundlepath)
-- [pluginFrontendCjsPath](backend.md#pluginfrontendcjspath)
-- [rendererMessages](backend.md#renderermessages)
-- [serverMessages](backend.md#servermessages)
-- [tempDirName](backend.md#tempdirname)
+- [GenericCms](#genericcms)
+- [GenericPlugin](#genericplugin)
+- [GenericTheme](#generictheme)
+- [ORMEntities](#ormentities)
+- [adminPanelMessages](#adminpanelmessages)
+- [buildDirName](#builddirname)
+- [cmsConfigFileName](#cmsconfigfilename)
+- [cmsName](#cmsname)
+- [cmsPackageName](#cmspackagename)
+- [configFileName](#configfilename)
+- [defaultCmsConfig](#defaultcmsconfig)
+- [pluginAdminBundlePath](#pluginadminbundlepath)
+- [pluginAdminCjsPath](#pluginadmincjspath)
+- [pluginFrontendBundlePath](#pluginfrontendbundlepath)
+- [pluginFrontendCjsPath](#pluginfrontendcjspath)
+- [rendererMessages](#renderermessages)
+- [serverMessages](#servermessages)
+- [tempDirName](#tempdirname)
 
 ### Functions
 
-- [Roles](backend.md#roles)
-- [applyGetManyFromOne](backend.md#applygetmanyfromone)
-- [applyGetPaged](backend.md#applygetpaged)
-- [checkEntitySlug](backend.md#checkentityslug)
-- [createGenericEntity](backend.md#creategenericentity)
-- [findPlugin](backend.md#findplugin)
-- [findTheme](backend.md#findtheme)
-- [fireAction](backend.md#fireaction)
-- [getAdminPanelDir](backend.md#getadminpaneldir)
-- [getAdminPanelServiceBuildDir](backend.md#getadminpanelservicebuilddir)
-- [getAdminPanelStartupPath](backend.md#getadminpanelstartuppath)
-- [getAdminPanelStaticDir](backend.md#getadminpanelstaticdir)
-- [getAdminPanelTempDir](backend.md#getadminpaneltempdir)
-- [getAdminPanelWebPublicDir](backend.md#getadminpanelwebpublicdir)
-- [getAdminPanelWebServiceBuildDir](backend.md#getadminpanelwebservicebuilddir)
-- [getBundledModulesDir](backend.md#getbundledmodulesdir)
-- [getCMSConfigPath](backend.md#getcmsconfigpath)
-- [getCmsEntity](backend.md#getcmsentity)
-- [getCmsInfo](backend.md#getcmsinfo)
-- [getCmsModuleConfig](backend.md#getcmsmoduleconfig)
-- [getCmsModuleInfo](backend.md#getcmsmoduleinfo)
-- [getCmsSettings](backend.md#getcmssettings)
-- [getCoreBackendDir](backend.md#getcorebackenddir)
-- [getCoreCommonDir](backend.md#getcorecommondir)
-- [getCoreFrontendDir](backend.md#getcorefrontenddir)
-- [getEmailTemplate](backend.md#getemailtemplate)
-- [getErrorLogPath](backend.md#geterrorlogpath)
-- [getLogger](backend.md#getlogger)
-- [getLogsDir](backend.md#getlogsdir)
-- [getManagerDir](backend.md#getmanagerdir)
-- [getManagerTempDir](backend.md#getmanagertempdir)
-- [getMetaInfoPath](backend.md#getmetainfopath)
-- [getModulePackage](backend.md#getmodulepackage)
-- [getModuleStaticDir](backend.md#getmodulestaticdir)
-- [getNodeModuleDir](backend.md#getnodemoduledir)
-- [getNodeModuleDirSync](backend.md#getnodemoduledirsync)
-- [getPaged](backend.md#getpaged)
-- [getPluginAdminBundlePath](backend.md#getpluginadminbundlepath)
-- [getPluginAdminCjsPath](backend.md#getpluginadmincjspath)
-- [getPluginBackendPath](backend.md#getpluginbackendpath)
-- [getPluginFrontendBundlePath](backend.md#getpluginfrontendbundlepath)
-- [getPluginFrontendCjsPath](backend.md#getpluginfrontendcjspath)
-- [getPluginFrontendMetaPath](backend.md#getpluginfrontendmetapath)
-- [getPluginSettings](backend.md#getpluginsettings)
-- [getPublicDir](backend.md#getpublicdir)
-- [getPublicPluginsDir](backend.md#getpublicpluginsdir)
-- [getPublicThemesDir](backend.md#getpublicthemesdir)
-- [getRendererBuildDir](backend.md#getrendererbuilddir)
-- [getRendererDir](backend.md#getrendererdir)
-- [getRendererStartupPath](backend.md#getrendererstartuppath)
-- [getRendererTempDevDir](backend.md#getrenderertempdevdir)
-- [getRendererTempDir](backend.md#getrenderertempdir)
-- [getServerBuildDir](backend.md#getserverbuilddir)
-- [getServerBuildPath](backend.md#getserverbuildpath)
-- [getServerBuildProxyPath](backend.md#getserverbuildproxypath)
-- [getServerDefaultEmailsDir](backend.md#getserverdefaultemailsdir)
-- [getServerDir](backend.md#getserverdir)
-- [getServerStartupPath](backend.md#getserverstartuppath)
-- [getServerTempDir](backend.md#getservertempdir)
-- [getServerTempEmailsDir](backend.md#getservertempemailsdir)
-- [getSqlBoolStr](backend.md#getsqlboolstr)
-- [getSqlLike](backend.md#getsqllike)
-- [getTempDir](backend.md#gettempdir)
-- [getThemeAdminPanelBundleDir](backend.md#getthemeadminpanelbundledir)
-- [getThemeAdminPanelDir](backend.md#getthemeadminpaneldir)
-- [getThemeBuildDir](backend.md#getthemebuilddir)
-- [getThemeConfigs](backend.md#getthemeconfigs)
-- [getThemeNextBuildDir](backend.md#getthemenextbuilddir)
-- [getThemeNextBuildDirByPath](backend.md#getthemenextbuilddirbypath)
-- [getThemePagesMetaPath](backend.md#getthemepagesmetapath)
-- [getThemePagesVirtualPath](backend.md#getthemepagesvirtualpath)
-- [getThemeRollupBuildDir](backend.md#getthemerollupbuilddir)
-- [getThemeRollupBuildDirByPath](backend.md#getthemerollupbuilddirbypath)
-- [getThemeTempAdminPanelDir](backend.md#getthemetempadminpaneldir)
-- [getThemeTempRollupBuildDir](backend.md#getthemetemprollupbuilddir)
-- [getUtilsBuildDir](backend.md#getutilsbuilddir)
-- [getUtilsDir](backend.md#getutilsdir)
-- [getUtilsImporterPath](backend.md#getutilsimporterpath)
-- [getUtilsTempDir](backend.md#getutilstempdir)
-- [graphQlAuthChecker](backend.md#graphqlauthchecker)
-- [handleBaseInput](backend.md#handlebaseinput)
-- [isExternalForm](backend.md#isexternalform)
-- [readCMSConfig](backend.md#readcmsconfig)
-- [readCMSConfigSync](backend.md#readcmsconfigsync)
-- [readCmsModules](backend.md#readcmsmodules)
-- [readPackage](backend.md#readpackage)
-- [readPluginsExports](backend.md#readpluginsexports)
-- [registerAction](backend.md#registeraction)
-- [requestPage](backend.md#requestpage)
-- [resolvePackageJsonPath](backend.md#resolvepackagejsonpath)
-- [runShellCommand](backend.md#runshellcommand)
-- [savePlugin](backend.md#saveplugin)
-- [savePluginSettings](backend.md#savepluginsettings)
-- [sendEmail](backend.md#sendemail)
-- [validateEmail](backend.md#validateemail)
-- [wrapInQuotes](backend.md#wrapinquotes)
+- [Roles](#roles)
+- [applyGetManyFromOne](#applygetmanyfromone)
+- [applyGetPaged](#applygetpaged)
+- [checkEntitySlug](#checkentityslug)
+- [createGenericEntity](#creategenericentity)
+- [findPlugin](#findplugin)
+- [findTheme](#findtheme)
+- [fireAction](#fireaction)
+- [getAdminPanelDir](#getadminpaneldir)
+- [getAdminPanelServiceBuildDir](#getadminpanelservicebuilddir)
+- [getAdminPanelStartupPath](#getadminpanelstartuppath)
+- [getAdminPanelStaticDir](#getadminpanelstaticdir)
+- [getAdminPanelTempDir](#getadminpaneltempdir)
+- [getAdminPanelWebPublicDir](#getadminpanelwebpublicdir)
+- [getAdminPanelWebServiceBuildDir](#getadminpanelwebservicebuilddir)
+- [getBundledModulesDir](#getbundledmodulesdir)
+- [getCMSConfigPath](#getcmsconfigpath)
+- [getCmsEntity](#getcmsentity)
+- [getCmsInfo](#getcmsinfo)
+- [getCmsModuleConfig](#getcmsmoduleconfig)
+- [getCmsModuleInfo](#getcmsmoduleinfo)
+- [getCmsSettings](#getcmssettings)
+- [getCoreBackendDir](#getcorebackenddir)
+- [getCoreCommonDir](#getcorecommondir)
+- [getCoreFrontendDir](#getcorefrontenddir)
+- [getEmailTemplate](#getemailtemplate)
+- [getErrorLogPath](#geterrorlogpath)
+- [getLogger](#getlogger)
+- [getLogsDir](#getlogsdir)
+- [getManagerDir](#getmanagerdir)
+- [getManagerTempDir](#getmanagertempdir)
+- [getMetaInfoPath](#getmetainfopath)
+- [getModulePackage](#getmodulepackage)
+- [getModuleStaticDir](#getmodulestaticdir)
+- [getNodeModuleDir](#getnodemoduledir)
+- [getNodeModuleDirSync](#getnodemoduledirsync)
+- [getPaged](#getpaged)
+- [getPluginAdminBundlePath](#getpluginadminbundlepath)
+- [getPluginAdminCjsPath](#getpluginadmincjspath)
+- [getPluginBackendPath](#getpluginbackendpath)
+- [getPluginFrontendBundlePath](#getpluginfrontendbundlepath)
+- [getPluginFrontendCjsPath](#getpluginfrontendcjspath)
+- [getPluginFrontendMetaPath](#getpluginfrontendmetapath)
+- [getPluginSettings](#getpluginsettings)
+- [getPublicDir](#getpublicdir)
+- [getPublicPluginsDir](#getpublicpluginsdir)
+- [getPublicThemesDir](#getpublicthemesdir)
+- [getRendererBuildDir](#getrendererbuilddir)
+- [getRendererDir](#getrendererdir)
+- [getRendererStartupPath](#getrendererstartuppath)
+- [getRendererTempDevDir](#getrenderertempdevdir)
+- [getRendererTempDir](#getrenderertempdir)
+- [getServerBuildDir](#getserverbuilddir)
+- [getServerBuildPath](#getserverbuildpath)
+- [getServerBuildProxyPath](#getserverbuildproxypath)
+- [getServerDefaultEmailsDir](#getserverdefaultemailsdir)
+- [getServerDir](#getserverdir)
+- [getServerStartupPath](#getserverstartuppath)
+- [getServerTempDir](#getservertempdir)
+- [getServerTempEmailsDir](#getservertempemailsdir)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [getTempDir](#gettempdir)
+- [getThemeAdminPanelBundleDir](#getthemeadminpanelbundledir)
+- [getThemeAdminPanelDir](#getthemeadminpaneldir)
+- [getThemeBuildDir](#getthemebuilddir)
+- [getThemeConfigs](#getthemeconfigs)
+- [getThemeNextBuildDir](#getthemenextbuilddir)
+- [getThemeNextBuildDirByPath](#getthemenextbuilddirbypath)
+- [getThemePagesMetaPath](#getthemepagesmetapath)
+- [getThemePagesVirtualPath](#getthemepagesvirtualpath)
+- [getThemeRollupBuildDir](#getthemerollupbuilddir)
+- [getThemeRollupBuildDirByPath](#getthemerollupbuilddirbypath)
+- [getThemeTempAdminPanelDir](#getthemetempadminpaneldir)
+- [getThemeTempRollupBuildDir](#getthemetemprollupbuilddir)
+- [getUtilsBuildDir](#getutilsbuilddir)
+- [getUtilsDir](#getutilsdir)
+- [getUtilsImporterPath](#getutilsimporterpath)
+- [getUtilsTempDir](#getutilstempdir)
+- [graphQlAuthChecker](#graphqlauthchecker)
+- [handleBaseInput](#handlebaseinput)
+- [isExternalForm](#isexternalform)
+- [readCMSConfig](#readcmsconfig)
+- [readCMSConfigSync](#readcmsconfigsync)
+- [readCmsModules](#readcmsmodules)
+- [readPackage](#readpackage)
+- [readPluginsExports](#readpluginsexports)
+- [registerAction](#registeraction)
+- [requestPage](#requestpage)
+- [resolvePackageJsonPath](#resolvepackagejsonpath)
+- [runShellCommand](#runshellcommand)
+- [savePlugin](#saveplugin)
+- [savePluginSettings](#savepluginsettings)
+- [sendEmail](#sendemail)
+- [validateEmail](#validateemail)
+- [wrapInQuotes](#wrapinquotes)
 
 ## Type aliases
 
@@ -255,7 +255,7 @@ ___
 
 ### ActionNames
 
-Ƭ **ActionNames**: keyof [`ActionTypes`](backend.md#actiontypes)
+Ƭ **ActionNames**: keyof [`ActionTypes`](#actiontypes)
 
 #### Defined in
 
@@ -271,41 +271,41 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `create_attribute` | [`Action`](backend.md#action)<`TAttribute`\> |
-| `create_order` | [`Action`](backend.md#action)<`TOrder`\> |
-| `create_payment` | [`Action`](backend.md#action)<`TPaymentSession`, `Object`\> |
-| `create_post` | [`Action`](backend.md#action)<`TPost`\> |
-| `create_post_comment` | [`Action`](backend.md#action)<`TPostComment`\> |
-| `create_product` | [`Action`](backend.md#action)<`TProduct`\> |
-| `create_product_category` | [`Action`](backend.md#action)<`TProductCategory`\> |
-| `create_product_review` | [`Action`](backend.md#action)<`TProductReview`\> |
-| `create_tag` | [`Action`](backend.md#action)<`TTag`\> |
-| `create_user` | [`Action`](backend.md#action)<`TUser`\> |
-| `delete_attribute` | [`Action`](backend.md#action)<`Object`\> |
-| `delete_order` | [`Action`](backend.md#action)<`Object`\> |
-| `delete_post` | [`Action`](backend.md#action)<`Object`\> |
-| `delete_post_comment` | [`Action`](backend.md#action)<`Object`\> |
-| `delete_product` | [`Action`](backend.md#action)<`Object`\> |
-| `delete_product_category` | [`Action`](backend.md#action)<`Object`\> |
-| `delete_product_review` | [`Action`](backend.md#action)<`Object`\> |
-| `delete_tag` | [`Action`](backend.md#action)<`Object`\> |
-| `delete_user` | [`Action`](backend.md#action)<`Object`\> |
-| `install_plugin` | [`Action`](backend.md#action)<`Object`\> |
-| `install_theme` | [`Action`](backend.md#action)<`Object`\> |
-| `uninstall_plugin` | [`Action`](backend.md#action)<`Object`\> |
-| `uninstall_theme` | [`Action`](backend.md#action)<`Object`\> |
-| `update_attribute` | [`Action`](backend.md#action)<`TAttribute`\> |
-| `update_order` | [`Action`](backend.md#action)<`TOrder`\> |
-| `update_plugin` | [`Action`](backend.md#action)<`Object`\> |
-| `update_post` | [`Action`](backend.md#action)<`TPost`\> |
-| `update_post_comment` | [`Action`](backend.md#action)<`TPostComment`\> |
-| `update_product` | [`Action`](backend.md#action)<`TProduct`\> |
-| `update_product_category` | [`Action`](backend.md#action)<`TProductCategory`\> |
-| `update_product_review` | [`Action`](backend.md#action)<`TProductReview`\> |
-| `update_settings` | [`Action`](backend.md#action)<`TCmsSettings`\> |
-| `update_tag` | [`Action`](backend.md#action)<`TTag`\> |
-| `update_theme` | [`Action`](backend.md#action)<`Object`\> |
-| `update_user` | [`Action`](backend.md#action)<`TUser`\> |
+| `create_attribute` | [`Action`](#action)<`TAttribute`\> |
+| `create_order` | [`Action`](#action)<`TOrder`\> |
+| `create_payment` | [`Action`](#action)<`TPaymentSession`, `Object`\> |
+| `create_post` | [`Action`](#action)<`TPost`\> |
+| `create_post_comment` | [`Action`](#action)<`TPostComment`\> |
+| `create_product` | [`Action`](#action)<`TProduct`\> |
+| `create_product_category` | [`Action`](#action)<`TProductCategory`\> |
+| `create_product_review` | [`Action`](#action)<`TProductReview`\> |
+| `create_tag` | [`Action`](#action)<`TTag`\> |
+| `create_user` | [`Action`](#action)<`TUser`\> |
+| `delete_attribute` | [`Action`](#action)<`Object`\> |
+| `delete_order` | [`Action`](#action)<`Object`\> |
+| `delete_post` | [`Action`](#action)<`Object`\> |
+| `delete_post_comment` | [`Action`](#action)<`Object`\> |
+| `delete_product` | [`Action`](#action)<`Object`\> |
+| `delete_product_category` | [`Action`](#action)<`Object`\> |
+| `delete_product_review` | [`Action`](#action)<`Object`\> |
+| `delete_tag` | [`Action`](#action)<`Object`\> |
+| `delete_user` | [`Action`](#action)<`Object`\> |
+| `install_plugin` | [`Action`](#action)<`Object`\> |
+| `install_theme` | [`Action`](#action)<`Object`\> |
+| `uninstall_plugin` | [`Action`](#action)<`Object`\> |
+| `uninstall_theme` | [`Action`](#action)<`Object`\> |
+| `update_attribute` | [`Action`](#action)<`TAttribute`\> |
+| `update_order` | [`Action`](#action)<`TOrder`\> |
+| `update_plugin` | [`Action`](#action)<`Object`\> |
+| `update_post` | [`Action`](#action)<`TPost`\> |
+| `update_post_comment` | [`Action`](#action)<`TPostComment`\> |
+| `update_product` | [`Action`](#action)<`TProduct`\> |
+| `update_product_category` | [`Action`](#action)<`TProductCategory`\> |
+| `update_product_review` | [`Action`](#action)<`TProductReview`\> |
+| `update_settings` | [`Action`](#action)<`TCmsSettings`\> |
+| `update_tag` | [`Action`](#action)<`TTag`\> |
+| `update_theme` | [`Action`](#action)<`Object`\> |
+| `update_user` | [`Action`](#action)<`TUser`\> |
 
 #### Defined in
 
@@ -378,7 +378,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `user?` | [`TAuthUserInfo`](backend.md#tauthuserinfo) |
+| `user?` | [`TAuthUserInfo`](#tauthuserinfo) |
 
 #### Defined in
 
@@ -408,7 +408,7 @@ ___
 
 ### TRequestWithUser
 
-Ƭ **TRequestWithUser**: `FastifyRequest` & { `cookies`: `any` ; `user`: [`TAuthUserInfo`](backend.md#tauthuserinfo)  }
+Ƭ **TRequestWithUser**: `FastifyRequest` & { `cookies`: `any` ; `user`: [`TAuthUserInfo`](#tauthuserinfo)  }
 
 #### Defined in
 
@@ -893,9 +893,9 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends keyof [`ActionTypes`](backend.md#actiontypes) |
-| `TPayload` | [`ActionTypes`](backend.md#actiontypes)[`T`][``"payload"``] |
-| `TOutput` | [`ActionTypes`](backend.md#actiontypes)[`T`][``"output"``] |
+| `T` | extends keyof [`ActionTypes`](#actiontypes) |
+| `TPayload` | [`ActionTypes`](#actiontypes)[`T`][``"payload"``] |
+| `TOutput` | [`ActionTypes`](#actiontypes)[`T`][``"output"``] |
 
 #### Parameters
 
@@ -1071,7 +1071,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/cms-settings.ts:103](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/cms-settings.ts#L103)
+[system/core/backend/src/helpers/cms-settings.ts:104](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/cms-settings.ts#L104)
 
 ___
 
@@ -1897,13 +1897,13 @@ ___
 
 ### getThemeConfigs
 
-▸ `Const` **getThemeConfigs**(): `Promise`<[`TAllThemeConfigs`](backend.md#tallthemeconfigs)\>
+▸ `Const` **getThemeConfigs**(): `Promise`<[`TAllThemeConfigs`](#tallthemeconfigs)\>
 
 Get currently active Theme's configs from DB
 
 #### Returns
 
-`Promise`<[`TAllThemeConfigs`](backend.md#tallthemeconfigs)\>
+`Promise`<[`TAllThemeConfigs`](#tallthemeconfigs)\>
 
 #### Defined in
 
@@ -2123,7 +2123,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `options?` | ``null`` \| { `args?`: `Record`<`string`, `any`\> ; `context?`: [`TGraphQLContext`](backend.md#tgraphqlcontext) ; `info?`: `any` ; `root?`: `any`  } |
+| `options?` | ``null`` \| { `args?`: `Record`<`string`, `any`\> ; `context?`: [`TGraphQLContext`](#tgraphqlcontext) ; `info?`: `any` ; `root?`: `any`  } |
 | `roles?` | ``null`` \| `TAuthRole`[] |
 
 #### Returns
@@ -2257,11 +2257,11 @@ ___
 
 ### readPluginsExports
 
-▸ `Const` **readPluginsExports**(): `Promise`<[`TPluginInfo`](backend.md#tplugininfo)[]\>
+▸ `Const` **readPluginsExports**(): `Promise`<[`TPluginInfo`](#tplugininfo)[]\>
 
 #### Returns
 
-`Promise`<[`TPluginInfo`](backend.md#tplugininfo)[]\>
+`Promise`<[`TPluginInfo`](#tplugininfo)[]\>
 
 #### Defined in
 
@@ -2277,9 +2277,9 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `T` | extends keyof [`ActionTypes`](backend.md#actiontypes)keyof [`ActionTypes`](backend.md#actiontypes) |
-| `TPayload` | [`ActionTypes`](backend.md#actiontypes)[`T`][``"payload"``] |
-| `TOutput` | [`ActionTypes`](backend.md#actiontypes)[`T`][``"output"``] |
+| `T` | extends keyof [`ActionTypes`](#actiontypes)keyof [`ActionTypes`](#actiontypes) |
+| `TPayload` | [`ActionTypes`](#actiontypes)[`T`][``"payload"``] |
+| `TOutput` | [`ActionTypes`](#actiontypes)[`T`][``"output"``] |
 
 #### Parameters
 

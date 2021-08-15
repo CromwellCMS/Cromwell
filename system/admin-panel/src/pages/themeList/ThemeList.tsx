@@ -1,5 +1,5 @@
 import { setStoreItem, TCCSVersion, TCmsSettings, TPackageCromwellConfig, TThemeEntity } from '@cromwell/core';
-import { getGraphQLClient, getRestAPIClient } from '@cromwell/core-frontend';
+import { getGraphQLClient, getRestApiClient } from '@cromwell/core-frontend';
 import {
     Badge,
     Button,
@@ -81,7 +81,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
 
     private getThemeList = async () => {
         try {
-            const client = getRestAPIClient();
+            const client = getRestApiClient();
             const updatedConfig = await client?.getCmsSettings();
             this.setState({ cmsConfig: updatedConfig })
 
@@ -116,7 +116,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
         for (const theme of this.state.packages) {
             this.themeUpdates[theme.name] = undefined;
             try {
-                const update = await getRestAPIClient().getThemeUpdate(theme.name);
+                const update = await getRestApiClient().getThemeUpdate(theme.name);
                 if (update) {
                     this.themeUpdates[theme.name] = update;
                 }
@@ -128,7 +128,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
     }
 
     private handleSetActiveTheme = async (info: TPackageCromwellConfig) => {
-        const client = getRestAPIClient();
+        const client = getRestApiClient();
         this.setState({ isChangingTheme: true });
 
         let success;
@@ -172,7 +172,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
 
     private handleActivateTheme = (themeName: string) => async () => {
         this.setState({ isLoading: true });
-        const client = getRestAPIClient();
+        const client = getRestApiClient();
         let success = false;
 
         try {
@@ -207,7 +207,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
         this.setState({ updateModalInfo: null });
         let success;
         try {
-            success = await getRestAPIClient().updateTheme(theme.name);
+            success = await getRestApiClient().updateTheme(theme.name);
         } catch (error) {
             console.error(error)
         }
@@ -238,7 +238,7 @@ class ThemeList extends React.Component<Partial<RouteComponentProps>, {
 
         let success;
         try {
-            success = await getRestAPIClient().deleteTheme(theme.name);
+            success = await getRestApiClient().deleteTheme(theme.name);
         } catch (error) {
             console.error(error)
         }

@@ -1,5 +1,5 @@
 import { isServer } from '@cromwell/core';
-import { CList, getRestAPIClient } from '@cromwell/core-frontend';
+import { CList, getRestApiClient } from '@cromwell/core-frontend';
 import { Breadcrumbs, Button, IconButton, TextField, Tooltip } from '@material-ui/core';
 import {
     ArrowBack as ArrowBackIcon,
@@ -93,12 +93,12 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
     }
 
     private getFilesInPath = (path?: string) => {
-        return getRestAPIClient()?.readPublicDir(path);
+        return getRestApiClient()?.readPublicDir(path);
     }
 
     private createFolder = async (dirName?: string) => {
         try {
-            await getRestAPIClient()?.createPublicDir(dirName, this.currentPath)
+            await getRestApiClient()?.createPublicDir(dirName, this.currentPath)
         } catch (e) {
             console.error(e)
         }
@@ -263,7 +263,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
     private handleDeleteItem = async () => {
         if (this.selectedItem && this.selectedFileName) {
             try {
-                await getRestAPIClient()?.removePublicDir(this.selectedFileName, this.currentPath)
+                await getRestApiClient()?.removePublicDir(this.selectedFileName, this.currentPath)
                 this.fetchCurrentItems();
             } catch (e) {
                 console.error(e)
@@ -275,7 +275,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
         if (this.selectedItem && this.selectedFileName) {
             this.setState({ hasLoadingStatus: true });
             try {
-                await getRestAPIClient()?.downloadPublicFile(this.selectedFileName, this.currentPath)
+                await getRestApiClient()?.downloadPublicFile(this.selectedFileName, this.currentPath)
             } catch (e) {
                 toast.error(e);
                 console.error(e);
@@ -298,7 +298,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
             this.setState({ isLoading: true });
 
             try {
-                await getRestAPIClient()?.uploadPublicFiles(this.currentPath, files)
+                await getRestApiClient()?.uploadPublicFiles(this.currentPath, files)
                 await this.fetchCurrentItems();
             } catch (e) {
                 console.error(e)

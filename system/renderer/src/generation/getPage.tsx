@@ -7,7 +7,7 @@ import {
     TDefaultPageName,
     TPageStats,
 } from '@cromwell/core';
-import { CContainer, getModuleImporter, getRestAPIClient, pageRootContainerId } from '@cromwell/core-frontend';
+import { CContainer, getModuleImporter, getRestApiClient, pageRootContainerId } from '@cromwell/core-frontend';
 import { NextRouter, withRouter } from 'next/router';
 import React, { useRef } from 'react';
 import ReactHtmlParser from 'react-html-parser';
@@ -78,7 +78,7 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         }
 
         if (!isServer()) {
-            const apiClient = getRestAPIClient();
+            const apiClient = getRestApiClient();
             const pageStats: TPageStats = {
                 pageRoute: window.location.pathname + window.location.search,
                 pageName: pageConfigName,

@@ -12,11 +12,11 @@
 
 ### Constructors
 
-- [constructor](backend.ProductCategoryFilterInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [nameSearch](backend.ProductCategoryFilterInput.md#namesearch)
+- [nameSearch](#namesearch)
 
 ## Constructors
 

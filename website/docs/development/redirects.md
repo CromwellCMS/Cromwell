@@ -53,17 +53,17 @@ After adding configuration in the cmsconfig.json, you need to restart your CMS. 
 
 Authors of Plugins can save redirects/rewrites into the database as CMS settings:
 ```ts
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 
 (async () => {
-  const settings = await getRestAPIClient().getAdminCmsSettings();
+  const settings = await getRestApiClient().getAdminCmsSettings();
   if (!settings.redirects) settings.redirects = [];
   settings.redirects.push({
     from: '/category/1',
     to: '/category/2',
     permanent: true,
   });
-  await getRestAPIClient().saveCmsSettings(settings);
+  await getRestApiClient().saveCmsSettings(settings);
 })();
 ```
 

@@ -14,7 +14,7 @@
 
 ### Constructors
 
-- [constructor](backend.GenericThemeResolver.md#constructor)
+- [constructor](#constructor)
 
 ## Constructors
 

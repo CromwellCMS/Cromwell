@@ -8,8 +8,8 @@ jest.mock('../../helpers/loadFrontendBundle', () => {
     }
 });
 
-jest.mock('../../api/CRestAPIClient', () => {
-    return { getRestAPIClient: () => ({}) };
+jest.mock('../../api/CRestApiClient', () => {
+    return { getRestApiClient: () => ({}) };
 });
 
 import { render, screen } from '@testing-library/react';

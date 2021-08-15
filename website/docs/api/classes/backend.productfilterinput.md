@@ -12,14 +12,14 @@
 
 ### Constructors
 
-- [constructor](backend.ProductFilterInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [attributes](backend.ProductFilterInput.md#attributes)
-- [maxPrice](backend.ProductFilterInput.md#maxprice)
-- [minPrice](backend.ProductFilterInput.md#minprice)
-- [nameSearch](backend.ProductFilterInput.md#namesearch)
+- [attributes](#attributes)
+- [maxPrice](#maxprice)
+- [minPrice](#minprice)
+- [nameSearch](#namesearch)
 
 ## Constructors
 

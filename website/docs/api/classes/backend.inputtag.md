@@ -18,18 +18,18 @@
 
 ### Constructors
 
-- [constructor](backend.InputTag.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [color](backend.InputTag.md#color)
-- [description](backend.InputTag.md#description)
-- [image](backend.InputTag.md#image)
-- [isEnabled](backend.InputTag.md#isenabled)
-- [name](backend.InputTag.md#name)
-- [pageDescription](backend.InputTag.md#pagedescription)
-- [pageTitle](backend.InputTag.md#pagetitle)
-- [slug](backend.InputTag.md#slug)
+- [color](#color)
+- [description](#description)
+- [image](#image)
+- [isEnabled](#isenabled)
+- [name](#name)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [slug](#slug)
 
 ## Constructors
 

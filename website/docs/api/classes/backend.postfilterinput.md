@@ -12,15 +12,15 @@
 
 ### Constructors
 
-- [constructor](backend.PostFilterInput.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [authorId](backend.PostFilterInput.md#authorid)
-- [featured](backend.PostFilterInput.md#featured)
-- [published](backend.PostFilterInput.md#published)
-- [tagIds](backend.PostFilterInput.md#tagids)
-- [titleSearch](backend.PostFilterInput.md#titlesearch)
+- [authorId](#authorid)
+- [featured](#featured)
+- [published](#published)
+- [tagIds](#tagids)
+- [titleSearch](#titlesearch)
 
 ## Constructors
 

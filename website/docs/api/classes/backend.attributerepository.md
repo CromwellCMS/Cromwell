@@ -14,32 +14,32 @@
 
 ### Constructors
 
-- [constructor](backend.AttributeRepository.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [dbType](backend.AttributeRepository.md#dbtype)
+- [dbType](#dbtype)
 
 ### Methods
 
-- [applyDeleteMany](backend.AttributeRepository.md#applydeletemany)
-- [createAttribute](backend.AttributeRepository.md#createattribute)
-- [createEntity](backend.AttributeRepository.md#createentity)
-- [deleteAttribute](backend.AttributeRepository.md#deleteattribute)
-- [deleteEntity](backend.AttributeRepository.md#deleteentity)
-- [deleteMany](backend.AttributeRepository.md#deletemany)
-- [getAll](backend.AttributeRepository.md#getall)
-- [getAttribute](backend.AttributeRepository.md#getattribute)
-- [getAttributes](backend.AttributeRepository.md#getattributes)
-- [getById](backend.AttributeRepository.md#getbyid)
-- [getBySlug](backend.AttributeRepository.md#getbyslug)
-- [getPaged](backend.AttributeRepository.md#getpaged)
-- [getSqlBoolStr](backend.AttributeRepository.md#getsqlboolstr)
-- [getSqlLike](backend.AttributeRepository.md#getsqllike)
-- [handleAttributeInput](backend.AttributeRepository.md#handleattributeinput)
-- [quote](backend.AttributeRepository.md#quote)
-- [updateAttribute](backend.AttributeRepository.md#updateattribute)
-- [updateEntity](backend.AttributeRepository.md#updateentity)
+- [applyDeleteMany](#applydeletemany)
+- [createAttribute](#createattribute)
+- [createEntity](#createentity)
+- [deleteAttribute](#deleteattribute)
+- [deleteEntity](#deleteentity)
+- [deleteMany](#deletemany)
+- [getAll](#getall)
+- [getAttribute](#getattribute)
+- [getAttributes](#getattributes)
+- [getById](#getbyid)
+- [getBySlug](#getbyslug)
+- [getPaged](#getpaged)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [handleAttributeInput](#handleattributeinput)
+- [quote](#quote)
+- [updateAttribute](#updateattribute)
+- [updateEntity](#updateentity)
 
 ## Constructors
 

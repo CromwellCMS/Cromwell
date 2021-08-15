@@ -12,7 +12,7 @@ import {
     readCMSConfig,
     rendererMessages,
 } from '@cromwell/core-backend';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import fs from 'fs-extra';
 import fetch, { Response } from 'node-fetch';
 import { resolve } from 'path';
@@ -33,7 +33,7 @@ export const startRenderer = async (command?: TRendererCommands, options?: {
     const cmsConfig = await readCMSConfig();
     let cmsSettings: TCmsSettings | undefined;
     try {
-        cmsSettings = await getRestAPIClient()?.getCmsSettings({ disableLog: true });
+        cmsSettings = await getRestApiClient()?.getCmsSettings({ disableLog: true });
     } catch (error) {
         logger.error(error);
     }
@@ -262,7 +262,7 @@ const isThemeBuilt = async (dir: string): Promise<boolean> => {
 const pollPages = async () => {
     let infos: TPageInfo[] | undefined;
     try {
-        infos = await getRestAPIClient().getPagesInfo();
+        infos = await getRestApiClient().getPagesInfo();
     } catch (error) {
         logger.error(error);
     }

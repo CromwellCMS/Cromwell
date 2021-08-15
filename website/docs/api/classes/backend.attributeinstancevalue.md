@@ -12,12 +12,12 @@
 
 ### Constructors
 
-- [constructor](backend.AttributeInstanceValue.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [productVariant](backend.AttributeInstanceValue.md#productvariant)
-- [value](backend.AttributeInstanceValue.md#value)
+- [productVariant](#productvariant)
+- [value](#value)
 
 ## Constructors
 

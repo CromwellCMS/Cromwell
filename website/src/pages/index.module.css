@@ -1,17 +1,31 @@
 .content {
   max-width: 900px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 .header {
-  text-align: center;
-  margin: 60px 0 20px;
-  font-size: 48px;
+  margin: 60px 0 30px;
+  font-size: 58px;
 }
 
 .subheader {
-  text-align: center;
-  font-size: 22px;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+svg.fireIcon {
+  margin-left: 10px;
+  font-size: 28px;
+}
+
+.quote {
+  font-size: 18px;
+  border-left: 2px solid #333;
+  padding-left: 12px;
+  max-width: 600px;
 }
 
 @media screen and (max-width: 966px) {

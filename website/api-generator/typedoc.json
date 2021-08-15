@@ -1,5 +1,5 @@
 {
-    "out": "./docs/api",
+    "out": "../docs/api",
     "exclude": [
         "*.(spec|test).ts",
         "*.(spec|test).tsx",
@@ -17,7 +17,7 @@
     "excludeExternals": true,
     "external-modulemap": ".*system\/core\/([^\/]+)\/.*",
     "entryPoints": [
-        "../system/core"
+        "../../system/core"
     ],
     "tsconfig": "./apiTsconfig.json"
 }

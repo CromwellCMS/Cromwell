@@ -12,12 +12,12 @@
 
 ### Constructors
 
-- [constructor](backend.ProductFilterAttributes.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [key](backend.ProductFilterAttributes.md#key)
-- [values](backend.ProductFilterAttributes.md#values)
+- [key](#key)
+- [values](#values)
 
 ## Constructors
 

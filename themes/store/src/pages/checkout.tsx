@@ -10,7 +10,7 @@ import {
     TStoreListItem,
     TUser,
 } from '@cromwell/core';
-import { CContainer, getCStore, getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
+import { CContainer, getCStore, getRestApiClient, LoadBox } from '@cromwell/core-frontend';
 import {
     Button,
     FormControl,
@@ -107,7 +107,7 @@ const CheckoutPage: TCromwellPage = () => {
     const getOrderTotal = async () => {
         setIsLoading(true);
         try {
-            const total = await getRestAPIClient()?.createPaymentSession({
+            const total = await getRestApiClient()?.createPaymentSession({
                 cart: JSON.stringify(cstore.getCart()),
                 currency: cstore.getActiveCurrencyTag(),
                 fromUrl: window.location.origin,
@@ -171,7 +171,7 @@ const CheckoutPage: TCromwellPage = () => {
         let order;
         setIsLoading(true);
         try {
-            order = await getRestAPIClient()?.placeOrder({
+            order = await getRestApiClient()?.placeOrder({
                 customerName: form.name,
                 customerPhone: form.phone,
                 customerAddress: form.address,

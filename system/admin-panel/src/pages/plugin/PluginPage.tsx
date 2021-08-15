@@ -1,5 +1,5 @@
 import { TPackageCromwellConfig } from '@cromwell/core';
-import { AdminPanelWidgetPlace, getRestAPIClient, LoadBox } from '@cromwell/core-frontend';
+import { AdminPanelWidgetPlace, getRestApiClient, LoadBox } from '@cromwell/core-frontend';
 import React, { useEffect, useState } from 'react';
 
 import styles from './PluginPage.module.scss';
@@ -10,13 +10,13 @@ const pluginInfos: Record<string, TPackageCromwellConfig> = {};
 const PluginPage = (props) => {
     const urlParams = new URLSearchParams(props?.location?.search);
     const pluginName = urlParams.get('pluginName');
-    const apiClient = getRestAPIClient();
+    const apiClient = getRestApiClient();
     const [canShow, setCanShow] = useState(false);
 
     useEffect(() => {
         const getInfos = async () => {
             try {
-                const allInfos: TPackageCromwellConfig[] = await getRestAPIClient()?.getPluginList();
+                const allInfos: TPackageCromwellConfig[] = await getRestApiClient()?.getPluginList();
                 const info = allInfos.find(inf => inf.name === pluginName);
                 if (info) {
                     pluginInfos[pluginName] = info;

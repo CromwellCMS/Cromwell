@@ -1,5 +1,5 @@
 import { getStoreItem, onStoreChange, TUser } from '@cromwell/core';
-import { getRestAPIClient } from '@cromwell/core-frontend';
+import { getRestApiClient } from '@cromwell/core-frontend';
 import {
     AppBar,
     IconButton,
@@ -73,7 +73,7 @@ export default function Sidebar() {
 
     const handleLogout = async () => {
         setOptionsOpen(false);
-        await getRestAPIClient()?.logOut();
+        await getRestApiClient()?.logOut();
         forceUpdate();
         history?.push(loginPageInfo.route);
     }

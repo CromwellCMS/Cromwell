@@ -14,26 +14,26 @@
 
 ### Constructors
 
-- [constructor](backend.PageStatsRepository.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [dbType](backend.PageStatsRepository.md#dbtype)
+- [dbType](#dbtype)
 
 ### Methods
 
-- [applyDeleteMany](backend.PageStatsRepository.md#applydeletemany)
-- [createEntity](backend.PageStatsRepository.md#createentity)
-- [deleteEntity](backend.PageStatsRepository.md#deleteentity)
-- [deleteMany](backend.PageStatsRepository.md#deletemany)
-- [getAll](backend.PageStatsRepository.md#getall)
-- [getById](backend.PageStatsRepository.md#getbyid)
-- [getBySlug](backend.PageStatsRepository.md#getbyslug)
-- [getPaged](backend.PageStatsRepository.md#getpaged)
-- [getSqlBoolStr](backend.PageStatsRepository.md#getsqlboolstr)
-- [getSqlLike](backend.PageStatsRepository.md#getsqllike)
-- [quote](backend.PageStatsRepository.md#quote)
-- [updateEntity](backend.PageStatsRepository.md#updateentity)
+- [applyDeleteMany](#applydeletemany)
+- [createEntity](#createentity)
+- [deleteEntity](#deleteentity)
+- [deleteMany](#deletemany)
+- [getAll](#getall)
+- [getById](#getbyid)
+- [getBySlug](#getbyslug)
+- [getPaged](#getpaged)
+- [getSqlBoolStr](#getsqlboolstr)
+- [getSqlLike](#getsqllike)
+- [quote](#quote)
+- [updateEntity](#updateentity)
 
 ## Constructors
 

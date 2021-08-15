@@ -36,7 +36,7 @@ jest.mock('@cromwell/core-frontend', () => {
         CList: () => {
             return <div>...list</div>
         },
-        getRestAPIClient: () => {
+        getRestApiClient: () => {
             return {
                 getCmsStatus: () => null,
             }

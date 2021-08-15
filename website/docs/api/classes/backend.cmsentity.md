@@ -18,23 +18,23 @@
 
 ### Constructors
 
-- [constructor](backend.CmsEntity.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [createDate](backend.CmsEntity.md#createdate)
-- [id](backend.CmsEntity.md#id)
-- [isEnabled](backend.CmsEntity.md#isenabled)
-- [pageDescription](backend.CmsEntity.md#pagedescription)
-- [pageTitle](backend.CmsEntity.md#pagetitle)
-- [slug](backend.CmsEntity.md#slug)
-- [updateDate](backend.CmsEntity.md#updatedate)
+- [createDate](#createdate)
+- [id](#id)
+- [isEnabled](#isenabled)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [slug](#slug)
+- [updateDate](#updatedate)
 
 ### Accessors
 
-- [adminSettings](backend.CmsEntity.md#adminsettings)
-- [internalSettings](backend.CmsEntity.md#internalsettings)
-- [publicSettings](backend.CmsEntity.md#publicsettings)
+- [adminSettings](#adminsettings)
+- [internalSettings](#internalsettings)
+- [publicSettings](#publicsettings)
 
 ## Constructors
 
@@ -62,7 +62,7 @@ TCmsEntity.createDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
+[system/core/backend/src/models/entities/base-page.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L29)
 
 ___
 
@@ -80,7 +80,7 @@ TCmsEntity.id
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
+[system/core/backend/src/models/entities/base-page.entity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L12)
 
 ___
 
@@ -98,7 +98,7 @@ TCmsEntity.isEnabled
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
+[system/core/backend/src/models/entities/base-page.entity.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L38)
 
 ___
 
@@ -116,7 +116,7 @@ TCmsEntity.pageDescription
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
+[system/core/backend/src/models/entities/base-page.entity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L24)
 
 ___
 
@@ -134,7 +134,7 @@ TCmsEntity.pageTitle
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
+[system/core/backend/src/models/entities/base-page.entity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L20)
 
 ___
 
@@ -152,7 +152,7 @@ TCmsEntity.slug
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
+[system/core/backend/src/models/entities/base-page.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L16)
 
 ___
 
@@ -170,7 +170,7 @@ TCmsEntity.updateDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
+[system/core/backend/src/models/entities/base-page.entity.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L34)
 
 ## Accessors
 

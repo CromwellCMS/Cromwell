@@ -18,28 +18,28 @@
 
 ### Constructors
 
-- [constructor](backend.User.md#constructor)
+- [constructor](#constructor)
 
 ### Properties
 
-- [address](backend.User.md#address)
-- [avatar](backend.User.md#avatar)
-- [bio](backend.User.md#bio)
-- [createDate](backend.User.md#createdate)
-- [email](backend.User.md#email)
-- [fullName](backend.User.md#fullname)
-- [id](backend.User.md#id)
-- [isEnabled](backend.User.md#isenabled)
-- [pageDescription](backend.User.md#pagedescription)
-- [pageTitle](backend.User.md#pagetitle)
-- [password](backend.User.md#password)
-- [phone](backend.User.md#phone)
-- [refreshToken](backend.User.md#refreshtoken)
-- [resetPasswordCode](backend.User.md#resetpasswordcode)
-- [resetPasswordDate](backend.User.md#resetpassworddate)
-- [role](backend.User.md#role)
-- [slug](backend.User.md#slug)
-- [updateDate](backend.User.md#updatedate)
+- [address](#address)
+- [avatar](#avatar)
+- [bio](#bio)
+- [createDate](#createdate)
+- [email](#email)
+- [fullName](#fullname)
+- [id](#id)
+- [isEnabled](#isenabled)
+- [pageDescription](#pagedescription)
+- [pageTitle](#pagetitle)
+- [password](#password)
+- [phone](#phone)
+- [refreshToken](#refreshtoken)
+- [resetPasswordCode](#resetpasswordcode)
+- [resetPasswordDate](#resetpassworddate)
+- [role](#role)
+- [slug](#slug)
+- [updateDate](#updatedate)
 
 ## Constructors
 
@@ -109,7 +109,7 @@ TUser.createDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L27)
+[system/core/backend/src/models/entities/base-page.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L29)
 
 ___
 
@@ -155,7 +155,7 @@ TUser.id
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:11](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L11)
+[system/core/backend/src/models/entities/base-page.entity.ts:12](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L12)
 
 ___
 
@@ -173,7 +173,7 @@ TUser.isEnabled
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L35)
+[system/core/backend/src/models/entities/base-page.entity.ts:38](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L38)
 
 ___
 
@@ -191,7 +191,7 @@ TUser.pageDescription
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L23)
+[system/core/backend/src/models/entities/base-page.entity.ts:24](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L24)
 
 ___
 
@@ -209,7 +209,7 @@ TUser.pageTitle
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L19)
+[system/core/backend/src/models/entities/base-page.entity.ts:20](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L20)
 
 ___
 
@@ -295,7 +295,7 @@ TUser.slug
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L15)
+[system/core/backend/src/models/entities/base-page.entity.ts:16](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L16)
 
 ___
 
@@ -313,4 +313,4 @@ TUser.updateDate
 
 #### Defined in
 
-[system/core/backend/src/models/entities/base-page.entity.ts:31](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L31)
+[system/core/backend/src/models/entities/base-page.entity.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/base-page.entity.ts#L34)

@@ -8,7 +8,7 @@ import 'react-resizable/css/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import { onStoreChange, setStoreItem, TUser } from '@cromwell/core';
-import { getGraphQLClient, getRestAPIClient, TErrorInfo } from '@cromwell/core-frontend';
+import { getGraphQLClient, getRestApiClient, TErrorInfo } from '@cromwell/core-frontend';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux-ts';
@@ -21,7 +21,7 @@ import { store } from './redux/store';
 
 (async () => {
     let isInstalled = true;
-    const restClient = getRestAPIClient();
+    const restClient = getRestApiClient();
     const graphClient = getGraphQLClient();
 
     const request = async <T>(req: Promise<T>): Promise<T> => {

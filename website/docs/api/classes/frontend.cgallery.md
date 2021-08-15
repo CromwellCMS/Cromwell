@@ -14,11 +14,11 @@
 
 ### Constructors
 
-- [constructor](frontend.CGallery.md#constructor)
+- [constructor](#constructor)
 
 ### Methods
 
-- [render](frontend.CGallery.md#render)
+- [render](#render)
 
 ## Constructors
 

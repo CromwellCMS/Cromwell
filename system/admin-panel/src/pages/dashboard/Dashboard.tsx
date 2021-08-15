@@ -1,5 +1,5 @@
 import { TCmsStats, TProductReview } from '@cromwell/core';
-import { getCStore, getRestAPIClient, getGraphQLClient, getWidgetsForPlace, onWidgetRegister, WidgetTypes } from '@cromwell/core-frontend';
+import { getCStore, getRestApiClient, getGraphQLClient, getWidgetsForPlace, onWidgetRegister, WidgetTypes } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import { CountUp } from 'countup.js';
 import React from 'react';
@@ -62,7 +62,7 @@ export default class Dashboard extends React.Component<any, {
         this.echarts = echarts;
 
         try {
-            const stats = await getRestAPIClient()?.getCmsStats();
+            const stats = await getRestApiClient()?.getCmsStats();
             if (stats) {
                 this.setState({ stats });
 
