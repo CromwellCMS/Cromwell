@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BasePageInput`](backend.BasePageInput.md)
+- [`BasePageInput`](./backend.BasePageInput.md)
 
   ↳ **`InputTag`**
 
@@ -39,7 +39,7 @@
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
+[BasePageInput](./backend.BasePageInput.md).[constructor](./backend.BasePageInput.md#constructor)
 
 ## Properties
 
@@ -95,7 +95,7 @@ TTagInput.isEnabled
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+[BasePageInput](./backend.BasePageInput.md).[isEnabled](./backend.BasePageInput.md#isenabled)
 
 #### Defined in
 
@@ -127,7 +127,7 @@ TTagInput.pageDescription
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+[BasePageInput](./backend.BasePageInput.md).[pageDescription](./backend.BasePageInput.md#pagedescription)
 
 #### Defined in
 
@@ -145,7 +145,7 @@ TTagInput.pageTitle
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+[BasePageInput](./backend.BasePageInput.md).[pageTitle](./backend.BasePageInput.md#pagetitle)
 
 #### Defined in
 
@@ -163,7 +163,7 @@ TTagInput.slug
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+[BasePageInput](./backend.BasePageInput.md).[slug](./backend.BasePageInput.md#slug)
 
 #### Defined in
 

@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- `TreeRepository`<[`ProductCategory`](backend.ProductCategory.md)\>
+- `TreeRepository`<[`ProductCategory`](./backend.ProductCategory.md)\>
 
   ↳ **`ProductCategoryRepository`**
 
@@ -75,8 +75,8 @@ TreeRepository&lt;ProductCategory\&gt;.constructor
 
 | Name | Type |
 | :------ | :------ |
-| `qb` | `SelectQueryBuilder`<[`ProductCategory`](backend.ProductCategory.md)\> \| `DeleteQueryBuilder`<[`ProductCategory`](backend.ProductCategory.md)\> |
-| `filterParams?` | [`ProductCategoryFilterInput`](backend.ProductCategoryFilterInput.md) |
+| `qb` | `SelectQueryBuilder`<[`ProductCategory`](./backend.ProductCategory.md)\> \| `DeleteQueryBuilder`<[`ProductCategory`](./backend.ProductCategory.md)\> |
+| `filterParams?` | [`ProductCategoryFilterInput`](./backend.ProductCategoryFilterInput.md) |
 
 #### Returns
 
@@ -90,18 +90,18 @@ ___
 
 ### createProductCategory
 
-▸ **createProductCategory**(`createProductCategory`, `id?`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+▸ **createProductCategory**(`createProductCategory`, `id?`): `Promise`<[`ProductCategory`](./backend.ProductCategory.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `createProductCategory` | [`CreateProductCategory`](backend.CreateProductCategory.md) |
+| `createProductCategory` | [`CreateProductCategory`](./backend.CreateProductCategory.md) |
 | `id?` | `string` |
 
 #### Returns
 
-`Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+`Promise`<[`ProductCategory`](./backend.ProductCategory.md)\>
 
 #### Defined in
 
@@ -118,7 +118,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `input` | `TDeleteManyInput` |
-| `filterParams?` | [`ProductCategoryFilterInput`](backend.ProductCategoryFilterInput.md) |
+| `filterParams?` | [`ProductCategoryFilterInput`](./backend.ProductCategoryFilterInput.md) |
 
 #### Returns
 
@@ -173,17 +173,17 @@ ___
 
 ### getChildCategories
 
-▸ **getChildCategories**(`category`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)[]\>
+▸ **getChildCategories**(`category`): `Promise`<[`ProductCategory`](./backend.ProductCategory.md)[]\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `category` | [`ProductCategory`](backend.ProductCategory.md) |
+| `category` | [`ProductCategory`](./backend.ProductCategory.md) |
 
 #### Returns
 
-`Promise`<[`ProductCategory`](backend.ProductCategory.md)[]\>
+`Promise`<[`ProductCategory`](./backend.ProductCategory.md)[]\>
 
 #### Defined in
 
@@ -199,8 +199,8 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<[`ProductCategory`](backend.ProductCategory.md)\> |
-| `filterParams?` | [`ProductCategoryFilterInput`](backend.ProductCategoryFilterInput.md) |
+| `pagedParams?` | [`PagedParamsInput`](./backend.PagedParamsInput.md)<[`ProductCategory`](./backend.ProductCategory.md)\> |
+| `filterParams?` | [`ProductCategoryFilterInput`](./backend.ProductCategoryFilterInput.md) |
 
 #### Returns
 
@@ -214,17 +214,17 @@ ___
 
 ### getParentCategory
 
-▸ **getParentCategory**(`category`): `Promise`<`undefined` \| ``null`` \| [`ProductCategory`](backend.ProductCategory.md)\>
+▸ **getParentCategory**(`category`): `Promise`<`undefined` \| ``null`` \| [`ProductCategory`](./backend.ProductCategory.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `category` | [`ProductCategory`](backend.ProductCategory.md) |
+| `category` | [`ProductCategory`](./backend.ProductCategory.md) |
 
 #### Returns
 
-`Promise`<`undefined` \| ``null`` \| [`ProductCategory`](backend.ProductCategory.md)\>
+`Promise`<`undefined` \| ``null`` \| [`ProductCategory`](./backend.ProductCategory.md)\>
 
 #### Defined in
 
@@ -254,7 +254,7 @@ ___
 
 ### getProductCategoriesById
 
-▸ **getProductCategoriesById**(`ids`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)[]\>
+▸ **getProductCategoriesById**(`ids`): `Promise`<[`ProductCategory`](./backend.ProductCategory.md)[]\>
 
 #### Parameters
 
@@ -264,7 +264,7 @@ ___
 
 #### Returns
 
-`Promise`<[`ProductCategory`](backend.ProductCategory.md)[]\>
+`Promise`<[`ProductCategory`](./backend.ProductCategory.md)[]\>
 
 #### Defined in
 
@@ -274,7 +274,7 @@ ___
 
 ### getProductCategoryById
 
-▸ **getProductCategoryById**(`id`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+▸ **getProductCategoryById**(`id`): `Promise`<[`ProductCategory`](./backend.ProductCategory.md)\>
 
 #### Parameters
 
@@ -284,7 +284,7 @@ ___
 
 #### Returns
 
-`Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+`Promise`<[`ProductCategory`](./backend.ProductCategory.md)\>
 
 #### Defined in
 
@@ -294,7 +294,7 @@ ___
 
 ### getProductCategoryBySlug
 
-▸ **getProductCategoryBySlug**(`slug`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+▸ **getProductCategoryBySlug**(`slug`): `Promise`<[`ProductCategory`](./backend.ProductCategory.md)\>
 
 #### Parameters
 
@@ -304,7 +304,7 @@ ___
 
 #### Returns
 
-`Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+`Promise`<[`ProductCategory`](./backend.ProductCategory.md)\>
 
 #### Defined in
 
@@ -314,11 +314,11 @@ ___
 
 ### getRootCategories
 
-▸ **getRootCategories**(): `Promise`<`TPagedList`<[`ProductCategory`](backend.ProductCategory.md)\>\>
+▸ **getRootCategories**(): `Promise`<`TPagedList`<[`ProductCategory`](./backend.ProductCategory.md)\>\>
 
 #### Returns
 
-`Promise`<`TPagedList`<[`ProductCategory`](backend.ProductCategory.md)\>\>
+`Promise`<`TPagedList`<[`ProductCategory`](./backend.ProductCategory.md)\>\>
 
 #### Defined in
 
@@ -368,7 +368,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `productCategory` | [`ProductCategory`](backend.ProductCategory.md) |
+| `productCategory` | [`ProductCategory`](./backend.ProductCategory.md) |
 | `input` | `TProductCategoryInput` |
 
 #### Returns
@@ -403,18 +403,18 @@ ___
 
 ### updateProductCategory
 
-▸ **updateProductCategory**(`id`, `updateProductCategory`): `Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+▸ **updateProductCategory**(`id`, `updateProductCategory`): `Promise`<[`ProductCategory`](./backend.ProductCategory.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `updateProductCategory` | [`UpdateProductCategory`](backend.UpdateProductCategory.md) |
+| `updateProductCategory` | [`UpdateProductCategory`](./backend.UpdateProductCategory.md) |
 
 #### Returns
 
-`Promise`<[`ProductCategory`](backend.ProductCategory.md)\>
+`Promise`<[`ProductCategory`](./backend.ProductCategory.md)\>
 
 #### Defined in
 

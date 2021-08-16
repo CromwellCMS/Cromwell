@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BaseRepository`](backend.BaseRepository.md)<[`Attribute`](backend.Attribute.md)\>
+- [`BaseRepository`](./backend.BaseRepository.md)<[`Attribute`](./backend.Attribute.md)\>
 
   ↳ **`AttributeRepository`**
 
@@ -51,11 +51,11 @@
 
 | Name | Type |
 | :------ | :------ |
-| `EntityClass` | (...`args`: `any`[]) => [`Attribute`](backend.Attribute.md) & { `id?`: `string`  } |
+| `EntityClass` | (...`args`: `any`[]) => [`Attribute`](./backend.Attribute.md) & { `id?`: `string`  } |
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
+[BaseRepository](./backend.BaseRepository.md).[constructor](./backend.BaseRepository.md#constructor)
 
 #### Defined in
 
@@ -69,7 +69,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[dbType](backend.BaseRepository.md#dbtype)
+[BaseRepository](./backend.BaseRepository.md).[dbType](./backend.BaseRepository.md#dbtype)
 
 #### Defined in
 
@@ -85,7 +85,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `qb` | `SelectQueryBuilder`<[`Attribute`](backend.Attribute.md)\> \| `DeleteQueryBuilder`<[`Attribute`](backend.Attribute.md)\> |
+| `qb` | `SelectQueryBuilder`<[`Attribute`](./backend.Attribute.md)\> \| `DeleteQueryBuilder`<[`Attribute`](./backend.Attribute.md)\> |
 | `input` | `TDeleteManyInput` |
 
 #### Returns
@@ -94,7 +94,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+[BaseRepository](./backend.BaseRepository.md).[applyDeleteMany](./backend.BaseRepository.md#applydeletemany)
 
 #### Defined in
 
@@ -125,22 +125,22 @@ ___
 
 ### createEntity
 
-▸ **createEntity**(`input`, `id?`): `Promise`<[`Attribute`](backend.Attribute.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`Attribute`](./backend.Attribute.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `input` | [`Attribute`](backend.Attribute.md) |
+| `input` | [`Attribute`](./backend.Attribute.md) |
 | `id?` | `string` |
 
 #### Returns
 
-`Promise`<[`Attribute`](backend.Attribute.md)\>
+`Promise`<[`Attribute`](./backend.Attribute.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+[BaseRepository](./backend.BaseRepository.md).[createEntity](./backend.BaseRepository.md#createentity)
 
 #### Defined in
 
@@ -184,7 +184,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+[BaseRepository](./backend.BaseRepository.md).[deleteEntity](./backend.BaseRepository.md#deleteentity)
 
 #### Defined in
 
@@ -208,7 +208,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+[BaseRepository](./backend.BaseRepository.md).[deleteMany](./backend.BaseRepository.md#deletemany)
 
 #### Defined in
 
@@ -218,15 +218,15 @@ ___
 
 ### getAll
 
-▸ **getAll**(): `Promise`<[`Attribute`](backend.Attribute.md)[]\>
+▸ **getAll**(): `Promise`<[`Attribute`](./backend.Attribute.md)[]\>
 
 #### Returns
 
-`Promise`<[`Attribute`](backend.Attribute.md)[]\>
+`Promise`<[`Attribute`](./backend.Attribute.md)[]\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+[BaseRepository](./backend.BaseRepository.md).[getAll](./backend.BaseRepository.md#getall)
 
 #### Defined in
 
@@ -236,7 +236,7 @@ ___
 
 ### getAttribute
 
-▸ **getAttribute**(`id`): `Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
+▸ **getAttribute**(`id`): `Promise`<`undefined` \| [`Attribute`](./backend.Attribute.md)\>
 
 #### Parameters
 
@@ -246,7 +246,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
+`Promise`<`undefined` \| [`Attribute`](./backend.Attribute.md)\>
 
 #### Defined in
 
@@ -256,11 +256,11 @@ ___
 
 ### getAttributes
 
-▸ **getAttributes**(): `Promise`<[`Attribute`](backend.Attribute.md)[]\>
+▸ **getAttributes**(): `Promise`<[`Attribute`](./backend.Attribute.md)[]\>
 
 #### Returns
 
-`Promise`<[`Attribute`](backend.Attribute.md)[]\>
+`Promise`<[`Attribute`](./backend.Attribute.md)[]\>
 
 #### Defined in
 
@@ -270,7 +270,7 @@ ___
 
 ### getById
 
-▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Attribute`](./backend.Attribute.md)\>
 
 #### Parameters
 
@@ -281,11 +281,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
+`Promise`<`undefined` \| [`Attribute`](./backend.Attribute.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+[BaseRepository](./backend.BaseRepository.md).[getById](./backend.BaseRepository.md#getbyid)
 
 #### Defined in
 
@@ -295,7 +295,7 @@ ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Attribute`](./backend.Attribute.md)\>
 
 #### Parameters
 
@@ -306,11 +306,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Attribute`](backend.Attribute.md)\>
+`Promise`<`undefined` \| [`Attribute`](./backend.Attribute.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+[BaseRepository](./backend.BaseRepository.md).[getBySlug](./backend.BaseRepository.md#getbyslug)
 
 #### Defined in
 
@@ -320,21 +320,21 @@ ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Attribute`](backend.Attribute.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Attribute`](./backend.Attribute.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params?` | `TPagedParams`<[`Attribute`](backend.Attribute.md)\> |
+| `params?` | `TPagedParams`<[`Attribute`](./backend.Attribute.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`Attribute`](backend.Attribute.md)\>\>
+`Promise`<`TPagedList`<[`Attribute`](./backend.Attribute.md)\>\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+[BaseRepository](./backend.BaseRepository.md).[getPaged](./backend.BaseRepository.md#getpaged)
 
 #### Defined in
 
@@ -358,7 +358,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
+[BaseRepository](./backend.BaseRepository.md).[getSqlBoolStr](./backend.BaseRepository.md#getsqlboolstr)
 
 #### Defined in
 
@@ -376,7 +376,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlLike](backend.BaseRepository.md#getsqllike)
+[BaseRepository](./backend.BaseRepository.md).[getSqlLike](./backend.BaseRepository.md#getsqllike)
 
 #### Defined in
 
@@ -392,7 +392,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `attribute` | [`Attribute`](backend.Attribute.md) |
+| `attribute` | [`Attribute`](./backend.Attribute.md) |
 | `input` | `TAttributeInput` |
 
 #### Returns
@@ -421,7 +421,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[quote](backend.BaseRepository.md#quote)
+[BaseRepository](./backend.BaseRepository.md).[quote](./backend.BaseRepository.md#quote)
 
 #### Defined in
 
@@ -431,7 +431,7 @@ ___
 
 ### updateAttribute
 
-▸ **updateAttribute**(`id`, `updateAttribute`): `Promise`<[`Attribute`](backend.Attribute.md)\>
+▸ **updateAttribute**(`id`, `updateAttribute`): `Promise`<[`Attribute`](./backend.Attribute.md)\>
 
 #### Parameters
 
@@ -442,7 +442,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Attribute`](backend.Attribute.md)\>
+`Promise`<[`Attribute`](./backend.Attribute.md)\>
 
 #### Defined in
 
@@ -452,22 +452,22 @@ ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`, `input`): `Promise`<[`Attribute`](backend.Attribute.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`Attribute`](./backend.Attribute.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `input` | [`Attribute`](backend.Attribute.md) |
+| `input` | [`Attribute`](./backend.Attribute.md) |
 
 #### Returns
 
-`Promise`<[`Attribute`](backend.Attribute.md)\>
+`Promise`<[`Attribute`](./backend.Attribute.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+[BaseRepository](./backend.BaseRepository.md).[updateEntity](./backend.BaseRepository.md#updateentity)
 
 #### Defined in
 

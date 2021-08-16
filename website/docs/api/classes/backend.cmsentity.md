@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BasePageEntity`](backend.BasePageEntity.md)
+- [`BasePageEntity`](./backend.BasePageEntity.md)
 
   ↳ **`CmsEntity`**
 
@@ -44,7 +44,7 @@
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
+[BasePageEntity](./backend.BasePageEntity.md).[constructor](./backend.BasePageEntity.md#constructor)
 
 ## Properties
 
@@ -58,7 +58,7 @@ TCmsEntity.createDate
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+[BasePageEntity](./backend.BasePageEntity.md).[createDate](./backend.BasePageEntity.md#createdate)
 
 #### Defined in
 
@@ -76,7 +76,7 @@ TCmsEntity.id
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+[BasePageEntity](./backend.BasePageEntity.md).[id](./backend.BasePageEntity.md#id)
 
 #### Defined in
 
@@ -94,7 +94,7 @@ TCmsEntity.isEnabled
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+[BasePageEntity](./backend.BasePageEntity.md).[isEnabled](./backend.BasePageEntity.md#isenabled)
 
 #### Defined in
 
@@ -112,7 +112,7 @@ TCmsEntity.pageDescription
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+[BasePageEntity](./backend.BasePageEntity.md).[pageDescription](./backend.BasePageEntity.md#pagedescription)
 
 #### Defined in
 
@@ -130,7 +130,7 @@ TCmsEntity.pageTitle
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+[BasePageEntity](./backend.BasePageEntity.md).[pageTitle](./backend.BasePageEntity.md#pagetitle)
 
 #### Defined in
 
@@ -148,7 +148,7 @@ TCmsEntity.slug
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+[BasePageEntity](./backend.BasePageEntity.md).[slug](./backend.BasePageEntity.md#slug)
 
 #### Defined in
 
@@ -166,7 +166,7 @@ TCmsEntity.updateDate
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+[BasePageEntity](./backend.BasePageEntity.md).[updateDate](./backend.BasePageEntity.md#updatedate)
 
 #### Defined in
 

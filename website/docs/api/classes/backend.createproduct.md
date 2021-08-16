@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BasePageInput`](backend.BasePageInput.md)
+- [`BasePageInput`](./backend.BasePageInput.md)
 
   ↳ **`CreateProduct`**
 
@@ -45,13 +45,13 @@
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
+[BasePageInput](./backend.BasePageInput.md).[constructor](./backend.BasePageInput.md#constructor)
 
 ## Properties
 
 ### attributes
 
-• `Optional` **attributes**: [`AttributeInstance`](backend.AttributeInstance.md)[]
+• `Optional` **attributes**: [`AttributeInstance`](./backend.AttributeInstance.md)[]
 
 #### Implementation of
 
@@ -129,7 +129,7 @@ TProductInput.isEnabled
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+[BasePageInput](./backend.BasePageInput.md).[isEnabled](./backend.BasePageInput.md#isenabled)
 
 #### Defined in
 
@@ -189,7 +189,7 @@ TProductInput.pageDescription
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+[BasePageInput](./backend.BasePageInput.md).[pageDescription](./backend.BasePageInput.md#pagedescription)
 
 #### Defined in
 
@@ -207,7 +207,7 @@ TProductInput.pageTitle
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+[BasePageInput](./backend.BasePageInput.md).[pageTitle](./backend.BasePageInput.md#pagetitle)
 
 #### Defined in
 
@@ -253,7 +253,7 @@ TProductInput.slug
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+[BasePageInput](./backend.BasePageInput.md).[slug](./backend.BasePageInput.md#slug)
 
 #### Defined in
 

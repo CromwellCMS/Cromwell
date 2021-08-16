@@ -43,7 +43,7 @@ ___
 
 ### values
 
-• **values**: [`AttributeInstanceValue`](backend.AttributeInstanceValue.md)[]
+• **values**: [`AttributeInstanceValue`](./backend.AttributeInstanceValue.md)[]
 
 #### Implementation of
 

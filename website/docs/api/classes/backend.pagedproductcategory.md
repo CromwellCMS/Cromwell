@@ -43,7 +43,7 @@ ___
 
 ### pagedMeta
 
-• `Optional` **pagedMeta**: [`PagedMeta`](backend.PagedMeta.md)
+• `Optional` **pagedMeta**: [`PagedMeta`](./backend.PagedMeta.md)
 
 #### Implementation of
 

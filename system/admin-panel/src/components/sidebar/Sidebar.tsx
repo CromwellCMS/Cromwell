@@ -101,7 +101,7 @@ export default function Sidebar() {
         <div className={styles.sidebarContent}>
             <div className={styles.sidebarTop}>
                 <div className={styles.sidebarHeader}>
-                    <img src="/admin/static/logo_icon_white.png" alt="logo" className={styles.logo} />
+                    <img src="/admin/static/icon_small.png" alt="logo" className={styles.logo} />
                     {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                     <div>
                         <NotificationCenter color="#fff" />

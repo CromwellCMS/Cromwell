@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BaseRepository`](backend.BaseRepository.md)<[`PluginEntity`](backend.PluginEntity.md)\>
+- [`BaseRepository`](./backend.BaseRepository.md)<[`PluginEntity`](./backend.PluginEntity.md)\>
 
   ↳ **`PluginRepository`**
 
@@ -50,7 +50,7 @@
 
 #### Overrides
 
-[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
+[BaseRepository](./backend.BaseRepository.md).[constructor](./backend.BaseRepository.md#constructor)
 
 #### Defined in
 
@@ -64,7 +64,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[dbType](backend.BaseRepository.md#dbtype)
+[BaseRepository](./backend.BaseRepository.md).[dbType](./backend.BaseRepository.md#dbtype)
 
 #### Defined in
 
@@ -80,7 +80,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `qb` | `SelectQueryBuilder`<[`PluginEntity`](backend.PluginEntity.md)\> \| `DeleteQueryBuilder`<[`PluginEntity`](backend.PluginEntity.md)\> |
+| `qb` | `SelectQueryBuilder`<[`PluginEntity`](./backend.PluginEntity.md)\> \| `DeleteQueryBuilder`<[`PluginEntity`](./backend.PluginEntity.md)\> |
 | `input` | `TDeleteManyInput` |
 
 #### Returns
@@ -89,7 +89,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+[BaseRepository](./backend.BaseRepository.md).[applyDeleteMany](./backend.BaseRepository.md#applydeletemany)
 
 #### Defined in
 
@@ -99,22 +99,22 @@ ___
 
 ### createEntity
 
-▸ **createEntity**(`input`, `id?`): `Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `input` | [`PluginEntity`](backend.PluginEntity.md) |
+| `input` | [`PluginEntity`](./backend.PluginEntity.md) |
 | `id?` | `string` |
 
 #### Returns
 
-`Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
+`Promise`<[`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+[BaseRepository](./backend.BaseRepository.md).[createEntity](./backend.BaseRepository.md#createentity)
 
 #### Defined in
 
@@ -124,7 +124,7 @@ ___
 
 ### createPlugin
 
-▸ **createPlugin**(`createPlugin`): `Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
+▸ **createPlugin**(`createPlugin`): `Promise`<[`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Parameters
 
@@ -134,7 +134,7 @@ ___
 
 #### Returns
 
-`Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
+`Promise`<[`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Defined in
 
@@ -158,7 +158,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+[BaseRepository](./backend.BaseRepository.md).[deleteEntity](./backend.BaseRepository.md#deleteentity)
 
 #### Defined in
 
@@ -182,7 +182,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+[BaseRepository](./backend.BaseRepository.md).[deleteMany](./backend.BaseRepository.md#deletemany)
 
 #### Defined in
 
@@ -212,15 +212,15 @@ ___
 
 ### getAll
 
-▸ **getAll**(): `Promise`<[`PluginEntity`](backend.PluginEntity.md)[]\>
+▸ **getAll**(): `Promise`<[`PluginEntity`](./backend.PluginEntity.md)[]\>
 
 #### Returns
 
-`Promise`<[`PluginEntity`](backend.PluginEntity.md)[]\>
+`Promise`<[`PluginEntity`](./backend.PluginEntity.md)[]\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+[BaseRepository](./backend.BaseRepository.md).[getAll](./backend.BaseRepository.md#getall)
 
 #### Defined in
 
@@ -230,7 +230,7 @@ ___
 
 ### getById
 
-▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Parameters
 
@@ -241,11 +241,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
+`Promise`<`undefined` \| [`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+[BaseRepository](./backend.BaseRepository.md).[getById](./backend.BaseRepository.md#getbyid)
 
 #### Defined in
 
@@ -255,7 +255,7 @@ ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Parameters
 
@@ -266,11 +266,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
+`Promise`<`undefined` \| [`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+[BaseRepository](./backend.BaseRepository.md).[getBySlug](./backend.BaseRepository.md#getbyslug)
 
 #### Defined in
 
@@ -280,21 +280,21 @@ ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`PluginEntity`](backend.PluginEntity.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`PluginEntity`](./backend.PluginEntity.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params?` | `TPagedParams`<[`PluginEntity`](backend.PluginEntity.md)\> |
+| `params?` | `TPagedParams`<[`PluginEntity`](./backend.PluginEntity.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`PluginEntity`](backend.PluginEntity.md)\>\>
+`Promise`<`TPagedList`<[`PluginEntity`](./backend.PluginEntity.md)\>\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+[BaseRepository](./backend.BaseRepository.md).[getPaged](./backend.BaseRepository.md#getpaged)
 
 #### Defined in
 
@@ -304,7 +304,7 @@ ___
 
 ### getPluginById
 
-▸ **getPluginById**(`id`): `Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
+▸ **getPluginById**(`id`): `Promise`<`undefined` \| [`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Parameters
 
@@ -314,7 +314,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
+`Promise`<`undefined` \| [`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Defined in
 
@@ -324,7 +324,7 @@ ___
 
 ### getPluginBySlug
 
-▸ **getPluginBySlug**(`slug`): `Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
+▸ **getPluginBySlug**(`slug`): `Promise`<`undefined` \| [`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Parameters
 
@@ -334,7 +334,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`PluginEntity`](backend.PluginEntity.md)\>
+`Promise`<`undefined` \| [`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Defined in
 
@@ -370,17 +370,17 @@ ___
 
 ### getPlugins
 
-▸ **getPlugins**(`params`): `Promise`<`TPagedList`<[`PluginEntity`](backend.PluginEntity.md)\>\>
+▸ **getPlugins**(`params`): `Promise`<`TPagedList`<[`PluginEntity`](./backend.PluginEntity.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params` | `TPagedParams`<[`PluginEntity`](backend.PluginEntity.md)\> |
+| `params` | `TPagedParams`<[`PluginEntity`](./backend.PluginEntity.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`PluginEntity`](backend.PluginEntity.md)\>\>
+`Promise`<`TPagedList`<[`PluginEntity`](./backend.PluginEntity.md)\>\>
 
 #### Defined in
 
@@ -404,7 +404,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
+[BaseRepository](./backend.BaseRepository.md).[getSqlBoolStr](./backend.BaseRepository.md#getsqlboolstr)
 
 #### Defined in
 
@@ -422,7 +422,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlLike](backend.BaseRepository.md#getsqllike)
+[BaseRepository](./backend.BaseRepository.md).[getSqlLike](./backend.BaseRepository.md#getsqllike)
 
 #### Defined in
 
@@ -446,7 +446,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[quote](backend.BaseRepository.md#quote)
+[BaseRepository](./backend.BaseRepository.md).[quote](./backend.BaseRepository.md#quote)
 
 #### Defined in
 
@@ -456,22 +456,22 @@ ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`, `input`): `Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `input` | [`PluginEntity`](backend.PluginEntity.md) |
+| `input` | [`PluginEntity`](./backend.PluginEntity.md) |
 
 #### Returns
 
-`Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
+`Promise`<[`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+[BaseRepository](./backend.BaseRepository.md).[updateEntity](./backend.BaseRepository.md#updateentity)
 
 #### Defined in
 
@@ -481,7 +481,7 @@ ___
 
 ### updatePlugin
 
-▸ **updatePlugin**(`id`, `updatePlugin`): `Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
+▸ **updatePlugin**(`id`, `updatePlugin`): `Promise`<[`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Parameters
 
@@ -492,7 +492,7 @@ ___
 
 #### Returns
 
-`Promise`<[`PluginEntity`](backend.PluginEntity.md)\>
+`Promise`<[`PluginEntity`](./backend.PluginEntity.md)\>
 
 #### Defined in
 

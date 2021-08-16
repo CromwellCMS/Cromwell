@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BasePageInput`](backend.BasePageInput.md)
+- [`BasePageInput`](./backend.BasePageInput.md)
 
   ↳ **`UpdateUser`**
 
@@ -42,7 +42,7 @@
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
+[BasePageInput](./backend.BasePageInput.md).[constructor](./backend.BasePageInput.md#constructor)
 
 ## Properties
 
@@ -126,7 +126,7 @@ TUpdateUser.isEnabled
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+[BasePageInput](./backend.BasePageInput.md).[isEnabled](./backend.BasePageInput.md#isenabled)
 
 #### Defined in
 
@@ -144,7 +144,7 @@ TUpdateUser.pageDescription
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+[BasePageInput](./backend.BasePageInput.md).[pageDescription](./backend.BasePageInput.md#pagedescription)
 
 #### Defined in
 
@@ -162,7 +162,7 @@ TUpdateUser.pageTitle
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+[BasePageInput](./backend.BasePageInput.md).[pageTitle](./backend.BasePageInput.md#pagetitle)
 
 #### Defined in
 
@@ -208,7 +208,7 @@ TUpdateUser.slug
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+[BasePageInput](./backend.BasePageInput.md).[slug](./backend.BasePageInput.md#slug)
 
 #### Defined in
 

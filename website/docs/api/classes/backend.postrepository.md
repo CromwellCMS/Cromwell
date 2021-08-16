@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BaseRepository`](backend.BaseRepository.md)<[`Post`](backend.Post.md)\>
+- [`BaseRepository`](./backend.BaseRepository.md)<[`Post`](./backend.Post.md)\>
 
   ↳ **`PostRepository`**
 
@@ -53,7 +53,7 @@
 
 #### Overrides
 
-[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
+[BaseRepository](./backend.BaseRepository.md).[constructor](./backend.BaseRepository.md#constructor)
 
 #### Defined in
 
@@ -67,7 +67,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[dbType](backend.BaseRepository.md#dbtype)
+[BaseRepository](./backend.BaseRepository.md).[dbType](./backend.BaseRepository.md#dbtype)
 
 #### Defined in
 
@@ -83,7 +83,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `qb` | `SelectQueryBuilder`<[`Post`](backend.Post.md)\> \| `DeleteQueryBuilder`<[`Post`](backend.Post.md)\> |
+| `qb` | `SelectQueryBuilder`<[`Post`](./backend.Post.md)\> \| `DeleteQueryBuilder`<[`Post`](./backend.Post.md)\> |
 | `input` | `TDeleteManyInput` |
 
 #### Returns
@@ -92,7 +92,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+[BaseRepository](./backend.BaseRepository.md).[applyDeleteMany](./backend.BaseRepository.md#applydeletemany)
 
 #### Defined in
 
@@ -109,7 +109,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `qb` | `SelectQueryBuilder`<`TPost`\> |
-| `filterParams?` | [`PostFilterInput`](backend.PostFilterInput.md) |
+| `filterParams?` | [`PostFilterInput`](./backend.PostFilterInput.md) |
 
 #### Returns
 
@@ -123,22 +123,22 @@ ___
 
 ### createEntity
 
-▸ **createEntity**(`input`, `id?`): `Promise`<[`Post`](backend.Post.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`Post`](./backend.Post.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `input` | [`Post`](backend.Post.md) |
+| `input` | [`Post`](./backend.Post.md) |
 | `id?` | `string` |
 
 #### Returns
 
-`Promise`<[`Post`](backend.Post.md)\>
+`Promise`<[`Post`](./backend.Post.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+[BaseRepository](./backend.BaseRepository.md).[createEntity](./backend.BaseRepository.md#createentity)
 
 #### Defined in
 
@@ -148,7 +148,7 @@ ___
 
 ### createPost
 
-▸ **createPost**(`createPost`, `id?`): `Promise`<[`Post`](backend.Post.md)\>
+▸ **createPost**(`createPost`, `id?`): `Promise`<[`Post`](./backend.Post.md)\>
 
 #### Parameters
 
@@ -159,7 +159,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Post`](backend.Post.md)\>
+`Promise`<[`Post`](./backend.Post.md)\>
 
 #### Defined in
 
@@ -183,7 +183,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+[BaseRepository](./backend.BaseRepository.md).[deleteEntity](./backend.BaseRepository.md#deleteentity)
 
 #### Defined in
 
@@ -207,7 +207,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+[BaseRepository](./backend.BaseRepository.md).[deleteMany](./backend.BaseRepository.md#deletemany)
 
 #### Defined in
 
@@ -224,7 +224,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `input` | `TDeleteManyInput` |
-| `filterParams?` | [`PostFilterInput`](backend.PostFilterInput.md) |
+| `filterParams?` | [`PostFilterInput`](./backend.PostFilterInput.md) |
 
 #### Returns
 
@@ -258,15 +258,15 @@ ___
 
 ### getAll
 
-▸ **getAll**(): `Promise`<[`Post`](backend.Post.md)[]\>
+▸ **getAll**(): `Promise`<[`Post`](./backend.Post.md)[]\>
 
 #### Returns
 
-`Promise`<[`Post`](backend.Post.md)[]\>
+`Promise`<[`Post`](./backend.Post.md)[]\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+[BaseRepository](./backend.BaseRepository.md).[getAll](./backend.BaseRepository.md#getall)
 
 #### Defined in
 
@@ -276,7 +276,7 @@ ___
 
 ### getById
 
-▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Post`](backend.Post.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Post`](./backend.Post.md)\>
 
 #### Parameters
 
@@ -287,11 +287,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Post`](backend.Post.md)\>
+`Promise`<`undefined` \| [`Post`](./backend.Post.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+[BaseRepository](./backend.BaseRepository.md).[getById](./backend.BaseRepository.md#getbyid)
 
 #### Defined in
 
@@ -301,7 +301,7 @@ ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Post`](backend.Post.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Post`](./backend.Post.md)\>
 
 #### Parameters
 
@@ -312,11 +312,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Post`](backend.Post.md)\>
+`Promise`<`undefined` \| [`Post`](./backend.Post.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+[BaseRepository](./backend.BaseRepository.md).[getBySlug](./backend.BaseRepository.md#getbyslug)
 
 #### Defined in
 
@@ -332,8 +332,8 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<[`Post`](backend.Post.md)\> |
-| `filterParams?` | [`PostFilterInput`](backend.PostFilterInput.md) |
+| `pagedParams?` | [`PagedParamsInput`](./backend.PagedParamsInput.md)<[`Post`](./backend.Post.md)\> |
+| `filterParams?` | [`PostFilterInput`](./backend.PostFilterInput.md) |
 
 #### Returns
 
@@ -347,21 +347,21 @@ ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Post`](backend.Post.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Post`](./backend.Post.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params?` | `TPagedParams`<[`Post`](backend.Post.md)\> |
+| `params?` | `TPagedParams`<[`Post`](./backend.Post.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`Post`](backend.Post.md)\>\>
+`Promise`<`TPagedList`<[`Post`](./backend.Post.md)\>\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+[BaseRepository](./backend.BaseRepository.md).[getPaged](./backend.BaseRepository.md#getpaged)
 
 #### Defined in
 
@@ -371,7 +371,7 @@ ___
 
 ### getPostById
 
-▸ **getPostById**(`id`): `Promise`<`undefined` \| [`Post`](backend.Post.md)\>
+▸ **getPostById**(`id`): `Promise`<`undefined` \| [`Post`](./backend.Post.md)\>
 
 #### Parameters
 
@@ -381,7 +381,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Post`](backend.Post.md)\>
+`Promise`<`undefined` \| [`Post`](./backend.Post.md)\>
 
 #### Defined in
 
@@ -391,7 +391,7 @@ ___
 
 ### getPostBySlug
 
-▸ **getPostBySlug**(`slug`): `Promise`<`undefined` \| [`Post`](backend.Post.md)\>
+▸ **getPostBySlug**(`slug`): `Promise`<`undefined` \| [`Post`](./backend.Post.md)\>
 
 #### Parameters
 
@@ -401,7 +401,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Post`](backend.Post.md)\>
+`Promise`<`undefined` \| [`Post`](./backend.Post.md)\>
 
 #### Defined in
 
@@ -411,17 +411,17 @@ ___
 
 ### getPosts
 
-▸ **getPosts**(`params`): `Promise`<`TPagedList`<[`Post`](backend.Post.md)\>\>
+▸ **getPosts**(`params`): `Promise`<`TPagedList`<[`Post`](./backend.Post.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params` | `TPagedParams`<[`Post`](backend.Post.md)\> |
+| `params` | `TPagedParams`<[`Post`](./backend.Post.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`Post`](backend.Post.md)\>\>
+`Promise`<`TPagedList`<[`Post`](./backend.Post.md)\>\>
 
 #### Defined in
 
@@ -445,7 +445,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
+[BaseRepository](./backend.BaseRepository.md).[getSqlBoolStr](./backend.BaseRepository.md#getsqlboolstr)
 
 #### Defined in
 
@@ -463,7 +463,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlLike](backend.BaseRepository.md#getsqllike)
+[BaseRepository](./backend.BaseRepository.md).[getSqlLike](./backend.BaseRepository.md#getsqllike)
 
 #### Defined in
 
@@ -473,7 +473,7 @@ ___
 
 ### getTagsOfPost
 
-▸ **getTagsOfPost**(`postId`): `Promise`<`undefined` \| ``null`` \| [`Tag`](backend.Tag.md)[]\>
+▸ **getTagsOfPost**(`postId`): `Promise`<`undefined` \| ``null`` \| [`Tag`](./backend.Tag.md)[]\>
 
 #### Parameters
 
@@ -483,7 +483,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| ``null`` \| [`Tag`](backend.Tag.md)[]\>
+`Promise`<`undefined` \| ``null`` \| [`Tag`](./backend.Tag.md)[]\>
 
 #### Defined in
 
@@ -507,7 +507,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[quote](backend.BaseRepository.md#quote)
+[BaseRepository](./backend.BaseRepository.md).[quote](./backend.BaseRepository.md#quote)
 
 #### Defined in
 
@@ -517,22 +517,22 @@ ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`, `input`): `Promise`<[`Post`](backend.Post.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`Post`](./backend.Post.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `input` | [`Post`](backend.Post.md) |
+| `input` | [`Post`](./backend.Post.md) |
 
 #### Returns
 
-`Promise`<[`Post`](backend.Post.md)\>
+`Promise`<[`Post`](./backend.Post.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+[BaseRepository](./backend.BaseRepository.md).[updateEntity](./backend.BaseRepository.md#updateentity)
 
 #### Defined in
 
@@ -542,7 +542,7 @@ ___
 
 ### updatePost
 
-▸ **updatePost**(`id`, `updatePost`): `Promise`<[`Post`](backend.Post.md)\>
+▸ **updatePost**(`id`, `updatePost`): `Promise`<[`Post`](./backend.Post.md)\>
 
 #### Parameters
 
@@ -553,7 +553,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Post`](backend.Post.md)\>
+`Promise`<[`Post`](./backend.Post.md)\>
 
 #### Defined in
 

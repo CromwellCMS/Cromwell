@@ -17,7 +17,7 @@ const buildScriptPath = resolve(localProjectRootDir, 'build/index.js');
   */
 const scriptName = process.argv[2];
 
-const main = () => {
+const main = async () => {
 
   const utilsDir = getUtilsDir();
   const utilsBuildDir = getUtilsBuildDir();
@@ -41,7 +41,7 @@ const main = () => {
   if (scriptName === 'buildService' || scriptName === 'check') return;
 
   const { startSystem } = require('./build/index');
-  startSystem({
+  await startSystem({
     scriptName: scriptName,
   });
 }

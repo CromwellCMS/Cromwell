@@ -29,7 +29,7 @@
 
 ### elements
 
-• `Optional` **elements**: [`User`](backend.User.md)[]
+• `Optional` **elements**: [`User`](./backend.User.md)[]
 
 #### Implementation of
 
@@ -43,7 +43,7 @@ ___
 
 ### pagedMeta
 
-• `Optional` **pagedMeta**: [`PagedMeta`](backend.PagedMeta.md)
+• `Optional` **pagedMeta**: [`PagedMeta`](./backend.PagedMeta.md)
 
 #### Implementation of
 

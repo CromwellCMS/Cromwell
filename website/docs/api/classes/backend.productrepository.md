@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BaseRepository`](backend.BaseRepository.md)<[`Product`](backend.Product.md)\>
+- [`BaseRepository`](./backend.BaseRepository.md)<[`Product`](./backend.Product.md)\>
 
   ↳ **`ProductRepository`**
 
@@ -59,7 +59,7 @@
 
 #### Overrides
 
-[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
+[BaseRepository](./backend.BaseRepository.md).[constructor](./backend.BaseRepository.md#constructor)
 
 #### Defined in
 
@@ -73,7 +73,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[dbType](backend.BaseRepository.md#dbtype)
+[BaseRepository](./backend.BaseRepository.md).[dbType](./backend.BaseRepository.md#dbtype)
 
 #### Defined in
 
@@ -110,7 +110,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `qb` | `SelectQueryBuilder`<[`Product`](backend.Product.md)\> \| `DeleteQueryBuilder`<[`Product`](backend.Product.md)\> |
+| `qb` | `SelectQueryBuilder`<[`Product`](./backend.Product.md)\> \| `DeleteQueryBuilder`<[`Product`](./backend.Product.md)\> |
 | `input` | `TDeleteManyInput` |
 
 #### Returns
@@ -119,7 +119,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+[BaseRepository](./backend.BaseRepository.md).[applyDeleteMany](./backend.BaseRepository.md#applydeletemany)
 
 #### Defined in
 
@@ -175,8 +175,8 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `qb` | `SelectQueryBuilder`<[`Product`](backend.Product.md)\> \| `DeleteQueryBuilder`<[`Product`](backend.Product.md)\> |
-| `filterParams?` | [`ProductFilterInput`](backend.ProductFilterInput.md) |
+| `qb` | `SelectQueryBuilder`<[`Product`](./backend.Product.md)\> \| `DeleteQueryBuilder`<[`Product`](./backend.Product.md)\> |
+| `filterParams?` | [`ProductFilterInput`](./backend.ProductFilterInput.md) |
 | `categoryId?` | `string` |
 
 #### Returns
@@ -191,22 +191,22 @@ ___
 
 ### createEntity
 
-▸ **createEntity**(`input`, `id?`): `Promise`<[`Product`](backend.Product.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`Product`](./backend.Product.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `input` | [`Product`](backend.Product.md) |
+| `input` | [`Product`](./backend.Product.md) |
 | `id?` | `string` |
 
 #### Returns
 
-`Promise`<[`Product`](backend.Product.md)\>
+`Promise`<[`Product`](./backend.Product.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+[BaseRepository](./backend.BaseRepository.md).[createEntity](./backend.BaseRepository.md#createentity)
 
 #### Defined in
 
@@ -216,7 +216,7 @@ ___
 
 ### createProduct
 
-▸ **createProduct**(`createProduct`, `id?`): `Promise`<[`Product`](backend.Product.md)\>
+▸ **createProduct**(`createProduct`, `id?`): `Promise`<[`Product`](./backend.Product.md)\>
 
 #### Parameters
 
@@ -227,7 +227,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Product`](backend.Product.md)\>
+`Promise`<[`Product`](./backend.Product.md)\>
 
 #### Defined in
 
@@ -251,7 +251,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+[BaseRepository](./backend.BaseRepository.md).[deleteEntity](./backend.BaseRepository.md#deleteentity)
 
 #### Defined in
 
@@ -275,7 +275,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+[BaseRepository](./backend.BaseRepository.md).[deleteMany](./backend.BaseRepository.md#deletemany)
 
 #### Defined in
 
@@ -292,7 +292,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `input` | `TDeleteManyInput` |
-| `filterParams?` | [`ProductFilterInput`](backend.ProductFilterInput.md) |
+| `filterParams?` | [`ProductFilterInput`](./backend.ProductFilterInput.md) |
 
 #### Returns
 
@@ -326,15 +326,15 @@ ___
 
 ### getAll
 
-▸ **getAll**(): `Promise`<[`Product`](backend.Product.md)[]\>
+▸ **getAll**(): `Promise`<[`Product`](./backend.Product.md)[]\>
 
 #### Returns
 
-`Promise`<[`Product`](backend.Product.md)[]\>
+`Promise`<[`Product`](./backend.Product.md)[]\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+[BaseRepository](./backend.BaseRepository.md).[getAll](./backend.BaseRepository.md#getall)
 
 #### Defined in
 
@@ -344,7 +344,7 @@ ___
 
 ### getById
 
-▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Product`](backend.Product.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Product`](./backend.Product.md)\>
 
 #### Parameters
 
@@ -355,11 +355,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Product`](backend.Product.md)\>
+`Promise`<`undefined` \| [`Product`](./backend.Product.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+[BaseRepository](./backend.BaseRepository.md).[getById](./backend.BaseRepository.md#getbyid)
 
 #### Defined in
 
@@ -369,7 +369,7 @@ ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Product`](backend.Product.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Product`](./backend.Product.md)\>
 
 #### Parameters
 
@@ -380,11 +380,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Product`](backend.Product.md)\>
+`Promise`<`undefined` \| [`Product`](./backend.Product.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+[BaseRepository](./backend.BaseRepository.md).[getBySlug](./backend.BaseRepository.md#getbyslug)
 
 #### Defined in
 
@@ -400,8 +400,8 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<`TProduct`\> |
-| `filterParams?` | [`ProductFilterInput`](backend.ProductFilterInput.md) |
+| `pagedParams?` | [`PagedParamsInput`](./backend.PagedParamsInput.md)<`TProduct`\> |
+| `filterParams?` | [`ProductFilterInput`](./backend.ProductFilterInput.md) |
 | `categoryId?` | `string` |
 
 #### Returns
@@ -416,21 +416,21 @@ ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Product`](backend.Product.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Product`](./backend.Product.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params?` | `TPagedParams`<[`Product`](backend.Product.md)\> |
+| `params?` | `TPagedParams`<[`Product`](./backend.Product.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`Product`](backend.Product.md)\>\>
+`Promise`<`TPagedList`<[`Product`](./backend.Product.md)\>\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+[BaseRepository](./backend.BaseRepository.md).[getPaged](./backend.BaseRepository.md#getpaged)
 
 #### Defined in
 
@@ -440,7 +440,7 @@ ___
 
 ### getProductById
 
-▸ **getProductById**(`id`): `Promise`<`undefined` \| [`Product`](backend.Product.md)\>
+▸ **getProductById**(`id`): `Promise`<`undefined` \| [`Product`](./backend.Product.md)\>
 
 #### Parameters
 
@@ -450,7 +450,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Product`](backend.Product.md)\>
+`Promise`<`undefined` \| [`Product`](./backend.Product.md)\>
 
 #### Defined in
 
@@ -460,7 +460,7 @@ ___
 
 ### getProductBySlug
 
-▸ **getProductBySlug**(`slug`): `Promise`<`undefined` \| [`Product`](backend.Product.md)\>
+▸ **getProductBySlug**(`slug`): `Promise`<`undefined` \| [`Product`](./backend.Product.md)\>
 
 #### Parameters
 
@@ -470,7 +470,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Product`](backend.Product.md)\>
+`Promise`<`undefined` \| [`Product`](./backend.Product.md)\>
 
 #### Defined in
 
@@ -576,7 +576,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
+[BaseRepository](./backend.BaseRepository.md).[getSqlBoolStr](./backend.BaseRepository.md#getsqlboolstr)
 
 #### Defined in
 
@@ -594,7 +594,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlLike](backend.BaseRepository.md#getsqllike)
+[BaseRepository](./backend.BaseRepository.md).[getSqlLike](./backend.BaseRepository.md#getsqllike)
 
 #### Defined in
 
@@ -610,7 +610,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `product` | [`Product`](backend.Product.md) |
+| `product` | [`Product`](./backend.Product.md) |
 | `input` | `TProductInput` |
 
 #### Returns
@@ -639,7 +639,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[quote](backend.BaseRepository.md#quote)
+[BaseRepository](./backend.BaseRepository.md).[quote](./backend.BaseRepository.md#quote)
 
 #### Defined in
 
@@ -649,22 +649,22 @@ ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`, `input`): `Promise`<[`Product`](backend.Product.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`Product`](./backend.Product.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `input` | [`Product`](backend.Product.md) |
+| `input` | [`Product`](./backend.Product.md) |
 
 #### Returns
 
-`Promise`<[`Product`](backend.Product.md)\>
+`Promise`<[`Product`](./backend.Product.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+[BaseRepository](./backend.BaseRepository.md).[updateEntity](./backend.BaseRepository.md#updateentity)
 
 #### Defined in
 
@@ -674,7 +674,7 @@ ___
 
 ### updateProduct
 
-▸ **updateProduct**(`id`, `updateProduct`): `Promise`<[`Product`](backend.Product.md)\>
+▸ **updateProduct**(`id`, `updateProduct`): `Promise`<[`Product`](./backend.Product.md)\>
 
 #### Parameters
 
@@ -685,7 +685,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Product`](backend.Product.md)\>
+`Promise`<[`Product`](./backend.Product.md)\>
 
 #### Defined in
 

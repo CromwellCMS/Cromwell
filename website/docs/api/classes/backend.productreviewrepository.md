@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BaseRepository`](backend.BaseRepository.md)<[`ProductReview`](backend.ProductReview.md)\>
+- [`BaseRepository`](./backend.BaseRepository.md)<[`ProductReview`](./backend.ProductReview.md)\>
 
   ↳ **`ProductReviewRepository`**
 
@@ -54,11 +54,11 @@
 
 | Name | Type |
 | :------ | :------ |
-| `EntityClass` | (...`args`: `any`[]) => [`ProductReview`](backend.ProductReview.md) & { `id?`: `string`  } |
+| `EntityClass` | (...`args`: `any`[]) => [`ProductReview`](./backend.ProductReview.md) & { `id?`: `string`  } |
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
+[BaseRepository](./backend.BaseRepository.md).[constructor](./backend.BaseRepository.md#constructor)
 
 #### Defined in
 
@@ -72,7 +72,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[dbType](backend.BaseRepository.md#dbtype)
+[BaseRepository](./backend.BaseRepository.md).[dbType](./backend.BaseRepository.md#dbtype)
 
 #### Defined in
 
@@ -88,7 +88,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `qb` | `SelectQueryBuilder`<[`ProductReview`](backend.ProductReview.md)\> \| `DeleteQueryBuilder`<[`ProductReview`](backend.ProductReview.md)\> |
+| `qb` | `SelectQueryBuilder`<[`ProductReview`](./backend.ProductReview.md)\> \| `DeleteQueryBuilder`<[`ProductReview`](./backend.ProductReview.md)\> |
 | `input` | `TDeleteManyInput` |
 
 #### Returns
@@ -97,7 +97,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+[BaseRepository](./backend.BaseRepository.md).[applyDeleteMany](./backend.BaseRepository.md#applydeletemany)
 
 #### Defined in
 
@@ -114,7 +114,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `qb` | `SelectQueryBuilder`<`TProductReview`\> \| `DeleteQueryBuilder`<`TProductReview`\> |
-| `filterParams?` | [`ProductReviewFilter`](backend.ProductReviewFilter.md) |
+| `filterParams?` | [`ProductReviewFilter`](./backend.ProductReviewFilter.md) |
 
 #### Returns
 
@@ -128,22 +128,22 @@ ___
 
 ### createEntity
 
-▸ **createEntity**(`input`, `id?`): `Promise`<[`ProductReview`](backend.ProductReview.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`ProductReview`](./backend.ProductReview.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `input` | [`ProductReview`](backend.ProductReview.md) |
+| `input` | [`ProductReview`](./backend.ProductReview.md) |
 | `id?` | `string` |
 
 #### Returns
 
-`Promise`<[`ProductReview`](backend.ProductReview.md)\>
+`Promise`<[`ProductReview`](./backend.ProductReview.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+[BaseRepository](./backend.BaseRepository.md).[createEntity](./backend.BaseRepository.md#createentity)
 
 #### Defined in
 
@@ -188,7 +188,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+[BaseRepository](./backend.BaseRepository.md).[deleteEntity](./backend.BaseRepository.md#deleteentity)
 
 #### Defined in
 
@@ -212,7 +212,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+[BaseRepository](./backend.BaseRepository.md).[deleteMany](./backend.BaseRepository.md#deletemany)
 
 #### Defined in
 
@@ -229,7 +229,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `input` | `TDeleteManyInput` |
-| `filterParams?` | [`ProductReviewFilter`](backend.ProductReviewFilter.md) |
+| `filterParams?` | [`ProductReviewFilter`](./backend.ProductReviewFilter.md) |
 
 #### Returns
 
@@ -263,15 +263,15 @@ ___
 
 ### getAll
 
-▸ **getAll**(): `Promise`<[`ProductReview`](backend.ProductReview.md)[]\>
+▸ **getAll**(): `Promise`<[`ProductReview`](./backend.ProductReview.md)[]\>
 
 #### Returns
 
-`Promise`<[`ProductReview`](backend.ProductReview.md)[]\>
+`Promise`<[`ProductReview`](./backend.ProductReview.md)[]\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+[BaseRepository](./backend.BaseRepository.md).[getAll](./backend.BaseRepository.md#getall)
 
 #### Defined in
 
@@ -281,7 +281,7 @@ ___
 
 ### getById
 
-▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`ProductReview`](backend.ProductReview.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`ProductReview`](./backend.ProductReview.md)\>
 
 #### Parameters
 
@@ -292,11 +292,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`ProductReview`](backend.ProductReview.md)\>
+`Promise`<`undefined` \| [`ProductReview`](./backend.ProductReview.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+[BaseRepository](./backend.BaseRepository.md).[getById](./backend.BaseRepository.md#getbyid)
 
 #### Defined in
 
@@ -306,7 +306,7 @@ ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`ProductReview`](backend.ProductReview.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`ProductReview`](./backend.ProductReview.md)\>
 
 #### Parameters
 
@@ -317,11 +317,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`ProductReview`](backend.ProductReview.md)\>
+`Promise`<`undefined` \| [`ProductReview`](./backend.ProductReview.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+[BaseRepository](./backend.BaseRepository.md).[getBySlug](./backend.BaseRepository.md#getbyslug)
 
 #### Defined in
 
@@ -337,8 +337,8 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<`TProductReview`\> |
-| `filterParams?` | [`ProductReviewFilter`](backend.ProductReviewFilter.md) |
+| `pagedParams?` | [`PagedParamsInput`](./backend.PagedParamsInput.md)<`TProductReview`\> |
+| `filterParams?` | [`ProductReviewFilter`](./backend.ProductReviewFilter.md) |
 
 #### Returns
 
@@ -352,21 +352,21 @@ ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`ProductReview`](backend.ProductReview.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`ProductReview`](./backend.ProductReview.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params?` | `TPagedParams`<[`ProductReview`](backend.ProductReview.md)\> |
+| `params?` | `TPagedParams`<[`ProductReview`](./backend.ProductReview.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`ProductReview`](backend.ProductReview.md)\>\>
+`Promise`<`TPagedList`<[`ProductReview`](./backend.ProductReview.md)\>\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+[BaseRepository](./backend.BaseRepository.md).[getPaged](./backend.BaseRepository.md#getpaged)
 
 #### Defined in
 
@@ -376,7 +376,7 @@ ___
 
 ### getProductReview
 
-▸ **getProductReview**(`id`): `Promise`<[`ProductReview`](backend.ProductReview.md)\>
+▸ **getProductReview**(`id`): `Promise`<[`ProductReview`](./backend.ProductReview.md)\>
 
 #### Parameters
 
@@ -386,7 +386,7 @@ ___
 
 #### Returns
 
-`Promise`<[`ProductReview`](backend.ProductReview.md)\>
+`Promise`<[`ProductReview`](./backend.ProductReview.md)\>
 
 #### Defined in
 
@@ -430,7 +430,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
+[BaseRepository](./backend.BaseRepository.md).[getSqlBoolStr](./backend.BaseRepository.md#getsqlboolstr)
 
 #### Defined in
 
@@ -448,7 +448,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlLike](backend.BaseRepository.md#getsqllike)
+[BaseRepository](./backend.BaseRepository.md).[getSqlLike](./backend.BaseRepository.md#getsqllike)
 
 #### Defined in
 
@@ -464,7 +464,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `productReview` | [`ProductReview`](backend.ProductReview.md) |
+| `productReview` | [`ProductReview`](./backend.ProductReview.md) |
 | `input` | `TProductReviewInput` |
 
 #### Returns
@@ -493,7 +493,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[quote](backend.BaseRepository.md#quote)
+[BaseRepository](./backend.BaseRepository.md).[quote](./backend.BaseRepository.md#quote)
 
 #### Defined in
 
@@ -503,22 +503,22 @@ ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`, `input`): `Promise`<[`ProductReview`](backend.ProductReview.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`ProductReview`](./backend.ProductReview.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `input` | [`ProductReview`](backend.ProductReview.md) |
+| `input` | [`ProductReview`](./backend.ProductReview.md) |
 
 #### Returns
 
-`Promise`<[`ProductReview`](backend.ProductReview.md)\>
+`Promise`<[`ProductReview`](./backend.ProductReview.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+[BaseRepository](./backend.BaseRepository.md).[updateEntity](./backend.BaseRepository.md#updateentity)
 
 #### Defined in
 
@@ -528,7 +528,7 @@ ___
 
 ### updateProductReview
 
-▸ **updateProductReview**(`id`, `updateProductReview`): `Promise`<[`ProductReview`](backend.ProductReview.md)\>
+▸ **updateProductReview**(`id`, `updateProductReview`): `Promise`<[`ProductReview`](./backend.ProductReview.md)\>
 
 #### Parameters
 
@@ -539,7 +539,7 @@ ___
 
 #### Returns
 
-`Promise`<[`ProductReview`](backend.ProductReview.md)\>
+`Promise`<[`ProductReview`](./backend.ProductReview.md)\>
 
 #### Defined in
 

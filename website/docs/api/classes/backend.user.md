@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BasePageEntity`](backend.BasePageEntity.md)
+- [`BasePageEntity`](./backend.BasePageEntity.md)
 
   ↳ **`User`**
 
@@ -49,7 +49,7 @@
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[constructor](backend.BasePageEntity.md#constructor)
+[BasePageEntity](./backend.BasePageEntity.md).[constructor](./backend.BasePageEntity.md#constructor)
 
 ## Properties
 
@@ -105,7 +105,7 @@ TUser.createDate
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[createDate](backend.BasePageEntity.md#createdate)
+[BasePageEntity](./backend.BasePageEntity.md).[createDate](./backend.BasePageEntity.md#createdate)
 
 #### Defined in
 
@@ -151,7 +151,7 @@ TUser.id
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[id](backend.BasePageEntity.md#id)
+[BasePageEntity](./backend.BasePageEntity.md).[id](./backend.BasePageEntity.md#id)
 
 #### Defined in
 
@@ -169,7 +169,7 @@ TUser.isEnabled
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[isEnabled](backend.BasePageEntity.md#isenabled)
+[BasePageEntity](./backend.BasePageEntity.md).[isEnabled](./backend.BasePageEntity.md#isenabled)
 
 #### Defined in
 
@@ -187,7 +187,7 @@ TUser.pageDescription
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[pageDescription](backend.BasePageEntity.md#pagedescription)
+[BasePageEntity](./backend.BasePageEntity.md).[pageDescription](./backend.BasePageEntity.md#pagedescription)
 
 #### Defined in
 
@@ -205,7 +205,7 @@ TUser.pageTitle
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[pageTitle](backend.BasePageEntity.md#pagetitle)
+[BasePageEntity](./backend.BasePageEntity.md).[pageTitle](./backend.BasePageEntity.md#pagetitle)
 
 #### Defined in
 
@@ -291,7 +291,7 @@ TUser.slug
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[slug](backend.BasePageEntity.md#slug)
+[BasePageEntity](./backend.BasePageEntity.md).[slug](./backend.BasePageEntity.md#slug)
 
 #### Defined in
 
@@ -309,7 +309,7 @@ TUser.updateDate
 
 #### Inherited from
 
-[BasePageEntity](backend.BasePageEntity.md).[updateDate](backend.BasePageEntity.md#updatedate)
+[BasePageEntity](./backend.BasePageEntity.md).[updateDate](./backend.BasePageEntity.md#updatedate)
 
 #### Defined in
 

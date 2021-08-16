@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BaseRepository`](backend.BaseRepository.md)<[`Order`](backend.Order.md)\>
+- [`BaseRepository`](./backend.BaseRepository.md)<[`Order`](./backend.Order.md)\>
 
   ↳ **`OrderRepository`**
 
@@ -53,7 +53,7 @@
 
 #### Overrides
 
-[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
+[BaseRepository](./backend.BaseRepository.md).[constructor](./backend.BaseRepository.md#constructor)
 
 #### Defined in
 
@@ -67,7 +67,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[dbType](backend.BaseRepository.md#dbtype)
+[BaseRepository](./backend.BaseRepository.md).[dbType](./backend.BaseRepository.md#dbtype)
 
 #### Defined in
 
@@ -83,7 +83,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `qb` | `SelectQueryBuilder`<[`Order`](backend.Order.md)\> \| `DeleteQueryBuilder`<[`Order`](backend.Order.md)\> |
+| `qb` | `SelectQueryBuilder`<[`Order`](./backend.Order.md)\> \| `DeleteQueryBuilder`<[`Order`](./backend.Order.md)\> |
 | `input` | `TDeleteManyInput` |
 
 #### Returns
@@ -92,7 +92,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+[BaseRepository](./backend.BaseRepository.md).[applyDeleteMany](./backend.BaseRepository.md#applydeletemany)
 
 #### Defined in
 
@@ -109,7 +109,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `qb` | `SelectQueryBuilder`<`TOrder`\> \| `DeleteQueryBuilder`<`TOrder`\> |
-| `filterParams?` | [`OrderFilterInput`](backend.OrderFilterInput.md) |
+| `filterParams?` | [`OrderFilterInput`](./backend.OrderFilterInput.md) |
 
 #### Returns
 
@@ -123,22 +123,22 @@ ___
 
 ### createEntity
 
-▸ **createEntity**(`input`, `id?`): `Promise`<[`Order`](backend.Order.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`Order`](./backend.Order.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `input` | [`Order`](backend.Order.md) |
+| `input` | [`Order`](./backend.Order.md) |
 | `id?` | `string` |
 
 #### Returns
 
-`Promise`<[`Order`](backend.Order.md)\>
+`Promise`<[`Order`](./backend.Order.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+[BaseRepository](./backend.BaseRepository.md).[createEntity](./backend.BaseRepository.md#createentity)
 
 #### Defined in
 
@@ -148,7 +148,7 @@ ___
 
 ### createOrder
 
-▸ **createOrder**(`inputData`, `id?`): `Promise`<[`Order`](backend.Order.md)\>
+▸ **createOrder**(`inputData`, `id?`): `Promise`<[`Order`](./backend.Order.md)\>
 
 #### Parameters
 
@@ -159,7 +159,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Order`](backend.Order.md)\>
+`Promise`<[`Order`](./backend.Order.md)\>
 
 #### Defined in
 
@@ -183,7 +183,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+[BaseRepository](./backend.BaseRepository.md).[deleteEntity](./backend.BaseRepository.md#deleteentity)
 
 #### Defined in
 
@@ -207,7 +207,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+[BaseRepository](./backend.BaseRepository.md).[deleteMany](./backend.BaseRepository.md#deletemany)
 
 #### Defined in
 
@@ -224,7 +224,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `input` | `TDeleteManyInput` |
-| `filterParams?` | [`OrderFilterInput`](backend.OrderFilterInput.md) |
+| `filterParams?` | [`OrderFilterInput`](./backend.OrderFilterInput.md) |
 
 #### Returns
 
@@ -258,15 +258,15 @@ ___
 
 ### getAll
 
-▸ **getAll**(): `Promise`<[`Order`](backend.Order.md)[]\>
+▸ **getAll**(): `Promise`<[`Order`](./backend.Order.md)[]\>
 
 #### Returns
 
-`Promise`<[`Order`](backend.Order.md)[]\>
+`Promise`<[`Order`](./backend.Order.md)[]\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+[BaseRepository](./backend.BaseRepository.md).[getAll](./backend.BaseRepository.md#getall)
 
 #### Defined in
 
@@ -276,7 +276,7 @@ ___
 
 ### getById
 
-▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Order`](backend.Order.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Order`](./backend.Order.md)\>
 
 #### Parameters
 
@@ -287,11 +287,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Order`](backend.Order.md)\>
+`Promise`<`undefined` \| [`Order`](./backend.Order.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+[BaseRepository](./backend.BaseRepository.md).[getById](./backend.BaseRepository.md#getbyid)
 
 #### Defined in
 
@@ -301,7 +301,7 @@ ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Order`](backend.Order.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Order`](./backend.Order.md)\>
 
 #### Parameters
 
@@ -312,11 +312,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Order`](backend.Order.md)\>
+`Promise`<`undefined` \| [`Order`](./backend.Order.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+[BaseRepository](./backend.BaseRepository.md).[getBySlug](./backend.BaseRepository.md#getbyslug)
 
 #### Defined in
 
@@ -332,8 +332,8 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<`TOrder`\> |
-| `filterParams?` | [`OrderFilterInput`](backend.OrderFilterInput.md) |
+| `pagedParams?` | [`PagedParamsInput`](./backend.PagedParamsInput.md)<`TOrder`\> |
+| `filterParams?` | [`OrderFilterInput`](./backend.OrderFilterInput.md) |
 
 #### Returns
 
@@ -347,7 +347,7 @@ ___
 
 ### getOrderById
 
-▸ **getOrderById**(`id`): `Promise`<`undefined` \| [`Order`](backend.Order.md)\>
+▸ **getOrderById**(`id`): `Promise`<`undefined` \| [`Order`](./backend.Order.md)\>
 
 #### Parameters
 
@@ -357,7 +357,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Order`](backend.Order.md)\>
+`Promise`<`undefined` \| [`Order`](./backend.Order.md)\>
 
 #### Defined in
 
@@ -367,7 +367,7 @@ ___
 
 ### getOrderBySlug
 
-▸ **getOrderBySlug**(`slug`): `Promise`<`undefined` \| [`Order`](backend.Order.md)\>
+▸ **getOrderBySlug**(`slug`): `Promise`<`undefined` \| [`Order`](./backend.Order.md)\>
 
 #### Parameters
 
@@ -377,7 +377,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Order`](backend.Order.md)\>
+`Promise`<`undefined` \| [`Order`](./backend.Order.md)\>
 
 #### Defined in
 
@@ -387,7 +387,7 @@ ___
 
 ### getOrders
 
-▸ **getOrders**(`params?`): `Promise`<`TPagedList`<[`Order`](backend.Order.md)\>\>
+▸ **getOrders**(`params?`): `Promise`<`TPagedList`<[`Order`](./backend.Order.md)\>\>
 
 #### Parameters
 
@@ -397,7 +397,7 @@ ___
 
 #### Returns
 
-`Promise`<`TPagedList`<[`Order`](backend.Order.md)\>\>
+`Promise`<`TPagedList`<[`Order`](./backend.Order.md)\>\>
 
 #### Defined in
 
@@ -414,7 +414,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `userId` | `string` |
-| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<`TOrder`\> |
+| `pagedParams?` | [`PagedParamsInput`](./backend.PagedParamsInput.md)<`TOrder`\> |
 
 #### Returns
 
@@ -428,21 +428,21 @@ ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Order`](backend.Order.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Order`](./backend.Order.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params?` | `TPagedParams`<[`Order`](backend.Order.md)\> |
+| `params?` | `TPagedParams`<[`Order`](./backend.Order.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`Order`](backend.Order.md)\>\>
+`Promise`<`TPagedList`<[`Order`](./backend.Order.md)\>\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+[BaseRepository](./backend.BaseRepository.md).[getPaged](./backend.BaseRepository.md#getpaged)
 
 #### Defined in
 
@@ -466,7 +466,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
+[BaseRepository](./backend.BaseRepository.md).[getSqlBoolStr](./backend.BaseRepository.md#getsqlboolstr)
 
 #### Defined in
 
@@ -484,7 +484,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlLike](backend.BaseRepository.md#getsqllike)
+[BaseRepository](./backend.BaseRepository.md).[getSqlLike](./backend.BaseRepository.md#getsqllike)
 
 #### Defined in
 
@@ -508,7 +508,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[quote](backend.BaseRepository.md#quote)
+[BaseRepository](./backend.BaseRepository.md).[quote](./backend.BaseRepository.md#quote)
 
 #### Defined in
 
@@ -518,22 +518,22 @@ ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`, `input`): `Promise`<[`Order`](backend.Order.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`Order`](./backend.Order.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `input` | [`Order`](backend.Order.md) |
+| `input` | [`Order`](./backend.Order.md) |
 
 #### Returns
 
-`Promise`<[`Order`](backend.Order.md)\>
+`Promise`<[`Order`](./backend.Order.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+[BaseRepository](./backend.BaseRepository.md).[updateEntity](./backend.BaseRepository.md#updateentity)
 
 #### Defined in
 
@@ -543,7 +543,7 @@ ___
 
 ### updateOrder
 
-▸ **updateOrder**(`id`, `inputData`): `Promise`<`undefined` \| [`Order`](backend.Order.md)\>
+▸ **updateOrder**(`id`, `inputData`): `Promise`<`undefined` \| [`Order`](./backend.Order.md)\>
 
 #### Parameters
 
@@ -554,7 +554,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Order`](backend.Order.md)\>
+`Promise`<`undefined` \| [`Order`](./backend.Order.md)\>
 
 #### Defined in
 

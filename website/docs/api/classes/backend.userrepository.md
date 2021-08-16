@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BaseRepository`](backend.BaseRepository.md)<[`User`](backend.User.md)\>
+- [`BaseRepository`](./backend.BaseRepository.md)<[`User`](./backend.User.md)\>
 
   ↳ **`UserRepository`**
 
@@ -55,7 +55,7 @@
 
 #### Overrides
 
-[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
+[BaseRepository](./backend.BaseRepository.md).[constructor](./backend.BaseRepository.md#constructor)
 
 #### Defined in
 
@@ -69,7 +69,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[dbType](backend.BaseRepository.md#dbtype)
+[BaseRepository](./backend.BaseRepository.md).[dbType](./backend.BaseRepository.md#dbtype)
 
 #### Defined in
 
@@ -85,7 +85,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `qb` | `SelectQueryBuilder`<[`User`](backend.User.md)\> \| `DeleteQueryBuilder`<[`User`](backend.User.md)\> |
+| `qb` | `SelectQueryBuilder`<[`User`](./backend.User.md)\> \| `DeleteQueryBuilder`<[`User`](./backend.User.md)\> |
 | `input` | `TDeleteManyInput` |
 
 #### Returns
@@ -94,7 +94,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+[BaseRepository](./backend.BaseRepository.md).[applyDeleteMany](./backend.BaseRepository.md#applydeletemany)
 
 #### Defined in
 
@@ -111,7 +111,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `qb` | `SelectQueryBuilder`<`TUser`\> \| `DeleteQueryBuilder`<`TUser`\> |
-| `filterParams?` | [`UserFilterInput`](backend.UserFilterInput.md) |
+| `filterParams?` | [`UserFilterInput`](./backend.UserFilterInput.md) |
 
 #### Returns
 
@@ -125,22 +125,22 @@ ___
 
 ### createEntity
 
-▸ **createEntity**(`input`, `id?`): `Promise`<[`User`](backend.User.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`User`](./backend.User.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `input` | [`User`](backend.User.md) |
+| `input` | [`User`](./backend.User.md) |
 | `id?` | `string` |
 
 #### Returns
 
-`Promise`<[`User`](backend.User.md)\>
+`Promise`<[`User`](./backend.User.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+[BaseRepository](./backend.BaseRepository.md).[createEntity](./backend.BaseRepository.md#createentity)
 
 #### Defined in
 
@@ -150,7 +150,7 @@ ___
 
 ### createUser
 
-▸ **createUser**(`createUser`, `id?`): `Promise`<[`User`](backend.User.md)\>
+▸ **createUser**(`createUser`, `id?`): `Promise`<[`User`](./backend.User.md)\>
 
 #### Parameters
 
@@ -161,7 +161,7 @@ ___
 
 #### Returns
 
-`Promise`<[`User`](backend.User.md)\>
+`Promise`<[`User`](./backend.User.md)\>
 
 #### Defined in
 
@@ -185,7 +185,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+[BaseRepository](./backend.BaseRepository.md).[deleteEntity](./backend.BaseRepository.md#deleteentity)
 
 #### Defined in
 
@@ -209,7 +209,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+[BaseRepository](./backend.BaseRepository.md).[deleteMany](./backend.BaseRepository.md#deletemany)
 
 #### Defined in
 
@@ -226,7 +226,7 @@ ___
 | Name | Type |
 | :------ | :------ |
 | `input` | `TDeleteManyInput` |
-| `filterParams?` | [`UserFilterInput`](backend.UserFilterInput.md) |
+| `filterParams?` | [`UserFilterInput`](./backend.UserFilterInput.md) |
 
 #### Returns
 
@@ -260,15 +260,15 @@ ___
 
 ### getAll
 
-▸ **getAll**(): `Promise`<[`User`](backend.User.md)[]\>
+▸ **getAll**(): `Promise`<[`User`](./backend.User.md)[]\>
 
 #### Returns
 
-`Promise`<[`User`](backend.User.md)[]\>
+`Promise`<[`User`](./backend.User.md)[]\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+[BaseRepository](./backend.BaseRepository.md).[getAll](./backend.BaseRepository.md#getall)
 
 #### Defined in
 
@@ -278,7 +278,7 @@ ___
 
 ### getById
 
-▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`User`](backend.User.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`User`](./backend.User.md)\>
 
 #### Parameters
 
@@ -289,11 +289,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`User`](backend.User.md)\>
+`Promise`<`undefined` \| [`User`](./backend.User.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+[BaseRepository](./backend.BaseRepository.md).[getById](./backend.BaseRepository.md#getbyid)
 
 #### Defined in
 
@@ -303,7 +303,7 @@ ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`User`](backend.User.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`User`](./backend.User.md)\>
 
 #### Parameters
 
@@ -314,11 +314,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`User`](backend.User.md)\>
+`Promise`<`undefined` \| [`User`](./backend.User.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+[BaseRepository](./backend.BaseRepository.md).[getBySlug](./backend.BaseRepository.md#getbyslug)
 
 #### Defined in
 
@@ -334,8 +334,8 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `pagedParams?` | [`PagedParamsInput`](backend.PagedParamsInput.md)<`TUser`\> |
-| `filterParams?` | [`UserFilterInput`](backend.UserFilterInput.md) |
+| `pagedParams?` | [`PagedParamsInput`](./backend.PagedParamsInput.md)<`TUser`\> |
+| `filterParams?` | [`UserFilterInput`](./backend.UserFilterInput.md) |
 
 #### Returns
 
@@ -349,21 +349,21 @@ ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`User`](backend.User.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`User`](./backend.User.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params?` | `TPagedParams`<[`User`](backend.User.md)\> |
+| `params?` | `TPagedParams`<[`User`](./backend.User.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`User`](backend.User.md)\>\>
+`Promise`<`TPagedList`<[`User`](./backend.User.md)\>\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+[BaseRepository](./backend.BaseRepository.md).[getPaged](./backend.BaseRepository.md#getpaged)
 
 #### Defined in
 
@@ -387,7 +387,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
+[BaseRepository](./backend.BaseRepository.md).[getSqlBoolStr](./backend.BaseRepository.md#getsqlboolstr)
 
 #### Defined in
 
@@ -405,7 +405,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlLike](backend.BaseRepository.md#getsqllike)
+[BaseRepository](./backend.BaseRepository.md).[getSqlLike](./backend.BaseRepository.md#getsqllike)
 
 #### Defined in
 
@@ -415,7 +415,7 @@ ___
 
 ### getUserByEmail
 
-▸ **getUserByEmail**(`email`): `Promise`<`undefined` \| [`User`](backend.User.md)\>
+▸ **getUserByEmail**(`email`): `Promise`<`undefined` \| [`User`](./backend.User.md)\>
 
 #### Parameters
 
@@ -425,7 +425,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`User`](backend.User.md)\>
+`Promise`<`undefined` \| [`User`](./backend.User.md)\>
 
 #### Defined in
 
@@ -435,7 +435,7 @@ ___
 
 ### getUserById
 
-▸ **getUserById**(`id`): `Promise`<`undefined` \| [`User`](backend.User.md)\>
+▸ **getUserById**(`id`): `Promise`<`undefined` \| [`User`](./backend.User.md)\>
 
 #### Parameters
 
@@ -445,7 +445,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`User`](backend.User.md)\>
+`Promise`<`undefined` \| [`User`](./backend.User.md)\>
 
 #### Defined in
 
@@ -455,7 +455,7 @@ ___
 
 ### getUserBySlug
 
-▸ **getUserBySlug**(`slug`): `Promise`<`undefined` \| [`User`](backend.User.md)\>
+▸ **getUserBySlug**(`slug`): `Promise`<`undefined` \| [`User`](./backend.User.md)\>
 
 #### Parameters
 
@@ -465,7 +465,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`User`](backend.User.md)\>
+`Promise`<`undefined` \| [`User`](./backend.User.md)\>
 
 #### Defined in
 
@@ -475,17 +475,17 @@ ___
 
 ### getUsers
 
-▸ **getUsers**(`params?`): `Promise`<`TPagedList`<[`User`](backend.User.md)\>\>
+▸ **getUsers**(`params?`): `Promise`<`TPagedList`<[`User`](./backend.User.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params?` | `TPagedParams`<[`User`](backend.User.md)\> |
+| `params?` | `TPagedParams`<[`User`](./backend.User.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`User`](backend.User.md)\>\>
+`Promise`<`TPagedList`<[`User`](./backend.User.md)\>\>
 
 #### Defined in
 
@@ -501,7 +501,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `user` | [`User`](backend.User.md) |
+| `user` | [`User`](./backend.User.md) |
 | `userInput` | `TUpdateUser` |
 
 #### Returns
@@ -550,7 +550,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[quote](backend.BaseRepository.md#quote)
+[BaseRepository](./backend.BaseRepository.md).[quote](./backend.BaseRepository.md#quote)
 
 #### Defined in
 
@@ -560,22 +560,22 @@ ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`, `input`): `Promise`<[`User`](backend.User.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`User`](./backend.User.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `input` | [`User`](backend.User.md) |
+| `input` | [`User`](./backend.User.md) |
 
 #### Returns
 
-`Promise`<[`User`](backend.User.md)\>
+`Promise`<[`User`](./backend.User.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+[BaseRepository](./backend.BaseRepository.md).[updateEntity](./backend.BaseRepository.md#updateentity)
 
 #### Defined in
 
@@ -585,7 +585,7 @@ ___
 
 ### updateUser
 
-▸ **updateUser**(`id`, `updateUser`): `Promise`<[`User`](backend.User.md)\>
+▸ **updateUser**(`id`, `updateUser`): `Promise`<[`User`](./backend.User.md)\>
 
 #### Parameters
 
@@ -596,7 +596,7 @@ ___
 
 #### Returns
 
-`Promise`<[`User`](backend.User.md)\>
+`Promise`<[`User`](./backend.User.md)\>
 
 #### Defined in
 

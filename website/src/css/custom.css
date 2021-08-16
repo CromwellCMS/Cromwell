@@ -44,8 +44,8 @@ html[data-theme="dark"] .menu__link--active {
 }
 
 .navbar__logo {
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
   margin: 0 20px 0 10px;
 }
 
@@ -62,5 +62,6 @@ html[data-theme="dark"] .menu__link--active {
 }
 
 .footer {
-  background: linear-gradient(144deg, #1b004b, #34002e);
+  /* background: linear-gradient(144deg, #1b004b, #34002e); */
+  background: linear-gradient(144deg, #240063, #4b0042);
 }
