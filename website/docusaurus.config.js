@@ -6,7 +6,7 @@ module.exports = {
   baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/logo_icon_white.png',
+  favicon: 'img/icon_small.png',
   organizationName: 'Cromwell CMS',
   projectName: 'Cromwell CMS',
   themeConfig: {
@@ -30,8 +30,8 @@ module.exports = {
       title: 'Cromwell CMS',
       logo: {
         alt: 'Cromwell CMS Logo',
-        src: 'img/logo_icon.png',
-        srcDark: 'img/logo_icon_white.png',
+        src: 'img/icon_small.png',
+        srcDark: 'img/icon_small.png',
       },
       items: [
         {
@@ -109,6 +109,10 @@ module.exports = {
             {
               label: 'Funding',
               href: '/funding'
+            },
+            {
+              label: 'Attribution',
+              href: '/attribution'
             }
           ],
         },

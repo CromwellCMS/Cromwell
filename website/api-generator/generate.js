@@ -6,13 +6,15 @@ const glob = require('glob');
 
 
 const generate = async () => {
-    spawnSync(`cd ${normalizePath(resolve(__dirname, '../../'))} && npx typedoc --options website/api-generator/typedoc.json`, { shell: true, stdio: 'inherit' });
+    spawnSync(`cd ${normalizePath(resolve(__dirname, '../../'))} && npx typedoc --options website/api-generator/typedoc.json`,
+        { shell: true, stdio: 'inherit' });
 
-    const apiDir = resolve(__dirname, '../docs/api')
+    const apiDir = resolve(__dirname, '../docs/api');
     if (!fs.pathExistsSync(apiDir)) throw new Error('Failed to generate API');
 
     const files = await new Promise(done => {
         glob(`${normalizePath(apiDir)}/**/*.md`, (err, files) => {
+            if (err) console.error(err);
             done(files);
         });
     })
@@ -22,8 +24,8 @@ const generate = async () => {
         const content = fs.readFileSync(file).toString()
             // Remove links in files to themselves
             .replace(new RegExp(`\\]\\(${fileName}\\)`, 'g'), ']')
-            // Same as before but for links with anchors we want to leave only anchors
-            // and remove file name
+            // Same as before but for links with anchors, we want to leave 
+            // only anchors and remove file name
             .replace(new RegExp(`\\]\\(${fileName}`, 'g'), '](')
 
         // Make links to other files relative by adding './'

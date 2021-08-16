@@ -6,7 +6,7 @@ sidebar_position: 2
 
 There are multiple ways to install and run Cromwell CMS
 
-## 1. Docker single container
+## 1. Docker run container
 For most use-cases the recommended way is to to run the CMS inside a Docker container. Our image goes with already installed MariaDB and Nginx, so you only need to install Docker.
 [You can install Docker on Windows, Linux or other supported platform](https://docs.docker.com/engine/install/)
 
