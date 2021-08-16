@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BasePageInput`](backend.BasePageInput.md)
+- [`BasePageInput`](./backend.BasePageInput.md)
 
   ↳ **`PluginInput`**
 
@@ -42,7 +42,7 @@
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[constructor](backend.BasePageInput.md#constructor)
+[BasePageInput](./backend.BasePageInput.md).[constructor](./backend.BasePageInput.md#constructor)
 
 ## Properties
 
@@ -84,7 +84,7 @@ TPluginEntityInput.isEnabled
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[isEnabled](backend.BasePageInput.md#isenabled)
+[BasePageInput](./backend.BasePageInput.md).[isEnabled](./backend.BasePageInput.md#isenabled)
 
 #### Defined in
 
@@ -144,7 +144,7 @@ TPluginEntityInput.pageDescription
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[pageDescription](backend.BasePageInput.md#pagedescription)
+[BasePageInput](./backend.BasePageInput.md).[pageDescription](./backend.BasePageInput.md#pagedescription)
 
 #### Defined in
 
@@ -162,7 +162,7 @@ TPluginEntityInput.pageTitle
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[pageTitle](backend.BasePageInput.md#pagetitle)
+[BasePageInput](./backend.BasePageInput.md).[pageTitle](./backend.BasePageInput.md#pagetitle)
 
 #### Defined in
 
@@ -194,7 +194,7 @@ TPluginEntityInput.slug
 
 #### Inherited from
 
-[BasePageInput](backend.BasePageInput.md).[slug](backend.BasePageInput.md#slug)
+[BasePageInput](./backend.BasePageInput.md).[slug](./backend.BasePageInput.md#slug)
 
 #### Defined in
 

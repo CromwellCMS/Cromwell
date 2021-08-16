@@ -1,4 +1,4 @@
-@cromwell/root / [Exports](modules.md)
+@cromwell/root / [Exports](./modules.md)
 
 ## CMS Development & Installation
 

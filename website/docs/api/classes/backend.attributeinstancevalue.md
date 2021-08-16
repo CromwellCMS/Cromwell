@@ -29,7 +29,7 @@
 
 ### productVariant
 
-• `Optional` **productVariant**: [`AttributeProductVariant`](backend.AttributeProductVariant.md)
+• `Optional` **productVariant**: [`AttributeProductVariant`](./backend.AttributeProductVariant.md)
 
 #### Implementation of
 

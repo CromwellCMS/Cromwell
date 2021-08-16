@@ -20,10 +20,22 @@ const generate = async () => {
     for (const file of files) {
         const fileName = file.split('/').pop();
         const content = fs.readFileSync(file).toString()
+            // Remove links in files to themselves
             .replace(new RegExp(`\\]\\(${fileName}\\)`, 'g'), ']')
-            .replace(new RegExp(`\\]\\(${fileName}`, 'g'), '](');
+            // Same as before but for links with anchors we want to leave only anchors
+            // and remove file name
+            .replace(new RegExp(`\\]\\(${fileName}`, 'g'), '](')
 
-        fs.outputFileSync(file, content);
+        // Make links to other files relative by adding './'
+        const chunks = content.split('](');
+        if (content.length > 1) {
+            for (let i = 1; i < chunks.length; i++) {
+                if (!/^\w/.test(chunks[i])) continue;
+                if (chunks[i].startsWith('http')) continue;
+                chunks[i] = './' + chunks[i];
+            }
+        }
+        fs.outputFileSync(file, chunks.join(']('));
     }
 }
 

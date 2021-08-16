@@ -6,7 +6,7 @@
 
 ## Hierarchy
 
-- [`BaseRepository`](backend.BaseRepository.md)<[`Tag`](backend.Tag.md)\>
+- [`BaseRepository`](./backend.BaseRepository.md)<[`Tag`](./backend.Tag.md)\>
 
   ↳ **`TagRepository`**
 
@@ -50,7 +50,7 @@
 
 #### Overrides
 
-[BaseRepository](backend.BaseRepository.md).[constructor](backend.BaseRepository.md#constructor)
+[BaseRepository](./backend.BaseRepository.md).[constructor](./backend.BaseRepository.md#constructor)
 
 #### Defined in
 
@@ -64,7 +64,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[dbType](backend.BaseRepository.md#dbtype)
+[BaseRepository](./backend.BaseRepository.md).[dbType](./backend.BaseRepository.md#dbtype)
 
 #### Defined in
 
@@ -80,7 +80,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `qb` | `SelectQueryBuilder`<[`Tag`](backend.Tag.md)\> \| `DeleteQueryBuilder`<[`Tag`](backend.Tag.md)\> |
+| `qb` | `SelectQueryBuilder`<[`Tag`](./backend.Tag.md)\> \| `DeleteQueryBuilder`<[`Tag`](./backend.Tag.md)\> |
 | `input` | `TDeleteManyInput` |
 
 #### Returns
@@ -89,7 +89,7 @@
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[applyDeleteMany](backend.BaseRepository.md#applydeletemany)
+[BaseRepository](./backend.BaseRepository.md).[applyDeleteMany](./backend.BaseRepository.md#applydeletemany)
 
 #### Defined in
 
@@ -99,22 +99,22 @@ ___
 
 ### createEntity
 
-▸ **createEntity**(`input`, `id?`): `Promise`<[`Tag`](backend.Tag.md)\>
+▸ **createEntity**(`input`, `id?`): `Promise`<[`Tag`](./backend.Tag.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `input` | [`Tag`](backend.Tag.md) |
+| `input` | [`Tag`](./backend.Tag.md) |
 | `id?` | `string` |
 
 #### Returns
 
-`Promise`<[`Tag`](backend.Tag.md)\>
+`Promise`<[`Tag`](./backend.Tag.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[createEntity](backend.BaseRepository.md#createentity)
+[BaseRepository](./backend.BaseRepository.md).[createEntity](./backend.BaseRepository.md#createentity)
 
 #### Defined in
 
@@ -124,7 +124,7 @@ ___
 
 ### createTag
 
-▸ **createTag**(`inputData`, `id?`): `Promise`<[`Tag`](backend.Tag.md)\>
+▸ **createTag**(`inputData`, `id?`): `Promise`<[`Tag`](./backend.Tag.md)\>
 
 #### Parameters
 
@@ -135,7 +135,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Tag`](backend.Tag.md)\>
+`Promise`<[`Tag`](./backend.Tag.md)\>
 
 #### Defined in
 
@@ -159,7 +159,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteEntity](backend.BaseRepository.md#deleteentity)
+[BaseRepository](./backend.BaseRepository.md).[deleteEntity](./backend.BaseRepository.md#deleteentity)
 
 #### Defined in
 
@@ -183,7 +183,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[deleteMany](backend.BaseRepository.md#deletemany)
+[BaseRepository](./backend.BaseRepository.md).[deleteMany](./backend.BaseRepository.md#deletemany)
 
 #### Defined in
 
@@ -213,15 +213,15 @@ ___
 
 ### getAll
 
-▸ **getAll**(): `Promise`<[`Tag`](backend.Tag.md)[]\>
+▸ **getAll**(): `Promise`<[`Tag`](./backend.Tag.md)[]\>
 
 #### Returns
 
-`Promise`<[`Tag`](backend.Tag.md)[]\>
+`Promise`<[`Tag`](./backend.Tag.md)[]\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getAll](backend.BaseRepository.md#getall)
+[BaseRepository](./backend.BaseRepository.md).[getAll](./backend.BaseRepository.md#getall)
 
 #### Defined in
 
@@ -231,7 +231,7 @@ ___
 
 ### getById
 
-▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
+▸ **getById**(`id`, `relations?`): `Promise`<`undefined` \| [`Tag`](./backend.Tag.md)\>
 
 #### Parameters
 
@@ -242,11 +242,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
+`Promise`<`undefined` \| [`Tag`](./backend.Tag.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getById](backend.BaseRepository.md#getbyid)
+[BaseRepository](./backend.BaseRepository.md).[getById](./backend.BaseRepository.md#getbyid)
 
 #### Defined in
 
@@ -256,7 +256,7 @@ ___
 
 ### getBySlug
 
-▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
+▸ **getBySlug**(`slug`, `relations?`): `Promise`<`undefined` \| [`Tag`](./backend.Tag.md)\>
 
 #### Parameters
 
@@ -267,11 +267,11 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
+`Promise`<`undefined` \| [`Tag`](./backend.Tag.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getBySlug](backend.BaseRepository.md#getbyslug)
+[BaseRepository](./backend.BaseRepository.md).[getBySlug](./backend.BaseRepository.md#getbyslug)
 
 #### Defined in
 
@@ -281,21 +281,21 @@ ___
 
 ### getPaged
 
-▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Tag`](backend.Tag.md)\>\>
+▸ **getPaged**(`params?`): `Promise`<`TPagedList`<[`Tag`](./backend.Tag.md)\>\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
-| `params?` | `TPagedParams`<[`Tag`](backend.Tag.md)\> |
+| `params?` | `TPagedParams`<[`Tag`](./backend.Tag.md)\> |
 
 #### Returns
 
-`Promise`<`TPagedList`<[`Tag`](backend.Tag.md)\>\>
+`Promise`<`TPagedList`<[`Tag`](./backend.Tag.md)\>\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getPaged](backend.BaseRepository.md#getpaged)
+[BaseRepository](./backend.BaseRepository.md).[getPaged](./backend.BaseRepository.md#getpaged)
 
 #### Defined in
 
@@ -319,7 +319,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlBoolStr](backend.BaseRepository.md#getsqlboolstr)
+[BaseRepository](./backend.BaseRepository.md).[getSqlBoolStr](./backend.BaseRepository.md#getsqlboolstr)
 
 #### Defined in
 
@@ -337,7 +337,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[getSqlLike](backend.BaseRepository.md#getsqllike)
+[BaseRepository](./backend.BaseRepository.md).[getSqlLike](./backend.BaseRepository.md#getsqllike)
 
 #### Defined in
 
@@ -347,7 +347,7 @@ ___
 
 ### getTagById
 
-▸ **getTagById**(`id`): `Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
+▸ **getTagById**(`id`): `Promise`<`undefined` \| [`Tag`](./backend.Tag.md)\>
 
 #### Parameters
 
@@ -357,7 +357,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
+`Promise`<`undefined` \| [`Tag`](./backend.Tag.md)\>
 
 #### Defined in
 
@@ -367,7 +367,7 @@ ___
 
 ### getTagBySlug
 
-▸ **getTagBySlug**(`slug`): `Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
+▸ **getTagBySlug**(`slug`): `Promise`<`undefined` \| [`Tag`](./backend.Tag.md)\>
 
 #### Parameters
 
@@ -377,7 +377,7 @@ ___
 
 #### Returns
 
-`Promise`<`undefined` \| [`Tag`](backend.Tag.md)\>
+`Promise`<`undefined` \| [`Tag`](./backend.Tag.md)\>
 
 #### Defined in
 
@@ -387,7 +387,7 @@ ___
 
 ### getTags
 
-▸ **getTags**(`params?`): `Promise`<`TPagedList`<[`Tag`](backend.Tag.md)\>\>
+▸ **getTags**(`params?`): `Promise`<`TPagedList`<[`Tag`](./backend.Tag.md)\>\>
 
 #### Parameters
 
@@ -397,7 +397,7 @@ ___
 
 #### Returns
 
-`Promise`<`TPagedList`<[`Tag`](backend.Tag.md)\>\>
+`Promise`<`TPagedList`<[`Tag`](./backend.Tag.md)\>\>
 
 #### Defined in
 
@@ -407,7 +407,7 @@ ___
 
 ### getTagsByIds
 
-▸ **getTagsByIds**(`ids`): `Promise`<[`Tag`](backend.Tag.md)[]\>
+▸ **getTagsByIds**(`ids`): `Promise`<[`Tag`](./backend.Tag.md)[]\>
 
 #### Parameters
 
@@ -417,7 +417,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Tag`](backend.Tag.md)[]\>
+`Promise`<[`Tag`](./backend.Tag.md)[]\>
 
 #### Defined in
 
@@ -441,7 +441,7 @@ ___
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[quote](backend.BaseRepository.md#quote)
+[BaseRepository](./backend.BaseRepository.md).[quote](./backend.BaseRepository.md#quote)
 
 #### Defined in
 
@@ -451,22 +451,22 @@ ___
 
 ### updateEntity
 
-▸ **updateEntity**(`id`, `input`): `Promise`<[`Tag`](backend.Tag.md)\>
+▸ **updateEntity**(`id`, `input`): `Promise`<[`Tag`](./backend.Tag.md)\>
 
 #### Parameters
 
 | Name | Type |
 | :------ | :------ |
 | `id` | `string` |
-| `input` | [`Tag`](backend.Tag.md) |
+| `input` | [`Tag`](./backend.Tag.md) |
 
 #### Returns
 
-`Promise`<[`Tag`](backend.Tag.md)\>
+`Promise`<[`Tag`](./backend.Tag.md)\>
 
 #### Inherited from
 
-[BaseRepository](backend.BaseRepository.md).[updateEntity](backend.BaseRepository.md#updateentity)
+[BaseRepository](./backend.BaseRepository.md).[updateEntity](./backend.BaseRepository.md#updateentity)
 
 #### Defined in
 
@@ -476,7 +476,7 @@ ___
 
 ### updateTag
 
-▸ **updateTag**(`id`, `inputData`): `Promise`<[`Tag`](backend.Tag.md)\>
+▸ **updateTag**(`id`, `inputData`): `Promise`<[`Tag`](./backend.Tag.md)\>
 
 #### Parameters
 
@@ -487,7 +487,7 @@ ___
 
 #### Returns
 
-`Promise`<[`Tag`](backend.Tag.md)\>
+`Promise`<[`Tag`](./backend.Tag.md)\>
 
 #### Defined in
 

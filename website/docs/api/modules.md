@@ -1,4 +1,4 @@
-[@cromwell/root](README.md) / Exports
+[@cromwell/root](./README.md) / Exports
 
 # @cromwell/root
 
@@ -6,6 +6,6 @@
 
 ### Modules
 
-- [backend](modules/backend.md)
-- [common](modules/common.md)
-- [frontend](modules/frontend.md)
+- [backend](./modules/backend.md)
+- [common](./modules/common.md)
+- [frontend](./modules/frontend.md)

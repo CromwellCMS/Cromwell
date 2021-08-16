@@ -31,7 +31,7 @@
 
 ### attributes
 
-• `Optional` **attributes**: [`ProductFilterAttributes`](backend.ProductFilterAttributes.md)[]
+• `Optional` **attributes**: [`ProductFilterAttributes`](./backend.ProductFilterAttributes.md)[]
 
 #### Implementation of
 

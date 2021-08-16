@@ -8,29 +8,29 @@
 
 - **`BasePageInput`**
 
-  ↳ [`AttributeInput`](backend.AttributeInput.md)
+  ↳ [`AttributeInput`](./backend.AttributeInput.md)
 
-  ↳ [`OrderInput`](backend.OrderInput.md)
+  ↳ [`OrderInput`](./backend.OrderInput.md)
 
-  ↳ [`PluginInput`](backend.PluginInput.md)
+  ↳ [`PluginInput`](./backend.PluginInput.md)
 
-  ↳ [`CreatePost`](backend.CreatePost.md)
+  ↳ [`CreatePost`](./backend.CreatePost.md)
 
-  ↳ [`UpdatePost`](backend.UpdatePost.md)
+  ↳ [`UpdatePost`](./backend.UpdatePost.md)
 
-  ↳ [`CreateProductCategory`](backend.CreateProductCategory.md)
+  ↳ [`CreateProductCategory`](./backend.CreateProductCategory.md)
 
-  ↳ [`UpdateProductCategory`](backend.UpdateProductCategory.md)
+  ↳ [`UpdateProductCategory`](./backend.UpdateProductCategory.md)
 
-  ↳ [`CreateProduct`](backend.CreateProduct.md)
+  ↳ [`CreateProduct`](./backend.CreateProduct.md)
 
-  ↳ [`UpdateProduct`](backend.UpdateProduct.md)
+  ↳ [`UpdateProduct`](./backend.UpdateProduct.md)
 
-  ↳ [`InputTag`](backend.InputTag.md)
+  ↳ [`InputTag`](./backend.InputTag.md)
 
-  ↳ [`CreateUser`](backend.CreateUser.md)
+  ↳ [`CreateUser`](./backend.CreateUser.md)
 
-  ↳ [`UpdateUser`](backend.UpdateUser.md)
+  ↳ [`UpdateUser`](./backend.UpdateUser.md)
 
 ## Implements
 

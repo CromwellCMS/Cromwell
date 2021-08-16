@@ -17,23 +17,23 @@
 
   ↳ **`BaseRepository`**
 
-  ↳↳ [`AttributeRepository`](backend.AttributeRepository.md)
+  ↳↳ [`AttributeRepository`](./backend.AttributeRepository.md)
 
-  ↳↳ [`OrderRepository`](backend.OrderRepository.md)
+  ↳↳ [`OrderRepository`](./backend.OrderRepository.md)
 
-  ↳↳ [`PageStatsRepository`](backend.PageStatsRepository.md)
+  ↳↳ [`PageStatsRepository`](./backend.PageStatsRepository.md)
 
-  ↳↳ [`PluginRepository`](backend.PluginRepository.md)
+  ↳↳ [`PluginRepository`](./backend.PluginRepository.md)
 
-  ↳↳ [`PostRepository`](backend.PostRepository.md)
+  ↳↳ [`PostRepository`](./backend.PostRepository.md)
 
-  ↳↳ [`ProductReviewRepository`](backend.ProductReviewRepository.md)
+  ↳↳ [`ProductReviewRepository`](./backend.ProductReviewRepository.md)
 
-  ↳↳ [`ProductRepository`](backend.ProductRepository.md)
+  ↳↳ [`ProductRepository`](./backend.ProductRepository.md)
 
-  ↳↳ [`TagRepository`](backend.TagRepository.md)
+  ↳↳ [`TagRepository`](./backend.TagRepository.md)
 
-  ↳↳ [`UserRepository`](backend.UserRepository.md)
+  ↳↳ [`UserRepository`](./backend.UserRepository.md)
 
 ## Table of contents
 
