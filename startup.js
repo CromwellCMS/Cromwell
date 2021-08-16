@@ -94,7 +94,7 @@ const fs = require('fs');
     }
 
     if (scriptName === 'build') {
-        spawn(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
+        spawnSync(`node ${managerStartupPath} ${scriptName}`, { shell: true, cwd: projectRootDir, stdio: 'inherit' });
     }
 
     // Check plugins

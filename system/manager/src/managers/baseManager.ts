@@ -118,8 +118,8 @@ export const startSystem = async (options: TStartOptions) => {
 
     if (scriptName === 'build') {
         await startServer('build');
-        await startAdminPanel('build');
         await startRenderer('buildService');
+        await startAdminPanel('build');
         return;
     }
 
