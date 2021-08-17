@@ -49,7 +49,7 @@ const start = async () => {
     const adminPanelStaticDir = normalizePath(getAdminPanelStaticDir())
     if (!fs.existsSync(webTempDir)) await fs.ensureDir(webTempDir);
 
-    // Link public dir in project root to admin panel temp public dir for Express.js server
+    // Link public dir in project root to admin panel temp public dir for Fastify web server
     if (!fs.existsSync(publicDir) && fs.existsSync(projectPublicDir)) {
         await symlinkDir(projectPublicDir, publicDir)
     }

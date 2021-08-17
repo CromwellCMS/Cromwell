@@ -67,10 +67,6 @@ import * as react_resize_detector_a4lv from 'react-resize-detector';
 importer.modules['react-resize-detector'] = interopDefault(react_resize_detector_a4lv, 'default');
 importer.importStatuses['react-resize-detector'] = 'default';
 
-import * as react_swipeable_views_q62k from 'react-swipeable-views';
-importer.modules['react-swipeable-views'] = interopDefault(react_swipeable_views_q62k, 'default');
-importer.importStatuses['react-swipeable-views'] = 'default';
-
 import * as _material_ui_core_26sp from '@material-ui/core';
 importer.modules['@material-ui/core'] = interopDefault(_material_ui_core_26sp, 'default');
 importer.importStatuses['@material-ui/core'] = 'default';

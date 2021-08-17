@@ -1,5 +1,4 @@
 import React from 'react';
-import clsx from 'clsx';
 import Layout from '@theme/Layout';
 import Link from '@docusaurus/Link';
 import { Button } from '@material-ui/core'
@@ -15,7 +14,7 @@ export default function Home() {
       description="Description will go into a meta tag in <head />">
       <div className={styles.content}>
         <div className={styles.moon}></div>
-        <h1 className={styles.header}>romwell CMS</h1>
+        <h1 className={styles.header}><span style={{ display: 'none' }}>C</span><span>romwell CMS</span></h1>
         <p className={styles.subheader}>It&apos;s time for everyone to make blazing-fast websites
           <WhatshotIcon className={styles.fireIcon} />
         </p>
@@ -62,6 +61,7 @@ export default function Home() {
               minWidth: '120px',
               height: '120px',
               marginLeft: '-50px',
+              backgroundSize: '90%',
               backgroundImage: 'url(../../static/img/seo.svg)',
             }}></div>
             <div>
@@ -81,11 +81,9 @@ export default function Home() {
           <div className={styles.feature}>
             <div className={styles.featureImg} style={{
               backgroundImage: 'url(../../static/img/rocket.svg)',
-              minWidth: '90px',
-              height: '90px',
             }}></div>
             <div>
-              <p className={styles.featureTitle}>Node.js. </p>
+              <p className={styles.featureTitle}>Node.js.</p>
               <p>Designed to be a better version of PHP web servers,
                 it greatly outperforms backend of well known CMS.</p>
             </div>
@@ -102,6 +100,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </Layout>
+    </Layout >
   );
 }
