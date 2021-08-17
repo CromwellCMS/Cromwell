@@ -37,12 +37,11 @@ jest.mock('@cromwell/core-frontend', () => {
 });
 
 jest.mock('countup.js', () => {
+    class CountUp {
+        start = jest.fn().mockImplementation(() => undefined);
+    }
     return {
-        CountUp: () => {
-            return {
-                start: jest.fn().mockImplementation(() => undefined),
-            }
-        },
+        CountUp: CountUp,
     }
 });
 

@@ -101,7 +101,10 @@ export default function Sidebar() {
         <div className={styles.sidebarContent}>
             <div className={styles.sidebarTop}>
                 <div className={styles.sidebarHeader}>
-                    <img src="/admin/static/icon_small.png" alt="logo" className={styles.logo} />
+                    <div
+                        className={styles.logo}
+                        style={{ backgroundImage: 'url(/admin/static/icon_small_dark.png)' }}
+                    ></div>
                     {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                     <div>
                         <NotificationCenter color="#fff" />
@@ -195,7 +198,7 @@ export default function Sidebar() {
                             className={styles.toolbar}
                         >
                             <div className={styles.sidebarMobileHeader}>
-                                <img src="/admin/static/logo_icon.png" alt="logo" className={styles.logoMobile} />
+                                <img src="/admin/static/icon_small.png" alt="logo" className={styles.logoMobile} />
                                 {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                                 <div className={styles.mobileActions}>
                                     <NotificationCenter />

@@ -1,6 +1,6 @@
 const cacache = require('cacache');
-const { cachePath, cacheKey, cleanCacheOnStart } = require('../config');
-const { pid } = require('process');
+const config = require('../config');
+const cachePath = config.default ? config.default.cachePath : config.cachePath;
 const serviceNamesKey = 'serviceNames';
 const asyncEach = require('async').each;
 

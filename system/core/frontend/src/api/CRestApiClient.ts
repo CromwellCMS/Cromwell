@@ -90,8 +90,13 @@ export class CRestApiClient {
                         const backend: typeof import('@cromwell/core-backend') = nodeRequire('@cromwell/core-backend');
                         const { resolve } = nodeRequire('path');
                         const cacache = nodeRequire('cacache');
-                        const serverCachePath = resolve(backend.getServerTempDir(), 'cache');
-                        cmsConfig.serviceSecret = (await cacache?.get(serverCachePath, 'service_secret'))?.data?.toString?.();
+                        const tempDir = backend.getServerTempDir();
+                        if (tempDir) {
+                            const serverCachePath = resolve(tempDir, 'cache');
+                            if (serverCachePath) {
+                                cmsConfig.serviceSecret = (await cacache?.get(serverCachePath, 'service_secret'))?.data?.toString?.();
+                            }
+                        }
                     } catch (error) { }
                 }
                 this.serviceSecret = cmsConfig?.serviceSecret;

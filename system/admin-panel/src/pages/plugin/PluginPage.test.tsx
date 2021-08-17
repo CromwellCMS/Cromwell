@@ -7,6 +7,7 @@ jest.mock('@cromwell/core-frontend', () => {
     return {
         getRestApiClient: () => {
             return {
+                getPluginList: jest.fn().mockImplementation(async () => []),
                 getPluginSettings: jest.fn().mockImplementation(() => settings)
             }
         },
@@ -14,7 +15,7 @@ jest.mock('@cromwell/core-frontend', () => {
             return <p>{props.pluginName}</p>
         },
         LoadBox: () => <div></div>,
-        AdminPanelWidgetPlace: (props) =>  <p>{props.pluginName}</p>,
+        AdminPanelWidgetPlace: (props) => <p>{props.pluginName}</p>,
     }
 });
 
