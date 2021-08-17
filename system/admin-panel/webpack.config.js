@@ -1,5 +1,4 @@
 const path = require('path');
-const localProjectDir = __dirname;
 const webpack = require('webpack');
 const resolveFrom = require('resolve-from');
 const coreBackend = require('@cromwell/core-backend');
@@ -11,7 +10,7 @@ const tsLoaderPath = resolveFrom(coreBackend.getAdminPanelDir(), 'ts-loader');
 const buildMode = process.env.NODE_ENV || 'production';
 const isProduction = buildMode === 'production';
 
-const entry = [path.resolve(localProjectDir, 'src/index.ts')];
+const entry = [path.resolve(__dirname, 'src/index.ts')];
 if (!isProduction) {
     entry.unshift('webpack-hot-middleware/client');
 }
@@ -26,7 +25,7 @@ module.exports = {
         webapp: entry
     },
     output: {
-        path: path.resolve(localProjectDir, 'build'),
+        path: path.resolve(__dirname, 'build'),
         filename: 'webapp.js',
         publicPath: '/admin/build/',
         chunkFilename: 'chunks' + '/[id].js'

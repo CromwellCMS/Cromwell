@@ -13,7 +13,7 @@ import { Skeleton } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { connect, PropsType } from 'react-redux-ts';
 import { Link } from 'react-router-dom';
-import { animated, useSpring } from 'react-spring/web.cjs.js';
+import { animated, useSpring } from 'react-spring';
 
 import { categoryPageInfo } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';

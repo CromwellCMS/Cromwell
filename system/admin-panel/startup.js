@@ -22,9 +22,8 @@ const main = () => {
         spawnSync(`npx --no-install rollup -c`, [],
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
 
-        let command = 'npx webpack';
-        if (dev) command = 'npx --no-install cross-env NODE_ENV=development ' + command;
-        spawnSync(command, [],
+        if (dev) return;
+        spawnSync('npx webpack', [],
             { shell: true, stdio: 'inherit', cwd: localProjectDir });
     }
 

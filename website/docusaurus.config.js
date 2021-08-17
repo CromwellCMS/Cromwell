@@ -29,7 +29,7 @@ module.exports = {
     navbar: {
       title: 'Cromwell CMS',
       logo: {
-        alt: 'Cromwell CMS Logo',
+        alt: 'Logo',
         src: 'img/icon_small.png',
         srcDark: 'img/icon_small.png',
       },

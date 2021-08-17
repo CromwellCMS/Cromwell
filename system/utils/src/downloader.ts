@@ -52,7 +52,7 @@ export const downloader = async (options?: {
         if (dep.name.startsWith('@cromwell')) return false;
 
         return true;
-    })
+    });
 
     const bundledModulesDir = getBundledModulesDir();
 
