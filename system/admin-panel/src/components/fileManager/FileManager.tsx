@@ -25,7 +25,9 @@ import styles from './FileManager.module.scss';
 import { IFileManager, TItemType, TState } from './types';
 
 
-class FileManager extends React.Component<any, TState> implements IFileManager {
+class FileManager extends React.Component<{
+    isActive?: boolean;
+}, TState> implements IFileManager {
 
     private filePromise: Promise<string | undefined> | null = null;
     private fileResolver: (fileName?: string) => void;
@@ -47,7 +49,7 @@ class FileManager extends React.Component<any, TState> implements IFileManager {
         super(props);
 
         this.state = {
-            isActive: false,
+            isActive: props?.isActive ?? false,
             isLoading: false,
             isSelecting: false,
             isCreatingFolder: false,
