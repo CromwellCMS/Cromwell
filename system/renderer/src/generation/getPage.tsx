@@ -42,6 +42,8 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
 
             if (!documentContext.origin)
                 documentContext.origin = window.location.origin;
+
+            if (!documentContext.origin.endsWith('/')) documentContext.origin = documentContext.origin + '/';
         }
 
         const forcedChildStaticProps = useRef(null);
@@ -91,10 +93,26 @@ export const getPage = (pageName: TDefaultPageName | string, PageComponent: TCro
         const pageId = documentContext?.fullUrl ?? resolvedPageRoute as string;
         const parserTransform = getParserTransform(pageId);
 
+        let favicon = cmsSettings?.favicon;
+        if (favicon && favicon !== '') {
+            if (!favicon.startsWith('http')) {
+                if (!favicon.startsWith('/')) favicon = '/' + favicon;
+                if (documentContext?.origin) {
+                    favicon = documentContext.origin + favicon;
+                }
+            }
+        }
+
         const content = (
             <>
                 <Head>
                     <meta charSet="utf-8" />
+                    {favicon && (
+                        <link rel="shortcut icon"
+                            type={favicon.endsWith('.png') ? 'image/png' : 'image/jpg'}
+                            href={favicon}
+                        />
+                    )}
                 </Head>
                 <CContainer id={pageRootContainerId} isConstant={true}>
                     <PageComponent {...pageCompProps} {...props} />
