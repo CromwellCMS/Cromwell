@@ -26,7 +26,6 @@
         "heroku-postbuild": "node ./startup.js build --no-install",
         "start": "node ./system/manager/src/utils/herokuStart.js",
         "docker:start-dev-mariadb": "docker run --rm -d -p 3306:3306 --name crw-mariadb -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -e MYSQL_USER=cromwell -e MYSQL_PASSWORD=my_password mariadb:latest",
-        "docker:start-dev-mariadb2": "docker run --rm -d -p 3307:3306 --name crw-mariadb2 -e MARIADB_ALLOW_EMPTY_ROOT_PASSWORD=true -e MARIADB_DATABASE=cromwell -e MYSQL_USER=cromwell -e MYSQL_PASSWORD=my_password mariadb:latest",
         "docker:start-dev-postgres": "docker run --rm -d -p 5432:5432 --name crw-postgres -e POSTGRES_DB=cromwell -e POSTGRES_USER=cromwell -e POSTGRES_PASSWORD=my_password postgres",
         "docker:build": "docker build -t cromwell:latest -f ./docker/cromwell/Dockerfile ./docker",
         "docker:build-maria": "docker build -t cromwell-mariadb:latest -f ./docker/cromwell-mariadb/Dockerfile ./docker",

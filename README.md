@@ -1,27 +1,18 @@
 # Cromwell CMS
 
-JavaScipt CMS for Next.js blazing-fast statically pre-rendered React websites with custom easy-to-build Themes and Plugins. 
+Cromwell CMS is a free open source headless TypeScript CMS for creating lightning-fast web-sites with React and Next.js. It has powerful plugin/theming system while providing extensive Admin panel GUI for Wordpress-like user experience.  
+We are focused on empowering content-creators and people with no programming knowledge to use all features of the CMS in their projects.  
 
-Includes: 
+Main features of Cromwell CMS:
 - Online store and blogging platform management systems.
-- User-friendly drag-and-drop website builder.
-- Simple installation of Themes and Plugins from official store and their local management.
-- Integrated Database. SQLite for development and MySQL/PostgreSQL for production.
+- Drag-and-drop theme editor.
+- Simple installation of themes and plugins from official store and their management.
+- Free full-featured online store and blog themes with multiple plugins.
+- Integrated Database. SQLite, MySQL, MariaDB, PostgreSQL are supported to use.
+- Developer-friendly experience. Use all power of Next.js, Nest.js, TypeORM, TypeGraphQL along with CMS API to build any type of web-site. 
 
+## Installation
 
-## Prerequisites
-- Node.js v12
+[See our docs](https://cromwellcms.com/docs/overview/installation)
 
-```sh
-$ npm i @cromwell/cms
-$ npx cromwell start
-```
-
-Open http://localhost:4128 to see your web-site and http://localhost:4064 for admin panel 
-
-
-
-### Development
-
-Core development guide > https://github.com/CromwellCMS/Cromwell/tree/master/system#readme
-
+## Contribution

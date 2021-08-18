@@ -130,7 +130,6 @@ button.examplesBtn:hover {
   width: 47%;
   display: flex;
   align-items: center;
-  /* border: 1px solid #333; */
   margin-bottom: 50px;
   padding: 20px;
   background: linear-gradient(144deg, rgb(60, 0, 166), rgb(119, 0, 106));

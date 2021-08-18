@@ -41,7 +41,7 @@ export default function Layout(props: TProps | undefined) {
 
     useEffect(() => {
         if (appState.isCartOpen) appState.isCartOpen = false;
-        if (appState.isSigninOpen) appState.isSigninOpen = false;
+        if (appState.isSignInOpen) appState.isSignInOpen = false;
         if (appState.isCartOpen) appState.isCartOpen = false;
         if (appState.isWishlistOpen) appState.isWishlistOpen = false;
         if (appState.isCompareOpen) appState.isCompareOpen = false;

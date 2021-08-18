@@ -123,7 +123,7 @@ const start = async () => {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <link rel="shortcut icon" type="image/jpg" href="/admin/static/icon_small.png"/>
+            <link rel="shortcut icon" type="image/png" href="/admin/static/icon_small.png"/>
             <title>Cromwell CMS Admin Panel</title>
             <script>
             CromwellStore = {

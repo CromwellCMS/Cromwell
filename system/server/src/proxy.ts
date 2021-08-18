@@ -44,11 +44,11 @@ async function main(): Promise<void> {
         }
 
         if (req?.url) {
-            if (req.url.startsWith('/admin')) {
+            if (req.url.startsWith('/admin/' || req.url === '/admin')) {
                 proxy.web(req, res, {
                     target: `http://localhost:${config.adminPanelPort}`
                 });
-            } else if (req.url.startsWith('/api')) {
+            } else if (req.url.startsWith('/api/') || req.url === '/api') {
                 proxyApiServer();
             } else {
                 proxy.web(req, res, {
@@ -56,7 +56,6 @@ async function main(): Promise<void> {
                 });
             }
         } else {
-
             proxyApiServer();
         }
     });

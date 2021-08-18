@@ -1,0 +1,44 @@
+# Contributing
+
+Every contribution is pretty much appreciated and welcomed!
+
+### Have a question?
+
+Ask in Discord server: [link] 
+
+### Have a problem or found bug?
+
+If you find a bug, you can help us by submitting an issue to our [GitHub Repository](https://github.com/CromwellCMS/Cromwell/issues)
+
+Before you submit an issue, please search the issue tracker,
+maybe an issue for your problem already exists and the discussion might inform you of available solutions.
+
+
+### Have a feature suggestion?
+
+You can request a new feature by submitting an issue to our GitHub Repository. If you would like to implement a new feature, please submit an issue with a proposal for your work first, to be sure that we can use it.  
+Wait for team members to leave a feedback on your issue.
+
+
+## Setup
+
+Read [Core development guide](https://github.com/CromwellCMS/Cromwell/tree/master/system)
+
+
+## Submitting Changes
+
+Workflow:
+
+- For a major fix/feature make sure your PR has an issue and if it doesn't, please create one. This would help discussion with the community, and polishing ideas in case of a new feature.
+- Create a fork of our [GitHub repository](https://github.com/CromwellCMS/Cromwell).
+- Crate a new git branch with name of your feature/bug
+- Create a pull request at GitHub website to the master branch of our repository.
+- Make sure your PR's description contains GitHub's special keyword references that automatically close the related issue when the PR is merged. ([More info](https://github.com/blog/1506-closing-issues-via-pull-requests))
+
+We may suggest some changes or improvements or alternatives, but for small changes your pull request should be accepted quickly.
+
+Follow these guidelines while working:
+
+- Follow the existing coding style
+- Write a [good commit message](https://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html)
+- When you have a lot of commits in your PR, it's good practice to squash all your commits in one single commit. ([Learn how to squash here](https://davidwalsh.name/squash-commits-git))

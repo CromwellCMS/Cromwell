@@ -1,26 +1,16 @@
-import { observable } from "mobx";
-import { TProduct } from '@cromwell/core';
+import { makeAutoObservable } from 'mobx';
 
 class State {
-    @observable
-    isSigninOpen: boolean = false;
+    constructor() {
+        makeAutoObservable(this)
+    }
 
-    @observable
+    isSignInOpen: boolean = false;
     isCartOpen: boolean = false;
-
-    @observable
     isWishlistOpen: boolean = false;
-
-    @observable
     isCompareOpen: boolean = false;
-
-    @observable
     isWatchedOpen: boolean = false;
-
-    @observable
     isQuickViewOpen: boolean = false;
-
-    @observable
     quickViewProductId: string | undefined;
 }
 
