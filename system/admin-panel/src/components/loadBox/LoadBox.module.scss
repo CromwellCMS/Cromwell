@@ -25,7 +25,9 @@
 
 div.loadContainer {
     @include paperElevated;
+    box-shadow: 0 2px 14px 0 rgb(0 0 0 / 14%), 0 0 35px 4px rgb(0 0 0 / 12%);
     width: 64px;
     margin: 0 0 0 auto;
     border-radius: 70px;
+    padding: 0;
 }

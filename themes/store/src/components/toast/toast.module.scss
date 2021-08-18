@@ -14,6 +14,7 @@
 
     :global(.Toastify__toast-body) {
         margin: 0;
+        padding: 0;
     }
 
     :global(.Toastify__close-button) {
@@ -38,9 +39,4 @@ div.alert {
     :global(.MuiAlert-message) {
         padding: 0;
     }
-}
-
-.Toastify__toast--warning {
-}
-.Toastify__toast--error {
 }
