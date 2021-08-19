@@ -120,7 +120,7 @@ export const getCpuUsageOption = (echarts, loads: TSystemUsage['cpuUsage']['prev
         tooltip: {
             trigger: 'axis',
             axisPointer: {
-                type: 'cross',
+                type: 'line',
                 label: {
                     backgroundColor: '#6a7985',
                     formatter: (params) => `${params.value}`,

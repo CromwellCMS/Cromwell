@@ -31,7 +31,7 @@ module.exports = {
       logo: {
         alt: 'Logo',
         src: 'img/icon_small.png',
-        srcDark: 'img/icon_small.png',
+        srcDark: 'img/icon_small_dark.png',
       },
       items: [
         {
