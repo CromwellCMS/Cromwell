@@ -12,7 +12,7 @@ import {
 } from '@cromwell/core-backend';
 import { Arg, Authorized, Ctx, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
-import { serverFireAction } from '../helpers/serverFireAction';
+import { serverFireAction } from '../helpers/server-fire-action';
 
 
 const getOneByIdPath = GraphQLPaths.User.getOneById;

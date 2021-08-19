@@ -2,7 +2,7 @@ import { INestApplication } from '@nestjs/common';
 import { FastifyAdapter, NestFastifyApplication } from '@nestjs/platform-fastify';
 import { Test } from '@nestjs/testing';
 
-import { closeConnection } from '../src/helpers/connectDataBase';
+import { closeConnection } from '../src/helpers/connect-database';
 import { AppModule } from '../src/modules/app.module';
 import { setupConnection } from './helpers';
 

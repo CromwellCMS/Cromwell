@@ -4,7 +4,7 @@ import * as coreBackend from '@cromwell/core-backend';
 import fs from 'fs-extra';
 import { join, resolve } from 'path';
 
-import { connectDatabase } from '../src/helpers/connectDataBase';
+import { connectDatabase } from '../src/helpers/connect-database';
 
 export const mockWorkingDirectory = async (name: string): Promise<string> => {
     const testDir = join(getServerTempDir(), 'test', name);

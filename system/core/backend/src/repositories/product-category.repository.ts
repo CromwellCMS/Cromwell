@@ -90,82 +90,14 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
         productCategory.description = input.description;
         productCategory.descriptionDelta = input.descriptionDelta;
 
-        const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
-        const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
-        const closureTableName = this.metadata.closureJunctionTable.tablePath;
-        const ancestorReferencedColumn = this.metadata.closureJunctionTable.ancestorColumns[0].referencedColumn?.databasePath as string;
-        const parentPropertyName = this.metadata.treeParentRelation?.propertyName as string;
-
-        let newParent: ProductCategory | undefined | null = input.parentId ? await this.getProductCategoryById(input.parentId) : undefined;
-
-        let currentParentId;
-        try {
-            const currentParent = await getConnection().createQueryBuilder()
-                .select([descendantColumn, ancestorColumn])
-                .from(closureTableName, closureTableName)
-                .where(`${descendantColumn} = :descendantId`, { descendantId: productCategory[ancestorReferencedColumn] })
-                .andWhere(`${ancestorColumn} != :descendantId`)
-                .execute();
-            currentParentId = currentParent?.[0]?.[ancestorColumn];
-        } catch (e) {
-            logger.error(e);
-        }
-
-        if (newParent) {
-            const children = await this.findDescendants(productCategory);
-            if (children.some(child => child.id === newParent?.id)) {
-                // if new assigned parent also is a child, it'll make an infinite loop
-                // don't assign such parents
-                newParent = undefined;
-                currentParentId = undefined;
-            }
-        }
+        const newParent: ProductCategory | undefined | null = input.parentId ? await this.getProductCategoryById(input.parentId) : undefined;
 
         if (newParent?.id) {
-
-            if (!productCategory[ancestorReferencedColumn] || !currentParentId) {
-                // create action
-                if (productCategory[ancestorReferencedColumn]) {
-                    await getConnection().createQueryBuilder()
-                        .insert()
-                        .into(closureTableName, [ancestorColumn, descendantColumn])
-                        .values({
-                            [ancestorColumn]: { [ancestorReferencedColumn]: parseInt(newParent[ancestorReferencedColumn]) },
-                            [descendantColumn]: { [ancestorReferencedColumn]: parseInt(productCategory[ancestorReferencedColumn]) },
-                        })
-                        .execute();
-                }
-
-                productCategory[parentPropertyName] = newParent;
-            }
-
-            if (productCategory.id && currentParentId && newParent.id !== productCategory.id) {
-                // update action
-                if (newParent.id !== currentParentId) {
-                    await this.createQueryBuilder()
-                        .update(closureTableName)
-                        .set({
-                            [ancestorColumn]: { [ancestorReferencedColumn]: newParent[ancestorReferencedColumn] },
-                        })
-                        .where(`${descendantColumn} = :descendantId`, { descendantId: productCategory[ancestorReferencedColumn] })
-                        .andWhere(`${ancestorColumn} = :ancestorId`, { ancestorId: currentParentId })
-                        .execute();
-                }
-
-                productCategory[parentPropertyName] = newParent;
-            }
+            productCategory.parent = newParent;
         }
 
-        if (!newParent && currentParentId) {
-            // delete action
-            await this.createQueryBuilder()
-                .delete()
-                .from(closureTableName)
-                .where(`${descendantColumn} = :descendantId`, { descendantId: productCategory[ancestorReferencedColumn] })
-                .andWhere(`${ancestorColumn} = :ancestorId`, { ancestorId: currentParentId })
-                .execute();
-
-            productCategory[parentPropertyName] = null;
+        if (!newParent) {
+            productCategory.parent = null;
         }
     }
 
@@ -197,41 +129,17 @@ export class ProductCategoryRepository extends TreeRepository<ProductCategory> {
     async deleteProductCategory(id: string): Promise<boolean> {
         logger.log('ProductCategoryRepository::deleteProductCategory id: ' + id);
         const productCategory = await this.getProductCategoryById(id);
-        if (!productCategory) return false;
+        if (!productCategory) throw new Error('Product category not found');
 
-        const descendantColumn = this.metadata.closureJunctionTable.descendantColumns[0].databasePath;
-        const ancestorColumn = this.metadata.closureJunctionTable.ancestorColumns[0].databasePath;
-        const tableName = this.metadata.tablePath;
-        const parentPropertyName = this.metadata.treeParentRelation?.joinColumns[0].propertyName;
-        const parentColumn = this.metadata.treeParentRelation?.joinColumns[0].databaseName;
-        const closureTableName = this.metadata.closureJunctionTable.tablePath;
+        const children = await this.getChildCategories(productCategory);
+        if (children?.length) {
+            await Promise.all(children.map(async child => {
+                child.parent = null;
+                await this.save(child);
+            }));
+        }
 
-        await getConnection().transaction(async transactionalEntityManager => {
-            // Delete all the nodes from the closure table
-            await transactionalEntityManager.createQueryBuilder(ProductCategory, tableName)
-                .delete()
-                .from(closureTableName)
-                .where(`${descendantColumn} = :id`, { id })
-                .orWhere(`${ancestorColumn} = :id`, { id })
-                .execute();
-
-            // Set parent to null in the main table
-            if (parentPropertyName && parentColumn) {
-                await transactionalEntityManager.createQueryBuilder(ProductCategory, tableName)
-                    .update(tableName, { [parentPropertyName]: null })
-                    .where(`${parentPropertyName} = :id`, { id })
-                    .execute();
-            }
-
-            // Delete entity
-            await transactionalEntityManager.createQueryBuilder(ProductCategory, tableName)
-                .delete()
-                .from(tableName)
-                .where(`id = :id`, { id })
-                .execute();
-
-        });
-
+        await this.remove(productCategory);
         return true;
     }
 

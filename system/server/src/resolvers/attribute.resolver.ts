@@ -3,7 +3,7 @@ import { Attribute, AttributeInput, AttributeRepository } from '@cromwell/core-b
 import { Arg, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { serverFireAction } from '../helpers/serverFireAction';
+import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneByIdPath = GraphQLPaths.Attribute.getOneById;
 const getManyPath = GraphQLPaths.Attribute.getMany;

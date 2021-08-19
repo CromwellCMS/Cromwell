@@ -28,11 +28,15 @@ const start = async () => {
     if (args.serverPort) {
         process.env.API_PORT = args.serverPort + '';
     }
-    const cmsConfig = readCMSConfigSync();
-    setStoreItem('cmsSettings', cmsConfig);
-
-    const cmsSettings = await getRestApiClient().getCmsSettings() ?? cmsConfig;
+    let cmsSettings = readCMSConfigSync();
     setStoreItem('cmsSettings', cmsSettings);
+
+    try {
+        cmsSettings = await getRestApiClient().getCmsSettings() ?? cmsSettings;
+        setStoreItem('cmsSettings', cmsSettings);
+    } catch (error) {
+        console.error(error);
+    }
 
     const env = process.argv[2];
 

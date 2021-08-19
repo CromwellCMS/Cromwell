@@ -1,6 +1,6 @@
 import { DynamicModule, Module } from '@nestjs/common';
 
-import { getControllers, getExports, getServices } from '../helpers/getControllers';
+import { getControllers, getExports, getServices } from '../helpers/get-controllers';
 import { loadEnv } from '../helpers/settings';
 
 @Module({})

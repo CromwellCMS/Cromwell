@@ -27,7 +27,7 @@ import {
 import { Arg, Authorized, FieldResolver, Mutation, Query, Resolver, Root } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { serverFireAction } from '../helpers/serverFireAction';
+import { serverFireAction } from '../helpers/server-fire-action';
 
 const categoriesKey: keyof TProduct = 'categories';
 const ratingKey: keyof TProduct = 'rating';

@@ -26,6 +26,7 @@ import { Throttle, ThrottlerGuard } from '@nestjs/throttler';
 import { FastifyReply } from 'fastify';
 import fs from 'fs-extra';
 import { join } from 'path';
+import { SystemUsageDto } from '../dto/system-usage.dto';
 import { Container } from 'typedi';
 import { getCustomRepository } from 'typeorm';
 
@@ -40,7 +41,7 @@ import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { SetupDto } from '../dto/setup.dto';
 import { publicSystemDirs } from '../helpers/constants';
-import { serverFireAction } from '../helpers/serverFireAction';
+import { serverFireAction } from '../helpers/server-fire-action';
 import { CmsService } from '../services/cms.service';
 import { MigrationService } from '../services/migration.service';
 import { PluginService } from '../services/plugin.service';
@@ -459,6 +460,22 @@ export class CmsController {
     async getStats(): Promise<CmsStatsDto> {
         return this.cmsService.getCmsStats();
     }
+
+
+    @Get('system')
+    @UseGuards(JwtAuthGuard)
+    @Roles('administrator', 'guest')
+    @ApiOperation({
+        description: `Returns system info and usage`,
+    })
+    @ApiResponse({
+        status: 200,
+        type: SystemUsageDto,
+    })
+    async getSystemUsage(): Promise<SystemUsageDto> {
+        return this.cmsService.getSystemUsage();
+    }
+
 
     @Get('status')
     @UseGuards(JwtAuthGuard)

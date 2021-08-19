@@ -110,6 +110,10 @@ export const getServerBuildProxyPath = () => {
     const serverDir = getServerDir();
     if (serverDir) return resolve(serverDir, 'build/proxy.js');
 }
+export const getServerBuildMonitorPath = () => {
+    const serverDir = getServerDir();
+    if (serverDir) return resolve(serverDir, 'build/monitor.js');
+}
 export const getServerTempDir = (dir?: string) => resolve(getTempDir(dir), 'server');
 export const getServerTempEmailsDir = () => resolve(getServerTempDir(), 'emails');
 export const getServerDefaultEmailsDir = () => {

@@ -545,3 +545,35 @@ export type TDBInfo = {
 export type TCmsInfo = {
     packages: Partial<Record<typeof systemPackages[number], string>>;
 }
+
+export type TSystemUsage = {
+    osInfo: {
+        arch: string;
+        distro: string;
+        platform: string;
+    };
+    cpuInfo: {
+        manufacturer: string;
+        brand: string;
+        cores: number;
+        speed: string;
+    };
+    cpuUsage: {
+        previousLoads: {
+            time: Date;
+            load: number;
+        }[];
+        currentLoad: number;
+        currentLoadIdle: number;
+    };
+    diskUsage: {
+        size: number;
+        available: number;
+        used: number;
+    };
+    memoryUsage: {
+        used: number
+        available: number
+        total: number
+    }
+}

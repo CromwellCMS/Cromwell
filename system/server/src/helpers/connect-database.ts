@@ -24,7 +24,7 @@ import { CmsService } from '../services/cms.service';
 import { MockService } from '../services/mock.service';
 import { PluginService } from '../services/plugin.service';
 import { ThemeService } from '../services/theme.service';
-import { collectPlugins } from './collectPlugins';
+import { collectPlugins } from './collect-plugins';
 import { DeepWriteable, Writeable } from './constants';
 import { getMigrationsDirName, loadEnv } from './settings';
 

@@ -4,7 +4,7 @@ import httpProxy from 'http-proxy';
 import nodeCleanup from 'node-cleanup';
 import yargs from 'yargs-parser';
 
-import { closeAllServers, getServerPort, launchServerManager, serverAliveWatcher } from './helpers/serverManager';
+import { closeAllServers, getServerPort, launchServerManager, serverAliveWatcher } from './helpers/server-manager';
 
 const logger = getLogger();
 

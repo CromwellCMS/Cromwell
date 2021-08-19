@@ -110,3 +110,8 @@
 .productReviewsList {
     @extend .pageViewList;
 }
+
+.specsList {
+    @extend .pageViewList;
+    padding:  0 10px;
+}

@@ -1,4 +1,4 @@
-import { TSalePerDay } from '@cromwell/core';
+import { TSalePerDay, TSystemUsage } from '@cromwell/core';
 import { format } from 'date-fns';
 
 
@@ -108,6 +108,71 @@ export const getSalesValuePerDayOption = (echarts, sales: TSalePerDay[]) => {
                     focus: 'series'
                 },
                 data: sales.map(sale => sale.salesValue).reverse(),
+            },
+        ]
+    };
+}
+
+
+export const getCpuUsageOption = (echarts, loads: TSystemUsage['cpuUsage']['previousLoads']) => {
+    return {
+        color: ['#3398DB'],
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'line',
+                label: {
+                    backgroundColor: '#6a7985',
+                    formatter: (params) => `${params.value}`,
+                }
+            }
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                boundaryGap: false,
+                data: loads.map(load => format(new Date(load.time), 'hh:mm')),
+                axisTick: {
+                    alignWithLabel: true
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                min: 0,
+                max: 100,
+                axisLabel: {
+                    formatter: (val) => `${val.toFixed()}%`,
+                }
+            }
+        ],
+        series: [
+            {
+                name: 'CPU usage',
+                type: 'line',
+                sampling: 'lttb',
+                smooth: true,
+                symbol: 'none',
+                itemStyle: {
+                    color: 'rgb(255, 70, 131)'
+                },
+                areaStyle: {
+                    color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        offset: 0,
+                        color: 'rgb(255, 70, 131)'
+                    }, {
+                        offset: 1,
+                        color: 'rgb(255, 158, 68)'
+                    }])
+                },
+                data: loads.map(load => Math.round(load.load)),
             },
         ]
     };

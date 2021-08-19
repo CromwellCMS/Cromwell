@@ -1,7 +1,7 @@
-import { Entity, Column } from "typeorm";
-import { Tree, TreeChildren, TreeParent, TreeLevelColumn, ManyToMany } from "typeorm";
-import { ObjectType, Field } from "type-graphql";
-import { TProductCategory, TProduct, TPagedList } from '@cromwell/core';
+import { TPagedList, TProduct, TProductCategory } from '@cromwell/core';
+import { Field, ObjectType } from 'type-graphql';
+import { Column, Entity, Index, ManyToMany, Tree, TreeChildren, TreeParent } from 'typeorm';
+
 import { BasePageEntity } from './base-page.entity';
 import { Product } from './product.entity';
 
@@ -11,6 +11,7 @@ import { Product } from './product.entity';
 export class ProductCategory extends BasePageEntity implements TProductCategory {
     @Field(() => String)
     @Column({ type: "varchar" })
+    @Index()
     name: string;
 
     @Field(() => String, { nullable: true })

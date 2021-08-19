@@ -110,6 +110,7 @@ const CategoryList = (props: TPropsType) => {
         if (categoryToDelete) {
             try {
                 await client?.deleteProductCategory(categoryToDelete.id)
+                deletedItemsRef.current[categoryToDelete.id] = true;
                 toast.success('Category deleted');
             } catch (e) {
                 console.error(e);
@@ -117,7 +118,6 @@ const CategoryList = (props: TPropsType) => {
             }
         }
         setCategoryToDelete(null);
-        deletedItemsRef.current[categoryToDelete.id] = true;
         getRootCategories();
         updateList();
     }

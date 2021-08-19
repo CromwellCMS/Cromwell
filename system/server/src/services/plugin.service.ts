@@ -37,15 +37,15 @@ import { resolve } from 'path';
 import { Container, Service } from 'typedi';
 import { getConnection, getCustomRepository } from 'typeorm';
 
-import { serverFireAction } from '../helpers/serverFireAction';
-import { childSendMessage } from '../helpers/serverManager';
+import { serverFireAction } from '../helpers/server-fire-action';
+import { childSendMessage } from '../helpers/server-manager';
 import {
     endTransaction,
     restartService,
     setPendingKill,
     setPendingRestart,
     startTransaction,
-} from '../helpers/stateManager';
+} from '../helpers/state-manager';
 import { CmsService } from './cms.service';
 
 const logger = getLogger();
