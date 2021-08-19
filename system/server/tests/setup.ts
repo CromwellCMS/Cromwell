@@ -1,10 +1,11 @@
-
-import { Container } from 'typedi';
 import { getServerTempDir } from '@cromwell/core-backend';
-import { MockService } from '../src/services/mock.service';
-import { join } from 'path';
 import fs from 'fs-extra';
-import { connectDatabase } from '../src/helpers/connectDataBase';
+import { join } from 'path';
+import { Container } from 'typedi';
+
+import { connectDatabase } from '../src/helpers/connect-database';
+import { MockService } from '../src/services/mock.service';
+
 
 export default async function () {
     const testDir = join(getServerTempDir());

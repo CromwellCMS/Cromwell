@@ -65,9 +65,11 @@ import { CreateOrderDto } from '../dto/create-order.dto';
 import { OrderTotalDto } from '../dto/order-total.dto';
 import { PageStatsDto } from '../dto/page-stats.dto';
 import { SetupDto } from '../dto/setup.dto';
-import { serverFireAction } from '../helpers/serverFireAction';
-import { childSendMessage } from '../helpers/serverManager';
-import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
+import { SystemUsageDto } from '../dto/system-usage.dto';
+import { getSysInfo, getSysUsageInfo } from '../helpers/monitor-client';
+import { serverFireAction } from '../helpers/server-fire-action';
+import { childSendMessage } from '../helpers/server-manager';
+import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';
 import { MockService } from './mock.service';
 import { PluginService } from './plugin.service';
 import { ThemeService } from './theme.service';
@@ -93,6 +95,11 @@ export class CmsService {
     constructor() {
         this.init();
     }
+
+    private cpuLoads: {
+        time: Date;
+        load: number;
+    }[] = [];
 
     private async init() {
         await sleep(1);
@@ -695,6 +702,29 @@ ${content}
         ]);
 
         return stats;
+    }
+
+    async getSystemUsage(): Promise<SystemUsageDto> {
+        const [info, usage] = await Promise.all([
+            getSysInfo(),
+            getSysUsageInfo()
+        ]);
+
+        const dto = new SystemUsageDto().parseSysInfo(info).parseSysUsage(usage);
+
+        if (dto.cpuUsage?.currentLoad !== undefined) {
+            this.cpuLoads.push({
+                load: dto.cpuUsage.currentLoad,
+                time: new Date(Date.now()),
+            });
+
+            if (this.cpuLoads.length > 30) this.cpuLoads = this.cpuLoads.slice(this.cpuLoads.length - 30, this.cpuLoads.length)
+        }
+
+        if (dto.cpuUsage) {
+            dto.cpuUsage.previousLoads = this.cpuLoads;
+        }
+        return dto;
     }
 
     async checkCmsUpdate(): Promise<TCCSVersion | undefined> {

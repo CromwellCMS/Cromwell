@@ -18,6 +18,7 @@ import {
     TPaymentSession,
     TProductReview,
     TProductReviewInput,
+    TSystemUsage,
     TThemeConfig,
     TUser,
 } from '@cromwell/core';
@@ -503,6 +504,14 @@ export class CRestApiClient {
      */
     public getCmsStats = async (options?: TRequestOptions): Promise<TCmsStats | undefined> => {
         return this.get(`v1/cms/stats`, options);
+    }
+
+    /**
+     * Get system specs and usage
+     * @auth admin
+     */
+    public getSystemUsage = async (options?: TRequestOptions): Promise<TSystemUsage | undefined> => {
+        return this.get(`v1/cms/system`, options);
     }
 
     /**

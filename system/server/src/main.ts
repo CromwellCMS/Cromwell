@@ -11,11 +11,11 @@ import getPort from 'get-port';
 import { buildSchema } from 'type-graphql';
 
 import { ExceptionFilter } from './filters/exception.filter';
-import { collectPlugins } from './helpers/collectPlugins';
-import { connectDatabase } from './helpers/connectDataBase';
-import { corsHandler } from './helpers/corsHandler';
-import { getResolvers } from './helpers/getResolvers';
-import { childRegister } from './helpers/serverManager';
+import { collectPlugins } from './helpers/collect-plugins';
+import { connectDatabase } from './helpers/connect-database';
+import { corsHandler } from './helpers/cors-handler';
+import { getResolvers } from './helpers/get-resolvers';
+import { childRegister } from './helpers/server-manager';
 import { authSettings, checkCmsVersion, checkConfigs, loadEnv } from './helpers/settings';
 import { AppModule } from './modules/app.module';
 import { authServiceInst } from './services/auth.service';

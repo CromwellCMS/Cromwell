@@ -2,7 +2,7 @@ import { TServiceVersions } from '@cromwell/core';
 import { incrementServiceVersion } from '@cromwell/core-backend';
 import { HttpException, HttpStatus } from '@nestjs/common';
 
-import { childSendMessage } from './serverManager';
+import { childSendMessage } from './server-manager';
 
 const store: {
     isPendingKill: boolean;

@@ -3,7 +3,7 @@ import { CmsController } from '../controllers/cms.controller';
 import { MockController } from '../controllers/mock.controller';
 import { PluginController } from '../controllers/plugin.controller';
 import { ThemeController } from '../controllers/theme.controller';
-import { collectPlugins } from '../helpers/collectPlugins';
+import { collectPlugins } from './collect-plugins';
 import { CmsService } from '../services/cms.service';
 import { MigrationService } from '../services/migration.service';
 import { MockService } from '../services/mock.service';

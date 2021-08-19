@@ -12,7 +12,7 @@ import {
 import { Arg, Ctx, Authorized, Mutation, Query, Resolver } from 'type-graphql';
 import { getCustomRepository } from 'typeorm';
 
-import { serverFireAction } from '../helpers/serverFireAction';
+import { serverFireAction } from '../helpers/server-fire-action';
 
 const getOneBySlugPath = GraphQLPaths.Order.getOneBySlug;
 const getOneByIdPath = GraphQLPaths.Order.getOneById;

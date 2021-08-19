@@ -37,9 +37,9 @@ import { getConnection, getCustomRepository } from 'typeorm';
 
 import { CmsConfigDto } from '../dto/cms-config.dto';
 import { ThemeConfigDto } from '../dto/theme-config.dto';
-import { serverFireAction } from '../helpers/serverFireAction';
-import { childSendMessage } from '../helpers/serverManager';
-import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/stateManager';
+import { serverFireAction } from '../helpers/server-fire-action';
+import { childSendMessage } from '../helpers/server-manager';
+import { endTransaction, restartService, setPendingKill, startTransaction } from '../helpers/state-manager';
 import { CmsService } from './cms.service';
 import { PluginService } from './plugin.service';
 

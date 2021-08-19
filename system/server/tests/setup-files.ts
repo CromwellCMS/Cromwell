@@ -1,5 +1,5 @@
 
-jest.mock('../src/helpers/serverFireAction', () => {
+jest.mock('../src/helpers/server-fire-action', () => {
     return {
         serverFireAction: () => null,
     }
