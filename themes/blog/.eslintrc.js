@@ -28,5 +28,6 @@ module.exports = {
         "@typescript-eslint/no-var-requires": "off",
         "react/prop-types": "off",
         "no-empty": "off",
+        "no-console": 1,
     }
 };

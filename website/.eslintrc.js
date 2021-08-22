@@ -31,5 +31,6 @@ module.exports = {
         "react/display-name": "off",
         "react/prop-types": "off",
         "no-empty": "off",
+        'no-console': 1,
     }
 }

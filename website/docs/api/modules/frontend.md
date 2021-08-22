@@ -255,7 +255,7 @@ ___
 
 #### Defined in
 
-system/core/frontend/src/api/CRestApiClient.ts:818
+[system/core/frontend/src/api/CRestApiClient.ts:823](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestApiClient.ts#L823)
 
 ___
 
@@ -343,7 +343,7 @@ ___
 
 #### Defined in
 
-system/core/frontend/src/api/CRestApiClient.ts:27
+[system/core/frontend/src/api/CRestApiClient.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestApiClient.ts#L27)
 
 ___
 
@@ -433,7 +433,7 @@ ___
 
 #### Defined in
 
-system/core/frontend/src/api/CRestApiClient.ts:34
+[system/core/frontend/src/api/CRestApiClient.ts:34](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestApiClient.ts#L34)
 
 ___
 
@@ -1064,7 +1064,7 @@ Get CRestApiClient instance from global store (singleton)
 
 #### Defined in
 
-system/core/frontend/src/api/CRestApiClient.ts:807
+[system/core/frontend/src/api/CRestApiClient.ts:812](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/frontend/src/api/CRestApiClient.ts#L812)
 
 ___
 
