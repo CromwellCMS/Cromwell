@@ -15,21 +15,23 @@ import {
     AccountCircle as AccountCircleIcon,
     AccountCircleOutlined as AccountCircleOutlinedIcon,
     Close as CloseIcon,
+    DnsRounded as DnsRoundedIcon,
     ExitToApp as ExitToAppIcon,
     HelpOutline as HelpOutlineIcon,
-    PermMediaOutlined as PermMediaOutlinedIcon,
     InfoOutlined as InfoOutlinedIcon,
     Menu as MenuIcon,
     MoreVertOutlined as MoreVertOutlinedIcon,
+    PermMediaOutlined as PermMediaOutlinedIcon,
 } from '@material-ui/icons';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import { getFileManager } from '../fileManager/helpers';
 
-import CmsInfo from '../cmsInfo/CmsInfo';
 import { getLinkByInfo, loginPageInfo, pageInfos, sideBarLinks, userPageInfo } from '../../constants/PageInfos';
 import { useForceUpdate } from '../../helpers/forceUpdate';
+import CmsInfo from '../cmsInfo/CmsInfo';
+import { getFileManager } from '../fileManager/helpers';
 import NotificationCenter from '../notificationCenter/NotificationCenter';
+import SystemMonitor from '../systemMonitor/SystemMonitor';
 import styles from './Sidebar.module.scss';
 import SidebarLink from './SidebarLink';
 
@@ -41,6 +43,7 @@ export default function Sidebar() {
     const [activeId, setActiveId] = useState<string | null>(currentLink?.id ?? null);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [cmsInfoOpen, setCmsInfoOpen] = useState(false);
+    const [systemMonitorOpen, setSystemMonitorOpen] = useState(false);
     const popperAnchorEl = useRef<HTMLDivElement | null>(null);
     const history = useHistory?.();
     const forceUpdate = useForceUpdate();
@@ -167,6 +170,10 @@ export default function Sidebar() {
                                 <PermMediaOutlinedIcon />
                                 <p>Media</p>
                             </MenuItem>
+                            <MenuItem className={styles.optionsItem} onClick={() => setSystemMonitorOpen(true)}>
+                                <DnsRoundedIcon />
+                                <p>System monitor</p>
+                            </MenuItem>
                             <MenuItem className={styles.optionsItem} onClick={openCmsInfo}>
                                 <InfoOutlinedIcon />
                                 <p>CMS specs</p>
@@ -221,6 +228,10 @@ export default function Sidebar() {
             <CmsInfo
                 open={cmsInfoOpen}
                 onClose={() => setCmsInfoOpen(false)}
+            />
+            <SystemMonitor
+                open={systemMonitorOpen}
+                onClose={() => setSystemMonitorOpen(false)}
             />
             <div className={styles.desktopContent}>{sidebarContent}</div>
         </div>

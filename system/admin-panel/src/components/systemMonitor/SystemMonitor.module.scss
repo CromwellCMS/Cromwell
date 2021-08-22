@@ -1,0 +1,43 @@
+@import "../../styles/common.module.scss";
+@import "../../styles/variables.scss";
+
+.SystemMonitor {
+    @include paper;
+    @include styledScrollBar;
+    padding: 20px;
+    max-height: 80vh;
+    max-width: 90vw;
+    overflow: auto;
+
+    >p {
+        margin: 8px 0;
+    }
+}
+
+.infoHeader {
+    font-size: 20px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+
+.pageViewList {
+    display: flex;
+    flex-direction: column;
+    margin: 0 10px 5px 10px;
+    padding-right: 10px;
+}
+
+.specsList {
+    @extend .pageViewList;
+    padding: 0 10px;
+    margin-bottom: 40px;
+}
+
+.chart {
+    width: 400px;
+    height: 300px;
+}
+
+.chartBox {
+    margin-bottom: 30px;
+}

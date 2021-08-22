@@ -1,4 +1,4 @@
-import { TCmsStats, TProductReview, TSystemUsage } from '@cromwell/core';
+import { TCmsStats, TProductReview } from '@cromwell/core';
 import {
     getCStore,
     getGraphQLClient,
@@ -9,15 +9,13 @@ import {
 } from '@cromwell/core-frontend';
 import { Rating } from '@material-ui/lab';
 import { CountUp } from 'countup.js';
-import prettyBytes from 'pretty-bytes';
 import React from 'react';
 import { Responsive, WidthProvider } from 'react-grid-layout';
 import ReactResizeDetector from 'react-resize-detector';
 import { debounce } from 'throttle-debounce';
 
-import LoadBox from '../../components/loadBox/LoadBox';
 import ReviewListItem from '../reviewList/ReviewListItem';
-import { getCpuUsageOption, getOrdersPerDayOption, getSalesValuePerDayOption } from './config/chartOptions';
+import { getOrdersPerDayOption, getSalesValuePerDayOption } from './config/chartOptions';
 import { getDefaultLayout } from './config/defaultLayout';
 import styles from './Dashboard.module.scss';
 
@@ -26,7 +24,6 @@ const ResponsiveGridLayout = WidthProvider(Responsive);
 export default class Dashboard extends React.Component<any, {
     stats?: TCmsStats;
     reviews: TProductReview[];
-    system?: TSystemUsage;
 }> {
 
     private contentRef: React.RefObject<HTMLDivElement> = React.createRef();
@@ -56,7 +53,6 @@ export default class Dashboard extends React.Component<any, {
     componentDidMount() {
         this.getCmsStats();
         this.getReviews();
-        this.getSystemUsage();
 
         onWidgetRegister('Dashboard', () => {
             this.widgets = getWidgetsForPlace('Dashboard', {
@@ -117,20 +113,6 @@ export default class Dashboard extends React.Component<any, {
 
         } catch (error) {
             console.error(error);
-        }
-    }
-
-    private getSystemUsage = async () => {
-        try {
-            const system = await getRestApiClient()?.getSystemUsage();
-            this.setState({ system });
-
-            this.cpuUsageChart = this.echarts.init(document.getElementById('cpuUsageChart'));
-            this.cpuUsageChart.setOption(
-                getCpuUsageOption(this.echarts, system?.cpuUsage?.previousLoads ?? []));
-
-        } catch (error) {
-            console.log(error);
         }
     }
 
@@ -314,40 +296,6 @@ export default class Dashboard extends React.Component<any, {
                                 )
                             })}
                         </div>
-                    </div>
-                    <div key="sysInfo" className={styles.chartBox}>
-                        <div className={styles.chartCaption}>
-                            <p className={styles.chartTitle + ' draggableCancel'}>System specs</p>
-                        </div>
-                        {!this.state?.system && (
-                            <LoadBox size={40} />
-                        )}
-                        {this.state?.system && (
-                            <div className={styles.specsList + ' draggableCancel'}>
-                                <p><b>OS:</b> {(this.state?.system?.osInfo?.distro ?? '')} {this.state?.system?.osInfo?.arch ?? ''}</p>
-                                <p><b>CPU:</b> {this.state?.system?.cpuInfo?.manufacturer ?? ''} {this.state?.system?.cpuInfo?.brand ?? ''}</p>
-                                <p><b>RAM total:</b> {prettyBytes(this.state?.system?.memoryUsage?.total ?? 0)}</p>
-                                <p><b>RAM used:</b> {prettyBytes(this.state?.system?.memoryUsage?.used ?? 0)}</p>
-                                <p><b>Disk total:</b> {prettyBytes(this.state?.system?.diskUsage?.size ?? 0)}</p>
-                                <p><b>Disk used:</b> {prettyBytes(this.state?.system?.diskUsage?.used ?? 0)}</p>
-                            </div>
-                        )}
-                    </div>
-                    <div key="cpuUsage" className={styles.chartBox}>
-                        <div className={styles.chartCaption}>
-                            <p className={styles.chartTitle + ' draggableCancel'}>CPU usage</p>
-                        </div>
-                        {!this.state?.system && (
-                            <LoadBox size={40} />
-                        )}
-                        <ReactResizeDetector handleWidth handleHeight>
-                            {({ targetRef }) => {
-                                this.cpuUsageChart?.resize?.();
-                                return (
-                                    <div id="cpuUsageChart" ref={targetRef as any} className={styles.chart}></div>
-                                )
-                            }}
-                        </ReactResizeDetector>
                     </div>
                     {this.widgets.map(widget => {
                         return (
