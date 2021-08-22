@@ -12,6 +12,11 @@ export interface IFileManager {
         initialPath?: string;
         initialFileLocation?: string;
     }) => Promise<string | undefined>;
+
+    open: (settings?: {
+        initialPath?: string;
+        initialFileLocation?: string;
+    }) => void;
 }
 
 declare global {

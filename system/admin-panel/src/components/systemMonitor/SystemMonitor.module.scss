@@ -23,13 +23,11 @@
 .pageViewList {
     display: flex;
     flex-direction: column;
-    margin: 0 10px 5px 10px;
     padding-right: 10px;
 }
 
 .specsList {
     @extend .pageViewList;
-    padding: 0 10px;
     margin-bottom: 40px;
 }
 

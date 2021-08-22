@@ -17,6 +17,7 @@ import React from 'react';
 
 import LoadBox from '../loadBox/LoadBox';
 import { LoadingStatus } from '../loadBox/LoadingStatus';
+import { askConfirmation } from '../modal/Confirmation';
 import Modal from '../modal/Modal';
 import Pagination from '../pagination/Pagination';
 import { toast } from '../toast/toast';
@@ -60,7 +61,7 @@ class FileManager extends React.Component<{
         else global.CromwellFileManager = this;
     }
 
-    private open = async () => {
+    private openHome = async () => {
         this.currentPath = '/';
         this.currentItems = [];
         this.setState({ isActive: true });
@@ -77,19 +78,22 @@ class FileManager extends React.Component<{
         this.setState({ isLoading: false });
     }
 
-    public getPhoto: IFileManager['getPhoto'] = async (settings) => {
-        this.filePromise = new Promise(resolver => {
-            this.fileResolver = resolver;
-        });
-        this.setState({ isSelecting: true });
-
+    public open: IFileManager['open'] = async (settings) => {
         if (settings?.initialPath && settings.initialPath !== '') {
             this.openPath(settings.initialPath);
         } else if (settings?.initialFileLocation && settings.initialFileLocation !== '') {
             this.openFileLocation(settings.initialFileLocation, true);
         } else {
-            this.open();
+            this.openHome();
         }
+    }
+
+    public getPhoto: IFileManager['getPhoto'] = async (settings) => {
+        this.filePromise = new Promise(resolver => {
+            this.fileResolver = resolver;
+        });
+        this.setState({ isSelecting: true });
+        this.open(settings);
 
         return this.filePromise;
     }
@@ -264,6 +268,10 @@ class FileManager extends React.Component<{
 
     private handleDeleteItem = async () => {
         if (this.selectedItem && this.selectedFileName) {
+            const confirm = await askConfirmation({
+                title: `Delete ${this.selectedFileName} ?`,
+            });
+            if (!confirm) return;
             try {
                 await getRestApiClient()?.removePublicDir(this.selectedFileName, this.currentPath)
                 this.fetchCurrentItems();
