@@ -30,7 +30,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `Readonly`<[`TCGalleryProps`](../modules/frontend.md#tcgalleryprops)\> |
+| `props` | [`TCGalleryProps`](../modules/frontend.md#tcgalleryprops) \| `Readonly`<[`TCGalleryProps`](../modules/frontend.md#tcgalleryprops)\> |
 
 #### Inherited from
 
@@ -38,9 +38,9 @@ React.Component<TCGalleryProps\>.constructor
 
 #### Defined in
 
-node_modules/@types/react/index.d.ts:485
+node_modules/@types/react/index.d.ts:475
 
-• **new CGallery**(`props`, `context?`)
+• **new CGallery**(`props`, `context`)
 
 **`deprecated`**
 
@@ -51,7 +51,7 @@ node_modules/@types/react/index.d.ts:485
 | Name | Type |
 | :------ | :------ |
 | `props` | [`TCGalleryProps`](../modules/frontend.md#tcgalleryprops) |
-| `context?` | `any` |
+| `context` | `any` |
 
 #### Inherited from
 
@@ -59,7 +59,7 @@ React.Component<TCGalleryProps\>.constructor
 
 #### Defined in
 
-node_modules/@types/react/index.d.ts:490
+node_modules/@types/react/index.d.ts:480
 
 ## Methods
 

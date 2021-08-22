@@ -183,6 +183,7 @@ const products = await getCustomRepository(ProductRepository).getProducts();
 - [getRendererTempDevDir](#getrenderertempdevdir)
 - [getRendererTempDir](#getrenderertempdir)
 - [getServerBuildDir](#getserverbuilddir)
+- [getServerBuildMonitorPath](#getserverbuildmonitorpath)
 - [getServerBuildPath](#getserverbuildpath)
 - [getServerBuildProxyPath](#getserverbuildproxypath)
 - [getServerDefaultEmailsDir](#getserverdefaultemailsdir)
@@ -608,7 +609,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:209](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L209)
+[system/core/backend/src/helpers/paths.ts:213](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L213)
 
 ___
 
@@ -618,7 +619,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:210](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L210)
+[system/core/backend/src/helpers/paths.ts:214](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L214)
 
 ___
 
@@ -628,7 +629,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:207](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L207)
+[system/core/backend/src/helpers/paths.ts:211](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L211)
 
 ___
 
@@ -638,7 +639,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:208](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L208)
+[system/core/backend/src/helpers/paths.ts:212](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L212)
 
 ___
 
@@ -1023,7 +1024,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:220](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L220)
+[system/core/backend/src/helpers/paths.ts:224](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L224)
 
 ___
 
@@ -1091,7 +1092,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:179](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L179)
+[system/core/backend/src/helpers/paths.ts:183](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L183)
 
 ___
 
@@ -1111,7 +1112,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:189](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L189)
+[system/core/backend/src/helpers/paths.ts:193](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L193)
 
 ___
 
@@ -1291,7 +1292,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:205](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L205)
+[system/core/backend/src/helpers/paths.ts:209](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L209)
 
 ___
 
@@ -1311,7 +1312,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:231](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L231)
+[system/core/backend/src/helpers/paths.ts:235](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L235)
 
 ___
 
@@ -1331,7 +1332,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:198](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L198)
+[system/core/backend/src/helpers/paths.ts:202](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L202)
 
 ___
 
@@ -1419,7 +1420,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:214](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L214)
+[system/core/backend/src/helpers/paths.ts:218](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L218)
 
 ___
 
@@ -1439,7 +1440,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:215](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L215)
+[system/core/backend/src/helpers/paths.ts:219](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L219)
 
 ___
 
@@ -1459,7 +1460,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:216](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L216)
+[system/core/backend/src/helpers/paths.ts:220](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L220)
 
 ___
 
@@ -1479,7 +1480,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:211](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L211)
+[system/core/backend/src/helpers/paths.ts:215](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L215)
 
 ___
 
@@ -1499,7 +1500,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:212](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L212)
+[system/core/backend/src/helpers/paths.ts:216](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L216)
 
 ___
 
@@ -1519,7 +1520,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:213](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L213)
+[system/core/backend/src/helpers/paths.ts:217](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L217)
 
 ___
 
@@ -1553,7 +1554,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:222](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L222)
+[system/core/backend/src/helpers/paths.ts:226](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L226)
 
 ___
 
@@ -1567,7 +1568,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:223](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L223)
+[system/core/backend/src/helpers/paths.ts:227](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L227)
 
 ___
 
@@ -1581,7 +1582,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:224](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L224)
+[system/core/backend/src/helpers/paths.ts:228](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L228)
 
 ___
 
@@ -1669,6 +1670,20 @@ ___
 
 ___
 
+### getServerBuildMonitorPath
+
+▸ `Const` **getServerBuildMonitorPath**(): `undefined` \| `string`
+
+#### Returns
+
+`undefined` \| `string`
+
+#### Defined in
+
+[system/core/backend/src/helpers/paths.ts:113](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L113)
+
+___
+
 ### getServerBuildPath
 
 ▸ `Const` **getServerBuildPath**(): `undefined` \| `string`
@@ -1707,7 +1722,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:115](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L115)
+[system/core/backend/src/helpers/paths.ts:119](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L119)
 
 ___
 
@@ -1755,7 +1770,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:113](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L113)
+[system/core/backend/src/helpers/paths.ts:117](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L117)
 
 ___
 
@@ -1769,7 +1784,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:114](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L114)
+[system/core/backend/src/helpers/paths.ts:118](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L118)
 
 ___
 
@@ -1781,7 +1796,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `dbType` | ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"`` |
+| `dbType` | ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"`` \| ``"capacitor"`` |
 | `b` | `boolean` |
 
 #### Returns
@@ -1802,7 +1817,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `dbType` | ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"`` |
+| `dbType` | ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"`` \| ``"capacitor"`` |
 
 #### Returns
 
@@ -1851,7 +1866,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:172](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L172)
+[system/core/backend/src/helpers/paths.ts:176](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L176)
 
 ___
 
@@ -1871,7 +1886,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:166](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L166)
+[system/core/backend/src/helpers/paths.ts:170](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L170)
 
 ___
 
@@ -1891,7 +1906,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:134](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L134)
+[system/core/backend/src/helpers/paths.ts:138](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L138)
 
 ___
 
@@ -1927,7 +1942,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:153](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L153)
+[system/core/backend/src/helpers/paths.ts:157](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L157)
 
 ___
 
@@ -1947,7 +1962,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:159](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L159)
+[system/core/backend/src/helpers/paths.ts:163](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L163)
 
 ___
 
@@ -1967,7 +1982,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:217](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L217)
+[system/core/backend/src/helpers/paths.ts:221](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L221)
 
 ___
 
@@ -1987,7 +2002,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:218](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L218)
+[system/core/backend/src/helpers/paths.ts:222](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L222)
 
 ___
 
@@ -2007,7 +2022,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:143](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L143)
+[system/core/backend/src/helpers/paths.ts:147](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L147)
 
 ___
 
@@ -2027,7 +2042,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:149](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L149)
+[system/core/backend/src/helpers/paths.ts:153](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L153)
 
 ___
 
@@ -2041,7 +2056,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:162](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L162)
+[system/core/backend/src/helpers/paths.ts:166](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L166)
 
 ___
 
@@ -2055,7 +2070,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:140](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L140)
+[system/core/backend/src/helpers/paths.ts:144](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L144)
 
 ___
 
@@ -2069,7 +2084,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:127](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L127)
+[system/core/backend/src/helpers/paths.ts:131](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L131)
 
 ___
 
@@ -2083,7 +2098,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:122](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L122)
+[system/core/backend/src/helpers/paths.ts:126](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L126)
 
 ___
 
@@ -2097,7 +2112,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:123](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L123)
+[system/core/backend/src/helpers/paths.ts:127](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L127)
 
 ___
 
@@ -2111,7 +2126,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:131](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L131)
+[system/core/backend/src/helpers/paths.ts:135](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L135)
 
 ___
 
@@ -2173,7 +2188,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:219](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L219)
+[system/core/backend/src/helpers/paths.ts:223](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L223)
 
 ___
 
@@ -2251,7 +2266,7 @@ ___
 
 #### Defined in
 
-[system/core/backend/src/helpers/paths.ts:226](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L226)
+[system/core/backend/src/helpers/paths.ts:230](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/helpers/paths.ts#L230)
 
 ___
 
@@ -2458,7 +2473,7 @@ ___
 
 | Name | Type |
 | :------ | :------ |
-| `dbType` | ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"`` |
+| `dbType` | ``"mysql"`` \| ``"mariadb"`` \| ``"postgres"`` \| ``"cockroachdb"`` \| ``"sqlite"`` \| ``"mssql"`` \| ``"sap"`` \| ``"oracle"`` \| ``"cordova"`` \| ``"nativescript"`` \| ``"react-native"`` \| ``"sqljs"`` \| ``"mongodb"`` \| ``"aurora-data-api"`` \| ``"aurora-data-api-pg"`` \| ``"expo"`` \| ``"better-sqlite3"`` \| ``"capacitor"`` |
 | `str` | `string` |
 
 #### Returns

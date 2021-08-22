@@ -136,6 +136,7 @@ const settings: TCmsSettings | undefined = getStoreItem('cmsSettings');
 - [TScriptMetaInfo](#tscriptmetainfo)
 - [TServiceVersions](#tserviceversions)
 - [TStoreListItem](#tstorelistitem)
+- [TSystemUsage](#tsystemusage)
 - [TTag](#ttag)
 - [TTagInput](#ttaginput)
 - [TThemeConfig](#tthemeconfig)
@@ -2233,6 +2234,42 @@ ___
 #### Defined in
 
 [system/core/common/src/types/data.ts:417](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L417)
+
+___
+
+### TSystemUsage
+
+Ƭ **TSystemUsage**: `Object`
+
+#### Type declaration
+
+| Name | Type |
+| :------ | :------ |
+| `cpuInfo` | `Object` |
+| `cpuInfo.brand` | `string` |
+| `cpuInfo.cores` | `number` |
+| `cpuInfo.manufacturer` | `string` |
+| `cpuInfo.speed` | `string` |
+| `cpuUsage` | `Object` |
+| `cpuUsage.currentLoad` | `number` |
+| `cpuUsage.currentLoadIdle` | `number` |
+| `cpuUsage.previousLoads` | { `load`: `number` ; `time`: `Date`  }[] |
+| `diskUsage` | `Object` |
+| `diskUsage.available` | `number` |
+| `diskUsage.size` | `number` |
+| `diskUsage.used` | `number` |
+| `memoryUsage` | `Object` |
+| `memoryUsage.available` | `number` |
+| `memoryUsage.total` | `number` |
+| `memoryUsage.used` | `number` |
+| `osInfo` | `Object` |
+| `osInfo.arch` | `string` |
+| `osInfo.distro` | `string` |
+| `osInfo.platform` | `string` |
+
+#### Defined in
+
+[system/core/common/src/types/data.ts:549](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/common/src/types/data.ts#L549)
 
 ___
 
