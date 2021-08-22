@@ -22,6 +22,6 @@ module.exports = {
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-var-requires": "off",
         "@typescript-eslint/no-empty-function": "off",
-        "no-console": 1,
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
     }
 }

@@ -17,7 +17,7 @@
         "@typescript-eslint/no-explicit-any": "off",
         "@typescript-eslint/no-empty-function": "off",
         "react/display-name": "off",
-        "no-console": 1,
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
         "react/prop-types": "off"
     },
     "env": {

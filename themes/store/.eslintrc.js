@@ -29,6 +29,6 @@ module.exports = {
         "react/prop-types": "off",
         "react/display-name": "off",
         "no-empty": "off",
-        "no-console": 1,
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
     }
 };
