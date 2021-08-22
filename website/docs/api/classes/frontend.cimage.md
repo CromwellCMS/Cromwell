@@ -30,7 +30,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `Readonly`<`CImageProps`\> |
+| `props` | `CImageProps` \| `Readonly`<`CImageProps`\> |
 
 #### Inherited from
 
@@ -38,9 +38,9 @@ React.Component<CImageProps\>.constructor
 
 #### Defined in
 
-node_modules/@types/react/index.d.ts:485
+node_modules/@types/react/index.d.ts:475
 
-• **new CImage**(`props`, `context?`)
+• **new CImage**(`props`, `context`)
 
 **`deprecated`**
 
@@ -51,7 +51,7 @@ node_modules/@types/react/index.d.ts:485
 | Name | Type |
 | :------ | :------ |
 | `props` | `CImageProps` |
-| `context?` | `any` |
+| `context` | `any` |
 
 #### Inherited from
 
@@ -59,7 +59,7 @@ React.Component<CImageProps\>.constructor
 
 #### Defined in
 
-node_modules/@types/react/index.d.ts:490
+node_modules/@types/react/index.d.ts:480
 
 ## Methods
 

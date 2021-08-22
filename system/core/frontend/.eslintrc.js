@@ -29,5 +29,6 @@ module.exports = {
         "react/display-name": "off",
         "react/prop-types": "off",
         "@typescript-eslint/no-var-requires": "off",
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
     }
 };

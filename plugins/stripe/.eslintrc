@@ -12,6 +12,7 @@
     "rules": {
         "@typescript-eslint/no-namespace": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
+        "no-console": ["warn", { "allow": ["warn", "error"] }],
         "@typescript-eslint/no-var-requires": 0
     },
     "env": {

@@ -59,7 +59,7 @@ TProductCategory.children
 
 #### Defined in
 
-[system/core/backend/src/models/entities/product-category.entity.ts:29](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L29)
+[system/core/backend/src/models/entities/product-category.entity.ts:30](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L30)
 
 ___
 
@@ -91,7 +91,7 @@ TProductCategory.description
 
 #### Defined in
 
-[system/core/backend/src/models/entities/product-category.entity.ts:22](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L22)
+[system/core/backend/src/models/entities/product-category.entity.ts:23](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L23)
 
 ___
 
@@ -105,7 +105,7 @@ TProductCategory.descriptionDelta
 
 #### Defined in
 
-[system/core/backend/src/models/entities/product-category.entity.ts:26](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L26)
+[system/core/backend/src/models/entities/product-category.entity.ts:27](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L27)
 
 ___
 
@@ -155,7 +155,7 @@ TProductCategory.mainImage
 
 #### Defined in
 
-[system/core/backend/src/models/entities/product-category.entity.ts:18](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L18)
+[system/core/backend/src/models/entities/product-category.entity.ts:19](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L19)
 
 ___
 
@@ -169,7 +169,7 @@ TProductCategory.name
 
 #### Defined in
 
-[system/core/backend/src/models/entities/product-category.entity.ts:14](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L14)
+[system/core/backend/src/models/entities/product-category.entity.ts:15](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L15)
 
 ___
 
@@ -219,7 +219,7 @@ TProductCategory.parent
 
 #### Defined in
 
-[system/core/backend/src/models/entities/product-category.entity.ts:32](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L32)
+[system/core/backend/src/models/entities/product-category.entity.ts:33](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L33)
 
 ___
 
@@ -233,7 +233,7 @@ TProductCategory.products
 
 #### Defined in
 
-[system/core/backend/src/models/entities/product-category.entity.ts:35](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L35)
+[system/core/backend/src/models/entities/product-category.entity.ts:36](https://github.com/CromwellCMS/Cromwell/blob/master/system/core/backend/src/models/entities/product-category.entity.ts#L36)
 
 ___
 

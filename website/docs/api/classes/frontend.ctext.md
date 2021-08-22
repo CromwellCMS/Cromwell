@@ -30,7 +30,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `Readonly`<`CTextProps`\> |
+| `props` | `CTextProps` \| `Readonly`<`CTextProps`\> |
 
 #### Inherited from
 
@@ -38,9 +38,9 @@ React.Component<CTextProps\>.constructor
 
 #### Defined in
 
-node_modules/@types/react/index.d.ts:485
+node_modules/@types/react/index.d.ts:475
 
-• **new CText**(`props`, `context?`)
+• **new CText**(`props`, `context`)
 
 **`deprecated`**
 
@@ -51,7 +51,7 @@ node_modules/@types/react/index.d.ts:485
 | Name | Type |
 | :------ | :------ |
 | `props` | `CTextProps` |
-| `context?` | `any` |
+| `context` | `any` |
 
 #### Inherited from
 
@@ -59,7 +59,7 @@ React.Component<CTextProps\>.constructor
 
 #### Defined in
 
-node_modules/@types/react/index.d.ts:490
+node_modules/@types/react/index.d.ts:480
 
 ## Methods
 

@@ -38,7 +38,7 @@ export default function Home() {
             <div className={styles.featureImg} style={{
               minWidth: '90px',
               height: '90px',
-              backgroundImage: 'url(../../static/img/content.svg)'
+              backgroundImage: 'url("/img/content.svg")'
             }}></div>
             <div>
               <p className={styles.featureTitle}>Online store and blogging platform.</p>
@@ -47,7 +47,7 @@ export default function Home() {
           </div>
           <div className={styles.feature}>
             <div className={styles.featureImg} style={{
-              backgroundImage: 'url(../../static/img/puzzle.svg)',
+              backgroundImage: 'url("/img/puzzle.svg")',
               minWidth: '90px',
               height: '90px',
             }}></div>
@@ -62,7 +62,7 @@ export default function Home() {
               height: '120px',
               marginLeft: '-50px',
               backgroundSize: '90%',
-              backgroundImage: 'url(../../static/img/seo.svg)',
+              backgroundImage: 'url("/img/seo.svg")',
             }}></div>
             <div>
               <p className={styles.featureTitle}>SEO optimized.</p>
@@ -71,7 +71,7 @@ export default function Home() {
           </div>
           <div className={styles.feature}>
             <div className={styles.featureImg} style={{
-              backgroundImage: 'url(../../static/img/magic-wand.svg)'
+              backgroundImage: 'url("/img/magic-wand.svg")'
             }}></div>
             <div>
               <p className={styles.featureTitle}>Theme editor</p>
@@ -80,7 +80,7 @@ export default function Home() {
           </div>
           <div className={styles.feature}>
             <div className={styles.featureImg} style={{
-              backgroundImage: 'url(../../static/img/rocket.svg)',
+              backgroundImage: 'url("/img/rocket.svg")',
             }}></div>
             <div>
               <p className={styles.featureTitle}>Node.js.</p>
@@ -90,7 +90,7 @@ export default function Home() {
           </div>
           <div className={styles.feature}>
             <div className={styles.featureImg} style={{
-              backgroundImage: 'url(../../static/img/open-source.svg)'
+              backgroundImage: 'url("/img/open-source.svg")'
             }}></div>
             <div>
               <p className={styles.featureTitle}>Free and open source</p>

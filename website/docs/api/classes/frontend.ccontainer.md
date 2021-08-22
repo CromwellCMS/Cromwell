@@ -30,7 +30,7 @@
 
 | Name | Type |
 | :------ | :------ |
-| `props` | `Readonly`<[`CContainerProps`](../modules/frontend.md#ccontainerprops)\> |
+| `props` | [`CContainerProps`](../modules/frontend.md#ccontainerprops) \| `Readonly`<[`CContainerProps`](../modules/frontend.md#ccontainerprops)\> |
 
 #### Inherited from
 
@@ -38,9 +38,9 @@ React.Component<CContainerProps\>.constructor
 
 #### Defined in
 
-node_modules/@types/react/index.d.ts:485
+node_modules/@types/react/index.d.ts:475
 
-• **new CContainer**(`props`, `context?`)
+• **new CContainer**(`props`, `context`)
 
 **`deprecated`**
 
@@ -51,7 +51,7 @@ node_modules/@types/react/index.d.ts:485
 | Name | Type |
 | :------ | :------ |
 | `props` | [`CContainerProps`](../modules/frontend.md#ccontainerprops) |
-| `context?` | `any` |
+| `context` | `any` |
 
 #### Inherited from
 
@@ -59,7 +59,7 @@ React.Component<CContainerProps\>.constructor
 
 #### Defined in
 
-node_modules/@types/react/index.d.ts:490
+node_modules/@types/react/index.d.ts:480
 
 ## Methods
 
