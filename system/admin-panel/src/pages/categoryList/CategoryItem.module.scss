@@ -15,6 +15,7 @@
     margin-bottom: 3px;
     transition: 0.3s;
 }
+
 .listItem:hover {
     background-color: #eee;
 }
@@ -31,6 +32,22 @@
 
 .header:hover {
     background-color: rgba($color: #000000, $alpha: 0.05);
+}
+
+:global(.modeDark) {
+    .listItem {
+        background-color: #333;
+        border-bottom: 1px solid #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .listItem:hover,
+    .header:hover {
+        background-color: #555;
+    }
 }
 
 .subList {

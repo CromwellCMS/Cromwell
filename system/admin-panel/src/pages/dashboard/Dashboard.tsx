@@ -286,7 +286,7 @@ export default class Dashboard extends React.Component<any, {
                                         embedded={true}
                                         key={review.id}
                                         data={review}
-                                        lislistItemProps={{
+                                        listItemProps={{
                                             handleDeleteBtnClick: () => null,
                                             toggleSelection: () => null,
                                             handleOpenReview: () => null,

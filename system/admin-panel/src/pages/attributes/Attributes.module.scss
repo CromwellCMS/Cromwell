@@ -23,3 +23,14 @@
     margin-bottom: 15px;
     padding: 10px 20px;
 }
+
+:global(.modeDark) {
+    .listItem,
+    .header {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

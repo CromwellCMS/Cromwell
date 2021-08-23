@@ -34,6 +34,17 @@
     overflow: auto;
 }
 
+:global(.modeDark) {
+    .treeList,
+    .header {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}
+
 .actionBtn {
     margin-right: 10px;
 }

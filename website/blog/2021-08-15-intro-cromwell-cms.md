@@ -49,6 +49,6 @@ From a developer point of view:
 
 
 
-WordPress is often chosen because of its plugins and themes abundance. I cannot replicate it. But I can try to create an environment, what next is up to community. Together we can create great   and more people are using it, more will. Things like that can change the web.  
+WordPress is often chosen because of its plugins and themes abundance. I cannot replicate it. But I can try to create an environment, what next is up to community. Together we can create a great ecosystem. And more people are using it, more will. Things like that can change the web.  
 
 I'm not having illusions that my system is already better than WordPress (since I haven't spent dozen years on it yet), but I'm trying my best. For now, I'm here to ask feedback on how to improve it. Well, and the project is open-source, anyone can try it. In the end, it all depends on community. How soon we'll embrace a new dominant language at backend development? Will there be a day when Node.js is powering 78.9% of the internet?

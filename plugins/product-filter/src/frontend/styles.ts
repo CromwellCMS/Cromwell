@@ -6,7 +6,7 @@ export const getStyles = (theme): StyleRules => ({
         margin: '15px 0',
         // boxShadow: '0 3px 6px 0 rgba(0, 0, 0, 0.04), 0 0 4px 0px rgba(0, 0, 0, 0.05)',
         boxShadow: 'none',
-        backgroundColor: '#fff',
+        backgroundColor: 'transparent',
         borderRadius: '5px'
     },
     root: {
@@ -17,7 +17,7 @@ export const getStyles = (theme): StyleRules => ({
     },
     list: {
         maxHeight: 230,
-        backgroundColor: theme.palette.background.paper,
+        backgroundColor: 'transparent',
         overflow: 'auto',
     },
     button: {
@@ -48,7 +48,7 @@ export const getStyles = (theme): StyleRules => ({
     },
     paper: {
         boxShadow: '0 3px 6px 0 rgba(0, 0, 0, 0.04), 0 0 10px 3px rgba(0, 0, 0, 0.05)',
-        backgroundColor: '#fff',
+        backgroundColor: 'transparent',
         borderRadius: '5px'
     },
     mobileOpenBtn: {
@@ -119,6 +119,7 @@ export const IOSSliderStyles = withStyles((theme: Theme) => ({
         height: 28,
         width: 28,
         backgroundColor: '#fff',
+        color: '#222',
         boxShadow: iOSBoxShadow,
         marginTop: -14,
         marginLeft: -14,

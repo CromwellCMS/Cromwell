@@ -35,16 +35,22 @@ a {
     justify-content: space-between;
 }
 
+.logoMoon {
+    background-color: transparent;
+    border-radius: 100%;
+    box-shadow: inset 0px 3px 0 1.4px #fff;
+    transform: rotate(270deg);
+}
+
 .logo {
+    @extend .logoMoon;
     width: 24px;
     height: 24px;
     margin-right: 10px;
     margin-left: 9px;
-    background-position: center;
-    background-size: contain;
-    background-repeat: no-repeat;
     user-select: none;
 }
+
 .logoMobile {
     width: 24px;
     margin-right: 10px;
@@ -72,6 +78,7 @@ div.SidebarLink {
     :global(.MuiAccordionSummary-content) {
         margin: 0;
     }
+
     :global(.MuiIconButton-edgeEnd) {
         margin: 0;
     }
@@ -125,6 +132,7 @@ div.SidebarLink {
     align-items: center;
     justify-content: space-between;
     margin-top: 15px;
+
     * {
         color: #fff;
     }
@@ -188,7 +196,7 @@ li.optionsItem {
 header.appBar {
     padding: 0;
     box-shadow: none;
-    @include paper;
+    @extend .paper;
 
     > div {
         padding: 0;

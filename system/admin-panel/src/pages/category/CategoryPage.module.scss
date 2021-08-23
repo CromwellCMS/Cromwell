@@ -7,69 +7,80 @@
     margin: 0 auto;
     width: 100%;
     padding: 20px;
+}
+.notFoundPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
 
-    .notFoundPage {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
-    }
+.notFoundText {
+    font-size: 25px;
+    font-weight: 500;
+}
 
-    .notFoundText {
-        font-size: 25px;
-        font-weight: 500;
-    }
+.header {
+    @include paper;
+    padding: 0 20px 0 0;
+    width: 100%;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
-    .header {
-        @include paper;
-        padding: 0 20px 0 0;
-        width: 100%;
-        margin-bottom: 20px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .headerLeft {
-        display: flex;
-        align-items: center;
-    }
+.headerLeft {
+    display: flex;
+    align-items: center;
+}
 
+.fields {
+    @include paper;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+:global(.modeDark) {
+    .header,
     .fields {
-        @include paper;
-        padding: 20px;
-        display: flex;
-        flex-direction: column;
-    }
+        background-color: #333;
 
-    .item {
-        margin-bottom: 20px;
+        * {
+            color: #eee;
+        }
     }
+}
 
-    .textField {
-        @extend .item;
-    }
+.item {
+    margin-bottom: 20px;
+}
 
-    .descriptionEditor {
-        @extend .item;
-    }
+.textField {
+    @extend .item;
+}
 
-    .imageBox {
-        @extend .item;
-        border-bottom: 1px solid #999;
-    }
+.descriptionEditor {
+    @extend .item;
+}
 
-    .mainImage {
-        width: 60px;
-        height: 40px;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: contain;
-    }
+.imageBox {
+    @extend .item;
+    border-bottom: 1px solid #999;
+}
 
-    .closeBtn {
-        position: absolute;
-        top: 5px;
-        right: 5px;
-        z-index: 3;
-    }
+.mainImage {
+    width: 60px;
+    height: 40px;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.closeBtn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    z-index: 3;
 }

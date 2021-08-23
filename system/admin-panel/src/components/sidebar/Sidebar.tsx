@@ -86,7 +86,7 @@ export default function Sidebar() {
     }
 
     const openFileManager = () => {
-        getFileManager()?.getPhoto({ initialFileLocation: '' });
+        getFileManager()?.open();
     }
 
     const openCmsInfo = () => {
@@ -104,10 +104,7 @@ export default function Sidebar() {
         <div className={styles.sidebarContent}>
             <div className={styles.sidebarTop}>
                 <div className={styles.sidebarHeader}>
-                    <div
-                        className={styles.logo}
-                        style={{ backgroundImage: 'url(/admin/static/icon_small_dark.png)' }}
-                    ></div>
+                    <div className={styles.logo}></div>
                     {/* <p className={commonStyles.text} style={{ color: '#fff', opacity: 0.7 }}>Admin Panel</p> */}
                     <div>
                         <NotificationCenter color="#fff" />
@@ -137,9 +134,12 @@ export default function Sidebar() {
                         <p className={styles.emailText}>{userInfo?.email ?? ''}</p>
                     </div>
                 </div>
-                <div className={styles.bottomBlock} ref={popperAnchorEl}>
+                <div className={styles.bottomBlock}
+                    style={{ marginRight: '-15px' }}
+                    ref={popperAnchorEl}>
                     <Tooltip title="Options">
                         <IconButton
+                            style={{ marginLeft: '-10px' }}
                             onClick={handleOptionsToggle}
                             className={styles.actionBtn}
                             aria-label="Options"
@@ -247,3 +247,4 @@ function HideOnScroll(props: { children: React.ReactElement }) {
         </Slide>
     );
 }
+

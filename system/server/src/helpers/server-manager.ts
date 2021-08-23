@@ -103,7 +103,11 @@ const makeServer = async (init?: boolean): Promise<ServerInfo> => {
     });
 
     if (!info.port) throw new Error('Proxy manager: Failed to start API server');
-    await tcpPortUsed.waitUntilUsed(info.port, 500, 8000);
+    try {
+        await tcpPortUsed.waitUntilUsed(info.port, 500, 8000);
+    } catch (error) {
+        logger.error(error);
+    }
 
     madeServers[serverId] = info;
     return info;
@@ -314,7 +318,7 @@ const parentRegisterChild = (child: ChildProcess, childInfo: ServerInfo) => {
             if (message.message === 'apply-new' && message.payload) {
                 const port = madeServers[message.payload]?.port;
                 if (port) {
-                    const isAlive = await tcpPortUsed.check(port, '127.0.0.1');
+                    const isAlive = await checkServerAlive({ port });
 
                     if (!isAlive) {
                         if (await checkServerAlive(childInfo)) {

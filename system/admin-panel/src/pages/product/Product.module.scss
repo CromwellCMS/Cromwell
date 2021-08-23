@@ -9,164 +9,164 @@
     overflow: auto;
     max-width: 1200px;
     margin: 0 auto;
+}
 
-    .paper {
-        @include paper;
-    }
+.paper {
+    @include paper;
+}
 
-    .header {
-        @include paper;
-        width: 100%;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-    .headerLeft {
-        display: flex;
-        align-items: center;
-    }
-    .headerActions {
-        padding-right: 15px;
-    }
+.header {
+    @include paper;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.headerLeft {
+    display: flex;
+    align-items: center;
+}
+.headerActions {
+    padding-right: 15px;
+}
 
-    .tabContent {
-        margin: 20px 0;
-    }
+.tabContent {
+    margin: 20px 0;
+}
 
-    .mainTab {
-        @include paper;
-        padding: 15px;
-    }
+.mainTab {
+    @include paper;
+    padding: 15px;
+}
 
-    .textField {
-        width: 100%;
-        margin: 10px 0;
-    }
+.textField {
+    width: 100%;
+    margin: 10px 0;
+}
 
-    .imageBlock {
-        position: relative;
-        border: 1px solid #bbb;
-        border-radius: 5px;
-        margin: 10px 0;
-        display: flex;
-        padding: 10px;
-    }
+.imageBlock {
+    position: relative;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    margin: 10px 0;
+    display: flex;
+    padding: 10px;
+}
 
+.imageItem {
+    position: relative;
+    transition: 0.3s;
+}
+
+.imageItem:hover {
+    background-color: #eee;
+    border-radius: 8px;
+}
+
+:global(.DraggableBlock__dragging) {
     .imageItem {
-        position: relative;
-        transition: 0.3s;
+        background-color: transparent;
     }
+}
 
-    .imageItem:hover {
-        background-color: #eee;
-        border-radius: 8px;
-    }
+.imageActions {
+    opacity: 0;
+    transition: 0.3s;
+    position: absolute;
+    top: 5px;
+    right: 5px;
+}
 
-    :global(.DraggableBlock__dragging) {
-        .imageItem {
-            background-color: transparent;
-        }
-    }
+.saveBtn {
+    position: relative;
+}
 
-    .imageActions {
-        opacity: 0;
-        transition: 0.3s;
-        position: absolute;
-        top: 5px;
-        right: 5px;
-    }
+.attributeBlock {
+    @include paper;
+    // border: 1px solid #bbb;
+    border-radius: 5px;
+    margin: 20px 0;
+}
 
-    .saveBtn {
-        position: relative;
-    }
+.attributeHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 10px;
+    border-bottom: 1px solid #ccc;
+}
 
-    .attributeBlock {
-        @include paper;
-        // border: 1px solid #bbb;
-        border-radius: 5px;
-        margin: 20px 0;
-    }
+.tag {
+    font-size: 18px;
+    border: 1px solid #333;
+    padding: 2px 6px;
+    border-radius: 3px;
+}
 
-    .attributeHeader {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding-left: 10px;
-        border-bottom: 1px solid #ccc;
-    }
+.attributeInstanceValue {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 100px;
+}
+
+.editingProductVariant {
+    border: 1px solid #bbb;
+    margin: 10px;
+    border-radius: 5px;
+}
+.editingProductVariantCard {
+    padding: 10px;
+}
+
+.editingProductVariantTitle {
+    font-size: 18px;
+    font-weight: 500;
 
     .tag {
-        font-size: 18px;
-        border: 1px solid #333;
-        padding: 2px 6px;
-        border-radius: 3px;
+        margin-left: 15px;
     }
+}
 
-    .attributeInstanceValue {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        min-width: 100px;
-    }
+.notFoundPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
 
-    .editingProductVariant {
-        border: 1px solid #bbb;
-        margin: 10px;
-        border-radius: 5px;
-    }
-    .editingProductVariantCard {
-        padding: 10px;
-    }
+.notFoundText {
+    font-size: 25px;
+    font-weight: 500;
+}
 
-    .editingProductVariantTitle {
-        font-size: 18px;
-        font-weight: 500;
+.galleryActions {
+    display: flex;
+    flex-direction: column;
+    border-left: 1px solid #ccc;
+}
 
-        .tag {
-            margin-left: 15px;
-        }
-    }
+.galleryContainer {
+    width: calc(100% - 50px);
+}
 
-    .notFoundPage {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100%;
+button.galleryActionBtn {
+    background-color: rgba($color: #fff, $alpha: 0.7);
+}
+button.galleryActionBtn:hover {
+    background-color: rgba(0, 0, 0, 0.3);
+    svg {
+        color: #fff;
     }
+}
 
-    .notFoundText {
-        font-size: 25px;
-        font-weight: 500;
-    }
+button.galleryAddImageBtn {
+    @extend .galleryActionBtn;
+}
 
-    .galleryActions {
-        display: flex;
-        flex-direction: column;
-        border-left: 1px solid #ccc;
-    }
-
-    .galleryContainer {
-        width: calc(100% - 50px);
-    }
-
-    button.galleryActionBtn {
-        background-color: rgba($color: #fff, $alpha: 0.7);
-    }
-    button.galleryActionBtn:hover {
-        background-color: rgba(0, 0, 0, 0.3);
-        svg {
-            color: #fff;
-        }
-    }
-
-    button.galleryAddImageBtn {
-        @extend .galleryActionBtn;
-    }
-
-    .openPageBtn {
-        margin-right: 10px;
-    }
+.openPageBtn {
+    margin-right: 10px;
 }
 
 .newAttributesList {
@@ -197,5 +197,18 @@
 @media screen and (max-width: 1069px) {
     .Product .header {
         justify-content: space-around;
+    }
+}
+
+:global(.modeDark) {
+    .mainTab,
+    .header,
+    .paper,
+    .attributeBlock {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
     }
 }
