@@ -134,9 +134,12 @@ export default function Sidebar() {
                         <p className={styles.emailText}>{userInfo?.email ?? ''}</p>
                     </div>
                 </div>
-                <div className={styles.bottomBlock} ref={popperAnchorEl}>
+                <div className={styles.bottomBlock}
+                    style={{ marginRight: '-15px' }}
+                    ref={popperAnchorEl}>
                     <Tooltip title="Options">
                         <IconButton
+                            style={{ marginLeft: '-10px' }}
                             onClick={handleOptionsToggle}
                             className={styles.actionBtn}
                             aria-label="Options"
@@ -244,3 +247,4 @@ function HideOnScroll(props: { children: React.ReactElement }) {
         </Slide>
     );
 }
+

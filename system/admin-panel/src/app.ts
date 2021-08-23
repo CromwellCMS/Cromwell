@@ -7,7 +7,7 @@ import 'react-grid-layout/css/styles.css';
 import 'react-resizable/css/styles.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { onStoreChange, setStoreItem, TUser } from '@cromwell/core';
+import { getStoreItem, onStoreChange, setStoreItem, TUser } from '@cromwell/core';
 import { getGraphQLClient, getRestApiClient, TErrorInfo } from '@cromwell/core-frontend';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -43,6 +43,14 @@ import { store } from './redux/store';
 
     if (settings) {
         setStoreItem('cmsSettings', settings);
+    }
+
+    const themeMode = window.localStorage.getItem('crw_theme_mode');
+    if (themeMode) {
+        setStoreItem('theme', {
+            ...(getStoreItem('theme') ?? {}),
+            mode: themeMode as any,
+        });
     }
 
     // Redirect to /setup page if not installed

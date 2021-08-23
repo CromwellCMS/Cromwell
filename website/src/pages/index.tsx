@@ -32,24 +32,25 @@ export default function Home() {
             className={styles.examplesBtn}
           >Examples</Button>
         </div>
-        <p className={styles.header2}>Easy to setup and maintain, includes </p>
+        <p className={styles.header2}>Easy to setup and maintain, includes:</p>
         <div className={styles.features}>
           <div className={styles.feature}>
             <div className={styles.featureImg} style={{
-              minWidth: '90px',
-              height: '90px',
+              // minWidth: '90px',
+              // height: '90px',
+              backgroundSize: '70%',
               backgroundImage: 'url("/img/content.svg")'
             }}></div>
             <div>
               <p className={styles.featureTitle}>Online store and blogging platform.</p>
-              <p> Manage your products, posts and other content with ease.</p>
+              <p>Manage your products, posts and other content with ease.</p>
             </div>
           </div>
           <div className={styles.feature}>
             <div className={styles.featureImg} style={{
               backgroundImage: 'url("/img/puzzle.svg")',
-              minWidth: '90px',
-              height: '90px',
+              // minWidth: '90px',
+              // height: '90px',
             }}></div>
             <div>
               <p className={styles.featureTitle}>Powerful admin panel with themes and plugins.</p>
@@ -58,10 +59,10 @@ export default function Home() {
           </div>
           <div className={styles.feature}>
             <div className={styles.featureImg} style={{
-              minWidth: '120px',
-              height: '120px',
-              marginLeft: '-50px',
-              backgroundSize: '90%',
+              // minWidth: '120px',
+              // height: '120px',
+              // marginLeft: '-50px',
+              backgroundSize: '97%',
               backgroundImage: 'url("/img/seo.svg")',
             }}></div>
             <div>

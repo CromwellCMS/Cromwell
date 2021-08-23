@@ -39,7 +39,7 @@ a {
     background-color: transparent;
     border-radius: 100%;
     box-shadow: inset 0px 3px 0 1.4px #fff;
-    transform: rotate(271deg);
+    transform: rotate(270deg);
 }
 
 .logo {
@@ -196,9 +196,9 @@ li.optionsItem {
 header.appBar {
     padding: 0;
     box-shadow: none;
-    @include paper;
+    @extend .paper;
 
-    >div {
+    > div {
         padding: 0;
     }
 }
@@ -218,7 +218,6 @@ header.appBar {
 }
 
 @media screen and (max-width: $mobileBreakpoint) {
-
     // mobile
     .sidebarMobileHeader {
         margin: 0;
@@ -234,7 +233,6 @@ header.appBar {
 }
 
 @media screen and (min-width: $mobileBreakpoint) {
-
     // desktop
     .mobileContent {
         display: none;

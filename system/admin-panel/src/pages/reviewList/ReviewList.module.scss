@@ -100,3 +100,14 @@ div.filterItem {
         margin-top: 30px;
     }
 }
+
+:global(.modeDark) {
+    .itemToView,
+    .listHeader {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

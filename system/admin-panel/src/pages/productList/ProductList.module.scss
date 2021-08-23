@@ -29,6 +29,16 @@
     }
 }
 
+:global(.modeDark) {
+    .listHeader {
+        background: #333;
+
+        * {
+            color: #fff;
+        }
+    }
+}
+
 .listWrapper {
     @extend .container;
     min-height: 400px;
@@ -49,6 +59,21 @@
 
 .listItem:hover {
     background-color: #eee;
+}
+
+:global(.modeDark) {
+    .listItem {
+        background-color: #333;
+        border-bottom: 1px solid #333;
+
+        * {
+            color: #eee;
+        }
+    }
+
+    .listItem:hover {
+        background-color: #555;
+    }
 }
 
 .list {
@@ -120,6 +145,16 @@ div.filterDrawer {
     @include styledScrollBar;
     width: 280px;
     padding-right: 7px;
+}
+
+:global(.modeDark) {
+    div.filterDrawer {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
 }
 
 .filterHeader {

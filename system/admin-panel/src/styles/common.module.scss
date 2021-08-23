@@ -96,3 +96,9 @@
   display: block;
   border-radius: 100%;
 }
+
+:global(.modeDark) {
+  .pageTitle::before {
+    background-color: #eee;
+  }
+}

@@ -11,5 +11,5 @@ export { default as PluginSettingsLayout } from './components/pluginSettingsLayo
 export { default as TextFieldWithTooltip } from './components/textFieldWithTooltip/TextFieldWithTooltip';
 export * from './components/toast/toast';
 export { default as TransferList } from './components/transferList/TransferList';
-export * from './components/SkeletonPreloader';
+export * from './components/skeleton/SkeletonPreloader';
 export * from './helpers/Draggable/Draggable';

@@ -11,7 +11,7 @@ import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Modal from '../../components/modal/Modal';
 import Pagination from '../../components/pagination/Pagination';
-import { listPreloader } from '../../components/SkeletonPreloader';
+import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import {
     countSelectedItems,

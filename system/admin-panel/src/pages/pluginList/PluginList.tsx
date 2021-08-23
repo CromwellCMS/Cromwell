@@ -16,7 +16,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import MarketModal from '../../components/market/MarketModal';
 import { askConfirmation } from '../../components/modal/Confirmation';
 import Modal from '../../components/modal/Modal';
-import { SkeletonPreloader } from '../../components/SkeletonPreloader';
+import { SkeletonPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { pluginMarketPageInfo, pluginPageInfo } from '../../constants/PageInfos';
 import { loadPlugin, loadPlugins } from '../../helpers/loadPlugins';

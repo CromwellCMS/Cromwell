@@ -20,6 +20,16 @@
     height: 100%;
 }
 
+:global(.modeDark) {
+    .topStatContent {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}
+
 .topStatIcon {
     background-position: center;
     background-size: contain;
@@ -62,6 +72,16 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+}
+
+:global(.modeDark) {
+    .chartBox {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
 }
 
 .chart {
@@ -113,5 +133,5 @@
 
 .specsList {
     @extend .pageViewList;
-    padding:  0 10px;
+    padding: 0 10px;
 }

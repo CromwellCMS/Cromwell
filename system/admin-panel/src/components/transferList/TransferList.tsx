@@ -1,7 +1,5 @@
 import {
     Button,
-    Card,
-    CardHeader,
     Checkbox,
     createStyles,
     Divider,
@@ -14,6 +12,7 @@ import {
     Theme,
 } from '@material-ui/core';
 import React from 'react';
+import styles from './TransferList.Module.scss';
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -22,11 +21,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         cardHeader: {
             padding: theme.spacing(1, 2),
-        },
-        list: {
-            height: 230,
-            backgroundColor: theme.palette.background.paper,
-            overflow: 'auto',
         },
         button: {
             margin: theme.spacing(0.5, 0),
@@ -93,7 +87,7 @@ export default function TransferList(props: {
                         aria-label="move selected right"
                     >
                         &gt;
-          </Button>
+                    </Button>
                     <Button
                         variant="outlined"
                         size="small"
@@ -103,7 +97,7 @@ export default function TransferList(props: {
                         aria-label="move selected left"
                     >
                         &lt;
-          </Button>
+                    </Button>
                 </Grid>
             </Grid>
             <Grid item>
@@ -127,7 +121,7 @@ export const CheckList = (props: {
     actions?: React.ReactNode;
     fullWidthToggle?: boolean;
 }) => {
-    const { title, items, itemComp, checked, setChecked, fullWidthToggle } = props;
+    const { title, items, checked, setChecked, fullWidthToggle } = props;
     const classes = useStyles();
 
     const handleToggle = (value: string) => () => {
@@ -179,7 +173,7 @@ export const CheckList = (props: {
                 {props.actions}
             </div>
             <Divider />
-            <List className={classes.list} dense role="list">
+            <List className={styles.list} dense role="list">
                 {items.map((value: string, index: number) => {
                     const labelId = `transfer-list-all-item-${value}-label`;
 

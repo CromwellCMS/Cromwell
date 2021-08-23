@@ -11,3 +11,13 @@
     @include paper;
     padding: 5px 10px;
 }
+
+:global(.modeDark) {
+    .pagination {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}

@@ -1,0 +1,8 @@
+@import "../../styles/variables.scss";
+@import "../../styles/common.module.scss";
+
+.list {
+    @include styledScrollBar;
+    height: 230px;
+    overflow: auto;
+}

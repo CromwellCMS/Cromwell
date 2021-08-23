@@ -1,15 +1,18 @@
+import { getStoreItem, onStoreChange } from '@cromwell/core';
 import { createMuiTheme, ThemeProvider, Toolbar } from '@material-ui/core';
-import React, { Suspense } from 'react';
+import clsx from 'clsx';
+import React, { Suspense, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { HashRouter, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 
 import { pageInfos } from '../../constants/PageInfos';
+import { useForceUpdate } from '../../helpers/forceUpdate';
 import Page404 from '../../pages/404/404page';
 import PageErrorBoundary from '../errorBoundaries/PageErrorBoundary';
 import FileManager from '../fileManager/FileManager';
-import { ConfirmPrompt } from '../modal/Confirmation';
 import LoadBox from '../loadBox/LoadBox';
+import { ConfirmPrompt } from '../modal/Confirmation';
 import Sidebar from '../sidebar/Sidebar';
 import styles from './Layout.module.scss';
 
@@ -29,10 +32,22 @@ const theme = createMuiTheme({
 });
 
 function Layout() {
+  const forceUpdate = useForceUpdate();
+  const darkMode = getStoreItem('theme')?.mode === 'dark';
+
+  document.body.classList.remove('modeDark');
+  document.body.classList.remove('modeLight');
+  document.body.classList.add(darkMode ? 'modeDark' : 'modeLight');
+
+  useEffect(() => {
+    onStoreChange('theme', () => {
+      forceUpdate();
+    })
+  });
 
   return (
     <ThemeProvider theme={theme}>
-      <div className={styles.Layout}>
+      <div className={clsx(styles.Layout)}>
         <HashRouter>
           <div className={styles.sidebar}>
             <Sidebar />

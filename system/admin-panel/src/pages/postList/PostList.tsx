@@ -12,7 +12,7 @@ import { debounce } from 'throttle-debounce';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
 import ConfirmationModal from '../../components/modal/Confirmation';
 import Pagination from '../../components/pagination/Pagination';
-import { listPreloader } from '../../components/SkeletonPreloader';
+import { listPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { postPageInfo } from '../../constants/PageInfos';
 import {

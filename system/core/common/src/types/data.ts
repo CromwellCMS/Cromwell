@@ -86,7 +86,7 @@ export type TCromwellStore = {
     nodeModules?: TCromwellNodeModules;
     fsRequire?: (path: string) => Promise<any>;
     notifier?: TCromwellNotify;
-    theme?: TCMSTheme;
+    theme?: TCmsTheme;
     userInfo?: TUser;
     storeChangeCallbacks?: Record<string, ((prop) => any)[]>;
     /**
@@ -533,9 +533,9 @@ export type TFrontendPluginProps<TData = any, TInstanceSettings = any> = {
     instanceSettings?: TInstanceSettings;
 }
 
-export type TCMSTheme = {
+export type TCmsTheme = {
     palette?: TPalette;
-    mode?: 'default' | 'dark';
+    mode?: 'default' | 'light' | 'dark';
 }
 
 export type TDBInfo = {

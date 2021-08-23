@@ -1,21 +1,13 @@
 import React from 'react';
 import { Skeleton } from '@material-ui/lab';
+import styles from './SkeletonPreloader.module.scss';
 
 const listSkeleton = [];
 for (let i = 0; i < 35; i++) {
     listSkeleton.push(<Skeleton key={i} variant="text" height="20px" style={{ margin: '25px 20px' }} />)
 }
 export const listPreloader = (
-    <div style={{
-        overflow: 'hidden',
-        position: 'absolute',
-        bottom: '0vh',
-        top: 0,
-        left: 0,
-        right: 0,
-        zIndex: 99,
-        backgroundColor: '#fff'
-    }}>{listSkeleton}</div>
+    <div className={styles.listPreloader} >{listSkeleton}</div>
 );
 
 export const SkeletonPreloader = (props: {
@@ -32,4 +24,4 @@ export const SkeletonPreloader = (props: {
                 ...(props.style ?? {}),
             }}>{listSkeleton}</div>
     )
-} 
+}

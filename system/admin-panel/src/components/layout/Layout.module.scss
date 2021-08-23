@@ -52,21 +52,23 @@ a {
 
 .toastContainer {
     z-index: 99999;
-    
+
     .Toastify {
-      font-size: 16px;
+        font-size: 16px;
     }
-  }
+}
+
+:global(.modeDark) {
+    .main {
+        background-color: #444;
+    }
+}
 
 @media screen and (max-width: $mobileBreakpoint) {
     // mobile
     .sidebar {
         min-width: 0;
         width: 0;
-    }
-
-    .main {
-        // overflow: visible;
     }
 }
 

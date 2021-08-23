@@ -25,7 +25,7 @@ import { RouteComponentProps } from 'react-router-dom';
 import PageErrorBoundary from '../../components/errorBoundaries/PageErrorBoundary';
 import LoadBox from '../../components/loadBox/LoadBox';
 import { LoadingStatus } from '../../components/loadBox/LoadingStatus';
-import { SkeletonPreloader } from '../../components/SkeletonPreloader';
+import { SkeletonPreloader } from '../../components/skeleton/SkeletonPreloader';
 import { toast } from '../../components/toast/toast';
 import { store } from '../../redux/store';
 import { PageBuilder } from './pageBuilder/PageBuilder';

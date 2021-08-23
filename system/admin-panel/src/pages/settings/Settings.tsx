@@ -42,6 +42,7 @@ import { languages } from '../../constants/languages';
 import { timezones } from '../../constants/timezones';
 import { NumberFormatCustom } from '../../helpers/NumberFormatCustom';
 import commonStyles from '../../styles/common.module.scss';
+import { ModeSwitch } from './ModeSwitch';
 import styles from './Settings.module.scss';
 
 
@@ -295,12 +296,17 @@ class SettingsPage extends React.Component<any, {
             <div className={styles.SettingsPage} >
                 <div className={styles.header}>
                     <p className={commonStyles.pageTitle}>settings</p>
-                    <Button
-                        color="primary"
-                        variant="contained"
-                        onClick={this.saveConfig}
-                        size="small"
-                    >Save</Button>
+                    <div style={{ display: 'flex', alignItems: 'center' }}>
+                        <div style={{ marginRight: '20px' }}>
+                            <ModeSwitch />
+                        </div>
+                        <Button
+                            color="primary"
+                            variant="contained"
+                            onClick={this.saveConfig}
+                            size="small"
+                        >Save</Button>
+                    </div>
                 </div>
                 <div className={styles.list}>
                     {this.makeCategory({

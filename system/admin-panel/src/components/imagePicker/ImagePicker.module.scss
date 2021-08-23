@@ -38,3 +38,13 @@
         opacity: 0.7;
     }
 }
+
+:global(.modeDark) {
+    .placeholder {
+        color: #ddd !important;
+    }
+
+    .floatingLabel {
+        color: #ddd;
+    }
+}

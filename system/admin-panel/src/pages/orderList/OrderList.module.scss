@@ -55,6 +55,17 @@
     padding: 5px 10px;
 }
 
+:global(.modeDark) {
+    .pagination,
+    .listHeader {
+        background-color: #333;
+
+        * {
+            color: #eee;
+        }
+    }
+}
+
 div.filterItem {
     margin: 10px;
     width: 150px;
