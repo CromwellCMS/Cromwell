@@ -21,13 +21,6 @@ body {
   }
 }
 
-div.ql-editor,
-div.ql-container.ql-snow {
-  padding: 0;
-  border: 0;
-  overflow: visible;
-}
-
 :global(.column) {
   display: flex;
   flex-direction: column;
