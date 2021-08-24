@@ -21,7 +21,7 @@ import styles from './Product.module.scss';
 export const editorId = "prod-text-editor";
 
 export type TInfoCardRef = {
-    save: () => void;
+    save: () => Promise<void>;
 };
 
 const ProductPage = () => {
@@ -138,7 +138,7 @@ const ProductPage = () => {
 
 
     const handleSave = async () => {
-        infoCardRef?.current?.save();
+        await infoCardRef?.current?.save();
         const product = productRef.current;
 
         const productAttributes = product.attributes?.map(attr => ({

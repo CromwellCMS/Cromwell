@@ -42,7 +42,7 @@ const MainInfoCard = (props: {
     }
 
     if (props.infoCardRef) props.infoCardRef.current = {
-        save: () => fullSave()
+        save: async () => await fullSave(),
     };
 
     const productVariantVal = useRef(props.productVariantVal);
