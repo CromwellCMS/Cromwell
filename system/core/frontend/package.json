@@ -64,6 +64,7 @@
     "eslint": "7.32.0",
     "eslint-plugin-react": "7.24.0",
     "jest": "27.0.6",
+    "postcss": "8.3.6",
     "rollup": "2.56.2",
     "rollup-plugin-auto-external": "2.0.0",
     "rollup-plugin-postcss": "4.0.1",
