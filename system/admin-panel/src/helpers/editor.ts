@@ -88,7 +88,7 @@ export const initTextEditor = async (options: {
                         return getFileManager().getPhoto();
                     },
                     uploader: {
-                        uploadByFile: (file) => {
+                        uploadByFile: () => {
                             toast.error('Please upload image via File manager')
                             return new Promise<any>(done => done({
                                 success: 0,
@@ -245,7 +245,6 @@ export const getEditorHtml = async (htmlId: string) => {
 export const getEditorData = async (htmlId: string): Promise<OutputData | undefined> => {
     const editor = editors[htmlId];
     if (!editor) {
-        console.error('getEditorData: !editor');
         return;
     }
     return await editor.save();
