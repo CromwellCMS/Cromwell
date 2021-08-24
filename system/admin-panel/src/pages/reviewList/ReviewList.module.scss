@@ -110,4 +110,16 @@ div.filterItem {
             color: #eee;
         }
     }
+
+    .rating,
+    .rating * {
+        color: #fdcf63;
+
+        :global(.MuiRating-iconEmpty) {
+            color: #666;
+            * {
+                color: #666;
+            }
+        }
+    }
 }

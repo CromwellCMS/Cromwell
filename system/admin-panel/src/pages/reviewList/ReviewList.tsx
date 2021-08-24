@@ -277,7 +277,11 @@ const ReviewList = (props: TPropsType) => {
                 <div className={styles.itemToView}>
                     <div className={styles.itemToViewHeader}>
                         <p className={styles.userName}>{itemToView?.userName}</p>
-                        <Rating name="read-only" value={itemToView?.rating} precision={0.5} readOnly />
+                        <Rating name="read-only"
+                        className={styles.rating}
+                            value={itemToView?.rating}
+                            precision={0.5}
+                            readOnly />
                     </div>
                     <h4 className={styles.title}>{itemToView?.title}</h4>
                     <p className={styles.description}>{itemToView?.description}</p>
